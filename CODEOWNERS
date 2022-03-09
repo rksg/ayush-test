@@ -1,0 +1,64 @@
+############################################################################################
+#                                                                                          #
+#                Documentation for this file usage starts here                             #
+#                                                                                          #
+#                                                                                          #
+# Ordering is important! The last matching file pattern has the highest precedence.        #
+#                                                                                          #
+# You can also use Bitbucket groups which start with '@@' compared to single users.        #
+#                                                                                          #
+# For Bitbucket users and groups with spaces in their name, put them into double quotes.   #
+#*.ts                     @"Vijaya Mynam" @@"Dev Ops Team"                                 #
+#                                                                                          #
+# When your glob expression contains spaces, put the glob into double quotes.              #
+# "a/path with spaces/*"   docs@example.com                                                #
+#                                                                                          #
+# mainowner is the code owner of all files in the /src/main directory at                   #
+# the root and all its descendants (e.g., /src/main/a).                                    #
+#/src/main/         @mainowner                                                             #
+#                                                                                          #
+# ci/* will match all files in the directory ci, but not deeper in                         #
+# the directory hierarchy (so ci/jobs/prod.yml will not match).                            #
+#ci/*                     @devops                                                          #
+#                                                                                          #
+# You can use '!' for negation in front of file pattern without any code owners afterwards,#
+# to unset all previously defined code owners of the files.                                #
+# e.g. devops group wants to review everything under ci (as defined above),                #
+# except ci/playgrounds.yml, which nobody needs to review:                                 #
+#!ci/playgrounds.yml                                                                       #
+#                                                                                          #
+# It's also possible to use double-asterisk globs. Here's an example that will match       #
+# all JS files under /src/components.                                                      #
+#src/components/**/*.js   @@MyDevs                                                         #
+#                                                                                          #
+# GroovyMaster owns any files in the groovy directory anywhere in the                      #
+# file tree (e.g., src/main/groovy/com/x/y/z.groovy).                                      #
+#groovy/                  @GroovyMaster                                                    #
+#                                                                                          #
+# Files starting with a `#` or a `!` can still be used by escaping them.                   #
+#\#myfile.rb              @PeterTheHacker                                                  #
+#\!yourfile.rb            @PaulTheJSGuru                                                  #
+#                                                                                          #
+#                                                                                          #
+#                                 End of Documentation                                     #
+#                                                                                          #
+############################################################################################
+
+
+# Defining local groups in this file for this repo
+# restriction will be at bitbucket level per group enforcement
+
+# @@@group1   	@user1 @user2
+# @@@group2   	@user1 @user2
+
+# Start adding the rules from here
+
+# Update CODEOWNERS accordingly
+# CODEOWNERS              @user1 @user2
+
+# Restricting this only for master and release branches for now
+CODEOWNERS.destination_branch_pattern master
+CODEOWNERS.destination_branch_pattern release/*
+
+# Suppress info comment on pull request creation about added code owners. Info comment will be added by default.
+# CODEOWNERS.toplevel.create_pull_request_comment disable

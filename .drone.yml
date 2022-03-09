@@ -1,0 +1,73 @@
+kind: pipeline
+name: push
+platform:
+  os: linux
+  arch: amd64
+trigger:
+  event:
+  - push
+  - custom
+
+clone:
+  disable: true
+steps:
+- name: 0_push_clone
+  image: drone/git
+- name: 1_push_ci
+  image: gcr.io/kumo-scratch/altoci-jdk11:stable
+  pull: always
+  environment:
+    KUMO_SCRATCH_GCR_KEY:
+      from_secret: kumoscratchgcrkey
+    ARTIFACTORY_REDPLOY_USERNAME:
+      from_secret: artifactory_redeploy_username
+    ARTIFACTORY_REDPLOY_PASSWORD:
+      from_secret: artifactory_redeploy_password
+    BITBUCKET_TOKEN:
+      from_secret: bitbucket_token
+  depends_on:
+  - 0_push_clone
+  volumes:
+  - name: altoci_m2
+    path: /home/altoci/.m2
+  - name: docker_sock
+    path: /var/run/docker.sock
+- name: 2_push_notify
+  pull: always
+  image: plugins/slack
+  settings:
+    channel: ruckus-alto-cicd
+    webhook:
+      from_secret: slack_webhook
+  depends_on:
+  - 1_push_ci
+  when:
+    status:
+    - failure
+volumes:
+- name: altoci_m2
+  host:
+    path: /var/cache/altoci.m2
+- name: docker_sock
+  host:
+    path: /var/run/docker.sock
+node:
+  jdk: 11
+---
+kind: secret
+external_data:
+  kumoscratchgcrkey:
+    path: kumoscratchgcrkey
+    name: kumoscratchgcrkey
+  artifactory_redeploy_username:
+    path: artifactory-redeploy
+    name: username
+  artifactory_redeploy_password:
+    path: artifactory-redeploy
+    name: password
+  slack_webhook:
+    path: slack-webhook
+    name: slack_webhook
+  bitbucket_token:
+    path: bitbucket-token
+    name: bitbucket_token

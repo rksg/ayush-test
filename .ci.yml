@@ -1,0 +1,13 @@
+ci_version: v1
+
+build:
+  - directory: .
+    build_type: dockerfile
+    images:
+      - image: ui
+        docker_image_name: gcr.io/kumo-scratch/services/acx-ui/ui
+        docker_image_tag: SNAPSHOT
+        dockerfile: Dockerfile.ui
+
+  - directory: configs
+    build_type: ci
