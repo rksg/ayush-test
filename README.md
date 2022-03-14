@@ -23,7 +23,9 @@ Made with ❤️ by [ACX-UI team](https://jira-wiki.ruckuswireless.com/display/A
     - [Connect to bitbucket repo](#connect-to-bitbucket-repo)
 - [Development](#development)
   - [Create a Feature Branch](#create-a-feature-branch)
+  - [Commit your development changes](#commit-your-development-changes)
   - [Create a Pull Request](#create-a-pull-request)
+  - [Delete the Feature Branch](#delete-the-feature-branch)
 </details>
 
 ---
@@ -91,7 +93,7 @@ Remember to use the RUCKUS Username (e.g. cc1149). Do not use your commscope ema
 <br/>
 4. Once it's created, checkout the branch locally to start your development.
 
-### Create a Pull Request
+### Commit your development changes
 
 1. Add the JIRA number as a prefix to your commit message:
 
@@ -100,7 +102,10 @@ Remember to use the RUCKUS Username (e.g. cc1149). Do not use your commscope ema
     ```
 2. Commit and push your branch.
 
-3. Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR.
+
+### Create a Pull Request
+
+1. Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR.
 
 ### Delete the Feature Branch
 
