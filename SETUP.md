@@ -14,27 +14,45 @@ Made with ❤️ by [ACX-UI team](https://jira-wiki.ruckuswireless.com/display/A
 <details open="open">
 <summary>Table of Contents</summary>
 
-- [Bitbucket](#bitbucket)
+- [About](#about)
+  - [Built With](#built-with)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Setup](#setup)
     - [Bitbucket login](#bitbucket-login)
     - [Connect to bitbucket repo](#connect-to-bitbucket-repo)
 - [Development](#development)
-    - [Create a Feature Branch](#create-a-feature-branch)
-    - [Commit your development changes](#commit-your-development-changes)
-    - [Create a Pull Request](#create-a-pull-request)
-    - [Delete the Feature Branch](#delete-the-feature-branch)
-- [Project](#project)
-    - [Built With](#built-with)
-    - [Prerequisites](#prerequisites)
-    - [Setting up the project](#setting-up-the-project)
-    - [Run UI for development](#run-ui-for-development)
-    - [Run tests](#run-tests)
-    - [Run Storybook in development mode](#run-storybook-in-development-mode)
+  - [Create a Feature Branch](#create-a-feature-branch)
+  - [Commit your development changes](#commit-your-development-changes)
+  - [Create a Pull Request](#create-a-pull-request)
+  - [Delete the Feature Branch](#delete-the-feature-branch)
 </details>
 
 ---
 
+## About
 
-## Bitbucket
+```sh
+Coming Soon
+```
+
+##### Built With
+
+- [React](https://reactjs.org/)
+- [Node.js](https://nodejs.org/)
+- [Ant Design](https://ant.design/)
+- ...
+
+
+## Getting Started
+
+##### Prerequisites
+
+```sh
+Coming Soon
+```
+
+### Setup
 
 ##### Bitbucket login
 
@@ -61,7 +79,7 @@ Remember to use the RUCKUS Username (e.g. cc1149). Do not use your commscope ema
 
 ## Development
 
-##### Create a Feature Branch
+### Create a Feature Branch
 
 1. Go to this slack channel. https://arris.slack.com/archives/CC04J4E3V
 <br/>
@@ -75,8 +93,7 @@ Remember to use the RUCKUS Username (e.g. cc1149). Do not use your commscope ema
 <br/>
 4. Once it's created, checkout the branch locally to start your development.
 
-
-##### Commit your development changes
+### Commit your development changes
 
 1. Add the JIRA number as a prefix to your commit message:
 
@@ -86,11 +103,11 @@ Remember to use the RUCKUS Username (e.g. cc1149). Do not use your commscope ema
 2. Commit and push your branch.
 
 
-##### Create a Pull Request
+### Create a Pull Request
 
 1. Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR.
 
-##### Delete the Feature Branch
+### Delete the Feature Branch
 
 1. Go to this slack channel. https://arris.slack.com/archives/CC04J4E3V
 <br/>
@@ -100,51 +117,3 @@ Remember to use the RUCKUS Username (e.g. cc1149). Do not use your commscope ema
     ```
     /alto-ci closefb MLSA-5449 acx-ui
     ```
-
-
-## Project
-
-##### Built With
-
-- [React](https://reactjs.org/)
-- [Node.js](https://nodejs.org/)
-- [Ant Design](https://ant.design/)
-
-##### Prerequisites
-
-- Node.js v14.19.0 ([`nvm`](https://github.com/nvm-sh/nvm) is recommended to manage multiple versions of Node.js in your local dev env)
-- Extract RC Cookie extension (see https://jira-wiki.ruckuswireless.com/display/Team/ACX-UI-POC)
-
-##### Setting up the project
-
-Clone this repo and install dependencies.
-
-```bash
-npm install
-```
-
-##### Run UI for development
-
-Execute command below and access UI at [http://localhost:3000](http://localhost:3000).
-
-```bash
-npm start
-```
-
-Login to RC environment and click on the Extract RC Cookie extension.
-
-##### Run tests
-
-```bash
-npm test
-```
-
-##### Run Storybook in development mode
-
-```bash
-npm run storybook
-```
-
-##### Misc - IDE
-
-To develop on this project, use of [Visual Studio Code](https://code.visualstudio.com/) or any other modern IDEs of your choice will work.

@@ -1,0 +1,74 @@
+module.exports = {
+  root: true,
+  extends: [
+    'react-app',
+    'react-app/jest'
+  ],
+  plugins: ['align-import'],
+  rules: {
+    'align-import/align-import': 2,
+    'comma-dangle': [2, 'never'],
+    'dot-notation': 2,
+    'import/no-cycle': 2,
+    'import/order': [2, {
+      alphabetize: { order: 'asc', caseInsensitive: true },
+      groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'type', 'object'],
+      pathGroups: [
+        { pattern: 'react', group: 'builtin', position: 'before' },
+        { pattern: 'src', group: 'internal', position: 'before' }
+      ],
+      pathGroupsExcludedImportTypes: ['react']
+    }],
+    'indent': [2, 2, { MemberExpression: 1, SwitchCase: 1 }],
+    'jsx-quotes': [2, 'prefer-single'],
+    'key-spacing': 2,
+    'max-len': [2, {
+      code: 100,
+      ignoreComments: true,
+      ignorePattern: '^import\\s.+\\sfrom\\s.+$'
+    }],
+    'no-console': 2,
+    'no-multi-spaces': [2, {
+      ignoreEOLComments: true,
+      exceptions: {
+        ExportAllDeclaration: true,
+        ExportNamedDeclaration: true,
+        ImportDeclaration: true,
+        IfStatement: true,
+        SwitchCase: true
+      }
+    }],
+    'no-unused-vars': [2, { ignoreRestSiblings: true }],
+    'no-var': 2,
+    'object-curly-spacing': [2, 'always'],
+    'quote-props': [2, 'consistent-as-needed'],
+    'quotes': [2, 'single', { avoidEscape: true }],
+    'radix': [2, 'always'],
+    'react/jsx-max-props-per-line': [2, { maximum: 1, when: 'multiline' }],
+    'semi': [2, 'never'],
+    'space-before-function-paren': [2, 'always']
+  },
+  overrides: [
+    {
+      files: ['**/*.ts?(x)'],
+      rules: {
+        'comma-dangle': 0,
+        '@typescript-eslint/comma-dangle': [2, 'never'],
+
+        'dot-notation': 0,
+
+        'no-unused-vars': 0,
+        '@typescript-eslint/no-unused-vars': [2, { ignoreRestSiblings: true }],
+
+        'quotes': 0,
+        '@typescript-eslint/quotes': [2, 'single', { avoidEscape: true }],
+
+        'semi': 0,
+        '@typescript-eslint/semi': [2, 'never'],
+
+        'space-before-function-paren': 0,
+        '@typescript-eslint/space-before-function-paren': [2, 'always']
+      }
+    }
+  ]
+}
