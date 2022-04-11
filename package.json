@@ -1,0 +1,72 @@
+{
+  "name": "acx-ui-poc",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@ant-design/pro-form": "1.55.1",
+    "@ant-design/pro-layout": "6.34.4",
+    "@reduxjs/toolkit": "1.7.2",
+    "@testing-library/jest-dom": "5.16.2",
+    "@testing-library/react": "12.1.2",
+    "@testing-library/user-event": "13.5.0",
+    "@types/jest": "27.4.0",
+    "@types/node": "16.11.25",
+    "@types/react": "17.0.39",
+    "@types/react-dom": "17.0.11",
+    "@types/styled-components": "5.1.24",
+    "antd": "4.18.9",
+    "lodash": "4.17.21",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-redux": "7.2.6",
+    "react-router-dom": "6.2.2",
+    "react-scripts": "5.0.0",
+    "styled-components": "5.3.3",
+    "typescript": "4.5.5",
+    "usehooks-ts": "2.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.17.5",
+    "@craco/craco": "6.4.3",
+    "@storybook/addon-actions": "6.4.19",
+    "@storybook/addon-essentials": "6.4.19",
+    "@storybook/addon-interactions": "6.4.19",
+    "@storybook/addon-links": "6.4.19",
+    "@storybook/builder-webpack5": "6.4.19",
+    "@storybook/manager-webpack5": "6.4.19",
+    "@storybook/node-logger": "6.4.19",
+    "@storybook/preset-ant-design": "0.0.2",
+    "@storybook/preset-create-react-app": "4.0.1",
+    "@storybook/react": "6.4.19",
+    "@storybook/testing-library": "0.0.9",
+    "@types/lodash": "4.14.178",
+    "craco-less": "2.0.0",
+    "eslint-plugin-align-import": "1.0.0",
+    "express": "4.17.3",
+    "http-proxy-middleware": "2.0.3",
+    "msw": "0.36.8",
+    "webpack": "5.69.1"
+  },
+  "scripts": {
+    "start": "ESLINT_NO_DEV_ERRORS='true' craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
+    "storybook": "ESLINT_NO_DEV_ERRORS='true' start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public -o storybook/storybook-static",
+    "deploy-storybook": "gcloud app deploy storybook/storybook.yaml --project ruckussgdc-mlisa-dev",
+    "lint": "eslint src"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

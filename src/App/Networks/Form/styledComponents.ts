@@ -1,0 +1,18 @@
+import styled from 'styled-components/macro'
+
+export const Diagram = styled.div`
+  height: 387px;
+  width: 358px;
+  margin-top: 5px;
+`
+
+export const Title = styled.h1`
+  padding-top: 11px;
+  color: #7f7f7f;
+  font-size: 20px;
+`
+
+export const RadioDescription = styled.div`
+  color: var(--acx-neutrals-50);
+  margin-top: 4px;
+`
