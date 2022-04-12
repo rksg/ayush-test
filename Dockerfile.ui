@@ -1,7 +1,24 @@
-FROM node:alpine
+FROM node:14.19.1-alpine
+
 WORKDIR /app
-COPY package.json ./
-COPY package-lock.json ./
+
+COPY .eslintignore .
+COPY .eslintrc.js .
+COPY .npmrc .
+COPY yarn.lock .
+
+COPY tsconfig.json .
+COPY craco.config.js .
+
+COPY package.json .
+COPY package-lock.json .
+
 RUN npm i
-COPY . ./
+
+COPY public/ public/
+COPY src/ src/
+COPY storybook/ storybook/
+
 CMD ["npm", "start"]
+
+EXPOSE 3000

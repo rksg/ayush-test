@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: values-configmap-vol-map-acx-ui
+data:
+  values.yaml: |
+  service:
+    volumeMounts:
+      initcontainers:
+        rks-dbmigrate:
+         - name: config-volume
+           mountPath: /etc/config/db
+           readOnly: true
+      containers:
+        acx-ui:
+         - name: configmap-volume-acx-ui
+           mountPath: /etc/config/configmap
+           readOnly: true
+    volumes:
+      - name: configmap-volume-acx-ui
+        configMap:
+          name: configmap-acx-ui
