@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: values-acx-ui
+data:
+  # add any overrides to acx_standard1/values.yaml here
+  # wiki: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=224686406
+  values.yaml: |
+    service: {}
+    #  service:
+    #    destinationRule:
+    #    enabled: True
+    #  livenessProbe:
+    #    enabled: True
+    #    initialDelaySeconds: 300
+    #    periodSeconds: 5
+    #    health: /health
+    #  readinessProbe:
+    #    enabled: True
+    #    initialDelaySeconds: 120
+    #    periodSeconds: 5
+    #    health: /health
+  # Default export 8080(http) / 18080(grpc) ##
+    # externalPort: 8080
+    #  hpa:
+    #    enabled: True
+    #    minReplicas: 1
+    #    maxReplicas: 3
+    #    cpu:
+    #      enabled: True
+    #      targetAverageUtilization: 80
+    #    memory:
+    #      enabled: False
+    #      targetAverageUtilization: 0
+    #  serviceResource:
+    #    ports:
+    #      - port: 9999
+    #        targetPort: 9999
+    #        protocol: TCP
+    #        name: http-dev

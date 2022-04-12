@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: values-configmap-env-map-acx-ui
+data:
+  values.yaml: |
+    service:
+      configmaps:
+      - configmap: configmap-acx-ui
+        key: documentation
+        name: DOCUMENTATION

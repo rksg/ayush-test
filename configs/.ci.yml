@@ -1,0 +1,5 @@
+ci_version: v1
+
+build:
+  - directory: .
+    build_type: configs
