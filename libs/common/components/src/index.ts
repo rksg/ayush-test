@@ -1,3 +1,4 @@
+export * from './components/Boundary'
 export * from './components/Card'
 export * from './components/DonutChart'
 export * from './components/DropDown'
