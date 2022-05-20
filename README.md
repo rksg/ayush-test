@@ -106,7 +106,7 @@ Remember to use the RUCKUS Username (e.g. cc1149). Do not use your commscope ema
 ### Prerequisites
 
 - Node.js v14.19.x ([`nvm`](https://github.com/nvm-sh/nvm) is recommended to manage multiple versions of Node.js in your local dev env)
-- Extract RC Cookie extension (see https://jira-wiki.ruckuswireless.com/display/Team/ACX-UI-POC)
+- Extract RC Cookie extension (see https://jira-wiki.ruckuswireless.com/display/Team/ACX-UI)
 
 ### Setting up the project
 
