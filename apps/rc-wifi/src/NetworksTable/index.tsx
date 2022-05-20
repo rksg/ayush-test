@@ -4,8 +4,8 @@ import { Button }    from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
 import styled        from 'styled-components/macro'
 
-import { PageHeader, Table }   from '@acx-ui/components'
-import { useNetworkListQuery } from '@acx-ui/rc/services'
+import { PageHeader, Table, Loader } from '@acx-ui/components'
+import { useNetworkListQuery }       from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
@@ -190,7 +190,7 @@ export function NetworksTable () {
     const params = useParams()
     const [payload, setPayload] = useState(defaultPayload)
     const [pagination, setPagination] = useState(defaultPagination)
-    const { data, error, isLoading, refetch } = useNetworkListQuery({
+    const { data, isLoading, isFetching, error } = useNetworkListQuery({
       params,
       payload
     })
@@ -204,7 +204,6 @@ export function NetworksTable () {
       }
     }
     useEffect(handleResponse, [data])
-    useEffect(refetch, [payload, refetch])
 
     const handleTableChange = (pagination: any, filters: any, sorter: any) => {
       const tableProps = {
@@ -217,16 +216,15 @@ export function NetworksTable () {
       setPayload(request)
     }
 
-    if (isLoading) return <div>Loading...</div>
-    if (error) return <div role='alert'>Error</div>
     return (
-      <Table
-        columns={columns}
-        dataSource={data.data}
-        pagination={pagination}
-        onChange={handleTableChange}
-        rowKey='id'
-      />
+      <Loader states={[{ isLoading, isFetching, error }]}>
+        <Table
+          columns={columns}
+          dataSource={data?.data}
+          pagination={pagination}
+          onChange={handleTableChange}
+          rowKey='id' />
+      </Loader>
     )
   }
 

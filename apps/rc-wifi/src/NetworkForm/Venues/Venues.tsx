@@ -64,7 +64,7 @@ export function Venues (props: any) {
   const [tableData, setTableData] = useState(defaultArray)
   const [selectedRowsData, setSelectedRowsData] = useState(defaultArray)
   const params = useParams()
-  const { data, error, isLoading, refetch } = useVenueListQuery({
+  const { data, error, isLoading } = useVenueListQuery({
     params: { ...params, networkId: getNetworkId() },
     payload
   })
@@ -212,7 +212,6 @@ export function Venues (props: any) {
   }
 
   useEffect(handleResponse, [data])
-  useEffect(refetch, [payload, refetch])
 
   const handleTableChange = (pagination: any, filters: any, sorter: any) => {
     const tableProps = {
