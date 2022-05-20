@@ -5,7 +5,7 @@ export interface ErrorBoundaryProps {
 }
 
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
-  state = { hasError: false, error: null }
+  override state = { hasError: false, error: null }
 
   static getDerivedStateFromError (error: Error) {
     return { hasError: Boolean(error), error }
@@ -18,7 +18,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
     </>
   }
 
-  render () {
+  override render () {
     if (this.state.error) {
       // TODO:
       // hide detailed error/show summary in prod

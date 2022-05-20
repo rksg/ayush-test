@@ -53,7 +53,7 @@ function ErrorContainer (props: Pick<LoaderProps, 'states'>) {
 }
 
 class ErrorBoundary extends DefaultErrorBoundary {
-  defaultFallback () {
+  override defaultFallback () {
     return <UI.FallbackWrapper children={super.defaultFallback()} />
   }
 }
