@@ -1,0 +1,97 @@
+{
+  "sourceRoot": "apps/rc-wifi/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/rc-wifi",
+        "index": "apps/rc-wifi/src/index.html",
+        "baseHref": "/",
+        "main": "apps/rc-wifi/src/main.ts",
+        "polyfills": "apps/rc-wifi/src/polyfills.ts",
+        "tsConfig": "apps/rc-wifi/tsconfig.app.json",
+        "assets": ["apps/rc-wifi/src/assets"],
+        "styles": [],
+        "scripts": [],
+        "webpackConfig": "apps/rc-wifi/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/rc-wifi/src/environments/environment.ts",
+              "with": "apps/rc-wifi/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "webpackConfig": "apps/rc-wifi/webpack.config.prod.js"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/react:module-federation-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "rc-wifi:build",
+        "hmr": true,
+        "port": 3001
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "rc-wifi:build:development"
+        },
+        "production": {
+          "buildTarget": "rc-wifi:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/rc-wifi/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/rc-wifi"],
+      "options": {
+        "jestConfig": "apps/rc-wifi/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "serve-static": {
+      "executor": "@nrwl/web:file-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "rc-wifi:build",
+        "port": 3001
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "rc-wifi:build:development"
+        },
+        "production": {
+          "buildTarget": "rc-wifi:build:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}

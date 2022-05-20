@@ -1,13 +1,11 @@
 
 <div align="center">
   ACX UI Project
-  <br />
 </div>
 
 <div align="center">
-<br />
 
-Made with ❤️ by [ACX-UI team](https://jira-wiki.ruckuswireless.com/display/ACX/ACX+UI+and+UX)
+Made with ❤️ by [ACX-UI team](https://jira-wiki.ruckuswireless.com/display/ACX/ACX+-+UI+and+UX)
 
 </div>
 
@@ -28,6 +26,7 @@ Made with ❤️ by [ACX-UI team](https://jira-wiki.ruckuswireless.com/display/A
     - [Setting up the project](#setting-up-the-project)
     - [Run UI for development](#run-ui-for-development)
     - [Run tests](#run-tests)
+    - [Run lint](#run-lint)
     - [Run Storybook in development mode](#run-storybook-in-development-mode)
 </details>
 
@@ -49,73 +48,67 @@ Made with ❤️ by [ACX-UI team](https://jira-wiki.ruckuswireless.com/display/A
 
 1. [Setup your SSH keys](https://confluence.atlassian.com/bitbucketserver0610/creating-ssh-keys-989761219.html)
 Remember to use the RUCKUS Username (e.g. cc1149). Do not use your commscope email address.
-<br/>
+
 
 2. Once created and pasted SSH public key under  _User > Account > SSH keys_
     ```sh
     ssh-keygen -t rsa -C "RUCKUS USERNAME"
     ```
 
-3. Use your prefer GIT GUI (e.g. sourcetree) or Cli. 
+3. Use your prefer GIT GUI (e.g. sourcetree) or Cli.
 
 
 ## Development
 
-##### Create a Feature Branch
+#### Create a Feature Branch
 
 1. Go to this slack channel. https://arris.slack.com/archives/CC04J4E3V
-<br/>
-2. Create a feature branch in the bitbucket repo with the following command. 
-⚠️ Replace MLSA-5449 with your JIRA task. 
-
+2. Create a feature branch in the bitbucket repo with the following command.
     ```
+    # ⚠️ Replace MLSA-5449 with your JIRA task.
     /alto-ci createfb MLSA-5449 acx-ui
     ```
-3. Wait for a few minutes for the branch to be created. 
-<br/>
+3. Wait for a few minutes for the branch to be created.
 4. Once it's created, checkout the branch locally to start your development.
 
-
-##### Commit your development changes
+#### Commit your development changes
 
 1. Add the JIRA number as a prefix to your commit message:
 
     ```
-    MLSA-5449: initial README for acx-ui 
+    MLSA-5449: initial README for acx-ui
     ```
 2. Commit and push your branch.
 
 
-##### Create a Pull Request
+#### Create a Pull Request
 
 1. Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR.
 
-##### Delete the Feature Branch
+#### Delete the Feature Branch
 
 1. Go to this slack channel. https://arris.slack.com/archives/CC04J4E3V
-<br/>
-2. Delete the feature branch in the bitbucket repo with the following command. 
-⚠️ Replace MLSA-5449 with your JIRA task. 
+2. Delete the feature branch in the bitbucket repo with the following command.
+⚠️ Replace MLSA-5449 with your JIRA task.
 
     ```
     /alto-ci closefb MLSA-5449 acx-ui
     ```
 
-
 ## Project
 
-##### Built With
+### Built With
 
 - [React](https://reactjs.org/)
 - [Node.js](https://nodejs.org/)
 - [Ant Design](https://ant.design/)
 
-##### Prerequisites
+### Prerequisites
 
-- Node.js v14.19.0 ([`nvm`](https://github.com/nvm-sh/nvm) is recommended to manage multiple versions of Node.js in your local dev env)
+- Node.js v14.19.x ([`nvm`](https://github.com/nvm-sh/nvm) is recommended to manage multiple versions of Node.js in your local dev env)
 - Extract RC Cookie extension (see https://jira-wiki.ruckuswireless.com/display/Team/ACX-UI-POC)
 
-##### Setting up the project
+### Setting up the project
 
 Clone this repo and install dependencies.
 
@@ -123,28 +116,33 @@ Clone this repo and install dependencies.
 npm install
 ```
 
-##### Run UI for development
+### Run UI for development
 
 Execute command below and access UI at [http://localhost:3000](http://localhost:3000).
 
 ```bash
-npm start
+npx nx run main:serve --devRemotes=rc-wifi
 ```
 
-Login to RC environment and click on the Extract RC Cookie extension.
-
-##### Run tests
+### Run tests
 
 ```bash
-npm test
+npx nx affected:test
 ```
-
-##### Run Storybook in development mode
+### Run lint
 
 ```bash
-npm run storybook
+npx nx affected:lint
 ```
 
-##### Misc - IDE
+### Run Storybook in development mode
+
+```bash
+npx nx run common-components:storybook
+```
+
+### Misc
 
 To develop on this project, use of [Visual Studio Code](https://code.visualstudio.com/) or any other modern IDEs of your choice will work.
+
+Refer to [Nx.md](Nx.md) for Nx related commands

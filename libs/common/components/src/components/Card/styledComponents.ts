@@ -1,0 +1,102 @@
+import { Button as AntButton } from 'antd'
+import styled                  from 'styled-components/macro'
+
+import { ArrowsOut, MoreVertical } from '@acx-ui/icons'
+
+type WrapperProps = {
+  hasTitle: boolean
+  hasSubTitle: boolean
+  hasTabs: boolean
+}
+
+export const ArrowOutIcon = styled(ArrowsOut)``
+export const MoreVerticalIcon = styled(MoreVertical)``
+
+export const Button = styled(AntButton)`
+  border: none;
+  box-shadow: none;
+  background: var(--acx-primary-white);
+  padding: 0;
+  &.ant-btn-icon-only {
+    width: 16px;
+    height: 16px;
+  }
+`
+
+const headRowGap = '5px'
+const cardPadding = '12px'
+
+export const Wrapper = styled.div<WrapperProps>`
+  height: 100%;
+  width: 100%;
+  .ant-card {
+    padding: ${cardPadding};
+    height: 100%;
+  }
+  .ant-card-head {
+    padding: 0;
+    border-bottom: none;
+    min-height: 0;
+    margin-bottom: 10px;
+    ${(props) => (props.hasTitle || props.hasTabs ? '' : 'display:none;')}
+  }
+  .ant-card-head-title {
+    padding: 0;
+  }
+  .ant-card-head-wrapper {
+    align-items: start;
+  }
+  .ant-card-extra {
+    padding: 0;
+  }
+  .ant-card-body {
+    height: calc(
+      100% -
+        (
+          var(--acx-headline-4-line-height) +
+          ${(props) => props.hasSubTitle ? 'var(--acx-body-4-line-height)' : '0'} +
+          ${cardPadding} +
+          ${headRowGap}
+        )
+    );
+    padding: 0;
+  }
+`
+
+export const HeaderContainer = styled.div<WrapperProps>`
+  line-height: 16px;
+  display: grid;
+  grid-template-areas: ${(props) => props.hasSubTitle
+    ? `
+      "title tabs"
+      "sub-title sub-title";
+    `
+    : '"title tabs";'}
+  grid-template-columns: auto 1fr;
+  column-gap: ${(props) => (!props.hasTitle && props.hasTabs ? '0px' : '20px')};
+  row-gap: ${headRowGap};
+`
+
+export const TitleWrapper = styled.div`
+  grid-area: title;
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: 600;
+  height: var(--acx-headline-4-line-height);
+`
+
+export const SelectionControlWrapper = styled.div`
+  grid-area: tabs;
+  height: var(--acx-headline-4-line-height);
+`
+
+export const SubTitleWrapper = styled.div`
+  grid-area: sub-title;
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  color: var(--acx-primary-black);
+  font-weight: 400;
+  height: var(--acx-body-4-line-height);
+`
