@@ -22,7 +22,7 @@ module.exports = webpackConfigWithModuleFederation({
    *   ['app2', '//example.com/path/to/app2/remoteEntry.js'],
    * ]
    */
-  remotes: [['rc-wifi-1', '//localhost:3001/']]
+  remotes: [['rc-wifi', '//localhost:3001/']]
 }, {
   devServer: {
     setupMiddlewares (md, server) {
