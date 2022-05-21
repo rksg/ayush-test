@@ -1,12 +1,6 @@
-<div align="center">
-  <h1>ACX UI</h1>
-</div>
+# ACX UI
 
-<div align="center">
-  Made with ❤️ by the [ACX-UI team](https://jira-wiki.ruckuswireless.com/display/ACX/ACX+-+UI+and+UX)
-</div>
-
----
+Made with ❤️ by the [ACX-UI team](https://jira-wiki.ruckuswireless.com/display/ACX/ACX+-+UI+and+UX).
 
 ## One-time setup
 
@@ -53,12 +47,12 @@
 ## Branches and pull requests
 
 Features are developed by branching from master. When a branch is ready for review, pull requests
-(PR) are raised. These are done using a combination of commands on the [#ruckus-alto-cicd Slack channel](https://arris.slack.com/archives/CC04J4E3V)
-and the Bitbucket UI.
+(PR) are raised. These are done using a combination of commands on the [#ruckus-alto-cicd](https://arris.slack.com/archives/CC04J4E3V)
+Slack channel and the Bitbucket UI.
 
 ### Creating a branch
 
-This is done on the [#ruckus-alto-cicd Slack channel](https://arris.slack.com/archives/CC04J4E3V).
+This is done on the [#ruckus-alto-cicd](https://arris.slack.com/archives/CC04J4E3V) Slack channel.
 
 ```
 # ⚠️ Replace ACX-5449 with your JIRA task.
@@ -83,7 +77,8 @@ merged.
 
 ### Deleting a branch
 
-After a PR is merged, you should delete the branch. Do this on the [#ruckus-alto-cicd Slack channel](https://arris.slack.com/archives/CC04J4E3V).
+After a PR is merged, you should delete the branch. Do this on the [#ruckus-alto-cicd](https://arris.slack.com/archives/CC04J4E3V)
+Slack channel.
 
 ```
 /alto-ci closefb ACX-5449 acx-ui
