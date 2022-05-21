@@ -21,7 +21,7 @@ using your RUCKUS username.
 ssh-keygen -t rsa -C "ruckus.username"
 ```
 
-Copy the public key using the command below, then [paste to Bitbucket](https://bitbucket.rks-cloud.com/plugins/servlet/ssh/account/keys).
+Copy the public key using the command below, then [add it to Bitbucket](https://bitbucket.rks-cloud.com/plugins/servlet/ssh/account/keys).
 
 ```sh
 pbcopy < ~/.ssh/id_rsa.pub
@@ -39,7 +39,7 @@ Configure Git.
 
 ```
 git config user.name "ruckus.username"
-git config user.email "ruckus.usersname@ruckuswireless.com"
+git config user.email "ruckus.username@ruckuswireless.com"
 ```
 
 ## Branches and pull requests
