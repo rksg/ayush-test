@@ -6,43 +6,41 @@ Made with ❤️ by the [ACX-UI team](https://jira-wiki.ruckuswireless.com/displ
 
 ### Login
 
-1. Connect to the VPN.
+Connect to the VPN and access [your Bitbucket profile](https://bitbucket.rks-cloud.com/profile)
+using your RUCKUS login credentials.
 
-2. Access [your Bitbucket profile](https://bitbucket.rks-cloud.com/profile) using your RUCKUS login
-   credentials.
-
-3. [Verify that your account has your username and email address](https://jira-wiki.ruckuswireless.com/display/Team/New+Hire+Guide+for+Alto+UI?preview=/224689327/224689391/image2021-11-23_11-45-52.png).
-   Please approach IT if these values aren't set correctly.
+[Verify that your account has your username and email address](https://jira-wiki.ruckuswireless.com/display/Team/New+Hire+Guide+for+Alto+UI?preview=/224689327/224689391/image2021-11-23_11-45-52.png).
+Please approach IT if these values aren't set correctly.
 
 ### SSH key
 
-1. [Create a new SSH key](https://confluence.atlassian.com/bitbucketserver0610/creating-ssh-keys-989761219.html)
-   using your RUCKUS username or use existing one.
+Use an existing SSH key or [create a new one](https://confluence.atlassian.com/bitbucketserver0610/creating-ssh-keys-989761219.html)
+using your RUCKUS username.
 
-    ```sh
-    ssh-keygen -t rsa -C "ruckus.username"
-    ```
+```sh
+ssh-keygen -t rsa -C "ruckus.username"
+```
 
-2. Copy the public key, then [paste to Bitbucket](https://bitbucket.rks-cloud.com/plugins/servlet/ssh/account/keys).
+Copy the public key using the command below, then [paste to Bitbucket](https://bitbucket.rks-cloud.com/plugins/servlet/ssh/account/keys).
 
-    ```sh
-    pbcopy < ~/.ssh/id_rsa.pub
-    ```
+```sh
+pbcopy < ~/.ssh/id_rsa.pub
+```
 
 ### Clone project
 
-1. Use your preferred Git GUI (e.g. sourcetree) or cli.
+Use your preferred Git GUI (e.g. sourcetree) or cli.
 
-    ```
-    git clone ssh://git@bitbucket.rks-cloud.com:7999/rkscloud/acx-ui.git
-    ```
+```
+git clone ssh://git@bitbucket.rks-cloud.com:7999/rkscloud/acx-ui.git
+```
 
-2. Configure git.
+Configure Git.
 
-    ```
-    git config user.name "ruckus.username"
-    git config user.email "ruckus.usersname@ruckuswireless.com"
-    ```
+```
+git config user.name "ruckus.username"
+git config user.email "ruckus.usersname@ruckuswireless.com"
+```
 
 ## Branches and pull requests
 
