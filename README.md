@@ -53,7 +53,7 @@ Slack channel and the Bitbucket UI.
 This is done on the [#ruckus-alto-cicd](https://arris.slack.com/archives/CC04J4E3V) Slack channel.
 
 ```
-# ⚠️ Replace ACX-5449 with your JIRA task.
+# ⚠️ Replace ACX-5449 with your JIRA issue number.
 /alto-ci createfb ACX-5449 acx-ui
 ```
 
