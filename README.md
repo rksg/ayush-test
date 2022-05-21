@@ -1,124 +1,112 @@
-
 <div align="center">
-  ACX UI Project
+  <h1>ACX UI</h1>
 </div>
 
 <div align="center">
-
-Made with ❤️ by [ACX-UI team](https://jira-wiki.ruckuswireless.com/display/ACX/ACX+-+UI+and+UX)
-
+  Made with ❤️ by the [ACX-UI team](https://jira-wiki.ruckuswireless.com/display/ACX/ACX+-+UI+and+UX)
 </div>
-
-<details open="open">
-<summary>Table of Contents</summary>
-
-- [Bitbucket](#bitbucket)
-    - [Bitbucket login](#bitbucket-login)
-    - [Connect to bitbucket repo](#connect-to-bitbucket-repo)
-- [Development](#development)
-    - [Create a Feature Branch](#create-a-feature-branch)
-    - [Commit your development changes](#commit-your-development-changes)
-    - [Create a Pull Request](#create-a-pull-request)
-    - [Delete the Feature Branch](#delete-the-feature-branch)
-- [Project](#project)
-    - [Built With](#built-with)
-    - [Prerequisites](#prerequisites)
-    - [Setting up the project](#setting-up-the-project)
-    - [Run UI for development](#run-ui-for-development)
-    - [Run tests](#run-tests)
-    - [Run lint](#run-lint)
-    - [Run Storybook in development mode](#run-storybook-in-development-mode)
-</details>
 
 ---
 
+## One-time setup
 
-## Bitbucket
-
-##### Bitbucket login
+### Login
 
 1. Connect to the VPN.
 
-2. Access to [Bitbucket account](https://bitbucket.rks-cloud.com/account) with your RUCKUS login credential
+2. Access [your Bitbucket profile](https://bitbucket.rks-cloud.com/profile) using your RUCKUS login
+   credentials.
 
-3. [Verify that your account has your user name and email address.](https://jira-wiki.ruckuswireless.com/display/Team/New+Hire+Guide+for+Alto+UI?preview=/224689327/224689391/image2021-11-23_11-45-52.png) Please approach IT if these values aren't set correctly.
+3. [Verify that your account has your username and email address](https://jira-wiki.ruckuswireless.com/display/Team/New+Hire+Guide+for+Alto+UI?preview=/224689327/224689391/image2021-11-23_11-45-52.png).
+   Please approach IT if these values aren't set correctly.
 
+### SSH key
 
-##### Connect to Bitbucket repo
+1. [Create a new SSH key](https://confluence.atlassian.com/bitbucketserver0610/creating-ssh-keys-989761219.html)
+   using your RUCKUS username or use existing one.
 
-1. [Setup your SSH keys](https://confluence.atlassian.com/bitbucketserver0610/creating-ssh-keys-989761219.html)
-Remember to use the RUCKUS Username (e.g. cc1149). Do not use your commscope email address.
-
-
-2. Once created and pasted SSH public key under  _User > Account > SSH keys_
     ```sh
-    ssh-keygen -t rsa -C "RUCKUS USERNAME"
+    ssh-keygen -t rsa -C "ruckus.username"
     ```
 
-3. Use your prefer GIT GUI (e.g. sourcetree) or Cli.
+2. Copy the public key, then [paste to Bitbucket](https://bitbucket.rks-cloud.com/plugins/servlet/ssh/account/keys).
 
-
-## Development
-
-#### Create a Feature Branch
-
-1. Go to this slack channel. https://arris.slack.com/archives/CC04J4E3V
-2. Create a feature branch in the bitbucket repo with the following command.
+    ```sh
+    pbcopy < ~/.ssh/id_rsa.pub
     ```
-    # ⚠️ Replace MLSA-5449 with your JIRA task.
-    /alto-ci createfb MLSA-5449 acx-ui
-    ```
-3. Wait for a few minutes for the branch to be created.
-4. Once it's created, checkout the branch locally to start your development.
 
-#### Commit your development changes
+### Clone project
 
-1. Add the JIRA number as a prefix to your commit message:
+1. Use your preferred Git GUI (e.g. sourcetree) or cli.
 
     ```
-    MLSA-5449: initial README for acx-ui
+    git clone ssh://git@bitbucket.rks-cloud.com:7999/rkscloud/acx-ui.git
     ```
-2. Commit and push your branch.
 
-
-#### Create a Pull Request
-
-1. Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR.
-
-#### Delete the Feature Branch
-
-1. Go to this slack channel. https://arris.slack.com/archives/CC04J4E3V
-2. Delete the feature branch in the bitbucket repo with the following command.
-⚠️ Replace MLSA-5449 with your JIRA task.
+2. Configure git.
 
     ```
-    /alto-ci closefb MLSA-5449 acx-ui
+    git config user.name "ruckus.username"
+    git config user.email "ruckus.usersname@ruckuswireless.com"
     ```
+
+## Branches and pull requests
+
+Features are developed by branching from master. When a branch is ready for review, pull requests
+(PR) are raised. These are done using a combination of commands on the [#ruckus-alto-cicd Slack channel](https://arris.slack.com/archives/CC04J4E3V)
+and the Bitbucket UI.
+
+### Creating a branch
+
+This is done on the [#ruckus-alto-cicd Slack channel](https://arris.slack.com/archives/CC04J4E3V).
+
+```
+# ⚠️ Replace ACX-5449 with your JIRA task.
+/alto-ci createfb ACX-5449 acx-ui
+```
+
+It takes for a few minutes for the branch to be created. Once it's created, checkout the branch
+locally to start your development.
+
+### Commit messages
+
+Commit message need to be prefixed with the JIRA issue number e.g.
+
+```
+ACX-5449: initial README for acx-ui
+```
+
+### Creating a pull request
+
+Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR before it can be
+merged.
+
+### Deleting a branch
+
+After a PR is merged, you should delete the branch. Do this on the [#ruckus-alto-cicd Slack channel](https://arris.slack.com/archives/CC04J4E3V).
+
+```
+/alto-ci closefb ACX-5449 acx-ui
+```
 
 ## Project
 
-### Built With
-
-- [React](https://reactjs.org/)
-- [Node.js](https://nodejs.org/)
-- [Ant Design](https://ant.design/)
-
 ### Prerequisites
 
-- Node.js v14.19.x ([`nvm`](https://github.com/nvm-sh/nvm) is recommended to manage multiple versions of Node.js in your local dev env)
+- Node.js v14.19.0 ([`nvm`](https://github.com/nvm-sh/nvm) is recommended to manage multiple versions of Node.js in your local dev env)
 - Extract RC Cookie extension (see https://jira-wiki.ruckuswireless.com/display/Team/ACX-UI-POC)
 
-### Setting up the project
+Use of [Visual Studio Code](https://code.visualstudio.com/) or any other modern IDEs of your choice will work.
 
-Clone this repo and install dependencies.
+### Installing dependencies
 
 ```bash
 npm install
 ```
 
-### Run UI for development
+### Run UI
 
-Execute command below and access UI at [http://localhost:3000](http://localhost:3000).
+Execute command below and access the UI at [http://localhost:3000](http://localhost:3000).
 
 ```bash
 npx nx run main:serve --devRemotes=rc-wifi
@@ -129,20 +117,19 @@ npx nx run main:serve --devRemotes=rc-wifi
 ```bash
 npx nx affected:test
 ```
+
 ### Run lint
 
 ```bash
 npx nx affected:lint
 ```
 
-### Run Storybook in development mode
+### Run Storybook
 
 ```bash
 npx nx run common-components:storybook
 ```
 
-### Misc
+### Other Nx commands
 
-To develop on this project, use of [Visual Studio Code](https://code.visualstudio.com/) or any other modern IDEs of your choice will work.
-
-Refer to [Nx.md](Nx.md) for Nx related commands
+Refer to [Nx.md](Nx.md) for other Nx related commands.
