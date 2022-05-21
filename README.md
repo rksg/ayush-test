@@ -31,13 +31,13 @@ pbcopy < ~/.ssh/id_rsa.pub
 
 Use your preferred Git GUI (e.g. sourcetree) or cli.
 
-```
+```sh
 git clone ssh://git@bitbucket.rks-cloud.com:7999/rkscloud/acx-ui.git
 ```
 
 Configure Git.
 
-```
+```sh
 git config user.name "ruckus.username"
 git config user.email "ruckus.username@ruckuswireless.com"
 ```
