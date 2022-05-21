@@ -53,7 +53,7 @@ Slack channel and the Bitbucket UI.
 This is done on the [#ruckus-alto-cicd](https://arris.slack.com/archives/CC04J4E3V) Slack channel.
 
 ```
-# ⚠️ Replace ACX-5449 with your JIRA issue number.
+# ⚠️ Replace ACX-5449 with your JIRA issue number
 /alto-ci createfb ACX-5449 acx-ui
 ```
 
@@ -93,7 +93,7 @@ Use of [Visual Studio Code](https://code.visualstudio.com/) or any other modern 
 
 ### Installing dependencies
 
-```bash
+```sh
 npm install
 ```
 
@@ -101,25 +101,25 @@ npm install
 
 Execute command below and access the UI at [http://localhost:3000](http://localhost:3000).
 
-```bash
+```sh
 npx nx run main:serve --devRemotes=rc-wifi
 ```
 
 ### Run tests
 
-```bash
+```sh
 npx nx affected:test
 ```
 
 ### Run lint
 
-```bash
+```sh
 npx nx affected:lint
 ```
 
 ### Run Storybook
 
-```bash
+```sh
 npx nx run common-components:storybook
 ```
 
