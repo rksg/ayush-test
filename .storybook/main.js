@@ -1,33 +1,12 @@
-const modifyVars = require('../src/theme/modify-vars')
-
 module.exports = {
-  stories: [
-    '../src/**/*.stories.mdx',
-    '../src/components/**/stories.@(js|jsx|ts|tsx)'
-  ],
-  addons: [
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@storybook/addon-interactions',
-    {
-      name: '@storybook/preset-create-react-app',
-      options: {
-        craOverrides: {
-          fileLoaderExcludes: ['less']
-        }
-      }
-    },
-    {
-      name: '@storybook/preset-ant-design',
-      options: {
-        lessOptions: {
-          modifyVars
-        }
-      }
-    }
-  ],
+  stories: [],
   framework: '@storybook/react',
-  core: {
-    builder: 'webpack5'
-  }
-}
+  addons: [],
+  // uncomment the property below if you want to apply some webpack config globally
+  // webpackFinal: async (config, { configType }) => {
+  //   // Make whatever fine-grained changes you need that should apply to all storybook configs
+
+  //   // Return the altered config
+  //   return config;
+  // },
+};

@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "projects": {
+    "common-components": "libs/common/components",
+    "common-icons": "libs/common/icons",
+    "common-store": "libs/common/store",
+    "main": "apps/main",
+    "rc-services": "libs/rc/services",
+    "rc-utils": "libs/rc/utils",
+    "rc-wifi": "apps/rc-wifi",
+    "react-router-dom": "libs/common/react-router-dom"
+  }
+}
