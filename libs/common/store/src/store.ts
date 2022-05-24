@@ -2,6 +2,7 @@
 import { configureStore }                                 from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
+import { trafficByVolumeWidgetApi } from '@acx-ui/analytics/services'
 import {
   networkListApi,
   venueListApi,
@@ -12,14 +13,16 @@ export const store = configureStore({
   reducer: {
     [networkListApi.reducerPath]: networkListApi.reducer,
     [venueListApi.reducerPath]: venueListApi.reducer,
-    [cloudpathListApi.reducerPath]: cloudpathListApi.reducer
+    [cloudpathListApi.reducerPath]: cloudpathListApi.reducer,
+    [trafficByVolumeWidgetApi.reducerPath]: trafficByVolumeWidgetApi.reducer
   },
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
       networkListApi.middleware,
       venueListApi.middleware,
-      cloudpathListApi.middleware
+      cloudpathListApi.middleware,
+      trafficByVolumeWidgetApi.middleware
     ]),
 
   devTools: process.env['NODE_ENV'] !== 'production'

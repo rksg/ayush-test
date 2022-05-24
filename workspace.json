@@ -1,6 +1,9 @@
 {
   "version": 2,
   "projects": {
+    "analytics": "apps/analytics",
+    "analytics-services": "libs/analytics/services",
+    "analytics-utils": "libs/analytics/utils",
     "common-components": "libs/common/components",
     "common-icons": "libs/common/icons",
     "common-store": "libs/common/store",

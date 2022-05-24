@@ -3,6 +3,7 @@ import React from 'react'
 import { DashboardRow, DashboardCol } from '@acx-ui/components'
 
 const WiFiWidgets = React.lazy(() => import('rc-wifi/Widgets'))
+const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
 function Placeholder ({
   style,
@@ -47,10 +48,7 @@ export function Summary () {
         <Placeholder style={{ paddingTop: '37.47%' }} children='Map' />
       </DashboardCol>
       <DashboardCol col={{ span: 12 }}>
-        <Placeholder
-          style={{ paddingTop: '49.4661921708%' }}
-          children='Traffic by Volume'
-        />
+       <AnalyticsWidgets name='monitoring/trafficByVolume'/>
       </DashboardCol>
       <DashboardCol col={{ span: 12 }}>
         <Placeholder
