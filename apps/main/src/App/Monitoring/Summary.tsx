@@ -48,7 +48,7 @@ export function Summary () {
         <Placeholder style={{ paddingTop: '37.47%' }} children='Map' />
       </DashboardCol>
       <DashboardCol col={{ span: 12 }}>
-       <AnalyticsWidgets name='monitoring/trafficByVolume'/>
+        <AnalyticsWidgets name='monitoring/trafficByVolume'/>
       </DashboardCol>
       <DashboardCol col={{ span: 12 }}>
         <Placeholder

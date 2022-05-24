@@ -3,7 +3,7 @@ import React from 'react'
 import { Tabs } from 'antd'
 
 import { GlobalFilterContext, defaultGlobalFilter } from '@acx-ui/analytics/utils'
-import { PageHeader } from '@acx-ui/components'
+import { PageHeader }                               from '@acx-ui/components'
 import {
   useLocation,
   useNavigate,
