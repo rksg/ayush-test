@@ -2,6 +2,9 @@ FROM node:14.19.1-alpine
 
 WORKDIR /app
 
+#Quick fix for build failed
+COPY . .
+
 #COPY .eslintignore .
 #COPY .eslintrc.js .
 #COPY .npmrc .
@@ -13,14 +16,11 @@ WORKDIR /app
 #COPY package.json .
 #COPY package-lock.json .
 
-#RUN npm i
+RUN npm i
 
 #COPY public/ public/
 #COPY src/ src/
 #COPY storybook/ storybook/
-
-#Quick fix for build failed
-COPY . .
 
 CMD ["npm", "start"]
 
