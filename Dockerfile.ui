@@ -3,7 +3,7 @@ FROM node:14.19.1-alpine
 WORKDIR /app
 
 COPY .eslintignore .
-COPY .eslintrc.js .
+COPY .eslintrc.json .
 COPY .npmrc .
 COPY yarn.lock .
 
