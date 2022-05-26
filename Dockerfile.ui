@@ -2,22 +2,24 @@ FROM node:14.19.1-alpine
 
 WORKDIR /app
 
-COPY .eslintignore .
-COPY .eslintrc.json .
-COPY .npmrc .
-COPY yarn.lock .
+#COPY .eslintignore .
+#COPY .eslintrc.json .
+#COPY .npmrc .
+#COPY yarn.lock .
 
-COPY tsconfig.json .
-COPY craco.config.js .
+#COPY tsconfig.base.json .
+#COPY craco.config.js .
 
-COPY package.json .
-COPY package-lock.json .
+#COPY package.json .
+#COPY package-lock.json .
 
-RUN npm i
+#RUN npm i
 
-COPY public/ public/
-COPY src/ src/
-COPY storybook/ storybook/
+#COPY public/ public/
+#COPY src/ src/
+#COPY storybook/ storybook/
+
+COPY . .
 
 CMD ["npm", "start"]
 
