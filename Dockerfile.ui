@@ -3,7 +3,7 @@ FROM node:14.19.1-alpine
 WORKDIR /app
 
 #COPY .eslintignore .
-#COPY .eslintrc.json .
+#COPY .eslintrc.js .
 #COPY .npmrc .
 #COPY yarn.lock .
 
@@ -19,6 +19,7 @@ WORKDIR /app
 #COPY src/ src/
 #COPY storybook/ storybook/
 
+#Quick fix for build failed
 COPY . .
 
 CMD ["npm", "start"]
