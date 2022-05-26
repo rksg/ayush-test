@@ -1,2 +1,6 @@
 export * from './constants'
-export * from './globalFilterContext'
+export {
+  GlobalFilter,
+  useGlobalFilter,
+  GlobalFilterProvider
+} from './globalFilter'

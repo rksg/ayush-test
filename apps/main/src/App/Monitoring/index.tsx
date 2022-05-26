@@ -2,8 +2,8 @@ import React from 'react'
 
 import { Tabs } from 'antd'
 
-import { GlobalFilterContext, defaultGlobalFilter } from '@acx-ui/analytics/utils'
-import { PageHeader }                               from '@acx-ui/components'
+import { GlobalFilterProvider } from '@acx-ui/analytics/utils'
+import { PageHeader }           from '@acx-ui/components'
 import {
   useLocation,
   useNavigate,
@@ -14,10 +14,10 @@ import {
 
 export function Monitoring () {
   return (
-    <GlobalFilterContext.Provider value={defaultGlobalFilter}>
+    <GlobalFilterProvider>
       <MonitoringPageHeader />
       <Outlet />
-    </GlobalFilterContext.Provider>
+    </GlobalFilterProvider>
   )
 }
 

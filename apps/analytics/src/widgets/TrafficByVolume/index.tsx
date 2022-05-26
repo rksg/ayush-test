@@ -2,11 +2,7 @@ import React from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import {
-  GlobalFilterContext,
-  GlobalFilterProps,
-  getDateFilter
-}                                   from '@acx-ui/analytics/utils'
+import { useGlobalFilter }                   from '@acx-ui/analytics/utils'
 import { Card }                              from '@acx-ui/components'
 import { MultiLineTimeSeriesChart }          from '@acx-ui/components'
 import { cssStr }                            from '@acx-ui/components'
@@ -34,11 +30,9 @@ const getSeriesData = (data?: TrafficByVolumeData): MultiLineTimeSeriesChartData
   }))
 }
 
-function Content (props: GlobalFilterProps) {
-  const { data, error, isLoading } = useTrafficByVolumeQuery({
-    path: props.path,
-    ...getDateFilter(props.dateFilter)
-  })
+function TrafficByVolumeWidget () {
+  const filters = useGlobalFilter()
+  const { data, error, isLoading } = useTrafficByVolumeQuery(filters)
 
   if (isLoading) return <div>loading</div>
   if (error) return <div>{JSON.stringify(error)}</div>
@@ -67,11 +61,4 @@ function Content (props: GlobalFilterProps) {
   )
 }
 
-function TrafficByVolumeWidget () {
-  return (
-    <GlobalFilterContext.Consumer>
-      {(props) => <Content {...props} />}
-    </GlobalFilterContext.Consumer>
-  )
-}
 export default TrafficByVolumeWidget

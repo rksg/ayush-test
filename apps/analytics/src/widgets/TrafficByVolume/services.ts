@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/analytics/services'
-import { Path }    from '@acx-ui/analytics/utils'
+import { dataApi }      from '@acx-ui/analytics/services'
+import { GlobalFilter } from '@acx-ui/analytics/utils'
 
 export interface TrafficByVolumeData {
   time: string[]
@@ -19,18 +19,11 @@ interface Response <TimeSeriesData> {
   }
 }
 
-interface TrafficByVolumePayload {
-  startDate: string
-  endDate: string
-  range: string
-  path: Path
-}
-
 const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     trafficByVolume: build.query<
       TrafficByVolumeData,
-      TrafficByVolumePayload
+      GlobalFilter
     >({
       // todo: change to the schema of real api
       query: (payload) => ({
