@@ -7,7 +7,7 @@ WORKDIR /app
 #COPY .npmrc .
 #COPY yarn.lock .
 
-#COPY tsconfig.base.json .
+#COPY tsconfig.json .
 #COPY craco.config.js .
 
 #COPY package.json .
