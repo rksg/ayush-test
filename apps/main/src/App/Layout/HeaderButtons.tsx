@@ -1,8 +1,8 @@
+import { AlarmsHeaderButton } from '../Alarms/HeaderButton'
 import {
   Button,
   Divider,
   AccountIconSmall,
-  NotificationIcon,
   QuestionIcon,
   SearchIcon
 } from './styledComponents'
@@ -12,7 +12,7 @@ function HeaderButtons () {
     <>
       <Button type='primary' shape='circle' icon={<SearchIcon />} />
       <Divider />
-      <Button type='primary' icon={<NotificationIcon />} />
+      <AlarmsHeaderButton></AlarmsHeaderButton>
       <Button type='primary' icon={<QuestionIcon />} />
       <Button type='primary' icon={<AccountIconSmall />} />
     </>
