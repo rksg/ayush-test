@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
-import { SortOrder }           from 'antd/lib/table/interface'
-import { Table }               from 'libs/common/components/src/components/Table'
-import { PageHeader }          from 'libs/common/components/src/components/PageHeader'
-import { CommonUrlsInfo }      from '@acx-ui/rc/utils'
-import { useAlarmsListQuery }  from '@acx-ui/rc/services'
-import { useParams }           from '@acx-ui/react-router-dom'
+import { useEffect, useState }                from 'react'
+import { SortOrder }                          from 'antd/lib/table/interface'
+import { Table }                              from 'libs/common/components/src/components/Table'
+import { PageHeader }                         from 'libs/common/components/src/components/PageHeader'
+import { CommonUrlsInfo, useTableQuery }      from '@acx-ui/rc/utils'
+import { useAlarmsListQuery }                 from '@acx-ui/rc/services'
+import { useParams }                          from '@acx-ui/react-router-dom'
 
 const columns = [
   {
@@ -21,22 +21,9 @@ const columns = [
   {
     title: 'Description',
     dataIndex: 'message',
-    sorter: false,
-    render: function (row: any) {
-      return transformDescription(row)
-    }
+    sorter: false
   }
 ]
-
-const transformDescription = (row: any) => {
-  return row
-}
-
-const defaultPagination = {
-  current: 1,
-  pageSize: 5,
-  total: 0
-}
 
 const defaultPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
@@ -55,51 +42,32 @@ const defaultPayload = {
     'switchName',
     'sourceType'
   ],
-  sortField: 'startTime',
-  sortOrder: 'DESC',
-  page: defaultPagination.current,
-  pageSize: defaultPagination.pageSize
+  sortField: 'startTime'
 }
 
-const transferSorter = (order: string) => {
-  return order === 'ascend' ? 'ASC' : 'DESC'
-}
+const defaultArray: any[] = []
 
 export function AlarmsTable () {
   const AlarmsTable = () => {
     const params = useParams()
-    const [payload, setPayload] = useState(defaultPayload)
-    const [pagination, setPagination] = useState(defaultPagination)
-    const { data, error, isLoading } = useAlarmsListQuery({payload, params})
-    const handleResponse = () => {
-      if (data) {
-        setPagination({
-          ...defaultPagination,
-          current: data.page,
-          total: data.totalCount
-        })
+    const tableQuery = useTableQuery({
+      api: useAlarmsListQuery,
+      apiParams: params,
+      defaultPayload
+    })
+    const [tableData, setTableData] = useState(defaultArray)
+    useEffect(()=>{
+      if (tableQuery.data?.data) {
+        setTableData(tableQuery.data.data)
       }
-    }
+    }, [tableQuery.data])
 
-    useEffect(handleResponse, [data])
-
-    const handleTableChange = (pagination: any, filters: any, sorter: any) => {
-      const tableProps = {
-        sortField: sorter.field || 'name',
-        sortOrder: sorter.order ? transferSorter(sorter.order) : 'ASC',
-        page: pagination.current,
-        pageSize: pagination.pageSize
-      }
-      const request = { ...defaultPayload, ...tableProps }
-      setPayload(request)
-    }
-
-    if (isLoading) return <div>Loading...</div>
-    if (error) return <div role='alert'>error</div>
+    if (tableQuery.isLoading) return <div>Loading...</div>
+    if (tableQuery.error) return <div role='alert'>error</div>
     return <Table columns={columns}
-      dataSource={data.data}
-      pagination={pagination}
-      onChange={handleTableChange}
+      dataSource={tableData}
+      pagination={tableQuery.pagination}
+      onChange={tableQuery.handleTableChange}
       style={{ width: '800px' }}
       rowKey='id' />
   }
