@@ -10,7 +10,7 @@ describe('dataApiURL', ()=>{
   it('should return correct url', ()=>{
     expect(require('./index').dataApiURL)
       .toEqual(
-        'http://localhost:5002/graphql/analytics/api/a4rc/api/rsa-data-api/graphql/analytics')
+        'http://localhost:3000/api/a4rc/api/rsa-data-api/graphql/analytics')
   })
   it('should return correct url for production', ()=>{
     process.env['NODE_ENV'] = 'production'
