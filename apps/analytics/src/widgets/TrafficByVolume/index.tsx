@@ -2,17 +2,16 @@ import React from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useTrafficByVolumeQuery } from '@acx-ui/analytics/services'
-import {
-  GlobalFilterContext,
-  GlobalFilterProps,
-  getDateFilter
-}                                   from '@acx-ui/analytics/utils'
-import { Card }                     from '@acx-ui/components'
-import { MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { cssStr }                   from '@acx-ui/components'
-import type { ChartData }           from '@acx-ui/components'
+import { useGlobalFilter }                   from '@acx-ui/analytics/utils'
+import { Card }                              from '@acx-ui/components'
+import { MultiLineTimeSeriesChart }          from '@acx-ui/components'
+import { cssStr }                            from '@acx-ui/components'
+import type { MultiLineTimeSeriesChartData } from '@acx-ui/components'
 
+import {
+  useTrafficByVolumeQuery,
+  TrafficByVolumeData
+} from './services'
 import * as UI from './styledComponents'
 
 const seriesMapping = [
@@ -20,31 +19,23 @@ const seriesMapping = [
   { key: 'traffic_6', name: '6 GHz' },
   { key: 'traffic_5', name: '5 GHz' },
   { key: 'traffic_24', name: '2.4 GHz' }
-]
+] as Array<{ key: keyof Omit<TrafficByVolumeData, 'time'>, name: string }>
 
-export interface TrafficByVolumeData {
-  time: [string]
-  traffic_all: [number]
-  traffic_6: [number]
-  traffic_5: [number]
-  traffic_24: [number]
-}
-
-export const getSeriesData = (data: TrafficByVolumeData) =>
-  seriesMapping.map(({ key, name }) => ({
+const getSeriesData = (data?: TrafficByVolumeData): MultiLineTimeSeriesChartData[] => {
+  if (!data) return []
+  return seriesMapping.map(({ key, name }) => ({
     name,
     data: data.time.map((t: string, index: number) =>
-      [t, data[key as keyof TrafficByVolumeData][index]])
+      [t, data[key][index]])
   }))
+}
 
-export function Content (props: GlobalFilterProps) {
-  const { data, error, isLoading } = useTrafficByVolumeQuery({
-    path: props.path,
-    ...getDateFilter(props.dateFilter)
-  })
+function TrafficByVolumeWidget () {
+  const filters = useGlobalFilter()
+  const { data, error, isLoading } = useTrafficByVolumeQuery(filters)
 
-  if (isLoading) return <div data-testid='loading'>loading</div>
-  if (error) return <div data-testid='error'>{JSON.stringify(error)}</div>
+  if (isLoading) return <div>loading</div>
+  if (error) return <div>{JSON.stringify(error)}</div>
 
   return (
     <Card
@@ -55,7 +46,7 @@ export function Content (props: GlobalFilterProps) {
           {({ height, width }) => (
             <MultiLineTimeSeriesChart
               style={{ width, height }}
-              data={getSeriesData(data as unknown as TrafficByVolumeData) as ChartData[]}
+              data={getSeriesData(data)}
               lineColors={[
                 cssStr('--acx-accents-blue-30'),
                 cssStr('--acx-accents-blue-50'),
@@ -70,11 +61,4 @@ export function Content (props: GlobalFilterProps) {
   )
 }
 
-function TrafficByVolumeWidget () {
-  return (
-    <GlobalFilterContext.Consumer>
-      {(props) => <Content {...props} />}
-    </GlobalFilterContext.Consumer>
-  )
-}
 export default TrafficByVolumeWidget
