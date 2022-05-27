@@ -21,7 +21,7 @@ const seriesMapping = [
   { key: 'traffic_24', name: '2.4 GHz' }
 ] as Array<{ key: keyof Omit<TrafficByVolumeData, 'time'>, name: string }>
 
-const getSeriesData = (data?: TrafficByVolumeData): MultiLineTimeSeriesChartData[] => {
+export const getSeriesData = (data?: TrafficByVolumeData): MultiLineTimeSeriesChartData[] => {
   if (!data) return []
   return seriesMapping.map(({ key, name }) => ({
     name,
@@ -34,8 +34,8 @@ function TrafficByVolumeWidget () {
   const filters = useGlobalFilter()
   const { data, error, isLoading } = useTrafficByVolumeQuery(filters)
 
-  if (isLoading) return <div>loading</div>
-  if (error) return <div>{JSON.stringify(error)}</div>
+  if (isLoading) return <div data-testid='loading'>loading</div>
+  if (error) return <div data-testid='error'>{JSON.stringify(error)}</div>
 
   return (
     <Card

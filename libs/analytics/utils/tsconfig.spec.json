@@ -16,5 +16,5 @@
     "**/*.test.jsx",
     "**/*.spec.jsx",
     "**/*.d.ts"
-  ]
+, "src/globalFilter.spec.tss"  ]
 }

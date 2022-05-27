@@ -19,7 +19,7 @@ interface Response <TimeSeriesData> {
   }
 }
 
-const api = dataApi.injectEndpoints({
+export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     trafficByVolume: build.query<
       TrafficByVolumeData,
@@ -28,7 +28,7 @@ const api = dataApi.injectEndpoints({
       // todo: change to the schema of real api
       query: (payload) => ({
         document: gql`
-          query widget(
+          query widget_trafficByVolume(
             $path: [HierarchyNodeInput]
             $start: DateTime
             $end: DateTime

@@ -1,6 +1,6 @@
 export * from './constants'
 export {
-  GlobalFilter,
   useGlobalFilter,
   GlobalFilterProvider
 } from './globalFilter'
+export type { GlobalFilter } from './globalFilter'

@@ -1,12 +1,13 @@
 import { render, screen } from '@testing-library/react'
 
-import { trafficByVolumeWidgetApi } from '@acx-ui/analytics/services'
-import { dataApiURL }               from '@acx-ui/analytics/utils'
-import { Provider, store }          from '@acx-ui/store'
+import { dataApiURL }      from '@acx-ui/analytics/services'
+import { Provider, store } from '@acx-ui/store'
 
 import { mockRTKQuery } from '../../../setupServer'
 
-import TrafficByVolumeWidget, { getSeriesData, TrafficByVolumeData } from './index'
+import { api, TrafficByVolumeData } from './services'
+
+import TrafficByVolumeWidget, { getSeriesData } from './index'
 
 const sample = {
   time: [
@@ -24,7 +25,7 @@ const sample = {
 
 describe('TrafficByVolumeWidget', () => {
   beforeEach(() =>
-    store.dispatch(trafficByVolumeWidgetApi.util.resetApiState())
+    store.dispatch(api.util.resetApiState())
   )
   it('should render correctly', async () => {
     const expectedResult = {
@@ -62,24 +63,28 @@ describe('TrafficByVolumeWidget', () => {
 
 describe('getSeriesData', ()=>{
   it('should return correct format', ()=>{
-    const result = getSeriesData(sample as unknown as TrafficByVolumeData)
-    expect(result).toEqual([
-      {
-        name: 'ALL',
-        data: sample.time.map((t,index)=>[t, 1+index])
-      },
-      {
-        name: '6 GHz',
-        data: sample.time.map((t,index)=>[t, 6+index])
-      },
-      {
-        name: '5 GHz',
-        data: sample.time.map((t,index)=>[t, 11+index])
-      },
-      {
-        name: '2.4 GHz',
-        data: sample.time.map((t,index)=>[t, 16+index])
-      }
-    ])
+    expect(getSeriesData(sample as unknown as TrafficByVolumeData))
+      .toEqual([
+        {
+          name: 'ALL',
+          data: sample.time.map((t,index)=>[t, 1+index])
+        },
+        {
+          name: '6 GHz',
+          data: sample.time.map((t,index)=>[t, 6+index])
+        },
+        {
+          name: '5 GHz',
+          data: sample.time.map((t,index)=>[t, 11+index])
+        },
+        {
+          name: '2.4 GHz',
+          data: sample.time.map((t,index)=>[t, 16+index])
+        }
+      ])
+  })
+  it('should return empty array if no data', ()=>{
+    expect(getSeriesData())
+      .toEqual([])
   })
 })
