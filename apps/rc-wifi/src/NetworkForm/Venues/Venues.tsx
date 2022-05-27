@@ -4,15 +4,10 @@ import { Form, Switch } from 'antd'
 
 import { StepsForm, Table }  from '@acx-ui/components'
 import { useVenueListQuery } from '@acx-ui/rc/services'
+import { useTableQuery }     from '@acx-ui/rc/utils'
 import { useParams }         from '@acx-ui/react-router-dom'
 
 import TableButtonBar from './TableButtonBar'
-
-const defaultPagination = {
-  current: 1,
-  pageSize: 5,
-  total: 0
-}
 
 const defaultPayload = {
   searchString: '',
@@ -35,15 +30,7 @@ const defaultPayload = {
     'longitude',
     'mesh',
     'status'
-  ],
-  sortField: 'name',
-  sortOrder: 'ASC',
-  page: defaultPagination.current,
-  pageSize: defaultPagination.pageSize
-}
-
-const transferSorter = (order: string) => {
-  return order === 'ascend' ? 'ASC' : 'DESC'
+  ]
 }
 
 const defaultArray: any[] = []
@@ -59,33 +46,12 @@ const getNetworkId = () => {
 }
 
 export function Venues (props: any) {
-  const [payload, setPayload] = useState(defaultPayload)
-  const [pagination, setPagination] = useState(defaultPagination)
-  const [tableData, setTableData] = useState(defaultArray)
-  const [selectedRowsData, setSelectedRowsData] = useState(defaultArray)
   const params = useParams()
-  const { data, error, isLoading, refetch } = useVenueListQuery({
-    params: { ...params, networkId: getNetworkId() },
-    payload
+  const tableQuery = useTableQuery({ api: useVenueListQuery,
+    apiParams: { ...params, networkId: getNetworkId() },
+    defaultPayload
   })
-
-  const rowSelection = {
-    selectedRowKeys: selectedRowsData.map((item) => item.id),
-    onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
-      setSelectedRowsData(selectedRows)
-    }
-  }
-
-  const onRowClick = (row: any) => {
-    const rowIndex = selectedRowsData.indexOf(row)
-    if (rowIndex === -1) {
-      setSelectedRowsData([...selectedRowsData, row])
-    } else {
-      const tmp = [...selectedRowsData]
-      tmp.splice(rowIndex, 1)
-      setSelectedRowsData(tmp)
-    }
-  }
+  const [tableData, setTableData] = useState(defaultArray)
 
   const handleSelectedRows = () => {
     function handleVenueSaveData (selectedRows: any[]) {
@@ -121,10 +87,19 @@ export function Venues (props: any) {
       })
     }
 
-    handleVenueSaveData(selectedRowsData)
-    handleActivatedButton(selectedRowsData)
+    handleVenueSaveData(tableQuery.selectedRowsData)
+    handleActivatedButton(tableQuery.selectedRowsData)
   }
-  useEffect(handleSelectedRows, [selectedRowsData, props.formRef])
+  useEffect(handleSelectedRows, [tableQuery.selectedRowsData, props.formRef])
+  useEffect(()=>{
+    if (tableQuery.data) {
+      const source = JSON.parse(JSON.stringify(tableQuery.data.data))
+      source.forEach((item: any) => { // for toogle button
+        item.activated = { isActivated: false }
+      })
+      setTableData(source)
+    }
+  }, [tableQuery.data])
 
   const columns = [
     {
@@ -195,60 +170,30 @@ export function Venues (props: any) {
     }
   ]
 
-  const handleResponse = () => {
-    if (data) {
-      setPagination({
-        ...defaultPagination,
-        current: data.page,
-        total: data.totalCount
-      })
-      const source = JSON.parse(JSON.stringify(data.data))
-      source.forEach((item: any) => {
-        // for toogle button
-        item.activated = { isActivated: false }
-      })
-      setTableData(source)
-    }
-  }
-
-  useEffect(handleResponse, [data])
-  useEffect(refetch, [payload, refetch])
-
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
-    const tableProps = {
-      sortField: sorter.field || 'name',
-      sortOrder: sorter.order ? transferSorter(sorter.order) : 'ASC',
-      page: pagination.current,
-      pageSize: pagination.pageSize
-    }
-    const request = { ...defaultPayload, ...tableProps }
-    setPayload(request)
-  }
-
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div role='alert'>Error</div>
+  if (tableQuery.isLoading) return <div>Loading...</div>
+  if (tableQuery.error) return <div role='alert'>Error</div>
 
   return (
     <>
       <StepsForm.Title>Venues</StepsForm.Title>
       <span>Select venues to activate this network</span>
-      <TableButtonBar rowsSelected={selectedRowsData.length} />
+      <TableButtonBar 
+        rowsSelected={tableQuery.selectedRowsData.length} 
+      />
       <Form.Item name='venues'>
         <Table
           rowKey='id'
           rowSelection={{
             type: 'checkbox',
-            ...rowSelection
+            ...tableQuery.rowSelection
           }}
           onRow={(record) => ({
-            onClick: () => {
-              onRowClick(record)
-            }
+            onClick: () => { tableQuery.onRowClick(record) }
           })}
           columns={columns}
           dataSource={tableData}
-          pagination={pagination}
-          onChange={handleTableChange}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
         />
       </Form.Item>
     </>
