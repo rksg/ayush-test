@@ -28,11 +28,10 @@ export const trafficByVolumeWidgetApi = createApi({
         payload: {
           startDate: string
           endDate: string
-          range: string
           path: Path
         }) => ({
         document: gql`
-          query widget(
+          query widget_trafficByVolume(
             $path: [HierarchyNodeInput]
             $start: DateTime
             $end: DateTime

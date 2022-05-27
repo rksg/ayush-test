@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TrafficByVolumeWidget should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-3 cLlXna"
+    data-testid="card"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="styledComponents__HeaderContainer-sc-13w5wfx-4 gmFkBh"
+            >
+              <div
+                class="styledComponents__TitleWrapper-sc-13w5wfx-5 dZPIuN"
+              >
+                Traffic by Volume
+              </div>
+              <div />
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <div
+          class="styledComponents__ChartWrapper-sc-olsszv-0 hRsHWe"
+        >
+          <div
+            style="overflow: visible; height: 0px; width: 0px;"
+          />
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1px; height: 1px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

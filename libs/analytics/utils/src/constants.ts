@@ -1,7 +1,11 @@
 import { pick } from 'lodash'
 import moment   from 'moment-timezone'
 
-export const dataApiURL = '/api/a4rc/api/rsa-data-api/graphql/analytics'
+export const dataApiURL =
+  (process.env['NODE_ENV'] !== 'production'
+    ? 'http://localhost:5002/graphql/analytics'
+    : 'https://devalto.ruckuswireless.com') +
+  '/api/a4rc/api/rsa-data-api/graphql/analytics'
 
 export const today = 'Today'
 export const last1Hour = 'Last 1 Hour'

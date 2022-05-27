@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
@@ -22,7 +22,7 @@ const seriesMapping = [
   { key: 'traffic_24', name: '2.4 GHz' }
 ]
 
-interface TrafficByVolumeData {
+export interface TrafficByVolumeData {
   time: [string]
   traffic_all: [number]
   traffic_6: [number]
@@ -30,22 +30,21 @@ interface TrafficByVolumeData {
   traffic_24: [number]
 }
 
-const getSeriesData = (data: TrafficByVolumeData) =>
+export const getSeriesData = (data: TrafficByVolumeData) =>
   seriesMapping.map(({ key, name }) => ({
     name,
     data: data.time.map((t: string, index: number) =>
       [t, data[key as keyof TrafficByVolumeData][index]])
   }))
 
-function Content (props: GlobalFilterProps) {
-  const { data, error, isLoading, refetch } = useTrafficByVolumeQuery({
+export function Content (props: GlobalFilterProps) {
+  const { data, error, isLoading } = useTrafficByVolumeQuery({
     path: props.path,
     ...getDateFilter(props.dateFilter)
   })
-  useEffect(refetch, [props, refetch])
 
-  if (isLoading) return <div>loading</div>
-  if (error) return <div>{error}</div>
+  if (isLoading) return <div data-testid='loading'>loading</div>
+  if (error) return <div data-testid='error'>{JSON.stringify(error)}</div>
 
   return (
     <Card
