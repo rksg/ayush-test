@@ -1,8 +1,9 @@
-import { CloseOutlined, LoadingOutlined } from '@ant-design/icons'
-import { message }                        from 'antd'
-import * as _                             from 'lodash'
-import styled                             from 'styled-components'
-import { rcToastTemplates }               from './toast.template'
+import { LoadingOutlined } from '@ant-design/icons'
+import * as _              from 'lodash'
+
+import { showToast } from '@acx-ui/components'
+
+import { rcToastTemplates } from './toast.template'
 
 export enum TxStatus {
   PENDING = 'PENDING',
@@ -27,82 +28,6 @@ export interface Transaction {
   link?:any
 }
 
-const CloseButton = styled.div`
- .anticon {
-   color: var(--acx-primary-white);
-   margin-right: 0;
-   margin-left: 8px;
-   font-size: 14px;
-   cursor: pointer;
- }
-`
-
-const Toast = styled.div`
-display: flex;
-align-items: baseline;
-.toast-style {
-  width: 100%;
-  display: flex;
-  .toast-left-side {
-    max-width: 600px;
-  }
-  .leading-text-style {
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .toast-link {
-    margin-left: 20px;
-    text-decoration: underline;
-    color: var(--acx-primary-white);
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  p-progressSpinner {
-    float: right;
-    margin-left: 20px;
-    margin-top: 3px;
-  }
-}
-.toast-style.toast-countdown {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  .toast-left-side {
-    float: none;
-    width: 60%;
-  }
-  .close-countdown {
-    color: $rw-blue-light;
-    cursor: pointer;
-    float: unset;
-  }
-  .countdown__block {
-    .anticon {
-      color: #fff;
-      float: right;
-      margin-left: 20px;
-      font-size: 22px;
-    }
-    float: none;
-    position: relative;
-    p-progressSpinner {
-      float: none;
-      margin-left: unset;
-      margin-top: unset;
-    }
-    .number {
-      font-size: 12px;
-      font-weight: bold;
-      position: absolute;
-      top: 4px;
-      right: 38%;
-      transform: translateX(50%);
-    }
-  }
-}
-`
-
 const TX_MAX_NAME_LENGTH = 45
 
 const routeToPage = (link:any) => {
@@ -120,18 +45,6 @@ const showDetails = (message: {[key: string]: string}) => {
   // }).then(x => {
   //   this.dialogService.close('TechnicalDetailsDialogComponent');
   // });
-}
-
-const toastContainer = (key:string, content:any, callback?:Function) => {
-  return (
-    <Toast>
-      {content}
-      <CloseButton onClick={() => {
-        message.destroy(key)
-        if(callback) callback()
-      }}><CloseOutlined /></CloseButton>
-    </Toast>
-  )
 }
 
 export const rcToastTemplate = (msg:any, test?:any) => {
@@ -187,7 +100,10 @@ export const showTxToast = (tx:any) => {
           tooltip: tooltip
         }
       }
-      showSuccessToast(tx.requestId, rcToastTemplate(msg))
+      showToast({
+        type: 'success',
+        content: rcToastTemplate(msg)
+      })
       break
     }
     case TxStatus.FAIL: {
@@ -199,7 +115,10 @@ export const showTxToast = (tx:any) => {
           tooltip: tooltip
         }
       }
-      showErrorToast(tx.requestId, rcToastTemplate(msg))
+      showToast({
+        type: 'error',
+        content: rcToastTemplate(msg)
+      })
       break
     }
     default: {
@@ -207,36 +126,6 @@ export const showTxToast = (tx:any) => {
       return
     }
   }
-}
-
-export const showInfoToast = (key:string, content:any, callback?:Function) => {
-  message.info({
-    className: 'toast-info',
-    key,
-    icon: <></>,
-    content: toastContainer(key, content, callback),
-    duration: 0
-  })
-}
-
-export const showSuccessToast = (key:string, content:any) => {
-  message.success({
-    className: 'toast-success',
-    key,
-    icon: <></>,
-    content: toastContainer(key, content),
-    duration: 0
-  })
-}
-
-export const showErrorToast = (key:string, content:any) => {
-  message.error({
-    className: 'toast-error',
-    key,
-    icon: <></>,
-    content: toastContainer(key, content),
-    duration: 0
-  })
 }
 
 const getToastMessage = (tx: Transaction): string => {
