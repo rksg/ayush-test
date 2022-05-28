@@ -89,12 +89,21 @@ export const networkListApi = createApi({
         }
       },
       invalidatesTags: ['Network']
+    }),
+    dashboardOverview: build.query<any, RequestPayload>({
+      query: ({ params }) => {
+        const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
+        return{
+          ...dashboardOverviewReq
+        }
+      }
     })
   })
 })
 export const {
   useNetworkListQuery,
-  useCreateNetworkMutation
+  useCreateNetworkMutation,
+  useDashboardOverviewQuery
 } = networkListApi
 
 export const venueListApi = createApi({
@@ -137,19 +146,3 @@ export const cloudpathListApi = createApi({
   })
 })
 export const { useCloudpathListQuery } = cloudpathListApi
-
-export const dashboardOverviewApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'dashboardOverviewApi',
-  endpoints: (build) => ({
-    dashboardOverview: build.query<any, any>({
-      query: ({ params }) => {
-        const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
-        return{
-          ...dashboardOverviewReq
-        }
-      }
-    })
-  })
-})
-export const { useDashboardOverviewQuery } = dashboardOverviewApi

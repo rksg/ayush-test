@@ -6,7 +6,6 @@ import {
   networkListApi,
   venueListApi,
   cloudpathListApi,
-  dashboardOverviewApi,
   eventAlarmApi
 } from '@acx-ui/rc/services'
 
@@ -15,7 +14,6 @@ export const store = configureStore({
     [networkListApi.reducerPath]: networkListApi.reducer,
     [venueListApi.reducerPath]: venueListApi.reducer,
     [cloudpathListApi.reducerPath]: cloudpathListApi.reducer,
-    [dashboardOverviewApi.reducerPath]: dashboardOverviewApi.reducer,
     [eventAlarmApi.reducerPath]: eventAlarmApi.reducer
   },
 
@@ -24,7 +22,6 @@ export const store = configureStore({
       networkListApi.middleware,
       venueListApi.middleware,
       cloudpathListApi.middleware,
-      dashboardOverviewApi.middleware,
       eventAlarmApi.middleware
     ]),
 
