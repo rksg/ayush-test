@@ -1,4 +1,17 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+
+import { Params } from '@acx-ui/react-router-dom'
+
+export interface RequestPayload <Payload = any> {
+  params?: Params<string>
+  payload?: Payload
+}
+
+export interface TableResult <ResultItemType> {
+  data: ResultItemType[]
+  page: number
+  totalCount: number
+}
 
 export interface TABLE_QUERY {
   defaultPayload: any,

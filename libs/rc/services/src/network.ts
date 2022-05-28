@@ -1,11 +1,58 @@
-import { createApi, fetchBaseQuery }                                  from '@reduxjs/toolkit/query/react'
-import { message }                                                    from 'antd'
-import { CommonUrlsInfo, createHttpRequest, onSocketActivityChanged } from '@acx-ui/rc/utils'
-import { Params }                                                     from '@acx-ui/react-router-dom'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { message }                   from 'antd'
 
-interface RequestPayload {
-  params?: Params<string>
-  payload?: any
+import {
+  CommonUrlsInfo,
+  createHttpRequest,
+  GuestNetworkTypeEnum,
+  onSocketActivityChanged,
+  RequestPayload,
+  TableResult,
+  WlanSecurityEnum
+} from '@acx-ui/rc/utils'
+
+export interface Network {
+  id: string
+  name: string
+  description: string
+  nwSubType: string
+  ssid: string
+  vlan: number
+  aps: number
+  clients: number
+  venues: { count: number, names: string[] }
+  captiveType: GuestNetworkTypeEnum
+  deepNetwork?: {
+    wlan: {
+      wlanSecurity: WlanSecurityEnum
+    }
+  }
+  vlanPool?: { name: string }
+  // cog ??
+}
+
+export interface Venue {
+  id: string
+  name: string
+  description: string
+  status: string
+  city: string
+  country: string
+  latitude: string
+  longitude: string
+  mesh: { enabled: boolean }
+  aggregatedApStatus: { [statusKey: string]: number }
+  networks: {
+    count: number
+    names: string[]
+    vlans: number[]
+  }
+  // aps ??
+  // switches ??
+  // switchClients ??
+  // radios ??
+  // scheduling ??
+  activated: { isActivated: boolean }
 }
 
 export const networkListApi = createApi({
@@ -13,7 +60,7 @@ export const networkListApi = createApi({
   reducerPath: 'networkListApi',
   tagTypes: ['Network'],
   endpoints: (build) => ({
-    networkList: build.query<any, RequestPayload>({
+    networkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
         const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList, params)
         return {
@@ -54,7 +101,7 @@ export const venueListApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueListApi',
   endpoints: (build) => ({
-    venueList: build.query<any, RequestPayload>({
+    venueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
         const venueListReq = createHttpRequest(CommonUrlsInfo.getNetworksVenuesList, params)
         return{
@@ -89,7 +136,7 @@ export const dashboardOverviewApi = createApi({
   reducerPath: 'dashboardOverviewApi',
   endpoints: (build) => ({
     dashboardOverview: build.query<any, any>({
-      query: ({params}) => {
+      query: ({ params }) => {
         const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
         return{
           ...dashboardOverviewReq
