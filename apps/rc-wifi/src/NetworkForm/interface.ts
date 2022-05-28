@@ -3,7 +3,7 @@ export interface CreateNetworkFormFields {
   description?: string;
   type: string;
   isCloudpathEnabled?: boolean;
-  venues: [];
+  venues: any[];
 }
 
 export interface NetworkSaveData {

@@ -2,10 +2,16 @@ import React, { useEffect, useState } from 'react'
 
 import { Form, Switch } from 'antd'
 
-import { StepsForm, Table }  from '@acx-ui/components'
+import {
+  StepFormProps,
+  StepsForm,
+  Table
+} from '@acx-ui/components'
 import { useVenueListQuery } from '@acx-ui/rc/services'
 import { useTableQuery }     from '@acx-ui/rc/utils'
 import { useParams }         from '@acx-ui/react-router-dom'
+
+import { CreateNetworkFormFields } from '../interface'
 
 import TableButtonBar from './TableButtonBar'
 
@@ -45,7 +51,7 @@ const getNetworkId = () => {
   return 'UNKNOWN-NETWORK-ID'
 }
 
-export function Venues (props: any) {
+export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
   const params = useParams()
   const tableQuery = useTableQuery({ api: useVenueListQuery,
     apiParams: { ...params, networkId: getNetworkId() },
@@ -61,16 +67,12 @@ export function Venues (props: any) {
         isAllApGroups: true,
         allApGroupsRadio: 'Both'
       }
-      const selected: React.SetStateAction<any[]> = []
-      selectedRows.forEach((row) => {
-        const tmp = {
-          ...defaultSetup,
-          venueId: row.id,
-          name: row.name
-        }
-        selected.push(tmp)
-      })
-      props.formRef.current.setFieldsValue({ venues: selected })
+      const selected = selectedRows.map((row) => ({
+        ...defaultSetup,
+        venueId: row.id,
+        name: row.name
+      }))
+      props.formRef?.current?.setFieldsValue({ venues: selected })
     }
 
     function handleActivatedButton (rows: any) {
