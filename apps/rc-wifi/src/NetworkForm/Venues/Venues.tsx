@@ -95,11 +95,12 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
   useEffect(handleSelectedRows, [tableQuery.selectedRowsData, props.formRef])
   useEffect(()=>{
     if (tableQuery.data) {
-      const source = JSON.parse(JSON.stringify(tableQuery.data.data))
-      source.forEach((item: any) => { // for toogle button
-        item.activated = { isActivated: false }
-      })
-      setTableData(source)
+      const data = tableQuery.data.data.map(item => ({
+        ...item,
+        // work around of read-only records from RTKQ
+        activated: { ...item.activated }
+      }))
+      setTableData(data)
     }
   }, [tableQuery.data])
 

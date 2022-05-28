@@ -108,6 +108,13 @@ export const venueListApi = createApi({
           ...venueListReq,
           body: payload
         }
+      },
+      transformResponse (result: TableResult<Venue>) {
+        result.data = result.data.map(item => ({
+          ...item,
+          activated: item.activated ?? { isActivated: false }
+        }))
+        return result
       }
     })
   })
