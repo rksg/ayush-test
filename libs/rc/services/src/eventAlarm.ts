@@ -29,9 +29,9 @@ interface AlarmMeta {
 
 export type Alarm = AlarmBase & AlarmMeta
 
-export const alarmsListApi = createApi({
+export const eventAlarmApi = createApi({
   baseQuery: fetchBaseQuery(),
-  reducerPath: 'alarmsListApi',
+  reducerPath: 'eventAlarmApi',
   tagTypes: ['Alarms'],
   endpoints: (build) => ({
     alarmsList: build.query<TableResult<Alarm>, RequestPayload>({
@@ -60,7 +60,7 @@ export const alarmsListApi = createApi({
 })
 export const {
   useAlarmsListQuery
-} = alarmsListApi
+} = eventAlarmApi
 
 
 export const getMetaList = function (

@@ -7,7 +7,7 @@ import {
   venueListApi,
   cloudpathListApi,
   dashboardOverviewApi,
-  alarmsListApi
+  eventAlarmApi
 } from '@acx-ui/rc/services'
 
 export const store = configureStore({
@@ -16,7 +16,7 @@ export const store = configureStore({
     [venueListApi.reducerPath]: venueListApi.reducer,
     [cloudpathListApi.reducerPath]: cloudpathListApi.reducer,
     [dashboardOverviewApi.reducerPath]: dashboardOverviewApi.reducer,
-    [alarmsListApi.reducerPath]: alarmsListApi.reducer
+    [eventAlarmApi.reducerPath]: eventAlarmApi.reducer
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -25,7 +25,7 @@ export const store = configureStore({
       venueListApi.middleware,
       cloudpathListApi.middleware,
       dashboardOverviewApi.middleware,
-      alarmsListApi.middleware
+      eventAlarmApi.middleware
     ]),
 
   devTools: process.env['NODE_ENV'] !== 'production'
