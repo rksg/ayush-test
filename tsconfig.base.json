@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@acx-ui/types": ["libs/common/types/src/index.ts"],
       "@acx-ui/components": ["libs/common/components/src/index.ts"],
       "@acx-ui/icons": ["libs/common/icons/src/index.ts"],
       "@acx-ui/rc/services": ["libs/rc/services/src/index.ts"],

@@ -4,6 +4,7 @@
     "common-components": "libs/common/components",
     "common-icons": "libs/common/icons",
     "common-store": "libs/common/store",
+    "common-types": "libs/common/types",
     "main": "apps/main",
     "rc-services": "libs/rc/services",
     "rc-utils": "libs/rc/utils",
