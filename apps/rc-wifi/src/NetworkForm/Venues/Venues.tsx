@@ -5,11 +5,11 @@ import { Form, Switch } from 'antd'
 import {
   StepFormProps,
   StepsForm,
-  Table
+  Table,
+  TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery } from '@acx-ui/rc/services'
-import { useTableQuery }     from '@acx-ui/rc/utils'
-import { useParams }         from '@acx-ui/react-router-dom'
+import { useVenueListQuery, Venue } from '@acx-ui/rc/services'
+import { useTableQuery }            from '@acx-ui/rc/utils'
 
 import { CreateNetworkFormFields } from '../interface'
 
@@ -39,7 +39,7 @@ const defaultPayload = {
   ]
 }
 
-const defaultArray: any[] = []
+const defaultArray: Venue[] = []
 
 const getNetworkId = () => {
   //  Identify tenantId in browser URL
@@ -52,15 +52,15 @@ const getNetworkId = () => {
 }
 
 export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
-  const params = useParams()
-  const tableQuery = useTableQuery({ api: useVenueListQuery,
-    apiParams: { ...params, networkId: getNetworkId() },
+  const tableQuery = useTableQuery({
+    useQuery: useVenueListQuery,
+    apiParams: { networkId: getNetworkId() },
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)
 
   const handleSelectedRows = () => {
-    function handleVenueSaveData (selectedRows: any[]) {
+    function handleVenueSaveData (selectedRows: Venue[]) {
       const defaultSetup = {
         apGroups: [],
         scheduler: { type: 'ALWAYS_ON' },
@@ -75,7 +75,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       props.formRef?.current?.setFieldsValue({ venues: selected })
     }
 
-    function handleActivatedButton (rows: any) {
+    function handleActivatedButton (rows: Venue[]) {
       setTableData((prevData) => {
         const tmp = [...prevData]
         tmp.forEach((item) => {
@@ -104,7 +104,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     }
   }, [tableQuery.data])
 
-  const columns = [
+  const columns: TableProps<Venue>['columns'] = [
     {
       title: 'Venue',
       dataIndex: 'name',
@@ -123,14 +123,14 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     {
       title: 'Networks',
       dataIndex: 'networks',
-      render: function (data: any) {
+      render: function (data) {
         return data ? data.count : 0
       }
     },
     {
       title: 'Wi-Fi APs',
       dataIndex: 'aggregatedApStatus',
-      render: function (data: any) {
+      render: function (data) {
         if (data) {
           let sum = 0
           Object.keys(data).forEach((key) => {
@@ -144,7 +144,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     {
       title: 'Activated',
       dataIndex: 'activated',
-      render: function (data: any) {
+      render: function (data) {
         return <Switch checked={data.isActivated} disabled={true} />
       }
     },
@@ -152,7 +152,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       title: 'APs',
       dataIndex: 'aps',
       width: '80px',
-      render: function (data: any, row: any) {
+      render: function (data, row) {
         return row.activated.isActivated ? 'All APs' : ''
       }
     },
@@ -160,14 +160,14 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       title: 'Radios',
       dataIndex: 'radios',
       width: '140px',
-      render: function (data: any, row: any) {
+      render: function (data, row) {
         return row.activated.isActivated ? '2.4 GHz / 5 GHz' : ''
       }
     },
     {
       title: 'Scheduling',
       dataIndex: 'scheduling',
-      render: function (data: any, row: any) {
+      render: function (data, row) {
         return row.activated.isActivated ? '24/7' : ''
       }
     }
@@ -180,8 +180,8 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     <>
       <StepsForm.Title>Venues</StepsForm.Title>
       <span>Select venues to activate this network</span>
-      <TableButtonBar 
-        rowsSelected={tableQuery.selectedRowsData.length} 
+      <TableButtonBar
+        rowsSelected={tableQuery.selectedRowsData.length}
       />
       <Form.Item name='venues'>
         <Table

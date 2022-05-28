@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Params } from '@acx-ui/react-router-dom'
+import { TableProps }        from '@acx-ui/components'
+import { useParams, Params } from '@acx-ui/react-router-dom'
+import { UseQuery }          from '@acx-ui/types'
 
 export interface RequestPayload <Payload = any> {
   params?: Params<string>
@@ -13,12 +15,15 @@ export interface TableResult <ResultItemType> {
   totalCount: number
 }
 
-export interface TABLE_QUERY {
-  defaultPayload: any,
-  api: any,
-  apiParams?:any,
-  pagination?: PAGINATION,
-  sorter?: SORTER,
+export interface TABLE_QUERY <
+  ResultType = Record<string, unknown>,
+  Payload extends RequestPayload = RequestPayload
+> {
+  defaultPayload: Partial<Payload>
+  useQuery: UseQuery<TableResult<ResultType>, { params: Params<string>, payload: Payload }>
+  apiParams?: Record<string, string>
+  pagination?: PAGINATION
+  sorter?: SORTER
   rowKey?: string
 }
 export interface PAGINATION {
@@ -48,29 +53,36 @@ const DEFAULT_SORTER = {
   sortOrder: SORTER_ABBR.ascend
 }
 
-const DEFAULT_ARRAY:any[] = []
-
 const transferSorter = (order:string) => {
   return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
 }
 
-export const useTableQuery = (option: TABLE_QUERY) => {
-  const [pagination, setPagination] = useState({ 
-    ...DEFAULT_PAGINATION, ...(option?.pagination || {}) 
+export function useTableQuery <ResultType, Payload> (option: TABLE_QUERY<ResultType, Payload>) {
+  const [pagination, setPagination] = useState({
+    ...DEFAULT_PAGINATION,
+    ...(option?.pagination || {})
   })
-  const [sorter, setSorter] = useState({ 
-    ...DEFAULT_SORTER, ...(option?.sorter || {}) })
-  const [payload, setPayload] = useState({ ...option.defaultPayload, ...pagination, ...sorter })
+  const [sorter, setSorter] = useState({
+    ...DEFAULT_SORTER,
+    ...(option?.sorter || {})
+  })
+  const [payload, setPayload] = useState({
+    ...option.defaultPayload,
+    ...(pagination as unknown as Partial<Payload>),
+    ...(sorter as unknown as Partial<Payload>)
+  })
 
-  const [selectedRowsData, setSelectedRowsData] = useState(DEFAULT_ARRAY)
-  const rowKey = 'id' || option.rowKey
+  const [selectedRowsData, setSelectedRowsData] = useState([] as ResultType[])
+  const rowKey = ('id' || option.rowKey) as keyof ResultType
 
   // RTKQuery
-  const api = option.api({ params: option.apiParams, payload })
-  const refetch = api.refetch
-  
-  useEffect(() => { 
-    const handlePagination = (data:any) => {
+  const api = option.useQuery({
+    params: { ...useParams(), ...option.apiParams },
+    payload: payload as Payload
+  })
+
+  useEffect(() => {
+    const handlePagination = (data?: TableResult<ResultType>) => {
       if (data) {
         setPagination({
           ...DEFAULT_PAGINATION,
@@ -79,11 +91,19 @@ export const useTableQuery = (option: TABLE_QUERY) => {
         })
       }
     }
-    handlePagination(api.data) 
+    handlePagination(api.data)
   }, [api.data])
-  useEffect(refetch, [payload, refetch])
 
-  const handleTableChange = (pagination:any, filters:any, sorter:any) => {
+  const handleTableChange: TableProps<ResultType>['onChange'] = (
+    pagination,
+    filters,
+    sorters
+  ) => {
+    // Implementation expect there will only be 1 sortable column
+    const sorter = Array.isArray(sorters)
+      ? sorters[0]
+      : sorters
+
     const tableProps = {
       sortField: sorter.field || DEFAULT_SORTER.sortField,
       sortOrder: sorter.order ? transferSorter(sorter.order) : DEFAULT_SORTER.sortOrder,
@@ -94,13 +114,13 @@ export const useTableQuery = (option: TABLE_QUERY) => {
   }
 
   // Select row data
-  const rowSelection = {
-    selectedRowKeys: selectedRowsData.map(item => item[rowKey]),
-    onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
+  const rowSelection: TableProps<ResultType>['rowSelection'] = {
+    selectedRowKeys: selectedRowsData.map(item => item[rowKey]) as unknown as React.Key[],
+    onChange: (selectedRowKeys, selectedRows) => {
       setSelectedRowsData(selectedRows)
     }
   }
-  const onRowClick = (row:any) => {
+  const onRowClick = (row: ResultType) => {
     const rowIndex = selectedRowsData.indexOf(row)
     if (rowIndex === -1) {
       setSelectedRowsData([...selectedRowsData, row])
@@ -116,7 +136,7 @@ export const useTableQuery = (option: TABLE_QUERY) => {
     sorter,
     setSorter,
     handleTableChange,
-    payload, 
+    payload,
     setPayload,
     rowSelection,
     onRowClick,

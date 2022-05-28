@@ -1,17 +1,15 @@
-import { useEffect, useState }                from 'react'
-import { SortOrder }                          from 'antd/lib/table/interface'
-import { Table }                              from 'libs/common/components/src/components/Table'
-import { PageHeader }                         from 'libs/common/components/src/components/PageHeader'
-import { CommonUrlsInfo, useTableQuery }      from '@acx-ui/rc/utils'
-import { useAlarmsListQuery }                 from '@acx-ui/rc/services'
-import { useParams }                          from '@acx-ui/react-router-dom'
+import { useEffect, useState } from 'react'
 
-const columns = [
+import { PageHeader, Table, TableProps } from '@acx-ui/components'
+import { Alarm, useAlarmsListQuery }     from '@acx-ui/rc/services'
+import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+
+const columns: TableProps<Alarm>['columns'] = [
   {
     title: 'Alarm Time',
     dataIndex: 'startTime',
     sorter: true,
-    defaultSortOrder: 'ascend' as SortOrder
+    defaultSortOrder: 'ascend'
   },
   {
     title: 'Severity',
@@ -45,14 +43,12 @@ const defaultPayload = {
   sortField: 'startTime'
 }
 
-const defaultArray: any[] = []
+const defaultArray: Alarm[] = []
 
 export function AlarmsTable () {
   const AlarmsTable = () => {
-    const params = useParams()
     const tableQuery = useTableQuery({
-      api: useAlarmsListQuery,
-      apiParams: params,
+      useQuery: useAlarmsListQuery,
       defaultPayload
     })
     const [tableData, setTableData] = useState(defaultArray)
