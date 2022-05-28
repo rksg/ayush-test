@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 import { Popover } from 'antd'
 
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
@@ -15,8 +13,7 @@ import {
 
 export function AlarmsHeaderButton () {
   const params = useParams()
-  const { data, refetch } = useDashboardOverviewQuery({ params })
-  useEffect(refetch, [data, refetch])
+  const { data } = useDashboardOverviewQuery({ params })
 
   const getCount = function () {
     if (data?.summary?.alarms?.totalCount) {
@@ -27,7 +24,7 @@ export function AlarmsHeaderButton () {
   }
 
   const content = (
-    <AlarmsTable></AlarmsTable>
+    <AlarmsTable />
   )
 
   const AlarmsHeaderButton = () => {
