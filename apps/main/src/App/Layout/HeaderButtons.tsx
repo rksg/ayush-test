@@ -1,4 +1,5 @@
 import { AlarmsHeaderButton } from '../Alarms/HeaderButton'
+
 import {
   Button,
   Divider,
@@ -12,7 +13,7 @@ function HeaderButtons () {
     <>
       <Button type='primary' shape='circle' icon={<SearchIcon />} />
       <Divider />
-      <AlarmsHeaderButton></AlarmsHeaderButton>
+      <AlarmsHeaderButton />
       <Button type='primary' icon={<QuestionIcon />} />
       <Button type='primary' icon={<AccountIconSmall />} />
     </>

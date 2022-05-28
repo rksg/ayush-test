@@ -1,6 +1,7 @@
-import { NotificationSolid }                          from '@acx-ui/icons'
-import { Badge, Button as AntButton}                 from 'antd'
-import styled, { css }                               from 'styled-components/macro'
+import { Badge, Button as AntButton } from 'antd'
+import styled, { css }                from 'styled-components/macro'
+
+import { NotificationSolid } from '@acx-ui/icons'
 
 export const Button = styled(AntButton)`
   background-color: var(--acx-neutrals-70);
