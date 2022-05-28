@@ -19,7 +19,7 @@ export type { ProFormInstance as StepsFormInstance }
 
 const { useImperativeHandle, useRef, useState } = React
 
-type StepsFormProps <FormValue = any> =
+export type StepsFormProps <FormValue = any> =
   Omit<ProAntStepsFormProps<FormValue>, 'stepsProps' | 'submitter'> &
   {
     /**
@@ -34,7 +34,7 @@ type StepsFormProps <FormValue = any> =
     onCancel?: () => void
   }
 
-type StepFormProps <FormValue> = Omit<ProAntStepFormProps<FormValue>, 'requiredMark'>
+export type StepFormProps <FormValue> = Omit<ProAntStepFormProps<FormValue>, 'requiredMark'>
 
 type InternalStepFormProps <FormValue> = StepFormProps<FormValue> & {
   /**
