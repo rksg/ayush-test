@@ -14,13 +14,21 @@ const classNameMap:{ [key in NoticeType]: string } = {
   loading: ''
 }
 
+const durationMap:{ [key in NoticeType]: number } = {
+  info: 0,
+  success: 7,
+  error: 0,
+  warning: 0,
+  loading: 0
+}
+
 export const showToast = (config: ArgsProps, callback?:Function) => {
   const key = config.key || uuidv4()
   message.open({
     className: classNameMap[config.type],
     key,
     icon: <></>,
-    duration: 0,
+    duration: durationMap[config.type],
     ...config,
     content: toastContainer(key, config.content, callback)
   })

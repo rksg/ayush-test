@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { LoadingOutlined } from '@ant-design/icons'
 import * as _              from 'lodash'
 
@@ -31,11 +32,12 @@ export interface Transaction {
 const TX_MAX_NAME_LENGTH = 45
 
 const routeToPage = (link:any) => {
-  // window.location.href = link
+  window.location.href = link
 }
 
-const showDetails = (message: {[key: string]: string}) => {
-  // TODO: Details Modal
+const showDetails = () => {
+  // TODO: params: message: {[key: string]: string}
+  // Details Modal
   // if (this.dialogService.isModalShown('TechnicalDetailsDialogComponent')) {
   //   return;
   // }
