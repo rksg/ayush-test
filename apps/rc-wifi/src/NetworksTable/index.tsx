@@ -179,13 +179,11 @@ export function NetworksTable () {
       defaultPayload
     })
 
-    if (tableQuery.isLoading) return <div>Loading...</div>
-    if (tableQuery.error) return <div role='alert'>Error</div>
     return (
       <Loader states={[tableQuery]}>
         <Table
           columns={columns}
-          dataSource={tableQuery.data.data}
+          dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
