@@ -94,13 +94,17 @@ export const Wrapper = styled.div`
 
   .ant-layout-content {
     margin: 0;
+    background-color: var(--acx-neutrals-5);
   }
 `
 
 export const Content = styled.div`
-  background-color: var(--acx-neutrals-5);
-  padding: var(--acx-content-vertical-space) var(--acx-content-horizontal-space);
+  margin: var(--acx-content-vertical-space) var(--acx-content-horizontal-space);
   min-width: calc(${modifyVars['@screen-xl']} - var(--acx-sider-width));
+  min-height: calc(100vh - var(--acx-header-height));
+  position: relative;
+  display: flex;
+  flex-direction: column;
   &:before {
     content: '';
     position: fixed;

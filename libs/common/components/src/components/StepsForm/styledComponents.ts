@@ -164,7 +164,7 @@ export const StepsContainer = styled.div`
   width: 100%;
   max-width: var(--acx-steps-form-steps-container-max-width);
   background-color: var(--acx-neutrals-5);
-  z-index: 2;
+  z-index: 1;
 `
 
 export const ActionsContainer = styled.div`
@@ -191,7 +191,7 @@ export const ActionsContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: -32px; // button height
-  z-index: 2; // to have it appear above the PageHeader
+  z-index: 3; // to have it appear above the PageHeader
 `
 
 export const Container = styled.div`

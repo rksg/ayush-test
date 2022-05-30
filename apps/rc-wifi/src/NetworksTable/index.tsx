@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react'
-
 import { Button }    from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
 import styled        from 'styled-components/macro'
 
-import { PageHeader, Table }   from '@acx-ui/components'
-import { useNetworkListQuery } from '@acx-ui/rc/services'
+import { PageHeader, Table, Loader } from '@acx-ui/components'
+import { useNetworkListQuery }       from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -152,12 +151,6 @@ const getWlanSecurity = (wlanSecurity: WlanSecurityEnum) => {
   return securityMap[wlanSecurity] || ''
 }
 
-const defaultPagination = {
-  current: 1,
-  pageSize: 10,
-  total: 0
-}
-
 const defaultPayload = {
   searchString: '',
   fields: [
@@ -174,59 +167,28 @@ const defaultPayload = {
     'vlanPool',
     'captiveType',
     'id'
-  ],
-  sortField: 'name',
-  sortOrder: 'ASC',
-  page: defaultPagination.current,
-  pageSize: defaultPagination.pageSize
-}
-
-const transferSorter = (order: string) => {
-  return order === 'ascend' ? 'ASC' : 'DESC'
+  ]
 }
 
 export function NetworksTable () {
   const NetworksTable = () => {
     const params = useParams()
-    const [payload, setPayload] = useState(defaultPayload)
-    const [pagination, setPagination] = useState(defaultPagination)
-    const { data, error, isLoading, refetch } = useNetworkListQuery({
-      params,
-      payload
+    const tableQuery = useTableQuery({
+      api: useNetworkListQuery,
+      apiParams: params,
+      defaultPayload
     })
-    const handleResponse = () => {
-      if (data) {
-        setPagination({
-          ...defaultPagination,
-          current: data.page,
-          total: data.totalCount
-        })
-      }
-    }
-    useEffect(handleResponse, [data])
-    useEffect(refetch, [payload, refetch])
 
-    const handleTableChange = (pagination: any, filters: any, sorter: any) => {
-      const tableProps = {
-        sortField: sorter.field || 'name',
-        sortOrder: sorter.order ? transferSorter(sorter.order) : 'ASC',
-        page: pagination.current,
-        pageSize: pagination.pageSize
-      }
-      const request = { ...defaultPayload, ...tableProps }
-      setPayload(request)
-    }
-
-    if (isLoading) return <div>Loading...</div>
-    if (error) return <div role='alert'>Error</div>
     return (
-      <Table
-        columns={columns}
-        dataSource={data.data}
-        pagination={pagination}
-        onChange={handleTableChange}
-        rowKey='id'
-      />
+      <Loader states={[tableQuery]}>
+        <Table
+          columns={columns}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+        />
+      </Loader>
     )
   }
 
