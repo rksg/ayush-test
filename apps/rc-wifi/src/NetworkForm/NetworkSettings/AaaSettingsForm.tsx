@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import {
   ExclamationCircleFilled,
@@ -244,9 +244,7 @@ function SettingsForm () {
 }
 
 function CloudpathServer () {
-  const { data, refetch } = useCloudpathListQuery({})
-
-  useEffect(refetch, [data, refetch])
+  const { data } = useCloudpathListQuery({})
 
   const [state, updateState] = useState({
     enableCloudPathServer: false,

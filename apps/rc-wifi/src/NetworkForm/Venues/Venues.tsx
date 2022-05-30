@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 
 import { Form, Switch } from 'antd'
 
-import { StepsForm, Table }  from '@acx-ui/components'
-import { useVenueListQuery } from '@acx-ui/rc/services'
-import { useTableQuery }     from '@acx-ui/rc/utils'
-import { useParams }         from '@acx-ui/react-router-dom'
+import { StepsForm, Table, Loader } from '@acx-ui/components'
+import { useVenueListQuery }        from '@acx-ui/rc/services'
+import { useTableQuery }            from '@acx-ui/rc/utils'
+import { useParams }                from '@acx-ui/react-router-dom'
 
 import TableButtonBar from './TableButtonBar'
 
@@ -170,31 +170,30 @@ export function Venues (props: any) {
     }
   ]
 
-  if (tableQuery.isLoading) return <div>Loading...</div>
-  if (tableQuery.error) return <div role='alert'>Error</div>
-
   return (
     <>
       <StepsForm.Title>Venues</StepsForm.Title>
       <span>Select venues to activate this network</span>
-      <TableButtonBar 
-        rowsSelected={tableQuery.selectedRowsData.length} 
+      <TableButtonBar
+        rowsSelected={tableQuery.selectedRowsData.length}
       />
       <Form.Item name='venues'>
-        <Table
-          rowKey='id'
-          rowSelection={{
-            type: 'checkbox',
-            ...tableQuery.rowSelection
-          }}
-          onRow={(record) => ({
-            onClick: () => { tableQuery.onRowClick(record) }
-          })}
-          columns={columns}
-          dataSource={tableData}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-        />
+        <Loader states={[tableQuery]}>
+          <Table
+            rowKey='id'
+            rowSelection={{
+              type: 'checkbox',
+              ...tableQuery.rowSelection
+            }}
+            onRow={(record) => ({
+              onClick: () => { tableQuery.onRowClick(record) }
+            })}
+            columns={columns}
+            dataSource={tableData}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+          />
+        </Loader>
       </Form.Item>
     </>
   )
