@@ -4,7 +4,7 @@ export const CloseButton = styled.div`
 .anticon {
   color: var(--acx-primary-white);
   margin-right: 0;
-  margin-left: 8px;
+  margin-left: 30px;
   font-size: 14px;
   cursor: pointer;
 }
@@ -14,7 +14,7 @@ export const Toast = styled.div`
 display: flex;
 align-items: baseline;
 font-size: 14px;
-font-weight: 600;
+font-weight: 400;
 .toast-style {
  width: 100%;
  display: flex;
@@ -22,7 +22,7 @@ font-weight: 600;
    max-width: 600px;
  }
  .toast-link {
-   margin-left: 20px;
+   margin-left: 60px;
    text-decoration: underline;
    color: var(--acx-primary-white);
    background-color: transparent;

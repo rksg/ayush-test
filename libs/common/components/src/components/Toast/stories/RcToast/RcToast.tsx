@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { message } from 'antd'
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { showTxToast, rcToastTemplate } from '@acx-ui/rc/utils'
 
 import { showToast } from '../../index'
@@ -46,7 +47,7 @@ const infoToast = (count:any, setCount:any) => {
       clearInterval(timeout) 
       countInterval = setInterval(() => {
         setCount(countdown--)
-        if (countdown === 0) {
+        if (countdown <= 0) {
           clearInterval(countInterval)
           setCount(SECONDS)
         }
@@ -62,7 +63,7 @@ const infoToast = (count:any, setCount:any) => {
     timeout = setInterval(() => {
       displayToast(countdown, timeout)
       setCount(countdown--)
-      if (countdown === 0) {
+      if (countdown <= 0) {
         clearInterval(timeout)
         message.destroy(TOAST_KEY)
         setCount(SECONDS)

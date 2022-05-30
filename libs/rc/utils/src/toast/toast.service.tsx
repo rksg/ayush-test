@@ -2,6 +2,7 @@
 import { LoadingOutlined } from '@ant-design/icons'
 import * as _              from 'lodash'
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { showToast } from '@acx-ui/components'
 
 import { rcToastTemplates } from './toast.template'
