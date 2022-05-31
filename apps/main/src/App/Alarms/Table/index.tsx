@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { PageHeader, Table, TableProps } from '@acx-ui/components'
-import { Alarm, useAlarmsListQuery }     from '@acx-ui/rc/services'
-import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
+import { Alarm, useAlarmsListQuery }             from '@acx-ui/rc/services'
+import { CommonUrlsInfo, useTableQuery }         from '@acx-ui/rc/utils'
 
 const columns: TableProps<Alarm>['columns'] = [
   {
@@ -58,14 +58,14 @@ export function AlarmsTable () {
       }
     }, [tableQuery.data])
 
-    if (tableQuery.isLoading) return <div>Loading...</div>
-    if (tableQuery.error) return <div role='alert'>error</div>
-    return <Table columns={columns}
-      dataSource={tableData}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      style={{ width: '800px' }}
-      rowKey='id' />
+    return <Loader states={[tableQuery]}>
+      <Table columns={columns}
+        dataSource={tableData}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        style={{ width: '800px' }}
+        rowKey='id' />
+    </Loader>
   }
 
   return <>
