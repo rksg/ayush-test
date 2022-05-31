@@ -21,13 +21,20 @@ const infoToast = () => {
 const successToast = () => {
   showToast({ 
     type: 'success',
-    content: 'This is a success message'
+    content: 'This is a success message',
+    link: {
+      onClick: () => {alert('Success detail')}
+    }
   })
 }
 
 const errorToast = () => {
   showToast({ 
     type: 'error',
-    content: 'This is a error message'
+    content: 'This is a error message',
+    link: {
+      text: 'Details',
+      onClick: () => {alert('Error detail')}
+    }
   }) 
 }

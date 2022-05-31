@@ -54,10 +54,10 @@ export const rcToastTemplate = (msg:any, test?:any) => {
   return (
     <div className={msg.data && msg.data.countdown ? 
       'toast-style toast-countdown' : 'toast-style'} >
-      <label className='leading-text-style'>{msg.summary}</label>
+      <label>{msg.summary}</label>
       <div className='description-style'>
         { msg.severity !== 'error' ? <p>{msg.detail}</p> : 
-          <button className='toast-link' onClick={() => showDetails(msg.data.link)}>
+          <button className='toast-link' onClick={() => showDetails()}>
             Technical Details
           </button> 
         }
@@ -105,6 +105,7 @@ export const showTxToast = (tx:any) => {
       }
       showToast({
         type: 'success',
+        isCustomContent: true,
         content: rcToastTemplate(msg)
       })
       break
@@ -120,6 +121,7 @@ export const showTxToast = (tx:any) => {
       }
       showToast({
         type: 'error',
+        isCustomContent: true,
         content: rcToastTemplate(msg)
       })
       break

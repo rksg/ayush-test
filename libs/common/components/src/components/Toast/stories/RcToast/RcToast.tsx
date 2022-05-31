@@ -40,18 +40,19 @@ const infoToast = (count:any, setCount:any) => {
     showToast({ 
       type: 'info',
       key: TOAST_KEY,
-      content: rcToastTemplate(msg, countdown) 
-    }, 
-    () => { 
-      setCount(countdown--)
-      clearInterval(timeout) 
-      countInterval = setInterval(() => {
+      content: rcToastTemplate(msg, countdown),
+      isCustomContent: true,
+      onClose: () => { 
         setCount(countdown--)
-        if (countdown <= 0) {
-          clearInterval(countInterval)
-          setCount(SECONDS)
-        }
-      }, 1000)
+        clearInterval(timeout) 
+        countInterval = setInterval(() => {
+          setCount(countdown--)
+          if (countdown <= 0) {
+            clearInterval(countInterval)
+            setCount(SECONDS)
+          }
+        }, 1000)
+      } 
     })
   }
   let countdown = count
