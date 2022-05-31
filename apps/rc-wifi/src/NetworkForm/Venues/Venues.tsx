@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Form, Switch } from 'antd'
 
 import {
+  Loader,
   StepFormProps,
   StepsForm,
   Table,
@@ -173,9 +174,6 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     }
   ]
 
-  if (tableQuery.isLoading) return <div>Loading...</div>
-  if (tableQuery.error) return <div role='alert'>Error</div>
-
   return (
     <>
       <StepsForm.Title>Venues</StepsForm.Title>
@@ -184,20 +182,22 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
         rowsSelected={tableQuery.selectedRowsData.length}
       />
       <Form.Item name='venues'>
-        <Table
-          rowKey='id'
-          rowSelection={{
-            type: 'checkbox',
-            ...tableQuery.rowSelection
-          }}
-          onRow={(record) => ({
-            onClick: () => { tableQuery.onRowClick(record) }
-          })}
-          columns={columns}
-          dataSource={tableData}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-        />
+        <Loader states={[tableQuery]}>
+          <Table
+            rowKey='id'
+            rowSelection={{
+              type: 'checkbox',
+              ...tableQuery.rowSelection
+            }}
+            onRow={(record) => ({
+              onClick: () => { tableQuery.onRowClick(record) }
+            })}
+            columns={columns}
+            dataSource={tableData}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+          />
+        </Loader>
       </Form.Item>
     </>
   )

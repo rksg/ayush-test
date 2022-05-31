@@ -59,6 +59,7 @@ export const networkListApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'networkListApi',
   tagTypes: ['Network'],
+  refetchOnMountOrArgChange: true,
   endpoints: (build) => ({
     networkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -109,6 +110,7 @@ export const {
 export const venueListApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueListApi',
+  refetchOnMountOrArgChange: true,
   endpoints: (build) => ({
     venueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -134,6 +136,7 @@ export const { useVenueListQuery } = venueListApi
 export const cloudpathListApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'cloudpathListApi',
+  refetchOnMountOrArgChange: true,
   endpoints: (build) => ({
     cloudpathList: build.query<any, RequestPayload>({
       query: ({ params }) => {

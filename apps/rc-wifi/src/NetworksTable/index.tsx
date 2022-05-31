@@ -2,8 +2,13 @@ import { Button }    from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
 import styled        from 'styled-components/macro'
 
+<<<<<<< HEAD
 import { PageHeader, Table, TableProps } from '@acx-ui/components'
 import { useNetworkListQuery, Network }  from '@acx-ui/rc/services'
+=======
+import { PageHeader, Table, Loader } from '@acx-ui/components'
+import { useNetworkListQuery }       from '@acx-ui/rc/services'
+>>>>>>> origin/master
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
@@ -177,16 +182,16 @@ export function NetworksTable () {
       defaultPayload
     })
 
-    if (tableQuery.isLoading) return <div>Loading...</div>
-    if (tableQuery.error) return <div role='alert'>Error</div>
     return (
-      <Table
-        columns={columns}
-        dataSource={tableQuery.data?.data}
-        pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
-        rowKey='id'
-      />
+      <Loader states={[tableQuery]}>
+        <Table
+          columns={columns}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+        />
+      </Loader>
     )
   }
 

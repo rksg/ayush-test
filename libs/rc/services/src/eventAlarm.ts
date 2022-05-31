@@ -33,6 +33,7 @@ export const eventAlarmApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'eventAlarmApi',
   tagTypes: ['Alarms'],
+  refetchOnMountOrArgChange: true,
   endpoints: (build) => ({
     alarmsList: build.query<TableResult<Alarm>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
