@@ -24,7 +24,7 @@ export const Button = styled(AntButton)`
 `
 
 const headRowGap = '5px'
-const cardPadding = '12px'
+const cardPadding = '16px'
 
 export const Wrapper = styled.div<WrapperProps>`
   height: 100%;
