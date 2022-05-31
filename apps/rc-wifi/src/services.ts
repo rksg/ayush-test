@@ -5,8 +5,8 @@ import { CommonUrlsInfo, createHttpRequest, onSocketActivityChanged } from '@acx
 import { Params }                                                     from '@acx-ui/react-router-dom'
 
 interface RequestPayload {
-  params?: Params<string>;
-  payload?: any;
+  params?: Params<string>
+  payload?: any
 }
 
 export const networkApi = baseNetworkApi.injectEndpoints({

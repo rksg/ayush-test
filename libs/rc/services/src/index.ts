@@ -10,7 +10,7 @@ export const baseNetworkApi = createApi({
 
 export const baseCloudpathApi = createApi({
   baseQuery: fetchBaseQuery(),
-  reducerPath: 'cloudpathListApi',
+  reducerPath: 'cloudpathApi',
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
