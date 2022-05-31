@@ -3,23 +3,20 @@ import { configureStore }                                 from '@reduxjs/toolkit
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 import {
-  networkListApi,
-  venueListApi,
-  cloudpathListApi
+  baseNetworkApi as networkApi,
+  baseCloudpathApi as cloudpathApi
 } from '@acx-ui/rc/services'
 
 export const store = configureStore({
   reducer: {
-    [networkListApi.reducerPath]: networkListApi.reducer,
-    [venueListApi.reducerPath]: venueListApi.reducer,
-    [cloudpathListApi.reducerPath]: cloudpathListApi.reducer
+    [networkApi.reducerPath]: networkApi.reducer,
+    [cloudpathApi.reducerPath]: cloudpathApi.reducer
   },
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
-      networkListApi.middleware,
-      venueListApi.middleware,
-      cloudpathListApi.middleware
+      networkApi.middleware,
+      cloudpathApi.middleware
     ]),
 
   devTools: process.env['NODE_ENV'] !== 'production'

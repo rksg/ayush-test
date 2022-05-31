@@ -3,7 +3,6 @@ import { SortOrder } from 'antd/lib/table/interface'
 import styled        from 'styled-components/macro'
 
 import { PageHeader, Table, Loader } from '@acx-ui/components'
-import { useNetworkListQuery }       from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
@@ -12,6 +11,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import { useNetworkListQuery } from '../services'
 
 const PageLink = styled.span`
   color: var(--acx-accents-blue-50);

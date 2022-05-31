@@ -17,11 +17,12 @@ import {
   Typography
 } from 'antd'
 
-import { StepsForm }             from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
-import { WlanSecurityEnum }      from '@acx-ui/rc/utils'
+import { StepsForm }        from '@acx-ui/components'
+import { WlanSecurityEnum } from '@acx-ui/rc/utils'
 
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import { useCloudpathListQuery } from '../../services'
+import { NetworkDiagram }        from '../NetworkDiagram/NetworkDiagram'
+
 
 const { Option } = Select
 

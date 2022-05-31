@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { Form, Switch } from 'antd'
 
 import { StepsForm, Table, Loader } from '@acx-ui/components'
-import { useVenueListQuery }        from '@acx-ui/rc/services'
 import { useTableQuery }            from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
+
+import { useVenueListQuery } from '../../services'
 
 import TableButtonBar from './TableButtonBar'
 

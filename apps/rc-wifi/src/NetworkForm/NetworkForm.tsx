@@ -7,13 +7,14 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateNetworkMutation } from '@acx-ui/rc/services'
-import { NetworkTypeEnum }          from '@acx-ui/rc/utils'
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+
+import { useCreateNetworkMutation } from '../services'
 
 import { CreateNetworkFormFields, NetworkSaveData } from './interface'
 import { NetworkDetailForm }                        from './NetworkDetail/NetworkDetailForm'
