@@ -5,10 +5,10 @@ import { GlobalFilter } from '@acx-ui/analytics/utils'
 
 export interface TrafficByVolumeData {
   time: string[]
-  traffic_all: number[]
-  traffic_6: number[]
-  traffic_5: number[]
-  traffic_24: number[]
+  totalTraffic_all: number[]
+  totalTraffic_6: number[]
+  totalTraffic_5: number[]
+  totalTraffic_24: number[]
 }
 
 interface Response <TimeSeriesData> {
@@ -38,10 +38,10 @@ export const api = dataApi.injectEndpoints({
               hierarchyNode(path: $path) {
                 timeSeries(granularity: $granularity) {
                   time
-                  traffic_all: traffic
-                  traffic_6: traffic(radio: "6")
-                  traffic_5: traffic(radio: "5")
-                  traffic_24: traffic(radio: "2.4")
+                  totalTraffic_all: totalTraffic
+                  totalTraffic_6: totalTraffic(radio: "6(5)")
+                  totalTraffic_5: totalTraffic(radio: "5")
+                  totalTraffic_24: totalTraffic(radio: "2.4")
                 }
               }
             }

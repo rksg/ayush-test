@@ -34,9 +34,9 @@ describe('trafficByVolumeWidgetApi', () => {
               '2022-04-07T10:00:00.000Z',
               '2022-04-07T10:15:00.000Z'
             ],
-            traffic_all: [1, 2, 3, 4, 5],
-            traffic_6: [6, 7, 8, 9, 10],
-            traffic_5: [11, 12, 13, 14, 15],
+            totalTraffic_all: [1, 2, 3, 4, 5],
+            totalTraffic_6: [6, 7, 8, 9, 10],
+            totalTraffic_5: [11, 12, 13, 14, 15],
             traffic_24: [16, 17, 18, 19, 20]
           }
         }

@@ -17,10 +17,10 @@ const sample = {
     '2022-04-07T10:00:00.000Z',
     '2022-04-07T10:15:00.000Z'
   ],
-  traffic_all: [1, 2, 3, 4, 5],
-  traffic_6: [6, 7, 8, 9, 10],
-  traffic_5: [11, 12, 13, 14, 15],
-  traffic_24: [16, 17, 18, 19, 20]
+  totalTraffic_all: [1, 2, 3, 4, 5],
+  totalTraffic_6: [6, 7, 8, 9, 10],
+  totalTraffic_5: [11, 12, 13, 14, 15],
+  totalTraffic_24: [16, 17, 18, 19, 20]
 }
 
 describe('TrafficByVolumeWidget', () => {
@@ -66,20 +66,20 @@ describe('getSeriesData', ()=>{
     expect(getSeriesData(sample as unknown as TrafficByVolumeData))
       .toEqual([
         {
-          name: 'ALL',
+          name: 'All Radios',
           data: sample.time.map((t,index)=>[t, 1+index])
         },
         {
-          name: '6 GHz',
-          data: sample.time.map((t,index)=>[t, 6+index])
+          name: '2.4 GHz',
+          data: sample.time.map((t,index)=>[t, 16+index])
         },
         {
           name: '5 GHz',
           data: sample.time.map((t,index)=>[t, 11+index])
         },
         {
-          name: '2.4 GHz',
-          data: sample.time.map((t,index)=>[t, 16+index])
+          name: '6 GHz',
+          data: sample.time.map((t,index)=>[t, 6+index])
         }
       ])
   })
