@@ -13,7 +13,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-
 const PageLink = styled.span`
   color: var(--acx-accents-blue-50);
 `

@@ -15,7 +15,6 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-
 import { CreateNetworkFormFields, NetworkSaveData } from './interface'
 import { NetworkDetailForm }                        from './NetworkDetail/NetworkDetailForm'
 import { AaaSettingsForm }                          from './NetworkSettings/AaaSettingsForm'

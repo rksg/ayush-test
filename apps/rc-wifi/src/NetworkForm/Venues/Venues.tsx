@@ -7,7 +7,6 @@ import { useVenueListQuery }        from '@acx-ui/rc/services'
 import { useTableQuery }            from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
 
-
 import TableButtonBar from './TableButtonBar'
 
 const defaultPayload = {

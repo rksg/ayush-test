@@ -23,7 +23,6 @@ import { WlanSecurityEnum }      from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
-
 const { Option } = Select
 
 export interface AaaSettingsFields {
