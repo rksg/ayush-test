@@ -1,13 +1,17 @@
-import { message } from 'antd'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { message }                   from 'antd'
 
-import { baseCloudpathApi, baseNetworkApi }                           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, createHttpRequest, onSocketActivityChanged } from '@acx-ui/rc/utils'
-import { Params }                                                     from '@acx-ui/react-router-dom'
 
-interface RequestPayload {
-  params?: Params<string>
-  payload?: any
-}
+import { RequestPayload } from './types'
+
+export const baseNetworkApi = createApi({
+  baseQuery: fetchBaseQuery(),
+  reducerPath: 'networkApi',
+  tagTypes: ['Network'],
+  refetchOnMountOrArgChange: true,
+  endpoints: () => ({ })
+})
 
 export const networkApi = baseNetworkApi.injectEndpoints({
   endpoints: (build) => ({
@@ -58,21 +62,3 @@ export const {
   useCreateNetworkMutation,
   useVenueListQuery
 } = networkApi
-
-export const cloudpathApi = baseCloudpathApi.injectEndpoints({
-  endpoints: (build) => ({
-    cloudpathList: build.query<any, RequestPayload>({
-      query: ({ params }) => {
-        const cloudpathListReq = createHttpRequest(
-          CommonUrlsInfo.getCloudpathList,
-          params
-        )
-        return {
-          ...cloudpathListReq
-        }
-      }
-    })
-  })
-})
-
-export const { useCloudpathListQuery } = cloudpathApi
