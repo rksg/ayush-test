@@ -7,6 +7,7 @@ import { Card }                              from '@acx-ui/components'
 import { MultiLineTimeSeriesChart }          from '@acx-ui/components'
 import { cssStr }                            from '@acx-ui/components'
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/components'
+import { formatter }                         from '@acx-ui/utils'
 
 import {
   useTrafficByVolumeQuery,
@@ -16,9 +17,9 @@ import * as UI from './styledComponents'
 
 const seriesMapping = [
   { key: 'totalTraffic_all', name: 'All Radios' },
-  { key: 'totalTraffic_24', name: '2.4 GHz' },
-  { key: 'totalTraffic_5', name: '5 GHz' },
-  { key: 'totalTraffic_6', name: '6 GHz' }
+  { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },
+  { key: 'totalTraffic_5', name: formatter('radioFormat')('5') },
+  { key: 'totalTraffic_6', name: formatter('radioFormat')('6') }
 ] as Array<{ key: keyof Omit<TrafficByVolumeData, 'time'>, name: string }>
 
 const lineColors = [

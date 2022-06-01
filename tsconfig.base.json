@@ -19,6 +19,7 @@
       "@acx-ui/analytics/utils": ["libs/analytics/utils/src/index.ts"],
       "@acx-ui/components": ["libs/common/components/src/index.ts"],
       "@acx-ui/icons": ["libs/common/icons/src/index.ts"],
+      "@acx-ui/utils": ["libs/common/utils/src/index.ts"],
       "@acx-ui/rc/services": ["libs/rc/services/src/index.ts"],
       "@acx-ui/rc/utils": ["libs/rc/utils/src/index.ts"],
       "@acx-ui/react-router-dom": ["libs/common/react-router-dom/src/index.ts"],
