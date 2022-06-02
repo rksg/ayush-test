@@ -52,19 +52,19 @@ const showDetails = () => {
 
 export const rcToastTemplate = (msg:any, test?:any) => {
   return (
-    <div className={msg.data && msg.data.countdown ? 
+    <div className={msg.data && msg.data.countdown ?
       'toast-style toast-countdown' : 'toast-style'} >
       <label>{msg.summary}</label>
       <div className='description-style'>
-        { msg.severity !== 'error' ? <p>{msg.detail}</p> : 
+        { msg.severity !== 'error' ? <p>{msg.detail}</p> :
           <button className='toast-link' onClick={() => showDetails()}>
             Technical Details
-          </button> 
+          </button>
         }
       </div>
       {
         msg.data && msg.data.countdown && (
-          <div className='countdown__block'>
+          <div className='countdown-block'>
             <LoadingOutlined />
             <span className='number'>{test}</span>
           </div>
