@@ -19,7 +19,6 @@ COPY .eslintignore \
   ./
 COPY .storybook ./.storybook
 COPY apps ./apps
-COPY configs ./configs
 COPY libs ./libs
 
 RUN npx nx run-many --target=build --all
