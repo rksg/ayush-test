@@ -56,7 +56,7 @@ export const Button = styled(AntButton)`
   }
 `
 
-const buttonIconStyle = css`
+export const buttonIconStyle = css`
   height: 100%;
   fill: var(--acx-primary-white);
   stroke: var(--acx-neutrals-70);
