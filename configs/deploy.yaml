@@ -2,11 +2,15 @@
   chart:
     name: acx_standard1
   values_configmaps:
+    # TODO: Can these be computed automatically from kubectl kustomize output?
+    - values-acx-ui
+    - values-configmap-env-map-acx-ui
     - values-configmap-vol-map-acx-ui
+    - values-secret-env-map-acx-ui
     - values-secret-vol-map-acx-ui
-      #- values-acx-ui
   # following must match the default value.yaml in the Helm chart
   service:
     name: acx-ui
+    type: service
     image:
-      path: gcr.io/kumo-scratch/services/acx-ui/ui
+      path: gcr.io/kumo-scratch/services/acx-ui
