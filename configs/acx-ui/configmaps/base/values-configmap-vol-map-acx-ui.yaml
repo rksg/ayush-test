@@ -4,19 +4,21 @@ metadata:
   name: values-configmap-vol-map-acx-ui
 data:
   values.yaml: |
-  service:
-    volumeMounts:
-      initcontainers:
-        rks-dbmigrate:
-         - name: config-volume
-           mountPath: /etc/config/db
-           readOnly: true
-      containers:
-        acx-ui:
-         - name: configmap-volume-acx-ui
-           mountPath: /etc/config/configmap
-           readOnly: true
-    volumes:
-      - name: configmap-volume-acx-ui
-        configMap:
-          name: configmap-acx-ui
+    # service:
+    #   volumeMounts:
+    #     initContainers:
+    #       # this is the name of the initContainer
+    #       rks-dbmigrate:
+    #         name: config-volume
+    #         mountPath: /etc/config
+    #         readOnly: true
+    #     containers:
+    #       # this is the name of the Container
+    #       acx-ui:
+    #         name: config-volume
+    #         mountPath: /etc/config
+    #         readOnly: true
+    #   volumes:
+    #     - name: config-volume
+    #       configMap:
+    #         name: configmap-acx-ui
