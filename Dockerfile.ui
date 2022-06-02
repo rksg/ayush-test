@@ -8,7 +8,6 @@ RUN npm i
 
 COPY .eslintignore \
   .eslintrc.json \
-  .npmrc \
   babel.config.json \
   jest.config.ts \
   jest.preset.ts \
