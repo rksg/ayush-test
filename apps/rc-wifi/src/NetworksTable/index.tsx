@@ -2,13 +2,8 @@ import { Button }    from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
 import styled        from 'styled-components/macro'
 
-<<<<<<< HEAD
-import { PageHeader, Table, TableProps } from '@acx-ui/components'
-import { useNetworkListQuery, Network }  from '@acx-ui/rc/services'
-=======
-import { PageHeader, Table, Loader } from '@acx-ui/components'
-import { useNetworkListQuery }       from '@acx-ui/rc/services'
->>>>>>> origin/master
+import { PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { useNetworkListQuery, Network }          from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,

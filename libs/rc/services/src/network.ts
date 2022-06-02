@@ -4,62 +4,22 @@ import { message }                   from 'antd'
 import {
   CommonUrlsInfo,
   createHttpRequest,
-  GuestNetworkTypeEnum,
   onSocketActivityChanged,
   RequestPayload,
-  TableResult,
-  WlanSecurityEnum
+  TableResult
 } from '@acx-ui/rc/utils'
 
-export interface Network {
-  id: string
-  name: string
-  description: string
-  nwSubType: string
-  ssid: string
-  vlan: number
-  aps: number
-  clients: number
-  venues: { count: number, names: string[] }
-  captiveType: GuestNetworkTypeEnum
-  deepNetwork?: {
-    wlan: {
-      wlanSecurity: WlanSecurityEnum
-    }
-  }
-  vlanPool?: { name: string }
-  // cog ??
-}
+import { Network } from './types'
 
-export interface Venue {
-  id: string
-  name: string
-  description: string
-  status: string
-  city: string
-  country: string
-  latitude: string
-  longitude: string
-  mesh: { enabled: boolean }
-  aggregatedApStatus: { [statusKey: string]: number }
-  networks: {
-    count: number
-    names: string[]
-    vlans: number[]
-  }
-  // aps ??
-  // switches ??
-  // switchClients ??
-  // radios ??
-  // scheduling ??
-  activated: { isActivated: boolean }
-}
-
-export const networkListApi = createApi({
+export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
-  reducerPath: 'networkListApi',
+  reducerPath: 'networkApi',
   tagTypes: ['Network'],
   refetchOnMountOrArgChange: true,
+  endpoints: () => ({ })
+})
+
+export const networkApi = baseNetworkApi.injectEndpoints({
   endpoints: (build) => ({
     networkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -77,7 +37,7 @@ export const networkListApi = createApi({
 
           if (msg.useCase === 'AddNetworkDeep') message.success('Created successfully')
 
-          api.dispatch(networkListApi.util.invalidateTags(['Network']))
+          api.dispatch(networkApi.util.invalidateTags(['Network']))
         })
       }
     }),
@@ -105,47 +65,4 @@ export const {
   useNetworkListQuery,
   useCreateNetworkMutation,
   useDashboardOverviewQuery
-} = networkListApi
-
-export const venueListApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'venueListApi',
-  refetchOnMountOrArgChange: true,
-  endpoints: (build) => ({
-    venueList: build.query<TableResult<Venue>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const venueListReq = createHttpRequest(CommonUrlsInfo.getNetworksVenuesList, params)
-        return{
-          ...venueListReq,
-          body: payload
-        }
-      },
-      transformResponse (result: TableResult<Venue>) {
-        result.data = result.data.map(item => ({
-          ...item,
-          activated: item.activated ?? { isActivated: false }
-        }))
-        return result
-      }
-    })
-  })
-})
-export const { useVenueListQuery } = venueListApi
-
-
-export const cloudpathListApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'cloudpathListApi',
-  refetchOnMountOrArgChange: true,
-  endpoints: (build) => ({
-    cloudpathList: build.query<any, RequestPayload>({
-      query: ({ params }) => {
-        const cloudpathListReq = createHttpRequest(CommonUrlsInfo.getCloudpathList, params)
-        return{
-          ...cloudpathListReq
-        }
-      }
-    })
-  })
-})
-export const { useCloudpathListQuery } = cloudpathListApi
+} = networkApi

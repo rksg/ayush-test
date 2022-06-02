@@ -9,31 +9,17 @@ import {
   RequestPayload
 } from '@acx-ui/rc/utils'
 
-interface AlarmBase {
-  startTime: string
-  severity: string
-  message: string
-  id: string
-  serialNumber: string
-  entityType: string
-  entityId: string
-  sourceType: string
-}
+import { Alarm, AlarmBase, AlarmMeta } from './types'
 
-interface AlarmMeta {
-  id: AlarmBase['id']
-  venueName: string
-  apName: string
-  switchName: string
-}
-
-export type Alarm = AlarmBase & AlarmMeta
-
-export const eventAlarmApi = createApi({
+export const baseEventAlarmApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'eventAlarmApi',
   tagTypes: ['Alarms'],
   refetchOnMountOrArgChange: true,
+  endpoints: () => ({ })
+})
+
+export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
   endpoints: (build) => ({
     alarmsList: build.query<TableResult<Alarm>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {

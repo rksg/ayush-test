@@ -3,25 +3,25 @@ import { configureStore }                                 from '@reduxjs/toolkit
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 import {
-  networkListApi,
-  venueListApi,
-  cloudpathListApi,
-  eventAlarmApi
+  baseNetworkApi as networkApi,
+  baseVenueApi as venueApi,
+  baseCloudpathApi as cloudpathApi,
+  baseEventAlarmApi as eventAlarmApi
 } from '@acx-ui/rc/services'
 
 export const store = configureStore({
   reducer: {
-    [networkListApi.reducerPath]: networkListApi.reducer,
-    [venueListApi.reducerPath]: venueListApi.reducer,
-    [cloudpathListApi.reducerPath]: cloudpathListApi.reducer,
+    [networkApi.reducerPath]: networkApi.reducer,
+    [venueApi.reducerPath]: venueApi.reducer,
+    [cloudpathApi.reducerPath]: cloudpathApi.reducer,
     [eventAlarmApi.reducerPath]: eventAlarmApi.reducer
   },
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
-      networkListApi.middleware,
-      venueListApi.middleware,
-      cloudpathListApi.middleware,
+      networkApi.middleware,
+      venueApi.middleware,
+      cloudpathApi.middleware,
       eventAlarmApi.middleware
     ]),
 
