@@ -1,16 +1,19 @@
 
 import { Tabs } from 'antd'
 
-import { useNavigate } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-function NetworkTabs (props: any) {
+function NetworkTabs () {
+  const { networkId, activeTab } = useParams()
+  const basePath = useTenantLink(`/networks/${networkId}/network-details/`)
   const navigate = useNavigate()
   const onTabChange = (tab: string) =>
     navigate({
-      pathname: `${props.pathBaseUrl}/${tab}`
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
     })
   return (
-    <Tabs onChange={onTabChange} defaultActiveKey={props.defaultActiveKey}>
+    <Tabs onChange={onTabChange} activeKey={activeTab}>
       <Tabs.TabPane tab='Overview' key='overview' />
       <Tabs.TabPane tab='APs(0)' key='aps' />
       <Tabs.TabPane tab='Venues(0)' key='venues' />
