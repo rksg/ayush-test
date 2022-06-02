@@ -1,3 +1,5 @@
+import { forwardRef } from 'react'
+
 import { Popover } from 'antd'
 
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
@@ -9,6 +11,17 @@ import { Button, NotificationIcon } from '../../Layout/styledComponents'
 import {
   NotificationCounter
 } from './styledComponents'
+
+const NotificationCounterWithRef = forwardRef<HTMLElement, { count: number }>((props, ref) => {
+  return <NotificationCounter
+    {...props}
+    overflowCount={999}
+    offset={[-2, 10]}
+    color='black'
+    size='small'
+    children={<Button type='primary' ref={ref} icon={<NotificationIcon />} />}
+  />
+})
 
 export function AlarmsHeaderButton () {
   const params = useParams()
@@ -30,14 +43,7 @@ export function AlarmsHeaderButton () {
     return <Popover arrowPointAtCenter
       content={content}
       trigger='click'>
-      <NotificationCounter
-        count={getCount()}
-        overflowCount={999}
-        offset={[-2, 10]}
-        color='black'
-        size='small'
-        children={<Button type='primary' icon={<NotificationIcon />} />}
-      />
+      <NotificationCounterWithRef count={getCount()} />
     </Popover>
   }
 
