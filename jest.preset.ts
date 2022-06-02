@@ -11,9 +11,5 @@ module.exports = {
     '!<rootDir>/src/**/stories/*',
     '!<rootDir>/src/theme/modify-vars.js'
   ],
-  setupFilesAfterEnv: [
-    'whatwg-fetch',
-    '@testing-library/jest-dom',
-    `${__dirname}/jest.setup.js`
-  ]
+  setupFilesAfterEnv: [`${__dirname}/jest.setup.js`]
 }
