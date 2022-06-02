@@ -6,9 +6,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm i
 
-COPY .ci.yml \
-  .drone.yml \
-  .eslintignore \
+COPY .eslintignore \
   .eslintrc.json \
   .npmrc \
   babel.config.json \
