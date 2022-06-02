@@ -1,5 +1,4 @@
 export * from './eventAlarm'
 export * from './network'
 export * from './cloudpath'
-export * from './venue'
 export * from './types'
