@@ -12,14 +12,14 @@ export function BasicToast () {
 }
 
 const infoToast = () => {
-  showToast({ 
+  showToast({
     type: 'info',
-    content: 'Action in progress..'
-  }) 
+    content: 'Action in progress...'
+  })
 }
 
 const successToast = () => {
-  showToast({ 
+  showToast({
     type: 'success',
     content: 'This is a success message',
     link: {
@@ -29,12 +29,12 @@ const successToast = () => {
 }
 
 const errorToast = () => {
-  showToast({ 
+  showToast({
     type: 'error',
     content: 'This is a error message',
     link: {
       text: 'Details',
       onClick: () => {alert('Error detail')}
     }
-  }) 
+  })
 }

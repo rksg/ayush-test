@@ -13,27 +13,27 @@ export const CloseButton = styled.div`
 export const Toast = styled.div`
 display: flex;
 align-items: baseline;
-font-size: 14px;
+font-size: var(--acx-body-3-font-size);
 font-weight: 400;
 .toast-style {
- width: 100%;
- display: flex;
- .toast-left-side {
-   max-width: 600px;
- }
- .toast-link {
-   margin-left: 60px;
-   text-decoration: underline;
-   color: var(--acx-primary-white);
-   background-color: transparent;
-   border: none;
-   cursor: pointer;
- }
- p-progressSpinner {
-   float: right;
-   margin-left: 20px;
-   margin-top: 3px;
- }
+  width: 100%;
+  display: flex;
+  .toast-left-side {
+    max-width: 600px;
+  }
+  .toast-link {
+    margin-left: 60px;
+    text-decoration: underline;
+    color: var(--acx-primary-white);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  p-progressSpinner {
+    float: right;
+    margin-left: 20px;
+    margin-top: 3px;
+  }
 }
 .toast-style.toast-countdown {
  display: flex;
@@ -63,7 +63,7 @@ font-weight: 400;
      margin-top: unset;
    }
    .number {
-     font-size: 12px;
+     font-size: var(--acx-body-4-font-size);
      font-weight: bold;
      position: absolute;
      top: 4px;
