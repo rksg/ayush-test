@@ -2,8 +2,7 @@ import { render, screen } from '@testing-library/react'
 
 import { dataApiURL }      from '@acx-ui/analytics/services'
 import { Provider, store } from '@acx-ui/store'
-
-import { mockRTKQuery } from '../../../setupServer'
+import { mockRTKQuery }    from '@acx-ui/test-utils'
 
 import { api, TrafficByVolumeData } from './services'
 

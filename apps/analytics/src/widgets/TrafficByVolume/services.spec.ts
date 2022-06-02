@@ -1,8 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-
-import { mockRTKQuery } from '../../../setupServer'
+import { mockRTKQuery }        from '@acx-ui/test-utils'
 
 import { api } from './services'
 

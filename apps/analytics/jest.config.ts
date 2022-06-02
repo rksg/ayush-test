@@ -6,6 +6,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/apps/analytics',
-  setupFilesAfterEnv: ['./setupServer.ts']
+  coverageDirectory: '../../coverage/apps/analytics'
 }
