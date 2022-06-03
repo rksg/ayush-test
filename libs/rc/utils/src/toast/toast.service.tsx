@@ -65,12 +65,11 @@ export interface ToastMessage {
   sticky?: boolean
   closable?: boolean
   data?: {
-    tooltip?: string
     link?: string | null
-    queryParams?: { tabView: string } | null
     isSwitchConfig?: boolean
+    queryParams?: { tabView: string } | null
+    tooltip?: string
     apSerialNumber?: number
-    countdown?: boolean
   }
 }
 

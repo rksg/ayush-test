@@ -39,8 +39,7 @@ const infoToast = (count: number, setCount: Function) => {
       sticky: false,
       closable: false,
       data: {
-        apSerialNumber: 1234,
-        countdown: true
+        apSerialNumber: 1234
       }
     }
     showToast({
