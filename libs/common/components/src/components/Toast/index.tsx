@@ -12,6 +12,7 @@ const durationMap:{ [index:string]: number } = {
 }
 
 const defaultLinkText:{ [index:string]: string} = {
+  info: 'Details',
   success: 'View',
   error: 'Technical Details'
 }
@@ -20,20 +21,22 @@ export type ToastType = 'info' | 'success' | 'error'
 
 export interface ToastProps extends ArgsProps {
   type: ToastType
-  link?: { text?: string, onClick: Function }
   extraContent?: React.ReactNode
+  link?: { text?: string, onClick: Function }
 }
 
-export const showToast = (config: ToastProps) => {
+export const showToast = (config: ToastProps): string | number => {
   const key = config.key || uuidv4()
   message.open({
     className: `toast-${config.type}`,
     key,
+    // eslint-disable-next-line react/jsx-no-useless-fragment
     icon: <></>,
     duration: durationMap[config.type],
     ...config,
     content: toastContent(key, config)
   })
+  return key
 }
 
 const toastContent = (key: string | number, config: ToastProps) => {
@@ -45,14 +48,15 @@ const toastContent = (key: string | number, config: ToastProps) => {
         { extraContent || null }
         {
           link && (
-            <UI.Link onClick={() => { link.onClick() }}>
-              {link.text || defaultLinkText[toastType] || 'Link'}
+            <UI.Link onClick={() => link.onClick()}>
+              {link.text || defaultLinkText[toastType]}
             </UI.Link>
           )
         }
       </UI.Content>
       <UI.CloseButton onClick={() => {
         message.destroy(key)
+        /* istanbul ignore else */
         if (onClose) onClose()
       }}>
         <CloseOutlined />
