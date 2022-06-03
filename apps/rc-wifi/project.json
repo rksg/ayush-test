@@ -10,7 +10,7 @@
         "compiler": "babel",
         "outputPath": "dist/apps/rc-wifi",
         "index": "apps/rc-wifi/src/index.html",
-        "baseHref": "/",
+        "baseHref": "/api/ui-beta/rc-wifi/",
         "main": "apps/rc-wifi/src/main.ts",
         "polyfills": "apps/rc-wifi/src/polyfills.ts",
         "tsConfig": "apps/rc-wifi/tsconfig.app.json",
@@ -47,6 +47,7 @@
       "executor": "@nrwl/react:module-federation-dev-server",
       "defaultConfiguration": "development",
       "options": {
+        "baseHref": "/",
         "buildTarget": "rc-wifi:build",
         "hmr": true,
         "port": 3001
