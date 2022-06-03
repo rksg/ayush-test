@@ -26,7 +26,7 @@ RUN npx nx run-many --target=build --all
 ###############################################################
 
 FROM build as ui-app
-RUN npx nx run-many --target=lint --all
+RUN npx nx run-many --target=lint --all --verbose
 RUN npx nx run-many --target=test --all --coverage --runInBand
 
 ###############################################################
