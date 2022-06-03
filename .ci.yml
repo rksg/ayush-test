@@ -8,6 +8,9 @@ build:
         docker_image_name: gcr.io/kumo-scratch/services/acx-ui/ui
         docker_image_tag: SNAPSHOT
         dockerfile: Dockerfile.ui
-
+        sonar:
+            sonar_property: sonar-project.properties
+            code_report_dir: /app/coverage
+            sonar_scan_based_tag: ui-app
   - directory: configs
     build_type: ci
