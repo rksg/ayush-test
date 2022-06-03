@@ -1,0 +1,62 @@
+import { CloseOutlined } from '@ant-design/icons'
+import { message }       from 'antd'
+import { ArgsProps }     from 'antd/lib/message'
+import { v4 as uuidv4 }  from 'uuid'
+
+import * as UI from './styledComponents'
+
+const durationMap:{ [index:string]: number } = {
+  info: 0,
+  success: 7,
+  error: 0
+}
+
+const defaultLinkText:{ [index:string]: string} = {
+  success: 'View',
+  error: 'Technical Details'
+}
+
+export type ToastType = 'info' | 'success' | 'error'
+
+export interface ToastProps extends ArgsProps {
+  type: ToastType
+  link?: { text?: string, onClick: Function }
+  extraContent?: React.ReactNode
+}
+
+export const showToast = (config: ToastProps) => {
+  const key = config.key || uuidv4()
+  message.open({
+    className: `toast-${config.type}`,
+    key,
+    icon: <></>,
+    duration: durationMap[config.type],
+    ...config,
+    content: toastContent(key, config)
+  })
+}
+
+const toastContent = (key: string | number, config: ToastProps) => {
+  const { content, extraContent, link, type: toastType, onClose } = config
+  return (
+    <UI.Toast>
+      <UI.Content>
+        <label>{content}</label>
+        { extraContent || null }
+        {
+          link && (
+            <UI.Link onClick={() => { link.onClick() }}>
+              {link.text || defaultLinkText[toastType] || 'Link'}
+            </UI.Link>
+          )
+        }
+      </UI.Content>
+      <UI.CloseButton onClick={() => {
+        message.destroy(key)
+        if (onClose) onClose()
+      }}>
+        <CloseOutlined />
+      </UI.CloseButton>
+    </UI.Toast>
+  )
+}
