@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 import { LoadingOutlined } from '@ant-design/icons'
 import * as _              from 'lodash'
+import styled              from 'styled-components/macro'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { showToast } from '@acx-ui/components'
+import { showToast, ToastProps, ToastType } from '@acx-ui/components'
 
 import { rcToastTemplates } from './toast.template'
 
@@ -14,25 +15,68 @@ export enum TxStatus {
   WAITING = 'WAITING' // Waiting to be executed
 }
 
+interface TxData {
+  name: string
+  value: string
+}
+
 export interface Transaction {
-  requestId?: string;
-  method: string;
-  entityId?: string;
-  count?: string;
-  status: TxStatus;
-  error?: any;
-  attributes?: any;
-  tenantId?: string;
-  descriptionTemplate?: string;
-  descriptionData?: any[];
-  linkTemplate?: string;
-  linkData?: any[];
-  link?:any
+  requestId?: string
+  method?: string
+  entityId?: string
+  count?: string
+  status: TxStatus
+  error?: unknown
+  attributes?: {
+    name: string
+  }
+  tenantId?: string
+  descriptionTemplate: string
+  descriptionData: TxData[]
+  linkTemplate?: string
+  linkData: TxData[]
+  link?: string
+  admin?: {
+    name: string
+    email: string
+  }
+  product?: string
+  steps?: {
+    id: string
+    status: TxStatus
+    progressType: string
+    message: string
+    startDatetime: string
+    endDatetime: string
+  }[]
+  notifications?: {
+    type: string
+  }[]
+  startDatetime: string
+  endDatetime: string
+  useCase: string
+}
+
+export interface ToastMessage {
+  severity: ToastType
+  summary: string
+  detail?: string
+  life?: number
+  sticky?: boolean
+  closable?: boolean
+  data?: {
+    tooltip?: string
+    link?: string | null
+    queryParams?: { tabView: string } | null
+    isSwitchConfig?: boolean
+    apSerialNumber?: number
+    countdown?: boolean
+  }
 }
 
 const TX_MAX_NAME_LENGTH = 45
 
-const routeToPage = (link:any) => {
+const routeToPage = (link: string) => {
   window.location.href = link
 }
 
@@ -50,36 +94,32 @@ const showDetails = () => {
   // });
 }
 
-export const rcToastTemplate = (msg:any, test?:any) => {
-  return (
-    <div className={msg.data && msg.data.countdown ?
-      'toast-style toast-countdown' : 'toast-style'} >
-      <label>{msg.summary}</label>
-      <div className='description-style'>
-        { msg.severity !== 'error' ? <p>{msg.detail}</p> :
-          <button className='toast-link' onClick={() => showDetails()}>
-            Technical Details
-          </button>
-        }
-      </div>
-      {
-        msg.data && msg.data.countdown && (
-          <div className='countdown-block'>
-            <LoadingOutlined />
-            <span className='number'>{test}</span>
-          </div>
-        )
-      }
-      { msg.data && msg.data.link && (
-        <button className='toast-link' onClick={() => routeToPage(msg.data.link)}>
-          {msg.data.isSwitchConfig ? 'Check Status' : 'View'}
-        </button>
-      )}
-    </div>
-  )
-}
+const Countdown = styled.div`
+  position: relative;
+  .anticon {
+    color: #fff;
+    margin-left: 20px;
+    font-size: 22px;
+  }
+`
 
-export const showTxToast = (tx:any) => {
+const CountdownNumber = styled.span`
+  font-size: var(--acx-body-4-font-size);
+  font-weight: 700;
+  position: absolute;
+  top: 4px;
+  right: 38%;
+  transform: translateX(50%);
+`
+
+export const CountdownNode = (props: { n: number }) => (
+  <Countdown>
+    <LoadingOutlined />
+    <CountdownNumber>{props.n}</CountdownNumber>
+  </Countdown>
+)
+
+export const showTxToast = (tx: Transaction) => {
   let tooltip
   if (tx.attributes && tx.attributes.name) {
     // calculate max_name_length
@@ -91,7 +131,7 @@ export const showTxToast = (tx:any) => {
       tx.attributes.name = (tx.attributes.name).substring(0, MAX_NAME_LENGTH) + '...'
     }
   }
-  let msg
+  let msg: ToastMessage
   switch (tx.status) {
     case TxStatus.SUCCESS: {
       msg = {
@@ -103,11 +143,6 @@ export const showTxToast = (tx:any) => {
           tooltip: tooltip
         }
       }
-      showToast({
-        type: 'success',
-        isCustomContent: true,
-        content: rcToastTemplate(msg)
-      })
       break
     }
     case TxStatus.FAIL: {
@@ -119,11 +154,6 @@ export const showTxToast = (tx:any) => {
           tooltip: tooltip
         }
       }
-      showToast({
-        type: 'error',
-        isCustomContent: true,
-        content: rcToastTemplate(msg)
-      })
       break
     }
     default: {
@@ -131,6 +161,31 @@ export const showTxToast = (tx:any) => {
       return
     }
   }
+  let config: ToastProps = {
+    type: msg.severity,
+    content: msg.summary
+  }
+  if (msg.severity !== 'error' as ToastType) {
+    config = {
+      ...config,
+      extraContent: <p>{msg.detail}</p>
+    }
+  } else {
+    config = {
+      ...config,
+      link: { onClick: () => showDetails() }
+    }
+  }
+  if (msg.data?.link) {
+    config = {
+      ...config,
+      link: {
+        onClick: () => routeToPage(msg.data?.link as string),
+        text: msg.data.isSwitchConfig ? 'Check Status' : undefined
+      }
+    }
+  }
+  showToast(config)
 }
 
 const getToastMessage = (tx: Transaction): string => {
@@ -138,7 +193,7 @@ const getToastMessage = (tx: Transaction): string => {
   let message = parseMessage(tx.descriptionTemplate, tx.descriptionData)
 
   if (!message) {
-    if (!rcToastTemplates[method]) {  // template not found
+    if (!method || !rcToastTemplates[method]) {  // template not found
       console.error(
         `Template not found for method ${method}, falling back to default messages. tx=`, tx)
       method = 'DefaultMethod'
@@ -149,12 +204,12 @@ const getToastMessage = (tx: Transaction): string => {
   return message
 }
 
-const parseMessage = (messageTemplate: any, despData: any, isHtml = false): string => {
+const parseMessage = (messageTemplate: string, despData: TxData[], isHtml = false): string => {
   if (!despData) {
     return messageTemplate
   }
 
-  despData.forEach((nameValuePair: { name: any; value: any; }) => {
+  despData.forEach((nameValuePair: TxData) => {
     const key = nameValuePair.name
     const value = nameValuePair.value
     const v = isHtml? `<span style="font-weight:bold;">${value}</span>` : value
@@ -164,7 +219,7 @@ const parseMessage = (messageTemplate: any, despData: any, isHtml = false): stri
   return messageTemplate
 }
 
-const getRouterLink = (tx:Transaction) => {
+const getRouterLink = (tx:Transaction): string | null => {
   if (tx.link) { // for guest service
     return tx.link
   }
@@ -178,7 +233,9 @@ const getRouterLink = (tx:Transaction) => {
 
 const getTabViewParams = (tx:Transaction) => {
   const method = tx.method
-  const tabId = rcToastTemplates[method] && _.template(rcToastTemplates[method].tabView)(tx)
+  const tabId = method &&
+    rcToastTemplates[method] &&
+    _.template(rcToastTemplates[method].tabView)(tx)
 
   return (_.isEmpty(tabId))? null : { tabView: tabId }
 }

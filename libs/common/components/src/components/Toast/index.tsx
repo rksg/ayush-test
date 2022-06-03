@@ -3,14 +3,7 @@ import { message }       from 'antd'
 import { ArgsProps }     from 'antd/lib/message'
 import { v4 as uuidv4 }  from 'uuid'
 
-import { Toast, CloseButton } from './styledComponents'
-
-
-const classNameMap:{ [index:string]: string } = {
-  info: 'toast-info',
-  success: 'toast-success',
-  error: 'toast-error'
-}
+import * as UI from './styledComponents'
 
 const durationMap:{ [index:string]: number } = {
   info: 0,
@@ -23,44 +16,47 @@ const defaultLinkText:{ [index:string]: string} = {
   error: 'Technical Details'
 }
 
-const commonTemplate = (config: ArgsProps & 
-  { link?: { text?: string, onClick: Function }, isCustomContent?: boolean }) => {
-  return (
-    <div className='toast-style'>
-      <label>{config.content}</label>
-      {
-        config.link && (
-          <button className='toast-link' onClick={()=>{config.link?.onClick()}}>
-            {config.link.text || defaultLinkText[config.type]}
-          </button>
-        )
-      }
-    </div>
-  )
+export type ToastType = 'info' | 'success' | 'error'
+
+export interface ToastProps extends ArgsProps {
+  type: ToastType
+  link?: { text?: string, onClick: Function }
+  extraContent?: React.ReactNode
 }
 
-export const showToast = (config: ArgsProps & 
-  { link?: { text?: string, onClick: Function }, isCustomContent?: boolean }) => {
+export const showToast = (config: ToastProps) => {
   const key = config.key || uuidv4()
-  const content = config.isCustomContent ? config.content : commonTemplate(config)
   message.open({
-    className: classNameMap[config.type],
+    className: `toast-${config.type}`,
     key,
     icon: <></>,
     duration: durationMap[config.type],
     ...config,
-    content: toastContainer(key, content, config.onClose)
+    content: toastContent(key, config)
   })
 }
 
-const toastContainer = (key:string | number, content:any, onClose?:Function) => {
+const toastContent = (key: string | number, config: ToastProps) => {
+  const { content, extraContent, link, type: toastType, onClose } = config
   return (
-    <Toast>
-      {content}
-      <CloseButton onClick={() => {
+    <UI.Toast>
+      <UI.Content>
+        <label>{content}</label>
+        { extraContent || null }
+        {
+          link && (
+            <UI.Link onClick={() => { link.onClick() }}>
+              {link.text || defaultLinkText[toastType] || 'Link'}
+            </UI.Link>
+          )
+        }
+      </UI.Content>
+      <UI.CloseButton onClick={() => {
         message.destroy(key)
-        if(onClose) onClose()
-      }}><CloseOutlined /></CloseButton>
-    </Toast>
+        if (onClose) onClose()
+      }}>
+        <CloseOutlined />
+      </UI.CloseButton>
+    </UI.Toast>
   )
 }

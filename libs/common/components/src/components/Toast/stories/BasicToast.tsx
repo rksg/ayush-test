@@ -31,7 +31,7 @@ const successToast = () => {
 const errorToast = () => {
   showToast({
     type: 'error',
-    content: 'This is a error message',
+    content: 'This is an error message',
     link: {
       text: 'Details',
       onClick: () => {alert('Error detail')}

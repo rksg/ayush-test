@@ -1,4 +1,7 @@
-export const mockdata = {
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { Transaction, TxStatus } from '@acx-ui/rc/utils'
+
+export const mockdata: Transaction = {
   requestId: '41fe99be-764d-455f-9df6-e27a40fe73d0',
   tenantId: 'fc47323e64bc4f69aceee96df92bf68f',
   admin: {
@@ -6,7 +9,7 @@ export const mockdata = {
     email: 'dog1094@email.com'
   },
   product: 'WIFI',
-  status: 'SUCCESS',
+  status: TxStatus.SUCCESS,
   descriptionTemplate: 'Network "@@networkName" was added',
   descriptionData: [
     {
@@ -33,7 +36,7 @@ export const mockdata = {
   steps: [
     {
       id: 'AddNetworkDeep',
-      status: 'SUCCESS',
+      status: TxStatus.SUCCESS,
       progressType: 'REQUEST',
       message: 'AddNetworkDeep',
       startDatetime: '2022-04-18 10:44:44 +0000',

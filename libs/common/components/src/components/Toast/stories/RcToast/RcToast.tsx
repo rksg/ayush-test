@@ -3,7 +3,13 @@ import { useState } from 'react'
 import { message } from 'antd'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { showTxToast, rcToastTemplate } from '@acx-ui/rc/utils'
+import {
+  showTxToast,
+  ToastMessage,
+  Transaction,
+  TxStatus,
+  CountdownNode
+} from '@acx-ui/rc/utils'
 
 import { showToast } from '../../index'
 
@@ -23,10 +29,10 @@ export function RcToast () {
 
 const SECONDS = 30
 
-const infoToast = (count:any, setCount:any) => {
+const infoToast = (count: number, setCount: Function) => {
   const TOAST_KEY = 'countdown_case'
-  const displayToast = (countdown:number, timeout:any) => {
-    const msg = {
+  const displayToast = (countdown: number, timeout: ReturnType<typeof setInterval>) => {
+    const msg: ToastMessage = {
       severity: 'info',
       summary: 'AP LEDs Blink ... ',
       life: 30 * 1000,
@@ -37,14 +43,14 @@ const infoToast = (count:any, setCount:any) => {
         countdown: true
       }
     }
-    showToast({ 
-      type: 'info',
+    showToast({
+      type: msg.severity,
+      content: msg.summary,
       key: TOAST_KEY,
-      content: rcToastTemplate(msg, countdown),
-      isCustomContent: true,
-      onClose: () => { 
+      extraContent: <CountdownNode n={countdown} />,
+      onClose: () => {
         setCount(countdown--)
-        clearInterval(timeout) 
+        clearInterval(timeout)
         countInterval = setInterval(() => {
           setCount(countdown--)
           if (countdown <= 0) {
@@ -52,12 +58,12 @@ const infoToast = (count:any, setCount:any) => {
             setCount(SECONDS)
           }
         }, 1000)
-      } 
+      }
     })
   }
   let countdown = count
-  let timeout:any
-  let countInterval:any
+  let timeout: ReturnType<typeof setInterval>
+  let countInterval: ReturnType<typeof setInterval>
   setTimeout(() => {
     displayToast(countdown, timeout)
     setCount(countdown--)
@@ -79,8 +85,8 @@ const successToast = () => {
 }
 
 const errorToast = () => {
-  const mockData = { ...mockdata, 
-    status: 'FAIL',
+  const mockData: Transaction = { ...mockdata,
+    status: TxStatus.FAIL,
     requestId: '456',
     descriptionTemplate: 'Network "@@networkName" was not added'
   }
