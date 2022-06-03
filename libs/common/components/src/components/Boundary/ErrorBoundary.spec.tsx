@@ -18,12 +18,19 @@ describe('ErrorBoundary', () => {
     const target = screen.getByTestId('target')
     expect(target).toHaveTextContent('OK')
   })
-  it('contain error thrown', async () => {
+  it('contain JSON error thrown', async () => {
     const { baseElement } = render(<ErrorBoundary>
       <ErrorThrowingComponent />
     </ErrorBoundary>)
     expect(baseElement).toHaveTextContent('Something went wrong')
     expect(baseElement).toHaveTextContent('{"message":"Error"}')
+  })
+  it('contain Error instance thrown', async () => {
+    const { baseElement } = render(<ErrorBoundary>
+      <ErrorThrowingComponent errorInstance />
+    </ErrorBoundary>)
+    expect(baseElement).toHaveTextContent('Something went wrong')
+    expect(baseElement).toHaveTextContent('Error: Error')
   })
   it('renders fallback', () => {
     const fallback = 'Custom Error Message'
@@ -34,7 +41,8 @@ describe('ErrorBoundary', () => {
   })
 })
 
-function ErrorThrowingComponent () {
+function ErrorThrowingComponent ({ errorInstance = false }) {
+  if (errorInstance) throw new Error('Error')
   throw { message: 'Error' }
   return <div />
 }
