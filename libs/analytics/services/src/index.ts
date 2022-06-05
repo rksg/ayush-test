@@ -14,6 +14,7 @@ export const dataApi = createApi({
     url: dataApiURL
   }),
   reducerPath: 'analytics-data-api',
+  refetchOnMountOrArgChange: true,
   tagTypes: ['Monitoring'],
   endpoints: () => ({ })
 })

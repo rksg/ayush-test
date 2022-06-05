@@ -2,72 +2,51 @@ import React from 'react'
 
 import { DashboardRow, DashboardCol } from '@acx-ui/components'
 
-const WiFiWidgets = React.lazy(() => import('rc-wifi/Widgets'))
+const WifiWidgets = React.lazy(() => import('rc-wifi/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
-
-function Placeholder ({
-  style,
-  children,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const styles = {
-    inner: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%'
-    } as React.CSSProperties,
-    outer: {
-      position: 'relative'
-    } as React.CSSProperties
-  }
-  return (
-    <div {...props} style={{ ...style, ...styles.outer }}>
-      <div style={styles.inner} children={children} />
-    </div>
-  )
-}
 
 export function Summary () {
   return (
     <DashboardRow gutter={[20, 20]}>
-      <DashboardCol col={{ span: 6 }}>
-        <WiFiWidgets name='dashboard/alarms' />
+
+      <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
+        <WifiWidgets name='alarms' />
       </DashboardCol>
-      <DashboardCol col={{ span: 6 }}>
-        <WiFiWidgets name='dashboard/incidents' />
+      <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
+        <AnalyticsWidgets name='incidents' />
       </DashboardCol>
-      <DashboardCol col={{ span: 12 }}>
-        <Placeholder style={{ paddingTop: '64.76%' }} children='SLA' />
+      <DashboardCol col={{ span: 12 }} style={{ height: '384px' }}>
+        <AnalyticsWidgets name='health' />
       </DashboardCol>
-      <DashboardCol col={{ span: 24 }}>
-        <Placeholder style={{ paddingTop: '37.47%' }} children='Map' />
+
+      <DashboardCol col={{ span: 6 }} style={{ height: '176px' }}>
+        <WifiWidgets name='venues' />
       </DashboardCol>
-      <DashboardCol col={{ span: 12 }}>
-        <AnalyticsWidgets name='monitoring/trafficByVolume'/>
+      <DashboardCol col={{ span: 10 }} style={{ height: '176px' }}>
+        <WifiWidgets name='devices' />
       </DashboardCol>
-      <DashboardCol col={{ span: 12 }}>
-        <Placeholder
-          style={{ paddingTop: '49.4661921708%' }}
-          children='Network History'
-        />
+      <DashboardCol col={{ span: 8 }} style={{ height: '176px' }}>
+        <WifiWidgets name='clients' />
       </DashboardCol>
-      <DashboardCol col={{ span: 12 }}>
-        <Placeholder
-          style={{ paddingTop: '49.4661921708%' }}
-          children='Traffic by Clients'
-        />
+
+      <DashboardCol col={{ span: 24 }} style={{ height: '428px' }}>
+        <WifiWidgets name='map' />
       </DashboardCol>
-      <DashboardCol col={{ span: 12 }}>
-        <Placeholder
-          style={{ paddingTop: '49.4661921708%' }}
-          children='Applications'
-        />
+
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='trafficByVolume' />
       </DashboardCol>
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='networkHistory' />
+      </DashboardCol>
+
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='connectedClientsOverTime' />
+      </DashboardCol>
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='topApplicationsByTraffic' />
+      </DashboardCol>
+
     </DashboardRow>
   )
 }

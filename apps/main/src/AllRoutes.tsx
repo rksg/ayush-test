@@ -6,7 +6,7 @@ import App              from './App'
 import monitoringRoutes from './App/Monitoring/routes'
 import NetworksBase     from './App/Networks'
 
-const WiFiRoutes = React.lazy(() => import('rc-wifi/Routes'))
+const WifiRoutes = React.lazy(() => import('rc-wifi/Routes'))
 
 function AllRoutes () {
   return (
@@ -15,7 +15,7 @@ function AllRoutes () {
         <Route index element={<TenantNavigate replace to='/monitoring' />} />
         {monitoringRoutes()}
         <Route path='networks/*' element={<NetworksBase />}>
-          <Route path='*' element={<WiFiRoutes />} />
+          <Route path='*' element={<WifiRoutes />} />
         </Route>
       </Route>
     </Routes>

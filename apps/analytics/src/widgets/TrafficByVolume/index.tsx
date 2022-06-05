@@ -4,6 +4,7 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { useGlobalFilter }                   from '@acx-ui/analytics/utils'
 import { Card }                              from '@acx-ui/components'
+import { Loader }                            from '@acx-ui/components'
 import { MultiLineTimeSeriesChart }          from '@acx-ui/components'
 import { cssStr }                            from '@acx-ui/components'
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/components'
@@ -13,7 +14,6 @@ import {
   useTrafficByVolumeQuery,
   TrafficByVolumeData
 } from './services'
-import * as UI from './styledComponents'
 
 const seriesMapping = [
   { key: 'totalTraffic_all', name: 'All Radios' },
@@ -40,27 +40,22 @@ export const getSeriesData = (data?: TrafficByVolumeData): MultiLineTimeSeriesCh
 
 function TrafficByVolumeWidget () {
   const filters = useGlobalFilter()
-  const { data, error, isLoading } = useTrafficByVolumeQuery(filters)
-
-  if (isLoading) return <div data-testid='loading'>loading</div>
-  if (error) return <div data-testid='error'>{JSON.stringify(error)}</div>
+  const queryResults = useTrafficByVolumeQuery(filters)
 
   return (
-    <Card
-      title={'Traffic by Volume'}
-    >
-      <UI.ChartWrapper>
+    <Loader states={[queryResults]}>
+      <Card title='Traffic by Volume' >
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart
               style={{ width, height }}
-              data={getSeriesData(data)}
+              data={getSeriesData(queryResults.data)}
               lineColors={lineColors}
             />
           )}
         </AutoSizer>
-      </UI.ChartWrapper>
-    </Card>
+      </Card>
+    </Loader>
   )
 }
 
