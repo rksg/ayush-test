@@ -31,7 +31,7 @@ export const Card = function Card ({ title, subTitle, tabs, ...props }: CardProp
     hasTabs: Boolean(tabs)
   }
   return (
-    <UI.Wrapper {...wrapperProps} data-testid='card'>
+    <UI.Wrapper {...wrapperProps}>
       <AntCard
         bordered={false}
         title={

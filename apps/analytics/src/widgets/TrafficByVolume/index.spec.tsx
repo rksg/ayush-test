@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 
-import { dataApiURL }      from '@acx-ui/analytics/services'
-import { Provider, store } from '@acx-ui/store'
-import { mockRTKQuery }    from '@acx-ui/test-utils'
+import { dataApiURL }                  from '@acx-ui/analytics/services'
+import { Provider, store }             from '@acx-ui/store'
+import { mockRTKQuery, mockAutoSizer } from '@acx-ui/test-utils'
 
 import { api, TrafficByVolumeData } from './services'
 
@@ -23,6 +23,8 @@ const sample = {
 }
 
 describe('TrafficByVolumeWidget', () => {
+  mockAutoSizer()
+
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )
@@ -42,9 +44,12 @@ describe('TrafficByVolumeWidget', () => {
         <TrafficByVolumeWidget/>
       </Provider>
     )
-    await screen.findByTestId('loading')
-    await screen.findByTestId('card')
-    expect(asFragment()).toMatchSnapshot()
+    await screen.findByText('Traffic by Volume')
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    fragment.querySelector('div[_echarts_instance_^="ec_"]')
+      ?.setAttribute('_echarts_instance_', 'ec_mock')
+    expect(fragment).toMatchSnapshot()
   })
   it('should render error', async () => {
     mockRTKQuery(dataApiURL, 'widget_trafficByVolume', {
@@ -55,8 +60,7 @@ describe('TrafficByVolumeWidget', () => {
         <TrafficByVolumeWidget/>
       </Provider>
     )
-    await screen.findByTestId('loading')
-    await screen.findByTestId('error')
+    await screen.findByText('Something went wrong.')
   })
 })
 
