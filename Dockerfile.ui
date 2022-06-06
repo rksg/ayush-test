@@ -1,4 +1,4 @@
-FROM node:14.19.1-alpine as build
+FROM node:14.19.1-alpine as build-base
 
 WORKDIR /app
 
@@ -21,13 +21,16 @@ COPY .storybook ./.storybook
 COPY apps ./apps
 COPY libs ./libs
 
-RUN npx nx run-many --target=build --all
+###############################################################
+
+FROM build-base as acx-ui
+RUN npx nx run-many --target=lint --all --verbose
+RUN npx nx run-many --target=test --all --coverage --runInBand
 
 ###############################################################
 
-FROM build as ui-app
-RUN npx nx run-many --target=lint --all --verbose
-RUN npx nx run-many --target=test --all --coverage --runInBand
+FROM acx-ui as build
+RUN npx nx run-many --target=build --all
 
 ###############################################################
 
