@@ -32,6 +32,7 @@ function PageHeader (props: PageHeaderProps) {
           }
         </Breadcrumb.Item>
       })}
+      <Breadcrumb.Item key='last'>&nbsp;</Breadcrumb.Item>
     </Breadcrumb>
   }
   return <UI.Wrapper>

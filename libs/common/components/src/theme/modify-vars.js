@@ -15,10 +15,10 @@ module.exports = {
   '@border-radius-base': '4px',
 
   '@breadcrumb-base-color': 'var(--acx-primary-black)',
-  '@breadcrumb-last-item-color': 'var(--acx-accents-orange-60)',
+  '@breadcrumb-last-item-color': 'var(--acx-primary-black)',
   '@breadcrumb-font-size': 'var(--acx-body-4-font-size)',
-  '@breadcrumb-link-color': 'var(--acx-primary-black)',
-  '@breadcrumb-link-color-hover': 'var(--acx-accents-orange-50)',
+  '@breadcrumb-link-color': 'var(--acx-accents-orange-50)',
+  '@breadcrumb-link-color-hover': 'var(--acx-accents-orange-60)',
   '@breadcrumb-separator-color': 'var(--acx-primary-black)',
   '@breadcrumb-separator-margin': '0 5px',
 

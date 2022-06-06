@@ -12,8 +12,7 @@ export function WithTabs () {
     <PageHeader
       title='With Tabs'
       breadcrumb={[
-        { text: 'Networks', link: '/networks' },
-        { text: 'Network Details' }
+        { text: 'Networks', link: '/networks' }
       ]}
       extra={[
         <Button key='1' type='primary'>Add...</Button>,
