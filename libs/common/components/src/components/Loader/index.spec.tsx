@@ -21,7 +21,7 @@ describe('Loader', () => {
       <div data-testid='target'>OK</div>
     </Loader>)
 
-    expect(screen.getByLabelText('loading')).toBeVisible()
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     expect(screen.queryByTestId('target')).toBeNull()
   })
   it('renders fallback & children when isFetching=true', async () => {
@@ -30,7 +30,7 @@ describe('Loader', () => {
       <div data-testid='target'>OK</div>
     </Loader>)
 
-    expect(screen.getByLabelText('loading')).toBeVisible()
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     expect(screen.getByTestId('target')).toBeVisible()
   })
   it('renders error when error is not null', async () => {

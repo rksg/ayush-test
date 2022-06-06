@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react'
 
-import { LoadingOutlined } from '@ant-design/icons'
-import { Spin }            from 'antd'
+import { Spin } from 'antd'
 
 import { ErrorBoundary } from './ErrorBoundary'
 
@@ -24,5 +23,7 @@ export function SuspenseBoundary (props: SuspenseBoundaryProps) {
 }
 
 SuspenseBoundary.DefaultFallback = function DefaultSuspenseFallback () {
-  return <Spin size='large' indicator={<LoadingOutlined />} />
+  return <span role='img' aria-label='loader'>
+    <Spin size='large' />
+  </span>
 }
