@@ -2,10 +2,17 @@ import React, { useEffect, useState } from 'react'
 
 import { Form, Switch } from 'antd'
 
-import { StepsForm, Table, Loader } from '@acx-ui/components'
-import { useVenueListQuery }        from '@acx-ui/rc/services'
+import {
+  Loader,
+  StepFormProps,
+  StepsForm,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import { useVenueListQuery, Venue } from '@acx-ui/rc/services'
 import { useTableQuery }            from '@acx-ui/rc/utils'
-import { useParams }                from '@acx-ui/react-router-dom'
+
+import { CreateNetworkFormFields } from '../interface'
 
 import TableButtonBar from './TableButtonBar'
 
@@ -33,7 +40,7 @@ const defaultPayload = {
   ]
 }
 
-const defaultArray: any[] = []
+const defaultArray: Venue[] = []
 
 const getNetworkId = () => {
   //  Identify tenantId in browser URL
@@ -45,35 +52,31 @@ const getNetworkId = () => {
   return 'UNKNOWN-NETWORK-ID'
 }
 
-export function Venues (props: any) {
-  const params = useParams()
-  const tableQuery = useTableQuery({ api: useVenueListQuery,
-    apiParams: { ...params, networkId: getNetworkId() },
+export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
+  const tableQuery = useTableQuery({
+    useQuery: useVenueListQuery,
+    apiParams: { networkId: getNetworkId() },
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)
 
   const handleSelectedRows = () => {
-    function handleVenueSaveData (selectedRows: any[]) {
+    function handleVenueSaveData (selectedRows: Venue[]) {
       const defaultSetup = {
         apGroups: [],
         scheduler: { type: 'ALWAYS_ON' },
         isAllApGroups: true,
         allApGroupsRadio: 'Both'
       }
-      const selected: React.SetStateAction<any[]> = []
-      selectedRows.forEach((row) => {
-        const tmp = {
-          ...defaultSetup,
-          venueId: row.id,
-          name: row.name
-        }
-        selected.push(tmp)
-      })
-      props.formRef.current.setFieldsValue({ venues: selected })
+      const selected = selectedRows.map((row) => ({
+        ...defaultSetup,
+        venueId: row.id,
+        name: row.name
+      }))
+      props.formRef?.current?.setFieldsValue({ venues: selected })
     }
 
-    function handleActivatedButton (rows: any) {
+    function handleActivatedButton (rows: Venue[]) {
       setTableData((prevData) => {
         const tmp = [...prevData]
         tmp.forEach((item) => {
@@ -93,15 +96,16 @@ export function Venues (props: any) {
   useEffect(handleSelectedRows, [tableQuery.selectedRowsData, props.formRef])
   useEffect(()=>{
     if (tableQuery.data) {
-      const source = JSON.parse(JSON.stringify(tableQuery.data.data))
-      source.forEach((item: any) => { // for toogle button
-        item.activated = { isActivated: false }
-      })
-      setTableData(source)
+      const data = tableQuery.data.data.map(item => ({
+        ...item,
+        // work around of read-only records from RTKQ
+        activated: { ...item.activated }
+      }))
+      setTableData(data)
     }
   }, [tableQuery.data])
 
-  const columns = [
+  const columns: TableProps<Venue>['columns'] = [
     {
       title: 'Venue',
       dataIndex: 'name',
@@ -120,14 +124,14 @@ export function Venues (props: any) {
     {
       title: 'Networks',
       dataIndex: 'networks',
-      render: function (data: any) {
+      render: function (data) {
         return data ? data.count : 0
       }
     },
     {
       title: 'Wi-Fi APs',
       dataIndex: 'aggregatedApStatus',
-      render: function (data: any) {
+      render: function (data) {
         if (data) {
           let sum = 0
           Object.keys(data).forEach((key) => {
@@ -141,7 +145,7 @@ export function Venues (props: any) {
     {
       title: 'Activated',
       dataIndex: 'activated',
-      render: function (data: any) {
+      render: function (data) {
         return <Switch checked={data.isActivated} disabled={true} />
       }
     },
@@ -149,7 +153,7 @@ export function Venues (props: any) {
       title: 'APs',
       dataIndex: 'aps',
       width: '80px',
-      render: function (data: any, row: any) {
+      render: function (data, row) {
         return row.activated.isActivated ? 'All APs' : ''
       }
     },
@@ -157,14 +161,14 @@ export function Venues (props: any) {
       title: 'Radios',
       dataIndex: 'radios',
       width: '140px',
-      render: function (data: any, row: any) {
+      render: function (data, row) {
         return row.activated.isActivated ? '2.4 GHz / 5 GHz' : ''
       }
     },
     {
       title: 'Scheduling',
       dataIndex: 'scheduling',
-      render: function (data: any, row: any) {
+      render: function (data, row) {
         return row.activated.isActivated ? '24/7' : ''
       }
     }
