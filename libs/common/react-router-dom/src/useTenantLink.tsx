@@ -1,6 +1,8 @@
 import _                          from 'lodash'
 import { useParams, resolvePath } from 'react-router-dom'
 
+import { useBasePath } from './helpers'
+
 import type { Path, To } from 'react-router-dom'
 
 /**
@@ -12,5 +14,5 @@ export function useTenantLink (to: To) {
     ? { pathname: to }
     : { ...to }
   path.pathname = _.trim(path.pathname, '/')
-  return resolvePath(path, `/t/${tenantId}`)
+  return resolvePath(path, `${useBasePath()}/t/${tenantId}`)
 }
