@@ -34,13 +34,7 @@ const infoToast = (count: number, setCount: Function) => {
   const displayToast = (countdown: number, timeout: ReturnType<typeof setInterval>) => {
     const msg: ToastMessage = {
       severity: 'info',
-      summary: 'AP LEDs Blink ... ',
-      life: 30 * 1000,
-      sticky: false,
-      closable: false,
-      data: {
-        apSerialNumber: 1234
-      }
+      summary: 'AP LEDs Blink ... '
     }
     showToast({
       type: msg.severity,

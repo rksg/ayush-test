@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { LoadingOutlined } from '@ant-design/icons'
 import * as _              from 'lodash'
+import { generatePath }    from 'react-router-dom'
 import styled              from 'styled-components/macro'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
@@ -57,26 +58,23 @@ export interface Transaction {
   useCase: string
 }
 
+type QueryParams = { tabView: string } | null
 export interface ToastMessage {
   severity: ToastType
   summary: string
   detail?: string
-  life?: number
-  sticky?: boolean
-  closable?: boolean
   data?: {
     link?: string | null
     isSwitchConfig?: boolean
-    queryParams?: { tabView: string } | null
-    tooltip?: string
-    apSerialNumber?: number
+    queryParams?: QueryParams
   }
 }
 
 const TX_MAX_NAME_LENGTH = 45
 
-const routeToPage = (link: string) => {
-  window.location.href = link
+const routeToPage = (link: string, queryParams: QueryParams) => {
+  const url = queryParams ? generatePath(link, queryParams) : link
+  window.location.href = url
 }
 
 const showDetails = () => {
@@ -119,14 +117,12 @@ export const CountdownNode = (props: { n: number }) => (
 )
 
 export const showTxToast = (tx: Transaction) => {
-  let tooltip
   if (tx.attributes && tx.attributes.name) {
     // calculate max_name_length
     const fullLength = getToastMessage(tx).length
     const msgLength = fullLength - tx.attributes.name.length - 3 // rest another 3 characters for the 3 points
     if (fullLength > TX_MAX_NAME_LENGTH) {
       const MAX_NAME_LENGTH = TX_MAX_NAME_LENGTH - msgLength
-      tooltip = tx.attributes.name
       tx.attributes.name = (tx.attributes.name).substring(0, MAX_NAME_LENGTH) + '...'
     }
   }
@@ -138,8 +134,7 @@ export const showTxToast = (tx: Transaction) => {
         summary: getToastMessage(tx),
         data: {
           link: getRouterLink(tx),
-          queryParams: getTabViewParams(tx),
-          tooltip: tooltip
+          queryParams: getTabViewParams(tx)
         }
       }
       break
@@ -148,10 +143,7 @@ export const showTxToast = (tx: Transaction) => {
       msg = {
         severity: 'error',
         summary: getToastMessage(tx),
-        detail: JSON.stringify({ requestId: tx.requestId, error: tx.error }, undefined, 2),
-        data: {
-          tooltip: tooltip
-        }
+        detail: JSON.stringify({ requestId: tx.requestId, error: tx.error }, undefined, 2)
       }
       break
     }
@@ -164,12 +156,7 @@ export const showTxToast = (tx: Transaction) => {
     type: msg.severity,
     content: msg.summary
   }
-  if (msg.severity !== 'error' as ToastType) {
-    config = {
-      ...config,
-      extraContent: <p>{msg.detail}</p>
-    }
-  } else {
+  if (msg.severity === 'error' as ToastType) {
     config = {
       ...config,
       link: { onClick: () => showDetails() }
@@ -179,7 +166,7 @@ export const showTxToast = (tx: Transaction) => {
     config = {
       ...config,
       link: {
-        onClick: () => routeToPage(msg.data?.link as string),
+        onClick: () => routeToPage(msg.data?.link as string, msg.data?.queryParams as QueryParams),
         text: msg.data.isSwitchConfig ? 'Check Status' : undefined
       }
     }
