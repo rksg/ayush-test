@@ -29,7 +29,7 @@ export function AlarmsHeaderButton () {
 
   const getCount = function () {
     if (data?.summary?.alarms?.totalCount) {
-      const clearedAlarms = data.summary.alarms.summary?.clear || 0;
+      const clearedAlarms = data.summary.alarms.summary?.clear || 0
       return data.summary.alarms.totalCount - clearedAlarms
     } else {
       return 0
