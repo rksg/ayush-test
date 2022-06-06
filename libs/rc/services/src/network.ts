@@ -1,9 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { message }                   from 'antd'
 
-import { CommonUrlsInfo, createHttpRequest, onSocketActivityChanged } from '@acx-ui/rc/utils'
+import {
+  CommonUrlsInfo,
+  createHttpRequest,
+  onSocketActivityChanged,
+  RequestPayload,
+  TableResult
+} from '@acx-ui/rc/utils'
 
-import { RequestPayload } from './types'
+import { Network, Venue } from './types'
 
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -15,7 +21,7 @@ export const baseNetworkApi = createApi({
 
 export const networkApi = baseNetworkApi.injectEndpoints({
   endpoints: (build) => ({
-    networkList: build.query<any, RequestPayload>({
+    networkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
         const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList, params)
         return {
@@ -45,20 +51,35 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: ['Network']
     }),
-    venueList: build.query<any, RequestPayload>({
+    venueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
         const venueListReq = createHttpRequest(CommonUrlsInfo.getNetworksVenuesList, params)
         return{
           ...venueListReq,
           body: payload
         }
+      },
+      transformResponse (result: TableResult<Venue>) {
+        result.data = result.data.map(item => ({
+          ...item,
+          activated: item.activated ?? { isActivated: false }
+        }))
+        return result
+      }
+    }),
+    dashboardOverview: build.query<any, RequestPayload>({
+      query: ({ params }) => {
+        const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
+        return{
+          ...dashboardOverviewReq
+        }
       }
     })
   })
 })
-
 export const {
   useNetworkListQuery,
   useCreateNetworkMutation,
-  useVenueListQuery
+  useVenueListQuery,
+  useDashboardOverviewQuery
 } = networkApi

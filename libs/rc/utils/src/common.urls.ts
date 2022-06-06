@@ -21,5 +21,17 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getCloudpathList: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/cloudpath'
+  },
+  getDashboardOverview: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/dashboard/overview/'
+  },
+  getAlarmsList: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/alarm/alarmlist'
+  },
+  getAlarmsListMeta: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/alarm/meta'
   }
 }

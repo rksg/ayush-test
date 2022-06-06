@@ -7,5 +7,5 @@ data:
     service:
       configmaps:
       - configmap: configmap-acx-ui
-        key: documentation
-        name: DOCUMENTATION
+        key: google.maps.key
+        name: GOOGLE_MAPS_KEY

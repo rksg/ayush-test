@@ -64,6 +64,8 @@ module.exports = {
   '@menu-dark-color': 'var(--acx-primary-white)',
   '@menu-dark-item-active-bg': 'var(--acx-neutrals-70)',
 
+  '@message-notice-content-padding': '10px 24px',
+
   '@page-header-tabs-tab-font-size': 'var(--acx-headline-4-font-size)',
 
   '@primary-color-active': 'var(--acx-neutrals-50)',

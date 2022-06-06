@@ -1,9 +1,12 @@
-import { useContext, useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 
 import {
   UNSAFE_RouteContext as RouteContext,
-  Routes
+  Routes,
+  Route
 } from 'react-router-dom'
+
+import { getBasePath } from './helpers'
 
 import type { RoutesProps } from 'react-router-dom'
 
@@ -21,4 +24,10 @@ export function RootRoutes (props: RoutesProps) {
   return <RouteContext.Provider value={value}>
     <Routes {...props}/>
   </RouteContext.Provider>
+}
+
+export function rootRoutes (routes: React.ReactNode) {
+  return <RootRoutes>
+    <Route path={getBasePath()} children={routes} />
+  </RootRoutes>
 }
