@@ -1,10 +1,11 @@
 import React from 'react'
 
-import { Button, Tabs } from 'antd'
+import { Tabs } from 'antd'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
 import { PageHeader } from '..'
+import { Button }     from '../../Button'
 
 export function WithTabs () {
   return <BrowserRouter>
@@ -15,7 +16,7 @@ export function WithTabs () {
         { text: 'Network Details' }
       ]}
       extra={[
-        <Button key='1'>Edit Network</Button>,
+        <Button key='1' type='primary'>Add...</Button>,
         <Button key='2'>Another Button</Button>
       ]}
       footer={

@@ -1,11 +1,47 @@
 import React from 'react'
 
-import { DashboardRow, DashboardCol } from '@acx-ui/components'
+import { GlobalFilterProvider } from '@acx-ui/analytics/utils'
+import {
+  Button,
+  DashboardRow,
+  DashboardCol,
+  PageHeader
+} from '@acx-ui/components'
+import {
+  ArrowExpand,
+  ClockOutlined,
+  DownloadOutlined,
+  BulbOutlined
+} from '@acx-ui/icons'
 
 const WifiWidgets = React.lazy(() => import('rc-wifi/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
-export function Summary () {
+export default function Dashboard () {
+  return (
+    <GlobalFilterProvider>
+      <DashboardPageHeader />
+      <DashboardWidgets />
+    </GlobalFilterProvider>
+  )
+}
+
+function DashboardPageHeader () {
+  return (
+    <PageHeader
+      title='Dashboard'
+      extra={[
+        <Button key='add' type='primary'>Add...</Button>,
+        <Button key='hierarchy'>Entire Organization <ArrowExpand /></Button>,
+        <Button key='date' icon={<ClockOutlined />}>Last 24 Hours</Button>,
+        <Button key='download' icon={<DownloadOutlined />} />,
+        <Button key='insight' icon={<BulbOutlined />} />
+      ]}
+    />
+  )
+}
+
+function DashboardWidgets () {
   return (
     <DashboardRow gutter={[20, 20]}>
 

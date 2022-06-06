@@ -1,9 +1,8 @@
-import { Button }    from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
 import styled        from 'styled-components/macro'
 
-import { PageHeader, Table, Loader } from '@acx-ui/components'
-import { useNetworkListQuery }       from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, Loader } from '@acx-ui/components'
+import { useNetworkListQuery }               from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
@@ -196,17 +195,11 @@ export function NetworksTable () {
     <>
       <PageHeader
         title='Networks'
-        footer={
-          <PageHeader.FooterWithDivider
-            extra={[
-              <TenantLink to='/networks/create'>
-                <Button>Add Network</Button>
-              </TenantLink>
-            ]}
-          >
-            <div />
-          </PageHeader.FooterWithDivider>
-        }
+        extra={[
+          <TenantLink to='/networks/create'>
+            <Button type='primary'>Add Wi-Fi Network</Button>
+          </TenantLink>
+        ]}
       />
       <NetworksTable />
     </>

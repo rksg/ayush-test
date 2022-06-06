@@ -9,8 +9,8 @@ const genPlaceholder = () => ({
 
 const config = [
   {
-    path: '/monitoring',
-    name: 'Monitoring',
+    path: '/dashboard',
+    name: 'Dashboard',
     disableIcon: UI.SpeedIndicatorIcon,
     enableIcon: UI.EnabledSpeedIndicatorIcon
   },

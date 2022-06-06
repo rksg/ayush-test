@@ -25,6 +25,7 @@ module.exports = {
   '@btn-default-border': 'var(--acx-primary-black)',
   '@btn-font-size-lg': '16px', // var(--acx-body-2-font-size)
   '@btn-font-size-sm': '12px', // var(--acx-body-3-font-size)
+  '@btn-primary-bg': 'var(--acx-primary-black)',
 
   '@card-background': 'var(--acx-primary-white)',
 

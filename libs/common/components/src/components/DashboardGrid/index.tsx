@@ -1,18 +1,14 @@
 import React from 'react'
 
-import {
-  Row as AntRow,
-  Col as AntCol
-} from 'antd'
-import styled from 'styled-components/macro'
+import { Col as AntCol } from 'antd'
+import styled            from 'styled-components/macro'
 
 import type { ColProps as AntColProps } from 'antd'
 
-export { RowProps as DashboardRowProps } from 'antd'
-
-export const DashboardRow = styled(AntRow)`
-  margin-top: 20px;
-`
+export {
+  Row as DashboardRow,
+  RowProps as DashboardRowProps
+} from 'antd'
 
 const ColInner = styled(AntCol)`
   // Appear in flex so allowed its children to
