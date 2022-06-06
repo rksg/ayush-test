@@ -1,0 +1,253 @@
+import moment from 'moment-timezone'
+
+import { formatter } from './formatter'
+
+function testFormat (
+  format: string,
+  values: Record<string | number | symbol, string>,
+  tz?: string
+) {
+  for (const [key, value] of Object.entries(values)) {
+    expect(formatter(format)(parseFloat(key), tz)).toBe(value)
+  }
+}
+describe('formatter', () => {
+  it('Should take care of null values correctly', () => {
+    expect(formatter()(null)).toBe(null)
+  })
+  it('Should default to countFormat', () => {
+    expect(formatter()(123.456789)).toBe('123')
+  })
+  it('percentFormat', () => testFormat('percentFormat', {
+    0.12: '12%',
+    0.123: '12.3%',
+    0.1235: '12.35%',
+    0.12359: '12.36%',
+    0.12999: '13%'
+  }))
+  it('percentFormatWithoutScalingBy100', () => testFormat('percentFormatWithoutScalingBy100', {
+    0.12: '0.12%',
+    0.123: '0.12%',
+    0.1235: '0.12%',
+    0.12359: '0.12%',
+    0.12999: '0.13%'
+  }))
+  it('percentFormatNoSign', () => testFormat('percentFormatNoSign', {
+    0.12: '12',
+    0.123: '12.3',
+    0.1235: '12.35',
+    0.12359: '12.36',
+    0.12999: '13'
+  }))
+  it('percentFormatRound', () => testFormat('percentFormatRound', {
+    0.12: '12%',
+    0.124: '12%',
+    0.126: '13%',
+    0.1244: '12%',
+    0.1266: '13%'
+  }))
+  it('countFormat', () => {
+    testFormat('countFormat', {
+      '-0': '0',
+      '0': '0',
+      '0.456': '0',
+      '1.50': '2',
+      '-1.50': '-1'
+    })
+    const positive = {
+      '1': '1',
+      '12': '12',
+      '123': '123',
+      '1234': '1.23 k',
+      '12345': '12.3 k',
+      '12344': '12.3 k',
+      '123456': '123 k',
+      '1234567': '1.23 m',
+      '12345678': '12.3 m',
+      '123000000000': '123 b',
+      '123000000000000': '123 t',
+      '123000000000000000': '123000 t',
+      '123.456789': '123',
+      '1.00': '1',
+      '1500': '1.5 k',
+      '2000': '2 k'
+    }
+    const negative = Object.entries(positive).reduce((agg, [key, value])=>{
+      agg[-key] = '-' + value
+      return agg
+    },{} as Record<string|number, string>)
+    testFormat('countFormat', positive)
+    testFormat('countFormat', negative)
+  })
+  it('countWithCommas', () => {
+    testFormat('countWithCommas', {
+      '-0': '0',
+      '0': '0',
+      '0.456': '0',
+      '1.50': '2',
+      '-1.50': '-1'
+    })
+    const positive = {
+      '1': '1',
+      '12': '12',
+      '123': '123',
+      '1234': '1,234',
+      '12345': '12,345',
+      '12344': '12,344',
+      '123456': '123,456',
+      '1234567': '1,234,567',
+      '12345678': '12,345,678',
+      '123000000000': '123,000,000,000',
+      '123000000000000': '123,000,000,000,000',
+      '123.456789': '123',
+      '1.00': '1',
+      '1500': '1,500',
+      '2000': '2,000'
+    }
+    const negative = Object.entries(positive).reduce((agg, [key, value])=>{
+      agg[-key] = '-' + value
+      return agg
+    },{} as Record<string|number, string>)
+    testFormat('countWithCommas', positive)
+    testFormat('countWithCommas', negative)
+  })
+  it('decibelFormat', () => testFormat('decibelFormat', {
+    '7.131': '7 dB',
+    '20': '20 dB',
+    '-77': '-77 dB',
+    '-105.011': '-105 dB'
+  }))
+  it('decibelMilliWattsFormat', () => testFormat('decibelMilliWattsFormat', {
+    '-77': '-77 dBm',
+    '-105.011': '-105 dBm'
+  }))
+  it('bytesFormat', () => testFormat('bytesFormat', {
+    7.131: '7.13 B',
+    123456: '121 KB',
+    1000000000: '954 MB',
+    26784000000: '24.9 GB',
+    12345: '12.1 KB',
+    123456789: '118 MB',
+    123000000000: '115 GB',
+    123000000000000: '112 TB',
+    123000000000000000: '109 PB',
+    123000000000000000000: '107 EB',
+    1025: '1 KB',
+    1024: '1 KB',
+    1023: '1020 B'
+  }))
+  it('networkSpeedFormat', () => testFormat('networkSpeedFormat', {
+    7.131: '7.13 Kbps',
+    123456: '121 Mbps',
+    1000000000: '954 Gbps',
+    26784000000: '24.9 Tbps',
+    12345: '12.1 Mbps',
+    123456789: '118 Gbps',
+    123000000000: '115 Tbps',
+    123000000000000: '112 Pbps',
+    123000000000000000: '109 Ebps',
+    123000000000000000000: '107 Zbps',
+    1025: '1 Mbps',
+    1024: '1 Mbps',
+    1023: '1020 Kbps'
+  }))
+  it('radioFormat', () => testFormat('radioFormat', {
+    2.4: '2.4 GHz',
+    5: '5 GHz'
+  }))
+  it('floatFormat', () => testFormat('floatFormat', {
+    0.05: '0.05',
+    0.0600: '0.06',
+    0.0504: '0.05',
+    0.0506: '0.051',
+    0.05004: '0.05',
+    0.05006: '0.05'
+  }))
+  it('enabledFormat', () => {
+    expect(formatter('enabledFormat')(true)).toEqual('Enabled')
+    expect(formatter('enabledFormat')(false)).toEqual('Disabled')
+  })
+  it('noFormat', () => {
+    expect(formatter('noFormat')(1)).toBe(1)
+  })
+  it('ratioFormat', () => {
+    expect(formatter('ratioFormat')([1, 2])).toBe('1 / 2')
+    expect(formatter('ratioFormat')([2, 2])).toBe('2 / 2')
+  })
+  describe('txFormat', () => {
+    it('should return same value if not in txpowerMapping', () => {
+      expect(formatter('txFormat')('MIN')).toBe('MIN')
+    })
+    it('should format values as per mapping', () => {
+      expect(formatter('txFormat')('_FULL')).toBe('Full')
+      expect(formatter('txFormat')('_1DB')).toBe('-1dB')
+      expect(formatter('txFormat')('_6DB')).toBe('-6dB(1/4)')
+      expect(formatter('txFormat')('_MIN')).toBe('Min')
+    })
+  })
+  describe('durationFormat', () => {
+    it('format durations', () =>
+      testFormat('durationFormat', {
+        0: '0',
+        2: '2ms',
+        2.54: '2.54ms',
+        2.54999: '2.55ms',
+        41: '41ms',
+        123: '123ms',
+        1000: '1s',
+        1234: '1.23s',
+        1600: '1.6s',
+        7000: '7s',
+        57111: '57.1s',
+        [60000 * 21]: '21m',
+        [60000 * 61]: '1h 1m',
+        [3600000 * 1]: '1h',
+        [3600000 * 23]: '23h',
+        [3600000 * 20 + 1000 * 37]: '20h', // seconds are not significant here
+        [3600000 * 20 + 60000 * 37]: '20h 37m',
+        86400000: '1d',
+        [86400000 * 8]: '8d',
+        [86400000 + 3600000 * 3 + 60000 * 4]: '1d 3h', // only 2 significant
+        2678400000: '1mo',
+        [2678400000 + 86400000 * 4]: '1mo 4d',
+        31622400000: '1y',
+        [31622400000 + 2678400000 * 8 + 86400000 * 4]: '1y 8mo',
+        [31622400000 + 2678400000 * 13]: '2y 1mo'
+      }))
+  })
+  describe('dateTimeFormats', () => {
+    it('Should format a timestamp to MMM DD YYYY', () => {
+      expect(formatter('dateFormat')(1456885800000))
+        .toBe(moment(1456885800000).format('MMM DD YYYY'))
+    })
+    it('Should format a timestamp to HH:mm', () => {
+      expect(formatter('timeFormat')(1456885800000))
+        .toBe(moment(1456885800000).format('HH:mm'))
+    })
+    it('Should format a timestamp to HH:mm:ss', () => {
+      expect(formatter('secondFormat')(1456885800000))
+        .toBe(moment(1456885800000).format('HH:mm:ss'))
+    })
+    it('Should format a timestamp to MMM DD YYYY HH:mm', () => {
+      expect(formatter('dateTimeFormat')(1456885800000))
+        .toBe(moment(1456885800000).format('MMM DD YYYY HH:mm'))
+    })
+    it('Should format a timestamp to MMM DD YYYY HH:mm:ss', () => {
+      expect(formatter('dateTimeFormatWithSeconds')(1456885800000))
+        .toBe(moment(1456885800000).format('MMM DD YYYY HH:mm:ss'))
+    })
+    it('Should format a timestamp to MMM DD', () => {
+      expect(formatter('monthDateFormat')(1456885800000))
+        .toBe(moment(1456885800000).format('MMM DD'))
+    })
+    it('Should format a timestamp to HH', () => {
+      expect(formatter('hourFormat')(1456885800000))
+        .toBe(moment(1456885800000).format('HH'))
+    })
+    it('With tz', () => {
+      expect(formatter('dateTimeFormatWithSeconds')(1456885800000, 'America/Los_Angeles'))
+        .toBe(moment(1456885800000).tz('America/Los_Angeles')
+          .format('MMM DD YYYY HH:mm:ss Z').replace('+00:00', 'UTC'))
+    })
+  })
+})

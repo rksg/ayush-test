@@ -6,7 +6,6 @@ import {
 } from '@ant-design/icons'
 import { Space } from 'antd'
 import {
-  Button,
   Col,
   Form,
   Input,
@@ -17,7 +16,7 @@ import {
   Typography
 } from 'antd'
 
-import { StepsForm }             from '@acx-ui/components'
+import { StepsForm, Button }     from '@acx-ui/components'
 import { useCloudpathListQuery } from '@acx-ui/rc/services'
 import { WlanSecurityEnum }      from '@acx-ui/rc/utils'
 

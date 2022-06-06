@@ -17,6 +17,9 @@ const ColInner = styled(AntCol)`
 `
 
 const WidgetContainer = styled.div`
+  // Appear in flex to take up full height
+  display: flex;
+  flex-direction: column;
   // Set flex to 1 for it to take up full width
   flex: 1;
 `

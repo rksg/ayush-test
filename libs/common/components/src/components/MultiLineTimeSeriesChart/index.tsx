@@ -5,7 +5,9 @@ import { cssStr } from '../../theme/helper'
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
 
-interface ChartData extends Object {
+type TimeStamp = string | number
+
+export interface MultiLineTimeSeriesChartData extends Object {
   /**
    * Multi dimensional array which first item is timestamp and 2nd item is value
    * @example
@@ -14,26 +16,27 @@ interface ChartData extends Object {
    *   [1603987200000, 76]
    * ]
    */
-  data: number[][]
+  data: [TimeStamp, number][]
 }
 
 export interface MultiLineTimeSeriesChartProps
-  <TChartData extends ChartData>
+  <TChartData extends MultiLineTimeSeriesChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[]
     /** @default 'name' */
-    legendProp?: keyof TChartData
+    legendProp?: keyof TChartData,
+    lineColors?: string[]
   }
 
 export function MultiLineTimeSeriesChart
-  <TChartData extends ChartData = { name: string, data: number[][] }>
+  <TChartData extends MultiLineTimeSeriesChartData = { name: string, data: [TimeStamp, number][] }>
 ({
   data,
   legendProp = 'name' as keyof TChartData,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData>) {
   const option: EChartsOption = {
-    color: [
+    color: props.lineColors || [
       cssStr('--acx-accents-blue-70'),
       cssStr('--acx-semantics-green-40'),
       cssStr('--acx-primary-black')

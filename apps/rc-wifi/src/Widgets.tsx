@@ -2,7 +2,7 @@ import { Card }     from '@acx-ui/components'
 import { Provider } from '@acx-ui/store'
 
 const widgetsMap = {
-  'dashboard/alarms': () => <Card>Alarms</Card>
+  alarms: () => <Card title='Alarms' />
 }
 
 function WifiWidgets ({ name }: { name: keyof typeof widgetsMap }) {

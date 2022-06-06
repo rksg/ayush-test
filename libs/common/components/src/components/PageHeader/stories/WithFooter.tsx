@@ -1,9 +1,10 @@
 import React from 'react'
 
 import { SearchOutlined } from '@ant-design/icons'
-import { Button, Input }  from 'antd'
+import { Input }          from 'antd'
 
 import { PageHeader } from '..'
+import { Button }     from '../../Button'
 
 export function WithFooter () {
   return <PageHeader

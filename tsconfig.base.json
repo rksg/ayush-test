@@ -15,6 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@acx-ui/analytics/services": ["libs/analytics/services/src/index.ts"],
+      "@acx-ui/analytics/utils": ["libs/analytics/utils/src/index.ts"],
       "@acx-ui/types": ["libs/common/types/src/index.ts"],
       "@acx-ui/components": ["libs/common/components/src/index.ts"],
       "@acx-ui/icons": ["libs/common/icons/src/index.ts"],
@@ -22,7 +24,9 @@
       "@acx-ui/rc/utils": ["libs/rc/utils/src/index.ts"],
       "@acx-ui/react-router-dom": ["libs/common/react-router-dom/src/index.ts"],
       "@acx-ui/store": ["libs/common/store/src/index.ts"],
-      "@acx-ui/theme": ["libs/common/components/src/theme/index.less"]
+      "@acx-ui/test-utils": ["libs/common/test-utils/src/index.ts"],
+      "@acx-ui/theme": ["libs/common/components/src/theme/index.less"],
+      "@acx-ui/utils": ["libs/common/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

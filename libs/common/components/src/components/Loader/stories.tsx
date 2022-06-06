@@ -13,9 +13,9 @@ const contents = <>
 </>
 
 storiesOf('Loader', module)
-  .add('isLoading', () => <Loader
+  .add('isLoading', () => <div style={{ height: '150px', display: 'flex' }}><Loader
     states={[{ isLoading: true }]}
-    children={contents} />)
+    children={contents} /></div>)
   .add('isFetching', () => <Loader
     states={[{ isLoading: false, isFetching: true }]}
     children={contents} />)
