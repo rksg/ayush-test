@@ -8,15 +8,21 @@ export const Wrapper = styled.div`
 
   .ant-page-header {
     padding: 0;
-    .ant-breadcrumb + .ant-page-header-heading {
-      margin-top: 6px;
-    }
     &-heading {
       h1 {
         margin-bottom: 0;
       }
       &-left, &-title {
         overflow: visible;
+      }
+      margin-bottom: var(--acx-content-vertical-space);
+    }
+    .ant-breadcrumb + .ant-page-header-heading {
+      margin-top: 6px;
+    }
+    &.has-footer {
+      .ant-page-header-heading {
+        margin-bottom: 0;
       }
     }
     &-footer {

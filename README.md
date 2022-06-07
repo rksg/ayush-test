@@ -102,7 +102,7 @@ npm install
 Execute command below and access the UI at [http://localhost:3000](http://localhost:3000).
 
 ```sh
-npx nx run main:serve --devRemotes=rc-wifi
+npx nx run main:serve --devRemotes=rc-wifi,analytics
 ```
 
 ### Run tests

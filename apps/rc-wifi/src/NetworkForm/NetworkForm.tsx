@@ -59,8 +59,7 @@ export function NetworkForm () {
       <PageHeader
         title='Create New Network'
         breadcrumb={[
-          { text: 'Networks', link: '/networks' },
-          { text: 'Wireless Networks' }
+          { text: 'Networks', link: '/networks' }
         ]}
       />
       <StepsForm<CreateNetworkFormFields>

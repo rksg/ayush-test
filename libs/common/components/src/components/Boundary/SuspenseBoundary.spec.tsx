@@ -12,7 +12,7 @@ describe('SuspenseBoundary', () => {
       <LazyComponent />
     </SuspenseBoundary>)
 
-    const loader = screen.getByLabelText('loading')
+    const loader = screen.getByRole('img', { name: 'loader' })
     expect(loader).toBeVisible()
     const element = await waitFor(() => screen.findByText('Lazy Component'))
     expect(element).toBeVisible()

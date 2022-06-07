@@ -1,9 +1,8 @@
-import { Button }    from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
 import styled        from 'styled-components/macro'
 
-import { PageHeader, Table, Loader } from '@acx-ui/components'
-import { useNetworkListQuery }       from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { useNetworkListQuery, Network }                  from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
@@ -11,19 +10,19 @@ import {
   WlanSecurityEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 const PageLink = styled.span`
   color: var(--acx-accents-blue-50);
 `
 
-const columns = [
+const columns: TableProps<Network>['columns'] = [
   {
     title: 'Network Name',
     dataIndex: 'name',
     sorter: true,
     defaultSortOrder: 'ascend' as SortOrder,
-    render: function (data: any) {
+    render: function (data) {
       return <PageLink>{data}</PageLink>
     }
   },
@@ -36,7 +35,7 @@ const columns = [
     title: 'Type',
     dataIndex: 'nwSubType',
     sorter: true,
-    render: function (data: any, row: any) {
+    render: function (data, row) {
       return transformNetworkType(data, row)
     }
   },
@@ -44,7 +43,7 @@ const columns = [
     title: 'Venues',
     dataIndex: 'venues',
     sorter: true,
-    render: function (data: any) {
+    render: function (data) {
       return <PageLink>{data ? data.count : 0}</PageLink>
     }
   },
@@ -52,7 +51,7 @@ const columns = [
     title: 'APs',
     dataIndex: 'aps',
     sorter: true,
-    render: function (data: any) {
+    render: function (data) {
       return <PageLink>{data}</PageLink>
     }
   },
@@ -65,13 +64,13 @@ const columns = [
     title: 'VLAN',
     dataIndex: 'vlan',
     sorter: true,
-    render: function (data: any, row: any) {
+    render: function (data, row) {
       return transformVLAN(row)
     }
   }
 ]
 
-const transformVLAN = (row: any) => {
+const transformVLAN = (row: Network) => {
   if (row.vlanPool) {
     const vlanPool = row.vlanPool
     return VLAN_PREFIX.POOL + (vlanPool ? vlanPool.name : '')
@@ -79,7 +78,7 @@ const transformVLAN = (row: any) => {
   return VLAN_PREFIX.VLAN + row.vlan
 }
 
-const transformNetworkType = (value: any, row: any) => {
+const transformNetworkType = (value: Network['nwSubType'], row: Network) => {
   let displayValue = ''
   const captiveType = row.captiveType
   const wlan = row?.deepNetwork?.wlan
@@ -136,7 +135,7 @@ const transformNetworkType = (value: any, row: any) => {
 }
 
 const getWlanSecurity = (wlanSecurity: WlanSecurityEnum) => {
-  const securityMap: any = {
+  const securityMap = {
     [WlanSecurityEnum.Open]: ' - Open',
     [WlanSecurityEnum.WPAPersonal]: ' - WPA',
     [WlanSecurityEnum.WPA2Personal]: ' - WPA2',
@@ -172,10 +171,8 @@ const defaultPayload = {
 
 export function NetworksTable () {
   const NetworksTable = () => {
-    const params = useParams()
     const tableQuery = useTableQuery({
-      api: useNetworkListQuery,
-      apiParams: params,
+      useQuery: useNetworkListQuery,
       defaultPayload
     })
 
@@ -196,17 +193,11 @@ export function NetworksTable () {
     <>
       <PageHeader
         title='Networks'
-        footer={
-          <PageHeader.FooterWithDivider
-            extra={[
-              <TenantLink to='/networks/create'>
-                <Button>Add Network</Button>
-              </TenantLink>
-            ]}
-          >
-            <div />
-          </PageHeader.FooterWithDivider>
-        }
+        extra={[
+          <TenantLink to='/networks/create'>
+            <Button type='primary'>Add Wi-Fi Network</Button>
+          </TenantLink>
+        ]}
       />
       <NetworksTable />
     </>

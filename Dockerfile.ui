@@ -43,9 +43,18 @@ RUN rm -rf ./*
 
 COPY tools/docker/nginx/conf.d/* /etc/nginx/conf.d/
 COPY tools/docker/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /app/dist/apps ./
-RUN mv ./rc-wifi main/.
 
-EXPOSE 3000
+COPY --from=build /app/dist/apps ./
+RUN \
+  # Move all other apps into main
+  ls | grep -v main | xargs mv -t main && \
+  # Create structure to match deployment need
+  mkdir -p api/ui-beta && \
+  # Move all files into it
+  mv -v main/* api/ui-beta/. && \
+  # Remove the main folder
+  rm -rf main
+
+EXPOSE 8080
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

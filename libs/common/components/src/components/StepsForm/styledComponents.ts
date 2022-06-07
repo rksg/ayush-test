@@ -183,15 +183,22 @@ export const ActionsContainer = styled.div`
     );
   }
   position: fixed;
+  bottom: 0;
+  padding-top: var(--acx-content-vertical-space);
+  padding-bottom: var(--acx-content-vertical-space);
+  padding-left: calc(
+    var(--acx-steps-form-steps-container-max-width) +
+    var(--acx-steps-form-container-margin)
+  );
   width: var(--acx-steps-form-steps-action-container-min-width);
   max-width: min(
     var(--acx-steps-form-steps-action-container-min-width),
     var(--acx-steps-form-max-width)
   );
   display: flex;
-  justify-content: flex-end;
-  margin-top: -32px; // button height
-  z-index: 3; // to have it appear above the PageHeader
+  justify-content: flex-start;
+  background-color: var(--acx-neutrals-5);
+  z-index: 3; // to have it appear above other content
 `
 
 export const Container = styled.div`
@@ -203,7 +210,12 @@ export const Container = styled.div`
       var(--acx-steps-form-steps-container-max-width) +
       var(--acx-steps-form-container-margin)
     );
+    margin-bottom: calc(
+      var(--acx-steps-form-container-margin) +
+      32px // button height
+    );
     margin-right: 0;
+    width: unset;
     min-width: unset;
     flex: 1;
   }

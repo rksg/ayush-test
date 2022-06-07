@@ -1,9 +1,15 @@
 {
   "version": 2,
   "projects": {
+    "analytics": "apps/analytics",
+    "analytics-services": "libs/analytics/services",
+    "analytics-utils": "libs/analytics/utils",
     "common-components": "libs/common/components",
     "common-icons": "libs/common/icons",
     "common-store": "libs/common/store",
+    "common-types": "libs/common/types",
+    "common-test-utils": "libs/common/test-utils",
+    "common-utils": "libs/common/utils",
     "main": "apps/main",
     "rc-services": "libs/rc/services",
     "rc-utils": "libs/rc/utils",

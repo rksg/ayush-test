@@ -1,4 +1,4 @@
 module.exports = {
   name: 'main',
-  remotes: ['rc-wifi']
+  remotes: ['rc-wifi', 'analytics']
 }

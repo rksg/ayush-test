@@ -24,7 +24,7 @@ export const Button = styled(AntButton)`
 `
 
 const headRowGap = '5px'
-const cardPadding = '12px'
+const cardPadding = '16px'
 
 export const Wrapper = styled.div<WrapperProps>`
   height: 100%;
@@ -54,7 +54,7 @@ export const Wrapper = styled.div<WrapperProps>`
       100% -
         (
           var(--acx-headline-4-line-height) +
-          ${(props) => props.hasSubTitle ? 'var(--acx-body-4-line-height)' : '0'} +
+          ${(props) => props.hasSubTitle ? 'var(--acx-body-4-line-height)' : '0px'} +
           ${cardPadding} +
           ${headRowGap}
         )

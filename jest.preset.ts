@@ -1,11 +1,16 @@
-const nxPreset = require('@nrwl/jest/preset');
+const nxPreset = require('@nrwl/jest/preset')
 
 module.exports = {
   ...nxPreset,
+  moduleNameMapper: {
+    '^antd/es/(.*)$': `${__dirname}/node_modules/antd/lib/$1`
+  },
   coverageReporters: [ 'lcov' ],
   collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
-    '!src/**/stories.{ts,tsx}',
-    '!src/**/stories/*'
-  ]
-};
+    '<rootDir>/src/**/*.{js,jsx,ts,tsx}',
+    '!<rootDir>/src/**/stories.tsx',
+    '!<rootDir>/src/**/stories/*',
+    '!<rootDir>/src/theme/modify-vars.js'
+  ],
+  setupFilesAfterEnv: [`${__dirname}/jest.setup.js`]
+}

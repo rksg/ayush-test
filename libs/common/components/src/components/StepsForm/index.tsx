@@ -2,24 +2,26 @@ import React from 'react'
 
 import { StepsForm as ProAntStepsForm } from '@ant-design/pro-form'
 import { useIntl }                      from '@ant-design/pro-provider'
-import { Steps, Space, Button, Row }    from 'antd'
+import { Steps, Space, Row }            from 'antd'
 import _                                from 'lodash'
 import toArray                          from 'rc-util/lib/Children/toArray'
 
+import { Button } from '../Button'
+
 import * as UI from './styledComponents'
 
+import type { ButtonProps }              from '../Button'
 import type {
   ProFormInstance,
   StepsFormProps as ProAntStepsFormProps,
   StepFormProps as ProAntStepFormProps
 } from '@ant-design/pro-form'
-import type { ButtonProps } from 'antd'
 
 export type { ProFormInstance as StepsFormInstance }
 
 const { useImperativeHandle, useRef, useState } = React
 
-type StepsFormProps <FormValue = any> =
+export type StepsFormProps <FormValue = any> =
   Omit<ProAntStepsFormProps<FormValue>, 'stepsProps' | 'submitter'> &
   {
     /**
@@ -34,7 +36,7 @@ type StepsFormProps <FormValue = any> =
     onCancel?: () => void
   }
 
-type StepFormProps <FormValue> = Omit<ProAntStepFormProps<FormValue>, 'requiredMark'>
+export type StepFormProps <FormValue> = Omit<ProAntStepFormProps<FormValue>, 'requiredMark'>
 
 type InternalStepFormProps <FormValue> = StepFormProps<FormValue> & {
   /**
@@ -120,11 +122,13 @@ export function StepsForm <FormValue = any> (
         next: 'Next',
         submit: 'Finish'
       }
-      const submitButton = React.cloneElement(button, {
-        ...button.props,
-        children: intl.getMessage(`stepsForm.${key}`, messages[key])
-      })
-      return [cancel, submitButton]
+      const submitButton = <Button
+        {...button.props}
+        key={key}
+        type='secondary'
+        children={intl.getMessage(`stepsForm.${key}`, messages[key])}
+      />
+      return [submitButton, cancel]
     }
   }
 

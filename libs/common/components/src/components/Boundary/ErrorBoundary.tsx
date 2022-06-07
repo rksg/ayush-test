@@ -20,7 +20,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
       const { name, message, stack } = this.state.error
       error = <>
         {name}: {message}<br />
-        {(stack || '').split('\n').map(line => <>{line}<br /></>)}
+        {stack?.split('\n').map(line => <>{line}<br /></>)}
       </>
     } else {
       error = JSON.stringify(this.state.error)
