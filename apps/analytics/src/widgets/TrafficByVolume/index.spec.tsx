@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react'
-import moment             from 'moment-timezone'
 
 import { dataApiURL }                  from '@acx-ui/analytics/services'
 import { Provider, store }             from '@acx-ui/store'
