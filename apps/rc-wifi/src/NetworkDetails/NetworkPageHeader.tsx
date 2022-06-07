@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
 
 import { BulbOutlined, ClockCircleOutlined } from '@ant-design/icons'
-import { Button }                            from 'antd'
 
-import { PageHeader } from '@acx-ui/components'
+import { Button, PageHeader } from '@acx-ui/components'
 
 import NetworkTabs from './NetworkTabs'
 
@@ -17,7 +16,7 @@ function NetworkPageHeader () {
       extra={<>
         <Button><ClockCircleOutlined />Last 24 hours</Button>
         <Button>Entire Organization</Button>
-        <Button style={{ background: 'black', color: 'white' }}>Configure</Button>
+        <Button type='primary'>Configure</Button>
         <Button><BulbOutlined /></Button>
       </>}
       footer={<NetworkTabs />}
