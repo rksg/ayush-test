@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import moment             from 'moment-timezone'
 
 import { dataApiURL }                  from '@acx-ui/analytics/services'
 import { Provider, store }             from '@acx-ui/store'
@@ -25,9 +26,13 @@ const sample = {
 describe('TrafficByVolumeWidget', () => {
   mockAutoSizer()
 
-  beforeEach(() =>
+  beforeEach(() => {
+    moment.tz.setDefault('UTC')
     store.dispatch(api.util.resetApiState())
-  )
+  })
+  afterEach(() => {
+    moment.tz.setDefault(moment.tz.guess())
+  })
   it('should render correctly', async () => {
     const expectedResult = {
       network: {
