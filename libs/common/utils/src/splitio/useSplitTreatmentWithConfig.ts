@@ -1,7 +1,11 @@
 import { useContext, useDebugValue } from 'react'
+
 import { SplitContext } from '@splitsoftware/splitio-react'
-import { Region, Tier, Vertical } from './feature-flag-model'
+
 import { getTenantId } from '@acx-ui/rc/utils'
+
+import { Region, Tier, Vertical } from './feature-flag-model'
+
 // TODO: Need to integrate with userProfile service later once it's added into the project,
 // for now using static values for tier, region & vertical
 // For MSP flows will be handled in separate jira - ACX-7910
@@ -18,7 +22,7 @@ const attributes = {
 
 export function useFFList () {
   const { isReady, client } = useContext(SplitContext)
-  let userFFConfig: any
+  let userFFConfig = []
 
   if (isReady) {
     const treatmentValue = client.getTreatmentWithConfig(splitName, attributes)
