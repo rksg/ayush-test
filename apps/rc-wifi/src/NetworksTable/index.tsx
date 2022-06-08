@@ -22,8 +22,12 @@ const columns: TableProps<Network>['columns'] = [
     dataIndex: 'name',
     sorter: true,
     defaultSortOrder: 'ascend' as SortOrder,
-    render: function (data) {
-      return <PageLink>{data}</PageLink>
+    render: function (data: any, row: any) {
+      return (
+        <TenantLink to={`/networks/${row.id}/network-details/overview`}>
+          <PageLink>{data}</PageLink>
+        </TenantLink>
+      )
     }
   },
   {
@@ -43,16 +47,24 @@ const columns: TableProps<Network>['columns'] = [
     title: 'Venues',
     dataIndex: 'venues',
     sorter: true,
-    render: function (data) {
-      return <PageLink>{data ? data.count : 0}</PageLink>
+    render: function (data: any, row: any) {
+      return (
+        <TenantLink to={`/networks/${row.id}/network-details/venues`}>
+          <PageLink>{data ? data.count : 0}</PageLink>
+        </TenantLink>
+      )
     }
   },
   {
     title: 'APs',
     dataIndex: 'aps',
     sorter: true,
-    render: function (data) {
-      return <PageLink>{data}</PageLink>
+    render: function (data: any, row: any) {
+      return (
+        <TenantLink to={`/networks/${row.id}/network-details/aps`}>
+          <PageLink>{data}</PageLink>
+        </TenantLink>
+      )
     }
   },
   {
