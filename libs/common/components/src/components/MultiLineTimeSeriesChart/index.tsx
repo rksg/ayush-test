@@ -73,7 +73,13 @@ export function MultiLineTimeSeriesChart
       borderColor: cssStr('--acx-neutrals-50'),
       borderWidth: 1,
       borderRadius: 0,
-      padding: 12
+      padding: 12,
+      formatter: function (parameters: any) {
+        return '<ul list-style: none>' + (parameters.map((params: any)=>
+          '<li>' + params.marker + params.seriesName + params.value[1] + '</li>'
+        )).join('\n')
+          + '</ul>'
+      }
     },
     xAxis: {
       type: 'time',
