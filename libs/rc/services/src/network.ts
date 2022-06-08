@@ -51,6 +51,14 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: ['Network']
     }),
+    networkDetailHeader: build.query<TableResult<Network>, RequestPayload>({
+      query: ({ params }) => {
+        const networkListReq = createHttpRequest(CommonUrlsInfo.getNetworksDetailHeader, params)
+        return {
+          ...networkListReq
+        }
+      }
+    }),
     venueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
         const venueListReq = createHttpRequest(CommonUrlsInfo.getNetworksVenuesList, params)
@@ -80,6 +88,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 export const {
   useNetworkListQuery,
   useCreateNetworkMutation,
+  useNetworkDetailHeaderQuery,
   useVenueListQuery,
   useDashboardOverviewQuery
 } = networkApi
