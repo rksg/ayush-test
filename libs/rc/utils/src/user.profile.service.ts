@@ -11,6 +11,5 @@ export const getTenantId = () => {
 
   const chunks = window.location.pathname.split('/')
   if (chunks[1] === 't') return chunks[2]
-  // console.error('URL is empty')
   return ''
 }
