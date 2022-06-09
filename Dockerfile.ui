@@ -22,6 +22,9 @@ COPY .storybook ./.storybook
 COPY apps ./apps
 COPY libs ./libs
 
+# dump git hash
+RUN echo NX_GIT_SHA=\'$(git show --no-patch --no-notes --pretty='%h %cd' HEAD)\' >> .env
+
 ###############################################################
 
 FROM build-base as acx-ui
@@ -31,7 +34,7 @@ RUN npx nx run-many --target=test --all --coverage --runInBand
 ###############################################################
 
 FROM acx-ui as build
-RUN npx nx run-many --target=build --all
+RUN npx nx run-many --target=build --all --envFile=git_hash
 
 ###############################################################
 
