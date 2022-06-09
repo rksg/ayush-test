@@ -34,7 +34,7 @@ RUN npx nx run-many --target=test --all --coverage --runInBand
 ###############################################################
 
 FROM acx-ui as build
-RUN npx nx run-many --target=build --all --envFile=git_hash
+RUN npx nx run-many --target=build --all
 
 ###############################################################
 
