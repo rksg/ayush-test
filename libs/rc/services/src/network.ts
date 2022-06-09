@@ -51,11 +51,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: ['Network']
     }),
-    networkDetailHeader: build.query<TableResult<Network>, RequestPayload>({
+    networkDetailHeader: build.query<any, RequestPayload>({
       query: ({ params }) => {
-        const networkListReq = createHttpRequest(CommonUrlsInfo.getNetworksDetailHeader, params)
+        const networkDetailReq = createHttpRequest(CommonUrlsInfo.getNetworksDetailHeader, params)
         return {
-          ...networkListReq
+          ...networkDetailReq
         }
       }
     }),
