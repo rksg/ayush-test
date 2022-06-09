@@ -24,15 +24,15 @@ function NetworkTabs () {
       pathname: `${basePath.pathname}/${tab}`
     })
 
-  const tableQuery = useNetworkDetailHeaderQuery({ params })
+  const { data } = useNetworkDetailHeaderQuery({ params })
 
   useEffect(()=>{
-    if (tableQuery.data) {
-      const source = JSON.parse(JSON.stringify(tableQuery.data))
+    if (data) {
+      const source = JSON.parse(JSON.stringify(data))
       setVenuesCount(source.activeVenueCount)
       setApsCount(source.aps.totalApCount)
     }
-  }, [tableQuery.data])
+  }, [data])
   
   return (
     <Wrapper>
