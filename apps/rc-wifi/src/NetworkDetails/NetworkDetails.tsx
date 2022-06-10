@@ -1,3 +1,4 @@
+import React         from 'react'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { NetworkApsTab }       from './NetworkApsTab'
@@ -23,6 +24,6 @@ export function NetworkDetails () {
   const Tab = tabs[activeTab as keyof typeof tabs]
   return <>
     <NetworkPageHeader />
-    <Tab />
+    { Tab && <Tab /> }
   </>
 }
