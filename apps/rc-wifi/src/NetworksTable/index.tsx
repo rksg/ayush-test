@@ -17,7 +17,7 @@ const columns: TableProps<Network>['columns'] = [
     dataIndex: 'name',
     sorter: true,
     defaultSortOrder: 'ascend' as SortOrder,
-    render: function (data: any, row: any) {
+    render: function (data, row) {
       return (
         <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
       )
@@ -40,10 +40,12 @@ const columns: TableProps<Network>['columns'] = [
     title: 'Venues',
     dataIndex: 'venues',
     sorter: true,
-    render: function (data: any, row: any) {
+    render: function (data, row) {
       return (
-        // eslint-disable-next-line max-len
-        <TenantLink to={`/networks/${row.id}/network-details/venues`}>{data ? data.count : 0}</TenantLink>
+        <TenantLink
+          to={`/networks/${row.id}/network-details/venues`}
+          children={data ? data.count : 0}
+        />
       )
     }
   },
@@ -51,7 +53,7 @@ const columns: TableProps<Network>['columns'] = [
     title: 'APs',
     dataIndex: 'aps',
     sorter: true,
-    render: function (data: any, row: any) {
+    render: function (data, row) {
       return (
         <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
       )
