@@ -2,7 +2,7 @@ import { Card }                        from '@acx-ui/components'
 import { Provider }                    from '@acx-ui/store'
 import { splitSDK, useSplitTreatment } from '@acx-ui/utils'
 
-const SPLIT_NAME = 'Sara-ACX-Bool' // this is sample splitName, needs to be switched based on the epic level FF name
+const SPLIT_NAME = 'sara-demo-toggle' // this is sample splitName, needs to be switched based on the epic level FF name
 
 const widgetsMap = {
   alarms: () => <Card title='Alarms' />

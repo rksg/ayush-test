@@ -2,7 +2,7 @@ import { useContext, useDebugValue } from 'react'
 
 import { SplitContext } from '@splitsoftware/splitio-react'
 
-import { getTenantId } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { Region, Tier, Vertical } from './feature-flag-model'
 
@@ -10,18 +10,17 @@ import { Region, Tier, Vertical } from './feature-flag-model'
 // for now using static values for tier, region & vertical
 // For MSP flows will be handled in separate jira - ACX-7910
 
-const tenantId = getTenantId()
-const splitName = 'Sara-ACX-PLM' // This value mostly will be onetime as defined by PLM (need to confirm)
-
-const attributes = {
-  tenantId: tenantId,
-  tier: Tier.TIER_GOLD, //userProfile.tier, TODO: Need backend support
-  region: Region.REGION_NA, //userProfile.region, TODO: Need backend support
-  vertical: Vertical.VERTICAL_DEFAULT //userProfile.vertical, TODO: Need backend support
-}
-
 export function useFFList () {
   const { isReady, client } = useContext(SplitContext)
+  const { tenantId } = useParams()
+  const splitName = 'Sara-ACX-PLM' // This value mostly will be onetime as defined by PLM (need to confirm)
+  const attributes = {
+    tenantId: tenantId,
+    tier: Tier.TIER_GOLD, //userProfile.tier, TODO: Need backend support
+    region: Region.REGION_NA, //userProfile.region, TODO: Need backend support
+    vertical: Vertical.VERTICAL_DEFAULT //userProfile.vertical, TODO: Need backend support
+  }
+
   let userFFConfig = []
 
   if (isReady) {
