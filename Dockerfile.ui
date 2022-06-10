@@ -1,4 +1,4 @@
-FROM node:14.19.1-alpine as build
+FROM node:14.19.1-alpine as build-base
 
 WORKDIR /app
 
@@ -11,6 +11,7 @@ COPY .eslintignore \
   babel.config.json \
   jest.config.ts \
   jest.preset.ts \
+  jest.setup.js \
   modulefederation.config.base.js \
   nx.json \
   webpack.config.base.js \
@@ -21,6 +22,15 @@ COPY .storybook ./.storybook
 COPY apps ./apps
 COPY libs ./libs
 
+###############################################################
+
+FROM build-base as acx-ui
+RUN npx nx run-many --target=lint --all --verbose
+RUN npx nx run-many --target=test --all --coverage --runInBand
+
+###############################################################
+
+FROM acx-ui as build
 RUN npx nx run-many --target=build --all
 
 ###############################################################
