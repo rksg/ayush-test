@@ -1,7 +1,7 @@
-import { Button, PageHeader } from '@acx-ui/components'
+import { Button, PageHeader }                       from '@acx-ui/components'
 import { ArrowExpand, ClockOutlined, BulbOutlined } from '@acx-ui/icons'
-import { useGetNetworkQuery } from '@acx-ui/rc/services'
-import { useParams }          from '@acx-ui/react-router-dom'
+import { useGetNetworkQuery }                       from '@acx-ui/rc/services'
+import { useParams }                                from '@acx-ui/react-router-dom'
 
 import NetworkTabs from './NetworkTabs'
 

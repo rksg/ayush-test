@@ -51,9 +51,7 @@ exports[`NetworkDetails should render correctly 1`] = `
           >
             <h1
               class="ant-typography"
-            >
-              Lab Network
-            </h1>
+            />
           </span>
         </div>
         <span

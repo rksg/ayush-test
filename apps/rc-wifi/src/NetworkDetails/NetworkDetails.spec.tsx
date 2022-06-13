@@ -12,7 +12,6 @@ describe('NetworkDetails', () => {
       <Provider><Router><NetworkDetails></NetworkDetails></Router></Provider>
     )
 
-    await screen.findByText('Lab Network')
     expect(asFragment()).toMatchSnapshot()
     const tabs = screen.getAllByRole('tab')
     expect(tabs).toHaveLength(6)
