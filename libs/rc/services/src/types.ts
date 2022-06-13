@@ -66,3 +66,14 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
+
+interface SettingValue {
+  [key: string]: string;
+}
+
+export interface UserSettings {
+  WIFI: SettingValue;
+  SWITCH: SettingValue;
+  LTE: SettingValue;
+  COMMON: SettingValue;
+}

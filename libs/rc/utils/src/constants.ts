@@ -31,3 +31,7 @@ export enum WlanSecurityEnum {
   WPA23Mixed = 'WPA23Mixed',
   WPA3 = 'WPA3'
 }
+
+export const Constants = {
+  triRadioUserSettingsKey: 'COMMON$supportTriRadio'
+}
