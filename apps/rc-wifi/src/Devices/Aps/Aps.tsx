@@ -8,10 +8,6 @@ import {
 import { useApListQuery } from '@acx-ui/rc/services'
 import { useTableQuery }  from '@acx-ui/rc/utils'
 
-import TableButtonBar from '../../NetworkForm/Venues/TableButtonBar'
-
-
-
 const defaultPayload = {
   searchString: '',
   fields: [
@@ -122,20 +118,15 @@ export function Aps () {
     }]
 
   return (
-    <>
-      <TableButtonBar
-        rowsSelected={tableQuery.selectedRowsData.length}
+    <Loader states={[tableQuery]}>
+      <Table
+        rowKey='id'
+        columns={columns}
+        dataSource={tableData}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange
+        }
       />
-      <Loader states={[tableQuery]}>
-        <Table
-          rowKey='id'
-          columns={columns}
-          dataSource={tableData}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange
-          }
-        />
-      </Loader>
-    </>
+    </Loader>
   )
 }
