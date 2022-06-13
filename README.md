@@ -126,3 +126,6 @@ npx nx run common-components:storybook
 ### Other Nx commands
 
 Refer to [Nx.md](Nx.md) for other Nx related commands.
+
+### Split.io Feature toggle
+Refer to [Feature Flag Operators & Usage in ACX-UI](https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=260188984) wiki on how to make use of feature toggle with Split.io
