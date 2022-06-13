@@ -4,7 +4,7 @@ import { SplitContext } from '@splitsoftware/splitio-react'
 
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { FeatureFlag } from './feature-flag-model'
+import { FeatureFlag } from './types'
 
 export function useSplitTreatment (splitName: string): boolean {
   const { isReady, client } = useContext(SplitContext)

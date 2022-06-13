@@ -1,6 +1,6 @@
-import { Card }                        from '@acx-ui/components'
-import { Provider }                    from '@acx-ui/store'
-import { splitSDK, useSplitTreatment } from '@acx-ui/utils'
+import { Card }              from '@acx-ui/components'
+import { Provider }          from '@acx-ui/store'
+import { useSplitTreatment } from '@acx-ui/utils'
 
 const SPLIT_NAME = 'sara-demo-toggle' // this is sample splitName, needs to be switched based on the epic level FF name
 
@@ -18,4 +18,4 @@ function WifiWidgets ({ name }: { name: keyof typeof widgetsMap }) {
   </Provider>
 }
 
-export default splitSDK(WifiWidgets)
+export default WifiWidgets
