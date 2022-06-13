@@ -1,4 +1,3 @@
-import React         from 'react'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { NetworkApsTab }       from './NetworkApsTab'
