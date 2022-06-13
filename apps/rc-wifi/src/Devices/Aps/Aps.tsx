@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from 'react'
 
+import Column      from 'antd/lib/table/Column'
+import ColumnGroup from 'antd/lib/table/ColumnGroup'
+
 import {
   Loader,
-  Table,
-  TableProps
+  Table
 } from '@acx-ui/components'
 import { useApListQuery } from '@acx-ui/rc/services'
-import { useTableQuery }  from '@acx-ui/rc/utils'
+import {
+  APMeshRole,
+  APView,
+  transformApStatus,
+  transformDisplayNumber,
+  transformDisplayText,
+  useTableQuery
+} from '@acx-ui/rc/utils'
 
 const defaultPayload = {
   searchString: '',
@@ -40,93 +49,68 @@ export function Aps () {
     }
   }, [tableQuery.data])
 
-  const columns: TableProps<any>['columns'] = [
-    {
-      title: 'AP Name',
-      dataIndex: 'name',
-      sorter: true
-    },
-    {
-      title: 'Status',
-      dataIndex: 'deviceStatus',
-      sorter: true
-    },
-    {
-      title: 'Model',
-      dataIndex: 'model',
-      sorter: true
-    },
-    {
-      title: 'IP Address',
-      dataIndex: 'IP',
-      sorter: true
-    },
-    {
-      title: 'MAC Address',
-      dataIndex: 'apMac',
-      sorter: true
-    },
-    {
-      title: 'Venue',
-      dataIndex: 'switchName',
-      sorter: true
-    },
-    {
-      title: 'Switch',
-      dataIndex: 'model',
-      sorter: true
-    },
-    {
-      title: 'Mesh Role',
-      dataIndex: 'meshRole',
-      sorter: true
-    },
-    {
-      title: 'Connected Clients',
-      dataIndex: 'clients',
-      sorter: true
-    },
-    {
-      title: 'AP Group',
-      dataIndex: 'deviceGroupName',
-      sorter: true
-    },
-    {
-      title: 'RF Channels',
-      dataIndex: 'apStatusData.APRadio.band',
-      sorter: true
-    },
-    {
-      title: 'Tags',
-      dataIndex: 'tags',
-      sorter: true
-    },
-    {
-      title: 'Serial Number',
-      dataIndex: 'serialNumber',
-      sorter: true
-    },
-    {
-      title: 'AP Group',
-      dataIndex: 'deviceGroupName',
-      sorter: true
-    },
-    {
-      title: 'Version',
-      dataIndex: 'fwVersion',
-      sorter: true
-    }]
+  const transformMeshRole = (value: APMeshRole) => {
+    let meshRole = ''
+    switch (value) {
+      case APMeshRole.EMAP:
+        meshRole = 'eMAP'
+        break
+      case APMeshRole.DISABLED:
+        meshRole = ''
+        break
+      default:
+        meshRole = value
+        break
+    }
+    return transformDisplayText(meshRole)
+  }
 
   return (
     <Loader states={[tableQuery]}>
-      <Table
+      <Table dataSource={tableData}
         rowKey='id'
-        columns={columns}
-        dataSource={tableData}
         pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange
-        }
-      />
+        onChange={tableQuery.handleTableChange}
+      >
+        <Column title='AP Name' dataIndex='name' sorter={true} />
+        <Column title='Status'
+          dataIndex='deviceStatus'
+          sorter={true}
+          render={(value) => (
+            <>
+              {transformApStatus(value, APView.AP_LIST)}
+            </>
+          )} />
+        <Column title='Model' dataIndex='model' sorter={true} />
+        <Column title='IP Address' dataIndex='IP' />
+        <Column title='MAC Address' dataIndex='apMac' sorter={true} />
+        <Column title='Venue' dataIndex='venueName' sorter={true} />
+        <Column title='Switch' dataIndex='switchName' />
+        <Column title='Mesh Role'
+          dataIndex='meshRole'
+          sorter={true}
+          render={
+            (value) => (
+              <>
+                {transformMeshRole(value)}
+              </>
+            )} />
+        <Column title='Connected Clients'
+          dataIndex='clients'
+          render={
+            (value) => <>
+              {transformDisplayNumber(value)}
+            </>
+          } />
+        <Column title='AP Group' dataIndex='deviceGroupName' sorter={true} />
+        <ColumnGroup title='RF Channels'>
+          <Column title='2.4 GHz' dataIndex='apStatusData' key='firstName' />
+          <Column title='5 GHz' dataIndex='apStatusData' key='deviceStatus' />
+        </ColumnGroup>
+        <Column title='Tags' dataIndex='tags' sorter={true} />
+        <Column title='Serial Number' dataIndex='serialNumber' sorter={true} />
+        <Column title='Version' dataIndex='fwVersion' sorter={true} />
+      </Table>
     </Loader>
   )
 }
