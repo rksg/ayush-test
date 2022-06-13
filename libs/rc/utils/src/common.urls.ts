@@ -33,5 +33,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getAlarmsListMeta: {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
+  },
+  getApsList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/aps'
   }
 }
