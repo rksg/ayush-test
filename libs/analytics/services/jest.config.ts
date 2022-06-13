@@ -6,5 +6,6 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../coverage/libs/analytics/services',
-  setupFilesAfterEnv: ['./setupServer.ts']
+  setupFilesAfterEnv: ['./setupServer.ts'],
+  collectCoverageFrom: []
 }

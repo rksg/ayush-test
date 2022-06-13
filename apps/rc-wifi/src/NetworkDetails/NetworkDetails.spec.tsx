@@ -1,15 +1,20 @@
-import React from 'react'
-
 import '@testing-library/jest-dom'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen }          from '@testing-library/react'
+import { BrowserRouter as Router } from 'react-router-dom'
+
+import { Provider } from '@acx-ui/store'
 
 import { NetworkDetails } from './NetworkDetails'
 
 describe('NetworkDetails', () => {
   it('should render correctly', async () => {
-    render(<NetworkDetails></NetworkDetails>)
+    const { asFragment } = render(
+      <Provider><Router><NetworkDetails></NetworkDetails></Router></Provider>
+    )
 
-    const title = screen.getByText('Lab Network')
-    await waitFor(() => expect(title).toBeInTheDocument())
+    await screen.findByText('Lab Network')
+    expect(asFragment()).toMatchSnapshot()
+    const tabs = screen.getAllByRole('tab')
+    expect(tabs).toHaveLength(6)
   })
 })

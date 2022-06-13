@@ -1,5 +1,4 @@
 import { SortOrder } from 'antd/lib/table/interface'
-import styled        from 'styled-components/macro'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import { useNetworkListQuery, Network }                  from '@acx-ui/rc/services'
@@ -12,21 +11,15 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-const PageLink = styled.span`
-  color: var(--acx-accents-blue-50);
-`
-
 const columns: TableProps<Network>['columns'] = [
   {
     title: 'Network Name',
     dataIndex: 'name',
     sorter: true,
     defaultSortOrder: 'ascend' as SortOrder,
-    render: function (data: any, row: any) {
+    render: function (data, row) {
       return (
-        <TenantLink to={`/networks/${row.id}/network-details/overview`}>
-          <PageLink>{data}</PageLink>
-        </TenantLink>
+        <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
       )
     }
   },
@@ -47,11 +40,12 @@ const columns: TableProps<Network>['columns'] = [
     title: 'Venues',
     dataIndex: 'venues',
     sorter: true,
-    render: function (data: any, row: any) {
+    render: function (data, row) {
       return (
-        <TenantLink to={`/networks/${row.id}/network-details/venues`}>
-          <PageLink>{data ? data.count : 0}</PageLink>
-        </TenantLink>
+        <TenantLink
+          to={`/networks/${row.id}/network-details/venues`}
+          children={data ? data.count : 0}
+        />
       )
     }
   },
@@ -59,11 +53,9 @@ const columns: TableProps<Network>['columns'] = [
     title: 'APs',
     dataIndex: 'aps',
     sorter: true,
-    render: function (data: any, row: any) {
+    render: function (data, row) {
       return (
-        <TenantLink to={`/networks/${row.id}/network-details/aps`}>
-          <PageLink>{data}</PageLink>
-        </TenantLink>
+        <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
       )
     }
   },
