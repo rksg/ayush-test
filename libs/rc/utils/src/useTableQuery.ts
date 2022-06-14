@@ -10,10 +10,11 @@ export interface RequestPayload <Payload = any> {
   payload?: Payload
 }
 
-export interface TableResult <ResultItemType> {
+export interface TableResult <ResultItemType, ExtraParms = any> {
   data: ResultItemType[]
   page: number
   totalCount: number
+  extra?: ExtraParms
 }
 
 export interface TABLE_QUERY <

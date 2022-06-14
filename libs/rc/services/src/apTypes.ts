@@ -25,3 +25,11 @@ export interface ApList {
   venueName: string
 }
 
+export interface ApExtraParams {
+  channel24: boolean;
+  channel50: boolean;
+  channelL50: boolean;
+  channelU50: boolean;
+  channel60: boolean;
+}
+

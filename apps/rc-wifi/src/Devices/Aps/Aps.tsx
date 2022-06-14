@@ -9,7 +9,7 @@ import {
   Loader,
   Table
 } from '@acx-ui/components'
-import { useApListQuery } from '@acx-ui/rc/services'
+import { ApExtraParams, useApListQuery } from '@acx-ui/rc/services'
 import {
   APMeshRole,
   APView,
@@ -32,14 +32,6 @@ const defaultPayload = {
   ]
 }
 const defaultArray: any[] = []
-export interface ChannelColumnStatus {
-  channel24: boolean;
-  channel50: boolean;
-  channelL50: boolean;
-  channelU50: boolean;
-  channel60: boolean;
-}
-
 
 export function Aps () {
   const params = useParams()
@@ -47,11 +39,11 @@ export function Aps () {
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultPayload,
-      filters: { networkId: [params.networkId] }
+      // filters: { networkId: [params.networkId] }
     }
   })
   const [tableData, setTableData] = useState(defaultArray)
-  const [channelStatus, setChannelStatus] = useState<ChannelColumnStatus>({
+  const [extraParams, setExtra] = useState<ApExtraParams>({
     channel24: true,
     channel50: false,
     channelL50: false,
@@ -62,9 +54,10 @@ export function Aps () {
   useEffect(() => {
     if (tableQuery.data) {
       const data = tableQuery.data.data
-      const status = tableQuery.data.channelColumnStatus
+      const extra = tableQuery.data.extra
+
       setTableData(data)
-      setChannelStatus(status)
+      setExtra(extra)
     }
   }, [tableQuery.data])
 
@@ -86,7 +79,7 @@ export function Aps () {
 
   const getChannelColumn = function () {
     return (<>
-      {channelStatus.channel24 &&
+      {extraParams.channel24 &&
         <Column title='2.4 GHz'
           dataIndex='channel24'
           render={
@@ -94,7 +87,7 @@ export function Aps () {
               {transformDisplayText(value)}
             </>
           } />}
-      {channelStatus.channel50 &&
+      {extraParams.channel50 &&
         <Column title='5 GHz'
           dataIndex='channel50'
           render={
@@ -103,7 +96,7 @@ export function Aps () {
             </>
           } />}
 
-      {channelStatus.channelL50 &&
+      {extraParams.channelL50 &&
         <Column title='LO 5 GHz'
           dataIndex='channelL50'
           render={
@@ -112,7 +105,7 @@ export function Aps () {
             </>
           } />}
 
-      {channelStatus.channelU50 &&
+      {extraParams.channelU50 &&
         <Column title='HI 5 GHz'
           dataIndex='channelU50'
           render={
@@ -121,7 +114,7 @@ export function Aps () {
             </>
           } />}
 
-      {channelStatus.channel60 &&
+      {extraParams.channel60 &&
         <Column title='6 GHz'
           dataIndex='channel60'
           render={
