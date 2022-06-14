@@ -1,3 +1,4 @@
+export { ReactComponent as AI } from './icons/AI.svg'
 export { ReactComponent as AccountCircleOutlined } from './icons/AccountCircleOutlined.svg'
 export { ReactComponent as AccountCircleSolid } from './icons/AccountCircleSolid.svg'
 export { ReactComponent as AccountCircleSolidSmall } from './icons/AccountCircleSolidSmall.svg'
@@ -17,7 +18,6 @@ export { ReactComponent as DownloadOutlined } from './icons/DownloadOutlined.svg
 export { ReactComponent as LocationOutline } from './icons/LocationOutline.svg'
 export { ReactComponent as LocationOutlined } from './icons/LocationOutlined.svg'
 export { ReactComponent as LocationSolid } from './icons/LocationSolid.svg'
-export { ReactComponent as MelissaAIIcon } from './icons/MelissaAIIcon.svg'
 export { ReactComponent as MoreVertical } from './icons/MoreVertical.svg'
 export { ReactComponent as NetworksOutlined } from './icons/NetworksOutlined.svg'
 export { ReactComponent as NetworksSolid } from './icons/NetworksSolid.svg'
