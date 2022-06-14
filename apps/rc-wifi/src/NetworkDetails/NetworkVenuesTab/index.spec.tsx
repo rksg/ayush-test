@@ -3,8 +3,7 @@ import '@testing-library/jest-dom'
 import { render }                  from '@testing-library/react'
 import { BrowserRouter as Router } from 'react-router-dom'
 
-import { Constants, getUserSettingsFromDict } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 
 import { NetworkVenuesTab } from './index'
 
