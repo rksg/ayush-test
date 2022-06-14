@@ -198,7 +198,7 @@ export function NetworksTable () {
       <PageHeader
         title='Networks'
         extra={[
-          <TenantLink to='/networks/create'>
+          <TenantLink key='create' to='/networks/create'>
             <Button type='primary'>Add Wi-Fi Network</Button>
           </TenantLink>
         ]}
