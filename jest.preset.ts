@@ -5,6 +5,9 @@ module.exports = {
   moduleNameMapper: {
     '^antd/es/(.*)$': `${__dirname}/node_modules/antd/lib/$1`
   },
+  transform: {
+    '\\.svg$': `${__dirname}/tools/tests/svgrTransformer.js`
+  },
   coverageReporters: [ 'lcov' ],
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{js,jsx,ts,tsx}',
@@ -12,5 +15,6 @@ module.exports = {
     '!<rootDir>/src/**/stories/*',
     '!<rootDir>/src/theme/modify-vars.js'
   ],
+  roots: ['<rootDir>', `${__dirname}/tools/tests`],
   setupFilesAfterEnv: [`${__dirname}/jest.setup.js`]
 }
