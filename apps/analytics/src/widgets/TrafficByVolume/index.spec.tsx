@@ -52,16 +52,23 @@ describe('TrafficByVolumeWidget', () => {
       ?.setAttribute('_echarts_instance_', 'ec_mock')
     expect(fragment).toMatchSnapshot()
   })
-  it('should render error', async () => {
-    mockRTKQuery(dataApiURL, 'widget_trafficByVolume', {
-      error: new Error('something went wrong!')
+  describe('error handling', () => {
+    beforeAll(() => jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {}))
+    afterAll(() => jest.resetAllMocks())
+
+    it('should render error', async () => {
+      mockRTKQuery(dataApiURL, 'widget_trafficByVolume', {
+        error: new Error('something went wrong!')
+      })
+      render(
+        <Provider>
+          <TrafficByVolumeWidget/>
+        </Provider>
+      )
+      await screen.findByText('Something went wrong.')
     })
-    render(
-      <Provider>
-        <TrafficByVolumeWidget/>
-      </Provider>
-    )
-    await screen.findByText('Something went wrong.')
   })
 })
 
