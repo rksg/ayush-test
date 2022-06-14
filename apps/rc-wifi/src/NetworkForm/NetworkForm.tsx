@@ -7,8 +7,8 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateNetworkMutation } from '@acx-ui/rc/services'
-import { NetworkTypeEnum }          from '@acx-ui/rc/utils'
+import { useCreateNetworkMutation }                                     from '@acx-ui/rc/services'
+import { NetworkTypeEnum, transferDetailToSave, tranferSettingsToSave } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -17,7 +17,9 @@ import {
 
 import { CreateNetworkFormFields, NetworkSaveData } from './interface'
 import { NetworkDetailForm }                        from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext                           from './NetworkFormContext'
 import { AaaSettingsForm }                          from './NetworkSettings/AaaSettingsForm'
+import { OpenSettingsForm }                         from './NetworkSettings/OpenSettingsForm'
 import { NetworkSummaryForm }                       from './NetworkSummary/NetworkSummaryForm'
 import { Venues }                                   from './Venues/Venues'
 
@@ -25,6 +27,8 @@ export function NetworkForm () {
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
+  const [settingStepTitle, setSettingStepTitle] = useState('Settings')
+
   const [createNetwork] = useCreateNetworkMutation()
   //DetailsState
   const [state, updateState] = useState<CreateNetworkFormFields>({
@@ -78,22 +82,28 @@ export function NetworkForm () {
             return true
           }}
         >
-          <NetworkDetailForm />
+          <NetworkFormContext.Provider value={{ setSettingStepTitle }}>
+            <NetworkDetailForm />
+          </NetworkFormContext.Provider>
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
-          name='aaaSettings'
-          title='AAA Settings'
+          name='Settings'
+          title={settingStepTitle}
           validateTrigger='onBlur'
           onFinish={async (data) => {
-            const aaaSaveData = tranferAaaSettingsToSave(data)
-
+            data = {
+              ...data,
+              ...{ type: state.type }
+            }
+            const settingSaveData = tranferSettingsToSave(data)
             updateData(data)
-            updateSaveData(aaaSaveData)
+            updateSaveData(settingSaveData)
             return true
           }}
         >
-          <AaaSettingsForm />
+          {state.type === 'aaa' && <AaaSettingsForm />}
+          {state.type === 'open' && <OpenSettingsForm />}
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
@@ -114,98 +124,4 @@ export function NetworkForm () {
       </StepsForm>
     </>
   )
-}
-
-function transferDetailToSave (data: any) {
-  return {
-    name: data.name,
-    description: data.description,
-    type: data.type,
-    wlan: {
-      ssid: data.name
-    }
-  }
-}
-
-function tranferAaaSettingsToSave (data: any) {
-  let saveData = {
-    wlan: {
-      wlanSecurity: data.wlanSecurity
-    }
-  }
-
-  if (data.isCloudpathEnabled) {
-    saveData = {
-      ...saveData,
-      ...{
-        cloudpathServerId: data.cloudpathServerId,
-        enableAccountingProxy: false,
-        enableAuthProxy: false
-      }
-    }
-  } else {
-    let authRadius = {
-      primary: {
-        ip: data['authRadius.primary.ip'],
-        port: data['authRadius.primary.port'],
-        sharedSecret: data['authRadius.primary.sharedSecret']
-      }
-    }
-    if (data['authRadius.secondary.ip']) {
-      authRadius = {
-        ...authRadius,
-        ...{
-          secondary: {
-            ip: data['authRadius.secondary.ip'],
-            port: data['authRadius.secondary.port'],
-            sharedSecret: data['authRadius.secondary.sharedSecret']
-          }
-        }
-      }
-    }
-
-    saveData = {
-      ...saveData,
-      ...{
-        enableAccountingProxy: data.enableAccountingProxy,
-        enableAuthProxy: data.enableAuthProxy,
-        authRadius
-      }
-    }
-
-    if (data.enableAccountingService === true) {
-      let accountingRadius = {}
-      accountingRadius = {
-        ...accountingRadius,
-        ...{
-          primary: {
-            ip: data['accountingRadius.primary.ip'],
-            port: data['accountingRadius.primary.port'],
-            sharedSecret: data['accountingRadius.primary.sharedSecret']
-          }
-        }
-      }
-
-      if (data['accountingRadius.secondary.ip']) {
-        accountingRadius = {
-          ...accountingRadius,
-          ...{
-            secondary: {
-              ip: data['accountingRadius.secondary.ip'],
-              port: data['accountingRadius.secondary.port'],
-              sharedSecret: data['accountingRadius.secondary.sharedSecret']
-            }
-          }
-        }
-      }
-
-      saveData = {
-        ...saveData,
-        ...{
-          accountingRadius
-        }
-      }
-    }
-  }
-  return saveData
 }
