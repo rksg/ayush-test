@@ -7,16 +7,17 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { 
+import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useGetAllUserSettingsQuery,
-  useGetNetworkQuery,
   useVenueListQuery,
-  Venue 
+  Venue
 } from '@acx-ui/rc/services'
 import { Constants, useTableQuery, getUserSettingsFromDict } from '@acx-ui/rc/utils'
 import { useParams }                                         from '@acx-ui/react-router-dom'
+
+import { useGetNetwork } from '../services'
 
 const defaultPayload = {
   searchString: '',
@@ -52,13 +53,9 @@ export function NetworkVenuesTab () {
   })
   const [tableData, setTableData] = useState(defaultArray)
   const [supportTriBandRadio, setSupportTriBandRadio] = useState(false)
-  const { tenantId, networkId } = useParams()
+  const { tenantId } = useParams()
   const userSetting = useGetAllUserSettingsQuery({ params: { tenantId } })
-  const networkQuery = useGetNetworkQuery({
-    params: {
-      tenantId, networkId
-    }
-  })
+  const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
     { isLoading: isAddNetworkUpdating }
@@ -67,7 +64,7 @@ export function NetworkVenuesTab () {
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkVenueMutation()
-  
+
   useEffect(()=>{
     if (tableQuery.data && networkQuery.data) {
       const data: React.SetStateAction<Venue[]> = []
@@ -117,7 +114,7 @@ export function NetworkVenuesTab () {
     if (supportTriBandRadio && isWPA3security) {
       defaultVenueData.allApGroupsRadioTypes.push('6-GHz')
     }
-  
+
     let deactivateNetworkVenueId = ''
     if (!checked && network.venues) {
       network.venues.forEach((venue: { venueId: any; id: any }) => {
@@ -178,7 +175,7 @@ export function NetworkVenuesTab () {
       render: function (data, row) {
         return <Switch checked={data.isActivated}
           onClick={
-            (checked: boolean, event: Event) => { 
+            (checked: boolean, event: Event) => {
               data.isActivated = checked
               activateNetwork(checked, row)
               event.stopPropagation()
