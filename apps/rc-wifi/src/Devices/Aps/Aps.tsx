@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
-import Column        from 'antd/lib/table/Column'
-import ColumnGroup   from 'antd/lib/table/ColumnGroup'
-import { useParams } from 'react-router-dom'
-
+import Column      from 'antd/lib/table/Column'
+import ColumnGroup from 'antd/lib/table/ColumnGroup'
 
 import {
   Loader,
   Table
 } from '@acx-ui/components'
-import { ApExtraParams, useApListQuery } from '@acx-ui/rc/services'
+import { ApExtraParams, Filters, useApListQuery } from '@acx-ui/rc/services'
 import {
   APMeshRole,
   APView,
@@ -33,13 +31,14 @@ const defaultPayload = {
 }
 const defaultArray: any[] = []
 
-export function Aps () {
-  const params = useParams()
+export function Aps (props: {
+  filters: Filters;
+}) {
   const tableQuery = useTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultPayload,
-      filters: { networkId: [params.networkId] }
+      filters: props.filters
     }
   })
   const [tableData, setTableData] = useState(defaultArray)
