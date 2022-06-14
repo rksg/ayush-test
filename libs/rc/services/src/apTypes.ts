@@ -1,24 +1,24 @@
 
 export interface APRadio {
-  channel: number,
+  channel?: number,
   band: string,
   radioId: number,
-  txPower: string,
+  txPower?: string,
   Rssi: string
 }
 export interface ApList {
-  IP: string
-  apMac: string
+  IP?: string
+  apMac?: string
   apStatusData?: {
     APRadio?: Array<APRadio>
   },
-  clients: number,
+  clients?: number,
   deviceGroupId: string,
-  deviceGroupName: string,
+  deviceGroupName?: string,
   deviceStatus: string,
   meshRole: string,
   model: string,
-  name: string,
+  name?: string,
   serialNumber: string,
   tags: string,
   venueId: string,
@@ -26,10 +26,10 @@ export interface ApList {
 }
 
 export interface ApExtraParams {
-  channel24: boolean;
-  channel50: boolean;
-  channelL50: boolean;
-  channelU50: boolean;
-  channel60: boolean;
+  channel24: boolean,
+  channel50: boolean,
+  channelL50: boolean,
+  channelU50: boolean,
+  channel60: boolean
 }
 

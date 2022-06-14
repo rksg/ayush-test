@@ -39,7 +39,7 @@ export function Aps () {
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultPayload,
-      // filters: { networkId: [params.networkId] }
+      filters: { networkId: [params.networkId] }
     }
   })
   const [tableData, setTableData] = useState(defaultArray)
