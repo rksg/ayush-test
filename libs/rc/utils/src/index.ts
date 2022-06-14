@@ -6,5 +6,5 @@ export * from './onSocketActivityChanged'
 export * from './toast/toast.service'
 export * from './useTableQuery'
 
-export * from '../pipes/apPipe'
-export * from '../pipes/commonPipe'
+export * from '../pipes/apPipes'
+export * from '../pipes/commonPipes'
