@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import Column      from 'antd/lib/table/Column'
-import ColumnGroup from 'antd/lib/table/ColumnGroup'
+import Column        from 'antd/lib/table/Column'
+import ColumnGroup   from 'antd/lib/table/ColumnGroup'
+import { useParams } from 'react-router-dom'
+
 
 import {
   Loader,
@@ -17,6 +19,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 
+import * as UI from './styledComponents'
+
 const defaultPayload = {
   searchString: '',
   fields: [
@@ -27,25 +31,40 @@ const defaultPayload = {
     'fwVersion'
   ]
 }
-
 const defaultArray: any[] = []
-
-const getNetworkId = () => {
-  return 'UNKNOWN-NETWORK-ID'
+export interface ChannelColumnStatus {
+  channel24: boolean;
+  channel50: boolean;
+  channelL50: boolean;
+  channelU50: boolean;
+  channel60: boolean;
 }
 
+
 export function Aps () {
+  const params = useParams()
   const tableQuery = useTableQuery({
     useQuery: useApListQuery,
-    apiParams: { networkId: getNetworkId() },
-    defaultPayload
+    defaultPayload: {
+      ...defaultPayload,
+      filters: { networkId: [params.networkId] }
+    }
   })
   const [tableData, setTableData] = useState(defaultArray)
+  const [channelStatus, setChannelStatus] = useState<ChannelColumnStatus>({
+    channel24: true,
+    channel50: false,
+    channelL50: false,
+    channelU50: false,
+    channel60: false
+  })
 
   useEffect(() => {
     if (tableQuery.data) {
       const data = tableQuery.data.data
+      const status = tableQuery.data.channelColumnStatus
       setTableData(data)
+      setChannelStatus(status)
     }
   }, [tableQuery.data])
 
@@ -65,6 +84,53 @@ export function Aps () {
     return transformDisplayText(meshRole)
   }
 
+  const getChannelColumn = function () {
+    return (<>
+      {channelStatus.channel24 &&
+        <Column title='2.4 GHz'
+          dataIndex='channel24'
+          render={
+            (value) => <>
+              {transformDisplayText(value)}
+            </>
+          } />}
+      {channelStatus.channel50 &&
+        <Column title='5 GHz'
+          dataIndex='channel50'
+          render={
+            (value) => <>
+              {transformDisplayText(value)}
+            </>
+          } />}
+
+      {channelStatus.channelL50 &&
+        <Column title='LO 5 GHz'
+          dataIndex='channelL50'
+          render={
+            (value) => <>
+              {transformDisplayText(value)}
+            </>
+          } />}
+
+      {channelStatus.channelU50 &&
+        <Column title='HI 5 GHz'
+          dataIndex='channelU50'
+          render={
+            (value) => <>
+              {transformDisplayText(value)}
+            </>
+          } />}
+
+      {channelStatus.channel60 &&
+        <Column title='6 GHz'
+          dataIndex='channel60'
+          render={
+            (value) => <>
+              {transformDisplayText(value)}
+            </>
+          } />}</>)
+  }
+
   return (
     <Loader states={[tableQuery]}>
       <Table dataSource={tableData}
@@ -77,9 +143,13 @@ export function Aps () {
           dataIndex='deviceStatus'
           sorter={true}
           render={(value) => (
-            <>
-              {transformApStatus(value, APView.AP_LIST)}
-            </>
+            <UI.StatusColumn>
+              <UI.DeviceStatusIcon
+                color={transformApStatus(value,
+                  APView.AP_LIST).deviceStatus}>
+              </UI.DeviceStatusIcon>
+              <div>{transformApStatus(value, APView.AP_LIST).message}</div>
+            </UI.StatusColumn>
           )} />
         <Column title='Model' dataIndex='model' sorter={true} />
         <Column title='IP Address' dataIndex='IP' />
@@ -104,8 +174,7 @@ export function Aps () {
           } />
         <Column title='AP Group' dataIndex='deviceGroupName' sorter={true} />
         <ColumnGroup title='RF Channels'>
-          <Column title='2.4 GHz' dataIndex='apStatusData' key='firstName' />
-          <Column title='5 GHz' dataIndex='apStatusData' key='deviceStatus' />
+          {getChannelColumn()}
         </ColumnGroup>
         <Column title='Tags' dataIndex='tags' sorter={true} />
         <Column title='Serial Number' dataIndex='serialNumber' sorter={true} />

@@ -52,3 +52,16 @@ export enum APMeshRole {
   EMAP = 'EMAP',
   DISABLED = 'DISABLED'
 }
+
+export enum DeviceConnectionStatus {
+  DISCONNECTED = 'Disconnected',
+  ALERTING = 'Alerting',
+  CONNECTED = 'Connected',
+  INITIAL = 'Initial'
+}
+
+export enum ApRadioBands {
+  band24 = '2.4G',
+  band50 = '5G',
+  band60 = '6G'
+}

@@ -1,9 +1,16 @@
 
+export interface APRadio {
+  channel: number,
+  band: string,
+  radioId: number,
+  txPower: string,
+  Rssi: string
+}
 export interface ApList {
   IP: string
   apMac: string
-  apStatus: {
-    APRadio: []
+  apStatusData?: {
+    APRadio?: Array<APRadio>
   },
   clients: number,
   deviceGroupId: string,
