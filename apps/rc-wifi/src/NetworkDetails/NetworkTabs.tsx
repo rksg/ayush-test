@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import { Tabs } from 'antd'
 
 import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
@@ -7,9 +5,6 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 function NetworkTabs () {
   const params = useParams()
-  const [ apsCount, setApsCount ] = useState(0)
-  const [ venuesCount, setVenuesCount ] = useState(0)
-  const [ servicesCount, setServicesCount ] = useState(0)
   const basePath = useTenantLink(`/networks/${params.networkId}/network-details/`)
   const navigate = useNavigate()
   const onTabChange = (tab: string) =>
@@ -20,13 +15,11 @@ function NetworkTabs () {
 
   const { data } = useNetworkDetailHeaderQuery({ params })
 
-  useEffect(()=>{
-    if (data) {
-      const source = JSON.parse(JSON.stringify(data))
-      setVenuesCount(source.activeVenueCount)
-      setApsCount(source.aps.totalApCount)
-    }
-  }, [data])
+  const [apsCount, venuesCount, servicesCount] = [
+    data?.aps.totalApCount ?? 0,
+    data?.activeVenueCount ?? 0,
+    0
+  ]
   
   return (
     <Tabs onChange={onTabChange} activeKey={params.networkId}>
