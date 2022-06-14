@@ -1,14 +1,11 @@
 import '@testing-library/jest-dom'
-import { render, screen }          from '@testing-library/react'
-import { rest }                    from 'msw'
-import { setupServer }             from 'msw/node'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { rest } from 'msw'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
+import { generatePath }                                          from '@acx-ui/react-router-dom'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { NetworkDetails } from './NetworkDetails'
-
 
 const network = {
   type: 'aaa',
@@ -31,25 +28,29 @@ const network = {
   id: '373377b0cb6e46ea8982b1c80aabe1fa'
 }
 
-const server = setupServer(
-  rest.post(CommonUrlsInfo.getNetwork.url, (req, res, ctx) => {
-    return res(ctx.json({ data: network }))
-  })
-)
 describe('NetworkDetails', () => {
   it('should render correctly', async () => {
-    server.use(
-      rest.post(CommonUrlsInfo.getNetwork.url, (req, res, ctx) => {
-        return res(ctx.json({ data: network }))
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
+    }
+    mockServer.use(
+      rest.get(generatePath(CommonUrlsInfo.getNetwork.url, params), (req, res, ctx) => {
+        return res(ctx.json(network))
       })
     )
-    const { asFragment } = render(
-      <Provider><Router><NetworkDetails></NetworkDetails></Router></Provider>
-    )
+    const { asFragment } = render(<NetworkDetails />, {
+      route: { params, path: '/:tenantId/:networkId' },
+      store: true
+    })
 
-    // await screen.findByText('testNetwork')
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    expect(screen.getByText('testNetwork')).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(6)
+
     expect(asFragment()).toMatchSnapshot()
-    const tabs = screen.getAllByRole('tab')
-    expect(tabs).toHaveLength(6)
   })
 })
