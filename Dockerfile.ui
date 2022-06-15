@@ -21,6 +21,7 @@ COPY .eslintignore \
 COPY .storybook ./.storybook
 COPY apps ./apps
 COPY libs ./libs
+COPY tools/tests ./tools/tests
 
 # dump git information
 ARG ENV_FILE
