@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 
-import { dataApiURL }                  from '@acx-ui/analytics/services'
-import { Provider, store }             from '@acx-ui/store'
-import { mockRTKQuery, mockAutoSizer } from '@acx-ui/test-utils'
+import { dataApiURL }                      from '@acx-ui/analytics/services'
+import { Provider, store }                 from '@acx-ui/store'
+import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 
 import { api, TrafficByVolumeData } from './services'
 
@@ -37,7 +37,7 @@ describe('TrafficByVolumeWidget', () => {
         }
       }
     }
-    mockRTKQuery(dataApiURL, 'widget_trafficByVolume', {
+    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
       data: expectedResult
     })
     const { asFragment } = render(
@@ -59,7 +59,7 @@ describe('TrafficByVolumeWidget', () => {
     afterAll(() => jest.resetAllMocks())
 
     it('should render error', async () => {
-      mockRTKQuery(dataApiURL, 'widget_trafficByVolume', {
+      mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
         error: new Error('something went wrong!')
       })
       render(

@@ -1,70 +1,66 @@
 import React from 'react'
 
-import { render, screen }      from '@testing-library/react'
-import { createMemoryHistory } from 'history'
-import { Router }              from 'react-router-dom'
+import { render, screen, waitForElementToBeRemoved, cleanup } from '@testing-library/react'
+import { createMemoryHistory }                                from 'history'
+import { Router }                                             from 'react-router-dom'
 
-import { Provider } from '@acx-ui/store'
+import { CommonUrlsInfo }   from '@acx-ui/rc/utils'
+import { Provider }         from '@acx-ui/store'
+import { mockRestApiQuery } from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
-
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: jest.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: jest.fn(), // deprecated
-    removeListener: jest.fn(), // deprecated
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn()
-  }))
-})
 
 jest.mock('./App/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
-jest.mock('./App/Analytics', () => () => {
+jest.mock('analytics/Routes', () => () => {
   return <div data-testid='analytics' />
-})
-jest.mock('./App/Networks', () => () => {
+},{ virtual: true })
+jest.mock('rc-wifi/Routes', () => () => {
   return <div data-testid='networks' />
-})
+},{ virtual: true })
 
-test('should navigate to dashboard', () => {
+describe('AllRoutes', () => {
   const history = createMemoryHistory()
-  history.push('/t/tenantId/dashboard')
-  render(
-    <Router location={history.location} navigator={history}>
-      <Provider>
-        <AllRoutes />
-      </Provider>
-    </Router>
-  )
-  screen.getByTestId('dashboard')
-})
-test('should navigate to analytics', () => {
-  const history = createMemoryHistory()
-  history.push('/t/tenantId/analytics')
-  render(
-    <Router location={history.location} navigator={history}>
-      <Provider>
-        <AllRoutes />
-      </Provider>
-    </Router>
-  )
-  screen.getByTestId('analytics')
-})
-test('should navigate to networks', () => {
-  const history = createMemoryHistory()
-  history.push('/t/tenantId/networks')
-  render(
-    <Router location={history.location} navigator={history}>
-      <Provider>
-        <AllRoutes />
-      </Provider>
-    </Router>
-  )
-  screen.getByTestId('networks')
+  beforeEach(() => {
+    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url.replace(':',''), 'http', 'get', {})
+  })
+  afterEach(cleanup)
+  test('should navigate to dashboard', async () => {
+    history.push('/t/tenantId/dashboard')
+    render(
+      <Router location={history.location} navigator={history}>
+        <Provider>
+          <AllRoutes />
+        </Provider>
+      </Router>
+    )
+    await screen.findByTestId('dashboard')
+  })
+  test('should navigate to analytics/*', async () => {
+    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url.replace(':',''), 'http', 'get', {})
+    history.push('/t/tenantId/analytics/some-page')
+    render(
+      <Router location={history.location} navigator={history}>
+        <Provider>
+          <AllRoutes />
+        </Provider>
+      </Router>
+    )
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await screen.findByTestId('analytics')
+  })
+  test('should navigate to networks/*', async () => {
+    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url.replace(':',''), 'http', 'get', {})
+    history.push('/t/tenantId/networks/some-page')
+    render(
+      <Router location={history.location} navigator={history}>
+        <Provider>
+          <AllRoutes />
+        </Provider>
+      </Router>
+    )
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await screen.findByTestId('networks')
+  })
 })

@@ -5,6 +5,7 @@
     "analytics-services": "libs/analytics/services",
     "analytics-utils": "libs/analytics/utils",
     "common-components": "libs/common/components",
+    "common-feature-toggle": "libs/common/feature-toggle",
     "common-icons": "libs/common/icons",
     "common-store": "libs/common/store",
     "common-types": "libs/common/types",

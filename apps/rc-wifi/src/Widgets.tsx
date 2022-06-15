@@ -1,6 +1,6 @@
 import { Card }              from '@acx-ui/components'
+import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import { Provider }          from '@acx-ui/store'
-import { useSplitTreatment } from '@acx-ui/utils'
 
 const SPLIT_NAME = 'sara-demo-toggle' // this is sample splitName, needs to be switched based on the epic level FF name
 

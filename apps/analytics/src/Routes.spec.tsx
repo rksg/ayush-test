@@ -4,7 +4,7 @@ import { Router }              from 'react-router-dom'
 
 import AnalyticsRoutes from './Routes'
 
-test('should navigate to analytics/incidents', async () => {
+test('should navigate to analytics/incidents', () => {
   const history = createMemoryHistory()
   history.push('/t/tenantId/analytics/incidents')
   render(
@@ -14,7 +14,7 @@ test('should navigate to analytics/incidents', async () => {
   )
   screen.getByText('Incidents')
 })
-test('should navigate to analytics/recommendations', async () => {
+test('should navigate to analytics/recommendations', () => {
   const history = createMemoryHistory()
   history.push('/t/tenantId/analytics/recommendations')
   render(
@@ -24,7 +24,7 @@ test('should navigate to analytics/recommendations', async () => {
   )
   screen.getByText('Recommendations')
 })
-test('should navigate to analytics/health', async () => {
+test('should navigate to analytics/health', () => {
   const history = createMemoryHistory()
   history.push('/t/tenantId/analytics/health')
   render(
@@ -34,7 +34,7 @@ test('should navigate to analytics/health', async () => {
   )
   screen.getByText('Health')
 })
-test('should navigate to analytics/configChange', async () => {
+test('should navigate to analytics/configChange', () => {
   const history = createMemoryHistory()
   history.push('/t/tenantId/analytics/configChange')
   render(
@@ -44,7 +44,7 @@ test('should navigate to analytics/configChange', async () => {
   )
   screen.getByText('Config Change')
 })
-test('should navigate to analytics/occupancy', async () => {
+test('should navigate to analytics/occupancy', () => {
   const history = createMemoryHistory()
   history.push('/t/tenantId/analytics/occupancy')
   render(
