@@ -63,6 +63,8 @@ export function MultipleSorterTable () {
       columns={basicColumns}
       dataSource={basicData}
       title={() => 'Multiple Sorter'}
+      options={false}
+      search={false}
     />
   )
 }

@@ -80,14 +80,58 @@ const rotatedStyle = css`
   }
 `
 
+const selectableStyle = css`
+  .ant-table {
+    &-thead > tr > th {
+      font-size: var(--acx-subtitle-4-font-size);
+      line-height: var(--acx-subtitle-4-line-height);
+      font-weight: 600;
+    }
+
+    &-tbody > tr > td {
+      font-size: var(--acx-body-4-font-size);
+      line-height: var(--acx-body-4-line-height);
+    }
+
+    .ant-table-tbody > tr.ant-table-row-selected > td {
+      background: none;
+    }
+  }
+
+  .ant-pro-table {
+    .ant-pro-table-alert {
+      margin: 0px;
+    }
+
+    .ant-alert {
+      padding-left: 16px;
+    }
+
+    .ant-pro-table-alert-info {
+      font-size: var(--acx-body-4-font-size);
+      line-height: var(--acx-body-4-line-height);
+
+      &-content > span > a {
+        color: red;
+      }
+    }
+
+    .ant-alert-content {
+      display: flex;
+      justify-content: flex-start;
+    }
+  }
+`
+
 const styles = {
   tall: tallStyle,
   compact: compactStyle,
-  rotated: rotatedStyle
+  rotated: rotatedStyle,
+  selectable: selectableStyle
 }
 
 /* eslint-disable max-len */
-export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' }>`
+export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' | 'selectable' }>`
   .ant-table {
     &-thead > tr > th {
       background: transparent;

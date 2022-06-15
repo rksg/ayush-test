@@ -58,6 +58,8 @@ export function RotatedTable () {
       dataSource={basicData}
       title={() => 'Rotated'}
       type={'rotated'}
+      options={false}
+      search={false}
     />
   )
 }

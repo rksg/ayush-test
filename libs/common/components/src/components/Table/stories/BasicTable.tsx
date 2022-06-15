@@ -39,6 +39,8 @@ export function BasicTable () {
       columns={basicColumns}
       dataSource={basicData}
       title={() => 'Basic'}
+      options={false}
+      search={false}
     />
   )
 }

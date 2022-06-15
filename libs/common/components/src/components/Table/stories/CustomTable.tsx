@@ -52,6 +52,8 @@ export function CustomTable () {
       columns={customColumns}
       dataSource={customData}
       title={() => 'With Custom Cell'}
+      options={false}
+      search={false}
     />
   )
 }

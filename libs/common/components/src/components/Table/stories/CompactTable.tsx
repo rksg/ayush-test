@@ -46,6 +46,8 @@ export function CompactTable () {
       dataSource={basicData}
       title={() => 'Compact'}
       type={'compact'}
+      options={false}
+      search={false}
     />
   )
 }
