@@ -21,6 +21,14 @@ COPY .eslintignore \
 COPY .storybook ./.storybook
 COPY apps ./apps
 COPY libs ./libs
+COPY tools/tests ./tools/tests
+
+# dump git information
+ARG ENV_FILE
+COPY ${ENV_FILE} .
+RUN export $(cat ${ENV_FILE}) \
+    && echo NX_GIT_SHA=$DRONE_COMMIT_SHA >> .env \
+    && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
 ###############################################################
 
