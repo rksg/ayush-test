@@ -40,6 +40,8 @@ const columns: TableProps<Network>['columns'] = [
     title: 'Venues',
     dataIndex: 'venues',
     sorter: true,
+    align: 'center',
+    className: 'ant-table-column-al-center',
     render: function (data, row) {
       return (
         <TenantLink
@@ -53,6 +55,8 @@ const columns: TableProps<Network>['columns'] = [
     title: 'APs',
     dataIndex: 'aps',
     sorter: true,
+    align: 'center',
+    className: 'ant-table-column-al-center',
     render: function (data, row) {
       return (
         <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
@@ -62,7 +66,16 @@ const columns: TableProps<Network>['columns'] = [
   {
     title: 'Clients',
     dataIndex: 'clients',
-    sorter: true
+    sorter: true,
+    align: 'center',
+    className: 'ant-table-column-al-center',
+  },
+  {
+    title: 'Services',
+    dataIndex: 'services',
+    sorter: true,
+    align: 'center',
+    className: 'ant-table-column-al-center',
   },
   {
     title: 'VLAN',
@@ -71,6 +84,16 @@ const columns: TableProps<Network>['columns'] = [
     render: function (data, row) {
       return transformVLAN(row)
     }
+  },
+  {
+    title: 'Health',
+    dataIndex: 'health',
+    sorter: true
+  },
+  {
+    title: 'Tags',
+    dataIndex: 'tags',
+    sorter: true
   }
 ]
 

@@ -104,6 +104,15 @@ export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' }>`
 
       .ant-table-column-title { flex: unset; }
 
+      &.ant-table-column-al-center {
+        .ant-table-column-sorters {
+          justify-content: center;
+        }
+        .ant-table-column-sorter {
+          width: 0;
+        }
+      }
+
       .ant-table-column-sorter {
         --icon-size: 11px;
 
