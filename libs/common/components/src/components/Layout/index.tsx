@@ -4,13 +4,13 @@ import React, { useState } from 'react'
 import ProLayout   from '@ant-design/pro-layout'
 import { isEmpty } from 'lodash'
 
+import { Logo }   from '@acx-ui/icons'
 import {
   NavLink,
   useLocation,
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import { ReactComponent as Logo } from '../../assets/Logo.svg'
 
 import * as UI from './styledComponents'
 
