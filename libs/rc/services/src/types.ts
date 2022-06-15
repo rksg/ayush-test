@@ -1,8 +1,9 @@
-import {
-  GuestNetworkTypeEnum,
-  WlanSecurityEnum
-} from '@acx-ui/rc/utils'
+import { GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
+export interface CommonResult {
+  requestId: string
+  response?:{}
+}
 export interface Network {
   id: string
   name: string
@@ -21,6 +22,14 @@ export interface Network {
   }
   vlanPool?: { name: string }
   // cog ??
+}
+
+export interface NetworkDetail {
+  type: string
+  tenantId: string
+  name: string
+  venues: { venueId: string, id: string }[]
+  id: string
 }
 
 export interface Venue {
@@ -66,14 +75,17 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
-
-interface SettingValue {
-  [key: string]: string;
+export interface UserSettings { 
+  [key: string]: string 
 }
 
-export interface UserSettings {
-  WIFI: SettingValue;
-  SWITCH: SettingValue;
-  LTE: SettingValue;
-  COMMON: SettingValue;
+export interface Dashboard {
+  summary: {
+    alarms: {
+      totalCount: number
+      summary? : {
+        clear: number
+      }
+    }
+  }
 }

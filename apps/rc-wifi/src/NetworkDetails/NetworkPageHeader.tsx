@@ -8,7 +8,7 @@ function NetworkPageHeader () {
   const network = useGetNetwork()
   return (
     <PageHeader
-      title={network.data?.name}
+      title={network.data?.name || ''}
       breadcrumb={[
         { text: 'Networks', link: '/networks' }
       ]}

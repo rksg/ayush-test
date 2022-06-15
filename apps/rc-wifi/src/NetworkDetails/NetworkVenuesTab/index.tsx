@@ -69,7 +69,7 @@ export function NetworkVenuesTab () {
     if (tableQuery.data && networkQuery.data) {
       const data: React.SetStateAction<Venue[]> = []
       tableQuery.data.data.forEach(item => {
-        const activatedVenue = networkQuery.data.venues?.find(
+        const activatedVenue = networkQuery.data?.venues?.find(
           (i: { venueId: string }) => i.venueId === item.id
         )
         data.push({
@@ -116,8 +116,8 @@ export function NetworkVenuesTab () {
     }
 
     let deactivateNetworkVenueId = ''
-    if (!checked && network.venues) {
-      network.venues.forEach((venue: { venueId: any; id: any }) => {
+    if (!checked && network?.venues) {
+      network?.venues.forEach((venue: { venueId: string; id: string }) => {
         if (venue.venueId === row.id || venue.id === row.id) {
           deactivateNetworkVenueId = venue.id
         }

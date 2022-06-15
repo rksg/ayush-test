@@ -9,7 +9,7 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 
-import { Network, Venue } from './types'
+import { Network, Venue, NetworkDetail, CommonResult, Dashboard } from './types'
 
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -41,7 +41,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
-    createNetwork: build.mutation<any, RequestPayload>({
+    createNetwork: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
         const createNetworkReq = createHttpRequest(CommonUrlsInfo.addNetworkDeep, params)
         return {
@@ -51,7 +51,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: ['Network']
     }),
-    addNetworkVenue: build.mutation<any, RequestPayload>({
+    addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addNetworkVenue, params)
         return {
@@ -61,7 +61,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'detail' }]
     }),
-    deleteNetworkVenue: build.mutation<any, RequestPayload>({
+    deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.deleteNetworkVenue, params)
         return {
@@ -70,7 +70,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'detail' }]
     }),
-    getNetwork: build.query<any, RequestPayload>({
+    getNetwork: build.query<NetworkDetail, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getNetwork, params)
         return{
@@ -95,7 +95,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return result
       }
     }),
-    dashboardOverview: build.query<any, RequestPayload>({
+    dashboardOverview: build.query<Dashboard, RequestPayload>({
       query: ({ params }) => {
         const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
         return{

@@ -6,6 +6,8 @@ import {
   RequestPayload
 } from '@acx-ui/rc/utils'
 
+import { UserSettings } from './types'
+
 export const baseUserApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'userApi',
@@ -15,7 +17,7 @@ export const baseUserApi = createApi({
 
 export const userApi = baseUserApi.injectEndpoints({
   endpoints: (build) => ({
-    getAllUserSettings: build.query<any, RequestPayload>({
+    getAllUserSettings: build.query<UserSettings, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           CommonUrlsInfo.getAllUserSettings,
@@ -25,7 +27,7 @@ export const userApi = baseUserApi.injectEndpoints({
           ...req
         }
       },
-      transformResponse (userSettings: any) {
+      transformResponse (userSettings: UserSettings) {
         let result:{[key: string]: string} = {}
         Object.keys(userSettings).forEach((key: string) => {
           result[key] = JSON.parse(userSettings[key])
