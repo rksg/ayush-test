@@ -68,14 +68,14 @@ const columns: TableProps<Network>['columns'] = [
     dataIndex: 'clients',
     sorter: true,
     align: 'center',
-    className: 'ant-table-column-al-center',
+    className: 'ant-table-column-al-center'
   },
   {
     title: 'Services',
     dataIndex: 'services',
     sorter: true,
     align: 'center',
-    className: 'ant-table-column-al-center',
+    className: 'ant-table-column-al-center'
   },
   {
     title: 'VLAN',
