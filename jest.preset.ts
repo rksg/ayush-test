@@ -15,6 +15,5 @@ module.exports = {
     '!<rootDir>/src/**/stories/*',
     '!<rootDir>/src/theme/modify-vars.js'
   ],
-  roots: ['<rootDir>', `${__dirname}/tools/tests`],
   setupFilesAfterEnv: [`${__dirname}/jest.setup.js`]
 }
