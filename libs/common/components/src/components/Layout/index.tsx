@@ -54,7 +54,7 @@ export function Layout ({
   })))
 
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
-    const path = (item.routes ? item.routes[0].path : item.path) || ''
+    const path = item.routes ? item.routes[0].path : item.path
     return <NavLink to={path}>
       {({ isActive }) => {
         const Icon = isActive ? item.enableIcon : item.disableIcon

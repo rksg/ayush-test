@@ -1,10 +1,36 @@
 import '@testing-library/jest-dom'
-import { render }        from '@testing-library/react'
-import { BrowserRouter } from 'react-router-dom'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { BrowserRouter }             from 'react-router-dom'
 
 import menuConfig from './stories/menuConfig'
 
 import { Layout } from '.'
+
+// TODO: mock icons for now, should use other way to mock svg
+jest.mock('@acx-ui/icons', ()=>({
+  Logo: () => <div data-testid='logo'/>,
+  ArrowChevronLeft: () => <div data-testid='arrow-left'/>,
+  ArrowChevronRight: () => <div data-testid='arrow-right'/>,
+  AI: () => <div data-testid='ai'/>,
+  AccountCircleOutlined: () => <div data-testid='acccount-circle-outlined'/>,
+  AccountCircleSolid: () => <div data-testid='acccount-circle-solid'/>,
+  CalendarDateOutlined: () => <div data-testid='calendar-date-outlined'/>,
+  CalendarDateSolid: () => <div data-testid='calendar-date-solid'/>,
+  ConfigurationOutlined: () => <div data-testid='configuration-outlined'/>,
+  ConfigurationSolid: () => <div data-testid='configuration-solid'/>,
+  DevicesOutlined: () => <div data-testid='devices-outlined'/>,
+  DevicesSolid: () => <div data-testid='devices-solid'/>,
+  LocationOutlined: () => <div data-testid='location-outlined'/>,
+  LocationSolid: () => <div data-testid='location-solid'/>,
+  NetworksOutlined: () => <div data-testid='networks-outlined'/>,
+  NetworksSolid: () => <div data-testid='networks-solid'/>,
+  ReportsOutlined: () => <div data-testid='reports-outlined'/>,
+  ReportsSolid: () => <div data-testid='reports-solid'/>,
+  ServicesOutlined: () => <div data-testid='services-outlined'/>,
+  ServicesSolid: () => <div data-testid='services-solid'/>,
+  SpeedIndicatorOutlined: () => <div data-testid='speed-indicator-outlined'/>,
+  SpeedIndicatorSolid: () => <div data-testid='speed-indicator-solid'/>
+}), { virtual: true })
 
 describe('Layout', () => {
   it('should render correctly', async () => {
@@ -18,6 +44,37 @@ describe('Layout', () => {
         />
       </BrowserRouter>
     )
+    await screen.findByTestId('logo')
     expect(asFragment()).toMatchSnapshot()
+  })
+  it('should collapsed', async () => {
+    render(
+      <BrowserRouter>
+        <Layout
+          menuConfig={menuConfig}
+          rightHeaderContent={<div>Right header</div>}
+          leftHeaderContent={<div>Left header</div>}
+          content={<div>content</div>}
+        />
+      </BrowserRouter>
+    )
+    await screen.findByTestId('logo')
+    fireEvent.click(screen.getByText('Collapse'))
+    await screen.findByTestId('arrow-right')
+  })
+  it('should render corresponding icons', async () => {
+    render(
+      <BrowserRouter>
+        <Layout
+          menuConfig={menuConfig}
+          rightHeaderContent={<div>Right header</div>}
+          leftHeaderContent={<div>Left header</div>}
+          content={<div>content</div>}
+        />
+      </BrowserRouter>
+    )
+    await screen.findByTestId('logo')
+    fireEvent.click(screen.getByTestId('acccount-circle-outlined'))
+    await screen.findByTestId('acccount-circle-solid')
   })
 })
