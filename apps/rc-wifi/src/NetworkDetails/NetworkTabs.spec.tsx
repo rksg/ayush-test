@@ -1,15 +1,25 @@
 import '@testing-library/jest-dom'
-import { render, screen }          from '@testing-library/react'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { rest } from 'msw'
 
-import { Provider } from '@acx-ui/store'
+import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
+import { generatePath }               from '@acx-ui/react-router-dom'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import NetworkTabs from './NetworkTabs'
 
 describe('NetworkTabs', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><Router><NetworkTabs></NetworkTabs></Router></Provider>)
-    
+    const params = { networkId: 'network-id', tenantId: 'tenant-id' }
+    const url = generatePath(CommonUrlsInfo.getNetworksDetailHeader.url, params)
+    mockServer.use(
+      rest.get(url, (req, res, ctx) => res(ctx.json({})))
+    )
+
+    const { asFragment } = render(<NetworkTabs />, {
+      route: { params },
+      store: true
+    })
+
     expect(asFragment()).toMatchSnapshot()
     await screen.findByText('Overview')
     await screen.findByText('APs (0)')
