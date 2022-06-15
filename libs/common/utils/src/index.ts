@@ -1,1 +1,5 @@
 export * from './formatter'
+export * from './splitio/types'
+export * from './splitio/useSplitTreatment'
+export * from './splitio/useSplitTreatmentWithConfig'
+export * from './splitio/SplitProvider'
