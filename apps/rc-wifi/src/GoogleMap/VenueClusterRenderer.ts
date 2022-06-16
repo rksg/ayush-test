@@ -1,6 +1,5 @@
 import { Cluster, Renderer } from '@googlemaps/markerclusterer'
 
-
 import { cssStr } from '@acx-ui/components'
 
 import greenClusterDefaultIcon from '../assets/GreenClusterDefault.svg'
