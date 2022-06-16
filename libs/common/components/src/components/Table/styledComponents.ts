@@ -110,39 +110,31 @@ const selectableStyle = css`
     .ant-pro-table-alert-info {
       font-size: var(--acx-body-4-font-size);
       line-height: var(--acx-body-4-line-height);
-
-      &-option {
-        padding-left: 32px;
-      }
     }
 
-    // .ant-pro-table-alert-info-content {
-    //   a {
-    //     width: 12px;
-    //     height: 12px;
-    //     background-color: var(--acx-accents-blue-50);
-    //     color: var(--acx-primary-white);
-    //     border-radius: 90px;
-    //     display: inline-flex;
-    //     justify-content: center;
-    //     align-items: center;
-    //   }
-    // }
-
-    .ant-pro-table-alert-info-option {
-      div {
-        color: var(--acx-neutrals-40);
-        font-weight: 400;
+    &-alert-info-content {
+      span {
+        padding-right: 40px;
       }
 
-      a {
+      .alert-options {
         font-weight: 600;
       }
-    }
 
-    .ant-alert-content {
-      display: flex;
-      justify-content: flex-start;
+      .options-divider {
+        color: var(--acx-neutrals-40);
+      }
+
+      .table-alert-close-button {
+        width: 12px;
+        height: 12px;
+        background-color: var(--acx-accents-blue-50);
+        color: var(--acx-primary-white);
+        border-radius: 15px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+      }
     }
   }
 `

@@ -18,7 +18,7 @@ export interface TableProps <RecordType>
 type ActionListItem = {
   key: number,
   label: string,
-  onClick: () => void // should have type from basicData
+  onClick: () => void
 }
 
 export function Table <RecordType extends object> (
@@ -51,22 +51,25 @@ export function Table <RecordType extends object> (
         (type === 'selectable' && { defaultSelectedRowKeys: [] }) ||
         (type === 'singleSelect' && { defaultSelectedRowKeys: [], type: 'radio' })
       }
-      tableAlertRender={({selectedRowKeys, selectedRows, onCleanSelected}) => (
+      tableAlertRender={({selectedRowKeys, onCleanSelected}) => (
         <>
           <Space>
             <span>
               {selectedRowKeys.length} selected
-              <a style={{ marginLeft: 8 }} onClick={onCleanSelected}>
+              <a className='table-alert-close-button' style={{ marginLeft: 8 }} onClick={onCleanSelected}>
                 x
               </a>
             </span>
           </Space>
-          <Space>
+          <Space size={12}>
             {
               props.alertOptions?.map(option => 
-                <a onClick={()=>option.onClick()} key={option.key}>
-                  {option.label}
-                </a>
+                <>
+                  <a onClick={()=>option.onClick()} key={option.key} className='alert-options'>
+                    {option.label}
+                  </a>
+                  <div className='options-divider'>|</div>
+                </>
               )
             }
           </Space>
