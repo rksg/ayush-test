@@ -1,17 +1,25 @@
-import { Table as AntTable, Space } from 'antd'
+import { Space } from 'antd'
 import ProTable from '@ant-design/pro-table'
-import type { ProColumns, ProTableProps as AntProTableProps } from '@ant-design/pro-table'
-
+import type { ProColumns } from '@ant-design/pro-table'
 import * as UI from './styledComponents'
 
 import type { TableProps as AntTableProps } from 'antd'
 export interface TableProps <RecordType>
-  extends Omit<AntTableProps<RecordType>, 'bordered'> {
+  extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' > {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'rotated' | 'selectable'
-    options?: true | false
-    search?: true | false
+    type?: 'tall' | 'compact' | 'rotated' | 'selectable' | 'singleSelect'
+    options?: false | undefined
+    search?: false | undefined
+    headerTitle?: String
+    columns: ProColumns<RecordType, 'text'>[] | undefined
+    alertOptions?: ActionListItem[]
   }
+
+type ActionListItem = {
+  key: number,
+  label: string,
+  onClick: () => void // should have type from basicData
+}
 
 export function Table <RecordType extends object> (
   { type = 'tall', ...props }: TableProps<RecordType>
@@ -30,12 +38,41 @@ export function Table <RecordType extends object> (
       }
     })
   }
+
   return <UI.Wrapper $type={type}>
     <ProTable<RecordType>
       {...props}
       bordered={false}
+      options={false}
+      search={false}
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
       columns={columns}
+      rowSelection={
+        (type === 'selectable' && { defaultSelectedRowKeys: [] }) ||
+        (type === 'singleSelect' && { defaultSelectedRowKeys: [], type: 'radio' })
+      }
+      tableAlertRender={({selectedRowKeys, selectedRows, onCleanSelected}) => (
+        <>
+          <Space>
+            <span>
+              {selectedRowKeys.length} selected
+              <a style={{ marginLeft: 8 }} onClick={onCleanSelected}>
+                x
+              </a>
+            </span>
+          </Space>
+          <Space>
+            {
+              props.alertOptions?.map(option => 
+                <a onClick={()=>option.onClick()} key={option.key}>
+                  {option.label}
+                </a>
+              )
+            }
+          </Space>
+        </> 
+      )}
+      tableAlertOptionRender={false}
     />
   </UI.Wrapper>
 }

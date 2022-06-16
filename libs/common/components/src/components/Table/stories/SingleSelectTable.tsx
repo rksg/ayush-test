@@ -30,15 +30,41 @@ const basicData = [
     name: 'Jane Doe',
     age: 33,
     address: 'new address'
+  },
+  {
+    key: '3',
+    name: 'Will Smith',
+    age: 45,
+    address: 'address'
   }
 ]
 
-export function BasicTable () {
+const actions = [
+  {
+    key: 11,
+    label: 'Edit',
+    onClick: ()=> { console.log('Edit') }
+  },
+  {
+    key: 12,
+    label: 'Delete',
+    onClick: ()=> { console.log('Delete') }
+  },
+  {
+    key: 13,
+    label: 'Mute',
+    onClick: ()=> { console.log('Mute') }
+  }
+]
+
+export function SingleSelectTable () {
   return (
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      title={() => 'Basic'}
+      alertOptions={actions}
+      headerTitle='Single Select'
+      type={'singleSelect'}
     />
   )
 }

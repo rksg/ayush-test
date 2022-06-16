@@ -1,4 +1,3 @@
-import { Space } from 'antd';
 import { Table } from '..'
 
 const basicColumns = [
@@ -40,34 +39,25 @@ const basicData = [
   }
 ]
 
+const actions = [
+  {
+    key: 11,
+    label: 'Edit',
+    onClick: ()=> { console.log('Edit') }
+  },
+  {
+    key: 12,
+    label: 'Delete',
+    onClick: ()=> { console.log('Delete') }
+  }
+]
+
 export function SelectableTable () {
   return (
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      rowSelection={{
-        defaultSelectedRowKeys: [],
-      }}
-      tableAlertRender={({ selectedRowKeys, onCleanSelected }) => (
-        <Space>
-          <span>
-            {selectedRowKeys.length} selected
-            <a style={{ marginLeft: 8 }} onClick={onCleanSelected}>
-              x
-            </a>
-          </span>
-        </Space>
-      )}
-      tableAlertOptionRender={() => (
-          <Space size={8}>
-            <a>Edit</a>
-            <a>|</a>
-            <a>Delete</a>
-          </Space>
-        )
-      }
-      options={false}
-      search={false}
+      alertOptions={actions}
       headerTitle='Selectable'
       type={'selectable'}
     />

@@ -111,8 +111,32 @@ const selectableStyle = css`
       font-size: var(--acx-body-4-font-size);
       line-height: var(--acx-body-4-line-height);
 
-      &-content > span > a {
-        color: red;
+      &-option {
+        padding-left: 32px;
+      }
+    }
+
+    // .ant-pro-table-alert-info-content {
+    //   a {
+    //     width: 12px;
+    //     height: 12px;
+    //     background-color: var(--acx-accents-blue-50);
+    //     color: var(--acx-primary-white);
+    //     border-radius: 90px;
+    //     display: inline-flex;
+    //     justify-content: center;
+    //     align-items: center;
+    //   }
+    // }
+
+    .ant-pro-table-alert-info-option {
+      div {
+        color: var(--acx-neutrals-40);
+        font-weight: 400;
+      }
+
+      a {
+        font-weight: 600;
       }
     }
 
@@ -127,11 +151,12 @@ const styles = {
   tall: tallStyle,
   compact: compactStyle,
   rotated: rotatedStyle,
-  selectable: selectableStyle
+  selectable: selectableStyle,
+  singleSelect: selectableStyle
 }
 
 /* eslint-disable max-len */
-export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' | 'selectable' }>`
+export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' | 'selectable' | 'singleSelect' }>`
   .ant-table {
     &-thead > tr > th {
       background: transparent;
