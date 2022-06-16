@@ -114,15 +114,21 @@ const selectableStyle = css`
 
     &-alert-info-content {
       span {
-        padding-right: 40px;
+        padding-right: 34px;
       }
 
       .alert-options {
         font-weight: 600;
+        padding-right: 12px;
+      }
+
+      .alert-option-span {
+        margin-bottom: 0;
       }
 
       .options-divider {
         color: var(--acx-neutrals-40);
+        padding-right: 10px;
       }
 
       .table-alert-close-button {
@@ -134,6 +140,7 @@ const selectableStyle = css`
         display: inline-flex;
         justify-content: center;
         align-items: center;
+        margin-left: 8px;
       }
     }
   }

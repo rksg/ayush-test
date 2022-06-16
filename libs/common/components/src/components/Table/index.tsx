@@ -1,9 +1,9 @@
-import { Space } from 'antd'
-import ProTable from '@ant-design/pro-table'
-import type { ProColumns } from '@ant-design/pro-table'
-import * as UI from './styledComponents'
-
+import { Space }                            from 'antd'
+import ProTable                             from '@ant-design/pro-table'
+import type { ProColumns }                  from '@ant-design/pro-table'
 import type { TableProps as AntTableProps } from 'antd'
+import * as UI                              from './styledComponents'
+
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' > {
     /** @default 'tall' */
@@ -56,20 +56,22 @@ export function Table <RecordType extends object> (
           <Space>
             <span>
               {selectedRowKeys.length} selected
-              <a className='table-alert-close-button' style={{ marginLeft: 8 }} onClick={onCleanSelected}>
+              <a className='table-alert-close-button' onClick={onCleanSelected} >
                 x
               </a>
             </span>
           </Space>
-          <Space size={12}>
+          <Space>
             {
-              props.alertOptions?.map(option => 
-                <>
-                  <a onClick={()=>option.onClick()} key={option.key} className='alert-options'>
+              props.alertOptions?.map((option, index) => 
+                <p key={option.key} className={'alert-option-span'}>
+                  <a onClick={()=>option.onClick()} className='alert-options'>
                     {option.label}
                   </a>
-                  <div className='options-divider'>|</div>
-                </>
+                  {(props.alertOptions
+                    && index + 1 < props?.alertOptions?.length)
+                    && <span className='options-divider' key={`optionsDivider${index}`}>|</span>}
+                </p>
               )
             }
           </Space>
