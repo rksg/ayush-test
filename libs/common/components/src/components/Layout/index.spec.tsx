@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import { fireEvent, render, screen } from '@testing-library/react'
-import { BrowserRouter }             from 'react-router-dom'
+
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import menuConfig from './stories/menuConfig'
 
@@ -34,45 +34,38 @@ jest.mock('@acx-ui/icons', ()=>({
 
 describe('Layout', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(
-      <BrowserRouter>
-        <Layout
-          menuConfig={menuConfig}
-          rightHeaderContent={<div>Right header</div>}
-          leftHeaderContent={<div>Left header</div>}
-          content={<div>content</div>}
-        />
-      </BrowserRouter>
-    )
+    const { asFragment } = render(<Layout
+      menuConfig={menuConfig}
+      rightHeaderContent={<div>Right header</div>}
+      leftHeaderContent={<div>Left header</div>}
+      content={<div>content</div>}
+    />, { route: true })
     await screen.findByTestId('logo')
     expect(asFragment()).toMatchSnapshot()
   })
   it('should collapsed', async () => {
-    render(
-      <BrowserRouter>
-        <Layout
-          menuConfig={menuConfig}
-          rightHeaderContent={<div>Right header</div>}
-          leftHeaderContent={<div>Left header</div>}
-          content={<div>content</div>}
-        />
-      </BrowserRouter>
-    )
+    render(<Layout
+      menuConfig={menuConfig}
+      rightHeaderContent={<div>Right header</div>}
+      leftHeaderContent={<div>Left header</div>}
+      content={<div>content</div>}
+    />, { route: true })
     await screen.findByTestId('logo')
     fireEvent.click(screen.getByText('Collapse'))
     await screen.findByTestId('arrow-right')
   })
   it('should render corresponding icons', async () => {
-    render(
-      <BrowserRouter>
-        <Layout
-          menuConfig={menuConfig}
-          rightHeaderContent={<div>Right header</div>}
-          leftHeaderContent={<div>Left header</div>}
-          content={<div>content</div>}
-        />
-      </BrowserRouter>
-    )
+    render(<Layout
+      menuConfig={menuConfig}
+      rightHeaderContent={<div>Right header</div>}
+      leftHeaderContent={<div>Left header</div>}
+      content={<div>content</div>}
+    />, {
+      route: {
+        path: '/t/:tenantId/:page',
+        params: { tenantId: 't-id', page: 'dashboard' }
+      }
+    })
     await screen.findByTestId('logo')
     fireEvent.click(screen.getByTestId('acccount-circle-outlined'))
     await screen.findByTestId('acccount-circle-solid')
