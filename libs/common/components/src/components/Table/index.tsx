@@ -12,7 +12,10 @@ export interface TableProps <RecordType>
 export function Table <RecordType extends object> (
   { type = 'tall', ...props }: TableProps<RecordType>
 ) {
-  let columns = props.columns
+  let columns = props.columns?.map((column)=>({
+    ...column,
+    ...(column.align && { className: `ant-table-column-al-${column.align}` })
+  }))
   if (type === 'rotated' && columns) {
     columns = columns.map(column => {
       if (column.sorter) return column

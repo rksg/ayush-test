@@ -113,6 +113,12 @@ export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' }>`
         }
       }
 
+      &.ant-table-column-al-right {
+        .ant-table-column-sorters {
+          justify-content: right;
+        }
+      }
+
       .ant-table-column-sorter {
         --icon-size: 11px;
 
