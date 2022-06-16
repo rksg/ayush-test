@@ -22,7 +22,7 @@ function NetworkTabs () {
   ]
   
   return (
-    <Tabs onChange={onTabChange} activeKey={params.networkId}>
+    <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab='Overview' key='overview' />
       <Tabs.TabPane tab={`APs (${apsCount})`} key='aps' />
       <Tabs.TabPane tab={`Venues (${venuesCount})`} key='venues' />

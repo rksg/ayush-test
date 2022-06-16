@@ -7,12 +7,18 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import NetworkTabs from './NetworkTabs'
 
+const networkDetailHeaderData = {
+  activeVenueCount: 1,
+  aps: {
+    totalApCount: 1
+  }
+}
 describe('NetworkTabs', () => {
   it('should render correctly', async () => {
     const params = { networkId: 'network-id', tenantId: 'tenant-id' }
     const url = generatePath(CommonUrlsInfo.getNetworksDetailHeader.url, params)
     mockServer.use(
-      rest.get(url, (req, res, ctx) => res(ctx.json({})))
+      rest.get(url, (req, res, ctx) => res(ctx.json(networkDetailHeaderData)))
     )
 
     const { asFragment } = render(<NetworkTabs />, {
