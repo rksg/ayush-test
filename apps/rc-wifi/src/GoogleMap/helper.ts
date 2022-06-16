@@ -72,8 +72,7 @@ function getSwitchClientCountByVenue (overviewData: DashboardOverview, venueId: 
   return _.get(overviewData, 'summary.switchClients.summary[' + venueId + ']') || 0
 }
 function getSwitchCountByVenue (overviewData: DashboardOverview, venueId: string): number {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const switchStat = (_.get(overviewData, 'switches.switchesStatus') || []).find((el: any) => {
+  const switchStat = (_.get(overviewData, 'switches.switchesStatus') || []).find((el: [string]) => {
     for (const key in el) {
       if (key === venueId) {
         return true
