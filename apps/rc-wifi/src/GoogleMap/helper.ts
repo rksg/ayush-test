@@ -49,11 +49,14 @@ export const massageVenuesData = (overviewData: DashboardOverview): VenueMarkerO
           operational = apStat[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]
         }
       }
-
+      let position
+      if(google) {
+        position = new google.maps.LatLng(val.latitude, val.longitude)
+      }
       venues.push({
         name: val.name,
         status: val.venueStatus,
-        position: new google.maps.LatLng(val.latitude, val.longitude),
+        position,
         venueId: venueId,
         clientsCount: overviewData?.summary?.clients?.summary[venueId],
         apStat: {
