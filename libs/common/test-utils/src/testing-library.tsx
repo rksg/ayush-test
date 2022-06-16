@@ -8,7 +8,10 @@ type CustomRenderOptions = RenderOptions & {
    * Wrap with MemoryRouter when set
    */
   route?: {
-    path: string
+    /**
+     * Default to keys of params
+     */
+    path?: string
     params?: Params
   }
 }
@@ -22,10 +25,13 @@ function customRender (
 ) {
   let wrappedUI = ui
   if (options?.route) {
-    const entry = generatePath(options.route.path, options.route.params ?? {})
+    const path = options.route.path ?? '/' + Object.keys(options.route.params ?? {})
+      .map(key => `:${key}`)
+      .join('/')
+    const entry = generatePath(path, options.route.params ?? {})
     wrappedUI = <MemoryRouter initialEntries={[entry]}>
       <Routes>
-        <Route path={options.route.path} element={wrappedUI} />
+        <Route path={path} element={wrappedUI} />
       </Routes>
     </MemoryRouter>
   }
