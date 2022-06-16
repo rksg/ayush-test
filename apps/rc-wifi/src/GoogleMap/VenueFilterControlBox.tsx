@@ -7,6 +7,9 @@ import { Tooltip } from '@acx-ui/components'
 import { ApVenueStatusEnum } from './constant'
 import * as UI               from './styledComponents'
 
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+
+
 export interface FilterState {
   [key: string]: boolean
   [ApVenueStatusEnum.REQUIRES_ATTENTION] : boolean
@@ -31,13 +34,15 @@ export default function VenueFilterControlBox (props: VenueFilterControlBoxProps
     [ApVenueStatusEnum.IN_SETUP_PHASE]: true,
     [ApVenueStatusEnum.OPERATIONAL]: true
   })
-  function onChange (e:any) {
-    filter[e.target.name] = !filter[e.target.name]
+
+  function onChange (e: CheckboxChangeEvent) {
+    filter[e.target.name!] = !filter[e.target.name!]
     setFilter(filter)
     if(props.onChange){
-      props.onChange({ key: e.target.name, value: filter[e.target.name] })
+      props.onChange({ key: e.target.name!, value: filter[e.target.name!] })
     }
   }
+
   return (
     <UI.VenueFilterContainer>
       <UI.FilterBoxTitle>Show</UI.FilterBoxTitle>
