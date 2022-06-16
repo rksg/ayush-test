@@ -1,56 +1,49 @@
-import { render, screen }      from '@testing-library/react'
-import { createMemoryHistory } from 'history'
-import { Router }              from 'react-router-dom'
+import { render, screen } from '@acx-ui/test-utils'
 
 import AnalyticsRoutes from './Routes'
 
 test('should navigate to analytics/incidents', () => {
-  const history = createMemoryHistory()
-  history.push('/t/tenantId/analytics/incidents')
-  render(
-    <Router location={history.location} navigator={history}>
-      <AnalyticsRoutes />
-    </Router>
-  )
+  render(<AnalyticsRoutes />, {
+    route: {
+      path: '/t/tenantId/analytics/incidents',
+      wrapRoutes: false
+    }
+  })
   screen.getByText('Incidents')
 })
 test('should navigate to analytics/recommendations', () => {
-  const history = createMemoryHistory()
-  history.push('/t/tenantId/analytics/recommendations')
-  render(
-    <Router location={history.location} navigator={history}>
-      <AnalyticsRoutes />
-    </Router>
-  )
+  render(<AnalyticsRoutes />, {
+    route: {
+      path: '/t/tenantId/analytics/recommendations',
+      wrapRoutes: false
+    }
+  })
   screen.getByText('Recommendations')
 })
 test('should navigate to analytics/health', () => {
-  const history = createMemoryHistory()
-  history.push('/t/tenantId/analytics/health')
-  render(
-    <Router location={history.location} navigator={history}>
-      <AnalyticsRoutes />
-    </Router>
-  )
+  render(<AnalyticsRoutes />, {
+    route: {
+      path: '/t/tenantId/analytics/health',
+      wrapRoutes: false
+    }
+  })
   screen.getByText('Health')
 })
 test('should navigate to analytics/configChange', () => {
-  const history = createMemoryHistory()
-  history.push('/t/tenantId/analytics/configChange')
-  render(
-    <Router location={history.location} navigator={history}>
-      <AnalyticsRoutes />
-    </Router>
-  )
+  render(<AnalyticsRoutes />, {
+    route: {
+      path: '/t/tenantId/analytics/configChange',
+      wrapRoutes: false
+    }
+  })
   screen.getByText('Config Change')
 })
 test('should navigate to analytics/occupancy', () => {
-  const history = createMemoryHistory()
-  history.push('/t/tenantId/analytics/occupancy')
-  render(
-    <Router location={history.location} navigator={history}>
-      <AnalyticsRoutes />
-    </Router>
-  )
+  render(<AnalyticsRoutes />, {
+    route: {
+      path: '/t/tenantId/analytics/occupancy',
+      wrapRoutes: false
+    }
+  })
   screen.getByText('Occupancy')
 })
