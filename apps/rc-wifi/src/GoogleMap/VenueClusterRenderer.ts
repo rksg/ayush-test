@@ -1,5 +1,8 @@
 import { Cluster, Renderer } from '@googlemaps/markerclusterer'
 
+
+import { cssStr } from '@acx-ui/components'
+
 import greenClusterDefaultIcon from '../assets/GreenClusterDefault.svg'
 import greenClusterHoverIcon   from '../assets/GreenClusterHover.svg'
 
@@ -17,12 +20,11 @@ export default class VenueClusterRenderer implements Renderer {
       },
       label: {
         text: String(count),
-        color: 'rgb(255,255,255)',
-        fontFamily: 'Source Sans Pro',
-        fontSize: '16px',
-        fontWeight: 'semibold'
+        color: cssStr('--acx-primary-white'),
+        fontFamily: cssStr('--acx-neutral-brand-font'),
+        fontSize: cssStr('--acx-body-2-font-size')
       },
-      title: `Cluster of ${count} markers`,
+      title: `Cluster of ${count} venues`,
       // adjust zIndex to be above other markers
       zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count
     })
