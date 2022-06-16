@@ -3,8 +3,6 @@ import { ReactElement } from 'react'
 import { render, RenderOptions }                             from '@testing-library/react'
 import { generatePath, MemoryRouter, Params, Route, Routes } from 'react-router-dom'
 
-import { Provider } from '@acx-ui/store'
-
 type CustomRenderOptions = RenderOptions & {
   /**
    * Wrap with MemoryRouter when set
@@ -13,10 +11,6 @@ type CustomRenderOptions = RenderOptions & {
     path: string
     params?: Params
   }
-  /**
-   * Wrap with store provider when set
-   */
-  store?: boolean
 }
 
 /**
@@ -35,7 +29,6 @@ function customRender (
       </Routes>
     </MemoryRouter>
   }
-  if (options?.store) wrappedUI = <Provider children={wrappedUI} />
   return render(wrappedUI, options)
 }
 
