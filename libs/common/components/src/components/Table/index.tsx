@@ -1,8 +1,11 @@
-import { Space }                            from 'antd'
-import ProTable                             from '@ant-design/pro-table'
+import ProTable  from '@ant-design/pro-table'
+import { Space } from 'antd'
+
+import * as UI from './styledComponents'
+
 import type { ProColumns }                  from '@ant-design/pro-table'
 import type { TableProps as AntTableProps } from 'antd'
-import * as UI                              from './styledComponents'
+
 
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' > {
@@ -51,7 +54,7 @@ export function Table <RecordType extends object> (
         (type === 'selectable' && { defaultSelectedRowKeys: [] }) ||
         (type === 'singleSelect' && { defaultSelectedRowKeys: [], type: 'radio' })
       }
-      tableAlertRender={({selectedRowKeys, onCleanSelected}) => (
+      tableAlertRender={({ selectedRowKeys, onCleanSelected }) => (
         <>
           <Space>
             <span>

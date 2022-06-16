@@ -43,12 +43,12 @@ const actions = [
   {
     key: 11,
     label: 'Edit',
-    onClick: ()=> { console.log('Edit') }
+    onClick: ()=> { console.log('Edit') } // eslint-disable-line
   },
   {
     key: 12,
     label: 'Delete',
-    onClick: ()=> { console.log('Delete') }
+    onClick: ()=> { console.log('Delete') } // eslint-disable-line
   }
 ]
 
