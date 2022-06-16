@@ -18,7 +18,7 @@ describe('NetworkTabs', () => {
     const params = { networkId: 'network-id', tenantId: 'tenant-id' }
     const url = generatePath(CommonUrlsInfo.getNetworksDetailHeader.url, params)
     mockServer.use(
-      await waitFor(() => rest.get(url, (req, res, ctx) => res(ctx.json(networkDetailHeaderData))))
+      rest.get(url, (req, res, ctx) => res(ctx.json(networkDetailHeaderData)))
     )
 
     const { asFragment } = render(<NetworkTabs />, {
@@ -26,12 +26,14 @@ describe('NetworkTabs', () => {
       store: true
     })
 
+    expect(asFragment()).toMatchSnapshot()
     await screen.findByText('Overview')
-    await screen.findByText('APs (1)')
-    await screen.findByText('Venues (1)')
+    await screen.findByText('APs (0)')
+    await screen.findByText('Venues (0)')
     await screen.findByText('Services (0)')
     await screen.findByText('Events')
     await screen.findByText('Incidents')
-    expect(asFragment()).toMatchSnapshot()
+    await waitFor(() => screen.findByText('APs (1)'))
+    await waitFor(() => screen.findByText('Venues (1)'))
   })
 })

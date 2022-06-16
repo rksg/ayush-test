@@ -41,7 +41,7 @@ exports[`NetworkTabs should render correctly 1`] = `
               role="tab"
               tabindex="0"
             >
-              APs (1)
+              APs (0)
             </div>
           </div>
           <div
@@ -55,7 +55,7 @@ exports[`NetworkTabs should render correctly 1`] = `
               role="tab"
               tabindex="0"
             >
-              Venues (1)
+              Venues (0)
             </div>
           </div>
           <div
@@ -102,7 +102,6 @@ exports[`NetworkTabs should render correctly 1`] = `
           </div>
           <div
             class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
-            style="left: 0px; width: 0px;"
           />
         </div>
       </div>
