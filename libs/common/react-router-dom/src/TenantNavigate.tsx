@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Navigate } from 'react-router-dom'
 
 import { useTenantLink  } from './useTenantLink'
