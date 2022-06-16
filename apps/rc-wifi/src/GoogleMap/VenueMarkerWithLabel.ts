@@ -5,6 +5,8 @@ export interface VenueMarkerOptions extends google.maps.MarkerOptions {
     status?: string;
     apsCount?: number;
     venueId?: string;
+    latitude?: number;
+    longitude?: number;
     apStat?: {
         [prop: string]: number
     };

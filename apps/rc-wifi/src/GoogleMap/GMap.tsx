@@ -93,7 +93,9 @@ const GMap: React.FC<MapProps> = ({
 
         const marker = new VenueMarkerWithLabel({
           labelContent: '',
-          position: venue.position,
+          position: (venue.latitude && venue.longitude) ?
+            new google.maps.LatLng(venue.latitude, venue.longitude):
+            venue.position,
           ...getIcon(svgMarkerDefault, scaledSize),
           visible: venue.visible
         }, {
