@@ -2,6 +2,7 @@ import React from 'react'
 
 import { SplitFactory } from '@splitsoftware/splitio-react'
 
+import { get }       from '@acx-ui/config'
 import { useParams } from '@acx-ui/react-router-dom'
 
 function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
@@ -11,7 +12,7 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
       featuresRefreshRate: 5 // 5 sec
     },
     core: {
-      authorizationKey: 's56i5harnvpksqb6a5kom1phqncj9d6ujf92', // TODO: will be addressed as part of Jira: ACX-8995, need to add secrets file variable SPLITIO_FF_KEY
+      authorizationKey: get('SPLIT_IO_KEY'),
       key: tenantId
     },
     storage: {
