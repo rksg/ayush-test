@@ -36,7 +36,8 @@ export type StepsFormProps <FormValue = any> =
     onCancel?: () => void
   }
 
-export type StepFormProps <FormValue> = Omit<ProAntStepFormProps<FormValue>, 'requiredMark'>
+export type StepFormProps <FormValue> = Omit<ProAntStepFormProps<FormValue>,
+  'requiredMark'|'children'> & { children?: React.ReactNode }
 
 type InternalStepFormProps <FormValue> = StepFormProps<FormValue> & {
   /**

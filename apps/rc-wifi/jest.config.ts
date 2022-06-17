@@ -6,5 +6,13 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/apps/rc-wifi'
+  coverageDirectory: '../../coverage/apps/rc-wifi',
+  coverageThreshold: {
+    global: {
+      statements: 5.21,
+      branches: 4.9,
+      functions: 4,
+      lines: 5.3
+    }
+  }
 }

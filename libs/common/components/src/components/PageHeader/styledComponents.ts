@@ -37,5 +37,8 @@ export const Wrapper = styled.div`
         }
       }
     }
+    .ant-tabs-tab + .ant-tabs-tab {
+      margin-left: 30px;
+    }
   }
 `
