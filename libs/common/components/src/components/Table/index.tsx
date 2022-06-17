@@ -21,7 +21,7 @@ export function Table <RecordType extends object> (
       return {
         ...column,
         title: typeof Title === 'function'
-          ? (props) => <UI.RotatedColumn children={<Title {...props} />} />
+          ? (props) => <UI.RotatedColumn children={Title(props)} />
           : <UI.RotatedColumn children={Title} />
       }
     })
