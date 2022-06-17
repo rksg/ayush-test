@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import Column      from 'antd/lib/table/Column'
 import ColumnGroup from 'antd/lib/table/ColumnGroup'
@@ -7,7 +7,7 @@ import {
   Loader,
   Table
 } from '@acx-ui/components'
-import { ApExtraParams, Filters, useApListQuery } from '@acx-ui/rc/services'
+import { Filters, useApListQuery } from '@acx-ui/rc/services'
 import {
   APMeshRole,
   APView,
@@ -29,7 +29,6 @@ const defaultPayload = {
     'fwVersion'
   ]
 }
-const defaultArray: any[] = []
 
 export function Aps (props: {
   filters: Filters;
@@ -41,24 +40,15 @@ export function Aps (props: {
       filters: props.filters
     }
   })
-  const [tableData, setTableData] = useState(defaultArray)
-  const [extraParams, setExtra] = useState<ApExtraParams>({
+
+  const tableData = tableQuery.data?.data ?? []
+  const extraParams = tableQuery.data?.extra ?? {
     channel24: true,
     channel50: false,
     channelL50: false,
     channelU50: false,
     channel60: false
-  })
-
-  useEffect(() => {
-    if (tableQuery.data) {
-      const data = tableQuery.data.data
-      const extra = tableQuery.data.extra
-
-      setTableData(data)
-      setExtra(extra)
-    }
-  }, [tableQuery.data])
+  }
 
   const transformMeshRole = (value: APMeshRole) => {
     let meshRole = ''
