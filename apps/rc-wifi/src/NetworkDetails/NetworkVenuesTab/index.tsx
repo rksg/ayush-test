@@ -210,7 +210,9 @@ export function NetworkVenuesTab () {
 
   return (
     <Loader states={[
-      tableQuery, { isLoading: isAddNetworkUpdating }, { isLoading: isDeleteNetworkUpdating }
+      tableQuery,
+      { isLoading: false, isFetching: isAddNetworkUpdating },
+      { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
         rowKey='id'
