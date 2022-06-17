@@ -1,8 +1,5 @@
-/* eslint-disable max-len */
-
-import { BulbOutlined, ClockCircleOutlined } from '@ant-design/icons'
-
-import { Button, PageHeader } from '@acx-ui/components'
+import { Button, PageHeader }                       from '@acx-ui/components'
+import { ArrowExpand, ClockOutlined, BulbOutlined } from '@acx-ui/icons'
 
 import NetworkTabs from './NetworkTabs'
 
@@ -13,12 +10,12 @@ function NetworkPageHeader () {
       breadcrumb={[
         { text: 'Networks', link: '/networks' }
       ]}
-      extra={<>
-        <Button><ClockCircleOutlined />Last 24 hours</Button>
-        <Button>Entire Organization</Button>
-        <Button type='primary'>Configure</Button>
+      extra={[
+        <Button><ClockOutlined />Last 24 hours</Button>,
+        <Button>Entire Organization <ArrowExpand /></Button>,
+        <Button type='primary'>Configure</Button>,
         <Button><BulbOutlined /></Button>
-      </>}
+      ]}
       footer={<NetworkTabs />}
     />
   )

@@ -23,6 +23,6 @@ export function NetworkDetails () {
   const Tab = tabs[activeTab as keyof typeof tabs]
   return <>
     <NetworkPageHeader />
-    <Tab />
+    { Tab && <Tab /> }
   </>
 }
