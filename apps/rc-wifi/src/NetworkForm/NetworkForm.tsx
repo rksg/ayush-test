@@ -18,6 +18,7 @@ import {
 import { CreateNetworkFormFields, NetworkSaveData } from './interface'
 import { NetworkDetailForm }                        from './NetworkDetail/NetworkDetailForm'
 import { AaaSettingsForm }                          from './NetworkSettings/AaaSettingsForm'
+import { NetworkMoreSettingsForm }                  from './NetworkSettings/NetworkMoreSettingsForm'
 import { NetworkSummaryForm }                       from './NetworkSummary/NetworkSummaryForm'
 import { Venues }                                   from './Venues/Venues'
 
@@ -67,6 +68,23 @@ export function NetworkForm () {
         onCancel={() => navigate(linkToNetworks)}
         onFinish={handleAddNetwork}
       >
+        <StepsForm.StepForm
+          name='moreSettings'
+          title='More Settings'
+          validateTrigger='onBlur'
+          onFinish={async (data) => {
+            const detailsSaveData = transferDetailToSave(data)
+            updateData(data)
+            updateSaveData(detailsSaveData)
+            return true
+          }}
+        >
+          <NetworkMoreSettingsForm />
+        </StepsForm.StepForm>
+
+
+
+
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='details'
           title='Network Details'
