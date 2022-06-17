@@ -3,6 +3,7 @@ export interface CreateNetworkFormFields {
   description?: string;
   type: string;
   isCloudpathEnabled?: boolean;
+  cloudpathServerId?: string;
   venues: any[];
 }
 

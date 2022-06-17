@@ -45,7 +45,8 @@ export function NetworkSummaryForm (props: {
         />
         <Form.Item
           label='Use Cloudpath Server'
-          children={props.summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
+          children={props.summaryData.cloudpathServerId && 
+            props.summaryData.cloudpathServerId !== '' ? 'Yes' : 'No'}
         />
         <Form.Item label='Activated in venues' children={getVenues()} />
       </Col>
