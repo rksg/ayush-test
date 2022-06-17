@@ -75,8 +75,8 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
-export interface UserSettings { 
-  [key: string]: string 
+export interface UserSettings {
+  [key: string]: string
 }
 
 export interface Dashboard {
@@ -87,5 +87,23 @@ export interface Dashboard {
         clear: number
       }
     }
+  }
+}
+
+export interface NetworkDetailHeader {
+  activeVenueCount: number,
+  aps: {
+    summary?: {
+      '1_InSetupPhase'?: number,
+      '1_InSetupPhase_Offline'?: number,
+      '2_Operational'?: number,
+      '3_RequiresAttention'?: number,
+      '4_TransientIssue'?: number
+    },
+    totalApCount: number
+  },
+  network: {
+    name: string,
+    id: string
   }
 }

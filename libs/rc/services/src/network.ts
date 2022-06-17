@@ -9,7 +9,7 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 
-import { Network, Venue, NetworkDetail, CommonResult, Dashboard } from './types'
+import { Network, Venue, NetworkDetailHeader, NetworkDetail, CommonResult, Dashboard } from './types'
 
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -79,6 +79,14 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       providesTags: [{ type: 'Network', id: 'detail' }]
     }),
+    networkDetailHeader: build.query<NetworkDetailHeader, RequestPayload>({
+      query: ({ params }) => {
+        const networkDetailReq = createHttpRequest(CommonUrlsInfo.getNetworksDetailHeader, params)
+        return {
+          ...networkDetailReq
+        }
+      }
+    }),
     venueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
         const venueListReq = createHttpRequest(CommonUrlsInfo.getNetworksVenuesList, params)
@@ -109,6 +117,7 @@ export const {
   useNetworkListQuery,
   useCreateNetworkMutation,
   useGetNetworkQuery,
+  useNetworkDetailHeaderQuery,
   useVenueListQuery,
   useDashboardOverviewQuery,
   useAddNetworkVenueMutation,
