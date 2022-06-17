@@ -11,6 +11,7 @@
   "dependencies": {
     "@ant-design/pro-form": "1.69.4",
     "@ant-design/pro-layout": "6.38.9",
+    "@ant-design/pro-table": "2.76.4",
     "@reduxjs/toolkit": "1.8.1",
     "@rtk-query/graphql-request-base-query": "2.0.1",
     "@splitsoftware/splitio-react": "1.4.1",
