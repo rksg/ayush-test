@@ -19,7 +19,8 @@ jest.mock('rc-wifi/Routes', () => () => {
 
 describe('AllRoutes', () => {
   beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url.replace(':',''), 'http', 'get', {})
+    const mockUrl = `${window.location.origin}${CommonUrlsInfo.getDashboardOverview.url}`
+    mockRestApiQuery(mockUrl, 'get', {})
   })
   afterEach(cleanup)
   test('should navigate to dashboard', async () => {
