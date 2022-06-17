@@ -2,6 +2,6 @@ export * from './eventAlarm'
 export * from './network'
 export * from './cloudpath'
 export * from './ap'
-export * from './apTypes'
 export * from './types'
+export * from '../types/ap'
 

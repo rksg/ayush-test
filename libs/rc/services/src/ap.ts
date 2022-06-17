@@ -8,7 +8,7 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 
-import { ApExtraParams, ApList, APRadio } from './apTypes'
+import { ApExtraParams, ApList, APRadio } from '../types/ap'
 
 
 export const baseApApi = createApi({
