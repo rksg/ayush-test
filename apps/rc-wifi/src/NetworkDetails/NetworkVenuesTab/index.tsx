@@ -84,8 +84,8 @@ export function NetworkVenuesTab () {
 
   useEffect(()=>{
     if (userSetting.data) {
-      const triRadio = getUserSettingsFromDict(userSetting.data,
-        Constants.triRadioUserSettingsKey) as String === 'true'
+      const triRadio = String(getUserSettingsFromDict(userSetting.data,
+        Constants.triRadioUserSettingsKey)) === 'true'
       setSupportTriBandRadio(triRadio)
     }
   }, [userSetting])
