@@ -10,19 +10,23 @@ export interface RequestPayload <Payload = any> {
   payload?: Payload
 }
 
-export interface TableResult <ResultItemType, ExtraParms = any> {
+export interface TableResult <ResultItemType, ResultExtra = unknown> {
   data: ResultItemType[]
   page: number
   totalCount: number
-  extra?: ExtraParms
+  extra?: ResultExtra
 }
 
 export interface TABLE_QUERY <
   ResultType = Record<string, unknown>,
-  Payload extends RequestPayload = RequestPayload
+  Payload extends RequestPayload = RequestPayload,
+  ResultExtra = unknown
 > {
   defaultPayload: Partial<Payload>
-  useQuery: UseQuery<TableResult<ResultType>, { params: Params<string>, payload: Payload }>
+  useQuery: UseQuery<
+    TableResult<ResultType, ResultExtra>,
+    { params: Params<string>, payload: Payload }
+  >
   apiParams?: Record<string, string>
   pagination?: PAGINATION
   sorter?: SORTER
@@ -59,7 +63,11 @@ const transferSorter = (order:string) => {
   return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
 }
 
-export function useTableQuery <ResultType, Payload> (option: TABLE_QUERY<ResultType, Payload>) {
+export function useTableQuery <
+  ResultType,
+  Payload,
+  ResultExtra
+> (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
   const [pagination, setPagination] = useState({
     ...DEFAULT_PAGINATION,
     ...(option?.pagination || {})
