@@ -144,7 +144,7 @@ exports[`NetworkDetails should render correctly 1`] = `
                       role="tab"
                       tabindex="0"
                     >
-                      APs (0)
+                      APs (1)
                     </div>
                   </div>
                   <div
@@ -158,7 +158,7 @@ exports[`NetworkDetails should render correctly 1`] = `
                       role="tab"
                       tabindex="0"
                     >
-                      Venues (0)
+                      Venues (1)
                     </div>
                   </div>
                   <div
