@@ -29,7 +29,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: ['Network'],
+      providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           if (msg.status !== 'SUCCESS') return
@@ -37,7 +37,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
           if (msg.useCase === 'AddNetworkDeep') message.success('Created successfully')
 
-          api.dispatch(networkApi.util.invalidateTags(['Network']))
+          api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
         })
       }
     }),
@@ -49,7 +49,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: ['Network']
+      invalidatesTags: [{ type: 'Network', id: 'LIST' }]
     }),
     addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -59,7 +59,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Network', id: 'detail' }]
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -68,7 +68,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Network', id: 'detail' }]
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
     getNetwork: build.query<NetworkDetail, RequestPayload>({
       query: ({ params }) => {
@@ -77,7 +77,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Network', id: 'detail' }]
+      providesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
     networkDetailHeader: build.query<NetworkDetailHeader, RequestPayload>({
       query: ({ params }) => {
@@ -85,7 +85,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...networkDetailReq
         }
-      }
+      },
+      providesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
     venueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
