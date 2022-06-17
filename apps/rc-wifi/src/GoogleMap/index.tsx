@@ -16,10 +16,6 @@ export interface GoogleMapProps {
 }
 
 export function GoogleMap ({ cluster, data }: GoogleMapProps) {
-  const [center] = React.useState<google.maps.LatLngLiteral>({
-    lat: 13.03,
-    lng: 77.692032
-  })
 
   const [venues, setVenues] = React.useState<VenueMarkerOptions[]>([])
 
@@ -51,10 +47,8 @@ export function GoogleMap ({ cluster, data }: GoogleMapProps) {
       render={render}
     >
       <GMap
-        center={center}
         mapTypeControl={false}
         streetViewControl={false}
-        zoom={3}
         style={{ height: '100%' }}
         venues={venues}
         cluster={cluster}
