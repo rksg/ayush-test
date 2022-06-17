@@ -17,8 +17,8 @@ import {
 
 import { CreateNetworkFormFields, NetworkSaveData } from './interface'
 import { NetworkDetailForm }                        from './NetworkDetail/NetworkDetailForm'
+import { NetworkMoreSettingsForm }                  from './NetworkMoreSettings/NetworkMoreSettingsForm'
 import { AaaSettingsForm }                          from './NetworkSettings/AaaSettingsForm'
-import { NetworkMoreSettingsForm }                  from './NetworkSettings/NetworkMoreSettingsForm'
 import { NetworkSummaryForm }                       from './NetworkSummary/NetworkSummaryForm'
 import { Venues }                                   from './Venues/Venues'
 
