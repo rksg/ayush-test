@@ -1,4 +1,4 @@
-import { ApDeviceStatusEnum, DeviceConnectionStatus } from '../src/constants'
+import { ApDeviceStatusEnum, DeviceConnectionStatus } from '../constants'
 
 export enum APView {
   AP_LIST,
