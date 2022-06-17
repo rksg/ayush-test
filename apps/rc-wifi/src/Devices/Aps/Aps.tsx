@@ -2,12 +2,13 @@ import React from 'react'
 
 import Column      from 'antd/lib/table/Column'
 import ColumnGroup from 'antd/lib/table/ColumnGroup'
+import _           from 'lodash'
 
 import {
   Loader,
   Table
 } from '@acx-ui/components'
-import { Filters, useApListQuery } from '@acx-ui/rc/services'
+import { ApExtraParams, Filters, useApListQuery } from '@acx-ui/rc/services'
 import {
   APMeshRole,
   APView,
@@ -66,51 +67,32 @@ export function Aps (props: {
     return transformDisplayText(meshRole)
   }
 
-  const getChannelColumn = function () {
-    return (<>
-      {extraParams.channel24 &&
-        <Column title='2.4 GHz'
-          dataIndex='channel24'
-          render={
-            (value) => <>
-              {transformDisplayText(value)}
-            </>
-          } />}
-      {extraParams.channel50 &&
-        <Column title='5 GHz'
-          dataIndex='channel50'
-          render={
-            (value) => <>
-              {transformDisplayText(value)}
-            </>
-          } />}
-
-      {extraParams.channelL50 &&
-        <Column title='LO 5 GHz'
-          dataIndex='channelL50'
-          render={
-            (value) => <>
-              {transformDisplayText(value)}
-            </>
-          } />}
-
-      {extraParams.channelU50 &&
-        <Column title='HI 5 GHz'
-          dataIndex='channelU50'
-          render={
-            (value) => <>
-              {transformDisplayText(value)}
-            </>
-          } />}
-
-      {extraParams.channel60 &&
-        <Column title='6 GHz'
-          dataIndex='channel60'
-          render={
-            (value) => <>
-              {transformDisplayText(value)}
-            </>
-          } />}</>)
+  const channelColumns = {
+    channel24: <Column
+      key='channel24'
+      title='2.4 GHz'
+      dataIndex='channel24'
+      render={transformDisplayText} />,
+    channel50: <Column
+      key='channel50'
+      title='5 GHz'
+      dataIndex='channel50'
+      render={transformDisplayText} />,
+    channelL50: <Column
+      key='channelL50'
+      title='LO 5 GHz'
+      dataIndex='channelL50'
+      render={transformDisplayText} />,
+    channelU50: <Column
+      key='channelU50'
+      title='HI 5 GHz'
+      dataIndex='channelU50'
+      render={transformDisplayText} />,
+    channel60: <Column
+      key='channel60'
+      title='6 GHz'
+      dataIndex='channel60'
+      render={transformDisplayText} />
   }
 
   return (
@@ -141,22 +123,15 @@ export function Aps (props: {
         <Column title='Mesh Role'
           dataIndex='meshRole'
           sorter={true}
-          render={
-            (value) => (
-              <>
-                {transformMeshRole(value)}
-              </>
-            )} />
+          render={transformMeshRole} />
         <Column title='Connected Clients'
           dataIndex='clients'
-          render={
-            (value) => <>
-              {transformDisplayNumber(value)}
-            </>
-          } />
+          render={transformDisplayNumber} />
         <Column title='AP Group' dataIndex='deviceGroupName' sorter={true} />
         <ColumnGroup title='RF Channels'>
-          {getChannelColumn()}
+          {_(channelColumns)
+            .filter((_, key) => extraParams[key as keyof ApExtraParams])
+            .value()}
         </ColumnGroup>
         <Column title='Tags' dataIndex='tags' sorter={true} />
         <Column title='Serial Number' dataIndex='serialNumber' sorter={true} />
