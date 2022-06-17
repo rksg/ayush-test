@@ -1,4 +1,5 @@
 import { Checkbox } from 'antd'
+import { Space }    from 'antd'
 import styled       from 'styled-components/macro'
 
 import { ReactComponent as VenueMarkerGreen }  from '../assets/VenueMarkerGreen.svg'
@@ -48,4 +49,37 @@ export const VenueMarkerOrangeIcon = styled(VenueMarkerOrange)`
 `
 export const VenueMarkerRedIcon = styled(VenueMarkerRed)`
   ${venueMarkerIconStyle}
+`
+export const Wrapper = styled.div`
+  height: 150px;
+  width: 400px;
+`
+export const CellWrapper = styled(Space)`
+  direction={props => props.direction ? props.direction : 'horizontal'}
+  justify-content: left;
+  width: 100%;
+  height: 20px;
+`
+export const InfoWindowHeader = styled.div`
+  height: 50px;
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
+  border-radius: 4px 4px 0px 0px;
+  border-bottom: 1px solid var(--acx-neutrals-30);
+`
+export const Title = styled.a`
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  font-weight: 600;
+  color: var(--acx-accents-blue-50);
+  padding: 20px 5px;
+`
+export const TotalCount = styled.a`
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: 700;
+  color: var(--acx-accents-blue-50);
 `

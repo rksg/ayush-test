@@ -1,3 +1,5 @@
+import { cssStr } from '@acx-ui/components'
+
 enum DeviceStatusSeverityEnum {
   IN_SETUP_PHASE = '1_InSetupPhase',
   OFFLINE = '1_InSetupPhase_Offline',
@@ -7,13 +9,42 @@ enum DeviceStatusSeverityEnum {
 }
 
 export enum SwitchStatusEnum {
-  NEVER_CONTACTED_CLOUD = 'PREPROVISIONED',
-  INITIALIZING = 'INITIALIZING',
-  APPLYING_FIRMWARE = 'APPLYINGFIRMWARE',
-  OPERATIONAL = 'ONLINE',
-  DISCONNECTED = 'OFFLINE',
-  STACK_MEMBER_NEVER_CONTACTED = 'STACK_MEMBER_PREPROVISIONED'
+  NEVER_CONTACTED_CLOUD = 'PREPROVISIONED', // 1_InSetupPhase
+  INITIALIZING = 'INITIALIZING', // 1_InSetupPhase
+  APPLYING_FIRMWARE = 'APPLYINGFIRMWARE', // 1_InSetupPhase
+  OPERATIONAL = 'ONLINE', // 2_Operational
+  DISCONNECTED = 'OFFLINE', // 3_RequiresAttention
+  STACK_MEMBER_NEVER_CONTACTED = 'STACK_MEMBER_PREPROVISIONED' // 1_InSetupPhase
 }
+
+export const getDisplayLabel = (label: string) => {
+  switch (label) {
+    case DeviceStatusSeverityEnum.IN_SETUP_PHASE:
+      return '3 In Setup Phase'
+    case DeviceStatusSeverityEnum.OFFLINE:
+      return '3 Offline'
+    case DeviceStatusSeverityEnum.OPERATIONAL:
+      return '4 Operational'
+    case DeviceStatusSeverityEnum.REQUIRES_ATTENTION:
+      return '1 Requires Attention'
+    case DeviceStatusSeverityEnum.TRANSIENT_ISSUE:
+      return '2 Transient Issue'
+    default:
+      return '3 Unknown'
+  }
+}
+
+export type ChartData = {
+  category: string
+  series: Array<{ name: string, value: number }>
+}
+
+export const getBarChartStatusColors = () => [
+  cssStr('--acx-status-green'),
+  cssStr('--acx-status-grey'),
+  cssStr('--acx-status-orange'),
+  cssStr('--acx-status-red')
+]
 
 export type ApVenueStatusEnumType = DeviceStatusSeverityEnum
 export const ApVenueStatusEnum = { ...DeviceStatusSeverityEnum }
@@ -73,11 +104,11 @@ export interface DashboardOverview {
     apsStatus: Array<{
       [prop: string]: {
         apStatus: {
-          [ApVenueStatusEnum.IN_SETUP_PHASE]?: number,
-          [ApVenueStatusEnum.OFFLINE]?: number,
-          [ApVenueStatusEnum.REQUIRES_ATTENTION]?: number,
-          [ApVenueStatusEnum.TRANSIENT_ISSUE]?: number,
-          [ApVenueStatusEnum.OPERATIONAL]?: number,
+          [ApVenueStatusEnum.IN_SETUP_PHASE]: number,
+          [ApVenueStatusEnum.OFFLINE]: number,
+          [ApVenueStatusEnum.REQUIRES_ATTENTION]: number,
+          [ApVenueStatusEnum.TRANSIENT_ISSUE]: number,
+          [ApVenueStatusEnum.OPERATIONAL]: number,
         },
         totalCount: number
       }

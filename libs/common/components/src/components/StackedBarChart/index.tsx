@@ -14,13 +14,35 @@ type ChartData = {
 type Dimensions = [
   number, // value
   string, // category
-  string, // category
+  string, // name
   number  // sum
 ]
 
+// Optional props
+interface StackedBarOptionalProps {
+  showLabels: boolean,
+  barColors?: string[],
+  showTotal?: boolean,
+  showTooltip?: boolean,
+}
+
+const defaultProps: StackedBarOptionalProps = {
+  showLabels: true,
+  barColors: [
+    cssStr('--acx-semantics-yellow-50'),
+    cssStr('--acx-semantics-yellow-70'),
+    cssStr('--acx-semantics-red-50'),
+    cssStr('--acx-semantics-violet-50')
+  ],
+  showTotal: true,
+  showTooltip: true
+}
+
+StackedBarChart.defaultProps = { ...defaultProps }
+
 export interface StackedBarChartProps
   <TChartData extends ChartData>
-  extends Omit<EChartsReactProps, 'option' | 'opts'> {
+  extends StackedBarOptionalProps, Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[]
     /** @default 'name' */
     legendProp?: keyof TChartData
@@ -49,7 +71,8 @@ const computeChartData = ({ category, series }: ChartData) => {
   })
 }
 
-const massageData = (data: ChartData[]): RegisteredSeriesOption['bar'][] => {
+const massageData = (
+  data: ChartData[], showTotal: boolean = true): RegisteredSeriesOption['bar'][] => {
   const seriesCommonConfig: RegisteredSeriesOption['bar'] = {
     type: 'bar',
     dimensions: [
@@ -60,15 +83,12 @@ const massageData = (data: ChartData[]): RegisteredSeriesOption['bar'][] => {
     ],
     stack: 'Total',
     barWidth: 8,
-    emphasis: {
-      focus: 'series'
-    },
     label: {
-      show: false,
       position: 'right',
       fontFamily: cssStr('--acx-neutral-brand-font'),
-      fontSize: 12,
-      lineHeight: 16,
+      fontSize: cssNumber('--acx-body-3-font-size'),
+      lineHeight: cssNumber('--acx-body-3-line-height'),
+      color: cssStr('--acx-primary-black'),
       fontWeight: 400,
       formatter: '{@sum}'
     }
@@ -86,7 +106,7 @@ const massageData = (data: ChartData[]): RegisteredSeriesOption['bar'][] => {
       data,
       label: {
         ...seriesCommonConfig.label,
-        show: index === sets.length - 1
+        show: showTotal ? index === sets.length - 1 : false
       }
     }))
     .value()
@@ -96,22 +116,17 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   data,
   ...props
 }: StackedBarChartProps<TChartData>) {
+  const { showTotal, showLabels, barColors, showTooltip } = props
+
   const option: EChartsOption = {
-    silent: true,
-    color: [
-      // TODO:
-      // enable custom list of colors
-      cssStr('--acx-semantics-yellow-50'),
-      cssStr('--acx-semantics-yellow-70'),
-      cssStr('--acx-semantics-red-50'),
-      cssStr('--acx-semantics-violet-50')
-    ],
+    silent: !showTooltip,
+    color: barColors,
     grid: {
-      left: 10,
-      right: 20,
+      left: showLabels ? 10 : 0,
+      right: showLabels ? 20 : 0,
       bottom: 0,
       top: 0,
-      containLabel: true
+      containLabel: showLabels
     },
     xAxis: {
       type: 'value',
@@ -139,7 +154,26 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
         }
       }
     },
-    series: massageData(data)
+    tooltip: {
+      show: showTooltip,
+      trigger: 'item',
+      formatter: (params: any) => {
+        const { value, marker } = params
+        return `${marker} ${value[0]}`
+      },
+      textStyle: {
+        fontFamily: cssStr('--acx-accent-brand-font'),
+        fontSize: cssNumber('--acx-body-5-font-size'),
+        fontWeight: 400,
+        lineHeight: cssNumber('--acx-body-5-line-height')
+      },
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      borderColor: cssStr('--acx-neutrals-50'),
+      borderWidth: 1,
+      borderRadius: 2,
+      padding: 8
+    },
+    series: massageData(data, showTotal)
   }
 
   return (

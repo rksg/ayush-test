@@ -3,8 +3,13 @@ import _ from 'lodash'
 
 import { cssStr } from '@acx-ui/components'
 
-import { ApVenueStatusEnum, DashboardOverview } from './constant'
-import { VenueMarkerOptions }                   from './VenueMarkerWithLabel'
+import {
+  ApVenueStatusEnum,
+  ChartData,
+  DashboardOverview,
+  getDisplayLabel,
+  SwitchStatusEnum } from './constant'
+import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
 export const massageVenuesData = (overviewData: DashboardOverview): VenueMarkerOptions[] => {
   const venues: VenueMarkerOptions[] = []
@@ -18,37 +23,9 @@ export const massageVenuesData = (overviewData: DashboardOverview): VenueMarkerO
         console.error(`Venue '${val.name}' doesn't include location,
           dummy coordinates were added for gmap correct behaviour`)
       }
-      const apStat = overviewData?.aps?.apsStatus.find((el) => {
-        for (const key in el) {
-          if (key === venueId) {
-            return true
-          }
-        }
-        return false
-      })
 
-      let requires_attention: number | undefined = 0
-      let in_setup_phase: number | undefined = 0
-      let transient_issue: number | undefined = 0
-      let operational :number | undefined = 0
-
-      if (apStat && apStat[venueId] && apStat[venueId].apStatus) {
-
-        if (apStat[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]) {
-          requires_attention = apStat[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]
-        }
-
-        if (apStat[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]) {
-          in_setup_phase = apStat[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]
-        }
-
-        if (apStat[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]) {
-          transient_issue = apStat[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]
-        }
-        if (apStat[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]) {
-          operational = apStat[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]
-        }
-      }
+      const { apStat, apsCount } = getApStatusDataByVenue(overviewData, venueId)
+      const { switchStat, switchesCount } = getSwitchStatusDataByVenue(overviewData, venueId)
 
       venues.push({
         name: val.name,
@@ -57,15 +34,12 @@ export const massageVenuesData = (overviewData: DashboardOverview): VenueMarkerO
         longitude: val.longitude,
         venueId: venueId,
         clientsCount: overviewData?.summary?.clients?.summary[venueId],
-        apStat: {
-          [ApVenueStatusEnum.REQUIRES_ATTENTION]: requires_attention!,
-          [ApVenueStatusEnum.TRANSIENT_ISSUE]: transient_issue!,
-          [ApVenueStatusEnum.IN_SETUP_PHASE]: in_setup_phase!,
-          [ApVenueStatusEnum.OPERATIONAL]: operational!
-        },
-        apsCount: apStat && apStat[venueId] ? apStat[venueId].totalCount : 0,
-        switchesCount: getSwitchCountByVenue(overviewData, venueId),
-        switchClientsCount: getSwitchClientCountByVenue(overviewData, venueId)
+        apStat,
+        apsCount,
+        switchStat,
+        switchesCount,
+        switchClientsCount: getSwitchClientCountByVenue(overviewData, venueId),
+        visible: true
       })
     })
   })
@@ -75,7 +49,67 @@ export const massageVenuesData = (overviewData: DashboardOverview): VenueMarkerO
 function getSwitchClientCountByVenue (overviewData: DashboardOverview, venueId: string): number {
   return _.get(overviewData, 'summary.switchClients.summary[' + venueId + ']') || 0
 }
-function getSwitchCountByVenue (overviewData: DashboardOverview, venueId: string): number {
+
+const getApStatusDataByVenue = (
+  overviewData: DashboardOverview,
+  venueId: string): {
+  apStat: ChartData[],
+  apsCount: number
+  } => {
+  const apsStatus = overviewData?.aps?.apsStatus.find((el: object) => {
+    for (const key in el) {
+      if (key === venueId) {
+        return true
+      }
+    }
+    return false
+  })
+
+  let requires_attention: number = 0
+  let in_setup_phase: number = 0
+  let transient_issue: number = 0
+  let operational: number = 0
+
+  if (apsStatus && apsStatus[venueId] && apsStatus[venueId].apStatus) {
+    if (apsStatus[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]) {
+      requires_attention = +apsStatus[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]
+    }
+    if (apsStatus[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]) {
+      transient_issue = +apsStatus[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]
+    }
+    if (apsStatus[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]) {
+      in_setup_phase = +apsStatus[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]
+    }
+    if (apsStatus[venueId].apStatus[ApVenueStatusEnum.OFFLINE]) {
+      in_setup_phase += +apsStatus[venueId].apStatus[ApVenueStatusEnum.OFFLINE]
+    }
+    if (apsStatus[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]) {
+      operational = +apsStatus[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]
+    }
+  }
+
+  return {
+    apStat: [{
+      category: 'APs',
+      series: [
+        { name: getDisplayLabel(ApVenueStatusEnum.REQUIRES_ATTENTION),
+          value: requires_attention },
+        { name: getDisplayLabel(ApVenueStatusEnum.TRANSIENT_ISSUE),
+          value: transient_issue },
+        { name: getDisplayLabel(ApVenueStatusEnum.IN_SETUP_PHASE),
+          value: in_setup_phase },
+        { name: getDisplayLabel(ApVenueStatusEnum.OPERATIONAL),
+          value: operational }
+      ]
+    }],
+    apsCount: apsStatus && apsStatus[venueId] ? apsStatus[venueId].totalCount : 0
+  }
+}
+
+function getSwitchStatusDataByVenue (overviewData: DashboardOverview, venueId: string): {
+  switchStat: ChartData[],
+  switchesCount: number
+} {
   const switchStat = (_.get(overviewData, 'switches.switchesStatus') || []).find((el: [string]) => {
     for (const key in el) {
       if (key === venueId) {
@@ -84,16 +118,48 @@ function getSwitchCountByVenue (overviewData: DashboardOverview, venueId: string
     }
     return false
   })
-  return switchStat ? switchStat[venueId].totalCount : 0
+
+  let operational: number = 0
+  let requires_attention: number = 0
+  let in_setup_phase: number = 0
+
+  if (switchStat && switchStat[venueId] && switchStat[venueId].switchStatus) {
+    if (switchStat[venueId].switchStatus[SwitchStatusEnum.DISCONNECTED]) {
+      requires_attention = +switchStat[venueId].switchStatus[SwitchStatusEnum.DISCONNECTED]
+    }
+    if (switchStat[venueId].switchStatus[SwitchStatusEnum.NEVER_CONTACTED_CLOUD]) {
+      in_setup_phase = +switchStat[venueId].switchStatus[SwitchStatusEnum.NEVER_CONTACTED_CLOUD]
+    }
+    if (switchStat[venueId].switchStatus[SwitchStatusEnum.INITIALIZING]) {
+      in_setup_phase += +switchStat[venueId].switchStatus[SwitchStatusEnum.INITIALIZING]
+    }
+    if (switchStat[venueId].switchStatus[SwitchStatusEnum.OPERATIONAL]) {
+      operational = +switchStat[venueId].switchStatus[SwitchStatusEnum.OPERATIONAL]
+    }
+  }
+
+  return {
+    switchStat: [{
+      category: 'Switches',
+      series: [
+        { name: getDisplayLabel(ApVenueStatusEnum.IN_SETUP_PHASE),
+          value: in_setup_phase },
+        { name: getDisplayLabel(ApVenueStatusEnum.OPERATIONAL),
+          value: operational },
+        { name: getDisplayLabel(ApVenueStatusEnum.REQUIRES_ATTENTION),
+          value: requires_attention }
+      ]
+    }],
+    switchesCount: switchStat && switchStat[venueId] ? switchStat[venueId].totalCount : 0
+  }
 }
 
-export const getMarkerColor = (statuses:any[] | undefined) => {
+export const getMarkerColor = (statuses: any[] | undefined) => {
+  // ApVenueStatusEnum.IN_SETUP_PHASE OR ApVenueStatusEnum.OFFLINE
   let color: { default: string, hover: string } = {
     default: cssStr('--acx-status-grey'),
     hover: cssStr('--acx-status-grey-dark')
   } // default case
-  // ApVenueStatusEnum.IN_SETUP_PHASE
-  // ApVenueStatusEnum.OFFLINE
 
   if (statuses?.includes(ApVenueStatusEnum.REQUIRES_ATTENTION))
     color = {
