@@ -48,6 +48,10 @@ export interface Venue {
     names: string[]
     vlans: number[]
   }
+  wlan: {
+    wlanSecurity: string
+  }
+  allApDisabled: boolean
   // aps ??
   // switches ??
   // switchClients ??

@@ -91,7 +91,7 @@ export function NetworkVenuesTab () {
   }, [userSetting])
 
 
-  const activateNetwork = async (checked: boolean, row: any) => {
+  const activateNetwork = async (checked: boolean, row: Venue) => {
     // TODO: Service
     // if (checked) {
     //   if (row.allApDisabled) {
