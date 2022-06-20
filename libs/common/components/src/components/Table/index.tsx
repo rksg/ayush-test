@@ -1,4 +1,5 @@
 import { Table as AntTable } from 'antd'
+import { ColumnTitleProps }  from 'antd/lib/table/interface'
 
 import * as UI from './styledComponents'
 
@@ -17,12 +18,14 @@ export function Table <RecordType extends object> (
     columns = columns.map(column => {
       if (column.sorter) return column
 
-      const Title = column.title
       return {
         ...column,
-        title: typeof Title === 'function'
-          ? (props) => <UI.RotatedColumn children={Title(props)} />
-          : <UI.RotatedColumn children={Title} />
+        title: typeof column.title === 'function'
+          ? (props) => {
+            const Title = column.title as React.FC<ColumnTitleProps<RecordType>>
+            return <UI.RotatedColumn children={<Title {...props} />} />
+          }
+          : <UI.RotatedColumn children={column.title} />
       }
     })
   }
