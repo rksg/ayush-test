@@ -2,6 +2,8 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
+import { generatePath }                        from '@acx-ui/react-router-dom'
+import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import NetworkTabs from './NetworkTabs'
@@ -14,16 +16,14 @@ const networkDetailHeaderData = {
 }
 describe('NetworkTabs', () => {
   it('should render correctly', async () => {
+    const params = { networkId: 'network-id', tenantId: 'tenant-id' }
+    const url = generatePath(CommonUrlsInfo.getNetworksDetailHeader.url, params)
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getNetworksDetailHeader.url,
-        (req, res, ctx) => res(ctx.json(networkDetailHeaderData))
-      )
+      rest.get(url, (req, res, ctx) => res(ctx.json(networkDetailHeaderData)))
     )
 
-    const { asFragment } = render(<NetworkTabs />, {
-      route: { params: { networkId: 'network-id', tenantId: 'tenant-id' } },
-      store: true
+    const { asFragment } = render(<Provider><NetworkTabs /></Provider>, {
+      route: { params }
     })
 
     expect(asFragment()).toMatchSnapshot()
