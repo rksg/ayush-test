@@ -8,7 +8,7 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 
-import { ApExtraParams, ApList, APRadio } from '../types/ap'
+import { ApExtraParams, AP, APRadio } from '../types/ap'
 
 
 export const baseApApi = createApi({
@@ -21,7 +21,7 @@ export const baseApApi = createApi({
 
 export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
-    apList: build.query<TableResult<ApList, ApExtraParams>, RequestPayload>({
+    apList: build.query<TableResult<AP, ApExtraParams>, RequestPayload>({
       query: ({ params, payload }) => {
         const apListReq = createHttpRequest(CommonUrlsInfo.getApsList, params)
         return{
@@ -29,7 +29,7 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse (result: TableResult<ApList, ApExtraParams>) {
+      transformResponse (result: TableResult<AP, ApExtraParams>) {
         return transformApList(result)
       }
     })
@@ -41,7 +41,7 @@ export const {
 } = apApi
 
 
-const transformApList = function (result: TableResult<ApList, ApExtraParams>) {
+const transformApList = function (result: TableResult<AP, ApExtraParams>) {
   let channelColumnStatus = {
     channel24: true,
     channel50: false,

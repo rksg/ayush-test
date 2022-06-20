@@ -6,7 +6,7 @@ export interface APRadio {
   txPower?: string,
   Rssi: string
 }
-export interface ApList {
+export interface AP {
   IP?: string
   apMac?: string
   apStatusData?: {
