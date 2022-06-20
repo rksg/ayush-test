@@ -14,7 +14,12 @@
         "main": "apps/main/src/main.ts",
         "polyfills": "apps/main/src/polyfills.ts",
         "tsConfig": "apps/main/tsconfig.app.json",
-        "assets": ["apps/main/src/favicon.ico", "apps/main/src/assets", "apps/main/src/robots.txt"],
+        "assets": [
+          "apps/main/src/favicon.ico",
+          "apps/main/src/env.json",
+          "apps/main/src/assets",
+          "apps/main/src/robots.txt"
+        ],
         "styles": [],
         "scripts": [],
         "webpackConfig": "apps/main/webpack.config.js"
@@ -27,12 +32,7 @@
           "vendorChunk": true
         },
         "production": {
-          "fileReplacements": [
-            {
-              "replace": "apps/main/src/environments/environment.ts",
-              "with": "apps/main/src/environments/environment.prod.ts"
-            }
-          ],
+          "fileReplacements": [],
           "optimization": true,
           "outputHashing": "all",
           "sourceMap": false,
