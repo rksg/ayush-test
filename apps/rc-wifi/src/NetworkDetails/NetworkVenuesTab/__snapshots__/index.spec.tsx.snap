@@ -76,6 +76,7 @@ exports[`NetworkVenuesTab activate Network 1`] = `
                         </th>
                         <th
                           class="ant-table-cell ant-table-column-has-sorters"
+                          tabindex="0"
                         >
                           <div
                             class="ant-table-column-sorters"
@@ -135,6 +136,7 @@ exports[`NetworkVenuesTab activate Network 1`] = `
                         </th>
                         <th
                           class="ant-table-cell ant-table-column-has-sorters"
+                          tabindex="0"
                         >
                           <div
                             class="ant-table-column-sorters"
@@ -194,6 +196,7 @@ exports[`NetworkVenuesTab activate Network 1`] = `
                         </th>
                         <th
                           class="ant-table-cell ant-table-column-has-sorters"
+                          tabindex="0"
                         >
                           <div
                             class="ant-table-column-sorters"
@@ -613,6 +616,7 @@ exports[`NetworkVenuesTab deactivate Network 1`] = `
                         </th>
                         <th
                           class="ant-table-cell ant-table-column-has-sorters"
+                          tabindex="0"
                         >
                           <div
                             class="ant-table-column-sorters"
@@ -672,6 +676,7 @@ exports[`NetworkVenuesTab deactivate Network 1`] = `
                         </th>
                         <th
                           class="ant-table-cell ant-table-column-has-sorters"
+                          tabindex="0"
                         >
                           <div
                             class="ant-table-column-sorters"
@@ -731,6 +736,7 @@ exports[`NetworkVenuesTab deactivate Network 1`] = `
                         </th>
                         <th
                           class="ant-table-cell ant-table-column-has-sorters"
+                          tabindex="0"
                         >
                           <div
                             class="ant-table-column-sorters"
@@ -1150,6 +1156,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                         </th>
                         <th
                           class="ant-table-cell ant-table-column-has-sorters"
+                          tabindex="0"
                         >
                           <div
                             class="ant-table-column-sorters"
@@ -1209,6 +1216,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                         </th>
                         <th
                           class="ant-table-cell ant-table-column-has-sorters"
+                          tabindex="0"
                         >
                           <div
                             class="ant-table-column-sorters"
@@ -1268,6 +1276,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                         </th>
                         <th
                           class="ant-table-cell ant-table-column-has-sorters"
+                          tabindex="0"
                         >
                           <div
                             class="ant-table-column-sorters"
