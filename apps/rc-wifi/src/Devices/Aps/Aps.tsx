@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Badge }   from 'antd'
 import Column      from 'antd/lib/table/Column'
 import ColumnGroup from 'antd/lib/table/ColumnGroup'
 import _           from 'lodash'
@@ -10,8 +11,10 @@ import {
 } from '@acx-ui/components'
 import { ApExtraParams, useApListQuery } from '@acx-ui/rc/services'
 import {
+  ApDeviceStatusEnum,
   APMeshRole,
   APView,
+  DeviceConnectionStatus,
   transformApStatus,
   transformDisplayNumber,
   transformDisplayText,
@@ -20,8 +23,6 @@ import {
 import { getFilters } from '@acx-ui/rc/utils'
 import { useParams }  from '@acx-ui/react-router-dom'
 
-
-import * as UI from './styledComponents'
 
 const defaultPayload = {
   searchString: '',
@@ -32,6 +33,21 @@ const defaultPayload = {
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
     'fwVersion'
   ]
+}
+
+const handleStatusColor = (color: string | undefined) => {
+  switch (color) {
+    case DeviceConnectionStatus.INITIAL:
+      return 'var(--acx-neutrals-50)'
+    case DeviceConnectionStatus.ALERTING:
+      return 'var(--acx-semantics-yellow-40)'
+    case DeviceConnectionStatus.DISCONNECTED:
+      return 'var(--acx-semantics-red-60)'
+    case DeviceConnectionStatus.CONNECTED:
+      return 'var(--acx-semantics-green-50)'
+    default:
+      return 'var(--acx-neutrals-50)'
+  }
 }
 
 export function Aps () {
@@ -98,6 +114,16 @@ export function Aps () {
       render={transformDisplayText} />
   }
 
+  const getApStatus = function (status: ApDeviceStatusEnum) {
+    const apStatus = transformApStatus(status, APView.AP_LIST)
+    return (
+      <div >
+        <Badge color={handleStatusColor(apStatus.deviceStatus)}
+          text={apStatus.message}
+        /></div>
+    )
+  }
+
   return (
     <Loader states={[tableQuery]}>
       <Table dataSource={tableData}
@@ -109,15 +135,8 @@ export function Aps () {
         <Column title='Status'
           dataIndex='deviceStatus'
           sorter={true}
-          render={(value) => (
-            <UI.StatusColumn>
-              <UI.DeviceStatusIcon
-                color={transformApStatus(value,
-                  APView.AP_LIST).deviceStatus}>
-              </UI.DeviceStatusIcon>
-              <div>{transformApStatus(value, APView.AP_LIST).message}</div>
-            </UI.StatusColumn>
-          )} />
+          width={160}
+          render={(value) => getApStatus(value)} />
         <Column title='Model' dataIndex='model' sorter={true} />
         <Column title='IP Address' dataIndex='IP' />
         <Column title='MAC Address' dataIndex='apMac' sorter={true} />
