@@ -11,6 +11,7 @@ import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useGetAllUserSettingsQuery,
+  UserSettings,
   useVenueListQuery,
   Venue
 } from '@acx-ui/rc/services'
@@ -52,9 +53,9 @@ export function NetworkVenuesTab () {
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)
-  const [supportTriBandRadio, setSupportTriBandRadio] = useState(false)
   const { tenantId } = useParams()
   const userSetting = useGetAllUserSettingsQuery({ params: { tenantId } })
+  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings, Constants.triRadioUserSettingsKey)) === 'true'
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
@@ -81,15 +82,6 @@ export function NetworkVenuesTab () {
       setTableData(data)
     }
   }, [tableQuery.data, networkQuery])
-
-  useEffect(()=>{
-    if (userSetting.data) {
-      const triRadio = String(getUserSettingsFromDict(userSetting.data,
-        Constants.triRadioUserSettingsKey)) === 'true'
-      setSupportTriBandRadio(triRadio)
-    }
-  }, [userSetting])
-
 
   const activateNetwork = async (checked: boolean, row: Venue) => {
     // TODO: Service
