@@ -54,6 +54,7 @@ export const Wrapper = styled.div`
         }
         .ant-menu-sub {
           background-color: var(--acx-neutrals-80);
+          padding-bottom: 4px;
           .ant-menu-item{
             height: 32px;
             margin: auto;
