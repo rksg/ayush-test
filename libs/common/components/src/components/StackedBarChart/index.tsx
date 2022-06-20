@@ -29,10 +29,10 @@ interface StackedBarOptionalProps {
 const defaultProps: StackedBarOptionalProps = {
   showLabels: true,
   barColors: [
-    cssStr('--acx-semantics-yellow-50'),
-    cssStr('--acx-semantics-yellow-70'),
-    cssStr('--acx-semantics-red-50'),
-    cssStr('--acx-semantics-violet-50')
+    cssStr('--acx-semantics-yellow-40'), // P4
+    cssStr('--acx-semantics-orange-30'), // P3
+    cssStr('--acx-semantics-orange-55'), // P2
+    cssStr('--acx-semantics-red-50') // P1
   ],
   showTotal: true,
   showTooltip: true
@@ -51,21 +51,14 @@ export interface StackedBarChartProps
 const computeChartData = ({ category, series }: ChartData) => {
   const values = _(series)
   const sum = values.sumBy('value')
-  const [firstIndex, lastIndex] = [
-    values.findIndex(v => v.value !== 0),
-    values.findLastIndex(v => v.value !== 0)
-  ]
+  const firstIndex = values.findIndex(v => v.value !== 0)
   return series.map(({ name, value }, index) => {
     const data = {
       value: [value, category, name, sum] as Dimensions,
       itemStyle: { borderRadius: [0] }
     }
-    if (firstIndex === lastIndex && firstIndex === index) {
-      data.itemStyle.borderRadius = [50]
-    } else if (firstIndex === index) {
-      data.itemStyle.borderRadius = [0, 50, 50, 0]
-    } else if(lastIndex === index) {
-      data.itemStyle.borderRadius = [50, 0, 0, 50]
+    if (firstIndex === index) {
+      data.itemStyle.borderRadius = [0, 2, 2, 0]
     }
     return data
   })

@@ -39,11 +39,11 @@ export type ChartData = {
   series: Array<{ name: string, value: number }>
 }
 
-export const getBarChartStatusColors = () => [
-  cssStr('--acx-status-green'),
-  cssStr('--acx-status-grey'),
-  cssStr('--acx-status-orange'),
-  cssStr('--acx-status-red')
+export const getDeviceConnectionStatusColors = () => [
+  cssStr('--acx-semantics-green-50'),
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-semantics-yellow-40'),
+  cssStr('--acx-semantics-red-50')
 ]
 
 export type ApVenueStatusEnumType = DeviceStatusSeverityEnum

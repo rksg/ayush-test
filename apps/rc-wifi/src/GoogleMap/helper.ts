@@ -157,24 +157,24 @@ function getSwitchStatusDataByVenue (overviewData: DashboardOverview, venueId: s
 export const getMarkerColor = (statuses: any[] | undefined) => {
   // ApVenueStatusEnum.IN_SETUP_PHASE OR ApVenueStatusEnum.OFFLINE
   let color: { default: string, hover: string } = {
-    default: cssStr('--acx-status-grey'),
-    hover: cssStr('--acx-status-grey-dark')
+    default: cssStr('--acx-neutrals-50'),
+    hover: cssStr('--acx-neutrals-70')
   } // default case
 
   if (statuses?.includes(ApVenueStatusEnum.REQUIRES_ATTENTION))
     color = {
-      default: cssStr('--acx-status-red'),
-      hover: cssStr('--acx-status-red-dark')
+      default: cssStr('--acx-semantics-red-50'),
+      hover: cssStr('--acx-semantics-red-70')
     }
   else if (statuses?.includes(ApVenueStatusEnum.TRANSIENT_ISSUE))
     color = {
-      default: cssStr('--acx-status-yellow'),
-      hover: cssStr('--acx-status-yellow-dark')
+      default: cssStr('--acx-semantics-yellow-40'),
+      hover: cssStr('--acx-semantics-yellow-70')
     }
   else if (statuses?.includes(ApVenueStatusEnum.OPERATIONAL))
     color = {
-      default: cssStr('--acx-status-green'),
-      hover: cssStr('--acx-status-green-dark')
+      default: cssStr('--acx-semantics-green-50'),
+      hover: cssStr('--acx-semantics-green-70')
     }
   return color
 }
