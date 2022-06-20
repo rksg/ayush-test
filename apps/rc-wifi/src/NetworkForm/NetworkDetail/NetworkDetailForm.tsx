@@ -1,3 +1,5 @@
+import { useState, useContext } from 'react'
+
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
 
@@ -5,7 +7,11 @@ import { StepsForm }       from '@acx-ui/components'
 import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext   from '../NetworkFormContext'
 import { RadioDescription } from '../styledComponents'
+
+import type { RadioChangeEvent } from 'antd'
+
 
 enum NetworkTypeDescription {
   PSK = 'Require users to enter a passphrase (that you have defined for the network) to connect',
@@ -25,7 +31,18 @@ enum NetworkTypeLabel {
   OPEN = 'Open Network',
 }
 
+enum NetworkTypeTitle {
+  aaa = 'AAA Settings', 
+  open = 'Settings' 
+}
+
 export function NetworkDetailForm () {
+  const { setSettingStepTitle } = useContext(NetworkFormContext)
+  const [ networkType, setNetworkType ] = useState('')
+  const onChange = (e: RadioChangeEvent) => {
+    setSettingStepTitle(NetworkTypeTitle[ e.target.value as keyof typeof NetworkTypeTitle ])
+    setNetworkType(e.target.value)
+  }
   return (
     <Row gutter={20}>
       <Col span={10}>
@@ -46,7 +63,7 @@ export function NetworkDetailForm () {
           label='Network Type'
           rules={[{ required: true }]}
         >
-          <Radio.Group>
+          <Radio.Group onChange={onChange}>
             <Space direction='vertical'>
               <Radio value={NetworkTypeEnum.PSK} disabled>
                 {NetworkTypeLabel.PSK}
@@ -76,7 +93,7 @@ export function NetworkDetailForm () {
                 </RadioDescription>
               </Radio>
 
-              <Radio value={NetworkTypeEnum.OPEN} disabled>
+              <Radio value={NetworkTypeEnum.OPEN}>
                 {NetworkTypeLabel.OPEN}
                 <RadioDescription>
                   {NetworkTypeDescription.OPEN}
@@ -88,7 +105,7 @@ export function NetworkDetailForm () {
       </Col>
 
       <Col span={14}>
-        <NetworkDiagram />
+        <NetworkDiagram type={networkType}/>
       </Col>
     </Row>
   )

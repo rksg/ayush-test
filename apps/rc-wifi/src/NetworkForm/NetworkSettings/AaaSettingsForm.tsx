@@ -72,7 +72,7 @@ export function AaaSettingsForm () {
         <SettingsForm />
       </Col>
       <Col span={14}>
-        <NetworkDiagram />
+        <NetworkDiagram type='aaa' />
       </Col>
     </Row>
   )
