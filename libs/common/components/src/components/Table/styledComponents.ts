@@ -64,6 +64,8 @@ const rotatedStyle = css`
       .ant-table-column-title { transform: rotate(180deg); }
 
       .ant-table-column-sorter {
+        width: unset; // resets width for the center align
+
         display: flex;
         margin: 0 0 calc(var(--icon-size) / 2) 0;
         &-up {
@@ -114,6 +116,8 @@ export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' }>`
 
         display: inline-flex;
         margin: 0 0 0 calc(var(--icon-size) / 2);
+
+        width: 0; // to ensure context don't look off when align to center
 
         &-up, &-down {
           visibility: hidden;
