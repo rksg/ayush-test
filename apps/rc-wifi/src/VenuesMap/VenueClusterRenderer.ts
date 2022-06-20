@@ -2,8 +2,8 @@ import { Cluster, Renderer } from '@googlemaps/markerclusterer'
 
 import { cssStr } from '@acx-ui/components'
 
-import greenClusterDefaultIcon from '../assets/GreenClusterDefault.svg'
-import greenClusterHoverIcon   from '../assets/GreenClusterHover.svg'
+import greenClusterDefaultIcon from '../assets/map/GreenClusterDefault.svg'
+import greenClusterHoverIcon   from '../assets/map/GreenClusterHover.svg'
 
 export default class VenueClusterRenderer implements Renderer {
   public render (

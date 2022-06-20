@@ -46,7 +46,7 @@ export const massageVenuesData = (overviewData: DashboardOverview): VenueMarkerO
           operational = apStat[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]
         }
       }
-  
+
       venues.push({
         name: val.name,
         status: val.venueStatus,

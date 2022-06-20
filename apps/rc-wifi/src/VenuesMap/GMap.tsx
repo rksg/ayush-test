@@ -2,9 +2,8 @@ import React from 'react'
 
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer'
 
-import greenMarkerDefaultIcon from '../assets/GreenMarkerDefault.svg'
-import greenMarkerHoverIcon   from '../assets/GreenMarkerHover.svg'
-
+import greenMarkerDefaultIcon from '../assets/map/GreenMarkerDefault.svg'
+import greenMarkerHoverIcon   from '../assets/map/GreenMarkerHover.svg'
 
 import VenueClusterRenderer                         from './VenueClusterRenderer'
 import VenueMarkerWithLabel, { VenueMarkerOptions } from './VenueMarkerWithLabel'
@@ -70,8 +69,8 @@ const GMap: React.FC<MapProps> = ({
       const markers = venues?.map((venue: VenueMarkerOptions) => {
         const marker = new VenueMarkerWithLabel({
           labelContent: '',
-          position: (venue.latitude && venue.longitude) ? 
-            new google.maps.LatLng(venue.latitude, venue.longitude): 
+          position: (venue.latitude && venue.longitude) ?
+            new google.maps.LatLng(venue.latitude, venue.longitude):
             venue.position,
           icon: {
             url: greenMarkerDefaultIcon,

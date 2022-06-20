@@ -2,6 +2,8 @@ import * as React from 'react'
 
 import { Wrapper, Status } from '@googlemaps/react-wrapper'
 
+import { get } from '@acx-ui/config'
+
 import GMap                   from './GMap'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
@@ -33,8 +35,7 @@ export function GoogleMap ({ cluster, data }: GoogleMapProps) {
 
   return (
     <Wrapper
-      //TODO: apiKey should be picked from secrets.
-      apiKey='AIzaSyB42fd7gibpZ4cW_kP2md8ajCQbT8HsXFs'
+      apiKey={get('GOOGLE_MAPS_KEY')}
       libraries={['places']}
       render={render}
     >
