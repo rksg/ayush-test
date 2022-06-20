@@ -41,13 +41,16 @@ export const Wrapper = styled.div`
             color: var(--acx-primary-white);
           }
         }
-        &-open, &-selected {
-          background-color: var(--acx-neutrals-80);
+        &-selected {
+          background-color: transparent;
           .ant-menu-submenu-title{
             font-weight: 600;
             border-left-color: var(--acx-accents-orange-50);
             background-color: var(--acx-neutrals-70);
           }
+        }
+        &-open {
+          background-color: var(--acx-neutrals-80);
         }
         .ant-menu-sub {
           background-color: var(--acx-neutrals-80);
