@@ -10,11 +10,13 @@ import {
   Typography
 } from 'antd'
 
-import { StepsForm, Button }     from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
-import { useParams }             from '@acx-ui/react-router-dom'
+import { StepsForm, StepFormProps, Button } from '@acx-ui/components'
+import { useCloudpathListQuery }            from '@acx-ui/rc/services'
+import { CreateNetworkFormFields }          from '@acx-ui/rc/utils'
+import { useParams }                        from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+
 
 const { Option } = Select
 
@@ -22,11 +24,11 @@ export interface OpenSettingsFields {
   isCloudpathEnabled?: boolean;
 }
 
-export function OpenSettingsForm () {
+export function OpenSettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <SettingsForm />
+        <SettingsForm formRef={props.formRef} />
       </Col>
       <Col span={14}>
         <NetworkDiagram type='open'/>
@@ -35,7 +37,7 @@ export function OpenSettingsForm () {
   )
 }
 
-function SettingsForm () {
+function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
   const [state, updateState] = useState<OpenSettingsFields>({
     isCloudpathEnabled: false
   })
@@ -47,11 +49,13 @@ function SettingsForm () {
     <>
       <StepsForm.Title>Open Settings</StepsForm.Title>
 
-      <Form.Item name='isCloudpathEnabled' valuePropName='checked'>
+      <Form.Item name='isCloudpathEnabled' 
+        initialValue={ state.isCloudpathEnabled }
+        valuePropName='checked'>
         <Switch
           onChange={function (value: any) {
+            props.formRef?.current?.setFieldsValue({ isCloudpathEnabled: value })
             updateData({ isCloudpathEnabled: value })
-            
           }}
         />
         <span>Use Cloudpath Server</span>

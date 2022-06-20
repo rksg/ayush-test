@@ -9,10 +9,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery, Venue } from '@acx-ui/rc/services'
-import { useTableQuery }            from '@acx-ui/rc/utils'
-
-import { CreateNetworkFormFields } from '../interface'
+import { useVenueListQuery, Venue }               from '@acx-ui/rc/services'
+import { useTableQuery, CreateNetworkFormFields } from '@acx-ui/rc/utils'
 
 import TableButtonBar from './TableButtonBar'
 

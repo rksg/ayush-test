@@ -7,21 +7,26 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateNetworkMutation }                                     from '@acx-ui/rc/services'
-import { NetworkTypeEnum, transferDetailToSave, tranferSettingsToSave } from '@acx-ui/rc/utils'
+import { useCreateNetworkMutation } from '@acx-ui/rc/services'
+import { 
+  NetworkTypeEnum,
+  transferDetailToSave,
+  tranferSettingsToSave,
+  CreateNetworkFormFields,
+  NetworkSaveData
+} from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CreateNetworkFormFields, NetworkSaveData } from './interface'
-import { NetworkDetailForm }                        from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext                           from './NetworkFormContext'
-import { AaaSettingsForm }                          from './NetworkSettings/AaaSettingsForm'
-import { OpenSettingsForm }                         from './NetworkSettings/OpenSettingsForm'
-import { NetworkSummaryForm }                       from './NetworkSummary/NetworkSummaryForm'
-import { Venues }                                   from './Venues/Venues'
+import { NetworkDetailForm }  from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext     from './NetworkFormContext'
+import { AaaSettingsForm }    from './NetworkSettings/AaaSettingsForm'
+import { OpenSettingsForm }   from './NetworkSettings/OpenSettingsForm'
+import { NetworkSummaryForm } from './NetworkSummary/NetworkSummaryForm'
+import { Venues }             from './Venues/Venues'
 
 export function NetworkForm () {
   const navigate = useNavigate()
@@ -34,6 +39,7 @@ export function NetworkForm () {
   const [state, updateState] = useState<CreateNetworkFormFields>({
     name: '',
     type: NetworkTypeEnum.AAA,
+    isCloudpathEnabled: false,
     venues: []
   })
   const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
@@ -94,7 +100,7 @@ export function NetworkForm () {
           onFinish={async (data) => {
             data = {
               ...data,
-              ...{ type: state.type }
+              ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
             }
             const settingSaveData = tranferSettingsToSave(data)
             updateData(data)
@@ -103,7 +109,7 @@ export function NetworkForm () {
           }}
         >
           {state.type === 'aaa' && <AaaSettingsForm />}
-          {state.type === 'open' && <OpenSettingsForm />}
+          {state.type === 'open' && <OpenSettingsForm formRef={formRef} />}
         </StepsForm.StepForm>
 
         <StepsForm.StepForm

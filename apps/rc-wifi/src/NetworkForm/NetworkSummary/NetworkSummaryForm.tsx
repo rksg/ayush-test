@@ -1,11 +1,10 @@
 import { EnvironmentOutlined } from '@ant-design/icons'
 import { Col, Form, Row }      from 'antd'
 
-import { StepsForm }       from '@acx-ui/components'
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { StepsForm }                                from '@acx-ui/components'
+import { NetworkTypeEnum, CreateNetworkFormFields } from '@acx-ui/rc/utils'
 
-import { CreateNetworkFormFields } from '../interface'
-import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
 export function NetworkSummaryForm (props: {
   summaryData: CreateNetworkFormFields;
@@ -45,8 +44,7 @@ export function NetworkSummaryForm (props: {
         />
         <Form.Item
           label='Use Cloudpath Server'
-          children={props.summaryData.cloudpathServerId && 
-            props.summaryData.cloudpathServerId !== '' ? 'Yes' : 'No'}
+          children={props.summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
         />
         <Form.Item label='Activated in venues' children={getVenues()} />
       </Col>

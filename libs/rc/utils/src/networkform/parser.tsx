@@ -1,5 +1,8 @@
+import { get } from 'lodash'
 
 import { 
+  CreateNetworkFormFields,
+  NetworkSaveData,
   IClientIsolationOptions, 
   IWlanRadioCustomization, 
   IOpenWlanAdvancedCustomization, 
@@ -11,7 +14,7 @@ import {
   ManagementFrameMinimumPhyRateEnum6G
 } from './interface'
 
-export function transferDetailToSave (data: any) {
+export function transferDetailToSave (data: CreateNetworkFormFields) {
   return {
     name: data.name,
     description: data.description ?? '',
@@ -23,7 +26,7 @@ export function transferDetailToSave (data: any) {
   }
 }
 
-export function tranferSettingsToSave (data: any) {
+export function tranferSettingsToSave (data: NetworkSaveData) {
   let saveData = {}
 
   if(data.type === 'aaa'){
@@ -42,21 +45,27 @@ export function tranferSettingsToSave (data: any) {
         }
       }
     } else {
-      let authRadius = {
-        primary: {
-          ip: data['authRadius.primary.ip'],
-          port: data['authRadius.primary.port'],
-          sharedSecret: data['authRadius.primary.sharedSecret']
+      let authRadius = {}
+      if (get(data, 'authRadius.primary.ip')) {
+        authRadius = {
+          ...authRadius,
+          ...{
+            primary: {
+              ip: get(data, 'authRadius.primary.ip'),
+              port: get(data, 'authRadius.primary.port'),
+              sharedSecret: get(data, 'authRadius.primary.sharedSecret')
+            }
+          }
         }
       }
-      if (data['authRadius.secondary.ip']) {
+      if (get(data, 'authRadius.secondary.ip')) {
         authRadius = {
           ...authRadius,
           ...{
             secondary: {
-              ip: data['authRadius.secondary.ip'],
-              port: data['authRadius.secondary.port'],
-              sharedSecret: data['authRadius.secondary.sharedSecret']
+              ip: get(data, 'authRadius.secondary.ip'),
+              port: get(data, 'authRadius.secondary.port'),
+              sharedSecret: get(data, 'authRadius.secondary.sharedSecret')
             }
           }
         }
@@ -77,21 +86,21 @@ export function tranferSettingsToSave (data: any) {
           ...accountingRadius,
           ...{
             primary: {
-              ip: data['accountingRadius.primary.ip'],
-              port: data['accountingRadius.primary.port'],
-              sharedSecret: data['accountingRadius.primary.sharedSecret']
+              ip: get(data, 'accountingRadius.primary.ip'),
+              port: get(data, 'accountingRadius.primary.port'),
+              sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
             }
           }
         }
   
-        if (data['accountingRadius.secondary.ip']) {
+        if (get(data, 'accountingRadius.secondary.ip')) {
           accountingRadius = {
             ...accountingRadius,
             ...{
               secondary: {
-                ip: data['accountingRadius.secondary.ip'],
-                port: data['accountingRadius.secondary.port'],
-                sharedSecret: data['accountingRadius.secondary.sharedSecret']
+                ip: get(data, 'accountingRadius.secondary.ip'),
+                port: get(data, 'accountingRadius.secondary.port'),
+                sharedSecret: get(data, 'accountingRadius.secondary.sharedSecret')
               }
             }
           }
