@@ -91,7 +91,7 @@ module.exports = {
   '@tooltip-arrow-width': '14px',
   '@tooltip-distance': '@tooltip-arrow-width - 2px',
   '@tooltip-color': 'var(--acx-primary-black)',
-  '@tooltip-bg': 'var(--acx-primary-white)',
+  '@tooltip-bg': '#FFFFFF', // var(--acx-primary-white)
 
   '@switch-min-width': '28px',
   '@switch-height': '16px',
