@@ -2,6 +2,15 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import AnalyticsRoutes from './Routes'
 
+test('should redirect analytics to analytics/incidents', () => {
+  render(<AnalyticsRoutes />, {
+    route: {
+      path: '/t/tenantId/analytics',
+      wrapRoutes: false
+    }
+  })
+  screen.getByText('Incidents')
+})
 test('should navigate to analytics/incidents', () => {
   render(<AnalyticsRoutes />, {
     route: {
