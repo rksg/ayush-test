@@ -55,7 +55,8 @@ export function NetworkVenuesTab () {
   const [tableData, setTableData] = useState(defaultArray)
   const { tenantId } = useParams()
   const userSetting = useGetAllUserSettingsQuery({ params: { tenantId } })
-  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings, Constants.triRadioUserSettingsKey)) === 'true'
+  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings, 
+    Constants.triRadioUserSettingsKey)) === 'true'
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
