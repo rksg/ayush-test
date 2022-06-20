@@ -8,7 +8,7 @@ module.exports = {
   transform: {
     '\\.svg$': `${__dirname}/tools/tests/svgrTransformer.js`
   },
-  coverageReporters: [ 'lcov', 'text-summary'],
+  coverageReporters: [ 'lcov' ],
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{js,jsx,ts,tsx}',
     '!<rootDir>/src/**/stories.tsx',
