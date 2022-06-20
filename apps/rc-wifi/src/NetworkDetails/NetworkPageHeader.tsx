@@ -13,10 +13,10 @@ function NetworkPageHeader () {
         { text: 'Networks', link: '/networks' }
       ]}
       extra={[
-        <Button key='date'><ClockOutlined />Last 24 hours</Button>,
-        <Button key='hierarchy'>Entire Organization <ArrowExpand /></Button>,
+        <Button key='time-filter'><ClockOutlined />Last 24 hours</Button>,
+        <Button key='organization'>Entire Organization <ArrowExpand /></Button>,
         <Button key='configure' type='primary'>Configure</Button>,
-        <Button key='insight'><BulbOutlined /></Button>
+        <Button key='bulb'><BulbOutlined /></Button>
       ]}
       footer={<NetworkTabs />}
     />

@@ -6,7 +6,7 @@ exports[`NetworkVenuesTab activate Network 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1w42t07-1 lgiHWb"
+      class="styledComponents__Wrapper-sc-1w42t07-1 kMSraG"
     >
       <div
         class="ant-table-wrapper"
@@ -543,7 +543,7 @@ exports[`NetworkVenuesTab deactivate Network 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1w42t07-1 lgiHWb"
+      class="styledComponents__Wrapper-sc-1w42t07-1 kMSraG"
     >
       <div
         class="ant-table-wrapper"
@@ -1080,7 +1080,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1w42t07-1 lgiHWb"
+      class="styledComponents__Wrapper-sc-1w42t07-1 kMSraG"
     >
       <div
         class="ant-table-wrapper"
