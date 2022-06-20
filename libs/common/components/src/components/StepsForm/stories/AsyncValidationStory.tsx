@@ -1,10 +1,11 @@
 import React from 'react'
 
-import { LoadingOutlined }      from '@ant-design/icons'
-import { message, Form, Input } from 'antd'
-import { RuleObject }           from 'antd/lib/form'
+import { LoadingOutlined } from '@ant-design/icons'
+import { Form, Input }     from 'antd'
+import { RuleObject }      from 'antd/lib/form'
 
 import { StepsForm } from '..'
+import { showToast } from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
@@ -28,10 +29,10 @@ export function AsyncValidationStory () {
 
   return <div style={{ marginTop: 80 }}>
     <StepsForm<Fields>
-      onCancel={() => message.info('Cancel')}
+      onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
       onFinish={async (data) => {
         console.log(data) // eslint-disable-line
-        message.success('Submitted')
+        showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
       }}
     >
       <StepsForm.StepForm<Pick<Fields, 'field1' | 'field2'>>

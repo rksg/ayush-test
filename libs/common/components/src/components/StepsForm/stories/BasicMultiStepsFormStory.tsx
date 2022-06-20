@@ -1,18 +1,19 @@
 import React from 'react'
 
-import { message, Form, Input } from 'antd'
+import { Form, Input } from 'antd'
 
 import { StepsForm } from '..'
+import { showToast } from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
 export function BasicMultiStepsFormStory () {
   return <div style={{ marginTop: 80 }}>
     <StepsForm
-      onCancel={() => message.info('Cancel')}
+      onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
       onFinish={async () => {
         await wait(1000) // mimic external service call
-        message.success('Submitted') // show notification to indicate submission successful
+        showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
       }}
     >
       <StepsForm.StepForm title='Step 1'>
