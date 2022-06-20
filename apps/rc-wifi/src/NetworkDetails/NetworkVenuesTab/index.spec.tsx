@@ -1,18 +1,12 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
+import { rest } from 'msw'
 
-import { render }                  from '@testing-library/react'
-import { rest }                    from 'msw'
-import { setupServer }             from 'msw/node'
-import { BrowserRouter as Router } from 'react-router-dom'
-
-import {
-  CommonUrlsInfo
-} from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { NetworkVenuesTab } from './index'
-
 
 const network = {
   type: 'aaa',
@@ -35,11 +29,7 @@ const network = {
   id: '373377b0cb6e46ea8982b1c80aabe1fa'
 }
 
-const user = {
-  COMMON:
-    '{"tab-networking-devices":"switch","activity":{"showUnreadMark":true,"isFirstTime":false},"tab-events-logs":"activities","tab-venue-networks":"switch","tab-users":"wifi"}',
-  WIFI: '{"network-venues":{"columns":{"name":true,"description":true,"city":true,"country":true,"networks":true,"aggregatedApStatus":true,"activated":true,"vlan":true,"aps":true,"radios":true,"scheduling":true}}}'
-}
+const user = { WIFI: '{"network-venues":{"columns":{"name":true,"description":true,"city":true,"country":true,"networks":true,"aggregatedApStatus":true,"activated":true,"vlan":true,"aps":true,"radios":true,"scheduling":true}}}',COMMON: '{"tab-networking-devices":"wifi","activity":{"showUnreadMark":true,"isFirstTime":false},"tab-events-logs":"activities","tab-venue-networks":"switch","tab-users":"switch","report-time-active-product":"SWITCH","tab-venue-clients":"wifi"}',SWITCH: '{"switches-list":{"columns-customization":{"activeSerial":"171px"}}}' }
 
 const list = {
   totalCount: 3,
@@ -47,7 +37,7 @@ const list = {
   data: [
     {
       id: 'd7b1a9a350634115a92ee7b0f11c7e75',
-      name: '101',
+      name: 'network-venue-1',
       description: '',
       city: 'Melbourne, Victoria',
       country: 'Australia',
@@ -113,42 +103,51 @@ const list = {
     }
   ]
 }
-
-const server = setupServer(
-  // Request handlers given to the `setupServer` call
-  // are referred to as initial request handlers.
-  rest.post(CommonUrlsInfo.getNetworksVenuesList.url, (req, res, ctx) => {
-    return res(ctx.json({ data: list }))
-  }),
-  rest.post(CommonUrlsInfo.getNetwork.url, (req, res, ctx) => {
-    return res(ctx.json({ data: network }))
-  }),
-  rest.get(CommonUrlsInfo.getAllUserSettings.url, (req, res, ctx) => {
-    return res(ctx.json({ data: user }))
+describe('NetworkVenuesTab', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation(query => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // Deprecated
+        removeListener: jest.fn(), // Deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn()
+      }))
+    })
   })
-)
-
-describe('NetworkDetails', () => {
+ 
   it('should render correctly', async () => {
-    server.use(
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url, (req, res, ctx) => {
-        return res(ctx.json({ data: list }))
-      }),
-      rest.post(CommonUrlsInfo.getNetwork.url, (req, res, ctx) => {
-        return res(ctx.json({ data: network }))
-      }),
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (req, res, ctx) => {
-        return res(ctx.json({ data: user }))
-      })
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getNetworksVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.get(
+        CommonUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json(network))
+      ),
+      rest.get(
+        CommonUrlsInfo.getAllUserSettings.url,
+        (req, res, ctx) => res(ctx.json(user))
+      )
     )
-    const { asFragment } = render(
-      <Provider>
-        <Router>
-          <NetworkVenuesTab></NetworkVenuesTab>
-        </Router>
-      </Provider>
-    )
-    // await screen.findByText('101')
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
+    }
+
+    const { asFragment } = render(<Provider><NetworkVenuesTab /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId' }
+    })
+
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByText('network-venue-1')
     expect(asFragment()).toMatchSnapshot()
   })
 })

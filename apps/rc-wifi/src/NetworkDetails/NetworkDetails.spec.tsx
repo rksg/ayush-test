@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { NetworkDetails } from './NetworkDetails'
@@ -51,9 +52,8 @@ describe('NetworkDetails', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
     }
-    const { asFragment } = render(<NetworkDetails />, {
-      route: { params, path: '/:tenantId/:networkId' },
-      store: true
+    const { asFragment } = render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId' }
     })
 
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
