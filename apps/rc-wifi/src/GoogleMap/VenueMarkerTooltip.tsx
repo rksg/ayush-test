@@ -10,17 +10,20 @@ const columns = [
   {
     title: '',
     dataIndex: 'name',
-    key: 'name'
+    key: 'name',
+    width: 50
   },
   {
     title: 'Networking Devices',
     dataIndex: 'networkDevices',
-    key: 'networkDevices'
+    key: 'networkDevices',
+    width: 140
   },
   {
     title: 'Clients',
     dataIndex: 'clients',
-    key: 'clients'
+    key: 'clients',
+    width: 140
   }
 ]
 
@@ -68,18 +71,12 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
         </UI.CellWrapper>,
       clients: clientsCount && clientsCount > 0
         ? <UI.CellWrapper>
-          <StackedBarChart
-            style={chartStyles}
-            data={apStat}
-            barColors={deviceConnectionStatusColors}
-            showLabels={false}
-            showTotal />
           <UI.TotalCount onClick={onClickHandler}>
             {clientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No AP Clients'}
+          {'No Connected Clients'}
         </UI.CellWrapper>
     },
     {
@@ -101,17 +98,12 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
         </UI.CellWrapper>,
       clients: switchClientsCount && switchClientsCount > 0
         ? <UI.CellWrapper>
-          <StackedBarChart
-            style={chartStyles}
-            data={switchStat}
-            barColors={deviceConnectionStatusColors}
-            showLabels={false} />
           <UI.TotalCount onClick={onClickHandler}>
             {switchClientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No Switch Clients'}
+          {'No Connected Clients'}
         </UI.CellWrapper>
     }
   ]
@@ -124,7 +116,7 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
       <Table
         columns={columns}
         dataSource={data}
-        style={{ width: '100%' }}
+        style={{ width: '435px' }}
         type={'tooltip'}
       />
     </UI.Wrapper>

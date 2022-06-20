@@ -77,7 +77,7 @@ export const Title = styled.a`
   padding: 20px 5px;
 `
 export const TotalCount = styled.a`
-  font-family: var(--acx-accent-brand-font);
+  font-family: var(--acx-neutral-brand-font);
   font-size: var(--acx-subtitle-5-font-size);
   line-height: var(--acx-subtitle-5-line-height);
   font-weight: 700;

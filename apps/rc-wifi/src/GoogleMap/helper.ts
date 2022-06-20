@@ -32,13 +32,13 @@ export const massageVenuesData = (overviewData: DashboardOverview): VenueMarkerO
         status: val.venueStatus,
         latitude: val.latitude,
         longitude: val.longitude,
-        venueId: venueId,
+        venueId,
         clientsCount: overviewData?.summary?.clients?.summary[venueId],
-        apStat,
-        apsCount,
-        switchStat,
-        switchesCount,
         switchClientsCount: getSwitchClientCountByVenue(overviewData, venueId),
+        apStat,
+        switchStat,
+        apsCount,
+        switchesCount,
         visible: true
       })
     })

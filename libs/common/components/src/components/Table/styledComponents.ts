@@ -106,6 +106,10 @@ const tooltipStyle = css`
       padding-top: 4px;
       border-bottom: 0px;
     }
+
+    .ant-table-tbody > tr.ant-table-row:hover > td, .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+      background: none;
+    }
   }
 `
 
