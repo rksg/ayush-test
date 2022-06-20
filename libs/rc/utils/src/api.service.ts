@@ -23,3 +23,21 @@ export const createHttpRequest = (
     url
   }
 }
+
+export interface Filters {
+  venueId?: string[];
+  networkId?: string[];
+  switchId?: string[];
+  clientId?: string[];
+  serialNumber?: string[];
+}
+
+export const getFilters = (params: Params) => {
+  let filters: Filters = {}
+
+  if (params.networkId) {
+    filters.networkId = [params.networkId]
+  }
+
+  return filters
+}

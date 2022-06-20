@@ -67,10 +67,6 @@ export interface AlarmMeta {
 
 export type Alarm = AlarmBase & AlarmMeta
 
-export interface Filters {
-  networkId?: string[];
-}
-
 export interface NetworkDetailHeader {
   activeVenueCount: number,
   aps: {

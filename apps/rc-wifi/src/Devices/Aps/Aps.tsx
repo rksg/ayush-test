@@ -8,7 +8,7 @@ import {
   Loader,
   Table
 } from '@acx-ui/components'
-import { ApExtraParams, Filters, useApListQuery } from '@acx-ui/rc/services'
+import { ApExtraParams, useApListQuery } from '@acx-ui/rc/services'
 import {
   APMeshRole,
   APView,
@@ -17,6 +17,9 @@ import {
   transformDisplayText,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { getFilters } from '@acx-ui/rc/utils'
+import { useParams }  from '@acx-ui/react-router-dom'
+
 
 import * as UI from './styledComponents'
 
@@ -31,14 +34,14 @@ const defaultPayload = {
   ]
 }
 
-export function Aps (props: {
-  filters: Filters;
-}) {
+export function Aps () {
+  const params = useParams()
+  const filters = getFilters(params)
   const tableQuery = useTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultPayload,
-      filters: props.filters
+      filters
     }
   })
 
