@@ -66,7 +66,7 @@ export function Table <RecordType extends object> (
           </Space>
           <Space>
             {
-              props.alertOptions?.map((option, index) => 
+              props.alertOptions?.map((option, index) =>
                 <p key={option.key} className={'alert-option-span'}>
                   <a onClick={()=>option.onClick()} className='alert-options'>
                     {option.label}
@@ -78,7 +78,7 @@ export function Table <RecordType extends object> (
               )
             }
           </Space>
-        </> 
+        </>
       )}
       tableAlertOptionRender={false}
     />

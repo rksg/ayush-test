@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import React, { useContext, useMemo } from 'react'
 
 import {
@@ -12,6 +13,7 @@ import type { RoutesProps } from 'react-router-dom'
 
 /**
  * Similar to Routes, except it enable routes define under be able start from root
+ * ref: https://github.com/remix-run/react-router/issues/8035#issuecomment-997737565
  */
 export function RootRoutes (props: RoutesProps) {
   const ctx = useContext(RouteContext)
