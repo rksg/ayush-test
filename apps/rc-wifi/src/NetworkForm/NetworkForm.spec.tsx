@@ -4,6 +4,7 @@ import { rest }  from 'msw'
 
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { generatePath }                          from '@acx-ui/react-router-dom'
+import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { NetworkForm } from './NetworkForm'
@@ -28,7 +29,7 @@ describe('NetworkForm', () => {
   it('should create open network successfully', async () => {
     const params = { networkId: 'network-id', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<NetworkForm />, {
+    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
       route: { params },
       store: true
     })
