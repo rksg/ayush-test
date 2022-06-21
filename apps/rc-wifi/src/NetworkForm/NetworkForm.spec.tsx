@@ -40,7 +40,7 @@ describe('NetworkForm', () => {
 
     mockServer.use(
       rest.post(formUrl, (req, res, ctx) => {
-        res(
+        return res(
           ctx.status(200),
           ctx.json(successResponse)
         )
