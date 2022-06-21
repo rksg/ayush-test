@@ -1,10 +1,10 @@
 import { Checkbox } from 'antd'
 import styled       from 'styled-components/macro'
 
-import { ReactComponent as VenueMarkerGreen }  from '../assets/VenueMarkerGreen.svg'
-import { ReactComponent as VenueMarkerGrey }   from '../assets/VenueMarkerGrey.svg'
-import { ReactComponent as VenueMarkerOrange } from '../assets/VenueMarkerOrange.svg'
-import { ReactComponent as VenueMarkerRed }    from '../assets/VenueMarkerRed.svg'
+import { ReactComponent as VenueMarkerGreen }  from '../assets/map/VenueMarkerGreen.svg'
+import { ReactComponent as VenueMarkerGrey }   from '../assets/map/VenueMarkerGrey.svg'
+import { ReactComponent as VenueMarkerOrange } from '../assets/map/VenueMarkerOrange.svg'
+import { ReactComponent as VenueMarkerRed }    from '../assets/map/VenueMarkerRed.svg'
 
 export const FilterCheckbox = styled(Checkbox)`
   margin-left: 0px !important; // override antd default margin
