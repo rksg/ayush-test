@@ -10,6 +10,12 @@ export function Map () {
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
+  }, 
+  {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: massageVenuesData(data),
+      ...rest
+    })
   })
 
   // TODO - This is temporary until implemented in widgets
@@ -17,10 +23,9 @@ export function Map () {
     return <span>Map is not enabled</span>
   }
 
-  const massagedVenues = massageVenuesData(queryResults.data)
   return (
     <Loader states={[queryResults]}>
-      <GoogleMap cluster={true} data={massagedVenues} />
+      <GoogleMap cluster={true} data={queryResults.data} />
     </Loader>
   )
 }
