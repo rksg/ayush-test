@@ -30,8 +30,8 @@ const defaultProps: StackedBarOptionalProps = {
   showLabels: true,
   barColors: [
     cssStr('--acx-semantics-yellow-40'), // P4
-    cssStr('--acx-semantics-orange-30'), // P3
-    cssStr('--acx-semantics-orange-55'), // P2
+    cssStr('--acx-accents-orange-30'), // P3
+    cssStr('--acx-accents-orange-55'), // P2
     cssStr('--acx-semantics-red-50') // P1
   ],
   showTotal: true,
