@@ -12,7 +12,7 @@ const widgetsMap = {
 }
 
 function WifiWidgets ({ name }: { name: keyof typeof widgetsMap }) {
-  let treatment = useSplitTreatment(SPLIT_NAME)
+  const treatment = useSplitTreatment(SPLIT_NAME)
   const Widget = widgetsMap[name]
 
   return <Provider>
