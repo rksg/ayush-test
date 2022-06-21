@@ -9,7 +9,7 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 
-import { Network, Venue, NetworkDetailHeader } from './types'
+import { Network, Venue, NetworkDetailHeader, DashboardOverview } from './types'
 
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -75,7 +75,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return result
       }
     }),
-    dashboardOverview: build.query<any, RequestPayload>({
+    dashboardOverview: build.query<DashboardOverview, RequestPayload>({
       query: ({ params }) => {
         const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
         return{
