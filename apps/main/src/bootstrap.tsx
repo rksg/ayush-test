@@ -2,7 +2,7 @@ import React from 'react'
 
 import { ConfigProvider } from 'antd'
 import enUS               from 'antd/lib/locale/en_US'
-import ReactDOM           from 'react-dom'
+import { createRoot }     from 'react-dom/client'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 import { Provider }      from '@acx-ui/store'
@@ -11,7 +11,9 @@ import AllRoutes from './AllRoutes'
 
 import '@acx-ui/theme'
 
-ReactDOM.render(
+const container = document.getElementById('root')
+const root = createRoot(container!)
+root.render(
   <React.StrictMode>
     <ConfigProvider locale={enUS}>
       <Provider>
@@ -22,6 +24,5 @@ ReactDOM.render(
         </BrowserRouter>
       </Provider>
     </ConfigProvider>
-  </React.StrictMode>,
-  document.getElementById('root') as HTMLElement
+  </React.StrictMode>
 )

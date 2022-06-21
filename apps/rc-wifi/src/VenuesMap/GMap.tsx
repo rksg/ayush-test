@@ -18,6 +18,7 @@ interface MapProps extends google.maps.MapOptions {
   onIdle?: (map: google.maps.Map) => void;
   venues: VenueMarkerOptions[]
   cluster?: boolean
+  children?: React.ReactNode
 }
 
 const GMap: React.FC<MapProps> = ({

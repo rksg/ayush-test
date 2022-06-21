@@ -1,11 +1,11 @@
 module.exports = {
-  displayName: 'ui-react-router-dom',
+  displayName: 'common-config',
   preset: '../../../jest.preset.ts',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../coverage/libs/common/react-router-dom',
+  coverageDirectory: '../../../coverage/libs/common/config',
   coverageThreshold: {
     global: {
       statements: 100,

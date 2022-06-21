@@ -1,38 +1,60 @@
 /* eslint-disable max-len */
 import _ from 'lodash'
 
-import { cssStr } from '@acx-ui/components'
-
+import { cssStr }    from '@acx-ui/components'
 import {
-  ApVenueStatusEnum,
   ChartData,
   DashboardOverview,
-  getDisplayLabel,
-  SwitchStatusEnum } from './constant'
+  ApVenueStatusEnum,
+  SwitchStatusEnum } from '@acx-ui/rc/services'
+
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
-export const massageVenuesData = (overviewData: DashboardOverview): VenueMarkerOptions[] => {
+export const getDeviceConnectionStatusColors = () => [
+  cssStr('--acx-semantics-green-50'),
+  cssStr('--acx-neutrals-50'),
+  cssStr('--acx-semantics-yellow-40'),
+  cssStr('--acx-semantics-red-50')
+]
+
+export const getDisplayLabel = (label: string) => {
+  switch (label) {
+    case ApVenueStatusEnum.IN_SETUP_PHASE:
+      return '3 In Setup Phase'
+    case ApVenueStatusEnum.OFFLINE:
+      return '3 Offline'
+    case ApVenueStatusEnum.OPERATIONAL:
+      return '4 Operational'
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
+      return '1 Requires Attention'
+    case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return '2 Transient Issue'
+    default:
+      return '3 Unknown'
+  }
+}
+
+export const massageVenuesData = (overviewData?: DashboardOverview): VenueMarkerOptions[] => {
   const venues: VenueMarkerOptions[] = []
   overviewData?.venues?.forEach((venue) => {
     _.forIn(venue, (val, venueId) => {
-      // todo: if venue has no coordinates, adding mock coordinates (Piazza San Pietro, Rome) and throwing relevant error
+      // Adding mock coordinates (Piazza San Pietro, Rome) if position is missing
       if (!val.latitude || !val.longitude) {
         val.latitude = 41.9021622
         val.longitude = 12.4572277
         // eslint-disable-next-line no-console
-        console.error(`Venue '${val.name}' doesn't include location,
-          dummy coordinates were added for gmap correct behaviour`)
+        console.error(`Venue '${val.name}' doesn't include location. Using default coordinates.`)
       }
 
       const { apStat, apsCount } = getApStatusDataByVenue(overviewData, venueId)
       const { switchStat, switchesCount } = getSwitchStatusDataByVenue(overviewData, venueId)
 
       venues.push({
+        venueId,
         name: val.name,
         status: val.venueStatus,
         latitude: val.latitude,
         longitude: val.longitude,
-        venueId,
         clientsCount: overviewData?.summary?.clients?.summary[venueId],
         switchClientsCount: getSwitchClientCountByVenue(overviewData, venueId),
         apStat,

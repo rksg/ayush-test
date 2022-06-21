@@ -55,11 +55,18 @@ const rotatedStyle = css`
         margin: auto;
         max-height: min-content;
       }
+      .ant-table-column-sorters {
+        display: flex;
+        justify-content: left;
+      }
 
       ${RotatedColumn},
       .ant-table-column-title { transform: rotate(180deg); }
 
       .ant-table-column-sorter {
+        width: unset; // resets width for the center align
+
+        display: flex;
         margin: 0 0 calc(var(--icon-size) / 2) 0;
         &-up {
           margin-bottom: 0px;
@@ -134,15 +141,17 @@ export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' | 'too
 
       &.ant-table-column-has-sorters { background: unset; }
 
-      .ant-table-column-sorters { justify-content: left; }
+      .ant-table-column-sorters { display: unset; }
 
       .ant-table-column-title { flex: unset; }
 
       .ant-table-column-sorter {
         --icon-size: 11px;
 
-        display: flex;
+        display: inline-flex;
         margin: 0 0 0 calc(var(--icon-size) / 2);
+
+        width: 0; // to ensure context don't look off when align to center
 
         &-up, &-down {
           visibility: hidden;
