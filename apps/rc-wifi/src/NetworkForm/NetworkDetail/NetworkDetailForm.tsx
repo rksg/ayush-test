@@ -12,28 +12,30 @@ import { RadioDescription } from '../styledComponents'
 
 import type { RadioChangeEvent } from 'antd'
 
-
-enum NetworkTypeDescription {
-  PSK = 'Require users to enter a passphrase (that you have defined for the network) to connect',
-  DPSK = 'Require users to enter a passphrase to connect. The passphrase is unique per device',
-  AAA = `Use 802.1X standard and WPA2 security protocols to authenticate users using an
-         authentication server on thenetwork`,
-  CAPTIVEPORTAL = 'Users are authorized through a captive portal in various methods',
-  OPEN = `Allow users to access the network without any authentication/security
-          (not recommended)`,
+const NetworkTypeDescription = {
+  [NetworkTypeEnum.PSK]: `Require users to enter a passphrase 
+                          (that you have defined for the network) to connect`,
+  [NetworkTypeEnum.DPSK]: `Require users to enter a passphrase to connect. 
+                          The passphrase is unique per device`,
+  [NetworkTypeEnum.AAA]: `Use 802.1X standard and WPA2 security protocols to authenticate 
+                          users using an authentication server on thenetwork`,
+  [NetworkTypeEnum.CAPTIVEPORTAL]: `Users are authorized through a captive portal 
+                                    in various methods`,
+  [NetworkTypeEnum.OPEN]: `Allow users to access the network without 
+                          any authentication/security(not recommended)`
 }
 
-enum NetworkTypeLabel {
-  PSK = 'Pre-Shared Key (PSK)',
-  DPSK = 'Dynamic Pre-Shared Key (DPSK)',
-  AAA = 'Enterprise AAA (802.1X)',
-  CAPTIVEPORTAL = 'Captive portal',
-  OPEN = 'Open Network',
+const NetworkTypeLabel = {
+  [NetworkTypeEnum.PSK]: 'Pre-Shared Key (PSK)',
+  [NetworkTypeEnum.DPSK]: 'Dynamic Pre-Shared Key (DPSK)',
+  [NetworkTypeEnum.AAA]: 'Enterprise AAA (802.1X)',
+  [NetworkTypeEnum.CAPTIVEPORTAL]: 'Captive portal',
+  [NetworkTypeEnum.OPEN]: 'Open Network'
 }
 
-enum NetworkTypeTitle {
-  aaa = 'AAA Settings', 
-  open = 'Settings' 
+const NetworkTypeTitle = {
+  [NetworkTypeEnum.AAA]: 'AAA Settings', 
+  [NetworkTypeEnum.OPEN]: 'Settings' 
 }
 
 export function NetworkDetailForm () {
@@ -66,37 +68,37 @@ export function NetworkDetailForm () {
           <Radio.Group onChange={onChange}>
             <Space direction='vertical'>
               <Radio value={NetworkTypeEnum.PSK} disabled>
-                {NetworkTypeLabel.PSK}
+                {NetworkTypeLabel.psk}
                 <RadioDescription>
-                  {NetworkTypeDescription.PSK}
+                  {NetworkTypeDescription.psk}
                 </RadioDescription>
               </Radio>
 
               <Radio value={NetworkTypeEnum.DPSK} disabled>
-                {NetworkTypeLabel.DPSK}
+                {NetworkTypeLabel.dpsk}
                 <RadioDescription>
-                  {NetworkTypeDescription.DPSK}
+                  {NetworkTypeDescription.dpsk}
                 </RadioDescription>
               </Radio>
 
               <Radio value={NetworkTypeEnum.AAA}>
-                {NetworkTypeLabel.AAA}
+                {NetworkTypeLabel.aaa}
                 <RadioDescription>
-                  {NetworkTypeDescription.AAA}
+                  {NetworkTypeDescription.aaa}
                 </RadioDescription>
               </Radio>
 
               <Radio value={NetworkTypeEnum.CAPTIVEPORTAL} disabled>
-                {NetworkTypeLabel.CAPTIVEPORTAL}
+                {NetworkTypeLabel.guest}
                 <RadioDescription>
-                  {NetworkTypeDescription.CAPTIVEPORTAL}
+                  {NetworkTypeDescription.guest}
                 </RadioDescription>
               </Radio>
 
               <Radio value={NetworkTypeEnum.OPEN}>
-                {NetworkTypeLabel.OPEN}
+                {NetworkTypeLabel.open}
                 <RadioDescription>
-                  {NetworkTypeDescription.OPEN}
+                  {NetworkTypeDescription.open}
                 </RadioDescription>
               </Radio>
             </Space>
