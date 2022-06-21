@@ -35,7 +35,7 @@ const defaultPayload = {
   ]
 }
 
-const handleStatusColor = (color: string | undefined) => {
+const handleStatusColor = (color: DeviceConnectionStatus) => {
   switch (color) {
     case DeviceConnectionStatus.INITIAL:
       return 'var(--acx-neutrals-50)'
@@ -45,8 +45,6 @@ const handleStatusColor = (color: string | undefined) => {
       return 'var(--acx-semantics-red-60)'
     case DeviceConnectionStatus.CONNECTED:
       return 'var(--acx-semantics-green-50)'
-    default:
-      return 'var(--acx-neutrals-50)'
   }
 }
 
@@ -127,7 +125,7 @@ export function Aps () {
   return (
     <Loader states={[tableQuery]}>
       <Table dataSource={tableData}
-        rowKey='id'
+        rowKey='serialNumber'
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
       >
