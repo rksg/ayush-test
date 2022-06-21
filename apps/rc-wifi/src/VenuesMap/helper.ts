@@ -1,9 +1,10 @@
 import * as _ from 'lodash'
 
-import { ApVenueStatusEnum, DashboardOverview } from './constant'
-import { VenueMarkerOptions }                   from './VenueMarkerWithLabel'
+import { DashboardOverview, ApVenueStatusEnumType } from '@acx-ui/rc/services'
 
-export const massageVenuesData = (overviewData: DashboardOverview): VenueMarkerOptions[] => {
+import { VenueMarkerOptions } from './VenueMarkerWithLabel'
+
+export const massageVenuesData = (overviewData?: DashboardOverview): VenueMarkerOptions[] => {
   const venues: VenueMarkerOptions[] = []
   overviewData?.venues?.forEach((venue) => {
     _.forIn(venue, (val, venueId) => {
@@ -31,19 +32,19 @@ export const massageVenuesData = (overviewData: DashboardOverview): VenueMarkerO
 
       if (apStat && apStat[venueId] && apStat[venueId].apStatus) {
 
-        if (apStat[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]) {
-          requires_attention = apStat[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]
+        if (apStat[venueId].apStatus[ApVenueStatusEnumType.REQUIRES_ATTENTION]) {
+          requires_attention = apStat[venueId].apStatus[ApVenueStatusEnumType.REQUIRES_ATTENTION]
         }
 
-        if (apStat[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]) {
-          in_setup_phase = apStat[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]
+        if (apStat[venueId].apStatus[ApVenueStatusEnumType.IN_SETUP_PHASE]) {
+          in_setup_phase = apStat[venueId].apStatus[ApVenueStatusEnumType.IN_SETUP_PHASE]
         }
 
-        if (apStat[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]) {
-          transient_issue = apStat[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]
+        if (apStat[venueId].apStatus[ApVenueStatusEnumType.TRANSIENT_ISSUE]) {
+          transient_issue = apStat[venueId].apStatus[ApVenueStatusEnumType.TRANSIENT_ISSUE]
         }
-        if (apStat[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]) {
-          operational = apStat[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]
+        if (apStat[venueId].apStatus[ApVenueStatusEnumType.OPERATIONAL]) {
+          operational = apStat[venueId].apStatus[ApVenueStatusEnumType.OPERATIONAL]
         }
       }
 
@@ -55,10 +56,10 @@ export const massageVenuesData = (overviewData: DashboardOverview): VenueMarkerO
         venueId: venueId,
         clientsCount: overviewData?.summary?.clients?.summary[venueId],
         apStat: {
-          [ApVenueStatusEnum.REQUIRES_ATTENTION]: requires_attention!,
-          [ApVenueStatusEnum.TRANSIENT_ISSUE]: transient_issue!,
-          [ApVenueStatusEnum.IN_SETUP_PHASE]: in_setup_phase!,
-          [ApVenueStatusEnum.OPERATIONAL]: operational!
+          [ApVenueStatusEnumType.REQUIRES_ATTENTION]: requires_attention!,
+          [ApVenueStatusEnumType.TRANSIENT_ISSUE]: transient_issue!,
+          [ApVenueStatusEnumType.IN_SETUP_PHASE]: in_setup_phase!,
+          [ApVenueStatusEnumType.OPERATIONAL]: operational!
         },
         apsCount: apStat && apStat[venueId] ? apStat[venueId].totalCount : 0,
         switchesCount: getSwitchCountByVenue(overviewData, venueId),
