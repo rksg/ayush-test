@@ -5,7 +5,10 @@ module.exports = {
   moduleNameMapper: {
     '^antd/es/(.*)$': `${__dirname}/node_modules/antd/lib/$1`
   },
-  coverageReporters: [ 'lcov' ],
+  transform: {
+    '\\.svg$': `${__dirname}/tools/tests/svgrTransformer.js`
+  },
+  coverageReporters: [ 'lcov', 'text-summary' ],
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{js,jsx,ts,tsx}',
     '!<rootDir>/src/**/stories.tsx',

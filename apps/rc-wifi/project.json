@@ -27,12 +27,7 @@
           "vendorChunk": true
         },
         "production": {
-          "fileReplacements": [
-            {
-              "replace": "apps/rc-wifi/src/environments/environment.ts",
-              "with": "apps/rc-wifi/src/environments/environment.prod.ts"
-            }
-          ],
+          "fileReplacements": [],
           "optimization": true,
           "outputHashing": "all",
           "sourceMap": false,
