@@ -2,7 +2,7 @@
 import { StackedBarChart } from '@acx-ui/components'
 import { Table }           from '@acx-ui/components'
 
-import { getDeviceConnectionStatusColors } from './constant'
+import { getDeviceConnectionStatusColors } from './helper'
 import * as UI                             from './styledComponents'
 import { VenueMarkerOptions }              from './VenueMarkerWithLabel'
 
