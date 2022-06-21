@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
 import _ from 'lodash'
 
-import { cssStr } from '@acx-ui/components'
-
+import { cssStr }                                   from '@acx-ui/components'
 import { DashboardOverview, ApVenueStatusEnumType } from '@acx-ui/rc/services'
 
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
@@ -96,17 +95,17 @@ export const getMarkerColor = (statuses:any[] | undefined) => {
   // ApVenueStatusEnum.IN_SETUP_PHASE
   // ApVenueStatusEnum.OFFLINE
 
-  if (statuses?.includes(ApVenueStatusEnum.REQUIRES_ATTENTION))
+  if (statuses?.includes(ApVenueStatusEnumType.REQUIRES_ATTENTION))
     color = {
       default: cssStr('--acx-status-red'),
       hover: cssStr('--acx-status-red-dark')
     }
-  else if (statuses?.includes(ApVenueStatusEnum.TRANSIENT_ISSUE))
+  else if (statuses?.includes(ApVenueStatusEnumType.TRANSIENT_ISSUE))
     color = {
       default: cssStr('--acx-status-yellow'),
       hover: cssStr('--acx-status-yellow-dark')
     }
-  else if (statuses?.includes(ApVenueStatusEnum.OPERATIONAL))
+  else if (statuses?.includes(ApVenueStatusEnumType.OPERATIONAL))
     color = {
       default: cssStr('--acx-status-green'),
       hover: cssStr('--acx-status-green-dark')
