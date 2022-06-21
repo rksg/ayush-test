@@ -49,7 +49,7 @@ export function NetworkSummaryForm (props: {
         <Form.Item label='Activated in venues' children={getVenues()} />
       </Col>
       <Col span={14}>
-        <NetworkDiagram />
+        <NetworkDiagram type={props.summaryData.type} />
       </Col>
     </Row>
   )
