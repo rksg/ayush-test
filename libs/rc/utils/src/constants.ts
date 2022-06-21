@@ -65,3 +65,6 @@ export enum ApRadioBands {
   band50 = '5G',
   band60 = '6G'
 }
+export const Constants = {
+  triRadioUserSettingsKey: 'COMMON$supportTriRadio'
+}
