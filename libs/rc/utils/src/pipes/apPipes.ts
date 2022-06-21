@@ -7,7 +7,7 @@ export enum APView {
 
 export function transformApStatus (status: ApDeviceStatusEnum, apView?: APView) {
   let message = ''
-  let deviceStatus = ''
+  let deviceStatus = DeviceConnectionStatus.INITIAL
   switch (status) {
     case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
       message = apView === APView.AP_LIST ? 'Never contacted cloud' : 'AP never contacted cloud'
