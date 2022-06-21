@@ -1,12 +1,13 @@
 import { EnvironmentOutlined } from '@ant-design/icons'
 import { Col, Form, Row }      from 'antd'
 
-import { StepsForm }                                from '@acx-ui/components'
-import { NetworkTypeEnum, CreateNetworkFormFields } from '@acx-ui/rc/utils'
+import { StepsForm }               from '@acx-ui/components'
+import { CreateNetworkFormFields } from '@acx-ui/rc/utils'
 
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import { NetworkDiagram }       from '../NetworkDiagram/NetworkDiagram'
+import { transformNetworkType } from '../parser'
 
-export function NetworkSummaryForm (props: {
+export function AaaNetworkSummaryForm (props: {
   summaryData: CreateNetworkFormFields;
 }) {
   const defaultValue = '--'
@@ -53,26 +54,4 @@ export function NetworkSummaryForm (props: {
       </Col>
     </Row>
   )
-}
-
-const transformNetworkType = (value: any) => {
-  let displayValue = ''
-  switch (value) {
-    case NetworkTypeEnum.OPEN:
-      displayValue = 'Open Network'
-      break
-    case NetworkTypeEnum.PSK:
-      displayValue = 'Pre-Shared Key (PSK)'
-      break
-    case NetworkTypeEnum.DPSK:
-      displayValue = 'Dynamic Pre-Shared Key (DPSK)'
-      break
-    case NetworkTypeEnum.AAA:
-      displayValue = 'Enterprise AAA (802.1X)'
-      break
-    case NetworkTypeEnum.CAPTIVEPORTAL:
-      //TODO
-      break
-  }
-  return displayValue
 }

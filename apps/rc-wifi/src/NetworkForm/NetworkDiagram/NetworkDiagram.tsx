@@ -13,12 +13,12 @@ export function NetworkDiagram (props: {
     <Row justify='center'>
       <Col>
         <Title>
-          {props.type === 'aaa' && 'Enterprise AAA (802.1X)'}
-          {props.type === 'open' && 'Open Network'}
+          {props.type === NetworkTypeEnum.AAA && 'Enterprise AAA (802.1X)'}
+          {props.type === NetworkTypeEnum.OPEN && 'Open Network'}
         </Title>
         <Diagram>
-          {props.type === 'aaa' && <img src={AaaDiagram} alt='Background'></img>}
-          {props.type === 'open' && <img src={OpenDiagram} alt='Background'></img>}
+          {props.type === NetworkTypeEnum.AAA && <img src={AaaDiagram} alt='Background'></img>}
+          {props.type === NetworkTypeEnum.OPEN && <img src={OpenDiagram} alt='Background'></img>}
         </Diagram>
       </Col>
     </Row>

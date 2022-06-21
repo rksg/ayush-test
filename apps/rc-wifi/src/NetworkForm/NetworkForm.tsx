@@ -10,8 +10,6 @@ import {
 import { useCreateNetworkMutation } from '@acx-ui/rc/services'
 import { 
   NetworkTypeEnum,
-  transferDetailToSave,
-  tranferSettingsToSave,
   CreateNetworkFormFields,
   NetworkSaveData
 } from '@acx-ui/rc/utils'
@@ -21,12 +19,17 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkDetailForm }  from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext     from './NetworkFormContext'
-import { AaaSettingsForm }    from './NetworkSettings/AaaSettingsForm'
-import { OpenSettingsForm }   from './NetworkSettings/OpenSettingsForm'
-import { NetworkSummaryForm } from './NetworkSummary/NetworkSummaryForm'
-import { Venues }             from './Venues/Venues'
+import { NetworkDetailForm }      from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext         from './NetworkFormContext'
+import { AaaSettingsForm }        from './NetworkSettings/AaaSettingsForm'
+import { OpenSettingsForm }       from './NetworkSettings/OpenSettingsForm'
+import { AaaNetworkSummaryForm }  from './NetworkSummary/AaaNetworkSummaryForm'
+import { OpenNetworkSummaryForm } from './NetworkSummary/OpenNetworkSummaryForm'
+import {
+  transferDetailToSave,
+  tranferSettingsToSave
+} from './parser'
+import { Venues } from './Venues/Venues'
 
 export function NetworkForm () {
   const navigate = useNavigate()
@@ -108,8 +111,8 @@ export function NetworkForm () {
             return true
           }}
         >
-          {state.type === 'aaa' && <AaaSettingsForm />}
-          {state.type === 'open' && <OpenSettingsForm formRef={formRef} />}
+          {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+          {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm formRef={formRef} />}
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
@@ -125,7 +128,8 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm name='summary' title='Summary'>
-          <NetworkSummaryForm summaryData={state} />
+          {state.type === NetworkTypeEnum.AAA && <AaaNetworkSummaryForm summaryData={state} />}
+          {state.type === NetworkTypeEnum.OPEN && <OpenNetworkSummaryForm summaryData={state} />}
         </StepsForm.StepForm>
       </StepsForm>
     </>
