@@ -7,8 +7,7 @@ import { CreateNetworkFormFields } from '@acx-ui/rc/utils'
 import { NetworkDiagram }       from '../NetworkDiagram/NetworkDiagram'
 import { transformNetworkType } from '../parser'
 
-
-export function OpenNetworkSummaryForm (props: {
+export function AaaSummaryForm (props: {
   summaryData: CreateNetworkFormFields;
 }) {
   const defaultValue = '--'
@@ -56,4 +55,3 @@ export function OpenNetworkSummaryForm (props: {
     </Row>
   )
 }
-
