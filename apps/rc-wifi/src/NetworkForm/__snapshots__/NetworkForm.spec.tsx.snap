@@ -8,38 +8,40 @@ exports[`NetworkForm should create open network successfully 1`] = `
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
     >
-      <div
+      <nav
         class="ant-breadcrumb"
       >
-        <span>
-          <span
-            class="ant-breadcrumb-link"
-          >
-            <a
-              href="/t/tenant-id/networks"
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
             >
-              Networks
-            </a>
-          </span>
-          <span
-            class="ant-breadcrumb-separator"
-          >
-            /
-          </span>
-        </span>
-        <span>
-          <span
-            class="ant-breadcrumb-link"
-          >
-             
-          </span>
-          <span
-            class="ant-breadcrumb-separator"
-          >
-            /
-          </span>
-        </span>
-      </div>
+              <a
+                href="/t/tenant-id/networks"
+              >
+                Networks
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
       <div
         class="ant-page-header-heading"
       >
@@ -352,7 +354,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                         style="margin-bottom: 8px;"
                                       >
                                         <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-disabled"
+                                          class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
                                         >
                                           <span
                                             class="ant-radio ant-radio-disabled"
@@ -383,7 +385,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                         style="margin-bottom: 8px;"
                                       >
                                         <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-disabled"
+                                          class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
                                         >
                                           <span
                                             class="ant-radio ant-radio-disabled"
@@ -414,7 +416,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                         style="margin-bottom: 8px;"
                                       >
                                         <label
-                                          class="ant-radio-wrapper"
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                         >
                                           <span
                                             class="ant-radio"
@@ -444,7 +446,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                         style="margin-bottom: 8px;"
                                       >
                                         <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-disabled"
+                                          class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
                                         >
                                           <span
                                             class="ant-radio ant-radio-disabled"
@@ -474,7 +476,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                         class="ant-space-item"
                                       >
                                         <label
-                                          class="ant-radio-wrapper"
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                         >
                                           <span
                                             class="ant-radio"
@@ -585,7 +587,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                   class="ant-form-item-control-input-content"
                                 >
                                   <div
-                                    class="ant-select ant-select-single ant-select-show-arrow"
+                                    class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
                                   >
                                     <div
                                       class="ant-select-selector"
@@ -1052,6 +1054,8 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                     role="img"
                                   >
                                     <div
+                                      aria-busy="true"
+                                      aria-live="polite"
                                       class="ant-spin ant-spin-lg ant-spin-spinning"
                                     >
                                       <span

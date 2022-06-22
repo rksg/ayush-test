@@ -14,7 +14,7 @@ import { Network, Venue, NetworkDetailHeader } from './types'
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'networkApi',
-  tagTypes: ['Network'],
+  tagTypes: ['Network', 'DetailHeader'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -57,7 +57,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...networkDetailReq
         }
-      }
+      },
+      providesTags: ['Network', 'DetailHeader']
     }),
     venueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
