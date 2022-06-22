@@ -87,14 +87,48 @@ const rotatedStyle = css`
   }
 `
 
+const tooltipStyle = css`
+  .ant-table {
+    background-color: transparent;
+    font-family: var(--acx-neutral-brand-font);
+
+    &-thead > tr > th {
+      font-size: var(--acx-body-4-font-size);
+      line-height: var(--acx-body-4-line-height);
+      font-weight: 400;
+      padding-bottom: 6px;
+      border-bottom: 0px;
+    }
+
+    &-tbody > tr > td:first-child {
+      font-size: var(--acx-subtitle-5-font-size);
+      line-height: var(--acx-subtitle-5-line-height);
+      font-weight: 700;
+    }
+
+    &-tbody > tr > td {
+      font-size: var(--acx-subtitle-5-font-size);
+      line-height: var(--acx-subtitle-5-line-height);
+      padding-bottom: 4px;
+      padding-top: 4px;
+      border-bottom: 0px;
+    }
+
+    .ant-table-tbody > tr.ant-table-row:hover > td, .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+      background: none;
+    }
+  }
+`
+
 const styles = {
   tall: tallStyle,
   compact: compactStyle,
-  rotated: rotatedStyle
+  rotated: rotatedStyle,
+  tooltip: tooltipStyle
 }
 
 /* eslint-disable max-len */
-export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' }>`
+export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' | 'tooltip' }>`
   .ant-table {
     &-thead > tr > th {
       background: transparent;

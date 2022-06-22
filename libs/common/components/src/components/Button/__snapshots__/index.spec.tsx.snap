@@ -29,7 +29,7 @@ exports[`Button should render primary button 1`] = `
 exports[`Button should render secondary button 1`] = `
 <DocumentFragment>
   <button
-    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 cniQDj"
+    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 guMxen"
     type="button"
   >
     <span>

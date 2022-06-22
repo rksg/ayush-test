@@ -7,18 +7,19 @@ import { GoogleMap }         from '../../VenuesMap'
 import { massageVenuesData } from '../../VenuesMap/helper'
 
 export function Map () {
+  // Refer https://jira.ruckuswireless.com/browse/ACX-9402
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
+
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
-  }, 
-  {
+  }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: massageVenuesData(data),
       ...rest
     })
   })
 
-  // TODO - This is temporary until implemented in widgets
+  // Restrict the map view to few tenants - ACX-9402
   if (!isMapEnabled) {
     return <span>Map is not enabled</span>
   }

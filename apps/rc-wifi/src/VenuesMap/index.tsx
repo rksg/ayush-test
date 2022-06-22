@@ -5,6 +5,7 @@ import { Wrapper, Status } from '@googlemaps/react-wrapper'
 import { get } from '@acx-ui/config'
 
 import GMap                   from './GMap'
+import { FilterStateChange }  from './VenueFilterControlBox'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
 const render = (status: Status) => {
@@ -17,12 +18,8 @@ export interface GoogleMapProps {
 }
 
 export function GoogleMap ({ cluster, data }: GoogleMapProps) {
-  const [center] = React.useState<google.maps.LatLngLiteral>({
-    lat: 13.03,
-    lng: 77.692032
-  })
 
-  const [venues,setVenues] = React.useState<VenueMarkerOptions[]>([])
+  const [venues, setVenues] = React.useState<VenueMarkerOptions[]>([])
 
   const onClusterClick = (event: google.maps.MapMouseEvent): void => {
     // Stop event propagation, to prevent clicks on the cluster
@@ -33,6 +30,17 @@ export function GoogleMap ({ cluster, data }: GoogleMapProps) {
     setVenues(data)
   },[data])
 
+  function onFilterChange (filter: FilterStateChange) {
+    setVenues((venues) => {
+      const filteredVenues = venues?.map((venue: VenueMarkerOptions) => {
+        if (filter.key === venue.status)
+          venue.visible = filter.value
+        return venue
+      })
+      return filteredVenues
+    })
+  }
+
   return (
     <Wrapper
       apiKey={get('GOOGLE_MAPS_KEY')}
@@ -40,14 +48,13 @@ export function GoogleMap ({ cluster, data }: GoogleMapProps) {
       render={render}
     >
       <GMap
-        center={center}
         mapTypeControl={false}
         streetViewControl={false}
-        zoom={3}
         style={{ height: '100%' }}
         venues={venues}
         cluster={cluster}
         onClusterClick={onClusterClick}
+        onFilterChange={onFilterChange}
       >
       </GMap>
     </Wrapper>
