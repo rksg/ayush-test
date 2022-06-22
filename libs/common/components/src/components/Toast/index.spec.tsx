@@ -49,15 +49,26 @@ describe('Toast', () => {
     })
   })
 
-  it('handles onClose', async () => {
-    const onClose = jest.fn()
-    showToast({
-      type: 'error',
-      content: 'This is a toast - test close',
-      onClose: onClose
+  describe('onClose', () => {
+    it('handles onClose', async () => {
+      const onClose = jest.fn()
+      showToast({
+        type: 'error',
+        content: 'This is a toast - test close',
+        onClose: onClose
+      })
+      const close = await waitFor(()=>screen.findByRole('img'))
+      fireEvent.click(close)
+      expect(onClose).toBeCalledTimes(1)
     })
-    const close = await waitFor(()=>screen.findByRole('img'))
-    fireEvent.click(close)
-    expect(onClose).toBeCalledTimes(1)
+
+    it('handles onClose is unavailable', async () => {
+      showToast({
+        type: 'error',
+        content: 'This is a toast - test close'
+      })
+      const close = await waitFor(()=>screen.findByRole('img'))
+      fireEvent.click(close)
+    })
   })
 })

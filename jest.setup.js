@@ -26,3 +26,11 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn()
   }))
 })
+
+jest.mock('@acx-ui/feature-toggle', () => ({
+  SplitProvider: ({ children }) =>
+    require('react').createElement('div', null, children),
+  useSplitTreatment: jest.fn(),
+  useFFList: jest.fn(),
+  useEvaluateFeature: jest.fn()
+}), { virtual: true })
