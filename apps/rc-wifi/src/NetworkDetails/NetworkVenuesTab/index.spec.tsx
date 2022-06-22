@@ -2,13 +2,14 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { networkApi }                                                            from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                                        from '@acx-ui/rc/utils'
+import { Provider, store }                                                       from '@acx-ui/store'
+import { act, fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { NetworkVenuesTab } from './index'
 
-let network = {
+const network = {
   type: 'aaa',
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
   venues: [
@@ -31,7 +32,7 @@ let network = {
 
 const user = { COMMON: '{"supportTriRadio":true,"tab-venue-clients":"wifi"}' }
 
-let list = {
+const list = {
   totalCount: 2,
   page: 1,
   data: [
@@ -66,6 +67,12 @@ let list = {
   ]
 }
 describe('NetworkVenuesTab', () => {
+  beforeEach(() => {
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+    })
+  })
+
   it('should render correctly', async () => {
     mockServer.use(
       rest.post(
