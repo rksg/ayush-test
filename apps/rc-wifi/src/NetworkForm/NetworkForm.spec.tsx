@@ -72,7 +72,7 @@ describe('NetworkForm', () => {
             ctx.json(venuesResponse)
           )
         }),
-      rest.post('/api/tenant/tenant-id/wifi/network/deep',
+      rest.post(/\/wifi\/network\/deep/,
         (req, res, ctx) => {
           return res(
             ctx.status(200),

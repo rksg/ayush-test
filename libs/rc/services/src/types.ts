@@ -22,6 +22,13 @@ export interface Network {
   vlanPool?: { name: string }
   // cog ??
 }
+export interface NetworkDetail {
+  type: string
+  tenantId: string
+  name: string
+  venues: { venueId: string, id: string }[]
+  id: string
+}
 
 export interface Venue {
   id: string
@@ -66,7 +73,9 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
-
+export interface UserSettings {
+  [key: string]: string
+}
 export interface NetworkDetailHeader {
   activeVenueCount: number,
   aps: {

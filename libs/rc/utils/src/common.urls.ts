@@ -10,6 +10,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/network'
   },
+  getNetwork: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/network/:networkId/deep'
+  },
   addNetworkDeep: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
