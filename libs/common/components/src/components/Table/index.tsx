@@ -55,7 +55,10 @@ export function Table <RecordType extends object> (
           <Space>
             <span>
               {selectedRowKeys.length} selected
-              <UI.CloseButton onClick={onCleanSelected} icon={<UI.CancelCircleIcon />}></UI.CloseButton>
+              <UI.CloseButton
+                onClick={onCleanSelected}
+                icon={<UI.CancelCircleIcon />}
+              />
             </span>
           </Space>
           <Space size={0}>

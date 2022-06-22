@@ -60,7 +60,7 @@ export function SelectableTable () {
       alertOptions={actions}
       headerTitle='Selectable'
       type={'selectable'}
-      rowSelection={{defaultSelectedRowKeys: []}}
+      rowSelection={{ defaultSelectedRowKeys: [] }}
     />
   )
 }

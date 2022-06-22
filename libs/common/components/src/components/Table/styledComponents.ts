@@ -1,5 +1,6 @@
-import styled, { css } from 'styled-components/macro'
 import { Button as AntButton } from 'antd'
+import styled, { css }         from 'styled-components/macro'
+
 import { CancelCircle } from '@acx-ui/icons'
 
 export const CancelCircleIcon = styled(CancelCircle)``
