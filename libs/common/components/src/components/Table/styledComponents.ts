@@ -1,8 +1,20 @@
 import styled, { css } from 'styled-components/macro'
+import { Button as AntButton } from 'antd'
+import { CancelCircle } from '@acx-ui/icons'
+
+export const CancelCircleIcon = styled(CancelCircle)``
 
 export const RotatedColumn = styled.div``
-
-/* eslint-disable max-len */
+export const Button = styled(AntButton)`
+  border: none;
+  box-shadow: none;
+  background-color: var(--acx-accents-blue-10);
+  padding: 0 6px;
+  &.ant-btn-icon-only {
+    width: 12px;
+    height: 12px;
+  }
+`
 
 const tallStyle = css`
   .ant-table {
@@ -130,18 +142,6 @@ const selectableStyle = css`
         color: var(--acx-neutrals-40);
         padding-right: 10px;
       }
-
-      .table-alert-close-button {
-        width: 12px;
-        height: 12px;
-        background-color: var(--acx-accents-blue-50);
-        color: var(--acx-primary-white);
-        border-radius: 15px;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        margin-left: 8px;
-      }
     }
   }
 `
@@ -150,12 +150,11 @@ const styles = {
   tall: tallStyle,
   compact: compactStyle,
   rotated: rotatedStyle,
-  selectable: selectableStyle,
-  singleSelect: selectableStyle
+  selectable: selectableStyle
 }
 
 /* eslint-disable max-len */
-export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' | 'selectable' | 'singleSelect' }>`
+export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' | 'selectable' }>`
   .ant-table {
     &-thead > tr > th {
       background: transparent;

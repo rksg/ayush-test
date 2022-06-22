@@ -10,7 +10,7 @@ import type { TableProps as AntTableProps } from 'antd'
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' > {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'rotated' | 'selectable' | 'singleSelect'
+    type?: 'tall' | 'compact' | 'rotated' | 'selectable'
     options?: false | undefined
     search?: false | undefined
     headerTitle?: String
@@ -21,7 +21,7 @@ export interface TableProps <RecordType>
 type ActionListItem = {
   key: number,
   label: string,
-  onClick: () => void
+  onClick: (arg: object) => void
 }
 
 export function Table <RecordType extends object> (
@@ -50,27 +50,21 @@ export function Table <RecordType extends object> (
       search={false}
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
       columns={columns}
-      rowSelection={
-        (type === 'selectable' && { defaultSelectedRowKeys: [] }) ||
-        (type === 'singleSelect' && { defaultSelectedRowKeys: [], type: 'radio' })
-      }
-      tableAlertRender={({ selectedRowKeys, onCleanSelected }) => (
+      tableAlertRender={({ selectedRowKeys, selectedRows, onCleanSelected }) => (
         <>
           <Space>
             <span>
               {selectedRowKeys.length} selected
-              <a className='table-alert-close-button' onClick={onCleanSelected} >
-                x
-              </a>
+              <UI.Button onClick={onCleanSelected} icon={<UI.CancelCircleIcon />}></UI.Button>
             </span>
           </Space>
           <Space>
             {
               props.alertOptions?.map((option, index) => 
                 <p key={option.key} className={'alert-option-span'}>
-                  <a onClick={()=>option.onClick()} className='alert-options'>
+                  <UI.Button onClick={()=>option.onClick(selectedRows)} className='alert-options'>
                     {option.label}
-                  </a>
+                  </UI.Button>
                   {(props.alertOptions
                     && index + 1 < props?.alertOptions?.length)
                     && <span className='options-divider' key={`optionsDivider${index}`}>|</span>}

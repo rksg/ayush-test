@@ -43,12 +43,12 @@ const actions = [
   {
     key: 11,
     label: 'Edit',
-    onClick: ()=> { console.log('Edit') } // eslint-disable-line
+    onClick: (selectedRows: object)=> { console.log(selectedRows) } // eslint-disable-line
   },
   {
     key: 12,
     label: 'Delete',
-    onClick: ()=> { console.log('Delete') } // eslint-disable-line
+    onClick: (selectedRows: object)=> { console.log(selectedRows) } // eslint-disable-line
   }
 ]
 
@@ -60,6 +60,7 @@ export function SelectableTable () {
       alertOptions={actions}
       headerTitle='Selectable'
       type={'selectable'}
+      rowSelection={{defaultSelectedRowKeys: []}}
     />
   )
 }
