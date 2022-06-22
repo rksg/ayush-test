@@ -5,14 +5,32 @@ import { CancelCircle } from '@acx-ui/icons'
 export const CancelCircleIcon = styled(CancelCircle)``
 
 export const RotatedColumn = styled.div``
-export const Button = styled(AntButton)`
+
+export const CloseButton = styled(AntButton)`
   border: none;
   box-shadow: none;
-  background-color: var(--acx-accents-blue-10);
   padding: 0 6px;
+  padding-right: 54px;
   &.ant-btn-icon-only {
+    background-color: var(--acx-accents-blue-10);
     width: 12px;
     height: 12px;
+  }
+`
+
+export const ActionButton = styled.button`
+  border: none;
+  box-shadow: none;
+  padding: 0 6px;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: 600;
+  background-color: var(--acx-accents-blue-10);
+  color: var(--acx-accents-blue-50);
+  &:hover {
+    background-color: var(--acx-accents-blue-10);
+    color: var(--acx-accents-blue-50);
+    cursor: pointer;
   }
 `
 
@@ -125,22 +143,13 @@ const selectableStyle = css`
     }
 
     &-alert-info-content {
-      span {
-        padding-right: 34px;
-      }
-
-      .alert-options {
-        font-weight: 600;
-        padding-right: 12px;
-      }
-
       .alert-option-span {
         margin-bottom: 0;
       }
 
       .options-divider {
         color: var(--acx-neutrals-40);
-        padding-right: 10px;
+        padding: 0 8px;
       }
     }
   }

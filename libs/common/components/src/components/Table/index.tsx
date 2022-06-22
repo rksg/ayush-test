@@ -55,16 +55,16 @@ export function Table <RecordType extends object> (
           <Space>
             <span>
               {selectedRowKeys.length} selected
-              <UI.Button onClick={onCleanSelected} icon={<UI.CancelCircleIcon />}></UI.Button>
+              <UI.CloseButton onClick={onCleanSelected} icon={<UI.CancelCircleIcon />}></UI.CloseButton>
             </span>
           </Space>
-          <Space>
+          <Space size={0}>
             {
               props.alertOptions?.map((option, index) => 
                 <p key={option.key} className={'alert-option-span'}>
-                  <UI.Button onClick={()=>option.onClick(selectedRows)} className='alert-options'>
+                  <UI.ActionButton onClick={()=>option.onClick(selectedRows)} >
                     {option.label}
-                  </UI.Button>
+                  </UI.ActionButton>
                   {(props.alertOptions
                     && index + 1 < props?.alertOptions?.length)
                     && <span className='options-divider' key={`optionsDivider${index}`}>|</span>}
