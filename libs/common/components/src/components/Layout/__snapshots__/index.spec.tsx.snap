@@ -33,30 +33,395 @@ exports[`Layout should render correctly 1`] = `
             <div
               style="flex: 1; overflow-y: auto; overflow-x: hidden;"
             >
-              <div
-                style="padding: 24px;"
+              <ul
+                class="ant-menu ant-menu-root ant-menu-inline ant-menu-dark ant-pro-sider-menu"
+                data-menu-list="true"
+                role="menu"
+                style="width: 100%;"
+                tabindex="0"
               >
-                <div
-                  class="ant-skeleton ant-skeleton-active"
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Dashboard"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/dashboard"
+                    >
+                      <div
+                        data-testid="speed-indicator-outlined"
+                      />
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Dashboard
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+                <li
+                  class="ant-menu-submenu ant-menu-submenu-inline"
+                  role="none"
                 >
                   <div
-                    class="ant-skeleton-content"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="ant-menu-submenu-title"
+                    role="menuitem"
+                    style="padding-left: 16px;"
+                    tabindex="-1"
                   >
-                    <ul
-                      class="ant-skeleton-paragraph"
+                    <span
+                      class="ant-menu-title-content"
                     >
-                      <li />
-                      <li />
-                      <li />
-                      <li />
-                      <li />
-                      <li
-                        style="width: 61%;"
-                      />
-                    </ul>
+                      <a
+                        class=""
+                        href="/t/undefined/analytics/incidents"
+                      >
+                        <div
+                          data-testid="ai"
+                        />
+                        <span
+                          class="ant-pro-menu-item"
+                          title="AI Analytics"
+                        >
+                          AI Analytics
+                        </span>
+                      </a>
+                    </span>
+                    <i
+                      class="ant-menu-submenu-arrow"
+                    />
                   </div>
-                </div>
-              </div>
+                </li>
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Timeline"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/timeline"
+                    >
+                      <div
+                        data-testid="calendar-date-outlined"
+                      />
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Timeline
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Reports"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/reports"
+                    >
+                      <div
+                        data-testid="reports-outlined"
+                      />
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Reports
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title=" "
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/1/placeholder"
+                    >
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                           
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Venues"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/venues"
+                    >
+                      <div
+                        data-testid="location-outlined"
+                      />
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Venues
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Devices"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/devices"
+                    >
+                      <div
+                        data-testid="devices-outlined"
+                      />
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Devices
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Networks"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/networks"
+                    >
+                      <div
+                        data-testid="networks-outlined"
+                      />
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Networks
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Services"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/services"
+                    >
+                      <div
+                        data-testid="services-outlined"
+                      />
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Services
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Policies"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/policies"
+                    >
+                      <div
+                        data-testid="services-outlined"
+                      />
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Policies
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Users"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/users"
+                    >
+                      <div
+                        data-testid="acccount-circle-outlined"
+                      />
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Users
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title=" "
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/2/placeholder"
+                    >
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                           
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Administration"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/t/undefined/administration"
+                    >
+                      <div
+                        data-testid="configuration-outlined"
+                      />
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Administration
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+              </ul>
+              <div
+                aria-hidden="true"
+                style="display: none;"
+              />
             </div>
             <div
               class="ant-pro-sider-links"

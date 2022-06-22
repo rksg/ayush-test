@@ -40,7 +40,7 @@ describe('Layout', () => {
       leftHeaderContent={<div>Left header</div>}
       content={<div>content</div>}
     />, { route: true })
-    await screen.findByTestId('logo')
+    await screen.findByTestId('ai')
     expect(asFragment()).toMatchSnapshot()
   })
   it('should collapsed', async () => {
@@ -50,7 +50,7 @@ describe('Layout', () => {
       leftHeaderContent={<div>Left header</div>}
       content={<div>content</div>}
     />, { route: true })
-    await screen.findByTestId('logo')
+    await screen.findByTestId('ai')
     fireEvent.click(screen.getByText('Collapse'))
     await screen.findByTestId('arrow-right')
   })
@@ -66,7 +66,7 @@ describe('Layout', () => {
         params: { tenantId: 't-id', page: 'dashboard' }
       }
     })
-    await screen.findByTestId('logo')
+    await screen.findByTestId('ai')
     fireEvent.click(screen.getByTestId('acccount-circle-outlined'))
     await screen.findByTestId('acccount-circle-solid')
   })
