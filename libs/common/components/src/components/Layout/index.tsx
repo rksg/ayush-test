@@ -1,22 +1,31 @@
+
 import React, { useState } from 'react'
 
-import ProLayout from '@ant-design/pro-layout'
+import ProLayout   from '@ant-design/pro-layout'
+import { isEmpty } from 'lodash'
 
+import { Logo }   from '@acx-ui/icons'
 import {
   NavLink,
   useLocation,
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import { ReactComponent as Logo } from '../../assets/Logo.svg'
 
 import * as UI from './styledComponents'
 
 interface MenuItem {
   path: string;
   name: string;
+}
+
+interface MenuItem {
+  path: string;
+  name: string;
   disableIcon?: React.FC;
   enableIcon?: React.FC;
+  routes?: Array<MenuItem>
+  pro_layout_parentKeys?: string[];
 }
 
 export interface LayoutProps {
@@ -37,8 +46,25 @@ export function Layout ({
   const bashPathname = useTenantLink('/').pathname
   const routes = menuConfig.map((item => ({
     ...item,
-    path: `${bashPathname}${item.path}`
+    path: `${bashPathname}${item.path}`,
+    routes: item.routes?.map(sub=>({
+      ...sub,
+      path: `${bashPathname}${sub.path}`
+    }))
   })))
+
+  const menuRender = (item: MenuItem, dom: React.ReactNode) => {
+    const path = item.routes ? item.routes[0].path : item.path
+    return <NavLink to={path}>
+      {({ isActive }) => {
+        const Icon = isActive ? item.enableIcon : item.disableIcon
+        return <>
+          {(Icon && isEmpty(item.pro_layout_parentKeys) )? <Icon /> : null}
+          {dom}
+        </>
+      }}
+    </NavLink>
+  }
 
   return <UI.Wrapper>
     <ProLayout
@@ -49,16 +75,8 @@ export function Layout ({
       fixSiderbar={true}
       location={location}
       menuHeaderRender={() => <Logo />}
-      menuItemRender={(item: MenuItem, dom: React.ReactNode) =>
-        <NavLink to={item.path || ''}>
-          {({ isActive }) => {
-            const Icon = isActive ? item.enableIcon : item.disableIcon
-            return <>
-              {Icon ? <Icon /> : null}
-              {dom}
-            </>
-          }}
-        </NavLink>}
+      subMenuItemRender={menuRender}
+      menuItemRender={menuRender}
       rightContentRender={() => rightHeaderContent}
       headerContentRender={() => leftHeaderContent}
       collapsedButtonRender={(collapsed: boolean) => {

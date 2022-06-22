@@ -76,7 +76,7 @@ exports[`NetworkDetails should render correctly 1`] = `
                   ClockOutlined.svg
                 </svg>
                 <span>
-                  Last 24 hours
+                  Last 24 Hours
                 </span>
               </button>
             </div>
@@ -113,7 +113,7 @@ exports[`NetworkDetails should render correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ckAoUV"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ckAoUV"
                 type="button"
               >
                 <svg>

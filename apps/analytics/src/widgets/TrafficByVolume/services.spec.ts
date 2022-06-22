@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { mockRTKQuery }        from '@acx-ui/test-utils'
+import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
 import { api } from './services'
 
@@ -41,7 +41,7 @@ describe('trafficByVolumeWidgetApi', () => {
         }
       }
     }
-    mockRTKQuery(dataApiURL, 'widget_trafficByVolume', {
+    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
@@ -52,7 +52,7 @@ describe('trafficByVolumeWidgetApi', () => {
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockRTKQuery(dataApiURL, 'widget_trafficByVolume', {
+    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
