@@ -212,4 +212,28 @@
       }
     }
   }
+
+  .ant-menu-submenu-popup {
+    .ant-menu{
+      margin-left: -4px;
+      box-shadow: none;
+      border-radius: 0;
+      background-color: var(--acx-neutrals-70);
+      .ant-menu-item{
+        height: 32px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        font-family: var(--acx-accent-brand-font);
+        line-height: var(--acx-headline-5-line-height);
+        font-size: var(--acx-headline-5-font-size);
+        opacity: 60%;
+        font-weight: 400;
+        &-selected {
+          opacity: 100%;
+          font-weight: 600;
+        }
+      }
+    }
+  }
 }
