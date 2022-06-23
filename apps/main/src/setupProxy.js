@@ -33,7 +33,8 @@ module.exports = async function setupProxy (app) {
     { target: CLOUD_URL, changeOrigin: true, ws: true }
   ))
   app.use(createProxyMiddleware(
-    '/api', { target: CLOUD_URL, changeOrigin: true }
+    '/api',
+    { target: CLOUD_URL, changeOrigin: true }
   ))
   return app
 }
