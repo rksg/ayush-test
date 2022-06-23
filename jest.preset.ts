@@ -12,7 +12,7 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{js,jsx,ts,tsx}',
     '!<rootDir>/src/**/stories.tsx',
-    '!<rootDir>/src/**/stories/*',
+    '!<rootDir>/src/**/stories/**',
     '!<rootDir>/src/theme/modify-vars.js'
   ],
   setupFilesAfterEnv: [`${__dirname}/jest.setup.js`]

@@ -12,6 +12,16 @@ const tallStyle = css`
       font-weight: 600;
     }
 
+    &-thead > tr:first-child > th[colspan] {
+      padding-bottom: 3px;
+    }
+
+    &-thead > tr:not(:first-child) > th {
+      font-size: var(--acx-subtitle-5-font-size);
+      line-height: var(--acx-subtitle-5-line-height);
+      padding-top: 0;
+    }
+
     &-tbody > tr > td {
       font-size: var(--acx-body-4-font-size);
       line-height: var(--acx-body-4-line-height);
@@ -139,32 +149,40 @@ export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' | 'too
         width: 0px;
       }
 
-      &.ant-table-column-has-sorters { background: unset; }
+      &.ant-table-column-has-sorters {
+        background: unset;
 
-      .ant-table-column-sorters { display: unset; }
+        .ant-table-column-sorters {
+          display: unset;
+          white-space: nowrap;
 
-      .ant-table-column-title { flex: unset; }
+          .ant-table-column-title { flex: unset; }
 
-      .ant-table-column-sorter {
-        --icon-size: 11px;
+          .ant-table-column-sorter {
+            --icon-size: 11px;
 
-        display: inline-flex;
-        margin: 0 0 0 calc(var(--icon-size) / 2);
+            display: inline-flex;
+            margin: 0;
 
-        width: 0; // to ensure context don't look off when align to center
+            &-up, &-down {
+              visibility: hidden;
+              width: 0;
+              &.active {
+                visibility: visible;
+                width: unset;
+                margin-left: calc(var(--icon-size) / 2);
+              }
+            }
+            &-up {
+              margin-bottom: calc(var(--icon-size) / -2);
+            }
+            &-down {
+              margin-top: calc(var(--icon-size) / -2);
+            }
 
-        &-up, &-down {
-          visibility: hidden;
-          &.active { visibility: visible; }
+            .anticon svg { fill: var(--acx-primary-black); }
+          }
         }
-        &-up {
-          margin-bottom: calc(var(--icon-size) / -2);
-        }
-        &-down {
-          margin-top: calc(var(--icon-size) / -2);
-        }
-
-        .anticon svg { fill: var(--acx-primary-black); }
       }
     }
 

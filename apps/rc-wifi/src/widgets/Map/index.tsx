@@ -7,6 +7,14 @@ import { VenuesMap }         from '../../VenuesMap'
 import { massageVenuesData } from '../../VenuesMap/helper'
 
 export function Map () {
+  const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
+  if (!isMapEnabled) {
+    return <span>Map is not enabled</span>
+  }
+  return (<ActualMap/>)
+}
+
+function ActualMap () {
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   },
@@ -16,15 +24,9 @@ export function Map () {
       ...rest
     })
   })
-
-  const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
-  if (!isMapEnabled) {
-    return <span>Map is not enabled</span>
-  } else {
-    return (
-      <Loader states={[queryResults]}>
-        <VenuesMap cluster={true} data={queryResults.data} />
-      </Loader>
-    )
-  }
+  return (
+    <Loader states={[queryResults]}>
+      <VenuesMap cluster={true} data={queryResults.data} />
+    </Loader>
+  )
 }

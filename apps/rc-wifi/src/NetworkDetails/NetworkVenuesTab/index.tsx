@@ -144,6 +144,7 @@ export function NetworkVenuesTab () {
     {
       title: 'Networks',
       dataIndex: 'networks',
+      align: 'center',
       render: function (data) {
         return data ? data.count : 0
       }
@@ -151,6 +152,7 @@ export function NetworkVenuesTab () {
     {
       title: 'Wi-Fi APs',
       dataIndex: 'aggregatedApStatus',
+      align: 'center',
       render: function (data) {
         if (data) {
           let sum = 0
@@ -165,6 +167,7 @@ export function NetworkVenuesTab () {
     {
       title: 'Activated',
       dataIndex: 'activated',
+      align: 'center',
       render: function (data, row) {
         return <Switch checked={data.isActivated}
           onClick={
