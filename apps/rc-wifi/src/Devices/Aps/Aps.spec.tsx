@@ -1,17 +1,13 @@
-
-
-
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                                                from '@acx-ui/rc/utils'
+import { Provider }                                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { Aps } from './Aps'
 
-
-let list = {
+const list = {
   totalCount: 1,
   page: 1,
   data: [
@@ -181,21 +177,6 @@ let list = {
 
 
 describe('Aps', () => {
-  beforeAll(() => {
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // Deprecated
-        removeListener: jest.fn(), // Deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn()
-      }))
-    })
-  })
   it('should render correctly', async () => {
     mockServer.use(
       rest.post(
@@ -211,10 +192,18 @@ describe('Aps', () => {
       route: { params, path: '/:tenantId' }
     })
 
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByRole('cell', { name: /000000000001/i })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = screen.getByRole('table').querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.serialNumber)).toBeVisible()
+    })
+
     expect(asFragment()).toMatchSnapshot()
   })
-
 })
