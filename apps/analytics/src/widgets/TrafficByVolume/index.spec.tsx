@@ -30,7 +30,6 @@ describe('TrafficByVolumeWidget', () => {
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )
-  afterAll(()=>jest.resetAllMocks())
 
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
@@ -55,6 +54,7 @@ describe('TrafficByVolumeWidget', () => {
     })
     render( <Provider> <TrafficByVolumeWidget/> </Provider>)
     await screen.findByText('Something went wrong.')
+    jest.resetAllMocks()
   })
 })
 

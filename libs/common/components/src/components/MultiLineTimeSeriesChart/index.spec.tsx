@@ -41,10 +41,12 @@ describe('toolTipFormatter',()=>{
 })
 
 describe('MultiLineTimeSeriesChart',()=>{
-  const formatter = jest.fn()
-  render(<MultiLineTimeSeriesChart
-    data={getSeriesData()}
-    dataFormatter={formatter}
-  />)
-  expect(formatter).toBeCalled()
+  it('should call formatter for yAxis', () => {
+    const formatter = jest.fn()
+    render(<MultiLineTimeSeriesChart
+      data={getSeriesData()}
+      dataFormatter={formatter}
+    />)
+    expect(formatter).toBeCalled()
+  })
 })
