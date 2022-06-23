@@ -3,23 +3,22 @@ import { ReactElement } from 'react'
 import { render, RenderOptions }                             from '@testing-library/react'
 import { generatePath, MemoryRouter, Params, Route, Routes } from 'react-router-dom'
 
-import { Provider } from '@acx-ui/store'
-
 type CustomRenderOptions = RenderOptions & {
   /**
    * Wrap with MemoryRouter when set
    */
-  route?: {
+  route?: boolean | {
     /**
      * Default to keys of params
      */
     path?: string
-    params?: Params
+    params?: Params,
+    /**
+     * Whether to wrap <Routes> and initial <Route>
+     * Default to true
+     */
+    wrapRoutes?: boolean
   }
-  /**
-   * Wrap with store provider when set
-   */
-  store?: boolean
 }
 
 /**
@@ -31,17 +30,24 @@ function customRender (
 ) {
   let wrappedUI = ui
   if (options?.route) {
-    const path = options.route.path ?? '/' + Object.keys(options.route.params ?? {})
+    const {
+      wrapRoutes = true,
+      ...route
+    } = typeof options?.route === 'boolean' ? {} : options?.route
+
+    const path = route.path ?? '/' + Object.keys(route.params ?? {})
       .map(key => `:${key}`)
       .join('/')
-    const entry = generatePath(path, options.route.params ?? {})
-    wrappedUI = <MemoryRouter initialEntries={[entry]}>
-      <Routes>
+    const entry = generatePath(path, route.params ?? {})
+
+    if (wrapRoutes) {
+      wrappedUI = <Routes>
         <Route path={path} element={wrappedUI} />
       </Routes>
-    </MemoryRouter>
+    }
+
+    wrappedUI = <MemoryRouter initialEntries={[entry]} children={wrappedUI} />
   }
-  if (options?.store) wrappedUI = <Provider children={wrappedUI} />
   return render(wrappedUI, options)
 }
 

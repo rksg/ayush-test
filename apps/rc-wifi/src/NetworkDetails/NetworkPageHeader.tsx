@@ -1,20 +1,22 @@
 import { Button, PageHeader }                       from '@acx-ui/components'
 import { ArrowExpand, ClockOutlined, BulbOutlined } from '@acx-ui/icons'
 
-import NetworkTabs from './NetworkTabs'
+import NetworkTabs       from './NetworkTabs'
+import { useGetNetwork } from './services'
 
 function NetworkPageHeader () {
+  const network = useGetNetwork()
   return (
     <PageHeader
-      title='Lab Network'
+      title={network.data?.name || ''}
       breadcrumb={[
         { text: 'Networks', link: '/networks' }
       ]}
       extra={[
-        <Button><ClockOutlined />Last 24 hours</Button>,
-        <Button>Entire Organization <ArrowExpand /></Button>,
-        <Button type='primary'>Configure</Button>,
-        <Button><BulbOutlined /></Button>
+        <Button key='date-filter' icon={<ClockOutlined />}>Last 24 Hours</Button>,
+        <Button key='hierarchy-filter'>Entire Organization <ArrowExpand /></Button>,
+        <Button key='configure' type='primary'>Configure</Button>,
+        <Button key='insight' icon={<BulbOutlined />} />
       ]}
       footer={<NetworkTabs />}
     />

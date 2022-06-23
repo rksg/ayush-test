@@ -3,6 +3,7 @@ import { rest } from 'msw'
 
 import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
 import { generatePath }                        from '@acx-ui/react-router-dom'
+import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import NetworkTabs from './NetworkTabs'
@@ -21,9 +22,8 @@ describe('NetworkTabs', () => {
       rest.get(url, (req, res, ctx) => res(ctx.json(networkDetailHeaderData)))
     )
 
-    const { asFragment } = render(<NetworkTabs />, {
-      route: { params },
-      store: true
+    const { asFragment } = render(<Provider><NetworkTabs /></Provider>, {
+      route: { params }
     })
 
     expect(asFragment()).toMatchSnapshot()
