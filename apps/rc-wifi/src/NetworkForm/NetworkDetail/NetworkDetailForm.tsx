@@ -35,7 +35,8 @@ const NetworkTypeLabel = {
 
 const NetworkTypeTitle = {
   [NetworkTypeEnum.AAA]: 'AAA Settings', 
-  [NetworkTypeEnum.OPEN]: 'Settings' 
+  [NetworkTypeEnum.OPEN]: 'Settings',
+  [NetworkTypeEnum.DPSK]: 'DPSK Settings'
 }
 
 export function NetworkDetailForm () {
@@ -74,7 +75,7 @@ export function NetworkDetailForm () {
                 </RadioDescription>
               </Radio>
 
-              <Radio value={NetworkTypeEnum.DPSK} disabled>
+              <Radio value={NetworkTypeEnum.DPSK}>
                 {NetworkTypeLabel.dpsk}
                 <RadioDescription>
                   {NetworkTypeDescription.dpsk}
