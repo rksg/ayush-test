@@ -4,11 +4,12 @@ import { message } from 'antd'
 
 import {
   PageHeader,
+  showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import { useCreateNetworkMutation } from '@acx-ui/rc/services'
-import { 
+import {
   NetworkTypeEnum,
   CreateNetworkFormFields,
   NetworkSaveData
@@ -64,7 +65,10 @@ export function NetworkForm () {
       await createNetwork({ params, payload: saveState }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
-      message.error('An error occurred')
+      showToast({
+        type: 'error',
+        content: 'An error occurred'
+      })
     }
   }
   return (
