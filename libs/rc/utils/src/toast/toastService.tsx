@@ -7,7 +7,7 @@ import styled              from 'styled-components/macro'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { showToast, ToastProps, ToastType } from '@acx-ui/components'
 
-import { rcToastTemplates } from './toast.template'
+import { rcToastTemplates } from './toastTemplate'
 
 export enum TxStatus {
   PENDING = 'PENDING',

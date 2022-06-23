@@ -2,7 +2,7 @@ import React from 'react'
 
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer'
 import * as _                                     from 'lodash'
-import ReactDOM                                   from 'react-dom'
+import { createRoot }                             from 'react-dom/client'
 
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
@@ -48,7 +48,8 @@ const GMap: React.FC<MapProps> = ({
     if(map){
       if (map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
         const legendControlBoxDiv = document.createElement('div')
-        ReactDOM.render(<VenueFilterControlBox onChange={onFilterChange} />, legendControlBoxDiv)
+        const root = createRoot(legendControlBoxDiv!)
+        root.render(<VenueFilterControlBox onChange={onFilterChange} />)
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(legendControlBoxDiv)
       }
 
@@ -121,7 +122,7 @@ const GMap: React.FC<MapProps> = ({
           marker.setIcon(getIcon(svgMarkerHover, scaledSize).icon)
 
           const infoDiv = document.createElement('div')
-          ReactDOM.render(<VenueMarkerTooltip venue={venue} />, infoDiv)
+          createRoot(infoDiv).render(<VenueMarkerTooltip venue={venue} />)
           infoDiv.onmouseover = () => {
             clearTimeout(closeInfoWindowWithTimeout)
           }

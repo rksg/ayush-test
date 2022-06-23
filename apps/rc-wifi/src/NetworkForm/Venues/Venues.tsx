@@ -59,41 +59,22 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)
-
-  const handleSelectedRows = () => {
-    function handleVenueSaveData (selectedRows: Venue[]) {
-      const defaultSetup = {
-        apGroups: [],
-        scheduler: { type: 'ALWAYS_ON' },
-        isAllApGroups: true,
-        allApGroupsRadio: 'Both'
-      }
-      const selected = selectedRows.map((row) => ({
-        ...defaultSetup,
-        venueId: row.id,
-        name: row.name
-      }))
-      props.formRef?.current?.setFieldsValue({ venues: selected })
+  const [activateVenues, setActivateVenues] = useState(defaultArray)
+  const handleVenueSaveData = (selectedRows: Venue[]) => {
+    const defaultSetup = {
+      apGroups: [],
+      scheduler: { type: 'ALWAYS_ON' },
+      isAllApGroups: true,
+      allApGroupsRadio: 'Both'
     }
-
-    function handleActivatedButton (rows: Venue[]) {
-      setTableData((prevData) => {
-        const tmp = [...prevData]
-        tmp.forEach((item) => {
-          if (rows.indexOf(item) !== -1) {
-            item.activated.isActivated = true
-          } else {
-            item.activated.isActivated = false
-          }
-        })
-        return tmp
-      })
-    }
-
-    handleVenueSaveData(tableQuery.selectedRowsData)
-    handleActivatedButton(tableQuery.selectedRowsData)
+    const selected = selectedRows.map((row) => ({
+      ...defaultSetup,
+      venueId: row.id,
+      name: row.name
+    }))
+    props.formRef?.current?.setFieldsValue({ venues: selected })
   }
-  useEffect(handleSelectedRows, [tableQuery.selectedRowsData, props.formRef])
+
   useEffect(()=>{
     if (tableQuery.data) {
       const data = tableQuery.data.data.map(item => ({
@@ -145,8 +126,21 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     {
       title: 'Activated',
       dataIndex: 'activated',
-      render: function (data) {
-        return <Switch checked={data.isActivated} disabled={true} />
+      render: function (data, row) {
+        return <Switch onClick={
+          (checked: boolean, event: Event) => { 
+            data.isActivated = checked
+            event.stopPropagation()
+            let selectedVenues = [...activateVenues]
+            if (checked) {
+              selectedVenues = [...selectedVenues, row]
+            } else {
+              selectedVenues.splice(selectedVenues.indexOf(row), 1)
+            }
+            setActivateVenues(selectedVenues)
+            handleVenueSaveData(selectedVenues)
+          }
+        }/>
       }
     },
     {

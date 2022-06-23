@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Map should render map if feature flag is on 1`] = `
+<DocumentFragment>
+  <span>
+    Map is not enabled
+  </span>
+</DocumentFragment>
+`;

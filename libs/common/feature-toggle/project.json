@@ -1,0 +1,28 @@
+{
+  "sourceRoot": "libs/common/feature-toggle/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/common/feature-toggle/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/common/feature-toggle"
+      ],
+      "options": {
+        "jestConfig": "libs/common/feature-toggle/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

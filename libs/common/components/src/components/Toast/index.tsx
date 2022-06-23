@@ -56,7 +56,6 @@ const toastContent = (key: string | number, config: ToastProps) => {
       </UI.Content>
       <UI.CloseButton onClick={() => {
         message.destroy(key)
-        /* istanbul ignore else */
         if (onClose) onClose()
       }}>
         <CloseOutlined />

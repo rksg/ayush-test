@@ -4,7 +4,7 @@ import _ from 'lodash'
 import { cssStr }    from '@acx-ui/components'
 import {
   ChartData,
-  DashboardOverview,
+  Dashboard,
   ApVenueStatusEnum,
   SwitchStatusEnum } from '@acx-ui/rc/services'
 
@@ -34,7 +34,7 @@ export const getDisplayLabel = (label: string) => {
   }
 }
 
-export const massageVenuesData = (overviewData?: DashboardOverview): VenueMarkerOptions[] => {
+export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[] => {
   const venues: VenueMarkerOptions[] = []
   overviewData?.venues?.forEach((venue) => {
     _.forIn(venue, (val, venueId) => {
@@ -68,12 +68,12 @@ export const massageVenuesData = (overviewData?: DashboardOverview): VenueMarker
   return venues
 }
 
-function getSwitchClientCountByVenue (overviewData: DashboardOverview, venueId: string): number {
+function getSwitchClientCountByVenue (overviewData: Dashboard, venueId: string): number {
   return _.get(overviewData, 'summary.switchClients.summary[' + venueId + ']') || 0
 }
 
 const getApStatusDataByVenue = (
-  overviewData: DashboardOverview,
+  overviewData: Dashboard,
   venueId: string): {
   apStat: ChartData[],
   apsCount: number
@@ -128,7 +128,7 @@ const getApStatusDataByVenue = (
   }
 }
 
-function getSwitchStatusDataByVenue (overviewData: DashboardOverview, venueId: string): {
+function getSwitchStatusDataByVenue (overviewData: Dashboard, venueId: string): {
   switchStat: ChartData[],
   switchesCount: number
 } {
