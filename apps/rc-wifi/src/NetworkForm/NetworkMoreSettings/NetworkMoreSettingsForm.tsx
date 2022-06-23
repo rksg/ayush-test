@@ -4,6 +4,7 @@ import {
   Collapse,
   Form,
   Input,
+  Select,
   Switch
 } from 'antd'
 
@@ -11,6 +12,7 @@ import { StepsForm } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
 const { Panel } = Collapse
+const { Option } = Select
 
 export function NetworkMoreSettingsForm () {
   return (
@@ -123,14 +125,18 @@ export function NetworkMoreSettingsForm () {
           }}
         >Load Control</StepsForm.Title>
 
-        <UI.FormItemNoLabel
-          name='hideSsid'
-          children={
-            <UI.Label>
-              <UI.CheckboxWrapper />
-              Hide SSID
-            </UI.Label>}
-        />
+        <Form.Item
+          label='Max Rate:'
+          name='maxRate'
+        >
+          <Select
+          >
+            <Option value='WPA2'>
+              WPA2 (Recommended)
+            </Option>
+            <Option value='WPA3'>WPA3</Option>
+          </Select>
+        </Form.Item>
       </Panel>
 
     </UI.CollpasePanel>

@@ -19,12 +19,13 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext    from './NetworkFormContext'
-import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
-import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
-import { AaaSummaryForm }    from './NetworkSummary/AaaSummaryForm'
-import { OpenSummaryForm }   from './NetworkSummary/OpenSummaryForm'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { AaaSummaryForm }          from './NetworkSummary/AaaSummaryForm'
+import { OpenSummaryForm }         from './NetworkSummary/OpenSummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave
