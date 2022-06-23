@@ -16,10 +16,10 @@ export const createHttpRequest = (
   customHeaders?: Record<string, unknown>
 ) => {
   const headers = { ...defaultHeaders, ...customHeaders }
-  const url = generatePath(apiInfo.url, paramValues)
+  const url = generatePath(`${apiInfo.url}`, paramValues)
   return {
     headers,
     method: apiInfo.method,
-    url
+    url: `${window.location.origin}${url}`
   }
 }
