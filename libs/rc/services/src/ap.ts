@@ -8,8 +8,7 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 
-import { ApExtraParams, AP, APRadio } from '../types/ap'
-
+import { ApExtraParams, AP, APRadio } from './types'
 
 export const baseApApi = createApi({
   baseQuery: fetchBaseQuery(),
