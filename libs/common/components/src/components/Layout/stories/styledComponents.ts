@@ -1,9 +1,9 @@
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import {
+  AI,
   AccountCircleOutlined,
   AccountCircleSolid,
-  AccountCircleSolidSmall,
   CalendarDateOutlined,
   CalendarDateSolid,
   ConfigurationOutlined,
@@ -12,55 +12,15 @@ import {
   DevicesSolid,
   LocationOutlined,
   LocationSolid,
-  MelissaAIIcon,
   NetworksOutlined,
   NetworksSolid,
-  NotificationSolid,
-  QuestionMarkCircleSolid,
   ReportsOutlined,
   ReportsSolid,
-  RocketOutlined,
-  SearchOutlined,
   ServicesOutlined,
   ServicesSolid,
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
-
-const buttonIconStyle = css`
-  height: 100%;
-  fill: var(--acx-primary-white);
-  stroke: var(--acx-neutrals-70);
-`
-
-export const AccountIconSmall = styled(AccountCircleSolidSmall)`
-  ${buttonIconStyle}
-`
-
-export const NotificationIcon = styled(NotificationSolid)`
-  ${buttonIconStyle}
-  stroke: var(--acx-primary-white);
-`
-
-export const QuestionIcon = styled(QuestionMarkCircleSolid)`
-  ${buttonIconStyle}
-`
-
-const iconStyle = css`
-  height: 100%;
-  path {
-    stroke: var(--acx-primary-white);
-  }
-`
-
-export const SearchIcon = styled(SearchOutlined)`
-  ${iconStyle}
-`
-
-export const RocketIcon = styled(RocketOutlined)`
-  ${iconStyle}
-  vertical-align: text-bottom;
-`
 
 const menuIconStyle = `
   height: 20px;
@@ -126,13 +86,9 @@ export const EnabledLocationIcon = styled(LocationSolid)`
   ${enabledMenuIconStyle}
 `
 
-export const MelissaIcon = styled(MelissaAIIcon)`
-  ${disabledMenuIconStyle}
-  stroke-width: 0;
-`
-export const EnabledMelissaIcon = styled(MelissaAIIcon)`
-  ${disabledMenuIconStyle}
-  stroke-width: 1;
+export const AIAnalyticsIcon = styled(AI)`
+  ${enabledMenuIconStyle}
+  path { stroke: none; }
 `
 
 export const NetworksIcon = styled(NetworksOutlined)`

@@ -1,17 +1,17 @@
 module.exports = {
-  displayName: 'ui-react-router-dom',
+  displayName: 'common-feature-toggle',
   preset: '../../../jest.preset.ts',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../coverage/libs/common/react-router-dom',
+  coverageDirectory: '../../../coverage/libs/common/feature-toggle',
   coverageThreshold: {
     global: {
-      statements: 40,
-      branches: 100,
-      functions: 37.5,
-      lines: 40
+      statements: 0,
+      branches: 0,
+      functions: 0,
+      lines: 0
     }
   }
 }
