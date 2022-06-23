@@ -1,4 +1,3 @@
-import { Loader }    from '@acx-ui/components'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { Aps } from '../Devices/Aps/Aps'
@@ -9,8 +8,6 @@ import { NetworkOverviewTab }  from './NetworkOverviewTab'
 import NetworkPageHeader       from './NetworkPageHeader'
 import { NetworkServicesTab }  from './NetworkServicesTab'
 import { NetworkVenuesTab }    from './NetworkVenuesTab'
-import { useGetNetwork }       from './services'
-
 
 const tabs = {
   overview: NetworkOverviewTab,
@@ -22,11 +19,10 @@ const tabs = {
 }
 
 export function NetworkDetails () {
-  const query = useGetNetwork()
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
-  return <Loader states={[query]}>
+  return <>
     <NetworkPageHeader />
     { Tab && <Tab /> }
-  </Loader>
+  </>
 }
