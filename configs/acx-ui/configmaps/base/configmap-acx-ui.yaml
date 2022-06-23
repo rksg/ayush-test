@@ -4,3 +4,4 @@ metadata:
   name: configmap-acx-ui
 data:
    google.maps.key: "AIzaSyDq4QI2gdhGotqFiR28ZXk_RkbWtZ-IMDQ"
+   split.io.key: "s56i5harnvpksqb6a5kom1phqncj9d6ujf92"
