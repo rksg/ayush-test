@@ -81,7 +81,7 @@ const GMap: React.FC<MapProps> = ({
 
       // Build the updated markers
       let markers = venues?.map((venue: VenueMarkerOptions) => {
-        let markerSize = 48
+        let markerSize = 32
         // DEFINITIONS: No APs = 32px, minimum # of APs (>0) = 48 px, maximum # of APs = 96px
         if(venue?.apsCount){
           markerSize = 48 + (venue?.apsCount / maxVenueCountPerVenue!) * 48
