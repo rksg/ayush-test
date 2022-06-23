@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom'
+
 import { render, screen } from '@testing-library/react'
 
 import { dataApiURL }                      from '@acx-ui/analytics/services'
@@ -6,7 +8,7 @@ import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 
 import { api, TrafficByVolumeData } from './services'
 
-import TrafficByVolumeWidget, { getSeriesData } from './index'
+import TrafficByVolumeWidget, { getSeriesData } from '.'
 
 const sample = {
   time: [
@@ -28,47 +30,31 @@ describe('TrafficByVolumeWidget', () => {
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )
-  // TODO: need to fix the time formatter
-  it.skip('should render correctly', async () => {
-    const expectedResult = {
-      network: {
-        hierarchyNode: {
-          timeSeries: sample
-        }
-      }
-    }
-    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
-      data: expectedResult
-    })
-    const { asFragment } = render(
-      <Provider>
-        <TrafficByVolumeWidget/>
-      </Provider>
-    )
-    await screen.findByText('Traffic by Volume')
-    const fragment = asFragment()
-    // eslint-disable-next-line testing-library/no-node-access
-    fragment.querySelector('div[_echarts_instance_^="ec_"]')
-      ?.setAttribute('_echarts_instance_', 'ec_mock')
-    expect(fragment).toMatchSnapshot()
-  })
-  describe('error handling', () => {
-    beforeAll(() => jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => {}))
-    afterAll(() => jest.resetAllMocks())
+  afterAll(()=>jest.resetAllMocks())
 
-    it('should render error', async () => {
-      mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
-        error: new Error('something went wrong!')
-      })
-      render(
-        <Provider>
-          <TrafficByVolumeWidget/>
-        </Provider>
-      )
-      await screen.findByText('Something went wrong.')
+  it('should render loader', () => {
+    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
+    render( <Provider> <TrafficByVolumeWidget/></Provider>)
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+  })
+  it('should render chart', async () => {
+    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
+    })
+    const { asFragment } =render( <Provider> <TrafficByVolumeWidget/></Provider>)
+    await screen.findByText('Traffic by Volume')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
+  it('should render error', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
+      error: new Error('something went wrong!')
+    })
+    render( <Provider> <TrafficByVolumeWidget/> </Provider>)
+    await screen.findByText('Something went wrong.')
   })
 })
 
