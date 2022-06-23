@@ -385,14 +385,13 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                         style="margin-bottom: 8px;"
                                       >
                                         <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                         >
                                           <span
-                                            class="ant-radio ant-radio-disabled"
+                                            class="ant-radio"
                                           >
                                             <input
                                               class="ant-radio-input"
-                                              disabled=""
                                               type="radio"
                                               value="dpsk"
                                             />
@@ -518,11 +517,8 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             <div
                               class="ant-col"
                             >
-                              <h1
-                                class="styledComponents__Title-sc-bfjsxr-1 kPZXFw"
-                              />
                               <div
-                                class="styledComponents__Diagram-sc-bfjsxr-0 IiZUr"
+                                class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
                               />
                             </div>
                           </div>
@@ -973,13 +969,8 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             <div
                               class="ant-col"
                             >
-                              <h1
-                                class="styledComponents__Title-sc-bfjsxr-1 kPZXFw"
-                              >
-                                Enterprise AAA (802.1X)
-                              </h1>
                               <div
-                                class="styledComponents__Diagram-sc-bfjsxr-0 IiZUr"
+                                class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
                               >
                                 <img
                                   alt="Background"
@@ -1261,13 +1252,8 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             <div
                               class="ant-col"
                             >
-                              <h1
-                                class="styledComponents__Title-sc-bfjsxr-1 kPZXFw"
-                              >
-                                Enterprise AAA (802.1X)
-                              </h1>
                               <div
-                                class="styledComponents__Diagram-sc-bfjsxr-0 IiZUr"
+                                class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
                               >
                                 <img
                                   alt="Background"
