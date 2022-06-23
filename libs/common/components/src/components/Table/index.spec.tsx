@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 import { render, fireEvent, screen, within } from '@acx-ui/test-utils'
 
 import { Table } from '.'
-// import * as UI from './styledComponents'
 
 jest.mock('@acx-ui/icons', ()=> ({
   CancelCircle: () => <div data-testid='cancel-circle'/>
@@ -109,12 +108,13 @@ describe('Table component', () => {
     const sorterAgeTitle = await screen.findByText('Age')
     fireEvent.click(sorterAgeTitle)
     expect(rotatedColumns[2].sorter).toBeCalled()
+
     const sorterNumberTitle = await screen.findByText('Favorite Number')
     fireEvent.click(sorterNumberTitle)
     expect(rotatedColumns[3].sorter).toBeCalled()
   })
 
-  it('should show table action when selectable table checkbox is clicked', async () => {
+  it('should render selectable table and render action buttons correctly', async () => {
     const selectableColumns = [
       {
         title: 'Name',
@@ -182,12 +182,18 @@ describe('Table component', () => {
     })
     const checkbox = await within(row).findByRole('checkbox')
     fireEvent.click(checkbox)
-    screen.logTestingPlaygroundURL()
-
+    
     const view = screen.getByText(/1 selected/i)
     const closeButton = within(view).getByRole('button')
     const editButton = screen.getByRole('button', { name: /edit/i })
     const deleteButton = screen.getByRole('button', { name: /delete/i })
+
+    expect(closeButton).toBeDefined()
+    expect(editButton).toBeDefined()
+    expect(deleteButton).toBeDefined()
+
+    expect(actions[0].onClick).toHaveBeenCalledTimes(0)
+    expect(actions[1].onClick).toHaveBeenCalledTimes(0)
 
     fireEvent.click(editButton)
     expect(actions[0].onClick).toBeCalled()
@@ -196,14 +202,5 @@ describe('Table component', () => {
     fireEvent.click(deleteButton)
     expect(actions[1].onClick).toBeCalled()
     expect(actions[1].onClick).toHaveBeenCalledTimes(1)
-
-    fireEvent.click(closeButton)
-    expect(actions[0].onClick).toHaveBeenCalledTimes(1)
-
-
-  })
-
-  it('it should', () => {
-
   })
 })
