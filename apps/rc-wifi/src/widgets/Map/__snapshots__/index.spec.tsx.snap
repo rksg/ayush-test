@@ -2,8 +2,12 @@
 
 exports[`Map should render map if feature flag is on 1`] = `
 <DocumentFragment>
-  <span>
-    Map is not enabled
-  </span>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <h1>
+      LOADING
+    </h1>
+  </div>
 </DocumentFragment>
 `;
