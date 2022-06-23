@@ -2,13 +2,14 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { networkApi }                                                            from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                                        from '@acx-ui/rc/utils'
+import { Provider, store }                                                       from '@acx-ui/store'
+import { act, fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { NetworkVenuesTab } from './index'
 
-let network = {
+const network = {
   type: 'aaa',
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
   venues: [
@@ -31,7 +32,7 @@ let network = {
 
 const user = { COMMON: '{"supportTriRadio":true,"tab-venue-clients":"wifi"}' }
 
-let list = {
+const list = {
   totalCount: 2,
   page: 1,
   data: [
@@ -66,22 +67,12 @@ let list = {
   ]
 }
 describe('NetworkVenuesTab', () => {
-  beforeAll(() => {
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // Deprecated
-        removeListener: jest.fn(), // Deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn()
-      }))
+  beforeEach(() => {
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
     })
   })
- 
+
   it('should render correctly', async () => {
     mockServer.use(
       rest.post(
@@ -106,9 +97,8 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     await screen.findByText('network-venue-1')
     expect(asFragment()).toMatchSnapshot()
   })
@@ -133,26 +123,40 @@ describe('NetworkVenuesTab', () => {
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
     }
 
-    const { asFragment } = render(<Provider><NetworkVenuesTab /></Provider>, {
+    render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('network-venue-1')
-    expect(asFragment()).toMatchSnapshot()
-    const toogleButton = screen.getByRole('switch', { checked: false })
-    fireEvent.click(toogleButton)
+
+    const newVenues = [
+      ...network.venues,
+      {
+        ...network.venues[0],
+        venueId: '02e2ddbc88e1428987666d31edbc3d9a'
+      }
+    ]
     mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
+      ),
       rest.post(
         CommonUrlsInfo.addNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+
+    const toogleButton = await screen.findByRole('switch', { checked: false })
+    fireEvent.click(toogleButton)
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const rows = await screen.findAllByRole('switch')
+    expect(rows).toHaveLength(2)
+    rows.forEach(row => expect(row).toBeChecked())
   })
-  
+
   it('deactivate Network', async () => {
     mockServer.use(
       rest.post(
@@ -173,23 +177,30 @@ describe('NetworkVenuesTab', () => {
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
     }
 
-    const { asFragment } = render(<Provider><NetworkVenuesTab /></Provider>, {
+    render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('network-venue-1')
-    expect(asFragment()).toMatchSnapshot()
-    const toogleButton = screen.getByRole('switch', { checked: true })
-    fireEvent.click(toogleButton)
+
     mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
+      ),
       rest.delete(
         CommonUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       )
     )
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+
+    const toogleButton = await screen.findByRole('switch', { checked: true })
+    fireEvent.click(toogleButton)
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const rows = await screen.findAllByRole('switch')
+    expect(rows).toHaveLength(2)
+    rows.forEach(row => expect(row).not.toBeChecked())
   })
 })

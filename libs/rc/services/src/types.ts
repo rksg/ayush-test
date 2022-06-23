@@ -83,17 +83,6 @@ export interface UserSettings {
   [key: string]: string
 }
 
-export interface Dashboard {
-  summary: {
-    alarms: {
-      totalCount: number
-      summary? : {
-        clear: number
-      }
-    }
-  }
-}
-
 export enum ApVenueStatusEnumType {
   IN_SETUP_PHASE = '1_InSetupPhase',
   OFFLINE = '1_InSetupPhase_Offline',
@@ -128,7 +117,7 @@ export interface NetworkDetailHeader {
   }
 }
 
-export interface DashboardOverview {
+export interface Dashboard {
   summary?: {
     clients?: {
       summary: {
@@ -167,10 +156,8 @@ export interface DashboardOverview {
       totalCount: number;
     }
     alarms?: {
-      summary: {
-        [prop: string]: number;
-      },
-      totalCount: number;
+      summary?: { clear: number }
+      totalCount: number
     },
   };
   incidents?: {

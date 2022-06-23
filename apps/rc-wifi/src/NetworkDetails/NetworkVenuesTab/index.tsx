@@ -55,7 +55,7 @@ export function NetworkVenuesTab () {
   const [tableData, setTableData] = useState(defaultArray)
   const { tenantId } = useParams()
   const userSetting = useGetAllUserSettingsQuery({ params: { tenantId } })
-  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings, 
+  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
     Constants.triRadioUserSettingsKey)) === 'true'
   const networkQuery = useGetNetwork()
   const [
@@ -82,7 +82,7 @@ export function NetworkVenuesTab () {
       })
       setTableData(data)
     }
-  }, [tableQuery.data, networkQuery])
+  }, [tableQuery.data, networkQuery.data])
 
   const activateNetwork = async (checked: boolean, row: Venue) => {
     // TODO: Service
@@ -204,6 +204,7 @@ export function NetworkVenuesTab () {
   return (
     <Loader states={[
       tableQuery,
+      networkQuery,
       { isLoading: false, isFetching: isAddNetworkUpdating },
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
