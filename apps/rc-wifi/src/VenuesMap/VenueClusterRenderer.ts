@@ -12,7 +12,7 @@ export default class VenueClusterRenderer implements Renderer {
     const statuses = markers?.map((marker: google.maps.Marker) =>
       (marker as VenueMarkerWithLabel).venueData.status)
     const clusterColor = getMarkerColor(statuses)
-    const scaledSize = new google.maps.Size(42, 42)
+    const scaledSize = new google.maps.Size(48, 48)
 
     const clusterMarker = new google.maps.Marker({
       position,

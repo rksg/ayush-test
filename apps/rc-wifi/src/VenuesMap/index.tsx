@@ -17,7 +17,7 @@ export interface GoogleMapProps {
   cluster?: boolean
 }
 
-export function GoogleMap ({ cluster, data }: GoogleMapProps) {
+export function VenuesMap ({ cluster, data }: GoogleMapProps) {
 
   const [venues, setVenues] = React.useState<VenueMarkerOptions[]>([])
 

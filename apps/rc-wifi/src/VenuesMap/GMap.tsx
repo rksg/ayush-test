@@ -2,7 +2,7 @@ import React from 'react'
 
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer'
 import * as _                                     from 'lodash'
-import ReactDOM                                   from 'react-dom'
+import { createRoot }                             from 'react-dom/client'
 
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
@@ -44,10 +44,10 @@ const GMap: React.FC<MapProps> = ({
 
   React.useEffect(() => {
     if(map){
-      const legendControlBoxDiv = document.createElement('div')
-      ReactDOM.render(<VenueFilterControlBox onChange={onFilterChange} />, legendControlBoxDiv)
-
       if (map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
+        const legendControlBoxDiv = document.createElement('div')
+        const root = createRoot(legendControlBoxDiv!)
+        root.render(<VenueFilterControlBox onChange={onFilterChange} />)
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(legendControlBoxDiv)
       }
 
@@ -64,8 +64,8 @@ const GMap: React.FC<MapProps> = ({
     }
     return function cleanup () {
       if(map) {
-        google.maps.event.clearListeners(map, 'click')
-        google.maps.event.clearListeners(map, 'idle')
+        ['click', 'idle'].forEach((eventName) =>
+          google.maps.event.clearListeners(map, eventName))
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,7 +73,6 @@ const GMap: React.FC<MapProps> = ({
 
   React.useEffect(() => {
     if (map) {
-      let markerSize = 32
       if(markerClusterer){
         markerClusterer.clearMarkers()
       }
@@ -82,14 +81,14 @@ const GMap: React.FC<MapProps> = ({
 
       // Build the updated markers
       let markers = venues?.map((venue: VenueMarkerOptions) => {
-        // DEFINITIONS: No APs – 32px, minimum # of APs (>0) – 48 px, maximum # of APs – 96px
+        let markerSize = 48
+        // DEFINITIONS: No APs = 32px, minimum # of APs (>0) = 48 px, maximum # of APs = 96px
         if(venue?.apsCount){
           markerSize = 48 + (venue?.apsCount / maxVenueCountPerVenue!) * 48
         }
         const markerColor = getMarkerColor([venue.status])
         const svgMarkerDefault = getMarkerSVG(markerColor.default)
         const svgMarkerHover = getMarkerSVG(markerColor.hover)
-        //const scaledSize = new google.maps.Size(54, 54)
         const scaledSize = new google.maps.Size(markerSize, markerSize)
 
         const marker = new VenueMarkerWithLabel({
@@ -128,11 +127,9 @@ const GMap: React.FC<MapProps> = ({
       })
 
       markers = markers.filter( marker => marker.getVisible())
-      if (markers && markers.length > 1) {
+      if (markers && markers.length > 0) {
         const bounds = new google.maps.LatLngBounds()
-        markers.map((marker: { getPosition: () => any }) =>
-          bounds.extend(marker.getPosition())
-        )
+        markers.map((marker) => bounds.extend(marker.getPosition()!))
         map.fitBounds(bounds)
       }
 
