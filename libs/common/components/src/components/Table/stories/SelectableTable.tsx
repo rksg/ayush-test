@@ -43,12 +43,12 @@ const actions = [
   {
     key: 11,
     label: 'Edit',
-    onClick: (selectedRows: object)=> { console.log(selectedRows) } // eslint-disable-line
+    onClick: (selectedRows: object)=> { console.log('Edit', selectedRows) } // eslint-disable-line
   },
   {
     key: 12,
     label: 'Delete',
-    onClick: (selectedRows: object)=> { console.log(selectedRows) } // eslint-disable-line
+    onClick: (selectedRows: object)=> { console.log('Delete', selectedRows) } // eslint-disable-line
   }
 ]
 

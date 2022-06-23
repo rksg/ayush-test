@@ -1,17 +1,13 @@
 import { Button as AntButton } from 'antd'
 import styled, { css }         from 'styled-components/macro'
 
-import { CancelCircle } from '@acx-ui/icons'
-
-export const CancelCircleIcon = styled(CancelCircle)``
-
 export const RotatedColumn = styled.div``
 
 export const CloseButton = styled(AntButton)`
   border: none;
   box-shadow: none;
   padding: 0 6px;
-  padding-right: 54px;
+  margin-right: 54px;
   &.ant-btn-icon-only {
     background-color: var(--acx-accents-blue-10);
     width: 12px;

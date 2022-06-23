@@ -1,5 +1,7 @@
-import ProTable  from '@ant-design/pro-table'
-import { Space } from 'antd'
+import ProTable, { IntlProvider, enUSIntl }  from '@ant-design/pro-table'
+import { Space, ConfigProvider } from 'antd'
+import enUS from 'antd/lib/locale/en_US'
+import { CancelCircle } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
@@ -57,13 +59,13 @@ export function Table <RecordType extends object> (
               {selectedRowKeys.length} selected
               <UI.CloseButton
                 onClick={onCleanSelected}
-                icon={<UI.CancelCircleIcon />}
+                icon={<CancelCircle />}
               />
             </span>
           </Space>
           <Space size={0}>
             {
-              props.alertOptions?.map((option, index) => 
+              props.alertOptions?.map((option, index) =>
                 <p key={option.key} className={'alert-option-span'}>
                   <UI.ActionButton onClick={()=>option.onClick(selectedRows)} >
                     {option.label}
@@ -75,7 +77,7 @@ export function Table <RecordType extends object> (
               )
             }
           </Space>
-        </> 
+        </>
       )}
       tableAlertOptionRender={false}
     />
