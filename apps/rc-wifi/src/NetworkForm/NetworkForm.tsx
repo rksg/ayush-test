@@ -92,7 +92,7 @@ export function NetworkForm () {
             return true
           }}
         >
-          <NetworkMoreSettingsForm />
+          <NetworkMoreSettingsForm/>
         </StepsForm.StepForm>
 
 
