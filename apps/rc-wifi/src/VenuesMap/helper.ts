@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 import _ from 'lodash'
 
-import { cssStr }                                   from '@acx-ui/components'
-import { DashboardOverview, ApVenueStatusEnumType } from '@acx-ui/rc/services'
+import { cssStr }                           from '@acx-ui/components'
+import { Dashboard, ApVenueStatusEnumType } from '@acx-ui/rc/services'
 
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
-export const massageVenuesData = (overviewData?: DashboardOverview): VenueMarkerOptions[] => {
+export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[] => {
   const venues: VenueMarkerOptions[] = []
   overviewData?.venues?.forEach((venue) => {
     _.forIn(venue, (val, venueId) => {
@@ -72,10 +72,10 @@ export const massageVenuesData = (overviewData?: DashboardOverview): VenueMarker
   return venues
 }
 
-function getSwitchClientCountByVenue (overviewData: DashboardOverview, venueId: string): number {
+function getSwitchClientCountByVenue (overviewData: Dashboard, venueId: string): number {
   return _.get(overviewData, 'summary.switchClients.summary[' + venueId + ']') || 0
 }
-function getSwitchCountByVenue (overviewData: DashboardOverview, venueId: string): number {
+function getSwitchCountByVenue (overviewData: Dashboard, venueId: string): number {
   const switchStat = (_.get(overviewData, 'switches.switchesStatus') || []).find((el: [string]) => {
     for (const key in el) {
       if (key === venueId) {
