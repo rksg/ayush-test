@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { NetworkDetails } from './NetworkDetails'
 
@@ -56,11 +56,7 @@ describe('NetworkDetails', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    expect(screen.getByText('testNetwork')).toBeVisible()
+    expect(await screen.findByText('testNetwork')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(6)
 
     expect(asFragment()).toMatchSnapshot()
