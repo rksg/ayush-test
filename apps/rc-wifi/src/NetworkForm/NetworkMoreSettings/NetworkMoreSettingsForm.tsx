@@ -1,21 +1,26 @@
 import React from 'react'
 
-import { Col, Collapse, Form,
-  Input, Row, Switch } from 'antd'
-
+import {
+  Collapse,
+  Form,
+  Input,
+  Switch
+} from 'antd'
 
 import { StepsForm } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
-
 const { Panel } = Collapse
-
 
 export function NetworkMoreSettingsForm () {
   return (
-    <Row gutter={0}>
-      <Col span={24}>
-        <StepsForm.Title>VLAN</StepsForm.Title>
+    <UI.CollpasePanel
+      defaultActiveKey={['1', '2', '3']}
+      expandIconPosition='end'
+      ghost={true}
+      bordered={false}>
+
+      <Panel header='VLAN' key='1' >
         <Form.Item
           name='enableVlanPooling'
           style={{ marginBottom: '10px' }}
@@ -49,12 +54,11 @@ export function NetworkMoreSettingsForm () {
           children={<>
             <UI.FieldLabel
               width='90px'>Proxy ARP:</UI.FieldLabel>
-            <Switch/></>}
+            <Switch /></>}
         />
-      </Col>
+      </Panel>
 
-      <Col span={24}>
-        <StepsForm.Title style={{ margin: '20px 0' }}>Services</StepsForm.Title>
+      <Panel header='Services' key='2' >
         <UI.FormItemNoLabel
           name='enableDnsProxy'
           children={<>
@@ -99,11 +103,9 @@ export function NetworkMoreSettingsForm () {
               Enable logging client data to external syslog
             </UI.Label>}
         />
+      </Panel>
 
-      </Col>
-
-      <Col span={24}>
-        <StepsForm.Title style={{ margin: '20px 0' }}>Radio</StepsForm.Title>
+      <Panel header='Radio' key='3' >
         <UI.FormItemNoLabel
           name='hideSsid'
           children={
@@ -129,20 +131,8 @@ export function NetworkMoreSettingsForm () {
               Hide SSID
             </UI.Label>}
         />
+      </Panel>
 
-
-        <Collapse defaultActiveKey={['1']}>
-          <Panel header='This is panel header 1' key='1'>
-            <p>test</p>
-          </Panel>
-          <Panel header='This is panel header 2' key='2'>
-            <p>test2</p>
-          </Panel>
-          <Panel header='This is panel header 3' key='3'>
-            <p>test3</p>
-          </Panel>
-        </Collapse>
-      </Col>
-    </Row>
+    </UI.CollpasePanel>
   )
 }
