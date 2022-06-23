@@ -60,7 +60,7 @@ describe('NetworkDetails', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    // expect(screen.getByText('testNetwork')).toBeVisible()
+    expect(screen.getByText('testNetwork')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(6)
 
     expect(asFragment()).toMatchSnapshot()

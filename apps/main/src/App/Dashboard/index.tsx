@@ -32,8 +32,8 @@ function DashboardPageHeader () {
       title='Dashboard'
       extra={[
         <Button key='add' type='primary'>Add...</Button>,
-        <Button key='hierarchy'>Entire Organization <ArrowExpand /></Button>,
-        <Button key='date' icon={<ClockOutlined />}>Last 24 Hours</Button>,
+        <Button key='hierarchy-filter'>Entire Organization <ArrowExpand /></Button>,
+        <Button key='date-filter' icon={<ClockOutlined />}>Last 24 Hours</Button>,
         <Button key='download' icon={<DownloadOutlined />} />,
         <Button key='insight' icon={<BulbOutlined />} />
       ]}

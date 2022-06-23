@@ -1,8 +1,9 @@
-import {
-  GuestNetworkTypeEnum,
-  WlanSecurityEnum
-} from '@acx-ui/rc/utils'
+import { GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
+export interface CommonResult {
+  requestId: string
+  response?:{}
+}
 export interface Network {
   id: string
   name: string
@@ -30,6 +31,14 @@ export interface NetworkDetail {
   id: string
 }
 
+export interface NetworkDetail {
+  type: string
+  tenantId: string
+  name: string
+  venues: { venueId: string, id: string }[]
+  id: string
+}
+
 export interface Venue {
   id: string
   name: string
@@ -46,6 +55,10 @@ export interface Venue {
     names: string[]
     vlans: number[]
   }
+  wlan: {
+    wlanSecurity: string
+  }
+  allApDisabled: boolean
   // aps ??
   // switches ??
   // switchClients ??
@@ -76,20 +89,136 @@ export type Alarm = AlarmBase & AlarmMeta
 export interface UserSettings {
   [key: string]: string
 }
+
+export enum ApVenueStatusEnumType {
+  IN_SETUP_PHASE = '1_InSetupPhase',
+  OFFLINE = '1_InSetupPhase_Offline',
+  OPERATIONAL = '2_Operational',
+  REQUIRES_ATTENTION = '3_RequiresAttention',
+  TRANSIENT_ISSUE = '4_TransientIssue'
+}
+
+export enum SwitchStatusEnum {
+  NEVER_CONTACTED_CLOUD = 'PREPROVISIONED',
+  INITIALIZING = 'INITIALIZING',
+  APPLYING_FIRMWARE = 'APPLYINGFIRMWARE',
+  OPERATIONAL = 'ONLINE',
+  DISCONNECTED = 'OFFLINE',
+  STACK_MEMBER_NEVER_CONTACTED = 'STACK_MEMBER_PREPROVISIONED'
+}
 export interface NetworkDetailHeader {
   activeVenueCount: number,
   aps: {
     summary?: {
-      '1_InSetupPhase'?: number,
-      '1_InSetupPhase_Offline'?: number,
-      '2_Operational'?: number,
-      '3_RequiresAttention'?: number,
-      '4_TransientIssue'?: number
+      [ApVenueStatusEnumType.IN_SETUP_PHASE]?: number
+      [ApVenueStatusEnumType.OFFLINE]?: number
+      [ApVenueStatusEnumType.OPERATIONAL]?: number
+      [ApVenueStatusEnumType.REQUIRES_ATTENTION]?: number
+      [ApVenueStatusEnumType.TRANSIENT_ISSUE]?: number
     },
     totalApCount: number
   },
   network: {
-    name: string,
+    name: string
     id: string
   }
+}
+
+export interface Dashboard {
+  summary?: {
+    clients?: {
+      summary: {
+        [prop: string]: number;
+      },
+      totalCount: number;
+    },
+    switchClients?: {
+      summary: {
+        [prop: string]: number;
+      },
+      totalCount: number;
+    },
+    aps?: {
+      summary: {
+        [prop: string]: number;
+      },
+      totalCount: number;
+    },
+    switches?: {
+      summary: {
+        [prop: string]: number;
+      },
+      totalCount: number;
+    },
+    dps?: {
+      summary: {
+        [prop: string]: number;
+      },
+      totalCount: number;
+    },
+    venues?: {
+      summary: {
+        [prop: string]: number;
+      },
+      totalCount: number;
+    }
+    alarms?: {
+      summary?: { clear: number }
+      totalCount: number
+    },
+  };
+  incidents?: {
+    P1: number,
+    P2: number,
+    P3: number,
+    P4: number
+  };
+  aps?: {
+    apsStatus: Array<{
+      [prop: string]: {
+        apStatus: {
+          [ApVenueStatusEnumType.IN_SETUP_PHASE]?: number
+          [ApVenueStatusEnumType.OFFLINE]?: number
+          [ApVenueStatusEnumType.REQUIRES_ATTENTION]?: number
+          [ApVenueStatusEnumType.TRANSIENT_ISSUE]?: number
+          [ApVenueStatusEnumType.OPERATIONAL]?: number
+        },
+        totalCount: number
+      }
+    }>,
+    totalCount: number
+  };
+  switches?: {
+    switchesStatus: Array<{
+      [prop: string]: {
+        switchStatus: {
+          [SwitchStatusEnum.OPERATIONAL]?: number,
+        },
+        totalCount: number
+      }
+    }>,
+    totalCount: number
+  };
+  venues?: Array<{
+    [prop: string]: {
+      zipCode?: string,
+      country?: string,
+      city?: string,
+      latitude?: number,
+      crtTime?: any,
+      description?: string,
+      type?: string,
+      lastUpdTime?: string,
+      tags?: string,
+      name?: string,
+      tenantId?: string,
+      street1?: string,
+      street2?: string,
+      state?: string,
+      id?: string,
+      longitude?: number,
+      timeZone?: string,
+      venueStatus?: ApVenueStatusEnumType
+    }
+  }>;
 }

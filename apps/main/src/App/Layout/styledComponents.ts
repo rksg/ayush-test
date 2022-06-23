@@ -2,6 +2,7 @@ import { Button as AntButton, Divider as AntDivider } from 'antd'
 import styled, { css }                                from 'styled-components/macro'
 
 import {
+  AI,
   AccountCircleOutlined,
   AccountCircleSolid,
   AccountCircleSolidSmall,
@@ -13,7 +14,6 @@ import {
   DevicesSolid,
   LocationOutlined,
   LocationSolid,
-  MelissaAIIcon,
   NetworksOutlined,
   NetworksSolid,
   NotificationSolid,
@@ -155,15 +155,10 @@ export const EnabledLocationIcon = styled(LocationSolid)`
   ${enabledMenuIconStyle}
 `
 
-export const MelissaIcon = styled(MelissaAIIcon)`
-  ${disabledMenuIconStyle}
-  stroke-width: 0;
+export const AIAnalyticsIcon = styled(AI)`
+  ${enabledMenuIconStyle}
+  path { stroke: none; }
 `
-export const EnabledMelissaIcon = styled(MelissaAIIcon)`
-  ${disabledMenuIconStyle}
-  stroke-width: 1;
-`
-
 export const NetworksIcon = styled(NetworksOutlined)`
   ${disabledMenuIconStyle}
 `

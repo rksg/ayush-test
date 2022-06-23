@@ -57,7 +57,7 @@ exports[`NetworkDetails should render correctly 1`] = `
               <h1
                 class="ant-typography"
               >
-                Lab Network
+                testNetwork
               </h1>
             </span>
           </div>
@@ -79,7 +79,7 @@ exports[`NetworkDetails should render correctly 1`] = `
                     ClockOutlined.svg
                   </svg>
                   <span>
-                    Last 24 hours
+                    Last 24 Hours
                   </span>
                 </button>
               </div>
@@ -116,7 +116,7 @@ exports[`NetworkDetails should render correctly 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ckAoUV"
+                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ckAoUV"
                   type="button"
                 >
                   <svg>
@@ -148,8 +148,10 @@ exports[`NetworkDetails should render correctly 1`] = `
                     class="ant-tabs-tab ant-tabs-tab-active"
                   >
                     <div
+                      aria-controls="rc-tabs-test-panel-overview"
                       aria-selected="true"
                       class="ant-tabs-tab-btn"
+                      id="rc-tabs-test-tab-overview"
                       role="tab"
                       tabindex="0"
                     >
@@ -160,32 +162,38 @@ exports[`NetworkDetails should render correctly 1`] = `
                     class="ant-tabs-tab"
                   >
                     <div
+                      aria-controls="rc-tabs-test-panel-aps"
                       aria-selected="false"
                       class="ant-tabs-tab-btn"
+                      id="rc-tabs-test-tab-aps"
                       role="tab"
                       tabindex="0"
                     >
-                      APs (0)
+                      APs (1)
                     </div>
                   </div>
                   <div
                     class="ant-tabs-tab"
                   >
                     <div
+                      aria-controls="rc-tabs-test-panel-venues"
                       aria-selected="false"
                       class="ant-tabs-tab-btn"
+                      id="rc-tabs-test-tab-venues"
                       role="tab"
                       tabindex="0"
                     >
-                      Venues (0)
+                      Venues (1)
                     </div>
                   </div>
                   <div
                     class="ant-tabs-tab"
                   >
                     <div
+                      aria-controls="rc-tabs-test-panel-services"
                       aria-selected="false"
                       class="ant-tabs-tab-btn"
+                      id="rc-tabs-test-tab-services"
                       role="tab"
                       tabindex="0"
                     >
@@ -196,8 +204,10 @@ exports[`NetworkDetails should render correctly 1`] = `
                     class="ant-tabs-tab"
                   >
                     <div
+                      aria-controls="rc-tabs-test-panel-events"
                       aria-selected="false"
                       class="ant-tabs-tab-btn"
+                      id="rc-tabs-test-tab-events"
                       role="tab"
                       tabindex="0"
                     >
@@ -208,8 +218,10 @@ exports[`NetworkDetails should render correctly 1`] = `
                     class="ant-tabs-tab"
                   >
                     <div
+                      aria-controls="rc-tabs-test-panel-incidents"
                       aria-selected="false"
                       class="ant-tabs-tab-btn"
+                      id="rc-tabs-test-tab-incidents"
                       role="tab"
                       tabindex="0"
                     >
@@ -218,6 +230,7 @@ exports[`NetworkDetails should render correctly 1`] = `
                   </div>
                   <div
                     class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                    style="left: 0px; width: 0px;"
                   />
                 </div>
               </div>
@@ -225,12 +238,12 @@ exports[`NetworkDetails should render correctly 1`] = `
                 class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
               >
                 <button
-                  aria-controls="null-more-popup"
+                  aria-controls="rc-tabs-test-more-popup"
                   aria-expanded="false"
                   aria-haspopup="listbox"
                   aria-hidden="true"
                   class="ant-tabs-nav-more"
-                  id="null-more"
+                  id="rc-tabs-test-more"
                   style="visibility: hidden; order: 1;"
                   tabindex="-1"
                   type="button"
@@ -265,41 +278,53 @@ exports[`NetworkDetails should render correctly 1`] = `
               >
                 <div
                   aria-hidden="false"
+                  aria-labelledby="rc-tabs-test-tab-overview"
                   class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                  id="rc-tabs-test-panel-overview"
                   role="tabpanel"
                   tabindex="0"
                 />
                 <div
                   aria-hidden="true"
+                  aria-labelledby="rc-tabs-test-tab-aps"
                   class="ant-tabs-tabpane"
+                  id="rc-tabs-test-panel-aps"
                   role="tabpanel"
                   style="display: none;"
                   tabindex="-1"
                 />
                 <div
                   aria-hidden="true"
+                  aria-labelledby="rc-tabs-test-tab-venues"
                   class="ant-tabs-tabpane"
+                  id="rc-tabs-test-panel-venues"
                   role="tabpanel"
                   style="display: none;"
                   tabindex="-1"
                 />
                 <div
                   aria-hidden="true"
+                  aria-labelledby="rc-tabs-test-tab-services"
                   class="ant-tabs-tabpane"
+                  id="rc-tabs-test-panel-services"
                   role="tabpanel"
                   style="display: none;"
                   tabindex="-1"
                 />
                 <div
                   aria-hidden="true"
+                  aria-labelledby="rc-tabs-test-tab-events"
                   class="ant-tabs-tabpane"
+                  id="rc-tabs-test-panel-events"
                   role="tabpanel"
                   style="display: none;"
                   tabindex="-1"
                 />
                 <div
                   aria-hidden="true"
+                  aria-labelledby="rc-tabs-test-tab-incidents"
                   class="ant-tabs-tabpane"
+                  id="rc-tabs-test-panel-incidents"
                   role="tabpanel"
                   style="display: none;"
                   tabindex="-1"

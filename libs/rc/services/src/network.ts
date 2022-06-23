@@ -9,7 +9,7 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 
-import { Network, Venue, NetworkDetailHeader, NetworkDetail } from './types'
+import { Network, Venue, NetworkDetailHeader, NetworkDetail, CommonResult, Dashboard } from './types'
 
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -29,7 +29,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: ['Network'],
+      providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           if (msg.status !== 'SUCCESS') return
@@ -37,11 +37,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
           if (msg.useCase === 'AddNetworkDeep') message.success('Created successfully')
 
-          api.dispatch(networkApi.util.invalidateTags(['Network']))
+          api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
         })
       }
     }),
-    createNetwork: build.mutation<any, RequestPayload>({
+    createNetwork: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
         const createNetworkReq = createHttpRequest(CommonUrlsInfo.addNetworkDeep, params)
         return {
@@ -49,7 +49,35 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: ['Network']
+      invalidatesTags: [{ type: 'Network', id: 'LIST' }]
+    }),
+    addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.addNetworkVenue, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.deleteNetworkVenue, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    getNetwork: build.query<NetworkDetail, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getNetwork, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
     getNetwork: build.query<NetworkDetail, RequestPayload>({
       query: ({ params }) => {
@@ -67,7 +95,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...networkDetailReq
         }
       },
-      providesTags: ['Network', 'DetailHeader']
+      providesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
     venueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -85,7 +113,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return result
       }
     }),
-    dashboardOverview: build.query<any, RequestPayload>({
+    dashboardOverview: build.query<Dashboard, RequestPayload>({
       query: ({ params }) => {
         const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
         return{
@@ -101,5 +129,7 @@ export const {
   useGetNetworkQuery,
   useNetworkDetailHeaderQuery,
   useVenueListQuery,
-  useDashboardOverviewQuery
+  useDashboardOverviewQuery,
+  useAddNetworkVenueMutation,
+  useDeleteNetworkVenueMutation
 } = networkApi

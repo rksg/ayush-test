@@ -26,6 +26,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues'
   },
+  addNetworkVenue: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network-venue'
+  },
+  deleteNetworkVenue: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId'
+  },
   getCloudpathList: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/cloudpath'
@@ -41,5 +49,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getAlarmsListMeta: {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
+  },
+  getAllUserSettings: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/admin-settings/ui'
   }
 }
