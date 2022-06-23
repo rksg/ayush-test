@@ -1,5 +1,4 @@
 import { SortOrder } from 'antd/lib/table/interface'
-import styled        from 'styled-components/macro'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import { useNetworkListQuery, Network }                  from '@acx-ui/rc/services'
@@ -12,18 +11,16 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-const PageLink = styled.span`
-  color: var(--acx-accents-blue-50);
-`
-
 const columns: TableProps<Network>['columns'] = [
   {
     title: 'Network Name',
     dataIndex: 'name',
     sorter: true,
     defaultSortOrder: 'ascend' as SortOrder,
-    render: function (data) {
-      return <PageLink>{data}</PageLink>
+    render: function (data, row) {
+      return (
+        <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+      )
     }
   },
   {
@@ -43,22 +40,38 @@ const columns: TableProps<Network>['columns'] = [
     title: 'Venues',
     dataIndex: 'venues',
     sorter: true,
-    render: function (data) {
-      return <PageLink>{data ? data.count : 0}</PageLink>
+    align: 'center',
+    render: function (data, row) {
+      return (
+        <TenantLink
+          to={`/networks/${row.id}/network-details/venues`}
+          children={data ? data.count : 0}
+        />
+      )
     }
   },
   {
     title: 'APs',
     dataIndex: 'aps',
     sorter: true,
-    render: function (data) {
-      return <PageLink>{data}</PageLink>
+    align: 'center',
+    render: function (data, row) {
+      return (
+        <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+      )
     }
   },
   {
     title: 'Clients',
     dataIndex: 'clients',
-    sorter: true
+    sorter: true,
+    align: 'center'
+  },
+  {
+    title: 'Services',
+    dataIndex: 'services',
+    sorter: true,
+    align: 'center'
   },
   {
     title: 'VLAN',
@@ -67,6 +80,16 @@ const columns: TableProps<Network>['columns'] = [
     render: function (data, row) {
       return transformVLAN(row)
     }
+  },
+  {
+    title: 'Health',
+    dataIndex: 'health',
+    sorter: true
+  },
+  {
+    title: 'Tags',
+    dataIndex: 'tags',
+    sorter: true
   }
 ]
 
@@ -194,7 +217,7 @@ export function NetworksTable () {
       <PageHeader
         title='Networks'
         extra={[
-          <TenantLink to='/networks/create'>
+          <TenantLink to='/networks/create' key='add'>
             <Button type='primary'>Add Wi-Fi Network</Button>
           </TenantLink>
         ]}

@@ -1,0 +1,86 @@
+import * as _ from 'lodash'
+
+import { Dashboard, ApVenueStatusEnumType } from '@acx-ui/rc/services'
+
+import { VenueMarkerOptions } from './VenueMarkerWithLabel'
+
+export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[] => {
+  const venues: VenueMarkerOptions[] = []
+  overviewData?.venues?.forEach((venue) => {
+    _.forIn(venue, (val, venueId) => {
+      // todo: if venue has no coordinates, adding mock coordinates (Piazza San Pietro, Rome) and throwing relevant error
+      if (!val.latitude || !val.longitude) {
+        val.latitude = 41.9021622
+        val.longitude = 12.4572277
+        // eslint-disable-next-line no-console
+        console.error(`Venue '${val.name}' doesn't include location,
+          dummy coordinates were added for gmap correct behaviour`)
+      }
+      const apStat = overviewData?.aps?.apsStatus.find((el) => {
+        for (const key in el) {
+          if (key === venueId) {
+            return true
+          }
+        }
+        return false
+      })
+
+      let requires_attention: number | undefined = 0
+      let in_setup_phase: number | undefined = 0
+      let transient_issue: number | undefined = 0
+      let operational :number | undefined = 0
+
+      if (apStat && apStat[venueId] && apStat[venueId].apStatus) {
+
+        if (apStat[venueId].apStatus[ApVenueStatusEnumType.REQUIRES_ATTENTION]) {
+          requires_attention = apStat[venueId].apStatus[ApVenueStatusEnumType.REQUIRES_ATTENTION]
+        }
+
+        if (apStat[venueId].apStatus[ApVenueStatusEnumType.IN_SETUP_PHASE]) {
+          in_setup_phase = apStat[venueId].apStatus[ApVenueStatusEnumType.IN_SETUP_PHASE]
+        }
+
+        if (apStat[venueId].apStatus[ApVenueStatusEnumType.TRANSIENT_ISSUE]) {
+          transient_issue = apStat[venueId].apStatus[ApVenueStatusEnumType.TRANSIENT_ISSUE]
+        }
+        if (apStat[venueId].apStatus[ApVenueStatusEnumType.OPERATIONAL]) {
+          operational = apStat[venueId].apStatus[ApVenueStatusEnumType.OPERATIONAL]
+        }
+      }
+
+      venues.push({
+        name: val.name,
+        status: val.venueStatus,
+        latitude: val.latitude,
+        longitude: val.longitude,
+        venueId: venueId,
+        clientsCount: overviewData?.summary?.clients?.summary[venueId],
+        apStat: {
+          [ApVenueStatusEnumType.REQUIRES_ATTENTION]: requires_attention!,
+          [ApVenueStatusEnumType.TRANSIENT_ISSUE]: transient_issue!,
+          [ApVenueStatusEnumType.IN_SETUP_PHASE]: in_setup_phase!,
+          [ApVenueStatusEnumType.OPERATIONAL]: operational!
+        },
+        apsCount: apStat && apStat[venueId] ? apStat[venueId].totalCount : 0,
+        switchesCount: getSwitchCountByVenue(overviewData, venueId),
+        switchClientsCount: getSwitchClientCountByVenue(overviewData, venueId)
+      })
+    })
+  })
+  return venues
+}
+
+function getSwitchClientCountByVenue (overviewData: Dashboard, venueId: string): number {
+  return _.get(overviewData, 'summary.switchClients.summary[' + venueId + ']') || 0
+}
+function getSwitchCountByVenue (overviewData: Dashboard, venueId: string): number {
+  const switchStat = (_.get(overviewData, 'switches.switchesStatus') || []).find((el: [string]) => {
+    for (const key in el) {
+      if (key === venueId) {
+        return true
+      }
+    }
+    return false
+  })
+  return switchStat ? switchStat[venueId].totalCount : 0
+}
