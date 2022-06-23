@@ -14,7 +14,7 @@ import { Network, Venue, NetworkDetailHeader, NetworkDetail, CommonResult, Dashb
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'networkApi',
-  tagTypes: ['Network'],
+  tagTypes: ['Network', 'DetailHeader'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
