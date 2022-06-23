@@ -1,13 +1,12 @@
-import ProTable, { IntlProvider, enUSIntl }  from '@ant-design/pro-table'
-import { Space, ConfigProvider } from 'antd'
-import enUS from 'antd/lib/locale/en_US'
+import ProTable  from '@ant-design/pro-table'
+import { Space } from 'antd'
+
 import { CancelCircle } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
 import type { ProColumns }                  from '@ant-design/pro-table'
 import type { TableProps as AntTableProps } from 'antd'
-
 
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' > {
