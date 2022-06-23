@@ -89,26 +89,31 @@ export function Aps () {
       key='channel24'
       title='2.4 GHz'
       dataIndex='channel24'
+      align='center'
       render={transformDisplayText} />,
     channel50: <Column
       key='channel50'
       title='5 GHz'
       dataIndex='channel50'
+      align='center'
       render={transformDisplayText} />,
     channelL50: <Column
       key='channelL50'
       title='LO 5 GHz'
       dataIndex='channelL50'
+      align='center'
       render={transformDisplayText} />,
     channelU50: <Column
       key='channelU50'
       title='HI 5 GHz'
       dataIndex='channelU50'
+      align='center'
       render={transformDisplayText} />,
     channel60: <Column
       key='channel60'
       title='6 GHz'
       dataIndex='channel60'
+      align='center'
       render={transformDisplayText} />
   }
 
@@ -146,7 +151,8 @@ export function Aps () {
           render={transformMeshRole} />
         <Column title='Connected Clients'
           dataIndex='clients'
-          render={transformDisplayNumber} />
+          render={transformDisplayNumber}
+          align='center' />
         <Column title='AP Group' dataIndex='deviceGroupName' sorter={true} />
         <ColumnGroup title='RF Channels'>
           {_(channelColumns)

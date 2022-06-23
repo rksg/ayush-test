@@ -256,16 +256,19 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                         </th>
                         <th
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           Networks
                         </th>
                         <th
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           Wi-Fi APs
                         </th>
                         <th
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           Activated
                         </th>
@@ -330,16 +333,19 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           1
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           1
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           <button
                             aria-checked="true"
@@ -412,16 +418,19 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           0
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           0
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           <button
                             aria-checked="false"
