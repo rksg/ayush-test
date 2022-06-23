@@ -115,10 +115,11 @@ export function Aps () {
   const getApStatus = function (status: ApDeviceStatusEnum) {
     const apStatus = transformApStatus(status, APView.AP_LIST)
     return (
-      <div >
+      <span>
         <Badge color={handleStatusColor(apStatus.deviceStatus)}
           text={apStatus.message}
-        /></div>
+        />
+      </span>
     )
   }
 
@@ -133,7 +134,6 @@ export function Aps () {
         <Column title='Status'
           dataIndex='deviceStatus'
           sorter={true}
-          width={160}
           render={(value) => getApStatus(value)} />
         <Column title='Model' dataIndex='model' sorter={true} />
         <Column title='IP Address' dataIndex='IP' />
