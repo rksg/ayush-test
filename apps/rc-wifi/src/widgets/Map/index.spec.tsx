@@ -1,13 +1,23 @@
 
-import { get }                                                         from '@acx-ui/config'
+import { rest } from 'msw'
+
+import * as config                                                     from '@acx-ui/config'
 import { useSplitTreatment }                                           from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }                                              from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { render, screen, mockRestApiQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { mockServer }                                                  from '@acx-ui/test-utils'
 
 import { Map } from './'
 
 describe('Map', () => {
+  beforeAll(async () => {
+    const env = {
+      GOOGLE_MAPS_KEY: 'GOOGLE_MAPS_KEY'
+    }
+    mockServer.use(rest.get('/env.json', (_, r, c) => r(c.json(env))))
+    await config.initialize()
+  })
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get', {})
   })
@@ -18,7 +28,6 @@ describe('Map', () => {
   })
   it('should render map if feature flag is on', async () => {
     jest.mocked(useSplitTreatment).mockReturnValue(true)
-    jest.mocked(get).mockReturnValue('google-map-api-key')
 
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'

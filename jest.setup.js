@@ -34,8 +34,3 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useFFList: jest.fn(),
   useEvaluateFeature: jest.fn()
 }), { virtual: true })
-
-jest.mock('@acx-ui/config', () => ({
-  __esModule: true,
-  get: jest.fn()
-}))
