@@ -22,6 +22,7 @@ const WidgetContainer = styled.div`
   flex-direction: column;
   // Set flex to 1 for it to take up full width
   flex: 1;
+  overflow: scroll;
 `
 
 export type DashboardColProps = React.HTMLAttributes<HTMLDivElement> & {
