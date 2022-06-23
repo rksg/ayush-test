@@ -77,7 +77,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Network', id: 'DETAIL' }]
+      providesTags (data) { return data ? [{ type: 'Network', id: data.id }] : [] }
     }),
     networkDetailHeader: build.query<NetworkDetailHeader, RequestPayload>({
       query: ({ params }) => {
