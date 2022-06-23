@@ -49,3 +49,6 @@ export enum PassphraseExpirationEnum {
   ONE_YEAR = 'ONE_YEAR',
   TWO_YEARS = 'TWO_YEARS',
 }
+export const Constants = {
+  triRadioUserSettingsKey: 'COMMON$supportTriRadio'
+}
