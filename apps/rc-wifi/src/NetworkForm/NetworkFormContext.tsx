@@ -1,9 +1,11 @@
 import { createContext } from 'react'
 
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 export interface NetworkFormContextType {
-    settingStepTitle?: string;
-    setSettingStepTitle: React.Dispatch<React.SetStateAction<string>>;
+  networkType?: NetworkTypeEnum;
+  setNetworkType: (networkType: NetworkTypeEnum) => void
 }
 const NetworkFormContext = createContext({} as NetworkFormContextType)
 
 export default NetworkFormContext
+
