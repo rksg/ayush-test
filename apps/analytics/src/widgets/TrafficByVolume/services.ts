@@ -25,10 +25,9 @@ export const api = dataApi.injectEndpoints({
       TrafficByVolumeData,
       GlobalFilter
     >({
-      // todo: change to the schema of real api
       query: (payload) => ({
         document: gql`
-          query widget_trafficByVolume(
+          query TrafficByVolumeWidget(
             $path: [HierarchyNodeInput]
             $start: DateTime
             $end: DateTime

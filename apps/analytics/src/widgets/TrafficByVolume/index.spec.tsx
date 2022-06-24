@@ -32,14 +32,14 @@ describe('TrafficByVolumeWidget', () => {
   )
 
   it('should render loader', () => {
-    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
+    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
     render( <Provider> <TrafficByVolumeWidget/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
-    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
+    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
     const { asFragment } =render( <Provider> <TrafficByVolumeWidget/></Provider>)
@@ -49,7 +49,7 @@ describe('TrafficByVolumeWidget', () => {
   })
   it('should render error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
+    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
       error: new Error('something went wrong!')
     })
     render( <Provider> <TrafficByVolumeWidget/> </Provider>)
