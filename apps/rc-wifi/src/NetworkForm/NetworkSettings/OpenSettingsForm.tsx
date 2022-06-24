@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import {
   Col,
@@ -7,54 +7,43 @@ import {
   Switch
 } from 'antd'
 
-import { StepsForm, StepFormProps, Button } from '@acx-ui/components'
-import { CreateNetworkFormFields }          from '@acx-ui/rc/utils'
+import { StepsForm, Button } from '@acx-ui/components'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
 
-export interface OpenSettingsFields {
-  isCloudpathEnabled?: boolean;
-}
+const { useWatch } = Form
 
-export function OpenSettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
+export function OpenSettingsForm () {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <SettingsForm formRef={props.formRef} />
+        <SettingsForm />
       </Col>
       <Col span={14}>
-        <NetworkDiagram type='open'/>
+        <NetworkDiagram type='open' />
       </Col>
     </Row>
   )
 }
 
-function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
-  const [state, updateState] = useState<OpenSettingsFields>({
-    isCloudpathEnabled: false
-  })
-  const updateData = (newData: Partial<OpenSettingsFields>) => {
-    updateState({ ...state, ...newData })
-  }
+function SettingsForm () {
+  const isCloudpathEnabled = useWatch<boolean>('isCloudpathEnabled')
 
   return (
     <>
       <StepsForm.Title>Open Settings</StepsForm.Title>
 
-      <Form.Item name='isCloudpathEnabled'
-        initialValue={ state.isCloudpathEnabled }
-        valuePropName='checked'>
-        <Switch
-          onChange={function (value: any) {
-            props.formRef?.current?.setFieldsValue({ isCloudpathEnabled: value })
-            updateData({ isCloudpathEnabled: value })
-          }}
-        />
+      <Form.Item>
+        <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
+          <Switch />
+        </Form.Item>
         <span>Use Cloudpath Server</span>
       </Form.Item>
-      {state.isCloudpathEnabled && <CloudpathServerForm />}
+
+      {isCloudpathEnabled && <CloudpathServerForm />}
+
       <div><Button type='link' style={{ padding: 0 }}>Show more settings</Button></div>
     </>
   )
