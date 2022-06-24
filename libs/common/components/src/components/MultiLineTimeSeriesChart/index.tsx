@@ -36,20 +36,24 @@ export const tooltipFormatter = (
   const [ time ] = (Array.isArray(parameters)
     ? parameters[0].data : parameters.data) as [TimeStamp, number]
   return renderToString(
-    <>
-      <UI.TimeWrapper>{formatter('dateTimeFormat')(time)}</UI.TimeWrapper>
-      <UI.ListWrapper>{
+    <UI.TooltipWrapper>
+      <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time)}</time>
+      <ul>{
         (Array.isArray(parameters) ? parameters : [parameters])
-          .map((parameter: TooltipFormatterParams, index: number)=> {
+          .map((parameter: TooltipFormatterParams)=> {
             const [, value] = parameter.data as [TimeStamp, number]
-            return <UI.ListItem key={index}>
-              <UI.Dot $color={`${parameter.color}`}/>
-              {`${parameter.seriesName}: `}
-              <UI.ValueWrapper children={`${dataFormatter ? dataFormatter(value) : value}`}/>
-            </UI.ListItem>
+            return <li key={parameter.seriesName}>
+              <UI.Badge
+                color={parameter.color!.toString()}
+                text={<>
+                  {`${parameter.seriesName}: `}
+                  <b>{`${dataFormatter ? dataFormatter(value) : value}`}</b>
+                </>}
+              />
+            </li>
           })
-      }</UI.ListWrapper>
-    </>
+      }</ul>
+    </UI.TooltipWrapper>
   )
 }
 
