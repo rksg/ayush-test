@@ -224,3 +224,26 @@ export interface Dashboard {
     }
   }>;
 }
+
+
+interface RadiusService {
+  ip: string
+  port: number
+  sharedSecret: string
+}
+
+export interface CloudpathServer {
+  id: string
+  name: string
+  deploymentType: 'Cloud' | 'OnPremise'
+  deployedInVenueId?: string
+  deployedInVenueName?: string
+  authRadius: {
+    id: string
+    primary: RadiusService
+  }
+  accountingRadiu?: {
+    id: string
+    primary: RadiusService
+  }
+}

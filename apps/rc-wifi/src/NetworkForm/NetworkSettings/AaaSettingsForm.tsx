@@ -16,11 +16,12 @@ import {
   Typography
 } from 'antd'
 
-import { StepsForm, Button }     from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
-import { WlanSecurityEnum }      from '@acx-ui/rc/utils'
+import { StepsForm, Button } from '@acx-ui/components'
+import { WlanSecurityEnum }  from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+
+import { CloudpathServerForm } from './CloudpathServerForm'
 
 const { Option } = Select
 
@@ -131,13 +132,13 @@ function SettingsForm () {
 
       <Form.Item name='isCloudpathEnabled' valuePropName='checked'>
         <Switch
-          onChange={function (value: any) {
+          onChange={function (value) {
             updateData({ isCloudpathEnabled: value })
           }}
         />
         <span>Use Cloudpath Server</span>
       </Form.Item>
-      {state.isCloudpathEnabled ? <CloudpathServer /> : aaaService()}
+      {state.isCloudpathEnabled ? <CloudpathServerForm /> : aaaService()}
     </>
   )
 
@@ -175,7 +176,7 @@ function SettingsForm () {
           initialValue='false'
         >
           <Switch
-            onChange={function (value: any) {
+            onChange={function (value) {
               updateData({ enableAuthProxy: value })
             }}
           />
@@ -240,81 +241,6 @@ function SettingsForm () {
       </React.Fragment>
     )
   }
-}
-
-function CloudpathServer () {
-  const { data } = useCloudpathListQuery({})
-
-  const [state, updateState] = useState({
-    enableCloudPathServer: false,
-    cloudpathId: ''
-  })
-
-  const updateData = (newData: any) => {
-    updateState(newData)
-  }
-
-  const selectOptions = []
-  for (let i = 0; i < (data ? data.length : 0); i++) {
-    selectOptions.push(<Option key={data[i].id}>{data[i].name}</Option>)
-  }
-
-  const onCloudPathChange = function (cloudpathId: any) {
-    updateData({ enableCloudPathServer: true, cloudpathId })
-  }
-
-  const getCloudData = function () {
-    return data.find((item: any) => item.id === state.cloudpathId)
-  }
-
-  return (
-    <React.Fragment>
-      <StepsForm.Title>Cloudpath Server</StepsForm.Title>
-      <Form.Item name='cloudpathServerId' rules={[{ required: true }]}>
-        <Select
-          style={{ width: '100%' }}
-          onChange={onCloudPathChange}
-          placeholder='Select...'
-        >
-          {selectOptions}
-        </Select>
-      </Form.Item>
-
-      {state.enableCloudPathServer && (
-        <>
-          <Typography.Title level={4}>
-            Radius Authentication Service
-          </Typography.Title>
-          <Form.Item
-            label='Deployment Type'
-            children={getCloudData().deploymentType}
-          />
-          <Typography.Title level={4}>
-            Radius Authentication Service
-          </Typography.Title>
-          <Form.Item
-            label='IP Address'
-            children={
-              getCloudData().authRadius.primary.ip +
-              ':' +
-              getCloudData().authRadius.primary.port
-            }
-          />
-          <Form.Item
-            label='Radius Shared secret'
-            children={
-              <Input.Password
-                readOnly={true}
-                bordered={false}
-                style={{ padding: '0px' }}
-                value={getCloudData().authRadius.primary.sharedSecret}
-              />
-            }
-          />
-        </>
-      )}
-    </React.Fragment>
-  )
 }
 
 function getAaaServer (

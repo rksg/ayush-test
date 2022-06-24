@@ -6,6 +6,8 @@ import {
   RequestPayload
 } from '@acx-ui/rc/utils'
 
+import { CloudpathServer } from './types'
+
 export const baseCloudpathApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'cloudpathApi',
@@ -15,7 +17,7 @@ export const baseCloudpathApi = createApi({
 
 export const cloudpathApi = baseCloudpathApi.injectEndpoints({
   endpoints: (build) => ({
-    cloudpathList: build.query<any, RequestPayload>({
+    cloudpathList: build.query<CloudpathServer[], RequestPayload>({
       query: ({ params }) => {
         const cloudpathListReq = createHttpRequest(
           CommonUrlsInfo.getCloudpathList,
