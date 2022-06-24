@@ -25,13 +25,6 @@ export interface Network {
   vlanPool?: { name: string }
   // cog ??
 }
-export interface NetworkDetail {
-  type: string
-  tenantId: string
-  name: string
-  venues: { venueId: string, id: string }[]
-  id: string
-}
 
 export interface NetworkDetail {
   type: string
