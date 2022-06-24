@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 
 import { dataApiURL }                  from '@acx-ui/analytics/services'
 import { Provider, store }             from '@acx-ui/store'
-import { mockRTKQuery, mockAutoSizer } from '@acx-ui/test-utils'
+import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 
 import { api, NetworkHistoryData } from './services'
 
@@ -18,7 +18,7 @@ const sample = {
   ],
   newClientCount: [1, 2, 3, 4, 5],
   impactedClientCount: [6, 7, 8, 9, 10],
-  connectedClientCount: [11, 12, 13, 14, 15]
+  connectedClientCount: [11, 12, 13, 14, 15],
 }
 
 describe('NetworkHistoryWidget', () => {
@@ -36,7 +36,7 @@ describe('NetworkHistoryWidget', () => {
         }
       }
     }
-    mockRTKQuery(dataApiURL, 'widget_networkHistory', {
+    mockGraphqlQuery(dataApiURL, 'widget_networkHistory', {
       data: expectedResult
     })
     const { asFragment } = render(
@@ -52,13 +52,13 @@ describe('NetworkHistoryWidget', () => {
     expect(fragment).toMatchSnapshot()
   })
   it('should render error', async () => {
-    mockRTKQuery(dataApiURL, 'widget_networkHistory', {
-      error: new Error('something went wrong!')
+    mockGraphqlQuery(dataApiURL, 'widget_networkHistory', {
+        error: new Error('something went wrong!')
     })
     render(
-      <Provider>
+        <Provider>
         <NetworkHistoryWidget/>
-      </Provider>
+        </Provider>
     )
     await screen.findByText('Something went wrong.')
   })
