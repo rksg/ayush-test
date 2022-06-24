@@ -96,6 +96,7 @@ export function MultiLineTimeSeriesChart
       itemWidth: 15,
       itemGap: 15,
       textStyle: {
+        color: cssStr('--acx-primary-black'),
         fontFamily: cssStr('--acx-neutral-brand-font'),
         fontSize: cssNumber('--acx-body-5-font-size'),
         lineHeight: cssNumber('--acx-body-5-line-height'),
@@ -105,6 +106,7 @@ export function MultiLineTimeSeriesChart
     tooltip: {
       trigger: 'axis',
       textStyle: {
+        color: cssStr('--acx-primary-black'),
         fontFamily: cssStr('--acx-neutral-brand-font'),
         fontSize: cssNumber('--acx-body-5-font-size'),
         lineHeight: cssNumber('--acx-body-5-line-height'),
