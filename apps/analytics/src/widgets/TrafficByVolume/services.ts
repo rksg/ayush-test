@@ -53,7 +53,6 @@ export const api = dataApi.injectEndpoints({
           granularity: 'PT15M'
         }
       }),
-      providesTags: [{ type: 'Monitoring', id: 'TRAFFIC_BY_VOLUME' }],
       transformResponse: (response: Response<TrafficByVolumeData>) =>
         response.network.hierarchyNode.timeSeries
     })
