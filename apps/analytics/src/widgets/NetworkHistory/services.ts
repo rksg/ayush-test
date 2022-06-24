@@ -17,7 +17,7 @@ interface Response <TimeSeriesData> {
     }
   }
 }
-
+// TODO: Make it dynamic
 const severity = [
   {
     gt: 0.9,
@@ -108,14 +108,13 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: 'PT15M',
-          severity: severity,
-          code: code
+          severity: severity, //TODO: Fetch severity dynamically
+          code: code //TODO: Fetch code dynamically
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'NETWORK_HISTORY' }],
       transformResponse: (response: Response<NetworkHistoryData>) =>
         response.network.hierarchyNode.timeSeries
-        // res.data.network.hierarchyNode.timeSeries
     })
   })
 })
