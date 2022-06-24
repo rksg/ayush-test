@@ -4,7 +4,7 @@ import { renderToString }         from 'react-dom/server'
 
 import { formatter } from '@acx-ui/utils'
 
-import { cssStr } from '../../theme/helper'
+import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
 
@@ -94,23 +94,23 @@ export function MultiLineTimeSeriesChart
       itemGap: 15,
       textStyle: {
         fontFamily: cssStr('--acx-neutral-brand-font'),
-        fontWeight: 400,
-        fontSize: 10,
-        lineHeight: 20
+        fontSize: cssNumber('--acx-body-5-font-size'),
+        lineHeight: cssNumber('--acx-body-5-line-height'),
+        fontWeight: 400
       }
     },
     tooltip: {
       trigger: 'axis',
       textStyle: {
         fontFamily: cssStr('--acx-neutral-brand-font'),
-        fontSize: 10,
-        fontWeight: 300,
-        lineHeight: 16
+        fontSize: cssNumber('--acx-body-5-font-size'),
+        lineHeight: cssNumber('--acx-body-5-line-height'),
+        fontWeight: 400
       },
       backgroundColor: 'rgba(255, 255, 255, 0.9)',
       borderRadius: 2,
       padding: 8,
-      extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.15);',
+      extraCssText: `box-shadow: 0px 4px 8px ${cssStr('--acx-primary-black')}26;`,
       formatter: toolTipFormatter(dataFormatter)
     },
     xAxis: {
@@ -131,7 +131,7 @@ export function MultiLineTimeSeriesChart
         rich: {
           label: {
             fontFamily: cssStr('--acx-neutral-brand-font'),
-            fontSize: 10,
+            fontSize: cssNumber('--acx-body-5-font-size'),
             fontWeight: 400
           }
         }
@@ -151,7 +151,7 @@ export function MultiLineTimeSeriesChart
       axisLabel: {
         color: cssStr('--acx-neutrals-50'),
         fontFamily: cssStr('--acx-neutral-brand-font'),
-        fontSize: 10,
+        fontSize: cssNumber('--acx-body-5-font-size'),
         fontWeight: 400,
         formatter: function (value: number) {
           return (dataFormatter && dataFormatter(value)) || `${value}`

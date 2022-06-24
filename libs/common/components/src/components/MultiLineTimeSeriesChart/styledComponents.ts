@@ -10,8 +10,9 @@ export const ListItem = styled.li`
   font-weight: 400;
 `
 
-export const TimeWrapper = styled.span`
+export const TimeWrapper = styled.div`
   font-weight: 700;
+  padding-bottom: 5px;
 `
 
 export const Dot = styled.div<{ $color: string }>`
