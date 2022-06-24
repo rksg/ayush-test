@@ -29,7 +29,7 @@ export interface MultiLineTimeSeriesChartData extends Object {
 }
 
 export const toolTipFormatter = (
-  dataFormatter?: ((value: unknown, tz?:string) => string | null)
+  dataFormatter?: ((value: unknown) => string | null)
 ) => (
   parameters: TooltipFormatterParams | TooltipFormatterParams[]
 ) => {
@@ -60,7 +60,7 @@ export interface MultiLineTimeSeriesChartProps
     /** @default 'name' */
     legendProp?: keyof TChartData,
     lineColors?: string[],
-    dataFormatter?: (value: unknown, tz?:string) => string | null
+    dataFormatter?: (value: unknown) => string | null
   }
 
 export function MultiLineTimeSeriesChart
