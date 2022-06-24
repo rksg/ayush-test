@@ -2,6 +2,7 @@ import ReactECharts               from 'echarts-for-react'
 import { TooltipComponentOption } from 'echarts/components'
 import { renderToString }         from 'react-dom/server'
 
+import { TimeStamp } from '@acx-ui/types'
 import { formatter } from '@acx-ui/utils'
 
 import { cssStr, cssNumber } from '../../theme/helper'
@@ -14,8 +15,6 @@ import type { EChartsReactProps } from 'echarts-for-react'
 type Unified<T> = Exclude<T, T[]>
 type TooltipFormatterCallback = Exclude<TooltipComponentOption['formatter'], string|undefined>
 export type TooltipFormatterParams = Unified<Parameters<TooltipFormatterCallback>[0]>
-
-export type TimeStamp = string | number
 
 export interface MultiLineTimeSeriesChartData extends Object {
   /**
