@@ -18,7 +18,7 @@ const sample = {
   ],
   newClientCount: [1, 2, 3, 4, 5],
   impactedClientCount: [6, 7, 8, 9, 10],
-  connectedClientCount: [11, 12, 13, 14, 15],
+  connectedClientCount: [11, 12, 13, 14, 15]
 }
 
 describe('NetworkHistoryWidget', () => {

@@ -8,7 +8,6 @@ import { Loader }                            from '@acx-ui/components'
 import { MultiLineTimeSeriesChart }          from '@acx-ui/components'
 import { cssStr }                            from '@acx-ui/components'
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/components'
-import { formatter }                         from '@acx-ui/utils'
 
 import {
   useNetworkHistoryQuery,
@@ -18,7 +17,7 @@ import {
 const seriesMapping = [
   { key: 'newClientCount', name: 'New Clients' },
   { key: 'impactedClientCount', name: 'Impacted Clients' },
-  { key: 'connectedClientCount', name: 'Connected Clients' },
+  { key: 'connectedClientCount', name: 'Connected Clients' }
 ] as Array<{ key: keyof Omit<NetworkHistoryData, 'time'>, name: string }>
 
 const lineColors = [

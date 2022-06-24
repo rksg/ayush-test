@@ -1,8 +1,9 @@
 import { Card }     from '@acx-ui/components'
 import { Provider } from '@acx-ui/store'
 
+
+import NetworkHistoryWidget  from './widgets/NetworkHistory'
 import TrafficByVolumeWidget from './widgets/TrafficByVolume'
-import NetworkHistoryWidget from './widgets/NetworkHistory'
 
 const widgetsMap = {
   trafficByVolume: () => <TrafficByVolumeWidget/>,
