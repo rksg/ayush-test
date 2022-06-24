@@ -107,7 +107,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     dashboardOverview: build.query<Dashboard, RequestPayload>({
       query: ({ params }) => {
         const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
-        return{
+        return {
           ...dashboardOverviewReq
         }
       }
