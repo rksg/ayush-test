@@ -17,15 +17,7 @@ module.exports = async function setupProxy (app) {
   if (await localDataApi === 'up') {
     app.use(createProxyMiddleware(
       '/api/a4rc',
-      {
-        target: LOCAL_MLISA_URL,
-        changeOrigin: true,
-        onProxyReq: (proxyReq) => {
-          proxyReq.setHeader('x-mlisa-tenant-id', 'a27e3eb0bd164e01ae731da8d976d3b1')
-          proxyReq.setHeader('x-mlisa-user-role', 'alto-report-only')
-          proxyReq.setHeader('x-mlisa-user-id', 'some-id')
-        }
-      }
+      { target: LOCAL_MLISA_URL, changeOrigin: true }
     ))
   }
   app.use(createProxyMiddleware(
