@@ -1,17 +1,19 @@
 import React from 'react'
 
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer'
+import * as _                                     from 'lodash'
+import { createRoot }                             from 'react-dom/client'
 
-import greenMarkerDefaultIcon from '../assets/map/GreenMarkerDefault.svg'
-import greenMarkerHoverIcon   from '../assets/map/GreenMarkerHover.svg'
-
+import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
+import VenueFilterControlBox, { FilterStateChange } from './VenueFilterControlBox'
 import VenueMarkerWithLabel, { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
 interface MapProps extends google.maps.MapOptions {
   style: React.CSSProperties;
   onClick?: (e: google.maps.MapMouseEvent) => void;
   onClusterClick?: (e: google.maps.MapMouseEvent) => void;
+  onFilterChange?: (e: FilterStateChange) => void;
   onIdle?: (map: google.maps.Map) => void;
   venues: VenueMarkerOptions[]
   cluster?: boolean
@@ -22,6 +24,7 @@ const GMap: React.FC<MapProps> = ({
   onClick,
   onClusterClick,
   onIdle,
+  onFilterChange,
   venues,
   cluster,
   children,
@@ -41,6 +44,13 @@ const GMap: React.FC<MapProps> = ({
 
   React.useEffect(() => {
     if(map){
+      if (map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
+        const legendControlBoxDiv = document.createElement('div')
+        const root = createRoot(legendControlBoxDiv!)
+        root.render(<VenueFilterControlBox onChange={onFilterChange} />)
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(legendControlBoxDiv)
+      }
+
       ['click', 'idle'].forEach((eventName) =>
         google.maps.event.clearListeners(map, eventName)
       )
@@ -54,10 +64,11 @@ const GMap: React.FC<MapProps> = ({
     }
     return function cleanup () {
       if(map) {
-        google.maps.event.clearListeners(map, 'click')
-        google.maps.event.clearListeners(map, 'idle')
+        ['click', 'idle'].forEach((eventName) =>
+          google.maps.event.clearListeners(map, eventName))
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[map, onClick, onIdle])
 
   React.useEffect(() => {
@@ -65,18 +76,28 @@ const GMap: React.FC<MapProps> = ({
       if(markerClusterer){
         markerClusterer.clearMarkers()
       }
+      const maxVenueCountPerVenue = (venues?.length > 0) ?
+        _.maxBy(venues, 'apsCount')?.apsCount : null
 
       // Build the updated markers
-      const markers = venues?.map((venue: VenueMarkerOptions) => {
+      let markers = venues?.map((venue: VenueMarkerOptions) => {
+        let markerSize = 32
+        // DEFINITIONS: No APs = 32px, minimum # of APs (>0) = 48 px, maximum # of APs = 96px
+        if(venue?.apsCount){
+          markerSize = 48 + (venue?.apsCount / maxVenueCountPerVenue!) * 48
+        }
+        const markerColor = getMarkerColor([venue.status])
+        const svgMarkerDefault = getMarkerSVG(markerColor.default)
+        const svgMarkerHover = getMarkerSVG(markerColor.hover)
+        const scaledSize = new google.maps.Size(markerSize, markerSize)
+
         const marker = new VenueMarkerWithLabel({
           labelContent: '',
           position: (venue.latitude && venue.longitude) ?
             new google.maps.LatLng(venue.latitude, venue.longitude):
             venue.position,
-          icon: {
-            url: greenMarkerDefaultIcon,
-            scaledSize: new google.maps.Size(34, 48)
-          }
+          ...getIcon(svgMarkerDefault, scaledSize),
+          visible: venue.visible
         }, {
           name: venue.name,
           status: venue.status
@@ -87,20 +108,14 @@ const GMap: React.FC<MapProps> = ({
         })
 
         marker.addListener('mouseover', () => {
-          marker.setIcon({
-            url: greenMarkerHoverIcon,
-            scaledSize: new google.maps.Size(34, 48)
-          })
+          marker.setIcon(getIcon(svgMarkerHover, scaledSize).icon)
           venueInfoWindow.open({
             shouldFocus: false,
             anchor: marker
           })
         })
         marker.addListener('mouseout', () => {
-          marker.setIcon({
-            url: greenMarkerDefaultIcon,
-            scaledSize: new google.maps.Size(34, 48)
-          })
+          marker.setIcon(getIcon(svgMarkerDefault, scaledSize).icon)
           venueInfoWindow.close()
         })
         marker.addListener('click', () => {
@@ -111,11 +126,10 @@ const GMap: React.FC<MapProps> = ({
         return marker
       })
 
-      if (markers && markers.length > 1) {
+      markers = markers.filter( marker => marker.getVisible())
+      if (markers && markers.length > 0) {
         const bounds = new google.maps.LatLngBounds()
-        markers.map((marker: { getPosition: () => any }) =>
-          bounds.extend(marker.getPosition())
-        )
+        markers.map((marker) => bounds.extend(marker.getPosition()!))
         map.fitBounds(bounds)
       }
 

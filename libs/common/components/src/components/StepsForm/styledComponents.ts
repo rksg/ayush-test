@@ -202,7 +202,6 @@ export const ActionsContainer = styled.div`
 `
 
 export const Container = styled.div`
-  // display: flex;
   .ant-pro-steps-form-container {
     margin: unset;
     margin: var(--acx-steps-form-container-margin);

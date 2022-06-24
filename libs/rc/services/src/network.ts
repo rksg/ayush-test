@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { message }                   from 'antd'
 
+import { showToast } from '@acx-ui/components'
 import {
   CommonUrlsInfo,
   createHttpRequest,
@@ -35,7 +35,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           if (msg.status !== 'SUCCESS') return
           if (!['DeleteNetwork', 'AddNetworkDeep'].includes(msg.useCase)) return
 
-          if (msg.useCase === 'AddNetworkDeep') message.success('Created successfully')
+          if (msg.useCase === 'AddNetworkDeep') {
+            showToast({
+              type: 'success',
+              content: 'Created successfully'
+            })
+          }
 
           api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
         })
@@ -107,7 +112,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     dashboardOverview: build.query<Dashboard, RequestPayload>({
       query: ({ params }) => {
         const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
-        return{
+        return {
           ...dashboardOverviewReq
         }
       }
