@@ -11,7 +11,7 @@ import styled        from 'styled-components/macro'
 
 import { ListWithIcon, ListWithIconProps } from '.'
 
-const StyledList = styled.div`
+export const StyledListWithIcon = styled.div`
 width: 300px;
 background-color: #333333;
 border-radius: 4px;
@@ -23,6 +23,7 @@ border-radius: 4px;
 .ant-list-item:hover {
     background-color: #565758;
 }
+
 .ant-list-pagination {
     margin-top: 24px;
     text-align: center;
@@ -95,7 +96,7 @@ storiesOf('List with Icon', module)
   .add('Basic',() => <ListWithIcon data={data} />)
   .add('With header and footer',() => <ListWithIcon data={data} header={header} footer={footer} />)
   .add('With pagination',() => <ListWithIcon data={data} isPaginate={true} pageSize={4} />)
-  .add('With Styles',() => (<StyledList>
+  .add('With Styles',() => (<StyledListWithIcon>
     <ListWithIcon data={data} isPaginate={true} pageSize={4} />
-  </StyledList>))
+  </StyledListWithIcon>))
   .add('Empty Data',() => <ListWithIcon data={[]} />)

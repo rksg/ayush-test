@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, FC } from 'react'
 
 import { List, Space, Popover } from 'antd'
 
@@ -10,8 +10,8 @@ export interface ListWithIconProps {
     isPaginate?: boolean
 }
   
-export function ListWithIcon (props:ListWithIconProps){
-  const { data, header, footer, pageSize, isPaginate } = props
+export const ListWithIcon: FC<ListWithIconProps> = (props) => {
+  const { data, header, footer, pageSize=3, isPaginate } = props
   return (
     <List
       header={header}
@@ -20,23 +20,28 @@ export function ListWithIcon (props:ListWithIconProps){
       bordered
       dataSource={data}
       renderItem={item => (
-        <List.Item>
-          <Popover 
-            content={item.popoverContent} 
-            placement='right' 
-            title={item.popoverContent ? item.title : ''}
-            trigger='hover'>
+        <Popover 
+          content={item.popoverContent} 
+          placement='right' 
+          // title={item.popoverContent ? item.title : ''}
+          trigger='hover'>
+          <List.Item>
             <Space>
               {item.icon}
               {item.title}
             </Space>
-          </Popover>
-        </List.Item>
+          </List.Item>
+        </Popover>
+       
       )}
-      pagination={isPaginate ? {
-        pageSize: pageSize || 3,
+      pagination={isPaginate && data.length > pageSize ? {
+        pageSize: pageSize,
         size: 'small'
       }:false}
     />
   )
+}
+
+ListWithIcon.defaultProps = {
+  pageSize: 3
 }
