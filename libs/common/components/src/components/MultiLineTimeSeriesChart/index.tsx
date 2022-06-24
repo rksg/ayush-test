@@ -28,7 +28,7 @@ export interface MultiLineTimeSeriesChartData extends Object {
   data: [TimeStamp, number][]
 }
 
-export const toolTipFormatter = (
+export const tooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null)
 ) => (
   parameters: TooltipFormatterParams | TooltipFormatterParams[]
@@ -110,7 +110,7 @@ export function MultiLineTimeSeriesChart
       borderRadius: 2,
       padding: 8,
       extraCssText: `box-shadow: 0px 4px 8px ${cssStr('--acx-primary-black')}26;`,
-      formatter: toolTipFormatter(dataFormatter)
+      formatter: tooltipFormatter(dataFormatter)
     },
     xAxis: {
       type: 'time',

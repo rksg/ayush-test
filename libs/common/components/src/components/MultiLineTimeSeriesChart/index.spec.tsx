@@ -3,11 +3,11 @@ import moment     from 'moment-timezone'
 
 import { getSeriesData } from './stories'
 
-import { toolTipFormatter, MultiLineTimeSeriesChart } from '.'
+import { tooltipFormatter, MultiLineTimeSeriesChart } from '.'
 
 import type { TooltipFormatterParams } from '.'
 
-describe('toolTipFormatter',()=>{
+describe('tooltipFormatter',()=>{
   const timezone = 'UTC'
   beforeEach(() => {
     moment.tz.setDefault(timezone)
@@ -26,17 +26,17 @@ describe('toolTipFormatter',()=>{
 
   it('should return correct Html string for single value', async () => {
     const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(toolTipFormatter(formatter)(singleparameters)).toMatchSnapshot()
+    expect(tooltipFormatter(formatter)(singleparameters)).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(1)
   })
   it('should return correct Html string for multiple value', async () => {
     const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(toolTipFormatter(formatter)(multiParameters)).toMatchSnapshot()
+    expect(tooltipFormatter(formatter)(multiParameters)).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(multiParameters.length)
   })
   it('should handle when no formatter', async () => {
-    expect(toolTipFormatter()(singleparameters)).toMatchSnapshot()
-    expect(toolTipFormatter()(multiParameters)).toMatchSnapshot()
+    expect(tooltipFormatter()(singleparameters)).toMatchSnapshot()
+    expect(tooltipFormatter()(multiParameters)).toMatchSnapshot()
   })
 })
 
