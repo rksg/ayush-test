@@ -42,3 +42,7 @@ export const Wrapper = styled.div`
     }
   }
 `
+
+export const Spacer = styled.div`
+  height: var(--acx-content-vertical-space);
+`

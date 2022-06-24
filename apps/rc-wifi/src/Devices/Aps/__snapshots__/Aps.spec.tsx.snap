@@ -6,7 +6,7 @@ exports[`Aps should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1w42t07-1 kMSraG"
+      class="styledComponents__Wrapper-sc-1w42t07-1 jaLvZQ"
     >
       <div
         class="ant-table-wrapper"
@@ -29,12 +29,7 @@ exports[`Aps should render correctly 1`] = `
                   <table
                     style="table-layout: auto;"
                   >
-                    <colgroup>
-                      <col />
-                      <col
-                        style="width: 160px;"
-                      />
-                    </colgroup>
+                    <colgroup />
                     <thead
                       class="ant-table-thead"
                     >
@@ -420,6 +415,7 @@ exports[`Aps should render correctly 1`] = `
                         <th
                           class="ant-table-cell"
                           rowspan="2"
+                          style="text-align: center;"
                         >
                           Connected Clients
                         </th>
@@ -677,11 +673,13 @@ exports[`Aps should render correctly 1`] = `
                       <tr>
                         <th
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           2.4 GHz
                         </th>
                         <th
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           5 GHz
                         </th>
@@ -702,7 +700,7 @@ exports[`Aps should render correctly 1`] = `
                         <td
                           class="ant-table-cell"
                         >
-                          <div>
+                          <span>
                             <span
                               class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
                             >
@@ -715,7 +713,7 @@ exports[`Aps should render correctly 1`] = `
                                 Operational
                               </span>
                             </span>
-                          </div>
+                          </span>
                         </td>
                         <td
                           class="ant-table-cell"
@@ -747,6 +745,7 @@ exports[`Aps should render correctly 1`] = `
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           0
                         </td>
@@ -755,11 +754,13 @@ exports[`Aps should render correctly 1`] = `
                         />
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           10
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           120
                         </td>
@@ -789,7 +790,7 @@ exports[`Aps should render correctly 1`] = `
                         <td
                           class="ant-table-cell"
                         >
-                          <div>
+                          <span>
                             <span
                               class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
                             >
@@ -802,7 +803,7 @@ exports[`Aps should render correctly 1`] = `
                                 Disconnected from cloud
                               </span>
                             </span>
-                          </div>
+                          </span>
                         </td>
                         <td
                           class="ant-table-cell"
@@ -834,6 +835,7 @@ exports[`Aps should render correctly 1`] = `
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           0
                         </td>
@@ -842,11 +844,13 @@ exports[`Aps should render correctly 1`] = `
                         />
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           10
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           120
                         </td>
@@ -876,7 +880,7 @@ exports[`Aps should render correctly 1`] = `
                         <td
                           class="ant-table-cell"
                         >
-                          <div>
+                          <span>
                             <span
                               class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
                             >
@@ -889,7 +893,7 @@ exports[`Aps should render correctly 1`] = `
                                 Rebooting
                               </span>
                             </span>
-                          </div>
+                          </span>
                         </td>
                         <td
                           class="ant-table-cell"
@@ -921,6 +925,7 @@ exports[`Aps should render correctly 1`] = `
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           0
                         </td>
@@ -929,11 +934,13 @@ exports[`Aps should render correctly 1`] = `
                         />
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           10
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           120
                         </td>
@@ -963,7 +970,7 @@ exports[`Aps should render correctly 1`] = `
                         <td
                           class="ant-table-cell"
                         >
-                          <div>
+                          <span>
                             <span
                               class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
                             >
@@ -976,7 +983,7 @@ exports[`Aps should render correctly 1`] = `
                                 Initializing
                               </span>
                             </span>
-                          </div>
+                          </span>
                         </td>
                         <td
                           class="ant-table-cell"
@@ -1008,6 +1015,7 @@ exports[`Aps should render correctly 1`] = `
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           0
                         </td>
@@ -1016,11 +1024,13 @@ exports[`Aps should render correctly 1`] = `
                         />
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           10
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           120
                         </td>
@@ -1050,7 +1060,7 @@ exports[`Aps should render correctly 1`] = `
                         <td
                           class="ant-table-cell"
                         >
-                          <div>
+                          <span>
                             <span
                               class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
                             >
@@ -1063,7 +1073,7 @@ exports[`Aps should render correctly 1`] = `
                                 Unknown
                               </span>
                             </span>
-                          </div>
+                          </span>
                         </td>
                         <td
                           class="ant-table-cell"
@@ -1095,6 +1105,7 @@ exports[`Aps should render correctly 1`] = `
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           0
                         </td>
@@ -1103,11 +1114,13 @@ exports[`Aps should render correctly 1`] = `
                         />
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           10
                         </td>
                         <td
                           class="ant-table-cell"
+                          style="text-align: center;"
                         >
                           120
                         </td>
