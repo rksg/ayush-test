@@ -68,7 +68,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
       class="ant-pro-steps-form"
     >
       <div
-        class="styledComponents__Container-sc-1ibvcih-4 jGBkBK"
+        class="styledComponents__Container-sc-1ibvcih-4 kimQK"
       >
         <div
           class="ant-row"
@@ -1095,19 +1095,24 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     <div
                       class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5 dOqwQw"
                     >
+                      <h3
+                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                      >
+                        Summary
+                      </h3>
                       <div
                         class="ant-row"
                         style="margin-left: -10px; margin-right: -10px;"
                       >
                         <div
-                          class="ant-col ant-col-10"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-col"
+                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
-                          <h3
-                            class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                          <div
+                            class="styledComponents__FormSubTitle-sc-bfjsxr-4 fDJbOl"
                           >
-                            Summary
-                          </h3>
+                            Network Info
+                          </div>
                           <div
                             class="ant-row ant-form-item"
                           >
@@ -1116,9 +1121,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Network Name"
+                                title="Network Name:"
                               >
-                                Network Name
+                                Network Name:
                               </label>
                             </div>
                             <div
@@ -1141,9 +1146,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Description"
+                                title="Info:"
                               >
-                                Description
+                                Info:
                               </label>
                             </div>
                             <div
@@ -1168,9 +1173,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Network Type"
+                                title="Type:"
                               >
-                                Network Type
+                                Type:
                               </label>
                             </div>
                             <div
@@ -1195,9 +1200,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Use Cloudpath Server"
+                                title="Use Cloudpath Server:"
                               >
-                                Use Cloudpath Server
+                                Use Cloudpath Server:
                               </label>
                             </div>
                             <div
@@ -1222,9 +1227,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Activated in venues"
+                                title="Proxy Service:"
                               >
-                                Activated in venues
+                                Proxy Service:
                               </label>
                             </div>
                             <div
@@ -1236,29 +1241,40 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                 <div
                                   class="ant-form-item-control-input-content"
                                 >
-                                  --
+                                  Disabled
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-14"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-divider ant-divider-vertical"
+                          role="separator"
+                          style="height: 300px;"
+                        />
+                        <div
+                          class="ant-col"
+                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
                           <div
-                            class="ant-row ant-row-center"
+                            class="styledComponents__FormSubTitle-sc-bfjsxr-4 fDJbOl"
+                          >
+                            Activated in venues
+                          </div>
+                          <div
+                            class="ant-row ant-form-item"
                           >
                             <div
-                              class="ant-col"
+                              class="ant-col ant-form-item-control"
                             >
                               <div
-                                class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+                                class="ant-form-item-control-input"
                               >
-                                <img
-                                  alt="Background"
-                                  src="aaa.png"
-                                />
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  --
+                                </div>
                               </div>
                             </div>
                           </div>

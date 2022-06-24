@@ -186,6 +186,37 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
   return saveData
 }
 
+const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
+  let saveData = {}
+
+  if (data.cloudpathServerId) {
+    saveData = {
+      cloudpathServerId: data.cloudpathServerId
+    }
+  } else {
+    saveData = {
+      dpskPassphraseGeneration: {
+        length: data.passphraseLength,
+        format: data.passphraseFormat,
+        expiration: data.expiration
+      }
+    }
+  }
+
+  saveData = {
+    ...saveData,
+    ...{
+      wlan: {
+        advancedCustomization: OpenWlanAdvancedCustomization,
+        enable: true,
+        vlanId: 1
+      }
+    }
+  }
+  
+  return saveData
+}
+
 export function transferDetailToSave (data: CreateNetworkFormFields) {
   return {
     name: data.name,
@@ -201,7 +232,8 @@ export function transferDetailToSave (data: CreateNetworkFormFields) {
 export function tranferSettingsToSave (data: NetworkSaveData) {
   const networkSaveDataParser = {
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data),
-    [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data)
+    [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data),
+    [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }

@@ -24,8 +24,7 @@ import NetworkFormContext    from './NetworkFormContext'
 import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
 import { DpskForm }          from './NetworkSettings/DpskForm'
 import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
-import { AaaSummaryForm }    from './NetworkSummary/AaaSummaryForm'
-import { OpenSummaryForm }   from './NetworkSummary/OpenSummaryForm'
+import { SummaryForm }       from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave
@@ -130,8 +129,7 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm name='summary' title='Summary'>
-          {state.type === NetworkTypeEnum.AAA && <AaaSummaryForm summaryData={state} />}
-          {state.type === NetworkTypeEnum.OPEN && <OpenSummaryForm summaryData={state} />}
+          <SummaryForm summaryData={state} />
         </StepsForm.StepForm>
       </StepsForm>
     </>
