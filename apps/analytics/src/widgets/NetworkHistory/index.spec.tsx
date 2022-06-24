@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 
-import { dataApiURL }                  from '@acx-ui/analytics/services'
-import { Provider, store }             from '@acx-ui/store'
+import { dataApiURL }                      from '@acx-ui/analytics/services'
+import { Provider, store }                 from '@acx-ui/store'
 import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 
 import { api, NetworkHistoryData } from './services'
@@ -51,16 +51,23 @@ describe('NetworkHistoryWidget', () => {
       ?.setAttribute('_echarts_instance_', 'ec_mock')
     expect(fragment).toMatchSnapshot()
   })
-  it('should render error', async () => {
-    mockGraphqlQuery(dataApiURL, 'widget_networkHistory', {
+  describe('error handling', () => {
+    beforeAll(() => jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {}))
+    afterAll(() => jest.resetAllMocks())
+
+    it('should render error', async () => {
+      mockGraphqlQuery(dataApiURL, 'widget_networkHistory', {
         error: new Error('something went wrong!')
-    })
-    render(
+      })
+      render(
         <Provider>
-        <NetworkHistoryWidget/>
+          <NetworkHistoryWidget/>
         </Provider>
-    )
-    await screen.findByText('Something went wrong.')
+      )
+      await screen.findByText('Something went wrong.')
+    })
   })
 })
 
