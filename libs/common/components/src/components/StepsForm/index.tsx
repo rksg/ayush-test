@@ -73,7 +73,8 @@ export function StepsForm <FormValue = any> (
 
   useImperativeHandle(propFormRef, () => formRef.current)
 
-  const items = toArray(children).map((child, index, { length }) => {
+  const _children = toArray(children)
+  const items = _children.map((child, index, { length }) => {
     const itemProps = child.props as StepFormProps<FormValue>
 
     return React.cloneElement(child, {
@@ -93,7 +94,8 @@ export function StepsForm <FormValue = any> (
   const stepsRender: ProAntStepsFormProps['stepsRender'] = (steps) => (
     <UI.StepsContainer>
       <Steps current={current} progressDot direction='vertical'>
-        {steps.map(({ key, title }, index) => {
+        {steps.map(({ key }, index) => {
+          const title = _children[index].props.title
           const onStepClick = (editMode || current > index) && current !== index
             ? setStep
             : undefined
