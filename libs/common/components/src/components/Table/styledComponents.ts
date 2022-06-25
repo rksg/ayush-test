@@ -106,7 +106,7 @@ const tooltipStyle = css`
       font-size: var(--acx-body-4-font-size);
       line-height: var(--acx-body-4-line-height);
       font-weight: 400;
-      padding-bottom: 6px;
+      padding: 6px;
       border-bottom: 0px;
     }
 
@@ -114,13 +114,13 @@ const tooltipStyle = css`
       font-size: var(--acx-subtitle-5-font-size);
       line-height: var(--acx-subtitle-5-line-height);
       font-weight: 700;
+      padding: 0px;
     }
 
     &-tbody > tr > td {
       font-size: var(--acx-subtitle-5-font-size);
       line-height: var(--acx-subtitle-5-line-height);
-      padding-bottom: 4px;
-      padding-top: 4px;
+      padding: 6px;
       border-bottom: 0px;
     }
 

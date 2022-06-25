@@ -57,14 +57,14 @@ const GMap: React.FC<MapProps> = ({
         google.maps.event.clearListeners(map, eventName)
       )
       if (onClick) {
-        map.addListener('click', onClick)
+        google.maps.event.addListener(map, 'click', onClick)
       }
 
       if (onIdle) {
-        map.addListener('idle', () => onIdle(map))
+        google.maps.event.addListener(map, 'idle', () => onIdle(map))
       }
 
-      map.addListener('zoom_changed', () => {
+      google.maps.event.addListener(map, 'zoom_changed', () => {
         if (venueInfoWindow) {
           venueInfoWindow.close()
         }
@@ -118,7 +118,7 @@ const GMap: React.FC<MapProps> = ({
         })
 
         let closeInfoWindowWithTimeout: NodeJS.Timeout
-        marker.addListener('mouseover', () => {
+        google.maps.event.addListener(marker, 'mouseover', () => {
           marker.setIcon(getIcon(svgMarkerHover, scaledSize).icon)
 
           const infoDiv = document.createElement('div')
@@ -129,7 +129,7 @@ const GMap: React.FC<MapProps> = ({
           infoDiv.onmouseout = () => {
             closeInfoWindowWithTimeout = setTimeout(() => {
               venueInfoWindow.close()
-            }, 1000)
+            }, 100)
           }
           venueInfoWindow.setContent(infoDiv)
           venueInfoWindow.open({
@@ -137,11 +137,11 @@ const GMap: React.FC<MapProps> = ({
             anchor: marker
           })
         })
-        marker.addListener('mouseout', () => {
+        google.maps.event.addListener(marker, 'mouseout', () => {
           marker.setIcon(getIcon(svgMarkerDefault, scaledSize).icon)
-          closeInfoWindowWithTimeout = setTimeout(() => venueInfoWindow.close(), 1000)
+          closeInfoWindowWithTimeout = setTimeout(() => venueInfoWindow.close(), 100)
         })
-        marker.addListener('click', () => {
+        google.maps.event.addListener(marker, 'click', () => {
           // TODO Navigate to venue page
           // eslint-disable-next-line no-console
           console.log('#TODO - Clicked on marker')

@@ -150,6 +150,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
     tooltip: {
       show: showTooltip,
       trigger: 'item',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       formatter: (params: any) => {
         const { value, marker } = params
         return `${marker} ${value[0]}`

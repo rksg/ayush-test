@@ -11,10 +11,10 @@ import {
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
 export const getDeviceConnectionStatusColors = () => [
-  cssStr('--acx-semantics-green-50'),
-  cssStr('--acx-neutrals-50'),
-  cssStr('--acx-semantics-yellow-40'),
-  cssStr('--acx-semantics-red-50')
+  cssStr('--acx-semantics-green-50'), // Operational
+  cssStr('--acx-neutrals-50'), // Setup Phase
+  cssStr('--acx-semantics-yellow-40'), // Transient Issue
+  cssStr('--acx-semantics-red-50') // Requires Attention
 ]
 
 export const getDisplayLabel = (label: string) => {
@@ -164,18 +164,21 @@ function getSwitchStatusDataByVenue (overviewData: Dashboard, venueId: string): 
     switchStat: [{
       category: 'Switches',
       series: [
+        { name: getDisplayLabel(ApVenueStatusEnum.REQUIRES_ATTENTION),
+          value: requires_attention },
+        { name: getDisplayLabel(ApVenueStatusEnum.TRANSIENT_ISSUE),
+          value: 0 },
         { name: getDisplayLabel(ApVenueStatusEnum.IN_SETUP_PHASE),
           value: in_setup_phase },
         { name: getDisplayLabel(ApVenueStatusEnum.OPERATIONAL),
-          value: operational },
-        { name: getDisplayLabel(ApVenueStatusEnum.REQUIRES_ATTENTION),
-          value: requires_attention }
+          value: operational }
       ]
     }],
     switchesCount: switchStat && switchStat[venueId] ? switchStat[venueId].totalCount : 0
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getMarkerColor = (statuses: any[] | undefined) => {
   // ApVenueStatusEnum.IN_SETUP_PHASE OR ApVenueStatusEnum.OFFLINE
   let color: { default: string, hover: string } = {
