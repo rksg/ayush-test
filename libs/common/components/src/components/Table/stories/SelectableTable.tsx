@@ -63,7 +63,6 @@ export function SelectableTable () {
       columns={basicColumns}
       dataSource={basicData}
       actions={actions}
-      headerTitle='Selectable'
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />
   )

@@ -10,8 +10,7 @@ export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' > {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'rotated'
-    headerTitle?: String
-    columns: ProColumns<RecordType, 'text'>[] | undefined
+    columns?: ProColumns<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
       onClick: (arg: RecordType[]) => void

@@ -15,24 +15,16 @@ const basicColumns: TableProps<typeof basicData[0]>['columns'] = [
     title: 'Age',
     dataIndex: 'age',
     key: 'age',
-    sorter: (a: basicDataList, b: basicDataList) => a.age - b.age,
+    sorter: (a, b) => a.age - b.age,
     showSorterTooltip: false
   },
   {
     title: 'Favorite Number',
     dataIndex: 'favoriteNumber',
     key: 'favoriteNumber',
-    sorter: (a: basicDataList, b: basicDataList) => a.favoriteNumber - b.favoriteNumber
+    sorter: (a, b) => a.favoriteNumber - b.favoriteNumber
   }
 ]
-
-type basicDataList = {
-  venue: string,
-  key: string,
-  name: string,
-  age: number,
-  favoriteNumber: number
-}
 
 const basicData = [
   {

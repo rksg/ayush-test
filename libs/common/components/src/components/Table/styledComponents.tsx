@@ -24,7 +24,8 @@ export const ActionButton = styled.button`
   padding: 0 6px;
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
-  background-color: var(--acx-accents-blue-10);
+  font-weight: 600;
+  background-color: transparent;
   color: var(--acx-accents-blue-50);
   cursor: pointer;
 `
@@ -64,11 +65,18 @@ const tallStyle = css`
       line-height: var(--acx-body-4-line-height);
     }
 
-    .ant-alert { padding-inline: 16px; }
+    .ant-alert {
+      padding: 10px 16px;
+      background-color: var(--acx-accents-blue-10);
+      border: var(--acx-accents-blue-10);
+      height: 36px;
+    }
     .ant-divider-vertical {
       border-left-color: var(--acx-neutrals-40);
     }
   }
+
+  .ant-pro-card-body { padding: 0; }
 `
 
 const compactStyle = css`

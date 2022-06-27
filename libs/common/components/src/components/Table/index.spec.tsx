@@ -111,7 +111,7 @@ describe('Table component', () => {
   })
 
   it('should render selectable table and render action buttons correctly', async () => {
-    const selectableColumns = [
+    const columns = [
       {
         title: 'Name',
         dataIndex: 'name',
@@ -128,7 +128,7 @@ describe('Table component', () => {
         key: 'address'
       }
     ]
-    const selectableData = [
+    const data = [
       {
         key: '1',
         name: 'John Doe',
@@ -148,49 +148,51 @@ describe('Table component', () => {
         address: 'address'
       }
     ]
+
+    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
     const actions = [
-      {
-        label: 'Edit',
-        onClick: jest.fn()
-      },
-      {
-        label: 'Delete',
-        onClick: jest.fn()
-      }
+      { label: 'Edit', onClick: onEdit },
+      { label: 'Delete', onClick: onDelete }
     ]
 
     const { asFragment } = render(<Table
-      columns={selectableColumns}
-      dataSource={selectableData}
+      columns={columns}
+      dataSource={data}
       actions={actions}
-      headerTitle='Selectable'
+      title={() => 'Selectable'}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />)
     expect(asFragment()).toMatchSnapshot()
 
-    const row = await screen.findByRole('row', {
-      name: /john doe 32 sample address/i
-    })
-    const checkbox = await within(row).findByRole('checkbox')
-    fireEvent.click(checkbox)
+    const row1 = await screen.findByRole('row', { name: /john/i })
+    const row2 = await screen.findByRole('row', { name: /jane/i })
+    fireEvent.click(within(row1).getByRole('checkbox'))
+    fireEvent.click(within(row2).getByRole('checkbox'))
+
+    expect(asFragment()).toMatchSnapshot()
 
     const closeButton = screen.getByRole('button', { name: 'clear selection' })
     const editButton = screen.getByRole('button', { name: /edit/i })
     const deleteButton = screen.getByRole('button', { name: /delete/i })
 
-    expect(closeButton).toBeDefined()
-    expect(editButton).toBeDefined()
-    expect(deleteButton).toBeDefined()
+    expect(closeButton).toBeVisible()
+    expect(editButton).toBeVisible()
+    expect(deleteButton).toBeVisible()
 
-    expect(actions[0].onClick).toHaveBeenCalledTimes(0)
-    expect(actions[1].onClick).toHaveBeenCalledTimes(0)
+    expect(onEdit).not.toHaveBeenCalled()
+    expect(onDelete).not.toHaveBeenCalled()
 
     fireEvent.click(editButton)
-    expect(actions[0].onClick).toBeCalled()
-    expect(actions[0].onClick).toHaveBeenCalledTimes(1)
+    expect(onEdit).toBeCalledWith(data.slice(0, 2))
 
     fireEvent.click(deleteButton)
-    expect(actions[1].onClick).toBeCalled()
-    expect(actions[1].onClick).toHaveBeenCalledTimes(1)
+    expect(onDelete).toBeCalledWith(data.slice(0, 2))
+
+    fireEvent.click(closeButton)
+    expect(closeButton).not.toBeVisible()
+    expect(editButton).not.toBeVisible()
+    expect(deleteButton).not.toBeVisible()
+
+    expect(asFragment()).toMatchSnapshot()
   })
 })

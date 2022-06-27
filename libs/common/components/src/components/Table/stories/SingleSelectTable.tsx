@@ -70,7 +70,6 @@ export function SingleSelectTable () {
       columns={basicColumns}
       dataSource={basicData}
       actions={actions}
-      headerTitle='Single Select'
       rowSelection={{ type: 'radio' }}
     />
   )
