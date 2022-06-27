@@ -51,6 +51,7 @@ function TrafficByVolumeWidget () {
               style={{ width, height }}
               data={getSeriesData(queryResults.data)}
               lineColors={lineColors}
+              dataFormatter={formatter('bytesFormat')}
             />
           )}
         </AutoSizer>

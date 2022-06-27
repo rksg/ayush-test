@@ -34,3 +34,6 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useFFList: jest.fn(),
   useEvaluateFeature: jest.fn()
 }), { virtual: true })
+
+// For Error: Not implemented: HTMLCanvasElement.prototype.getContext (without installing the canvas npm package)
+HTMLCanvasElement.prototype.getContext = () => null
