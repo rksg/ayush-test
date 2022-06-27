@@ -1,17 +1,20 @@
 import { Button as AntButton } from 'antd'
 import styled, { css }         from 'styled-components/macro'
 
+import { CancelCircle } from '@acx-ui/icons'
+
 export const RotatedColumn = styled.div``
 
-export const CloseButton = styled(AntButton)`
+export const CloseButton = styled(AntButton).attrs({
+  icon: <CancelCircle />
+})`
   border: none;
   box-shadow: none;
-  padding: 0 6px;
-  margin-right: 54px;
   &.ant-btn-icon-only {
+    width: 16px;
+    height: 16px;
+    padding: 0;
     background-color: var(--acx-accents-blue-10);
-    width: 12px;
-    height: 12px;
   }
 `
 
@@ -21,14 +24,9 @@ export const ActionButton = styled.button`
   padding: 0 6px;
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
-  font-weight: 600;
   background-color: var(--acx-accents-blue-10);
   color: var(--acx-accents-blue-50);
-  &:hover {
-    background-color: var(--acx-accents-blue-10);
-    color: var(--acx-accents-blue-50);
-    cursor: pointer;
-  }
+  cursor: pointer;
 `
 
 const tallStyle = css`
@@ -52,6 +50,23 @@ const tallStyle = css`
     &-tbody > tr > td {
       font-size: var(--acx-body-4-font-size);
       line-height: var(--acx-body-4-line-height);
+    }
+
+    &-tbody > tr.ant-table-row-selected > td {
+      background: none;
+    }
+  }
+
+  .ant-pro-table {
+    &-alert { margin: 0px; }
+    &-alert-info {
+      font-size: var(--acx-body-4-font-size);
+      line-height: var(--acx-body-4-line-height);
+    }
+
+    .ant-alert { padding-inline: 16px; }
+    .ant-divider-vertical {
+      border-left-color: var(--acx-neutrals-40);
     }
   }
 `
@@ -124,60 +139,14 @@ const rotatedStyle = css`
   }
 `
 
-const selectableStyle = css`
-  .ant-table {
-    &-thead > tr > th {
-      font-size: var(--acx-subtitle-4-font-size);
-      line-height: var(--acx-subtitle-4-line-height);
-      font-weight: 600;
-    }
-
-    &-tbody > tr > td {
-      font-size: var(--acx-body-4-font-size);
-      line-height: var(--acx-body-4-line-height);
-    }
-
-    .ant-table-tbody > tr.ant-table-row-selected > td {
-      background: none;
-    }
-  }
-
-  .ant-pro-table {
-    .ant-pro-table-alert {
-      margin: 0px;
-    }
-
-    .ant-alert {
-      padding-left: 16px;
-    }
-
-    .ant-pro-table-alert-info {
-      font-size: var(--acx-body-4-font-size);
-      line-height: var(--acx-body-4-line-height);
-    }
-
-    &-alert-info-content {
-      .alert-option-span {
-        margin-bottom: 0;
-      }
-
-      .options-divider {
-        color: var(--acx-neutrals-40);
-        padding: 0 8px;
-      }
-    }
-  }
-`
-
 const styles = {
   tall: tallStyle,
   compact: compactStyle,
-  rotated: rotatedStyle,
-  selectable: selectableStyle
+  rotated: rotatedStyle
 }
 
 /* eslint-disable max-len */
-export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' | 'selectable' }>`
+export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' }>`
   .ant-table {
     &-thead > tr > th {
       background: transparent;

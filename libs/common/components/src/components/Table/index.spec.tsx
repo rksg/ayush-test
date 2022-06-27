@@ -39,8 +39,6 @@ describe('Table component', () => {
       columns={basicColumns}
       dataSource={basicData}
       title={() => 'Basic'}
-      options={false}
-      search={false}
     />)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -100,8 +98,6 @@ describe('Table component', () => {
       dataSource={rotatedData}
       title={() => 'Rotated'}
       type={'rotated'}
-      options={false}
-      search={false}
     />)
     expect(asFragment()).toMatchSnapshot()
 
@@ -154,12 +150,10 @@ describe('Table component', () => {
     ]
     const actions = [
       {
-        key: 11,
         label: 'Edit',
         onClick: jest.fn()
       },
       {
-        key: 12,
         label: 'Delete',
         onClick: jest.fn()
       }
@@ -168,12 +162,9 @@ describe('Table component', () => {
     const { asFragment } = render(<Table
       columns={selectableColumns}
       dataSource={selectableData}
-      alertOptions={actions}
+      actions={actions}
       headerTitle='Selectable'
-      type={'selectable'}
       rowSelection={{ defaultSelectedRowKeys: [] }}
-      options={false}
-      search={false}
     />)
     expect(asFragment()).toMatchSnapshot()
 
@@ -182,9 +173,8 @@ describe('Table component', () => {
     })
     const checkbox = await within(row).findByRole('checkbox')
     fireEvent.click(checkbox)
-    
-    const view = screen.getByText(/1 selected/i)
-    const closeButton = within(view).getByRole('button')
+
+    const closeButton = screen.getByRole('button', { name: 'clear selection' })
     const editButton = screen.getByRole('button', { name: /edit/i })
     const deleteButton = screen.getByRole('button', { name: /delete/i })
 

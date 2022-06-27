@@ -1,4 +1,5 @@
-import { Table } from '..'
+import { Table, TableProps } from '..'
+import { showToast }         from '../../Toast'
 
 const basicColumns = [
   {
@@ -39,16 +40,20 @@ const basicData = [
   }
 ]
 
-const actions = [
+const actions: TableProps<(typeof basicData)[0]>['actions'] = [
   {
-    key: 11,
     label: 'Edit',
-    onClick: (selectedRows: object)=> { console.log('Edit', selectedRows) } // eslint-disable-line
+    onClick: (selectedRows) => showToast({
+      type: 'info',
+      content: `Edit ${selectedRows.length} item(s)`
+    })
   },
   {
-    key: 12,
     label: 'Delete',
-    onClick: (selectedRows: object)=> { console.log('Delete', selectedRows) } // eslint-disable-line
+    onClick: (selectedRows) => showToast({
+      type: 'info',
+      content: `Delete ${selectedRows.length} item(s)`
+    })
   }
 ]
 
@@ -57,9 +62,8 @@ export function SelectableTable () {
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      alertOptions={actions}
+      actions={actions}
       headerTitle='Selectable'
-      type={'selectable'}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />
   )

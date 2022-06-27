@@ -1,7 +1,5 @@
-import ProTable  from '@ant-design/pro-table'
-import { Space } from 'antd'
-
-import { CancelCircle } from '@acx-ui/icons'
+import ProTable           from '@ant-design/pro-table'
+import { Space, Divider } from 'antd'
 
 import * as UI from './styledComponents'
 
@@ -11,19 +9,14 @@ import type { TableProps as AntTableProps } from 'antd'
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' > {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'rotated' | 'selectable'
-    options?: false | undefined
-    search?: false | undefined
+    type?: 'tall' | 'compact' | 'rotated'
     headerTitle?: String
     columns: ProColumns<RecordType, 'text'>[] | undefined
-    alertOptions?: ActionListItem[]
+    actions?: Array<{
+      label: string,
+      onClick: (arg: RecordType[]) => void
+    }>
   }
-
-type ActionListItem = {
-  key: number,
-  label: string,
-  onClick: (arg: object) => void
-}
 
 export function Table <RecordType extends object> (
   { type = 'tall', ...props }: TableProps<RecordType>
@@ -52,31 +45,21 @@ export function Table <RecordType extends object> (
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
       columns={columns}
       tableAlertRender={({ selectedRowKeys, selectedRows, onCleanSelected }) => (
-        <>
-          <Space>
-            <span>
-              {selectedRowKeys.length} selected
-              <UI.CloseButton
-                onClick={onCleanSelected}
-                icon={<CancelCircle />}
+        <Space size={32}>
+          <Space size={6}>
+            <span>{selectedRowKeys.length} selected</span>
+            <UI.CloseButton onClick={onCleanSelected} title='clear selection' />
+          </Space>
+          <Space size={0} split={<Divider type='vertical' />}>
+            {props.actions?.map((option) =>
+              <UI.ActionButton
+                key={option.label}
+                onClick={()=>option.onClick(selectedRows)}
+                children={option.label}
               />
-            </span>
+            )}
           </Space>
-          <Space size={0}>
-            {
-              props.alertOptions?.map((option, index) =>
-                <p key={option.key} className={'alert-option-span'}>
-                  <UI.ActionButton onClick={()=>option.onClick(selectedRows)} >
-                    {option.label}
-                  </UI.ActionButton>
-                  {(props.alertOptions
-                    && index + 1 < props?.alertOptions?.length)
-                    && <span className='options-divider' key={`optionsDivider${index}`}>|</span>}
-                </p>
-              )
-            }
-          </Space>
-        </>
+        </Space>
       )}
       tableAlertOptionRender={false}
     />
