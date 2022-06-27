@@ -2,10 +2,14 @@ import { Checkbox } from 'antd'
 import { Space }    from 'antd'
 import styled       from 'styled-components/macro'
 
-import { ReactComponent as VenueMarkerGreen }  from '../assets/map/VenueMarkerGreen.svg'
-import { ReactComponent as VenueMarkerGrey }   from '../assets/map/VenueMarkerGrey.svg'
-import { ReactComponent as VenueMarkerOrange } from '../assets/map/VenueMarkerOrange.svg'
-import { ReactComponent as VenueMarkerRed }    from '../assets/map/VenueMarkerRed.svg'
+import { ReactComponent as VenueInfoMarkerGreen }  from '../assets/map/VenueInfoMarkerGreen.svg'
+import { ReactComponent as VenueInfoMarkerGrey }   from '../assets/map/VenueInfoMarkerGrey.svg'
+import { ReactComponent as VenueInfoMarkerOrange } from '../assets/map/VenueInfoMarkerOrange.svg'
+import { ReactComponent as VenueInfoMarkerRed }    from '../assets/map/VenueInfoMarkerRed.svg'
+import { ReactComponent as VenueMarkerGreen }      from '../assets/map/VenueMarkerGreen.svg'
+import { ReactComponent as VenueMarkerGrey }       from '../assets/map/VenueMarkerGrey.svg'
+import { ReactComponent as VenueMarkerOrange }     from '../assets/map/VenueMarkerOrange.svg'
+import { ReactComponent as VenueMarkerRed }        from '../assets/map/VenueMarkerRed.svg'
 
 export const FilterCheckbox = styled(Checkbox)`
   margin-left: 0px !important; // override antd default margin
@@ -50,6 +54,19 @@ export const VenueMarkerOrangeIcon = styled(VenueMarkerOrange)`
 export const VenueMarkerRedIcon = styled(VenueMarkerRed)`
   ${venueMarkerIconStyle}
 `
+
+export const VenueInfoMarkerGreenIcon = styled(VenueInfoMarkerGreen)`
+  ${venueMarkerIconStyle}
+`
+export const VenueInfoMarkerGreyIcon = styled(VenueInfoMarkerGrey)`
+  ${venueMarkerIconStyle}
+`
+export const VenueInfoMarkerOrangeIcon = styled(VenueInfoMarkerOrange)`
+  ${venueMarkerIconStyle}
+`
+export const VenueInfoMarkerRedIcon = styled(VenueInfoMarkerRed)`
+  ${venueMarkerIconStyle}`
+
 export const Wrapper = styled.div`
   height: 150px;
   width: 400px;

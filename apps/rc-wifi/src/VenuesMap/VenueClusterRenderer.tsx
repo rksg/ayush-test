@@ -1,17 +1,34 @@
-/* eslint-disable max-len */
 /* eslint-disable no-console */
-import {
-  HomeOutlined,
+import Icon, {
   CloseOutlined
 } from '@ant-design/icons'
 import { Cluster,Renderer } from '@googlemaps/markerclusterer'
 import ReactDOM             from 'react-dom'
 
 import { cssStr, ListWithIconProps, ListWithIcon, StyledListWithIcon } from '@acx-ui/components'
+import { ApVenueStatusEnum }                                           from '@acx-ui/rc/services'
 
 import { getClusterSVG, getIcon, getMarkerColor } from './helper'
+import * as UI                                    from './styledComponents'
 import { VenueMarkerTooltip }                     from './VenueMarkerTooltip'
 import VenueMarkerWithLabel                       from './VenueMarkerWithLabel'
+
+export const getVenueInfoMarkerIcon = (status: string) => {
+  switch (status) {
+    case ApVenueStatusEnum.IN_SETUP_PHASE:
+      return UI.VenueInfoMarkerGreyIcon
+    case ApVenueStatusEnum.OFFLINE:
+      return UI.VenueInfoMarkerRedIcon
+    case ApVenueStatusEnum.OPERATIONAL:
+      return UI.VenueInfoMarkerGreenIcon
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
+      return UI.VenueInfoMarkerOrangeIcon
+    case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return UI.VenueInfoMarkerOrangeIcon
+    default:
+      return UI.VenueInfoMarkerGreyIcon
+  }
+}
 
 export default class VenueClusterRenderer implements Renderer {
   public render (
@@ -49,10 +66,12 @@ export default class VenueClusterRenderer implements Renderer {
       let data: ListWithIconProps['data']=[]
       if(markers)
         data= markers?.map((marker)=>{
+          const { venueData } = marker as VenueMarkerWithLabel
           return {
-            icon: <HomeOutlined/>,
-            title: (marker as VenueMarkerWithLabel).venueData.name || 'NA',
-            popoverContent: <VenueMarkerTooltip venue={(marker as VenueMarkerWithLabel).venueData} />
+            icon: <Icon component={getVenueInfoMarkerIcon(venueData.status || 'NA')}/>,
+            title: venueData.name || 'NA',
+            popoverContent: <VenueMarkerTooltip 
+              venue={(marker as VenueMarkerWithLabel).venueData} />
           }
         })
       const infoDiv = document.createElement('div')
