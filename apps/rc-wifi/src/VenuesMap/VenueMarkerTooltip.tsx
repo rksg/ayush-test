@@ -17,22 +17,22 @@ const columns = [
     title: 'Networking Devices',
     dataIndex: 'networkDevices',
     key: 'networkDevices',
-    width: 140
+    width: 150
   },
   {
     title: 'Clients',
     dataIndex: 'clients',
     key: 'clients',
-    width: 140
+    width: 150
   }
 ]
 
-const navigateToVenuePage = (venueId: any) => {
+const navigateToVenuePage = (venueId: string) => {
   // TODO: confirm the path
   window.location.href = '/venues/' + venueId
 }
 
-const navigateToClientsPage = (venueId: any) => {
+const navigateToClientsPage = (venueId: string) => {
   // TODO: confirm the path
   window.location.href = '/clients/' + venueId
 }
@@ -47,9 +47,16 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
     clientsCount,
     switchClientsCount
   } = props.venue
-  const chartStyles = { height: 20, width: 135 }
+
   const deviceConnectionStatusColors = getDeviceConnectionStatusColors()
-  const onClickHandler = () => { navigateToClientsPage(venueId) }
+  const onClickHandler = () => { navigateToClientsPage(venueId!) }
+  const commonProps = {
+    showLabels: false,
+    style: { height: 10, width: 100 },
+    showTotal: false,
+    barColors: deviceConnectionStatusColors
+  }
+
   const data = [
     {
       key: '1',
@@ -57,11 +64,8 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
       networkDevices: apsCount > 0
         ? <UI.CellWrapper>
           <StackedBarChart
-            style={chartStyles}
             data={apStat}
-            barColors={deviceConnectionStatusColors}
-            showLabels={false}
-            showTotal={false}/>
+            { ...commonProps }/>
           <UI.TotalCount onClick={onClickHandler}>
             {apsCount}
           </UI.TotalCount>
@@ -85,10 +89,8 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
       networkDevices: switchesCount > 0
         ? <UI.CellWrapper>
           <StackedBarChart
-            style={chartStyles}
             data={switchStat}
-            barColors={deviceConnectionStatusColors}
-            showLabels={false} />
+            { ...commonProps } />
           <UI.TotalCount onClick={onClickHandler}>
             {switchesCount}
           </UI.TotalCount>
@@ -111,12 +113,11 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
   return (
     <UI.Wrapper>
       <UI.InfoWindowHeader>
-        <UI.Title onClick={() => navigateToVenuePage(venueId)}>{props.venue.name}</UI.Title>
+        <UI.Title onClick={() => navigateToVenuePage(venueId!)}>{props.venue.name}</UI.Title>
       </UI.InfoWindowHeader>
       <Table
         columns={columns}
         dataSource={data}
-        style={{ width: '435px' }}
         type={'tooltip'}
       />
     </UI.Wrapper>

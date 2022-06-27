@@ -68,21 +68,21 @@ export const VenueInfoMarkerRedIcon = styled(VenueInfoMarkerRed)`
   ${venueMarkerIconStyle}`
 
 export const Wrapper = styled.div`
-  height: 150px;
-  width: 400px;
+  height: 140px;
+  width: 350px;
+  padding: 10px 15px;
 `
 export const CellWrapper = styled(Space)`
   direction={props => props.direction ? props.direction : 'horizontal'}
   justify-content: left;
   width: 100%;
-  height: 20px;
+  height: 15px;
 `
 export const InfoWindowHeader = styled.div`
-  height: 50px;
+  height: 35px;
   width: 100%;
   display: inline-flex;
   justify-content: space-between;
-  border-radius: 4px 4px 0px 0px;
   border-bottom: 1px solid var(--acx-neutrals-30);
 `
 export const Title = styled.a`
@@ -91,7 +91,7 @@ export const Title = styled.a`
   line-height: var(--acx-headline-4-line-height);
   font-weight: 600;
   color: var(--acx-accents-blue-50);
-  padding: 20px 5px;
+  padding: 10px 0px;
 `
 export const TotalCount = styled.a`
   font-family: var(--acx-neutral-brand-font);

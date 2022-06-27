@@ -1,8 +1,11 @@
-import {
-  GuestNetworkTypeEnum,
-  WlanSecurityEnum
-} from '@acx-ui/rc/utils'
+import { GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
+export * from './ap'
+
+export interface CommonResult {
+  requestId: string
+  response?:{}
+}
 export interface Network {
   id: string
   name: string
@@ -23,6 +26,14 @@ export interface Network {
   // cog ??
 }
 
+export interface NetworkDetail {
+  type: string
+  tenantId: string
+  name: string
+  venues: { venueId: string, id: string }[]
+  id: string
+}
+
 export interface Venue {
   id: string
   name: string
@@ -39,6 +50,10 @@ export interface Venue {
     names: string[]
     vlans: number[]
   }
+  wlan: {
+    wlanSecurity: string
+  }
+  allApDisabled: boolean
   // aps ??
   // switches ??
   // switchClients ??
@@ -66,6 +81,9 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
+export interface UserSettings {
+  [key: string]: string
+}
 
 export enum ApVenueStatusEnum {
   IN_SETUP_PHASE = '1_InSetupPhase',
@@ -107,7 +125,7 @@ export interface NetworkDetailHeader {
   }
 }
 
-export interface DashboardOverview {
+export interface Dashboard {
   summary?: {
     clients?: {
       summary: {
@@ -146,10 +164,8 @@ export interface DashboardOverview {
       totalCount: number;
     }
     alarms?: {
-      summary: {
-        [prop: string]: number;
-      },
-      totalCount: number;
+      summary?: { clear: number }
+      totalCount: number
     },
   };
   incidents?: {

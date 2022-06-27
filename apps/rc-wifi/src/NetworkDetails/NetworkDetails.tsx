@@ -1,6 +1,7 @@
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { NetworkApsTab }       from './NetworkApsTab'
+import { Aps } from '../Devices/Aps/Aps'
+
 import { NetworkEventsTab }    from './NetworkEventsTab'
 import { NetworkIncidentsTab } from './NetworkIncidentsTab'
 import { NetworkOverviewTab }  from './NetworkOverviewTab'
@@ -8,10 +9,9 @@ import NetworkPageHeader       from './NetworkPageHeader'
 import { NetworkServicesTab }  from './NetworkServicesTab'
 import { NetworkVenuesTab }    from './NetworkVenuesTab'
 
-
 const tabs = {
   overview: NetworkOverviewTab,
-  aps: NetworkApsTab,
+  aps: Aps,
   venues: NetworkVenuesTab,
   services: NetworkServicesTab,
   events: NetworkEventsTab,

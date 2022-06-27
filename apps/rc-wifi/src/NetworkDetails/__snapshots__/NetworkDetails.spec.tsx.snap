@@ -17,7 +17,7 @@ exports[`NetworkDetails should render correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/networks"
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks"
               >
                 Networks
               </a>
@@ -54,7 +54,7 @@ exports[`NetworkDetails should render correctly 1`] = `
             <h1
               class="ant-typography"
             >
-              Lab Network
+              testNetwork
             </h1>
           </span>
         </div>
@@ -166,7 +166,7 @@ exports[`NetworkDetails should render correctly 1`] = `
                     role="tab"
                     tabindex="0"
                   >
-                    APs (0)
+                    APs (1)
                   </div>
                 </div>
                 <div
@@ -180,7 +180,7 @@ exports[`NetworkDetails should render correctly 1`] = `
                     role="tab"
                     tabindex="0"
                   >
-                    Venues (0)
+                    Venues (1)
                   </div>
                 </div>
                 <div
@@ -227,6 +227,7 @@ exports[`NetworkDetails should render correctly 1`] = `
                 </div>
                 <div
                   class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                  style="left: 0px; width: 0px;"
                 />
               </div>
             </div>
@@ -331,5 +332,8 @@ exports[`NetworkDetails should render correctly 1`] = `
       </div>
     </div>
   </div>
+  <div
+    class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
+  />
 </DocumentFragment>
 `;

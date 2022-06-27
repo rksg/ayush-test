@@ -2,11 +2,13 @@
 import { configureStore }                                 from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-import { dataApi }                     from '@acx-ui/analytics/services'
+import { dataApi }         from '@acx-ui/analytics/services'
 import {
   baseNetworkApi as networkApi,
   baseCloudpathApi as cloudpathApi,
-  baseEventAlarmApi as eventAlarmApi
+  baseEventAlarmApi as eventAlarmApi,
+  apApi,
+  baseUserApi as userApi
 } from '@acx-ui/rc/services'
 
 export const store = configureStore({
@@ -14,6 +16,9 @@ export const store = configureStore({
     [networkApi.reducerPath]: networkApi.reducer,
     [cloudpathApi.reducerPath]: cloudpathApi.reducer,
     [eventAlarmApi.reducerPath]: eventAlarmApi.reducer,
+    [dataApi.reducerPath]: dataApi.reducer,
+    [apApi.reducerPath]: apApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
     [dataApi.reducerPath]: dataApi.reducer
   },
 
@@ -22,6 +27,9 @@ export const store = configureStore({
       networkApi.middleware,
       cloudpathApi.middleware,
       eventAlarmApi.middleware,
+      dataApi.middleware,
+      apApi.middleware,
+      userApi.middleware,
       dataApi.middleware
     ]),
 

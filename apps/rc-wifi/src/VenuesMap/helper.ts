@@ -4,17 +4,17 @@ import _ from 'lodash'
 import { cssStr }    from '@acx-ui/components'
 import {
   ChartData,
-  DashboardOverview,
+  Dashboard,
   ApVenueStatusEnum,
   SwitchStatusEnum } from '@acx-ui/rc/services'
 
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
 export const getDeviceConnectionStatusColors = () => [
-  cssStr('--acx-semantics-green-50'),
-  cssStr('--acx-neutrals-50'),
-  cssStr('--acx-semantics-yellow-40'),
-  cssStr('--acx-semantics-red-50')
+  cssStr('--acx-semantics-green-50'), // Operational
+  cssStr('--acx-neutrals-50'), // Setup Phase
+  cssStr('--acx-semantics-yellow-40'), // Transient Issue
+  cssStr('--acx-semantics-red-50') // Requires Attention
 ]
 
 export const getDisplayLabel = (label: string) => {
@@ -34,7 +34,7 @@ export const getDisplayLabel = (label: string) => {
   }
 }
 
-export const massageVenuesData = (overviewData?: DashboardOverview): VenueMarkerOptions[] => {
+export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[] => {
   const venues: VenueMarkerOptions[] = []
   overviewData?.venues?.forEach((venue) => {
     _.forIn(venue, (val, venueId) => {
@@ -68,12 +68,12 @@ export const massageVenuesData = (overviewData?: DashboardOverview): VenueMarker
   return venues
 }
 
-function getSwitchClientCountByVenue (overviewData: DashboardOverview, venueId: string): number {
+function getSwitchClientCountByVenue (overviewData: Dashboard, venueId: string): number {
   return _.get(overviewData, 'summary.switchClients.summary[' + venueId + ']') || 0
 }
 
 const getApStatusDataByVenue = (
-  overviewData: DashboardOverview,
+  overviewData: Dashboard,
   venueId: string): {
   apStat: ChartData[],
   apsCount: number
@@ -128,7 +128,7 @@ const getApStatusDataByVenue = (
   }
 }
 
-function getSwitchStatusDataByVenue (overviewData: DashboardOverview, venueId: string): {
+function getSwitchStatusDataByVenue (overviewData: Dashboard, venueId: string): {
   switchStat: ChartData[],
   switchesCount: number
 } {
@@ -164,18 +164,21 @@ function getSwitchStatusDataByVenue (overviewData: DashboardOverview, venueId: s
     switchStat: [{
       category: 'Switches',
       series: [
+        { name: getDisplayLabel(ApVenueStatusEnum.REQUIRES_ATTENTION),
+          value: requires_attention },
+        { name: getDisplayLabel(ApVenueStatusEnum.TRANSIENT_ISSUE),
+          value: 0 },
         { name: getDisplayLabel(ApVenueStatusEnum.IN_SETUP_PHASE),
           value: in_setup_phase },
         { name: getDisplayLabel(ApVenueStatusEnum.OPERATIONAL),
-          value: operational },
-        { name: getDisplayLabel(ApVenueStatusEnum.REQUIRES_ATTENTION),
-          value: requires_attention }
+          value: operational }
       ]
     }],
     switchesCount: switchStat && switchStat[venueId] ? switchStat[venueId].totalCount : 0
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getMarkerColor = (statuses: any[] | undefined) => {
   // ApVenueStatusEnum.IN_SETUP_PHASE OR ApVenueStatusEnum.OFFLINE
   let color: { default: string, hover: string } = {

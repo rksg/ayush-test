@@ -3,13 +3,18 @@ import { useSplitTreatment }         from '@acx-ui/feature-toggle'
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import { useParams }                 from '@acx-ui/react-router-dom'
 
-import { GoogleMap }         from '../../VenuesMap'
+import { VenuesMap }         from '../../VenuesMap'
 import { massageVenuesData } from '../../VenuesMap/helper'
 
 export function Map () {
-  // Refer https://jira.ruckuswireless.com/browse/ACX-9402
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
+  if (!isMapEnabled) {
+    return <span>Map is not enabled</span>
+  }
+  return (<ActualMap/>)
+}
 
+function ActualMap () {
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   },
@@ -19,15 +24,9 @@ export function Map () {
       ...rest
     })
   })
-
-  // Restrict the map view to few tenants - ACX-9402
-  if (!isMapEnabled) {
-    return <span>Map is not enabled</span>
-  }
-
   return (
     <Loader states={[queryResults]}>
-      <GoogleMap cluster={true} data={queryResults.data} />
+      <VenuesMap cluster={true} data={queryResults.data} />
     </Loader>
   )
 }
