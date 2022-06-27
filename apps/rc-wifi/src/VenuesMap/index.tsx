@@ -9,13 +9,9 @@ import GMap                   from './GMap'
 import { FilterStateChange }  from './VenueFilterControlBox'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
-const render = (status: Status) => {
-  return <h1>{status}</h1>
-}
-
 export interface GoogleMapProps {
   data: VenueMarkerOptions[]
-  cluster?: boolean
+  cluster?: boolean,
 }
 
 export interface NavigateProps {
@@ -56,6 +52,10 @@ export function VenuesMap ({ cluster, data }: GoogleMapProps) {
   React.useEffect(()=>{
     setVenues(data)
   },[data])
+
+  const render = (status: Status) => {
+    return <h1>{status}</h1>
+  }
 
   return (
     <Wrapper

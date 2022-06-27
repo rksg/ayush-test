@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 
-import { Provider } from '@acx-ui/store'
+import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
+import { Provider }                from '@acx-ui/store'
 
 import { VenuesMap } from './'
 
@@ -12,9 +13,11 @@ jest.mock('@acx-ui/config', () => ({
 describe('VenuesMap', () => {
   it('should load google maps api', async () => {
     render(
-      <Provider>
-        <VenuesMap data={[]} cluster />
-      </Provider>
+      <Router>
+        <Provider>
+          <VenuesMap data={[]} cluster />
+        </Provider>
+      </Router>
     )
 
     const status = screen.getByRole('heading').textContent
