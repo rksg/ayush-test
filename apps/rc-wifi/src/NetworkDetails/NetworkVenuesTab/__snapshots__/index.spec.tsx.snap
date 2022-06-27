@@ -429,12 +429,14 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
-                              />
+                              >
+                                -
+                              </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0-
+                                0
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -476,12 +478,12 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                     <li
                       class="ant-pagination-total-text"
                     >
-                      第 1-2 条/总共 2 条
+                        1-2 of 2 items
                     </li>
                     <li
                       aria-disabled="true"
                       class="ant-pagination-prev ant-pagination-disabled"
-                      title="上一页"
+                      title="Previous Page"
                     >
                       <button
                         class="ant-pagination-item-link"
@@ -524,7 +526,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                     <li
                       aria-disabled="true"
                       class="ant-pagination-next ant-pagination-disabled"
-                      title="下一页"
+                      title="Next Page"
                     >
                       <button
                         class="ant-pagination-item-link"

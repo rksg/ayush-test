@@ -3,7 +3,7 @@
 exports[`Table component should call sorter function when sorter title is clicked 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1w42t07-3 keODlQ"
+    class="styledComponents__Wrapper-sc-1w42t07-3 WbmAZ"
   >
     <div
       class="ant-pro-table"
@@ -280,7 +280,7 @@ exports[`Table component should call sorter function when sorter title is clicke
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1w42t07-3 biHXvE"
+    class="styledComponents__Wrapper-sc-1w42t07-3 cWpbyK"
   >
     <div
       class="ant-pro-table"
@@ -415,12 +415,12 @@ exports[`Table component should render correctly 1`] = `
                   <li
                     class="ant-pagination-total-text"
                   >
-                    第 1-3 条/总共 3 条
+                      1-3 of 3 items
                   </li>
                   <li
                     aria-disabled="true"
                     class="ant-pagination-prev ant-pagination-disabled"
-                    title="上一页"
+                    title="Previous Page"
                   >
                     <button
                       class="ant-pagination-item-link"
@@ -463,7 +463,7 @@ exports[`Table component should render correctly 1`] = `
                   <li
                     aria-disabled="true"
                     class="ant-pagination-next ant-pagination-disabled"
-                    title="下一页"
+                    title="Next Page"
                   >
                     <button
                       class="ant-pagination-item-link"
@@ -506,7 +506,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render selectable table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1w42t07-3 jlIonq"
+    class="styledComponents__Wrapper-sc-1w42t07-3 lnDVbv"
   >
     <div
       class="ant-pro-table"

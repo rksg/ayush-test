@@ -1,15 +1,13 @@
 import React from 'react'
 
-import { Badge }   from 'antd'
-import Column      from 'antd/lib/table/Column'
-import ColumnGroup from 'antd/lib/table/ColumnGroup'
-import _           from 'lodash'
+import { Badge } from 'antd'
 
 import {
   Loader,
-  Table
+  Table,
+  TableProps
 } from '@acx-ui/components'
-import { ApExtraParams, useApListQuery } from '@acx-ui/rc/services'
+import { ApExtraParams, useApListQuery, AP } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
   APMeshRole,
@@ -48,6 +46,41 @@ const handleStatusColor = (color: DeviceConnectionStatus) => {
   }
 }
 
+const channelTitleMap: Record<keyof ApExtraParams, string> = {
+  channel24: '2.4 GHz',
+  channel50: '5 GHz',
+  channelL50: 'LO 5 GHz',
+  channelU50: 'HI 5 GHz',
+  channel60: '6 GHz'
+}
+
+const transformMeshRole = (value: APMeshRole) => {
+  let meshRole = ''
+  switch (value) {
+    case APMeshRole.EMAP:
+      meshRole = 'eMAP'
+      break
+    case APMeshRole.DISABLED:
+      meshRole = ''
+      break
+    default:
+      meshRole = value
+      break
+  }
+  return transformDisplayText(meshRole)
+}
+
+const getApStatus = function (status: ApDeviceStatusEnum) {
+  const apStatus = transformApStatus(status, APView.AP_LIST)
+  return (
+    <span>
+      <Badge color={handleStatusColor(apStatus.deviceStatus)}
+        text={apStatus.message}
+      />
+    </span>
+  )
+}
+
 export function Aps () {
   const params = useParams()
   const filters = getFilters(params)
@@ -60,109 +93,92 @@ export function Aps () {
   })
 
   const tableData = tableQuery.data?.data ?? []
-  const extraParams = tableQuery.data?.extra ?? {
-    channel24: true,
-    channel50: false,
-    channelL50: false,
-    channelU50: false,
-    channel60: false
-  }
 
-  const transformMeshRole = (value: APMeshRole) => {
-    let meshRole = ''
-    switch (value) {
-      case APMeshRole.EMAP:
-        meshRole = 'eMAP'
-        break
-      case APMeshRole.DISABLED:
-        meshRole = ''
-        break
-      default:
-        meshRole = value
-        break
+  const columns = React.useMemo(() => {
+    const extraParams = tableQuery.data?.extra ?? {
+      channel24: true,
+      channel50: false,
+      channelL50: false,
+      channelU50: false,
+      channel60: false
     }
-    return transformDisplayText(meshRole)
-  }
 
-  const channelColumns = {
-    channel24: <Column
-      key='channel24'
-      title='2.4 GHz'
-      dataIndex='channel24'
-      align='center'
-      render={transformDisplayText} />,
-    channel50: <Column
-      key='channel50'
-      title='5 GHz'
-      dataIndex='channel50'
-      align='center'
-      render={transformDisplayText} />,
-    channelL50: <Column
-      key='channelL50'
-      title='LO 5 GHz'
-      dataIndex='channelL50'
-      align='center'
-      render={transformDisplayText} />,
-    channelU50: <Column
-      key='channelU50'
-      title='HI 5 GHz'
-      dataIndex='channelU50'
-      align='center'
-      render={transformDisplayText} />,
-    channel60: <Column
-      key='channel60'
-      title='6 GHz'
-      dataIndex='channel60'
-      align='center'
-      render={transformDisplayText} />
-  }
-
-  const getApStatus = function (status: ApDeviceStatusEnum) {
-    const apStatus = transformApStatus(status, APView.AP_LIST)
-    return (
-      <span>
-        <Badge color={handleStatusColor(apStatus.deviceStatus)}
-          text={apStatus.message}
-        />
-      </span>
-    )
-  }
+    return [{
+      title: 'AP Name',
+      dataIndex: 'name',
+      sorter: true
+    }, {
+      title: 'Status',
+      dataIndex: 'deviceStatus',
+      sorter: true,
+      render: getApStatus
+    }, {
+      title: 'Model',
+      dataIndex: 'model',
+      sorter: true
+    }, {
+      title: 'IP Address',
+      dataIndex: 'IP'
+    }, {
+      title: 'MAC Address',
+      dataIndex: 'apMac',
+      sorter: true
+    }, {
+      title: 'Venue',
+      dataIndex: 'venueName',
+      sorter: true
+    }, {
+      title: 'Switch',
+      dataIndex: 'switchName'
+    }, {
+      title: 'Mesh Role',
+      dataIndex: 'meshRole',
+      sorter: true,
+      render: transformMeshRole
+    }, {
+      title: 'Connected Clients',
+      dataIndex: 'clients',
+      align: 'center',
+      render: transformDisplayNumber
+    }, {
+      title: 'AP Group',
+      dataIndex: 'deviceGroupName',
+      sorter: true
+    }, {
+      title: 'RF Channels',
+      children: Object.entries(extraParams)
+        .map(([channel, visible]) => visible ? {
+          key: channel,
+          dataIndex: channel,
+          title: channelTitleMap[channel as keyof ApExtraParams],
+          align: 'center',
+          render: transformDisplayText
+        } : null)
+        .filter(Boolean)
+    }, {
+      title: 'Tags',
+      dataIndex: 'tags',
+      sorter: true
+    }, {
+      title: 'Serial Number',
+      dataIndex: 'serialNumber',
+      sorter: true
+    }, {
+      title: 'Version',
+      dataIndex: 'fwVersion',
+      sorter: true
+    }] as TableProps<AP>['columns']
+  }, [tableQuery.data?.extra])
 
   return (
     <Loader states={[tableQuery]}>
-      <Table dataSource={tableData}
+      <Table<AP>
+        columns={columns}
+        dataSource={tableData}
         rowKey='serialNumber'
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-      >
-        <Column title='AP Name' dataIndex='name' sorter={true} />
-        <Column title='Status'
-          dataIndex='deviceStatus'
-          sorter={true}
-          render={(value) => getApStatus(value)} />
-        <Column title='Model' dataIndex='model' sorter={true} />
-        <Column title='IP Address' dataIndex='IP' />
-        <Column title='MAC Address' dataIndex='apMac' sorter={true} />
-        <Column title='Venue' dataIndex='venueName' sorter={true} />
-        <Column title='Switch' dataIndex='switchName' />
-        <Column title='Mesh Role'
-          dataIndex='meshRole'
-          sorter={true}
-          render={transformMeshRole} />
-        <Column title='Connected Clients'
-          dataIndex='clients'
-          render={transformDisplayNumber}
-          align='center' />
-        <Column title='AP Group' dataIndex='deviceGroupName' sorter={true} />
-        <ColumnGroup title='RF Channels'>
-          {_(channelColumns)
-            .filter((_, key) => extraParams[key as keyof ApExtraParams])
-            .value()}
-        </ColumnGroup>
-        <Column title='Tags' dataIndex='tags' sorter={true} />
-        <Column title='Serial Number' dataIndex='serialNumber' sorter={true} />
-        <Column title='Version' dataIndex='fwVersion' sorter={true} />
-      </Table>
+      />
     </Loader>
   )
 }

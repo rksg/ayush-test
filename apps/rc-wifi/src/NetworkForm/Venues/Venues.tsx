@@ -104,43 +104,33 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     },
     {
       title: 'Networks',
-      dataIndex: 'networks',
-      render: function (data) {
-        return data ? data.count : 0
-      }
+      dataIndex: ['networks', 'count']
     },
     {
       title: 'Wi-Fi APs',
       dataIndex: 'aggregatedApStatus',
-      render: function (data) {
-        if (data) {
-          let sum = 0
-          Object.keys(data).forEach((key) => {
-            sum = sum + data[key]
-          })
-          return sum
-        }
-        return 0
+      render: function (data, row) {
+        if (!row.aggregatedApStatus) { return 0 }
+        return Object
+          .values(row.aggregatedApStatus)
+          .reduce((a, b) => a + b, 0)
       }
     },
     {
       title: 'Activated',
-      dataIndex: 'activated',
+      dataIndex: ['activated', 'isActivated'],
       render: function (data, row) {
-        return <Switch onClick={
-          (checked: boolean, event: Event) => { 
-            data.isActivated = checked
-            event.stopPropagation()
-            let selectedVenues = [...activateVenues]
-            if (checked) {
-              selectedVenues = [...selectedVenues, row]
-            } else {
-              selectedVenues.splice(selectedVenues.indexOf(row), 1)
-            }
-            setActivateVenues(selectedVenues)
-            handleVenueSaveData(selectedVenues)
+        return <Switch onClick={(checked: boolean, event: Event) => {
+          event.stopPropagation()
+          let selectedVenues = [...activateVenues]
+          if (checked) {
+            selectedVenues = [...selectedVenues, row]
+          } else {
+            selectedVenues.splice(selectedVenues.indexOf(row), 1)
           }
-        }/>
+          setActivateVenues(selectedVenues)
+          handleVenueSaveData(selectedVenues)
+        }} />
       }
     },
     {
