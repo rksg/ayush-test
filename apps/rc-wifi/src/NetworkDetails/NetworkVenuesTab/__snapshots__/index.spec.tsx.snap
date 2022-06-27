@@ -6,7 +6,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1w42t07-3 biHXvE"
+      class="styledComponents__Wrapper-sc-1w42t07-3 cWpbyK"
     >
       <div
         class="ant-pro-table"
@@ -266,16 +266,19 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 Networks
                               </th>
                               <th
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 Wi-Fi APs
                               </th>
                               <th
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 Activated
                               </th>
@@ -340,16 +343,19 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 1
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 1
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 <button
                                   aria-checked="true"
@@ -422,14 +428,17 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               />
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0-
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 <button
                                   aria-checked="false"
