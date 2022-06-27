@@ -41,7 +41,7 @@ describe('trafficByVolumeWidgetApi', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
+    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
@@ -52,7 +52,7 @@ describe('trafficByVolumeWidgetApi', () => {
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'widget_trafficByVolume', {
+    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
