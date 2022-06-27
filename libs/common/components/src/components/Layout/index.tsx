@@ -79,8 +79,8 @@ export function Layout ({
       menuItemRender={menuRender}
       rightContentRender={() => rightHeaderContent}
       headerContentRender={() => leftHeaderContent}
+      onCollapse={setCollapsed}
       collapsedButtonRender={(collapsed: boolean) => {
-        setCollapsed(collapsed)
         return <>
           {collapsed ? <UI.ArrowCollapsed /> : <UI.Arrow />}
           <UI.TextWrapper className='ant-pro-menu-item-title'>{'Collapse'}</UI.TextWrapper>

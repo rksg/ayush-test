@@ -25,10 +25,9 @@ export const api = dataApi.injectEndpoints({
       TrafficByVolumeData,
       GlobalFilter
     >({
-      // todo: change to the schema of real api
       query: (payload) => ({
         document: gql`
-          query widget_trafficByVolume(
+          query TrafficByVolumeWidget(
             $path: [HierarchyNodeInput]
             $start: DateTime
             $end: DateTime
@@ -39,9 +38,9 @@ export const api = dataApi.injectEndpoints({
                 timeSeries(granularity: $granularity) {
                   time
                   totalTraffic_all: totalTraffic
-                  totalTraffic_6: totalTraffic(radio: "6(5)")
-                  totalTraffic_5: totalTraffic(radio: "5")
-                  totalTraffic_24: totalTraffic(radio: "2.4")
+                  totalTraffic_6: totalTraffic(band: "6")
+                  totalTraffic_5: totalTraffic(band: "5")
+                  totalTraffic_24: totalTraffic(band: "2.4")
                 }
               }
             }
@@ -54,7 +53,6 @@ export const api = dataApi.injectEndpoints({
           granularity: 'PT15M'
         }
       }),
-      providesTags: [{ type: 'Monitoring', id: 'TRAFFIC_BY_VOLUME' }],
       transformResponse: (response: Response<TrafficByVolumeData>) =>
         response.network.hierarchyNode.timeSeries
     })
