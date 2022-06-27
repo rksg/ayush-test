@@ -38,9 +38,9 @@ export const api = dataApi.injectEndpoints({
                 timeSeries(granularity: $granularity) {
                   time
                   totalTraffic_all: totalTraffic
-                  totalTraffic_6: totalTraffic(radio: "6(5)")
-                  totalTraffic_5: totalTraffic(radio: "5")
-                  totalTraffic_24: totalTraffic(radio: "2.4")
+                  totalTraffic_6: totalTraffic(band: "6")
+                  totalTraffic_5: totalTraffic(band: "5")
+                  totalTraffic_24: totalTraffic(band: "2.4")
                 }
               }
             }
