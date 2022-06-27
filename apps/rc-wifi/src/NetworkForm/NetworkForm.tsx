@@ -113,7 +113,7 @@ export function NetworkForm () {
             return true
           }}
         >
-          {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+          {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm formRef={formRef} />}
           {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm formRef={formRef} />}
           {state.type === NetworkTypeEnum.DPSK && <DpskForm />}
         </StepsForm.StepForm>

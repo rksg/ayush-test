@@ -16,9 +16,10 @@ import {
   Typography
 } from 'antd'
 
-import { StepsForm, Button }     from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
-import { WlanSecurityEnum }      from '@acx-ui/rc/utils'
+import { StepsForm, StepFormProps, Button }          from '@acx-ui/components'
+import { useCloudpathListQuery }                     from '@acx-ui/rc/services'
+import { WlanSecurityEnum, NetworkSaveData } from '@acx-ui/rc/utils'
+import { useParams }                                 from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
@@ -65,11 +66,11 @@ enum MessageEnum {
   by devices manufactured after 2019.`,
 }
 
-export function AaaSettingsForm () {
+export function AaaSettingsForm (props: StepFormProps<NetworkSaveData>) {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <SettingsForm />
+        <SettingsForm formRef={props.formRef} />
       </Col>
       <Col span={14}>
         <NetworkDiagram type='aaa' />
@@ -78,7 +79,7 @@ export function AaaSettingsForm () {
   )
 }
 
-function SettingsForm () {
+function SettingsForm (props: StepFormProps<NetworkSaveData>) {
   const [state, updateState] = useState<AaaSettingsFields>({
     wlanSecurity: WlanSecurityEnum.WPA2Enterprise,
     isCloudpathEnabled: false,
@@ -129,9 +130,13 @@ function SettingsForm () {
         </Select>
       </Form.Item>
 
-      <Form.Item name='isCloudpathEnabled' valuePropName='checked'>
+      <Form.Item 
+        name='isCloudpathEnabled' 
+        valuePropName='checked' 
+        initialValue={state.isCloudpathEnabled}>
         <Switch
           onChange={function (value: any) {
+            props.formRef?.current?.setFieldsValue({ isCloudpathEnabled: value })
             updateData({ isCloudpathEnabled: value })
           }}
         />
@@ -172,10 +177,11 @@ function SettingsForm () {
         <Form.Item
           name='enableAuthProxy'
           valuePropName='checked'
-          initialValue='false'
+          initialValue={state.enableAuthProxy}
         >
           <Switch
             onChange={function (value: any) {
+              props.formRef?.current?.setFieldsValue({ enableAuthProxy: value })
               updateData({ enableAuthProxy: value })
             }}
           />
@@ -186,9 +192,14 @@ function SettingsForm () {
         </Form.Item>
 
         <StepsForm.Title>Accounting Service</StepsForm.Title>
-        <Form.Item name='enableAccountingService' valuePropName='checked'>
+        <Form.Item 
+          name='enableAccountingService'
+          valuePropName='checked'
+          initialValue={state.enableAccountingService}
+        >
           <Switch
             onChange={function (value: any) {
+              props.formRef?.current?.setFieldsValue({ enableAccountingService: value })
               updateData({ enableAccountingService: value })
             }}
           />
@@ -223,10 +234,11 @@ function SettingsForm () {
             <Form.Item
               name='enableAccountingProxy'
               valuePropName='checked'
-              initialValue='false'
+              initialValue={state.enableAccountingProxy}
             >
               <Switch
                 onChange={function (value: any) {
+                  props.formRef?.current?.setFieldsValue({ enableAccountingProxy: value })
                   updateData({ enableAccountingProxy: value })
                 }}
               />
@@ -243,7 +255,8 @@ function SettingsForm () {
 }
 
 function CloudpathServer () {
-  const { data } = useCloudpathListQuery({})
+  const params = useParams()
+  const { data } = useCloudpathListQuery({ params })
 
   const [state, updateState] = useState({
     enableCloudPathServer: false,
