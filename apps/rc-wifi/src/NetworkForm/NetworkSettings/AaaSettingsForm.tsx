@@ -16,8 +16,11 @@ import {
   Typography
 } from 'antd'
 
-import { StepsForm, Button } from '@acx-ui/components'
-import { WlanSecurityEnum }  from '@acx-ui/rc/utils'
+import { StepsForm, Button }                                    from '@acx-ui/components'
+import { useGetAllUserSettingsQuery, UserSettings }             from '@acx-ui/rc/services'
+import { Constants, WlanSecurityEnum, getUserSettingsFromDict } from '@acx-ui/rc/utils'
+import { useParams }                                            from '@acx-ui/react-router-dom'
+
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
@@ -81,6 +84,11 @@ function SettingsForm () {
     useWatch('enableSecondaryAcctServer')
   ]
 
+  const { tenantId } = useParams()
+  const userSetting = useGetAllUserSettingsQuery({ params: { tenantId } })
+  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
+    Constants.triRadioUserSettingsKey)) === 'true'
+
   const wpa2Description = (
     <>
       {AaaMessages.WPA2_DESCRIPTION}
@@ -96,24 +104,25 @@ function SettingsForm () {
   return (
     <>
       <StepsForm.Title>AAA Settings</StepsForm.Title>
-      <Form.Item
-        label='Security Protocol'
-        name='wlanSecurity'
-        initialValue={WlanSecurityEnum.WPA2Enterprise}
-        extra={
-          wlanSecurity === WlanSecurityEnum.WPA2Enterprise
-            ? wpa2Description
-            : wpa3Description
-        }
-      >
-        <Select>
-          <Option value={WlanSecurityEnum.WPA2Enterprise}>
-            WPA2 (Recommended)
-          </Option>
-          <Option value={WlanSecurityEnum.WPA3}>WPA3</Option>
-        </Select>
-      </Form.Item>
-
+      {supportTriBandRadio && 
+        <Form.Item
+          label='Security Protocol'
+          name='wlanSecurity'
+          initialValue={WlanSecurityEnum.WPA2Enterprise}
+          extra={
+            wlanSecurity === WlanSecurityEnum.WPA2Enterprise
+              ? wpa2Description
+              : wpa3Description
+          }
+        >
+          <Select>
+            <Option value={WlanSecurityEnum.WPA2Enterprise}>
+              WPA2 (Recommended)
+            </Option>
+            <Option value={WlanSecurityEnum.WPA3}>WPA3</Option>
+          </Select>
+        </Form.Item>
+      }
       <Form.Item>
         <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
           <Switch />
