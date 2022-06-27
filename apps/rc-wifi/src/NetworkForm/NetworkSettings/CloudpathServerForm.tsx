@@ -14,8 +14,7 @@ import { useParams }             from '@acx-ui/react-router-dom'
 const { Option } = Select
 
 export function CloudpathServerForm () {
-  const fieldPath = ['cloudpath', 'id']
-  const selectedId = Form.useWatch(fieldPath, Form.useFormInstance())
+  const selectedId = Form.useWatch('cloudpathServerId')
   const { selectOptions, selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
       return {
@@ -28,7 +27,7 @@ export function CloudpathServerForm () {
   return (
     <React.Fragment>
       <Form.Item
-        name={['cloudpath', 'id']}
+        name='cloudpathServerId'
         label='Cloudpath Server'
         rules={[{ required: true }]}>
         <Select placeholder='Select...' children={selectOptions} />
