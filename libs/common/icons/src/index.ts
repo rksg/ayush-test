@@ -15,6 +15,7 @@ export { ReactComponent as ConfigurationSolid } from './icons/ConfigurationSolid
 export { ReactComponent as DevicesOutlined } from './icons/DevicesOutlined.svg'
 export { ReactComponent as DevicesSolid } from './icons/DevicesSolid.svg'
 export { ReactComponent as DownloadOutlined } from './icons/DownloadOutlined.svg'
+export { ReactComponent as LoadingSolid } from './icons/LoadingSolid.svg'
 export { ReactComponent as Logo } from './icons/Logo.svg'
 export { ReactComponent as LocationOutline } from './icons/LocationOutline.svg'
 export { ReactComponent as LocationOutlined } from './icons/LocationOutlined.svg'
@@ -32,3 +33,4 @@ export { ReactComponent as ServicesOutlined } from './icons/ServicesOutlined.svg
 export { ReactComponent as ServicesSolid } from './icons/ServicesSolid.svg'
 export { ReactComponent as SpeedIndicatorOutlined } from './icons/SpeedIndicatorOutlined.svg'
 export { ReactComponent as SpeedIndicatorSolid } from './icons/SpeedIndicatorSolid.svg'
+export { ReactComponent as SuccessSolid } from './icons/SuccessSolid.svg'

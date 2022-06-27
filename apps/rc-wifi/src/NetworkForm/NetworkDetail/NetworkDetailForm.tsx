@@ -1,8 +1,12 @@
-import { Form, Input, Col, Radio, Row, Space } from 'antd'
-import TextArea                                from 'antd/lib/input/TextArea'
+import { useEffect, useState } from 'react'
 
-import { StepsForm }       from '@acx-ui/components'
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Form, Col, Radio, Row, Space } from 'antd'
+import TextArea                         from 'antd/lib/input/TextArea'
+
+import { StepsForm, FormValidationItem } from '@acx-ui/components'
+import { useNetworkListQuery }           from '@acx-ui/rc/services'
+import { NetworkTypeEnum }               from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
 import { RadioDescription } from '../styledComponents'
@@ -25,16 +29,48 @@ enum NetworkTypeLabel {
   OPEN = 'Open Network',
 }
 
-export function NetworkDetailForm () {
+export function NetworkDetailForm (props: any) {
+  const payload = {
+    searchString: '',
+    fields: ['name', 'id'],
+    searchTargetFields: ['name'],
+    filters: {},
+    pageSize: 10000
+  }
+  const [defaultPayload, setDefaultPayload] = useState(payload)
+  const networkListQuery = useNetworkListQuery({
+    params: useParams(),
+    payload: defaultPayload
+  })
+  useEffect(() => {
+    const triggerValidation = !networkListQuery.isFetching && defaultPayload.searchString
+    if (triggerValidation) {
+      props.formRef.current.validateFields(['name'])
+    }
+  }, [networkListQuery])
+
+  const remoteValidation = {
+    listQuery: networkListQuery,
+    payload: defaultPayload,
+    message: 'A Network with that name already exists',
+    updateQuery: (value: string) => {
+      const payload = {
+        ...defaultPayload,
+        searchString: value
+      }
+      setDefaultPayload(payload)
+    }
+  }
+
   return (
     <Row gutter={20}>
       <Col span={10}>
         <StepsForm.Title>Network Details</StepsForm.Title>
-        <Form.Item
+        <FormValidationItem
           name='name'
           label='Network Name'
           rules={[{ required: true }, { min: 2 }, { max: 32 }]}
-          children={<Input />}
+          remoteValidation={remoteValidation}
         />
         <Form.Item
           name='description'

@@ -78,7 +78,7 @@ export function NetworkForm () {
             return true
           }}
         >
-          <NetworkDetailForm />
+          <NetworkDetailForm formRef={formRef} />
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
