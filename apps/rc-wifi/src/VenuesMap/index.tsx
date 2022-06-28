@@ -25,6 +25,8 @@ export function VenuesMap ({ cluster, data }: GoogleMapProps) {
 
   const basePath = useTenantLink('/venues/')
   const navigate = useNavigate()
+
+  /* istanbul ignore next */
   const onNavigate = (params: NavigateProps) => {
     const { venueId, path } = params
     navigate({
@@ -33,6 +35,7 @@ export function VenuesMap ({ cluster, data }: GoogleMapProps) {
     })
   }
 
+  /* istanbul ignore next */
   const onFilterChange = (filter: FilterStateChange) => {
     setVenues((venues) => {
       const filteredVenues = venues?.map((venue: VenueMarkerOptions) => {
@@ -44,6 +47,7 @@ export function VenuesMap ({ cluster, data }: GoogleMapProps) {
     })
   }
 
+  /* istanbul ignore next */
   const onClusterClick = (event: google.maps.MapMouseEvent): void => {
     // Stop event propagation, to prevent clicks on the cluster
     event.domEvent.stopPropagation()
