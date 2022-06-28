@@ -1,57 +1,102 @@
-import { EnvironmentOutlined } from '@ant-design/icons'
-import { Col, Form, Row }      from 'antd'
+import { Form, Input } from 'antd'
+import { get }         from 'lodash'
 
-import { StepsForm }               from '@acx-ui/components'
-import { CreateNetworkFormFields } from '@acx-ui/rc/utils'
-
-import { NetworkDiagram }       from '../NetworkDiagram/NetworkDiagram'
-import { transformNetworkType } from '../parser'
+import { NetworkSaveData } from '@acx-ui/rc/utils'
 
 export function AaaSummaryForm (props: {
-  summaryData: CreateNetworkFormFields;
+  summaryData: NetworkSaveData;
 }) {
-  const defaultValue = '--'
-
-  const getVenues = function () {
-    const venues = props.summaryData.venues
-    const rows = []
-    if (props.summaryData.venues.length > 0) {
-      for (const venue of venues) {
-        rows.push(
-          <li key={(venue as any).venueId} style={{ margin: '10px 0px' }}>
-            <EnvironmentOutlined />
-            {(venue as any).name}
-          </li>
-        )
-      }
-      return rows
-    } else {
-      return defaultValue
-    }
-  }
-
+  const { summaryData } = props
   return (
-    <Row gutter={20}>
-      <Col span={10}>
-        <StepsForm.Title>Summary</StepsForm.Title>
-        <Form.Item label='Network Name' children={props.summaryData.name} />
-        <Form.Item
-          label='Description'
-          children={props.summaryData.description || defaultValue}
-        />
-        <Form.Item
-          label='Network Type'
-          children={transformNetworkType(props.summaryData.type)}
-        />
-        <Form.Item
-          label='Use Cloudpath Server'
-          children={props.summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
-        />
-        <Form.Item label='Activated in venues' children={getVenues()} />
-      </Col>
-      <Col span={14}>
-        <NetworkDiagram type={props.summaryData.type} />
-      </Col>
-    </Row>
+    <>
+      {
+        get(summaryData, 'authRadius.primary.ip') !== undefined && <>Authentication Service
+          <Form.Item
+            label='Primary Server:'
+            children={get(summaryData, 'authRadius.primary.ip') !== '' ? 
+              get(summaryData, 'authRadius.primary.ip') + ':' + 
+              get(summaryData, 'authRadius.primary.port') : ''} />
+          <Form.Item
+            label='Shared Secret:'
+            children={<Input.Password
+              readOnly
+              bordered={false}
+              value={get(props.summaryData, 'authRadius.primary.sharedSecret') !== '' ?
+                get(props.summaryData, 'authRadius.primary.sharedSecret') : ''}
+            />}
+          />
+          {
+            get(summaryData, 'authRadius.secondary.ip') !== undefined && 
+            <>
+              <Form.Item
+                label='Secondary Server:'
+                children={get(summaryData, 'authRadius.secondary.ip') !== '' ? 
+                  get(summaryData, 'authRadius.secondary.ip') + ':' + 
+                  get(summaryData, 'authRadius.secondary.port') : ''} />
+              <Form.Item
+                label='Shared Secret:'
+                children={<Input.Password
+                  readOnly
+                  bordered={false}
+                  value={get(props.summaryData, 'authRadius.secondary.sharedSecret') !== '' ?
+                    get(props.summaryData, 'authRadius.secondary.sharedSecret') : ''}
+                />}
+              />
+            </>
+          }
+          <Form.Item
+            label='Proxy Service:'
+            children={summaryData.enableAuthProxy ? 'Enabled' : 'Disabled'} />
+          <Form.Item
+            label='TLS Encryption:'
+            children='Disabled' />
+        </>
+      }
+      {
+        summaryData.enableAccountingService && <>Accounting Service
+          <Form.Item
+            label='Primary Server:'
+            children={get(summaryData, 'accountingRadius.primary.ip') !== '' ? 
+              get(summaryData, 'accountingRadius.primary.ip') + ':' + 
+              get(summaryData, 'accountingRadius.primary.port') : ''} />
+          <Form.Item
+            label='Shared Secret:'
+            children={<Input.Password
+              readOnly
+              bordered={false}
+              value={get(props.summaryData, 'accountingRadius.primary.sharedSecret') !== '' ?
+                get(props.summaryData, 'accountingRadius.primary.sharedSecret') : ''}
+            />}
+          />
+
+          {
+            get(summaryData, 'authRadius.secondary.ip') !== undefined && 
+            <>
+              <Form.Item
+                label='Secondary Server:'
+                children={get(summaryData, 'accountingRadius.secondary.ip') !== '' ? 
+                  get(summaryData, 'accountingRadius.secondary.ip') + ':' + 
+                  get(summaryData, 'accountingRadius.secondary.port') : ''} />
+              <Form.Item
+                label='Shared Secret:'
+                children={<Input.Password
+                  readOnly
+                  bordered={false}
+                  value={get(props.summaryData, 'accountingRadius.secondary.sharedSecret') !== ''
+                    ? get(props.summaryData, 'accountingRadius.secondary.sharedSecret') : ''}
+                />}
+              />
+            </>
+          }
+          <Form.Item
+            label='Accounting Proxy Service:'
+            children={summaryData.enableAccountingProxy ? 'Enabled' : 'Disabled'} />
+          <Form.Item
+            label='TLS Encryption:'
+            children='Disabled' />
+        </>
+      }
+    </>
+
   )
 }
