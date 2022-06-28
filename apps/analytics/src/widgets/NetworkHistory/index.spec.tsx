@@ -42,6 +42,7 @@ describe('NetworkHistoryWidget', () => {
     await screen.findByText('Network History')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
   it('should render error', async () => {
