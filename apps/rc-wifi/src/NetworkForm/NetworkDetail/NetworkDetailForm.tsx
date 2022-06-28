@@ -13,11 +13,6 @@ import { RadioDescription }                         from '../styledComponents'
 
 import type { RadioChangeEvent } from 'antd'
 
-const NetworkTypeTitle = {
-  [NetworkTypeEnum.AAA]: 'AAA Settings', 
-  [NetworkTypeEnum.OPEN]: 'Settings',
-  [NetworkTypeEnum.DPSK]: 'DPSK Settings'
-}
 const { useWatch } = Form
 
 export function NetworkDetailForm () {

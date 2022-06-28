@@ -10,18 +10,17 @@ import {
   Input,
   Row,
   Select,
-  Tooltip,
-  Typography
+  Tooltip
 } from 'antd'
 
 import { StepsForm, Button }                       from '@acx-ui/components'
-import { useCloudpathListQuery }                   from '@acx-ui/rc/services'
 import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkType, 
   transformDpskNetwork, PassphraseExpirationEnum }      from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram }    from '../NetworkDiagram/NetworkDiagram'
 import { FieldExtraTooltip } from '../styledComponents'
+
+import { CloudpathServerForm } from './CloudpathServerForm'
 
 const { Option } = Select
 
@@ -117,85 +116,9 @@ function SettingsForm () {
           </Space>
         </Radio.Group>
       </Form.Item>
-      {state.isCloudpathEnabled ? <CloudpathServer /> : <PassphraseGeneration />}
+      {state.isCloudpathEnabled ? <CloudpathServerForm /> : <PassphraseGeneration />}
       <div><Button type='link' style={{ padding: 0 }}>Show more settings</Button></div>
     </>
-  )
-}
-
-function CloudpathServer () {
-  const params = useParams()
-  const { data } = useCloudpathListQuery({ params })
-
-  const [state, updateState] = useState({
-    enableCloudPathServer: false,
-    cloudpathId: ''
-  })
-
-  const updateData = (newData: any) => {
-    updateState(newData)
-  }
-
-  const selectOptions = []
-  for (let i = 0; i < (data ? data.length : 0); i++) {
-    selectOptions.push(<Option key={data[i].id}>{data[i].name}</Option>)
-  }
-
-  const onCloudPathChange = function (cloudpathId: any) {
-    updateData({ enableCloudPathServer: true, cloudpathId })
-  }
-
-  const getCloudData = function () {
-    return data.find((item: any) => item.id === state.cloudpathId)
-  }
-
-  return (
-    <React.Fragment>
-      <StepsForm.Title>Cloudpath Server</StepsForm.Title>
-      <Form.Item name='cloudpathServerId' rules={[{ required: true }]}>
-        <Select
-          style={{ width: '100%' }}
-          onChange={onCloudPathChange}
-          placeholder='Select...'
-        >
-          {selectOptions}
-        </Select>
-      </Form.Item>
-
-      {state.enableCloudPathServer && (
-        <>
-          <Typography.Title level={4}>
-            Radius Authentication Service
-          </Typography.Title>
-          <Form.Item
-            label='Deployment Type'
-            children={getCloudData().deploymentType}
-          />
-          <Typography.Title level={4}>
-            Radius Authentication Service
-          </Typography.Title>
-          <Form.Item
-            label='IP Address'
-            children={
-              getCloudData().authRadius.primary.ip +
-              ':' +
-              getCloudData().authRadius.primary.port
-            }
-          />
-          <Form.Item
-            label='Radius Shared secret'
-            children={
-              <Input.Password
-                readOnly={true}
-                bordered={false}
-                style={{ padding: '0px' }}
-                value={getCloudData().authRadius.primary.sharedSecret}
-              />
-            }
-          />
-        </>
-      )}
-    </React.Fragment>
   )
 }
 
