@@ -56,11 +56,11 @@ const AaaMessages = {
 
 const { useWatch } = Form
 
-export function AaaSettingsForm (props: StepFormProps<NetworkSaveData>) {
+export function AaaSettingsForm () {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <SettingsForm formRef={props.formRef} />
+        <SettingsForm />
       </Col>
       <Col span={14}>
         <NetworkDiagram type='aaa' />
