@@ -19,13 +19,13 @@ const columns = [
     title: 'Networking Devices',
     dataIndex: 'networkDevices',
     key: 'networkDevices',
-    width: 150
+    width: 162
   },
   {
     title: 'Clients',
     dataIndex: 'clients',
     key: 'clients',
-    width: 150
+    width: 162
   }
 ]
 

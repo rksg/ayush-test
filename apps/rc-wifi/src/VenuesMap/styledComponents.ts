@@ -52,7 +52,7 @@ export const VenueMarkerRedIcon = styled(VenueMarkerRed)`
 `
 export const Wrapper = styled.div`
   height: 140px;
-  width: 350px;
+  width: 375px;
   padding: 10px 15px;
 `
 export const CellWrapper = styled(Space)`
