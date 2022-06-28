@@ -23,7 +23,7 @@ const buttonStype = css`
 export const Wrapper = styled.div`
   .ant-radio-group {
     border-radius: 20px;
-    background-color: var(--acx-neutrals-15);
+    background-color: var(--acx-neutrals-20);
     vertical-align: top;
   }
   .ant-radio-button-wrapper {
