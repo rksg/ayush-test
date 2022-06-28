@@ -39,7 +39,7 @@ export const VenueFilterContainer = styled.div`
   border-radius: 4px;
   box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
   overflow: hidden;
-  background: none var(--acx-neutrals-5);
+  background: none var(--acx-neutrals-20);
 `
 
 export const VenueMarkerGreenIcon = styled(VenueMarkerGreen)`
@@ -69,7 +69,7 @@ export const VenueInfoMarkerRedIcon = styled(VenueInfoMarkerRed)`
 
 export const Wrapper = styled.div`
   height: 140px;
-  width: 350px;
+  width: 375px;
   padding: 10px 15px;
 `
 export const CellWrapper = styled(Space)`

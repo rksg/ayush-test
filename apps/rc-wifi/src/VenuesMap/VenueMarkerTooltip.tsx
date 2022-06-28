@@ -6,6 +6,8 @@ import { getDeviceConnectionStatusColors } from './helper'
 import * as UI                             from './styledComponents'
 import { VenueMarkerOptions }              from './VenueMarkerWithLabel'
 
+import { NavigateProps } from './index'
+
 const columns = [
   {
     title: '',
@@ -17,27 +19,22 @@ const columns = [
     title: 'Networking Devices',
     dataIndex: 'networkDevices',
     key: 'networkDevices',
-    width: 150
+    width: 162
   },
   {
     title: 'Clients',
     dataIndex: 'clients',
     key: 'clients',
-    width: 150
+    width: 162
   }
 ]
 
-const navigateToVenuePage = (venueId: string) => {
-  // TODO: confirm the path
-  window.location.href = '/venues/' + venueId
+interface VenueMarkerTooltipProps {
+  onNavigate: (params: NavigateProps) => void;
 }
 
-const navigateToClientsPage = (venueId: string) => {
-  // TODO: confirm the path
-  window.location.href = '/clients/' + venueId
-}
-
-export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
+export function VenueMarkerTooltip (
+  props: { venue: VenueMarkerOptions } & VenueMarkerTooltipProps) {
   const {
     venueId,
     apStat,
@@ -48,8 +45,8 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
     switchClientsCount
   } = props.venue
 
+  const { onNavigate } = props
   const deviceConnectionStatusColors = getDeviceConnectionStatusColors()
-  const onClickHandler = () => { navigateToClientsPage(venueId!) }
   const commonProps = {
     showLabels: false,
     style: { height: 10, width: 100 },
@@ -66,7 +63,7 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
           <StackedBarChart
             data={apStat}
             { ...commonProps }/>
-          <UI.TotalCount onClick={onClickHandler}>
+          <UI.TotalCount onClick={() => onNavigate({ venueId, path: 'TBD' })}>
             {apsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -75,12 +72,12 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
         </UI.CellWrapper>,
       clients: clientsCount && clientsCount > 0
         ? <UI.CellWrapper>
-          <UI.TotalCount onClick={onClickHandler}>
+          <UI.TotalCount onClick={() => onNavigate({ venueId, path: 'TBD' })}>
             {clientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No Connected Clients'}
+          {'No AP Clients'}
         </UI.CellWrapper>
     },
     {
@@ -91,7 +88,7 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
           <StackedBarChart
             data={switchStat}
             { ...commonProps } />
-          <UI.TotalCount onClick={onClickHandler}>
+          <UI.TotalCount onClick={() => onNavigate({ venueId, path: 'TBD' })}>
             {switchesCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -100,12 +97,12 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
         </UI.CellWrapper>,
       clients: switchClientsCount && switchClientsCount > 0
         ? <UI.CellWrapper>
-          <UI.TotalCount onClick={onClickHandler}>
+          <UI.TotalCount onClick={() => onNavigate({ venueId, path: 'TBD' })}>
             {switchClientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No Connected Clients'}
+          {'No Switch Clients'}
         </UI.CellWrapper>
     }
   ]
@@ -113,7 +110,9 @@ export function VenueMarkerTooltip (props: { venue: VenueMarkerOptions }) {
   return (
     <UI.Wrapper>
       <UI.InfoWindowHeader>
-        <UI.Title onClick={() => navigateToVenuePage(venueId!)}>{props.venue.name}</UI.Title>
+        <UI.Title onClick={() => onNavigate({ venueId, path: 'overview' })}>
+          {props.venue.name}
+        </UI.Title>
       </UI.InfoWindowHeader>
       <Table
         columns={columns}

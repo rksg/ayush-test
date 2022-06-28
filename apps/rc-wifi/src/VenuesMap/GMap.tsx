@@ -10,11 +10,14 @@ import VenueFilterControlBox, { FilterStateChange } from './VenueFilterControlBo
 import { VenueMarkerTooltip }                       from './VenueMarkerTooltip'
 import VenueMarkerWithLabel, { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
+import { NavigateProps } from './index'
+
 interface MapProps extends google.maps.MapOptions {
   style: React.CSSProperties;
   onClick?: (e: google.maps.MapMouseEvent) => void;
   onClusterClick?: (e: google.maps.MapMouseEvent) => void;
   onFilterChange?: (e: FilterStateChange) => void;
+  onNavigate: (params: NavigateProps) => void;
   onIdle?: (map: google.maps.Map) => void;
   venues: VenueMarkerOptions[]
   cluster?: boolean
@@ -26,6 +29,7 @@ const GMap: React.FC<MapProps> = ({
   onClusterClick,
   onIdle,
   onFilterChange,
+  onNavigate,
   venues,
   cluster,
   children,
@@ -107,6 +111,7 @@ const GMap: React.FC<MapProps> = ({
           ...getIcon(svgMarkerDefault, scaledSize),
           visible: venue.visible
         }, {
+          venueId: venue.venueId,
           name: venue.name,
           status: venue.status,
           apStat: venue.apStat,
@@ -122,15 +127,15 @@ const GMap: React.FC<MapProps> = ({
           marker.setIcon(getIcon(svgMarkerHover, scaledSize).icon)
 
           const infoDiv = document.createElement('div')
-          createRoot(infoDiv).render(<VenueMarkerTooltip venue={venue} />)
-          infoDiv.onmouseover = () => {
+          createRoot(infoDiv).render(<VenueMarkerTooltip venue={venue} onNavigate={onNavigate}/>)
+          infoDiv.addEventListener('mouseover', () => {
             clearTimeout(closeInfoWindowWithTimeout)
-          }
-          infoDiv.onmouseout = () => {
+          })
+          infoDiv.addEventListener('mouseout', () => {
             closeInfoWindowWithTimeout = setTimeout(() => {
               venueInfoWindow.close()
             }, 100)
-          }
+          })
           venueInfoWindow.setContent(infoDiv)
           venueInfoWindow.open({
             shouldFocus: true,
@@ -142,9 +147,10 @@ const GMap: React.FC<MapProps> = ({
           closeInfoWindowWithTimeout = setTimeout(() => venueInfoWindow.close(), 100)
         })
         google.maps.event.addListener(marker, 'click', () => {
-          // TODO Navigate to venue page
-          // eslint-disable-next-line no-console
-          console.log('#TODO - Clicked on marker')
+          onNavigate({
+            venueId: venue.venueId,
+            path: 'overview'
+          })
         })
         return marker
       })
