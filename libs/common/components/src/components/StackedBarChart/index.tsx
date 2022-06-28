@@ -1,7 +1,11 @@
-import ReactECharts from 'echarts-for-react'
-import _            from 'lodash'
+import { TooltipComponentOption } from 'echarts'
+import ReactECharts               from 'echarts-for-react'
+import _                          from 'lodash'
+import { renderToString }         from 'react-dom/server'
 
 import { cssNumber, cssStr } from '../../theme/helper'
+import { tooltipOptions }    from '../Chart/helper'
+import * as UI               from '../Chart/styledComponents'
 
 import type { EChartsOption, RegisteredSeriesOption } from 'echarts'
 import type { EChartsReactProps }                     from 'echarts-for-react'
@@ -148,24 +152,21 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
       }
     },
     tooltip: {
-      show: showTooltip,
+      ...tooltipOptions as TooltipComponentOption,
       trigger: 'item',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       formatter: (params: any) => {
-        const { value, marker } = params
-        return `${marker} ${value[0]}`
+        const { color, value } = params
+        return renderToString(
+          <UI.TooltipWrapper>
+            <UI.Badge
+              color={color!.toString()}
+              text={value[0]}
+            />
+          </UI.TooltipWrapper>
+        )
       },
-      textStyle: {
-        fontFamily: cssStr('--acx-accent-brand-font'),
-        fontSize: cssNumber('--acx-body-5-font-size'),
-        fontWeight: 400,
-        lineHeight: cssNumber('--acx-body-5-line-height')
-      },
-      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-      borderColor: cssStr('--acx-neutrals-50'),
-      borderWidth: 1,
-      borderRadius: 2,
-      padding: 8
+      show: showTooltip
     },
     series: massageData(data, showTotal)
   }
