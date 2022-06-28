@@ -18,6 +18,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { NetworkTypeTitle }  from './contentsMap'
 import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext    from './NetworkFormContext'
 import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
@@ -34,7 +35,7 @@ export function NetworkForm () {
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
-  const [settingStepTitle, setSettingStepTitle] = useState('Settings')
+  const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [createNetwork] = useCreateNetworkMutation()
   //DetailsState
@@ -93,14 +94,14 @@ export function NetworkForm () {
             return true
           }}
         >
-          <NetworkFormContext.Provider value={{ setSettingStepTitle }}>
+          <NetworkFormContext.Provider value={{ setNetworkType }}>
             <NetworkDetailForm />
           </NetworkFormContext.Provider>
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
           name='Settings'
-          title={settingStepTitle}
+          title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
           validateTrigger='onBlur'
           onFinish={async (data) => {
             data = {
@@ -114,7 +115,7 @@ export function NetworkForm () {
           }}
         >
           {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-          {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm formRef={formRef} />}
+          {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
           {state.type === NetworkTypeEnum.DPSK && <DpskForm />}
         </StepsForm.StepForm>
 

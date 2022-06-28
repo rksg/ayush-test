@@ -13,6 +13,8 @@ module.exports = {
     '<rootDir>/src/**/*.{js,jsx,ts,tsx}',
     '!<rootDir>/src/**/stories.tsx',
     '!<rootDir>/src/**/stories/**',
+    '!<rootDir>/src/main.ts',
+    '!<rootDir>/src/setupProxy.js',
     '!<rootDir>/src/theme/modify-vars.js'
   ],
   setupFilesAfterEnv: [`${__dirname}/jest.setup.js`]

@@ -3,12 +3,12 @@ export const VLAN_PREFIX = {
   POOL: 'VLAN Pool: '
 }
 
-export const NetworkTypeEnum = {
-  PSK: 'psk',
-  OPEN: 'open',
-  AAA: 'aaa',
-  CAPTIVEPORTAL: 'guest',
-  DPSK: 'dpsk'
+export enum NetworkTypeEnum {
+  PSK = 'psk',
+  OPEN = 'open',
+  AAA = 'aaa',
+  CAPTIVEPORTAL = 'guest',
+  DPSK = 'dpsk'
 }
 
 export enum GuestNetworkTypeEnum {
