@@ -1,15 +1,27 @@
 import { Row, Col } from 'antd'
 
-import AaaDiagram         from '../../assets/images/network-wizard-diagrams/aaa.png'
-import { Diagram, Title } from '../styledComponents'
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 
-export function NetworkDiagram () {
+import AaaDiagram           from '../../assets/images/network-wizard-diagrams/aaa.png'
+import OpenDiagram          from '../../assets/images/network-wizard-diagrams/open.png'
+import { NetworkTypeLabel } from '../contentsMap'
+import { Diagram, Title }   from '../styledComponents'
+
+const diagramMap: Partial<Record<NetworkTypeEnum, string>> = {
+  [NetworkTypeEnum.AAA]: AaaDiagram,
+  [NetworkTypeEnum.OPEN]: OpenDiagram
+}
+
+export function NetworkDiagram (props: { type?: string }) {
+  const type = props.type as NetworkTypeEnum
+  const title = NetworkTypeLabel[type]
+  const diagram = diagramMap[type]
   return (
     <Row justify='center'>
       <Col>
-        <Title>Enterprise AAA </Title>
+        <Title>{title}</Title>
         <Diagram>
-          <img src={AaaDiagram} alt='Background'></img>
+          {diagram && <img src={diagram} alt={title} />}
         </Diagram>
       </Col>
     </Row>
