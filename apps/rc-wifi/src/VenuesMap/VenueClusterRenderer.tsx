@@ -37,7 +37,7 @@ export default class VenueClusterRenderer implements Renderer {
     const statuses = markers?.map((marker: google.maps.Marker) =>
       (marker as VenueMarkerWithLabel).venueData.status)
     const clusterColor = getMarkerColor(statuses)
-    const scaledSize = new google.maps.Size(42, 42)
+    const scaledSize = new google.maps.Size(42, 42, 'px')
     const clusterInfoWindow = new google.maps.InfoWindow({})
 
     const clusterMarker = new google.maps.Marker({
@@ -55,13 +55,13 @@ export default class VenueClusterRenderer implements Renderer {
       zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count
     })
 
-    clusterMarker.addListener('mouseover', () => {
+    google.maps.event.addListener(clusterMarker, 'mouseover', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.hover), scaledSize).icon)
     })
-    clusterMarker.addListener('mouseout', () => {
+    google.maps.event.addListener(clusterMarker, 'mouseout', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
     })
-    clusterMarker.addListener('click',() => {
+    google.maps.event.addListener(clusterMarker, 'click',() => {
       console.log('Markers:',markers)
       let data: ListWithIconProps['data']=[]
       if(markers)
