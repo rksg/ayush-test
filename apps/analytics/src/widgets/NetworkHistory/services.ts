@@ -81,7 +81,7 @@ export const api = dataApi.injectEndpoints({
       // todo: Skipping the filter for impactedClientCount
       query: (payload) => ({
         document: gql`
-            query widget_networkHistory(
+            query NetworkHistoryWidget(
             $path:[HierarchyNodeInput],
             $start: DateTime,
             $end: DateTime,

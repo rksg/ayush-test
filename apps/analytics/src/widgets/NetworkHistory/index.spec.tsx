@@ -27,53 +27,37 @@ describe('NetworkHistoryWidget', () => {
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )
-  // TODO: need to fix the time formatter
-  it.skip('should render correctly', async () => {
-    const expectedResult = {
-      network: {
-        hierarchyNode: {
-          timeSeries: sample
-        }
-      }
-    }
-    mockGraphqlQuery(dataApiURL, 'widget_networkHistory', {
-      data: expectedResult
+  it('should render loader', () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    const { asFragment } = render(
-      <Provider>
-        <NetworkHistoryWidget/>
-      </Provider>
-    )
-    await screen.findByText('Network History')
-    const fragment = asFragment()
-    // eslint-disable-next-line testing-library/no-node-access
-    fragment.querySelector('div[_echarts_instance_^="ec_"]')
-      ?.setAttribute('_echarts_instance_', 'ec_mock')
-    expect(fragment).toMatchSnapshot()
+    render( <Provider> <NetworkHistoryWidget/></Provider>)
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
-  describe('error handling', () => {
-    beforeAll(() => jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => {}))
-    afterAll(() => jest.resetAllMocks())
-
-    it('should render error', async () => {
-      mockGraphqlQuery(dataApiURL, 'widget_networkHistory', {
-        error: new Error('something went wrong!')
-      })
-      render(
-        <Provider>
-          <NetworkHistoryWidget/>
-        </Provider>
-      )
-      await screen.findByText('Something went wrong.')
+  it('should render chart', async () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
+    const { asFragment } =render( <Provider> <NetworkHistoryWidget/></Provider>)
+    await screen.findByText('Network History')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+  it('should render error', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
+      error: new Error('something went wrong!')
+    })
+    render( <Provider> <NetworkHistoryWidget/> </Provider>)
+    await screen.findByText('Something went wrong.')
+    jest.resetAllMocks()
   })
 })
 
 describe('getSeriesData', ()=>{
   it('should return correct format', ()=>{
-    expect(getSeriesData(sample as unknown as NetworkHistoryData))
+    expect(getSeriesData(sample as NetworkHistoryData))
       .toEqual([
         {
           name: 'New Clients',
@@ -90,7 +74,7 @@ describe('getSeriesData', ()=>{
       ])
   })
   it('should return empty array if no data', ()=>{
-    expect(getSeriesData())
+    expect(getSeriesData(null))
       .toEqual([])
   })
 })

@@ -23,11 +23,10 @@ const seriesMapping = [
 const lineColors = [
   cssStr('--acx-primary-black'),
   cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-orange-50'),
-  cssStr('--acx-semantics-yellow-40')
+  cssStr('--acx-accents-orange-50')
 ]
 
-export const getSeriesData = (data?: NetworkHistoryData): MultiLineTimeSeriesChartData[] => {
+export const getSeriesData = (data: NetworkHistoryData | null): MultiLineTimeSeriesChartData[] => {
   if (!data) return []
   return seriesMapping.map(({ key, name }) => ({
     name,
@@ -47,7 +46,7 @@ function NetworkHistoryWidget () {
           {({ height, width }) => (
             <MultiLineTimeSeriesChart
               style={{ width, height }}
-              data={getSeriesData(queryResults.data)}
+              data={getSeriesData(queryResults.data!)}
               lineColors={lineColors}
             />
           )}

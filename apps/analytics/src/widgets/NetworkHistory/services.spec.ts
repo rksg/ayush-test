@@ -40,7 +40,7 @@ describe('networkHistoryWidgetApi', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'widget_networkHistory', {
+    mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
@@ -51,7 +51,7 @@ describe('networkHistoryWidgetApi', () => {
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'widget_networkHistory', {
+    mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
