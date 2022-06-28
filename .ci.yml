@@ -4,7 +4,7 @@ build:
   - directory: .
     build_type: dockerfile
     images:
-      - image: ui
+      - image: acx-ui
         docker_image_name: gcr.io/kumo-scratch/services/acx-ui
         docker_image_tag: SNAPSHOT
         dockerfile: Dockerfile.ui
