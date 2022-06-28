@@ -1,5 +1,5 @@
-import { Form, Input } from 'antd'
-import { get }         from 'lodash'
+import { Form } from 'antd'
+import { get }  from 'lodash'
 
 import { NetworkSaveData } from '@acx-ui/rc/utils'
 
@@ -18,13 +18,8 @@ export function AaaSummaryForm (props: {
               get(summaryData, 'authRadius.primary.port') : ''} />
           <Form.Item
             label='Shared Secret:'
-            children={<Input.Password
-              readOnly
-              bordered={false}
-              value={get(props.summaryData, 'authRadius.primary.sharedSecret') !== '' ?
-                get(props.summaryData, 'authRadius.primary.sharedSecret') : ''}
-            />}
-          />
+            children={get(summaryData, 'authRadius.primary.sharedSecret') !== '' ?
+              get(summaryData, 'authRadius.primary.sharedSecret') : ''} />
           {
             get(summaryData, 'authRadius.secondary.ip') !== undefined && 
             <>
@@ -35,13 +30,8 @@ export function AaaSummaryForm (props: {
                   get(summaryData, 'authRadius.secondary.port') : ''} />
               <Form.Item
                 label='Shared Secret:'
-                children={<Input.Password
-                  readOnly
-                  bordered={false}
-                  value={get(props.summaryData, 'authRadius.secondary.sharedSecret') !== '' ?
-                    get(props.summaryData, 'authRadius.secondary.sharedSecret') : ''}
-                />}
-              />
+                children={get(summaryData, 'authRadius.secondary.sharedSecret') !== '' ?
+                  get(summaryData, 'authRadius.secondary.sharedSecret') : ''} />
             </>
           }
           <Form.Item
@@ -61,13 +51,8 @@ export function AaaSummaryForm (props: {
               get(summaryData, 'accountingRadius.primary.port') : ''} />
           <Form.Item
             label='Shared Secret:'
-            children={<Input.Password
-              readOnly
-              bordered={false}
-              value={get(props.summaryData, 'accountingRadius.primary.sharedSecret') !== '' ?
-                get(props.summaryData, 'accountingRadius.primary.sharedSecret') : ''}
-            />}
-          />
+            children={get(summaryData, 'accountingRadius.primary.sharedSecret') !== '' ?
+              get(summaryData, 'accountingRadius.primary.sharedSecret') : ''} />
 
           {
             get(summaryData, 'authRadius.secondary.ip') !== undefined && 
@@ -79,13 +64,8 @@ export function AaaSummaryForm (props: {
                   get(summaryData, 'accountingRadius.secondary.port') : ''} />
               <Form.Item
                 label='Shared Secret:'
-                children={<Input.Password
-                  readOnly
-                  bordered={false}
-                  value={get(props.summaryData, 'accountingRadius.secondary.sharedSecret') !== ''
-                    ? get(props.summaryData, 'accountingRadius.secondary.sharedSecret') : ''}
-                />}
-              />
+                children={get(summaryData, 'accountingRadius.secondary.sharedSecret') !== '' ?
+                  get(summaryData, 'accountingRadius.secondary.sharedSecret') : ''} />
             </>
           }
           <Form.Item
