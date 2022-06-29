@@ -34,7 +34,6 @@ function DashboardPageHeader () {
     <PageHeader
       title='Dashboard'
       extra={[
-        <p>{t('description')}</p>,
         <Button key='add' type='primary'>{t('add')}...</Button>,
         <Button key='hierarchy-filter'>{t('entirOrg')}<ArrowExpand /></Button>,
         <Button key='date-filter' icon={<ClockOutlined />}>{t('last24Hrs')}</Button>,
