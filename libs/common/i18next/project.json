@@ -1,0 +1,22 @@
+{
+  "sourceRoot": "libs/common/i18next/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/common/i18next/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/common/i18next"],
+      "options": {
+        "jestConfig": "libs/common/i18next/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Dashboard",
+  "pageHeaderMenu": {
+    "add": "Add",
+    "enterOrg": "Entire Organization",
+    "last24Hrs": "Last 24 Hours"
+  }
+}

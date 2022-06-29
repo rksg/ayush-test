@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { useTranslation } from 'react-i18next'
+
 import { GlobalFilterProvider } from '@acx-ui/analytics/utils'
 import {
   Button,
@@ -27,13 +29,15 @@ export default function Dashboard () {
 }
 
 function DashboardPageHeader () {
+  const { t } = useTranslation()
   return (
     <PageHeader
       title='Dashboard'
       extra={[
-        <Button key='add' type='primary'>Add...</Button>,
-        <Button key='hierarchy-filter'>Entire Organization <ArrowExpand /></Button>,
-        <Button key='date-filter' icon={<ClockOutlined />}>Last 24 Hours</Button>,
+        <p>{t('description')}</p>,
+        <Button key='add' type='primary'>{t('add')}...</Button>,
+        <Button key='hierarchy-filter'>{t('entirOrg')}<ArrowExpand /></Button>,
+        <Button key='date-filter' icon={<ClockOutlined />}>{t('last24Hrs')}</Button>,
         <Button key='download' icon={<DownloadOutlined />} />,
         <Button key='insight' icon={<BulbOutlined />} />
       ]}
