@@ -1,11 +1,20 @@
-import ReactECharts from 'echarts-for-react'
+import ReactECharts               from 'echarts-for-react'
+import { TooltipComponentOption } from 'echarts/components'
+import { renderToString }         from 'react-dom/server'
 
-import { cssStr } from '../../theme/helper'
+import { TimeStamp } from '@acx-ui/types'
+import { formatter } from '@acx-ui/utils'
+
+import { cssStr, cssNumber } from '../../theme/helper'
+
+import * as UI from './styledComponents'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
 
-type TimeStamp = string | number
+type Unified<T> = Exclude<T, T[]>
+type TooltipFormatterCallback = Exclude<TooltipComponentOption['formatter'], string|undefined>
+export type TooltipFormatterParams = Unified<Parameters<TooltipFormatterCallback>[0]>
 
 export interface MultiLineTimeSeriesChartData extends Object {
   /**
@@ -19,13 +28,43 @@ export interface MultiLineTimeSeriesChartData extends Object {
   data: [TimeStamp, number][]
 }
 
+export const tooltipFormatter = (
+  dataFormatter?: ((value: unknown) => string | null)
+) => (
+  parameters: TooltipFormatterParams | TooltipFormatterParams[]
+) => {
+  const [ time ] = (Array.isArray(parameters)
+    ? parameters[0].data : parameters.data) as [TimeStamp, number]
+  return renderToString(
+    <UI.TooltipWrapper>
+      <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time)}</time>
+      <ul>{
+        (Array.isArray(parameters) ? parameters : [parameters])
+          .map((parameter: TooltipFormatterParams)=> {
+            const [, value] = parameter.data as [TimeStamp, number]
+            return <li key={parameter.seriesName}>
+              <UI.Badge
+                color={parameter.color!.toString()}
+                text={<>
+                  {`${parameter.seriesName}: `}
+                  <b>{`${dataFormatter ? dataFormatter(value) : value}`}</b>
+                </>}
+              />
+            </li>
+          })
+      }</ul>
+    </UI.TooltipWrapper>
+  )
+}
+
 export interface MultiLineTimeSeriesChartProps
   <TChartData extends MultiLineTimeSeriesChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[]
     /** @default 'name' */
     legendProp?: keyof TChartData,
-    lineColors?: string[]
+    lineColors?: string[],
+    dataFormatter?: (value: unknown) => string | null
   }
 
 export function MultiLineTimeSeriesChart
@@ -33,13 +72,15 @@ export function MultiLineTimeSeriesChart
 ({
   data,
   legendProp = 'name' as keyof TChartData,
+  dataFormatter,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData>) {
   const option: EChartsOption = {
     color: props.lineColors || [
-      cssStr('--acx-accents-blue-70'),
-      cssStr('--acx-semantics-green-40'),
-      cssStr('--acx-primary-black')
+      cssStr('--acx-primary-black'),
+      cssStr('--acx-accents-blue-50'),
+      cssStr('--acx-accents-orange-50'),
+      cssStr('--acx-semantics-yellow-40')
     ],
     grid: {
       left: '0%',
@@ -55,29 +96,37 @@ export function MultiLineTimeSeriesChart
       itemWidth: 15,
       itemGap: 15,
       textStyle: {
+        color: cssStr('--acx-primary-black'),
         fontFamily: cssStr('--acx-neutral-brand-font'),
-        fontWeight: 400,
-        fontSize: 10,
-        lineHeight: 20
+        fontSize: cssNumber('--acx-body-5-font-size'),
+        lineHeight: cssNumber('--acx-body-5-line-height'),
+        fontWeight: 400
       }
     },
     tooltip: {
       trigger: 'axis',
       textStyle: {
-        fontFamily: cssStr('--acx-accent-brand-font'),
-        fontSize: 10,
-        fontWeight: 300,
-        lineHeight: 16
+        color: cssStr('--acx-primary-black'),
+        fontFamily: cssStr('--acx-neutral-brand-font'),
+        fontSize: cssNumber('--acx-body-5-font-size'),
+        lineHeight: cssNumber('--acx-body-5-line-height'),
+        fontWeight: 400
       },
       backgroundColor: 'rgba(255, 255, 255, 0.9)',
-      borderColor: cssStr('--acx-neutrals-50'),
-      borderWidth: 1,
-      borderRadius: 0,
-      padding: 12
+      borderRadius: 2,
+      padding: 8,
+      extraCssText: `box-shadow: 0px 4px 8px ${cssStr('--acx-primary-black')}26;`,
+      formatter: tooltipFormatter(dataFormatter)
     },
     xAxis: {
       type: 'time',
+      axisLine: {
+        lineStyle: {
+          color: 'transparent'
+        }
+      },
       axisLabel: {
+        color: cssStr('--acx-neutrals-50'),
         formatter: {
           // TODO:
           // handle smaller and larger time range
@@ -87,9 +136,17 @@ export function MultiLineTimeSeriesChart
         rich: {
           label: {
             fontFamily: cssStr('--acx-neutral-brand-font'),
-            fontSize: 10,
+            fontSize: cssNumber('--acx-body-5-font-size'),
             fontWeight: 400
           }
+        }
+      },
+      axisPointer: {
+        type: 'line',
+        lineStyle: {
+          type: 'solid',
+          width: 1,
+          color: cssStr('--acx-primary-black')
         }
       }
     },
@@ -97,9 +154,13 @@ export function MultiLineTimeSeriesChart
       type: 'value',
       boundaryGap: [0, '10%'],
       axisLabel: {
+        color: cssStr('--acx-neutrals-50'),
         fontFamily: cssStr('--acx-neutral-brand-font'),
-        fontSize: 10,
-        fontWeight: 400
+        fontSize: cssNumber('--acx-body-5-font-size'),
+        fontWeight: 400,
+        formatter: function (value: number) {
+          return (dataFormatter && dataFormatter(value)) || `${value}`
+        }
       }
     },
     series: data.map(datum => ({
@@ -108,7 +169,7 @@ export function MultiLineTimeSeriesChart
       type: 'line',
       smooth: true,
       symbol: 'none',
-      lineStyle: { width: 2 }
+      lineStyle: { width: 1 }
     }))
   }
 

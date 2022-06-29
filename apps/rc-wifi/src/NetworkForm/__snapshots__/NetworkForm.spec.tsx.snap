@@ -68,7 +68,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
       class="ant-pro-steps-form"
     >
       <div
-        class="styledComponents__Container-sc-1ibvcih-4 jGBkBK"
+        class="styledComponents__Container-sc-1ibvcih-4 kimQK"
       >
         <div
           class="ant-row"
@@ -374,8 +374,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                             <div
                                               class="styledComponents__RadioDescription-sc-bfjsxr-2 jyfQwQ"
                                             >
-                                              Require users to enter a passphrase 
-                          (that you have defined for the network) to connect
+                                              Require users to enter a passphrase (that you have defined for the network) to connect
                                             </div>
                                           </span>
                                         </label>
@@ -405,8 +404,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                             <div
                                               class="styledComponents__RadioDescription-sc-bfjsxr-2 jyfQwQ"
                                             >
-                                              Require users to enter a passphrase to connect. 
-                          The passphrase is unique per device
+                                              Require users to enter a passphrase to connect. The passphrase is unique per device
                                             </div>
                                           </span>
                                         </label>
@@ -435,8 +433,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                             <div
                                               class="styledComponents__RadioDescription-sc-bfjsxr-2 jyfQwQ"
                                             >
-                                              Use 802.1X standard and WPA2 security protocols to authenticate 
-                          users using an authentication server on thenetwork
+                                              Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
                                             </div>
                                           </span>
                                         </label>
@@ -466,8 +463,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                             <div
                                               class="styledComponents__RadioDescription-sc-bfjsxr-2 jyfQwQ"
                                             >
-                                              Users are authorized through a captive portal 
-                                    in various methods
+                                              Users are authorized through a captive portal in various methods
                                             </div>
                                           </span>
                                         </label>
@@ -495,8 +491,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                             <div
                                               class="styledComponents__RadioDescription-sc-bfjsxr-2 jyfQwQ"
                                             >
-                                              Allow users to access the network without 
-                          any authentication/security(not recommended)
+                                              Allow users to access the network without any authentication/security(not recommended)
                                             </div>
                                           </span>
                                         </label>
@@ -651,9 +646,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                               <div
                                 class="ant-form-item-extra"
                               >
-                                WPA2 is strong Wi-Fi security that is widely available on all mobile devices
-  manufactured after 2006. WPA2 should be selected unless you have a specific
-  reason to choose otherwise.
+                                WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.
                                 <div
                                   class="ant-space ant-space-horizontal ant-space-align-start"
                                 >
@@ -684,8 +677,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                   <div
                                     class="ant-space-item"
                                   >
-                                    Security protocols other than WPA3 are not be supported in 6 GHz
-  radio.
+                                    Security protocols other than WPA3 are not be supported in 6 GHz radio.
                                   </div>
                                 </div>
                               </div>
@@ -706,6 +698,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                   <button
                                     aria-checked="false"
                                     class="ant-switch"
+                                    id="Settings_isCloudpathEnabled"
                                     role="switch"
                                     type="button"
                                   >
@@ -888,6 +881,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                   <button
                                     aria-checked="false"
                                     class="ant-switch"
+                                    id="Settings_enableAuthProxy"
                                     role="switch"
                                     type="button"
                                   >
@@ -982,7 +976,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                 class="styledComponents__Diagram-sc-bfjsxr-0 IiZUr"
                               >
                                 <img
-                                  alt="Background"
+                                  alt="Enterprise AAA (802.1X)"
                                   src="aaa.png"
                                 />
                               </div>
@@ -1270,7 +1264,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                 class="styledComponents__Diagram-sc-bfjsxr-0 IiZUr"
                               >
                                 <img
-                                  alt="Background"
+                                  alt="Enterprise AAA (802.1X)"
                                   src="aaa.png"
                                 />
                               </div>

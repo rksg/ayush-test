@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useContext } from 'react'
 
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
@@ -6,44 +6,20 @@ import TextArea                                from 'antd/lib/input/TextArea'
 import { StepsForm }       from '@acx-ui/components'
 import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 
-import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext   from '../NetworkFormContext'
-import { RadioDescription } from '../styledComponents'
+import { NetworkTypeDescription, NetworkTypeLabel } from '../contentsMap'
+import { NetworkDiagram }                           from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext                           from '../NetworkFormContext'
+import { RadioDescription }                         from '../styledComponents'
 
 import type { RadioChangeEvent } from 'antd'
 
-const NetworkTypeDescription = {
-  [NetworkTypeEnum.PSK]: `Require users to enter a passphrase 
-                          (that you have defined for the network) to connect`,
-  [NetworkTypeEnum.DPSK]: `Require users to enter a passphrase to connect. 
-                          The passphrase is unique per device`,
-  [NetworkTypeEnum.AAA]: `Use 802.1X standard and WPA2 security protocols to authenticate 
-                          users using an authentication server on thenetwork`,
-  [NetworkTypeEnum.CAPTIVEPORTAL]: `Users are authorized through a captive portal 
-                                    in various methods`,
-  [NetworkTypeEnum.OPEN]: `Allow users to access the network without 
-                          any authentication/security(not recommended)`
-}
-
-const NetworkTypeLabel = {
-  [NetworkTypeEnum.PSK]: 'Pre-Shared Key (PSK)',
-  [NetworkTypeEnum.DPSK]: 'Dynamic Pre-Shared Key (DPSK)',
-  [NetworkTypeEnum.AAA]: 'Enterprise AAA (802.1X)',
-  [NetworkTypeEnum.CAPTIVEPORTAL]: 'Captive portal',
-  [NetworkTypeEnum.OPEN]: 'Open Network'
-}
-
-const NetworkTypeTitle = {
-  [NetworkTypeEnum.AAA]: 'AAA Settings', 
-  [NetworkTypeEnum.OPEN]: 'Settings' 
-}
+const { useWatch } = Form
 
 export function NetworkDetailForm () {
-  const { setSettingStepTitle } = useContext(NetworkFormContext)
-  const [ networkType, setNetworkType ] = useState('')
+  const type = useWatch<string>('type')
+  const { setNetworkType: setSettingStepTitle } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
-    setSettingStepTitle(NetworkTypeTitle[ e.target.value as keyof typeof NetworkTypeTitle ])
-    setNetworkType(e.target.value)
+    setSettingStepTitle(e.target.value as NetworkTypeEnum)
   }
   return (
     <Row gutter={20}>
@@ -107,7 +83,7 @@ export function NetworkDetailForm () {
       </Col>
 
       <Col span={14}>
-        <NetworkDiagram type={networkType}/>
+        <NetworkDiagram type={type}/>
       </Col>
     </Row>
   )

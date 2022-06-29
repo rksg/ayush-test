@@ -99,7 +99,15 @@ npm install
 
 ### Run UI
 
-Execute command below and access the UI at [http://localhost:3000](http://localhost:3000).
+Execute command below and access the UI by logging into
+[devalto](https://devalto.ruckuswireless.com/) and clicking on the Extract RC Cookie extension. UI
+will open in a new tab at [http://localhost:3000](http://localhost:3000).
+
+API calls will be proxied to services on devalto (see `apps/main/src/setupProxy.js`).
+
+To proxy to local MLISA services on [https://alto.local.mlisa.io](https://alto.local.mlisa.io) instead,
+start the [MLISA dev environment](https://github.com/rksg/rsa-mlisa-helm/tree/develop/dev) first
+before executing the command.
 
 ```sh
 npx nx run main:serve --devRemotes=rc-wifi,analytics

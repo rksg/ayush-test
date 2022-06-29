@@ -1,9 +1,8 @@
 import { useState, useRef } from 'react'
 
-import { message } from 'antd'
-
 import {
   PageHeader,
+  showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -19,13 +18,13 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext          from './NetworkFormContext'
-import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
-import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
-import { AaaSummaryForm }          from './NetworkSummary/AaaSummaryForm'
-import { OpenSummaryForm }         from './NetworkSummary/OpenSummaryForm'
+import { NetworkTypeTitle }  from './contentsMap'
+import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext    from './NetworkFormContext'
+import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
+import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
+import { AaaSummaryForm }    from './NetworkSummary/AaaSummaryForm'
+import { OpenSummaryForm }   from './NetworkSummary/OpenSummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave
@@ -36,7 +35,7 @@ export function NetworkForm () {
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
-  const [settingStepTitle, setSettingStepTitle] = useState('Settings')
+  const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [createNetwork] = useCreateNetworkMutation()
   //DetailsState
@@ -65,7 +64,10 @@ export function NetworkForm () {
       await createNetwork({ params, payload: saveState }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
-      message.error('An error occurred')
+      showToast({
+        type: 'error',
+        content: 'An error occurred'
+      })
     }
   }
   return (
@@ -109,14 +111,14 @@ export function NetworkForm () {
             return true
           }}
         >
-          <NetworkFormContext.Provider value={{ setSettingStepTitle }}>
+          <NetworkFormContext.Provider value={{ setNetworkType }}>
             <NetworkDetailForm />
           </NetworkFormContext.Provider>
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
           name='Settings'
-          title={settingStepTitle}
+          title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
           validateTrigger='onBlur'
           onFinish={async (data) => {
             data = {
@@ -130,7 +132,7 @@ export function NetworkForm () {
           }}
         >
           {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-          {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm formRef={formRef} />}
+          {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
