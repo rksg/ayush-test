@@ -1,6 +1,6 @@
 import moment from 'moment-timezone'
 
-import { timeSeriesTooltipFormatter } from './helper'
+import { timeSeriesTooltipFormatter, stackedBarTooltipFormatter } from './helper'
 
 import type { TooltipFormatterParams } from './helper'
 
@@ -34,5 +34,19 @@ describe('timeSeriesTooltipFormatter',()=>{
   it('should handle when no formatter', async () => {
     expect(timeSeriesTooltipFormatter()(singleparameters)).toMatchSnapshot()
     expect(timeSeriesTooltipFormatter()(multiParameters)).toMatchSnapshot()
+  })
+})
+
+describe('stackedBarTooltipFormatter', () => {
+  const singleparameters = {
+    color: 'color1', value: [10]
+  } as TooltipFormatterParams
+  it('should return correct Html string for single value', async () => {
+    const formatter = jest.fn(value=>`formatted-${value}`)
+    expect(stackedBarTooltipFormatter(formatter)(singleparameters)).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(1)
+  })
+  it('should handle when no formatter', async () => {
+    expect(stackedBarTooltipFormatter()(singleparameters)).toMatchSnapshot()
   })
 })

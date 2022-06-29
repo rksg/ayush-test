@@ -1,11 +1,9 @@
 import { TooltipComponentOption } from 'echarts'
 import ReactECharts               from 'echarts-for-react'
 import _                          from 'lodash'
-import { renderToString }         from 'react-dom/server'
 
-import { cssNumber, cssStr } from '../../theme/helper'
-import { tooltipOptions }    from '../Chart/helper'
-import * as UI               from '../Chart/styledComponents'
+import { cssNumber, cssStr }                          from '../../theme/helper'
+import { tooltipOptions, stackedBarTooltipFormatter } from '../Chart/helper'
 
 import type { EChartsOption, RegisteredSeriesOption } from 'echarts'
 import type { EChartsReactProps }                     from 'echarts-for-react'
@@ -52,6 +50,7 @@ export interface StackedBarChartProps
     data: TChartData[]
     /** @default 'name' */
     legendProp?: keyof TChartData
+    dataFormatter?: (value: unknown) => string | null
   }
 
 const computeChartData = ({ category, series }: ChartData) => {
@@ -113,6 +112,7 @@ const massageData = (
 
 export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   data,
+  dataFormatter,
   ...props
 }: StackedBarChartProps<TChartData>) {
   const { animation, showTotal, showLabels, barColors, showTooltip } = props
@@ -157,18 +157,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
     tooltip: {
       ...tooltipOptions as TooltipComponentOption,
       trigger: 'item',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      formatter: (params: any) => {
-        const { color, value } = params
-        return renderToString(
-          <UI.TooltipWrapper>
-            <UI.Badge
-              color={color!.toString()}
-              text={value[0]}
-            />
-          </UI.TooltipWrapper>
-        )
-      },
+      formatter: stackedBarTooltipFormatter(dataFormatter),
       show: showTooltip
     },
     series: massageData(data, showTotal)

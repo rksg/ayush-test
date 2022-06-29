@@ -112,3 +112,17 @@ export const timeSeriesTooltipFormatter = (
   )
 }
 
+export const stackedBarTooltipFormatter = (
+  dataFormatter?: ((value: unknown) => string | null)
+) => (
+  parameters: any
+) => {
+  return renderToString(
+    <UI.TooltipWrapper>
+      <UI.Badge
+        color={parameters.color!.toString()}
+        text={dataFormatter ? dataFormatter(parameters.value[0]) : parameters.value[0]}
+      />
+    </UI.TooltipWrapper>
+  )
+}
