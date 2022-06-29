@@ -261,7 +261,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                               class="ant-col ant-form-item-label"
                             >
                               <label
-                                class="ant-form-item-required"
+                                class=""
                                 for="details_name"
                                 title="Network Name"
                               >

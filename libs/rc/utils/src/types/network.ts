@@ -1,4 +1,4 @@
-import { PassphraseExpirationEnum, PassphraseFormatEnum } from '../constants'
+import { PassphraseExpirationEnum, PassphraseFormatEnum, WlanSecurityEnum } from '../constants'
 
 export interface CreateNetworkFormFields {
   name: string;
@@ -24,7 +24,7 @@ export interface NetworkSaveData {
     enable?: boolean,
     advancedCustomization?: IOpenWlanAdvancedCustomization
   };
-  wlanSecurity?: string;
+  wlanSecurity?: WlanSecurityEnum;
   authRadius?: {
     primary: {
       ip: string, 

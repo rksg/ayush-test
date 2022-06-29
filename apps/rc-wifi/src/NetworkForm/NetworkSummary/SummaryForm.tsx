@@ -1,8 +1,8 @@
 import { EnvironmentOutlined }     from '@ant-design/icons'
 import { Col, Divider, Form, Row } from 'antd'
 
-import { StepsForm }                                from '@acx-ui/components'
-import { CreateNetworkFormFields, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { StepsForm }                                                      from '@acx-ui/components'
+import { CreateNetworkFormFields, NetworkTypeEnum, transformDisplayText } from '@acx-ui/rc/utils'
 
 import { transformNetworkType } from '../parser'
 import { FormSubTitle }         from '../styledComponents'
@@ -14,7 +14,6 @@ import { DpskSummaryForm } from './DpskSummaryForm'
 export function SummaryForm (props: {
   summaryData: CreateNetworkFormFields;
 }) {
-  const defaultValue = '--'
   const { summaryData } = props
   const getVenues = function () {
     const venues = summaryData.venues
@@ -30,7 +29,7 @@ export function SummaryForm (props: {
       }
       return rows
     } else {
-      return defaultValue
+      return transformDisplayText()
     }
   }
 
@@ -43,7 +42,7 @@ export function SummaryForm (props: {
           <Form.Item label='Network Name:' children={summaryData.name} />
           <Form.Item
             label='Info:'
-            children={summaryData.description || defaultValue}
+            children={transformDisplayText(summaryData.description)}
           />
           <Form.Item
             label='Type:'

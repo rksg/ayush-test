@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import {
   QuestionCircleOutlined
 } from '@ant-design/icons'
-import { Radio, RadioChangeEvent, Space } from 'antd'
+import { Radio, Space } from 'antd'
 import {
   Col,
   Form,
@@ -24,23 +24,7 @@ import { CloudpathServerForm } from './CloudpathServerForm'
 
 const { Option } = Select
 
-export interface DpskSettingsFields {
-  wlanSecurity?: string;
-  isCloudpathEnabled?: boolean;
-  passphraseFormat?: string;
-  expiration?: string;
-  passphraseLength?: number;
-  cloudpathServerId?: string;
-}
-
-enum MessageEnum {
-  WPA2_DESCRIPTION = `WPA2 is strong Wi-Fi security that is widely available on all mobile devices
-  manufactured after 2006. WPA2 should be selected unless you have a specific
-  reason to choose otherwise.`,
-
-  WPA3_DESCRIPTION = `WPA3 is the highest level of Wi-Fi security available but is supported only
-  by devices manufactured after 2019.`,
-}
+const { useWatch } = Form
 
 export function DpskForm () {
   return (
@@ -56,25 +40,11 @@ export function DpskForm () {
 }
 
 function SettingsForm () {
-  const [state, updateState] = useState<DpskSettingsFields>({
-    wlanSecurity: WlanSecurityEnum.WPA2Enterprise,
-    isCloudpathEnabled: false
-  })
-  const updateData = (newData: Partial<DpskSettingsFields>) => {
-    updateState({ ...state, ...newData })
-  }
-
-  const wpa2Description = (
-    <>
-      {MessageEnum.WPA2_DESCRIPTION}
-    </>
-  )
-
-  const wpa3Description = MessageEnum.WPA3_DESCRIPTION
-
-  const onChange = (e: RadioChangeEvent) => {
-    updateData({ isCloudpathEnabled: e.target.value })
-  }
+  const [
+    isCloudpathEnabled
+  ] = [
+    useWatch('isCloudpathEnabled')
+  ]
 
   return (
     <>
@@ -82,30 +52,21 @@ function SettingsForm () {
       <Form.Item
         label='Security Protocol'
         name='wlanSecurity'
-        initialValue={WlanSecurityEnum.WPA2Enterprise}
-        extra={
-          state.wlanSecurity === WlanSecurityEnum.WPA2Enterprise
-            ? wpa2Description
-            : wpa3Description
-        }
+        initialValue={WlanSecurityEnum.WPA2Personal}
       >
-        <Select
-          onChange={function (value: any) {
-            updateData({ wlanSecurity: value })
-          }}
-        >
-          <Option value={WlanSecurityEnum.WPA2Enterprise}>
+        <Select>
+          <Option value={WlanSecurityEnum.WPA2Personal}>
             WPA2 (Recommended)
           </Option>
-          <Option value={WlanSecurityEnum.WPA3}>WPA3</Option>
+          <Option value={WlanSecurityEnum.WPAPersonal}>WPA</Option>
         </Select>
       </Form.Item>
 
       <Form.Item
         name='isCloudpathEnabled'
-        initialValue={state.isCloudpathEnabled}
+        initialValue={isCloudpathEnabled}
       >
-        <Radio.Group onChange={onChange}>
+        <Radio.Group>
           <Space direction='vertical'>
             <Radio value={false}>
                 Use the DPSK Service
@@ -116,7 +77,7 @@ function SettingsForm () {
           </Space>
         </Radio.Group>
       </Form.Item>
-      {state.isCloudpathEnabled ? <CloudpathServerForm /> : <PassphraseGeneration />}
+      {isCloudpathEnabled ? <CloudpathServerForm /> : <PassphraseGeneration />}
       <div><Button type='link' style={{ padding: 0 }}>Show more settings</Button></div>
     </>
   )

@@ -103,13 +103,6 @@ exports[`DpskForm should create open network successfully 1`] = `
                 </div>
               </div>
             </div>
-            <div
-              class="ant-form-item-extra"
-            >
-              WPA2 is strong Wi-Fi security that is widely available on all mobile devices
-  manufactured after 2006. WPA2 should be selected unless you have a specific
-  reason to choose otherwise.
-            </div>
           </div>
         </div>
         <div
@@ -136,13 +129,12 @@ exports[`DpskForm should create open network successfully 1`] = `
                       style="margin-bottom: 8px;"
                     >
                       <label
-                        class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
+                        class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                       >
                         <span
-                          class="ant-radio ant-radio-checked"
+                          class="ant-radio"
                         >
                           <input
-                            checked=""
                             class="ant-radio-input"
                             type="radio"
                             value="false"
