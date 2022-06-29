@@ -11,7 +11,8 @@ import {
 
 import { StepsForm } from '@acx-ui/components'
 
-import * as UI from './styledComponents'
+import { ServicesForm } from './ServicesForm'
+import * as UI          from './styledComponents'
 const { Panel } = Collapse
 const { Option } = Select
 
@@ -25,7 +26,6 @@ enum MessageEnum {
 
 function VlanForm () {
   const enableVlanPooling = useWatch<boolean>('enableVlanPooling')
-
 
   return (
     <>
@@ -60,7 +60,6 @@ function VlanForm () {
       </div>}
 
       {enableVlanPooling &&
-
         <UI.FieldLabel width='90px'>
           Proxy ARP:
           <Form.Item
@@ -90,127 +89,8 @@ export function NetworkMoreSettingsForm () {
       </Panel>
 
       <Panel header='Services' key='2' >
+        <ServicesForm />
 
-        <UI.FieldLabel width='125px'>
-          DNS Proxy:
-          <Form.Item
-            name='enableDnsProxy'
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}
-          />
-        </UI.FieldLabel>
-
-
-
-        <UI.FieldLabel width='125px'>
-          DNS Wi-Fi Calling:
-          <Form.Item
-            name='enableWifiCalling'
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}
-          />
-        </UI.FieldLabel>
-
-        <UI.FieldLabel width='125px'>
-          Client Isolation:
-          <Form.Item
-            name='enableClientIsolation'
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}
-          />
-        </UI.FieldLabel>
-
-        <UI.FieldLabel width='125px'>
-          Anti-spoofing:
-          <Form.Item
-            name='enableAntiSpoofing'
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}
-          />
-        </UI.FieldLabel>
-
-
-
-
-
-
-        <div style={{ display: 'grid', gridTemplateColumns: '160px 60px 1fr' }}>
-          <UI.FormItemNoLabel
-            name='enableArpRequestRateLimit'
-            children={
-              <UI.Label>
-                <UI.CheckboxWrapper />
-                ARP request rate limit
-              </UI.Label>}
-          />
-
-          <Form.Item
-            name='arpRequestRateLimit'
-            style={{ marginBottom: '10px', lineHeight: '32px' }}
-            children={
-              <Input style={{ width: '50px' }}></Input>}
-          />
-          <UI.Label
-            style={{ lineHeight: '32px' }}>
-            ppm
-          </UI.Label>
-        </div>
-
-
-
-        <div style={{ display: 'grid', gridTemplateColumns: '160px 60px 1fr' }}>
-          <UI.FormItemNoLabel
-            name='enableDhcpRequestRateLimit'
-            children={
-              <UI.Label>
-                <UI.CheckboxWrapper />
-                DHCP request rate limit
-              </UI.Label>}
-          />
-
-
-          <Form.Item
-            name='dhcpRequestRateLimit'
-            style={{ marginBottom: '10px', lineHeight: '32px' }}
-            children={
-              <Input style={{ width: '50px' }}></Input>}
-          />
-          <UI.Label
-            style={{ lineHeight: '32px' }}>
-            ppm
-          </UI.Label>
-        </div>
-
-
-
-
-
-
-
-        <UI.FormItemNoLabel
-          name='enableDhcp'
-          children={
-            <UI.Label>
-              <UI.CheckboxWrapper />
-              Force DHCP
-            </UI.Label>}
-        />
-        <UI.FormItemNoLabel
-          name='enableSyslog'
-          children={
-            <UI.Label>
-              <UI.CheckboxWrapper />
-              Enable logging client data to external syslog
-            </UI.Label>}
-        />
       </Panel>
 
       <Panel header='Radio' key='3' >
