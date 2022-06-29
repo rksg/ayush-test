@@ -10,20 +10,14 @@ import {
   NetworkSaveData
 } from '@acx-ui/rc/utils'
 
-import { CloudpathSummary } from './CloudpathSummary'
-
 export function AaaSummaryForm (props: {
   summaryData: NetworkSaveData;
 }) {
   const { summaryData } = props
   return (
     <>
-      {summaryData.isCloudpathEnabled &&
-        <CloudpathSummary cloudpathServerId={summaryData.cloudpathServerId}></CloudpathSummary>
-      }
-      {!summaryData.isCloudpathEnabled && <>
-        {
-          get(summaryData, 'authRadius.primary.ip') !== undefined && 
+      {
+        get(summaryData, 'authRadius.primary.ip') !== undefined && 
             <>
               Authentication Service
               {getAaaServer(
@@ -31,17 +25,16 @@ export function AaaSummaryForm (props: {
                 summaryData
               )}
             </>
-        }
-        {
-          summaryData.enableAccountingService && 
+      }
+      {
+        summaryData.enableAccountingService && 
             <>Accounting Service
               {getAaaServer(
                 AaaServerTypeEnum.ACCOUNTING,
                 summaryData
               )}
             </>
-        }
-      </>}
+      }
     </>
 
   )
