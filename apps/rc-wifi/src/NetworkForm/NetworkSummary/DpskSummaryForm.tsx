@@ -13,7 +13,7 @@ export function DpskSummaryForm (props: {
         children={transformNetworkEncryption(summaryData.dpskWlanSecurity)}
       />
       {
-        !summaryData.cloudpathServerId && (
+        !summaryData.isCloudpathEnabled && (
           <>
             <Form.Item
               label='Passphrase Format:'
