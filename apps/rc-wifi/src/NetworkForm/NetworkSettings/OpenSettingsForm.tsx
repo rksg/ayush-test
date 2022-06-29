@@ -7,7 +7,7 @@ import {
   Switch
 } from 'antd'
 
-import { StepsForm, Button } from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
@@ -44,7 +44,7 @@ function SettingsForm () {
 
       {isCloudpathEnabled && <CloudpathServerForm />}
 
-      <div><Button type='link' style={{ padding: 0 }}>Show more settings</Button></div>
+      { /*TODO: <div><Button type='link' style={{ padding: 0 }}>Show more settings</Button></div> */ }
     </>
   )
 }

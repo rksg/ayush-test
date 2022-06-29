@@ -5,6 +5,7 @@ export interface CreateNetworkFormFields {
   description?: string;
   type: string;
   isCloudpathEnabled?: boolean;
+  cloudpathServerId?: string;
   venues: any;
 }
 
@@ -17,7 +18,7 @@ export interface NetworkSaveData {
   enableAuthProxy?: boolean;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
-  venues?: [];
+  venues?: { venueId: string; name: string; }[];
   wlan?: {
     ssid?: string,
     vlanId?: number,

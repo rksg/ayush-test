@@ -75,7 +75,8 @@ describe('NetworkForm', () => {
             ctx.status(200),
             ctx.json(successResponse)
           )
-        })
+        }),
+      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) => res(ctx.json([])))
     )
 
     const insertInput = screen.getByLabelText('Network Name')

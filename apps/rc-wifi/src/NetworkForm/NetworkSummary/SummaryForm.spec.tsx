@@ -2,8 +2,9 @@ import '@testing-library/jest-dom'
 
 import { Form } from 'antd'
 
-import { Provider } from '@acx-ui/store'
-import { render }   from '@acx-ui/test-utils'
+import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { render }                                                           from '@acx-ui/test-utils'
 
 import { SummaryForm } from './SummaryForm'
 
@@ -13,18 +14,14 @@ const mockSummary = {
   isCloudpathEnabled: false,
   venues: [
     {
-      apGroups: [],
-      scheduler: { type: 'ALWAYS_ON' },
-      isAllApGroups: true,
-      allApGroupsRadio: 'Both',
       venueId: '6cf550cdb67641d798d804793aaa82db',
       name: 'My-Venue'
     }
   ],
-  wlanSecurity: 'WPA2Enterprise',
-  passphraseFormat: 'MOST_SECURED',
+  wlanSecurity: WlanSecurityEnum.WPA2Enterprise,
+  passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
   passphraseLength: 18,
-  expiration: 'UNLIMITED'
+  expiration: PassphraseExpirationEnum.UNLIMITED
 }
 
 describe('SummaryForm', () => {
