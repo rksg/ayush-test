@@ -15,19 +15,19 @@ describe('StackedBarChart', () => {
   it('should render correctly', async () => {
     const { asFragment } = render(
       <StackedBarChart
-        style={{ height: 200, width: 400 }}
         data={data}
         barColors={barColors}/>)
-    expect(asFragment()).toMatchSnapshot()
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('svg')).toBeDefined()
   })
   it('should not render labels and total count', async () => {
     const { asFragment } = render(
       <StackedBarChart
-        style={{ height: 200, width: 400 }}
         data={data}
         barColors={barColors}
         showTotal={false}
         showLabels={false}/>)
-    expect(asFragment()).toMatchSnapshot()
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('svg')).toBeDefined()
   })
 })
