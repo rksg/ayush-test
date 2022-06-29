@@ -180,10 +180,11 @@ function getSwitchStatusDataByVenue (overviewData: Dashboard, venueId: string): 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getMarkerColor = (statuses: any[] | undefined) => {
-  // ApVenueStatusEnum.IN_SETUP_PHASE OR ApVenueStatusEnum.OFFLINE
+  // ApVenueStatusEnum.OPERATIONAL
   let color: { default: string, hover: string } = {
-    default: cssStr('--acx-neutrals-50'),
-    hover: cssStr('--acx-neutrals-70')
+    default: cssStr('--acx-semantics-green-50'),
+    hover: cssStr('--acx-semantics-green-70')
+
   } // default case
 
   if (statuses?.includes(ApVenueStatusEnum.REQUIRES_ATTENTION))
@@ -196,10 +197,11 @@ export const getMarkerColor = (statuses: any[] | undefined) => {
       default: cssStr('--acx-semantics-yellow-40'),
       hover: cssStr('--acx-semantics-yellow-70')
     }
-  else if (statuses?.includes(ApVenueStatusEnum.OPERATIONAL))
+  else if (statuses?.includes(ApVenueStatusEnum.IN_SETUP_PHASE) ||
+    statuses?.includes(ApVenueStatusEnum.OFFLINE))
     color = {
-      default: cssStr('--acx-semantics-green-50'),
-      hover: cssStr('--acx-semantics-green-70')
+      default: cssStr('--acx-neutrals-50'),
+      hover: cssStr('--acx-neutrals-70')
     }
   return color
 }
