@@ -18,13 +18,14 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkTypeTitle }  from './contentsMap'
-import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext    from './NetworkFormContext'
-import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
-import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
-import { AaaSummaryForm }    from './NetworkSummary/AaaSummaryForm'
-import { OpenSummaryForm }   from './NetworkSummary/OpenSummaryForm'
+import { NetworkTypeTitle }        from './contentsMap'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { AaaSummaryForm }          from './NetworkSummary/AaaSummaryForm'
+import { OpenSummaryForm }         from './NetworkSummary/OpenSummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave
@@ -88,13 +89,14 @@ export function NetworkForm () {
           title='More Settings'
           validateTrigger='onBlur'
           onFinish={async (data) => {
-            const detailsSaveData = transferDetailToSave(data)
+            const detailsSaveData = data
             updateData(data)
             updateSaveData(detailsSaveData)
             return true
           }}
         >
-          <NetworkMoreSettingsForm/>
+
+          <NetworkMoreSettingsForm />
         </StepsForm.StepForm>
 
 
