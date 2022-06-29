@@ -1,13 +1,13 @@
-import { EnvironmentOutlined }   from '@ant-design/icons'
-import { Col, Form, Row, Input } from 'antd'
+import { EnvironmentOutlined } from '@ant-design/icons'
+import { Col, Form, Row }      from 'antd'
 
 import { StepsForm }               from '@acx-ui/components'
-import { useCloudpathListQuery }   from '@acx-ui/rc/services'
 import { CreateNetworkFormFields } from '@acx-ui/rc/utils'
-import { useParams }               from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram }       from '../NetworkDiagram/NetworkDiagram'
 import { transformNetworkType } from '../parser'
+
+import { CloudpathSummary } from './CloudpathSummary'
 
 
 export function OpenSummaryForm (props: {
@@ -15,15 +15,6 @@ export function OpenSummaryForm (props: {
 }) {
   const { summaryData } = props
   const defaultValue = '--'
-
-  const selectedId = summaryData.cloudpathServerId
-  const { selected } = useCloudpathListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        selected: data?.find((item) => item.id === selectedId)
-      }
-    }
-  })  
 
 
   const getVenues = function () {
@@ -61,29 +52,8 @@ export function OpenSummaryForm (props: {
           label='Use Cloudpath Server'
           children={summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
         />
-        {summaryData.isCloudpathEnabled && selected &&
-          <>
-            <Form.Item
-              label='Cloudpath Server'
-              children={ selected.name }
-            />
-            <Form.Item
-              label='Deployment Type'
-              children={ selected.deploymentType }
-            />
-            <Form.Item
-              label='Authentication Server'
-              children={ `${selected.authRadius.primary.ip}:${selected.authRadius.primary.port}` }
-            />
-            <Form.Item
-              label='Shared Secret'
-              children={ <Input.Password
-                readOnly
-                bordered={false}
-                value={selected.authRadius.primary.sharedSecret}
-              />}
-            />
-          </>
+        {summaryData.isCloudpathEnabled &&
+          <CloudpathSummary cloudpathServerId={summaryData.cloudpathServerId}></CloudpathSummary>
         }
         <Form.Item label='Activated in venues' children={getVenues()} />
       </Col>

@@ -16,10 +16,17 @@ import {
   Typography
 } from 'antd'
 
-import { StepsForm, Button }                                    from '@acx-ui/components'
-import { useGetAllUserSettingsQuery, UserSettings }             from '@acx-ui/rc/services'
-import { Constants, WlanSecurityEnum, getUserSettingsFromDict } from '@acx-ui/rc/utils'
-import { useParams }                                            from '@acx-ui/react-router-dom'
+import { StepsForm, Button }                        from '@acx-ui/components'
+import { useGetAllUserSettingsQuery, UserSettings } from '@acx-ui/rc/services'
+import { 
+  Constants,
+  WlanSecurityEnum,
+  getUserSettingsFromDict,
+  AaaServerTypeEnum,
+  AaaServerOrderEnum,
+  AaaServerTitle
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
@@ -28,20 +35,6 @@ import { CloudpathServerForm } from './CloudpathServerForm'
 
 const { Option } = Select
 
-enum AaaServerTypeEnum {
-  AUTHENTICATION = 'authRadius',
-  ACCOUNTING = 'accountingRadius',
-}
-
-enum AaaServerOrderEnum {
-  PRIMARY = 'primary',
-  SECONDARY = 'secondary',
-}
-
-const AaaServerTitle = {
-  [AaaServerOrderEnum.PRIMARY]: 'Primary Server',
-  [AaaServerOrderEnum.SECONDARY]: 'Secondary Server'
-}
 /* eslint-disable max-len */
 const AaaMessages = {
   ENABLE_PROXY_TOOLTIP: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.',

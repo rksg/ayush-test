@@ -71,12 +71,6 @@ const OpenWlanAdvancedCustomization: IOpenWlanAdvancedCustomization = {
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {}
 
-  saveData = {
-    wlan: {
-      wlanSecurity: data.wlanSecurity
-    }
-  }
-
   if (data.isCloudpathEnabled) {
     saveData = {
       ...saveData,
@@ -100,7 +94,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
         }
       }
     }
-    if (get(data, 'authRadius.secondary.ip')) {
+    if (data.enableSecondaryAuthServer) {
       authRadius = {
         ...authRadius,
         ...{
@@ -116,13 +110,12 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
     saveData = {
       ...saveData,
       ...{
-        enableAccountingProxy: data.enableAccountingProxy,
         enableAuthProxy: data.enableAuthProxy,
         authRadius
       }
     }
 
-    if (data.enableAccountingService === true) {
+    if (data.enableAccountingService) {
       let accountingRadius = {}
       accountingRadius = {
         ...accountingRadius,
@@ -135,7 +128,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
         }
       }
 
-      if (get(data, 'accountingRadius.secondary.ip')) {
+      if (data.enableSecondaryAcctServer) {
         accountingRadius = {
           ...accountingRadius,
           ...{
@@ -151,8 +144,23 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
       saveData = {
         ...saveData,
         ...{
+          enableAccountingProxy: data.enableAccountingProxy,
           accountingRadius
         }
+      }
+    }
+  }
+  saveData = {
+    ...saveData,
+    ...{
+      wlan: {
+        wlanSecurity: data.wlanSecurity,
+        advancedCustomization: OpenWlanAdvancedCustomization,
+        bypassCNA: false,
+        bypassCPUsingMacAddressAuthentication: false,
+        enable: true,
+        managementFrameProtection: 'Disabled',
+        vlanId: 1
       }
     }
   }
