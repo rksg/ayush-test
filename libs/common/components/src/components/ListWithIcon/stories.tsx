@@ -11,13 +11,44 @@ import styled        from 'styled-components/macro'
 
 import { ListWithIcon, ListWithIconProps } from '.'
 
+export const StyledListWithIconLight = styled.div`
+width: 300px;
+border-radius: 4px;
+
+.ant-list-pagination {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.ant-list-item:hover {
+  background-color: #D8D7C9;
+}
+`
+
 export const StyledListWithIcon = styled.div`
 width: 300px;
 background-color: #333333;
 border-radius: 4px;
 
+.venueInfoHeader {
+  color: white;
+}
+
 .ant-list-item {
     color: white;
+}
+
+.ant-list-split .ant-list-item {
+  border-bottom: 1px solid #464749;
+}
+
+.ant-list-split .ant-list-header {
+  border-bottom: 1px solid #464749;
+}
+
+.ant-list-split.ant-list-something-after-last-item 
+.ant-spin-container > .ant-list-items > .ant-list-item:last-child {
+  border-bottom: 1px solid #464749;
 }
 
 .ant-list-item:hover {
@@ -96,7 +127,10 @@ storiesOf('List with Icon', module)
   .add('Basic',() => <ListWithIcon data={data} />)
   .add('With header and footer',() => <ListWithIcon data={data} header={header} footer={footer} />)
   .add('With pagination',() => <ListWithIcon data={data} isPaginate={true} pageSize={4} />)
-  .add('With Styles',() => (<StyledListWithIcon>
+  .add('With Dark Styles',() => (<StyledListWithIcon>
     <ListWithIcon data={data} isPaginate={true} pageSize={4} />
   </StyledListWithIcon>))
+  .add('With Light Styles',() => (<StyledListWithIconLight>
+    <ListWithIcon data={data} isPaginate={true} pageSize={4} />
+  </StyledListWithIconLight>))
   .add('Empty Data',() => <ListWithIcon data={[]} />)

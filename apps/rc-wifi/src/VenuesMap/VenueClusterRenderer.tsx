@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import Icon, {
   CloseOutlined
 } from '@ant-design/icons'
@@ -62,7 +61,6 @@ export default class VenueClusterRenderer implements Renderer {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
     })
     google.maps.event.addListener(clusterMarker, 'click',() => {
-      console.log('Markers:',markers)
       let data: ListWithIconProps['data']=[]
       if(markers)
         data= markers?.map((marker)=>{
@@ -71,13 +69,14 @@ export default class VenueClusterRenderer implements Renderer {
             icon: <Icon component={getVenueInfoMarkerIcon(venueData.status || 'NA')}/>,
             title: venueData.name || 'NA',
             popoverContent: <VenueMarkerTooltip 
-              venue={(marker as VenueMarkerWithLabel).venueData} />
+              venue={(marker as VenueMarkerWithLabel).venueData}
+              onNavigate={()=>{}} />
           }
         })
       const infoDiv = document.createElement('div')
-      const header = <div style={{ color: 'white' }}>
+      const header = <div className='venueInfoHeader'>
         <span style={{ fontWeight: 'bolder' }}>{markers?.length} Venues</span> 
-        <span style={{ float: 'right' }}
+        <span style={{ float: 'right', cursor: 'pointer' }}
           onClick={()=>{
             clusterInfoWindow.close()
           }}>
