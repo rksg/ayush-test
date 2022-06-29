@@ -7,13 +7,13 @@ import { Radio, Space } from 'antd'
 import {
   Col,
   Form,
-  Input,
+  InputNumber,
   Row,
   Select,
   Tooltip
 } from 'antd'
 
-import { StepsForm, Button }                       from '@acx-ui/components'
+import { StepsForm }                               from '@acx-ui/components'
 import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkType, 
   transformDpskNetwork, PassphraseExpirationEnum }      from '@acx-ui/rc/utils'
 
@@ -51,7 +51,7 @@ function SettingsForm () {
       <StepsForm.Title>DPSK Settings</StepsForm.Title>
       <Form.Item
         label='Security Protocol'
-        name='wlanSecurity'
+        name='dpskWlanSecurity'
         initialValue={WlanSecurityEnum.WPA2Personal}
       >
         <Select>
@@ -64,7 +64,7 @@ function SettingsForm () {
 
       <Form.Item
         name='isCloudpathEnabled'
-        initialValue={isCloudpathEnabled}
+        initialValue={false}
       >
         <Radio.Group>
           <Space direction='vertical'>
@@ -78,7 +78,7 @@ function SettingsForm () {
         </Radio.Group>
       </Form.Item>
       {isCloudpathEnabled ? <CloudpathServerForm /> : <PassphraseGeneration />}
-      <div><Button type='link' style={{ padding: 0 }}>Show more settings</Button></div>
+      { /*TODO: <div><Button type='link' style={{ padding: 0 }}>Show more settings</Button></div> */ }
     </>
   )
 }
@@ -129,45 +129,55 @@ function PassphraseGeneration () {
   return (
     <React.Fragment>
       <StepsForm.Title>Passphrase Generation Parameters</StepsForm.Title>
-      <Space>
-        <Form.Item 
-          name='passphraseFormat' 
-          label='Passphrase format'
-          rules={[{ required: true }]}
-          initialValue={state.passphraseFormat}
-          extra={passphraseFormatDescription[state.passphraseFormat]}
-        >
-          <Select
-            onChange={onFormatChange}
+      <Row align='middle' gutter={8}>
+        <Col span={23}>
+          <Form.Item 
+            name='passphraseFormat' 
+            label='Passphrase format'
+            rules={[{ required: true }]}
+            initialValue={state.passphraseFormat}
+            extra={passphraseFormatDescription[state.passphraseFormat]}
           >
-            {passphraseOptions}
-          </Select>
-        </Form.Item>
-        <FieldExtraTooltip>
-          <Tooltip title= {
-            /* eslint-disable */
-              <div dangerouslySetInnerHTML={{ __html:FIELD_TOOLTIP.FORMAT }}></div>
+            <Select
+              onChange={onFormatChange}
+            >
+              {passphraseOptions}
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col span={1}>
+          <FieldExtraTooltip>
+            <Tooltip title= {
               /* eslint-disable */
-            } 
-            placement='bottom'
-          >
+                <div dangerouslySetInnerHTML={{ __html:FIELD_TOOLTIP.FORMAT }}></div>
+                /* eslint-disable */
+              } 
+              placement='bottom'
+            >
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </FieldExtraTooltip>
+        </Col>  
+      </Row>
+      
+      
+      <Row align='middle' gutter={8}>
+        <Col span={23}>
+          <Form.Item
+            name='passphraseLength'
+            label='Passphrase length'
+            rules={[{ required: true }]}
+            initialValue={state.passphraseLength}
+            children={<InputNumber min={8} max={63} style={{ width: '100%' }}/>}
+          />
+        </Col>
+        <Col span={1}>
+          <Tooltip title={FIELD_TOOLTIP.LENGTH} placement='bottom'>
             <QuestionCircleOutlined />
           </Tooltip>
-        </FieldExtraTooltip>
-       </Space>
+        </Col>
+       </Row>
 
-       <Space >
-        <Form.Item
-          name='passphraseLength'
-          label='Passphrase length'
-          rules={[{ required: true }]}
-          initialValue={state.passphraseLength}
-          children={<Input />}
-        />
-        <Tooltip title={FIELD_TOOLTIP.LENGTH} placement='bottom'>
-          <QuestionCircleOutlined />
-        </Tooltip>
-       </Space>
       <Form.Item 
         name='expiration' 
         label='Passphrase expiration'

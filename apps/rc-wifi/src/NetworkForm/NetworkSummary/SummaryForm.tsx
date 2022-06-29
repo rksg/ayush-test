@@ -1,5 +1,5 @@
-import { EnvironmentOutlined }            from '@ant-design/icons'
-import { Col, Divider, Form, Input, Row } from 'antd'
+import { EnvironmentOutlined }                        from '@ant-design/icons'
+import { Col, Divider, Form, Input, Row, Typography } from 'antd'
 
 import { StepsForm }                                              from '@acx-ui/components'
 import { useCloudpathListQuery }                                  from '@acx-ui/rc/services'
@@ -7,7 +7,6 @@ import { NetworkSaveData, NetworkTypeEnum, transformDisplayText } from '@acx-ui/
 import { useParams }                                              from '@acx-ui/react-router-dom'
 
 import { transformNetworkType } from '../parser'
-import { FormSubTitle }         from '../styledComponents'
 
 import { AaaSummaryForm }  from './AaaSummaryForm'
 import { DpskSummaryForm } from './DpskSummaryForm'
@@ -48,7 +47,9 @@ export function SummaryForm (props: {
       <StepsForm.Title>Summary</StepsForm.Title>
       <Row gutter={20}>
         <Col flex={1}>
-          <FormSubTitle>Network Info</FormSubTitle>
+          <Typography.Title level={4}>
+            Network Info
+          </Typography.Title>
           <Form.Item label='Network Name:' children={summaryData.name} />
           <Form.Item
             label='Info:'
@@ -95,7 +96,9 @@ export function SummaryForm (props: {
         </Col>
         <Divider type='vertical' style={{ height: '300px' }}/>
         <Col flex={1}>
-          <FormSubTitle>Activated in venues</FormSubTitle>
+          <Typography.Title level={4}>
+            Activated in venues
+          </Typography.Title>
           <Form.Item children={getVenues()} />
         </Col>
       </Row>

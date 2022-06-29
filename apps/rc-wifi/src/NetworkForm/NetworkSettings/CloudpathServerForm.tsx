@@ -36,9 +36,6 @@ export function CloudpathServerForm () {
       <Button type='link' style={{ padding: 0 }}>Add Server</Button>
 
       {selected && (<>
-        <Typography.Title level={4}>
-          Radius Authentication Service
-        </Typography.Title>
         <Form.Item
           label='Deployment Type'
           children={selected.deploymentType}

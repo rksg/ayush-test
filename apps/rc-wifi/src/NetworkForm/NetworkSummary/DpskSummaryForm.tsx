@@ -10,7 +10,7 @@ export function DpskSummaryForm (props: {
     <>
       <Form.Item
         label='Security Protocol:'
-        children={transformNetworkEncryption(summaryData.wlanSecurity)}
+        children={transformNetworkEncryption(summaryData.dpskWlanSecurity)}
       />
       {
         !summaryData.cloudpathServerId && (

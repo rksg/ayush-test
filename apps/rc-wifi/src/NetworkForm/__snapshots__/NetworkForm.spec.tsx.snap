@@ -1110,11 +1110,11 @@ exports[`NetworkForm should create open network successfully 1`] = `
                           class="ant-col"
                           style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
-                          <div
-                            class="styledComponents__FormSubTitle-sc-bfjsxr-4 fDJbOl"
+                          <h4
+                            class="ant-typography"
                           >
                             Network Info
-                          </div>
+                          </h4>
                           <div
                             class="ant-row ant-form-item"
                           >
@@ -1258,11 +1258,11 @@ exports[`NetworkForm should create open network successfully 1`] = `
                           class="ant-col"
                           style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
-                          <div
-                            class="styledComponents__FormSubTitle-sc-bfjsxr-4 fDJbOl"
+                          <h4
+                            class="ant-typography"
                           >
                             Activated in venues
-                          </div>
+                          </h4>
                           <div
                             class="ant-row ant-form-item"
                           >
