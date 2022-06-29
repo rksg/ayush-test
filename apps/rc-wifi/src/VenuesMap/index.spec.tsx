@@ -12,16 +12,11 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockReturnValue('some-key')
 }))
 
-const executeLoaderCallback = async (e?: string | Error): Promise<void> => {
+const executeLoaderCallback = async (): Promise<void> => {
   // eslint-disable-next-line testing-library/no-unnecessary-act
   await act(async () => {
     const loader = Loader['instance']
-    if (e) {
-      loader.onerrorEvent = e
-      loader.callbacks[0](e)
-    } else {
-      loader.callback()
-    }
+    loader.callback()
     await waitFor(() => loader.done)
   })
 }

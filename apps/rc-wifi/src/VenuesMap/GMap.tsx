@@ -182,13 +182,10 @@ const GMap: React.FC<MapProps> = ({
     }
   }, [map, options])
 
-  console.log(React.Children.toArray)
-
   return (
     <>
       <div id='map' ref={ref} style={style} />
       {React.Children.map(children, (child) => {
-        console.log(child)
         if (React.isValidElement(child)) {
           // set the map prop on the child component
           return React.cloneElement(child, { map })

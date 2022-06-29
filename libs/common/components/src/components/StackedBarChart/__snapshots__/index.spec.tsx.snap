@@ -1,0 +1,191 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StackedBarChart should not render labels and total count 1`] = `
+<DocumentFragment>
+  <div
+    _echarts_instance_="ec_1656482868276"
+    class="echarts-for-react "
+    size-sensor-id="2"
+    style="height: 200px; width: 400px; position: relative;"
+  >
+    <div
+      style="position: relative; overflow: hidden; width: 400px; height: 200px;"
+    >
+      <svg
+        baseProfile="full"
+        height="200"
+        style="position:absolute;left:0;top:0;user-select:none"
+        version="1.1"
+        width="400"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+      >
+        <rect
+          fill="none"
+          fill-opacity="1"
+          height="200"
+          id="0"
+          width="400"
+          x="0"
+          y="0"
+        />
+        <g>
+          <path
+            d="M0 162.6667L0 170.6667L0 162.6667"
+            fill="#F9C34B"
+          />
+          <path
+            d="M0 96L0 104L0 96"
+            fill="#F9C34B"
+          />
+          <path
+            d="M0 29.3333L0 37.3333L0 29.3333"
+            fill="#F9C34B"
+          />
+          <path
+            d="M0 162.6667L0 170.6667L0 162.6667"
+            fill="#EC7100"
+          />
+          <path
+            d="M0 96L0 104L0 96"
+            fill="#EC7100"
+          />
+          <path
+            d="M233.3333 29.3333L233.3333 37.3333L233.3333 29.3333"
+            fill="#EC7100"
+          />
+          <path
+            d="M0 162.6667L0 170.6667L0 162.6667"
+            fill="#ED1C24"
+          />
+          <path
+            d="M166.6667 96L166.6667 104L166.6667 96"
+            fill="#ED1C24"
+          />
+          <path
+            d="M233.3333 29.3333L233.3333 37.3333L233.3333 29.3333"
+            fill="#ED1C24"
+          />
+          <path
+            d="M166.6667 162.6667L166.6667 170.6667L166.6667 162.6667"
+            fill="#A00D14"
+          />
+          <path
+            d="M233.3333 96L233.3333 104L233.3333 96"
+            fill="#A00D14"
+          />
+          <path
+            d="M333.3333 29.3333L333.3333 37.3333L333.3333 29.3333"
+            fill="#A00D14"
+          />
+        </g>
+      </svg>
+    </div>
+    <div
+      class=""
+    />
+    <object
+      class="size-sensor-object"
+      data="about:blank"
+      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+      tabindex="-1"
+      type="text/html"
+    />
+  </div>
+</DocumentFragment>
+`;
+
+exports[`StackedBarChart should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    _echarts_instance_="ec_1656482868275"
+    class="echarts-for-react "
+    size-sensor-id="1"
+    style="height: 200px; width: 400px; position: relative;"
+  >
+    <div
+      style="position: relative; overflow: hidden; width: 400px; height: 200px;"
+    >
+      <svg
+        baseProfile="full"
+        height="200"
+        style="position:absolute;left:0;top:0;user-select:none"
+        version="1.1"
+        width="400"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+      >
+        <rect
+          fill="none"
+          fill-opacity="1"
+          height="200"
+          id="0"
+          width="400"
+          x="0"
+          y="0"
+        />
+        <g>
+          <path
+            d="M88.92 146L88.92 154L88.92 146"
+            fill="#F9C34B"
+          />
+          <path
+            d="M88.92 86L88.92 94L88.92 86"
+            fill="#F9C34B"
+          />
+          <path
+            d="M88.92 26L88.92 34L88.92 26"
+            fill="#F9C34B"
+          />
+          <path
+            d="M88.92 146L88.92 154L88.92 146"
+            fill="#EC7100"
+          />
+          <path
+            d="M88.92 86L88.92 94L88.92 86"
+            fill="#EC7100"
+          />
+          <path
+            d="M258.7167 26L258.7167 34L258.7167 26"
+            fill="#EC7100"
+          />
+          <path
+            d="M88.92 146L88.92 154L88.92 146"
+            fill="#ED1C24"
+          />
+          <path
+            d="M210.2033 86L210.2033 94L210.2033 86"
+            fill="#ED1C24"
+          />
+          <path
+            d="M258.7167 26L258.7167 34L258.7167 26"
+            fill="#ED1C24"
+          />
+          <path
+            d="M210.2033 146L210.2033 154L210.2033 146"
+            fill="#A00D14"
+          />
+          <path
+            d="M258.7167 86L258.7167 94L258.7167 86"
+            fill="#A00D14"
+          />
+          <path
+            d="M331.4867 26L331.4867 34L331.4867 26"
+            fill="#A00D14"
+          />
+        </g>
+      </svg>
+    </div>
+    <div
+      class=""
+    />
+    <object
+      class="size-sensor-object"
+      data="about:blank"
+      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+      tabindex="-1"
+      type="text/html"
+    />
+  </div>
+</DocumentFragment>
+`;

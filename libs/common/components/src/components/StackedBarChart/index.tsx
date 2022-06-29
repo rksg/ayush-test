@@ -26,9 +26,9 @@ type Dimensions = [
 interface StackedBarOptionalProps {
   animation: boolean
   showLabels: boolean
-  barColors?: string[]
-  showTotal?: boolean
-  showTooltip?: boolean
+  barColors: string[]
+  showTotal: boolean
+  showTooltip: boolean
 }
 
 const defaultProps: StackedBarOptionalProps = {
@@ -71,7 +71,7 @@ const computeChartData = ({ category, series }: ChartData) => {
 }
 
 const massageData = (
-  data: ChartData[], showTotal: boolean = true): RegisteredSeriesOption['bar'][] => {
+  data: ChartData[], showTotal: boolean): RegisteredSeriesOption['bar'][] => {
   const seriesCommonConfig: RegisteredSeriesOption['bar'] = {
     type: 'bar',
     dimensions: [

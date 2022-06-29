@@ -3,12 +3,12 @@ import { storiesOf }                 from '@storybook/react'
 
 import { StackedBarChart } from '.'
 
-const data = [{
+export const data = [{
   category: 'Infrastructure',
   series: [
+    { name: 'P3', value: 0 },
     { name: 'P1', value: 0 },
     { name: 'P2', value: 5 },
-    { name: 'P3', value: 0 },
     { name: 'P4', value: 0 }
   ]
 }, {
