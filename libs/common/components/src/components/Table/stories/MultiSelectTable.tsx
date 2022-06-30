@@ -57,7 +57,7 @@ const actions: TableProps<(typeof basicData)[0]>['actions'] = [
   }
 ]
 
-export function SelectableTable () {
+export function MultiSelectTable () {
   return (
     <Table
       columns={basicColumns}

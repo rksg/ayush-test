@@ -4,8 +4,8 @@ import { BasicTable }          from './BasicTable'
 import { CompactTable }        from './CompactTable'
 import { CustomTable }         from './CustomTable'
 import { MultipleSorterTable } from './MultipleSorterTable'
+import { MultiSelectTable }    from './MultiSelectTable'
 import { RotatedTable }        from './RotatedTable'
-import { SelectableTable }     from './SelectableTable'
 import { SingleSelectTable }   from './SingleSelectTable'
 
 storiesOf('Table', module)
@@ -14,7 +14,7 @@ storiesOf('Table', module)
   .add('Multiple Sorter', MultipleSorterTable)
   .add('Compact', CompactTable)
   .add('Rotated', RotatedTable)
-  .add('Selectable', SelectableTable)
+  .add('Multi Select', MultiSelectTable)
   .add('Single Select', SingleSelectTable)
 
 export {}
