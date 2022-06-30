@@ -1,12 +1,10 @@
-import { initialize, mockInstances }              from '@googlemaps/jest-mocks'
-import { Cluster, ClusterStats, MarkerClusterer } from '@googlemaps/markerclusterer'
+import { initialize, mockInstances } from '@googlemaps/jest-mocks'
 
 import {
   ApVenueStatusEnum, Dashboard, SwitchStatusEnum
 } from '@acx-ui/rc/services'
 
 import { getClusterSVG, getDeviceConnectionStatusColors, getIcon, getMarkerColor, getMarkerSVG, massageVenuesData } from './helper'
-import VenueClusterRenderer                                                                                         from './VenueClusterRenderer'
 
 jest.mock('@acx-ui/components', () => ({
   __esModule: true,
