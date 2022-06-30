@@ -21,7 +21,7 @@ interface MapProps extends google.maps.MapOptions {
   onIdle?: (map: google.maps.Map) => void;
   venues: VenueMarkerOptions[]
   cluster?: boolean
-  venueFilter?: boolean
+  enableVenueFilter?: boolean
   children?: React.ReactNode
 }
 
@@ -33,7 +33,7 @@ const GMap: React.FC<MapProps> = ({
   onNavigate,
   venues,
   cluster,
-  venueFilter,
+  enableVenueFilter,
   children,
   style,
   ...options
@@ -53,7 +53,7 @@ const GMap: React.FC<MapProps> = ({
 
   React.useEffect(() => {
     if(map){
-      if (venueFilter && onFilterChange
+      if (enableVenueFilter && onFilterChange
         && map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
         const legendControlBoxDiv = document.createElement('div')
         const root = createRoot(legendControlBoxDiv!)
