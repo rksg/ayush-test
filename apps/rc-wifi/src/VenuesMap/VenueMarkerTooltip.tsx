@@ -48,6 +48,7 @@ export function VenueMarkerTooltip (
   const { onNavigate } = props
   const deviceConnectionStatusColors = getDeviceConnectionStatusColors()
   const commonProps = {
+    animation: false,
     showLabels: false,
     style: { height: 10, width: 100 },
     showTotal: false,

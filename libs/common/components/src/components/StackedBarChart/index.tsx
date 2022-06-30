@@ -1,7 +1,9 @@
-import ReactECharts from 'echarts-for-react'
-import _            from 'lodash'
+import { TooltipComponentOption } from 'echarts'
+import ReactECharts               from 'echarts-for-react'
+import _                          from 'lodash'
 
-import { cssNumber, cssStr } from '../../theme/helper'
+import { cssNumber, cssStr }                          from '../../theme/helper'
+import { tooltipOptions, stackedBarTooltipFormatter } from '../Chart/helper'
 
 import type { EChartsOption, RegisteredSeriesOption } from 'echarts'
 import type { EChartsReactProps }                     from 'echarts-for-react'
@@ -20,19 +22,21 @@ type Dimensions = [
 
 // Optional props
 interface StackedBarOptionalProps {
-  showLabels: boolean,
-  barColors?: string[],
-  showTotal?: boolean,
-  showTooltip?: boolean,
+  animation: boolean
+  showLabels: boolean
+  barColors: string[]
+  showTotal: boolean
+  showTooltip: boolean
 }
 
 const defaultProps: StackedBarOptionalProps = {
+  animation: true,
   showLabels: true,
   barColors: [
     cssStr('--acx-semantics-yellow-40'), // P4
-    cssStr('--acx-accents-orange-30'), // P3
-    cssStr('--acx-accents-orange-55'), // P2
-    cssStr('--acx-semantics-red-50') // P1
+    cssStr('--acx-accents-orange-50'), //.. P3
+    cssStr('--acx-semantics-red-50'), //... P2
+    cssStr('--acx-semantics-red-70') //.... P1
   ],
   showTotal: true,
   showTooltip: true
@@ -46,6 +50,7 @@ export interface StackedBarChartProps
     data: TChartData[]
     /** @default 'name' */
     legendProp?: keyof TChartData
+    dataFormatter?: (value: unknown) => string | null
   }
 
 const computeChartData = ({ category, series }: ChartData) => {
@@ -65,7 +70,7 @@ const computeChartData = ({ category, series }: ChartData) => {
 }
 
 const massageData = (
-  data: ChartData[], showTotal: boolean = true): RegisteredSeriesOption['bar'][] => {
+  data: ChartData[], showTotal: boolean): RegisteredSeriesOption['bar'][] => {
   const seriesCommonConfig: RegisteredSeriesOption['bar'] = {
     type: 'bar',
     dimensions: [
@@ -107,11 +112,13 @@ const massageData = (
 
 export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   data,
+  dataFormatter,
   ...props
 }: StackedBarChartProps<TChartData>) {
-  const { showTotal, showLabels, barColors, showTooltip } = props
+  const { animation, showTotal, showLabels, barColors, showTooltip } = props
 
   const option: EChartsOption = {
+    animation,
     silent: !showTooltip,
     color: barColors,
     grid: {
@@ -148,24 +155,10 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
       }
     },
     tooltip: {
-      show: showTooltip,
+      ...tooltipOptions() as TooltipComponentOption,
       trigger: 'item',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      formatter: (params: any) => {
-        const { value, marker } = params
-        return `${marker} ${value[0]}`
-      },
-      textStyle: {
-        fontFamily: cssStr('--acx-accent-brand-font'),
-        fontSize: cssNumber('--acx-body-5-font-size'),
-        fontWeight: 400,
-        lineHeight: cssNumber('--acx-body-5-line-height')
-      },
-      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-      borderColor: cssStr('--acx-neutrals-50'),
-      borderWidth: 1,
-      borderRadius: 2,
-      padding: 8
+      formatter: stackedBarTooltipFormatter(dataFormatter),
+      show: showTooltip
     },
     series: massageData(data, showTotal)
   }

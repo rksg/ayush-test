@@ -43,7 +43,8 @@ const GMap: React.FC<MapProps> = ({
 
   React.useEffect(() => {
     if (ref.current) {
-      setMap(new window.google.maps.Map(ref.current, {}))
+      const map = new window.google.maps.Map(ref.current, {})
+      setMap(map)
     }
     return () => setMap(undefined)
   }, [ref])
@@ -155,21 +156,21 @@ const GMap: React.FC<MapProps> = ({
         return marker
       })
 
-      markers = markers.filter( marker => marker.getVisible())
+      markers = markers.filter(marker => marker.getVisible())
       if (markers && markers.length > 0) {
+        if(cluster){
+          setMarkerClusterer(new MarkerClusterer({
+            map,
+            markers,
+            renderer: new VenueClusterRenderer(),
+            algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
+            onClusterClick: onClusterClick
+          }))
+        }
+
         const bounds = new google.maps.LatLngBounds()
         markers.map((marker) => bounds.extend(marker.getPosition()!))
         map.fitBounds(bounds)
-      }
-
-      if(cluster && markers){
-        setMarkerClusterer(new MarkerClusterer({
-          map,
-          markers,
-          renderer: new VenueClusterRenderer(),
-          algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
-          onClusterClick: onClusterClick
-        }))
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -183,7 +184,7 @@ const GMap: React.FC<MapProps> = ({
 
   return (
     <>
-      <div ref={ref} style={style} />
+      <div id='map' ref={ref} style={style} />
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           // set the map prop on the child component
