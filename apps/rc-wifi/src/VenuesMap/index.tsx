@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import * as React from 'react'
 
 import { Wrapper, Status } from '@googlemaps/react-wrapper'
@@ -9,6 +8,7 @@ import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import GMap                   from './GMap'
 import { FilterStateChange }  from './VenueFilterControlBox'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
+export * from './VenueClusterRenderer'
 
 export interface GoogleMapProps {
   data: VenueMarkerOptions[]

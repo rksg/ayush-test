@@ -29,6 +29,46 @@ export const getVenueInfoMarkerIcon = (status: string) => {
   }
 }
 
+export const clusterClickHandler = (markers: google.maps.Marker[],
+  clusterInfoWindow: google.maps.InfoWindow, clusterMarker: google.maps.Marker ) => {  
+  let data: ListWithIconProps['data']=[]
+  data = markers?.map((marker)=>{
+    const { venueData } = marker as VenueMarkerWithLabel
+    return {
+      icon: <Icon component={getVenueInfoMarkerIcon(venueData.status || 'NA')}/>,
+      title: venueData.name || 'NA',
+      popoverContent: <VenueMarkerTooltip 
+        venue={(marker as VenueMarkerWithLabel).venueData}
+        onNavigate={()=>{}} />
+    }
+  })
+  
+  const infoDiv = document.createElement('div')
+  const header = <div className='venueInfoHeader'>
+    <span style={{ fontWeight: 'bolder' }}>{markers?.length} Venues</span> 
+    <span style={{ float: 'right', cursor: 'pointer' }}
+      onClick={()=>{
+        clusterInfoWindow.close()
+      }}>
+      <CloseOutlined/>
+    </span></div>
+  const footer=<div></div>
+  const content = <StyledListWithIcon>
+    <ListWithIcon data={data} isPaginate={true} pageSize={3} header={header} footer={footer}/>
+  </StyledListWithIcon>
+
+  if(content)
+    ReactDOM.render(content, infoDiv)
+  
+  clusterInfoWindow.setContent(infoDiv)
+  
+  clusterInfoWindow.open({
+    shouldFocus: true,
+    anchor: clusterMarker
+  })
+  return infoDiv
+}
+
 export default class VenueClusterRenderer implements Renderer {
   public render (
     { count, position, markers }: Cluster
@@ -60,42 +100,12 @@ export default class VenueClusterRenderer implements Renderer {
     google.maps.event.addListener(clusterMarker, 'mouseout', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
     })
-    google.maps.event.addListener(clusterMarker, 'click',() => {
-      let data: ListWithIconProps['data']=[]
-      if(markers)
-        data= markers?.map((marker)=>{
-          const { venueData } = marker as VenueMarkerWithLabel
-          return {
-            icon: <Icon component={getVenueInfoMarkerIcon(venueData.status || 'NA')}/>,
-            title: venueData.name || 'NA',
-            popoverContent: <VenueMarkerTooltip 
-              venue={(marker as VenueMarkerWithLabel).venueData}
-              onNavigate={()=>{}} />
-          }
-        })
-      const infoDiv = document.createElement('div')
-      const header = <div className='venueInfoHeader'>
-        <span style={{ fontWeight: 'bolder' }}>{markers?.length} Venues</span> 
-        <span style={{ float: 'right', cursor: 'pointer' }}
-          onClick={()=>{
-            clusterInfoWindow.close()
-          }}>
-          <CloseOutlined/>
-        </span></div>
-      const content = <StyledListWithIcon>
-        <ListWithIcon data={data} isPaginate={true} pageSize={2} header={header}/>
-      </StyledListWithIcon>
 
-      if(content)
-        ReactDOM.render(content, infoDiv)
-      
-      clusterInfoWindow.setContent(infoDiv)
-      
-      clusterInfoWindow.open({
-        shouldFocus: true,
-        anchor: clusterMarker
-      })
-    })
+    if(markers){
+      google.maps.event.addListener(clusterMarker, 'click',
+        ()=>clusterClickHandler(markers, clusterInfoWindow, clusterMarker))
+    }
+    
     return clusterMarker
   }
 }
