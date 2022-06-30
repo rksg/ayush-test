@@ -144,8 +144,8 @@ export function NetworkVenuesTab () {
     {
       title: 'Networks',
       dataIndex: ['networks', 'count'],
-      render: function (data) { return data ? data : 0 },
-      align: 'center'
+      align: 'center',
+      render: function (data) { return data ? data : 0 }
     },
     {
       title: 'Wi-Fi APs',
