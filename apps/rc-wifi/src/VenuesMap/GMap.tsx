@@ -176,15 +176,6 @@ const GMap: React.FC<MapProps> = ({
         map.fitBounds(bounds)
       }
 
-      if(cluster && markers.length > 0){
-        setMarkerClusterer(new MarkerClusterer({
-          map,
-          markers,
-          renderer: new VenueClusterRenderer(),
-          algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
-          onClusterClick: onClusterClick
-        }))
-      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, cluster, onClusterClick, venues])
