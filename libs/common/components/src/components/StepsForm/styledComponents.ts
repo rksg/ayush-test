@@ -163,7 +163,7 @@ export const StepsContainer = styled.div`
   height: 100%;
   width: 100%;
   max-width: var(--acx-steps-form-steps-container-max-width);
-  background-color: var(--acx-neutrals-5);
+  background-color: var(--acx-neutrals-10);
   z-index: 1;
 `
 
@@ -197,7 +197,7 @@ export const ActionsContainer = styled.div`
   );
   display: flex;
   justify-content: flex-start;
-  background-color: var(--acx-neutrals-5);
+  background-color: var(--acx-neutrals-10);
   z-index: 3; // to have it appear above other content
 `
 

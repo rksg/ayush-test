@@ -10,7 +10,7 @@
 module.exports = {
   '@badge-status-size': '8px',
 
-  '@body-background': 'var(--acx-neutrals-5)',
+  '@body-background': 'var(--acx-neutrals-10)',
 
   '@border-radius-base': '4px',
 
@@ -18,7 +18,7 @@ module.exports = {
   '@breadcrumb-last-item-color': 'var(--acx-primary-black)',
   '@breadcrumb-font-size': 'var(--acx-body-4-font-size)',
   '@breadcrumb-link-color': 'var(--acx-accents-orange-50)',
-  '@breadcrumb-link-color-hover': 'var(--acx-accents-orange-60)',
+  '@breadcrumb-link-color-hover': 'var(--acx-accents-orange-55)',
   '@breadcrumb-separator-color': 'var(--acx-primary-black)',
   '@breadcrumb-separator-margin': '0 5px',
 
@@ -29,7 +29,7 @@ module.exports = {
 
   '@card-background': 'var(--acx-primary-white)',
 
-  '@component-background': 'var(--acx-neutrals-5)',
+  '@component-background': 'var(--acx-neutrals-10)',
 
   '@font-family': 'var(--acx-neutral-brand-font)',
   '@font-size-base': '14px', // var(--acx-body-3-font-size)

@@ -1,11 +1,10 @@
 import { withKnobs,object } from '@storybook/addon-knobs'
 import { storiesOf }        from '@storybook/react'
 
+import { TimeStamp } from '@acx-ui/types'
 import { formatter } from '@acx-ui/utils'
 
 import { MultiLineTimeSeriesChart } from '.'
-
-import type { TimeStamp } from '.'
 
 const getData = () => {
   const base = +new Date(2020, 9, 29)
