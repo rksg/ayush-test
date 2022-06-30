@@ -1,5 +1,7 @@
 import { storiesOf } from '@storybook/react'
 
+import { TimeStamp } from '@acx-ui/types'
+
 import { StackedAreaChart } from '.'
 
 const getData = () => {
@@ -10,10 +12,10 @@ const getData = () => {
   for (let i = 1; i < 37; i++) {
     data.push([base + oneDay * i, Math.round((Math.random() - 0.5) * 25 + data[i - 1][1])])
   }
-  return data
+  return data as [TimeStamp, number][]
 }
 
-const data = [
+export const data = [
   { name: '2.4 GHz', value: getData() },
   { name: '5 GHz', value: getData() }
 ]

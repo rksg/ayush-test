@@ -9,7 +9,7 @@ import type { TableProps as AntTableProps } from 'antd'
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' > {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'rotated'
+    type?: 'tall' | 'compact' | 'rotated' | 'tooltip'
     columns?: ProColumns<RecordType, 'text'>[]
     actions?: Array<{
       label: string,

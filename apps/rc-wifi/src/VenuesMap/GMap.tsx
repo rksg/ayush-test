@@ -7,13 +7,17 @@ import { createRoot }                             from 'react-dom/client'
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
 import VenueFilterControlBox, { FilterStateChange } from './VenueFilterControlBox'
+import { VenueMarkerTooltip }                       from './VenueMarkerTooltip'
 import VenueMarkerWithLabel, { VenueMarkerOptions } from './VenueMarkerWithLabel'
+
+import { NavigateProps } from './index'
 
 interface MapProps extends google.maps.MapOptions {
   style: React.CSSProperties;
   onClick?: (e: google.maps.MapMouseEvent) => void;
   onClusterClick?: (e: google.maps.MapMouseEvent) => void;
   onFilterChange?: (e: FilterStateChange) => void;
+  onNavigate: (params: NavigateProps) => void;
   onIdle?: (map: google.maps.Map) => void;
   venues: VenueMarkerOptions[]
   cluster?: boolean
@@ -25,6 +29,7 @@ const GMap: React.FC<MapProps> = ({
   onClusterClick,
   onIdle,
   onFilterChange,
+  onNavigate,
   venues,
   cluster,
   children,
@@ -34,10 +39,12 @@ const GMap: React.FC<MapProps> = ({
   const ref = React.useRef<HTMLDivElement>(null)
   const [map, setMap] = React.useState<google.maps.Map>()
   const [markerClusterer, setMarkerClusterer] = React.useState<MarkerClusterer>()
+  const venueInfoWindow = new google.maps.InfoWindow({})
 
   React.useEffect(() => {
     if (ref.current) {
-      setMap(new window.google.maps.Map(ref.current, {}))
+      const map = new window.google.maps.Map(ref.current, {})
+      setMap(map)
     }
     return () => setMap(undefined)
   }, [ref])
@@ -51,20 +58,26 @@ const GMap: React.FC<MapProps> = ({
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(legendControlBoxDiv)
       }
 
-      ['click', 'idle'].forEach((eventName) =>
+      ['click', 'idle', 'zoom_changed'].forEach((eventName) =>
         google.maps.event.clearListeners(map, eventName)
       )
       if (onClick) {
-        map.addListener('click', onClick)
+        google.maps.event.addListener(map, 'click', onClick)
       }
 
       if (onIdle) {
-        map.addListener('idle', () => onIdle(map))
+        google.maps.event.addListener(map, 'idle', () => onIdle(map))
       }
+
+      google.maps.event.addListener(map, 'zoom_changed', () => {
+        if (venueInfoWindow) {
+          venueInfoWindow.close()
+        }
+      })
     }
     return function cleanup () {
       if(map) {
-        ['click', 'idle'].forEach((eventName) =>
+        ['click', 'idle', 'zoom_changed'].forEach((eventName) =>
           google.maps.event.clearListeners(map, eventName))
       }
     }
@@ -99,48 +112,65 @@ const GMap: React.FC<MapProps> = ({
           ...getIcon(svgMarkerDefault, scaledSize),
           visible: venue.visible
         }, {
+          venueId: venue.venueId,
           name: venue.name,
-          status: venue.status
+          status: venue.status,
+          apStat: venue.apStat,
+          apsCount: venue.apsCount,
+          switchStat: venue.switchStat,
+          switchesCount: venue.switchesCount,
+          clientsCount: venue.clientsCount,
+          switchClientsCount: venue.switchClientsCount
         })
 
-        const venueInfoWindow = new google.maps.InfoWindow({
-          content: venue.name
-        })
-
-        marker.addListener('mouseover', () => {
+        let closeInfoWindowWithTimeout: NodeJS.Timeout
+        google.maps.event.addListener(marker, 'mouseover', () => {
           marker.setIcon(getIcon(svgMarkerHover, scaledSize).icon)
+
+          const infoDiv = document.createElement('div')
+          createRoot(infoDiv).render(<VenueMarkerTooltip venue={venue} onNavigate={onNavigate}/>)
+          infoDiv.addEventListener('mouseover', () => {
+            clearTimeout(closeInfoWindowWithTimeout)
+          })
+          infoDiv.addEventListener('mouseout', () => {
+            closeInfoWindowWithTimeout = setTimeout(() => {
+              venueInfoWindow.close()
+            }, 100)
+          })
+          venueInfoWindow.setContent(infoDiv)
           venueInfoWindow.open({
-            shouldFocus: false,
+            shouldFocus: true,
             anchor: marker
           })
         })
-        marker.addListener('mouseout', () => {
+        google.maps.event.addListener(marker, 'mouseout', () => {
           marker.setIcon(getIcon(svgMarkerDefault, scaledSize).icon)
-          venueInfoWindow.close()
+          closeInfoWindowWithTimeout = setTimeout(() => venueInfoWindow.close(), 100)
         })
-        marker.addListener('click', () => {
-          // TODO Navigate to venue page
-          // eslint-disable-next-line no-console
-          console.log('#TODO - Clicked on marker')
+        google.maps.event.addListener(marker, 'click', () => {
+          onNavigate({
+            venueId: venue.venueId,
+            path: 'overview'
+          })
         })
         return marker
       })
 
-      markers = markers.filter( marker => marker.getVisible())
+      markers = markers.filter(marker => marker.getVisible())
       if (markers && markers.length > 0) {
+        if(cluster){
+          setMarkerClusterer(new MarkerClusterer({
+            map,
+            markers,
+            renderer: new VenueClusterRenderer(),
+            algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
+            onClusterClick: onClusterClick
+          }))
+        }
+
         const bounds = new google.maps.LatLngBounds()
         markers.map((marker) => bounds.extend(marker.getPosition()!))
         map.fitBounds(bounds)
-      }
-
-      if(cluster && markers){
-        setMarkerClusterer(new MarkerClusterer({
-          map,
-          markers,
-          renderer: new VenueClusterRenderer(),
-          algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
-          onClusterClick: onClusterClick
-        }))
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,7 +184,7 @@ const GMap: React.FC<MapProps> = ({
 
   return (
     <>
-      <div ref={ref} style={style} />
+      <div id='map' ref={ref} style={style} />
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           // set the map prop on the child component

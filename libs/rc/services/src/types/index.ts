@@ -85,7 +85,7 @@ export interface UserSettings {
   [key: string]: string
 }
 
-export enum ApVenueStatusEnumType {
+export enum ApVenueStatusEnum {
   IN_SETUP_PHASE = '1_InSetupPhase',
   OFFLINE = '1_InSetupPhase_Offline',
   OPERATIONAL = '2_Operational',
@@ -101,15 +101,21 @@ export enum SwitchStatusEnum {
   DISCONNECTED = 'OFFLINE',
   STACK_MEMBER_NEVER_CONTACTED = 'STACK_MEMBER_PREPROVISIONED'
 }
+
+export type ChartData = {
+  category: string
+  series: Array<{ name: string, value: number }>
+}
+
 export interface NetworkDetailHeader {
   activeVenueCount: number,
   aps: {
     summary?: {
-      [ApVenueStatusEnumType.IN_SETUP_PHASE]?: number
-      [ApVenueStatusEnumType.OFFLINE]?: number
-      [ApVenueStatusEnumType.OPERATIONAL]?: number
-      [ApVenueStatusEnumType.REQUIRES_ATTENTION]?: number
-      [ApVenueStatusEnumType.TRANSIENT_ISSUE]?: number
+      [ApVenueStatusEnum.IN_SETUP_PHASE]?: number
+      [ApVenueStatusEnum.OFFLINE]?: number
+      [ApVenueStatusEnum.OPERATIONAL]?: number
+      [ApVenueStatusEnum.REQUIRES_ATTENTION]?: number
+      [ApVenueStatusEnum.TRANSIENT_ISSUE]?: number
     },
     totalApCount: number
   },
@@ -172,11 +178,11 @@ export interface Dashboard {
     apsStatus: Array<{
       [prop: string]: {
         apStatus: {
-          [ApVenueStatusEnumType.IN_SETUP_PHASE]?: number
-          [ApVenueStatusEnumType.OFFLINE]?: number
-          [ApVenueStatusEnumType.REQUIRES_ATTENTION]?: number
-          [ApVenueStatusEnumType.TRANSIENT_ISSUE]?: number
-          [ApVenueStatusEnumType.OPERATIONAL]?: number
+          [ApVenueStatusEnum.IN_SETUP_PHASE]: number
+          [ApVenueStatusEnum.OFFLINE]: number
+          [ApVenueStatusEnum.REQUIRES_ATTENTION]: number
+          [ApVenueStatusEnum.TRANSIENT_ISSUE]: number
+          [ApVenueStatusEnum.OPERATIONAL]: number
         },
         totalCount: number
       }
@@ -213,7 +219,7 @@ export interface Dashboard {
       id?: string,
       longitude?: number,
       timeZone?: string,
-      venueStatus?: ApVenueStatusEnumType
+      venueStatus?: ApVenueStatusEnum
     }
   }>;
 }
