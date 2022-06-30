@@ -174,7 +174,8 @@ const tooltipStyle = css`
       border-bottom: 0px;
     }
 
-    .ant-table-tbody > tr.ant-table-row:hover > td, .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+    .ant-table-tbody > tr.ant-table-row:hover > td,
+    .ant-table-tbody > tr > td.ant-table-cell-row-hover {
       background: none;
     }
   }
