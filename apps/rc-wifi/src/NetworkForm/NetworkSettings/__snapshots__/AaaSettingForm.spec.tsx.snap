@@ -659,7 +659,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                   <input
                                     class="ant-input"
                                     id="Settings_authRadius.primary.port"
-                                    type="text"
+                                    type="number"
                                     value=""
                                   />
                                 </div>
@@ -696,6 +696,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                       action="click"
                                       class="ant-input"
                                       id="Settings_authRadius.primary.sharedSecret"
+                                      placeholder="Spaces are not allowed"
                                       type="password"
                                       value=""
                                     />
@@ -985,11 +986,11 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                           class="ant-col"
                           style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
-                          <div
-                            class="styledComponents__FormSubTitle-sc-bfjsxr-4 fDJbOl"
+                          <h4
+                            class="ant-typography"
                           >
                             Network Info
-                          </div>
+                          </h4>
                           <div
                             class="ant-row ant-form-item"
                           >
@@ -1106,11 +1107,11 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                           class="ant-col"
                           style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
-                          <div
-                            class="styledComponents__FormSubTitle-sc-bfjsxr-4 fDJbOl"
+                          <h4
+                            class="ant-typography"
                           >
                             Activated in venues
-                          </div>
+                          </h4>
                           <div
                             class="ant-row ant-form-item"
                           >

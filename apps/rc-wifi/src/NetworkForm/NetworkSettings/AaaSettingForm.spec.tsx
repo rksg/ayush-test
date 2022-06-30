@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { rest } from 'msw'
 
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
@@ -94,14 +93,14 @@ describe('NetworkForm', () => {
     expect(ipTextbox).toHaveValue('111.111.111.111')
     
     const portTextbox = screen.getByLabelText('Port')
-    fireEvent.change(portTextbox, { target: { value: '1111' } })
-    expect(portTextbox).toHaveValue('1111')
+    fireEvent.change(portTextbox, { target: { value: 1111 } })
+    expect(portTextbox).toHaveValue(1111)
     
     const secretTextbox = screen.getByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: '111111' } })
     expect(secretTextbox).toHaveValue('111111')
 
-    userEvent.click(screen.getByText('Next'))
+    fireEvent.click(screen.getByText('Next'))
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
     
     fireEvent.click(screen.getByText('Next'))
