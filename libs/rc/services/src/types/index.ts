@@ -178,11 +178,7 @@ export interface Dashboard {
     apsStatus: Array<{
       [prop: string]: {
         apStatus: {
-          [ApVenueStatusEnum.IN_SETUP_PHASE]: number
-          [ApVenueStatusEnum.OFFLINE]: number
-          [ApVenueStatusEnum.REQUIRES_ATTENTION]: number
-          [ApVenueStatusEnum.TRANSIENT_ISSUE]: number
-          [ApVenueStatusEnum.OPERATIONAL]: number
+          [ key in ApVenueStatusEnum]?: number
         },
         totalCount: number
       }
@@ -193,11 +189,11 @@ export interface Dashboard {
     switchesStatus: Array<{
       [prop: string]: {
         switchStatus: {
-          [SwitchStatusEnum.OPERATIONAL]?: number,
+          [ key in SwitchStatusEnum]?: number
         },
         totalCount: number
       }
-    }>,
+    }> | undefined,
     totalCount: number
   };
   venues?: Array<{

@@ -21,6 +21,7 @@ interface MapProps extends google.maps.MapOptions {
   onIdle?: (map: google.maps.Map) => void;
   venues: VenueMarkerOptions[]
   cluster?: boolean
+  venueFilter?: boolean
   children?: React.ReactNode
 }
 
@@ -32,6 +33,7 @@ const GMap: React.FC<MapProps> = ({
   onNavigate,
   venues,
   cluster,
+  venueFilter,
   children,
   style,
   ...options
@@ -51,7 +53,8 @@ const GMap: React.FC<MapProps> = ({
 
   React.useEffect(() => {
     if(map){
-      if (map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
+      if (venueFilter && onFilterChange
+        && map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
         const legendControlBoxDiv = document.createElement('div')
         const root = createRoot(legendControlBoxDiv!)
         root.render(<VenueFilterControlBox onChange={onFilterChange} />)
@@ -171,6 +174,16 @@ const GMap: React.FC<MapProps> = ({
         const bounds = new google.maps.LatLngBounds()
         markers.map((marker) => bounds.extend(marker.getPosition()!))
         map.fitBounds(bounds)
+      }
+
+      if(cluster && markers.length > 0){
+        setMarkerClusterer(new MarkerClusterer({
+          map,
+          markers,
+          renderer: new VenueClusterRenderer(),
+          algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
+          onClusterClick: onClusterClick
+        }))
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

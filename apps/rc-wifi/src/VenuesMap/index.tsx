@@ -12,6 +12,7 @@ import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 export interface GoogleMapProps {
   data: VenueMarkerOptions[]
   cluster?: boolean,
+  venueFilter?: boolean
 }
 
 export interface NavigateProps {
@@ -19,7 +20,7 @@ export interface NavigateProps {
   path?: string
 }
 
-export function VenuesMap ({ cluster, data }: GoogleMapProps) {
+export function VenuesMap ({ cluster, data, venueFilter }: GoogleMapProps) {
 
   const [venues, setVenues] = React.useState<VenueMarkerOptions[]>([])
 
@@ -72,6 +73,7 @@ export function VenuesMap ({ cluster, data }: GoogleMapProps) {
         streetViewControl={false}
         style={{ height: '100%' }}
         venues={venues}
+        venueFilter={venueFilter}
         cluster={cluster}
         onClusterClick={onClusterClick}
         onFilterChange={onFilterChange}

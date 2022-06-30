@@ -26,7 +26,7 @@ function ActualMap () {
   })
   return (
     <Loader states={[queryResults]}>
-      <VenuesMap cluster={true} data={queryResults.data} />
+      <VenuesMap cluster={true} data={queryResults.data} venueFilter={true} />
     </Loader>
   )
 }
