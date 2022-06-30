@@ -20,16 +20,14 @@ export interface TableProps <RecordType>
 export function Table <RecordType extends object> (
   { type = 'tall', ...props }: TableProps<RecordType>
 ) {
-  let columns = props.columns
-
-  return <UI.Wrapper $type={type}>
+  return <UI.Wrapper $type={type} $rowSelection={props.rowSelection}>
     <ProTable<RecordType>
       {...props}
       bordered={false}
       options={false}
       search={false}
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
-      columns={columns}
+      columns={props.columns}
       columnEmptyText={false}
       tableAlertRender={({ selectedRowKeys, selectedRows, onCleanSelected }) => (
         <Space size={32}>
