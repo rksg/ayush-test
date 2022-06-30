@@ -68,6 +68,12 @@ Commit message need to be prefixed with the JIRA issue number e.g.
 ACX-5449: initial README for acx-ui
 ```
 
+you can install this hook to automatically prefix the branch name:
+
+```
+cp tools/dev/prepare-commit-msg .git/hooks/prepare-commit-msg
+```
+
 ### Creating a pull request
 
 Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR before it can be
