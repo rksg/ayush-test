@@ -57,8 +57,7 @@ export const clusterClickHandler = (markers: google.maps.Marker[],
     <ListWithIcon data={data} isPaginate={true} pageSize={3} header={header} footer={footer}/>
   </StyledListWithIcon>
 
-  if(content)
-    ReactDOM.render(content, infoDiv)
+  ReactDOM.render(content, infoDiv)
   
   clusterInfoWindow.setContent(infoDiv)
   

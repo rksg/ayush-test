@@ -78,7 +78,9 @@ describe('VenuesMap', () => {
       expect(icon).toMatchSnapshot()
     })
 
-    it('clusterClickHandler',()=>{
+    it('should match with snapshot for venue cluster tooltip',()=>{
+      const markerSpy:any = jest.fn()
+      google.maps.Marker = markerSpy
       const series=[
         {
           name: '1 Requires Attention',
@@ -97,9 +99,7 @@ describe('VenuesMap', () => {
           value: 1
         }
       ]
-      const marker = new VenueMarkerWithLabel({
-        labelContent: ''
-      },{
+      const venueData = {
         venueId: 'someVenueId',
         name: 'someVenueName',
         status: ApVenueStatusEnum.OPERATIONAL,
@@ -115,11 +115,15 @@ describe('VenuesMap', () => {
         switchesCount: 2,
         clientsCount: 20,
         switchClientsCount: 10
-      })
+      }
+      const marker = new VenueMarkerWithLabel({
+        labelContent: ''
+      },venueData)
       
       const clusterInfoWindow = new google.maps.InfoWindow({})
       const infoDiv=clusterClickHandler([marker],clusterInfoWindow, marker)
       expect(infoDiv).toMatchSnapshot()
+      expect(markerSpy).toBeCalled()
     })
   })
 })
