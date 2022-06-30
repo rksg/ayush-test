@@ -3,7 +3,7 @@
 exports[`NetworkForm should create open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hcFAEh"
+    class="styledComponents__Wrapper-sc-xov27h-0 ljoVMe"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -79,7 +79,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
             style="padding-left: 12px; padding-right: 12px;"
           >
             <div
-              class="styledComponents__StepsContainer-sc-1ibvcih-2 coEWdE"
+              class="styledComponents__StepsContainer-sc-1ibvcih-2 jRRiLQ"
             >
               <div
                 class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -1264,7 +1264,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-3 krgHkD"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-3 dZyVXD"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"

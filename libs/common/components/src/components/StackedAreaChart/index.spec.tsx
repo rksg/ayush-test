@@ -1,14 +1,14 @@
 import { render } from '@testing-library/react'
 
-import { getSeriesData } from './stories'
+import { data } from './stories'
 
-import { MultiLineTimeSeriesChart } from '.'
+import { StackedAreaChart } from '.'
 
-describe('MultiLineTimeSeriesChart',()=>{
+describe('StackedAreaChart',()=>{
   it('should call formatter for yAxis', () => {
     const formatter = jest.fn()
-    render(<MultiLineTimeSeriesChart
-      data={getSeriesData()}
+    render(<StackedAreaChart
+      data={data}
       dataFormatter={formatter}
     />)
     expect(formatter).toBeCalled()
