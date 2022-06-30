@@ -144,6 +144,7 @@ export function NetworkVenuesTab () {
     {
       title: 'Networks',
       dataIndex: ['networks', 'count'],
+      render: function (data) { return data ? data : 0 },
       align: 'center'
     },
     {

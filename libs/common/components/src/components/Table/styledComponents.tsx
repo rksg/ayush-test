@@ -31,7 +31,7 @@ export const ActionButton = styled.button`
 `
 
 const tallStyle = css`
-  .ant-table {
+  .ant-pro-table .ant-table {
     &-thead > tr > th {
       font-size: var(--acx-subtitle-4-font-size);
       line-height: var(--acx-subtitle-4-line-height);
@@ -40,6 +40,7 @@ const tallStyle = css`
 
     &-thead > tr:first-child > th[colspan] {
       padding-bottom: 3px;
+      border-bottom: 0;
     }
 
     &-thead > tr:not(:first-child) > th {
@@ -75,12 +76,10 @@ const tallStyle = css`
       border-left-color: var(--acx-neutrals-40);
     }
   }
-
-  .ant-pro-card-body { padding: 0; }
 `
 
 const compactStyle = css`
-  .ant-table {
+  .ant-pro-table .ant-table {
     &-thead > tr > th {
       font-size: var(--acx-body-5-font-size);
       line-height: var(--acx-body-5-line-height);
@@ -99,56 +98,8 @@ const compactStyle = css`
   }
 `
 
-const rotatedStyle = css`
-  .ant-table {
-    &-thead > tr > th {
-      font-size: var(--acx-body-5-font-size);
-      line-height: 1;
-      font-weight: 400;
-      border-bottom: 0px;
-      vertical-align: unset;
-
-      ${RotatedColumn},
-      .ant-table-column-sorters {
-        writing-mode: vertical-rl;
-        flex-flow: row-reverse;
-        margin: auto;
-        max-height: min-content;
-      }
-      .ant-table-column-sorters {
-        display: flex;
-        justify-content: left;
-      }
-
-      ${RotatedColumn},
-      .ant-table-column-title { transform: rotate(180deg); }
-
-      .ant-table-column-sorter {
-        width: unset; // resets width for the center align
-
-        display: flex;
-        margin: 0 0 calc(var(--icon-size) / 2) 0;
-        &-up {
-          margin-bottom: 0px;
-          margin-left: calc(var(--icon-size) / -2);
-        }
-        &-down {
-          margin-top: 0px;
-          margin-right: calc(var(--icon-size) / -2);
-        }
-      }
-    }
-
-    &-tbody > tr > td {
-      font-size: var(--acx-body-5-font-size);
-      line-height: var(--acx-body-5-line-height);
-      text-align: center;
-    }
-  }
-`
-
 const tooltipStyle = css`
-  .ant-table {
+  .ant-pro-table .ant-table {
     background-color: transparent;
     font-family: var(--acx-neutral-brand-font);
 
@@ -184,18 +135,16 @@ const tooltipStyle = css`
 const styles = {
   tall: tallStyle,
   compact: compactStyle,
-  rotated: rotatedStyle,
   tooltip: tooltipStyle
 }
 
 /* eslint-disable max-len */
-export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' | 'tooltip' }>`
-  .ant-table {
+export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'tooltip' }>`
+  .ant-pro-table .ant-table {
     &-thead > tr > th {
       background: transparent;
       border-bottom: 1px solid var(--acx-neutrals-30);
-      padding-top: 11px;
-      padding-bottom: 11px;
+      padding: 12px 8px;
       &:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
         width: 0px;
       }
@@ -239,10 +188,16 @@ export const Wrapper = styled.div<{ $type: 'tall' | 'compact' | 'rotated' | 'too
 
     &-tbody > tr > td {
       border-bottom: 1px solid var(--acx-neutrals-30);
-      padding-top: 14px;
-      padding-bottom: 14px;
+      padding: 14px 8px;
+
+      a {
+        font-size: unset;
+      }
     }
+
   }
+
+  .ant-pro-card-body { padding: 0; }
 
   ${props => styles[props.$type]}
 `

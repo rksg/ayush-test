@@ -3,7 +3,7 @@
 exports[`Table component should call sorter function when sorter title is clicked 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 nYIxZ"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 bqlZfR"
   >
     <div
       class="ant-pro-table"
@@ -48,19 +48,11 @@ exports[`Table component should call sorter function when sorter title is clicke
                           <tr>
                             <th
                               class="ant-table-cell"
-                            >
-                              <div
-                                class="styledComponents__RotatedColumn-sc-1abm7iv-0"
-                              />
-                            </th>
+                            />
                             <th
                               class="ant-table-cell"
                             >
-                              <div
-                                class="styledComponents__RotatedColumn-sc-1abm7iv-0"
-                              >
-                                Name
-                              </div>
+                              Name
                             </th>
                             <th
                               class="ant-table-cell ant-table-column-has-sorters"
@@ -280,7 +272,7 @@ exports[`Table component should call sorter function when sorter title is clicke
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 bgjEgu"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 fMMGUd"
   >
     <div
       class="ant-pro-table"
@@ -506,7 +498,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render selectable table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 bgjEgu"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 fMMGUd"
   >
     <div
       class="ant-pro-table"
@@ -820,7 +812,7 @@ exports[`Table component should render selectable table and render action button
 exports[`Table component should render selectable table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 bgjEgu"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 fMMGUd"
   >
     <div
       class="ant-pro-table"
@@ -1231,7 +1223,7 @@ exports[`Table component should render selectable table and render action button
 exports[`Table component should render selectable table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 bgjEgu"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 fMMGUd"
   >
     <div
       class="ant-pro-table"
