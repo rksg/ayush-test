@@ -1111,7 +1111,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                           style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
                           <h4
-                            class="ant-typography"
+                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
                           >
                             Network Info
                           </h4>
@@ -1232,7 +1232,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                           style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
                           <h4
-                            class="ant-typography"
+                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
                           >
                             Activated in venues
                           </h4>

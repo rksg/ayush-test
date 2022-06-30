@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Subtitle should render correctly 1`] = `
+<DocumentFragment>
+  <h1
+    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
+  >
+    Subtitle 1
+  </h1>
+  <h2
+    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
+  >
+    Subtitle 2
+  </h2>
+  <h3
+    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
+  >
+    Subtitle 3
+  </h3>
+  <h4
+    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
+  >
+    Subtitle 4
+  </h4>
+  <h5
+    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
+  >
+    Subtitle 5
+  </h5>
+</DocumentFragment>
+`;
