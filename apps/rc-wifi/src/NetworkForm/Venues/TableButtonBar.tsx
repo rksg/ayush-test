@@ -6,17 +6,3 @@ const Wrapper = styled.div`
     color: var(--acx-neutrals-60);
   }
 `
-
-function TableButtonBar (props: any) {
-  return (
-    <Wrapper>
-      <div className='rows-selected'>
-        {props.rowsSelected !== null && (
-          <div>Selected venues: {props.rowsSelected}</div>
-        )}
-      </div>
-    </Wrapper>
-  )
-}
-
-export default TableButtonBar

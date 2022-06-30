@@ -12,8 +12,6 @@ import {
 import { useVenueListQuery, Venue }               from '@acx-ui/rc/services'
 import { useTableQuery, CreateNetworkFormFields } from '@acx-ui/rc/utils'
 
-import TableButtonBar from './TableButtonBar'
-
 const defaultPayload = {
   searchString: '',
   fields: [
@@ -159,10 +157,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
   return (
     <>
       <StepsForm.Title>Venues</StepsForm.Title>
-      <span>Select venues to activate this network</span>
-      <TableButtonBar
-        rowsSelected={tableQuery.selectedRowsData.length}
-      />
+      <p>Select venues to activate this network</p>
       <Form.Item name='venues'>
         <Loader states={[tableQuery]}>
           <Table
