@@ -20,6 +20,8 @@ export interface NetworkSaveData {
   enableAccountingService?: boolean;
   enableAccountingProxy?: boolean;
   enableAuthProxy?: boolean;
+  enableSecondaryAuthServer?: boolean;
+  enableSecondaryAcctServer?: boolean;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
   venues?: { venueId: string; name: string }[];

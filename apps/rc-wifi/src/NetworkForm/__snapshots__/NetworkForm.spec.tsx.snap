@@ -1221,33 +1221,6 @@ exports[`NetworkForm should create open network successfully 1`] = `
                               </div>
                             </div>
                           </div>
-                          <div
-                            class="ant-row ant-form-item"
-                          >
-                            <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Proxy Service:"
-                              >
-                                Proxy Service:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  Disabled
-                                </div>
-                              </div>
-                            </div>
-                          </div>
                         </div>
                         <div
                           class="ant-divider ant-divider-vertical"

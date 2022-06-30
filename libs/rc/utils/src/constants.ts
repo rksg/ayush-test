@@ -86,3 +86,18 @@ export enum ApRadioBands {
 export const Constants = {
   triRadioUserSettingsKey: 'COMMON$supportTriRadio'
 }
+
+export enum AaaServerTypeEnum {
+  AUTHENTICATION = 'authRadius',
+  ACCOUNTING = 'accountingRadius',
+}
+
+export enum AaaServerOrderEnum {
+  PRIMARY = 'primary',
+  SECONDARY = 'secondary',
+}
+
+export const AaaServerTitle = {
+  [AaaServerOrderEnum.PRIMARY]: 'Primary Server',
+  [AaaServerOrderEnum.SECONDARY]: 'Secondary Server'
+}

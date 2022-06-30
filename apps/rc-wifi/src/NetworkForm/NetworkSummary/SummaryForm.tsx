@@ -87,7 +87,7 @@ export function SummaryForm (props: {
               />
             </>
           }
-          {summaryData.type === NetworkTypeEnum.AAA && 
+          {summaryData.type === NetworkTypeEnum.AAA && !summaryData.isCloudpathEnabled &&
            <AaaSummaryForm summaryData={summaryData} />
           }
           {summaryData.type === NetworkTypeEnum.DPSK && 
