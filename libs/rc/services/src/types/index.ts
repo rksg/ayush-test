@@ -44,7 +44,7 @@ export interface Venue {
   latitude: string
   longitude: string
   mesh: { enabled: boolean }
-  aggregatedApStatus: Partial<Record<ApVenueStatusEnumType, number>>
+  aggregatedApStatus: Partial<Record<ApVenueStatusEnum, number>>
   networks: {
     count: number
     names: string[]
