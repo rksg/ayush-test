@@ -3,8 +3,6 @@ import styled, { css }         from 'styled-components/macro'
 
 import { CancelCircle } from '@acx-ui/icons'
 
-export const RotatedColumn = styled.div``
-
 export const CloseButton = styled(AntButton).attrs({
   icon: <CancelCircle />
 })`
