@@ -8,15 +8,15 @@ import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
 
-export const gridOptions = {
+export const gridOptions = () => ({
   left: '0%',
   right: '2%',
   bottom: '0%',
   top: '15%',
   containLabel: true
-}
+})
 
-export const legendOptions = {
+export const legendOptions = () => ({
   icon: 'square',
   right: 15,
   itemWidth: 15,
@@ -28,9 +28,9 @@ export const legendOptions = {
     lineHeight: cssNumber('--acx-body-5-line-height'),
     fontWeight: 400
   }
-}
+})
 
-export const xAxisOptions = {
+export const xAxisOptions = () => ({
   axisLine: {
     lineStyle: {
       color: 'transparent'
@@ -44,27 +44,27 @@ export const xAxisOptions = {
       color: cssStr('--acx-primary-black')
     }
   }
-}
+})
 
-export const yAxisOptions = {
+export const yAxisOptions = () => ({
   boundaryGap: [0, '10%']
-}
+})
 
-export const axisLabelOptions = {
+export const axisLabelOptions = () => ({
   color: cssStr('--acx-neutrals-50'),
   fontFamily: cssStr('--acx-neutral-brand-font'),
   fontSize: cssNumber('--acx-body-5-font-size'),
   fontWeight: 400
-}
+})
 
-export const dateAxisFormatter = {
+export const dateAxisFormatter = () => ({
   // TODO:
   // handle smaller and larger time range
   month: '{MMM}', // Jan, Feb, ...
   day: '{d}' // 1, 2, ...
-}
+})
 
-export const tooltipOptions = {
+export const tooltipOptions = () => ({
   textStyle: {
     color: cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-neutral-brand-font'),
@@ -77,7 +77,7 @@ export const tooltipOptions = {
   borderWidth: 0,
   padding: 8,
   extraCssText: `box-shadow: 0px 4px 8px ${cssStr('--acx-primary-black')}26;`
-}
+})
 
 type Unified<T> = Exclude<T, T[]>
 type TooltipFormatterCallback = Exclude<TooltipComponentOption['formatter'], string|undefined>

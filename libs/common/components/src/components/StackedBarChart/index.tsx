@@ -155,7 +155,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
       }
     },
     tooltip: {
-      ...tooltipOptions as TooltipComponentOption,
+      ...tooltipOptions() as TooltipComponentOption,
       trigger: 'item',
       formatter: stackedBarTooltipFormatter(dataFormatter),
       show: showTooltip

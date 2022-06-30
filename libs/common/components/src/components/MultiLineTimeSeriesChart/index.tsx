@@ -59,29 +59,29 @@ export function MultiLineTimeSeriesChart
       cssStr('--acx-accents-orange-50'),
       cssStr('--acx-semantics-yellow-40')
     ],
-    grid: { ...gridOptions },
+    grid: { ...gridOptions() },
     legend: {
-      ...legendOptions,
+      ...legendOptions(),
       data: data.map(datum => datum[legendProp]) as unknown as string[]
     },
     tooltip: {
-      ...tooltipOptions as TooltipComponentOption,
+      ...tooltipOptions() as TooltipComponentOption,
       trigger: 'axis',
       formatter: timeSeriesTooltipFormatter(dataFormatter)
     },
     xAxis: {
-      ...xAxisOptions as XAXisComponentOption,
+      ...xAxisOptions() as XAXisComponentOption,
       type: 'time',
       axisLabel: {
-        ...axisLabelOptions,
-        formatter: dateAxisFormatter
+        ...axisLabelOptions(),
+        formatter: dateAxisFormatter()
       }
     },
     yAxis: {
-      ...yAxisOptions as YAXisComponentOption,
+      ...yAxisOptions() as YAXisComponentOption,
       type: 'value',
       axisLabel: {
-        ...axisLabelOptions,
+        ...axisLabelOptions(),
         formatter: function (value: number) {
           return (dataFormatter && dataFormatter(value)) || `${value}`
         }
