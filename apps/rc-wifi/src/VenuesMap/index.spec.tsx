@@ -6,8 +6,9 @@ import { BrowserRouter as Router }                        from '@acx-ui/react-ro
 import { Provider }                                       from '@acx-ui/store'
 import { act, queryByAttribute, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { VenuesMap, getVenueInfoMarkerIcon, clusterClickHandler } from './VenueClusterRenderer'
-import VenueMarkerWithLabel                                       from './VenueMarkerWithLabel'
+import VenueMarkerWithLabel from './VenueMarkerWithLabel'
+
+import { VenuesMap, getVenueInfoMarkerIcon, clusterClickHandler } from './'
 
 
 jest.mock('@acx-ui/config', () => ({

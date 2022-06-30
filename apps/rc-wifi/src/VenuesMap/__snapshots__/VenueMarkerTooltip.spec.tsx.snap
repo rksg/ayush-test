@@ -3,13 +3,13 @@
 exports[`Venue Marker Tooltip should not render any data 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-mzsngu-7 MBAIy"
+    class="styledComponents__Wrapper-sc-mzsngu-11 bYrZiN"
   >
     <div
-      class="styledComponents__InfoWindowHeader-sc-mzsngu-9 dKCOxV"
+      class="styledComponents__InfoWindowHeader-sc-mzsngu-13 kIrYde"
     >
       <a
-        class="styledComponents__Title-sc-mzsngu-10 khmGvm"
+        class="styledComponents__Title-sc-mzsngu-14 gneXJO"
       >
         Aparna-Venue
       </a>
@@ -84,7 +84,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                           class="ant-table-cell"
                         >
                           <div
-                            class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-8 ccRknu"
+                            class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 geAuCt"
                           >
                             <div
                               class="ant-space-item"
@@ -97,7 +97,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                           class="ant-table-cell"
                         >
                           <div
-                            class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-8 ccRknu"
+                            class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 geAuCt"
                           >
                             <div
                               class="ant-space-item"
@@ -120,7 +120,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                           class="ant-table-cell"
                         >
                           <div
-                            class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-8 ccRknu"
+                            class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 geAuCt"
                           >
                             <div
                               class="ant-space-item"
@@ -133,7 +133,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                           class="ant-table-cell"
                         >
                           <div
-                            class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-8 ccRknu"
+                            class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 geAuCt"
                           >
                             <div
                               class="ant-space-item"
