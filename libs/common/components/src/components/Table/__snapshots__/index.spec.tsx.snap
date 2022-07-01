@@ -3,7 +3,7 @@
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-2 ewzsTh"
+    class="styledComponents__Wrapper-sc-1abm7iv-2 cRDXH"
   >
     <div
       class="ant-pro-table"
@@ -229,7 +229,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-2 jhyLeo"
+    class="styledComponents__Wrapper-sc-1abm7iv-2 bATjAJ"
   >
     <div
       class="ant-pro-table"
@@ -543,7 +543,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-2 jhyLeo"
+    class="styledComponents__Wrapper-sc-1abm7iv-2 bATjAJ"
   >
     <div
       class="ant-pro-table"
@@ -598,7 +598,7 @@ exports[`Table component should render multi select table and render action butt
                             >
                               <button
                                 class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-0 NLfLf"
-                                title="clear selection"
+                                title="Clear selection"
                                 type="button"
                               >
                                 <div
@@ -954,7 +954,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-2 jhyLeo"
+    class="styledComponents__Wrapper-sc-1abm7iv-2 bATjAJ"
   >
     <div
       class="ant-pro-table"

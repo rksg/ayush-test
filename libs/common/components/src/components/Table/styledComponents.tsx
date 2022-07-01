@@ -30,65 +30,11 @@ export const ActionButton = styled.button`
   cursor: pointer;
 `
 
-const tallStyle = css`
-  .ant-pro-table {
-    &-alert {
-      margin: 0px;
-      position: absolute;
-      left: 0;
-      right: 0;
-
-      .ant-alert {
-        padding: 10px 16px;
-        background-color: var(--acx-accents-blue-10);
-        border: var(--acx-accents-blue-10);
-        height: var(--acx-table-action-area-height);
-
-        .ant-pro-table-alert-info {
-          font-size: var(--acx-body-4-font-size);
-          line-height: var(--acx-body-4-line-height);
-
-          .ant-divider-vertical {
-            border-left-color: var(--acx-neutrals-40);
-          }
-        }
-      }
-    }
-
-    .ant-table {
-      &-thead > tr > th {
-        font-size: var(--acx-subtitle-4-font-size);
-        line-height: var(--acx-subtitle-4-line-height);
-        font-weight: 600;
-      }
-
-      &-thead > tr:first-child > th[colspan] {
-        padding-bottom: 3px;
-        border-bottom: 0;
-      }
-
-      &-thead > tr:not(:first-child) > th {
-        font-size: var(--acx-subtitle-5-font-size);
-        line-height: var(--acx-subtitle-5-line-height);
-        padding-top: 0;
-      }
-
-      &-tbody > tr > td {
-        font-size: var(--acx-body-4-font-size);
-        line-height: var(--acx-body-4-line-height);
-      }
-
-      &-tbody > tr.ant-table-row-selected > td {
-        background: none;
-      }
-    }
-  }
-`
-
 const compactStyle = css`
   .ant-pro-table {
     .ant-table {
-      &-thead > tr > th {
+      &-thead > tr:first-child > th,
+      &-thead > tr:last-child > th {
         font-size: var(--acx-body-5-font-size);
         line-height: var(--acx-body-5-line-height);
         font-weight: 700;
@@ -111,9 +57,9 @@ const tooltipStyle = css`
   .ant-pro-table {
     .ant-table {
       background-color: transparent;
-      font-family: var(--acx-neutral-brand-font);
 
-      &-thead > tr > th {
+      &-thead > tr:first-child > th,
+      &-thead > tr:last-child > th {
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
         font-weight: 400;
@@ -144,7 +90,7 @@ const tooltipStyle = css`
 `
 
 const styles = {
-  tall: tallStyle,
+  tall: '',
   compact: compactStyle,
   tooltip: tooltipStyle
 }
@@ -158,8 +104,12 @@ export const Wrapper = styled.div<{
     --acx-table-cell-horizontal-space: 8px;
     --acx-table-action-area-height: 36px;
 
-    .ant-pro-card-body {
-      padding: 0px;
+    .ant-pro-card {
+      background-color: transparent;
+
+      .ant-pro-card-body {
+        padding: 0px;
+      }
     }
 
     ${props => props.$rowSelection && `
@@ -168,11 +118,54 @@ export const Wrapper = styled.div<{
       }
     `}
 
+    &-alert {
+      margin: 0px;
+      position: absolute;
+      left: 0;
+      right: 0;
+
+      .ant-alert {
+        height: var(--acx-table-action-area-height);
+        background-color: var(--acx-accents-blue-10);
+        border: var(--acx-accents-blue-10);
+        padding: 10px 16px;
+
+        .ant-pro-table-alert-info {
+          font-size: var(--acx-body-4-font-size);
+          line-height: var(--acx-body-4-line-height);
+
+          .ant-divider-vertical {
+            border-left-color: var(--acx-neutrals-40);
+          }
+        }
+      }
+    }
+
     .ant-table {
-      &-thead > tr > th {
-        background: transparent;
+      &-thead > tr:first-child > th {
+        padding-top: 12px;
+        font-size: var(--acx-subtitle-4-font-size);
+        line-height: var(--acx-subtitle-4-line-height);
+        font-weight: 600;
+      }
+
+      &-thead > tr:not(:first-child) > th {
+        padding-top: 6px;
+        font-size: var(--acx-subtitle-5-font-size);
+        line-height: var(--acx-subtitle-5-line-height);
+        font-weight: 600;
+      }
+
+      &-thead > tr:last-child > th,
+      &-thead > tr:first-child > th[rowspan] {
+        padding-bottom: 12px;
         border-bottom: 1px solid var(--acx-neutrals-30);
-        padding: 12px var(--acx-table-cell-horizontal-space);
+      }
+
+      &-thead > tr > th {
+        border-bottom: 0;
+        background: transparent;
+        padding: 0px var(--acx-table-cell-horizontal-space);
         &:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
           width: 0px;
         }
@@ -217,10 +210,16 @@ export const Wrapper = styled.div<{
       &-tbody > tr > td {
         border-bottom: 1px solid var(--acx-neutrals-30);
         padding: 14px var(--acx-table-cell-horizontal-space);
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
 
         a {
           font-size: unset;
         }
+      }
+
+      &-tbody > tr.ant-table-row-selected > td {
+        background: none;
       }
     }
   }

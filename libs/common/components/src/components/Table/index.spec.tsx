@@ -104,7 +104,7 @@ describe('Table component', () => {
 
     expect(asFragment()).toMatchSnapshot()
 
-    const closeButton = screen.getByRole('button', { name: 'clear selection' })
+    const closeButton = screen.getByRole('button', { name: 'Clear selection' })
     const editButton = screen.getByRole('button', { name: /edit/i })
     const deleteButton = screen.getByRole('button', { name: /delete/i })
 
