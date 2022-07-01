@@ -186,3 +186,74 @@ exports[`PageHeader should render page header with tabs 1`] = `
   />
 </DocumentFragment>
 `;
+
+exports[`PageHeader should render page header with title, breadcrumb & sub title 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ksnkIr"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/undefined/networks"
+              >
+                Networks
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography"
+            >
+              With Sub Title
+            </h1>
+          </span>
+          <span
+            class="ant-page-header-heading-sub-title"
+          >
+            <span>
+              Sub Title
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

@@ -12,7 +12,15 @@ export const Wrapper = styled.div`
       h1 {
         margin-bottom: 0;
       }
-      &-left, &-title {
+      &-left{
+        overflow: visible;
+        flex-direction: column;
+      }
+      &-sub-title {
+        align-self: flex-start;
+        margin-top: 6px;
+      }
+      &-title {
         overflow: visible;
       }
       margin-bottom: var(--acx-content-vertical-space);

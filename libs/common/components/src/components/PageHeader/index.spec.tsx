@@ -30,4 +30,19 @@ describe('PageHeader', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('should render page header with title, breadcrumb & sub title', () => {
+    const { asFragment } = render(
+      <BrowserRouter>
+        <PageHeader
+          title='With Sub Title'
+          breadcrumb={[
+            { text: 'Networks', link: '/networks' }
+          ]}
+          subTitle={<span>Sub Title</span>}
+        />
+      </BrowserRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
 })
