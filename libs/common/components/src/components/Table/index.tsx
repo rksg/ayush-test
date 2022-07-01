@@ -7,7 +7,7 @@ import type { TableProps as AntTableProps } from 'antd'
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered'> {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'rotated'
+    type?: 'tall' | 'compact' | 'rotated' | 'tooltip'
   }
 
 export function Table <RecordType extends object> (

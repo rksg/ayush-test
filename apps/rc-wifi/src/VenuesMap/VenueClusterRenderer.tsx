@@ -29,10 +29,10 @@ export default class VenueClusterRenderer implements Renderer {
       zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count
     })
 
-    clusterMarker.addListener('mouseover', () => {
+    google.maps.event.addListener(clusterMarker, 'mouseover', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.hover), scaledSize).icon)
     })
-    clusterMarker.addListener('mouseout', () => {
+    google.maps.event.addListener(clusterMarker, 'mouseout', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
     })
     return clusterMarker
