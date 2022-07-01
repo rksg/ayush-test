@@ -1,103 +1,140 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`VenuesMap VenueClusterRenderer should match with snapshot for venue cluster tooltip 1`] = `
-<div>
-  <div
-    class="stories__StyledListWithIcon-sc-vkhg7k-1 gGpxuW"
-  >
-    <div
-      class="ant-list ant-list-vertical ant-list-split ant-list-bordered ant-list-something-after-last-item"
-    >
+<stories__StyledListWithIcon>
+  <ListWithIcon
+    data={
+      Array [
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1386770054,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-mzsngu-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-mzsngu-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            venue={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "name": "someVenueName",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "someVenueId",
+              }
+            }
+          />,
+          "title": "someVenueName",
+        },
+      ]
+    }
+    footer={<div />}
+    header={
       <div
-        class="ant-list-header"
+        className="venueInfoHeader"
       >
-        <div
-          class="venueInfoHeader"
+        <span
+          style={
+            Object {
+              "fontWeight": "bolder",
+            }
+          }
         >
-          <span
-            style="font-weight: bolder;"
-          >
-            1
-             Venues
-          </span>
-          <span
-            style="float: right; cursor: pointer;"
-          >
-            <span
-              aria-label="close"
-              class="anticon anticon-close"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="close"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 00203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
-                />
-              </svg>
-            </span>
-          </span>
-        </div>
-      </div>
-      <div
-        class="ant-spin-nested-loading"
-      >
-        <div
-          class="ant-spin-container"
+          1
+           Venues
+        </span>
+        <span
+          onClick={[Function]}
+          style={
+            Object {
+              "cursor": "pointer",
+              "float": "right",
+            }
+          }
         >
-          <ul
-            class="ant-list-items"
-          >
-            <li
-              class="ant-list-item ant-list-item-no-flex"
-            >
-              <div
-                class="ant-space ant-space-horizontal ant-space-align-center"
-              >
-                <div
-                  class="ant-space-item"
-                  style="margin-right: 8px;"
-                >
-                  <span
-                    class="anticon"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="styledComponents__VenueInfoMarkerGreenIcon-sc-mzsngu-7 etdTWv"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      width="1em"
-                    >
-                      VenueInfoMarkerGreen.svg
-                    </svg>
-                  </span>
-                </div>
-                <div
-                  class="ant-space-item"
-                >
-                  someVenueName
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
+          <ForwardRef(CloseOutlined) />
+        </span>
       </div>
-      <div
-        class="ant-list-footer"
-      >
-        <div />
-      </div>
-    </div>
-  </div>
-</div>
+    }
+    isPaginate={true}
+    pageSize={3}
+  />
+</stories__StyledListWithIcon>
 `;
 
 exports[`VenuesMap VenueClusterRenderer should test getVenueInfoMarkerIcon method 1`] = `
