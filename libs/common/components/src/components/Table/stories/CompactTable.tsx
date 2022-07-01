@@ -2,7 +2,7 @@ import { Table } from '..'
 
 const basicColumns = [
   {
-    title: ('Name'),
+    title: 'Name',
     dataIndex: 'name',
     key: 'name'
   },

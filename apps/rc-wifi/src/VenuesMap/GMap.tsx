@@ -17,10 +17,11 @@ interface MapProps extends google.maps.MapOptions {
   onClick?: (e: google.maps.MapMouseEvent) => void;
   onClusterClick?: (e: google.maps.MapMouseEvent) => void;
   onFilterChange?: (e: FilterStateChange) => void;
-  onNavigate: (params: NavigateProps) => void;
+  onNavigate?: (params: NavigateProps) => void;
   onIdle?: (map: google.maps.Map) => void;
   venues: VenueMarkerOptions[]
   cluster?: boolean
+  enableVenueFilter?: boolean
   children?: React.ReactNode
 }
 
@@ -32,6 +33,7 @@ const GMap: React.FC<MapProps> = ({
   onNavigate,
   venues,
   cluster,
+  enableVenueFilter,
   children,
   style,
   ...options
@@ -51,7 +53,8 @@ const GMap: React.FC<MapProps> = ({
 
   React.useEffect(() => {
     if(map){
-      if (map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
+      if (enableVenueFilter && onFilterChange
+        && map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
         const legendControlBoxDiv = document.createElement('div')
         const root = createRoot(legendControlBoxDiv!)
         root.render(<VenueFilterControlBox onChange={onFilterChange} />)
@@ -64,11 +67,9 @@ const GMap: React.FC<MapProps> = ({
       if (onClick) {
         google.maps.event.addListener(map, 'click', onClick)
       }
-
       if (onIdle) {
         google.maps.event.addListener(map, 'idle', () => onIdle(map))
       }
-
       google.maps.event.addListener(map, 'zoom_changed', () => {
         if (venueInfoWindow) {
           venueInfoWindow.close()
@@ -96,7 +97,8 @@ const GMap: React.FC<MapProps> = ({
       let markers = venues?.map((venue: VenueMarkerOptions) => {
         let markerSize = 32
         // DEFINITIONS: No APs = 32px, minimum # of APs (>0) = 48 px, maximum # of APs = 96px
-        if(venue?.apsCount){
+      
+        if(venue?.apsCount > 0){
           markerSize = 48 + (venue?.apsCount / maxVenueCountPerVenue!) * 48
         }
         const markerColor = getMarkerColor([venue.status])
@@ -124,7 +126,7 @@ const GMap: React.FC<MapProps> = ({
         })
 
         let closeInfoWindowWithTimeout: NodeJS.Timeout
-        google.maps.event.addListener(marker, 'mouseover', () => {
+        marker.addListener('mouseover', () => {
           marker.setIcon(getIcon(svgMarkerHover, scaledSize).icon)
 
           const infoDiv = document.createElement('div')
@@ -143,12 +145,12 @@ const GMap: React.FC<MapProps> = ({
             anchor: marker
           })
         })
-        google.maps.event.addListener(marker, 'mouseout', () => {
+        marker.addListener('mouseout', () => {
           marker.setIcon(getIcon(svgMarkerDefault, scaledSize).icon)
           closeInfoWindowWithTimeout = setTimeout(() => venueInfoWindow.close(), 100)
         })
-        google.maps.event.addListener(marker, 'click', () => {
-          onNavigate({
+        marker.addListener('click', () => {
+          onNavigate && onNavigate({
             venueId: venue.venueId,
             path: 'overview'
           })
@@ -172,6 +174,7 @@ const GMap: React.FC<MapProps> = ({
         markers.map((marker) => bounds.extend(marker.getPosition()!))
         map.fitBounds(bounds)
       }
+
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, cluster, onClusterClick, venues])
@@ -183,16 +186,7 @@ const GMap: React.FC<MapProps> = ({
   }, [map, options])
 
   return (
-    <>
-      <div id='map' ref={ref} style={style} />
-      {React.Children.map(children, (child) => {
-        if (React.isValidElement(child)) {
-          // set the map prop on the child component
-          return React.cloneElement(child, { map })
-        }
-        return child
-      })}
-    </>
+    <div id='map' ref={ref} style={style} />
   )
 }
 

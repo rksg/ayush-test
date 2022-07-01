@@ -886,20 +886,9 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                       >
                         Venues
                       </h3>
-                      <span>
+                      <p>
                         Select venues to activate this network
-                      </span>
-                      <div
-                        class="TableButtonBar__Wrapper-sc-1rgo52e-0 eEYLXv"
-                      >
-                        <div
-                          class="rows-selected"
-                        >
-                          <div>
-                            Selected venues: 0
-                          </div>
-                        </div>
-                      </div>
+                      </p>
                       <div
                         class="ant-row ant-form-item"
                       >
