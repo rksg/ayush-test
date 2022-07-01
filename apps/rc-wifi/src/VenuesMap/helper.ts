@@ -21,8 +21,6 @@ export const getDisplayLabel = (label: string) => {
   switch (label) {
     case ApVenueStatusEnum.IN_SETUP_PHASE:
       return '3 In Setup Phase'
-    case ApVenueStatusEnum.OFFLINE:
-      return '3 Offline'
     case ApVenueStatusEnum.OPERATIONAL:
       return '4 Operational'
     case ApVenueStatusEnum.REQUIRES_ATTENTION:
@@ -94,19 +92,19 @@ const getApStatusDataByVenue = (
 
   if (apsStatus && apsStatus[venueId] && apsStatus[venueId].apStatus) {
     if (apsStatus[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]) {
-      requires_attention = +apsStatus[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]
+      requires_attention = +apsStatus[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]!
     }
     if (apsStatus[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]) {
-      transient_issue = +apsStatus[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]
+      transient_issue = +apsStatus[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]!
     }
     if (apsStatus[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]) {
-      in_setup_phase = +apsStatus[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]
+      in_setup_phase = +apsStatus[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]!
     }
     if (apsStatus[venueId].apStatus[ApVenueStatusEnum.OFFLINE]) {
-      in_setup_phase += +apsStatus[venueId].apStatus[ApVenueStatusEnum.OFFLINE]
+      in_setup_phase += +apsStatus[venueId].apStatus[ApVenueStatusEnum.OFFLINE]!
     }
     if (apsStatus[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]) {
-      operational = +apsStatus[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]
+      operational = +apsStatus[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]!
     }
   }
 
