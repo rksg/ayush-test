@@ -125,6 +125,12 @@ npx nx run main:serve --devRemotes=rc-wifi,analytics
 npx nx affected:test
 ```
 
+to also generate / update the coverage folder:
+
+```
+npx nx affected:test --coverage
+```
+
 ### Run lint
 
 ```sh
