@@ -1,5 +1,6 @@
-import { ConfigProvider } from 'antd'
-import enUS               from 'antd/lib/locale/en_US'
+import { ConfigProvider as ProProvider, enUSIntl } from '@ant-design/pro-provider'
+import { ConfigProvider }                          from 'antd'
+import enUS                                        from 'antd/lib/locale/en_US'
 
 import '@acx-ui/theme'
 
@@ -17,7 +18,9 @@ export const decorators = [
   (Story) => {
     return (
       <ConfigProvider locale={enUS}>
-        <Story />
+        <ProProvider value={{ intl: enUSIntl }}>
+          <Story />
+        </ProProvider>
       </ConfigProvider>
     )
   }
