@@ -12,6 +12,12 @@ import * as UI                                    from './styledComponents'
 import { VenueMarkerTooltip }                     from './VenueMarkerTooltip'
 import VenueMarkerWithLabel                       from './VenueMarkerWithLabel'
 
+declare global {
+  interface Window {
+    googleMap: any;
+  }
+}
+
 let currentInfoWindow: google.maps.InfoWindow
 
 export const getVenueInfoMarkerIcon = (status: string) => {
@@ -112,11 +118,12 @@ export default class VenueClusterRenderer implements Renderer {
       ()=>clusterClickHandler(markers || [new google.maps.Marker({})],
         clusterInfoWindow, clusterMarker))
 
-    // google.maps.event.addListener(map, 'click',()=>{
-    //   if (typeof(currentInfoWindow) != 'undefined') { 
-    //     currentInfoWindow.close()
-    //   }
-    // })
+    /* istanbul ignore next */    
+    google.maps.event.addListener(window.googleMap, 'click',()=>{
+      if (typeof(currentInfoWindow) != 'undefined') { 
+        currentInfoWindow.close()
+      }
+    })
     return clusterMarker
   }
 }

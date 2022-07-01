@@ -12,6 +12,12 @@ import VenueMarkerWithLabel, { VenueMarkerOptions } from './VenueMarkerWithLabel
 
 import { NavigateProps } from './index'
 
+declare global {
+  interface Window {
+    googleMap: any;
+  }
+}
+
 interface MapProps extends google.maps.MapOptions {
   style: React.CSSProperties;
   onClick?: (e: google.maps.MapMouseEvent) => void;
@@ -47,6 +53,7 @@ const GMap: React.FC<MapProps> = ({
     /* istanbul ignore else */
     if (ref.current) {
       const map = new window.google.maps.Map(ref.current, {})
+      window.googleMap = map
       setMap(map)
     }
     return () => setMap(undefined)
