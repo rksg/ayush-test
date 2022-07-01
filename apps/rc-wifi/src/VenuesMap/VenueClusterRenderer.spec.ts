@@ -1,18 +1,15 @@
-import { initialize, mockInstances } from '@googlemaps/jest-mocks'
-import { Cluster,MarkerClusterer }   from '@googlemaps/markerclusterer'
+import { initialize, Marker, mockInstances } from '@googlemaps/jest-mocks'
+import { Cluster,MarkerClusterer }           from '@googlemaps/markerclusterer'
 
 import VenueClusterRenderer from './VenueClusterRenderer'
-
-
-
-
 
 describe('VenueClusterRenderer', () => {
   beforeAll(() => {
     initialize()
   })
-  // Clear all mocks
+
   beforeEach(() => {
+    // Clear all mocks
     mockInstances.clearAll()
   })
 
@@ -41,14 +38,14 @@ describe('VenueClusterRenderer', () => {
     
     clusters.forEach((cluster) => {
       expect(cluster.marker.setMap).toBeCalledWith(map)
-      // expect(cluster.marker.addListener).toHaveBeenCalledWith(
-      //   'mouseover',
-      //   expect.any(Function)
-      // )
-      // expect(cluster.marker.addListener).toHaveBeenCalledWith(
-      //   'mouseout',
-      //   expect.any(Function)
-      // )
+      expect(cluster.marker.addListener).toHaveBeenCalledWith(
+        'mouseover',
+        expect.any(Function)
+      )
+      expect(cluster.marker.addListener).toHaveBeenCalledWith(
+        'mouseout',
+        expect.any(Function)
+      )
     })
     expect(spyRender).toHaveBeenCalled()
   })

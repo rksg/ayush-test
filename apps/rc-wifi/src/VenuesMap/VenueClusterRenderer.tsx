@@ -29,21 +29,13 @@ export default class VenueClusterRenderer implements Renderer {
       zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count
     })
     /* istanbul ignore next */
-    google.maps.event.addListener(clusterMarker, 'mouseover', () => {
+    clusterMarker.addListener('mouseover', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.hover), scaledSize).icon)
     })
     /* istanbul ignore next */
-    google.maps.event.addListener(clusterMarker, 'mouseout', () => {
+    clusterMarker.addListener('mouseout', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
     })
-    // /* istanbul ignore next */
-    // clusterMarker.addListener('mouseover', () => {
-    //   clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.hover), scaledSize).icon)
-    // })
-    // /* istanbul ignore next */
-    // clusterMarker.addListener('mouseout', () => {
-    //   clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
-    // })
     return clusterMarker
   }
 }
