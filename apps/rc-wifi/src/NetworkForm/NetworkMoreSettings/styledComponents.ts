@@ -16,6 +16,7 @@ export const FormItemNoLabel = styled(Form.Item)`
 `
 export const Label = styled.span`
   font-size: var(--acx-body-4-font-size);
+  line-height: 34px;
 `
 
 export const CollpasePanel = styled(Collapse)`
@@ -42,3 +43,11 @@ export const CollpasePanel = styled(Collapse)`
          }
 `
 
+export const LabelOfInput = styled.span`
+    font-size: var(--acx-body-4-font-size);
+    line-height: 32px;
+    color: var(--acx-neutrals-60);
+    margin: 22px 0px 10px;
+    position: relative;
+    left: 80px;
+`

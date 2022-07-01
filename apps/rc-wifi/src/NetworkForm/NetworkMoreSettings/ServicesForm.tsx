@@ -61,16 +61,18 @@ function ClientIsolationForm () {
           </Option>
 
         </Select>
-      </Form.Item><UI.FieldLabel width='230px'>
-          Automatic support for VRRP/HSRP:
+      </Form.Item>
+      <UI.FieldLabel width='230px'>
+        Automatic support for VRRP/HSRP:
         <Form.Item
           name='enableVrrpHsrpAutomaticSupport'
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
           children={<Switch />} />
-      </UI.FieldLabel><UI.FieldLabel width='230px'>
-          Client Isolation Allowlist by Venue:
+      </UI.FieldLabel>
+      <UI.FieldLabel width='230px'>
+        Client Isolation Allowlist by Venue:
         <Form.Item
           name='enableVenueClientIsolationAllowlist'
           style={{ marginBottom: '10px' }}
