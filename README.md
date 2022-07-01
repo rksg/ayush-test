@@ -68,7 +68,7 @@ Commit message need to be prefixed with the JIRA issue number e.g.
 ACX-5449: initial README for acx-ui
 ```
 
-you can install this hook to automatically prefix the branch name:
+you can install this hook to automatically prefix your message with the jira ticket number:
 
 ```
 cp tools/dev/prepare-commit-msg .git/hooks/prepare-commit-msg
