@@ -411,7 +411,7 @@ describe('Venues Map Helper', () => {
     expect(getMarkerColor([ApVenueStatusEnum.OPERATIONAL]))
       .toStrictEqual({ default: '#23AB36;', hover: '#226D2C;' })
     expect(getMarkerColor([ApVenueStatusEnum.IN_SETUP_PHASE]))
-      .toStrictEqual({ default: '#ACAEB0;', hover: '#565758;' })
+      .toStrictEqual({ default: '#ACAEB0;', hover: '#565758;' }) //default colors
   })
 
   it('should return cluster svg string with the given fill color', ()=>{
@@ -445,10 +445,6 @@ describe('Venues Map Helper', () => {
           }
         }
       })
-
-      // const vcr = new VenueClusterRenderer()
-      // console.log(vcr.render())
-      
     })
   })
 })
