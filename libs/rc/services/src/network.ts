@@ -40,8 +40,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
               type: 'success',
               content: 'Created successfully'
             })
+          } else if (msg.useCase === 'DeleteNetwork') {
+            showToast({
+              type: 'success',
+              content: 'Deleted successfully'
+            })
           }
-
           api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
         })
       }
@@ -52,6 +56,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...createNetworkReq,
           body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'LIST' }]
+    }),
+    deleteNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.deleteNetwork, params)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
@@ -127,5 +140,6 @@ export const {
   useVenueListQuery,
   useDashboardOverviewQuery,
   useAddNetworkVenueMutation,
-  useDeleteNetworkVenueMutation
+  useDeleteNetworkVenueMutation,
+  useDeleteNetworkMutation
 } = networkApi
