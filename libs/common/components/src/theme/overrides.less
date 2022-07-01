@@ -66,6 +66,15 @@
     }
   }
 
+  .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
+    display: inline-block;
+    margin-left: 3px;
+    color: var(--acx-accents-orange-50);
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+    content: '*';
+  }
+
   .ant-radio {
     top: 0.25em;
     font-size: var(--acx-body-4-font-size);
