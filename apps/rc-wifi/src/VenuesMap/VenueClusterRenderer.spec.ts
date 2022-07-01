@@ -1,5 +1,5 @@
-import { initialize, Marker, mockInstances } from '@googlemaps/jest-mocks'
-import { Cluster,MarkerClusterer }           from '@googlemaps/markerclusterer'
+import { initialize, mockInstances } from '@googlemaps/jest-mocks'
+import { Cluster, MarkerClusterer }  from '@googlemaps/markerclusterer'
 
 import VenueClusterRenderer from './VenueClusterRenderer'
 
