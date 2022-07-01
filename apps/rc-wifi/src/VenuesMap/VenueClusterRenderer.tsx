@@ -73,7 +73,7 @@ export default class VenueClusterRenderer implements Renderer {
     { count, position, markers }: Cluster
   ): google.maps.Marker {
     const statuses = markers?.map((marker: google.maps.Marker) =>
-      (marker as VenueMarkerWithLabel).venueData.status)
+      (marker as VenueMarkerWithLabel)?.venueData?.status)
     const clusterColor = getMarkerColor(statuses)
     const scaledSize = new google.maps.Size(42, 42, 'px')
     const clusterInfoWindow = new google.maps.InfoWindow({})
@@ -92,11 +92,12 @@ export default class VenueClusterRenderer implements Renderer {
       // adjust zIndex to be above other markers
       zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count
     })
-
-    google.maps.event.addListener(clusterMarker, 'mouseover', () => {
+    /* istanbul ignore next */
+    clusterMarker.addListener('mouseover', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.hover), scaledSize).icon)
     })
-    google.maps.event.addListener(clusterMarker, 'mouseout', () => {
+    /* istanbul ignore next */
+    clusterMarker.addListener('mouseout', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
     })
 
