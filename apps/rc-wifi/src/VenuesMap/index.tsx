@@ -8,7 +8,6 @@ import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import GMap                   from './GMap'
 import { FilterStateChange }  from './VenueFilterControlBox'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
-export * from './VenueClusterRenderer'
 
 export interface GoogleMapProps {
   data: VenueMarkerOptions[]

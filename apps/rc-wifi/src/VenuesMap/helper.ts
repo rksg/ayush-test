@@ -8,6 +8,7 @@ import {
   ApVenueStatusEnum,
   SwitchStatusEnum } from '@acx-ui/rc/services'
 
+import * as UI                from './styledComponents'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
 export const getDeviceConnectionStatusColors = () => [
@@ -30,6 +31,23 @@ export const getDisplayLabel = (label: string) => {
     /* istanbul ignore next */
     default:
       return '3 Unknown'
+  }
+}
+
+export const getVenueInfoMarkerIcon = (status: string) => {
+  switch (status) {
+    case ApVenueStatusEnum.IN_SETUP_PHASE:
+      return UI.VenueInfoMarkerGreyIcon
+    case ApVenueStatusEnum.OFFLINE:
+      return UI.VenueInfoMarkerRedIcon
+    case ApVenueStatusEnum.OPERATIONAL:
+      return UI.VenueInfoMarkerGreenIcon
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
+      return UI.VenueInfoMarkerOrangeIcon
+    case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return UI.VenueInfoMarkerOrangeIcon
+    default:
+      return UI.VenueInfoMarkerGreyIcon
   }
 }
 

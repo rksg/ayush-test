@@ -4,7 +4,7 @@ import {
   ApVenueStatusEnum, Dashboard, SwitchStatusEnum
 } from '@acx-ui/rc/services'
 
-import { getClusterSVG, getDeviceConnectionStatusColors, getIcon, getMarkerColor, getMarkerSVG, massageVenuesData } from './helper'
+import { getClusterSVG, getDeviceConnectionStatusColors, getIcon, getMarkerColor, getMarkerSVG, massageVenuesData, getVenueInfoMarkerIcon } from './helper'
 
 jest.mock('@acx-ui/components', () => ({
   __esModule: true,
@@ -412,6 +412,22 @@ describe('Venues Map Helper', () => {
       .toStrictEqual({ default: '#23AB36;', hover: '#226D2C;' })
     expect(getMarkerColor([ApVenueStatusEnum.IN_SETUP_PHASE]))
       .toStrictEqual({ default: '#ACAEB0;', hover: '#565758;' })
+  })
+
+  it('should test getVenueInfoMarkerIcon method',()=>{
+    const listOfStatuses:ApVenueStatusEnum[] = [
+      ApVenueStatusEnum.IN_SETUP_PHASE,
+      ApVenueStatusEnum.OFFLINE,
+      ApVenueStatusEnum.OPERATIONAL,
+      ApVenueStatusEnum.REQUIRES_ATTENTION,
+      ApVenueStatusEnum.TRANSIENT_ISSUE
+    ]
+    const iconList = listOfStatuses.map(status=>getVenueInfoMarkerIcon(status))
+    expect(iconList).toMatchSnapshot()
+  })
+  it('should test getVenueInfoMarkerIcon method for unknown status',()=>{
+    const icon = getVenueInfoMarkerIcon('unkownStatus')
+    expect(icon).toMatchSnapshot()
   })
 
   it('should return cluster svg string with the given fill color', ()=>{

@@ -1,14 +1,12 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import { Loader }     from '@googlemaps/js-api-loader'
 
-import { ApVenueStatusEnum }                              from '@acx-ui/rc/services'
+
 import { BrowserRouter as Router }                        from '@acx-ui/react-router-dom'
 import { Provider }                                       from '@acx-ui/store'
 import { act, queryByAttribute, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import VenueMarkerWithLabel from './VenueMarkerWithLabel'
-
-import { VenuesMap, getVenueInfoMarkerIcon, clusterClickHandler } from './'
+import { VenuesMap } from './'
 
 
 jest.mock('@acx-ui/config', () => ({
@@ -60,70 +58,5 @@ describe('VenuesMap', () => {
     const getById = queryByAttribute.bind(null, 'id')
     const map = getById(container, 'map')
     expect(map).toBeTruthy()  
-  })
-  describe('VenueClusterRenderer',()=>{
-    it('should test getVenueInfoMarkerIcon method',()=>{
-      const listOfStatuses:ApVenueStatusEnum[] = [
-        ApVenueStatusEnum.IN_SETUP_PHASE,
-        ApVenueStatusEnum.OFFLINE,
-        ApVenueStatusEnum.OPERATIONAL,
-        ApVenueStatusEnum.REQUIRES_ATTENTION,
-        ApVenueStatusEnum.TRANSIENT_ISSUE
-      ]
-      const iconList = listOfStatuses.map(status=>getVenueInfoMarkerIcon(status))
-      expect(iconList).toMatchSnapshot()
-    })
-    it('should test getVenueInfoMarkerIcon method for unknown status',()=>{
-      const icon = getVenueInfoMarkerIcon('unkownStatus')
-      expect(icon).toMatchSnapshot()
-    })
-
-    it('should match with snapshot for venue cluster tooltip',()=>{
-      const markerSpy:any = jest.fn()
-      google.maps.Marker = markerSpy
-      const series=[
-        {
-          name: '1 Requires Attention',
-          value: 0
-        },
-        {
-          name: '2 Transient Issue',
-          value: 0
-        },
-        {
-          name: '3 In Setup Phase',
-          value: 0
-        },
-        {
-          name: '4 Operational',
-          value: 1
-        }
-      ]
-      const venueData = {
-        venueId: 'someVenueId',
-        name: 'someVenueName',
-        status: ApVenueStatusEnum.OPERATIONAL,
-        apStat: [{
-          category: 'APs',
-          series
-        }],
-        apsCount: 50,
-        switchStat: [{
-          category: 'Switches',
-          series
-        }],
-        switchesCount: 2,
-        clientsCount: 20,
-        switchClientsCount: 10
-      }
-      const marker = new VenueMarkerWithLabel({
-        labelContent: ''
-      },venueData)
-      
-      const clusterInfoWindow = new google.maps.InfoWindow({})
-      const infoDiv=clusterClickHandler([marker],clusterInfoWindow, marker)
-      expect(infoDiv).toMatchSnapshot()
-      expect(markerSpy).toBeCalled()
-    })
   })
 })

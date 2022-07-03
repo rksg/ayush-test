@@ -4,13 +4,12 @@ import Icon, {
 import { Cluster,Renderer } from '@googlemaps/markerclusterer'
 import { createRoot }       from 'react-dom/client'
 
-import { cssStr, ListWithIconProps, ListWithIcon, StyledListWithIcon } from '@acx-ui/components'
-import { ApVenueStatusEnum }                                           from '@acx-ui/rc/services'
+import { cssStr, ListWithIconProps, ListWithIcon } from '@acx-ui/components'
 
-import { getClusterSVG, getIcon, getMarkerColor } from './helper'
-import * as UI                                    from './styledComponents'
-import { VenueMarkerTooltip }                     from './VenueMarkerTooltip'
-import VenueMarkerWithLabel                       from './VenueMarkerWithLabel'
+import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon } from './helper'
+import { StyledListWithIcon }                                             from './styledComponents'
+import { VenueMarkerTooltip }                                             from './VenueMarkerTooltip'
+import VenueMarkerWithLabel                                               from './VenueMarkerWithLabel'
 
 declare global {
   interface Window {
@@ -19,23 +18,6 @@ declare global {
 }
 
 let currentInfoWindow: google.maps.InfoWindow
-
-export const getVenueInfoMarkerIcon = (status: string) => {
-  switch (status) {
-    case ApVenueStatusEnum.IN_SETUP_PHASE:
-      return UI.VenueInfoMarkerGreyIcon
-    case ApVenueStatusEnum.OFFLINE:
-      return UI.VenueInfoMarkerRedIcon
-    case ApVenueStatusEnum.OPERATIONAL:
-      return UI.VenueInfoMarkerGreenIcon
-    case ApVenueStatusEnum.REQUIRES_ATTENTION:
-      return UI.VenueInfoMarkerOrangeIcon
-    case ApVenueStatusEnum.TRANSIENT_ISSUE:
-      return UI.VenueInfoMarkerOrangeIcon
-    default:
-      return UI.VenueInfoMarkerGreyIcon
-  }
-}
 
 export const clusterClickHandler = (markers: google.maps.Marker[],
   clusterInfoWindow: google.maps.InfoWindow, clusterMarker: google.maps.Marker ) => {
@@ -51,6 +33,7 @@ export const clusterClickHandler = (markers: google.maps.Marker[],
   })
   
   const infoDiv = document.createElement('div')
+  const pageSize=3
   const header = <div className='venueInfoHeader'>
     <span style={{ fontWeight: 'bolder' }}>{markers?.length} Venues</span> 
     <span style={{ float: 'right', cursor: 'pointer' }}
@@ -59,9 +42,14 @@ export const clusterClickHandler = (markers: google.maps.Marker[],
       }}>
       <CloseOutlined/>
     </span></div>
-  const footer=<div></div>
+  const footer=data.length <= pageSize ? <div></div> : undefined
   const content = <StyledListWithIcon>
-    <ListWithIcon data={data} isPaginate={true} pageSize={3} header={header} footer={footer}/>
+    <ListWithIcon 
+      data={data}
+      isPaginate={true}
+      pageSize={pageSize}
+      header={header}
+      footer={footer}/>
   </StyledListWithIcon>
 
   createRoot(infoDiv).render(content)

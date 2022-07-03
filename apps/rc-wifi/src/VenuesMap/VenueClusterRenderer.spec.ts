@@ -1,7 +1,11 @@
 import { initialize, mockInstances } from '@googlemaps/jest-mocks'
 import { Cluster, MarkerClusterer }  from '@googlemaps/markerclusterer'
 
-import VenueClusterRenderer from './VenueClusterRenderer'
+import { ApVenueStatusEnum } from '@acx-ui/rc/services'
+
+import VenueClusterRenderer, { clusterClickHandler } from './VenueClusterRenderer'
+import VenueMarkerWithLabel                          from './VenueMarkerWithLabel'
+
 
 describe('VenueClusterRenderer', () => {
   beforeAll(() => {
@@ -48,6 +52,56 @@ describe('VenueClusterRenderer', () => {
       )
     })
     expect(spyRender).toHaveBeenCalled()
+  })
+
+  it('should match with snapshot for venue cluster tooltip',()=>{
+    const markerSpy:any = jest.fn()
+    google.maps.Marker = markerSpy
+    const series=[
+      {
+        name: '1 Requires Attention',
+        value: 0
+      },
+      {
+        name: '2 Transient Issue',
+        value: 0
+      },
+      {
+        name: '3 In Setup Phase',
+        value: 0
+      },
+      {
+        name: '4 Operational',
+        value: 1
+      }
+    ]
+    const venueData = {
+      venueId: 'someVenueId',
+      name: 'someVenueName',
+      status: ApVenueStatusEnum.OPERATIONAL,
+      apStat: [{
+        category: 'APs',
+        series
+      }],
+      apsCount: 50,
+      switchStat: [{
+        category: 'Switches',
+        series
+      }],
+      switchesCount: 2,
+      clientsCount: 20,
+      switchClientsCount: 10
+    }
+    const markers = Array.from(Array(15).keys()).map(index=>{
+      return new VenueMarkerWithLabel({
+        labelContent: ''
+      },{ ...venueData,venueId: `venueId#${index+1}`,name: `Venue #${index+1}` })
+    })
+    
+    const clusterInfoWindow = new google.maps.InfoWindow({})
+    const infoDiv=clusterClickHandler(markers,clusterInfoWindow, markers[0])
+    expect(infoDiv).toMatchSnapshot()
+    expect(markerSpy).toBeCalled()
   })
 })
 

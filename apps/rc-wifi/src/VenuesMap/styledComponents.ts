@@ -100,3 +100,68 @@ export const TotalCount = styled.a`
   font-weight: 700;
   color: var(--acx-accents-blue-50);
 `
+
+export const StyledListWithIcon = styled.div`
+width: 300px;
+background-color: #333333;
+border-radius: 4px;
+
+.venueInfoHeader {
+  color: white;
+}
+
+.ant-list-item {
+    color: white;
+}
+
+.ant-list-split .ant-list-item {
+  border-bottom: 1px solid #464749;
+}
+
+.ant-list-split .ant-list-header {
+  border-bottom: 1px solid #464749;
+}
+
+.ant-list-split.ant-list-something-after-last-item 
+.ant-spin-container > .ant-list-items > .ant-list-item:last-child {
+  border-bottom: 1px solid #464749;
+}
+
+.ant-list-item:hover {
+    background-color: #565758;
+}
+
+.ant-list-pagination {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.ant-pagination-item a {
+    display: block;
+    padding: 0 6px;
+    color: white;
+    transition: none;
+}
+.ant-pagination-item-active a {
+    color: #EC7100
+}
+.ant-pagination-prev button, .ant-pagination-next button {
+    color: white;
+    cursor: pointer;
+    user-select: none;
+}
+`
+
+export const StyledListWithIconLight = styled.div`
+width: 300px;
+border-radius: 4px;
+
+.ant-list-pagination {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.ant-list-item:hover {
+  background-color: #D8D7C9;
+}
+`
