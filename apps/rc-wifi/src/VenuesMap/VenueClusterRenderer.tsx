@@ -92,11 +92,9 @@ export default class VenueClusterRenderer implements Renderer {
       // adjust zIndex to be above other markers
       zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count
     })
-    /* istanbul ignore next */
     clusterMarker.addListener('mouseover', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.hover), scaledSize).icon)
     })
-    /* istanbul ignore next */
     clusterMarker.addListener('mouseout', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
     })

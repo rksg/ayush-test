@@ -28,7 +28,6 @@ export const getDisplayLabel = (label: string) => {
       return '1 Requires Attention'
     case ApVenueStatusEnum.TRANSIENT_ISSUE:
       return '2 Transient Issue'
-    /* istanbul ignore next */
     default:
       return '3 Unknown'
   }
@@ -110,23 +109,18 @@ const getApStatusDataByVenue = (
   let operational: number = 0
 
   if (apsStatus && apsStatus[venueId] && apsStatus[venueId].apStatus) {
-    /* istanbul ignore else */
     if (apsStatus[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]) {
       requires_attention = +apsStatus[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]!
     }
-    /* istanbul ignore else */
     if (apsStatus[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]) {
       transient_issue = +apsStatus[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]!
     }
-    /* istanbul ignore else */
     if (apsStatus[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]) {
       in_setup_phase = +apsStatus[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]!
     }
-    /* istanbul ignore else */
     if (apsStatus[venueId].apStatus[ApVenueStatusEnum.OFFLINE]) {
       in_setup_phase += +apsStatus[venueId].apStatus[ApVenueStatusEnum.OFFLINE]!
     }
-    /* istanbul ignore else */
     if (apsStatus[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]) {
       operational = +apsStatus[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]!
     }
@@ -168,19 +162,15 @@ function getSwitchStatusDataByVenue (overviewData: Dashboard, venueId: string): 
   let in_setup_phase: number = 0
 
   if (switchStat && switchStat[venueId] && switchStat[venueId].switchStatus) {
-    /* istanbul ignore else */
     if (switchStat[venueId].switchStatus[SwitchStatusEnum.DISCONNECTED]) {
       requires_attention = +switchStat[venueId].switchStatus[SwitchStatusEnum.DISCONNECTED]
     }
-    /* istanbul ignore else */
     if (switchStat[venueId].switchStatus[SwitchStatusEnum.NEVER_CONTACTED_CLOUD]) {
       in_setup_phase = +switchStat[venueId].switchStatus[SwitchStatusEnum.NEVER_CONTACTED_CLOUD]
     }
-    /* istanbul ignore else */
     if (switchStat[venueId].switchStatus[SwitchStatusEnum.INITIALIZING]) {
       in_setup_phase += +switchStat[venueId].switchStatus[SwitchStatusEnum.INITIALIZING]
     }
-    /* istanbul ignore else */
     if (switchStat[venueId].switchStatus[SwitchStatusEnum.OPERATIONAL]) {
       operational = +switchStat[venueId].switchStatus[SwitchStatusEnum.OPERATIONAL]
     }

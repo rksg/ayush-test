@@ -50,7 +50,6 @@ const GMap: React.FC<MapProps> = ({
   const venueInfoWindow = new google.maps.InfoWindow({})
 
   React.useEffect(() => {
-    /* istanbul ignore else */
     if (ref.current) {
       const map = new window.google.maps.Map(ref.current, {})
       window.googleMap = map
@@ -60,9 +59,7 @@ const GMap: React.FC<MapProps> = ({
   }, [ref])
 
   React.useEffect(() => {
-    /* istanbul ignore else */
     if(map){
-      /* istanbul ignore else */
       if (enableVenueFilter && onFilterChange
         && map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
         const legendControlBoxDiv = document.createElement('div')
@@ -74,16 +71,12 @@ const GMap: React.FC<MapProps> = ({
       ['click', 'idle', 'zoom_changed'].forEach((eventName) =>
         google.maps.event.clearListeners(map, eventName)
       )
-      /* istanbul ignore else */
       if (onClick) {
         google.maps.event.addListener(map, 'click', onClick)
       }
-      /* istanbul ignore else */
       if (onIdle) {
-        /* istanbul ignore next */
         google.maps.event.addListener(map, 'idle', () => onIdle(map))
       }
-      /* istanbul ignore next */
       google.maps.event.addListener(map, 'zoom_changed', () => {
         if (venueInfoWindow) {
           venueInfoWindow.close()
@@ -91,7 +84,6 @@ const GMap: React.FC<MapProps> = ({
       })
     }
     return function cleanup () {
-      /* istanbul ignore else */
       if(map) {
         ['click', 'idle', 'zoom_changed'].forEach((eventName) =>
           google.maps.event.clearListeners(map, eventName))
@@ -101,7 +93,6 @@ const GMap: React.FC<MapProps> = ({
   },[map, onClick, onIdle])
 
   React.useEffect(() => {
-    /* istanbul ignore else */
     if (map) {
       if(markerClusterer){
         markerClusterer.clearMarkers()
@@ -114,7 +105,6 @@ const GMap: React.FC<MapProps> = ({
         let markerSize = 32
         // DEFINITIONS: No APs = 32px, minimum # of APs (>0) = 48 px, maximum # of APs = 96px
       
-        /* istanbul ignore else */
         if(venue?.apsCount > 0){
           markerSize = 48 + (venue?.apsCount / maxVenueCountPerVenue!) * 48
         }
@@ -143,7 +133,6 @@ const GMap: React.FC<MapProps> = ({
         })
 
         let closeInfoWindowWithTimeout: NodeJS.Timeout
-        /* istanbul ignore next */
         marker.addListener('mouseover', () => {
           marker.setIcon(getIcon(svgMarkerHover, scaledSize).icon)
 
@@ -163,12 +152,10 @@ const GMap: React.FC<MapProps> = ({
             anchor: marker
           })
         })
-        /* istanbul ignore next */
         marker.addListener('mouseout', () => {
           marker.setIcon(getIcon(svgMarkerDefault, scaledSize).icon)
           closeInfoWindowWithTimeout = setTimeout(() => venueInfoWindow.close(), 100)
         })
-        /* istanbul ignore next */
         marker.addListener('click', () => {
           onNavigate && onNavigate({
             venueId: venue.venueId,
@@ -179,9 +166,7 @@ const GMap: React.FC<MapProps> = ({
       })
 
       markers = markers.filter(marker => marker.getVisible())
-      /* istanbul ignore else */
       if (markers && markers.length > 0) {
-        /* istanbul ignore else */
         if(cluster){
           setMarkerClusterer(new MarkerClusterer({
             map,

@@ -74,9 +74,6 @@ module.exports = {
   '@screen-xl': '1280px',
   '@screen-xxl': '1920px',
 
-  '@table-padding-vertical': '14px',
-  '@table-padding-horizontal': '8px',
-
   '@tabs-highlight-color': 'var(--acx-primary-black)',
   '@tabs-hover-color': 'var(--acx-accents-orange-50)',
   '@tabs-active-color': 'var(--acx-primary-black)',
