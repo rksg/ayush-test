@@ -99,12 +99,10 @@ export default class VenueClusterRenderer implements Renderer {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
     })
 
-    /* istanbul ignore next */
     google.maps.event.addListener(clusterMarker, 'click',
       ()=>clusterClickHandler(markers || [new google.maps.Marker({})],
         clusterInfoWindow, clusterMarker))
 
-    /* istanbul ignore next */    
     google.maps.event.addListener(window.googleMap, 'click',()=>{
       if (typeof(currentInfoWindow) != 'undefined') { 
         currentInfoWindow.close()

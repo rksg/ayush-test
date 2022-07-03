@@ -94,7 +94,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-8 ccRknu"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 geAuCt"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -107,7 +107,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-8 ccRknu"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 geAuCt"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -130,7 +130,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-8 ccRknu"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 geAuCt"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -143,7 +143,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-8 ccRknu"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 geAuCt"
                                 >
                                   <div
                                     class="ant-space-item"
