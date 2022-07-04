@@ -23,7 +23,7 @@ export function WithSubTitleComp () {
       breadcrumb={[
         { text: 'Networks', link: '/networks' }
       ]}
-      subTitle={<span style={{background: 'yellow'}}>Custom Component</span>}
+      subTitle={<span style={{ background: 'yellow' }}>Custom Component</span>}
     />
   </BrowserRouter>
 }
