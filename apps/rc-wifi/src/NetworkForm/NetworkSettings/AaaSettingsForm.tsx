@@ -24,7 +24,10 @@ import {
   getUserSettingsFromDict,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  AaaServerTitle
+  AaaServerTitle,
+  networkWifiIpRegExp,
+  networkWifiPortRegExp,
+  stringContainSpace
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -221,14 +224,7 @@ function getAaaServer (
           required: true,
           whitespace: false
         },{
-          validator: (rule, value) => {
-            // eslint-disable-next-line max-len
-            const re = new RegExp(/^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\p{N}\p{L}]+)?$/)
-            if (value!=='' && !re.test(value)) {
-              return Promise.reject('Please enter a valid IP address')
-            }
-            return Promise.resolve()
-          }
+          validator: networkWifiIpRegExp
         }]}
         children={<Input />}
       />
@@ -236,18 +232,9 @@ function getAaaServer (
         name={`${serverType}.${order}.port`}
         label='Port'
         rules={[{
-          required: true,
-          whitespace: false
+          required: true
         },{
-          validator: (rule, value) => {
-            // eslint-disable-next-line max-len
-            if (value !=='' && value <= 0){
-              return Promise.reject('This value should be higher than or equal to 1')
-            } else if (value !=='' && value > 65535) {
-              return Promise.reject('This value should be lower than or equal to 65535')
-            }
-            return Promise.resolve()
-          }
+          validator: networkWifiPortRegExp
         }]}
         children={<Input type='number'/>}
       />
@@ -258,15 +245,9 @@ function getAaaServer (
           required: true,
           whitespace: false
         },{
-          validator: (rule, value) => {
-            const re = new RegExp(/[\s]/)
-            if (re.test(value)) {
-              return Promise.reject('Spaces are not allowed')
-            }
-            return Promise.resolve()
-          }
+          validator: stringContainSpace
         }]}
-        children={<Input.Password placeholder='Spaces are not allowed' />}
+        children={<Input.Password />}
       />
     </React.Fragment>
   )
