@@ -10,6 +10,7 @@ import { showToast, ToastProps, ToastType } from '@acx-ui/components'
 import { rcToastTemplates } from './toastTemplate'
 
 export enum TxStatus {
+  IN_PROGRESS = 'IN_PROGRESS',
   PENDING = 'PENDING',
   SUCCESS = 'SUCCESS',
   FAIL = 'FAIL',
@@ -35,7 +36,7 @@ export interface Transaction {
   descriptionTemplate: string
   descriptionData: TxData[]
   linkTemplate?: string
-  linkData: TxData[]
+  linkData?: TxData[]
   link?: string
   admin?: {
     name: string
@@ -47,14 +48,14 @@ export interface Transaction {
     status: TxStatus
     progressType: string
     message: string
-    startDatetime: string
-    endDatetime: string
+    startDatetime?: string
+    endDatetime?: string
   }[]
   notifications?: {
     type: string
   }[]
   startDatetime: string
-  endDatetime: string
+  endDatetime?: string
   useCase: string
 }
 
@@ -115,6 +116,12 @@ export const CountdownNode = (props: { n: number }) => (
     <CountdownNumber>{props.n}</CountdownNumber>
   </Countdown>
 )
+
+export const showActivityMessage = (tx: Transaction, useCase: string[]) => {
+  if (tx.status === TxStatus.IN_PROGRESS) return
+  if (!useCase.includes(tx.useCase)) return
+  showTxToast(tx)
+} 
 
 export const showTxToast = (tx: Transaction) => {
   if (tx.attributes && tx.attributes.name) {
@@ -210,7 +217,7 @@ const getRouterLink = (tx:Transaction): string | null => {
     return tx.link
   }
 
-  if (!tx.linkTemplate) {
+  if (!tx.linkTemplate || !tx.linkData) {
     return null
   }
 
