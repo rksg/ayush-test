@@ -1,13 +1,11 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import { Loader }     from '@googlemaps/js-api-loader'
 
-
 import { BrowserRouter as Router }                        from '@acx-ui/react-router-dom'
 import { Provider }                                       from '@acx-ui/store'
 import { act, queryByAttribute, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { VenuesMap } from './'
-
 
 jest.mock('@acx-ui/config', () => ({
   __esModule: true,
@@ -45,6 +43,7 @@ describe('VenuesMap', () => {
       'https://maps.googleapis.com/maps/api/js' +
       '?callback=__googleMapsCallback&key=some-key&libraries=places')
   })
+  
   it('should load the child component after api is loaded successfully', async () => {
     const { container } = render(
       <Router>
@@ -53,10 +52,9 @@ describe('VenuesMap', () => {
         </Provider>
       </Router>
     )
-    
     await executeLoaderCallback() // Will make render return success
     const getById = queryByAttribute.bind(null, 'id')
     const map = getById(container, 'map')
-    expect(map).toBeTruthy()  
+    expect(map).toBeTruthy()
   })
 })
