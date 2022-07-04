@@ -57,8 +57,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
+      }
     }),
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -66,8 +65,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...req
         }
-      },
-      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
+      }
     }),
     getNetwork: build.query<NetworkDetail, RequestPayload>({
       query: ({ params }) => {
