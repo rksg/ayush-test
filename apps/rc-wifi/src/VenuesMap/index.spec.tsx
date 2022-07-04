@@ -52,7 +52,7 @@ describe('VenuesMap', () => {
         </Provider>
       </Router>
     )
-    
+
     await executeLoaderCallback() // Will make render return success
     const getById = queryByAttribute.bind(null, 'id')
     const map = getById(container, 'map')
