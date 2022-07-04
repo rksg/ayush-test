@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { NetworkForm } from '../NetworkForm'
 
@@ -35,63 +35,108 @@ const venuesResponse = {
 
 const successResponse = { requestId: 'request-id' }
 
+async function fillInBeforeSettings (networkName: string) {
+  const insertInput = screen.getByLabelText('Network Name')
+  fireEvent.change(insertInput, { target: { value: networkName } })
+
+  const button = screen.getAllByRole('radio')
+  fireEvent.click(button[2])
+  fireEvent.click(screen.getByText('Next'))
+
+  await screen.findByRole('heading', { level: 3, name: 'AAA Settings' })
+}
+
+async function fillInAfterSettings (checkSummary: Function) {
+  fireEvent.click(screen.getByText('Next'))
+  await screen.findByRole('heading', { level: 3, name: 'Venues' })
+
+  fireEvent.click(screen.getByText('Next'))
+  await screen.findByRole('heading', { level: 3, name: 'Summary' })
+
+  checkSummary()
+  const finish = screen.getByText('Finish')
+  fireEvent.click(finish)
+  await waitForElementToBeRemoved(finish)
+}
 
 describe('NetworkForm', () => {
-  it('should create AAA network successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
-      route: { params }
-    })
-
-    expect(asFragment()).toMatchSnapshot()
-
+  beforeEach(() => {
     mockServer.use(
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => {
+        (_, res, ctx) => {
           return res(
             ctx.status(200),
             ctx.json(venuesResponse)
           )
         }),
-      rest.post(CommonUrlsInfo.addNetworkDeep.url,
-        (req, res, ctx) => {
+      rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+        (_, res, ctx) => {
           return res(
             ctx.status(200),
             ctx.json(successResponse)
           )
         }),
-      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) => res(ctx.json([])))
+      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) => res(ctx.json([]))),
+      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) => res(ctx.json([])))
     )
+  })
 
-    const insertInput = screen.getByLabelText('Network Name')
-    fireEvent.change(insertInput, { target: { value: 'AAA network test' } })
-    expect(insertInput).toHaveValue('AAA network test')
+  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const button = screen.getAllByRole('radio')
-    fireEvent.click(button[2])
-    fireEvent.click(screen.getByText('Next'))
+  it('should create AAA network successfully', async () => {
+    const { asFragment } = render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    expect(asFragment()).toMatchSnapshot()
 
-    await screen.findByRole('heading', { level: 3, name: 'AAA Settings' })
+    await fillInBeforeSettings('AAA network test')
 
     const ipTextbox = screen.getByLabelText('IP Address')
     fireEvent.change(ipTextbox, { target: { value: '111.111.111.111' } })
-    expect(ipTextbox).toHaveValue('111.111.111.111')
+
+    const portTextbox = screen.getByLabelText('Port')
+    fireEvent.change(portTextbox, { target: { value: '1111' } })
+
+    const secretTextbox = screen.getByLabelText('Shared secret')
+    fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
+
+    await fillInAfterSettings(async () => {
+      expect(screen.getByText('AAA network test')).toBeVisible()
+      expect(screen.getByText('111.111.111.111:1111')).toBeVisible()
+      expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
+    })
+  })
+
+  it('should create AAA network with secondary server', async () => {
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+
+    await fillInBeforeSettings('AAA network test')
+
+    const ipTextbox = screen.getByLabelText('IP Address')
+    fireEvent.change(ipTextbox, { target: { value: '111.111.111.111' } })
 
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: 1111 } })
-    expect(portTextbox).toHaveValue(1111)
 
     const secretTextbox = screen.getByLabelText('Shared secret')
-    fireEvent.change(secretTextbox, { target: { value: '111111' } })
-    expect(secretTextbox).toHaveValue('111111')
+    fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
-    fireEvent.click(screen.getByText('Next'))
-    await screen.findByRole('heading', { level: 3, name: 'Venues' })
+    fireEvent.click(screen.getByText('Add Secondary Server'))
 
-    fireEvent.click(screen.getByText('Next'))
-    await screen.findByRole('heading', { level: 3, name: 'Summary' })
+    const secondaryIpTextbox = screen.getAllByLabelText('IP Address')[1]
+    fireEvent.change(secondaryIpTextbox, { target: { value: '222.222.222.222' } })
 
-    fireEvent.click(screen.getByText('Finish'))
+    const secondaryPortTextbox = screen.getAllByLabelText('Port')[1]
+    fireEvent.change(secondaryPortTextbox, { target: { value: '2222' } })
+
+    const secondarySecretTextbox = screen.getAllByLabelText('Shared secret')[1]
+    fireEvent.change(secondarySecretTextbox, { target: { value: 'secret-2' } })
+
+    await fillInAfterSettings(() => {
+      expect(screen.getByText('AAA network test')).toBeVisible()
+      expect(screen.getByText('111.111.111.111:1111')).toBeVisible()
+      expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
+
+      expect(screen.getByText('222.222.222.222:2222')).toBeVisible()
+      expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
+    })
   })
 })

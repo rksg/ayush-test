@@ -55,7 +55,7 @@ describe('NetworkForm', () => {
             ctx.json(venuesResponse)
           )
         }),
-      rest.post(CommonUrlsInfo.addNetworkDeep.url,
+      rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (req, res, ctx) => {
           return res(
             ctx.status(200),
