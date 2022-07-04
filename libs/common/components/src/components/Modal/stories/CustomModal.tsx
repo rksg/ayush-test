@@ -6,7 +6,7 @@ export function CustomModal () {
       Custom Modal:
       <button onClick={ConfirmDeleteNotification}>Confirm Delete</button>
       <button onClick={ConfirmDeleteWithValidation}>Confirm Delete With Validation</button>
-      <button onClick={ErrorDetailNotification}>Error with details</button>
+      <button onClick={ErrorDetailNotification}>Error With Details</button>
     </>
   )
 }

@@ -5,8 +5,8 @@ export function BasicModal () {
     <>
       Basic Modal:
       <button onClick={InfoNotification}>Info</button>
-      <button onClick={ConfirmNotification}>Confirm</button>
       <button onClick={ErrorNotification}>Error</button>
+      <button onClick={ConfirmNotification}>Confirm</button>
     </>
   )
 }

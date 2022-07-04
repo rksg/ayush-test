@@ -19,6 +19,7 @@ export const FooterButtons = styled.div`
 `
 
 export const Collapse = styled(AntCollapse)`
+  width: 100%;
   .ant-collapse-item {
     flex: 1;
     > .ant-collapse-content >.ant-collapse-content-box {
@@ -42,16 +43,19 @@ export const Collapse = styled(AntCollapse)`
     }
   }
   
-  pre {
-    background: var(--acx-neutrals-5);
+  textarea {
+    background: var(--acx-neutrals-10);
     border: 1px solid var(--acx-neutrals-30);
-    border-radius: 4px;
-    word-break: break-word;
-    white-space: pre-wrap;
     font-size: 10px;
     line-height: 1.5;
     padding: 12px;
     max-height: 200px;
+    resize: none;
+    &:hover,
+    &:focus {
+      border-color: var(--acx-neutrals-30);
+      box-shadow: none
+    }
   }
 `
 

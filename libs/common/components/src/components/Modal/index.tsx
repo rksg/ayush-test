@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+
 import { Modal, Button, Collapse, Form, Input } from 'antd'
 import { ModalFuncProps }                       from 'antd/lib/modal'
 
@@ -5,12 +7,14 @@ import { ExpandSquareUp, ExpandSquareDown } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 const { Panel } = Collapse
+const { TextArea } = Input
 
 export type ModalType = 'info' | 'error' | 'confirm'
+export type ModalAction = 'DELETE' | 'SHOW_ERRORS'
 
 export interface ModalProps extends ModalFuncProps {
   type: ModalType,
-  action?: 'DELETE' | 'SHOW_ERRORS',
+  action?: ModalAction,
   errorDetails?: ErrorDetailsProps,
   multiple?: boolean,
   numOfEntities?: number,
@@ -26,7 +30,7 @@ export interface ModalRef {
 
 export interface ErrorDetailsProps {
   headers?: {
-    normalizedNames: object,
+    normalizedNames?: object,
     lazyUpdate?: boolean
   },
   status?: number
@@ -113,6 +117,11 @@ function CollapsePanel (props: {
   header: string,
   content: ErrorDetailsProps
 }) {
+  const inputEl:any = useRef(null)
+  const copyText = () => {
+    navigator.clipboard.writeText(convertToJSON(props.content))
+    inputEl.current.resizableTextArea.textArea.select()
+  }
   return (
     <UI.Collapse
       ghost
@@ -120,12 +129,10 @@ function CollapsePanel (props: {
       expandIcon={({ isActive }) => isActive ? <ExpandSquareUp /> : <ExpandSquareDown />}
     >
       <Panel header={props.header} key={props.header}>
-        <pre>{convertToJSON(props.content)}</pre>
-        <UI.CopyButton
-          type='link'
-          onClick={() => {
-            navigator.clipboard.writeText(convertToJSON(props.content))
-          }}>Copy to clipboard</UI.CopyButton>
+        <TextArea ref={inputEl} rows={20} readOnly={true} value={convertToJSON(props.content)} />
+        <UI.CopyButton type='link' onClick={copyText}>
+          Copy to clipboard
+        </UI.CopyButton>
       </Panel>
     </UI.Collapse>
   )
@@ -136,11 +143,8 @@ function ConfirmForm (props: {
   modal: ModalRef
 }) {
   return (
-    <Form className='confirm-form'>
-      <Form.Item
-        name='name'
-        label={`Type the word "${props.text}" to confirm:`}
-      >
+    <Form>
+      <Form.Item name='name' label={`Type the word "${props.text}" to confirm:`}>
         <Input onChange={(e) => {
           const disabled = e.target.value.toLowerCase() !== props.text.toLowerCase()
           props.modal.update({
