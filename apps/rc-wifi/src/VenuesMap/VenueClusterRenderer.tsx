@@ -26,23 +26,18 @@ export const clusterClickHandler = (markers: google.maps.Marker[],
   markers.sort((a,b)=>{
     const { venueData: dataA } = a as VenueMarkerWithLabel
     const { venueData: dataB } = b as VenueMarkerWithLabel
-    return getVenueStatusSeverity(dataA.status || 'NA') 
-    - getVenueStatusSeverity(dataB.status || 'NA')
+    return getVenueStatusSeverity(dataA.status as string)
+    - getVenueStatusSeverity(dataB.status as string)
   })
 
   data = markers.map((marker)=>{
     const { venueData } = marker as VenueMarkerWithLabel
     return {
-      icon: <Icon component={getVenueInfoMarkerIcon(venueData.status || 'NA')}/>,
-      title: venueData.name || 'NA',
+      icon: <Icon component={getVenueInfoMarkerIcon(venueData.status as string)}/>,
+      title: venueData.name as string,
       popoverContent: <VenueMarkerTooltip 
         venue={(marker as VenueMarkerWithLabel).venueData} />
     }
-  })
-
-  data?.forEach(item=>{
-    data.push(item)
-    data.push(item)
   })
   
   const infoDiv = document.createElement('div')
