@@ -6,10 +6,10 @@ import { createRoot }       from 'react-dom/client'
 
 import { cssStr, ListWithIconProps, ListWithIcon } from '@acx-ui/components'
 
-import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon } from './helper'
-import { StyledListWithIcon }                                             from './styledComponents'
-import { VenueMarkerTooltip }                                             from './VenueMarkerTooltip'
-import VenueMarkerWithLabel                                               from './VenueMarkerWithLabel'
+import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon, getVenueStatusSeverity } from './helper'
+import { StyledListWithIcon }                                                                     from './styledComponents'
+import { VenueMarkerTooltip }                                                                     from './VenueMarkerTooltip'
+import VenueMarkerWithLabel                                                                       from './VenueMarkerWithLabel'
 
 declare global {
   interface Window {
@@ -22,7 +22,15 @@ let currentInfoWindow: google.maps.InfoWindow
 export const clusterClickHandler = (markers: google.maps.Marker[],
   clusterInfoWindow: google.maps.InfoWindow, clusterMarker: google.maps.Marker ) => {
   let data: ListWithIconProps['data']=[]
-  data = markers?.map((marker)=>{
+
+  markers.sort((a,b)=>{
+    const { venueData: dataA } = a as VenueMarkerWithLabel
+    const { venueData: dataB } = b as VenueMarkerWithLabel
+    return getVenueStatusSeverity(dataA.status || 'NA') 
+    - getVenueStatusSeverity(dataB.status || 'NA')
+  })
+
+  data = markers.map((marker)=>{
     const { venueData } = marker as VenueMarkerWithLabel
     return {
       icon: <Icon component={getVenueInfoMarkerIcon(venueData.status || 'NA')}/>,
@@ -31,9 +39,14 @@ export const clusterClickHandler = (markers: google.maps.Marker[],
         venue={(marker as VenueMarkerWithLabel).venueData} />
     }
   })
+
+  data?.forEach(item=>{
+    data.push(item)
+    data.push(item)
+  })
   
   const infoDiv = document.createElement('div')
-  const pageSize=3
+  const pageSize=4
   const header = <div className='venueInfoHeader'>
     <span style={{ fontWeight: 'bolder' }}>{markers?.length} Venues</span> 
     <span style={{ float: 'right', cursor: 'pointer' }}

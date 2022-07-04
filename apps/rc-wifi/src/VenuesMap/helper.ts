@@ -38,15 +38,32 @@ export const getVenueInfoMarkerIcon = (status: string) => {
     case ApVenueStatusEnum.IN_SETUP_PHASE:
       return UI.VenueInfoMarkerGreyIcon
     case ApVenueStatusEnum.OFFLINE:
-      return UI.VenueInfoMarkerRedIcon
+      return UI.VenueInfoMarkerGreyIcon
     case ApVenueStatusEnum.OPERATIONAL:
       return UI.VenueInfoMarkerGreenIcon
     case ApVenueStatusEnum.REQUIRES_ATTENTION:
       return UI.VenueInfoMarkerOrangeIcon
     case ApVenueStatusEnum.TRANSIENT_ISSUE:
-      return UI.VenueInfoMarkerOrangeIcon
+      return UI.VenueInfoMarkerRedIcon
     default:
       return UI.VenueInfoMarkerGreyIcon
+  }
+}
+
+export const getVenueStatusSeverity = (status: string) => {
+  switch (status) {
+    case ApVenueStatusEnum.IN_SETUP_PHASE:
+      return 4
+    case ApVenueStatusEnum.OFFLINE:
+      return 4
+    case ApVenueStatusEnum.OPERATIONAL:
+      return 3
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
+      return 2
+    case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return 1
+    default:
+      return 4
   }
 }
 

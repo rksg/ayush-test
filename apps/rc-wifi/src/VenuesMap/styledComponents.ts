@@ -111,7 +111,11 @@ border-radius: 4px;
 }
 
 .ant-list-item {
-    color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  color: white;
 }
 
 .ant-list-split .ant-list-item {
@@ -132,7 +136,7 @@ border-radius: 4px;
 }
 
 .ant-list-pagination {
-    margin-top: 15px;
+    margin-top: 12px;
     text-align: center;
 }
 
