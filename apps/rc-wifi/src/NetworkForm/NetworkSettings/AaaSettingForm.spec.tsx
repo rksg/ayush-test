@@ -7,20 +7,6 @@ import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { NetworkForm } from '../NetworkForm'
 
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: jest.fn().mockImplementation(query => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: jest.fn(), // Deprecated
-    removeListener: jest.fn(), // Deprecated
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn()
-  }))
-})
-
 const venuesResponse = {
   fields: [
     'country','city','aps','latitude','switches','description',
@@ -87,25 +73,25 @@ describe('NetworkForm', () => {
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'AAA Settings' })
-    
+
     const ipTextbox = screen.getByLabelText('IP Address')
     fireEvent.change(ipTextbox, { target: { value: '111.111.111.111' } })
     expect(ipTextbox).toHaveValue('111.111.111.111')
-    
+
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: 1111 } })
     expect(portTextbox).toHaveValue(1111)
-    
+
     const secretTextbox = screen.getByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: '111111' } })
     expect(secretTextbox).toHaveValue('111111')
 
     fireEvent.click(screen.getByText('Next'))
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    
+
     fireEvent.click(screen.getByText('Next'))
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    
+
     fireEvent.click(screen.getByText('Finish'))
   })
 })
