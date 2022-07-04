@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { showToast } from '@acx-ui/components'
 import {
   CommonUrlsInfo,
   createHttpRequest,
   onSocketActivityChanged,
   RequestPayload,
+  showTxToast,
   TableResult
 } from '@acx-ui/rc/utils'
 
@@ -34,14 +34,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           if (msg.status !== 'SUCCESS') return
           if (!['DeleteNetwork', 'AddNetworkDeep'].includes(msg.useCase)) return
-
-          if (msg.useCase === 'AddNetworkDeep') {
-            showToast({
-              type: 'success',
-              content: 'Created successfully'
-            })
-          }
-
+          showTxToast(msg)
           api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
         })
       }
@@ -91,7 +84,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...networkDetailReq
         }
       },
-      providesTags: [{ type: 'Network', id: 'DETAIL' }]
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          if (msg.status !== 'SUCCESS') return
+          if (!['AddNetworkVenue', 'DeleteNetworkVenue'].includes(msg.useCase)) return
+          showTxToast(msg)
+          api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+        })
+      }
     }),
     venueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
