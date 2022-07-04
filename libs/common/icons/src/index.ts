@@ -31,3 +31,4 @@ export { ReactComponent as ServicesOutlined } from './icons/ServicesOutlined.svg
 export { ReactComponent as ServicesSolid } from './icons/ServicesSolid.svg'
 export { ReactComponent as SpeedIndicatorOutlined } from './icons/SpeedIndicatorOutlined.svg'
 export { ReactComponent as SpeedIndicatorSolid } from './icons/SpeedIndicatorSolid.svg'
+export { ReactComponent as ArrowDown } from './icons/ArrowDown.svg'
