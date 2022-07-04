@@ -85,8 +85,10 @@ describe('Modal', () => {
 
     it('should collapse/expand details panel', async () => {
       const collapseBtn = await screen.findByRole('button', { expanded: false })
-      await fireEvent.click(collapseBtn)
+      await screen.findByTestId('expand-square-down')
 
+      await fireEvent.click(collapseBtn)
+      await screen.findByTestId('expand-square-up')
       const details = await screen.findByText(/Some error details/i)
       expect(collapseBtn).toHaveAttribute('aria-expanded', 'true')
       expect(details).toBeVisible()
