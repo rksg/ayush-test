@@ -68,7 +68,7 @@ Commit message need to be prefixed with the JIRA issue number e.g.
 ACX-5449: initial README for acx-ui
 ```
 
-you can install this hook to automatically prefix your message with the jira ticket number:
+To automatically prefix your message with the JIRA issue number, use a Git hook:
 
 ```
 cp tools/dev/prepare-commit-msg .git/hooks/prepare-commit-msg
@@ -119,16 +119,19 @@ before executing the command.
 npx nx run main:serve --devRemotes=rc-wifi,analytics
 ```
 
+If you are not working on a particular app, you can choose to remove it from `--devRemotes`.
+E.g. `--devRemotes=analytics` will only run `analytics` in dev mode with changes being monitored
+while `rc-wifi` will be built statically.
+
 ### Run tests
 
 ```sh
-npx nx affected:test
-```
-
-to also generate / update the coverage folder:
-
-```
 npx nx affected:test --coverage
+```
+
+Remove `--coverage` if updating the coverage folder is not needed.
+
+```
 ```
 
 ### Run lint
