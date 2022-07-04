@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Switch } from 'antd'
 
 import {
+  Alert,
   Loader,
   Table,
   TableProps
@@ -45,7 +46,8 @@ const defaultPayload = {
 }
 
 const defaultArray: Venue[] = []
-// TODO: const notificationMessage = 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues\n';
+/* eslint-disable max-len */
+const notificationMessage = 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues'
 
 export function NetworkVenuesTab () {
   const tableQuery = useTableQuery({
@@ -211,6 +213,10 @@ export function NetworkVenuesTab () {
       { isLoading: false, isFetching: isAddNetworkUpdating },
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
+      {
+        !networkQuery.data?.venues?.length &&  
+        <Alert message={notificationMessage} type='info' closable />
+      }
       <Table
         rowKey='id'
         rowSelection={{
