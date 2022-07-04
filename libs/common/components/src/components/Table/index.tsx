@@ -9,7 +9,7 @@ import type { TableProps as AntTableProps } from 'antd'
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' > {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'rotated' | 'tooltip'
+    type?: 'tall' | 'compact' | 'tooltip'
     columns?: ProColumns<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
@@ -20,34 +20,20 @@ export interface TableProps <RecordType>
 export function Table <RecordType extends object> (
   { type = 'tall', ...props }: TableProps<RecordType>
 ) {
-  let columns = props.columns
-  if (type === 'rotated' && columns) {
-    columns = columns.map(column => {
-      if (column.sorter) return column
-
-      const Title = column.title
-      return {
-        ...column,
-        title: typeof Title === 'function'
-          ? (props) => <UI.RotatedColumn children={Title(props, undefined, null)} />
-          : <UI.RotatedColumn children={Title} />
-      }
-    })
-  }
-
-  return <UI.Wrapper $type={type}>
+  return <UI.Wrapper $type={type} $rowSelection={props.rowSelection}>
     <ProTable<RecordType>
       {...props}
       bordered={false}
       options={false}
       search={false}
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
-      columns={columns}
+      columns={props.columns}
+      columnEmptyText={false}
       tableAlertRender={({ selectedRowKeys, selectedRows, onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
             <span>{selectedRowKeys.length} selected</span>
-            <UI.CloseButton onClick={onCleanSelected} title='clear selection' />
+            <UI.CloseButton onClick={onCleanSelected} title='Clear selection' />
           </Space>
           <Space size={0} split={<Divider type='vertical' />}>
             {props.actions?.map((option) =>

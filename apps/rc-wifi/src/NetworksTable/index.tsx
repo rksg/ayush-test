@@ -43,7 +43,7 @@ const columns: TableProps<Network>['columns'] = [
       return (
         <TenantLink
           to={`/networks/${row.id}/network-details/venues`}
-          children={count}
+          children={count ? count : 0}
         />
       )
     }

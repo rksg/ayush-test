@@ -1,286 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Table component should call sorter function when sorter title is clicked 1`] = `
-<DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 nYIxZ"
-  >
-    <div
-      class="ant-pro-table"
-    >
-      <div
-        class="ant-pro-card"
-      >
-        <div
-          class="ant-pro-card-body"
-          style="padding-top: 0px;"
-        >
-          <div
-            class="ant-table-wrapper"
-          >
-            <div
-              class="ant-spin-nested-loading"
-            >
-              <div
-                class="ant-spin-container"
-              >
-                <div
-                  class="ant-table ant-table-middle"
-                >
-                  <div
-                    class="ant-table-title"
-                  >
-                    Rotated
-                  </div>
-                  <div
-                    class="ant-table-container"
-                  >
-                    <div
-                      class="ant-table-content"
-                    >
-                      <table
-                        style="table-layout: auto;"
-                      >
-                        <colgroup />
-                        <thead
-                          class="ant-table-thead"
-                        >
-                          <tr>
-                            <th
-                              class="ant-table-cell"
-                            >
-                              <div
-                                class="styledComponents__RotatedColumn-sc-1abm7iv-0"
-                              />
-                            </th>
-                            <th
-                              class="ant-table-cell"
-                            >
-                              <div
-                                class="styledComponents__RotatedColumn-sc-1abm7iv-0"
-                              >
-                                Name
-                              </div>
-                            </th>
-                            <th
-                              class="ant-table-cell ant-table-column-has-sorters"
-                              tabindex="0"
-                            >
-                              <div
-                                class="ant-table-column-sorters"
-                              >
-                                <span
-                                  class="ant-table-column-title"
-                                >
-                                  Age
-                                </span>
-                                <span
-                                  class="ant-table-column-sorter ant-table-column-sorter-full"
-                                >
-                                  <span
-                                    class="ant-table-column-sorter-inner"
-                                  >
-                                    <span
-                                      aria-label="caret-up"
-                                      class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                      role="img"
-                                    >
-                                      <svg
-                                        aria-hidden="true"
-                                        data-icon="caret-up"
-                                        fill="currentColor"
-                                        focusable="false"
-                                        height="1em"
-                                        viewBox="0 0 1024 1024"
-                                        width="1em"
-                                      >
-                                        <path
-                                          d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
-                                        />
-                                      </svg>
-                                    </span>
-                                    <span
-                                      aria-label="caret-down"
-                                      class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                      role="img"
-                                    >
-                                      <svg
-                                        aria-hidden="true"
-                                        data-icon="caret-down"
-                                        fill="currentColor"
-                                        focusable="false"
-                                        height="1em"
-                                        viewBox="0 0 1024 1024"
-                                        width="1em"
-                                      >
-                                        <path
-                                          d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
-                                        />
-                                      </svg>
-                                    </span>
-                                  </span>
-                                </span>
-                              </div>
-                            </th>
-                            <th
-                              class="ant-table-cell ant-table-column-has-sorters"
-                              tabindex="0"
-                            >
-                              <div
-                                class="ant-table-column-sorters"
-                              >
-                                <span
-                                  class="ant-table-column-title"
-                                >
-                                  Favorite Number
-                                </span>
-                                <span
-                                  class="ant-table-column-sorter ant-table-column-sorter-full"
-                                >
-                                  <span
-                                    class="ant-table-column-sorter-inner"
-                                  >
-                                    <span
-                                      aria-label="caret-up"
-                                      class="anticon anticon-caret-up ant-table-column-sorter-up"
-                                      role="img"
-                                    >
-                                      <svg
-                                        aria-hidden="true"
-                                        data-icon="caret-up"
-                                        fill="currentColor"
-                                        focusable="false"
-                                        height="1em"
-                                        viewBox="0 0 1024 1024"
-                                        width="1em"
-                                      >
-                                        <path
-                                          d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
-                                        />
-                                      </svg>
-                                    </span>
-                                    <span
-                                      aria-label="caret-down"
-                                      class="anticon anticon-caret-down ant-table-column-sorter-down"
-                                      role="img"
-                                    >
-                                      <svg
-                                        aria-hidden="true"
-                                        data-icon="caret-down"
-                                        fill="currentColor"
-                                        focusable="false"
-                                        height="1em"
-                                        viewBox="0 0 1024 1024"
-                                        width="1em"
-                                      >
-                                        <path
-                                          d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
-                                        />
-                                      </svg>
-                                    </span>
-                                  </span>
-                                </span>
-                              </div>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody
-                          class="ant-table-tbody"
-                        >
-                          <tr
-                            class="ant-table-row ant-table-row-level-0"
-                            data-row-key="1"
-                          >
-                            <td
-                              class="ant-table-cell"
-                            >
-                              venue 1
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              John
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              40
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              1
-                            </td>
-                          </tr>
-                          <tr
-                            class="ant-table-row ant-table-row-level-0"
-                            data-row-key="2"
-                          >
-                            <td
-                              class="ant-table-cell"
-                            >
-                              venue 2
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              Anne
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              33
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              10
-                            </td>
-                          </tr>
-                          <tr
-                            class="ant-table-row ant-table-row-level-0"
-                            data-row-key="3"
-                          >
-                            <td
-                              class="ant-table-cell"
-                            >
-                              venue 3
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              Will
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              55
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              5
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 bgjEgu"
+    class="styledComponents__Wrapper-sc-1abm7iv-2 cRDXH"
   >
     <div
       class="ant-pro-table"
@@ -503,10 +226,10 @@ exports[`Table component should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Table component should render selectable table and render action buttons correctly 1`] = `
+exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 bgjEgu"
+    class="styledComponents__Wrapper-sc-1abm7iv-2 bATjAJ"
   >
     <div
       class="ant-pro-table"
@@ -817,10 +540,10 @@ exports[`Table component should render selectable table and render action button
 </DocumentFragment>
 `;
 
-exports[`Table component should render selectable table and render action buttons correctly 2`] = `
+exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 bgjEgu"
+    class="styledComponents__Wrapper-sc-1abm7iv-2 bATjAJ"
   >
     <div
       class="ant-pro-table"
@@ -874,8 +597,8 @@ exports[`Table component should render selectable table and render action button
                               class="ant-space-item"
                             >
                               <button
-                                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-1 jWyPHu"
-                                title="clear selection"
+                                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-0 NLfLf"
+                                title="Clear selection"
                                 type="button"
                               >
                                 <div
@@ -896,7 +619,7 @@ exports[`Table component should render selectable table and render action button
                               style="margin-right: 0px;"
                             >
                               <button
-                                class="styledComponents__ActionButton-sc-1abm7iv-2 kDkJge"
+                                class="styledComponents__ActionButton-sc-1abm7iv-1 dLjZwh"
                               >
                                 Edit
                               </button>
@@ -914,7 +637,7 @@ exports[`Table component should render selectable table and render action button
                               class="ant-space-item"
                             >
                               <button
-                                class="styledComponents__ActionButton-sc-1abm7iv-2 kDkJge"
+                                class="styledComponents__ActionButton-sc-1abm7iv-1 dLjZwh"
                               >
                                 Delete
                               </button>
@@ -1228,10 +951,10 @@ exports[`Table component should render selectable table and render action button
 </DocumentFragment>
 `;
 
-exports[`Table component should render selectable table and render action buttons correctly 3`] = `
+exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 bgjEgu"
+    class="styledComponents__Wrapper-sc-1abm7iv-2 bATjAJ"
   >
     <div
       class="ant-pro-table"

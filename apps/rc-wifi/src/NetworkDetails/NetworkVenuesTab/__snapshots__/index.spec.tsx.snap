@@ -6,7 +6,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-3 bgjEgu"
+      class="styledComponents__Wrapper-sc-1abm7iv-2 bATjAJ"
     >
       <div
         class="ant-pro-table"
@@ -430,7 +430,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                -
+                                0
                               </td>
                               <td
                                 class="ant-table-cell"

@@ -43,74 +43,7 @@ describe('Table component', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should call sorter function when sorter title is clicked', async () => {
-    const rotatedColumns = [
-      {
-        title: '',
-        dataIndex: 'venue',
-        key: 'venue'
-      },
-      {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name'
-      },
-      {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-        sorter: jest.fn(),
-        showSorterTooltip: false
-      },
-      {
-        title: 'Favorite Number',
-        dataIndex: 'favoriteNumber',
-        key: 'favoriteNumber',
-        sorter: jest.fn()
-      }
-    ]
-    const rotatedData = [
-      {
-        venue: 'venue 1',
-        key: '1',
-        name: 'John',
-        age: 40,
-        favoriteNumber: 1
-      },
-      {
-        venue: 'venue 2',
-        key: '2',
-        name: 'Anne',
-        age: 33,
-        favoriteNumber: 10
-      },
-      {
-        venue: 'venue 3',
-        key: '3',
-        name: 'Will',
-        age: 55,
-        favoriteNumber: 5
-      }
-    ]
-
-    const { asFragment } = render(<Table
-      columns={rotatedColumns}
-      dataSource={rotatedData}
-      title={() => 'Rotated'}
-      type={'rotated'}
-    />)
-    expect(asFragment()).toMatchSnapshot()
-
-    const sorterAgeTitle = await screen.findByText('Age')
-    fireEvent.click(sorterAgeTitle)
-    expect(rotatedColumns[2].sorter).toBeCalled()
-
-    const sorterNumberTitle = await screen.findByText('Favorite Number')
-    fireEvent.click(sorterNumberTitle)
-    expect(rotatedColumns[3].sorter).toBeCalled()
-  })
-
-  it('should render selectable table and render action buttons correctly', async () => {
+  it('should render multi select table and render action buttons correctly', async () => {
     const columns = [
       {
         title: 'Name',
@@ -171,7 +104,7 @@ describe('Table component', () => {
 
     expect(asFragment()).toMatchSnapshot()
 
-    const closeButton = screen.getByRole('button', { name: 'clear selection' })
+    const closeButton = screen.getByRole('button', { name: 'Clear selection' })
     const editButton = screen.getByRole('button', { name: /edit/i })
     const deleteButton = screen.getByRole('button', { name: /delete/i })
 
