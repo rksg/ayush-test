@@ -696,7 +696,6 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                       action="click"
                                       class="ant-input"
                                       id="Settings_authRadius.primary.sharedSecret"
-                                      placeholder="Spaces are not allowed"
                                       type="password"
                                       value=""
                                     />
