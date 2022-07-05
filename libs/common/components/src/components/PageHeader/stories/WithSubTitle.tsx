@@ -11,7 +11,7 @@ export function WithSubTitleText () {
       breadcrumb={[
         { text: 'Networks', link: '/networks' }
       ]}
-      subTitle={'Sub title text'}
+      subTitle={'Subtitle text'}
     />
   </BrowserRouter>
 }
