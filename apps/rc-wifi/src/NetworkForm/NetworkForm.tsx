@@ -23,8 +23,7 @@ import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext    from './NetworkFormContext'
 import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
 import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
-import { AaaSummaryForm }    from './NetworkSummary/AaaSummaryForm'
-import { OpenSummaryForm }   from './NetworkSummary/OpenSummaryForm'
+import { SummaryForm }       from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave
@@ -54,6 +53,12 @@ export function NetworkForm () {
   const [saveState, updateSaveState] = useState<NetworkSaveData>()
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
+    if( state.isCloudpathEnabled ){
+      delete saveState?.accountingRadius
+      delete saveState?.authRadius
+    }else{
+      delete saveState?.cloudpathServerId
+    }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -131,8 +136,7 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm name='summary' title='Summary'>
-          {state.type === NetworkTypeEnum.AAA && <AaaSummaryForm summaryData={state} />}
-          {state.type === NetworkTypeEnum.OPEN && <OpenSummaryForm summaryData={state} />}
+          <SummaryForm summaryData={state} />
         </StepsForm.StepForm>
       </StepsForm>
     </>

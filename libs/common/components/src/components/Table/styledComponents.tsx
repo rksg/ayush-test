@@ -213,13 +213,17 @@ export const Wrapper = styled.div<{
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
 
+        &.ant-table-column-sort {
+          background: unset;
+        }
+
         a {
           font-size: unset;
         }
       }
 
       &-tbody > tr.ant-table-row-selected > td {
-        background: none;
+        background: unset;
       }
     }
   }
