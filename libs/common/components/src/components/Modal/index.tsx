@@ -88,6 +88,7 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
       props = {
         ...props,
         content: customContent,
+        okText: ' ',
         className: 'modal-custom'
       }
       break

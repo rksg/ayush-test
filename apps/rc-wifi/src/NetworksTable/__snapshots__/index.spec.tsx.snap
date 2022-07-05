@@ -1552,7 +1552,7 @@ exports[`Networks Table should delete selected row 1`] = `
                     <li
                       class="ant-pagination-total-text"
                     >
-                        1-3 of 3 items
+                        1-10 of 10 items
                     </li>
                     <li
                       aria-disabled="true"

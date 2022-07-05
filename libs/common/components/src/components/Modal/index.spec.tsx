@@ -81,6 +81,9 @@ describe('Modal', () => {
     it('should open Error modal with details', async () => {
       await screen.findByText('Something went wrong')
       await screen.findByText('Some descriptions')
+
+      const okButton = await screen.findByText('OK')
+      fireEvent.click(okButton)
     })
 
     it('should collapse/expand details panel', async () => {

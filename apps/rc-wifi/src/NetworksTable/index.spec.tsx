@@ -1,4 +1,3 @@
-
 import { rest } from 'msw'
 
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
@@ -15,7 +14,7 @@ import {
 import { NetworksTable } from './'
 
 const list = {
-  totalCount: 3,
+  totalCount: 10,
   page: 1,
   data: [
     {
