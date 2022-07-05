@@ -104,20 +104,16 @@ export const TotalCount = styled.a`
 export const StyledListWithIcon = styled.div`
   width: 200px;
   padding: 5px;
-  background-color: #333333;
+  background-color: var(--acx-primary-black);
   border-radius: 4px;
 
   .venueInfoHeader {
-    color: white;
-    font-family: 'Open Sans';
+    color: var(--acx-primary-white);
+    font-family: var(--acx-neutral-brand-font);
     font-style: normal;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 20px;
-  }
-
-  .ant-list-header {
-    padding: 10px;
+    font-weight: var(--acx-headline-4-font-weight);
+    font-size: var(--acx-subtitle-4-font-size);
+    line-height: var(--acx-subtitle-4-line-height);
   }
 
   .ant-list-header {
@@ -130,29 +126,29 @@ export const StyledListWithIcon = styled.div`
 
   .ant-list-item {
     padding: 6px;
-    color: white;
-    font-family: 'Open Sans';
+    color: var(--acx-primary-white);
+    font-family: var(--acx-neutral-brand-font);
     font-style: normal;
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 16px;
+    font-weight: var(--acx-headline-4-font-weight);
+    font-size: var(--acx-headline-5-font-size);
+    line-height: var(--acx-subtitle-5-line-height);
   }
 
   .ant-list-split .ant-list-item {
-    border-bottom: 1px solid #464749;
+    border-bottom: 1px solid var(--acx-neutrals-80);
   }
 
   .ant-list-split .ant-list-header {
-    border-bottom: 1px solid #565758;
+    border-bottom: 1px solid var(--acx-neutrals-70);
   }
 
   .ant-list-split.ant-list-something-after-last-item
   .ant-spin-container > .ant-list-items > .ant-list-item:last-child {
-    border-bottom: 1px solid #565758;
+    border-bottom: 1px solid var(--acx-neutrals-70);
   }
 
   .ant-list-item:hover {
-    background-color: #565758;
+    background-color: var(--acx-neutrals-70);
   }
 
 .ant-list-pagination {
@@ -163,39 +159,29 @@ export const StyledListWithIcon = styled.div`
   .ant-pagination-item a {
     display: block;
     padding: 0 6px;
-    color: white;
+    color: var(--acx-primary-white);
     transition: none;
     text-decoration-line: underline;
   }
 
   .ant-pagination-item-active a {
-    font-weight: bolder;
+    font-weight: var(--acx-headline-5-font-weight-bold);
     text-decoration-line: none;
   }
 
   .ant-pagination-item-active {
-    font-weight: bolder;
+    font-weight: var(--acx-headline-5-font-weight-bold);
     background: none !important;
-    border-color: transparent;
+    border: none;
 }
 
   .ant-pagination-prev button, .ant-pagination-next button {
-    color: white;
+    color: var(--acx-primary-white);
     cursor: pointer;
     user-select: none;
   }
-`
 
-export const StyledListWithIconLight = styled.div`
-width: 300px;
-border-radius: 4px;
-
-.ant-list-pagination {
-  margin-top: 24px;
-  text-align: center;
-}
-
-.ant-list-item:hover {
-  background-color: #D8D7C9;
+  .ant-list-bordered .ant-list-pagination {
+    margin: 3px 24px;
 }
 `
