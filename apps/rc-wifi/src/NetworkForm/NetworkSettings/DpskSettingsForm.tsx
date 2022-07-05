@@ -26,7 +26,7 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-export function DpskForm () {
+export function DpskSettingsForm () {
   return (
     <Row gutter={20}>
       <Col span={10}>

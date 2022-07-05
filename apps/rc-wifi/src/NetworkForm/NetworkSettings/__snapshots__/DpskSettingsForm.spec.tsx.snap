@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DpskForm should create open network successfully 1`] = `
+exports[`DpskSettingsForm should create open network successfully 1`] = `
 <DocumentFragment>
   <form
     class="ant-form ant-form-horizontal"
