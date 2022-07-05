@@ -4,9 +4,9 @@ import { dataApiURL }                      from '@acx-ui/analytics/services'
 import { Provider, store }                 from '@acx-ui/store'
 import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 
-import { api, NetworkHistoryData } from './services'
+import { api } from './services'
 
-import NetworkHistoryWidget, { getSeriesData } from './index'
+import NetworkHistoryWidget from './index'
 
 const sample = {
   time: [
@@ -56,26 +56,3 @@ describe('NetworkHistoryWidget', () => {
   })
 })
 
-describe('getSeriesData', ()=>{
-  it('should return correct format', ()=>{
-    expect(getSeriesData(sample as NetworkHistoryData))
-      .toEqual([
-        {
-          name: 'New Clients',
-          data: sample.time.map((t,index)=>[t, 1+index])
-        },
-        {
-          name: 'Impacted Clients',
-          data: sample.time.map((t,index)=>[t, 6+index])
-        },
-        {
-          name: 'Connected Clients',
-          data: sample.time.map((t,index)=>[t, 11+index])
-        }
-      ])
-  })
-  it('should return empty array if no data', ()=>{
-    expect(getSeriesData(null))
-      .toEqual([])
-  })
-})
