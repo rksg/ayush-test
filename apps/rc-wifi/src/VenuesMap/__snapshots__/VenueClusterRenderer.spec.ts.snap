@@ -1451,13 +1451,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
       <div
         className="venueInfoHeader"
       >
-        <span
-          style={
-            Object {
-              "fontWeight": "bolder",
-            }
-          }
-        >
+        <span>
           15
            Venues
         </span>
@@ -1475,7 +1469,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
       </div>
     }
     isPaginate={true}
-    pageSize={4}
+    pageSize={5}
   />
 </styledComponents__StyledListWithIcon>
 `;
@@ -1775,18 +1769,11 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
         },
       ]
     }
-    footer={<div />}
     header={
       <div
         className="venueInfoHeader"
       >
-        <span
-          style={
-            Object {
-              "fontWeight": "bolder",
-            }
-          }
-        >
+        <span>
           3
            Venues
         </span>
@@ -1804,7 +1791,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
       </div>
     }
     isPaginate={true}
-    pageSize={4}
+    pageSize={5}
   />
 </styledComponents__StyledListWithIcon>
 `;

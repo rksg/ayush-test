@@ -39,25 +39,24 @@ export const clusterClickHandler = (markers: google.maps.Marker[],
         venue={(marker as VenueMarkerWithLabel).venueData} />
     }
   })
-  
+
   const infoDiv = document.createElement('div')
-  const pageSize=4
+  const pageSize=5
   const header = <div className='venueInfoHeader'>
-    <span style={{ fontWeight: 'bolder' }}>{markers?.length} Venues</span> 
+    <span>{markers?.length} Venues</span> 
     <span style={{ float: 'right', cursor: 'pointer' }}
       onClick={()=>{
         clusterInfoWindow.close()
       }}>
       <CloseOutlined/>
     </span></div>
-  const footer=data.length <= pageSize ? <div></div> : undefined
   const content = <StyledListWithIcon>
     <ListWithIcon 
       data={data}
       isPaginate={true}
       pageSize={pageSize}
       header={header}
-      footer={footer}/>
+    />
   </StyledListWithIcon>
 
   createRoot(infoDiv).render(content)
@@ -84,7 +83,9 @@ export default class VenueClusterRenderer implements Renderer {
       (marker as VenueMarkerWithLabel)?.venueData?.status)
     const clusterColor = getMarkerColor(statuses)
     const scaledSize = new google.maps.Size(42, 42, 'px')
-    const clusterInfoWindow = new google.maps.InfoWindow({})
+    const clusterInfoWindow = new google.maps.InfoWindow({
+      pixelOffset: new google.maps.Size(0, 10)
+    })
 
     const clusterMarker = new google.maps.Marker({
       position,

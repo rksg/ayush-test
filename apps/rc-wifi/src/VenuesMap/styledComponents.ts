@@ -102,58 +102,88 @@ export const TotalCount = styled.a`
 `
 
 export const StyledListWithIcon = styled.div`
-width: 300px;
-background-color: #333333;
-border-radius: 4px;
+  width: 200px;
+  padding: 5px;
+  background-color: #333333;
+  border-radius: 4px;
 
-.venueInfoHeader {
-  color: white;
-}
+  .venueInfoHeader {
+    color: white;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+  }
 
-.ant-list-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 0;
-  color: white;
-}
+  .ant-list-header {
+    padding: 10px;
+  }
 
-.ant-list-split .ant-list-item {
-  border-bottom: 1px solid #464749;
-}
+  .ant-list-header {
+    padding: 10px;
+  }
 
-.ant-list-split .ant-list-header {
-  border-bottom: 1px solid #464749;
-}
+  .ant-list-bordered {
+    border: none;
+  }
 
-.ant-list-split.ant-list-something-after-last-item 
-.ant-spin-container > .ant-list-items > .ant-list-item:last-child {
-  border-bottom: 1px solid #464749;
-}
+  .ant-list-item {
+    padding: 6px;
+    color: white;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+  }
 
-.ant-list-item:hover {
+  .ant-list-split .ant-list-item {
+    border-bottom: 1px solid #464749;
+  }
+
+  .ant-list-split .ant-list-header {
+    border-bottom: 1px solid #565758;
+  }
+
+  .ant-list-split.ant-list-something-after-last-item
+  .ant-spin-container > .ant-list-items > .ant-list-item:last-child {
+    border-bottom: 1px solid #565758;
+  }
+
+  .ant-list-item:hover {
     background-color: #565758;
-}
+  }
 
 .ant-list-pagination {
     margin-top: 12px;
     text-align: center;
-}
+  }
 
-.ant-pagination-item a {
+  .ant-pagination-item a {
     display: block;
     padding: 0 6px;
     color: white;
     transition: none;
+    text-decoration-line: underline;
+  }
+
+  .ant-pagination-item-active a {
+    font-weight: bolder;
+    text-decoration-line: none;
+  }
+
+  .ant-pagination-item-active {
+    font-weight: bolder;
+    background: none !important;
+    border-color: transparent;
 }
-.ant-pagination-item-active a {
-    color: #EC7100
-}
-.ant-pagination-prev button, .ant-pagination-next button {
+
+  .ant-pagination-prev button, .ant-pagination-next button {
     color: white;
     cursor: pointer;
     user-select: none;
-}
+  }
 `
 
 export const StyledListWithIconLight = styled.div`
