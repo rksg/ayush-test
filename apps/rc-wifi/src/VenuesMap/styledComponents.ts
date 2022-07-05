@@ -24,7 +24,7 @@ export const FilterBoxTitle = styled.span`
   font-family: var(--acx-neutral-brand-font);
   font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-5-line-height);
-  font-weight: 700
+  font-weight: var(--acx-body-font-weight-bold);
 `
 export const VenueFilterContainer = styled.div`
   display: grid;
@@ -89,7 +89,7 @@ export const Title = styled.a`
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
   line-height: var(--acx-headline-4-line-height);
-  font-weight: 600;
+  font-weight: var(--acx-headline-4-font-weight-bold);
   color: var(--acx-accents-blue-50);
   padding: 10px 0px;
 `
@@ -97,7 +97,7 @@ export const TotalCount = styled.a`
   font-family: var(--acx-neutral-brand-font);
   font-size: var(--acx-subtitle-5-font-size);
   line-height: var(--acx-subtitle-5-line-height);
-  font-weight: 700;
+  font-weight: var(--acx-subtitle-5-font-weight);
   color: var(--acx-accents-blue-50);
 `
 
