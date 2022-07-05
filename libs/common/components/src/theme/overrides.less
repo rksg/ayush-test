@@ -50,6 +50,23 @@
   }
 
   .ant-form {
+    &-item {
+      margin-bottom: 16px;
+    }
+
+    &-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
+      flex-direction: row-reverse;
+
+      &::before {
+        margin-right: 0;
+        margin-left: 3px;
+        color: var(--acx-accents-orange-50);
+        font-family: var(--acx-neutral-brand-font);
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+      }
+    }
+
     &-item-explain, &-item-extra {
       font-size: var(--acx-body-4-font-size);
       line-height: var(--acx-body-4-line-height);
@@ -64,15 +81,6 @@
       font-size: var(--acx-body-4-font-size);
       line-height: var(--acx-body-4-line-height);
     }
-  }
-
-  .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
-    display: inline-block;
-    margin-left: 3px;
-    color: var(--acx-accents-orange-50);
-    font-size: var(--acx-body-4-font-size);
-    line-height: var(--acx-body-4-line-height);
-    content: '*';
   }
 
   .ant-radio {
@@ -246,9 +254,6 @@
     }
   }
 
-  .ant-form-item {
-    margin-bottom: 16px;
-  }
   // Gmap Close Icon and Info windows overrides
   .gm-ui-hover-effect {
     display: none !important;
