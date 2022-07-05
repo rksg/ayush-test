@@ -1,41 +1,29 @@
 import React from 'react'
 
+import { Divider } from 'antd'
 
-import { PageHeader }      from '@acx-ui/components'
+import { PageHeader, PageHeaderProps } from '@acx-ui/components'
 
 
-type BaseProps = {
-  title: string,
-  breadCrumb: BreadCrumb[]
-}
-type BreadCrumb = {
-  text: string,
-  link: string
-}
-type SubTitle = {
+type Subtitle = {
   key: string,
   value: string[]
 }
-type SubTitleProps = {
-  subTitle: SubTitle[]
-}
-type HeaderProps = BaseProps & SubTitleProps
 
-export const getSubTitle = ({ subTitle }: SubTitleProps) => {
-  return (<>{subTitle.map(({ key, value }, index) => (
+type HeaderProps = PageHeaderProps & { subTitles: Subtitle[] }
+
+export const getSubtitle = (subTitles: Subtitle[]) => {
+  return (<>{subTitles.map(({ key, value }, index) => (
     <span key={key} title={value.join(', ')}>
       {key}: {value.length > 1 ? `${value[0]}(${value.length})` : `${value[0]}`}
-      {index < subTitle.length - 1 && '  |  '}
+      {index < subTitles.length - 1 && <Divider type='vertical' />}
     </span>)
   )}
   </>)
 }
-export const Header = ({ title, subTitle, breadCrumb }: HeaderProps) => {
+export const Header = ({ subTitles, ...otherProps }: HeaderProps) => {
+  const props = { ...otherProps, subTitle: getSubtitle(subTitles) }
   return (
-    <PageHeader
-      breadcrumb={breadCrumb}
-      title={title}
-      footer={getSubTitle({ subTitle })}
-    />
+    <PageHeader {...props}/>
   )
 }
