@@ -87,7 +87,7 @@ const massageData = (
       fontSize: cssNumber('--acx-body-3-font-size'),
       lineHeight: cssNumber('--acx-body-3-line-height'),
       color: cssStr('--acx-primary-black'),
-      fontWeight: 400,
+      fontWeight: cssNumber('--acx-body-font-weight'),
       formatter: '{@sum}'
     }
   }
@@ -149,7 +149,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
             fontFamily: cssStr('--acx-neutral-brand-font'),
             fontSize: cssNumber('--acx-body-4-font-size'),
             lineHeight: cssNumber('--acx-body-4-line-height'),
-            fontWeight: 400
+            fontWeight: cssNumber('--acx-body-font-weight')
           }
         }
       }
