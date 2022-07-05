@@ -23,7 +23,7 @@ export type FilterStateChange = {
 }
 
 interface VenueFilterControlBoxProps {
-  onChange?: (e: FilterStateChange) => void;
+  onChange: (e: FilterStateChange) => void;
 }
 
 export default function VenueFilterControlBox (props: VenueFilterControlBoxProps) {
@@ -37,9 +37,7 @@ export default function VenueFilterControlBox (props: VenueFilterControlBoxProps
   function onChange (e: CheckboxChangeEvent) {
     filter[e.target.name!] = !filter[e.target.name!]
     setFilter(filter)
-    if(props.onChange){
-      props.onChange({ key: e.target.name!, value: filter[e.target.name!] })
-    }
+    props.onChange({ key: e.target.name!, value: filter[e.target.name!] })
   }
 
   return (

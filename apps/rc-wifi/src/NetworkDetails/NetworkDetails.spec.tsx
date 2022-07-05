@@ -36,7 +36,7 @@ const networkDetailHeaderData = {
 }
 
 describe('NetworkDetails', () => {
-  it('should render correctly', async () => {
+  beforeEach(() => {
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getNetwork.url,
@@ -47,18 +47,35 @@ describe('NetworkDetails', () => {
         (req, res, ctx) => res(ctx.json(networkDetailHeaderData))
       )
     )
+  })
 
+  it('should render correctly', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'overview'
     }
     const { asFragment } = render(<Provider><NetworkDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
     })
 
     expect(await screen.findByText('testNetwork')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(6)
 
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should not have active tab if it does not exist', async () => {
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'not-exist'
+    }
+    render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
+    })
+
+    expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
+      .toHaveLength(0)
   })
 })
