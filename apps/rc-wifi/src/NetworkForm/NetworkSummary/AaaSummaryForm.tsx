@@ -1,57 +1,104 @@
-import { EnvironmentOutlined } from '@ant-design/icons'
-import { Col, Form, Row }      from 'antd'
+import React from 'react'
 
-import { StepsForm }               from '@acx-ui/components'
-import { CreateNetworkFormFields } from '@acx-ui/rc/utils'
+import { Form, Input } from 'antd'
+import { get }         from 'lodash'
 
-import { NetworkDiagram }       from '../NetworkDiagram/NetworkDiagram'
-import { transformNetworkType } from '../parser'
+import { 
+  AaaServerTypeEnum,
+  AaaServerOrderEnum,
+  AaaServerTitle,
+  NetworkSaveData
+} from '@acx-ui/rc/utils'
 
 export function AaaSummaryForm (props: {
-  summaryData: CreateNetworkFormFields;
+  summaryData: NetworkSaveData;
 }) {
-  const defaultValue = '--'
+  const { summaryData } = props
+  return (
+    <>
+      {
+        get(summaryData, 'authRadius.primary.ip') !== undefined && 
+            <>
+              Authentication Service
+              {getAaaServer(
+                AaaServerTypeEnum.AUTHENTICATION,
+                summaryData
+              )}
+            </>
+      }
+      {
+        summaryData.enableAccountingService && 
+            <>Accounting Service
+              {getAaaServer(
+                AaaServerTypeEnum.ACCOUNTING,
+                summaryData
+              )}
+            </>
+      }
+    </>
 
-  const getVenues = function () {
-    const venues = props.summaryData.venues
-    const rows = []
-    if (props.summaryData.venues.length > 0) {
-      for (const venue of venues) {
-        rows.push(
-          <li key={(venue as any).venueId} style={{ margin: '10px 0px' }}>
-            <EnvironmentOutlined />
-            {(venue as any).name}
-          </li>
+  )
+}
+
+function getAaaServer (
+  serverType: AaaServerTypeEnum,
+  summaryData: NetworkSaveData
+) {
+  const primaryTitle = AaaServerTitle[AaaServerOrderEnum.PRIMARY]
+  const secondaryTitle = AaaServerTitle[AaaServerOrderEnum.SECONDARY]
+
+  const enableSecondaryServer = serverType === AaaServerTypeEnum.AUTHENTICATION ? 
+    summaryData.enableSecondaryAuthServer : 
+    summaryData.enableSecondaryAcctServer 
+
+  const enableProxy = serverType === AaaServerTypeEnum.AUTHENTICATION ? 
+    summaryData.enableAuthProxy : summaryData.enableAccountingProxy
+
+  return (    
+    <React.Fragment>
+      {getAaaServerData(
+        primaryTitle,
+        `${get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.ip`)}`+
+        `:${get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.port`)}`,
+        get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.sharedSecret`)
+      )}
+      {
+        enableSecondaryServer && 
+        getAaaServerData(
+          secondaryTitle,
+          `${get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.ip`)}`+
+          `:${get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.port`)}`,
+          get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.sharedSecret`)
         )
       }
-      return rows
-    } else {
-      return defaultValue
-    }
-  }
+      <Form.Item
+        label='Proxy Service:'
+        children={enableProxy ? 'Enabled' : 'Disabled'} />
+      <Form.Item
+        label='TLS Encryption:'
+        children='Disabled' />
+    </React.Fragment>
+  )
+}
 
-  return (
-    <Row gutter={20}>
-      <Col span={10}>
-        <StepsForm.Title>Summary</StepsForm.Title>
-        <Form.Item label='Network Name' children={props.summaryData.name} />
-        <Form.Item
-          label='Description'
-          children={props.summaryData.description || defaultValue}
-        />
-        <Form.Item
-          label='Network Type'
-          children={transformNetworkType(props.summaryData.type)}
-        />
-        <Form.Item
-          label='Use Cloudpath Server'
-          children={props.summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
-        />
-        <Form.Item label='Activated in venues' children={getVenues()} />
-      </Col>
-      <Col span={14}>
-        <NetworkDiagram type={props.summaryData.type} />
-      </Col>
-    </Row>
+function getAaaServerData (
+  title: string,
+  ipPort: string,
+  sharedSecret: string
+) {
+  return (    
+    <React.Fragment>
+      <Form.Item
+        label={`${title}:`}
+        children={ipPort} />
+      <Form.Item
+        label='Shared Secret:'
+        children={<Input.Password
+          readOnly
+          bordered={false}
+          value={sharedSecret}
+        />}
+      />
+    </React.Fragment>
   )
 }
