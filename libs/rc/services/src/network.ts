@@ -32,8 +32,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['DeleteNetwork', 'AddNetworkDeep'])
-          api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
+          showActivityMessage(msg, ['AddNetworkDeep', 'DeleteNetwork'], () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
+          })
         })
       }
     }),
@@ -54,7 +55,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -62,7 +64,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
     getNetwork: build.query<NetworkDetail, RequestPayload>({
       query: ({ params }) => {
@@ -83,8 +86,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddNetworkVenue', 'DeleteNetworkVenue'])
-          api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          showActivityMessage(msg, ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
         })
       }
     }),

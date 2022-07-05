@@ -117,10 +117,11 @@ export const CountdownNode = (props: { n: number }) => (
   </Countdown>
 )
 
-export const showActivityMessage = (tx: Transaction, useCase: string[]) => {
+export const showActivityMessage = (tx: Transaction, useCase: string[], callback?: Function) => {
   if (tx.status === TxStatus.IN_PROGRESS) return
   if (!useCase.includes(tx.useCase)) return
   showTxToast(tx)
+  if (callback) callback()
 } 
 
 export const showTxToast = (tx: Transaction) => {
