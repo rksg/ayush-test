@@ -5,7 +5,7 @@ export const TooltipWrapper = styled.div`
   font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-5-line-height);
 
-  time { font-weight: 700; }
+  time { font-weight: var(--acx-body-font-weight-bold); }
 
   > ul {
     padding: 0px;
@@ -14,7 +14,7 @@ export const TooltipWrapper = styled.div`
     padding-top: 4px;
   }
   > li {
-    font-weight: 400;
+    font-weight: var(--acx-body-font-weight);
     margin-bottom: 4px;
     &:is(:last-child) { margin-bottom: unset; }
   }
@@ -31,6 +31,6 @@ export const Badge = styled(AntBadge)`
     font-size: var(--acx-body-5-font-size);
     line-height: var(--acx-body-5-line-height);
 
-    > b { font-weight: 600; }
+    > b { font-weight: var(--acx-subtitle-6-font-weight-bold); }
   }
 `

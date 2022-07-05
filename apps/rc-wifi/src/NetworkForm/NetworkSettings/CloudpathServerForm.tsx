@@ -3,11 +3,10 @@ import React from 'react'
 import {
   Form,
   Input,
-  Select,
-  Typography
+  Select
 } from 'antd'
 
-import { Button }                from '@acx-ui/components'
+import { Button, Subtitle }      from '@acx-ui/components'
 import { useCloudpathListQuery } from '@acx-ui/rc/services'
 import { useParams }             from '@acx-ui/react-router-dom'
 
@@ -25,7 +24,7 @@ export function CloudpathServerForm () {
   })
 
   return (
-    <React.Fragment>
+    <>
       <Form.Item
         name='cloudpathServerId'
         label='Cloudpath Server'
@@ -36,16 +35,13 @@ export function CloudpathServerForm () {
       <Button type='link' style={{ padding: 0 }}>Add Server</Button>
 
       {selected && (<>
-        <Typography.Title level={4}>
-          Radius Authentication Service
-        </Typography.Title>
         <Form.Item
           label='Deployment Type'
           children={selected.deploymentType}
         />
-        <Typography.Title level={4}>
+        <Subtitle level={4}>
           Radius Authentication Service
-        </Typography.Title>
+        </Subtitle>
         <Form.Item
           label='IP Address'
           children={
@@ -63,6 +59,6 @@ export function CloudpathServerForm () {
           />}
         />
       </>)}
-    </React.Fragment>
+    </>
   )
 }
