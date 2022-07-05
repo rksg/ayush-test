@@ -3,7 +3,7 @@
 exports[`NetworkForm should create AAA network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ljoVMe"
+    class="styledComponents__Wrapper-sc-xov27h-0 kGPZVk"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -62,7 +62,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 JZdxa"
+    class="styledComponents__Wrapper-sc-1ibvcih-0 hnQMwg"
   >
     <div
       class="ant-pro-steps-form"
@@ -228,7 +228,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
               >
                 <form
                   autocomplete="off"
-                  class="ant-form ant-form-vertical ant-form-hide-required-mark"
+                  class="ant-form ant-form-vertical"
                   id="details"
                 >
                   <input
@@ -531,7 +531,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
               >
                 <form
                   autocomplete="off"
-                  class="ant-form ant-form-vertical ant-form-hide-required-mark"
+                  class="ant-form ant-form-vertical"
                   id="Settings"
                 >
                   <input
@@ -867,7 +867,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
               >
                 <form
                   autocomplete="off"
-                  class="ant-form ant-form-vertical ant-form-hide-required-mark"
+                  class="ant-form ant-form-vertical"
                   id="venues"
                 >
                   <input
@@ -948,7 +948,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
               >
                 <form
                   autocomplete="off"
-                  class="ant-form ant-form-vertical ant-form-hide-required-mark"
+                  class="ant-form ant-form-vertical"
                   id="summary"
                 >
                   <input
@@ -975,7 +975,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                           style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
                           <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
+                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                           >
                             Network Info
                           </h4>
@@ -1096,7 +1096,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                           style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
                           <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
+                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                           >
                             Activated in venues
                           </h4>

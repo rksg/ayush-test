@@ -32,7 +32,7 @@ export const Wrapper = styled.div`
         .ant-tabs-tab {
           padding: 4px 0 14px 0;
           &.ant-tabs-tab-active .ant-tabs-tab-btn {
-            font-weight: 700;
+            font-weight: var(--acx-subtitle-4-font-weight);
           }
         }
       }

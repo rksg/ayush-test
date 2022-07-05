@@ -19,7 +19,7 @@ exports[`SummaryForm should create cloudpath disabled successfully 1`] = `
         style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
         >
           Network Info
         </h4>
@@ -167,7 +167,7 @@ exports[`SummaryForm should create cloudpath disabled successfully 1`] = `
         style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
         >
           Activated in venues
         </h4>
@@ -236,7 +236,7 @@ exports[`SummaryForm should create cloudpath enabled successfully 1`] = `
         style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
         >
           Network Info
         </h4>
@@ -384,7 +384,7 @@ exports[`SummaryForm should create cloudpath enabled successfully 1`] = `
         style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 cUEXBg"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
         >
           Activated in venues
         </h4>

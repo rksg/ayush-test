@@ -66,7 +66,7 @@ module.exports = {
 
   '@message-notice-content-padding': '10px 24px',
 
-  '@page-header-tabs-tab-font-size': 'var(--acx-headline-4-font-size)',
+  '@page-header-tabs-tab-font-size': 'var(--acx-subtitle-4-font-size)',
 
   '@primary-color-active': 'var(--acx-neutrals-50)',
   '@primary-color': '#EC7100', // var(--acx-accents-orange-50)

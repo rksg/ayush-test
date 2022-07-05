@@ -11,7 +11,7 @@
   // @font-size-base so we can't override it, but bulk of ACX body text is --acx-body-4-font-size
   body {
     font-style: normal;
-    font-weight: 400;
+    font-weight: var(--acx-body-font-weight);
     font-size: var(--acx-body-4-font-size);
     line-height: var(--acx-body-4-line-height);
   }
@@ -19,27 +19,27 @@
   h1.ant-typography, .ant-typography h1 {
     line-height: var(--acx-headline-1-line-height);
     font-family: var(--acx-accent-brand-font);
-    font-weight: 400;
+    font-weight: var(--acx-headline-1-font-weight);
   }
   h2.ant-typography, .ant-typography h2 {
     line-height: var(--acx-headline-2-line-height);
     font-family: var(--acx-accent-brand-font);
-    font-weight: 400;
+    font-weight: var(--acx-headline-2-font-weight);
   }
   h3.ant-typography, .ant-typography h3 {
     line-height: var(--acx-headline-3-line-height);
     font-family: var(--acx-accent-brand-font);
-    font-weight: 500;
+    font-weight: var(--acx-headline-3-font-weight);
   }
   h4.ant-typography, .ant-typography h4 {
     line-height: var(--acx-headline-4-line-height);
     font-family: var(--acx-accent-brand-font);
-    font-weight: 400;
+    font-weight: var(--acx-headline-4-font-weight);
   }
   h5.ant-typography, .ant-typography h5 {
     line-height: var(--acx-headline-5-line-height);
     font-family: var(--acx-accent-brand-font);
-    font-weight: 400;
+    font-weight: var(--acx-headline-5-font-weight);
   }
 
   .ant-badge {
@@ -237,10 +237,10 @@
         line-height: var(--acx-headline-5-line-height);
         font-size: var(--acx-headline-5-font-size);
         opacity: 60%;
-        font-weight: 400;
+        font-weight: var(--acx-headline-5-font-weight);
         &-selected {
           opacity: 100%;
-          font-weight: 600;
+          font-weight: var(--acx-headline-5-font-weight-bold);
         }
       }
     }
