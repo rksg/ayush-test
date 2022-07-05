@@ -1,14 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }      from '@acx-ui/analytics/services'
-import { GlobalFilter } from '@acx-ui/analytics/utils'
-
-export interface NetworkHistoryData {
-  connectedClientCount: number[]
-  impactedClientCount: number[]
-  newClientCount: number[]
-  time: string[]
-}
+import { dataApi }            from '@acx-ui/analytics/services'
+import { GlobalFilter }       from '@acx-ui/analytics/utils'
+import { NetworkHistoryData } from '@acx-ui/utils'
 
 interface Response <TimeSeriesData> {
   network: {

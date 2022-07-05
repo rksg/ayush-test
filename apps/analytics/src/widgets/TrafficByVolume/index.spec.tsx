@@ -6,9 +6,9 @@ import { dataApiURL }                      from '@acx-ui/analytics/services'
 import { Provider, store }                 from '@acx-ui/store'
 import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 
-import { api, TrafficByVolumeData } from './services'
+import { api }                             from './services'
 
-import TrafficByVolumeWidget, { getSeriesData } from '.'
+import TrafficByVolumeWidget               from '.'
 
 const sample = {
   time: [
@@ -58,30 +58,3 @@ describe('TrafficByVolumeWidget', () => {
   })
 })
 
-describe('getSeriesData', ()=>{
-  it('should return correct format', ()=>{
-    expect(getSeriesData(sample as unknown as TrafficByVolumeData))
-      .toEqual([
-        {
-          name: 'All Radios',
-          data: sample.time.map((t,index)=>[t, 1+index])
-        },
-        {
-          name: '2.4 GHz',
-          data: sample.time.map((t,index)=>[t, 16+index])
-        },
-        {
-          name: '5 GHz',
-          data: sample.time.map((t,index)=>[t, 11+index])
-        },
-        {
-          name: '6 GHz',
-          data: sample.time.map((t,index)=>[t, 6+index])
-        }
-      ])
-  })
-  it('should return empty array if no data', ()=>{
-    expect(getSeriesData())
-      .toEqual([])
-  })
-})

@@ -1,14 +1,31 @@
 import React from 'react'
 
 import { MultiLineTimeSeriesChartData }          from '@acx-ui/components'
-import { NetworkHistoryData }                    from '../../../../apps/analytics/src/widgets/NetworkHistory/services'
 
-export function getSeriesData(data: NetworkHistoryData | null, 
-  seriesMapping: Array<{ key: keyof Omit<NetworkHistoryData, 'time'>, name: string }> ): MultiLineTimeSeriesChartData[] {
+
+export interface NetworkHistoryData {
+  connectedClientCount: number[]
+  impactedClientCount: number[]
+  newClientCount: number[]
+  time: string[]
+}
+export interface TrafficByVolumeData {
+  time: string[]
+  totalTraffic_all: number[]
+  totalTraffic_6: number[]
+  totalTraffic_5: number[]
+  totalTraffic_24: number[]
+}
+export type TimeSeriesKey = keyof Omit<NetworkHistoryData, 'time'>  & keyof Omit<TrafficByVolumeData, 'time'>
+
+export function getSeriesData(data: NetworkHistoryData | TrafficByVolumeData | null, 
+  seriesMapping: Array<{ key: TimeSeriesKey, name: string }>): 
+  MultiLineTimeSeriesChartData[] {
   if (!data) return []
-  return seriesMapping.map(({ key, name }) => ({
+  return seriesMapping.map(({ key , name }) => ({
     name,
-    data: data.time.map((t: string, index: number) =>
-      [t, data[key][index]])
+    data: data.time.map((t: string, index: number) =>{
+      return [t, data[key][index]]
+    })
   }))
 }
