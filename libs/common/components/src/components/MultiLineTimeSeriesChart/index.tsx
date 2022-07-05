@@ -1,11 +1,26 @@
+import {
+  XAXisComponentOption,
+  YAXisComponentOption,
+  TooltipComponentOption
+} from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
-import { cssStr } from '../../theme/helper'
+import { TimeStamp } from '@acx-ui/types'
+
+import { cssStr }              from '../../theme/helper'
+import {
+  gridOptions,
+  legendOptions,
+  xAxisOptions,
+  yAxisOptions,
+  axisLabelOptions,
+  dateAxisFormatter,
+  tooltipOptions,
+  timeSeriesTooltipFormatter
+} from '../Chart/helper'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
-
-type TimeStamp = string | number
 
 export interface MultiLineTimeSeriesChartData extends Object {
   /**
@@ -25,7 +40,8 @@ export interface MultiLineTimeSeriesChartProps
     data: TChartData[]
     /** @default 'name' */
     legendProp?: keyof TChartData,
-    lineColors?: string[]
+    lineColors?: string[],
+    dataFormatter?: (value: unknown) => string | null
   }
 
 export function MultiLineTimeSeriesChart
@@ -33,73 +49,42 @@ export function MultiLineTimeSeriesChart
 ({
   data,
   legendProp = 'name' as keyof TChartData,
+  dataFormatter,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData>) {
   const option: EChartsOption = {
     color: props.lineColors || [
-      cssStr('--acx-accents-blue-70'),
-      cssStr('--acx-semantics-green-40'),
-      cssStr('--acx-primary-black')
+      cssStr('--acx-primary-black'),
+      cssStr('--acx-accents-blue-50'),
+      cssStr('--acx-accents-orange-50'),
+      cssStr('--acx-semantics-yellow-40')
     ],
-    grid: {
-      left: '0%',
-      right: '2%',
-      bottom: '0%',
-      top: '15%',
-      containLabel: true
-    },
+    grid: { ...gridOptions() },
     legend: {
-      data: data.map(datum => datum[legendProp]) as unknown as string[],
-      icon: 'square',
-      right: 15,
-      itemWidth: 15,
-      itemGap: 15,
-      textStyle: {
-        fontFamily: cssStr('--acx-neutral-brand-font'),
-        fontWeight: 400,
-        fontSize: 10,
-        lineHeight: 20
-      }
+      ...legendOptions(),
+      data: data.map(datum => datum[legendProp]) as unknown as string[]
     },
     tooltip: {
+      ...tooltipOptions() as TooltipComponentOption,
       trigger: 'axis',
-      textStyle: {
-        fontFamily: cssStr('--acx-accent-brand-font'),
-        fontSize: 10,
-        fontWeight: 300,
-        lineHeight: 16
-      },
-      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-      borderColor: cssStr('--acx-neutrals-50'),
-      borderWidth: 1,
-      borderRadius: 0,
-      padding: 12
+      formatter: timeSeriesTooltipFormatter(dataFormatter)
     },
     xAxis: {
+      ...xAxisOptions() as XAXisComponentOption,
       type: 'time',
       axisLabel: {
-        formatter: {
-          // TODO:
-          // handle smaller and larger time range
-          month: '{label|{MMM}}', // Jan, Feb, ...
-          day: '{label|{d}}' // 1, 2, ...
-        },
-        rich: {
-          label: {
-            fontFamily: cssStr('--acx-neutral-brand-font'),
-            fontSize: 10,
-            fontWeight: 400
-          }
-        }
+        ...axisLabelOptions(),
+        formatter: dateAxisFormatter()
       }
     },
     yAxis: {
+      ...yAxisOptions() as YAXisComponentOption,
       type: 'value',
-      boundaryGap: [0, '10%'],
       axisLabel: {
-        fontFamily: cssStr('--acx-neutral-brand-font'),
-        fontSize: 10,
-        fontWeight: 400
+        ...axisLabelOptions(),
+        formatter: function (value: number) {
+          return (dataFormatter && dataFormatter(value)) || `${value}`
+        }
       }
     },
     series: data.map(datum => ({
@@ -108,7 +93,7 @@ export function MultiLineTimeSeriesChart
       type: 'line',
       smooth: true,
       symbol: 'none',
-      lineStyle: { width: 2 }
+      lineStyle: { width: 1 }
     }))
   }
 

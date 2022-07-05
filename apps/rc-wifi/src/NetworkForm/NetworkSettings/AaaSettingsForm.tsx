@@ -16,54 +16,41 @@ import {
   Typography
 } from 'antd'
 
-import { StepsForm, Button }     from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
-import { WlanSecurityEnum }      from '@acx-ui/rc/utils'
+import { StepsForm, Button }                        from '@acx-ui/components'
+import { useGetAllUserSettingsQuery, UserSettings } from '@acx-ui/rc/services'
+import { 
+  Constants,
+  WlanSecurityEnum,
+  getUserSettingsFromDict,
+  AaaServerTypeEnum,
+  AaaServerOrderEnum,
+  AaaServerTitle,
+  networkWifiIpRegExp,
+  networkWifiPortRegExp,
+  stringContainSpace
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
+import { CloudpathServerForm } from './CloudpathServerForm'
+
 const { Option } = Select
 
-export interface AaaSettingsFields {
-  wlanSecurity?: string;
-  isCloudpathEnabled?: boolean;
-  enableAuthProxy: boolean;
-  enableAccountingProxy?: boolean;
-  enableSecondaryAcctServer: boolean;
-  enableSecondaryAuthServer: boolean;
-  enableAccountingService: boolean;
+/* eslint-disable max-len */
+const AaaMessages = {
+  ENABLE_PROXY_TOOLTIP: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.',
+
+  WPA2_DESCRIPTION: 'WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.',
+
+  WPA2_DESCRIPTION_WARNING: 'Security protocols other than WPA3 are not be supported in 6 GHz radio.',
+
+  WPA3_DESCRIPTION: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
 }
+/* eslint-enable */
 
-enum AaaServerTypeEnum {
-  AUTHENTICATION = 'authRadius',
-  ACCOUNTING = 'accountingRadius',
-}
-
-enum AaaServerOrderEnum {
-  PRIMARY = 'primary',
-  SECONDARY = 'secondary',
-}
-
-enum AaaServerTitleEnum {
-  PRIMARY = 'Primary Server',
-  SECONDARY = 'Secondary Server',
-}
-
-enum MessageEnum {
-  ENABLE_PROXY_TOOLTIP = `Use the controller as proxy in 802.1X networks.
-  A proxy AAA server is used when APs send authentication/accounting messages
-  to the controller and the controller forwards these messages to an external AAA server.`,
-
-  WPA2_DESCRIPTION = `WPA2 is strong Wi-Fi security that is widely available on all mobile devices
-  manufactured after 2006. WPA2 should be selected unless you have a specific
-  reason to choose otherwise.`,
-
-  WPA2_DESCRIPTION_WARNING = `Security protocols other than WPA3 are not be supported in 6 GHz
-  radio.`,
-
-  WPA3_DESCRIPTION = `WPA3 is the highest level of Wi-Fi security available but is supported only
-  by devices manufactured after 2019.`,
-}
+const { useWatch } = Form
 
 export function AaaSettingsForm () {
   return (
@@ -72,72 +59,74 @@ export function AaaSettingsForm () {
         <SettingsForm />
       </Col>
       <Col span={14}>
-        <NetworkDiagram />
+        <NetworkDiagram type='aaa' />
       </Col>
     </Row>
   )
 }
 
 function SettingsForm () {
-  const [state, updateState] = useState<AaaSettingsFields>({
-    wlanSecurity: WlanSecurityEnum.WPA2Enterprise,
-    isCloudpathEnabled: false,
-    enableAccountingProxy: false,
-    enableAuthProxy: false,
-    enableSecondaryAcctServer: false,
-    enableSecondaryAuthServer: false,
-    enableAccountingService: false
-  })
-  const updateData = (newData: Partial<AaaSettingsFields>) => {
-    updateState({ ...state, ...newData })
-  }
+  const [
+    isCloudpathEnabled,
+    wlanSecurity,
+    enableSecondaryAuthServer,
+    enableAccountingService,
+    enableSecondaryAcctServer
+  ] = [
+    useWatch('isCloudpathEnabled'),
+    useWatch('wlanSecurity'),
+    useWatch('enableSecondaryAuthServer'),
+    useWatch('enableAccountingService'),
+    useWatch('enableSecondaryAcctServer')
+  ]
+
+  const { tenantId } = useParams()
+  const userSetting = useGetAllUserSettingsQuery({ params: { tenantId } })
+  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
+    Constants.triRadioUserSettingsKey)) === 'true'
 
   const wpa2Description = (
     <>
-      {MessageEnum.WPA2_DESCRIPTION}
+      {AaaMessages.WPA2_DESCRIPTION}
       <Space align='start'>
         <ExclamationCircleFilled />
-        {MessageEnum.WPA2_DESCRIPTION_WARNING}
+        {AaaMessages.WPA2_DESCRIPTION_WARNING}
       </Space>
     </>
   )
 
-  const wpa3Description = MessageEnum.WPA3_DESCRIPTION
+  const wpa3Description = AaaMessages.WPA3_DESCRIPTION
 
   return (
     <>
       <StepsForm.Title>AAA Settings</StepsForm.Title>
-      <Form.Item
-        label='Security Protocol'
-        name='wlanSecurity'
-        initialValue={WlanSecurityEnum.WPA2Enterprise}
-        extra={
-          state.wlanSecurity === WlanSecurityEnum.WPA2Enterprise
-            ? wpa2Description
-            : wpa3Description
-        }
-      >
-        <Select
-          onChange={function (value: any) {
-            updateData({ wlanSecurity: value })
-          }}
+      {supportTriBandRadio && 
+        <Form.Item
+          label='Security Protocol'
+          name='wlanSecurity'
+          initialValue={WlanSecurityEnum.WPA2Enterprise}
+          extra={
+            wlanSecurity === WlanSecurityEnum.WPA2Enterprise
+              ? wpa2Description
+              : wpa3Description
+          }
         >
-          <Option value={WlanSecurityEnum.WPA2Enterprise}>
-            WPA2 (Recommended)
-          </Option>
-          <Option value={WlanSecurityEnum.WPA3}>WPA3</Option>
-        </Select>
-      </Form.Item>
-
-      <Form.Item name='isCloudpathEnabled' valuePropName='checked'>
-        <Switch
-          onChange={function (value: any) {
-            updateData({ isCloudpathEnabled: value })
-          }}
-        />
+          <Select>
+            <Option value={WlanSecurityEnum.WPA2Enterprise}>
+              WPA2 (Recommended)
+            </Option>
+            <Option value={WlanSecurityEnum.WPA3}>WPA3</Option>
+          </Select>
+        </Form.Item>
+      }
+      <Form.Item>
+        <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
+          <Switch />
+        </Form.Item>
         <span>Use Cloudpath Server</span>
       </Form.Item>
-      {state.isCloudpathEnabled ? <CloudpathServer /> : aaaService()}
+
+      {isCloudpathEnabled ? <CloudpathServerForm /> : aaaService()}
     </>
   )
 
@@ -149,89 +138,67 @@ function SettingsForm () {
           AaaServerTypeEnum.AUTHENTICATION,
           AaaServerOrderEnum.PRIMARY
         )}
-        <Button
-          type='link'
-          style={{ padding: 0 }}
-          onClick={function () {
-            updateData({
-              enableSecondaryAuthServer: !state.enableSecondaryAuthServer
-            })
-          }}
-        >
-          {state.enableSecondaryAuthServer
-            ? 'Remove Secondary Server'
-            : 'Add Secondary Server'}
-        </Button>
 
-        {state.enableSecondaryAuthServer &&
-          getAaaServer(
-            AaaServerTypeEnum.AUTHENTICATION,
-            AaaServerOrderEnum.SECONDARY
-          )}
+        <Form.Item noStyle name='enableSecondaryAuthServer'>
+          <ToggleButtonInput
+            enableText='Remove Secondary Server'
+            disableText='Add Secondary Server'
+          />
+        </Form.Item>
 
-        <Form.Item
-          name='enableAuthProxy'
-          valuePropName='checked'
-          initialValue='false'
-        >
-          <Switch
-            onChange={function (value: any) {
-              updateData({ enableAuthProxy: value })
-            }}
+        {enableSecondaryAuthServer && getAaaServer(
+          AaaServerTypeEnum.AUTHENTICATION,
+          AaaServerOrderEnum.SECONDARY
+        )}
+
+        <Form.Item>
+          <Form.Item
+            noStyle
+            name='enableAuthProxy'
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch />}
           />
           <span>Proxy Service</span>
-          <Tooltip title={MessageEnum.ENABLE_PROXY_TOOLTIP} placement='bottom'>
+          <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP} placement='bottom'>
             <QuestionCircleOutlined />
           </Tooltip>
         </Form.Item>
 
         <StepsForm.Title>Accounting Service</StepsForm.Title>
         <Form.Item name='enableAccountingService' valuePropName='checked'>
-          <Switch
-            onChange={function (value: any) {
-              updateData({ enableAccountingService: value })
-            }}
-          />
+          <Switch />
         </Form.Item>
 
-        {state.enableAccountingService && (
+        {enableAccountingService && (
           <React.Fragment>
             {getAaaServer(
               AaaServerTypeEnum.ACCOUNTING,
               AaaServerOrderEnum.PRIMARY
             )}
 
-            <Button
-              type='link'
-              style={{ padding: 0 }}
-              onClick={function () {
-                updateData({
-                  enableSecondaryAcctServer: !state.enableSecondaryAcctServer
-                })
-              }}
-            >
-              {state.enableSecondaryAcctServer
-                ? 'Remove Secondary Server'
-                : 'Add Secondary Server'}
-            </Button>
-            {state.enableSecondaryAcctServer &&
-              getAaaServer(
-                AaaServerTypeEnum.ACCOUNTING,
-                AaaServerOrderEnum.SECONDARY
-              )}
+            <Form.Item noStyle name='enableSecondaryAcctServer'>
+              <ToggleButtonInput
+                enableText='Remove Secondary Server'
+                disableText='Add Secondary Server'
+              />
+            </Form.Item>
 
-            <Form.Item
-              name='enableAccountingProxy'
-              valuePropName='checked'
-              initialValue='false'
-            >
-              <Switch
-                onChange={function (value: any) {
-                  updateData({ enableAccountingProxy: value })
-                }}
+            {enableSecondaryAcctServer && getAaaServer(
+              AaaServerTypeEnum.ACCOUNTING,
+              AaaServerOrderEnum.SECONDARY
+            )}
+
+            <Form.Item>
+              <Form.Item
+                noStyle
+                name='enableAccountingProxy'
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch />}
               />
               <span>Proxy Service</span>
-              <Tooltip title={MessageEnum.ENABLE_PROXY_TOOLTIP}>
+              <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP}>
                 <QuestionCircleOutlined />
               </Tooltip>
             </Form.Item>
@@ -242,110 +209,65 @@ function SettingsForm () {
   }
 }
 
-function CloudpathServer () {
-  const { data } = useCloudpathListQuery({})
-
-  const [state, updateState] = useState({
-    enableCloudPathServer: false,
-    cloudpathId: ''
-  })
-
-  const updateData = (newData: any) => {
-    updateState(newData)
-  }
-
-  const selectOptions = []
-  for (let i = 0; i < (data ? data.length : 0); i++) {
-    selectOptions.push(<Option key={data[i].id}>{data[i].name}</Option>)
-  }
-
-  const onCloudPathChange = function (cloudpathId: any) {
-    updateData({ enableCloudPathServer: true, cloudpathId })
-  }
-
-  const getCloudData = function () {
-    return data.find((item: any) => item.id === state.cloudpathId)
-  }
-
-  return (
-    <React.Fragment>
-      <StepsForm.Title>Cloudpath Server</StepsForm.Title>
-      <Form.Item name='cloudpathServerId' rules={[{ required: true }]}>
-        <Select
-          style={{ width: '100%' }}
-          onChange={onCloudPathChange}
-          placeholder='Select...'
-        >
-          {selectOptions}
-        </Select>
-      </Form.Item>
-
-      {state.enableCloudPathServer && (
-        <>
-          <Typography.Title level={4}>
-            Radius Authentication Service
-          </Typography.Title>
-          <Form.Item
-            label='Deployment Type'
-            children={getCloudData().deploymentType}
-          />
-          <Typography.Title level={4}>
-            Radius Authentication Service
-          </Typography.Title>
-          <Form.Item
-            label='IP Address'
-            children={
-              getCloudData().authRadius.primary.ip +
-              ':' +
-              getCloudData().authRadius.primary.port
-            }
-          />
-          <Form.Item
-            label='Radius Shared secret'
-            children={
-              <Input.Password
-                readOnly={true}
-                bordered={false}
-                style={{ padding: '0px' }}
-                value={getCloudData().authRadius.primary.sharedSecret}
-              />
-            }
-          />
-        </>
-      )}
-    </React.Fragment>
-  )
-}
-
 function getAaaServer (
   serverType: AaaServerTypeEnum,
   order: AaaServerOrderEnum
 ) {
+  const title = AaaServerTitle[order]
   return (
     <React.Fragment>
-      <Typography.Title level={4}>
-        {(order === AaaServerOrderEnum.PRIMARY && AaaServerTitleEnum.PRIMARY) ||
-          (order === AaaServerOrderEnum.SECONDARY &&
-            AaaServerTitleEnum.SECONDARY)}
-      </Typography.Title>
+      <Typography.Title level={4} children={title} />
       <Form.Item
         name={`${serverType}.${order}.ip`}
         label='IP Address'
-        rules={[{ required: true }]}
+        rules={[{
+          required: true,
+          whitespace: false
+        },{
+          validator: (_, value) => networkWifiIpRegExp(value)
+        }]}
         children={<Input />}
       />
       <Form.Item
         name={`${serverType}.${order}.port`}
         label='Port'
-        rules={[{ required: true }]}
-        children={<Input />}
+        rules={[{
+          required: true
+        },{
+          validator: (_, value) => networkWifiPortRegExp(value)
+        }]}
+        children={<Input type='number'/>}
       />
       <Form.Item
         name={`${serverType}.${order}.sharedSecret`}
         label='Shared secret'
-        rules={[{ required: true }]}
+        rules={[{ 
+          required: true,
+          whitespace: false
+        },{
+          validator: (_, value) => stringContainSpace(value)
+        }]}
         children={<Input.Password />}
       />
     </React.Fragment>
   )
+}
+
+function ToggleButtonInput (props: {
+  value?: boolean
+  onChange?: (value: boolean) => void
+  enableText: React.ReactNode
+  disableText: React.ReactNode
+}) {
+  const [enabled, setEnabled] = useState(props.value ?? false)
+  return <Button
+    type='link'
+    style={{ padding: 0 }}
+    onClick={() => {
+      props.onChange?.(!enabled)
+      setEnabled(!enabled)
+    }}
+  >
+    {enabled ? props.enableText : props.disableText}
+  </Button>
 }

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Icon                      from '@ant-design/icons'
 import { Tooltip as AntTooltip } from 'antd'
 
-import { ApVenueStatusEnumType } from '@acx-ui/rc/services'
+import { ApVenueStatusEnum } from '@acx-ui/rc/services'
 
 import * as UI from './styledComponents'
 
@@ -11,10 +11,10 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 export interface FilterState {
   [key: string]: boolean
-  [ApVenueStatusEnumType.REQUIRES_ATTENTION] : boolean
-  [ApVenueStatusEnumType.TRANSIENT_ISSUE]: boolean
-  [ApVenueStatusEnumType.IN_SETUP_PHASE]: boolean
-  [ApVenueStatusEnumType.OPERATIONAL]: boolean
+  [ApVenueStatusEnum.REQUIRES_ATTENTION] : boolean
+  [ApVenueStatusEnum.TRANSIENT_ISSUE]: boolean
+  [ApVenueStatusEnum.IN_SETUP_PHASE]: boolean
+  [ApVenueStatusEnum.OPERATIONAL]: boolean
 }
 
 export type FilterStateChange = {
@@ -23,53 +23,51 @@ export type FilterStateChange = {
 }
 
 interface VenueFilterControlBoxProps {
-  onChange?: (e: FilterStateChange) => void;
+  onChange: (e: FilterStateChange) => void;
 }
 
 export default function VenueFilterControlBox (props: VenueFilterControlBoxProps) {
   const [ filter, setFilter ] = useState<FilterState>({
-    [ApVenueStatusEnumType.REQUIRES_ATTENTION]: true,
-    [ApVenueStatusEnumType.TRANSIENT_ISSUE]: true,
-    [ApVenueStatusEnumType.IN_SETUP_PHASE]: true,
-    [ApVenueStatusEnumType.OPERATIONAL]: true
+    [ApVenueStatusEnum.REQUIRES_ATTENTION]: true,
+    [ApVenueStatusEnum.TRANSIENT_ISSUE]: true,
+    [ApVenueStatusEnum.IN_SETUP_PHASE]: true,
+    [ApVenueStatusEnum.OPERATIONAL]: true
   })
 
   function onChange (e: CheckboxChangeEvent) {
     filter[e.target.name!] = !filter[e.target.name!]
     setFilter(filter)
-    if(props.onChange){
-      props.onChange({ key: e.target.name!, value: filter[e.target.name!] })
-    }
+    props.onChange({ key: e.target.name!, value: filter[e.target.name!] })
   }
 
   return (
     <UI.VenueFilterContainer>
       <UI.FilterBoxTitle>Show</UI.FilterBoxTitle>
       <UI.FilterCheckbox
-        name={ApVenueStatusEnumType.REQUIRES_ATTENTION}
+        name={ApVenueStatusEnum.REQUIRES_ATTENTION}
         onChange={onChange}
-        defaultChecked={filter[ApVenueStatusEnumType.REQUIRES_ATTENTION]}>
+        defaultChecked={filter[ApVenueStatusEnum.REQUIRES_ATTENTION]}>
         <AntTooltip title='Requires Attention' placement='right'>
           <Icon component={UI.VenueMarkerRedIcon} />
         </AntTooltip>
       </UI.FilterCheckbox>
-      <UI.FilterCheckbox name={ApVenueStatusEnumType.TRANSIENT_ISSUE}
+      <UI.FilterCheckbox name={ApVenueStatusEnum.TRANSIENT_ISSUE}
         onChange={onChange}
-        defaultChecked={filter[ApVenueStatusEnumType.TRANSIENT_ISSUE]}>
+        defaultChecked={filter[ApVenueStatusEnum.TRANSIENT_ISSUE]}>
         <AntTooltip title='Temporarily degraded' placement='right'>
           <Icon component={UI.VenueMarkerOrangeIcon} />
         </AntTooltip>
       </UI.FilterCheckbox>
-      <UI.FilterCheckbox name={ApVenueStatusEnumType.IN_SETUP_PHASE}
+      <UI.FilterCheckbox name={ApVenueStatusEnum.IN_SETUP_PHASE}
         onChange={onChange}
-        defaultChecked={filter[ApVenueStatusEnumType.IN_SETUP_PHASE]}>
+        defaultChecked={filter[ApVenueStatusEnum.IN_SETUP_PHASE]}>
         <AntTooltip title='In Setup Phase' placement='right'>
           <Icon component={UI.VenueMarkerGreyIcon} />
         </AntTooltip>
       </UI.FilterCheckbox>
-      <UI.FilterCheckbox name={ApVenueStatusEnumType.OPERATIONAL}
+      <UI.FilterCheckbox name={ApVenueStatusEnum.OPERATIONAL}
         onChange={onChange}
-        defaultChecked={filter[ApVenueStatusEnumType.OPERATIONAL]}>
+        defaultChecked={filter[ApVenueStatusEnum.OPERATIONAL]}>
         <AntTooltip title='Operational' placement='right'>
           <Icon component={UI.VenueMarkerGreenIcon} />
         </AntTooltip>

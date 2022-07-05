@@ -1,71 +1,65 @@
 /* eslint-disable max-len */
 import _ from 'lodash'
 
-import { cssStr }                           from '@acx-ui/components'
-import { Dashboard, ApVenueStatusEnumType } from '@acx-ui/rc/services'
+import { cssStr }    from '@acx-ui/components'
+import {
+  ChartData,
+  Dashboard,
+  ApVenueStatusEnum,
+  SwitchStatusEnum } from '@acx-ui/rc/services'
 
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
+
+export const getDeviceConnectionStatusColors = () => [
+  cssStr('--acx-semantics-green-50'), // Operational
+  cssStr('--acx-neutrals-50'), // Setup Phase
+  cssStr('--acx-semantics-yellow-40'), // Transient Issue
+  cssStr('--acx-semantics-red-50') // Requires Attention
+]
+
+export const getDisplayLabel = (label: string) => {
+  switch (label) {
+    case ApVenueStatusEnum.IN_SETUP_PHASE:
+      return '3 In Setup Phase'
+    case ApVenueStatusEnum.OPERATIONAL:
+      return '4 Operational'
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
+      return '1 Requires Attention'
+    case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return '2 Transient Issue'
+    default:
+      return '3 Unknown'
+  }
+}
 
 export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[] => {
   const venues: VenueMarkerOptions[] = []
   overviewData?.venues?.forEach((venue) => {
     _.forIn(venue, (val, venueId) => {
-      // todo: if venue has no coordinates, adding mock coordinates (Piazza San Pietro, Rome) and throwing relevant error
+      // Adding mock coordinates (Piazza San Pietro, Rome) if position is missing
       if (!val.latitude || !val.longitude) {
         val.latitude = 41.9021622
         val.longitude = 12.4572277
         // eslint-disable-next-line no-console
-        console.error(`Venue '${val.name}' doesn't include location,
-          dummy coordinates were added for gmap correct behaviour`)
+        console.error(`Venue '${val.name}' doesn't include location. Using default coordinates.`)
       }
-      const apStat = overviewData?.aps?.apsStatus.find((el) => {
-        for (const key in el) {
-          if (key === venueId) {
-            return true
-          }
-        }
-        return false
-      })
 
-      let requires_attention: number | undefined = 0
-      let in_setup_phase: number | undefined = 0
-      let transient_issue: number | undefined = 0
-      let operational :number | undefined = 0
-
-      if (apStat && apStat[venueId] && apStat[venueId].apStatus) {
-
-        if (apStat[venueId].apStatus[ApVenueStatusEnumType.REQUIRES_ATTENTION]) {
-          requires_attention = apStat[venueId].apStatus[ApVenueStatusEnumType.REQUIRES_ATTENTION]
-        }
-
-        if (apStat[venueId].apStatus[ApVenueStatusEnumType.IN_SETUP_PHASE]) {
-          in_setup_phase = apStat[venueId].apStatus[ApVenueStatusEnumType.IN_SETUP_PHASE]
-        }
-
-        if (apStat[venueId].apStatus[ApVenueStatusEnumType.TRANSIENT_ISSUE]) {
-          transient_issue = apStat[venueId].apStatus[ApVenueStatusEnumType.TRANSIENT_ISSUE]
-        }
-        if (apStat[venueId].apStatus[ApVenueStatusEnumType.OPERATIONAL]) {
-          operational = apStat[venueId].apStatus[ApVenueStatusEnumType.OPERATIONAL]
-        }
-      }
+      const { apStat, apsCount } = getApStatusDataByVenue(overviewData, venueId)
+      const { switchStat, switchesCount } = getSwitchStatusDataByVenue(overviewData, venueId)
 
       venues.push({
+        venueId,
         name: val.name,
         status: val.venueStatus,
         latitude: val.latitude,
         longitude: val.longitude,
-        venueId: venueId,
         clientsCount: overviewData?.summary?.clients?.summary[venueId],
-        apStat: {
-          [ApVenueStatusEnumType.REQUIRES_ATTENTION]: requires_attention!,
-          [ApVenueStatusEnumType.TRANSIENT_ISSUE]: transient_issue!,
-          [ApVenueStatusEnumType.IN_SETUP_PHASE]: in_setup_phase!,
-          [ApVenueStatusEnumType.OPERATIONAL]: operational!
-        },
-        apsCount: apStat && apStat[venueId] ? apStat[venueId].totalCount : 0,
-        switchesCount: getSwitchCountByVenue(overviewData, venueId),
-        switchClientsCount: getSwitchClientCountByVenue(overviewData, venueId)
+        switchClientsCount: getSwitchClientCountByVenue(overviewData, venueId),
+        apStat,
+        switchStat,
+        apsCount,
+        switchesCount,
+        visible: true
       })
     })
   })
@@ -75,7 +69,67 @@ export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[
 function getSwitchClientCountByVenue (overviewData: Dashboard, venueId: string): number {
   return _.get(overviewData, 'summary.switchClients.summary[' + venueId + ']') || 0
 }
-function getSwitchCountByVenue (overviewData: Dashboard, venueId: string): number {
+
+const getApStatusDataByVenue = (
+  overviewData: Dashboard,
+  venueId: string): {
+  apStat: ChartData[],
+  apsCount: number
+  } => {
+  const apsStatus = overviewData?.aps?.apsStatus.find((el: object) => {
+    for (const key in el) {
+      if (key === venueId) {
+        return true
+      }
+    }
+    return false
+  })
+
+  let requires_attention: number = 0
+  let in_setup_phase: number = 0
+  let transient_issue: number = 0
+  let operational: number = 0
+
+  if (apsStatus && apsStatus[venueId] && apsStatus[venueId].apStatus) {
+    if (apsStatus[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]) {
+      requires_attention = +apsStatus[venueId].apStatus[ApVenueStatusEnum.REQUIRES_ATTENTION]!
+    }
+    if (apsStatus[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]) {
+      transient_issue = +apsStatus[venueId].apStatus[ApVenueStatusEnum.TRANSIENT_ISSUE]!
+    }
+    if (apsStatus[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]) {
+      in_setup_phase = +apsStatus[venueId].apStatus[ApVenueStatusEnum.IN_SETUP_PHASE]!
+    }
+    if (apsStatus[venueId].apStatus[ApVenueStatusEnum.OFFLINE]) {
+      in_setup_phase += +apsStatus[venueId].apStatus[ApVenueStatusEnum.OFFLINE]!
+    }
+    if (apsStatus[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]) {
+      operational = +apsStatus[venueId].apStatus[ApVenueStatusEnum.OPERATIONAL]!
+    }
+  }
+
+  return {
+    apStat: [{
+      category: 'APs',
+      series: [
+        { name: getDisplayLabel(ApVenueStatusEnum.REQUIRES_ATTENTION),
+          value: requires_attention },
+        { name: getDisplayLabel(ApVenueStatusEnum.TRANSIENT_ISSUE),
+          value: transient_issue },
+        { name: getDisplayLabel(ApVenueStatusEnum.IN_SETUP_PHASE),
+          value: in_setup_phase },
+        { name: getDisplayLabel(ApVenueStatusEnum.OPERATIONAL),
+          value: operational }
+      ]
+    }],
+    apsCount: apsStatus && apsStatus[venueId] ? apsStatus[venueId].totalCount : 0
+  }
+}
+
+function getSwitchStatusDataByVenue (overviewData: Dashboard, venueId: string): {
+  switchStat: ChartData[],
+  switchesCount: number
+} {
   const switchStat = (_.get(overviewData, 'switches.switchesStatus') || []).find((el: [string]) => {
     for (const key in el) {
       if (key === venueId) {
@@ -84,31 +138,68 @@ function getSwitchCountByVenue (overviewData: Dashboard, venueId: string): numbe
     }
     return false
   })
-  return switchStat ? switchStat[venueId].totalCount : 0
+
+  let operational: number = 0
+  let requires_attention: number = 0
+  let in_setup_phase: number = 0
+
+  if (switchStat && switchStat[venueId] && switchStat[venueId].switchStatus) {
+    if (switchStat[venueId].switchStatus[SwitchStatusEnum.DISCONNECTED]) {
+      requires_attention = +switchStat[venueId].switchStatus[SwitchStatusEnum.DISCONNECTED]
+    }
+    if (switchStat[venueId].switchStatus[SwitchStatusEnum.NEVER_CONTACTED_CLOUD]) {
+      in_setup_phase = +switchStat[venueId].switchStatus[SwitchStatusEnum.NEVER_CONTACTED_CLOUD]
+    }
+    if (switchStat[venueId].switchStatus[SwitchStatusEnum.INITIALIZING]) {
+      in_setup_phase += +switchStat[venueId].switchStatus[SwitchStatusEnum.INITIALIZING]
+    }
+    if (switchStat[venueId].switchStatus[SwitchStatusEnum.OPERATIONAL]) {
+      operational = +switchStat[venueId].switchStatus[SwitchStatusEnum.OPERATIONAL]
+    }
+  }
+
+  return {
+    switchStat: [{
+      category: 'Switches',
+      series: [
+        { name: getDisplayLabel(ApVenueStatusEnum.REQUIRES_ATTENTION),
+          value: requires_attention },
+        { name: getDisplayLabel(ApVenueStatusEnum.TRANSIENT_ISSUE),
+          value: 0 },
+        { name: getDisplayLabel(ApVenueStatusEnum.IN_SETUP_PHASE),
+          value: in_setup_phase },
+        { name: getDisplayLabel(ApVenueStatusEnum.OPERATIONAL),
+          value: operational }
+      ]
+    }],
+    switchesCount: switchStat && switchStat[venueId] ? switchStat[venueId].totalCount : 0
+  }
 }
 
-export const getMarkerColor = (statuses:any[] | undefined) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getMarkerColor = (statuses: any[] | undefined) => {
+  // ApVenueStatusEnum.OPERATIONAL
   let color: { default: string, hover: string } = {
-    default: cssStr('--acx-status-grey'),
-    hover: cssStr('--acx-status-grey-dark')
-  } // default case
-  // ApVenueStatusEnum.IN_SETUP_PHASE
-  // ApVenueStatusEnum.OFFLINE
+    default: cssStr('--acx-semantics-green-50'),
+    hover: cssStr('--acx-semantics-green-70')
 
-  if (statuses?.includes(ApVenueStatusEnumType.REQUIRES_ATTENTION))
+  } // default case
+
+  if (statuses?.includes(ApVenueStatusEnum.REQUIRES_ATTENTION))
     color = {
-      default: cssStr('--acx-status-red'),
-      hover: cssStr('--acx-status-red-dark')
+      default: cssStr('--acx-semantics-red-50'),
+      hover: cssStr('--acx-semantics-red-70')
     }
-  else if (statuses?.includes(ApVenueStatusEnumType.TRANSIENT_ISSUE))
+  else if (statuses?.includes(ApVenueStatusEnum.TRANSIENT_ISSUE))
     color = {
-      default: cssStr('--acx-status-yellow'),
-      hover: cssStr('--acx-status-yellow-dark')
+      default: cssStr('--acx-semantics-yellow-40'),
+      hover: cssStr('--acx-semantics-yellow-70')
     }
-  else if (statuses?.includes(ApVenueStatusEnumType.OPERATIONAL))
+  else if (statuses?.includes(ApVenueStatusEnum.IN_SETUP_PHASE) ||
+    statuses?.includes(ApVenueStatusEnum.OFFLINE))
     color = {
-      default: cssStr('--acx-status-green'),
-      hover: cssStr('--acx-status-green-dark')
+      default: cssStr('--acx-neutrals-50'),
+      hover: cssStr('--acx-neutrals-70')
     }
   return color
 }
