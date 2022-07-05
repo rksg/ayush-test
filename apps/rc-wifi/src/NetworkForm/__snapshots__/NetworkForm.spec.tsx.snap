@@ -384,14 +384,13 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                         style="margin-bottom: 8px;"
                                       >
                                         <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                         >
                                           <span
-                                            class="ant-radio ant-radio-disabled"
+                                            class="ant-radio"
                                           >
                                             <input
                                               class="ant-radio-input"
-                                              disabled=""
                                               type="radio"
                                               value="dpsk"
                                             />
@@ -517,7 +516,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                 class="styledComponents__Title-sc-bfjsxr-1 kPZXFw"
                               />
                               <div
-                                class="styledComponents__Diagram-sc-bfjsxr-0 IiZUr"
+                                class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
                               />
                             </div>
                           </div>
@@ -558,131 +557,6 @@ exports[`NetworkForm should create open network successfully 1`] = `
                           >
                             AAA Settings
                           </h3>
-                          <div
-                            class="ant-row ant-form-item"
-                          >
-                            <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                for="Settings_wlanSecurity"
-                                title="Security Protocol"
-                              >
-                                Security Protocol
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  <div
-                                    class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
-                                  >
-                                    <div
-                                      class="ant-select-selector"
-                                    >
-                                      <span
-                                        class="ant-select-selection-search"
-                                      >
-                                        <input
-                                          aria-activedescendant="Settings_wlanSecurity_list_0"
-                                          aria-autocomplete="list"
-                                          aria-controls="Settings_wlanSecurity_list"
-                                          aria-haspopup="listbox"
-                                          aria-owns="Settings_wlanSecurity_list"
-                                          autocomplete="off"
-                                          class="ant-select-selection-search-input"
-                                          id="Settings_wlanSecurity"
-                                          readonly=""
-                                          role="combobox"
-                                          style="opacity: 0;"
-                                          type="search"
-                                          unselectable="on"
-                                          value=""
-                                        />
-                                      </span>
-                                      <span
-                                        class="ant-select-selection-item"
-                                        title="WPA2 (Recommended)"
-                                      >
-                                        WPA2 (Recommended)
-                                      </span>
-                                    </div>
-                                    <span
-                                      aria-hidden="true"
-                                      class="ant-select-arrow"
-                                      style="user-select: none;"
-                                      unselectable="on"
-                                    >
-                                      <span
-                                        aria-label="down"
-                                        class="anticon anticon-down ant-select-suffix"
-                                        role="img"
-                                      >
-                                        <svg
-                                          aria-hidden="true"
-                                          data-icon="down"
-                                          fill="currentColor"
-                                          focusable="false"
-                                          height="1em"
-                                          viewBox="64 64 896 896"
-                                          width="1em"
-                                        >
-                                          <path
-                                            d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                          />
-                                        </svg>
-                                      </span>
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                class="ant-form-item-extra"
-                              >
-                                WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-start"
-                                >
-                                  <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
-                                  >
-                                    <span
-                                      aria-label="exclamation-circle"
-                                      class="anticon anticon-exclamation-circle"
-                                      role="img"
-                                    >
-                                      <svg
-                                        aria-hidden="true"
-                                        data-icon="exclamation-circle"
-                                        fill="currentColor"
-                                        focusable="false"
-                                        height="1em"
-                                        viewBox="64 64 896 896"
-                                        width="1em"
-                                      >
-                                        <path
-                                          d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm-32 232c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v272c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V296zm32 440a48.01 48.01 0 010-96 48.01 48.01 0 010 96z"
-                                        />
-                                      </svg>
-                                    </span>
-                                  </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    Security protocols other than WPA3 are not be supported in 6 GHz radio.
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
                           <div
                             class="ant-row ant-form-item"
                           >
@@ -785,7 +659,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                   <input
                                     class="ant-input"
                                     id="Settings_authRadius.primary.port"
-                                    type="text"
+                                    type="number"
                                     value=""
                                   />
                                 </div>
@@ -973,7 +847,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                 Enterprise AAA (802.1X)
                               </h1>
                               <div
-                                class="styledComponents__Diagram-sc-bfjsxr-0 IiZUr"
+                                class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
                               >
                                 <img
                                   alt="Enterprise AAA (802.1X)"
@@ -1011,20 +885,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                       >
                         Venues
                       </h3>
-                      <span>
+                      <p>
                         Select venues to activate this network
-                      </span>
-                      <div
-                        class="TableButtonBar__Wrapper-sc-1rgo52e-0 eEYLXv"
-                      >
-                        <div
-                          class="rows-selected"
-                        >
-                          <div>
-                            Selected venues: 0
-                          </div>
-                        </div>
-                      </div>
+                      </p>
                       <div
                         class="ant-row ant-form-item"
                       >
@@ -1098,19 +961,24 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     <div
                       class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5 dOqwQw"
                     >
+                      <h3
+                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                      >
+                        Summary
+                      </h3>
                       <div
                         class="ant-row"
                         style="margin-left: -10px; margin-right: -10px;"
                       >
                         <div
-                          class="ant-col ant-col-10"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-col"
+                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
-                          <h3
-                            class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                          <h4
+                            class="ant-typography"
                           >
-                            Summary
-                          </h3>
+                            Network Info
+                          </h4>
                           <div
                             class="ant-row ant-form-item"
                           >
@@ -1119,9 +987,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Network Name"
+                                title="Network Name:"
                               >
-                                Network Name
+                                Network Name:
                               </label>
                             </div>
                             <div
@@ -1144,9 +1012,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Description"
+                                title="Info:"
                               >
-                                Description
+                                Info:
                               </label>
                             </div>
                             <div
@@ -1171,9 +1039,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Network Type"
+                                title="Type:"
                               >
-                                Network Type
+                                Type:
                               </label>
                             </div>
                             <div
@@ -1198,9 +1066,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Use Cloudpath Server"
+                                title="Use Cloudpath Server:"
                               >
-                                Use Cloudpath Server
+                                Use Cloudpath Server:
                               </label>
                             </div>
                             <div
@@ -1217,19 +1085,24 @@ exports[`NetworkForm should create open network successfully 1`] = `
                               </div>
                             </div>
                           </div>
+                        </div>
+                        <div
+                          class="ant-divider ant-divider-vertical"
+                          role="separator"
+                          style="height: 300px;"
+                        />
+                        <div
+                          class="ant-col"
+                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                        >
+                          <h4
+                            class="ant-typography"
+                          >
+                            Activated in venues
+                          </h4>
                           <div
                             class="ant-row ant-form-item"
                           >
-                            <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Activated in venues"
-                              >
-                                Activated in venues
-                              </label>
-                            </div>
                             <div
                               class="ant-col ant-form-item-control"
                             >
@@ -1241,32 +1114,6 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                 >
                                   --
                                 </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-14"
-                          style="padding-left: 10px; padding-right: 10px;"
-                        >
-                          <div
-                            class="ant-row ant-row-center"
-                          >
-                            <div
-                              class="ant-col"
-                            >
-                              <h1
-                                class="styledComponents__Title-sc-bfjsxr-1 kPZXFw"
-                              >
-                                Enterprise AAA (802.1X)
-                              </h1>
-                              <div
-                                class="styledComponents__Diagram-sc-bfjsxr-0 IiZUr"
-                              >
-                                <img
-                                  alt="Enterprise AAA (802.1X)"
-                                  src="aaa.png"
-                                />
                               </div>
                             </div>
                           </div>
