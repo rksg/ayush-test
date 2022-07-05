@@ -13,8 +13,8 @@ import {
   Tooltip
 } from 'antd'
 
-import { StepsForm }                               from '@acx-ui/components'
-import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkType, 
+import { StepsForm, Subtitle }                     from '@acx-ui/components'
+import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkType,
   transformDpskNetwork, PassphraseExpirationEnum }      from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }    from '../NetworkDiagram/NetworkDiagram'
@@ -47,39 +47,43 @@ function SettingsForm () {
   ]
 
   return (
-    <>
-      <StepsForm.Title>DPSK Settings</StepsForm.Title>
-      <Form.Item
-        label='Security Protocol'
-        name='dpskWlanSecurity'
-        initialValue={WlanSecurityEnum.WPA2Personal}
-      >
-        <Select>
-          <Option value={WlanSecurityEnum.WPA2Personal}>
-            WPA2 (Recommended)
-          </Option>
-          <Option value={WlanSecurityEnum.WPAPersonal}>WPA</Option>
-        </Select>
-      </Form.Item>
+    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+      <div>
+        <StepsForm.Title>DPSK Settings</StepsForm.Title>
+        <Form.Item
+          label='Security Protocol'
+          name='dpskWlanSecurity'
+          initialValue={WlanSecurityEnum.WPA2Personal}
+        >
+          <Select>
+            <Option value={WlanSecurityEnum.WPA2Personal}>
+              WPA2 (Recommended)
+            </Option>
+            <Option value={WlanSecurityEnum.WPAPersonal}>WPA</Option>
+          </Select>
+        </Form.Item>
 
-      <Form.Item
-        name='isCloudpathEnabled'
-        initialValue={false}
-      >
-        <Radio.Group>
-          <Space direction='vertical'>
-            <Radio value={false}>
-                Use the DPSK Service
-            </Radio>
-            <Radio value={true}>
-                Use Cloudpath Server
-            </Radio>
-          </Space>
-        </Radio.Group>
-      </Form.Item>
-      {isCloudpathEnabled ? <CloudpathServerForm /> : <PassphraseGeneration />}
-      { /*TODO: <div><Button type='link' style={{ padding: 0 }}>Show more settings</Button></div> */ }
-    </>
+        <Form.Item
+          name='isCloudpathEnabled'
+          initialValue={false}
+        >
+          <Radio.Group>
+            <Space direction='vertical'>
+              <Radio value={false}>
+                  Use the DPSK Service
+              </Radio>
+              <Radio value={true}>
+                  Use Cloudpath Server
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+      </div>
+      <div>
+        {isCloudpathEnabled ? <CloudpathServerForm /> : <PassphraseGeneration />}
+        { /*TODO: <div><Button type='link' style={{ padding: 0 }}>Show more settings</Button></div> */ }
+      </div>
+    </Space>
   )
 }
 
@@ -93,12 +97,12 @@ function PassphraseGeneration () {
   const updateData = (newData: any) => {
     updateState({ ...state, ...newData })
   }
-  
-  const passphraseOptions = Object.keys(PassphraseFormatEnum).map((key =>  
+
+  const passphraseOptions = Object.keys(PassphraseFormatEnum).map((key =>
     <Option key={key}>{transformDpskNetwork(DpskNetworkType.FORMAT, key)}</Option>
   ))
 
-  const expirationOptions = Object.keys(PassphraseExpirationEnum).map((key =>  
+  const expirationOptions = Object.keys(PassphraseExpirationEnum).map((key =>
     <Option key={key}>{transformDpskNetwork(DpskNetworkType.EXPIRATION, key)}</Option>
   ))
 
@@ -121,18 +125,18 @@ function PassphraseGeneration () {
     <p> Most secured - all printable ASCII characters can be used </p>
     <p> Keyboard friendly - only letters and numbers will be used </p>
     Numbers only - only numbers will be used`,
-  
+
     LENGTH: 'Number of characters in passphrase. Valid range 8-63'
   }
-  
+
 
   return (
-    <React.Fragment>
-      <StepsForm.Title>Passphrase Generation Parameters</StepsForm.Title>
+    <>
+      <Subtitle level={3}>Passphrase Generation Parameters</Subtitle>
       <Row align='middle' gutter={8}>
         <Col span={23}>
-          <Form.Item 
-            name='passphraseFormat' 
+          <Form.Item
+            name='passphraseFormat'
             label='Passphrase format'
             rules={[{ required: true }]}
             initialValue={state.passphraseFormat}
@@ -151,16 +155,15 @@ function PassphraseGeneration () {
               /* eslint-disable */
                 <div dangerouslySetInnerHTML={{ __html:FIELD_TOOLTIP.FORMAT }}></div>
                 /* eslint-disable */
-              } 
+              }
               placement='bottom'
             >
               <QuestionCircleOutlined />
             </Tooltip>
           </FieldExtraTooltip>
-        </Col>  
+        </Col>
       </Row>
-      
-      
+
       <Row align='middle' gutter={8}>
         <Col span={23}>
           <Form.Item
@@ -178,8 +181,8 @@ function PassphraseGeneration () {
         </Col>
        </Row>
 
-      <Form.Item 
-        name='expiration' 
+      <Form.Item
+        name='expiration'
         label='Passphrase expiration'
         rules={[{ required: true }]}
         initialValue={state.expiration}
@@ -191,6 +194,6 @@ function PassphraseGeneration () {
           {expirationOptions}
         </Select>
       </Form.Item>
-    </React.Fragment>
+    </>
   )
 }
