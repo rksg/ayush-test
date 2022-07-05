@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SummaryForm should create cloudpath disabled successfully 1`] = `
+exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
 <DocumentFragment>
   <form
     class="ant-form ant-form-horizontal"
@@ -217,7 +217,7 @@ exports[`SummaryForm should create cloudpath disabled successfully 1`] = `
 </DocumentFragment>
 `;
 
-exports[`SummaryForm should create cloudpath enabled successfully 1`] = `
+exports[`SummaryForm should render cloudpath enabled successfully 1`] = `
 <DocumentFragment>
   <form
     class="ant-form ant-form-horizontal"
