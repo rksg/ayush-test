@@ -6,9 +6,9 @@ import { dataApiURL }                      from '@acx-ui/analytics/services'
 import { Provider, store }                 from '@acx-ui/store'
 import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 
-import { api }                             from './services'
+import { api } from './services'
 
-import TrafficByVolumeWidget               from '.'
+import TrafficByVolumeWidget from '.'
 
 const sample = {
   time: [

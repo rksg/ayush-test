@@ -1,11 +1,23 @@
+import { formatter }   from './formatter'
+import { 
+  TrafficByVolumeData, 
+  TimeSeriesKey, 
+  NetworkHistoryData }   from './timeseries'
+
 import { getSeriesData } from './index'
 
-import { NetworkHistoryData }                    from '@acx-ui/utils'
-import { TrafficByVolumeData }                   from '@acx-ui/utils'
-import { seriesMapping }                         from '../../../../apps/analytics/src/widgets/NetworkHistory/index'
-import { 
-  seriesMapping as TrafficByVolumeseriesMapping
-} from '../../../../apps/analytics/src/widgets/TrafficByVolume/index'
+const seriesMapping = [
+  { key: 'newClientCount', name: 'New Clients' },
+  { key: 'impactedClientCount', name: 'Impacted Clients' },
+  { key: 'connectedClientCount', name: 'Connected Clients' }
+] as TimeSeriesKey
+
+const TrafficByVolumeseriesMapping = [
+  { key: 'totalTraffic_all', name: 'All Radios' },
+  { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },
+  { key: 'totalTraffic_5', name: formatter('radioFormat')('5') },
+  { key: 'totalTraffic_6', name: formatter('radioFormat')('6') }
+] as TimeSeriesKey
 
 const sample = {
   time: [
@@ -60,7 +72,8 @@ describe('getSeriesData', ()=>{
 
 describe('getSeriesData for TrafficByVolume', ()=>{
   it('should return correct format', ()=>{
-    expect(getSeriesData(TrafficByVolumeDataSample  as TrafficByVolumeData, TrafficByVolumeseriesMapping))
+    expect(getSeriesData(TrafficByVolumeDataSample as TrafficByVolumeData,
+      TrafficByVolumeseriesMapping))
       .toEqual([
         {
           name: 'All Radios',
@@ -82,6 +95,6 @@ describe('getSeriesData for TrafficByVolume', ()=>{
   })
   it('should return empty array if no data', ()=>{
     expect(getSeriesData(null, TrafficByVolumeseriesMapping))
-    .toEqual([])
+      .toEqual([])
   })
 })

@@ -2,15 +2,15 @@ import React from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter }                   from '@acx-ui/analytics/utils'
-import { getSeriesData, TimeSeriesKey }      from '@acx-ui/utils'
-import { Card }                              from '@acx-ui/components'
-import { Loader }                            from '@acx-ui/components'
-import { MultiLineTimeSeriesChart }          from '@acx-ui/components'
-import { cssStr }                            from '@acx-ui/components'
-import { formatter }                         from '@acx-ui/utils'
+import { useGlobalFilter }              from '@acx-ui/analytics/utils'
+import { Card }                         from '@acx-ui/components'
+import { Loader }                       from '@acx-ui/components'
+import { MultiLineTimeSeriesChart }     from '@acx-ui/components'
+import { cssStr }                       from '@acx-ui/components'
+import { getSeriesData, TimeSeriesKey } from '@acx-ui/utils'
+import { formatter }                    from '@acx-ui/utils'
 
-import { useTrafficByVolumeQuery }           from './services'
+import { useTrafficByVolumeQuery } from './services'
 
 export const seriesMapping = [
   { key: 'totalTraffic_all', name: 'All Radios' },
@@ -34,7 +34,7 @@ function TrafficByVolumeWidget () {
         data: getSeriesData(data!, seriesMapping),
         ...rest
       })
-  })
+    })
   return (
     <Loader states={[queryResults]}>
       <Card title='Traffic by Volume' >

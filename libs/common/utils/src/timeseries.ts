@@ -1,7 +1,16 @@
-import React from 'react'
+import { TimeStamp } from '@acx-ui/types'
 
-import { MultiLineTimeSeriesChartData }          from '@acx-ui/components'
-
+interface MultiLineTimeSeriesChartData extends Object {
+  /**
+   * Multi dimensional array which first item is timestamp and 2nd item is value
+   * @example
+   * [
+   *   [1603900800000, 64.12186646508322],
+   *   [1603987200000, 76]
+   * ]
+   */
+  data: [TimeStamp, number][]
+}
 
 export interface NetworkHistoryData {
   connectedClientCount: number[]
@@ -16,9 +25,10 @@ export interface TrafficByVolumeData {
   totalTraffic_5: number[]
   totalTraffic_24: number[]
 }
-export type TimeSeriesKey = keyof Omit<NetworkHistoryData, 'time'>  & keyof Omit<TrafficByVolumeData, 'time'>
+export type TimeSeriesKey = keyof Omit<NetworkHistoryData, 'time'>  
+& keyof Omit<TrafficByVolumeData, 'time'>
 
-export function getSeriesData(data: NetworkHistoryData | TrafficByVolumeData | null, 
+export function getSeriesData (data: NetworkHistoryData | TrafficByVolumeData | null, 
   seriesMapping: Array<{ key: TimeSeriesKey, name: string }>): 
   MultiLineTimeSeriesChartData[] {
   if (!data) return []
