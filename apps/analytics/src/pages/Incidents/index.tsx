@@ -2,17 +2,11 @@ import React from 'react'
 
 import { Col, Row } from 'antd'
 
-import { Button, PageHeader } from '@acx-ui/components'
+import Header  from '../../components/Header'
 
 function Incidents () {
   return <>
-    <PageHeader
-      title='Incidents'
-      extra={[
-        <Button key='hierarchy-filter'>network filter</Button>,
-        <Button key='date-filter'>date filter</Button>
-      ]}
-    />
+    <Header title='Incidents' />
     <Row gutter={[20, 20]}>
       <Col span={4}>
         <div>bar chart</div>

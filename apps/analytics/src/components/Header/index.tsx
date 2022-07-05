@@ -2,8 +2,9 @@ import React from 'react'
 
 import { Divider } from 'antd'
 
-import { PageHeader, PageHeaderProps } from '@acx-ui/components'
+import { useGlobalFilter }  from '@acx-ui/analytics/utils'
 
+import { PageHeader, PageHeaderProps, Button } from '@acx-ui/components'
 
 type Subtitle = {
   key: string,
@@ -22,8 +23,22 @@ export const getSubtitle = (subTitles: Subtitle[]) => {
   </>)
 }
 export const Header = ({ subTitles, ...otherProps }: HeaderProps) => {
-  const props = { ...otherProps, subTitle: getSubtitle(subTitles) }
+  const props = { 
+    ...otherProps,
+    subTitle: getSubtitle(subTitles),
+    extra: [
+      <Button key='hierarchy-filter'>network filter</Button>,
+      <Button key='date-filter'>date filter</Button>
+    ]
+  }
   return (
     <PageHeader {...props}/>
   )
+}
+
+export default (props: PageHeaderProps) => {
+  const filters = useGlobalFilter()
+  // const queryResults = useTrafficByVolumeQuery(filters)
+  console.log(filters)
+  return <Header {...props} subTitles={[]} />
 }
