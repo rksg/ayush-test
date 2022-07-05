@@ -25,7 +25,7 @@ const mockSummary = {
 }
 
 describe('SummaryForm', () => {
-  it('should create cloudpath enabled successfully', async () => {
+  it('should render cloudpath enabled successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     mockSummary.isCloudpathEnabled = true
     const { asFragment } = render(
@@ -41,7 +41,7 @@ describe('SummaryForm', () => {
 
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should create cloudpath disabled successfully', async () => {
+  it('should render cloudpath disabled successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     const { asFragment } = render(
