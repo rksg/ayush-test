@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { Divider } from 'antd'
+import { PageHeader, PageHeaderProps , Button } from '@acx-ui/components'
 
-import { useGlobalFilter }  from '@acx-ui/analytics/utils'
+import { Divider } from './styledComponents'
 
-import { PageHeader, PageHeaderProps, Button } from '@acx-ui/components'
+
 
 type Subtitle = {
   key: string,

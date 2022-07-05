@@ -31,7 +31,7 @@ exports[`Analytics dumb header should render correctly 1`] = `
             >
               1: 1
               <div
-                class="ant-divider ant-divider-vertical"
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1neyjyv-0 SjZWI"
                 role="separator"
               />
             </span>
