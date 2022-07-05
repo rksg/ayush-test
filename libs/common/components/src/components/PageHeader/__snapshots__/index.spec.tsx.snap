@@ -187,7 +187,7 @@ exports[`PageHeader should render page header with tabs 1`] = `
 </DocumentFragment>
 `;
 
-exports[`PageHeader should render page header with title, breadcrumb & sub title 1`] = `
+exports[`PageHeader should render page header with title, breadcrumb & subtitle 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
@@ -241,14 +241,14 @@ exports[`PageHeader should render page header with title, breadcrumb & sub title
             <h1
               class="ant-typography"
             >
-              With Sub Title
+              With Subtitle
             </h1>
           </span>
           <span
             class="ant-page-header-heading-sub-title"
           >
             <span>
-              Sub Title
+              Subtitle
             </span>
           </span>
         </div>
