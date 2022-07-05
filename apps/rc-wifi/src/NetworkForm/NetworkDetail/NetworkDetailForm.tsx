@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form, Input, Col, Radio, Row, Space } from 'antd'
-import TextArea                                from 'antd/lib/input/TextArea'
+import { Form, Col, Radio, Row, Space } from 'antd'
+import TextArea                         from 'antd/lib/input/TextArea'
 
 import { StepsForm, FormValidationItem } from '@acx-ui/components'
 import { useNetworkListQuery }           from '@acx-ui/rc/services'
