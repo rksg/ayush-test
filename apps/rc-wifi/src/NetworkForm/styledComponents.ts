@@ -19,8 +19,3 @@ export const RadioDescription = styled.div`
 export const FieldExtraTooltip = styled.div`
   margin-bottom: 20px;
 `
-
-export const FormSubTitle = styled.div`
-  font-size: 14px;
-  font-weight: 600;
-`

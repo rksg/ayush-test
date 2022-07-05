@@ -1,4 +1,4 @@
-export const networkWifiIpRegExp = (rule: any, value: string) => {
+export const networkWifiIpRegExp = (value: string) => {
   // eslint-disable-next-line max-len
   const re = new RegExp(/^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\p{N}\p{L}]+)?$/)
   if (value!=='' && !re.test(value)) {
@@ -7,7 +7,7 @@ export const networkWifiIpRegExp = (rule: any, value: string) => {
   return Promise.resolve()
 }
 
-export const networkWifiPortRegExp = (rule: any, value: number) => {
+export const networkWifiPortRegExp = (value: number) => {
   if (value && value <= 0){
     return Promise.reject('This value should be higher than or equal to 1')
   } else if (value && value > 65535) {
@@ -16,7 +16,7 @@ export const networkWifiPortRegExp = (rule: any, value: number) => {
   return Promise.resolve()
 }
 
-export const stringContainSpace = (rule: any, value: string) => {
+export const stringContainSpace = (value: string) => {
   const re = new RegExp(/[\s]/)
   if (re.test(value)) {
     return Promise.reject('Spaces are not allowed')

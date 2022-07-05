@@ -224,7 +224,7 @@ function getAaaServer (
           required: true,
           whitespace: false
         },{
-          validator: networkWifiIpRegExp
+          validator: (_, value) => networkWifiIpRegExp(value)
         }]}
         children={<Input />}
       />
@@ -234,7 +234,7 @@ function getAaaServer (
         rules={[{
           required: true
         },{
-          validator: networkWifiPortRegExp
+          validator: (_, value) => networkWifiPortRegExp(value)
         }]}
         children={<Input type='number'/>}
       />
@@ -245,7 +245,7 @@ function getAaaServer (
           required: true,
           whitespace: false
         },{
-          validator: stringContainSpace
+          validator: (_, value) => stringContainSpace(value)
         }]}
         children={<Input.Password />}
       />
