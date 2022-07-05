@@ -1,8 +1,9 @@
 import React from 'react'
 
-import { Divider } from 'antd'
-
 import { PageHeader, PageHeaderProps } from '@acx-ui/components'
+
+import { Divider } from './styledComponents'
+
 
 
 type Subtitle = {
