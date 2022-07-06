@@ -13,7 +13,7 @@ import { Button } from '../Button'
 
 import * as UI from './styledComponents'
 
-import type { Moment } from 'moment'
+import type { Moment  } from 'moment'
 
 
 const styles = {
@@ -28,7 +28,10 @@ const styles = {
 }
 
 type DateRangeType = { 'start': moment.Moment | null, 'end' : moment.Moment | null}
-type RangeValue = [Moment | null, Moment | null] | null
+type RangeValueType = [Moment | null, Moment | null] | null
+type RangeBoundType= [Moment, Moment] | null
+type RangesType = Record<string, Exclude<RangeBoundType, null> 
+| (() => Exclude<RangeBoundType, null>)>
 interface CalenderRangePickerProps {
   showTimePicker?: boolean;
   enableDates?: [Moment, Moment];
@@ -145,7 +148,8 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
     <UI.Wrapper>
       <RangePicker 
         style={styles.rangePicker}
-        ranges={showRanges && defaultRanges(rangeOptions)}
+        ranges={showRanges ? 
+          defaultRanges(rangeOptions) as RangesType : undefined}
         placement = 'bottomRight'
         disabledDate={disabledDate}
         className = 'acx-range-picker'
@@ -154,7 +158,7 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
         onClick = {() => setIscalenderOpen (true)}
         getPopupContainer={(triggerNode: HTMLElement) => 
           triggerNode }
-        onCalendarChange={(values: RangeValue) => {
+        onCalendarChange={(values: RangeValueType) => {
           setRange({ start: values ? values[0] : null ,end: values ? values[1] : null })
         }}
         mode = {['date', 'date']}

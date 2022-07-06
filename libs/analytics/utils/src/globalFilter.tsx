@@ -46,7 +46,7 @@ export function GlobalFilterProvider (props: { children: ReactNode }) {
   return <GlobalFilterContext.Provider {...props} value={defaultGlobalFilter} />
 }
 
-export function defaultRanges (subRange?: DateRange[]) : any {
+export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
     [DateRange.last1Hour]: [
       moment().subtract(1, 'hours').seconds(0),
