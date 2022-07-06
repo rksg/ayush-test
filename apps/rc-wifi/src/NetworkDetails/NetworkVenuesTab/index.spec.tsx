@@ -2,10 +2,18 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { networkApi }                                                            from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                                        from '@acx-ui/rc/utils'
-import { Provider, store }                                                       from '@acx-ui/store'
-import { act, fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { networkApi }         from '@acx-ui/rc/services'
+import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider, store }    from '@acx-ui/store'
+import {
+  act,
+  fireEvent,
+  mockServer,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
 import { NetworkVenuesTab } from './index'
 
@@ -154,7 +162,7 @@ describe('NetworkVenuesTab', () => {
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
-    rows.forEach(row => expect(row).toBeChecked())
+    await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
   })
 
   it('deactivate Network', async () => {
@@ -201,6 +209,6 @@ describe('NetworkVenuesTab', () => {
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
-    rows.forEach(row => expect(row).not.toBeChecked())
+    await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
   })
 })

@@ -150,7 +150,7 @@ function StepForm <FormValue = any> (
 
   return <ProAntStepsForm.StepForm<FormValue>
     {...formProps}
-    requiredMark={false}
+    requiredMark={true}
   >
     <Row>
       <UI.FormContainer
