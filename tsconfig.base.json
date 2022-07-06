@@ -19,7 +19,6 @@
     "paths": {
       "@acx-ui/analytics/services": ["libs/analytics/services/src/index.ts"],
       "@acx-ui/analytics/utils": ["libs/analytics/utils/src/index.ts"],
-      "@acx-ui/i18next": ["libs/common/i18next/src/index.ts"],
       "@acx-ui/components": ["libs/common/components/src/index.ts"],
       "@acx-ui/config": ["libs/common/config/src/index.ts"],
       "@acx-ui/feature-toggle": ["libs/common/feature-toggle/src/index.ts"],

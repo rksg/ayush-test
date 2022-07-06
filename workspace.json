@@ -7,7 +7,6 @@
     "common-components": "libs/common/components",
     "common-config": "libs/common/config",
     "common-feature-toggle": "libs/common/feature-toggle",
-    "common-i18next": "libs/common/i18next",
     "common-icons": "libs/common/icons",
     "common-store": "libs/common/store",
     "common-test-utils": "libs/common/test-utils",
