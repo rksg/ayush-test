@@ -108,4 +108,8 @@ border-radius: 20px
 .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before{
     border-radius: 20px
 }
+.ant-picker-header-view button:hover {
+  color: inherit;
+  cursor: default;
+}
 }`

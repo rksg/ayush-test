@@ -148,6 +148,7 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
         onCalendarChange={(values: RangeValue) => {
           setRange({ start: values ? values[0] : null ,end: values ? values[1] : null })
         }}
+        mode = {['date', 'date']}
         renderExtraFooter={() => 
           <CalenderFooter 
             showTimePicker = {showTimePicker} 
