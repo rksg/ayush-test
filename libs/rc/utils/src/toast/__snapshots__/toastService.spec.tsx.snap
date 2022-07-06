@@ -25,7 +25,7 @@ exports[`Toast Service: basic should render CountdownNode correctly 1`] = `
       </svg>
     </span>
     <span
-      class="toastService__CountdownNumber-sc-kknr04-1 inKWnw"
+      class="toastService__CountdownNumber-sc-kknr04-1 fNOXNH"
     >
       20
     </span>

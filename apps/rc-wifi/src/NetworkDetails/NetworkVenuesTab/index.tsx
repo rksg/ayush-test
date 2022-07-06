@@ -145,40 +145,33 @@ export function NetworkVenuesTab () {
     },
     {
       title: 'Networks',
-      dataIndex: 'networks',
+      dataIndex: ['networks', 'count'],
       align: 'center',
-      render: function (data) {
-        return data ? data.count : 0
-      }
+      render: function (data) { return data ? data : 0 }
     },
     {
       title: 'Wi-Fi APs',
       dataIndex: 'aggregatedApStatus',
       align: 'center',
-      render: function (data) {
-        if (data) {
-          let sum = 0
-          Object.keys(data).forEach((key) => {
-            sum = sum + data[key]
-          })
-          return sum
-        }
-        return 0
+      render: function (data, row) {
+        if (!row.aggregatedApStatus) { return 0 }
+        return Object
+          .values(row.aggregatedApStatus)
+          .reduce((a, b) => a + b, 0)
       }
     },
     {
       title: 'Activated',
-      dataIndex: 'activated',
+      dataIndex: ['activated', 'isActivated'],
       align: 'center',
       render: function (data, row) {
-        return <Switch checked={data.isActivated}
-          onClick={
-            (checked: boolean, event: Event) => {
-              data.isActivated = checked
-              activateNetwork(checked, row)
-              event.stopPropagation()
-            }
-          }/>
+        return <Switch
+          checked={Boolean(data)}
+          onClick={(checked: boolean, event: Event) => {
+            activateNetwork(checked, row)
+            event.stopPropagation()
+          }}
+        />
       }
     },
     {

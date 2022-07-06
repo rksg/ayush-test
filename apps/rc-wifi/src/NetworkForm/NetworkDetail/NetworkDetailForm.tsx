@@ -50,7 +50,7 @@ export function NetworkDetailForm () {
                 </RadioDescription>
               </Radio>
 
-              <Radio value={NetworkTypeEnum.DPSK} disabled>
+              <Radio value={NetworkTypeEnum.DPSK}>
                 {NetworkTypeLabel.dpsk}
                 <RadioDescription>
                   {NetworkTypeDescription.dpsk}

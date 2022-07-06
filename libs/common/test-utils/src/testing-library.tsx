@@ -1,6 +1,8 @@
 import { ReactElement } from 'react'
 
 import { render, RenderOptions }                             from '@testing-library/react'
+import { ConfigProvider }                                    from 'antd'
+import enUS                                                  from 'antd/lib/locale/en_US'
 import { generatePath, MemoryRouter, Params, Route, Routes } from 'react-router-dom'
 
 type CustomRenderOptions = RenderOptions & {
@@ -48,6 +50,7 @@ function customRender (
 
     wrappedUI = <MemoryRouter initialEntries={[entry]} children={wrappedUI} />
   }
+  wrappedUI = <ConfigProvider locale={enUS} children={wrappedUI} />
   return render(wrappedUI, options)
 }
 

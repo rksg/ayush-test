@@ -66,16 +66,13 @@ module.exports = {
 
   '@message-notice-content-padding': '10px 24px',
 
-  '@page-header-tabs-tab-font-size': 'var(--acx-headline-4-font-size)',
+  '@page-header-tabs-tab-font-size': 'var(--acx-subtitle-4-font-size)',
 
   '@primary-color-active': 'var(--acx-neutrals-50)',
   '@primary-color': '#EC7100', // var(--acx-accents-orange-50)
 
   '@screen-xl': '1280px',
   '@screen-xxl': '1920px',
-
-  '@table-padding-vertical': '14px',
-  '@table-padding-horizontal': '8px',
 
   '@tabs-highlight-color': 'var(--acx-primary-black)',
   '@tabs-hover-color': 'var(--acx-accents-orange-50)',

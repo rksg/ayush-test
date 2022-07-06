@@ -1,9 +1,8 @@
 import styled from 'styled-components/macro'
 
 export const Diagram = styled.div`
-  height: 387px;
   width: 358px;
-  margin-top: 5px;
+  margin-top: 40px;
 `
 
 export const Title = styled.h1`
@@ -15,4 +14,8 @@ export const Title = styled.h1`
 export const RadioDescription = styled.div`
   color: var(--acx-neutrals-50);
   margin-top: 4px;
+`
+
+export const FieldExtraTooltip = styled.div`
+  margin-bottom: 20px;
 `
