@@ -34,7 +34,8 @@ interface CalenderRangePickerProps {
   showTimePicker?: boolean;
   enableDates?: [Moment, Moment];
   rangeOptions?: [DateRange,DateRange];
-  showRanges?: boolean
+  showRanges?: boolean;
+  selectedRange? : DateRangeType
 };
 interface CalenderFooterProps {
   showTimePicker?: boolean;
@@ -101,7 +102,7 @@ const CalenderFooter: React.FC<CalenderFooterProps> =
     <Row className='calender-range-apply-row'>
       <Col span={showTimePicker ? 12 : 10} offset={showTimePicker ? 6 : 8}>
         {`${getCustomisedDate(range?.start, showTimePicker)}
-        - ${getCustomisedDate(range?.start, showTimePicker)}`}</Col>
+        - ${getCustomisedDate(range?.end, showTimePicker)}`}</Col>
       <Col span={3} style = {{ lineHeight: 'normal' }}><Button onClick={()=>onButtonClick('cancel')}
         style = {styles.button}>Cancel</Button></Col>
       <Col span={3} style = {{ lineHeight: 'normal' }}><Button type = {'primary'}
@@ -112,10 +113,12 @@ const CalenderFooter: React.FC<CalenderFooterProps> =
 }
 
 export const CalenderRangePicker: React.FC<CalenderRangePickerProps> = 
-({ showTimePicker, enableDates, rangeOptions , showRanges, ...props }) => {
+({ showTimePicker, enableDates, rangeOptions , showRanges,selectedRange, ...props }) => {
 
+  const defaultSelection = 
+  { start: moment().subtract(1, 'days').seconds(0),end: moment().seconds(0) }
   const [range, setRange] = useState<DateRangeType>(
-    { start: moment().subtract(1, 'days').seconds(0),end: moment().seconds(0) })
+    selectedRange? selectedRange:defaultSelection)
   const [isCalenderOpen, setIscalenderOpen] = useState<boolean>(false)
   const disabledDate = (current: Moment) => {
     if (!enableDates) {

@@ -64,3 +64,21 @@ storiesOf('CalenderRangePicker', module).add('with restricted date selection', (
     />
   </div>
 ))
+storiesOf('CalenderRangePicker', module).add('with user default selected date', () => (
+  <div style = {{
+    position: 'absolute',
+    top: 100,
+    left: 500
+  }}>
+    <CalenderRangePicker
+      rangeOptions= {[DateRange.today, DateRange.last7Days]}
+      showTimePicker
+      enableDates={[moment().subtract(1, 'month').seconds(0),
+        moment().seconds(0)]}
+      showRanges
+      selectedRange=
+        {{ start: moment().subtract(7, 'days').seconds(0), 
+          end: moment().seconds(0) }}
+    />
+  </div>
+))
