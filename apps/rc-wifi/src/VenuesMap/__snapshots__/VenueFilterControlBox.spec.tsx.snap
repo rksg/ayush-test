@@ -6,7 +6,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
     class="styledComponents__VenueFilterContainer-sc-mzsngu-2 iqDICE"
   >
     <span
-      class="styledComponents__FilterBoxTitle-sc-mzsngu-1 bXwlvO"
+      class="styledComponents__FilterBoxTitle-sc-mzsngu-1 fhweiO"
     >
       Show
     </span>

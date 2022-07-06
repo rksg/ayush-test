@@ -7,11 +7,11 @@ import { PageHeader } from '..'
 export function WithSubTitleText () {
   return <BrowserRouter>
     <PageHeader
-      title='With Subtitle text'
+      title='With Subtitle Text'
       breadcrumb={[
         { text: 'Networks', link: '/networks' }
       ]}
-      subTitle={'Sub title text'}
+      subTitle={'Subtitle text'}
     />
   </BrowserRouter>
 }

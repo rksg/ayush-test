@@ -20,8 +20,9 @@ export const Wrapper = styled.div`
         align-self: flex-start;
         margin-top: 6px;
         color: var(--acx-primary-black);
-        font-weight: 400;
-        font-size: 12px;
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
       }
       &-title {
         overflow: visible;
@@ -43,7 +44,7 @@ export const Wrapper = styled.div`
         .ant-tabs-tab {
           padding: 4px 0 14px 0;
           &.ant-tabs-tab-active .ant-tabs-tab-btn {
-            font-weight: 700;
+            font-weight: var(--acx-subtitle-4-font-weight);
           }
         }
       }

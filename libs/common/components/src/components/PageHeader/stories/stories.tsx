@@ -9,6 +9,6 @@ storiesOf('PageHeader', module)
   .add('Basic', Basic)
   .add('With Buttons', WithButtons)
   .add('With Tabs', WithTabs)
-  .add('With Sub Title Text', WithSubTitleText)
-  .add('With Sub Title Component', WithSubTitleComp)
+  .add('With Subtitle Text', WithSubTitleText)
+  .add('With Subtitle Component', WithSubTitleComp)
 export {}
