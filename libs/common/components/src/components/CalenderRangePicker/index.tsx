@@ -70,7 +70,7 @@ const CalenderFooter: React.FC<CalenderFooterProps> =
   
   return <>
     {showTimePicker &&
-    <Row >
+    <Row>
       {timePickerConfig.map((config)=>
         <>
           <Col key = {config.id}
@@ -118,14 +118,14 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
   const defaultSelection = 
   { start: moment().subtract(1, 'days').seconds(0),end: moment().seconds(0) }
   const [range, setRange] = useState<DateRangeType>(
-    selectedRange? selectedRange:defaultSelection)
+    selectedRange? selectedRange : defaultSelection)
   const [isCalenderOpen, setIscalenderOpen] = useState<boolean>(false)
   const disabledDate = (current: Moment) => {
     if (!enableDates) {
       return false
     }
     return enableDates[0] >= current ||
-    enableDates[1] < current
+    enableDates[1] < current.seconds(0)
   }
   return ( 
     <UI.Wrapper>
