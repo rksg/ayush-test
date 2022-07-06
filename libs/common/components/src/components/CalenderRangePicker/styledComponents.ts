@@ -11,6 +11,7 @@ export const Wrapper = styled.div`
     }
 .ant-picker-panel-container {
     border-radius: 0px 4px 4px 0;
+    background: var(--acx-primary-white);
 }   
 .ant-picker-range .ant-picker-active-bar {
     background: var(--acx-accents-blue-50);
@@ -28,12 +29,12 @@ export const Wrapper = styled.div`
   }
  .ant-picker-ranges{
   position: absolute;
-  left: -110px;
-  width: 20%;
+  left: -122px;
+  width: 22%;
   display: flex;
   flex-direction: column;
-  background-color:var(--acx-neutrals-5);
-  height: 94.5%;
+  background-color:var(--acx-neutrals-10);
+  height: 95%;
   padding: 20px;
   top: 9px;
   border-radius: 4px 0 0 4px;
@@ -48,14 +49,14 @@ export const Wrapper = styled.div`
 }
 
 .calender-range-apply-row{
-  background-color:var(--acx-neutrals-5); 
+  background-color:var(--acx-neutrals-10); 
   height: 48px;
   align-items: center;
 }
 .ant-picker-ranges .ant-picker-preset > .ant-tag-blue {
   color: black;
-  background: var(--acx-neutrals-5);
-  border-color: var(--acx-neutrals-5);
+  background: var(--acx-neutrals-10);
+  border-color: var(--acx-neutrals-10);
   cursor: pointer;
 }
 
