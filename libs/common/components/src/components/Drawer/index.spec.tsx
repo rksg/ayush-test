@@ -8,7 +8,8 @@ jest.mock('@acx-ui/icons', ()=> ({
 }), { virtual: true })
 
 const onClose = jest.fn()
-const content = <><p>some content</p></>
+const resetFields = jest.fn()
+const content = <p>some content</p>
 
 describe('Drawer', () => {
   it('should match snapshot', () => {
@@ -31,11 +32,42 @@ describe('Drawer', () => {
       mask={false}
     />)
 
-    const button = await screen.getByRole('button', { name: /close/i })
+    const button = screen.getByRole('button', { name: /close/i })
     await screen.findByText('Test Drawer')
     await screen.findByText('some content')
 
     fireEvent.click(button)
     expect(onClose).toBeCalled()
+  })
+
+  it('should render custom drawer correctly', async () => {
+    const footer = <>
+      <button onClick={onClose} >Save</button>
+      <button onClick={resetFields}>Reset</button>
+    </>
+
+    render(<Drawer
+      title={'Test Custom Drawer'}
+      visible={true}
+      onClose={onClose}
+      content={content}
+      mask={false}
+      footer={footer}
+    />)
+
+    const closeButton = screen.getByRole('button', { name: /close/i })
+    const saveButton = screen.getByRole('button', { name: /save/i })
+    const resetButton = screen.getByRole('button', { name: /reset/i })
+
+    await screen.findByText('Test Custom Drawer')
+
+    fireEvent.click(closeButton)
+    expect(onClose).toBeCalled()
+
+    fireEvent.click(saveButton)
+    expect(onClose).toBeCalled()
+
+    fireEvent.click(resetButton)
+    expect(resetFields).toBeCalled()
   })
 })
