@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useTranslation } from 'react-i18next'
+import { useIntl } from 'react-intl'
 
 import { GlobalFilterProvider } from '@acx-ui/analytics/utils'
 import {
@@ -29,14 +29,14 @@ export default function Dashboard () {
 }
 
 function DashboardPageHeader () {
-  const { t } = useTranslation()
+  const { $t } = useIntl()
   return (
     <PageHeader
-      title='Dashboard'
+      title={$t({ id: 'title' })}
       extra={[
-        <Button key='add' type='primary'>{t('add')}...</Button>,
-        <Button key='hierarchy-filter'>{t('entirOrg')}<ArrowExpand /></Button>,
-        <Button key='date-filter' icon={<ClockOutlined />}>{t('last24Hrs')}</Button>,
+        <Button key='add' type='primary'>{$t({ id: 'add' })}...</Button>,
+        <Button key='hierarchy-filter'>{$t({ id: 'entirOrg' })}<ArrowExpand /></Button>,
+        <Button key='date-filter' icon={<ClockOutlined />}>{$t({ id: 'last24Hrs' })}</Button>,
         <Button key='download' icon={<DownloadOutlined />} />,
         <Button key='insight' icon={<BulbOutlined />} />
       ]}
