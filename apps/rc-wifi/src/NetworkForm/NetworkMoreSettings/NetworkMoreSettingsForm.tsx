@@ -152,14 +152,8 @@ export function NetworkMoreSettingsForm () {
         >Load Control</StepsForm.Title>
         <LoadControlForm />
 
-        <StepsForm.Title
-          style={{
-            fontSize: 'var(--acx-subtitle-4-font-size)',
-            fontWeight: '600',
-            margin: '20px 0'
-          }}
-        >Access Control</StepsForm.Title>
-        <AccessControlForm />
+
+        <AccessControlForm/>
 
 
         <UI.FormItemNoLabel
