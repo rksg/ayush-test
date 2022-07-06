@@ -96,36 +96,6 @@ Array [
     "$$typeof": Symbol(react.forward_ref),
     "attrs": Array [],
     "componentStyle": e {
-      "baseHash": -347520609,
-      "baseStyle": undefined,
-      "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-mzsngu-9",
-      "isStatic": false,
-      "rules": Array [
-        "
-  height: 20px;
-  width: 32px;
-  vertical-align: text-bottom;
-  fill: var(--acx-neutrals-50);
-",
-      ],
-      "staticRulesId": "",
-    },
-    "foldedComponentIds": Array [],
-    "render": [Function],
-    "shouldForwardProp": undefined,
-    "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-mzsngu-9",
-    "target": Object {
-      "$$typeof": Symbol(react.forward_ref),
-      "render": [Function],
-    },
-    "toString": [Function],
-    "warnTooManyClasses": [Function],
-    "withComponent": [Function],
-  },
-  Object {
-    "$$typeof": Symbol(react.forward_ref),
-    "attrs": Array [],
-    "componentStyle": e {
       "baseHash": 163195716,
       "baseStyle": undefined,
       "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-mzsngu-10",
@@ -144,6 +114,36 @@ Array [
     "render": [Function],
     "shouldForwardProp": undefined,
     "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-mzsngu-10",
+    "target": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "toString": [Function],
+    "warnTooManyClasses": [Function],
+    "withComponent": [Function],
+  },
+  Object {
+    "$$typeof": Symbol(react.forward_ref),
+    "attrs": Array [],
+    "componentStyle": e {
+      "baseHash": -347520609,
+      "baseStyle": undefined,
+      "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-mzsngu-9",
+      "isStatic": false,
+      "rules": Array [
+        "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+      ],
+      "staticRulesId": "",
+    },
+    "foldedComponentIds": Array [],
+    "render": [Function],
+    "shouldForwardProp": undefined,
+    "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-mzsngu-9",
     "target": Object {
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],

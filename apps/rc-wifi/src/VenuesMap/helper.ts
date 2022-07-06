@@ -35,15 +35,13 @@ export const getDisplayLabel = (label: string) => {
 
 export const getVenueInfoMarkerIcon = (status: string) => {
   switch (status) {
-    case ApVenueStatusEnum.IN_SETUP_PHASE:
-      return UI.VenueInfoMarkerGreyIcon
-    case ApVenueStatusEnum.OFFLINE:
+    case ApVenueStatusEnum.IN_SETUP_PHASE || ApVenueStatusEnum.OFFLINE:
       return UI.VenueInfoMarkerGreyIcon
     case ApVenueStatusEnum.OPERATIONAL:
       return UI.VenueInfoMarkerGreenIcon
-    case ApVenueStatusEnum.REQUIRES_ATTENTION:
-      return UI.VenueInfoMarkerOrangeIcon
     case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return UI.VenueInfoMarkerOrangeIcon
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
       return UI.VenueInfoMarkerRedIcon
     default:
       return UI.VenueInfoMarkerGreyIcon
@@ -52,16 +50,14 @@ export const getVenueInfoMarkerIcon = (status: string) => {
 
 export const getVenueStatusSeverity = (status: string) => {
   switch (status) {
-    case ApVenueStatusEnum.IN_SETUP_PHASE:
-      return 4
-    case ApVenueStatusEnum.OFFLINE:
-      return 4
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
+      return 1
+    case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return 2
     case ApVenueStatusEnum.OPERATIONAL:
       return 3
-    case ApVenueStatusEnum.REQUIRES_ATTENTION:
-      return 2
-    case ApVenueStatusEnum.TRANSIENT_ISSUE:
-      return 1
+    case ApVenueStatusEnum.IN_SETUP_PHASE || ApVenueStatusEnum.OFFLINE:
+      return 4
     default:
       return 4
   }
