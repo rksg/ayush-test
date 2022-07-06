@@ -30,6 +30,22 @@ describe('useTenantLink', () => {
     expect(result.current.pathname).toEqual('/t/t-id/some/path')
     expect(result.current.search).toEqual('?test=ok')
   })
+  it('merges search parameters', () => {
+    const { result } = renderHook(
+      () => useTenantLink('/some/path?another=param'),
+      { wrapper: getWrapper('') }
+    )
+    expect(result.current.pathname).toEqual('/t/t-id/some/path')
+    expect(result.current.search).toEqual('?test=ok&another=param')
+  })
+  it('replaces search parameters', () => {
+    const { result } = renderHook(
+      () => useTenantLink('/some/path?another=param&test=updated'),
+      { wrapper: getWrapper('') }
+    )
+    expect(result.current.pathname).toEqual('/t/t-id/some/path')
+    expect(result.current.search).toEqual('?test=updated&another=param')
+  })
 
   describe('basePath = /base/path/', () => {
     const basePath = '/base/path'
