@@ -202,22 +202,19 @@ export function NetworksTable () {
       { isLoading: isDeleteNetworkUpdating }
     ] = useDeleteNetworkMutation()
 
-    const actions: TableProps<Network>['actions'] = [
-      {
-        label: 'Delete',
-        onClick: (selectedRows) => handleDeleteNetwork(selectedRows[0])
+    const actions: TableProps<Network>['actions'] = [{
+      label: 'Delete',
+      onClick: ([{ name, id }], clearSelection) => {
+        showModal({
+          type: 'confirm',
+          entityName: 'Network',
+          entityValue: name,
+          action: 'DELETE',
+          onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
+            .then(clearSelection)
+        })
       }
-    ]
-
-    const handleDeleteNetwork = ({ name, id }: Network) => {
-      showModal({
-        type: 'confirm',
-        entityName: 'Network',
-        entityValue: name,
-        action: 'DELETE',
-        onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
-      })
-    }
+    }]
 
     return (
       <Loader states={[
