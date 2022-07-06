@@ -1,3 +1,5 @@
+import { PassphraseExpirationEnum, PassphraseFormatEnum } from '../constants'
+
 export interface CreateNetworkFormFields {
   name: string;
   description?: string;
@@ -14,6 +16,8 @@ export interface NetworkSaveData {
   enableAccountingService?: boolean;
   enableAccountingProxy?: boolean;
   enableAuthProxy?: boolean;
+  enableSecondaryAuthServer?: boolean;
+  enableSecondaryAcctServer?: boolean;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
   venues?: [];
@@ -48,6 +52,9 @@ export interface NetworkSaveData {
       sharedSecret: string
     }
   };
+  passphraseLength?: number;
+  passphraseFormat?: PassphraseFormatEnum;
+  expiration?: PassphraseExpirationEnum;
 }
 
 export enum IsolatePacketsTypeEnum {

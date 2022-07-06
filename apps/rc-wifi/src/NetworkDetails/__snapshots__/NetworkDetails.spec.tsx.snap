@@ -335,5 +335,6 @@ exports[`NetworkDetails should render correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
+  Overview
 </DocumentFragment>
 `;
