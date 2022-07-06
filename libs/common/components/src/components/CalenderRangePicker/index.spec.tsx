@@ -57,10 +57,12 @@ describe('CalenderRangePicker', () => {
     expect(await screen.findByText('Cancel')).toBeVisible()
   })
   it('should select date when click on date selection',async () => {
+    const onDateChange = jest.fn()
     render(<CalenderRangePicker 
       selectedRange=
         {{ start: moment().subtract(40, 'days').seconds(0), 
-          end: moment().seconds(0) }}/>)
+          end: moment().seconds(0) }}
+      onDateChange = {onDateChange}/>)
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
@@ -68,11 +70,14 @@ describe('CalenderRangePicker', () => {
     await user.click(dateSelect[0])
     expect( screen.getByRole('display-date-range'))
       .toHaveTextContent('06/07/2022')
+    expect(onDateChange).toBeCalledTimes(1)  
   })
   it('should select time when click on time selection',async () => {
+    const onDateChange = jest.fn()
     render(<CalenderRangePicker 
       showTimePicker
       rangeOptions= {[DateRange.today, DateRange.last7Days]}
+      onDateChange = {onDateChange}
       selectedRange=
         {{ start: moment().subtract(7, 'days').seconds(0), 
           end: moment().seconds(0) }}
@@ -86,5 +91,6 @@ describe('CalenderRangePicker', () => {
     await user.click(hourSelect[hourSelect.length-1])
     expect( screen.getByRole('display-date-range'))
       .toHaveTextContent('20:')
+    expect(onDateChange).toBeCalledTimes(1)  
   })
 })

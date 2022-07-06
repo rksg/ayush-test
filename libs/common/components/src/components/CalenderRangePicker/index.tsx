@@ -1,5 +1,5 @@
 
-import  { useState } from 'react'
+import  { useEffect, useState, useRef } from 'react'
 
 import { TimePicker, Row, Col } from 'antd'
 import { DatePicker }           from 'antd'
@@ -34,7 +34,8 @@ interface CalenderRangePickerProps {
   enableDates?: [Moment, Moment];
   rangeOptions?: [DateRange,DateRange];
   showRanges?: boolean;
-  selectedRange? : DateRangeType
+  selectedRange?: DateRangeType;
+  onDateChange?:Function;
 };
 interface CalenderFooterProps {
   showTimePicker?: boolean;
@@ -118,8 +119,9 @@ const CalenderFooter: React.FC<CalenderFooterProps> =
 }
 
 export const CalenderRangePicker: React.FC<CalenderRangePickerProps> = 
-({ showTimePicker, enableDates, rangeOptions , showRanges,selectedRange, ...props }) => {
-
+({ showTimePicker, enableDates, rangeOptions, 
+  showRanges, selectedRange, onDateChange, ...props }) => {
+  const didMountRef = useRef(false)
   const defaultValue = 
   { start: moment().subtract(1, 'days').seconds(0),end: moment().seconds(0) }
   const [range, setRange] = useState<DateRangeType>(
@@ -132,6 +134,13 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
     return enableDates[0] >= current ||
     enableDates[1] < current.seconds(0)
   }
+  useEffect(()=>{
+    if (!didMountRef.current) { 
+      didMountRef.current = true
+      return 
+    }
+    if(typeof onDateChange === 'function') onDateChange(range)}
+  ,[range, onDateChange])
   return ( 
     <UI.Wrapper>
       <RangePicker 
