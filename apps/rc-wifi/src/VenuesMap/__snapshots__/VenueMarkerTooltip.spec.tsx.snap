@@ -9,13 +9,13 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
       class="styledComponents__InfoWindowHeader-sc-mzsngu-9 dKCOxV"
     >
       <a
-        class="styledComponents__Title-sc-mzsngu-10 khmGvm"
+        class="styledComponents__Title-sc-mzsngu-10 cEibZf"
       >
         Aparna-Venue
       </a>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-2 kPDrQH"
+      class="styledComponents__Wrapper-sc-1abm7iv-2 gGaxUh"
     >
       <div
         class="ant-pro-table"
