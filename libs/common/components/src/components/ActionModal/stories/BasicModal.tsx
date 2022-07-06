@@ -1,18 +1,18 @@
-import { showModal } from '..'
+import { showActionModal } from '..'
 
-export function BasicModal () {
+export function BasicActionModal () {
   return (
     <>
-      Basic Modal:
-      <button onClick={InfoNotification}>Info</button>
-      <button onClick={ErrorNotification}>Error</button>
-      <button onClick={ConfirmNotification}>Confirm</button>
+      Basic Action Modal:
+      <button onClick={InfoModal}>Info</button>
+      <button onClick={ErrorModal}>Error</button>
+      <button onClick={ConfirmModal}>Confirm</button>
     </>
   )
 }
 
-const InfoNotification = () => {
-  showModal({
+const InfoModal = () => {
+  showActionModal({
     type: 'info',
     title: 'Please note that...',
     content: (
@@ -24,8 +24,8 @@ const InfoNotification = () => {
   })
 }
 
-const ConfirmNotification = () => {
-  showModal({
+const ConfirmModal = () => {
+  showActionModal({
     type: 'confirm',
     title: 'Please confirm that...',
     content: 'Some descriptions',
@@ -35,8 +35,8 @@ const ConfirmNotification = () => {
   })
 }
 
-const ErrorNotification = () => {
-  showModal({
+const ErrorModal = () => {
+  showActionModal({
     type: 'error',
     title: 'Something went wrong',
     content: 'Some descriptions'

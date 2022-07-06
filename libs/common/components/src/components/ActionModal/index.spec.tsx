@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { screen, fireEvent } from '@testing-library/react'
 
-import { showModal, convertToJSON } from '.'
+import { showActionModal, convertToJSON } from '.'
 
 jest.mock('@acx-ui/icons', ()=>({
   ExpandSquareUp: () => <div data-testid='expand-square-up'/>,
@@ -15,7 +15,7 @@ Object.assign(navigator, {
   }
 })
 
-describe('Modal', () => {
+describe('Action Modal', () => {
   let dialog
   const onOk = jest.fn()
   const onCancel = jest.fn()
@@ -24,7 +24,7 @@ describe('Modal', () => {
   afterEach(async () => dialog.remove())
 
   it('should open Info modal', async () => {
-    showModal({
+    showActionModal({
       type: 'info',
       title: 'This is a notification message',
       content: 'Some descriptions',
@@ -43,7 +43,7 @@ describe('Modal', () => {
   })
 
   it('should open Error modal', async () => {
-    showModal({
+    showActionModal({
       type: 'error',
       title: 'This is a error message',
       content: 'Some error descriptions',
@@ -68,7 +68,7 @@ describe('Modal', () => {
     const detailsContent = convertToJSON(mockErrorDetails)
 
     beforeEach(async () => {
-      showModal({
+      showActionModal({
         type: 'error',
         action: 'SHOW_ERRORS',
         title: 'Something went wrong',
@@ -108,7 +108,7 @@ describe('Modal', () => {
   })
 
   it('should open Confirm modal', async () => {
-    showModal({
+    showActionModal({
       type: 'confirm',
       title: 'This is a confirm message',
       content: 'Some confirm descriptions',
@@ -133,7 +133,7 @@ describe('Modal', () => {
 	
   describe('Confirm delete modal', () => {
     it('should open Confirm delete modal', async () => {
-      showModal({
+      showActionModal({
         type: 'confirm',
         action: 'DELETE',
         entityName: 'Network',
@@ -156,7 +156,7 @@ describe('Modal', () => {
     })
 
     it('should open Confirm bulk delete modal', async () => {
-      showModal({
+      showActionModal({
         type: 'confirm',
         action: 'DELETE',
         entityName: 'Networks',
@@ -180,7 +180,7 @@ describe('Modal', () => {
     })
 
     it('should open Confirm delete modal with input validation', async () => {
-      showModal({
+      showActionModal({
         type: 'confirm',
         action: 'DELETE',
         entityName: 'Network',

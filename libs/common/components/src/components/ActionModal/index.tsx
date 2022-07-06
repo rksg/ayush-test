@@ -42,12 +42,11 @@ export interface ErrorDetailsProps {
   error?: string
 }
 
-
 export const convertToJSON = (content: ErrorDetailsProps) => {
   return JSON.stringify(content, undefined, 2)
 }
 
-export const showModal = (props: ModalProps) => {
+export const showActionModal = (props: ModalProps) => {
   const modal = Modal[props.type]({})
   const config = transformProps(props, modal)
   modal.update({

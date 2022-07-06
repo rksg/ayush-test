@@ -1,18 +1,18 @@
-import { showModal } from '..'
+import { showActionModal } from '..'
 
-export function CustomModal () {
+export function CustomActionModal () {
   return (
     <>
-      Custom Modal:
-      <button onClick={ConfirmDeleteNotification}>Confirm Delete</button>
+      Custom Action Modal:
+      <button onClick={ConfirmDeleteModal}>Confirm Delete</button>
       <button onClick={ConfirmDeleteWithValidation}>Confirm Delete With Validation</button>
-      <button onClick={ErrorDetailNotification}>Error With Details</button>
+      <button onClick={ErrorDetailModal}>Error With Details</button>
     </>
   )
 }
 
-const ConfirmDeleteNotification = () => {
-  showModal({
+const ConfirmDeleteModal = () => {
+  showActionModal({
     type: 'confirm',
     action: 'DELETE',
     entityName: 'Network',
@@ -23,7 +23,7 @@ const ConfirmDeleteNotification = () => {
 }
 
 const ConfirmDeleteWithValidation = () => {
-  showModal({
+  showActionModal({
     type: 'confirm',
     action: 'DELETE',
     entityName: 'Network',
@@ -48,8 +48,8 @@ const mockErrorDetails = {
   error: 'org.json.JSONException: JSONArray[0] not found.'
 }
 
-const ErrorDetailNotification = () => {
-  showModal({
+const ErrorDetailModal = () => {
+  showActionModal({
     type: 'error',
     action: 'SHOW_ERRORS',
     title: 'Something went wrong',
