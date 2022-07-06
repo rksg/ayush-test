@@ -1,9 +1,11 @@
 import { useRef } from 'react'
 
-import { Modal, Button, Collapse, Form, Input } from 'antd'
-import { ModalFuncProps }                       from 'antd/lib/modal'
+import { Modal, Collapse, Form, Input } from 'antd'
+import { ModalFuncProps }               from 'antd/lib/modal'
 
 import { ExpandSquareUp, ExpandSquareDown } from '@acx-ui/icons'
+
+import { Button } from '../Button'
 
 import * as UI from './styledComponents'
 const { Panel } = Collapse
