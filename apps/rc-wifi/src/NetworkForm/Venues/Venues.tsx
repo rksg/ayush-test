@@ -9,12 +9,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery, Venue } from '@acx-ui/rc/services'
-import { useTableQuery }            from '@acx-ui/rc/utils'
-
-import { CreateNetworkFormFields } from '../interface'
-
-import TableButtonBar from './TableButtonBar'
+import { useVenueListQuery, Venue }               from '@acx-ui/rc/services'
+import { useTableQuery, CreateNetworkFormFields } from '@acx-ui/rc/utils'
 
 const defaultPayload = {
   searchString: '',
@@ -59,41 +55,22 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)
-
-  const handleSelectedRows = () => {
-    function handleVenueSaveData (selectedRows: Venue[]) {
-      const defaultSetup = {
-        apGroups: [],
-        scheduler: { type: 'ALWAYS_ON' },
-        isAllApGroups: true,
-        allApGroupsRadio: 'Both'
-      }
-      const selected = selectedRows.map((row) => ({
-        ...defaultSetup,
-        venueId: row.id,
-        name: row.name
-      }))
-      props.formRef?.current?.setFieldsValue({ venues: selected })
+  const [activateVenues, setActivateVenues] = useState(defaultArray)
+  const handleVenueSaveData = (selectedRows: Venue[]) => {
+    const defaultSetup = {
+      apGroups: [],
+      scheduler: { type: 'ALWAYS_ON' },
+      isAllApGroups: true,
+      allApGroupsRadio: 'Both'
     }
-
-    function handleActivatedButton (rows: Venue[]) {
-      setTableData((prevData) => {
-        const tmp = [...prevData]
-        tmp.forEach((item) => {
-          if (rows.indexOf(item) !== -1) {
-            item.activated.isActivated = true
-          } else {
-            item.activated.isActivated = false
-          }
-        })
-        return tmp
-      })
-    }
-
-    handleVenueSaveData(tableQuery.selectedRowsData)
-    handleActivatedButton(tableQuery.selectedRowsData)
+    const selected = selectedRows.map((row) => ({
+      ...defaultSetup,
+      venueId: row.id,
+      name: row.name
+    }))
+    props.formRef?.current?.setFieldsValue({ venues: selected })
   }
-  useEffect(handleSelectedRows, [tableQuery.selectedRowsData, props.formRef])
+
   useEffect(()=>{
     if (tableQuery.data) {
       const data = tableQuery.data.data.map(item => ({
@@ -123,30 +100,33 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     },
     {
       title: 'Networks',
-      dataIndex: 'networks',
-      render: function (data) {
-        return data ? data.count : 0
-      }
+      dataIndex: ['networks', 'count']
     },
     {
       title: 'Wi-Fi APs',
       dataIndex: 'aggregatedApStatus',
-      render: function (data) {
-        if (data) {
-          let sum = 0
-          Object.keys(data).forEach((key) => {
-            sum = sum + data[key]
-          })
-          return sum
-        }
-        return 0
+      render: function (data, row) {
+        if (!row.aggregatedApStatus) { return 0 }
+        return Object
+          .values(row.aggregatedApStatus)
+          .reduce((a, b) => a + b, 0)
       }
     },
     {
       title: 'Activated',
-      dataIndex: 'activated',
-      render: function (data) {
-        return <Switch checked={data.isActivated} disabled={true} />
+      dataIndex: ['activated', 'isActivated'],
+      render: function (data, row) {
+        return <Switch onClick={(checked: boolean, event: Event) => {
+          event.stopPropagation()
+          let selectedVenues = [...activateVenues]
+          if (checked) {
+            selectedVenues = [...selectedVenues, row]
+          } else {
+            selectedVenues.splice(selectedVenues.indexOf(row), 1)
+          }
+          setActivateVenues(selectedVenues)
+          handleVenueSaveData(selectedVenues)
+        }} />
       }
     },
     {
@@ -177,10 +157,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
   return (
     <>
       <StepsForm.Title>Venues</StepsForm.Title>
-      <span>Select venues to activate this network</span>
-      <TableButtonBar
-        rowsSelected={tableQuery.selectedRowsData.length}
-      />
+      <p>Select venues to activate this network</p>
       <Form.Item name='venues'>
         <Loader states={[tableQuery]}>
           <Table

@@ -15,16 +15,44 @@ const config = [
     enableIcon: UI.EnabledSpeedIndicatorIcon
   },
   {
+    path: '/analytics',
+    name: 'AI Analytics',
+    disableIcon: UI.AIAnalyticsIcon,
+    enableIcon: UI.AIAnalyticsIcon,
+    routes: [
+      {
+        path: '/analytics/incidents',
+        name: 'Incidents'
+      },
+      {
+        path: '/analytics/recommendations',
+        name: 'Recommendations'
+      },
+      {
+        path: '/analytics/health',
+        name: 'Health'
+      },
+      {
+        path: '/analytics/configChange',
+        name: 'Config Change'
+      },
+      {
+        path: '/analytics/occupancy',
+        name: 'Occupancy'
+      }
+    ]
+  },
+  {
+    path: '/timeline',
+    name: 'Timeline',
+    disableIcon: UI.CalendarIcon,
+    enableIcon: UI.EnabledCalendarIcon
+  },
+  {
     path: '/reports',
     name: 'Reports',
     disableIcon: UI.ReportsIcon,
     enableIcon: UI.EnabledReportsIcon
-  },
-  {
-    path: '/events',
-    name: 'Events',
-    disableIcon: UI.CalendarIcon,
-    enableIcon: UI.EnabledCalendarIcon
   },
   genPlaceholder(),
   {
@@ -52,18 +80,18 @@ const config = [
     enableIcon: UI.EnabledServicesIcon
   },
   {
+    path: '/policies',
+    name: 'Policies',
+    disableIcon: UI.ServicesIcon,
+    enableIcon: UI.EnabledServicesIcon
+  },
+  {
     path: '/users',
     name: 'Users',
     disableIcon: UI.AccountIcon,
     enableIcon: UI.EnabledAccountIcon
   },
   genPlaceholder(),
-  {
-    path: '/melissa',
-    name: 'Melissa AI',
-    disableIcon: UI.MelissaIcon,
-    enableIcon: UI.EnabledMelissaIcon
-  },
   {
     path: '/administration',
     name: 'Administration',

@@ -44,16 +44,9 @@ export type StepFormProps <FormValue> = Omit<
 
 type InternalStepFormProps <FormValue> = StepFormProps<FormValue> & {
   /**
-   * Action handler to goto current step
-   */
-  onGotoStep: () => void
-
-  /**
    * State of current step
    */
   state: 'finish' | 'active' | 'wait'
-
-  isLastStep: boolean
 }
 
 export function StepsForm <FormValue = any> (
@@ -69,19 +62,18 @@ export function StepsForm <FormValue = any> (
   } = props
   const intl = useIntl()
   const formRef = useRef()
-  const [current, setStep] = useState(typeof propCurrent === 'number' ? propCurrent : 0)
+  const [current, setStep] = useState(propCurrent ?? 0)
 
   useImperativeHandle(propFormRef, () => formRef.current)
 
-  const items = toArray(children).map((child, index, { length }) => {
+  const _children = toArray(children)
+  const items = _children.map((child, index) => {
     const itemProps = child.props as StepFormProps<FormValue>
 
     return React.cloneElement(child, {
       ...itemProps,
       key: itemProps.name ?? index.toString(),
-      onGotoStep: () => setStep(index),
-      state: index < current ? 'finish' : index === current ? 'active' : 'wait',
-      isLastStep: length - 1 === index
+      state: index < current ? 'finish' : index === current ? 'active' : 'wait'
     })
   })
 
@@ -93,7 +85,8 @@ export function StepsForm <FormValue = any> (
   const stepsRender: ProAntStepsFormProps['stepsRender'] = (steps) => (
     <UI.StepsContainer>
       <Steps current={current} progressDot direction='vertical'>
-        {steps.map(({ key, title }, index) => {
+        {steps.map(({ key }, index) => {
+          const title = _children[index].props.title
           const onStepClick = (editMode || current > index) && current !== index
             ? setStep
             : undefined
@@ -151,13 +144,13 @@ export function StepsForm <FormValue = any> (
 function StepForm <FormValue = any> (
   props: StepFormProps<FormValue>
 ) {
-  const keys = ['onGotoStep', 'state', 'isLastStep']
+  const keys = ['state']
   const internalProps = _.pick(props, keys) as InternalStepFormProps<FormValue>
   const formProps = _.omit(props, keys)
 
   return <ProAntStepsForm.StepForm<FormValue>
     {...formProps}
-    requiredMark={false}
+    requiredMark={true}
   >
     <Row>
       <UI.FormContainer

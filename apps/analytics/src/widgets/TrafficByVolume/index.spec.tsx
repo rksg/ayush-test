@@ -1,12 +1,14 @@
+import '@testing-library/jest-dom'
+
 import { render, screen } from '@testing-library/react'
 
-import { dataApiURL }                  from '@acx-ui/analytics/services'
-import { Provider, store }             from '@acx-ui/store'
-import { mockRTKQuery, mockAutoSizer } from '@acx-ui/test-utils'
+import { dataApiURL }                      from '@acx-ui/analytics/services'
+import { Provider, store }                 from '@acx-ui/store'
+import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 
 import { api, TrafficByVolumeData } from './services'
 
-import TrafficByVolumeWidget, { getSeriesData } from './index'
+import TrafficByVolumeWidget, { getSeriesData } from '.'
 
 const sample = {
   time: [
@@ -28,40 +30,31 @@ describe('TrafficByVolumeWidget', () => {
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )
-  // TODO: need to fix the time formatter
-  it.skip('should render correctly', async () => {
-    const expectedResult = {
-      network: {
-        hierarchyNode: {
-          timeSeries: sample
-        }
-      }
-    }
-    mockRTKQuery(dataApiURL, 'widget_trafficByVolume', {
-      data: expectedResult
+
+  it('should render loader', () => {
+    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    const { asFragment } = render(
-      <Provider>
-        <TrafficByVolumeWidget/>
-      </Provider>
-    )
+    render( <Provider> <TrafficByVolumeWidget/></Provider>)
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+  })
+  it('should render chart', async () => {
+    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
+    })
+    const { asFragment } =render( <Provider> <TrafficByVolumeWidget/></Provider>)
     await screen.findByText('Traffic by Volume')
-    const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
-    fragment.querySelector('div[_echarts_instance_^="ec_"]')
-      ?.setAttribute('_echarts_instance_', 'ec_mock')
-    expect(fragment).toMatchSnapshot()
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
   it('should render error', async () => {
-    mockRTKQuery(dataApiURL, 'widget_trafficByVolume', {
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
       error: new Error('something went wrong!')
     })
-    render(
-      <Provider>
-        <TrafficByVolumeWidget/>
-      </Provider>
-    )
+    render( <Provider> <TrafficByVolumeWidget/> </Provider>)
     await screen.findByText('Something went wrong.')
+    jest.resetAllMocks()
   })
 })
 

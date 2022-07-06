@@ -1,7 +1,9 @@
-import ReactECharts from 'echarts-for-react'
-import _            from 'lodash'
+import { TooltipComponentOption } from 'echarts'
+import ReactECharts               from 'echarts-for-react'
+import _                          from 'lodash'
 
-import { cssNumber, cssStr } from '../../theme/helper'
+import { cssNumber, cssStr }                          from '../../theme/helper'
+import { tooltipOptions, stackedBarTooltipFormatter } from '../Chart/helper'
 
 import type { EChartsOption, RegisteredSeriesOption } from 'echarts'
 import type { EChartsReactProps }                     from 'echarts-for-react'
@@ -14,42 +16,61 @@ type ChartData = {
 type Dimensions = [
   number, // value
   string, // category
-  string, // category
+  string, // name
   number  // sum
 ]
 
+// Optional props
+interface StackedBarOptionalProps {
+  animation: boolean
+  showLabels: boolean
+  barColors: string[]
+  showTotal: boolean
+  showTooltip: boolean
+}
+
+const defaultProps: StackedBarOptionalProps = {
+  animation: true,
+  showLabels: true,
+  barColors: [
+    cssStr('--acx-semantics-yellow-40'), // P4
+    cssStr('--acx-accents-orange-50'), //.. P3
+    cssStr('--acx-semantics-red-50'), //... P2
+    cssStr('--acx-semantics-red-70') //.... P1
+  ],
+  showTotal: true,
+  showTooltip: true
+}
+
+StackedBarChart.defaultProps = { ...defaultProps }
+
 export interface StackedBarChartProps
   <TChartData extends ChartData>
-  extends Omit<EChartsReactProps, 'option' | 'opts'> {
+  extends StackedBarOptionalProps, Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[]
     /** @default 'name' */
     legendProp?: keyof TChartData
+    dataFormatter?: (value: unknown) => string | null
   }
 
 const computeChartData = ({ category, series }: ChartData) => {
   const values = _(series)
   const sum = values.sumBy('value')
-  const [firstIndex, lastIndex] = [
-    values.findIndex(v => v.value !== 0),
-    values.findLastIndex(v => v.value !== 0)
-  ]
+  const firstIndex = values.findIndex(v => v.value !== 0)
   return series.map(({ name, value }, index) => {
     const data = {
       value: [value, category, name, sum] as Dimensions,
       itemStyle: { borderRadius: [0] }
     }
-    if (firstIndex === lastIndex && firstIndex === index) {
-      data.itemStyle.borderRadius = [50]
-    } else if (firstIndex === index) {
-      data.itemStyle.borderRadius = [0, 50, 50, 0]
-    } else if(lastIndex === index) {
-      data.itemStyle.borderRadius = [50, 0, 0, 50]
+    if (firstIndex === index) {
+      data.itemStyle.borderRadius = [0, 2, 2, 0]
     }
     return data
   })
 }
 
-const massageData = (data: ChartData[]): RegisteredSeriesOption['bar'][] => {
+const massageData = (
+  data: ChartData[], showTotal: boolean): RegisteredSeriesOption['bar'][] => {
   const seriesCommonConfig: RegisteredSeriesOption['bar'] = {
     type: 'bar',
     dimensions: [
@@ -60,16 +81,13 @@ const massageData = (data: ChartData[]): RegisteredSeriesOption['bar'][] => {
     ],
     stack: 'Total',
     barWidth: 8,
-    emphasis: {
-      focus: 'series'
-    },
     label: {
-      show: false,
       position: 'right',
       fontFamily: cssStr('--acx-neutral-brand-font'),
-      fontSize: 12,
-      lineHeight: 16,
-      fontWeight: 400,
+      fontSize: cssNumber('--acx-body-3-font-size'),
+      lineHeight: cssNumber('--acx-body-3-line-height'),
+      color: cssStr('--acx-primary-black'),
+      fontWeight: cssNumber('--acx-body-font-weight'),
       formatter: '{@sum}'
     }
   }
@@ -86,7 +104,7 @@ const massageData = (data: ChartData[]): RegisteredSeriesOption['bar'][] => {
       data,
       label: {
         ...seriesCommonConfig.label,
-        show: index === sets.length - 1
+        show: showTotal ? index === sets.length - 1 : false
       }
     }))
     .value()
@@ -94,24 +112,21 @@ const massageData = (data: ChartData[]): RegisteredSeriesOption['bar'][] => {
 
 export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   data,
+  dataFormatter,
   ...props
 }: StackedBarChartProps<TChartData>) {
+  const { animation, showTotal, showLabels, barColors, showTooltip } = props
+
   const option: EChartsOption = {
-    silent: true,
-    color: [
-      // TODO:
-      // enable custom list of colors
-      cssStr('--acx-semantics-yellow-50'),
-      cssStr('--acx-semantics-yellow-70'),
-      cssStr('--acx-semantics-red-50'),
-      cssStr('--acx-semantics-violet-50')
-    ],
+    animation,
+    silent: !showTooltip,
+    color: barColors,
     grid: {
-      left: 10,
-      right: 20,
+      left: showLabels ? 10 : 0,
+      right: showLabels ? 20 : 0,
       bottom: 0,
       top: 0,
-      containLabel: true
+      containLabel: showLabels
     },
     xAxis: {
       type: 'value',
@@ -134,12 +149,18 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
             fontFamily: cssStr('--acx-neutral-brand-font'),
             fontSize: cssNumber('--acx-body-4-font-size'),
             lineHeight: cssNumber('--acx-body-4-line-height'),
-            fontWeight: 400
+            fontWeight: cssNumber('--acx-body-font-weight')
           }
         }
       }
     },
-    series: massageData(data)
+    tooltip: {
+      ...tooltipOptions() as TooltipComponentOption,
+      trigger: 'item',
+      formatter: stackedBarTooltipFormatter(dataFormatter),
+      show: showTooltip
+    },
+    series: massageData(data, showTotal)
   }
 
   return (

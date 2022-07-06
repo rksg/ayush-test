@@ -68,6 +68,12 @@ Commit message need to be prefixed with the JIRA issue number e.g.
 ACX-5449: initial README for acx-ui
 ```
 
+To automatically prefix your message with the JIRA issue number, use a Git hook:
+
+```
+cp tools/dev/prepare-commit-msg .git/hooks/prepare-commit-msg
+```
+
 ### Creating a pull request
 
 Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR before it can be
@@ -99,16 +105,33 @@ npm install
 
 ### Run UI
 
-Execute command below and access the UI at [http://localhost:3000](http://localhost:3000).
+Execute command below and access the UI by logging into
+[devalto](https://devalto.ruckuswireless.com/) and clicking on the Extract RC Cookie extension. UI
+will open in a new tab at [http://localhost:3000](http://localhost:3000).
+
+API calls will be proxied to services on devalto (see `apps/main/src/setupProxy.js`).
+
+To proxy to local MLISA services on [https://alto.local.mlisa.io](https://alto.local.mlisa.io) instead,
+start the [MLISA dev environment](https://github.com/rksg/rsa-mlisa-helm/tree/develop/dev) first
+before executing the command.
 
 ```sh
 npx nx run main:serve --devRemotes=rc-wifi,analytics
 ```
 
+If you are not working on a particular app, you can choose to remove it from `--devRemotes`.
+E.g. `--devRemotes=analytics` will only run `analytics` in dev mode with changes being monitored
+while `rc-wifi` will be built statically.
+
 ### Run tests
 
 ```sh
-npx nx affected:test
+npx nx affected:test --coverage
+```
+
+Remove `--coverage` if updating the coverage folder is not needed.
+
+```
 ```
 
 ### Run lint

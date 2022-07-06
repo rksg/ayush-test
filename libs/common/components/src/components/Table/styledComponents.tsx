@@ -1,0 +1,233 @@
+import { Button as AntButton } from 'antd'
+import styled, { css }         from 'styled-components/macro'
+
+import { CancelCircle } from '@acx-ui/icons'
+
+import type { TableProps as AntTableProps } from 'antd'
+
+export const CloseButton = styled(AntButton).attrs({
+  icon: <CancelCircle />
+})`
+  border: none;
+  box-shadow: none;
+  &.ant-btn-icon-only {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    background-color: var(--acx-accents-blue-10);
+  }
+`
+
+export const ActionButton = styled.button`
+  border: none;
+  box-shadow: none;
+  padding: 0 6px;
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+  background-color: transparent;
+  color: var(--acx-accents-blue-50);
+  cursor: pointer;
+`
+
+const compactStyle = css`
+  .ant-pro-table {
+    .ant-table {
+      &-thead > tr:first-child > th,
+      &-thead > tr:last-child > th {
+        font-size: var(--acx-body-5-font-size);
+        line-height: var(--acx-body-5-line-height);
+        font-weight: var(--acx-body-font-weight-bold);
+        padding-top: 6px;
+        padding-bottom: 6px;
+      }
+
+      &-tbody > tr > td {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
+        padding-top: 6px;
+        padding-bottom: 6px;
+        border-bottom: 0px;
+      }
+    }
+  }
+`
+
+const tooltipStyle = css`
+  .ant-pro-table {
+    .ant-table {
+      background-color: transparent;
+
+      &-thead > tr:first-child > th,
+      &-thead > tr:last-child > th {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
+        padding: 6px;
+        border-bottom: 0px;
+      }
+
+      &-tbody > tr > td:first-child {
+        font-size: var(--acx-subtitle-5-font-size);
+        line-height: var(--acx-subtitle-5-line-height);
+        font-weight: var(--acx-subtitle-5-font-weight);
+        padding: 0px;
+      }
+
+      &-tbody > tr > td {
+        font-size: var(--acx-subtitle-5-font-size);
+        line-height: var(--acx-subtitle-5-line-height);
+        padding: 6px;
+        border-bottom: 0px;
+      }
+
+      .ant-table-tbody > tr.ant-table-row:hover > td,
+      .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+        background: none;
+      }
+    }
+  }
+`
+
+const styles = {
+  tall: '',
+  compact: compactStyle,
+  tooltip: tooltipStyle
+}
+
+/* eslint-disable max-len */
+export const Wrapper = styled.div<{
+  $type: 'tall' | 'compact' | 'tooltip',
+  $rowSelection: AntTableProps<any>['rowSelection'] // eslint-disable-line @typescript-eslint/no-explicit-any
+}>`
+  .ant-pro-table {
+    --acx-table-cell-horizontal-space: 8px;
+    --acx-table-action-area-height: 36px;
+
+    .ant-pro-card {
+      background-color: transparent;
+
+      .ant-pro-card-body {
+        padding: 0px;
+      }
+    }
+
+    ${props => props.$rowSelection && `
+      .ant-table-wrapper {
+        padding-top: var(--acx-table-action-area-height);
+      }
+    `}
+
+    &-alert {
+      margin: 0px;
+      position: absolute;
+      left: 0;
+      right: 0;
+
+      .ant-alert {
+        height: var(--acx-table-action-area-height);
+        background-color: var(--acx-accents-blue-10);
+        border: var(--acx-accents-blue-10);
+        padding: 10px 16px;
+
+        .ant-pro-table-alert-info {
+          font-size: var(--acx-body-4-font-size);
+          line-height: var(--acx-body-4-line-height);
+
+          .ant-divider-vertical {
+            border-left-color: var(--acx-neutrals-40);
+          }
+        }
+      }
+    }
+
+    .ant-table {
+      &-thead > tr:first-child > th {
+        padding-top: 12px;
+        font-size: var(--acx-subtitle-4-font-size);
+        line-height: var(--acx-subtitle-4-line-height);
+        font-weight: var(--acx-subtitle-4-font-weight);
+      }
+
+      &-thead > tr:not(:first-child) > th {
+        padding-top: 6px;
+        font-size: var(--acx-subtitle-5-font-size);
+        line-height: var(--acx-subtitle-5-line-height);
+        font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+      }
+
+      &-thead > tr:last-child > th,
+      &-thead > tr:first-child > th[rowspan] {
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--acx-neutrals-30);
+      }
+
+      &-thead > tr > th {
+        border-bottom: 0;
+        background: transparent;
+        padding: 0px var(--acx-table-cell-horizontal-space);
+        &:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+          width: 0px;
+        }
+
+        &.ant-table-column-has-sorters {
+          background: unset;
+
+          .ant-table-column-sorters {
+            display: unset;
+            white-space: nowrap;
+
+            .ant-table-column-title { flex: unset; }
+
+            .ant-table-column-sorter {
+              --icon-size: 11px;
+
+              display: inline-flex;
+              margin: 0;
+
+              &-up, &-down {
+                visibility: hidden;
+                width: 0;
+                &.active {
+                  visibility: visible;
+                  width: unset;
+                  margin-left: calc(var(--icon-size) / 2);
+                }
+              }
+              &-up {
+                margin-bottom: calc(var(--icon-size) / -2);
+              }
+              &-down {
+                margin-top: calc(var(--icon-size) / -2);
+              }
+
+              .anticon svg { fill: var(--acx-primary-black); }
+            }
+          }
+        }
+      }
+
+      &-tbody > tr > td {
+        border-bottom: 1px solid var(--acx-neutrals-30);
+        padding: 14px var(--acx-table-cell-horizontal-space);
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+
+        &.ant-table-column-sort {
+          background: unset;
+        }
+
+        a {
+          font-size: unset;
+        }
+      }
+
+      &-tbody > tr.ant-table-row-selected > td {
+        background: unset;
+      }
+    }
+  }
+
+  ${props => styles[props.$type]}
+`
