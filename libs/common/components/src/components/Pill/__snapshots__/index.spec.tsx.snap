@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Pill renders negative trend 1`] = `
+<DocumentFragment>
+  <span
+    class="styledComponents__Pill-sc-j61ge1-0 hvJowx"
+  >
+    -123
+  </span>
+</DocumentFragment>
+`;
+
+exports[`Pill renders neutral trend 1`] = `
+<DocumentFragment>
+  <span
+    class="styledComponents__Pill-sc-j61ge1-0 eJSgPA"
+  >
+    0
+  </span>
+</DocumentFragment>
+`;
+
+exports[`Pill renders positive trend 1`] = `
+<DocumentFragment>
+  <span
+    class="styledComponents__Pill-sc-j61ge1-0 iMfUiN"
+  >
+    123
+  </span>
+</DocumentFragment>
+`;
+
+exports[`Pill renders without trend 1`] = `
+<DocumentFragment>
+  <span
+    class="styledComponents__Pill-sc-j61ge1-0 fkAcnY"
+  >
+    10
+  </span>
+</DocumentFragment>
+`;
