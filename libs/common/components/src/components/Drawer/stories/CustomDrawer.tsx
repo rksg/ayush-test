@@ -5,7 +5,6 @@ import { Col, Form, Input, Row } from 'antd'
 import { Drawer } from '..'
 import { Button } from '../../Button'
 
-
 export function CustomDrawer () {
   const [visible, setVisible] = useState(false)
   const [resetField, setResetField] = useState(false)
@@ -15,6 +14,7 @@ export function CustomDrawer () {
   }
   const onOpen = () => {
     setVisible(true)
+    setResetField(false)
   }
   const resetFields = () => {
     setResetField(true)
