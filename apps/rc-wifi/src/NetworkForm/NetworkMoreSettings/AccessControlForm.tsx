@@ -6,7 +6,9 @@ import {
   Form,
   Select,
   Slider,
-  Switch
+  Switch,
+  Modal,
+  Input
 } from 'antd'
 
 import { StepsForm } from '@acx-ui/components'
@@ -18,7 +20,63 @@ import * as UI from './styledComponents'
 const { useWatch } = Form
 const { Option } = Select
 
+function SaveAsAcProfileButton () {
+  const [isModalVisible, setIsModalVisible] = useState(false)
 
+  const showModal = () => {
+    setIsModalVisible(true)
+  }
+
+  const handleOk = () => {
+    setIsModalVisible(false)
+  }
+
+  const handleCancel = () => {
+    setIsModalVisible(false)
+  }
+
+  return( <>
+    <Button
+      type='link'
+      style={{ padding: 0 }}
+      onClick={() => {
+        showModal()
+      }}
+    >
+      Save as AC Profile
+    </Button>
+    <Modal
+      title='Create Access Control Profile'
+      visible={isModalVisible}
+      onOk={handleOk}
+      onCancel={handleCancel}
+    >
+      <UI.FieldLabel width='175px'>
+        Profile Name:
+        <Form.Item
+          name='profileName'
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Input />}
+        />
+      </UI.FieldLabel>
+
+      <UI.FieldLabel width='175px'>
+        Client Rate Limit
+        <Form.Item
+          name='description'
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Input />}
+        />
+      </UI.FieldLabel>
+
+      <AccessControlConfigForm />
+    </Modal>
+  </>)
+}
 
 
 export function AccessControlForm () {
@@ -41,14 +99,8 @@ export function AccessControlForm () {
 
         <span>
           {!enabledProfile &&
-            <Button
-              type='link'
-              style={{ padding: 0 }}
-              onClick={() => {
-              }}
-            >
-              Save as AC Profile
-            </Button>}
+            <SaveAsAcProfileButton />
+          }
         </span>
 
 
@@ -129,9 +181,6 @@ function SelectAccessProfileProfile () {
       <span>Client Rate Limit</span>
       <span>--</span>
     </UI.FieldLabel>
-
-
-
 
   </>)
 }
