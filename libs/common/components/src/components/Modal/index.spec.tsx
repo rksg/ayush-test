@@ -8,11 +8,6 @@ describe('Modal', () => {
   it('should match snapshot', async () => {
     const handleCancel = jest.fn()
     const handleConfirm = jest.fn()
-    const content = <>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-    </>
     const footer = [
       <button key='cancel' onClick={handleCancel}>
         Cancel
@@ -24,7 +19,6 @@ describe('Modal', () => {
     const { asFragment } = render(<Modal
       title='Basic Modal'
       closable={false}
-      content={content}
       footer={footer}
     />)
     expect(asFragment()).toMatchSnapshot()

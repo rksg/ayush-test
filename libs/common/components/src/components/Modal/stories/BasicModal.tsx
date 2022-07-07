@@ -16,7 +16,7 @@ export function BasicModal () {
     setVisible(true)
   }
 
-  const handleConfirm = () => {
+  const handleOk = () => {
     setVisible(false)
   }
 
@@ -24,14 +24,14 @@ export function BasicModal () {
     setVisible(false)
   }
 
-  const footer = [
-    <Button key='cancel' size='large' onClick={handleCancel}>
-      Cancel
-    </Button>,
-    <Button key='apply' size='large' type='primary' onClick={handleConfirm}>
-      Apply
-    </Button>
-  ]
+  // const footer = [
+  //   <Button key='cancel' size='large' onClick={handleCancel}>
+  //     Cancel
+  //   </Button>,
+  //   <Button key='apply' size='large' type='primary' onClick={handleOk}>
+  //     Apply
+  //   </Button>
+  // ]
 
   return (
     <>
@@ -41,7 +41,11 @@ export function BasicModal () {
       <Modal
         title='Basic Modal'
         visible={visible}
-        footer={footer}
+        // footer={footer}
+        okText='Apply'
+        onCancel={handleCancel}
+        onOk={handleOk}
+        subTitle='some text'
       >
         {content}
       </Modal>
