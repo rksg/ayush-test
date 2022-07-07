@@ -38,7 +38,7 @@ export const Wrapper = styled.div`
   padding: 20px;
   top: 9px;
   border-radius: 4px 0 0 4px;
-
+  box-shadow:  -4px 4px 6px 0 rgb(0 0 0 / 12%)
  } 
 .ant-picker-footer-extra{
   background-color:white;
