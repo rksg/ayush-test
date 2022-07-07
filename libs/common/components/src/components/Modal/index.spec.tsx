@@ -27,6 +27,7 @@ describe('Modal', () => {
       content={content}
       footer={footer}
     />)
+    // TODO: snapshow showing DocumentFragment only, need to fix
     expect(asFragment()).toMatchSnapshot()
   })
 })

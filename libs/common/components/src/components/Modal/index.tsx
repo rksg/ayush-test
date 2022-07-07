@@ -1,13 +1,5 @@
-import { Modal as AntdModal } from 'antd'
-
-import * as UI from './styledComponents'
+import { Modal as AntModal } from 'antd'
 
 export function Modal ({ ...props }) {
-  return (
-    <UI.Wrapper>
-      <AntdModal
-        {...props}
-      />
-    </UI.Wrapper>
-  )
+  return <AntModal {...props} />
 }

@@ -5,7 +5,7 @@ import { Button } from '../../Button'
 
 export function BasicModal () {
   const [visible, setVisible] = useState(false)
-  
+
   const content = <>
     <p>Some contents...</p>
     <p>Some contents...</p>
@@ -47,5 +47,5 @@ export function BasicModal () {
         {content}
       </Modal>
     </>
-  )  
+  )
 }
