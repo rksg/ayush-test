@@ -24,13 +24,11 @@ export function Modal ({ ...props }: ModalProps) {
   }
 
   return (
-    <UI.Wrapper>
-      <AntdModal
-        {...props}
-        closeIcon={<CloseSymbol />}
-        title={props.subTitle ? TitleWithSubtitle(props.title, props.subTitle) : props.title}
-      />
-    </UI.Wrapper>
+    <AntdModal
+      {...props}
+      closeIcon={<CloseSymbol />}
+      title={props.subTitle ? TitleWithSubtitle(props.title, props.subTitle) : props.title}
+    />
   )
 }
 

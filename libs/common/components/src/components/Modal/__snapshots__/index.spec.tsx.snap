@@ -1,9 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Modal should match snapshot 1`] = `
-<DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-k3durc-0 bPbxAF"
-  />
-</DocumentFragment>
-`;
+exports[`Modal should match snapshot 1`] = `<DocumentFragment />`;
