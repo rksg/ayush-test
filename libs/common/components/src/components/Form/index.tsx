@@ -30,13 +30,16 @@ export interface FormVItemProps extends AntFormItemProps {
   remoteValidation: RemoteValidation
 }
 
-export function FormValidationItem (props: FormVItemProps) {
+export function FormValidationItem ({
+  name,
+  label,
+  value = '',
+  placeholder,
+  rules = [],
+  remoteValidation
+}: FormVItemProps) {
   const [status, setStatus] = useState<ValidateStatus>('')
-  const [oldValue, setOldValue] = useState<string>(props.value || '')
-  const { 
-    rules = [],
-    remoteValidation
-  } = { ...props }
+  const [oldValue, setOldValue] = useState<string>(value)
 
   const suffixIcon = (status: ValidateStatus) => {
     switch (status) {
@@ -70,8 +73,8 @@ export function FormValidationItem (props: FormVItemProps) {
 
   return <UI.Wrapper>
     <AntForm.Item
-      name={props.name}
-      label={props.label}
+      name={name}
+      label={label}
       rules={_.compact([
         ...rules,
         remoteValidation && {
@@ -84,8 +87,8 @@ export function FormValidationItem (props: FormVItemProps) {
       validateStatus={status}
     >
       <Input
-        value={props.value}
-        placeholder={props.placeholder}
+        value={value}
+        placeholder={placeholder}
         suffix={suffixIcon(status)}
         onBlur={() => {
           setStatus('')
