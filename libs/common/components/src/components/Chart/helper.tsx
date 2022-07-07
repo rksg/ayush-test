@@ -1,4 +1,5 @@
 import { TooltipComponentOption } from 'echarts/components'
+import { CallbackDataParams }     from 'echarts/types/dist/shared'
 import { renderToString }         from 'react-dom/server'
 
 import { TimeStamp } from '@acx-ui/types'
@@ -120,8 +121,27 @@ export const stackedBarTooltipFormatter = (
   return renderToString(
     <UI.TooltipWrapper>
       <UI.Badge
-        color={parameters.color!.toString()}
+        color={parameters.color?.toString()}
         text={dataFormatter ? dataFormatter(parameters.value[0]) : parameters.value[0]}
+      />
+    </UI.TooltipWrapper>
+  )
+}
+
+export const donutChartTooltipFormatter = (
+  dataFormatter?: ((value: unknown) => string | null)
+) => (
+  parameters: CallbackDataParams
+) => {
+  return renderToString(
+    <UI.TooltipWrapper>
+      <UI.Badge
+        color={parameters.color?.toString()}
+        text={<>
+          {`${parameters.name}`}<br/>
+          <b><span>{`${dataFormatter
+            ? dataFormatter(parameters.value): parameters.value}`}</span></b>
+        </>}
       />
     </UI.TooltipWrapper>
   )
