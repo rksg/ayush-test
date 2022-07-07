@@ -1,3 +1,54 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Drawer should match snapshot 1`] = `<DocumentFragment />`;
+exports[`Drawer should match snapshot 1`] = `
+<div
+  class="ant-drawer ant-drawer-right ant-drawer-open no-mask"
+  content="[object Object]"
+  data-testid="basic-drawer"
+  style="width: 400px;"
+  tabindex="-1"
+>
+  <div
+    class="ant-drawer-content-wrapper"
+    style=""
+  >
+    <div
+      class="ant-drawer-content"
+    >
+      <div
+        class="ant-drawer-wrapper-body"
+      >
+        <div
+          class="ant-drawer-header"
+        >
+          <div
+            class="ant-drawer-header-title"
+          >
+            <button
+              aria-label="Close"
+              class="ant-drawer-close"
+              type="button"
+            >
+              <div
+                data-testid="close-symbol"
+              />
+            </button>
+            <div
+              class="ant-drawer-title"
+            >
+              Test Drawer
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-drawer-body"
+        >
+          <p>
+            some content
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

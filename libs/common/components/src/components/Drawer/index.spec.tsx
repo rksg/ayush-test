@@ -13,14 +13,16 @@ const content = <p>some content</p>
 
 describe('Drawer', () => {
   it('should match snapshot', () => {
-    const { asFragment } = render(<Drawer
+    render(<Drawer
       title={'Test Drawer'}
       visible={true}
       onClose={onClose}
       content={content}
       mask={false}
+      data-testid={'basic-drawer'}
     />)
-    expect(asFragment()).toMatchSnapshot()
+    const drawerComponent = screen.getByTestId('basic-drawer')
+    expect(drawerComponent).toMatchSnapshot()
   })
 
   it('should render test drawer correctly', async () => {
