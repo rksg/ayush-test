@@ -12,7 +12,10 @@ jest.mock('@acx-ui/icons', () => ({
 
 describe('CalenderRangePicker', () => {
   it('should render default CalenderRangePicker', () => {
-    const { asFragment } = render(<CalenderRangePicker showRanges/>)
+    const { asFragment } = render(<CalenderRangePicker showRanges
+      selectedRange=
+        {{ start: moment('01/01/2022').subtract(1, 'days').seconds(0), 
+          end: moment('01/01/2022').seconds(0) }}/>)
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render CalenderRangePicker when click on date select',async () => {
@@ -22,7 +25,6 @@ describe('CalenderRangePicker', () => {
       enableDates={[moment().subtract(7, 'days').seconds(0),
         moment().seconds(0)]}/>)
     const user = userEvent.setup()
-
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
     expect(screen.getByText('Apply')).toBeInTheDocument()
@@ -66,7 +68,7 @@ describe('CalenderRangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    const dateSelect = await screen.findAllByTitle(moment('06/07/2022').format('YYYY-MM-DD'))
+    const dateSelect = await screen.findAllByTitle(moment('07/06/2022').format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
     expect( screen.getByRole('display-date-range'))
       .toHaveTextContent('06/07/2022')
