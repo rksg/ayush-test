@@ -54,8 +54,9 @@ export const Wrapper = styled.div<WrapperProps>`
 }
 .ant-picker-panels{
   background-color:white;
+  padding-left: 12px;
+  padding-right: 12px;
 }
-
 .calender-range-apply-row{
   background-color:var(--acx-neutrals-10); 
   height: 48px;
@@ -121,11 +122,15 @@ border-radius: 20px
   cursor: default;
 }
 .ant-picker-input > input{
-  font-size: 12px
+  font-size: 12px;
+  padding-left: 4px;
 }
 .calender-range-apply-row,
 .ant-picker-content td{
   font-weight: 600
+}
+.ant-picker-header {
+  border-bottom: none;
 }
 .ant-picker-header-view {
   font-weight: 700

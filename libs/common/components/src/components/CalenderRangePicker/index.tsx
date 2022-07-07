@@ -31,6 +31,7 @@ interface CalenderFooterProps {
   setRange: React.Dispatch<React.SetStateAction<DateRangeType>>;
   range: DateRangeType;
   setIscalenderOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  defaultValue: DateRangeType
 };
 const styles = {
   timePicker: {
@@ -38,7 +39,7 @@ const styles = {
     height: '24px',
     padding: '4px'
   },
-  row: { marginLeft: 12 },
+  row: { marginLeft: 24 },
   timePickerCol2: { marginLeft: 3, marginRight: 3 },
   timePickerCol3: { marginLeft: 17, marginRight: 17 },
   button: { height: '24px',width: '56px',fontSize: '12px' },
@@ -57,19 +58,16 @@ const getCustomisedDate = (date: Moment | null, showTimePicker?: boolean ) =>
   showTimePicker ? date?.format(dateWithTimeFormat) : date?.format(dateFormat)
 
 const CalenderFooter: React.FC<CalenderFooterProps> = 
-({ showTimePicker, range, setRange, setIscalenderOpen }) => {
+({ showTimePicker, range, defaultValue, setRange, setIscalenderOpen }) => {
 
   const onButtonClick = (type: string) =>{
     if(type === 'cancel')
-      setRange({ start: moment().subtract(1, 'days').seconds(0),end: moment().seconds(0) })
+      setRange(defaultValue)
     setIscalenderOpen(false)
   }
   const onTimePickerSelect = (config : typeof timePickerConfig[number], time: Moment) => 
-    setRange({ ...range, [config.range]:
-    (range[config.range as keyof DateRangeType] as Moment)
-      .set(config.value as moment.unitOfTime.All, 
-        time.get(config.value as moment.unitOfTime.All)) })
-        
+    setRange({ ...range, [config.range]: time })
+
   return <>
     {showTimePicker &&
     <Row style ={styles.row}>
@@ -112,7 +110,8 @@ const CalenderFooter: React.FC<CalenderFooterProps> =
       </Col>
       <Col span={3} style = {{ lineHeight: 'normal' }}>
         <Button onClick={()=>onButtonClick('cancel')}
-          style = {styles.button}>Cancel</Button></Col>
+          style = {styles.button}>Cancel</Button>
+      </Col>
       <Col span={3} style = {{ lineHeight: 'normal' }}>
         <Button type = {'primary'}
           style = {styles.button}
@@ -126,10 +125,10 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
 ({ showTimePicker, enableDates, rangeOptions, 
   showRanges, selectedRange, onDateChange, ...props }) => {
   const didMountRef = useRef(false)
-  const defaultValue = 
-  { start: moment().subtract(1, 'days').seconds(0),end: moment().seconds(0) }
-  const [range, setRange] = useState<DateRangeType>(
-    selectedRange? selectedRange : defaultValue)
+  const defaultValue = selectedRange 
+    ? selectedRange 
+    : { start: moment().subtract(1, 'days').seconds(0),end: moment().seconds(0) }
+  const [range, setRange] = useState<DateRangeType>(defaultValue)
   const [isCalenderOpen, setIscalenderOpen] = useState<boolean>(false)
   const disabledDate = (current: Moment) => {
     if (!enableDates) {
@@ -145,6 +144,7 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
     }
     if(typeof onDateChange === 'function') onDateChange(range)}
   ,[range, onDateChange])
+
   return ( 
     <UI.Wrapper hasTimePicker = {showTimePicker}>
       <RangePicker 
@@ -175,6 +175,7 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
             showTimePicker = {showTimePicker} 
             range = {range}
             setRange = {setRange}
+            defaultValue = {defaultValue}
             setIscalenderOpen = {setIscalenderOpen}/>}
         {...props}
         value = {[range?.start, range?.end]}
