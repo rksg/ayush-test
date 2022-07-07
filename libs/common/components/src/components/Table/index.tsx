@@ -39,7 +39,12 @@ export function Table <RecordType extends object> (
             {props.actions?.map((option) =>
               <UI.ActionButton
                 key={option.label}
-                onClick={() => option.onClick(selectedRows, () => { onCleanSelected() })}
+                onClick={(event) => {
+                  console.log(selectedRowKeys, selectedRows)
+                  event.preventDefault()
+                  option.onClick(selectedRows, () => { onCleanSelected() })
+                 }
+                }
                 children={option.label}
               />
             )}
