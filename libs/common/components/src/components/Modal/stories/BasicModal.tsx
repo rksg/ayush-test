@@ -24,6 +24,20 @@ export function BasicModal () {
     setVisible(false)
   }
 
+  const footer = [
+    <Button key='back' onClick={handleCancel}>
+      Return
+    </Button>,
+    <Button key='forward' onClick={handleCancel}>
+      Forward
+    </Button>,
+    <Button key='save' type='primary' onClick={handleOk}>
+      Save and Exit
+    </Button>,
+    <Button key='submit' type='primary' onClick={handleOk}>
+      Submit
+    </Button>
+  ]
   return (
     <>
       <Button onClick={showModal}>
@@ -32,12 +46,11 @@ export function BasicModal () {
       <Modal
         title='Basic Modal'
         visible={visible}
-        okText='Apply'
         onCancel={handleCancel}
-        onOk={handleOk}
         width={800}
+        content={content}
+        footer={footer}
       >
-        {content}
       </Modal>
     </>
   )
