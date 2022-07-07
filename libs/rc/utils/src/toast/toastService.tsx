@@ -102,7 +102,7 @@ const Countdown = styled.div`
 
 const CountdownNumber = styled.span`
   font-size: var(--acx-body-4-font-size);
-  font-weight: 700;
+  font-weight: var(--acx-body-font-weight);
   position: absolute;
   top: 4px;
   right: 38%;

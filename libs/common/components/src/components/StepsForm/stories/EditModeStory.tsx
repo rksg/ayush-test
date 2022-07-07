@@ -18,7 +18,7 @@ export function EditModeStory () {
       }}
     >
       <StepsForm.StepForm name='step1' title='Step 1'>
-        <StepsForm.Title children='Step 2' />
+        <StepsForm.Title children='Step 1' />
         <Form.Item name='field1' label='Field 1'>
           <Input />
         </Form.Item>

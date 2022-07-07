@@ -22,9 +22,9 @@ export const ActionButton = styled.button`
   border: none;
   box-shadow: none;
   padding: 0 6px;
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-  font-weight: 600;
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
   background-color: transparent;
   color: var(--acx-accents-blue-50);
   cursor: pointer;
@@ -37,14 +37,15 @@ const compactStyle = css`
       &-thead > tr:last-child > th {
         font-size: var(--acx-body-5-font-size);
         line-height: var(--acx-body-5-line-height);
-        font-weight: 700;
+        font-weight: var(--acx-body-font-weight-bold);
         padding-top: 6px;
         padding-bottom: 6px;
       }
 
       &-tbody > tr > td {
-        font-size: var(--acx-body-5-font-size);
-        line-height: var(--acx-body-5-line-height);
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
         padding-top: 6px;
         padding-bottom: 6px;
         border-bottom: 0px;
@@ -62,7 +63,7 @@ const tooltipStyle = css`
       &-thead > tr:last-child > th {
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
-        font-weight: 400;
+        font-weight: var(--acx-body-font-weight);
         padding: 6px;
         border-bottom: 0px;
       }
@@ -70,7 +71,7 @@ const tooltipStyle = css`
       &-tbody > tr > td:first-child {
         font-size: var(--acx-subtitle-5-font-size);
         line-height: var(--acx-subtitle-5-line-height);
-        font-weight: 700;
+        font-weight: var(--acx-subtitle-5-font-weight);
         padding: 0px;
       }
 
@@ -146,14 +147,14 @@ export const Wrapper = styled.div<{
         padding-top: 12px;
         font-size: var(--acx-subtitle-4-font-size);
         line-height: var(--acx-subtitle-4-line-height);
-        font-weight: 600;
+        font-weight: var(--acx-subtitle-4-font-weight);
       }
 
       &-thead > tr:not(:first-child) > th {
         padding-top: 6px;
         font-size: var(--acx-subtitle-5-font-size);
         line-height: var(--acx-subtitle-5-line-height);
-        font-weight: 600;
+        font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
       }
 
       &-thead > tr:last-child > th,
@@ -213,13 +214,17 @@ export const Wrapper = styled.div<{
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
 
+        &.ant-table-column-sort {
+          background: unset;
+        }
+
         a {
           font-size: unset;
         }
       }
 
       &-tbody > tr.ant-table-row-selected > td {
-        background: none;
+        background: unset;
       }
     }
   }
