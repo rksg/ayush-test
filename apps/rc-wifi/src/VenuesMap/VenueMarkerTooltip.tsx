@@ -63,7 +63,7 @@ export function VenueMarkerTooltip (
         ? <UI.CellWrapper>
           <StackedBarChart
             data={apStat}
-            { ...commonProps }/>
+            {...commonProps}/>
           <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
             {apsCount}
           </UI.TotalCount>
@@ -88,7 +88,7 @@ export function VenueMarkerTooltip (
         ? <UI.CellWrapper>
           <StackedBarChart
             data={switchStat}
-            { ...commonProps } />
+            {...commonProps} />
           <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
             {switchesCount}
           </UI.TotalCount>
