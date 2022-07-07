@@ -70,10 +70,12 @@ describe('Action Modal', () => {
     beforeEach(async () => {
       showActionModal({
         type: 'error',
-        action: 'SHOW_ERRORS',
         title: 'Something went wrong',
         content: 'Some descriptions',
-        errorDetails: mockErrorDetails
+        customContent: {
+          action: 'SHOW_ERRORS',
+          errorDetails: mockErrorDetails
+        }
       })
       dialog = await screen.findByRole('dialog')
     })
@@ -135,9 +137,11 @@ describe('Action Modal', () => {
     it('should open Confirm delete modal', async () => {
       showActionModal({
         type: 'confirm',
-        action: 'DELETE',
-        entityName: 'Network',
-        entityValue: 'Network 01',
+        customContent: {
+          action: 'DELETE',
+          entityName: 'Network',
+          entityValue: 'Network 01'
+        },
         onOk () {},
         onCancel () {}
       })
@@ -158,10 +162,11 @@ describe('Action Modal', () => {
     it('should open Confirm bulk delete modal', async () => {
       showActionModal({
         type: 'confirm',
-        action: 'DELETE',
-        entityName: 'Networks',
-        multiple: true,
-        numOfEntities: 2,
+        customContent: {
+          action: 'DELETE',
+          entityName: 'Networks',
+          numOfEntities: 2
+        },
         onOk () {},
         onCancel () {}
       })
@@ -182,10 +187,12 @@ describe('Action Modal', () => {
     it('should open Confirm delete modal with input validation', async () => {
       showActionModal({
         type: 'confirm',
-        action: 'DELETE',
-        entityName: 'Network',
-        entityValue: 'Network 01',
-        confirmationText: 'Delete',
+        customContent: {
+          action: 'DELETE',
+          entityName: 'Network',
+          entityValue: 'Network 01',
+          confirmationText: 'Delete'
+        },
         onOk () {},
         onCancel () {}
       })

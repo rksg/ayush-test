@@ -14,9 +14,11 @@ export function CustomActionModal () {
 const ConfirmDeleteModal = () => {
   showActionModal({
     type: 'confirm',
-    action: 'DELETE',
-    entityName: 'Network',
-    entityValue: 'Network 01',
+    customContent: {
+      action: 'DELETE',
+      entityName: 'Network',
+      entityValue: 'Network 01'
+    },
     onOk () {},
     onCancel () {}
   })
@@ -25,10 +27,12 @@ const ConfirmDeleteModal = () => {
 const ConfirmDeleteWithValidation = () => {
   showActionModal({
     type: 'confirm',
-    action: 'DELETE',
-    entityName: 'Network',
-    entityValue: 'Network 01',
-    confirmationText: 'Delete',
+    customContent: {
+      action: 'DELETE',
+      entityName: 'Network',
+      entityValue: 'Network 01',
+      confirmationText: 'Delete'
+    },
     onOk () {},
     onCancel () {}
   })
@@ -51,9 +55,11 @@ const mockErrorDetails = {
 const ErrorDetailModal = () => {
   showActionModal({
     type: 'error',
-    action: 'SHOW_ERRORS',
     title: 'Something went wrong',
     content: 'Some descriptions',
-    errorDetails: mockErrorDetails
+    customContent: {
+      action: 'SHOW_ERRORS',
+      errorDetails: mockErrorDetails
+    }
   })
 }

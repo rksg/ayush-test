@@ -207,9 +207,11 @@ export function NetworksTable () {
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
-          entityName: 'Network',
-          entityValue: name,
-          action: 'DELETE',
+          customContent: {
+            action: 'DELETE',
+            entityName: 'Network',
+            entityValue: name
+          },
           onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
             .then(clearSelection)
         })

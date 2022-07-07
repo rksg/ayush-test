@@ -16,13 +16,14 @@ export type ModalAction = 'DELETE' | 'SHOW_ERRORS'
 
 export interface ModalProps extends ModalFuncProps {
   type: ModalType,
-  action?: ModalAction,
-  errorDetails?: ErrorDetailsProps,
-  multiple?: boolean,
-  numOfEntities?: number,
-  entityName?: string,
-  entityValue?: string,
-  confirmationText?: string
+  customContent?: {
+    action?: ModalAction,
+    errorDetails?: ErrorDetailsProps,
+    numOfEntities?: number,
+    entityName?: string,
+    entityValue?: string,
+    confirmationText?: string
+  }
 }
 
 export interface ModalRef {
@@ -62,16 +63,15 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
     action,
     content,
     errorDetails = {},
-    multiple,
     numOfEntities,
     entityName,
     entityValue,
     confirmationText
-  } = props
+  } = { ...props, ...props.customContent }
 
   switch (action) {
     case 'DELETE':
-      const entityNameText = multiple ? `${numOfEntities} ${entityName}` : entityValue
+      const entityNameText = numOfEntities ? `${numOfEntities} ${entityName}` : entityValue
       const desp = (<>
         {`Are you sure you want to delete ${numOfEntities ? 'these' : 'this'} ${entityName}?`}
         {confirmationText ? <ConfirmForm text={confirmationText} modal={modal} /> : null}
@@ -80,7 +80,7 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
         ...props,
         title: `Delete "${entityNameText}"?`,
         content: desp,
-        okText: `Delete ${props.entityName}`,
+        okText: `Delete ${entityName}`,
         okButtonProps: { disabled: !!confirmationText }
       }
       break
