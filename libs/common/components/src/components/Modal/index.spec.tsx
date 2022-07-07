@@ -32,8 +32,8 @@ describe('Modal', () => {
       visible={true}
       data-testid={'basic-modal'}
     />)
-    const modalComponent = screen.getByTestId('basic-modal');
-    expect(modalComponent).toMatchSnapshot();
+    const modalComponent = screen.getByTestId('basic-modal')
+    expect(modalComponent).toMatchSnapshot()
   })
 
   it('should render modal correctly', async () => {
