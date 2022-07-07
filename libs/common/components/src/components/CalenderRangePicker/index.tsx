@@ -62,8 +62,7 @@ const CalenderFooter: React.FC<CalenderFooterProps> =
 
   const onButtonClick = (type: string) =>{
     if(type === 'cancel')
-      setRange({ start: moment().subtract(6, 'days').seconds(0),
-        end: moment().seconds(0) })
+      setRange({ start: moment().subtract(1, 'days').seconds(0),end: moment().seconds(0) })
     setIscalenderOpen(false)
   }
   const onTimePickerSelect = (config : typeof timePickerConfig[number], time: Moment) => 
