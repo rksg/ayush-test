@@ -1,5 +1,5 @@
-import { Button, PageHeader, Table, TableProps, Loader, showModal } from '@acx-ui/components'
-import { useNetworkListQuery, useDeleteNetworkMutation, Network }   from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, Modal }   from '@acx-ui/components'
+import { useNetworkListQuery, useDeleteNetworkMutation, Network } from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
@@ -210,7 +210,7 @@ export function NetworksTable () {
     ]
 
     const handleDeleteNetwork = ({ name, id }: Network) => {
-      showModal({
+      Modal({
         type: 'confirm',
         entityName: 'Network',
         entityValue: name,

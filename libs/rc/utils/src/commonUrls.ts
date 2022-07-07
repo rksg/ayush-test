@@ -61,5 +61,33 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getAllUserSettings: {
     method: 'get',
     url: '/api/tenant/:tenantId/admin-settings/ui'
+  },
+  getL2AclPolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/l2-acl-policy/query'
+  },
+  getL3AclPolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/l3-acl-policy/query'
+  },
+  getDevicePolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/device-policy/query'
+  },
+  getApplicationPolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/application-policy/query'
+  },
+  getAccessControlProfileList: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/access-control-profile'
+  },
+  getWifiCallingProfileList: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/wifi-calling-profile'
+  },
+  getVlanPoolList: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/vlan-pool'
   }
 }

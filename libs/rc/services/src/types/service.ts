@@ -1,0 +1,62 @@
+
+export enum AccessEnum {
+  ALLOW = 'Allow',
+  BLOCK = 'Block'
+}
+
+export interface L2AclPolicy {
+  access: AccessEnum,
+  description: string,
+  macAddress: string[],
+  name: string,
+  id: string
+}
+
+export interface L3AclPolicy {
+  networksCount: number,
+  rulesCount: number,
+  name: string,
+  id: string
+}
+
+export interface DevicePolicy {
+  defaultAcces?: AccessEnum,
+  description?: string,
+  id: string,
+  name: string,
+  networksCount: number,
+  rulesCount: number
+}
+
+export interface ApplicationPolicy {
+  networksCount: number,
+  rulesCount: number,
+  name: string,
+  id: string
+}
+
+export interface CloudpathServer {
+  id: string
+  name: string
+  deploymentType: 'Cloud' | 'OnPremise'
+  deployedInVenueId?: string
+  deployedInVenueName?: string
+  authRadius: {
+    id: string
+    primary: RadiusService
+  }
+  accountingRadiu?: {
+    id: string
+    primary: RadiusService
+  }
+}
+
+
+
+export interface RadiusService {
+  ip: string
+  port: number
+  sharedSecret: string
+}
+
+

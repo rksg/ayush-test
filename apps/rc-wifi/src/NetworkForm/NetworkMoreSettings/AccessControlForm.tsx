@@ -11,10 +11,16 @@ import {
   Input
 } from 'antd'
 
-import { StepsForm } from '@acx-ui/components'
-
+import { StepsForm }              from '@acx-ui/components'
+import { useDevicePolicyListQuery,
+  useL2AclPolicyListQuery,
+  useL3AclPolicyListQuery,
+  useApplicationPolicyListQuery } from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
+
+
 
 
 const { useWatch } = Form
@@ -205,6 +211,60 @@ function AccessControlConfigForm () {
     useWatch<boolean>('enableClientRateLimit')
   ]
 
+  const listPayload = {
+    fields: ['name', 'id'], sortField: 'name',
+    sortOrder: 'ASC', page: 1, pageSize: 10000
+  }
+
+  const { layer2SelectOptions } = useL2AclPolicyListQuery({
+    params: useParams(),
+    payload: listPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        layer2SelectOptions: data?.data.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? []
+      }
+    }
+  })
+
+  const { layer3SelectOptions } = useL3AclPolicyListQuery({
+    params: useParams(),
+    payload: listPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        layer3SelectOptions: data?.data.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? []
+      }
+    }
+  })
+
+  const { devicePolicySelectOptions } = useDevicePolicyListQuery({
+    params: useParams(),
+    payload: listPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        devicePolicySelectOptions: data?.data.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? []
+      }
+    }
+  })
+
+  const { applicationPolicySelectOptions } = useApplicationPolicyListQuery({
+    params: useParams(),
+    payload: listPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        applicationPolicySelectOptions: data?.data.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? []
+      }
+    }
+  })
+
+
   return (<>
     <UI.FieldLabel width='175px'>
       Layer 2
@@ -219,13 +279,13 @@ function AccessControlConfigForm () {
 
         {enableLayer2 && <>
           <Form.Item
-            name='layer2'
+            name='layer2Id'
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
-              <Select defaultValue=''
-                style={{ width: '180px' }}>
-                <Option value=''>Select profile...</Option>
-              </Select>}
+              <Select placeholder='Select profile...'
+                style={{ width: '180px' }}
+                children={layer2SelectOptions} />
+            }
           />
           Add
         </>}
@@ -248,10 +308,10 @@ function AccessControlConfigForm () {
             name='layer3'
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
-              <Select defaultValue=''
-                style={{ width: '180px' }}>
-                <Option value=''>Select profile...</Option>
-              </Select>}
+              <Select placeholder='Select profile...'
+                style={{ width: '180px' }}
+                children={layer3SelectOptions} />
+            }
           />
           Add
         </>}
@@ -274,10 +334,10 @@ function AccessControlConfigForm () {
             name='deviceOs'
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
-              <Select defaultValue=''
-                style={{ width: '180px' }}>
-                <Option value=''>Select profile...</Option>
-              </Select>}
+              <Select placeholder='Select profile...'
+                style={{ width: '180px' }}
+                children={devicePolicySelectOptions} />
+            }
           />
           Add
         </>}
@@ -295,15 +355,16 @@ function AccessControlConfigForm () {
           initialValue={false}
           children={<Switch />}
         />
+
         {enableApplications && <>
           <Form.Item
             name='applications'
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
-              <Select defaultValue=''
-                style={{ width: '180px' }}>
-                <Option value=''>Select profile...</Option>
-              </Select>}
+              <Select placeholder='Select profile...'
+                style={{ width: '180px' }}
+                children={applicationPolicySelectOptions} />
+            }
           />
           Add
         </>}
