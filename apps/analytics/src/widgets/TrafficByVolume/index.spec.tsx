@@ -57,4 +57,3 @@ describe('TrafficByVolumeWidget', () => {
     jest.resetAllMocks()
   })
 })
-
