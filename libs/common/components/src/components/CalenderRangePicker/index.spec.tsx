@@ -13,14 +13,13 @@ jest.mock('@acx-ui/icons', () => ({
 describe('CalenderRangePicker', () => {
   it('should render default CalenderRangePicker', () => {
     const { asFragment } = render(<CalenderRangePicker showRanges
-      selectedRange=
-        {{ start: moment('01/01/2022').subtract(1, 'days').seconds(0), 
-          end: moment('01/01/2022').seconds(0) }}/>)
+      selectedRange={{ start: moment('01/01/2022').subtract(1, 'days').seconds(0),
+        end: moment('01/01/2022').seconds(0) }}/>)
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render CalenderRangePicker when click on date select',async () => {
-    render(<CalenderRangePicker 
-      rangeOptions= {[DateRange.today, DateRange.last7Days]}
+    render(<CalenderRangePicker
+      rangeOptions={[DateRange.today, DateRange.last7Days]}
       showTimePicker
       enableDates={[moment().subtract(7, 'days').seconds(0),
         moment().seconds(0)]}/>)
@@ -30,12 +29,11 @@ describe('CalenderRangePicker', () => {
     expect(screen.getByText('Apply')).toBeInTheDocument()
   })
   it('should close CalenderRangePicker when click on apply',async () => {
-    render(<CalenderRangePicker 
-      rangeOptions= {[DateRange.today, DateRange.last7Days]}
+    render(<CalenderRangePicker
+      rangeOptions={[DateRange.today, DateRange.last7Days]}
       showTimePicker
-      selectedRange=
-        {{ start: moment().subtract(7, 'days').seconds(0), 
-          end: moment().seconds(0) }}
+      selectedRange={{ start: moment().subtract(7, 'days').seconds(0),
+        end: moment().seconds(0) }}
       enableDates={[moment().subtract(7, 'days').seconds(0),
         moment().seconds(0)]}/>)
     const user = userEvent.setup()
@@ -46,11 +44,10 @@ describe('CalenderRangePicker', () => {
     expect(await screen.findByText('Apply')).toBeVisible()
   })
   it('should close CalenderRangePicker when click on cancel',async () => {
-    render(<CalenderRangePicker 
-      rangeOptions= {[DateRange.today, DateRange.last7Days]}
-      selectedRange=
-        {{ start: moment().subtract(7, 'days').seconds(0), 
-          end: moment().seconds(0) }}/>)
+    render(<CalenderRangePicker
+      rangeOptions={[DateRange.today, DateRange.last7Days]}
+      selectedRange={{ start: moment().subtract(7, 'days').seconds(0),
+        end: moment().seconds(0) }}/>)
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
@@ -60,11 +57,10 @@ describe('CalenderRangePicker', () => {
   })
   it('should select date when click on date selection',async () => {
     const onDateChange = jest.fn()
-    render(<CalenderRangePicker 
-      selectedRange=
-        {{ start: moment('01/01/2022').subtract(7, 'days').seconds(0), 
-          end: moment('03/01/2022').seconds(0) }}
-      onDateChange = {onDateChange}/>)
+    render(<CalenderRangePicker
+      selectedRange={{ start: moment('01/01/2022').subtract(7, 'days').seconds(0),
+        end: moment('03/01/2022').seconds(0) }}
+      onDateChange={onDateChange}/>)
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
@@ -72,17 +68,16 @@ describe('CalenderRangePicker', () => {
     await user.click(dateSelect[0])
     expect( screen.getByRole('display-date-range'))
       .toHaveTextContent('01/01/2022')
-    expect(onDateChange).toBeCalledTimes(1)  
+    expect(onDateChange).toBeCalledTimes(1)
   })
   it('should select time when click on time selection',async () => {
     const onDateChange = jest.fn()
-    render(<CalenderRangePicker 
+    render(<CalenderRangePicker
       showTimePicker
-      rangeOptions= {[DateRange.today, DateRange.last7Days]}
-      onDateChange = {onDateChange}
-      selectedRange=
-        {{ start: moment().subtract(7, 'days').seconds(0), 
-          end: moment().seconds(0) }}
+      rangeOptions={[DateRange.today, DateRange.last7Days]}
+      onDateChange={onDateChange}
+      selectedRange={{ start: moment().subtract(7, 'days').seconds(0),
+        end: moment().seconds(0) }}
     />)
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -93,6 +88,6 @@ describe('CalenderRangePicker', () => {
     await user.click(hourSelect[hourSelect.length-1])
     expect( screen.getByRole('display-date-range'))
       .toHaveTextContent('20:')
-    expect(onDateChange).toBeCalledTimes(1)  
+    expect(onDateChange).toBeCalledTimes(1)
   })
 })
