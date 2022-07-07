@@ -18,6 +18,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
   },
+  editNetworkDeep: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true'
+  },
   getNetworksDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/network/:networkId/detailheader'

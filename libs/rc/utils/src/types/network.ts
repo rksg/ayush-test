@@ -16,7 +16,7 @@ export interface NetworkSaveData {
   enableAuthProxy?: boolean;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
-  venues?: [];
+  venues?: any;
   wlan?: {
     ssid?: string,
     vlanId?: number,

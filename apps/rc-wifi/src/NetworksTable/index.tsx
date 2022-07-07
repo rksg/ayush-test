@@ -1,5 +1,5 @@
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { useNetworkListQuery, Network }                  from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showToast } from '@acx-ui/components'
+import { useNetworkListQuery, Network }                             from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
@@ -7,7 +7,7 @@ import {
   WlanSecurityEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 const columns: TableProps<Network>['columns'] = [
   {
@@ -191,6 +191,24 @@ const defaultPayload = {
 }
 
 export function NetworksTable () {
+  const navigate = useNavigate()
+  const linkToEditNetwork = useTenantLink('/networks/')
+
+  const actions: TableProps<Network>['actions'] = [
+    {
+      label: 'Edit',
+      onClick: (selectedRows) => {
+        navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
+      }
+    },
+    {
+      label: 'Delete',
+      onClick: (selectedRows) => showToast({
+        type: 'info',
+        content: `Delete ${selectedRows[0].name}`
+      })
+    }
+  ]
   const NetworksTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useNetworkListQuery,
@@ -205,6 +223,8 @@ export function NetworksTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
+          actions={actions}
+          rowSelection={{ type: 'radio' }}
         />
       </Loader>
     )

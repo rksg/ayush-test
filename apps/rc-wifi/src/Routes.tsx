@@ -14,6 +14,10 @@ export default function WifiRoutes () {
         path='networks/:networkId/network-details/:activeTab'
         element={<NetworkDetails />}
       />
+      <Route
+        path='networks/:networkId/:action'
+        element={<NetworkForm />}
+      />
     </Route>
   )
   return (

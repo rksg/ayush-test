@@ -33,12 +33,20 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           if (msg.status !== 'SUCCESS') return
-          if (!['DeleteNetwork', 'AddNetworkDeep'].includes(msg.useCase)) return
+          if (!['DeleteNetwork', 'AddNetworkDeep', 'UpdateNetworkDeep'].includes(msg.useCase))
+            return
 
           if (msg.useCase === 'AddNetworkDeep') {
             showToast({
               type: 'success',
               content: 'Created successfully'
+            })
+          }
+
+          if (msg.useCase === 'UpdateNetworkDeep') {
+            showToast({
+              type: 'success',
+              content: 'Updated successfully'
             })
           }
 
@@ -51,6 +59,16 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const createNetworkReq = createHttpRequest(CommonUrlsInfo.addNetworkDeep, params)
         return {
           ...createNetworkReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'LIST' }]
+    }),
+    editNetwork: build.mutation<Network, RequestPayload>({
+      query: ({ params, payload }) => {
+        const editNetworkReq = createHttpRequest(CommonUrlsInfo.editNetworkDeep, params)
+        return {
+          ...editNetworkReq,
           body: payload
         }
       },
@@ -122,6 +140,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 export const {
   useNetworkListQuery,
   useCreateNetworkMutation,
+  useEditNetworkMutation,
   useGetNetworkQuery,
   useNetworkDetailHeaderQuery,
   useVenueListQuery,

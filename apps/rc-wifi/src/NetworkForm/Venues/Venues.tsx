@@ -9,8 +9,9 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery, Venue }               from '@acx-ui/rc/services'
-import { useTableQuery, CreateNetworkFormFields } from '@acx-ui/rc/utils'
+import { useVenueListQuery, Venue, useGetNetworkQuery } from '@acx-ui/rc/services'
+import { useTableQuery, CreateNetworkFormFields }       from '@acx-ui/rc/utils'
+import { useParams }                                    from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
   searchString: '',
@@ -49,13 +50,18 @@ const getNetworkId = () => {
 }
 
 export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
+  const params = useParams()
+  const { data } = useGetNetworkQuery({ params })
+
   const tableQuery = useTableQuery({
     useQuery: useVenueListQuery,
     apiParams: { networkId: getNetworkId() },
     defaultPayload
   })
+  
   const [tableData, setTableData] = useState(defaultArray)
   const [activateVenues, setActivateVenues] = useState(defaultArray)
+
   const handleVenueSaveData = (selectedRows: Venue[]) => {
     const defaultSetup = {
       apGroups: [],
@@ -68,19 +74,25 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       venueId: row.id,
       name: row.name
     }))
+
     props.formRef?.current?.setFieldsValue({ venues: selected })
   }
-
+  
   useEffect(()=>{
-    if (tableQuery.data) {
-      const data = tableQuery.data.data.map(item => ({
-        ...item,
-        // work around of read-only records from RTKQ
-        activated: { ...item.activated }
-      }))
-      setTableData(data)
+    if(tableQuery.data){
+      const tableData = tableQuery.data.data.map((item: any) => 
+      {
+        const activatedVenue = data?.venues && 
+        data?.venues.filter((venue: any) => venue.venueId === item.id).length > 0
+        return {
+          ...item,
+          // work around of read-only records from RTKQ
+          activated: { isActivated: activatedVenue || item.activated.isActivated }
+        }
+      })
+      setTableData(tableData)
     }
-  }, [tableQuery.data])
+  }, [data?.venues, tableQuery.data])
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -126,7 +138,9 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
           }
           setActivateVenues(selectedVenues)
           handleVenueSaveData(selectedVenues)
-        }} />
+        }} 
+        defaultChecked={ row.activated.isActivated }
+        />
       }
     },
     {
@@ -164,10 +178,12 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
             rowKey='id'
             rowSelection={{
               type: 'checkbox',
-              ...tableQuery.rowSelection
+              defaultSelectedRowKeys: data?.venues.map(item => item.venueId)
             }}
-            onRow={(record) => ({
-              onClick: () => { tableQuery.onRowClick(record) }
+            onRow={(record: Venue) => ({
+              onClick: () => { 
+                tableQuery.onRowClick(record)
+              }
             })}
             columns={columns}
             dataSource={tableData}

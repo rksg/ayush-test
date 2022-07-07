@@ -31,11 +31,13 @@ export interface NetworkDetail {
   tenantId: string
   name: string
   venues: { venueId: string, id: string }[]
-  id: string
+  id: string,
+  cloudpathServerId?: string
 }
 
 export interface Venue {
   id: string
+  venueId: string
   name: string
   description: string
   status: string

@@ -6,7 +6,7 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateNetworkMutation } from '@acx-ui/rc/services'
+import { useCreateNetworkMutation, useGetNetworkQuery, useEditNetworkMutation } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   CreateNetworkFormFields,
@@ -35,9 +35,11 @@ export function NetworkForm () {
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
+  const editMode = params.action === 'edit'
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [createNetwork] = useCreateNetworkMutation()
+  const [editNetwork] = useEditNetworkMutation()
   //DetailsState
   const [state, updateState] = useState<CreateNetworkFormFields>({
     name: '',
@@ -59,6 +61,14 @@ export function NetworkForm () {
     updateSaveState({ ...saveState, ...newSavedata })
   }
 
+  const { data } = useGetNetworkQuery({ params })
+
+  if(data){
+    formRef?.current?.setFieldsValue({ ...data, 
+      isCloudpathEnabled: typeof data.cloudpathServerId !== 'undefined'
+    })
+  }
+
   const handleAddNetwork = async () => {
     try {
       await createNetwork({ params, payload: saveState }).unwrap()
@@ -70,18 +80,31 @@ export function NetworkForm () {
       })
     }
   }
+
+  const handleEditNetwork = async () => {
+    try {
+      await editNetwork({ params, payload: saveState }).unwrap()
+      navigate(linkToNetworks, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: 'An error occurred'
+      })
+    }
+  }
   return (
     <>
       <PageHeader
-        title='Create New Network'
+        title={editMode?'Edit Network':'Create New Network'}
         breadcrumb={[
           { text: 'Networks', link: '/networks' }
         ]}
       />
       <StepsForm<CreateNetworkFormFields>
         formRef={formRef}
+        editMode={editMode}
         onCancel={() => navigate(linkToNetworks)}
-        onFinish={handleAddNetwork}
+        onFinish={editMode ? handleEditNetwork: handleAddNetwork}
       >
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='details'
@@ -95,11 +118,12 @@ export function NetworkForm () {
           }}
         >
           <NetworkFormContext.Provider value={{ setNetworkType }}>
-            <NetworkDetailForm />
+            <NetworkDetailForm editMode={editMode}/>
           </NetworkFormContext.Provider>
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
+          formRef={formRef}
           name='Settings'
           title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
           validateTrigger='onBlur'

@@ -171,7 +171,6 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
       }
     }
   }
-
   saveData = {
     ...saveData,
     ...{
@@ -189,8 +188,7 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
 export function transferDetailToSave (data: CreateNetworkFormFields) {
   return {
     name: data.name,
-    description: data.description ?? '',
-    venues: data.venues ?? null,
+    description: data.description,
     type: data.type,
     wlan: {
       ssid: data.name

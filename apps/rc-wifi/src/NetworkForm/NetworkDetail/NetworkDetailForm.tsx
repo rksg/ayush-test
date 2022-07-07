@@ -15,8 +15,9 @@ import type { RadioChangeEvent } from 'antd'
 
 const { useWatch } = Form
 
-export function NetworkDetailForm () {
-  const type = useWatch<string>('type')
+export function NetworkDetailForm (props: { editMode?: boolean }) {
+  const { editMode } = props
+  let type = useWatch<NetworkTypeEnum>('type')
   const { setNetworkType: setSettingStepTitle } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
     setSettingStepTitle(e.target.value as NetworkTypeEnum)
@@ -36,50 +37,66 @@ export function NetworkDetailForm () {
           label='Description'
           children={<TextArea rows={4} maxLength={64} />}
         />
-        <Form.Item
-          name='type'
-          label='Network Type'
-          rules={[{ required: true }]}
-        >
-          <Radio.Group onChange={onChange}>
-            <Space direction='vertical'>
-              <Radio value={NetworkTypeEnum.PSK} disabled>
-                {NetworkTypeLabel.psk}
-                <RadioDescription>
-                  {NetworkTypeDescription.psk}
-                </RadioDescription>
-              </Radio>
+        <Form.Item>
+          {!editMode && 
+            <Form.Item
+              name='type'
+              label='Network Type'
+              rules={[{ required: true }]}
+            >
+              <Radio.Group onChange={onChange}>
+                <Space direction='vertical'>
+                  <Radio value={NetworkTypeEnum.PSK} disabled>
+                    {NetworkTypeLabel.psk}
+                    <RadioDescription>
+                      {NetworkTypeDescription.psk}
+                    </RadioDescription>
+                  </Radio>
 
-              <Radio value={NetworkTypeEnum.DPSK} disabled>
-                {NetworkTypeLabel.dpsk}
-                <RadioDescription>
-                  {NetworkTypeDescription.dpsk}
-                </RadioDescription>
-              </Radio>
+                  <Radio value={NetworkTypeEnum.DPSK} disabled>
+                    {NetworkTypeLabel.dpsk}
+                    <RadioDescription>
+                      {NetworkTypeDescription.dpsk}
+                    </RadioDescription>
+                  </Radio>
 
-              <Radio value={NetworkTypeEnum.AAA}>
-                {NetworkTypeLabel.aaa}
-                <RadioDescription>
-                  {NetworkTypeDescription.aaa}
-                </RadioDescription>
-              </Radio>
+                  <Radio value={NetworkTypeEnum.AAA}>
+                    {NetworkTypeLabel.aaa}
+                    <RadioDescription>
+                      {NetworkTypeDescription.aaa}
+                    </RadioDescription>
+                  </Radio>
 
-              <Radio value={NetworkTypeEnum.CAPTIVEPORTAL} disabled>
-                {NetworkTypeLabel.guest}
-                <RadioDescription>
-                  {NetworkTypeDescription.guest}
-                </RadioDescription>
-              </Radio>
+                  <Radio value={NetworkTypeEnum.CAPTIVEPORTAL} disabled>
+                    {NetworkTypeLabel.guest}
+                    <RadioDescription>
+                      {NetworkTypeDescription.guest}
+                    </RadioDescription>
+                  </Radio>
 
-              <Radio value={NetworkTypeEnum.OPEN}>
-                {NetworkTypeLabel.open}
-                <RadioDescription>
-                  {NetworkTypeDescription.open}
-                </RadioDescription>
-              </Radio>
-            </Space>
-          </Radio.Group>
-        </Form.Item>
+                  <Radio value={NetworkTypeEnum.OPEN}>
+                    {NetworkTypeLabel.open}
+                    <RadioDescription>
+                      {NetworkTypeDescription.open}
+                    </RadioDescription>
+                  </Radio>
+                </Space>
+              </Radio.Group>
+            </Form.Item>
+          }
+          {editMode && 
+            <Form.Item
+              name='type'
+              label='Network Type'
+              rules={[{ required: true }]}
+            >
+              <>
+                <div><h4 className='ant-typography'>{NetworkTypeLabel[type]}</h4></div>
+                <div><label>{NetworkTypeDescription[type]}</label></div>
+              </>
+            </Form.Item>     
+          } 
+        </Form.Item>     
       </Col>
 
       <Col span={14}>

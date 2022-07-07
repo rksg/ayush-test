@@ -151,6 +151,7 @@ export function useTableQuery <
     rowSelection,
     onRowClick,
     selectedRowsData,
+    setSelectedRowsData,
     ...api
   }
 }
