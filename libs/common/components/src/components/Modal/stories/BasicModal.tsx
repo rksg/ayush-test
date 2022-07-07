@@ -1,44 +1,51 @@
-import { showModal } from '..'
+import { useState } from 'react'
+
+import { Modal }  from '..'
+import { Button } from '../../Button'
 
 export function BasicModal () {
+  const [visible, setVisible] = useState(false)
+
+  const content = <>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+  </>
+
+  const showModal = () => {
+    setVisible(true)
+  }
+
+  const handleConfirm = () => {
+    setVisible(false)
+  }
+
+  const handleCancel = () => {
+    setVisible(false)
+  }
+
+  const footer = [
+    <Button key='cancel' onClick={handleCancel}>
+      Cancel
+    </Button>,
+    <Button key='confirm' type='primary' onClick={handleConfirm}>
+      Confirm
+    </Button>
+  ]
+
   return (
     <>
-      Basic Modal:
-      <button onClick={InfoNotification}>Info</button>
-      <button onClick={ErrorNotification}>Error</button>
-      <button onClick={ConfirmNotification}>Confirm</button>
+      <Button onClick={showModal}>
+        Open Modal
+      </Button>
+      <Modal
+        title='Basic Modal'
+        visible={visible}
+        footer={footer}
+        closable={false}
+      >
+        {content}
+      </Modal>
     </>
   )
-}
-
-const InfoNotification = () => {
-  showModal({
-    type: 'info',
-    title: 'Please note that...',
-    content: (
-      <div>
-        <p>Some descriptions</p>
-      </div>
-    ),
-    onOk () {}
-  })
-}
-
-const ConfirmNotification = () => {
-  showModal({
-    type: 'confirm',
-    title: 'Please confirm that...',
-    content: 'Some descriptions',
-    okText: 'Confirm',
-    onOk () {},
-    onCancel () {}
-  })
-}
-
-const ErrorNotification = () => {
-  showModal({
-    type: 'error',
-    title: 'Something went wrong',
-    content: 'Some descriptions'
-  })
 }
