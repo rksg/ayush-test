@@ -231,6 +231,13 @@
 
   .ant-modal {
     &:not(.ant-modal-confirm) {
+      .ant-modal-title {
+        font-family: var(--acx-accent-brand-font);
+        font-size: var(--acx-headline-2-font-size);
+        font-weight: var(--acx-headline-2-font-weight);
+        line-height: var(--acx-headline-2-line-height);
+      }
+
       .ant-modal-footer {
         .ant-btn + .ant-btn:not(.ant-dropdown-trigger) {
           margin-left: 16px;
@@ -242,22 +249,21 @@
       .ant-modal-content {
         border-radius: 0;
         border-top: 4px solid var(--acx-primary-black);
-        background: var(--acx-primary-white);
         box-shadow: 0px 6px 16px rgba(51, 51, 51, 0.1);
       }
       .ant-modal-body {
         padding: 24px;
       }
       .ant-modal-confirm-title {
-        font-weight: 600;
-        line-height: 20px;
-        color: var(--acx-primary-black);
         font-family: var(--acx-accent-brand-font);
+        font-size: var(--acx-headline-3-font-size);
+        font-weight: var(--acx-headline-3-font-weight);
+        line-height: var(--acx-headline-3-line-height);
       }
       .ant-modal-confirm-content {
         margin-top: 16px;
-        font-size: 12px;
-        line-height: 16px;
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
         color: var(--acx-primary-black);
         min-height: 44px;
         .ant-form {
@@ -267,12 +273,6 @@
       .ant-btn:not(.ant-btn-link) {
         min-width: 85px;
         padding: 6px 16px;
-        &.ant-btn-primary {
-          &[disabled] {
-            background: var(--acx-primary-black);
-            color: var(--acx-primary-white);
-          }
-        }
       }
       &.ant-modal-confirm-error {
         .ant-modal-content {

@@ -44,7 +44,7 @@ function SettingsForm () {
 
       {isCloudpathEnabled && <CloudpathServerForm />}
 
-      { /*TODO: <div><Button type='link' style={{ padding: 0 }}>Show more settings</Button></div> */ }
+      { /*TODO: <div><Button type='link'>Show more settings</Button></div> */ }
     </>
   )
 }
