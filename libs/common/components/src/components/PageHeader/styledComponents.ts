@@ -12,7 +12,19 @@ export const Wrapper = styled.div`
       h1 {
         margin-bottom: 0;
       }
-      &-left, &-title {
+      &-left{
+        overflow: visible;
+        flex-direction: column;
+      }
+      &-sub-title {
+        align-self: flex-start;
+        margin-top: 6px;
+        color: var(--acx-primary-black);
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
+      }
+      &-title {
         overflow: visible;
       }
       margin-bottom: var(--acx-content-vertical-space);
@@ -32,7 +44,7 @@ export const Wrapper = styled.div`
         .ant-tabs-tab {
           padding: 4px 0 14px 0;
           &.ant-tabs-tab-active .ant-tabs-tab-btn {
-            font-weight: 700;
+            font-weight: var(--acx-subtitle-4-font-weight);
           }
         }
       }

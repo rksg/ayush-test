@@ -18,12 +18,12 @@ export const Wrapper = styled.section<{ editMode?: boolean }>`
   --acx-steps-form-steps-title-color: var(--acx-primary-black);
   --acx-steps-form-steps-title-font-size: var(--acx-body-4-font-size);
   --acx-steps-form-steps-title-line-height: var(--acx-body-4-line-height);
-  --acx-steps-form-steps-active-title-font-weight: 700;
+  --acx-steps-form-steps-active-title-font-weight: var(--acx-body-font-weight-bold);
   --acx-steps-form-steps-step-size: 12px;
   --acx-steps-form-steps-step-color: var(--acx-accents-orange-50);
 
   --acx-steps-form-form-title-font-size: var(--acx-headline-3-font-size);
-  --acx-steps-form-form-title-font-weight: 500;
+  --acx-steps-form-form-title-font-weight: var(--acx-headline-3-font-weight);
   --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
   --acx-steps-form-form-title-margin-bottom: 16px;
 
