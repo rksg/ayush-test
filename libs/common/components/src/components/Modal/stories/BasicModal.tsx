@@ -1,10 +1,10 @@
-import { Button } from '../../Button'
-import { Modal } from '..'
 import { useState } from 'react'
+
+import { Modal }  from '..'
+import { Button } from '../../Button'
 
 export function BasicModal () {
   const [visible, setVisible] = useState(false)
-  const [mask, setMask] = useState(true)
   
   const content = <>
     <p>Some contents...</p>
@@ -14,7 +14,6 @@ export function BasicModal () {
 
   const showModal = () => {
     setVisible(true)
-    setMask(false)
   }
 
   const handleConfirm = () => {
@@ -26,10 +25,10 @@ export function BasicModal () {
   }
 
   const footer = [
-    <Button key="cancel" onClick={handleCancel}>
+    <Button key='cancel' onClick={handleCancel}>
       Cancel
     </Button>,
-    <Button key="confirm" type="primary" onClick={handleConfirm}>
+    <Button key='confirm' type='primary' onClick={handleConfirm}>
       Confirm
     </Button>
   ]
@@ -40,15 +39,13 @@ export function BasicModal () {
         Open Modal
       </Button>
       <Modal
-        title="Basic Modal"
+        title='Basic Modal'
         visible={visible}
         footer={footer}
         closable={false}
-        mask={mask}
       >
         {content}
       </Modal>
     </>
-   
   )  
 }

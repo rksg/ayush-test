@@ -1,6 +1,7 @@
-import { Button } from '../../Button'
-import { Modal } from '..'
 import { useState } from 'react'
+
+import { Modal }  from '..'
+import { Button } from '../../Button'
 
 export function SingleButtonModal () {
   const [visible, setVisible] = useState(false)
@@ -20,7 +21,7 @@ export function SingleButtonModal () {
   }
 
   const footer = [
-    <Button key="confirm" type="primary" onClick={handleConfirm}>
+    <Button key='confirm' type='primary' onClick={handleConfirm}>
       Confirm
     </Button>
   ]
@@ -31,7 +32,7 @@ export function SingleButtonModal () {
         Open Modal
       </Button>
       <Modal
-        title="Single Button Modal"
+        title='Single Button Modal'
         visible={visible}
         footer={footer}
         closable={false}
