@@ -16,11 +16,11 @@ export function ConfigProvider (props: ConfigProviderProps) {
   return (
     <LocaleProvider lang={props.lang}>
       <LocaleContext.Consumer>
-        {context => (
+        {context => context.messages ? (
           <IntlProvider locale={context.lang} messages={context.messages}>
             <AntConfigProvider {...props} locale={context.messages} />
           </IntlProvider>
-        )}
+        ) : null}
       </LocaleContext.Consumer>
     </LocaleProvider>
   )
