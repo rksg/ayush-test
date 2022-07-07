@@ -24,14 +24,16 @@ describe('Modal', () => {
     </button>
   ]
   it('should match snapshot', async () => {
-    const { asFragment } = render(<Modal
+    render(<Modal
       title='Basic Modal'
       closable={false}
       footer={footer}
       content={content}
+      visible={true}
+      data-testid={'basic-modal'}
     />)
-    // TODO: snapshow showing DocumentFragment only, need to fix
-    expect(asFragment()).toMatchSnapshot()
+    const modalComponent = screen.getByTestId('basic-modal');
+    expect(modalComponent).toMatchSnapshot();
   })
 
   it('should render modal correctly', async () => {
