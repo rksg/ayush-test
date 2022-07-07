@@ -25,25 +25,24 @@ export function FormModal () {
   }
 
   const footer = [
-    <Button key='cancel' onClick={handleCancel}>
+    <Button key='cancel'size='large' onClick={handleCancel}>
       Cancel
     </Button>,
-    <Button key='confirm' type='primary' onClick={handleConfirm}>
-      Confirm
+    <Button key='add' size='large' type='primary' onClick={handleConfirm}>
+      Add
     </Button>
   ]
 
   return (
     <>
       <Button onClick={showModal}>
-        Open Modal
+        Form Modal
       </Button>
       <Modal
         title='Form Modal'
         visible={visible}
         footer={footer}
-        closable={false}
-        width={600}
+        width={800}
       >
         {content}
       </Modal>

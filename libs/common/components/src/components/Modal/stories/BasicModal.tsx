@@ -25,24 +25,23 @@ export function BasicModal () {
   }
 
   const footer = [
-    <Button key='cancel' onClick={handleCancel}>
+    <Button key='cancel' size='large' onClick={handleCancel}>
       Cancel
     </Button>,
-    <Button key='confirm' type='primary' onClick={handleConfirm}>
-      Confirm
+    <Button key='apply' size='large' type='primary' onClick={handleConfirm}>
+      Apply
     </Button>
   ]
 
   return (
     <>
       <Button onClick={showModal}>
-        Open Modal
+        Basic Modal
       </Button>
       <Modal
         title='Basic Modal'
         visible={visible}
         footer={footer}
-        closable={false}
       >
         {content}
       </Modal>
