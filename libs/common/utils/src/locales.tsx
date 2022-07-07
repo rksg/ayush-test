@@ -68,7 +68,6 @@ export const LocaleContext = createContext<LocaleContextType>(null as unknown as
 export interface LocaleProviderProps {
   /** @default 'en-US' */
   lang?: Key
-  test?: boolean
   children: ReactElement
 }
 
@@ -76,7 +75,7 @@ export { LocaleProviderWrap as LocaleProvider }
 
 function LocaleProviderWrap (props: LocaleProviderProps): ReactElement {
   const context = useContext(LocaleContext)
-  // if (props.test) console.log(context)
+
   // skip setting up another context if there is already a context available
   return context ? props.children : <LocaleProvider {...props} />
 }
