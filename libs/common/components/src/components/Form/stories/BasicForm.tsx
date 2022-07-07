@@ -3,7 +3,17 @@ import { useEffect } from 'react'
 import { Form, Input } from 'antd'
 
 import { FormValidationItem } from '..'
-import { formItemLayout }     from '../index'
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 }
+  }
+}
 
 export function BasicForm () {
   const [form] = Form.useForm()
