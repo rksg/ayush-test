@@ -1,12 +1,10 @@
 import React from 'react'
 
-import { ConfigProvider } from 'antd'
-import { createRoot }     from 'react-dom/client'
-import { IntlProvider }   from 'react-intl'
+import { createRoot } from 'react-dom/client'
 
-import { BrowserRouter } from '@acx-ui/react-router-dom'
-import { Provider }      from '@acx-ui/store'
-import { loadLocale }    from '@acx-ui/utils'
+import { ConfigProvider } from '@acx-ui/components'
+import { BrowserRouter }  from '@acx-ui/react-router-dom'
+import { Provider }       from '@acx-ui/store'
 
 import AllRoutes from './AllRoutes'
 
@@ -15,21 +13,19 @@ import '@acx-ui/theme'
 export async function init () {
   const container = document.getElementById('root')
   const root = createRoot(container!)
-  const locale = await loadLocale('en-US')
+  const lang = 'en-US'
 
   root.render(
     <React.StrictMode>
-      <IntlProvider locale={locale.locale} messages={locale}>
-        <ConfigProvider locale={locale}>
-          <Provider>
-            <BrowserRouter>
-              <React.Suspense fallback={null}>
-                <AllRoutes />
-              </React.Suspense>
-            </BrowserRouter>
-          </Provider>
-        </ConfigProvider>
-      </IntlProvider>
+      <ConfigProvider lang={lang}>
+        <Provider>
+          <BrowserRouter>
+            <React.Suspense fallback={null}>
+              <AllRoutes />
+            </React.Suspense>
+          </BrowserRouter>
+        </Provider>
+      </ConfigProvider>
     </React.StrictMode>
   )
 }

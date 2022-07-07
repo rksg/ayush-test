@@ -4,13 +4,14 @@ import { act, screen } from '@acx-ui/test-utils'
 
 import * as bootstrap from './bootstrap'
 
+jest.mock('./AllRoutes', () => () => <div data-testid='all-routes' />)
 jest.mock('@acx-ui/theme', () => {}, { virtual: true })
-jest.mock(
-  './AllRoutes',
-  () => () => <div data-testid='all-routes' />)
-jest.mock(
-  '@acx-ui/utils',
-  () => ({ loadLocale: jest.fn().mockResolvedValue({ locale: 'en-US' }) }))
+jest.mock('@acx-ui/components', () => ({
+  ConfigProvider: (props: { children: React.ReactNode }) => <div
+    {...props}
+    data-testid='config-provider'
+  />
+}))
 
 describe('bootstrap.init', () => {
   it('renders correctly', async () => {
