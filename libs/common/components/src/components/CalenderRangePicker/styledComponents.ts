@@ -1,8 +1,11 @@
 import styled from 'styled-components/macro'
 
 
+type WrapperProps = {
+  hasTimePicker?: boolean
+}
 /* eslint-disable max-len */
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<WrapperProps>`
 
 .ant-picker:hover,
 .ant-picker-focused  {
@@ -34,7 +37,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   background-color:var(--acx-neutrals-10);
-  height: 95%;
+  height: ${(props) => (props.hasTimePicker ? '95.2%;' : '94.6%;')}
   padding: 20px;
   top: 9px;
   border-radius: 4px 0 0 4px;

@@ -144,7 +144,7 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
     if(typeof onDateChange === 'function') onDateChange(range)}
   ,[range, onDateChange])
   return ( 
-    <UI.Wrapper>
+    <UI.Wrapper hasTimePicker = {showTimePicker} >
       <RangePicker 
         style={styles.rangePicker}
         ranges={showRanges ? 
