@@ -4,5 +4,8 @@
     "add": "Add",
     "entireOrg": "Entire Organization",
     "last24Hrs": "Last 24 Hours"
+  },
+  "stepsForm": {
+    "cancel": "Cancel"
   }
 }

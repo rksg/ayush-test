@@ -1,10 +1,10 @@
 import React from 'react'
 
 import { StepsForm as ProAntStepsForm } from '@ant-design/pro-form'
-import { useIntl }                      from '@ant-design/pro-provider'
 import { Steps, Space, Row }            from 'antd'
 import _                                from 'lodash'
 import toArray                          from 'rc-util/lib/Children/toArray'
+import { useIntl }                      from 'react-intl'
 
 import { Button } from '../Button'
 
@@ -60,7 +60,7 @@ export function StepsForm <FormValue = any> (
     onCancel,
     ...otherProps
   } = props
-  const intl = useIntl()
+  const { $t } = useIntl()
   const formRef = useRef()
   const [current, setStep] = useState(propCurrent ?? 0)
 
@@ -108,7 +108,7 @@ export function StepsForm <FormValue = any> (
   const cancel = <Button
     key='cancel'
     onClick={() => onCancel?.()}
-    children={intl.getMessage('stepsForm.cancel', 'Cancel')}
+    children={$t({ id: 'stepsForm.cancel', defaultMessage: 'Cancel' })}
   />
 
   const submitter: ProAntStepsFormProps<FormValue>['submitter'] = {
@@ -123,7 +123,7 @@ export function StepsForm <FormValue = any> (
         {...button.props}
         key={key}
         type='secondary'
-        children={intl.getMessage(`stepsForm.${key}`, messages[key])}
+        children={$t({ id: `stepsForm.${key}`, defaultMessage: messages[key] })}
       />
       return [submitButton, cancel]
     }
