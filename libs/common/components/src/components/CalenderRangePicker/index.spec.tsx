@@ -62,16 +62,16 @@ describe('CalenderRangePicker', () => {
     const onDateChange = jest.fn()
     render(<CalenderRangePicker 
       selectedRange=
-        {{ start: moment().subtract(40, 'days').seconds(0), 
-          end: moment().seconds(0) }}
+        {{ start: moment('01/01/2022').subtract(7, 'days').seconds(0), 
+          end: moment('03/01/2022').seconds(0) }}
       onDateChange = {onDateChange}/>)
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    const dateSelect = await screen.findAllByTitle(moment('07/06/2022').format('YYYY-MM-DD'))
+    const dateSelect = await screen.findAllByTitle(moment('01/01/2022').format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
     expect( screen.getByRole('display-date-range'))
-      .toHaveTextContent('06/07/2022')
+      .toHaveTextContent('01/01/2022')
     expect(onDateChange).toBeCalledTimes(1)  
   })
   it('should select time when click on time selection',async () => {
