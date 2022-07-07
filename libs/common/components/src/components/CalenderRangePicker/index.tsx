@@ -38,8 +38,10 @@ const styles = {
     height: '24px',
     padding: '4px'
   },
-  timePickerCol: { marginLeft: 12, marginRight: 12 },
-  button: { height: '24px',width: '56px' },
+  row: { marginLeft: 12 },
+  timePickerCol2: { marginLeft: 3, marginRight: 3 },
+  timePickerCol3: { marginLeft: 17, marginRight: 17 },
+  button: { height: '24px',width: '56px',fontSize: '12px' },
   rangePicker: { width: '100%' }
 }
 const timePickerConfig = [
@@ -70,11 +72,11 @@ const CalenderFooter: React.FC<CalenderFooterProps> =
         
   return <>
     {showTimePicker &&
-    <Row>
+    <Row style ={styles.row}>
       {timePickerConfig.map((config)=>
         <>
           <Col key = {config.id}
-            span={2}
+            span={2.5}
             offset={config.offset} 
           >
             <TimePicker
@@ -93,23 +95,29 @@ const CalenderFooter: React.FC<CalenderFooterProps> =
             /> 
           </Col>
           {config.hasSemiColon && 
-          <Col style ={styles.timePickerCol}> : </Col>}
+          <Col style ={styles.timePickerCol2}>:
+          </Col>}
           {config.hasHyphen && 
-          <Col style ={styles.timePickerCol}> - </Col>} 
+          <Col style ={styles.timePickerCol3}>-
+          </Col>} 
         </>
       )}
     </Row>}
     <Row className='calender-range-apply-row'>
       <Col role = 'display-date-range' 
-        span={showTimePicker ? 12 : 10}
-        offset={showTimePicker ? 6 : 8}>
+        span={ showTimePicker ? 12 : 10 }
+        offset={ showTimePicker ? 6 : 8 }>
         {`${getCustomisedDate(range?.start, showTimePicker) || ''}
-        - ${getCustomisedDate(range?.end, showTimePicker) || ''}`}</Col>
-      <Col span={3} style = {{ lineHeight: 'normal' }}><Button onClick={()=>onButtonClick('cancel')}
-        style = {styles.button}>Cancel</Button></Col>
-      <Col span={3} style = {{ lineHeight: 'normal' }}><Button type = {'primary'}
-        style = {styles.button}
-        onClick={()=>onButtonClick('apply')}>Apply</Button></Col>
+        - ${getCustomisedDate(range?.end, showTimePicker) || ''}`}
+      </Col>
+      <Col span={3} style = {{ lineHeight: 'normal' }}>
+        <Button onClick={()=>onButtonClick('cancel')}
+          style = {styles.button}>Cancel</Button></Col>
+      <Col span={3} style = {{ lineHeight: 'normal' }}>
+        <Button type = {'primary'}
+          style = {styles.button}
+          onClick={()=>onButtonClick('apply')}>Apply</Button>
+      </Col>
     </Row>
   </>
 }
@@ -141,8 +149,10 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
     <UI.Wrapper hasTimePicker = {showTimePicker}>
       <RangePicker 
         style={styles.rangePicker}
-        ranges={showRanges ? 
-          defaultRanges(rangeOptions) as RangesType : undefined}
+        ranges={
+          showRanges 
+            ? defaultRanges(rangeOptions) as RangesType 
+            : undefined}
         placement = 'bottomRight'
         disabledDate={disabledDate}
         className = 'acx-range-picker'
@@ -151,7 +161,13 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
         onClick = {() => setIscalenderOpen (true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode }
         onCalendarChange={(values: RangeValueType) => 
-          setRange({ start: values ? values[0] : null ,end: values ? values[1] : null })
+          setRange({ 
+            start: values 
+              ? values[0] 
+              : null ,
+            end: values 
+              ? values[1] 
+              : null })
         }
         mode = {['date', 'date']}
         renderExtraFooter={() => 
@@ -162,7 +178,11 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
             setIscalenderOpen = {setIscalenderOpen}/>}
         {...props}
         value = {[range?.start, range?.end]}
-        format={showTimePicker ? dateWithTimeFormat : dateFormat}
+        format={
+          showTimePicker 
+            ? dateWithTimeFormat 
+            : dateFormat
+        }
         allowClear = {false}
       />
     </UI.Wrapper>

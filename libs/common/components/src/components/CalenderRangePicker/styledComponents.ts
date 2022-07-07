@@ -7,6 +7,9 @@ type WrapperProps = {
 /* eslint-disable max-len */
 export const Wrapper = styled.div<WrapperProps>`
 
+.ant-picker{
+  background: var(--acx-primary-white);
+}
 .ant-picker:hover,
 .ant-picker-focused  {
     border-color: var(--acx-accents-blue-50);
@@ -20,12 +23,14 @@ export const Wrapper = styled.div<WrapperProps>`
     background: var(--acx-accents-blue-50);
     }
 .acx-range-picker-popup {
+  font-size: 12px;
   & .ant-picker-panel {border: none;}
   & .ant-picker-header-super-prev-btn,
   & .ant-picker-header-super-next-btn{
     display: none;
 }
   & .acx-calender {
+    font-size: 12px;
     & .ant-picker-footer{
       display: none;
     }
@@ -115,4 +120,13 @@ border-radius: 20px
   color: inherit;
   cursor: default;
 }
+.ant-picker-input > input{
+  font-size: 12px
+}
+.calender-range-apply-row,
+.ant-picker-content td{
+  font-weight: 600
+}
+.ant-picker-header-view {
+  font-weight: 700
 }`
