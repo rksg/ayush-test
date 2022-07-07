@@ -10,18 +10,12 @@ jest.mock('@acx-ui/icons', () => ({
 }), { virtual: true })
 
 describe('Form With Validation Item', () => {
-  const mockRemoteValidation = (data, searchString) => {
+  const mockRemoteValidation = (isValid) => {
     return {
-      listQuery: {
-        isFetching: false,
-        data: {
-          data: data
-        }
-      },
-      payload: {
-        searchString: searchString
-      },
+      queryResult: [],
       message: 'error message',
+      isValidating: false,
+      validator: jest.fn().mockReturnValue(isValid),
       updateQuery: jest.fn()
     }
   }
@@ -32,7 +26,7 @@ describe('Form With Validation Item', () => {
   }
 
   it('should render Validation Item', async () => {
-    const remote = mockRemoteValidation([], '')
+    const remote = mockRemoteValidation(true)
     render(
       <Form>
         <FormValidationItem
@@ -50,7 +44,7 @@ describe('Form With Validation Item', () => {
   })
 
   it('should render Validation Item with loading icon when typing a new string', async () => {
-    const remote = mockRemoteValidation([], '')
+    const remote = mockRemoteValidation(true)
     render(
       <Form>
         <FormValidationItem
@@ -75,7 +69,7 @@ describe('Form With Validation Item', () => {
   })
 
   it('should render Validation Item with success icon when object has not existed', async () => {
-    const remote = mockRemoteValidation([], 'text')
+    const remote = mockRemoteValidation(true)
     render(
       <Form>
         <FormValidationItem
@@ -95,10 +89,11 @@ describe('Form With Validation Item', () => {
       onBlur(inputNode)
     })
     await screen.findByTestId('success-solid')
+    expect(remote.validator).toHaveBeenCalled()
   })
 
   it('should render Validation Item with error status when object has existed', async () => {
-    const remote = mockRemoteValidation([{ name: 'error' }], 'error')
+    const remote = mockRemoteValidation(false)
     render(
       <Form>
         <FormValidationItem
@@ -118,6 +113,7 @@ describe('Form With Validation Item', () => {
       onBlur(inputNode)
     })
     const alert = await screen.findByRole('alert')
+    expect(remote.validator).toHaveBeenCalled()
     expect(alert).toHaveTextContent('error message')
   })
 })

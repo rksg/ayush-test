@@ -4,23 +4,16 @@ import { Form as AntForm, Input } from 'antd'
 import { RuleObject }             from 'antd/lib/form'
 import _                          from 'lodash'
 
-import { UseQueryResult } from '@acx-ui/types'
-
 import * as UI from './styledComponents'
 
 import type { FormItemProps as AntFormItemProps } from 'antd/lib/form/FormItem'
 type ValidateStatus = Parameters<typeof AntForm.Item>[0]['validateStatus']
 
-interface remoteValidation {
-  listQuery: UseQueryResult<any>,
-  payload?: {
-    fields?: string[]
-    filters?: object
-    pageSize?: number
-    searchString: string
-    searchTargetFields?: string[] 
-  },
+interface RemoteValidation {
+  queryResult: any,
   message: string,
+  isValidating: boolean,
+  validator: Function,
   updateQuery?: any
 }
 
@@ -45,20 +38,16 @@ export enum ValidateStatusEnum {
 export interface FormVItemProps extends AntFormItemProps {
   value?: string
   placeholder?: string,
-  remoteValidation?: remoteValidation
-}
-
-export const checkObjectExists = (
-  list: any[],
-  propName: string,
-  propValue: string
-) => {
-  return list.filter(l => l[propName] === propValue).length > 0
+  remoteValidation: RemoteValidation
 }
 
 export function FormValidationItem (props: FormVItemProps) {
   const [status, setStatus] = useState<ValidateStatus>('')
-  const { rules=[], remoteValidation = null } = { ...props }
+  const [oldValue, setOldValue] = useState<string>(props.value || '')
+  const { 
+    rules = [],
+    remoteValidation
+  } = { ...props }
 
   const suffixIcon = (status: ValidateStatus) => {
     switch (status) {
@@ -73,16 +62,18 @@ export function FormValidationItem (props: FormVItemProps) {
   }
 
   const remoteValidator = (rule: RuleObject, value: string) => {
-    let isInvalid = false
-    if (value !== remoteValidation?.payload?.searchString) {
-      remoteValidation?.updateQuery(value)
+    let isValid = true
+    const { queryResult, isValidating, updateQuery, validator }: RemoteValidation = remoteValidation
+    if (value !== oldValue) {
+      updateQuery(value)
+      setOldValue(value)
       setStatus(ValidateStatusEnum.VALIDATING)
-    } else if (!remoteValidation.listQuery.isFetching && value) {
-      const datalist = remoteValidation.listQuery?.data?.data || []
-      isInvalid = checkObjectExists(datalist, 'name', value)
-      setStatus(isInvalid ? ValidateStatusEnum.ERROR : ValidateStatusEnum.SUCCESS)
+    } else if (!isValidating && value) {
+      isValid = validator(queryResult, value)
+      setStatus(isValid ? ValidateStatusEnum.SUCCESS : ValidateStatusEnum.ERROR)
     }
-    if (isInvalid) {
+
+    if (!isValid) {
       return Promise.reject(new Error(rule.message?.toString()))
     }
     return Promise.resolve()

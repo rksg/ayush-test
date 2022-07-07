@@ -3,10 +3,10 @@ import { useContext, useEffect, useState } from 'react'
 import { Form, Col, Radio, Row, Space } from 'antd'
 import TextArea                         from 'antd/lib/input/TextArea'
 
-import { StepsForm, FormValidationItem } from '@acx-ui/components'
-import { useNetworkListQuery }           from '@acx-ui/rc/services'
-import { NetworkTypeEnum }               from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
+import { StepsForm, FormValidationItem }         from '@acx-ui/components'
+import { useNetworkListQuery }                   from '@acx-ui/rc/services'
+import { NetworkTypeEnum, checkObjectNotExists } from '@acx-ui/rc/utils'
+import { useParams }                             from '@acx-ui/react-router-dom'
 
 import { NetworkTypeDescription, NetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                           from '../NetworkDiagram/NetworkDiagram'
@@ -31,26 +31,34 @@ export function NetworkDetailForm (props: any) {
     pageSize: 10000
   }
   const [defaultPayload, setDefaultPayload] = useState(payload)
+  const [validating, setValidating] = useState(false)
+  const [remoteQueryResult, setRemoteQueryResult] = useState([])
   const networkListQuery = useNetworkListQuery({
     params: useParams(),
     payload: defaultPayload
   })
+
   useEffect(() => {
     const triggerValidation = !networkListQuery.isFetching && defaultPayload.searchString
     if (triggerValidation) {
+      const result: any = networkListQuery?.data?.data
+      setValidating(false)
+      setRemoteQueryResult(result)
       props.formRef.current.validateFields(['name'])
     }
-  }, [networkListQuery])
+  }, [networkListQuery, validating])
 
   const remoteValidation = {
-    listQuery: networkListQuery,
-    payload: defaultPayload,
+    queryResult: remoteQueryResult,
     message: 'A Network with that name already exists',
+    isValidating: validating,
+    validator: checkObjectNotExists,
     updateQuery: (value: string) => {
       const payload = {
         ...defaultPayload,
         searchString: value
       }
+      setValidating(true)
       setDefaultPayload(payload)
     }
   }

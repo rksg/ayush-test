@@ -23,3 +23,10 @@ export const stringContainSpace = (value: string) => {
   }
   return Promise.resolve()
 }
+
+export const checkObjectNotExists = (
+  list: any[],
+  value: string
+) => {
+  return list.filter(l => l['name'] === value).length === 0
+}

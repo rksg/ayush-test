@@ -1,27 +1,18 @@
 import { useEffect } from 'react'
 
-import { Form } from 'antd'
+import { Form, Input } from 'antd'
 
 import { FormValidationItem } from '..'
 import { formItemLayout }     from '../index'
 
 export function BasicForm () {
   const [form] = Form.useForm()
-  const mockRemoteValidation = (isFetching, searchString) => {
+  const mockRemoteValidation = (isValid) => {
     return {
-      listQuery: {
-        isFetching: isFetching,
-        data: {
-          data: [{
-            id: 'fakeid',
-            name: 'error'
-          }]
-        }
-      },
-      payload: {
-        searchString: searchString 
-      },
+      queryResult: [],
       message: 'error message',
+      isValidating: false,
+      validator: () => isValid,
       updateQuery: () => {}
     }
   }
@@ -38,24 +29,26 @@ export function BasicForm () {
   
   return (
     <Form {...formItemLayout} form={form}>
-      <FormValidationItem
-        label='Normal'
-        placeholder='Type something'
-      />
+      <Form.Item label='Normal'>
+        <Input placeholder='Type something' />
+      </Form.Item>
       <FormValidationItem
         name='validating'
         label='Validating'
-        remoteValidation={mockRemoteValidation(true, 'text')}
+        value=''
+        remoteValidation={mockRemoteValidation(true)}
       />
       <FormValidationItem
         name='error'
         label='Error'
-        remoteValidation={mockRemoteValidation(false, 'error')}
+        value='error'
+        remoteValidation={mockRemoteValidation(false)}
       />
       <FormValidationItem
         name='success'
         label='Success'
-        remoteValidation={mockRemoteValidation(false, 'text')}
+        value='text'
+        remoteValidation={mockRemoteValidation(true)}
       />
     </Form>
   )
