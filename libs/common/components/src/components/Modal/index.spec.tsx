@@ -4,7 +4,6 @@ import { render } from '@testing-library/react'
 import { Modal } from '.'
 
 describe('Modal', () => {
-
   it('should match snapshot', async () => {
     const handleCancel = jest.fn()
     const handleConfirm = jest.fn()

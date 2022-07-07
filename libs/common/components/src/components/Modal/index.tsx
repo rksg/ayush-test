@@ -1,6 +1,6 @@
-import { CloseSymbol } from '@acx-ui/icons'
 import { Modal as AntdModal, ModalProps as AntdModalProps } from 'antd'
-import { useState } from 'react'
+
+import { CloseSymbol } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
@@ -9,20 +9,6 @@ interface ModalProps extends AntdModalProps {
 }
 
 export function Modal ({ ...props }: ModalProps) {
-  const [visible, setVisible] = useState(false)
-
-  const showModal = () => {
-    setVisible(true)
-  }
-
-  const handleOk = () => {
-    setVisible(false)
-  }
-
-  const handleCancel = () => {
-    setVisible(false)
-  }
-
   return (
     <AntdModal
       {...props}
@@ -35,7 +21,7 @@ export function Modal ({ ...props }: ModalProps) {
 const TitleWithSubtitle = (title: React.ReactNode, subTitle: string) => {
   return (
     <>
-      <>{title}</>
+      {title}
       <UI.SubTitleWrapper children={subTitle} />
     </>
   )
