@@ -37,7 +37,7 @@ export const Wrapper = styled.div<WrapperProps>`
   display: flex;
   flex-direction: column;
   background-color:var(--acx-neutrals-10);
-  height: ${(props) => (props.hasTimePicker ? '95.2%;' : '94.6%;')}
+  height: ${(props) => (props.hasTimePicker ? '95%;' : '94.6%;')}
   padding: 20px;
   top: 9px;
   border-radius: 4px 0 0 4px;

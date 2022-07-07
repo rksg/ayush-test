@@ -1,31 +1,17 @@
 
 import  { useEffect, useState, useRef } from 'react'
 
-import { TimePicker, Row, Col } from 'antd'
-import { DatePicker }           from 'antd'
-import moment                   from 'moment'
+import { TimePicker, Row, Col, DatePicker } from 'antd'
+import moment                               from 'moment'
 
-import { defaultRanges } from '@acx-ui/analytics/utils'
-import { DateRange }     from '@acx-ui/analytics/utils'
-import { ArrowDown }     from '@acx-ui/icons'
+import { defaultRanges, DateRange } from '@acx-ui/analytics/utils'
+import { ArrowDown }                from '@acx-ui/icons'
 
 import { Button } from '../Button'
 
 import * as UI from './styledComponents'
 
 import type { Moment  } from 'moment'
-
-
-const styles = {
-  timePicker: {
-    width: '50px',
-    height: '24px',
-    padding: '4px'
-  },
-  timePickerCol: { marginLeft: 12, marginRight: 12 },
-  button: { height: '24px',width: '56px' },
-  rangePicker: { width: '100%' }
-}
 
 type DateRangeType = { 'start': moment.Moment | null, 'end' : moment.Moment | null}
 type RangeValueType = [Moment | null, Moment | null] | null
@@ -46,16 +32,27 @@ interface CalenderFooterProps {
   range: DateRangeType;
   setIscalenderOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
-const { RangePicker } = DatePicker
+const styles = {
+  timePicker: {
+    width: '50px',
+    height: '24px',
+    padding: '4px'
+  },
+  timePickerCol: { marginLeft: 12, marginRight: 12 },
+  button: { height: '24px',width: '56px' },
+  rangePicker: { width: '100%' }
+}
 const timePickerConfig = [
   { id: 1, range: 'start', value: 'hour', format: 'HH', offset: 6, hasSemiColon: true },
   { id: 2, range: 'start', value: 'minutes', format: 'mm', offset: 0, hasHyphen: true },
   { id: 3, range: 'end', value: 'hour', format: 'HH', offset: 0, hasSemiColon: true },
   { id: 4, range: 'end', value: 'minutes', format: 'mm', offset: 0 }
 ]
-
+const { RangePicker } = DatePicker
+const dateFormat = 'DD/MM/YYYY'
+const dateWithTimeFormat= 'DD/MM/YYYY HH:mm'
 const getCustomisedDate = (date: Moment | null, showTimePicker?: boolean ) => 
-  showTimePicker ? date?.format('DD/MM/YYYY HH:mm') : date?.format('DD/MM/YYYY')
+  showTimePicker ? date?.format(dateWithTimeFormat) : date?.format(dateFormat)
 
 const CalenderFooter: React.FC<CalenderFooterProps> = 
 ({ showTimePicker, range, setRange, setIscalenderOpen }) => {
@@ -70,8 +67,7 @@ const CalenderFooter: React.FC<CalenderFooterProps> =
     (range[config.range as keyof DateRangeType] as Moment)
       .set(config.value as moment.unitOfTime.All, 
         time.get(config.value as moment.unitOfTime.All)) })
-
-  
+        
   return <>
     {showTimePicker &&
     <Row>
@@ -90,9 +86,7 @@ const CalenderFooter: React.FC<CalenderFooterProps> =
               suffixIcon= {<ArrowDown/>}
               allowClear = {false}
               style = {styles.timePicker}
-              getPopupContainer={(node: HTMLElement) => 
-                node
-              }
+              getPopupContainer={(node: HTMLElement) => node}
               onSelect={(time) => onTimePickerSelect(config, time)}
               value={range[config.range as keyof DateRangeType]}
               disabled = {!range[config.range as keyof DateRangeType]}
@@ -144,7 +138,7 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
     if(typeof onDateChange === 'function') onDateChange(range)}
   ,[range, onDateChange])
   return ( 
-    <UI.Wrapper hasTimePicker = {showTimePicker} >
+    <UI.Wrapper hasTimePicker = {showTimePicker}>
       <RangePicker 
         style={styles.rangePicker}
         ranges={showRanges ? 
@@ -155,11 +149,10 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
         dropdownClassName='acx-range-picker-popup'
         open = {isCalenderOpen}
         onClick = {() => setIscalenderOpen (true)}
-        getPopupContainer={(triggerNode: HTMLElement) => 
-          triggerNode }
-        onCalendarChange={(values: RangeValueType) => {
+        getPopupContainer={(triggerNode: HTMLElement) => triggerNode }
+        onCalendarChange={(values: RangeValueType) => 
           setRange({ start: values ? values[0] : null ,end: values ? values[1] : null })
-        }}
+        }
         mode = {['date', 'date']}
         renderExtraFooter={() => 
           <CalenderFooter 
@@ -169,7 +162,7 @@ export const CalenderRangePicker: React.FC<CalenderRangePickerProps> =
             setIscalenderOpen = {setIscalenderOpen}/>}
         {...props}
         value = {[range?.start, range?.end]}
-        format={showTimePicker ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'}
+        format={showTimePicker ? dateWithTimeFormat : dateFormat}
         allowClear = {false}
       />
     </UI.Wrapper>
