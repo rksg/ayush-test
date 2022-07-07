@@ -1,8 +1,15 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }             from '@acx-ui/analytics/services'
-import { GlobalFilter }        from '@acx-ui/analytics/utils'
-import { TrafficByVolumeData } from '@acx-ui/utils'
+import { dataApi }      from '@acx-ui/analytics/services'
+import { GlobalFilter } from '@acx-ui/analytics/utils'
+
+export type TrafficByVolumeData = {
+  time: string[]
+  totalTraffic_all: number[]
+  totalTraffic_6: number[]
+  totalTraffic_5: number[]
+  totalTraffic_24: number[]
+}
 
 interface Response <TimeSeriesData> {
   network: {

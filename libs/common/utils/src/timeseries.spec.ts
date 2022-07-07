@@ -1,8 +1,5 @@
-import { formatter }   from './formatter'
-import { 
-  TrafficByVolumeData, 
-  TimeSeriesKey, 
-  NetworkHistoryData }   from './timeseries'
+
+import { formatter } from './formatter'
 
 import { getSeriesData } from './index'
 
@@ -10,14 +7,14 @@ const seriesMapping = [
   { key: 'newClientCount', name: 'New Clients' },
   { key: 'impactedClientCount', name: 'Impacted Clients' },
   { key: 'connectedClientCount', name: 'Connected Clients' }
-] as TimeSeriesKey
+] as Array<{ key: string, name: string }>
 
 const TrafficByVolumeseriesMapping = [
   { key: 'totalTraffic_all', name: 'All Radios' },
   { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },
   { key: 'totalTraffic_5', name: formatter('radioFormat')('5') },
   { key: 'totalTraffic_6', name: formatter('radioFormat')('6') }
-] as TimeSeriesKey
+] as Array<{ key: string, name: string }>
 
 const sample = {
   time: [
@@ -48,7 +45,7 @@ const TrafficByVolumeDataSample = {
 
 describe('getSeriesData', ()=>{
   it('should return correct format', ()=>{
-    expect(getSeriesData(sample as NetworkHistoryData , seriesMapping))
+    expect(getSeriesData(sample , seriesMapping))
       .toEqual([
         {
           name: 'New Clients',
@@ -72,7 +69,7 @@ describe('getSeriesData', ()=>{
 
 describe('getSeriesData for TrafficByVolume', ()=>{
   it('should return correct format', ()=>{
-    expect(getSeriesData(TrafficByVolumeDataSample as TrafficByVolumeData,
+    expect(getSeriesData(TrafficByVolumeDataSample,
       TrafficByVolumeseriesMapping))
       .toEqual([
         {

@@ -2,14 +2,15 @@ import React from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter }              from '@acx-ui/analytics/utils'
-import { Card }                         from '@acx-ui/components'
-import { Loader }                       from '@acx-ui/components'
-import { MultiLineTimeSeriesChart }     from '@acx-ui/components'
-import { cssStr }                       from '@acx-ui/components'
-import { getSeriesData, TimeSeriesKey } from '@acx-ui/utils'
-import { formatter }                    from '@acx-ui/utils'
+import { useGlobalFilter }          from '@acx-ui/analytics/utils'
+import { Card }                     from '@acx-ui/components'
+import { Loader }                   from '@acx-ui/components'
+import { MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { cssStr }                   from '@acx-ui/components'
+import { getSeriesData }            from '@acx-ui/utils'
+import { formatter }                from '@acx-ui/utils'
 
+import { TrafficByVolumeData }     from './services'
 import { useTrafficByVolumeQuery } from './services'
 
 export const seriesMapping = [
@@ -17,7 +18,7 @@ export const seriesMapping = [
   { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },
   { key: 'totalTraffic_5', name: formatter('radioFormat')('5') },
   { key: 'totalTraffic_6', name: formatter('radioFormat')('6') }
-] as TimeSeriesKey
+] as Array<{ key: keyof Omit<TrafficByVolumeData, 'time'>, name: string }>
 
 const lineColors = [
   cssStr('--acx-primary-black'),
