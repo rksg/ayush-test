@@ -1,0 +1,33 @@
+import '@testing-library/jest-dom'
+import { render } from '@testing-library/react'
+
+import { Modal } from '.'
+
+describe('Modal', () => {
+
+  it('should match snapshot', async () => {
+    const handleCancel = jest.fn()
+    const handleConfirm = jest.fn()
+    const content = <>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+    </>
+    const footer = [
+      <button key='cancel' onClick={handleCancel}>
+        Cancel
+      </button>,
+      <button key='confirm' onClick={handleConfirm}>
+        Confirm
+      </button>
+    ]
+    const { asFragment } = render(<Modal
+      title='Basic Modal'
+      closable={false}
+      content={content}
+      footer={footer}
+    />)
+    // TODO: snapshow showing DocumentFragment only, need to fix
+    expect(asFragment()).toMatchSnapshot()
+  })
+})
