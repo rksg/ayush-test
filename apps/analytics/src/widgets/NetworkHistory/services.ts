@@ -17,7 +17,7 @@ interface Response <TimeSeriesData> {
     }
   }
 }
-// TODO: Make it dynamic
+
 const severity = [
   {
     gt: 0.9,
@@ -36,7 +36,7 @@ const severity = [
     lte: 0.6
   }
 ]
-// TODO: Make it dynamic
+
 const code = [
   'ttc',
   'ttc+radius-failure',
@@ -108,8 +108,8 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: 'PT15M',
-          severity: severity, //TODO: Fetch severity dynamically
-          code: code //TODO: Fetch code dynamically
+          severity: severity,
+          code: code
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'NETWORK_HISTORY' }],
