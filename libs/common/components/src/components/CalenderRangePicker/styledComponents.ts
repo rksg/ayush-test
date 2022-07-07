@@ -18,6 +18,7 @@ export const Wrapper = styled.div<WrapperProps>`
 .ant-picker-panel-container {
     border-radius: 0px 4px 4px 0;
     background: var(--acx-primary-white);
+    box-shadow: 6px 2px 6px 2px rgb(0 0 0 / 5%), 6px 2px 6px 2px rgb(0 0 0 / 5%);
 }   
 .ant-picker-range .ant-picker-active-bar {
     background: var(--acx-accents-blue-50);
@@ -37,16 +38,16 @@ export const Wrapper = styled.div<WrapperProps>`
   }
  .ant-picker-ranges{
   position: absolute;
-  left: -122px;
+  left: -120px;
   width: 22%;
   display: flex;
   flex-direction: column;
   background-color:var(--acx-neutrals-10);
-  height: ${(props) => (props.hasTimePicker ? '95%;' : '94.6%;')}
+  height: ${(props) => (props.hasTimePicker ? '356px;' : '318px;')}
   padding: 20px;
   top: 9px;
   border-radius: 4px 0 0 4px;
-  box-shadow:  -4px 4px 6px 0 rgb(0 0 0 / 12%)
+  box-shadow:  -6px 2px 6px 4px rgb(0 0 0 / 5%), -6px 2px 6px -2px rgb(0 0 0 / 5%);
  } 
 .ant-picker-footer-extra{
   background-color:white;
@@ -54,7 +55,7 @@ export const Wrapper = styled.div<WrapperProps>`
 }
 .ant-picker-panels{
   background-color:white;
-  padding-left: 12px;
+  padding-left: 14px;
   padding-right: 12px;
 }
 .calender-range-apply-row{
