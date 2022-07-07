@@ -68,7 +68,7 @@ describe('Form With Validation Item', () => {
     expect(remote.updateQuery).toHaveBeenCalled()
   })
 
-  it('should render Validation Item with success icon when object has not existed', async () => {
+  it('should render Validation Item with success icon when validation success', async () => {
     const remote = mockRemoteValidation(true)
     render(
       <Form>
@@ -92,7 +92,7 @@ describe('Form With Validation Item', () => {
     expect(remote.validator).toHaveBeenCalled()
   })
 
-  it('should render Validation Item with error status when object has existed', async () => {
+  it('should render Validation Item with error status when validation fails', async () => {
     const remote = mockRemoteValidation(false)
     render(
       <Form>
