@@ -6,7 +6,7 @@ import { DateRange } from '@acx-ui/analytics/utils'
 import { CalenderRangePicker } from '.'
 
 storiesOf('CalenderRangePicker', module).add('Basic', () => (
-  <div style = {{
+  <div style={{
     position: 'absolute',
     top: 100,
     left: 500
@@ -15,28 +15,28 @@ storiesOf('CalenderRangePicker', module).add('Basic', () => (
   </div>
 ))
 storiesOf('CalenderRangePicker', module).add('with default Ranges', () => (
-  <div style = {{
+  <div style={{
     position: 'absolute',
     top: 100,
     left: 500
   }}>
-    <CalenderRangePicker 
+    <CalenderRangePicker
       showRanges
     />
   </div>
 ))
 storiesOf('CalenderRangePicker', module).add('with custom ranges', () => (
-  <div style = {{
+  <div style={{
     position: 'absolute',
     top: 100,
     left: 500
   }}>
-    <CalenderRangePicker rangeOptions= {[DateRange.today, DateRange.last7Days]}
+    <CalenderRangePicker rangeOptions={[DateRange.today, DateRange.last7Days]}
       showRanges
     /></div>
 ))
 storiesOf('CalenderRangePicker', module).add('with custom time picker and ranges ', () => (
-  <div style = {{
+  <div style={{
     position: 'absolute',
     top: 100,
     left: 500
@@ -46,17 +46,16 @@ storiesOf('CalenderRangePicker', module).add('with custom time picker and ranges
       showRanges
     />
   </div>
- 
 ))
 
 storiesOf('CalenderRangePicker', module).add('with restricted date selection', () => (
-  <div style = {{
+  <div style={{
     position: 'absolute',
     top: 100,
     left: 500
   }}>
     <CalenderRangePicker
-      rangeOptions= {[DateRange.today, DateRange.last7Days]}
+      rangeOptions={[DateRange.today, DateRange.last7Days]}
       showTimePicker
       enableDates={[moment().subtract(7, 'days').seconds(0),
         moment().seconds(0)]}
@@ -65,20 +64,19 @@ storiesOf('CalenderRangePicker', module).add('with restricted date selection', (
   </div>
 ))
 storiesOf('CalenderRangePicker', module).add('with user default selected date', () => (
-  <div style = {{
+  <div style={{
     position: 'absolute',
     top: 100,
     left: 500
   }}>
     <CalenderRangePicker
-      rangeOptions= {[DateRange.today, DateRange.last7Days]}
+      rangeOptions={[DateRange.today, DateRange.last7Days]}
       showTimePicker
       enableDates={[moment().subtract(1, 'month').seconds(0),
         moment().seconds(0)]}
       showRanges
-      selectedRange=
-        {{ start: moment().subtract(7, 'days').seconds(0), 
-          end: moment().seconds(0) }}
+      selectedRange={{ start: moment().subtract(7, 'days').seconds(0),
+        end: moment().seconds(0) }}
     />
   </div>
 ))
