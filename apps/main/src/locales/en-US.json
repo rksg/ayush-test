@@ -2,7 +2,7 @@
   "title": "Dashboard",
   "pageHeaderMenu": {
     "add": "Add",
-    "enterOrg": "Entire Organization",
+    "entireOrg": "Entire Organization",
     "last24Hrs": "Last 24 Hours"
   }
 }
