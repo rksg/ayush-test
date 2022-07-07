@@ -3,7 +3,6 @@
  *
  * Notes:
  * - Override here if there isn't a wrapper for antd components, otherwise use styled-components
- * - Sort alphanumerically to make it easier to locate styles
  */
 
 :root {
@@ -226,6 +225,16 @@
       }
       &.toast-error .ant-message-notice-content {
         background: var(--acx-semantics-red-60);
+      }
+    }
+  }
+
+  .ant-modal {
+    &:not(.ant-modal-confirm) {
+      .ant-modal-footer {
+        .ant-btn + .ant-btn:not(.ant-dropdown-trigger) {
+          margin-left: 16px;
+        }
       }
     }
   }
