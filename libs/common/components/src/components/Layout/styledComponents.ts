@@ -30,7 +30,7 @@ export const Wrapper = styled.div`
           background-color: var(--acx-primary-black);
         }
         &:after {
-          background-color: var(--acx-neutrals-5);
+          background-color: var(--acx-neutrals-10);
           border-top-left-radius: 20px;
         }
       }
@@ -44,7 +44,7 @@ export const Wrapper = styled.div`
         &-selected {
           background-color: transparent;
           .ant-menu-submenu-title{
-            font-weight: 600;
+            font-weight: var(--acx-headline-4-font-weight-bold);
             border-left-color: var(--acx-accents-orange-50);
             background-color: var(--acx-neutrals-70);
           }
@@ -65,10 +65,10 @@ export const Wrapper = styled.div`
             padding-left: 16px !important;
             font-size: var(--acx-headline-5-font-size);
             opacity: 60%;
-            font-weight: 400;
+            font-weight: var(--acx-headline-5-font-weight);
             &-selected {
               opacity: 100%;
-              font-weight: 600;
+              font-weight: var(--acx-headline-5-font-weight-semi-bold);
             }
           }
         }
@@ -80,7 +80,7 @@ export const Wrapper = styled.div`
         font-size: var(--acx-headline-4-font-size);
         line-height: 38px;
         &-selected {
-          font-weight: 600;
+          font-weight: var(--acx-headline-4-font-weight-bold);
           border-left-color: var(--acx-accents-orange-50);
         }
         .ant-menu-title-content {
@@ -145,7 +145,7 @@ export const Wrapper = styled.div`
 
   .ant-layout-content {
     margin: 0;
-    background-color: var(--acx-neutrals-5);
+    background-color: var(--acx-neutrals-10);
   }
 `
 
@@ -163,7 +163,7 @@ export const Content = styled.div`
     top: var(--acx-header-height);
     height: var(--acx-content-vertical-space);
     width: 100%;
-    background-color: var(--acx-neutrals-5);
+    background-color: var(--acx-neutrals-10);
     z-index: 2;
   }
 `

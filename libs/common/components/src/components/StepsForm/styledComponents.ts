@@ -18,12 +18,12 @@ export const Wrapper = styled.section<{ editMode?: boolean }>`
   --acx-steps-form-steps-title-color: var(--acx-primary-black);
   --acx-steps-form-steps-title-font-size: var(--acx-body-4-font-size);
   --acx-steps-form-steps-title-line-height: var(--acx-body-4-line-height);
-  --acx-steps-form-steps-active-title-font-weight: 700;
+  --acx-steps-form-steps-active-title-font-weight: var(--acx-body-font-weight-bold);
   --acx-steps-form-steps-step-size: 12px;
   --acx-steps-form-steps-step-color: var(--acx-accents-orange-50);
 
   --acx-steps-form-form-title-font-size: var(--acx-headline-3-font-size);
-  --acx-steps-form-form-title-font-weight: 500;
+  --acx-steps-form-form-title-font-weight: var(--acx-headline-3-font-weight);
   --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
   --acx-steps-form-form-title-margin-bottom: 16px;
 
@@ -163,7 +163,7 @@ export const StepsContainer = styled.div`
   height: 100%;
   width: 100%;
   max-width: var(--acx-steps-form-steps-container-max-width);
-  background-color: var(--acx-neutrals-5);
+  background-color: var(--acx-neutrals-10);
   z-index: 1;
 `
 
@@ -197,12 +197,11 @@ export const ActionsContainer = styled.div`
   );
   display: flex;
   justify-content: flex-start;
-  background-color: var(--acx-neutrals-5);
+  background-color: var(--acx-neutrals-10);
   z-index: 3; // to have it appear above other content
 `
 
 export const Container = styled.div`
-  display: flex;
   .ant-pro-steps-form-container {
     margin: unset;
     margin: var(--acx-steps-form-container-margin);

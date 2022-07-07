@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1ik4x5l-0 fisgiV"
+    class="styledComponents__Wrapper-sc-1ik4x5l-0 ctpEmk"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -491,7 +491,7 @@ exports[`Layout should render correctly 1`] = `
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__Content-sc-1ik4x5l-1 jkDkaA"
+              class="styledComponents__Content-sc-1ik4x5l-1 hNBcPA"
             >
               <div>
                 content

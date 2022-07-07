@@ -1,35 +1,48 @@
 import { useState, useRef } from 'react'
 
-import { message } from 'antd'
-
 import {
   PageHeader,
+  showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import { useCreateNetworkMutation } from '@acx-ui/rc/services'
-import { NetworkTypeEnum }          from '@acx-ui/rc/utils'
+import {
+  NetworkTypeEnum,
+  CreateNetworkFormFields,
+  NetworkSaveData
+} from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CreateNetworkFormFields, NetworkSaveData } from './interface'
-import { NetworkDetailForm }                        from './NetworkDetail/NetworkDetailForm'
-import { AaaSettingsForm }                          from './NetworkSettings/AaaSettingsForm'
-import { NetworkSummaryForm }                       from './NetworkSummary/NetworkSummaryForm'
-import { Venues }                                   from './Venues/Venues'
+import { NetworkTypeTitle }  from './contentsMap'
+import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext    from './NetworkFormContext'
+import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }  from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
+import { SummaryForm }       from './NetworkSummary/SummaryForm'
+import {
+  transferDetailToSave,
+  tranferSettingsToSave
+} from './parser'
+import { Venues } from './Venues/Venues'
 
 export function NetworkForm () {
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
+  const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
+
   const [createNetwork] = useCreateNetworkMutation()
   //DetailsState
   const [state, updateState] = useState<CreateNetworkFormFields>({
     name: '',
     type: NetworkTypeEnum.AAA,
+    isCloudpathEnabled: false,
     venues: []
   })
   const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
@@ -41,6 +54,12 @@ export function NetworkForm () {
   const [saveState, updateSaveState] = useState<NetworkSaveData>()
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
+    if( state.isCloudpathEnabled ){
+      delete saveState?.accountingRadius
+      delete saveState?.authRadius
+    }else{
+      delete saveState?.cloudpathServerId
+    }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -51,7 +70,10 @@ export function NetworkForm () {
       await createNetwork({ params, payload: saveState }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
-      message.error('An error occurred')
+      showToast({
+        type: 'error',
+        content: 'An error occurred'
+      })
     }
   }
   return (
@@ -78,22 +100,29 @@ export function NetworkForm () {
             return true
           }}
         >
-          <NetworkDetailForm />
+          <NetworkFormContext.Provider value={{ setNetworkType }}>
+            <NetworkDetailForm />
+          </NetworkFormContext.Provider>
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
-          name='aaaSettings'
-          title='AAA Settings'
+          name='Settings'
+          title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
           validateTrigger='onBlur'
           onFinish={async (data) => {
-            const aaaSaveData = tranferAaaSettingsToSave(data)
-
+            data = {
+              ...data,
+              ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
+            }
+            const settingSaveData = tranferSettingsToSave(data)
             updateData(data)
-            updateSaveData(aaaSaveData)
+            updateSaveData(settingSaveData)
             return true
           }}
         >
-          <AaaSettingsForm />
+          {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+          {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
+          {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
@@ -109,103 +138,9 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm name='summary' title='Summary'>
-          <NetworkSummaryForm summaryData={state} />
+          <SummaryForm summaryData={state} />
         </StepsForm.StepForm>
       </StepsForm>
     </>
   )
-}
-
-function transferDetailToSave (data: any) {
-  return {
-    name: data.name,
-    description: data.description,
-    type: data.type,
-    wlan: {
-      ssid: data.name
-    }
-  }
-}
-
-function tranferAaaSettingsToSave (data: any) {
-  let saveData = {
-    wlan: {
-      wlanSecurity: data.wlanSecurity
-    }
-  }
-
-  if (data.isCloudpathEnabled) {
-    saveData = {
-      ...saveData,
-      ...{
-        cloudpathServerId: data.cloudpathServerId,
-        enableAccountingProxy: false,
-        enableAuthProxy: false
-      }
-    }
-  } else {
-    let authRadius = {
-      primary: {
-        ip: data['authRadius.primary.ip'],
-        port: data['authRadius.primary.port'],
-        sharedSecret: data['authRadius.primary.sharedSecret']
-      }
-    }
-    if (data['authRadius.secondary.ip']) {
-      authRadius = {
-        ...authRadius,
-        ...{
-          secondary: {
-            ip: data['authRadius.secondary.ip'],
-            port: data['authRadius.secondary.port'],
-            sharedSecret: data['authRadius.secondary.sharedSecret']
-          }
-        }
-      }
-    }
-
-    saveData = {
-      ...saveData,
-      ...{
-        enableAccountingProxy: data.enableAccountingProxy,
-        enableAuthProxy: data.enableAuthProxy,
-        authRadius
-      }
-    }
-
-    if (data.enableAccountingService === true) {
-      let accountingRadius = {}
-      accountingRadius = {
-        ...accountingRadius,
-        ...{
-          primary: {
-            ip: data['accountingRadius.primary.ip'],
-            port: data['accountingRadius.primary.port'],
-            sharedSecret: data['accountingRadius.primary.sharedSecret']
-          }
-        }
-      }
-
-      if (data['accountingRadius.secondary.ip']) {
-        accountingRadius = {
-          ...accountingRadius,
-          ...{
-            secondary: {
-              ip: data['accountingRadius.secondary.ip'],
-              port: data['accountingRadius.secondary.port'],
-              sharedSecret: data['accountingRadius.secondary.sharedSecret']
-            }
-          }
-        }
-      }
-
-      saveData = {
-        ...saveData,
-        ...{
-          accountingRadius
-        }
-      }
-    }
-  }
-  return saveData
 }

@@ -1,5 +1,3 @@
-import { SortOrder } from 'antd/lib/table/interface'
-
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import { useNetworkListQuery, Network }                  from '@acx-ui/rc/services'
 import {
@@ -16,7 +14,7 @@ const columns: TableProps<Network>['columns'] = [
     title: 'Network Name',
     dataIndex: 'name',
     sorter: true,
-    defaultSortOrder: 'ascend' as SortOrder,
+    defaultSortOrder: 'ascend',
     render: function (data, row) {
       return (
         <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
@@ -33,19 +31,19 @@ const columns: TableProps<Network>['columns'] = [
     dataIndex: 'nwSubType',
     sorter: true,
     render: function (data, row) {
-      return transformNetworkType(data, row)
+      return transformNetworkType(String(data), row)
     }
   },
   {
     title: 'Venues',
-    dataIndex: 'venues',
+    dataIndex: ['venues', 'count'],
     sorter: true,
     align: 'center',
-    render: function (data, row) {
+    render: function (count, row) {
       return (
         <TenantLink
           to={`/networks/${row.id}/network-details/venues`}
-          children={data ? data.count : 0}
+          children={count ? count : 0}
         />
       )
     }
