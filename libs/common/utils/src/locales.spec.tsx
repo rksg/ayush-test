@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import _        from 'lodash'
 import { rest } from 'msw'
 
 import {
@@ -18,11 +19,13 @@ import {
 const messages = {
   'en-US': {
     lang: 'Language',
-    nested: { lang: 'Language' }
+    nested: { lang: 'Language' },
+    stepsForm: { cancel: 'Cancel' }
   },
   'de-DE': {
     lang: 'Sprache',
-    nested: { lang: 'Sprache' }
+    nested: { lang: 'Sprache' },
+    stepsForm: { cancel: 'Absagen' }
   }
 }
 
@@ -37,13 +40,22 @@ describe('loadLocale', () => {
 
     const en = await loadLocale('en-US')
     expect(en).toEqual(expect.objectContaining({
-      ...messages['en-US'],
+      ..._.omit(messages['en-US'], 'stepsForm'),
       'nested.lang': 'Language'
     }))
+    expect(en!.stepsForm).toEqual(expect.objectContaining({
+      cancel: expect.any(String),
+      next: expect.any(String)
+    }))
+
     const de = await loadLocale('de-DE')
     expect(de).toEqual(expect.objectContaining({
-      ...messages['de-DE'],
+      ..._.omit(messages['de-DE'], 'stepsForm'),
       'nested.lang': 'Sprache'
+    }))
+    expect(de!.stepsForm).toEqual(expect.objectContaining({
+      cancel: expect.any(String),
+      next: expect.any(String)
     }))
   })
 
@@ -57,13 +69,9 @@ describe('loadLocale', () => {
       })
     )
 
-    const expected = expect.objectContaining({
-      ...messages['en-US'],
-      'nested.lang': 'Language'
-    })
-
-    expect(await loadLocale('en-US')).toEqual(expected)
-    expect(await loadLocale('en-US')).toEqual(expected)
+    await loadLocale('en-US')
+    // should throw if cache not being use
+    await loadLocale('en-US')
   })
 })
 

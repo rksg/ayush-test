@@ -1,6 +1,7 @@
 import { createContext, ReactElement, useContext, useEffect, useState } from 'react'
 
 import { Locale } from 'antd/lib/locale-provider'
+import { merge }  from 'lodash'
 
 type Message = string | NestedMessages
 type NestedMessages = { [key: string]: Message }
@@ -27,7 +28,7 @@ async function loadEnUS (): Promise<Messages> {
   const translation: NestedMessages = await fetch('/locales/en-US.json')
     .then(res => res.json())
 
-  const combine = { ...base, ...proBase, ...translation }
+  const combine = merge({}, base, proBase, translation)
   return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
 }
 
@@ -37,7 +38,7 @@ async function loadDe (): Promise<Messages> {
   const translation: NestedMessages = await fetch('/locales/de-DE.json')
     .then(res => res.json())
 
-  const combine = { ...base, ...proBase, ...translation }
+  const combine = merge({}, base, proBase, translation)
   return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
 }
 
