@@ -1,52 +1,35 @@
 import React from 'react'
 
-import { ConfigProvider }                   from 'antd'
-import enUS                                 from 'antd/lib/locale/en_US'
-import { createRoot }                       from 'react-dom/client'
-import { IntlProvider, ResolvedIntlConfig } from 'react-intl'
+import { ConfigProvider } from 'antd'
+import { createRoot }     from 'react-dom/client'
+import { IntlProvider }   from 'react-intl'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 import { Provider }      from '@acx-ui/store'
+import { loadLocale }    from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
 
 import '@acx-ui/theme'
 
-type MessagesType = ResolvedIntlConfig['messages']
+export async function init () {
+  const container = document.getElementById('root')
+  const root = createRoot(container!)
+  const locale = await loadLocale('en-US')
 
-const lang = 'en-US'
-const contents: Record<string, MessagesType> = {
-  'en-US': {
-    ...(enUS as unknown as MessagesType),
-    title: 'Dashboard',
-    description: 'Testing i18next framework integration',
-    add: 'Add',
-    entirOrg: 'Entire Organization',
-    last24Hrs: 'Last 24 Hours'
-  },
-  'de': {
-    title: 'DE: Dashboard',
-    description: 'De: Testing i18next framework integration',
-    add: 'De: Add',
-    entirOrg: 'De: Entire Organization',
-    last24Hrs: 'DE: Last 24 Hours'
-  }
+  root.render(
+    <React.StrictMode>
+      <IntlProvider locale={locale.locale} messages={locale}>
+        <ConfigProvider locale={locale}>
+          <Provider>
+            <BrowserRouter>
+              <React.Suspense fallback={null}>
+                <AllRoutes />
+              </React.Suspense>
+            </BrowserRouter>
+          </Provider>
+        </ConfigProvider>
+      </IntlProvider>
+    </React.StrictMode>
+  )
 }
-
-const container = document.getElementById('root')
-const root = createRoot(container!)
-root.render(
-  <React.StrictMode>
-    <IntlProvider locale={lang} messages={contents[lang]}>
-      <ConfigProvider locale={enUS}>
-        <Provider>
-          <BrowserRouter>
-            <React.Suspense fallback={null}>
-              <AllRoutes />
-            </React.Suspense>
-          </BrowserRouter>
-        </Provider>
-      </ConfigProvider>
-    </IntlProvider>
-  </React.StrictMode>
-)
