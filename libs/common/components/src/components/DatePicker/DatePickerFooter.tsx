@@ -40,9 +40,9 @@ const dateWithTimeFormat= 'DD/MM/YYYY HH:mm'
 const getCustomisedDate = (date: Moment | null, showTimePicker?: boolean ) =>
   showTimePicker ? date?.format(dateWithTimeFormat) : date?.format(dateFormat)
 
-export const DatePickerFooter: React.FC<DatePickerFooterProps> = 
-({ showTimePicker, range, defaultValue, setRange, setIscalenderOpen }) => {
-
+export const DatePickerFooter = ({ showTimePicker, range, defaultValue, 
+  setRange, setIscalenderOpen }: DatePickerFooterProps) => {
+    
   const onButtonClick = (type: string) =>{
     if(type === 'cancel')
       setRange(defaultValue)

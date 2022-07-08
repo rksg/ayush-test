@@ -72,9 +72,9 @@ const defaultRanges = (subRange?: DateRange[] | boolean) => {
   return defaultRange
 }
 
-export const DatePicker: React.FC<DatePickerProps> =
-({ showTimePicker, enableDates, rangeOptions,
-  selectedRange, onDateChange, ...props }) => {
+export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
+  selectedRange, onDateChange, ...props }:DatePickerProps) => {
+    
   const didMountRef = useRef(false)
   const [range, setRange] = useState<DateRangeType>(selectedRange)
   const [isCalenderOpen, setIscalenderOpen] = useState<boolean>(false)
