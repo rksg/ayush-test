@@ -1,53 +1,165 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }      from '@acx-ui/analytics/services'
-import { GlobalFilter } from '@acx-ui/analytics/utils'
+import { dataApi }                                              from '@acx-ui/analytics/services'
+import { GlobalFilter, NetworkPath, networkNodeTypeForDisplay } from '@acx-ui/analytics/utils'
 
-export interface NetworkNodeInfo {
+import { HeaderData } from './index'
+
+interface NetworkNodeInfo {
   type: string,
   name: string,
   clientCount?: number,
   apCount?: number,
-  switchCount?: number
+  switchCount?: number,
+  mac?: string,
+  model?: [string],
+  internalIp?: [string],
+  version?: [string],
+  firmware?: string,
+  portCount?: number,
 }
-
 interface Response <NetworkNodeInfo> {
   network: {
     node: NetworkNodeInfo
   }
 }
+type QueryVariables = {
+  path?: NetworkPath
+  startDate: string
+  endDate: string
+  mac?: string
+}
+const labelMap = {
+  type: 'Type',
+  model: 'Model',
+  firmware: 'Firmware',
+  version: 'Firmware',
+  mac: 'MAC Address',
+  internalIp: 'IP Address',
+  apCount: 'APs',
+  clientCount: 'Clients',
+  portCount: 'Ports',
+  switchCount: 'Switches'
+}
 
+const lowPreferenceList = [
+  '0.0.0.0', '0', 'Unknown'
+]
+
+const getAttributesByNodeType = (type: keyof typeof networkNodeTypeForDisplay): string[] => {
+  const defaultAttributes = ['type', 'apCount', 'clientCount' ]
+ 
+  const attributes = {
+    network: [...defaultAttributes, 'switchCount'],
+    zone: defaultAttributes,
+    apGroup: defaultAttributes,
+    AP: [
+      'model',
+      'version',            
+      'mac',
+      'internalIp',
+      'clientCount'
+    ],
+    switchGroup: [
+      'switchCount'
+    ],
+    switchSubGroup: [
+      'switchCount'
+    ],
+    switch: [
+      'model',
+      'firmware',
+      'portCount'
+    ]
+  }
+  return attributes[type]
+}
+
+const getQuery = (path: NetworkPath) : string => {
+  const [{ type }] = path.slice(-1)
+  switch (type) {
+    case 'AP':
+      return gql`query NetworkNodeInfo($startDate: DateTime, $endDate: DateTime, $mac: String){
+        network(start: $startDate, end: $endDate) {
+          node: ap(mac: $mac) {
+            type: __typename
+            name
+            ${getAttributesByNodeType(type).join('\n')}
+          }
+        }
+      }`
+    case 'switch': return gql`
+      query NetworkNodeInfo(
+        $path: [HierarchyNodeInput],
+        $startDate: DateTime,
+        $endDate: DateTime,
+        $mac: String
+      ){
+        network(start: $startDate, end: $endDate) {
+          node: switch(mac: $mac, path: $path) {
+            type
+            name
+            ${getAttributesByNodeType(type).join('\n')}
+          }
+        }
+      }
+    `
+    default: return gql`
+      query NetworkNodeInfo(
+        $path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime
+      ){
+        network(start: $startDate, end: $endDate) {
+          node: hierarchyNode(path:$path) {
+            name
+            ${getAttributesByNodeType(type as keyof typeof networkNodeTypeForDisplay).join('\n')}
+          }
+        }
+      }
+    `
+  }
+}
+
+const getQueryVariables = (payload: GlobalFilter): QueryVariables => {
+  const { startDate, endDate, path } = payload
+  const [{ type, name }] = path.slice(-1)
+  switch(type) {
+    case 'AP': return { ...payload, startDate, endDate, mac: name }
+    case 'switch': return { ...payload, mac: name }
+    default: return { ...payload }
+  }
+}
+
+const sortPreference = (values: string | string[]): string[] => Array.isArray(values)
+  ? [...values].sort(value => lowPreferenceList.includes(value) ? 1 : -1)
+  : [values]
+
+export const transformForDisplay = (data: NetworkNodeInfo): HeaderData => {
+  const { name } = data
+  const subTitle = Object.entries(data)
+    .filter(([key, value]) => value && key !== 'name')
+    .map(([key, value]) => ({
+      key: labelMap[key as keyof typeof labelMap],
+      value: key === 'type'
+        ? [networkNodeTypeForDisplay[value as keyof typeof networkNodeTypeForDisplay]]
+        : sortPreference(value)
+    }))
+  return { title: name, subTitle }
+}
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkNodeInfo: build.query<
-      NetworkNodeInfo,
+      HeaderData,
       GlobalFilter
     >({
       query: (payload) => ({
-        document: gql`
-          query Network($path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime) {
-            network(start: $startDate, end: $endDate) {
-              node: hierarchyNode(path: $path) {
-                type
-                name
-                type
-                clientCount
-                apCount
-                switchCount
-              }
-            }
-          }
-        `,
-        variables: {
-          path: payload.path,
-          start: payload.startDate,
-          end: payload.endDate
-        }
+        document: getQuery(payload.path),
+        variables: getQueryVariables(payload)
       }),
-      transformResponse: (response: Response<NetworkNodeInfo>) =>
-        response.network.node
+      transformResponse:
+        (response: Response<NetworkNodeInfo>): HeaderData =>
+          transformForDisplay(response.network.node)
     })
   })
 })
 
-export const { networkNodeInfoQuery } = api
+export const { useNetworkNodeInfoQuery } = api

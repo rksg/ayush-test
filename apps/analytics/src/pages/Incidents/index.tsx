@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Col, Row } from 'antd'
 
-import Header  from '../../components/Header'
+import Header from '../../components/Header'
 
 function Incidents () {
   return <>
