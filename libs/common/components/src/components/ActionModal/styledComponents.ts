@@ -1,8 +1,6 @@
 import { Collapse as AntCollapse, Button } from 'antd'
 import styled                              from 'styled-components/macro'
 
-export const CustomTemplate = styled.div``
-
 export const Content = styled.div`
   min-height: 43px;
 `
@@ -42,7 +40,7 @@ export const Collapse = styled(AntCollapse)`
       }
     }
   }
-  
+
   textarea {
     background: var(--acx-neutrals-10);
     border: 1px solid var(--acx-neutrals-30);

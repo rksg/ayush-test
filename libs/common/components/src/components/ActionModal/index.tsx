@@ -12,18 +12,23 @@ const { Panel } = Collapse
 const { TextArea } = Input
 
 export type ModalType = 'info' | 'error' | 'confirm'
-export type ModalAction = 'DELETE' | 'SHOW_ERRORS'
+
+type DeleteContent = {
+  action: 'DELETE',
+  entityName: string,
+  entityValue: string,
+  numOfEntities?: number,
+  confirmationText?: string
+}
+
+type ErrorContent = {
+  action: 'SHOW_ERRORS',
+  errorDetails: ErrorDetailsProps
+}
 
 export interface ModalProps extends ModalFuncProps {
   type: ModalType,
-  customContent?: {
-    action?: ModalAction,
-    errorDetails?: ErrorDetailsProps,
-    numOfEntities?: number,
-    entityName?: string,
-    entityValue?: string,
-    confirmationText?: string
-  }
+  customContent?: DeleteContent | ErrorContent
 }
 
 export interface ModalRef {
@@ -59,18 +64,9 @@ export const showActionModal = (props: ModalProps) => {
 }
 
 const transformProps = (props: ModalProps, modal: ModalRef) => {
-  const {
-    action,
-    content,
-    errorDetails = {},
-    numOfEntities,
-    entityName,
-    entityValue,
-    confirmationText
-  } = { ...props, ...props.customContent }
-
-  switch (action) {
+  switch (props.customContent?.action) {
     case 'DELETE':
+      const { numOfEntities, entityName, entityValue, confirmationText } = props.customContent
       const entityNameText = numOfEntities ? `${numOfEntities} ${entityName}` : entityValue
       const desp = (<>
         {`Are you sure you want to delete ${numOfEntities ? 'these' : 'this'} ${entityName}?`}
@@ -85,7 +81,10 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
       }
       break
     case 'SHOW_ERRORS':
-      const customContent = <CustomTemplate content={content} errors={errorDetails} modal={modal} />
+      const customContent = <ErrorTemplate
+        content={props.content}
+        errors={props.customContent.errorDetails}
+        modal={modal} />
       props = {
         ...props,
         content: customContent,
@@ -97,13 +96,13 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
   return props
 }
 
-function CustomTemplate (props: {
+function ErrorTemplate (props: {
   content: React.ReactNode,
   errors: ErrorDetailsProps,
   modal: ModalRef
 }) {
   return (
-    <UI.CustomTemplate>
+    <>
       <UI.Content>{props.content}</UI.Content>
       <UI.Footer>
         <CollapsePanel header='Technical details' content={props.errors} />
@@ -111,7 +110,7 @@ function CustomTemplate (props: {
           <Button type='primary' onClick={() => props.modal.destroy()}>OK</Button>
         </UI.FooterButtons>
       </UI.Footer>
-    </UI.CustomTemplate>
+    </>
   )
 }
 

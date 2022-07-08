@@ -41,7 +41,7 @@ const ConfirmDeleteWithValidation = () => {
 const mockErrorDetails = {
   headers: {
     normalizedNames: {},
-    lazyUpdate: null
+    lazyUpdate: false
   },
   status: 500,
   statusText: 'Internal Server Error',
