@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import ProTable           from '@ant-design/pro-table'
 import { Space, Divider } from 'antd'
 
@@ -20,6 +22,35 @@ export interface TableProps <RecordType>
 export function Table <RecordType extends object> (
   { type = 'tall', ...props }: TableProps<RecordType>
 ) {
+  const rowKey = props.rowKey || 'id'
+  const [selectedRowsData, setSelectedRowsData] = useState([] as RecordType[])
+  const defaultRowSelection: TableProps<RecordType>['rowSelection'] = {
+    // @ts-ignore
+    selectedRowKeys: selectedRowsData.map(item => item[rowKey]),
+    onChange: (selectedRowKeys, selectedRows) => {
+      setSelectedRowsData(selectedRows)
+    }
+  }
+  const onRowClick = (row: RecordType) => {
+    if (props.rowSelection) {
+      if (props.rowSelection?.type == 'radio') { // single select
+        setSelectedRowsData([row])
+      } else { // multiple select
+        // @ts-ignore
+        const rowIndex = selectedRowsData.findIndex(item => item[rowKey] == row[rowKey])
+        if (rowIndex === -1) {
+          setSelectedRowsData([...selectedRowsData, row])
+        } else {
+          let tmp = [...selectedRowsData]
+          tmp.splice(rowIndex, 1)
+          setSelectedRowsData(tmp)
+        }
+      }
+    }
+  }
+  if (props.rowSelection) {
+    props.rowSelection = { ...defaultRowSelection, ...props.rowSelection }
+  }
   return <UI.Wrapper $type={type} $rowSelection={props.rowSelection}>
     <ProTable<RecordType>
       {...props}
@@ -29,7 +60,10 @@ export function Table <RecordType extends object> (
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
       columns={props.columns}
       columnEmptyText={false}
-      tableAlertRender={({ selectedRowKeys, selectedRows, onCleanSelected }) => (
+      onRow={(record) => ({
+        onClick: () => { onRowClick(record) }
+      })}
+      tableAlertRender={({ selectedRowKeys, onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
             <span>{selectedRowKeys.length} selected</span>
@@ -40,10 +74,9 @@ export function Table <RecordType extends object> (
               <UI.ActionButton
                 key={option.label}
                 onClick={(event) => {
-                  console.log(selectedRowKeys, selectedRows)
                   event.preventDefault()
-                  option.onClick(selectedRows, () => { onCleanSelected() })
-                 }
+                  option.onClick(selectedRowsData, () => { onCleanSelected() })
+                }
                 }
                 children={option.label}
               />

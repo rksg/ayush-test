@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Form, Switch } from 'antd'
+import _                from 'lodash'
 
 import {
   Loader,
@@ -11,7 +12,6 @@ import {
 } from '@acx-ui/components'
 import { useVenueListQuery, Venue }               from '@acx-ui/rc/services'
 import { useTableQuery, CreateNetworkFormFields } from '@acx-ui/rc/utils'
-import _ from 'lodash'
 
 const defaultPayload = {
   searchString: '',
@@ -83,13 +83,15 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     } else {
       if (Array.isArray(row)) {
         row.forEach(item => {
-          if (selectedVenues.indexOf(item) !== -1) {
-            selectedVenues.splice(selectedVenues.indexOf(item), 1)
+          const index = selectedVenues.findIndex(i => i.id == item.id)
+          if (index !== -1) {
+            selectedVenues.splice(index, 1)
           } 
         })
       } else {
-        if (selectedVenues.indexOf(row) !== -1) {
-          selectedVenues.splice(selectedVenues.indexOf(row), 1)
+        const index = selectedVenues.findIndex(i => i.id == row.id)
+        if (index !== -1) {
+          selectedVenues.splice(index, 1)
         } 
       }
     }
@@ -104,7 +106,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
       item.activated = activated
       data.push(item)
-    });
+    })
     setTableData(data)
   }
 
@@ -120,7 +122,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       onClick: (rows) => { 
         handleActivateVenue(false, rows) 
       }
-    },
+    }
   ]
 
   useEffect(()=>{
@@ -170,7 +172,8 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       render: function (data, row) {
         return <Switch 
           checked={Boolean(data)} 
-          onClick={(checked: boolean) => {
+          onClick={(checked: boolean, event:Event) => {
+            event.stopPropagation()
             handleActivateVenue(checked, row)
           }} 
         />
@@ -211,12 +214,8 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
             rowKey='id'
             actions={actions}
             rowSelection={{
-              type: 'checkbox',
-              // ...tableQuery.rowSelection
+              type: 'checkbox'
             }}
-            onRow={(record) => ({
-              onClick: () => { tableQuery.onRowClick(record) }
-            })}
             columns={columns}
             dataSource={tableData}
             pagination={tableQuery.pagination}
