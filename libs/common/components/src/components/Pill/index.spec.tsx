@@ -12,12 +12,8 @@ describe('Pill', () => {
     const { asFragment } = render(<Pill value='123' trend='positive' />)
     expect(asFragment()).toMatchSnapshot()
   })
-  it('renders neutral trend', () => {
-    const { asFragment } = render(<Pill value='0' trend='neutral' />)
-    expect(asFragment()).toMatchSnapshot()
-  })
-  it('renders without trend', () => {
-    const { asFragment } = render(<Pill value='10' />)
+  it('renders no trend', () => {
+    const { asFragment } = render(<Pill value='0' trend='none' />)
     expect(asFragment()).toMatchSnapshot()
   })
 })

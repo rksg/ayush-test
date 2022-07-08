@@ -2,11 +2,11 @@ import React from 'react'
 
 import * as UI from './styledComponents'
 
-export type TrendType = 'neutral' | 'positive' | 'negative'
+export type TrendType = 'none' | 'positive' | 'negative'
 
 interface PillProps {
   value: string
-  trend?: TrendType
+  trend: TrendType
 }
 
 export function Pill ({ value, trend }: PillProps) {

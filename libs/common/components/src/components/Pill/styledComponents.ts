@@ -4,8 +4,7 @@ const pillColor = ({ trend }) => {
   switch (trend) {
     case 'positive': return '--acx-semantics-green-50'
     case 'negative': return '--acx-semantics-red-50'
-    case 'neutral': return '--acx-neutrals-50'
-    default: return '--acx-accents-blue-50'
+    case 'none': return '--acx-neutrals-50'
   }
 }
 export const Pill = styled.span`

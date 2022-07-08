@@ -10,7 +10,7 @@ exports[`Pill renders negative trend 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Pill renders neutral trend 1`] = `
+exports[`Pill renders no trend 1`] = `
 <DocumentFragment>
   <span
     class="styledComponents__Pill-sc-j61ge1-0 eJSgPA"
@@ -26,16 +26,6 @@ exports[`Pill renders positive trend 1`] = `
     class="styledComponents__Pill-sc-j61ge1-0 iMfUiN"
   >
     123
-  </span>
-</DocumentFragment>
-`;
-
-exports[`Pill renders without trend 1`] = `
-<DocumentFragment>
-  <span
-    class="styledComponents__Pill-sc-j61ge1-0 fkAcnY"
-  >
-    10
   </span>
 </DocumentFragment>
 `;
