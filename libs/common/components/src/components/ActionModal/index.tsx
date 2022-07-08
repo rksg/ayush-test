@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 
 import { Modal, Collapse, Form, Input } from 'antd'
+import { TextAreaRef }                  from 'antd/lib/input/TextArea'
 import { ModalFuncProps }               from 'antd/lib/modal'
 
 import { ExpandSquareUp, ExpandSquareDown } from '@acx-ui/icons'
@@ -8,6 +9,7 @@ import { ExpandSquareUp, ExpandSquareDown } from '@acx-ui/icons'
 import { Button } from '../Button'
 
 import * as UI from './styledComponents'
+
 const { Panel } = Collapse
 const { TextArea } = Input
 
@@ -118,10 +120,10 @@ function CollapsePanel (props: {
   header: string,
   content: ErrorDetailsProps
 }) {
-  const inputEl:any = useRef(null)
+  const inputEl = useRef<TextAreaRef>(null)
   const copyText = () => {
     navigator.clipboard.writeText(convertToJSON(props.content))
-    inputEl.current.resizableTextArea.textArea.select()
+    inputEl.current?.resizableTextArea?.textArea.select()
   }
   return (
     <UI.Collapse
