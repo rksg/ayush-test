@@ -58,7 +58,7 @@ export function AsyncValidationStory () {
             { required: true },
             { validator: remoteValidation, message: 'Value in use' }
           ]}>
-          <Input suffix={loadingStates.field1 ? <LoadingOutlined /> : null } />
+          <Input suffix={loadingStates.field1 ? <LoadingOutlined /> : null} />
         </Form.Item>
         <Form.Item name='field2' label='Field 2'>
           <Input />
