@@ -7,7 +7,7 @@ import { useTenantLink } from './useTenantLink'
 
 const getWrapper = (basePath: string = '') =>
   ({ children }: { children: React.ReactElement }) => (
-    <MemoryRouter initialEntries={[`${basePath}/t/t-id`]}>
+    <MemoryRouter initialEntries={[`${basePath}/t/t-id?test=ok`]}>
       <Routes>
         <Route path={`${basePath}/t/:tenantId`} element={children} />
       </Routes>
@@ -21,6 +21,30 @@ describe('useTenantLink', () => {
       { wrapper: getWrapper('') }
     )
     expect(result.current.pathname).toEqual('/t/t-id/networks')
+  })
+  it('keeps search parameters', () => {
+    const { result } = renderHook(
+      () => useTenantLink('/some/path'),
+      { wrapper: getWrapper('') }
+    )
+    expect(result.current.pathname).toEqual('/t/t-id/some/path')
+    expect(result.current.search).toEqual('?test=ok')
+  })
+  it('merges search parameters', () => {
+    const { result } = renderHook(
+      () => useTenantLink('/some/path?another=param'),
+      { wrapper: getWrapper('') }
+    )
+    expect(result.current.pathname).toEqual('/t/t-id/some/path')
+    expect(result.current.search).toEqual('?test=ok&another=param')
+  })
+  it('replaces search parameters', () => {
+    const { result } = renderHook(
+      () => useTenantLink('/some/path?another=param&test=updated'),
+      { wrapper: getWrapper('') }
+    )
+    expect(result.current.pathname).toEqual('/t/t-id/some/path')
+    expect(result.current.search).toEqual('?test=updated&another=param')
   })
 
   describe('basePath = /base/path/', () => {

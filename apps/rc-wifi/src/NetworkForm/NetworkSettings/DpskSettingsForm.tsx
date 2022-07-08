@@ -151,7 +151,7 @@ function PassphraseGeneration () {
         </Col>
         <Col span={1}>
           <FieldExtraTooltip>
-            <Tooltip title= {
+            <Tooltip title={
               /* eslint-disable */
                 <div dangerouslySetInnerHTML={{ __html:FIELD_TOOLTIP.FORMAT }}></div>
                 /* eslint-disable */
