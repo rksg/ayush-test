@@ -1,5 +1,4 @@
 import { TooltipComponentOption } from 'echarts/components'
-import { CallbackDataParams }     from 'echarts/types/dist/shared'
 import { renderToString }         from 'react-dom/server'
 
 import { TimeStamp } from '@acx-ui/types'
@@ -116,7 +115,8 @@ export const timeSeriesTooltipFormatter = (
 export const stackedBarTooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null)
 ) => (
-  parameters: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  parameters: any // Since the value has been changed to array, the original type cannot be used.
 ) => {
   return renderToString(
     <UI.TooltipWrapper>
@@ -131,7 +131,7 @@ export const stackedBarTooltipFormatter = (
 export const donutChartTooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null)
 ) => (
-  parameters: CallbackDataParams
+  parameters: TooltipFormatterParams
 ) => {
   return renderToString(
     <UI.TooltipWrapper>
