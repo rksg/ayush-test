@@ -76,6 +76,7 @@ export const tooltipOptions = () => ({
   borderRadius: 2,
   borderWidth: 0,
   padding: 8,
+  confine: true,
   extraCssText: `box-shadow: 0px 4px 8px ${cssStr('--acx-primary-black')}26;`
 })
 
