@@ -13,8 +13,8 @@ interface RemoteValidation {
   queryResult: any,
   message: string,
   isValidating: boolean,
-  validator: Function,
-  updateQuery?: any
+  validator: (result: any, value: string) => boolean,
+  updateQuery: (value: string) => void
 }
 
 export enum ValidateStatusEnum {

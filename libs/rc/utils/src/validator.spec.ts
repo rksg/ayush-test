@@ -1,4 +1,4 @@
-import { networkWifiIpRegExp, networkWifiPortRegExp, stringContainSpace } from './validator'
+import { networkWifiIpRegExp, networkWifiPortRegExp, stringContainSpace, checkObjectNotExists } from './validator'
 
 describe('validator', () => {
   it('Should take care of ip address values correctly', () => {
@@ -24,5 +24,15 @@ describe('validator', () => {
   })
   it('Should display error meesage if string contains space', async () => {
     await expect(stringContainSpace('password 1')).rejects.toEqual('Spaces are not allowed')
+  })
+  describe('checkObjectNotExists', () => {
+    const mockdata = [{ name: 'test01' }]
+    it('Should return false when object exists', async () => {
+      await expect(checkObjectNotExists(mockdata, 'test01')).toBeFalsy()
+    })
+    it('Should return true when object does not exists', async () => {
+      await expect(checkObjectNotExists(mockdata, 'test01', 'pname')).toBeTruthy()
+      await expect(checkObjectNotExists(mockdata, 'test02')).toBeTruthy()
+    })
   })
 })

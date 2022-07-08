@@ -26,7 +26,8 @@ export const stringContainSpace = (value: string) => {
 
 export const checkObjectNotExists = (
   list: any[],
-  value: string
+  value: string,
+  key?: string 
 ) => {
-  return list.filter(l => l['name'] === value).length === 0
+  return list.filter(l => l[key || 'name'] === value).length === 0
 }
