@@ -18,7 +18,9 @@ export const Wrapper = styled.div<WrapperProps>`
 .ant-picker-panel-container {
     border-radius: 0px 4px 4px 0;
     background: var(--acx-primary-white);
-    box-shadow: 6px 3px 6px 2px rgb(0 0 0 / 5%), 6px 3px 6px 2px rgb(0 0 0 / 5%);
+    box-shadow: ${(props) => (props.hasTimePicker 
+    ? '6px 4px 6px 2px rgb(0 0 0 / 5%), 6px 4px 6px 2px rgb(0 0 0 / 5%);' 
+    : '0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);')} 
 }   
 .ant-picker-range .ant-picker-active-bar {
     background: var(--acx-accents-blue-50);
