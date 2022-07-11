@@ -1,5 +1,5 @@
-import { Button, PageHeader, Table, TableProps, Loader, showModal } from '@acx-ui/components'
-import { useNetworkListQuery, useDeleteNetworkMutation, Network }   from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { useNetworkListQuery, useDeleteNetworkMutation, Network }         from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
@@ -205,11 +205,13 @@ export function NetworksTable () {
     const actions: TableProps<Network>['actions'] = [{
       label: 'Delete',
       onClick: ([{ name, id }], clearSelection) => {
-        showModal({
+        showActionModal({
           type: 'confirm',
-          entityName: 'Network',
-          entityValue: name,
-          action: 'DELETE',
+          customContent: {
+            action: 'DELETE',
+            entityName: 'Network',
+            entityValue: name
+          },
           onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
             .then(clearSelection)
         })

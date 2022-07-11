@@ -37,7 +37,7 @@ exports[`Networks Table should delete selected row 1`] = `
                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/create"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ckAoUV"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
                   type="button"
                 >
                   <span>
@@ -1678,7 +1678,7 @@ exports[`Networks Table should render table 1`] = `
                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/create"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ckAoUV"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
                   type="button"
                 >
                   <span>

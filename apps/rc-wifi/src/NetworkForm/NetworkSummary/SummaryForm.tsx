@@ -67,19 +67,19 @@ export function SummaryForm (props: {
             <>
               <Form.Item
                 label='Cloudpath Server'
-                children={ selected.name }
+                children={selected.name}
               />
               <Form.Item
                 label='Deployment Type'
-                children={ selected.deploymentType }
+                children={selected.deploymentType}
               />
               <Form.Item
                 label='Authentication Server'
-                children={ `${selected.authRadius.primary.ip}:${selected.authRadius.primary.port}` }
+                children={`${selected.authRadius.primary.ip}:${selected.authRadius.primary.port}`}
               />
               <Form.Item
                 label='Shared Secret'
-                children={ <Input.Password
+                children={<Input.Password
                   readOnly
                   bordered={false}
                   value={selected.authRadius.primary.sharedSecret}

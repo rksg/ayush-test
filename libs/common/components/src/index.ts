@@ -7,7 +7,7 @@ export * from './components/DonutChart'
 export * from './components/DropDown'
 export * from './components/Layout'
 export * from './components/Loader'
-export * from './components/Modal'
+export * from './components/ActionModal'
 export { MultiLineTimeSeriesChart } from './components/MultiLineTimeSeriesChart'
 export type {
   MultiLineTimeSeriesChartProps,
