@@ -168,7 +168,6 @@ export function NetworkVenuesTab () {
         if (activatingVenue.allApDisabled) {
           enabledNotActivatedVenues.push(activatingVenue.name)
         }
-        enabledNotActivatedVenues.push('test')
       })
     }
 
