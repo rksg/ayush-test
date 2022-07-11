@@ -1,0 +1,150 @@
+import { find }  from 'lodash'
+import AutoSizer from 'react-virtualized-auto-sizer'
+
+import { cssStr, Loader }                              from '@acx-ui/components'
+import { Card }                                        from '@acx-ui/components'
+import { DonutChart }                                  from '@acx-ui/components'
+import type { DonutChartData }                         from '@acx-ui/components'
+import { SwitchStatusEnum, useDashboardOverviewQuery } from '@acx-ui/rc/services'
+import {
+  Dashboard,
+  ApVenueStatusEnum
+} from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
+
+const seriesMappingAP = [
+  { key: ApVenueStatusEnum.REQUIRES_ATTENTION, name: 'Requires Attention',
+    color: cssStr('--acx-semantics-red-50') },
+  { key: ApVenueStatusEnum.TRANSIENT_ISSUE, name: 'Temporarily Degraded',
+    color: cssStr('--acx-semantics-yellow-40') },
+  { key: ApVenueStatusEnum.IN_SETUP_PHASE, name: 'In Setup Phase',
+    color: cssStr('--acx-neutrals-50') },
+  { key: ApVenueStatusEnum.OFFLINE, name: 'Offline',
+    color: cssStr('--acx-neutrals-50') },
+  { key: ApVenueStatusEnum.OPERATIONAL, name: 'Operational',
+    color: cssStr('--acx-semantics-green-60') }
+] as Array<{ key: string, name: string, color: string }>
+
+const getApDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
+  const chartData: DonutChartData[] = []
+  const apsSummary = overviewData?.summary?.aps?.summary
+  if (apsSummary) {
+    seriesMappingAP.forEach(({ key, name, color }) => {
+      if (key === ApVenueStatusEnum.OFFLINE && apsSummary[key]) {
+        const setupPhase = find(chartData, { name: 'In Setup Phase' })
+        if (setupPhase) {
+          setupPhase.name = setupPhase.name + ' + ' + name
+          setupPhase.value = setupPhase.value + apsSummary[key]
+        } else {
+          chartData.push({
+            name,
+            value: apsSummary[key],
+            color
+          })
+        }
+      }
+      else if (apsSummary[key]) {
+        chartData.push({
+          name,
+          value: apsSummary[key],
+          color
+        })
+      }
+    })
+  }
+  return chartData
+}
+
+const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
+  switch (switchStatus) {
+    case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
+    case SwitchStatusEnum.INITIALIZING:
+    case SwitchStatusEnum.APPLYING_FIRMWARE:
+      return 'In Setup Phase'
+    case SwitchStatusEnum.OPERATIONAL:
+      return 'Operational'
+    case SwitchStatusEnum.DISCONNECTED:
+      return 'Requires Attention'
+    default:
+      return 'In Setup Phase'
+  }
+}
+
+const seriesMappingSwitch = [
+  { key: SwitchStatusEnum.DISCONNECTED,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.DISCONNECTED),
+    color: cssStr('--acx-semantics-red-50') },
+  { key: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.NEVER_CONTACTED_CLOUD),
+    color: cssStr('--acx-neutrals-50') },
+  { key: SwitchStatusEnum.INITIALIZING,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.INITIALIZING),
+    color: cssStr('--acx-neutrals-50') },
+  { key: SwitchStatusEnum.OPERATIONAL,
+    name: getSwitchStatusDisplayName(SwitchStatusEnum.OPERATIONAL),
+    color: cssStr('--acx-semantics-green-60') }
+] as Array<{ key: string, name: string, color: string }>
+
+const getSwitchDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
+  const chartData: DonutChartData[] = []
+  const switchesSummary = overviewData?.summary?.switches?.summary
+  if (switchesSummary) {
+    seriesMappingSwitch.forEach(({ key, name, color }) => {
+      if(key === SwitchStatusEnum.INITIALIZING && switchesSummary[key]) {
+        const neverContactedCloud = find(chartData, {
+          name: getSwitchStatusDisplayName(SwitchStatusEnum.NEVER_CONTACTED_CLOUD) })
+        if (neverContactedCloud) {
+          const currentValue: number = neverContactedCloud.value
+          neverContactedCloud.value = currentValue + parseInt(switchesSummary[key], 10)
+        } else {
+          chartData.push({
+            name,
+            value: parseInt(switchesSummary[key], 10),
+            color
+          })
+        }
+      } else if (switchesSummary[key]) {
+        chartData.push({
+          name,
+          value: parseInt(switchesSummary[key], 10),
+          color
+        })
+      }
+    })
+  }
+  return chartData
+}
+
+export function Devices () {
+  const queryResults = useDashboardOverviewQuery({
+    params: useParams()
+  },{
+    selectFromResult: ({ data, ...rest }) => ({
+      data: {
+        apData: getApDonutChartData(data),
+        switchData: getSwitchDonutChartData(data)
+      },
+      ...rest
+    })
+  })
+  return (
+    <Loader states={[queryResults]}>
+      <Card title='Devices'>
+        <AutoSizer>
+          {({ height, width }) => (
+            <div style={{ display: 'inline-flex' }}>
+              <DonutChart
+                style={{ width: width/2 , height }}
+                title='Wi-Fi'
+                data={queryResults.data.apData} />
+              <DonutChart
+                style={{ width: width/2, height }}
+                title='Switch'
+                data={queryResults.data.switchData}/>
+            </div>
+          )}
+        </AutoSizer>
+      </Card>
+    </Loader>
+  )
+}

@@ -17,18 +17,18 @@ export const getDeviceConnectionStatusColors = () => [
   cssStr('--acx-semantics-red-50') // Requires Attention
 ]
 
-export const getDisplayLabel = (label: string) => {
+export const getDisplayLabel = (label: string, severity: boolean = true) => {
   switch (label) {
-    case ApVenueStatusEnum.IN_SETUP_PHASE:
-      return '3 In Setup Phase'
-    case ApVenueStatusEnum.OPERATIONAL:
-      return '4 Operational'
     case ApVenueStatusEnum.REQUIRES_ATTENTION:
-      return '1 Requires Attention'
+      return `${severity ? 1 : ''}Requires Attention`
     case ApVenueStatusEnum.TRANSIENT_ISSUE:
-      return '2 Transient Issue'
+      return `${severity ? 2 : ''}Transient Issue`
+    case ApVenueStatusEnum.IN_SETUP_PHASE:
+      return `${severity ? 3 : ''}In Setup Phase`
+    case ApVenueStatusEnum.OPERATIONAL:
+      return `${severity ? 4 : ''}Operational`
     default:
-      return '3 Unknown'
+      return `${severity ? 3 : ''}Unknown`
   }
 }
 

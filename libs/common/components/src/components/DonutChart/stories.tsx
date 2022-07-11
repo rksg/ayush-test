@@ -1,25 +1,35 @@
 import { withKnobs,object } from '@storybook/addon-knobs'
 import { storiesOf }        from '@storybook/react'
-
+import { cssStr } from '@acx-ui/components'
 import { DonutChart } from '.'
+import { Card } from '../Card'
 
 const data = [
-  { value: 35, name: 'Requires Attention' },
-  { value: 40, name: 'Temporarily Degraded' },
-  { value: 50, name: 'Operational' },
-  { value: 20, name: 'In Setup Phase' }
+  { value: 35, name: 'Requires Attention', color: cssStr('--acx-semantics-red-60') },
+  { value: 40, name: 'Temporarily Degraded', color: cssStr('--acx-semantics-yellow-40') },
+  { value: 50, name: 'Operational', color: cssStr('--acx-neutrals-50') },
+  { value: 20, name: 'In Setup Phase', color: cssStr('--acx-semantics-green-50') }
 ]
 
 storiesOf('Donut Chart', module)
   .addDecorator(withKnobs)
   .add('Chart View', () =>
-    <DonutChart
+    <Card title='Venues'>
+      <DonutChart
+        style={{ width: 172, height: 104 }}
+        title='Wi-Fi'
+        data={data}/>
+    </Card>)
+  .add('No Data', () =>
+    <Card title='Venues'>
+      <DonutChart
+        style={{ width: 172, height: 104 }}
+        title='Wi-Fi'
+        data={[]}/>
+    </Card>)
+  .add('With Knobs', () =>
+    <Card title='Venues'>
+      <DonutChart
       style={{ width: 172, height: 104 }}
-      data={data}
-      title='Wi-Fi'/>)
-  .add('With Knobs', () => <div
-    style={{ width: 208, height: 174, padding: 10, border: '1px solid lightgray' }}>
-    <DonutChart style={{ width: '100%', height: 110, marginTop: 15 }}
-      data={object('data', data)}
-    />
-  </div>)
+      data={object('data', data)}/>
+    </Card>)

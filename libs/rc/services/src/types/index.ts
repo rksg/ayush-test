@@ -131,6 +131,9 @@ export interface Dashboard {
       summary: {
         [prop: string]: number;
       },
+      clientDto: [{
+        healthCheckStatus: string
+      }]
       totalCount: number;
     },
     switchClients?: {
@@ -147,7 +150,7 @@ export interface Dashboard {
     },
     switches?: {
       summary: {
-        [prop: string]: number;
+        [prop: string]: string;
       },
       totalCount: number;
     },
