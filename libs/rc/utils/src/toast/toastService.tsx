@@ -117,12 +117,24 @@ export const CountdownNode = (props: { n: number }) => (
   </Countdown>
 )
 
+const proceedByUsecase = (tx: Transaction, useCase: string[]) => {
+  if (tx.status === TxStatus.IN_PROGRESS) return false
+  if (!useCase.includes(tx.useCase)) return false
+  return true
+}
+
 export const showActivityMessage = (tx: Transaction, useCase: string[], callback?: Function) => {
-  if (tx.status === TxStatus.IN_PROGRESS) return
-  if (!useCase.includes(tx.useCase)) return
-  showTxToast(tx)
-  if (callback) callback()
-} 
+  if (proceedByUsecase(tx, useCase)) {
+    showTxToast(tx)
+    if (callback) callback()
+  }
+}
+
+export const refetchByUsecase = (tx: Transaction, useCase: string[], callback: Function) => {
+  if (proceedByUsecase(tx, useCase)) {
+    callback()
+  }  
+}
 
 export const showTxToast = (tx: Transaction) => {
   if (tx.attributes && tx.attributes.name) {
