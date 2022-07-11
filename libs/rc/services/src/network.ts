@@ -48,6 +48,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
     }),
+    deleteNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.deleteNetwork, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'LIST' }]
+    }),
     addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addNetworkVenue, params)
@@ -126,5 +135,6 @@ export const {
   useVenueListQuery,
   useDashboardOverviewQuery,
   useAddNetworkVenueMutation,
-  useDeleteNetworkVenueMutation
+  useDeleteNetworkVenueMutation,
+  useDeleteNetworkMutation
 } = networkApi

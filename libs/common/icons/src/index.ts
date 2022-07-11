@@ -16,6 +16,8 @@ export { ReactComponent as ConfigurationSolid } from './icons/ConfigurationSolid
 export { ReactComponent as DevicesOutlined } from './icons/DevicesOutlined.svg'
 export { ReactComponent as DevicesSolid } from './icons/DevicesSolid.svg'
 export { ReactComponent as DownloadOutlined } from './icons/DownloadOutlined.svg'
+export { ReactComponent as ExpandSquareDown } from './icons/ExpandSquareDown.svg'
+export { ReactComponent as ExpandSquareUp } from './icons/ExpandSquareUp.svg'
 export { ReactComponent as Logo } from './icons/Logo.svg'
 export { ReactComponent as LocationOutline } from './icons/LocationOutline.svg'
 export { ReactComponent as LocationOutlined } from './icons/LocationOutlined.svg'

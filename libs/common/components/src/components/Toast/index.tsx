@@ -11,7 +11,7 @@ const durationMap:{ [index:string]: number } = {
   error: 0
 }
 
-const defaultLinkText:{ [index:string]: string} = {
+const defaultLinkText:{ [index:string]: string } = {
   info: 'Details',
   success: 'View',
   error: 'Technical Details'
