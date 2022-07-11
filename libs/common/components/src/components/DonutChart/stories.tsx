@@ -1,8 +1,10 @@
 import { withKnobs,object } from '@storybook/addon-knobs'
 import { storiesOf }        from '@storybook/react'
-import { cssStr } from '@acx-ui/components'
+
+import { cssStr } from '../../theme/helper'
+import { Card }   from '../Card'
+
 import { DonutChart } from '.'
-import { Card } from '../Card'
 
 export const data = [
   { value: 35, name: 'Requires Attention', color: cssStr('--acx-semantics-red-60') },
@@ -30,6 +32,6 @@ storiesOf('Donut Chart', module)
   .add('With Knobs', () =>
     <Card title='Venues'>
       <DonutChart
-      style={{ width: 172, height: 104 }}
-      data={object('data', data)}/>
+        style={{ width: 172, height: 104 }}
+        data={object('data', data)}/>
     </Card>)
