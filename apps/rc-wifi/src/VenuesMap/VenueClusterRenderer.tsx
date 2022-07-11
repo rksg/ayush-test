@@ -19,8 +19,8 @@ declare global {
 
 let currentInfoWindow: google.maps.InfoWindow
 
-export const clusterClickHandler = (markers: google.maps.Marker[],
-  clusterInfoWindow: google.maps.InfoWindow, clusterMarker: google.maps.Marker ) => {
+export const generateClusterInfoContent = (markers: google.maps.Marker[],
+  clusterInfoWindow: google.maps.InfoWindow ) => {
   let data: ListWithIconProps['data']=[]
 
   markers.sort((a,b)=>{
@@ -40,7 +40,6 @@ export const clusterClickHandler = (markers: google.maps.Marker[],
     }
   })
 
-  const infoDiv = document.createElement('div')
   const pageSize=5
   const header = <div className='venueInfoHeader'>
     <span>{markers?.length} Venues</span> 
@@ -58,20 +57,7 @@ export const clusterClickHandler = (markers: google.maps.Marker[],
       header={header}
     />
   </StyledListWithIcon>
-
-  createRoot(infoDiv).render(content)
   
-  clusterInfoWindow.setContent(infoDiv)
-
-  if (typeof(currentInfoWindow) != 'undefined') { 
-    currentInfoWindow.close()
-  } 
-  
-  clusterInfoWindow.open({
-    shouldFocus: true,
-    anchor: clusterMarker
-  })
-  currentInfoWindow = clusterInfoWindow
   return content
 }
 
@@ -109,8 +95,25 @@ export default class VenueClusterRenderer implements Renderer {
     })
 
     google.maps.event.addListener(clusterMarker, 'click',
-      ()=>clusterClickHandler(markers || [new google.maps.Marker({})],
-        clusterInfoWindow, clusterMarker))
+      ()=>{
+        const content=generateClusterInfoContent(markers || [new google.maps.Marker({})],
+          clusterInfoWindow)
+
+        const infoDiv = document.createElement('div')
+        createRoot(infoDiv).render(content)
+  
+        clusterInfoWindow.setContent(infoDiv)
+
+        if (typeof(currentInfoWindow) != 'undefined') { 
+          currentInfoWindow.close()
+        } 
+  
+        clusterInfoWindow.open({
+          shouldFocus: true,
+          anchor: clusterMarker
+        })
+        currentInfoWindow = clusterInfoWindow
+      })
 
     google.maps.event.addListener(window.googleMap, 'click',()=>{
       if (typeof(currentInfoWindow) != 'undefined') { 

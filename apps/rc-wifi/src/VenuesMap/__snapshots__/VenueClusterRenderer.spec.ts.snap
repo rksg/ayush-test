@@ -1470,6 +1470,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
     }
     isPaginate={true}
     pageSize={5}
+    showPopoverTitle={false}
   />
 </styledComponents__StyledListWithIcon>
 `;
@@ -1792,6 +1793,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
     }
     isPaginate={true}
     pageSize={5}
+    showPopoverTitle={false}
   />
 </styledComponents__StyledListWithIcon>
 `;
