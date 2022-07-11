@@ -132,7 +132,7 @@ export interface Dashboard {
         [prop: string]: number;
       },
       clientDto: [{
-        healthCheckStatus: string
+        [prop: string]: string
       }]
       totalCount: number;
     },

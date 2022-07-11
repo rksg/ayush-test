@@ -1,5 +1,5 @@
 import ReactECharts from 'echarts-for-react'
-import _            from 'lodash'
+import { find }     from 'lodash'
 
 import { cssNumber, cssStr }                          from '../../theme/helper'
 import { tooltipOptions, donutChartTooltipFormatter } from '../Chart/helper'
@@ -62,11 +62,11 @@ export function DonutChart ({
     legend: {
       show: props.showLegend,
       top: 'middle',
-      left: '60%',
+      left: '65%',
       orient: 'vertical',
       icon: 'circle',
       selectedMode: false,
-      itemGap: 2,
+      itemGap: 4,
       itemWidth: 8,
       itemHeight: 8,
       textStyle: {
@@ -76,7 +76,7 @@ export function DonutChart ({
         borderWidth: 0
       },
       formatter: name => {
-        return `${_.find(data, (row) => row.name === name)?.value || name}`
+        return `${find(data, (pie) => pie.name === name)?.value}`
       }
     },
     color: colors,

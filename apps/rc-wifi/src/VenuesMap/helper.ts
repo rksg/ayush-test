@@ -17,18 +17,33 @@ export const getDeviceConnectionStatusColors = () => [
   cssStr('--acx-semantics-red-50') // Requires Attention
 ]
 
-export const getDisplayLabel = (label: string, severity: boolean = true) => {
+export const getAPStatusDisplayName = (label: ApVenueStatusEnum, severity: boolean = true) => {
   switch (label) {
     case ApVenueStatusEnum.REQUIRES_ATTENTION:
-      return `${severity ? 1 : ''}Requires Attention`
+      return `${severity ? '1 ' : ''}Requires Attention`
     case ApVenueStatusEnum.TRANSIENT_ISSUE:
-      return `${severity ? 2 : ''}Transient Issue`
+      return `${severity ? '2 ' : ''}Transient Issue`
     case ApVenueStatusEnum.IN_SETUP_PHASE:
-      return `${severity ? 3 : ''}In Setup Phase`
+      return `${severity ? '3 ' : ''}In Setup Phase`
     case ApVenueStatusEnum.OPERATIONAL:
-      return `${severity ? 4 : ''}Operational`
+      return `${severity ? '4 ' : ''}Operational`
+    case ApVenueStatusEnum.OFFLINE:
     default:
-      return `${severity ? 3 : ''}Unknown`
+      return `${severity ? '3 ' : ''}Offline`
+  }
+}
+
+export const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
+  switch (switchStatus) {
+    case SwitchStatusEnum.OPERATIONAL:
+      return 'Operational'
+    case SwitchStatusEnum.DISCONNECTED:
+      return 'Requires Attention'
+    case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
+    case SwitchStatusEnum.INITIALIZING:
+    case SwitchStatusEnum.APPLYING_FIRMWARE:
+    default:
+      return 'In Setup Phase'
   }
 }
 
@@ -112,13 +127,13 @@ const getApStatusDataByVenue = (
     apStat: [{
       category: 'APs',
       series: [
-        { name: getDisplayLabel(ApVenueStatusEnum.REQUIRES_ATTENTION),
+        { name: getAPStatusDisplayName(ApVenueStatusEnum.REQUIRES_ATTENTION),
           value: requires_attention },
-        { name: getDisplayLabel(ApVenueStatusEnum.TRANSIENT_ISSUE),
+        { name: getAPStatusDisplayName(ApVenueStatusEnum.TRANSIENT_ISSUE),
           value: transient_issue },
-        { name: getDisplayLabel(ApVenueStatusEnum.IN_SETUP_PHASE),
+        { name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE),
           value: in_setup_phase },
-        { name: getDisplayLabel(ApVenueStatusEnum.OPERATIONAL),
+        { name: getAPStatusDisplayName(ApVenueStatusEnum.OPERATIONAL),
           value: operational }
       ]
     }],
@@ -162,13 +177,13 @@ function getSwitchStatusDataByVenue (overviewData: Dashboard, venueId: string): 
     switchStat: [{
       category: 'Switches',
       series: [
-        { name: getDisplayLabel(ApVenueStatusEnum.REQUIRES_ATTENTION),
+        { name: getAPStatusDisplayName(ApVenueStatusEnum.REQUIRES_ATTENTION),
           value: requires_attention },
-        { name: getDisplayLabel(ApVenueStatusEnum.TRANSIENT_ISSUE),
+        { name: getAPStatusDisplayName(ApVenueStatusEnum.TRANSIENT_ISSUE),
           value: 0 },
-        { name: getDisplayLabel(ApVenueStatusEnum.IN_SETUP_PHASE),
+        { name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE),
           value: in_setup_phase },
-        { name: getDisplayLabel(ApVenueStatusEnum.OPERATIONAL),
+        { name: getAPStatusDisplayName(ApVenueStatusEnum.OPERATIONAL),
           value: operational }
       ]
     }],

@@ -9,7 +9,7 @@ import { getClusterSVG, getDeviceConnectionStatusColors, getIcon, getMarkerColor
 jest.mock('@acx-ui/components', () => ({
   __esModule: true,
   cssStr: jest.fn(property => {
-    let color= 'some-color' 
+    let color= 'some-color'
     switch(property){
       case '--acx-semantics-red-50':
         color = '#ACAEB0'
@@ -36,7 +36,7 @@ jest.mock('@acx-ui/components', () => ({
         color = '#565758;'
         break
     }
-    return color 
+    return color
   })
 }))
 
@@ -58,7 +58,8 @@ describe('Venues Map Helper', () => {
         summary: {
           clients: {
             summary: {},
-            totalCount: 0
+            totalCount: 0,
+            clientDto: [{}]
           },
           aps: {
             summary: {
@@ -157,7 +158,7 @@ describe('Venues Map Helper', () => {
           }
         ]
       }
-      
+
       expect(massageVenuesData(data)).toStrictEqual([
         {
           venueId: '01d74a2c947346a1a963a310ee8c9f6f',
@@ -284,7 +285,8 @@ describe('Venues Map Helper', () => {
         summary: {
           clients: {
             summary: {},
-            totalCount: 0
+            totalCount: 0,
+            clientDto: [{}]
           },
           aps: {
             summary: {
@@ -339,7 +341,7 @@ describe('Venues Map Helper', () => {
           }
         ]
       }
-      
+
       expect(massageVenuesData(data)).toEqual([
         {
           venueId: '01d74a2c947346a1a963a310ee8c9f6f',

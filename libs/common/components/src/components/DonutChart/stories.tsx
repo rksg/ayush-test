@@ -4,7 +4,7 @@ import { cssStr } from '@acx-ui/components'
 import { DonutChart } from '.'
 import { Card } from '../Card'
 
-const data = [
+export const data = [
   { value: 35, name: 'Requires Attention', color: cssStr('--acx-semantics-red-60') },
   { value: 40, name: 'Temporarily Degraded', color: cssStr('--acx-semantics-yellow-40') },
   { value: 50, name: 'Operational', color: cssStr('--acx-neutrals-50') },

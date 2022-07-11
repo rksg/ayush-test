@@ -22,7 +22,7 @@ const seriesMapping = [
     color: cssStr('--acx-semantics-green-60') }
 ] as Array<{ key: string, name: string, color: string }>
 
-const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
+export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   const venuesSummary = overviewData?.summary?.venues?.summary
   if (venuesSummary) {
@@ -39,7 +39,7 @@ const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartData[] => 
   return chartData
 }
 
-export function Venues () {
+function Venues () {
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   },{
@@ -62,3 +62,5 @@ export function Venues () {
     </Loader>
   )
 }
+
+export default Venues

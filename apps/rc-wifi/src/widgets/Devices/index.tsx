@@ -12,20 +12,27 @@ import {
 } from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { getAPStatusDisplayName, getSwitchStatusDisplayName } from '../../VenuesMap/helper'
+
 const seriesMappingAP = [
-  { key: ApVenueStatusEnum.REQUIRES_ATTENTION, name: 'Requires Attention',
+  { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
+    name: getAPStatusDisplayName(ApVenueStatusEnum.REQUIRES_ATTENTION, false),
     color: cssStr('--acx-semantics-red-50') },
-  { key: ApVenueStatusEnum.TRANSIENT_ISSUE, name: 'Temporarily Degraded',
+  { key: ApVenueStatusEnum.TRANSIENT_ISSUE,
+    name: getAPStatusDisplayName(ApVenueStatusEnum.TRANSIENT_ISSUE, false),
     color: cssStr('--acx-semantics-yellow-40') },
-  { key: ApVenueStatusEnum.IN_SETUP_PHASE, name: 'In Setup Phase',
+  { key: ApVenueStatusEnum.IN_SETUP_PHASE,
+    name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE, false),
     color: cssStr('--acx-neutrals-50') },
-  { key: ApVenueStatusEnum.OFFLINE, name: 'Offline',
+  { key: ApVenueStatusEnum.OFFLINE,
+    name: getAPStatusDisplayName(ApVenueStatusEnum.OFFLINE, false),
     color: cssStr('--acx-neutrals-50') },
-  { key: ApVenueStatusEnum.OPERATIONAL, name: 'Operational',
+  { key: ApVenueStatusEnum.OPERATIONAL,
+    name: getAPStatusDisplayName(ApVenueStatusEnum.OPERATIONAL, false),
     color: cssStr('--acx-semantics-green-60') }
 ] as Array<{ key: string, name: string, color: string }>
 
-const getApDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
+export const getApDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   const apsSummary = overviewData?.summary?.aps?.summary
   if (apsSummary) {
@@ -55,21 +62,6 @@ const getApDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
   return chartData
 }
 
-const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
-  switch (switchStatus) {
-    case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
-    case SwitchStatusEnum.INITIALIZING:
-    case SwitchStatusEnum.APPLYING_FIRMWARE:
-      return 'In Setup Phase'
-    case SwitchStatusEnum.OPERATIONAL:
-      return 'Operational'
-    case SwitchStatusEnum.DISCONNECTED:
-      return 'Requires Attention'
-    default:
-      return 'In Setup Phase'
-  }
-}
-
 const seriesMappingSwitch = [
   { key: SwitchStatusEnum.DISCONNECTED,
     name: getSwitchStatusDisplayName(SwitchStatusEnum.DISCONNECTED),
@@ -85,7 +77,7 @@ const seriesMappingSwitch = [
     color: cssStr('--acx-semantics-green-60') }
 ] as Array<{ key: string, name: string, color: string }>
 
-const getSwitchDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
+export const getSwitchDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   const switchesSummary = overviewData?.summary?.switches?.summary
   if (switchesSummary) {
@@ -115,7 +107,7 @@ const getSwitchDonutChartData = (overviewData?: Dashboard): DonutChartData[] => 
   return chartData
 }
 
-export function Devices () {
+function Devices () {
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   },{
@@ -148,3 +140,5 @@ export function Devices () {
     </Loader>
   )
 }
+
+export default Devices
