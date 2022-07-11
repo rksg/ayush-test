@@ -13,7 +13,7 @@ import VenueMarkerWithLabel                                                     
 
 declare global {
   interface Window {
-    googleMap: any;
+    googleMap: any
   }
 }
 

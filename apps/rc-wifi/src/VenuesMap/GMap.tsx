@@ -14,7 +14,7 @@ import { NavigateProps } from './index'
 
 declare global {
   interface Window {
-    googleMap: any;
+    googleMap: any
   }
 }
 

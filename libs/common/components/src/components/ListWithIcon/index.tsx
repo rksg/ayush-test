@@ -3,15 +3,16 @@ import { ReactNode, FC } from 'react'
 import { List, Space, Popover } from 'antd'
 
 export interface ListWithIconProps {
-    data: {icon: ReactNode, title: string, popoverContent?: ReactNode}[],
+    data: {icon: ReactNode, title: string, popoverContent?: ReactNode}[]
     header?: ReactNode
-    footer?: ReactNode,
-    pageSize?: number,
+    footer?: ReactNode
+    pageSize?: number
     isPaginate?: boolean
+    showPopoverTitle?: boolean
 }
   
 export const ListWithIcon: FC<ListWithIconProps> = (props) => {
-  const { data, header, footer, pageSize, isPaginate } = props
+  const { data, header, footer, pageSize, isPaginate, showPopoverTitle } = props
   return (
     <List
       header={header}
@@ -23,7 +24,7 @@ export const ListWithIcon: FC<ListWithIconProps> = (props) => {
         <Popover 
           content={item.popoverContent} 
           placement='right' 
-          // title={item.popoverContent ? item.title : ''}
+          title={showPopoverTitle && item.popoverContent ? item.title : ''}
           trigger='hover'>
           <List.Item>
             <Space>
@@ -44,5 +45,6 @@ export const ListWithIcon: FC<ListWithIconProps> = (props) => {
 
 ListWithIcon.defaultProps = {
   pageSize: 3,
-  isPaginate: false
+  isPaginate: false,
+  showPopoverTitle: false
 }

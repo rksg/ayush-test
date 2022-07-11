@@ -57,7 +57,7 @@ const header = <div style={{ fontWeight: 'bold' }}>Header</div>
 const footer = <div style={{ fontWeight: 'bold' }}>Footer</div>
 
 storiesOf('List with Icon', module)
-  .add('Basic',() => <ListWithIcon data={data} />)
+  .add('Basic',() => <ListWithIcon data={data} showPopoverTitle={true} />)
   .add('With header and footer',() => <ListWithIcon data={data} header={header} footer={footer} />)
   .add('With pagination',() => <ListWithIcon data={data} isPaginate={true} pageSize={4} />)
   .add('Empty Data',() => <ListWithIcon data={[]} />)

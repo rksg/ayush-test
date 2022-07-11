@@ -17,7 +17,7 @@ describe('ListWithIcon',()=>{
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render a component for proper data', () => {
-    const { asFragment } = render(<ListWithIcon data={data}/>)
+    const { asFragment } = render(<ListWithIcon data={data} showPopoverTitle={true} />)
     expect(asFragment()).toMatchSnapshot()
   })
 
