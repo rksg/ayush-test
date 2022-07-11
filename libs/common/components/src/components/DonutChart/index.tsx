@@ -13,7 +13,18 @@ export type DonutChartData = {
   color: string,
 }
 
-export interface DonutChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
+interface DonutChartOptionalProps {
+  showLegend: boolean
+}
+
+const defaultProps: DonutChartOptionalProps = {
+  showLegend: true
+}
+
+DonutChart.defaultProps = { ...defaultProps }
+
+export interface DonutChartProps extends DonutChartOptionalProps,
+  Omit<EChartsReactProps, 'option' | 'opts'> {
   data: Array<DonutChartData>
   title?: string,
   dataFormatter?: (value: unknown) => string | null
@@ -49,8 +60,9 @@ export function DonutChart ({
       show: false
     },
     legend: {
+      show: props.showLegend,
       top: 'middle',
-      left: '68%',
+      left: '60%',
       orient: 'vertical',
       icon: 'circle',
       selectedMode: false,
@@ -73,8 +85,8 @@ export function DonutChart ({
         animation: !isEmpty,
         data,
         type: 'pie',
-        center: ['32%', '50%'],
-        radius: ['76%', '90%'],
+        center: [props.showLegend ? '32%' : '50%', '50%'],
+        radius: ['78%', '90%'],
         cursor: isEmpty ? 'auto' : 'pointer',
         avoidLabelOverlap: true,
         label: {
@@ -103,7 +115,7 @@ export function DonutChart ({
         },
         emphasis: {
           disabled: isEmpty,
-          scaleSize: 6
+          scaleSize: 5
         },
         labelLine: {
           show: false

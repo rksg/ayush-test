@@ -14,7 +14,8 @@ import { useParams } from '@acx-ui/react-router-dom'
 const seriesMapping = [
   { name: 'Good', color: cssStr('--acx-semantics-green-60') },
   { name: 'Average', color: cssStr('--acx-semantics-yellow-40') },
-  { name: 'Poor', color: cssStr('--acx-semantics-red-50') }
+  { name: 'Poor', color: cssStr('--acx-semantics-red-50') },
+  { name: 'Unknown', color: cssStr('--acx-neutrals-50') }
 ] as Array<{ name: string, color: string }>
 
 const getAPClientChartData = (overviewData?: Dashboard): DonutChartData[] => {
@@ -22,12 +23,15 @@ const getAPClientChartData = (overviewData?: Dashboard): DonutChartData[] => {
   const clientDto = overviewData?.summary?.clients?.clientDto
   if (clientDto && clientDto.length > 0) {
     const counts = countBy(clientDto, client => client.healthCheckStatus)
-    seriesMapping.forEach(({ name, color }) =>
-      chartData.push({
-        name,
-        value: counts[name] || 0,
-        color
-      }))
+    seriesMapping.forEach(({ name, color }) => {
+      if(counts[name] && counts[name] > 0) {
+        chartData.push({
+          name,
+          value: counts[name],
+          color
+        })
+      }
+    })
   }
   return chartData
 }
@@ -66,10 +70,12 @@ export function Clients () {
               <DonutChart
                 style={{ width: width/2 , height }}
                 title='Wi-Fi'
+                showLegend={false}
                 data={queryResults.data.apData}/>
               <DonutChart
                 style={{ width: width/2, height }}
                 title='Switch'
+                showLegend={false}
                 data={queryResults.data.switchData} />
             </div>
           )}
