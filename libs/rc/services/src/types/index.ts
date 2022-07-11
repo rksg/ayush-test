@@ -59,7 +59,8 @@ export interface Venue {
   // switchClients ??
   // radios ??
   // scheduling ??
-  activated: { isActivated: boolean }
+  activated: { isActivated: boolean, isDisabled?: boolean }
+  deepVenue?: { scheduler: {} }
 }
 
 export interface AlarmBase {

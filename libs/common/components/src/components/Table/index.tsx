@@ -36,7 +36,7 @@ export function Table <RecordType extends object> (
       setSelectedRowsData(selectedRows)
     }
   }
-  const onRowClick = (row: {[index: string]: any}) => {
+  const onRowClick = (row: { [index: string]: any }) => {
     if (props.rowSelection) {
       if (props.rowSelection?.type == 'radio') { // single select
         setSelectedRowsData([row])

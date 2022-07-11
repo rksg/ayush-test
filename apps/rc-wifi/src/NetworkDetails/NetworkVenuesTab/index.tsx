@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
 import { Switch } from 'antd'
+import _          from 'lodash'
 
 import {
   Loader,
+  showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -12,11 +14,12 @@ import {
   useDeleteNetworkVenueMutation,
   useGetAllUserSettingsQuery,
   UserSettings,
+  useUpdateNetworkDeepMutation,
   useVenueListQuery,
   Venue
 } from '@acx-ui/rc/services'
-import { Constants, useTableQuery, getUserSettingsFromDict } from '@acx-ui/rc/utils'
-import { useParams }                                         from '@acx-ui/react-router-dom'
+import { Constants, useTableQuery, getUserSettingsFromDict, NetworkSaveData } from '@acx-ui/rc/utils'
+import { useParams }                                                          from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from '../services'
 
@@ -53,8 +56,9 @@ export function NetworkVenuesTab () {
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)
-  const { tenantId } = useParams()
-  const userSetting = useGetAllUserSettingsQuery({ params: { tenantId } })
+  const params = useParams()
+  const [updateNetworkDeep] = useUpdateNetworkDeepMutation()
+  const userSetting = useGetAllUserSettingsQuery({ params: { tenantId: params.tenantId } })
   const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
     Constants.triRadioUserSettingsKey)) === 'true'
   const networkQuery = useGetNetwork()
@@ -66,7 +70,7 @@ export function NetworkVenuesTab () {
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkVenueMutation()
-
+  
   useEffect(()=>{
     if (tableQuery.data && networkQuery.data) {
       const data: React.SetStateAction<Venue[]> = []
@@ -84,6 +88,21 @@ export function NetworkVenuesTab () {
     }
   }, [tableQuery.data, networkQuery.data])
 
+  const generateDefaultNetworkVenue = (venueId: string) => {
+    const network = networkQuery.data
+    return {
+      apGroups: [],
+      scheduler: {
+        type: 'ALWAYS_ON'
+      },
+      isAllApGroups: true,
+      allApGroupsRadio: 'Both',
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      venueId: venueId,
+      networkId: (network && network?.id) ? network.id : ''
+    }
+  }
+
   const activateNetwork = async (checked: boolean, row: Venue) => {
     // TODO: Service
     // if (checked) {
@@ -92,17 +111,7 @@ export function NetworkVenuesTab () {
     //   }
     // }
     const network = networkQuery.data
-    const defaultVenueData = {
-      apGroups: [],
-      scheduler: {
-        type: 'ALWAYS_ON'
-      },
-      isAllApGroups: true,
-      allApGroupsRadio: 'Both',
-      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
-      venueId: row.id,
-      networkId: (network && network?.id) ? network.id : ''
-    }
+    const defaultVenueData = generateDefaultNetworkVenue(row.id) 
     const isWPA3security = row.wlan && row.wlan.wlanSecurity === 'WPA3'
     if (supportTriBandRadio && isWPA3security) {
       defaultVenueData.allApGroupsRadioTypes.push('6-GHz')
@@ -118,12 +127,106 @@ export function NetworkVenuesTab () {
     }
     if (!row.allApDisabled || !checked) {
       if (checked) { // activate
-        addNetworkVenue({ params: { tenantId }, payload: defaultVenueData })
+        addNetworkVenue({ params: { tenantId: params.tenantId }, payload: defaultVenueData })
       } else { // deactivate
-        deleteNetworkVenue({ params: { tenantId, networkVenueId: deactivateNetworkVenueId } })
+        /* eslint-disable max-len */
+        deleteNetworkVenue({ params: { tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId } })
       }
     }
   }
+    
+  const handleEditNetwork = (network: NetworkSaveData, clearSelection: () => void) => {
+    updateNetworkDeep({ params, payload: network }).then(clearSelection)
+  }
+
+  const activateSelected = (venues: any[], activatingVenues: any[]) => {
+    const enabledNotActivatedVenues:string[] = []
+    const networkVenues = [...venues]
+    if (tableData && tableData.length > 0) {
+      activatingVenues.forEach(activatingVenue => {
+        const defaultVenueData = generateDefaultNetworkVenue(activatingVenue.id)
+
+        const alreadyActivatedVenue = networkVenues.find(x => x.venueId === activatingVenue.id)
+        if (!alreadyActivatedVenue && !activatingVenue.disabledActivation && !activatingVenue.allApDisabled) {
+          const row = tableData.find(v => v.id === activatingVenue.id)
+          if (row) {
+            row.activated = row.activated || { isActivated: false }
+            if (!row.activated.isDisabled) {
+              row.activated.isActivated = true
+              row.deepVenue = defaultVenueData
+              row.deepVenue.scheduler = defaultVenueData.scheduler
+              networkVenues.push(row.deepVenue)
+            }
+          } else {
+            // This selected venue is not visible (not in this current page)
+            networkVenues.push(defaultVenueData)
+          }
+        }
+
+        if (activatingVenue.allApDisabled) {
+          enabledNotActivatedVenues.push(activatingVenue.name)
+        }
+        enabledNotActivatedVenues.push('test')
+      })
+    }
+
+    if (enabledNotActivatedVenues.length > 0) {
+      showActionModal({
+        type: 'info',
+        title: 'Your Attention is Required',
+        content: (
+          <div>
+            <div>
+              <span>For the following {enabledNotActivatedVenues.length === 1 ? 'venue' : 'venues'},
+              the network could not be activated on all Venues: </span> 
+            </div>
+            {enabledNotActivatedVenues.map(venue =>(<div key={venue}> {venue} </div>))}
+          </div>
+        ),
+        onOk () {}
+      })
+    }
+
+    return networkVenues
+  }
+
+  const deActivateSelected = (venues: any[], activatingVenues: any[]) => {
+    const networkVenues = [...venues]
+    const selectedVenuesId = activatingVenues.map(row => row.id)
+
+    // Handle current page
+    tableData.forEach(row => {
+      if (selectedVenuesId.includes(row.id)) {
+        row.activated = row.activated || { isActivated: false }
+        row.activated.isActivated = false
+      }
+    })
+
+    if (networkVenues) {
+      _.remove(networkVenues, networkVenue => selectedVenuesId.includes(networkVenue['venueId']))
+    }
+
+    return networkVenues
+  }
+
+  const actions: TableProps<Venue>['actions'] = [
+    {
+      label: 'Activate',
+      onClick: (rows, clearSelection) => {
+        const network = networkQuery.data
+        const networkVenues = activateSelected(network?.venues || [], rows)
+        handleEditNetwork({ ...network, venues: networkVenues }, clearSelection)
+      }
+    },
+    {
+      label: 'Deactivate',
+      onClick: (rows, clearSelection) => { 
+        const network = networkQuery.data
+        const networkVenues = deActivateSelected(network?.venues || [], rows)
+        handleEditNetwork({ ...network, venues: networkVenues }, clearSelection)
+      }
+    }
+  ]
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -206,13 +309,10 @@ export function NetworkVenuesTab () {
     ]}>
       <Table
         rowKey='id'
+        actions={actions}
         rowSelection={{
-          type: 'checkbox',
-          ...tableQuery.rowSelection
+          type: 'checkbox'
         }}
-        onRow={(record) => ({
-          onClick: () => { tableQuery.onRowClick(record) }
-        })}
         columns={columns}
         dataSource={tableData}
         pagination={tableQuery.pagination}
