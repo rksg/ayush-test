@@ -18,7 +18,7 @@ export const CloseButton = styled(AntButton).attrs({
   }
 `
 
-export const ActionButton = styled.button`
+export const ActionButton = styled.button.attrs({ type: 'button' })`
   border: none;
   box-shadow: none;
   padding: 0 6px;

@@ -22,21 +22,25 @@ export interface TableProps <RecordType>
 export function Table <RecordType extends object> (
   { type = 'tall', ...props }: TableProps<RecordType>
 ) {
-  const rowKey = props.rowKey || 'id'
-  const [selectedRowsData, setSelectedRowsData] = useState([] as RecordType[])
+  const rowKey:string = props.rowKey as string || 'key'
+  let defaultSelectedRowsData:any[] = [] 
+  if (props.rowSelection?.defaultSelectedRowKeys) {
+    defaultSelectedRowsData = props.rowSelection.defaultSelectedRowKeys.map(
+      item => ({ [rowKey]: item })
+    )
+  }
+  const [selectedRowsData, setSelectedRowsData] = useState(defaultSelectedRowsData)
   const defaultRowSelection: TableProps<RecordType>['rowSelection'] = {
-    // @ts-ignore
     selectedRowKeys: selectedRowsData.map(item => item[rowKey]),
     onChange: (selectedRowKeys, selectedRows) => {
       setSelectedRowsData(selectedRows)
     }
   }
-  const onRowClick = (row: RecordType) => {
+  const onRowClick = (row: {[index: string]: any}) => {
     if (props.rowSelection) {
       if (props.rowSelection?.type == 'radio') { // single select
         setSelectedRowsData([row])
       } else { // multiple select
-        // @ts-ignore
         const rowIndex = selectedRowsData.findIndex(item => item[rowKey] == row[rowKey])
         if (rowIndex === -1) {
           setSelectedRowsData([...selectedRowsData, row])
@@ -73,8 +77,7 @@ export function Table <RecordType extends object> (
             {props.actions?.map((option) =>
               <UI.ActionButton
                 key={option.label}
-                onClick={(event) => {
-                  event.preventDefault()
+                onClick={() => {
                   option.onClick(selectedRowsData, () => { onCleanSelected() })
                 }
                 }
