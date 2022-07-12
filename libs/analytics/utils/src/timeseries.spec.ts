@@ -1,5 +1,5 @@
 
-import { formatter } from './formatter'
+import { formatter } from '@acx-ui/utils'
 
 import { getSeriesData } from './index'
 

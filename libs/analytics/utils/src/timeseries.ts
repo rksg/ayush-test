@@ -23,7 +23,7 @@ export function getSeriesData (data: TimeSeriesData | null,
   if (!data) return []
   return seriesMapping.map(({ key , name }) => ({
     name,
-    data: (data.time as string[]).map((t: string, index: number) =>{
+    data: (data['time'] as string[]).map((t: string, index: number) =>{
       return [t, data[key][index] as number]
     })
   }))
