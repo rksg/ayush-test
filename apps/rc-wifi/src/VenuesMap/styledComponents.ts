@@ -103,8 +103,7 @@ export const TotalCount = styled.a`
 
 export const StyledListWithIcon = styled.div`
   width: 200px;
-  padding: 5px;
-  background-color: var(--acx-primary-black);
+  background-color: var(--acx-primary-white);
   border-radius: 4px;
 
   .venueInfoHeader {
@@ -124,9 +123,15 @@ export const StyledListWithIcon = styled.div`
     border: none;
   }
 
+  .ant-list-items {
+    margin: 0;
+    padding: 5px;
+    list-style: none;
+}
+
   .ant-list-item {
     padding: 6px;
-    color: var(--acx-primary-white);
+    color: var(--acx-primary-black);
     font-family: var(--acx-neutral-brand-font);
     font-style: normal;
     font-weight: var(--acx-headline-4-font-weight);
@@ -135,20 +140,26 @@ export const StyledListWithIcon = styled.div`
   }
 
   .ant-list-split .ant-list-item {
-    border-bottom: 1px solid var(--acx-neutrals-80);
+    border-bottom: 1px solid var(--acx-neutrals-30);
   }
 
   .ant-list-split .ant-list-header {
-    border-bottom: 1px solid var(--acx-neutrals-70);
+    background-color: var(--acx-primary-black);
+    border-bottom: 1px solid var(--acx-neutrals-30);
   }
 
   .ant-list-split.ant-list-something-after-last-item
   .ant-spin-container > .ant-list-items > .ant-list-item:last-child {
-    border-bottom: 1px solid var(--acx-neutrals-70);
+    border-bottom: 1px solid var(--acx-neutrals-30);
   }
 
+  .ant-list-split .ant-list-item:last-child {
+    border-bottom: none;
+    margin-bottom: 5px;
+}
+
   .ant-list-item:hover {
-    background-color: var(--acx-neutrals-70);
+    background-color: var(--acx-neutrals-25);
   }
 
 .ant-list-pagination {
@@ -159,29 +170,30 @@ export const StyledListWithIcon = styled.div`
   .ant-pagination-item a {
     display: block;
     padding: 0 6px;
-    color: var(--acx-primary-white);
+    color: var(--acx-primary-black);
     transition: none;
-    text-decoration-line: underline;
+    font-weight: var(--acx-headline-5-font-weight-bold);
   }
 
   .ant-pagination-item-active a {
+    color: var(--acx-primary-white);
     font-weight: var(--acx-headline-5-font-weight-bold);
     text-decoration-line: none;
   }
 
   .ant-pagination-item-active {
     font-weight: var(--acx-headline-5-font-weight-bold);
-    background: none !important;
+    background-color: var(--acx-accents-blue-50) !important;
     border: none;
 }
 
   .ant-pagination-prev button, .ant-pagination-next button {
-    color: var(--acx-primary-white);
+    color: var(--acx-primary-black);
     cursor: pointer;
     user-select: none;
   }
 
   .ant-list-bordered .ant-list-pagination {
-    margin: 3px 24px;
+    margin: 0px 24px 10px 24px;
 }
 `
