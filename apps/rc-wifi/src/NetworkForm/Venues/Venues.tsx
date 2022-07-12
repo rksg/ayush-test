@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Switch } from 'antd'
 
 import {
   Loader,
-  StepFormProps,
   StepsForm,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery, Venue, useGetNetworkQuery } from '@acx-ui/rc/services'
-import { useTableQuery, CreateNetworkFormFields }       from '@acx-ui/rc/utils'
-import { useParams }                                    from '@acx-ui/react-router-dom'
+import { useVenueListQuery, Venue } from '@acx-ui/rc/services'
+import { useTableQuery }            from '@acx-ui/rc/utils'
 
 const defaultPayload = {
   searchString: '',
@@ -49,9 +47,8 @@ const getNetworkId = () => {
   return 'UNKNOWN-NETWORK-ID'
 }
 
-export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
-  const params = useParams()
-  const { data } = useGetNetworkQuery({ params })
+export function Venues (props: {formRef: any, editMode: boolean}) {
+  const venues = Form.useWatch('venues')
 
   const tableQuery = useTableQuery({
     useQuery: useVenueListQuery,
@@ -77,22 +74,40 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
 
     props.formRef?.current?.setFieldsValue({ venues: selected })
   }
-  
   useEffect(()=>{
-    if(tableQuery.data){
-      const tableData = tableQuery.data.data.map((item: any) => 
-      {
-        const activatedVenue = data?.venues && 
-        data?.venues.filter((venue: any) => venue.venueId === item.id).length > 0
-        return {
-          ...item,
-          // work around of read-only records from RTKQ
-          activated: { isActivated: activatedVenue || item.activated.isActivated }
-        }
-      })
-      setTableData(tableData)
+    if(props.editMode){
+      if(tableQuery.data && venues){
+        const selected: Venue[] = []
+        const tableData = tableQuery.data.data.map((item: Venue) => 
+        {
+          const activatedVenue = venues && 
+            venues.filter((venue: Venue) => venue.venueId === item.id).length > 0
+          if(activatedVenue){
+            selected.push(item)
+          }
+          return {
+            ...item,
+            // work around of read-only records from RTKQ
+            activated: { isActivated: activatedVenue || item.activated.isActivated }
+          }
+        })
+        setTableData(tableData)
+        setActivateVenues(selected)
+      }
+    }else{
+      if(tableQuery.data){
+        const tableData = tableQuery.data.data.map((item: Venue) => 
+        {
+          return {
+            ...item,
+            // work around of read-only records from RTKQ
+            activated: { ...item.activated }
+          }
+        })
+        setTableData(tableData)
+      }
     }
-  }, [data?.venues, tableQuery.data])
+  }, [venues, tableQuery.data, props.editMode])
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -178,7 +193,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
             rowKey='id'
             rowSelection={{
               type: 'checkbox',
-              defaultSelectedRowKeys: data?.venues.map(item => item.venueId)
+              defaultSelectedRowKeys: venues?.map((item: Venue) => item.venueId)
             }}
             onRow={(record: Venue) => ({
               onClick: () => { 

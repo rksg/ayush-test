@@ -6,7 +6,7 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateNetworkMutation, useGetNetworkQuery, useEditNetworkMutation } from '@acx-ui/rc/services'
+import { useCreateNetworkMutation, useGetNetworkQuery, useUpdateNetworkMutation } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   CreateNetworkFormFields,
@@ -39,7 +39,7 @@ export function NetworkForm () {
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [createNetwork] = useCreateNetworkMutation()
-  const [editNetwork] = useEditNetworkMutation()
+  const [updateNetwork] = useUpdateNetworkMutation()
   //DetailsState
   const [state, updateState] = useState<CreateNetworkFormFields>({
     name: '',
@@ -83,7 +83,7 @@ export function NetworkForm () {
 
   const handleEditNetwork = async () => {
     try {
-      await editNetwork({ params, payload: saveState }).unwrap()
+      await updateNetwork({ params, payload: saveState }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -123,7 +123,10 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
-          formRef={formRef}
+          initialValues={{ 
+            ...data, 
+            isCloudpathEnabled: data?.cloudpathServerId !== ''
+          }}
           name='Settings'
           title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
           validateTrigger='onBlur'
@@ -143,6 +146,7 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
+          initialValues={{ venues: data?.venues }}
           name='venues'
           title='Venues'
           onFinish={async (data) => {
@@ -151,7 +155,7 @@ export function NetworkForm () {
             return true
           }}
         >
-          <Venues formRef={formRef} />
+          <Venues formRef={formRef} editMode={editMode} />
         </StepsForm.StepForm>
 
         <StepsForm.StepForm name='summary' title='Summary'>

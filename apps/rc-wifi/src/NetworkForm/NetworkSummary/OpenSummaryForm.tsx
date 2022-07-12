@@ -1,14 +1,21 @@
 import { EnvironmentOutlined }   from '@ant-design/icons'
 import { Col, Form, Row, Input } from 'antd'
 
-import { StepsForm }               from '@acx-ui/components'
-import { useCloudpathListQuery }   from '@acx-ui/rc/services'
-import { CreateNetworkFormFields } from '@acx-ui/rc/utils'
-import { useParams }               from '@acx-ui/react-router-dom'
+import { StepsForm }                                from '@acx-ui/components'
+import { useCloudpathListQuery, useVenueListQuery } from '@acx-ui/rc/services'
+import { CreateNetworkFormFields }                  from '@acx-ui/rc/utils'
+import { useParams }                                from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram }       from '../NetworkDiagram/NetworkDiagram'
 import { transformNetworkType } from '../parser'
 
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'id'
+  ]
+}
 
 export function OpenSummaryForm (props: {
   summaryData: CreateNetworkFormFields;
@@ -17,7 +24,8 @@ export function OpenSummaryForm (props: {
   const defaultValue = '--'
 
   const selectedId = summaryData.cloudpathServerId
-  const { selected } = useCloudpathListQuery({ params: useParams() }, {
+  const params = useParams()
+  const { selected } = useCloudpathListQuery({ params }, {
     selectFromResult ({ data }) {
       return {
         selected: data?.find((item) => item.id === selectedId)
@@ -25,6 +33,13 @@ export function OpenSummaryForm (props: {
     }
   })  
 
+  const { data } = useVenueListQuery({ params:
+    { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' }, payload: defaultPayload })
+
+  const venueList = data?.data.reduce((map: any, obj: any) => {
+    map[obj.id] = obj
+    return map
+  }, {})
 
   const getVenues = function () {
     const venues = summaryData.venues
@@ -34,7 +49,7 @@ export function OpenSummaryForm (props: {
         rows.push(
           <li key={(venue as any).venueId} style={{ margin: '10px 0px' }}>
             <EnvironmentOutlined />
-            {(venue as any).name}
+            {venueList[(venue as any).venueId].name}
           </li>
         )
       }
