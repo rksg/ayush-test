@@ -159,9 +159,6 @@ export function NetworkVenuesTab () {
               row.deepVenue.scheduler = defaultVenueData.scheduler
               networkVenues.push(row.deepVenue)
             }
-          } else {
-            // This selected venue is not visible (not in this current page)
-            networkVenues.push(defaultVenueData)
           }
         }
 

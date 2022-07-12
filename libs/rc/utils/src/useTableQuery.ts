@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { TableProps }        from '@acx-ui/components'
