@@ -32,9 +32,11 @@ function DashboardPageHeader () {
   const { $t } = useIntl()
   return (
     <PageHeader
-      title={$t({ id: 'title', defaultMessage: 'Dashboard'  })}
+      title={$t({ id: 'title', defaultMessage: 'Dashboard' })}
       extra={[
-        <Button key='add' type='primary'>{$t({ id: 'pageHeaderMenu.add', defaultMessage: 'Add' })}...</Button>,
+        <Button key='add' type='primary'>
+          {$t({ id: 'pageHeaderMenu.add', defaultMessage: 'Add' })}...
+        </Button>,
         <Button key='hierarchy-filter'>
           {$t({ id: 'pageHeaderMenu.entireOrg', defaultMessage: 'Entire Organization' })}
           <ArrowExpand />
