@@ -6,19 +6,17 @@ import { Card }                      from '@acx-ui/components'
 import { DonutChart }                from '@acx-ui/components'
 import type { DonutChartData }       from '@acx-ui/components'
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
-import {
-  Dashboard
-} from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import { Dashboard }                 from '@acx-ui/rc/services'
+import { useParams }                 from '@acx-ui/react-router-dom'
 
 const seriesMapping = [
-  { name: 'Good', color: cssStr('--acx-semantics-green-60') },
-  { name: 'Average', color: cssStr('--acx-semantics-yellow-40') },
   { name: 'Poor', color: cssStr('--acx-semantics-red-50') },
+  { name: 'Average', color: cssStr('--acx-semantics-yellow-40') },
+  { name: 'Good', color: cssStr('--acx-semantics-green-60') },
   { name: 'Unknown', color: cssStr('--acx-neutrals-50') }
 ] as Array<{ name: string, color: string }>
 
-const getAPClientChartData = (overviewData?: Dashboard): DonutChartData[] => {
+export const getAPClientChartData = (overviewData?: Dashboard): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   const clientDto = overviewData?.summary?.clients?.clientDto
   if (clientDto && clientDto.length > 0) {
@@ -36,7 +34,7 @@ const getAPClientChartData = (overviewData?: Dashboard): DonutChartData[] => {
   return chartData
 }
 
-const getSwitchClientChartData = (overviewData?: Dashboard): DonutChartData[] => {
+export const getSwitchClientChartData = (overviewData?: Dashboard): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   const switchClients = overviewData?.summary?.switchClients
   if (switchClients && switchClients.totalCount > 0) {
@@ -49,7 +47,7 @@ const getSwitchClientChartData = (overviewData?: Dashboard): DonutChartData[] =>
   return chartData
 }
 
-export function Clients () {
+function Clients () {
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   },{
@@ -84,3 +82,5 @@ export function Clients () {
     </Loader>
   )
 }
+
+export default Clients

@@ -131,14 +131,14 @@ export interface Dashboard {
       summary: {
         [prop: string]: number;
       },
-      clientDto: [{
+      clientDto: Array<{
         [prop: string]: string
-      }]
+      }>,
       totalCount: number;
     },
     switchClients?: {
       summary: {
-        [prop: string]: number;
+        [prop: string]: string;
       },
       totalCount: number;
     },

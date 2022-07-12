@@ -26,7 +26,7 @@ jest.mock('@acx-ui/components', () => ({
   })
 }))
 
-describe('Venues widget', () => {
+describe('Devices widget', () => {
   mockAutoSizer()
 
   beforeEach(() => {
