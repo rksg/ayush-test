@@ -44,7 +44,6 @@ export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
 export default (props: PageHeaderProps) => {
   const filters = useGlobalFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
-   
   return <div>
     <Loader states={[queryResults]}>
       <Header {...props} 
