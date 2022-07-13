@@ -16,17 +16,16 @@ export function BasicDrawer () {
     <p>some content</p>
     <p>some content</p>
   </>
-  
+
   return (
     <>
       <Button onClick={onOpen}>Basic Drawer</Button>
-      <Drawer 
+      <Drawer
         title={'Basic Drawer'}
         visible={visible}
         onClose={onClose}
-        content={content}
-      >
-      </Drawer>
+        children={content}
+      />
     </>
   )
 }

@@ -17,7 +17,7 @@ describe('Drawer', () => {
       title={'Test Drawer'}
       visible={true}
       onClose={onClose}
-      content={content}
+      children={content}
       mask={false}
       data-testid={'basic-drawer'}
     />)
@@ -30,7 +30,7 @@ describe('Drawer', () => {
       title={'Test Drawer'}
       visible={true}
       onClose={onClose}
-      content={content}
+      children={content}
       mask={false}
     />)
 
@@ -52,7 +52,7 @@ describe('Drawer', () => {
       title={'Test Custom Drawer'}
       visible={true}
       onClose={onClose}
-      content={content}
+      children={content}
       mask={false}
       footer={footer}
     />)

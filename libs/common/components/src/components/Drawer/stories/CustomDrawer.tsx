@@ -59,11 +59,11 @@ export function CustomDrawer () {
   return (
     <>
       <Button onClick={onOpen}>Custom Drawer</Button>
-      <Drawer 
+      <Drawer
         title={'Custom Drawer'}
         visible={visible}
         onClose={onClose}
-        content={content}
+        children={content}
         footer={footer}
         destroyOnClose={resetField}
       />
