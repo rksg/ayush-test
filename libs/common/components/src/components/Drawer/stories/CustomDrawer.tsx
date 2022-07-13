@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Col, Form, Input, Row } from 'antd'
+import { Form, Input, Space } from 'antd'
 
 import { Drawer } from '..'
 import { Button } from '../../Button'
@@ -8,9 +8,11 @@ import { Button } from '../../Button'
 export function CustomDrawer () {
   const [visible, setVisible] = useState(false)
   const [resetField, setResetField] = useState(false)
+  const [form] = Form.useForm()
 
   const onClose = () => {
     setVisible(false)
+    form.resetFields()
   }
   const onOpen = () => {
     setVisible(true)
@@ -21,41 +23,26 @@ export function CustomDrawer () {
     onClose()
   }
 
-  const content = <Form layout='vertical' hideRequiredMark>
-    <Row>
-      <Col span={24}>
-        <Form.Item
-          name='name'
-          label='Name'
-          rules={[{ required: true, message: 'Please enter name' }]}
-        >
-          <Input placeholder='Please enter name' />
-        </Form.Item>
-      </Col>
-    </Row>
-    <Row>
-      <Col span={24}>
-        <Form.Item
-          name='description'
-          label='Description'
-          rules={[
-            {
-              required: true,
-              message: 'Please enter description'
-            }
-          ]}
-        >
-          <Input.TextArea rows={4} placeholder='Please enter description' />
-        </Form.Item>
-      </Col>
-    </Row>
+  const content = <Form layout='vertical' form={form} onFinish={onClose}>
+    <Form.Item
+      name='name'
+      label='Name'
+      rules={[{ required: true }]}
+      children={<Input placeholder='Please enter name' />}
+    />
+    <Form.Item
+      name='description'
+      label='Description'
+      rules={[{ required: true }]}
+      children={<Input.TextArea rows={4} placeholder='Please enter description' />}
+    />
   </Form>
 
-  const footer = <>
-    <Button onClick={onClose} type={'primary'}>Save</Button>
+  const footer = <Space>
+    <Button onClick={() => form.submit()} type={'primary'}>Save</Button>
     <Button onClick={resetFields}>Reset</Button>
-  </>
-  
+  </Space>
+
   return (
     <>
       <Button onClick={onOpen}>Custom Drawer</Button>
