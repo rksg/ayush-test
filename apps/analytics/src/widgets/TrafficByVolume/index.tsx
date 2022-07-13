@@ -2,13 +2,14 @@ import React from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter }                   from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter }                from '@acx-ui/analytics/utils'
 import { Card }                              from '@acx-ui/components'
 import { Loader }                            from '@acx-ui/components'
 import { MultiLineTimeSeriesChart }          from '@acx-ui/components'
 import { cssStr }                            from '@acx-ui/components'
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/components'
 import { formatter }                         from '@acx-ui/utils'
+import { useDateFilter }                     from '@acx-ui/utils'
 
 import {
   useTrafficByVolumeQuery,
@@ -39,8 +40,14 @@ export const getSeriesData = (data?: TrafficByVolumeData): MultiLineTimeSeriesCh
 }
 
 function TrafficByVolumeWidget () {
-  const filters = useGlobalFilter()
-  const queryResults = useTrafficByVolumeQuery(filters)
+  const filters = useAnalyticsFilter()
+  const { startDate,endDate } = useDateFilter()
+
+  console.log(startDate)
+  console.log(endDate)
+
+  const queryResults = useTrafficByVolumeQuery({ path: filters.path,
+    startDate: startDate?.format() , endDate: endDate?.format() })
 
   return (
     <Loader states={[queryResults]}>

@@ -1,10 +1,15 @@
-import React, { ReactNode, useContext } from 'react'
+import { createContext, useContext,ReactNode, useState } from 'react'
 
 import { pick } from 'lodash'
 import moment   from 'moment-timezone'
-
-import { NetworkPath } from './constants'
-
+interface DateFilter {
+  startDate: moment.Moment,
+  endDate: moment.Moment
+}
+export type DateFilterContextprops = {
+  dateFilter: DateFilter,
+  setDateFilter:(c: DateFilter) => void
+}
 export enum DateRange {
   today = 'Today',
   last1Hour = 'Last 1 Hour',
@@ -14,38 +19,24 @@ export enum DateRange {
   custom = 'Custom'
 }
 
-interface DateFilter {
-  range: DateRange
-}
-
-interface GlobalFilterProps {
-  dateFilter: DateFilter
-  path: Readonly<NetworkPath>
-}
-
-export const defaultGlobalFilter = {
-  dateFilter: { range: DateRange.last24Hours },
-  path: [{ type: 'network', name: 'Network' }] as NetworkPath
+export const defaultDateFilter = {
+  dateFilter: { ...getDateRangeFilter(DateRange.last24Hours) },
+  setDateFilter: () => {}
 } as const
-
-const GlobalFilterContext = React.createContext<GlobalFilterProps>(defaultGlobalFilter)
-
-export type GlobalFilter = ReturnType<typeof useGlobalFilter>
-
-export function useGlobalFilter () {
-  const { dateFilter, ...filters } = useContext(GlobalFilterContext)
+export const DateFilterContext = createContext<DateFilterContextprops>(defaultDateFilter)
+export const useDateFilter = () => {
+  const { dateFilter, ...filters } = useContext(DateFilterContext)
   return {
     ...filters,
-    ...getDateRangeFilter(dateFilter)
+    ...dateFilter
   } as const
 }
 
-export function GlobalFilterProvider (props: { children: ReactNode }) {
-  // TODO:
-  // Expose methods to change global filters
-  return <GlobalFilterContext.Provider {...props} value={defaultGlobalFilter} />
+export function DateFilterProvider (props: { children: ReactNode }) {
+  const [dateFilter, setDateFilter] = useState<DateFilter>(defaultDateFilter.dateFilter)
+  console.log(dateFilter)
+  return <DateFilterContext.Provider {...props} value={{ dateFilter, setDateFilter }} />
 }
-
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
     [DateRange.last1Hour]: [
@@ -69,12 +60,11 @@ export function defaultRanges (subRange?: DateRange[]) {
   return defaultRange
 }
 
-export function getDateRangeFilter ({ range }: DateFilter) {
-  // TODO:
-  // instead of generating all ranges, maybe generate only what is given at `dateFilter.range`?
+export function getDateRangeFilter ( range : DateRange) {
   const ranges = defaultRanges()
   const [startDate, endDate] = (
     ranges as Record<string, [moment.Moment, moment.Moment]>
-  )[range].map((date: moment.Moment) => date.format())
+  )[range].map((date: moment.Moment) => date )
   return { startDate, endDate }
 }
+

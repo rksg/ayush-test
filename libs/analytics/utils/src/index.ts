@@ -1,8 +1,8 @@
 export * from './constants'
 export {
-  useGlobalFilter,
-  GlobalFilterProvider,
+  useAnalyticsFilter,
+  AnalyticsFilterProvider,
   defaultRanges,
   DateRange
-} from './globalFilter'
-export type { GlobalFilter } from './globalFilter'
+} from './analyticsFilter'
+export type { AnalyticsFilter } from './analyticsFilter'

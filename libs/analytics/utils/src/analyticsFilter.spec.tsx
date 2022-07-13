@@ -7,9 +7,9 @@ import {
   defaultRanges,
   DateRange,
   getDateRangeFilter,
-  useGlobalFilter,
-  GlobalFilterProvider
-} from './globalFilter'
+  useAnalyticsFilter,
+  AnalyticsFilterProvider
+} from './analyticsFilter'
 
 describe('useGlobalFilter', ()=>{
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe('useGlobalFilter', ()=>{
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
   it('should return correctly value',()=>{
-    const { result } = renderHook(useGlobalFilter)
+    const { result } = renderHook(useAnalyticsFilter)
     expect(result.current).toEqual({
       path: [{ name: 'Network', type: 'network' }],
       startDate: '2021-12-31T08:00:00+08:00',
@@ -29,10 +29,10 @@ describe('useGlobalFilter', ()=>{
 describe('GlobalFilterProvider', ()=>{
   it('should render correctly',()=>{
     function Component () {
-      const filters = useGlobalFilter()
+      const filters = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
     }
-    const { asFragment } = render(<GlobalFilterProvider><Component/></GlobalFilterProvider>)
+    const { asFragment } = render(<AnalyticsFilterProvider><Component/></AnalyticsFilterProvider>)
     expect(asFragment()).toMatchSnapshot()
   })
 })

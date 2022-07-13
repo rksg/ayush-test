@@ -15,7 +15,7 @@ describe('CalenderRangePicker', () => {
     const { asFragment } = render(
       <DatePicker 
         rangeOptions
-        onDateChange={()=>{}}
+        onDateApply={()=>{}}
         selectedRange={{ start: moment('01/01/2022').subtract(1, 'days').seconds(0),
           end: moment('01/01/2022').seconds(0) }}/>)
     expect(asFragment()).toMatchSnapshot()
@@ -25,7 +25,7 @@ describe('CalenderRangePicker', () => {
       <DatePicker
         selectedRange={{ start: moment().subtract(1, 'days').seconds(0),
           end: moment().seconds(0) }}
-        onDateChange={()=>{}}
+        onDateApply={()=>{}}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         showTimePicker
         enableDates={[moment().subtract(7, 'days').seconds(0),
@@ -38,7 +38,7 @@ describe('CalenderRangePicker', () => {
   it('should close CalenderRangePicker when click on apply',async () => {
     render(
       <DatePicker
-        onDateChange={()=>{}}
+        onDateApply={()=>{}}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         showTimePicker
         selectedRange={{ start: moment().subtract(7, 'days').seconds(0),
@@ -55,7 +55,7 @@ describe('CalenderRangePicker', () => {
   it('should close CalenderRangePicker when click on cancel',async () => {
     render(
       <DatePicker
-        onDateChange={()=>{}}
+        onDateApply={()=>{}}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         selectedRange={{ start: moment().subtract(7, 'days').seconds(0),
           end: moment().seconds(0) }}/>)
@@ -72,7 +72,9 @@ describe('CalenderRangePicker', () => {
       <DatePicker
         selectedRange={{ start: moment('01/01/2022').subtract(7, 'days').seconds(0),
           end: moment('03/01/2022').seconds(0) }}
-        onDateChange={onDateChange}/>)
+        onDateChange={onDateChange}
+        onDateApply={()=>{}}
+      />)
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
@@ -90,6 +92,8 @@ describe('CalenderRangePicker', () => {
       onDateChange={onDateChange}
       selectedRange={{ start: moment().subtract(7, 'days').seconds(0),
         end: moment().seconds(0) }}
+      onDateApply={()=>{}}
+
     />)
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')

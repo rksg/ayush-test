@@ -14,7 +14,8 @@ storiesOf('DatePicker', module).add('Basic', () => (
     <DatePicker 
       selectedRange={{ start: moment().subtract(1, 'days').seconds(0),
         end: moment().seconds(0) }}
-      onDateChange={()=>{}}/>
+      onDateApply={()=>{}}
+    />
   </div>
 ))
 storiesOf('DatePicker', module).add('with default Ranges', () => (
@@ -27,7 +28,7 @@ storiesOf('DatePicker', module).add('with default Ranges', () => (
       selectedRange={{ start: moment().subtract(1, 'days').seconds(0),
         end: moment().seconds(0) }}
       rangeOptions
-      onDateChange={()=>{}}
+      onDateApply={()=>{}}
     />
   </div>
 ))
@@ -41,8 +42,8 @@ storiesOf('DatePicker', module).add('with custom ranges', () => (
       selectedRange={{ start: moment().subtract(1, 'days').seconds(0),
         end: moment().seconds(0) }}
       rangeOptions={[DateRange.today, DateRange.last7Days]}
-      onDateChange={()=>{}}
-    /></div>
+      onDateApply={()=>{}}/>
+  </div>
 ))
 storiesOf('DatePicker', module).add('with custom time picker and ranges ', () => (
   <div style={{
@@ -55,7 +56,7 @@ storiesOf('DatePicker', module).add('with custom time picker and ranges ', () =>
       rangeOptions
       selectedRange={{ start: moment().subtract(1, 'days').seconds(0),
         end: moment().seconds(0) }}
-      onDateChange={()=>{}}
+      onDateApply={()=>{}}
     />
   </div>
 ))
@@ -73,7 +74,7 @@ storiesOf('DatePicker', module).add('with restricted date selection', () => (
         moment().seconds(0)]}
       selectedRange={{ start: moment().subtract(1, 'days').seconds(0),
         end: moment().seconds(0) }}
-      onDateChange={()=>{}}
+      onDateApply={()=>{}}
     />
   </div>
 ))
@@ -90,7 +91,7 @@ storiesOf('DatePicker', module).add('with user default selected date', () => (
         moment().seconds(0)]}
       selectedRange={{ start: moment().subtract(7, 'days').seconds(0),
         end: moment().seconds(0) }}
-      onDateChange={()=>{}}
+      onDateApply={()=>{}}
     />
   </div>
 ))

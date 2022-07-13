@@ -19,7 +19,7 @@ enum DateRange {
   lastMonth = 'Last Month',
   custom = 'Custom'
 }
-type DateRangeType = { 'start': moment.Moment | null, 'end' : moment.Moment | null }
+type DateRangeType = { startDate: moment.Moment | null, endDate : moment.Moment | null }
 type RangeValueType = [Moment | null, Moment | null] | null
 type RangeBoundType= [Moment, Moment] | null
 type RangesType = Record<string, Exclude<RangeBoundType, null>
@@ -29,7 +29,8 @@ interface DatePickerProps {
   enableDates?: [Moment, Moment];
   rangeOptions?: [DateRange,DateRange] | boolean;
   selectedRange: DateRangeType;
-  onDateChange:Function;
+  onDateChange?:Function;
+  onDateApply:Function
 };
 const styles = {
   timePicker: {
@@ -47,7 +48,7 @@ const styles = {
 const { RangePicker } = antdDatePicker
 const dateFormat = 'DD/MM/YYYY'
 const dateWithTimeFormat= 'DD/MM/YYYY HH:mm'
-
+  
 
 const defaultRanges = (subRange?: DateRange[] | boolean) => {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
@@ -73,9 +74,11 @@ const defaultRanges = (subRange?: DateRange[] | boolean) => {
 }
 
 export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
-  selectedRange, onDateChange, ...props }:DatePickerProps) => {
-    
+  selectedRange, onDateChange,onDateApply }:DatePickerProps) => {
+
   const didMountRef = useRef(false)
+  const ref = useRef<HTMLDivElement | null>(null)
+
   const [range, setRange] = useState<DateRangeType>(selectedRange)
   const [isCalenderOpen, setIscalenderOpen] = useState<boolean>(false)
   const disabledDate = (current: Moment) => {
@@ -90,11 +93,26 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
       didMountRef.current = true
       return
     }
-    onDateChange(range)}
-  ,[range, onDateChange])
+    if( typeof onDateChange === 'function')
+      onDateChange(range)
+    const handleClickForDatePicker = (event : MouseEvent) => {
+      const target = event.target as HTMLInputElement
+      if ((ref.current && !ref.current.contains(event.target as Node)) 
+      || Object.values(DateRange).includes(target.innerText as DateRange)
+      ){
+        onDateApply(range)
+        setIscalenderOpen(false) 
+      }
+    }
+    document.addEventListener('click', handleClickForDatePicker, true)
+    return () => {
+      document.removeEventListener('click', handleClickForDatePicker, true)
+    }
+  }
+  ,[range, onDateChange,setIscalenderOpen,onDateApply])
 
   return ( 
-    <UI.Wrapper hasTimePicker={showTimePicker}>
+    <UI.Wrapper ref={ref} hasTimePicker={showTimePicker}>
       <RangePicker 
         style={styles.rangePicker}
         ranges={
@@ -110,10 +128,10 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         onCalendarChange={(values: RangeValueType) =>
           setRange({
-            start: values
+            startDate: values
               ? values[0]
               : null ,
-            end: values
+            endDate: values
               ? values[1]
               : null })
         }
@@ -125,9 +143,9 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
             range={range}
             setRange={setRange}
             defaultValue={selectedRange}
-            setIscalenderOpen={setIscalenderOpen}/>}
-        {...props}
-        value={[range?.start, range?.end]}
+            setIscalenderOpen={setIscalenderOpen}
+            onDateApply={onDateApply}/>}
+        value={[range?.startDate, range?.endDate]}
         format={
           showTimePicker
             ? dateWithTimeFormat

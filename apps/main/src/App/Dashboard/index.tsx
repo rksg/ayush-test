@@ -1,39 +1,55 @@
 import React from 'react'
 
-import { GlobalFilterProvider } from '@acx-ui/analytics/utils'
+import moment from 'moment'
+
+import { AnalyticsFilterProvider } from '@acx-ui/analytics/utils'
 import {
   Button,
   DashboardRow,
   DashboardCol,
-  PageHeader
+  PageHeader,
+  DatePicker
 } from '@acx-ui/components'
 import {
   ArrowExpand,
-  ClockOutlined,
   DownloadOutlined,
   BulbOutlined
 } from '@acx-ui/icons'
+import { useDateFilter } from '@acx-ui/utils'
 
 const WifiWidgets = React.lazy(() => import('rc-wifi/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
 export default function Dashboard () {
   return (
-    <GlobalFilterProvider>
+    <AnalyticsFilterProvider>
       <DashboardPageHeader />
       <DashboardWidgets />
-    </GlobalFilterProvider>
+    </AnalyticsFilterProvider>
   )
 }
 
 function DashboardPageHeader () {
+  const { startDate,endDate, setDateFilter } = useDateFilter()
+  console.log(startDate)
+  console.log(endDate)
+
   return (
     <PageHeader
       title='Dashboard'
       extra={[
         <Button key='add' type='primary'>Add...</Button>,
         <Button key='hierarchy-filter'>Entire Organization <ArrowExpand /></Button>,
-        <Button key='date-filter' icon={<ClockOutlined />}>Last 24 Hours</Button>,
+        <DatePicker
+          selectedRange={{ 
+            startDate: startDate,
+            endDate: endDate }}
+          rangeOptions
+          enableDates={[moment().subtract(3, 'months').seconds(0),
+            moment().seconds(0)]}
+          onDateApply={setDateFilter}
+          showTimePicker
+        />,
         <Button key='download' icon={<DownloadOutlined />} />,
         <Button key='insight' icon={<BulbOutlined />} />
       ]}
@@ -44,7 +60,6 @@ function DashboardPageHeader () {
 function DashboardWidgets () {
   return (
     <DashboardRow gutter={[20, 20]}>
-
       <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
         <WifiWidgets name='alarms' />
       </DashboardCol>

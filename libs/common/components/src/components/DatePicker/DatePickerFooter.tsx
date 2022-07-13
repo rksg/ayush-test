@@ -9,13 +9,14 @@ import { Button } from '../Button'
 
 import type { Moment  } from 'moment'
 
-type DateRangeType = { 'start': moment.Moment | null, 'end' : moment.Moment | null }
+type DateRangeType = { startDate: moment.Moment | null, endDate : moment.Moment | null }
 interface DatePickerFooterProps {
   showTimePicker?: boolean;
   setRange: React.Dispatch<React.SetStateAction<DateRangeType>>;
   range: DateRangeType;
   setIscalenderOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  defaultValue: DateRangeType
+  defaultValue: DateRangeType,
+  onDateApply:Function
 };
 const styles = {
   timePicker: {
@@ -30,10 +31,10 @@ const styles = {
   rangePicker: { width: '100%' }
 }
 const timePickerConfig = [
-  { id: 1, range: 'start', value: 'hour', format: 'HH', offset: 6, hasSemiColon: true },
-  { id: 2, range: 'start', value: 'minutes', format: 'mm', offset: 0, hasHyphen: true },
-  { id: 3, range: 'end', value: 'hour', format: 'HH', offset: 0, hasSemiColon: true },
-  { id: 4, range: 'end', value: 'minutes', format: 'mm', offset: 0 }
+  { id: 1, range: 'startDate', value: 'hour', format: 'HH', offset: 6, hasSemiColon: true },
+  { id: 2, range: 'startDate', value: 'minutes', format: 'mm', offset: 0, hasHyphen: true },
+  { id: 3, range: 'endDate', value: 'hour', format: 'HH', offset: 0, hasSemiColon: true },
+  { id: 4, range: 'endDate', value: 'minutes', format: 'mm', offset: 0 }
 ]
 const dateFormat = 'DD/MM/YYYY'
 const dateWithTimeFormat= 'DD/MM/YYYY HH:mm'
@@ -41,11 +42,13 @@ const getCustomisedDate = (date: Moment | null, showTimePicker?: boolean ) =>
   showTimePicker ? date?.format(dateWithTimeFormat) : date?.format(dateFormat)
 
 export const DatePickerFooter = ({ showTimePicker, range, defaultValue, 
-  setRange, setIscalenderOpen }: DatePickerFooterProps) => {
+  setRange, setIscalenderOpen, onDateApply }: DatePickerFooterProps) => {
     
   const onButtonClick = (type: string) =>{
     if(type === 'cancel')
       setRange(defaultValue)
+    else   
+      onDateApply(range)  
     setIscalenderOpen(false)
   }
   const onTimePickerSelect = (config : typeof timePickerConfig[number], time: Moment) => 
@@ -88,8 +91,8 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
       <Col role='display-date-range'
         span={showTimePicker ? 12 : 10}
         offset={showTimePicker ? 6 : 8}>
-        {`${getCustomisedDate(range?.start, showTimePicker) || ''}
-        - ${getCustomisedDate(range?.end, showTimePicker) || ''}`}
+        {`${getCustomisedDate(range?.startDate, showTimePicker) || ''}
+        - ${getCustomisedDate(range?.endDate, showTimePicker) || ''}`}
       </Col>
       <Col span={3} style={{ lineHeight: 'normal' }}>
         <Button onClick={()=>onButtonClick('cancel')}
