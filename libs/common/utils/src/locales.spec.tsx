@@ -133,8 +133,8 @@ describe('LocaleProvider', () => {
 
   it('skip render LocaleProvider when already in LocaleContext', async () => {
     render(
-      <LocaleProvider test lang='de-DE'>
-        <LocaleProvider test lang='en-US'>
+      <LocaleProvider lang='de-DE'>
+        <LocaleProvider lang='en-US'>
           <LocaleContext.Consumer>
             {(context) => <div data-testid='target'>{context.messages?.lang}</div>}
           </LocaleContext.Consumer>
