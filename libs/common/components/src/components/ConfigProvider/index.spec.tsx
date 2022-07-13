@@ -7,6 +7,8 @@ import { IntlProvider }                 from 'react-intl'
 import { render, screen }                   from '@acx-ui/test-utils'
 import { LocaleContext, LocaleContextType } from '@acx-ui/utils'
 
+import { Loader, LoaderProps } from '../Loader'
+
 import { ConfigProvider } from '.'
 
 type Props = { children: React.ReactNode }
@@ -36,6 +38,14 @@ jest.mock('@acx-ui/utils', () => ({
     data-testid='locale-provider'
   />),
   LocaleContext: { Consumer: jest.fn() }
+}))
+
+jest.mock('../Loader', () => ({
+  Loader: jest.fn().mockImplementation((props: LoaderProps) => <div
+    data-testid='loader'
+    // eslint-disable-next-line testing-library/no-node-access
+    children={props.states?.some(v => v.isLoading) ? null : props.children}
+  />)
 }))
 
 describe('ConfigProvider', () => {
@@ -83,7 +93,10 @@ describe('ConfigProvider', () => {
       </ConfigProvider>
     )
 
-    const provider = screen.getByTestId('locale-provider')
-    expect(provider).toBeEmptyDOMElement()
+    const loader = screen.getByTestId('loader')
+    expect(loader).toBeEmptyDOMElement()
+
+    const expectedProps = expect.objectContaining({ states: [{ isLoading: true }] })
+    expect(Loader).toHaveBeenCalledWith(expectedProps, {})
   })
 })
