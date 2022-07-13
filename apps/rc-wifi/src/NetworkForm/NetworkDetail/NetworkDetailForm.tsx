@@ -16,7 +16,7 @@ import type { RadioChangeEvent } from 'antd'
 const { useWatch } = Form
 
 export function NetworkDetailForm () {
-  const type = useWatch<string>('type')
+  const type = useWatch<NetworkTypeEnum>('type')
   const { setNetworkType: setSettingStepTitle } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
     setSettingStepTitle(e.target.value as NetworkTypeEnum)

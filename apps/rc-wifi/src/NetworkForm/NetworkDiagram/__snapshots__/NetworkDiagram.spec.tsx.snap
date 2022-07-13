@@ -1,0 +1,462 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NetworkDiagram NetworkDiagram - AAA should render AAA (Cloud) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Enterprise AAA (802.1X)"
+          src="aaa-cloudpath-cloud-deployment.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - AAA should render AAA (On Premise) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Enterprise AAA (802.1X)"
+          src="aaa-cloudpath-on-prem-deployment.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Enterprise AAA (802.1X)"
+          src="aaa-proxy.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Enterprise AAA (802.1X)"
+          src="aaa.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Click Through) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Captive portal"
+          src="click-through.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Cloudpath - Cloud) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Captive portal"
+          src="captive-portal-cloudpath-cloud-deployment.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Cloudpath - On Premise) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Captive portal"
+          src="captive-portal-cloudpath-on-prem-deployment.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Guest Pass) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Captive portal"
+          src="guest-pass.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Host Approval) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Captive portal"
+          src="host-approval.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Self Sign In) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Captive portal"
+          src="self-sign-in.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (WISPr With Psk) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Captive portal"
+          src="wispr-psk.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (WISPr) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Captive portal"
+          src="wispr.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal default diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Captive portal"
+          src="click-through.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK (Cloud) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Dynamic Pre-Shared Key (DPSK)"
+          src="dpsk-cloudpath-cloud-deployment.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK (On Premise) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Dynamic Pre-Shared Key (DPSK)"
+          src="dpsk-cloudpath-on-prem-deployment.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Dynamic Pre-Shared Key (DPSK)"
+          src="dpsk.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN (Cloud) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Open Network"
+          src="open-cloudpath-cloud-deployment.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN (On Premise) diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Open Network"
+          src="open-cloudpath-on-prem-deployment.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Open Network"
+          src="open.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - PSK should render AAA diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Pre-Shared Key (PSK)"
+          src="aaa.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - PSK should render PSK diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Pre-Shared Key (PSK)"
+          src="psk.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram should render default diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          src="none.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

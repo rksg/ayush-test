@@ -17,6 +17,7 @@ import {
 
 import { StepsForm, Button, Subtitle }              from '@acx-ui/components'
 import { useGetAllUserSettingsQuery, UserSettings } from '@acx-ui/rc/services'
+import { useCloudpathListQuery }                    from '@acx-ui/rc/services'
 import {
   Constants,
   WlanSecurityEnum,
@@ -28,7 +29,8 @@ import {
   networkWifiPortRegExp,
   stringContainSpace
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { useParams }       from '@acx-ui/react-router-dom'
 
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
@@ -52,13 +54,41 @@ const AaaMessages = {
 const { useWatch } = Form
 
 export function AaaSettingsForm () {
+  const [
+    isCloudpathEnabled,
+    selectedId,
+    enableAuthProxy,
+    enableAccountingService,
+    enableAccountingProxy
+  ] = [
+    useWatch('isCloudpathEnabled'),
+    useWatch('cloudpathServerId'),
+    useWatch('enableAuthProxy'),
+    useWatch('enableAccountingService'),
+    useWatch('enableAccountingProxy')
+  ]
+  const { selected } = useCloudpathListQuery({ params: useParams() }, {
+    selectFromResult ({ data }) {
+      return {
+        selected: data?.find((item) => item.id === selectedId)
+      }
+    }
+  })
+
   return (
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
       </Col>
       <Col span={14}>
-        <NetworkDiagram type='aaa' />
+        <NetworkDiagram
+          type={NetworkTypeEnum.AAA}
+          cloudpathType={selected?.deploymentType}
+          enableAuthProxy={enableAuthProxy}
+          enableAccountingService={enableAccountingService}
+          enableAccountingProxy={enableAccountingProxy}
+          showAaaButton={enableAuthProxy !== !!enableAccountingProxy && !isCloudpathEnabled}
+        />
       </Col>
     </Row>
   )
