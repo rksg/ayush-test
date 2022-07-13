@@ -3,10 +3,10 @@ import { useContext, useEffect, useState } from 'react'
 import { Form, Col, Radio, Row, Space } from 'antd'
 import TextArea                         from 'antd/lib/input/TextArea'
 
-import { StepsForm, FormValidationItem }         from '@acx-ui/components'
-import { useNetworkListQuery }                   from '@acx-ui/rc/services'
-import { NetworkTypeEnum, checkObjectNotExists } from '@acx-ui/rc/utils'
-import { useParams }                             from '@acx-ui/react-router-dom'
+import { StepsForm, StepsFormProps, FormValidationItem } from '@acx-ui/components'
+import { useNetworkListQuery }                           from '@acx-ui/rc/services'
+import { NetworkTypeEnum, checkObjectNotExists }         from '@acx-ui/rc/utils'
+import { useParams }                                     from '@acx-ui/react-router-dom'
 
 import { NetworkTypeDescription, NetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                           from '../NetworkDiagram/NetworkDiagram'
@@ -17,7 +17,7 @@ import type { RadioChangeEvent } from 'antd'
 
 const { useWatch } = Form
 
-export function NetworkDetailForm (props: any) {
+export function NetworkDetailForm (props: { formRef: StepsFormProps['formRef'] }) { 
   const type = useWatch<string>('type')
   const { setNetworkType: setSettingStepTitle } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
@@ -44,7 +44,7 @@ export function NetworkDetailForm (props: any) {
       const result: any = networkListQuery?.data?.data
       setValidating(false)
       setRemoteQueryResult(result)
-      props.formRef.current.validateFields(['name'])
+      props.formRef?.current?.validateFields(['name'])
     }
   }, [networkListQuery, validating])
 
