@@ -6,7 +6,7 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateNetworkMutation, useGetNetworkQuery, useUpdateNetworkMutation } from '@acx-ui/rc/services'
+import { useCreateNetworkMutation, useGetNetworkQuery, useUpdateNetworkDeepMutation } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   CreateNetworkFormFields,
@@ -39,11 +39,11 @@ export function NetworkForm () {
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [createNetwork] = useCreateNetworkMutation()
-  const [updateNetwork] = useUpdateNetworkMutation()
+  const [updateNetworkDeep] = useUpdateNetworkDeepMutation()
   //DetailsState
   const [state, updateState] = useState<CreateNetworkFormFields>({
     name: '',
-    type: NetworkTypeEnum.AAA,
+    type: NetworkTypeEnum.OPEN,
     isCloudpathEnabled: false,
     venues: []
   })
@@ -83,7 +83,7 @@ export function NetworkForm () {
 
   const handleEditNetwork = async () => {
     try {
-      await updateNetwork({ params, payload: saveState }).unwrap()
+      await updateNetworkDeep({ params, payload: saveState }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -123,10 +123,7 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
-          initialValues={{ 
-            ...data, 
-            isCloudpathEnabled: data?.cloudpathServerId !== ''
-          }}
+          formRef={formRef}
           name='Settings'
           title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
           validateTrigger='onBlur'
@@ -146,7 +143,14 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
-          initialValues={{ venues: data?.venues }}
+          initialValues={data}
+          params={data}
+          request={(params) => {
+            return Promise.resolve({
+              data: params,
+              success: true
+            })
+          }}
           name='venues'
           title='Venues'
           onFinish={async (data) => {

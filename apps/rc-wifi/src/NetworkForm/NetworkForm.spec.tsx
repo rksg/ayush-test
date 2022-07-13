@@ -88,7 +88,7 @@ describe('NetworkForm', () => {
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     expect(insertInput).toHaveValue('open network test')
 
-    fireEvent.click(screen.getByText('Open Network'))
+    fireEvent.click(screen.getAllByText('Open Network')[0])
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })

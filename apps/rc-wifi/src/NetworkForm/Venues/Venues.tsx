@@ -76,7 +76,7 @@ export function Venues (props: {formRef: any, editMode: boolean}) {
   }
   useEffect(()=>{
     if(props.editMode){
-      if(tableQuery.data && venues){
+      if(tableQuery.data){
         const selected: Venue[] = []
         const tableData = tableQuery.data.data.map((item: Venue) => 
         {
@@ -88,7 +88,7 @@ export function Venues (props: {formRef: any, editMode: boolean}) {
           return {
             ...item,
             // work around of read-only records from RTKQ
-            activated: { isActivated: activatedVenue || item.activated.isActivated }
+            activated: { isActivated: activatedVenue }
           }
         })
         setTableData(tableData)
@@ -155,6 +155,7 @@ export function Venues (props: {formRef: any, editMode: boolean}) {
           handleVenueSaveData(selectedVenues)
         }} 
         defaultChecked={ row.activated.isActivated }
+        checked={ row.activated.isActivated }
         />
       }
     },

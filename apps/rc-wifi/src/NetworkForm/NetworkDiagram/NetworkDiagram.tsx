@@ -5,7 +5,7 @@ import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 import AaaDiagram           from '../../assets/images/network-wizard-diagrams/aaa.png'
 import OpenDiagram          from '../../assets/images/network-wizard-diagrams/open.png'
 import { NetworkTypeLabel } from '../contentsMap'
-import { Diagram, Title }   from '../styledComponents'
+import { Diagram }          from '../styledComponents'
 
 const diagramMap: Partial<Record<NetworkTypeEnum, string>> = {
   [NetworkTypeEnum.AAA]: AaaDiagram,
@@ -19,7 +19,6 @@ export function NetworkDiagram (props: { type?: string }) {
   return (
     <Row justify='center'>
       <Col>
-        <Title>{title}</Title>
         <Diagram>
           {diagram && <img src={diagram} alt={title} />}
         </Diagram>

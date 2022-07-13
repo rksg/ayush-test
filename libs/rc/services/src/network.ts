@@ -64,11 +64,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
     }),
-    updateNetwork: build.mutation<Network, RequestPayload>({
+    updateNetworkDeep: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
-        const editNetworkReq = createHttpRequest(CommonUrlsInfo.editNetworkDeep, params)
+        const req = createHttpRequest(CommonUrlsInfo.updateNetworkDeep, params)
         return {
-          ...editNetworkReq,
+          ...req,
           body: payload
         }
       },
@@ -140,7 +140,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 export const {
   useNetworkListQuery,
   useCreateNetworkMutation,
-  useUpdateNetworkMutation,
+  useUpdateNetworkDeepMutation,
   useGetNetworkQuery,
   useNetworkDetailHeaderQuery,
   useVenueListQuery,
