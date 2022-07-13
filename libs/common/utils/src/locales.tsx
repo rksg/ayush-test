@@ -23,20 +23,22 @@ function flattenMessages (nestedMessages: NestedMessages, prefix = ''): Record<s
 }
 
 async function loadEnUS (): Promise<Messages> {
-  const base = (await import('antd/lib/locale/en_US')).default
-  const proBase = (await import('@ant-design/pro-provider/lib/locale/en_US')).default
-  const translation: NestedMessages = await fetch('/locales/en-US.json')
-    .then(res => res.json())
+  const [base, proBase, translation] = await Promise.all([
+    import('antd/lib/locale/en_US').then(result => result.default),
+    import('@ant-design/pro-provider/lib/locale/en_US').then(result => result.default),
+    fetch('/locales/en-US.json').then(res => res.json()) as Promise<NestedMessages>
+  ])
 
   const combine = merge({}, base, proBase, translation)
   return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
 }
 
 async function loadDe (): Promise<Messages> {
-  const base = (await import('antd/lib/locale/de_DE')).default
-  const proBase = (await import('@ant-design/pro-provider/lib/locale/de_DE')).default
-  const translation: NestedMessages = await fetch('/locales/de-DE.json')
-    .then(res => res.json())
+  const [base, proBase, translation] = await Promise.all([
+    import('antd/lib/locale/de_DE').then(result => result.default),
+    import('@ant-design/pro-provider/lib/locale/de_DE').then(result => result.default),
+    fetch('/locales/de-DE.json').then(res => res.json()) as Promise<NestedMessages>
+  ])
 
   const combine = merge({}, base, proBase, translation)
   return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
