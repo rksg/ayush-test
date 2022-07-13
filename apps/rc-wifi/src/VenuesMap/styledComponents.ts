@@ -101,7 +101,7 @@ export const TotalCount = styled.a`
   color: var(--acx-accents-blue-50);
 `
 
-export const StyledListWithIcon = styled.div`
+export const VenueClusterTooltip = styled.div`
   width: 200px;
   background-color: var(--acx-primary-white);
   border-radius: 4px;

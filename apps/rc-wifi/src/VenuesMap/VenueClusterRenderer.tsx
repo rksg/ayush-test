@@ -7,7 +7,7 @@ import { createRoot }       from 'react-dom/client'
 import { cssStr, ListWithIconProps, ListWithIcon } from '@acx-ui/components'
 
 import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon, getVenueStatusSeverity } from './helper'
-import { StyledListWithIcon }                                                                     from './styledComponents'
+import { VenueClusterTooltip }                                                                    from './styledComponents'
 import { VenueMarkerTooltip }                                                                     from './VenueMarkerTooltip'
 import VenueMarkerWithLabel                                                                       from './VenueMarkerWithLabel'
 
@@ -49,16 +49,15 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
       }}>
       <CloseOutlined/>
     </span></div>
-  const content = <StyledListWithIcon>
+    
+  return(<VenueClusterTooltip>
     <ListWithIcon 
       data={data}
       isPaginate={true}
       pageSize={pageSize}
       header={header}
     />
-  </StyledListWithIcon>
-  
-  return content
+  </VenueClusterTooltip>)
 }
 
 export default class VenueClusterRenderer implements Renderer {

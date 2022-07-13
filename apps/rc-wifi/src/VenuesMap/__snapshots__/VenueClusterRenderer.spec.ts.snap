@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip 1`] = `
-<styledComponents__StyledListWithIcon>
+<styledComponents__VenueClusterTooltip>
   <ListWithIcon
     data={
       Array [
@@ -1472,11 +1472,11 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
     pageSize={5}
     showPopoverTitle={false}
   />
-</styledComponents__StyledListWithIcon>
+</styledComponents__VenueClusterTooltip>
 `;
 
 exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip without pagination 1`] = `
-<styledComponents__StyledListWithIcon>
+<styledComponents__VenueClusterTooltip>
   <ListWithIcon
     data={
       Array [
@@ -1795,5 +1795,5 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
     pageSize={5}
     showPopoverTitle={false}
   />
-</styledComponents__StyledListWithIcon>
+</styledComponents__VenueClusterTooltip>
 `;
