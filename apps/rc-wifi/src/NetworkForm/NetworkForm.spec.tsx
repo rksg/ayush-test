@@ -84,6 +84,7 @@ describe('NetworkForm', () => {
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
+
     fireEvent.click(screen.getByText('Finish'))
   })
 })
