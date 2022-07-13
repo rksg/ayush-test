@@ -4,7 +4,7 @@ export const Toast = styled.div`
   display: flex;
   align-items: baseline;
   font-size: var(--acx-body-3-font-size);
-  font-weight: 400;
+  font-weight: var(--acx-body-font-weight);
 `
 
 export const Content = styled.div`

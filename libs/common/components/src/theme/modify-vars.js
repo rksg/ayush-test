@@ -26,6 +26,9 @@ module.exports = {
   '@btn-font-size-lg': '16px', // var(--acx-body-2-font-size)
   '@btn-font-size-sm': '12px', // var(--acx-body-3-font-size)
   '@btn-primary-bg': 'var(--acx-primary-black)',
+  '@btn-disable-color': 'var(--acx-neutrals-10)',
+  '@btn-disable-bg': 'var(--acx-neutrals-40)',
+  '@btn-disable-border': 'var(--acx-neutrals-40)',
 
   '@card-background': 'var(--acx-primary-white)',
 
@@ -66,7 +69,20 @@ module.exports = {
 
   '@message-notice-content-padding': '10px 24px',
 
-  '@page-header-tabs-tab-font-size': 'var(--acx-headline-4-font-size)',
+  '@modal-header-bg': 'var(--acx-primary-white)',
+  '@modal-header-title-font-size': 'var(--acx-headline-2-font-size)',
+  '@modal-header-padding': '20px 24px',
+  '@modal-header-border-width': '0',
+  '@modal-header-title-line-height': 'var(--acx-headline-2-line-height)',
+  '@modal-heading-color': 'var(--acx-primary-black)',
+  '@modal-content-bg': 'var(--acx-primary-white)',
+  '@modal-body-padding': '12px 24px',
+  '@modal-footer-bg': 'var(--acx-neutrals-10)',
+  '@modal-footer-border-width': '0',
+  '@modal-footer-padding-vertical': '12px',
+  '@modal-footer-padding-horizontal': '24px',
+
+  '@page-header-tabs-tab-font-size': 'var(--acx-subtitle-4-font-size)',
 
   '@primary-color-active': 'var(--acx-neutrals-50)',
   '@primary-color': '#EC7100', // var(--acx-accents-orange-50)

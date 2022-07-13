@@ -22,6 +22,7 @@ import { NetworkTypeTitle }  from './contentsMap'
 import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext    from './NetworkFormContext'
 import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }  from './NetworkSettings/DpskSettingsForm'
 import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
 import { SummaryForm }       from './NetworkSummary/SummaryForm'
 import {
@@ -121,6 +122,7 @@ export function NetworkForm () {
         >
           {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
           {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
+          {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
