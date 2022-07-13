@@ -1,9 +1,64 @@
+import Icon, {
+  CloseOutlined
+} from '@ant-design/icons'
 import { Cluster,Renderer } from '@googlemaps/markerclusterer'
+import { createRoot }       from 'react-dom/client'
 
-import { cssStr } from '@acx-ui/components'
+import { cssStr, ListWithIconProps, ListWithIcon } from '@acx-ui/components'
 
-import { getClusterSVG, getIcon, getMarkerColor } from './helper'
-import VenueMarkerWithLabel                       from './VenueMarkerWithLabel'
+import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon, getVenueStatusSeverity } from './helper'
+import { VenueClusterTooltip }                                                                    from './styledComponents'
+import { VenueMarkerTooltip }                                                                     from './VenueMarkerTooltip'
+import VenueMarkerWithLabel                                                                       from './VenueMarkerWithLabel'
+
+declare global {
+  interface Window {
+    googleMap: any
+  }
+}
+
+let currentInfoWindow: google.maps.InfoWindow
+
+export const generateClusterInfoContent = (markers: google.maps.Marker[],
+  clusterInfoWindow: google.maps.InfoWindow ) => {
+  let data: ListWithIconProps['data']=[]
+
+  markers.sort((a,b)=>{
+    const { venueData: dataA } = a as VenueMarkerWithLabel
+    const { venueData: dataB } = b as VenueMarkerWithLabel
+    return getVenueStatusSeverity(dataA.status as string)
+    - getVenueStatusSeverity(dataB.status as string)
+  })
+
+  data = markers.map((marker)=>{
+    const { venueData } = marker as VenueMarkerWithLabel
+    return {
+      icon: <Icon component={getVenueInfoMarkerIcon(venueData.status as string)}/>,
+      title: venueData.name as string,
+      popoverContent: <VenueMarkerTooltip 
+        venue={(marker as VenueMarkerWithLabel).venueData} />
+    }
+  })
+
+  const pageSize=5
+  const header = <div className='venueInfoHeader'>
+    <span>{markers?.length} Venues</span> 
+    <span style={{ float: 'right', cursor: 'pointer' }}
+      onClick={()=>{
+        clusterInfoWindow.close()
+      }}>
+      <CloseOutlined/>
+    </span></div>
+    
+  return(<VenueClusterTooltip>
+    <ListWithIcon 
+      data={data}
+      isPaginate={true}
+      pageSize={pageSize}
+      header={header}
+    />
+  </VenueClusterTooltip>)
+}
 
 export default class VenueClusterRenderer implements Renderer {
   public render (
@@ -13,6 +68,7 @@ export default class VenueClusterRenderer implements Renderer {
       (marker as VenueMarkerWithLabel)?.venueData?.status)
     const clusterColor = getMarkerColor(statuses)
     const scaledSize = new google.maps.Size(42, 42, 'px')
+    const clusterInfoWindow = new google.maps.InfoWindow({})
 
     const clusterMarker = new google.maps.Marker({
       position,
@@ -33,6 +89,33 @@ export default class VenueClusterRenderer implements Renderer {
     })
     clusterMarker.addListener('mouseout', () => {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
+    })
+
+    google.maps.event.addListener(clusterMarker, 'click',
+      ()=>{
+        const content=generateClusterInfoContent(markers || [new google.maps.Marker({})],
+          clusterInfoWindow)
+
+        const infoDiv = document.createElement('div')
+        createRoot(infoDiv).render(content)
+  
+        clusterInfoWindow.setContent(infoDiv)
+
+        if (typeof(currentInfoWindow) != 'undefined') { 
+          currentInfoWindow.close()
+        } 
+  
+        clusterInfoWindow.open({
+          shouldFocus: true,
+          anchor: clusterMarker
+        })
+        currentInfoWindow = clusterInfoWindow
+      })
+
+    google.maps.event.addListener(window.googleMap, 'click',()=>{
+      if (typeof(currentInfoWindow) != 'undefined') { 
+        currentInfoWindow.close()
+      }
     })
     return clusterMarker
   }
