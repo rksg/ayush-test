@@ -138,5 +138,5 @@ describe('NetworkForm', () => {
       expect(screen.getByText('222.222.222.222:2222')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
     })
-  })
+  }, 7000)
 })
