@@ -1,8 +1,5 @@
-import React, { useState } from 'react'
+import { Row, Col } from 'antd'
 
-import { Row, Col, Space } from 'antd'
-
-import { Button }          from '@acx-ui/components'
 import { CloudpathServer } from '@acx-ui/rc/services'
 import {
   CloudpathDeploymentTypeEnum,
@@ -33,18 +30,38 @@ import WISPrDiagram                  from '../../assets/images/network-wizard-di
 import { NetworkTypeLabel }          from '../contentsMap'
 import { Diagram }                   from '../styledComponents'
 
-interface NetworkDiagramProps {
-  type: NetworkTypeEnum
-  cloudpathType?: CloudpathServer['deploymentType']
-  networkPortalType?: GuestNetworkTypeEnum
-  wisprWithPsk?: boolean
-  enableAuthProxy?: boolean
-  enableAccountingService?: boolean
-  enableAccountingProxy?: boolean
-  enableMACAuth?: boolean
-  enableAaaAuthBtn?: boolean
-  showAaaButton?: boolean
+interface DiagramProps {
+  type: NetworkTypeEnum;
+  cloudpathType?: CloudpathServer['deploymentType'];
 }
+
+interface DpskDiagramProps extends DiagramProps {
+  type: NetworkTypeEnum.DPSK;
+}
+
+interface OpenDiagramProps extends DiagramProps {
+  type: NetworkTypeEnum.OPEN;
+}
+
+interface PskDiagramProps extends DiagramProps {
+  type: NetworkTypeEnum.PSK;
+  enableMACAuth?: boolean;
+}
+interface AaaDiagramProps extends DiagramProps {
+  type: NetworkTypeEnum.AAA;
+  enableAuthProxy?: boolean;
+  enableAccountingProxy?: boolean;
+  enableAaaAuthBtn?: boolean;
+  showButtons?: boolean;
+}
+interface CaptivePortalDiagramProps extends DiagramProps {
+  type: NetworkTypeEnum.CAPTIVEPORTAL;
+  networkPortalType?: GuestNetworkTypeEnum;
+  wisprWithPsk?: boolean;
+}
+
+type NetworkDiagramProps = DpskDiagramProps | OpenDiagramProps | PskDiagramProps 
+                          | AaaDiagramProps | CaptivePortalDiagramProps
 
 const CloudpathCloudDiagramMap: Partial<Record<NetworkTypeEnum, string>> = {
   [NetworkTypeEnum.DPSK]: DpskCloudpathCloudDiagram,
@@ -61,13 +78,26 @@ const CloudpathOnPremDiagramMap: Partial<Record<NetworkTypeEnum, string>> = {
 }
 
 function getDiagram (props: NetworkDiagramProps) {
-  const diagramMap: Partial<Record<NetworkTypeEnum, string>> = {
-    [NetworkTypeEnum.PSK]: props.enableMACAuth ? AaaDiagram : PskDiagram,
-    [NetworkTypeEnum.DPSK]: DpskDiagram,
-    [NetworkTypeEnum.OPEN]: OpenDiagram,
-    [NetworkTypeEnum.AAA]: getAAADiagram(props),
-    [NetworkTypeEnum.CAPTIVEPORTAL]: getCaptivePortalDiagram(props)
-  }
+  let diagram = null
+  switch (props.type) {
+    case NetworkTypeEnum.DPSK:
+      diagram = DpskDiagram
+      break
+    case NetworkTypeEnum.PSK:
+      diagram = getPSKDiagram(props)
+      break
+    case NetworkTypeEnum.OPEN:
+      diagram = OpenDiagram
+      break
+    case NetworkTypeEnum.AAA:
+      diagram = getAAADiagram(props)
+      break
+    case NetworkTypeEnum.CAPTIVEPORTAL:
+      diagram = getCaptivePortalDiagram(props)
+      break
+    default:
+      diagram = DefaultDiagram
+  }  
 
   if (props?.cloudpathType) {
     const isCloudDeployment = props?.cloudpathType === CloudpathDeploymentTypeEnum.Cloud
@@ -75,11 +105,15 @@ function getDiagram (props: NetworkDiagramProps) {
     return cloudpathMap[props?.type]
   }
 
-  return diagramMap[props.type] || DefaultDiagram
+  return diagram
 }
 
-function getAAADiagram (props: NetworkDiagramProps) {
-  if (props.showAaaButton) {
+function getPSKDiagram (props: PskDiagramProps) {
+  return props?.enableMACAuth ? AaaDiagram : PskDiagram
+}
+
+function getAAADiagram (props: AaaDiagramProps) {
+  if (props.showButtons) {
     const enableAuthProxyService = props.enableAuthProxy && props.enableAaaAuthBtn
     const enableAccProxyService = props.enableAccountingProxy && !props.enableAaaAuthBtn
     return enableAuthProxyService || enableAccProxyService ? AaaProxyDiagram : AaaDiagram
@@ -87,7 +121,7 @@ function getAAADiagram (props: NetworkDiagramProps) {
   return props.enableAuthProxy ? AaaProxyDiagram : AaaDiagram
 }
 
-function getCaptivePortalDiagram (props: NetworkDiagramProps) {
+function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   const type = props.networkPortalType as GuestNetworkTypeEnum
   const isCloudDeployment = props.cloudpathType === CloudpathDeploymentTypeEnum.Cloud
 
@@ -104,23 +138,9 @@ function getCaptivePortalDiagram (props: NetworkDiagramProps) {
 }
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
-  const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
   const type = props.type as NetworkTypeEnum
   const title = NetworkTypeLabel[type]
-  const diagram = getDiagram({ ...props, enableAaaAuthBtn })
-
-  function AaaButtons () {
-    return (
-      <Space align='center' style={{ display: 'flex', justifyContent: 'center' }}>
-        <Button type='link' disabled={enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(true)}>
-          Authentication Service
-        </Button>
-        <Button type='link' disabled={!enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(false)}>
-          Accounting Service
-        </Button>
-      </Space>
-    )
-  }
+  const diagram = getDiagram({ ...props })
 
   return (
     <Row justify='center'>
@@ -128,7 +148,6 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
         <Diagram>
           {diagram && <img src={diagram} alt={title} />}
         </Diagram>
-        { props?.showAaaButton && <AaaButtons />}
       </Col>
     </Row>
   )

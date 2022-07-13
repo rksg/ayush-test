@@ -63,7 +63,49 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram suc
 </DocumentFragment>
 `;
 
+exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram when enabling Authentication Service button 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Enterprise AAA (802.1X)"
+          src="aaa-proxy.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
+      >
+        <img
+          alt="Enterprise AAA (802.1X)"
+          src="aaa.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram when enabling Accounting Service button 1`] = `
 <DocumentFragment>
   <div
     class="ant-row ant-row-center"

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
 import { CloudpathDeploymentTypeEnum, GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { fireEvent, render, screen }                                          from '@acx-ui/test-utils'
+import { render, screen }                                                     from '@acx-ui/test-utils'
 
 import { NetworkTypeLabel } from '../contentsMap'
 
@@ -112,33 +112,34 @@ describe('NetworkDiagram', () => {
       expect(asFragment()).toMatchSnapshot()
     })
 
-    it('test AAA Buttons when enabling Authentication Proxy Service', async () => {
-      render(
+    it('should render AAA Proxy diagram when enabling Authentication Service button', async () => {
+      const { asFragment } = render(
         <NetworkDiagram
           type={type}
           enableAuthProxy={true}
-          showAaaButton={true}
+          enableAccountingProxy={false}
+          enableAaaAuthBtn={true}
+          showButtons={true}
         />
       )
       const diagram = screen.getByAltText(NetworkTypeLabel[type])
-      const aaaAccButton = screen.getByRole('button', { name: 'Accounting Service' })
-      await fireEvent.click(aaaAccButton)
-      expect(diagram.src).toContain('aaa.png')
+      expect(diagram.src).toContain('aaa-proxy.png')
+      expect(asFragment()).toMatchSnapshot()
     })
 
-    it('test AAA Buttons when enabling Accounting Proxy Service', async () => {
-      render(
+    it('should render AAA diagram when enabling Accounting Service button', async () => {
+      const { asFragment } = render(
         <NetworkDiagram
           type={type}
-          enableAccountingService={true}
-          enableAccountingProxy={true}
-          showAaaButton={true}
+          enableAuthProxy={true}
+          enableAccountingProxy={false}
+          enableAaaAuthBtn={false}
+          showButtons={true}
         />
       )
       const diagram = screen.getByAltText(NetworkTypeLabel[type])
-      const aaaAccButton = screen.getByRole('button', { name: 'Accounting Service' })
-      await fireEvent.click(aaaAccButton)
-      expect(diagram.src).toContain('aaa-proxy.png')
+      expect(diagram.src).toContain('aaa.png')
+      expect(asFragment()).toMatchSnapshot()
     })
 
     it('should render AAA (Cloud) diagram successfully', async () => {

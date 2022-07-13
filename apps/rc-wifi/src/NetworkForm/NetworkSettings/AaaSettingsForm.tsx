@@ -74,6 +74,9 @@ export function AaaSettingsForm () {
       }
     }
   })
+  const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
+  const showButtons = enableAuthProxy !== !!enableAccountingProxy
+                    && enableAccountingService && !isCloudpathEnabled
 
   return (
     <Row gutter={20}>
@@ -85,13 +88,27 @@ export function AaaSettingsForm () {
           type={NetworkTypeEnum.AAA}
           cloudpathType={selected?.deploymentType}
           enableAuthProxy={enableAuthProxy}
-          enableAccountingService={enableAccountingService}
           enableAccountingProxy={enableAccountingProxy}
-          showAaaButton={enableAuthProxy !== !!enableAccountingProxy && !isCloudpathEnabled}
+          enableAaaAuthBtn={enableAaaAuthBtn}
+          showButtons={showButtons}
         />
+        {showButtons && <AaaButtons />}
       </Col>
     </Row>
   )
+
+  function AaaButtons () {
+    return (
+      <Space align='center' style={{ display: 'flex', justifyContent: 'center' }}>
+        <Button type='link' disabled={enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(true)}>
+          Authentication Service
+        </Button>
+        <Button type='link' disabled={!enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(false)}>
+          Accounting Service
+        </Button>
+      </Space>
+    )
+  }
 }
 
 function SettingsForm () {
