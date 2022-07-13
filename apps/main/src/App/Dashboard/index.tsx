@@ -35,7 +35,7 @@ function DashboardPageHeader () {
       title={$t({ id: 'title', defaultMessage: 'Dashboard' })}
       extra={[
         <Button key='add' type='primary'>
-          {$t({ id: 'pageHeaderMenu.add', defaultMessage: 'Add' })}...
+          {$t({ id: 'pageHeaderMenu.add', defaultMessage: 'Add...' })}
         </Button>,
         <Button key='hierarchy-filter'>
           {$t({ id: 'pageHeaderMenu.entireOrg', defaultMessage: 'Entire Organization' })}

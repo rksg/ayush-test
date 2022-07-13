@@ -30,10 +30,10 @@ describe('StepsForm', () => {
     render(<CustomForm onFinish={onFinish} />)
 
     expect(await screen.findByRole('heading', { name: 'Step 1 Title' })).toBeVisible()
-    fireEvent.click(screen.getByRole('button', { name: 'stepsForm.next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Step 2 Title' })).toBeVisible()
-    fireEvent.click(screen.getByRole('button', { name: 'stepsForm.submit' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
 
     await waitFor(() => expect(onFinish).toHaveBeenCalled())
   })
@@ -44,24 +44,24 @@ describe('StepsForm', () => {
 
     render(<CustomForm {...{ onCurrentChange, onCancel }} />)
 
-    fireEvent.click(await screen.findByRole('button', { name: 'stepsForm.next' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Next' }))
     await waitFor(() => expect(onCurrentChange).toHaveBeenCalled())
 
-    fireEvent.click(await screen.findByRole('button', { name: 'stepsForm.cancel' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(onCancel).toHaveBeenCalled())
 
     cleanup()
 
     render(<CustomForm />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'stepsForm.next' }))
-    fireEvent.click(await screen.findByRole('button', { name: 'stepsForm.cancel' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
   it('handles navigate to past step', async () => {
     render(<CustomForm />)
 
-    fireEvent.click(await screen.findByRole('button', { name: 'stepsForm.next' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Next' }))
     expect(await screen.findByRole('heading', { name: 'Step 2 Title' })).toBeVisible()
 
     fireEvent.click(await screen.findByText('Step 1'))

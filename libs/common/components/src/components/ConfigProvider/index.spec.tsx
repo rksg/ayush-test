@@ -13,8 +13,22 @@ type Props = { children: React.ReactNode }
 
 jest.mock('antd/lib/config-provider', () => jest.fn().mockImplementation((props: Props) => <div
   {...props}
-  data-testid='ant-config-provider'
+  data-testid='ant-pro-config-provider'
 />))
+
+jest.mock('antd', () => ({
+  ConfigProvider: jest.fn().mockImplementation((props: Props) => <div
+    {...props}
+    data-testid='ant-config-provider'
+  />)
+}))
+
+jest.mock('react-intl', () => ({
+  IntlProvider: jest.fn().mockImplementation((props) => require('react').createElement('div', {
+    ...props,
+    'data-testid': 'intl-provider'
+  }))
+}))
 
 jest.mock('@acx-ui/utils', () => ({
   LocaleProvider: jest.fn().mockImplementation((props: Props) => <div

@@ -35,15 +35,5 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useEvaluateFeature: jest.fn()
 }), { virtual: true })
 
-
-jest.mock('react-intl', () => ({
-  ...jest.requireActual('react-intl'),
-  IntlProvider: jest.fn().mockImplementation((props) => require('react').createElement('div', {
-    ...props,
-    'data-testid': 'intl-provider'
-  })),
-  useIntl: jest.fn().mockReturnValue({ $t: (descriptor) => descriptor.id })
-}))
-
 // For Error: Not implemented: HTMLCanvasElement.prototype.getContext (without installing the canvas npm package)
 HTMLCanvasElement.prototype.getContext = () => null

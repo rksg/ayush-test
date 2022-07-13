@@ -105,25 +105,28 @@ export function StepsForm <FormValue = any> (
     </>
   )
 
+  const buttonLabel = {
+    next: $t({ id: 'stepsForm.next', defaultMessage: 'Next' }),
+    submit: $t({ id: 'stepsForm.submit', defaultMessage: 'Finish' }),
+    cancel: $t({ id: 'stepsForm.cancel', defaultMessage: 'Cancel' })
+  }
+
   const cancel = <Button
     key='cancel'
     onClick={() => onCancel?.()}
-    children={$t({ id: 'stepsForm.cancel', defaultMessage: 'Cancel' })}
+    children={buttonLabel.cancel}
   />
 
   const submitter: ProAntStepsFormProps<FormValue>['submitter'] = {
     render (_, submitterDom) {
       const button = Array.from(submitterDom).pop() as React.ReactElement<ButtonProps>
       const key = button.key as 'next' | 'submit'
-      const messages = {
-        next: 'Next',
-        submit: 'Finish'
-      }
+
       const submitButton = <Button
         {...button.props}
         key={key}
         type='secondary'
-        children={$t({ id: `stepsForm.${key}`, defaultMessage: messages[key] })}
+        children={buttonLabel[key]}
       />
       return [submitButton, cancel]
     }

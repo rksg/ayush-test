@@ -75,16 +75,16 @@ describe('NetworkForm', () => {
     expect(insertInput).toHaveValue('open network test')
 
     fireEvent.click(screen.getByText('Open Network'))
-    fireEvent.click(screen.getByText('stepsForm.next'))
+    fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
-    fireEvent.click(screen.getByText('stepsForm.next'))
+    fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    fireEvent.click(screen.getByText('stepsForm.next'))
+    fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
-    fireEvent.click(screen.getByText('stepsForm.submit'))
+    fireEvent.click(screen.getByText('Finish'))
   })
 })

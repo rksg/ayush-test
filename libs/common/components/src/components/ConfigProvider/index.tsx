@@ -1,7 +1,10 @@
 import React from 'react'
 
 import {
-  default as AntConfigProvider,
+  ConfigProvider as AntConfigProvider
+}    from 'antd'
+import {
+  default as AntProConfigProvider,
   ConfigProviderProps as AntConfigProviderProps
 } from 'antd/lib/config-provider'
 import { IntlProvider } from 'react-intl'
@@ -18,7 +21,9 @@ export function ConfigProvider (props: ConfigProviderProps) {
       <LocaleContext.Consumer>
         {context => context.messages ? (
           <IntlProvider locale={context.lang} messages={context.messages}>
-            <AntConfigProvider {...props} locale={context.messages} />
+            <AntConfigProvider locale={context.messages}>
+              <AntProConfigProvider {...props} locale={context.messages} />
+            </AntConfigProvider>
           </IntlProvider>
         ) : null}
       </LocaleContext.Consumer>

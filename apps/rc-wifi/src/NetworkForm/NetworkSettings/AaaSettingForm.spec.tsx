@@ -41,20 +41,20 @@ async function fillInBeforeSettings (networkName: string) {
 
   const button = screen.getAllByRole('radio')
   fireEvent.click(button[2])
-  fireEvent.click(screen.getByText('stepsForm.next'))
+  fireEvent.click(screen.getByText('Next'))
 
   await screen.findByRole('heading', { level: 3, name: 'AAA Settings' })
 }
 
 async function fillInAfterSettings (checkSummary: Function) {
-  fireEvent.click(screen.getByText('stepsForm.next'))
+  fireEvent.click(screen.getByText('Next'))
   await screen.findByRole('heading', { level: 3, name: 'Venues' })
 
-  fireEvent.click(screen.getByText('stepsForm.next'))
+  fireEvent.click(screen.getByText('Next'))
   await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
   checkSummary()
-  const finish = screen.getByText('stepsForm.submit')
+  const finish = screen.getByText('Finish')
   fireEvent.click(finish)
   await waitForElementToBeRemoved(finish)
 }

@@ -1178,7 +1178,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
               type="button"
             >
               <span>
-                stepsForm.next
+                Next
               </span>
             </button>
           </div>
@@ -1190,7 +1190,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
               type="button"
             >
               <span>
-                stepsForm.cancel
+                Cancel
               </span>
             </button>
           </div>
