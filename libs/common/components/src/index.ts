@@ -8,6 +8,7 @@ export * from './components/DropDown'
 export * from './components/Form'
 export * from './components/Layout'
 export * from './components/Loader'
+export * from './components/ActionModal'
 export { MultiLineTimeSeriesChart } from './components/MultiLineTimeSeriesChart'
 export type {
   MultiLineTimeSeriesChartProps,

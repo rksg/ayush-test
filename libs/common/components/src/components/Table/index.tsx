@@ -13,7 +13,7 @@ export interface TableProps <RecordType>
     columns?: ProColumns<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
-      onClick: (arg: RecordType[]) => void
+      onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
   }
 
@@ -39,7 +39,7 @@ export function Table <RecordType extends object> (
             {props.actions?.map((option) =>
               <UI.ActionButton
                 key={option.label}
-                onClick={()=>option.onClick(selectedRows)}
+                onClick={() => option.onClick(selectedRows, () => { onCleanSelected() })}
                 children={option.label}
               />
             )}
