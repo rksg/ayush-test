@@ -36,7 +36,9 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
       icon: <Icon component={getVenueInfoMarkerIcon(venueData.status as string)}/>,
       title: venueData.name as string,
       popoverContent: <VenueMarkerTooltip 
-        venue={(marker as VenueMarkerWithLabel).venueData} />
+        venue={(marker as VenueMarkerWithLabel).venueData}
+        needPadding={false}
+      />
     }
   })
 
@@ -69,7 +71,9 @@ export default class VenueClusterRenderer implements Renderer {
       (marker as VenueMarkerWithLabel)?.venueData?.status)
     const clusterColor = getMarkerColor(statuses)
     const scaledSize = new google.maps.Size(42, 42, 'px')
-    const clusterInfoWindow = new google.maps.InfoWindow({})
+    const clusterInfoWindow = new google.maps.InfoWindow({
+      pixelOffset: new google.maps.Size(0,5)
+    })
 
     const clusterMarker = new google.maps.Marker({
       position,

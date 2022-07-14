@@ -67,10 +67,14 @@ export const VenueInfoMarkerOrangeIcon = styled(VenueInfoMarkerOrange)`
 export const VenueInfoMarkerRedIcon = styled(VenueInfoMarkerRed)`
   ${venueMarkerIconStyle}`
 
-export const Wrapper = styled.div`
+interface WrapperProps{
+  needPadding?:boolean
+}
+export const Wrapper = styled.div<WrapperProps>`
   height: 140px;
   width: 375px;
-  padding: 10px 15px;
+  padding: ${props => props.needPadding ? '10px 15px' : undefined};
+  margin-bottom: ${props => !props.needPadding ? '-25px' : undefined};
 `
 export const CellWrapper = styled(Space)`
   direction={props => props.direction ? props.direction : 'horizontal'}

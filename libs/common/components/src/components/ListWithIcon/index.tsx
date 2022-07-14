@@ -32,7 +32,7 @@ export const ListWithIcon: FC<ListWithIconProps> = (props) => {
           content={item.popoverContent}
           placement='right'
           title={showPopoverTitle && item.popoverContent ? item.title : ''}
-          trigger='hover'>
+          trigger='click'>
           <List.Item>
             <Space>
               {item.icon}

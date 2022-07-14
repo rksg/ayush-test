@@ -31,6 +31,7 @@ const columns = [
 
 interface VenueMarkerTooltipProps {
   onNavigate?: (params: NavigateProps) => void;
+  needPadding?: boolean
 }
 
 export function VenueMarkerTooltip (
@@ -45,7 +46,7 @@ export function VenueMarkerTooltip (
     switchClientsCount
   } = props.venue
 
-  const { onNavigate } = props
+  const { onNavigate, needPadding=true } = props
   const deviceConnectionStatusColors = getDeviceConnectionStatusColors()
   const commonProps = {
     animation: false,
@@ -109,7 +110,7 @@ export function VenueMarkerTooltip (
   ]
 
   return (
-    <UI.Wrapper>
+    <UI.Wrapper needPadding={needPadding}>
       <UI.InfoWindowHeader>
         <UI.Title onClick={() => onNavigate && onNavigate({ venueId, path: 'overview' })}>
           {props.venue.name}
