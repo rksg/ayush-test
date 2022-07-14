@@ -1,0 +1,11 @@
+{
+  "title": "Armaturenbrett",
+  "pageHeaderMenu": {
+    "add": "Hinzufügen",
+    "entireOrg": "Die ganze Organisation",
+    "last24Hrs": "Letzte 24 Stunden"
+  },
+  "stepsForm": {
+    "cancel": "Absagen"
+  }
+}
