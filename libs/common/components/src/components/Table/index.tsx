@@ -7,7 +7,7 @@ import type { ProColumns }                  from '@ant-design/pro-table'
 import type { TableProps as AntTableProps } from 'antd'
 
 export interface TableProps <RecordType>
-  extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' > {
+  extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' | 'title'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip'
     columns?: ProColumns<RecordType, 'text'>[]

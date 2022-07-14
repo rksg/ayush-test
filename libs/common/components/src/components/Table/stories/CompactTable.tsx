@@ -40,12 +40,12 @@ const basicData = [
 ]
 
 export function CompactTable () {
-  return (
+  return (<>
+    Compact
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      title={() => 'Compact'}
       type={'compact'}
     />
-  )
+  </>)
 }
