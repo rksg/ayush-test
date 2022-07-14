@@ -106,6 +106,22 @@ describe('VenueClusterRenderer', () => {
     expect(infoDiv).toMatchSnapshot()
     expect(markerSpy).toBeCalled()
   })
+  it('should match with snapshot for venue cluster tooltip for more than 20 venues',()=>{
+    const markerSpy:any = jest.fn()
+    google.maps.Marker = markerSpy
+    const markers = Array.from(Array(25).keys()).map(index=>{
+      return new VenueMarkerWithLabel({
+        labelContent: ''
+      },{ ...venueData,
+        venueId: `venueId#${index+1}`,name: `Venue #${index+1}`,
+        status: index % 2 === 0 ? ApVenueStatusEnum.REQUIRES_ATTENTION : venueData.status })
+    })
+    
+    const clusterInfoWindow = new google.maps.InfoWindow({})
+    const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow)
+    expect(infoDiv).toMatchSnapshot()
+    expect(markerSpy).toBeCalled()
+  })
   it('should match with snapshot for venue cluster tooltip without pagination',()=>{
     const markerSpy:any = jest.fn()
     google.maps.Marker = markerSpy

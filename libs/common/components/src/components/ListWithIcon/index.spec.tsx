@@ -9,7 +9,8 @@ describe('ListWithIcon',()=>{
   
   const data:ListWithIconProps['data']=Array.from(Array(15).keys()).map((_,index)=>({
     title: `Item ${index+1}`,
-    icon: <HomeOutlined/>
+    icon: <HomeOutlined/>,
+    popoverContent: index % 2 ? <h3>Popover Content {index+1}</h3> : undefined
   }))
   
   it('should render a component for empty data', () => {

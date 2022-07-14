@@ -56,6 +56,7 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
       isPaginate={true}
       pageSize={pageSize}
       header={header}
+      isSimplePagination={data.length > 20}
     />
   </VenueClusterTooltip>)
 }

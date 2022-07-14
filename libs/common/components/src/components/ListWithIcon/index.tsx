@@ -9,10 +9,17 @@ export interface ListWithIconProps {
     pageSize?: number
     isPaginate?: boolean
     showPopoverTitle?: boolean
+    isSimplePagination?: boolean
 }
 
 export const ListWithIcon: FC<ListWithIconProps> = (props) => {
-  const { data, header, footer, pageSize, isPaginate, showPopoverTitle } = props
+  const { data,
+    header,
+    footer,
+    pageSize,
+    isPaginate,
+    showPopoverTitle,
+    isSimplePagination } = props
   return (
     <List
       header={header}
@@ -37,7 +44,8 @@ export const ListWithIcon: FC<ListWithIconProps> = (props) => {
       )}
       pagination={isPaginate && data.length > (pageSize as number) ? {
         pageSize: pageSize,
-        size: 'small'
+        size: 'small',
+        simple: isSimplePagination
       }:false}
     />
   )
@@ -46,5 +54,6 @@ export const ListWithIcon: FC<ListWithIconProps> = (props) => {
 ListWithIcon.defaultProps = {
   pageSize: 3,
   isPaginate: false,
-  showPopoverTitle: false
+  showPopoverTitle: false,
+  isSimplePagination: false
 }
