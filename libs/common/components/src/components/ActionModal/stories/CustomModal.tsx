@@ -1,0 +1,65 @@
+import { showActionModal } from '..'
+
+export function CustomActionModal () {
+  return (
+    <>
+      Custom Action Modal:
+      <button onClick={ConfirmDeleteModal}>Confirm Delete</button>
+      <button onClick={ConfirmDeleteWithValidation}>Confirm Delete With Validation</button>
+      <button onClick={ErrorDetailModal}>Error With Details</button>
+    </>
+  )
+}
+
+const ConfirmDeleteModal = () => {
+  showActionModal({
+    type: 'confirm',
+    customContent: {
+      action: 'DELETE',
+      entityName: 'Network',
+      entityValue: 'Network 01'
+    },
+    onOk () {},
+    onCancel () {}
+  })
+}
+
+const ConfirmDeleteWithValidation = () => {
+  showActionModal({
+    type: 'confirm',
+    customContent: {
+      action: 'DELETE',
+      entityName: 'Network',
+      entityValue: 'Network 01',
+      confirmationText: 'Delete'
+    },
+    onOk () {},
+    onCancel () {}
+  })
+}
+
+const mockErrorDetails = {
+  headers: {
+    normalizedNames: {},
+    lazyUpdate: false
+  },
+  status: 500,
+  statusText: 'Internal Server Error',
+  url: 'http://test/api/viewmodel/xx/switch/xx',
+  ok: false,
+  name: 'HttpErrorResponse',
+  message: 'Http failure response for URL: 500 Internal Server Error',
+  error: 'org.json.JSONException: JSONArray[0] not found.'
+}
+
+const ErrorDetailModal = () => {
+  showActionModal({
+    type: 'error',
+    title: 'Something went wrong',
+    content: 'Some descriptions',
+    customContent: {
+      action: 'SHOW_ERRORS',
+      errorDetails: mockErrorDetails
+    }
+  })
+}

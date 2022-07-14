@@ -3,7 +3,6 @@
  *
  * Notes:
  * - Override here if there isn't a wrapper for antd components, otherwise use styled-components
- * - Sort alphanumerically to make it easier to locate styles
  */
 
 :root {
@@ -11,7 +10,7 @@
   // @font-size-base so we can't override it, but bulk of ACX body text is --acx-body-4-font-size
   body {
     font-style: normal;
-    font-weight: 400;
+    font-weight: var(--acx-body-font-weight);
     font-size: var(--acx-body-4-font-size);
     line-height: var(--acx-body-4-line-height);
   }
@@ -19,27 +18,27 @@
   h1.ant-typography, .ant-typography h1 {
     line-height: var(--acx-headline-1-line-height);
     font-family: var(--acx-accent-brand-font);
-    font-weight: 400;
+    font-weight: var(--acx-headline-1-font-weight);
   }
   h2.ant-typography, .ant-typography h2 {
     line-height: var(--acx-headline-2-line-height);
     font-family: var(--acx-accent-brand-font);
-    font-weight: 400;
+    font-weight: var(--acx-headline-2-font-weight);
   }
   h3.ant-typography, .ant-typography h3 {
     line-height: var(--acx-headline-3-line-height);
     font-family: var(--acx-accent-brand-font);
-    font-weight: 500;
+    font-weight: var(--acx-headline-3-font-weight);
   }
   h4.ant-typography, .ant-typography h4 {
     line-height: var(--acx-headline-4-line-height);
     font-family: var(--acx-accent-brand-font);
-    font-weight: 400;
+    font-weight: var(--acx-headline-4-font-weight);
   }
   h5.ant-typography, .ant-typography h5 {
     line-height: var(--acx-headline-5-line-height);
     font-family: var(--acx-accent-brand-font);
-    font-weight: 400;
+    font-weight: var(--acx-headline-5-font-weight);
   }
 
   .ant-badge {
@@ -50,6 +49,23 @@
   }
 
   .ant-form {
+    &-item {
+      margin-bottom: 16px;
+    }
+
+    &-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
+      flex-direction: row-reverse;
+
+      &::before {
+        margin-right: 0;
+        margin-left: 3px;
+        color: var(--acx-accents-orange-50);
+        font-family: var(--acx-neutral-brand-font);
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+      }
+    }
+
     &-item-explain, &-item-extra {
       font-size: var(--acx-body-4-font-size);
       line-height: var(--acx-body-4-line-height);
@@ -213,6 +229,70 @@
     }
   }
 
+  .ant-modal {
+    &:not(.ant-modal-confirm) {
+      .ant-modal-title {
+        font-family: var(--acx-accent-brand-font);
+        font-size: var(--acx-headline-2-font-size);
+        font-weight: var(--acx-headline-2-font-weight);
+        line-height: var(--acx-headline-2-line-height);
+      }
+
+      .ant-modal-footer {
+        .ant-btn + .ant-btn:not(.ant-dropdown-trigger) {
+          margin-left: 16px;
+        }
+      }
+    }
+
+    &.ant-modal-confirm {
+      .ant-modal-content {
+        border-radius: 0;
+        border-top: 4px solid var(--acx-primary-black);
+        box-shadow: 0px 6px 16px rgba(51, 51, 51, 0.1);
+      }
+      .ant-modal-body {
+        padding: 24px;
+      }
+      .ant-modal-confirm-title {
+        font-family: var(--acx-accent-brand-font);
+        font-size: var(--acx-headline-3-font-size);
+        font-weight: var(--acx-headline-3-font-weight);
+        line-height: var(--acx-headline-3-line-height);
+      }
+      .ant-modal-confirm-content {
+        margin-top: 16px;
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        color: var(--acx-primary-black);
+        min-height: 44px;
+        .ant-form {
+          margin-top: 4px;
+        }
+      }
+      .ant-btn:not(.ant-btn-link) {
+        min-width: 85px;
+        padding: 6px 16px;
+      }
+      &.ant-modal-confirm-error {
+        .ant-modal-content {
+          border-color: var(--acx-semantics-red-60);
+        }
+      }
+      &.ant-modal-confirm-info {
+        .ant-modal-content {
+          border-color: var(--acx-accents-blue-50);
+        }
+      }
+    }
+
+    &.modal-custom {
+      .ant-modal-confirm-btns {
+        display: none;
+      }
+    }
+  }
+
   .ant-menu-submenu-popup {
     .ant-menu{
       margin-left: -4px;
@@ -228,10 +308,10 @@
         line-height: var(--acx-headline-5-line-height);
         font-size: var(--acx-headline-5-font-size);
         opacity: 60%;
-        font-weight: 400;
+        font-weight: var(--acx-headline-5-font-weight);
         &-selected {
           opacity: 100%;
-          font-weight: 600;
+          font-weight: var(--acx-headline-5-font-weight-bold);
         }
       }
     }
@@ -240,6 +320,10 @@
   // Gmap Close Icon and Info windows overrides
   .gm-ui-hover-effect {
     display: none !important;
+  }
+
+  .gm-style {
+    font-family: var(--acx-neutral-brand-font);
   }
 
   .gm-style .gm-style-iw-c {

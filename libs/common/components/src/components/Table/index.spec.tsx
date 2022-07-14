@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { render, fireEvent, screen, within } from '@acx-ui/test-utils'
 
-import { Table } from '.'
+import { Table, TableProps } from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
   CancelCircle: () => <div data-testid='cancel-circle'/>
@@ -104,7 +104,7 @@ describe('Table component', () => {
 
     expect(asFragment()).toMatchSnapshot()
 
-    const closeButton = screen.getByRole('button', { name: 'clear selection' })
+    const closeButton = screen.getByRole('button', { name: 'Clear selection' })
     const editButton = screen.getByRole('button', { name: /edit/i })
     const deleteButton = screen.getByRole('button', { name: /delete/i })
 
@@ -116,10 +116,10 @@ describe('Table component', () => {
     expect(onDelete).not.toHaveBeenCalled()
 
     fireEvent.click(editButton)
-    expect(onEdit).toBeCalledWith(data.slice(0, 2))
+    expect(onEdit).toBeCalledWith(data.slice(0, 2), expect.anything())
 
     fireEvent.click(deleteButton)
-    expect(onDelete).toBeCalledWith(data.slice(0, 2))
+    expect(onDelete).toBeCalledWith(data.slice(0, 2), expect.anything())
 
     fireEvent.click(closeButton)
     expect(closeButton).not.toBeVisible()
@@ -127,5 +127,41 @@ describe('Table component', () => {
     expect(deleteButton).not.toBeVisible()
 
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('allow action to clear selection', async () => {
+    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
+    const data = [
+      { key: '1', name: 'John Doe' },
+      { key: '2', name: 'Jane Doe' },
+      { key: '3', name: 'Will Smith' }
+    ]
+
+    const actions: TableProps<{ key: string, name: string }>['actions'] = [
+      { label: 'Delete', onClick: (selected, clear) => clear() }
+    ]
+
+    render(<Table
+      columns={columns}
+      dataSource={data}
+      actions={actions}
+      rowSelection={{ defaultSelectedRowKeys: ['1', '2'] }}
+    />)
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    const before = (await body.findAllByRole('checkbox')) as HTMLInputElement[]
+    expect(before.filter(el => el.checked)).toHaveLength(2)
+    expect(before.filter(el => !el.checked)).toHaveLength(1)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
+
+    const after = (await body.findAllByRole('checkbox')) as HTMLInputElement[]
+    expect(after.filter(el => el.checked)).toHaveLength(0)
+    expect(after.filter(el => !el.checked)).toHaveLength(3)
   })
 })

@@ -1,5 +1,5 @@
-import { Button, PageHeader, Table, TableProps, Loader, showToast } from '@acx-ui/components'
-import { useNetworkListQuery, Network }                             from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { useNetworkListQuery, useDeleteNetworkMutation, Network }         from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
@@ -7,7 +7,7 @@ import {
   WlanSecurityEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
 const columns: TableProps<Network>['columns'] = [
   {
@@ -191,32 +191,47 @@ const defaultPayload = {
 }
 
 export function NetworksTable () {
-  const navigate = useNavigate()
-  const linkToEditNetwork = useTenantLink('/networks/')
-
-  const actions: TableProps<Network>['actions'] = [
-    {
-      label: 'Edit',
-      onClick: (selectedRows) => {
-        navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
-      }
-    },
-    {
-      label: 'Delete',
-      onClick: (selectedRows) => showToast({
-        type: 'info',
-        content: `Delete ${selectedRows[0].name}`
-      })
-    }
-  ]
   const NetworksTable = () => {
+    const navigate = useNavigate()
+    const linkToEditNetwork = useTenantLink('/networks/')
     const tableQuery = useTableQuery({
       useQuery: useNetworkListQuery,
       defaultPayload
     })
+    const { tenantId } = useParams()
+    const [
+      deleteNetwork,
+      { isLoading: isDeleteNetworkUpdating }
+    ] = useDeleteNetworkMutation()
+
+    const actions: TableProps<Network>['actions'] = [
+      {
+        label: 'Edit',
+        onClick: (selectedRows) => {
+          navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
+        }
+      },
+      {
+        label: 'Delete',
+        onClick: ([{ name, id }], clearSelection) => {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: 'Network',
+              entityValue: name
+            },
+            onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
+              .then(clearSelection)
+          })
+        }
+      }]
 
     return (
-      <Loader states={[tableQuery]}>
+      <Loader states={[
+        tableQuery,
+        { isLoading: false, isFetching: isDeleteNetworkUpdating }
+      ]}>
         <Table
           columns={columns}
           dataSource={tableQuery.data?.data}

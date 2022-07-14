@@ -3,7 +3,7 @@
 exports[`Button should render default button 1`] = `
 <DocumentFragment>
   <button
-    class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ckAoUV"
+    class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
     type="button"
   >
     <span>
@@ -16,7 +16,7 @@ exports[`Button should render default button 1`] = `
 exports[`Button should render primary button 1`] = `
 <DocumentFragment>
   <button
-    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ckAoUV"
+    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
     type="button"
   >
     <span>
@@ -29,7 +29,7 @@ exports[`Button should render primary button 1`] = `
 exports[`Button should render secondary button 1`] = `
 <DocumentFragment>
   <button
-    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 cniQDj"
+    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 gtfjWr"
     type="button"
   >
     <span>

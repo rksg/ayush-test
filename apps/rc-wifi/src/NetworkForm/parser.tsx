@@ -4,19 +4,25 @@ import {
   NetworkTypeEnum,
   CreateNetworkFormFields,
   NetworkSaveData,
-  IClientIsolationOptions, 
-  IWlanRadioCustomization, 
-  IOpenWlanAdvancedCustomization, 
-  RfBandUsageEnum, 
-  BssMinimumPhyRateEnum, 
-  BssMinimumPhyRateEnum6G, 
+  IClientIsolationOptions,
+  IWlanRadioCustomization,
+  IOpenWlanAdvancedCustomization,
+  RfBandUsageEnum,
+  BssMinimumPhyRateEnum,
+  BssMinimumPhyRateEnum6G,
   PhyTypeConstraintEnum,
   ManagementFrameMinimumPhyRateEnum,
-  ManagementFrameMinimumPhyRateEnum6G
+  ManagementFrameMinimumPhyRateEnum6G,
+  DnsProxy,
+  IDpskWlanAdvancedCustomization
 } from '@acx-ui/rc/utils'
 
 const clientIsolationOptions: IClientIsolationOptions = {
   autoVrrp: false
+}
+
+const dnsProxy: DnsProxy = {
+  dnsProxyRules: []
 }
 
 const radioCustomization: IWlanRadioCustomization = {
@@ -68,14 +74,51 @@ const OpenWlanAdvancedCustomization: IOpenWlanAdvancedCustomization = {
   dnsProxyEnabled: false
 }
 
+const DpskWlanAdvancedCustomization: IDpskWlanAdvancedCustomization = {
+  maxClientsOnWlanPerRadio: 100,
+  enableBandBalancing: true,
+  clientIsolation: false,
+  clientIsolationOptions: clientIsolationOptions,
+  hideSsid: false,
+  forceMobileDeviceDhcp: false,
+  clientLoadBalancingEnable: true,
+  enableAaaVlanOverride: true,
+  directedThreshold: 5,
+  enableNeighborReport: true,
+  radioCustomization: radioCustomization,
+  enableSyslog: false,
+  clientInactivityTimeout: 120,
+  accessControlEnable: false,
+  respectiveAccessControl: true,
+  vlanPool: null,
+  applicationPolicyEnable: false,
+  l2AclEnable: false,
+  l3AclEnable: false,
+  wifiCallingEnabled: false,
+  wifiCallingIds: [],
+  proxyARP: false,
+  enableAirtimeDecongestion: false,
+  enableJoinRSSIThreshold: false,
+  joinRSSIThreshold: -85,
+  enableTransientClientManagement: false,
+  joinWaitTime: 30,
+  joinExpireTime: 300,
+  joinWaitThreshold: 10,
+  enableOptimizedConnectivityExperience: false,
+  broadcastProbeResponseDelay: 15,
+  rssiAssociationRejectionThreshold: -75,
+  enableAntiSpoofing: false,
+  enableArpRequestRateLimit: true,
+  arpRequestRateLimit: 15,
+  enableDhcpRequestRateLimit: true,
+  dhcpRequestRateLimit: 15,
+  dnsProxyEnabled: false,
+  dnsProxy: dnsProxy,
+  tunnelWlanEnable: false
+}
+
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {}
-
-  saveData = {
-    wlan: {
-      wlanSecurity: data.wlanSecurity
-    }
-  }
 
   if (data.isCloudpathEnabled) {
     saveData = {
@@ -100,7 +143,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
         }
       }
     }
-    if (get(data, 'authRadius.secondary.ip')) {
+    if (data.enableSecondaryAuthServer) {
       authRadius = {
         ...authRadius,
         ...{
@@ -116,13 +159,12 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
     saveData = {
       ...saveData,
       ...{
-        enableAccountingProxy: data.enableAccountingProxy,
         enableAuthProxy: data.enableAuthProxy,
         authRadius
       }
     }
 
-    if (data.enableAccountingService === true) {
+    if (data.enableAccountingService) {
       let accountingRadius = {}
       accountingRadius = {
         ...accountingRadius,
@@ -135,14 +177,17 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
         }
       }
 
-      if (get(data, 'accountingRadius.secondary.ip')) {
+      if (data.enableSecondaryAcctServer) {
         accountingRadius = {
           ...accountingRadius,
           ...{
             secondary: {
               ip: get(data, 'accountingRadius.secondary.ip'),
               port: get(data, 'accountingRadius.secondary.port'),
-              sharedSecret: get(data, 'accountingRadius.secondary.sharedSecret')
+              sharedSecret: get(
+                data,
+                'accountingRadius.secondary.sharedSecret'
+              )
             }
           }
         }
@@ -151,8 +196,23 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
       saveData = {
         ...saveData,
         ...{
+          enableAccountingProxy: data.enableAccountingProxy,
           accountingRadius
         }
+      }
+    }
+  }
+  saveData = {
+    ...saveData,
+    ...{
+      wlan: {
+        wlanSecurity: data.wlanSecurity,
+        advancedCustomization: OpenWlanAdvancedCustomization,
+        bypassCNA: false,
+        bypassCPUsingMacAddressAuthentication: false,
+        enable: true,
+        managementFrameProtection: 'Disabled',
+        vlanId: 1
       }
     }
   }
@@ -181,7 +241,34 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
       }
     }
   }
-  
+
+  return saveData
+}
+
+const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
+  let saveData = {}
+
+  saveData = {
+    wlan: {
+      wlanSecurity: data.dpskWlanSecurity,
+      enable: true,
+      vlanId: 1,
+      advancedCustomization: DpskWlanAdvancedCustomization
+    },
+    dpskPassphraseGeneration: {
+      length: data.passphraseLength,
+      format: data.passphraseFormat,
+      expiration: data.expiration
+    }
+  }
+
+  if (data.cloudpathServerId) {
+    saveData = {
+      ...saveData,
+      cloudpathServerId: data.cloudpathServerId
+    }
+  }
+
   return saveData
 }
 
@@ -199,7 +286,8 @@ export function transferDetailToSave (data: CreateNetworkFormFields) {
 export function tranferSettingsToSave (data: NetworkSaveData) {
   const networkSaveDataParser = {
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data),
-    [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data)
+    [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data),
+    [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }

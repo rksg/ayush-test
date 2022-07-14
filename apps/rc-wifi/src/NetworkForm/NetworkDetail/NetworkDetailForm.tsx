@@ -53,7 +53,7 @@ export function NetworkDetailForm (props: { editMode?: boolean }) {
                     </RadioDescription>
                   </Radio>
 
-                  <Radio value={NetworkTypeEnum.DPSK} disabled>
+                  <Radio value={NetworkTypeEnum.DPSK}>
                     {NetworkTypeLabel.dpsk}
                     <RadioDescription>
                       {NetworkTypeDescription.dpsk}

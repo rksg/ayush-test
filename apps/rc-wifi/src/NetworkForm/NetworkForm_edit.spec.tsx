@@ -148,7 +148,7 @@ describe('NetworkForm', () => {
     
     await expect(waitFor(() => {
       expect(screen.getByRole('input')).toHaveValue('open network test')
-    }, { timeout: 100 })).rejects.toThrow()
+    }, { timeout: 1000 })).rejects.toThrow()
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })

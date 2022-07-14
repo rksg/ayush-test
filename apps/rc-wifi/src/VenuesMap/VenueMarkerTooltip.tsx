@@ -30,7 +30,7 @@ const columns = [
 ]
 
 interface VenueMarkerTooltipProps {
-  onNavigate: (params: NavigateProps) => void;
+  onNavigate?: (params: NavigateProps) => void;
 }
 
 export function VenueMarkerTooltip (
@@ -63,8 +63,8 @@ export function VenueMarkerTooltip (
         ? <UI.CellWrapper>
           <StackedBarChart
             data={apStat}
-            { ...commonProps }/>
-          <UI.TotalCount onClick={() => onNavigate({ venueId, path: 'TBD' })}>
+            {...commonProps}/>
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
             {apsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -73,7 +73,7 @@ export function VenueMarkerTooltip (
         </UI.CellWrapper>,
       clients: clientsCount && clientsCount > 0
         ? <UI.CellWrapper>
-          <UI.TotalCount onClick={() => onNavigate({ venueId, path: 'TBD' })}>
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
             {clientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -88,8 +88,8 @@ export function VenueMarkerTooltip (
         ? <UI.CellWrapper>
           <StackedBarChart
             data={switchStat}
-            { ...commonProps } />
-          <UI.TotalCount onClick={() => onNavigate({ venueId, path: 'TBD' })}>
+            {...commonProps} />
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
             {switchesCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -98,7 +98,7 @@ export function VenueMarkerTooltip (
         </UI.CellWrapper>,
       clients: switchClientsCount && switchClientsCount > 0
         ? <UI.CellWrapper>
-          <UI.TotalCount onClick={() => onNavigate({ venueId, path: 'TBD' })}>
+          <UI.TotalCount onClick={() => onNavigate && onNavigate({ venueId, path: 'TBD' })}>
             {switchClientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -111,7 +111,7 @@ export function VenueMarkerTooltip (
   return (
     <UI.Wrapper>
       <UI.InfoWindowHeader>
-        <UI.Title onClick={() => onNavigate({ venueId, path: 'overview' })}>
+        <UI.Title onClick={() => onNavigate && onNavigate({ venueId, path: 'overview' })}>
           {props.venue.name}
         </UI.Title>
       </UI.InfoWindowHeader>

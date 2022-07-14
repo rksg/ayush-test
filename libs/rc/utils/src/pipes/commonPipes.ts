@@ -1,4 +1,4 @@
-export function transformDisplayText (value: string) {
+export function transformDisplayText (value?: string) {
   return value ? value : '--'
 }
 

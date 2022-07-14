@@ -47,7 +47,8 @@ const getNetworkId = () => {
   return 'UNKNOWN-NETWORK-ID'
 }
 
-export function Venues (props: {formRef: any, editMode: boolean}) {
+export function Venues (props: { formRef: any, editMode: boolean }) {
+  const { formRef, editMode } = props
   const venues = Form.useWatch('venues')
 
   const tableQuery = useTableQuery({
@@ -72,23 +73,23 @@ export function Venues (props: {formRef: any, editMode: boolean}) {
       name: row.name
     }))
 
-    props.formRef?.current?.setFieldsValue({ venues: selected })
+    formRef?.current?.setFieldsValue({ venues: selected })
   }
   useEffect(()=>{
-    if(props.editMode){
+    if(editMode){
       if(tableQuery.data){
         const selected: Venue[] = []
         const tableData = tableQuery.data.data.map((item: Venue) => 
         {
-          const activatedVenue = venues && 
+          const isActivated = venues && 
             venues.filter((venue: Venue) => venue.venueId === item.id).length > 0
-          if(activatedVenue){
+          if(isActivated){
             selected.push(item)
           }
           return {
             ...item,
             // work around of read-only records from RTKQ
-            activated: { isActivated: activatedVenue }
+            activated: { isActivated }
           }
         })
         setTableData(tableData)
@@ -107,7 +108,7 @@ export function Venues (props: {formRef: any, editMode: boolean}) {
         setTableData(tableData)
       }
     }
-  }, [venues, tableQuery.data, props.editMode])
+  }, [venues, tableQuery.data, editMode])
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -142,9 +143,10 @@ export function Venues (props: {formRef: any, editMode: boolean}) {
     {
       title: 'Activated',
       dataIndex: ['activated', 'isActivated'],
-      render: function (data, row) {
-        return <Switch onClick={(checked: boolean, event: Event) => {
+      render: function (status, row) {
+        const onToggle = (checked: boolean, event: Event) => {
           event.stopPropagation()
+          row.activated.isActivated = checked
           let selectedVenues = [...activateVenues]
           if (checked) {
             selectedVenues = [...selectedVenues, row]
@@ -153,10 +155,14 @@ export function Venues (props: {formRef: any, editMode: boolean}) {
           }
           setActivateVenues(selectedVenues)
           handleVenueSaveData(selectedVenues)
-        }} 
-        defaultChecked={ row.activated.isActivated }
-        checked={ row.activated.isActivated }
-        />
+        }
+        return editMode?
+          <Switch onChange={onToggle} 
+            defaultChecked={row.activated.isActivated}
+            checked={row.activated.isActivated}
+          />:<Switch onChange={onToggle} 
+            defaultChecked={!!status}
+          />
       }
     },
     {
@@ -202,7 +208,7 @@ export function Venues (props: {formRef: any, editMode: boolean}) {
               }
             })}
             columns={columns}
-            dataSource={tableData}
+            dataSource={[...tableData]}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
           />

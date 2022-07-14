@@ -3,7 +3,7 @@
 exports[`NetworkForm should create open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ljoVMe"
+    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -62,7 +62,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 JZdxa"
+    class="styledComponents__Wrapper-sc-1ibvcih-0 hnQMwg"
   >
     <div
       class="ant-pro-steps-form"
@@ -228,7 +228,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
               >
                 <form
                   autocomplete="off"
-                  class="ant-form ant-form-vertical ant-form-hide-required-mark"
+                  class="ant-form ant-form-vertical"
                   id="details"
                 >
                   <input
@@ -396,14 +396,13 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                 style="margin-bottom: 8px;"
                                               >
                                                 <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                                 >
                                                   <span
-                                                    class="ant-radio ant-radio-disabled"
+                                                    class="ant-radio"
                                                   >
                                                     <input
                                                       class="ant-radio-input"
-                                                      disabled=""
                                                       type="radio"
                                                       value="dpsk"
                                                     />
@@ -530,7 +529,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                               class="ant-col"
                             >
                               <div
-                                class="styledComponents__Diagram-sc-bfjsxr-0 IiZUr"
+                                class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
                               />
                             </div>
                           </div>
@@ -545,7 +544,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
               >
                 <form
                   autocomplete="off"
-                  class="ant-form ant-form-vertical ant-form-hide-required-mark"
+                  class="ant-form ant-form-vertical"
                   id="Settings"
                 >
                   <input
@@ -616,7 +615,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                               class="ant-col"
                             >
                               <div
-                                class="styledComponents__Diagram-sc-bfjsxr-0 IiZUr"
+                                class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
                               >
                                 <img
                                   alt="Open Network"
@@ -666,7 +665,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
               >
                 <form
                   autocomplete="off"
-                  class="ant-form ant-form-vertical ant-form-hide-required-mark"
+                  class="ant-form ant-form-vertical"
                   id="summary"
                 >
                   <input
@@ -679,19 +678,24 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     <div
                       class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5 dOqwQw"
                     >
+                      <h3
+                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                      >
+                        Summary
+                      </h3>
                       <div
                         class="ant-row"
                         style="margin-left: -10px; margin-right: -10px;"
                       >
                         <div
-                          class="ant-col ant-col-10"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-col"
+                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                         >
-                          <h3
-                            class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                          <h4
+                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                           >
-                            Summary
-                          </h3>
+                            Network Info
+                          </h4>
                           <div
                             class="ant-row ant-form-item"
                           >
@@ -700,9 +704,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Network Name"
+                                title="Network Name:"
                               >
-                                Network Name
+                                Network Name:
                               </label>
                             </div>
                             <div
@@ -725,9 +729,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Description"
+                                title="Info:"
                               >
-                                Description
+                                Info:
                               </label>
                             </div>
                             <div
@@ -752,9 +756,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Network Type"
+                                title="Type:"
                               >
-                                Network Type
+                                Type:
                               </label>
                             </div>
                             <div
@@ -779,9 +783,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Use Cloudpath Server"
+                                title="Use Cloudpath Server:"
                               >
-                                Use Cloudpath Server
+                                Use Cloudpath Server:
                               </label>
                             </div>
                             <div
@@ -798,19 +802,24 @@ exports[`NetworkForm should create open network successfully 1`] = `
                               </div>
                             </div>
                           </div>
+                        </div>
+                        <div
+                          class="ant-divider ant-divider-vertical"
+                          role="separator"
+                          style="height: 300px;"
+                        />
+                        <div
+                          class="ant-col"
+                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                        >
+                          <h4
+                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                          >
+                            Activated in venues
+                          </h4>
                           <div
                             class="ant-row ant-form-item"
                           >
-                            <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Activated in venues"
-                              >
-                                Activated in venues
-                              </label>
-                            </div>
                             <div
                               class="ant-col ant-form-item-control"
                             >
@@ -822,27 +831,6 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                 >
                                   --
                                 </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-14"
-                          style="padding-left: 10px; padding-right: 10px;"
-                        >
-                          <div
-                            class="ant-row ant-row-center"
-                          >
-                            <div
-                              class="ant-col"
-                            >
-                              <div
-                                class="styledComponents__Diagram-sc-bfjsxr-0 IiZUr"
-                              >
-                                <img
-                                  alt="Open Network"
-                                  src="open.png"
-                                />
                               </div>
                             </div>
                           </div>
@@ -867,7 +855,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 cniQDj"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 gtfjWr"
               type="button"
             >
               <span>
@@ -879,7 +867,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ckAoUV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
               type="button"
             >
               <span>
