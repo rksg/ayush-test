@@ -10,7 +10,7 @@ import {
   Dashboard,
   ApVenueStatusEnum
 } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { getAPStatusDisplayName, getSwitchStatusDisplayName } from '../../VenuesMap/helper'
 
@@ -108,6 +108,17 @@ export const getSwitchDonutChartData = (overviewData?: Dashboard): DonutChartDat
 }
 
 function Devices () {
+  const basePath = useTenantLink('/devices/')
+  const navigate = useNavigate()
+
+  const onClick = (param: string) => {
+    navigate({
+      ...basePath,
+      // TODO Actual path to be updated later
+      pathname: `${basePath.pathname}/${param}`
+    })
+  }
+
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   },{
@@ -128,11 +139,13 @@ function Devices () {
               <DonutChart
                 style={{ width: width/2 , height }}
                 title='Wi-Fi'
-                data={queryResults.data.apData} />
+                data={queryResults.data.apData}
+                onClick={() => onClick('TBD')}/>
               <DonutChart
                 style={{ width: width/2, height }}
                 title='Switch'
-                data={queryResults.data.switchData}/>
+                data={queryResults.data.switchData}
+                onClick={() => onClick('TBD')}/>
             </div>
           )}
         </AutoSizer>

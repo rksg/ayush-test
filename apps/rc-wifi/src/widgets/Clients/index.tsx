@@ -1,13 +1,13 @@
 import { countBy } from 'lodash'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader }            from '@acx-ui/components'
-import { Card }                      from '@acx-ui/components'
-import { DonutChart }                from '@acx-ui/components'
-import type { DonutChartData }       from '@acx-ui/components'
-import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
-import { Dashboard }                 from '@acx-ui/rc/services'
-import { useParams }                 from '@acx-ui/react-router-dom'
+import { cssStr, Loader }                        from '@acx-ui/components'
+import { Card }                                  from '@acx-ui/components'
+import { DonutChart }                            from '@acx-ui/components'
+import type { DonutChartData }                   from '@acx-ui/components'
+import { useDashboardOverviewQuery }             from '@acx-ui/rc/services'
+import { Dashboard }                             from '@acx-ui/rc/services'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 const seriesMapping = [
   { name: 'Poor', color: cssStr('--acx-semantics-red-50') },
@@ -48,6 +48,17 @@ export const getSwitchClientChartData = (overviewData?: Dashboard): DonutChartDa
 }
 
 function Clients () {
+  const basePath = useTenantLink('/users/')
+  const navigate = useNavigate()
+
+  const onClick = (param: string) => {
+    navigate({
+      ...basePath,
+      // TODO Actual path to be updated later
+      pathname: `${basePath.pathname}/${param}`
+    })
+  }
+
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   },{
@@ -69,12 +80,14 @@ function Clients () {
                 style={{ width: width/2 , height }}
                 title='Wi-Fi'
                 showLegend={false}
-                data={queryResults.data.apData}/>
+                data={queryResults.data.apData}
+                onClick={() => onClick('TBD')}/>
               <DonutChart
                 style={{ width: width/2, height }}
                 title='Switch'
                 showLegend={false}
-                data={queryResults.data.switchData} />
+                data={queryResults.data.switchData}
+                onClick={() => onClick('TBD')}/>
             </div>
           )}
         </AutoSizer>

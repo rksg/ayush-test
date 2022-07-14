@@ -1,8 +1,8 @@
 import ReactECharts from 'echarts-for-react'
 import { find }     from 'lodash'
 
-import { cssNumber, cssStr }                          from '../../theme/helper'
-import { tooltipOptions, donutChartTooltipFormatter } from '../Chart/helper'
+import { cssNumber, cssStr }                                       from '../../theme/helper'
+import { tooltipOptions, donutChartTooltipFormatter, EventParams } from '../Chart/helper'
 
 import type { EChartsOption, TooltipComponentOption } from 'echarts'
 import type { EChartsReactProps }                     from 'echarts-for-react'
@@ -27,7 +27,8 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   Omit<EChartsReactProps, 'option' | 'opts'> {
   data: Array<DonutChartData>
   title?: string,
-  dataFormatter?: (value: unknown) => string | null
+  dataFormatter?: (value: unknown) => string | null,
+  onClick?: (params: EventParams) => void
 }
 
 export function DonutChart ({
@@ -53,6 +54,15 @@ export function DonutChart ({
     fontSize: cssNumber('--acx-headline-3-font-size'),
     lineHeight: cssNumber('--acx-headline-3-line-height'),
     fontWeight: cssNumber('--acx-headline-3-font-weight')
+  }
+
+  const eventHandlers = {
+    click: (params: EventParams) => {
+      const { onClick } = props
+      if (onClick) {
+        onClick(params)
+      }
+    }
   }
 
   const option: EChartsOption = {
@@ -132,6 +142,7 @@ export function DonutChart ({
     <ReactECharts
       {...props}
       opts={{ renderer: 'svg' }}
-      option={option} />
+      option={option}
+      onEvents={eventHandlers} />
   )
 }

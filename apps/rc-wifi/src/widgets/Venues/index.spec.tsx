@@ -1,3 +1,4 @@
+import { Dashboard }          from '@acx-ui/rc/services'
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider  }          from '@acx-ui/store'
 import { render,
@@ -24,11 +25,24 @@ jest.mock('@acx-ui/components', () => ({
   })
 }))
 
+const data: Dashboard = {
+  summary: {
+    venues: {
+      summary: {
+        '1_InSetupPhase': 4,
+        '2_Operational': 5,
+        '3_RequiresAttention': 2
+      },
+      totalCount: 4
+    }
+  }
+}
+
 describe('Venues widget', () => {
   mockAutoSizer()
 
   beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get',{})
+    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get', { data })
   })
 
   it('should render loader and then chart', async () => {
@@ -44,18 +58,6 @@ describe('Venues widget', () => {
 })
 
 describe('getVenuesDonutChartData', () => {
-  const data = {
-    summary: {
-      venues: {
-        summary: {
-          '1_InSetupPhase': 4,
-          '2_Operational': 5,
-          '3_RequiresAttention': 2
-        },
-        totalCount: 4
-      }
-    }
-  }
   it('should return correct formatted data', async () => {
     expect(getVenuesDonutChartData(data)).toEqual([{
       color: 'Red',

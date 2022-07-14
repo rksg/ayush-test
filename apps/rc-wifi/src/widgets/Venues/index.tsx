@@ -9,16 +9,22 @@ import {
   Dashboard,
   ApVenueStatusEnum
 } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+import { getAPStatusDisplayName } from '../../VenuesMap/helper'
 
 const seriesMapping = [
-  { key: ApVenueStatusEnum.REQUIRES_ATTENTION, name: 'Requires Attention',
+  { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
+    name: getAPStatusDisplayName(ApVenueStatusEnum.REQUIRES_ATTENTION, false),
     color: cssStr('--acx-semantics-red-50') },
-  { key: ApVenueStatusEnum.TRANSIENT_ISSUE, name: 'Temporarily Degraded',
+  { key: ApVenueStatusEnum.TRANSIENT_ISSUE,
+    name: getAPStatusDisplayName(ApVenueStatusEnum.TRANSIENT_ISSUE, false),
     color: cssStr('--acx-semantics-yellow-40') },
-  { key: ApVenueStatusEnum.IN_SETUP_PHASE, name: 'In Setup Phase',
+  { key: ApVenueStatusEnum.IN_SETUP_PHASE,
+    name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE, false),
     color: cssStr('--acx-neutrals-50') },
-  { key: ApVenueStatusEnum.OPERATIONAL, name: 'Operational',
+  { key: ApVenueStatusEnum.OPERATIONAL,
+    name: getAPStatusDisplayName(ApVenueStatusEnum.OPERATIONAL, false),
     color: cssStr('--acx-semantics-green-60') }
 ] as Array<{ key: string, name: string, color: string }>
 
@@ -40,6 +46,16 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
 }
 
 function Venues () {
+  const basePath = useTenantLink('/venues/')
+  const navigate = useNavigate()
+
+  const onClick = () => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}`
+    })
+  }
+
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   },{
@@ -55,7 +71,8 @@ function Venues () {
           {({ height, width }) => (
             <DonutChart
               style={{ width, height }}
-              data={queryResults.data} />
+              data={queryResults.data}
+              onClick={onClick} />
           )}
         </AutoSizer>
       </Card>
