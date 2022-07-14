@@ -22,11 +22,15 @@ function flattenMessages (nestedMessages: NestedMessages, prefix = ''): Record<s
   }, {} as Record<string, string>)
 }
 
+function localePath (locale: string) {
+  return `locales/${locale}.json`
+}
+
 async function loadEnUS (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/en_US').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/en_US').then(result => result.default),
-    fetch('/locales/en-US.json').then(res => res.json()) as Promise<NestedMessages>
+    fetch(localePath('en-US')).then(res => res.json()) as Promise<NestedMessages>
   ])
 
   const combine = merge({}, base, proBase, translation)
@@ -37,7 +41,7 @@ async function loadDe (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/de_DE').then(result => result.default),
     import('@ant-design/pro-provider/lib/locale/de_DE').then(result => result.default),
-    fetch('/locales/de-DE.json').then(res => res.json()) as Promise<NestedMessages>
+    fetch(localePath('de-DE')).then(res => res.json()) as Promise<NestedMessages>
   ])
 
   const combine = merge({}, base, proBase, translation)
