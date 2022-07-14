@@ -96,7 +96,7 @@ export function Venues (props: { formRef: any, editMode: boolean }) {
         setActivateVenues(selected)
       }
     }else{
-      if(tableQuery.data){
+      if(tableQuery.data && tableData.length === 0){
         const tableData = tableQuery.data.data.map((item: Venue) => 
         {
           return {
@@ -156,13 +156,10 @@ export function Venues (props: { formRef: any, editMode: boolean }) {
           setActivateVenues(selectedVenues)
           handleVenueSaveData(selectedVenues)
         }
-        return editMode?
-          <Switch onChange={onToggle} 
-            defaultChecked={row.activated.isActivated}
-            checked={row.activated.isActivated}
-          />:<Switch onChange={onToggle} 
-            defaultChecked={!!status}
-          />
+        return <Switch onChange={onToggle} 
+          defaultChecked={row.activated.isActivated}
+          checked={row.activated.isActivated}
+        />
       }
     },
     {
