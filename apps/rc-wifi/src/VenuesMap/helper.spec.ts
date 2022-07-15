@@ -1,45 +1,15 @@
 import { initialize, mockInstances } from '@googlemaps/jest-mocks'
 
-import {
-  ApVenueStatusEnum, Dashboard, SwitchStatusEnum
-} from '@acx-ui/rc/services'
+import { ApVenueStatusEnum, Dashboard, SwitchStatusEnum } from '@acx-ui/rc/services'
+import { mockLightTheme }                                 from '@acx-ui/test-utils'
 
-import { getClusterSVG, getDeviceConnectionStatusColors, getIcon, getMarkerColor, getMarkerSVG, massageVenuesData } from './helper'
+import { getClusterSVG, getDeviceConnectionStatusColors,
+  getIcon, getMarkerColor, getMarkerSVG, massageVenuesData } from './helper'
 
 jest.mock('@acx-ui/components', () => ({
   __esModule: true,
-  cssStr: jest.fn(property => {
-    let color= 'some-color'
-    switch(property){
-      case '--acx-semantics-red-50':
-        color = '#ACAEB0'
-        break
-      case '--acx-semantics-red-70':
-        color = '#A00D14'
-        break
-      case '--acx-semantics-yellow-40':
-        color = '#E47B01;'
-        break
-      case '--acx-semantics-yellow-70':
-        color = '#E47B01;'
-        break
-      case '--acx-semantics-green-50':
-        color = '#23AB36;'
-        break
-      case '--acx-semantics-green-70':
-        color = '#226D2C;'
-        break
-      case '--acx-neutrals-50':
-        color = '#ACAEB0;'
-        break
-      case '--acx-neutrals-70':
-        color = '#565758;'
-        break
-    }
-    return color
-  })
+  cssStr: jest.fn(property => mockLightTheme[property])
 }))
-
 
 describe('Venues Map Helper', () => {
   describe('massageVenuesData', () => {
@@ -407,13 +377,13 @@ describe('Venues Map Helper', () => {
 
   it('should return the correct marker color for the AP status', ()=>{
     expect(getMarkerColor([ApVenueStatusEnum.REQUIRES_ATTENTION]))
-      .toStrictEqual({ default: '#ACAEB0', hover: '#A00D14' })
+      .toStrictEqual({ default: '#ED1C24', hover: '#A00D14' })
     expect(getMarkerColor([ApVenueStatusEnum.TRANSIENT_ISSUE]))
-      .toStrictEqual({ default: '#E47B01;', hover: '#E47B01;' })
+      .toStrictEqual({ default: '#F9C34B', hover: '#E47B01' })
     expect(getMarkerColor([ApVenueStatusEnum.OPERATIONAL]))
-      .toStrictEqual({ default: '#23AB36;', hover: '#226D2C;' }) //default colors
+      .toStrictEqual({ default: '#23AB36', hover: '#226D2C' }) //default colors
     expect(getMarkerColor([ApVenueStatusEnum.IN_SETUP_PHASE]))
-      .toStrictEqual({ default: '#ACAEB0;', hover: '#565758;' })
+      .toStrictEqual({ default: '#ACAEB0', hover: '#565758' })
   })
 
   it('should return cluster svg string with the given fill color', ()=>{
@@ -426,7 +396,11 @@ describe('Venues Map Helper', () => {
 
   it('should return the correct color for the device status', ()=>{
     expect(getDeviceConnectionStatusColors())
-      .toStrictEqual([ '#23AB36;', '#ACAEB0;', '#E47B01;', '#ACAEB0' ])
+      .toStrictEqual([
+        '#23AB36',
+        '#ACAEB0',
+        '#F9C34B',
+        '#ED1C24'])
   })
 
   describe('getIcon', () => {

@@ -14,11 +14,13 @@ export type DonutChartData = {
 }
 
 interface DonutChartOptionalProps {
-  showLegend: boolean
+  showLegend: boolean,
+  animation: boolean,
 }
 
 const defaultProps: DonutChartOptionalProps = {
-  showLegend: true
+  showLegend: true,
+  animation: true
 }
 
 DonutChart.defaultProps = { ...defaultProps }
@@ -56,16 +58,19 @@ export function DonutChart ({
     fontWeight: cssNumber('--acx-headline-3-font-weight')
   }
 
-  const eventHandlers = {
-    click: (params: EventParams) => {
-      const { onClick } = props
-      if (onClick) {
-        onClick(params)
-      }
+  const onChartClick = (params: EventParams) => {
+    const { onClick } = props
+    if (onClick) {
+      onClick(params)
     }
   }
 
+  const eventHandlers = {
+    click: onChartClick
+  }
+
   const option: EChartsOption = {
+    animation: props.animation,
     tooltip: {
       show: false
     },

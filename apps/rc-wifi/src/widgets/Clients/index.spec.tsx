@@ -3,6 +3,7 @@ import { Provider  }          from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
   mockAutoSizer,
+  mockLightTheme,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import Clients, { getAPClientChartData, getSwitchClientChartData } from '.'
@@ -10,18 +11,8 @@ import Clients, { getAPClientChartData, getSwitchClientChartData } from '.'
 jest.mock('@acx-ui/components', () => ({
   __esModule: true,
   ...(jest.requireActual('@acx-ui/components')),
-  cssStr: jest.fn(property => {
-    switch (property) {
-      case '--acx-semantics-red-50':
-        return 'Red'
-      case '--acx-semantics-yellow-40':
-        return 'Yellow'
-      case '--acx-neutrals-50':
-        return 'Grey'
-      default:
-        return 'Green'
-    }
-  })
+  cssStr: jest.fn(property => mockLightTheme[property]),
+  cssNumber: jest.fn(property => parseInt(mockLightTheme[property], 10))
 }))
 
 describe('Clients widget', () => {
@@ -63,15 +54,15 @@ describe('getAPClientChartData', () => {
   }
   it('should return correct formatted data', async () => {
     expect(getAPClientChartData(data)).toEqual([{
-      color: 'Red',
+      color: '#ED1C24',
       name: 'Poor',
       value: 1
     }, {
-      color: 'Green',
+      color: '#258D36',
       name: 'Good',
       value: 2
     }, {
-      color: 'Grey',
+      color: '#ACAEB0',
       name: 'Unknown',
       value: 1
     }])
@@ -94,7 +85,7 @@ describe('getSwitchClientChartData', () => {
   }
   it('should return correct formatted data', async () => {
     expect(getSwitchClientChartData(data)).toEqual([{
-      color: 'Green',
+      color: '#258D36',
       name: 'Clients',
       value: 2
     }])

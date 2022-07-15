@@ -4,6 +4,7 @@ import { Provider  }          from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
   mockAutoSizer,
+  mockLightTheme,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import Venues, { getVenuesDonutChartData } from '.'
@@ -11,18 +12,8 @@ import Venues, { getVenuesDonutChartData } from '.'
 jest.mock('@acx-ui/components', () => ({
   __esModule: true,
   ...(jest.requireActual('@acx-ui/components')),
-  cssStr: jest.fn(property => {
-    switch (property) {
-      case '--acx-semantics-red-50':
-        return 'Red'
-      case '--acx-semantics-yellow-40':
-        return 'Yellow'
-      case '--acx-neutrals-50':
-        return 'Grey'
-      default:
-        return 'Green'
-    }
-  })
+  cssStr: jest.fn(property => mockLightTheme[property]),
+  cssNumber: jest.fn(property => parseInt(mockLightTheme[property], 10))
 }))
 
 const data: Dashboard = {
@@ -60,15 +51,15 @@ describe('Venues widget', () => {
 describe('getVenuesDonutChartData', () => {
   it('should return correct formatted data', async () => {
     expect(getVenuesDonutChartData(data)).toEqual([{
-      color: 'Red',
+      color: '#ED1C24',
       name: 'Requires Attention',
       value: 2
     },{
-      color: 'Grey',
+      color: '#ACAEB0',
       name: 'In Setup Phase',
       value: 4
     },{
-      color: 'Green',
+      color: '#258D36',
       name: 'Operational',
       value: 5
     }])
