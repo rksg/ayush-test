@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 import { Form, Input, Space } from 'antd'
 
+import { BulbOutlined } from '@acx-ui/icons'
+
 import { Drawer } from '..'
 import { Button } from '../../Button'
 
@@ -53,6 +55,7 @@ export function CustomDrawer () {
         children={content}
         footer={footer}
         destroyOnClose={resetField}
+        extra={<BulbOutlined />}
       />
     </>
   )

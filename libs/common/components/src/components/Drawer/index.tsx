@@ -3,6 +3,7 @@ import { Drawer as AntdDrawer, DrawerProps as AntdDrawerProps } from 'antd'
 import { CloseSymbol } from '@acx-ui/icons'
 
 export interface DrawerProps extends Omit<AntdDrawerProps, 'placement'> {
+  title: string
 }
 
 export const Drawer = (props: DrawerProps) => {
