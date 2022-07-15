@@ -81,7 +81,7 @@ function SettingsForm () {
       </div>
       <div>
         {isCloudpathEnabled ? <CloudpathServerForm /> : <PassphraseGeneration />}
-        { /*TODO: <div><Button type='link' style={{ padding: 0 }}>Show more settings</Button></div> */ }
+        { /*TODO: <div><Button type='link'>Show more settings</Button></div> */ }
       </div>
     </Space>
   )
