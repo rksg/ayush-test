@@ -70,8 +70,8 @@ export function FormModal () {
         onCancel={handleCancel}
         onOk={handleOk}
         subTitle='Description'
-        content={formContent}
       >
+        {formContent}
       </Modal>
     </>
   )  

@@ -6,7 +6,7 @@ import * as UI from './styledComponents'
 
 interface ModalProps extends AntdModalProps {
   subTitle?: string
-  content?: React.ReactNode
+  title: string
 }
 
 export function Modal ({ ...props }: ModalProps) {
@@ -15,12 +15,11 @@ export function Modal ({ ...props }: ModalProps) {
       {...props}
       closeIcon={<CloseSymbol />}
       title={props.subTitle ? TitleWithSubtitle(props.title, props.subTitle) : props.title}
-      children={props.content}
     />
   )
 }
 
-const TitleWithSubtitle = (title: React.ReactNode, subTitle: string) => {
+const TitleWithSubtitle = (title: string, subTitle: string) => {
   return (
     <>
       {title}

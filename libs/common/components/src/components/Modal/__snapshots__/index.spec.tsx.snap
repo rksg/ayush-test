@@ -39,17 +39,7 @@ exports[`Modal should match snapshot 1`] = `
         </div>
         <div
           class="ant-modal-body"
-        >
-          <p>
-            Some contents...
-          </p>
-          <p>
-            Some contents...
-          </p>
-          <p>
-            Some contents...
-          </p>
-        </div>
+        />
         <div
           class="ant-modal-footer"
         >

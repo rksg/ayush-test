@@ -48,9 +48,9 @@ export function BasicModal () {
         visible={visible}
         onCancel={handleCancel}
         width={800}
-        content={content}
         footer={footer}
       >
+        {content}
       </Modal>
     </>
   )
