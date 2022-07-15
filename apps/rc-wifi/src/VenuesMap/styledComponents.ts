@@ -119,6 +119,13 @@ export const VenueClusterTooltip = styled.div`
     line-height: var(--acx-subtitle-4-line-height);
   }
 
+  .ListWithIcon-item-title{
+    white-space: nowrap; 
+    width: 145px; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .ant-list-header {
     padding: 10px;
   }

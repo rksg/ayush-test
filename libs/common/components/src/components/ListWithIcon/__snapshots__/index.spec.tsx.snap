@@ -114,7 +114,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 1
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 1
+                </div>
               </div>
             </div>
           </li>
@@ -151,7 +155,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 2
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 2
+                </div>
               </div>
             </div>
           </li>
@@ -188,7 +196,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 3
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 3
+                </div>
               </div>
             </div>
           </li>
@@ -225,7 +237,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 4
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 4
+                </div>
               </div>
             </div>
           </li>
@@ -262,7 +278,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 5
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 5
+                </div>
               </div>
             </div>
           </li>
@@ -299,7 +319,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 6
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 6
+                </div>
               </div>
             </div>
           </li>
@@ -336,7 +360,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 7
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 7
+                </div>
               </div>
             </div>
           </li>
@@ -373,7 +401,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 8
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 8
+                </div>
               </div>
             </div>
           </li>
@@ -410,7 +442,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 9
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 9
+                </div>
               </div>
             </div>
           </li>
@@ -447,7 +483,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 10
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 10
+                </div>
               </div>
             </div>
           </li>
@@ -484,7 +524,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 11
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 11
+                </div>
               </div>
             </div>
           </li>
@@ -521,7 +565,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 12
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 12
+                </div>
               </div>
             </div>
           </li>
@@ -558,7 +606,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 13
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 13
+                </div>
               </div>
             </div>
           </li>
@@ -595,7 +647,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 14
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 14
+                </div>
               </div>
             </div>
           </li>
@@ -632,7 +688,11 @@ exports[`ListWithIcon should render a component for proper data 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 15
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 15
+                </div>
               </div>
             </div>
           </li>
@@ -697,7 +757,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 1
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 1
+                </div>
               </div>
             </div>
           </li>
@@ -734,7 +798,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 2
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 2
+                </div>
               </div>
             </div>
           </li>
@@ -771,7 +839,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 3
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 3
+                </div>
               </div>
             </div>
           </li>
@@ -808,7 +880,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 4
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 4
+                </div>
               </div>
             </div>
           </li>
@@ -845,7 +921,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 5
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 5
+                </div>
               </div>
             </div>
           </li>
@@ -882,7 +962,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 6
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 6
+                </div>
               </div>
             </div>
           </li>
@@ -919,7 +1003,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 7
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 7
+                </div>
               </div>
             </div>
           </li>
@@ -956,7 +1044,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 8
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 8
+                </div>
               </div>
             </div>
           </li>
@@ -993,7 +1085,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 9
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 9
+                </div>
               </div>
             </div>
           </li>
@@ -1030,7 +1126,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 10
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 10
+                </div>
               </div>
             </div>
           </li>
@@ -1067,7 +1167,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 11
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 11
+                </div>
               </div>
             </div>
           </li>
@@ -1104,7 +1208,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 12
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 12
+                </div>
               </div>
             </div>
           </li>
@@ -1141,7 +1249,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 13
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 13
+                </div>
               </div>
             </div>
           </li>
@@ -1178,7 +1290,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 14
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 14
+                </div>
               </div>
             </div>
           </li>
@@ -1215,7 +1331,11 @@ exports[`ListWithIcon should render a component for proper data with header and 
               <div
                 class="ant-space-item"
               >
-                Item 15
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 15
+                </div>
               </div>
             </div>
           </li>
@@ -1280,7 +1400,11 @@ exports[`ListWithIcon should render a component with pagination 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 1
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 1
+                </div>
               </div>
             </div>
           </li>
@@ -1317,7 +1441,11 @@ exports[`ListWithIcon should render a component with pagination 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 2
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 2
+                </div>
               </div>
             </div>
           </li>
@@ -1354,7 +1482,11 @@ exports[`ListWithIcon should render a component with pagination 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 3
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 3
+                </div>
               </div>
             </div>
           </li>
@@ -1391,7 +1523,11 @@ exports[`ListWithIcon should render a component with pagination 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 4
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 4
+                </div>
               </div>
             </div>
           </li>
@@ -1428,7 +1564,11 @@ exports[`ListWithIcon should render a component with pagination 1`] = `
               <div
                 class="ant-space-item"
               >
-                Item 5
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 5
+                </div>
               </div>
             </div>
           </li>
@@ -1592,7 +1732,11 @@ exports[`ListWithIcon should render a component with pagination having default p
               <div
                 class="ant-space-item"
               >
-                Item 1
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 1
+                </div>
               </div>
             </div>
           </li>
@@ -1629,7 +1773,11 @@ exports[`ListWithIcon should render a component with pagination having default p
               <div
                 class="ant-space-item"
               >
-                Item 2
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 2
+                </div>
               </div>
             </div>
           </li>
@@ -1666,7 +1814,11 @@ exports[`ListWithIcon should render a component with pagination having default p
               <div
                 class="ant-space-item"
               >
-                Item 3
+                <div
+                  class="ListWithIcon-item-title"
+                >
+                  Item 3
+                </div>
               </div>
             </div>
           </li>

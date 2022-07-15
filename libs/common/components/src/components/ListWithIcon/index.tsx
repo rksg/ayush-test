@@ -40,7 +40,9 @@ export const ListWithIcon: FC<ListWithIconProps> = (props) => {
           <List.Item>
             <Space>
               {item.icon}
-              {item.title}
+              <div className='ListWithIcon-item-title'>
+                {item.title}
+              </div>
             </Space>
           </List.Item>
         </Popover>
