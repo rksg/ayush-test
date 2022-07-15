@@ -8,7 +8,6 @@ import { Space } from 'antd'
 import {
   Col,
   Form,
-  Input,
   Row,
   Select,
   Switch,
@@ -24,9 +23,7 @@ import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
   AaaServerTitle,
-  networkWifiIpRegExp,
-  networkWifiPortRegExp,
-  stringContainSpace
+  IpPortSecretForm
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -137,10 +134,11 @@ function SettingsForm () {
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
           <Subtitle level={3}>Authentication Service</Subtitle>
-          {getAaaServer(
-            AaaServerTypeEnum.AUTHENTICATION,
-            AaaServerOrderEnum.PRIMARY
-          )}
+          <IpPortSecretForm 
+            title={AaaServerTitle[AaaServerOrderEnum.PRIMARY]} 
+            serverType={AaaServerTypeEnum.AUTHENTICATION}
+            order={AaaServerOrderEnum.PRIMARY}
+          />
 
           <Form.Item noStyle name='enableSecondaryAuthServer'>
             <ToggleButtonInput
@@ -149,10 +147,13 @@ function SettingsForm () {
             />
           </Form.Item>
 
-          {enableSecondaryAuthServer && getAaaServer(
-            AaaServerTypeEnum.AUTHENTICATION,
-            AaaServerOrderEnum.SECONDARY
-          )}
+          {enableSecondaryAuthServer && 
+            <IpPortSecretForm 
+              title={AaaServerTitle[AaaServerOrderEnum.SECONDARY]} 
+              serverType={AaaServerTypeEnum.AUTHENTICATION}
+              order={AaaServerOrderEnum.SECONDARY}
+            />
+          }
 
           <Form.Item>
             <Form.Item
@@ -176,10 +177,11 @@ function SettingsForm () {
 
           {enableAccountingService && (
             <>
-              {getAaaServer(
-                AaaServerTypeEnum.ACCOUNTING,
-                AaaServerOrderEnum.PRIMARY
-              )}
+              <IpPortSecretForm 
+                title={AaaServerTitle[AaaServerOrderEnum.PRIMARY]} 
+                serverType={AaaServerTypeEnum.ACCOUNTING}
+                order={AaaServerOrderEnum.PRIMARY}
+              />
 
               <Form.Item noStyle name='enableSecondaryAcctServer'>
                 <ToggleButtonInput
@@ -188,10 +190,13 @@ function SettingsForm () {
                 />
               </Form.Item>
 
-              {enableSecondaryAcctServer && getAaaServer(
-                AaaServerTypeEnum.ACCOUNTING,
-                AaaServerOrderEnum.SECONDARY
-              )}
+              {enableSecondaryAcctServer &&
+                <IpPortSecretForm 
+                  title={AaaServerTitle[AaaServerOrderEnum.SECONDARY]} 
+                  serverType={AaaServerTypeEnum.ACCOUNTING}
+                  order={AaaServerOrderEnum.SECONDARY}
+                />
+              }
 
               <Form.Item>
                 <Form.Item
@@ -212,50 +217,6 @@ function SettingsForm () {
       </Space>
     )
   }
-}
-
-function getAaaServer (
-  serverType: AaaServerTypeEnum,
-  order: AaaServerOrderEnum
-) {
-  const title = AaaServerTitle[order]
-  return (
-    <>
-      <Subtitle level={4} children={title} />
-      <Form.Item
-        name={`${serverType}.${order}.ip`}
-        label='IP Address'
-        rules={[{
-          required: true,
-          whitespace: false
-        },{
-          validator: (_, value) => networkWifiIpRegExp(value)
-        }]}
-        children={<Input />}
-      />
-      <Form.Item
-        name={`${serverType}.${order}.port`}
-        label='Port'
-        rules={[{
-          required: true
-        },{
-          validator: (_, value) => networkWifiPortRegExp(value)
-        }]}
-        children={<Input type='number'/>}
-      />
-      <Form.Item
-        name={`${serverType}.${order}.sharedSecret`}
-        label='Shared secret'
-        rules={[{
-          required: true,
-          whitespace: false
-        },{
-          validator: (_, value) => stringContainSpace(value)
-        }]}
-        children={<Input.Password />}
-      />
-    </>
-  )
 }
 
 function ToggleButtonInput (props: {

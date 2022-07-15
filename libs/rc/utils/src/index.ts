@@ -12,3 +12,4 @@ export * from './pipes/apPipes'
 export * from './pipes/commonPipes'
 
 export * from './validator'
+export * from './IpPortSecretForm'
