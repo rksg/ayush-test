@@ -4,7 +4,7 @@ import { Form, Col, Radio, Row, Space } from 'antd'
 import TextArea                         from 'antd/lib/input/TextArea'
 
 import { StepsForm, StepsFormProps, FormValidationItem } from '@acx-ui/components'
-import { useNetworkListQuery }                           from '@acx-ui/rc/services'
+import { useNetworkListQuery, Network }                  from '@acx-ui/rc/services'
 import { NetworkTypeEnum, checkObjectNotExists }         from '@acx-ui/rc/utils'
 import { useParams }                                     from '@acx-ui/react-router-dom'
 
@@ -17,7 +17,7 @@ import type { RadioChangeEvent } from 'antd'
 
 const { useWatch } = Form
 
-export function NetworkDetailForm (props: { formRef: StepsFormProps['formRef'] }) { 
+export function NetworkDetailForm (props: { formRef: StepsFormProps['formRef'] }) {
   const type = useWatch<string>('type')
   const { setNetworkType: setSettingStepTitle } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
@@ -32,7 +32,7 @@ export function NetworkDetailForm (props: { formRef: StepsFormProps['formRef'] }
   }
   const [defaultPayload, setDefaultPayload] = useState(payload)
   const [validating, setValidating] = useState(false)
-  const [remoteQueryResult, setRemoteQueryResult] = useState([])
+  const [remoteQueryResult, setRemoteQueryResult] = useState<Network[]>([])
   const networkListQuery = useNetworkListQuery({
     params: useParams(),
     payload: defaultPayload
@@ -41,7 +41,7 @@ export function NetworkDetailForm (props: { formRef: StepsFormProps['formRef'] }
   useEffect(() => {
     const triggerValidation = !networkListQuery.isFetching && defaultPayload.searchString
     if (triggerValidation) {
-      const result: any = networkListQuery?.data?.data
+      const result: Network[] = networkListQuery?.data?.data || []
       setValidating(false)
       setRemoteQueryResult(result)
       props.formRef?.current?.validateFields(['name'])
@@ -67,7 +67,7 @@ export function NetworkDetailForm (props: { formRef: StepsFormProps['formRef'] }
     <Row gutter={20}>
       <Col span={10}>
         <StepsForm.Title>Network Details</StepsForm.Title>
-        <FormValidationItem
+        <FormValidationItem<Pick<Network, 'name'>>
           name='name'
           label='Network Name'
           rules={[{ required: true }, { min: 2 }, { max: 32 }]}

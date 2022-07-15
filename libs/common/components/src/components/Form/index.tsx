@@ -9,11 +9,11 @@ import * as UI from './styledComponents'
 import type { FormItemProps as AntFormItemProps } from 'antd/lib/form/FormItem'
 type ValidateStatus = Parameters<typeof AntForm.Item>[0]['validateStatus']
 
-interface RemoteValidation {
-  queryResult: any,
+interface RemoteValidation<T> {
+  queryResult: T[],
   message: string,
   isValidating: boolean,
-  validator: (result: any, value: string) => boolean,
+  validator: (result: T[], value: string) => boolean,
   updateQuery: (value: string) => void
 }
 
@@ -24,20 +24,20 @@ export enum ValidateStatusEnum {
   WARNING = 'warning'
 }
 
-export interface FormVItemProps extends AntFormItemProps {
+export interface FormVItemProps<T> extends AntFormItemProps {
   value?: string
   placeholder?: string,
-  remoteValidation: RemoteValidation
+  remoteValidation: RemoteValidation<T>
 }
 
-export function FormValidationItem ({
+export function FormValidationItem<T> ({
   name,
   label,
   value = '',
   placeholder,
   rules = [],
   remoteValidation
-}: FormVItemProps) {
+}: FormVItemProps<T>) {
   const [status, setStatus] = useState<ValidateStatus>('')
   const [oldValue, setOldValue] = useState<string>(value)
 
@@ -55,7 +55,8 @@ export function FormValidationItem ({
 
   const remoteValidator = (rule: RuleObject, value: string) => {
     let isValid = true
-    const { queryResult, isValidating, updateQuery, validator }: RemoteValidation = remoteValidation
+    const { queryResult, isValidating, updateQuery, validator }: RemoteValidation<T> =
+      remoteValidation
     if (value !== oldValue) {
       updateQuery(value)
       setOldValue(value)
