@@ -11,12 +11,6 @@ import { VenueClusterTooltip }                                                  
 import { VenueMarkerTooltip }                                                                     from './VenueMarkerTooltip'
 import VenueMarkerWithLabel                                                                       from './VenueMarkerWithLabel'
 
-declare global {
-  interface Window {
-    googleMap: any
-  }
-}
-
 let currentInfoWindow: google.maps.InfoWindow
 
 export const generateClusterInfoContent = (markers: google.maps.Marker[],
@@ -64,6 +58,10 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
 }
 
 export default class VenueClusterRenderer implements Renderer {
+  private map:google.maps.Map
+  constructor (map:google.maps.Map){
+    this.map=map
+  }
   public render (
     { count, position, markers }: Cluster
   ): google.maps.Marker {
@@ -117,7 +115,7 @@ export default class VenueClusterRenderer implements Renderer {
         currentInfoWindow = clusterInfoWindow
       })
 
-    google.maps.event.addListener(window.googleMap, 'click',()=>{
+    google.maps.event.addListener(this.map, 'click',()=>{
       if (typeof(currentInfoWindow) != 'undefined') { 
         currentInfoWindow.close()
       }

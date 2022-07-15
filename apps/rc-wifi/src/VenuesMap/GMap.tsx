@@ -12,12 +12,6 @@ import VenueMarkerWithLabel, { VenueMarkerOptions } from './VenueMarkerWithLabel
 
 import { NavigateProps } from './index'
 
-declare global {
-  interface Window {
-    googleMap: any
-  }
-}
-
 interface MapProps extends google.maps.MapOptions {
   style: React.CSSProperties;
   onClick?: (e: google.maps.MapMouseEvent) => void;
@@ -51,9 +45,7 @@ const GMap: React.FC<MapProps> = ({
 
   React.useEffect(() => {
     if (ref.current) {
-      const map = new window.google.maps.Map(ref.current, {})
-      window.googleMap = map
-      setMap(map)
+      setMap(new window.google.maps.Map(ref.current, {}))
     }
     return () => setMap(undefined)
   }, [ref])
@@ -171,7 +163,7 @@ const GMap: React.FC<MapProps> = ({
           setMarkerClusterer(new MarkerClusterer({
             map,
             markers,
-            renderer: new VenueClusterRenderer(),
+            renderer: new VenueClusterRenderer(map),
             algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
             onClusterClick: onClusterClick
           }))

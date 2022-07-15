@@ -54,11 +54,10 @@ describe('VenueClusterRenderer', () => {
   })
 
   it('should call render for the markercluster', ()=>{
-    const renderer = new VenueClusterRenderer()
+    const map = new google.maps.Map(document.createElement('div'))
+    const renderer = new VenueClusterRenderer(map)
     const spyRender = jest.spyOn(renderer, 'render')
     
-    const map = new google.maps.Map(document.createElement('div'))
-
     const markers: google.maps.Marker[] = [
       new google.maps.Marker(),
       new google.maps.Marker()

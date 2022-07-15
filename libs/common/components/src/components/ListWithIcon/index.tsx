@@ -2,6 +2,7 @@ import { ReactNode, FC } from 'react'
 
 import { List, Space, Popover } from 'antd'
 
+type Trigger = 'hover' | 'focus' | 'click' | 'contextMenu'
 export interface ListWithIconProps {
     data: { icon: ReactNode, title: string, popoverContent?: ReactNode }[]
     header?: ReactNode
@@ -10,6 +11,7 @@ export interface ListWithIconProps {
     isPaginate?: boolean
     showPopoverTitle?: boolean
     isSimplePagination?: boolean
+    popoverTrigger?: Trigger | Array<Trigger>
 }
 
 export const ListWithIcon: FC<ListWithIconProps> = (props) => {
@@ -19,7 +21,9 @@ export const ListWithIcon: FC<ListWithIconProps> = (props) => {
     pageSize,
     isPaginate,
     showPopoverTitle,
-    isSimplePagination } = props
+    isSimplePagination,
+    popoverTrigger
+  } = props
   return (
     <List
       header={header}
@@ -32,7 +36,7 @@ export const ListWithIcon: FC<ListWithIconProps> = (props) => {
           content={item.popoverContent}
           placement='right'
           title={showPopoverTitle && item.popoverContent ? item.title : ''}
-          trigger='click'>
+          trigger={popoverTrigger}>
           <List.Item>
             <Space>
               {item.icon}
@@ -55,5 +59,6 @@ ListWithIcon.defaultProps = {
   pageSize: 3,
   isPaginate: false,
   showPopoverTitle: false,
-  isSimplePagination: false
+  isSimplePagination: false,
+  popoverTrigger: 'hover'
 }

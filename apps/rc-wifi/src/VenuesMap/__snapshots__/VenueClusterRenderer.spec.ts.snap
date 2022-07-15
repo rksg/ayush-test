@@ -1486,6 +1486,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
     isPaginate={true}
     isSimplePagination={false}
     pageSize={5}
+    popoverTrigger="hover"
     showPopoverTitle={false}
   />
 </styledComponents__VenueClusterTooltip>
@@ -3947,6 +3948,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
     isPaginate={true}
     isSimplePagination={true}
     pageSize={5}
+    popoverTrigger="hover"
     showPopoverTitle={false}
   />
 </styledComponents__VenueClusterTooltip>
@@ -4274,6 +4276,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
     isPaginate={true}
     isSimplePagination={false}
     pageSize={5}
+    popoverTrigger="hover"
     showPopoverTitle={false}
   />
 </styledComponents__VenueClusterTooltip>
