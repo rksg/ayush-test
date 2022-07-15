@@ -575,11 +575,6 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
           <div
             class="ant-col"
           >
-            <h1
-              class="styledComponents__Title-sc-bfjsxr-1 kPZXFw"
-            >
-              Dynamic Pre-Shared Key (DPSK)
-            </h1>
             <div
               class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
             >
