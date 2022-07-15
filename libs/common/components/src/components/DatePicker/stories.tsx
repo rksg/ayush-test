@@ -1,9 +1,7 @@
 import { storiesOf } from '@storybook/react'
 import moment        from 'moment'
 
-import { DateRange } from '@acx-ui/analytics/utils'
-
-import { DatePicker } from '.'
+import { DatePicker,DateRange } from '.'
 
 storiesOf('DatePicker', module).add('Basic', () => (
   <div style={{
