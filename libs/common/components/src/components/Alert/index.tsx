@@ -1,20 +1,12 @@
-import { AlertProps, Row } from 'antd'
-
 import { InformationSolid } from '@acx-ui/icons'
 
 import { AlertStyle } from './styledComponents'
 
-export const Alert = (props: AlertProps) => {
-  const alertProps = { ...props }
-  if (props.type === 'info') {
-    alertProps.message = <Row>
-      <div className='anticon ant-alert-icon'>
-        <InformationSolid />
-      </div>
-      <span>
-        {props.message}
-      </span>
-    </Row>
-  }
-  return (<AlertStyle {...alertProps} />)
-}
+import type { AlertProps } from 'antd'
+
+export type { AlertProps }
+
+export const Alert = (props: AlertProps) => <AlertStyle
+  {...props}
+  icon={props.showIcon && props.type === 'info' ? <InformationSolid /> : undefined}
+/>
