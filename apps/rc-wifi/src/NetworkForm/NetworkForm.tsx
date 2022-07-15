@@ -18,6 +18,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { PortalTypeForm }    from './CaptivePortal/PortalTypeForm'
 import { NetworkTypeTitle }  from './contentsMap'
 import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext    from './NetworkFormContext'
@@ -123,6 +124,7 @@ export function NetworkForm () {
           {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
           {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
           {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
+          {state.type === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm />}
         </StepsForm.StepForm>
 
         <StepsForm.StepForm

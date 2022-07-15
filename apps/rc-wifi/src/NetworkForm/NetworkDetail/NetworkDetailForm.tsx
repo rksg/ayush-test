@@ -64,7 +64,7 @@ export function NetworkDetailForm () {
                 </RadioDescription>
               </Radio>
 
-              <Radio value={NetworkTypeEnum.CAPTIVEPORTAL} disabled>
+              <Radio value={NetworkTypeEnum.CAPTIVEPORTAL}>
                 {NetworkTypeLabel.guest}
                 <RadioDescription>
                   {NetworkTypeDescription.guest}

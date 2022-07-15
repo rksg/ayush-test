@@ -246,6 +246,24 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
   return saveData
 }
 
+const parseCaptivePortalDataToSave = (data: NetworkSaveData) => {
+  let saveData = {}
+
+  saveData = {
+    ...saveData,
+    enableDhcp: false,
+    // TODO:
+    wlan: {
+      advancedCustomization: OpenWlanAdvancedCustomization,
+      enable: true,
+      vlanId: 1
+    },
+    guestPortal:{}
+  }
+
+  return saveData
+}
+
 const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {}
 
@@ -289,7 +307,8 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
   const networkSaveDataParser = {
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data),
     [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data),
-    [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data)
+    [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data),
+    [NetworkTypeEnum.CAPTIVEPORTAL]: parseCaptivePortalDataToSave(data), // TODO: Remove
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }
@@ -310,7 +329,7 @@ export const transformNetworkType = (value: any) => {
       displayValue = 'Enterprise AAA (802.1X)'
       break
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      //TODO
+      displayValue = 'Captive Portal - '
       break
   }
   return displayValue

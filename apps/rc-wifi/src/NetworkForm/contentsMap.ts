@@ -1,4 +1,4 @@
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 /* eslint-disable max-len */
 export const NetworkTypeDescription: Record<NetworkTypeEnum, string> = {
@@ -21,5 +21,24 @@ export const NetworkTypeLabel: Record<NetworkTypeEnum, string> = {
 export const NetworkTypeTitle: Partial<Record<NetworkTypeEnum, string>> = {
   [NetworkTypeEnum.AAA]: 'AAA Settings',
   [NetworkTypeEnum.OPEN]: 'Settings',
-  [NetworkTypeEnum.DPSK]: 'DPSK Settings'
+  [NetworkTypeEnum.DPSK]: 'DPSK Settings',
+  [NetworkTypeEnum.CAPTIVEPORTAL]: 'Portal Type'
+}
+
+export const GuestNetworkTypeLabel: Record<GuestNetworkTypeEnum, string> = {
+  [GuestNetworkTypeEnum.ClickThrough]: 'Click-Through',
+  [GuestNetworkTypeEnum.SelfSignIn]: 'Self Sign In',
+  [GuestNetworkTypeEnum.Cloudpath]: 'Cloudpath Captive Portal',
+  [GuestNetworkTypeEnum.HostApproval]: 'Host Approval',
+  [GuestNetworkTypeEnum.GuestPass]: 'Guest Pass',
+  [GuestNetworkTypeEnum.WISPr]: '3rd Party Captive Portal (WISPr)',
+}
+
+export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> = {
+  [GuestNetworkTypeEnum.ClickThrough]: 'Users just need to accept Terms and Conditions in order to access the network',
+  [GuestNetworkTypeEnum.SelfSignIn]: 'Users can sign in with their social media account or register their details in the portal and get personal password',
+  [GuestNetworkTypeEnum.Cloudpath]: 'Users connect through an enhanced captive portal experience with Cloudpath',
+  [GuestNetworkTypeEnum.HostApproval]: 'Users register their details in the portal including their host email - the host needs to approve the request',
+  [GuestNetworkTypeEnum.GuestPass]: 'Users sign in with personal password which they need to get in advance from the network administration staff',
+  [GuestNetworkTypeEnum.WISPr]: 'Users connect through a 3rd party captive portal, authenticated by a AAA server',
 }
