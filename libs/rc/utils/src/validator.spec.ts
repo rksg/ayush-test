@@ -28,11 +28,11 @@ describe('validator', () => {
   describe('checkObjectNotExists', () => {
     const mockdata = [{ name: 'test01' }]
     it('Should return false when object exists', async () => {
-      await expect(checkObjectNotExists(mockdata, 'test01')).toBeFalsy()
+      expect(checkObjectNotExists(mockdata, 'test01')).toBeFalsy()
     })
     it('Should return true when object does not exists', async () => {
-      await expect(checkObjectNotExists(mockdata, 'test01', 'pname')).toBeTruthy()
-      await expect(checkObjectNotExists(mockdata, 'test02')).toBeTruthy()
+      expect(checkObjectNotExists(mockdata, 'test01', 'pname')).toBeTruthy()
+      expect(checkObjectNotExists(mockdata, 'test02')).toBeTruthy()
     })
   })
 })
