@@ -9,6 +9,15 @@ export const Wrapper = styled.div<WrapperProps>`
 
 .ant-picker{
   background: var(--acx-primary-white);
+  width: 85%;
+}
+.acx-range-picker > div:first-of-type{
+  margin-left: 22px
+}
+.acx-range-picker > .ant-picker-suffix{
+  position: absolute;
+  left: 3px;
+  width: 18px;
 }
 .ant-picker:hover,
 .ant-picker-focused  {
@@ -24,6 +33,7 @@ export const Wrapper = styled.div<WrapperProps>`
 }   
 .ant-picker-range .ant-picker-active-bar {
     background: var(--acx-accents-blue-50);
+    margin-left: 33px
     }
 .acx-range-picker-popup {
   font-size: 12px;
