@@ -92,7 +92,6 @@ export function NetworkForm () {
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='details'
           title='Network Details'
-          validateTrigger='onBlur'
           onFinish={async (data) => {
             const detailsSaveData = transferDetailToSave(data)
             updateData(data)
@@ -108,7 +107,6 @@ export function NetworkForm () {
         <StepsForm.StepForm
           name='Settings'
           title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
-          validateTrigger='onBlur'
           onFinish={async (data) => {
             data = {
               ...data,
