@@ -2,8 +2,9 @@
 
 exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip 1`] = `
 <styledComponents__VenueClusterTooltip>
-  <ListWithIcon
-    data={
+  <List
+    bordered={true}
+    dataSource={
       Array [
         Object {
           "icon": <AntdIcon
@@ -1483,19 +1484,24 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
         </span>
       </div>
     }
-    isPaginate={true}
-    isSimplePagination={false}
-    pageSize={5}
-    popoverTrigger="hover"
-    showPopoverTitle={false}
+    itemLayout="vertical"
+    pagination={
+      Object {
+        "pageSize": 5,
+        "simple": false,
+        "size": "small",
+      }
+    }
+    renderItem={[Function]}
   />
 </styledComponents__VenueClusterTooltip>
 `;
 
 exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip for more than 20 venues 1`] = `
 <styledComponents__VenueClusterTooltip>
-  <ListWithIcon
-    data={
+  <List
+    bordered={true}
+    dataSource={
       Array [
         Object {
           "icon": <AntdIcon
@@ -3945,19 +3951,24 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
         </span>
       </div>
     }
-    isPaginate={true}
-    isSimplePagination={true}
-    pageSize={5}
-    popoverTrigger="hover"
-    showPopoverTitle={false}
+    itemLayout="vertical"
+    pagination={
+      Object {
+        "pageSize": 5,
+        "simple": true,
+        "size": "small",
+      }
+    }
+    renderItem={[Function]}
   />
 </styledComponents__VenueClusterTooltip>
 `;
 
 exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip without pagination 1`] = `
 <styledComponents__VenueClusterTooltip>
-  <ListWithIcon
-    data={
+  <List
+    bordered={true}
+    dataSource={
       Array [
         Object {
           "icon": <AntdIcon
@@ -4273,11 +4284,8 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
         </span>
       </div>
     }
-    isPaginate={true}
-    isSimplePagination={false}
-    pageSize={5}
-    popoverTrigger="hover"
-    showPopoverTitle={false}
+    itemLayout="vertical"
+    renderItem={[Function]}
   />
 </styledComponents__VenueClusterTooltip>
 `;

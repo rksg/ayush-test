@@ -1,10 +1,13 @@
+import { ReactNode } from 'react'
+
 import Icon, {
   CloseOutlined
 } from '@ant-design/icons'
-import { Cluster,Renderer } from '@googlemaps/markerclusterer'
-import { createRoot }       from 'react-dom/client'
+import { Cluster,Renderer }     from '@googlemaps/markerclusterer'
+import { List, Space, Popover } from 'antd'
+import { createRoot }           from 'react-dom/client'
 
-import { cssStr, ListWithIconProps, ListWithIcon } from '@acx-ui/components'
+import { cssStr } from '@acx-ui/components'
 
 import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon, getVenueStatusSeverity } from './helper'
 import { VenueClusterTooltip }                                                                    from './styledComponents'
@@ -15,7 +18,11 @@ let currentInfoWindow: google.maps.InfoWindow
 
 export const generateClusterInfoContent = (markers: google.maps.Marker[],
   clusterInfoWindow: google.maps.InfoWindow ) => {
-  let data: ListWithIconProps['data']=[]
+  let data: { 
+    icon: ReactNode, 
+    title: string, 
+    popoverContent?: ReactNode
+   }[]=[]
 
   markers.sort((a,b)=>{
     const { venueData: dataA } = a as VenueMarkerWithLabel
@@ -46,15 +53,36 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
       <CloseOutlined/>
     </span></div>
     
-  return(<VenueClusterTooltip>
-    <ListWithIcon 
-      data={data}
-      isPaginate={true}
-      pageSize={pageSize}
-      header={header}
-      isSimplePagination={data.length > 20}
-    />
-  </VenueClusterTooltip>)
+  return(
+    <VenueClusterTooltip>
+      <List 
+        header={header}
+        itemLayout='vertical'
+        dataSource={data}
+        bordered
+        pagination={data.length > pageSize ? {
+          pageSize,
+          size: 'small',
+          simple: data.length > 20
+        } : undefined}
+        renderItem={item => (
+          <Popover
+            content={item.popoverContent}
+            placement='right'
+            trigger='hover'
+          >
+            <List.Item>
+              <Space>
+                {item.icon}
+                <div className='ListWithIcon-item-title'>
+                  {item.title}
+                </div>
+              </Space>
+            </List.Item>
+          </Popover>
+        )}
+      />
+    </VenueClusterTooltip>)
 }
 
 export default class VenueClusterRenderer implements Renderer {
