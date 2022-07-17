@@ -16,13 +16,32 @@ import VenueMarkerWithLabel                                                     
 
 let currentInfoWindow: google.maps.InfoWindow
 
+export interface VenueClusterTooltipData { 
+  icon: ReactNode, 
+  title: string, 
+  popoverContent: ReactNode
+ }
+
+export const renderItemForList = (item:VenueClusterTooltipData)=>(
+  <Popover
+    content={item.popoverContent}
+    placement='right'
+    trigger='hover'
+  >
+    <List.Item>
+      <Space>
+        {item.icon}
+        <div className='ListWithIcon-item-title'>
+          {item.title}
+        </div>
+      </Space>
+    </List.Item>
+  </Popover>
+)
+
 export const generateClusterInfoContent = (markers: google.maps.Marker[],
   clusterInfoWindow: google.maps.InfoWindow ) => {
-  let data: { 
-    icon: ReactNode, 
-    title: string, 
-    popoverContent?: ReactNode
-   }[]=[]
+  let data: VenueClusterTooltipData[]=[]
 
   markers.sort((a,b)=>{
     const { venueData: dataA } = a as VenueMarkerWithLabel
@@ -65,22 +84,7 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
           size: 'small',
           simple: data.length > 20
         } : undefined}
-        renderItem={item => (
-          <Popover
-            content={item.popoverContent}
-            placement='right'
-            trigger='hover'
-          >
-            <List.Item>
-              <Space>
-                {item.icon}
-                <div className='ListWithIcon-item-title'>
-                  {item.title}
-                </div>
-              </Space>
-            </List.Item>
-          </Popover>
-        )}
+        renderItem={renderItemForList}
       />
     </VenueClusterTooltip>)
 }

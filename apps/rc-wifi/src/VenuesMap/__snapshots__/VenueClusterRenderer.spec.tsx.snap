@@ -1,5 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`VenueClusterRenderer should match with snapshot for renderItemForList 1`] = `
+<Popover
+  content={
+    <h2>
+      Popover content
+    </h2>
+  }
+  mouseEnterDelay={0.1}
+  mouseLeaveDelay={0.1}
+  overlayStyle={Object {}}
+  placement="right"
+  trigger="hover"
+>
+  <ForwardRef(InternalItem)>
+    <Space>
+      <h3>
+        Some React node instead of icon
+      </h3>
+      <div
+        className="ListWithIcon-item-title"
+      >
+        Some Title
+      </div>
+    </Space>
+  </ForwardRef(InternalItem)>
+</Popover>
+`;
+
 exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip 1`] = `
 <styledComponents__VenueClusterTooltip>
   <List

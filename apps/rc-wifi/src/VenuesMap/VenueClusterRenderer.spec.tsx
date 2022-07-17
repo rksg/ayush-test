@@ -3,8 +3,8 @@ import { Cluster, MarkerClusterer }  from '@googlemaps/markerclusterer'
 
 import { ApVenueStatusEnum } from '@acx-ui/rc/services'
 
-import VenueClusterRenderer, { generateClusterInfoContent } from './VenueClusterRenderer'
-import VenueMarkerWithLabel                                 from './VenueMarkerWithLabel'
+import VenueClusterRenderer, { generateClusterInfoContent, renderItemForList, VenueClusterTooltipData } from './VenueClusterRenderer'
+import VenueMarkerWithLabel                                                                             from './VenueMarkerWithLabel'
 
 const series=[
   {
@@ -134,6 +134,14 @@ describe('VenueClusterRenderer', () => {
     const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow)
     expect(infoDiv).toMatchSnapshot()
     expect(markerSpy).toBeCalled()
+  })
+  it('should match with snapshot for renderItemForList',()=>{
+    const item: VenueClusterTooltipData = {
+      icon: <h3>Some React node instead of icon</h3>,
+      title: 'Some Title',
+      popoverContent: <h2>Popover content</h2>
+    }
+    expect(renderItemForList(item)).toMatchSnapshot()
   })
 })
 
