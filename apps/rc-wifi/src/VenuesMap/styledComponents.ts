@@ -14,7 +14,7 @@ import { ReactComponent as VenueMarkerRed }        from '../assets/map/VenueMark
 export const FilterCheckbox = styled(Checkbox)`
   margin-left: 0px !important; // override antd default margin
 `
-const venueMarkerIconStyle =`
+const venueMarkerIconStyle = `
   height: 20px;
   width: 32px;
   vertical-align: text-bottom;
@@ -67,8 +67,8 @@ export const VenueInfoMarkerOrangeIcon = styled(VenueInfoMarkerOrange)`
 export const VenueInfoMarkerRedIcon = styled(VenueInfoMarkerRed)`
   ${venueMarkerIconStyle}`
 
-interface WrapperProps{
-  needPadding?:boolean
+interface WrapperProps {
+  needPadding?: boolean
 }
 export const Wrapper = styled.div<WrapperProps>`
   height: 140px;
@@ -119,8 +119,8 @@ export const VenueClusterTooltip = styled.div`
   }
 
   .ListWithIcon-item-title{
-    white-space: nowrap; 
-    width: 145px; 
+    white-space: nowrap;
+    width: 145px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -137,7 +137,7 @@ export const VenueClusterTooltip = styled.div`
     margin: 0;
     padding: 5px;
     list-style: none;
-}
+  }
 
   .ant-list-item {
     padding: 6px;
@@ -166,13 +166,13 @@ export const VenueClusterTooltip = styled.div`
   .ant-list-split .ant-list-item:last-child {
     border-bottom: none;
     margin-bottom: 5px;
-}
+  }
 
   .ant-list-item:hover {
     background-color: var(--acx-neutrals-25);
   }
 
-.ant-list-pagination {
+  .ant-list-pagination {
     margin-top: 12px;
     text-align: center;
   }
@@ -195,7 +195,7 @@ export const VenueClusterTooltip = styled.div`
     font-weight: var(--acx-headline-5-font-weight-bold);
     background-color: var(--acx-accents-blue-50) !important;
     border: none;
-}
+  }
 
   .ant-pagination-prev button, .ant-pagination-next button {
     color: var(--acx-primary-black);
@@ -205,5 +205,5 @@ export const VenueClusterTooltip = styled.div`
 
   .ant-list-bordered .ant-list-pagination {
     margin: 0px 24px 10px 24px;
-}
+  }
 `
