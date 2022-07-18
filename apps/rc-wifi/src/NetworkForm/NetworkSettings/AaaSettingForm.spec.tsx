@@ -5,42 +5,17 @@ import { CommonUrlsInfo }                                                   from
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { NetworkForm } from '../NetworkForm'
-
-const venuesResponse = {
-  fields: [
-    'country','city','aps','latitude','switches','description',
-    'networks','switchClients','vlan','radios','name','scheduling',
-    'id','aggregatedApStatus','mesh','activated','longitude','status'
-  ],
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      id: '6cf550cdb67641d798d804793aaa82db',name: 'My-Venue',
-      description: 'My-Venue',city: 'New York',country: 'United States',
-      latitude: '40.7690084',longitude: '-73.9431541',switches: 2,
-      status: '1_InSetupPhase',mesh: { enabled: false }
-    },{
-      id: 'c6ae1e4fb6144d27886eb7693ae895c8',name: 'TDC_Venue',
-      description: 'Taipei',city: 'Zhongzheng District, Taipei City',
-      country: 'Taiwan',latitude: '25.0346703',longitude: '121.5218293',
-      networks: { count: 1,names: ['JK-Network'],vlans: [1] },
-      aggregatedApStatus: { '2_00_Operational': 1 },
-      switchClients: 1,switches: 1,status: '2_Operational',
-      mesh: { enabled: false }
-    }
-  ]
-}
-
-const successResponse = { requestId: 'request-id' }
+import { NetworkForm }                                       from '../NetworkForm'
+import { networksResponse, venuesResponse, successResponse } from '../NetworkForm.spec'
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText('Network Name')
   fireEvent.change(insertInput, { target: { value: networkName } })
+  fireEvent.blur(insertInput)
+  const validating = await screen.findByRole('img', { name: 'loading' })
+  await waitForElementToBeRemoved(validating)
 
-  const button = screen.getAllByRole('radio')
-  fireEvent.click(button[2])
+  fireEvent.click(screen.getByRole('radio', { name: /802.1X standard/ }))
   fireEvent.click(screen.getByText('Next'))
 
   await screen.findByRole('heading', { level: 3, name: 'AAA Settings' })
@@ -62,22 +37,16 @@ async function fillInAfterSettings (checkSummary: Function) {
 describe('NetworkForm', () => {
   beforeEach(() => {
     mockServer.use(
+      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+        (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
-        (_, res, ctx) => {
-          return res(
-            ctx.status(200),
-            ctx.json(venuesResponse)
-          )
-        }),
+        (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => {
-          return res(
-            ctx.status(200),
-            ctx.json(successResponse)
-          )
-        }),
-      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) => res(ctx.json([]))),
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) => res(ctx.json([])))
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(CommonUrlsInfo.getCloudpathList.url,
+        (_, res, ctx) => res(ctx.json([])))
     )
   })
 
@@ -138,5 +107,5 @@ describe('NetworkForm', () => {
       expect(screen.getByText('222.222.222.222:2222')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
     })
-  }, 7000)
+  })
 })

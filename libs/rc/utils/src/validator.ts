@@ -24,10 +24,14 @@ export function stringContainSpace (value: string) {
   return Promise.resolve()
 }
 
-export function checkObjectNotExists<T = string> (
-  list: { [key: string]: T }[],
-  value: T,
-  key: string = 'name'
+export function checkObjectNotExists (
+  list: { [key: string]: string }[],
+  value: string,
+  entityName: string,
+  key = 'name'
 ) {
-  return list.filter(l => l[key] === value).length === 0
+  if (list.filter(l => l[key] === value).length !== 0) {
+    return Promise.reject(`${entityName} with that ${key} already exists`)
+  }
+  return Promise.resolve()
 }

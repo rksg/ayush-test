@@ -255,47 +255,41 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             Network Details
                           </h3>
                           <div
-                            class="styledComponents__Wrapper-sc-h4m974-0 hpAcxj"
+                            class="ant-row ant-form-item"
                           >
                             <div
-                              class="ant-row ant-form-item"
+                              class="ant-col ant-form-item-label"
+                            >
+                              <label
+                                class="ant-form-item-required"
+                                for="details_name"
+                                title="Network Name"
+                              >
+                                Network Name
+                              </label>
+                            </div>
+                            <div
+                              class="ant-col ant-form-item-control"
                             >
                               <div
-                                class="ant-col ant-form-item-label"
-                              >
-                                <label
-                                  class="ant-form-item-required"
-                                  for="details_name"
-                                  title="Network Name"
-                                >
-                                  Network Name
-                                </label>
-                              </div>
-                              <div
-                                class="ant-col ant-form-item-control"
+                                class="ant-form-item-control-input"
                               >
                                 <div
-                                  class="ant-form-item-control-input"
+                                  class="ant-form-item-control-input-content"
                                 >
-                                  <div
-                                    class="ant-form-item-control-input-content"
+                                  <span
+                                    class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
                                   >
+                                    <input
+                                      class="ant-input"
+                                      id="details_name"
+                                      type="text"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-input-affix-wrapper"
-                                    >
-                                      <input
-                                        class="ant-input"
-                                        id="details_name"
-                                        type="text"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-input-suffix"
-                                      >
-                                        <i />
-                                      </span>
-                                    </span>
-                                  </div>
+                                      class="ant-input-suffix"
+                                    />
+                                  </span>
                                 </div>
                               </div>
                             </div>

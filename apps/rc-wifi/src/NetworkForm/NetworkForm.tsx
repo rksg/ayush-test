@@ -100,7 +100,7 @@ export function NetworkForm () {
           }}
         >
           <NetworkFormContext.Provider value={{ setNetworkType }}>
-            <NetworkDetailForm formRef={formRef} />
+            <NetworkDetailForm />
           </NetworkFormContext.Provider>
         </StepsForm.StepForm>
 

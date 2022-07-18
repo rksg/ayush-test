@@ -134,6 +134,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 })
 export const {
   useNetworkListQuery,
+  useLazyNetworkListQuery,
   useCreateNetworkMutation,
   useGetNetworkQuery,
   useNetworkDetailHeaderQuery,
