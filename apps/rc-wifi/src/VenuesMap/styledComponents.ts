@@ -77,7 +77,6 @@ export const Wrapper = styled.div<WrapperProps>`
   margin-bottom: ${props => !props.needPadding ? '-25px' : undefined};
 `
 export const CellWrapper = styled(Space)`
-  direction={props => props.direction ? props.direction : 'horizontal'}
   justify-content: left;
   width: 100%;
   height: 15px;

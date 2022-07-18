@@ -128,7 +128,7 @@ export default class VenueClusterRenderer implements Renderer {
 
     google.maps.event.addListener(clusterMarker, 'click',
       ()=>{
-        const content=generateClusterInfoContent(markers || [new google.maps.Marker({})],
+        const content=generateClusterInfoContent([...markers || [new google.maps.Marker({})]],
           clusterInfoWindow)
 
         const infoDiv = document.createElement('div')
