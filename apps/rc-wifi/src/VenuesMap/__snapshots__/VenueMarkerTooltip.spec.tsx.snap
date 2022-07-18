@@ -3,13 +3,13 @@
 exports[`Venue Marker Tooltip should not render any data 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-mzsngu-11 crgofk"
+    class="styledComponents__Wrapper-sc-mzsngu-12 hTgFYv"
   >
     <div
-      class="styledComponents__InfoWindowHeader-sc-mzsngu-13 kIrYde"
+      class="styledComponents__InfoWindowHeader-sc-mzsngu-14 iHfRyx"
     >
       <a
-        class="styledComponents__Title-sc-mzsngu-14 ddOpBj"
+        class="styledComponents__Title-sc-mzsngu-15 bOdnrW"
       >
         Aparna-Venue
       </a>
@@ -94,7 +94,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 dwFAVF"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-13 cJuYto"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -107,7 +107,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 dwFAVF"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-13 cJuYto"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -130,7 +130,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 dwFAVF"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-13 cJuYto"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -143,7 +143,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 dwFAVF"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-13 cJuYto"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -172,13 +172,13 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
 exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-mzsngu-11 fKKbMH"
+    class="styledComponents__Wrapper-sc-mzsngu-12 cdSxzM"
   >
     <div
-      class="styledComponents__InfoWindowHeader-sc-mzsngu-13 kIrYde"
+      class="styledComponents__InfoWindowHeader-sc-mzsngu-14 iHfRyx"
     >
       <a
-        class="styledComponents__Title-sc-mzsngu-14 ddOpBj"
+        class="styledComponents__Title-sc-mzsngu-15 bOdnrW"
       >
         Aparna-Venue
       </a>
@@ -263,7 +263,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 dwFAVF"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-13 cJuYto"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -276,7 +276,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 dwFAVF"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-13 cJuYto"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -299,7 +299,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 dwFAVF"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-13 cJuYto"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -312,7 +312,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-12 dwFAVF"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-mzsngu-13 cJuYto"
                                 >
                                   <div
                                     class="ant-space-item"

@@ -1508,7 +1508,35 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           }
         >
-          <ForwardRef(CloseOutlined) />
+          <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1881772287,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__CloseIcon-sc-mzsngu-11",
+                  "isStatic": false,
+                  "rules": Array [
+                    "font-size:large;margin-top:3px;",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__CloseIcon-sc-mzsngu-11",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />
         </span>
       </div>
     }
@@ -3975,7 +4003,35 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           }
         >
-          <ForwardRef(CloseOutlined) />
+          <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1881772287,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__CloseIcon-sc-mzsngu-11",
+                  "isStatic": false,
+                  "rules": Array [
+                    "font-size:large;margin-top:3px;",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__CloseIcon-sc-mzsngu-11",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />
         </span>
       </div>
     }
@@ -4308,7 +4364,35 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           }
         >
-          <ForwardRef(CloseOutlined) />
+          <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1881772287,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__CloseIcon-sc-mzsngu-11",
+                  "isStatic": false,
+                  "rules": Array [
+                    "font-size:large;margin-top:3px;",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__CloseIcon-sc-mzsngu-11",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />
         </span>
       </div>
     }

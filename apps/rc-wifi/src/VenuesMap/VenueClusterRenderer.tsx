@@ -1,8 +1,6 @@
 import { ReactNode } from 'react'
 
-import Icon, {
-  CloseOutlined
-} from '@ant-design/icons'
+import Icon                     from '@ant-design/icons'
 import { Cluster,Renderer }     from '@googlemaps/markerclusterer'
 import { List, Space, Popover } from 'antd'
 import { createRoot }           from 'react-dom/client'
@@ -10,7 +8,7 @@ import { createRoot }           from 'react-dom/client'
 import { cssStr } from '@acx-ui/components'
 
 import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon, getVenueStatusSeverity } from './helper'
-import { VenueClusterTooltip }                                                                    from './styledComponents'
+import { VenueClusterTooltip, CloseIcon }                                                         from './styledComponents'
 import { VenueMarkerTooltip }                                                                     from './VenueMarkerTooltip'
 import VenueMarkerWithLabel                                                                       from './VenueMarkerWithLabel'
 
@@ -69,7 +67,7 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
       onClick={() => {
         clusterInfoWindow.close()
       }}>
-      <CloseOutlined/>
+      <Icon component={CloseIcon}/>
     </span>
   </div>
 
