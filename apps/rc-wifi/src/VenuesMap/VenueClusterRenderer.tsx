@@ -16,13 +16,13 @@ import VenueMarkerWithLabel                                                     
 
 let currentInfoWindow: google.maps.InfoWindow
 
-export interface VenueClusterTooltipData { 
-  icon: ReactNode, 
-  title: string, 
+export interface VenueClusterTooltipData {
+  icon: ReactNode,
+  title: string,
   popoverContent: ReactNode
  }
 
-export const renderItemForList = (item:VenueClusterTooltipData)=>(
+export const renderItemForList = (item:VenueClusterTooltipData) => (
   <Popover
     content={item.popoverContent}
     placement='right'
@@ -41,13 +41,13 @@ export const renderItemForList = (item:VenueClusterTooltipData)=>(
 
 export const generateClusterInfoContent = (markers: google.maps.Marker[],
   clusterInfoWindow: google.maps.InfoWindow ) => {
-  let data: VenueClusterTooltipData[]=[]
+  let data: VenueClusterTooltipData[] = []
 
-  markers.sort((a,b)=>{
+  markers.sort((a,b) => {
     const { venueData: dataA } = a as VenueMarkerWithLabel
     const { venueData: dataB } = b as VenueMarkerWithLabel
     return getVenueStatusSeverity(dataA.status as string)
-    - getVenueStatusSeverity(dataB.status as string)
+      - getVenueStatusSeverity(dataB.status as string)
   })
 
   data = markers.map((marker)=>{
@@ -55,26 +55,27 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
     return {
       icon: <Icon component={getVenueInfoMarkerIcon(venueData.status as string)}/>,
       title: venueData.name as string,
-      popoverContent: <VenueMarkerTooltip 
+      popoverContent: <VenueMarkerTooltip
         venue={(marker as VenueMarkerWithLabel).venueData}
         needPadding={false}
       />
     }
   })
 
-  const pageSize=5
+  const pageSize = 5
   const header = <div className='venueInfoHeader'>
-    <span>{markers?.length} Venues</span> 
+    <span>{markers?.length} Venues</span>
     <span style={{ float: 'right', cursor: 'pointer' }}
-      onClick={()=>{
+      onClick={() => {
         clusterInfoWindow.close()
       }}>
       <CloseOutlined/>
-    </span></div>
-    
+    </span>
+  </div>
+
   return(
     <VenueClusterTooltip>
-      <List 
+      <List
         header={header}
         itemLayout='vertical'
         dataSource={data}
@@ -91,8 +92,8 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
 
 export default class VenueClusterRenderer implements Renderer {
   private map:google.maps.Map
-  constructor (map:google.maps.Map){
-    this.map=map
+  constructor (map:google.maps.Map) {
+    this.map = map
   }
   public render (
     { count, position, markers }: Cluster
@@ -126,29 +127,28 @@ export default class VenueClusterRenderer implements Renderer {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
     })
 
-    google.maps.event.addListener(clusterMarker, 'click',
-      ()=>{
-        const content=generateClusterInfoContent(markers || [new google.maps.Marker({})],
-          clusterInfoWindow)
+    google.maps.event.addListener(clusterMarker, 'click', () => {
+      const content = generateClusterInfoContent(markers || [new google.maps.Marker({})],
+        clusterInfoWindow)
 
-        const infoDiv = document.createElement('div')
-        createRoot(infoDiv).render(content)
-  
-        clusterInfoWindow.setContent(infoDiv)
+      const infoDiv = document.createElement('div')
+      createRoot(infoDiv).render(content)
 
-        if (typeof(currentInfoWindow) != 'undefined') { 
-          currentInfoWindow.close()
-        } 
-  
-        clusterInfoWindow.open({
-          shouldFocus: true,
-          anchor: clusterMarker
-        })
-        currentInfoWindow = clusterInfoWindow
+      clusterInfoWindow.setContent(infoDiv)
+
+      if (typeof(currentInfoWindow) != 'undefined') {
+        currentInfoWindow.close()
+      }
+
+      clusterInfoWindow.open({
+        shouldFocus: true,
+        anchor: clusterMarker
       })
+      currentInfoWindow = clusterInfoWindow
+    })
 
-    google.maps.event.addListener(this.map, 'click',()=>{
-      if (typeof(currentInfoWindow) != 'undefined') { 
+    google.maps.event.addListener(this.map, 'click', () => {
+      if (typeof(currentInfoWindow) != 'undefined') {
         currentInfoWindow.close()
       }
     })

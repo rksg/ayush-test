@@ -46,7 +46,7 @@ export function VenueMarkerTooltip (
     switchClientsCount
   } = props.venue
 
-  const { onNavigate, needPadding=true } = props
+  const { onNavigate, needPadding = true } = props
   const deviceConnectionStatusColors = getDeviceConnectionStatusColors()
   const commonProps = {
     animation: false,
