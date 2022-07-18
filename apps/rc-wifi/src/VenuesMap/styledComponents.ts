@@ -69,7 +69,7 @@ export const VenueInfoMarkerRedIcon = styled(VenueInfoMarkerRed)`
 
 export const CloseIcon = styled(CloseIconSvg)`
   font-size: large;
-  margin-top: 3px;
+  margin-top: 2px;
 `
 
 interface WrapperProps {
