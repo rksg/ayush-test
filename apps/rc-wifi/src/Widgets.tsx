@@ -14,7 +14,8 @@ const widgetsMap = {
   map: () => <Map />,
   venues: () => <Venues />,
   devices: () => <Devices />,
-  clients: () => <Clients />
+  clients: () => <Clients />,
+  none: null
 }
 
 function WifiWidgets ({ name }: { name: keyof typeof widgetsMap }) {
@@ -22,8 +23,13 @@ function WifiWidgets ({ name }: { name: keyof typeof widgetsMap }) {
   const Widget = widgetsMap[name]
 
   return <Provider>
-    {Widget ? <Widget /> : <Card>{ treatment && name }
-      { !treatment && 'Coming soon...' }</Card>}
+    { Widget
+      ? <Widget />
+      : <Card>
+        { treatment && name }
+        { !treatment && 'Coming soon...' }
+      </Card>
+    }
   </Provider>
 }
 
