@@ -26,7 +26,7 @@ export const legendOptions = () => ({
     fontFamily: cssStr('--acx-neutral-brand-font'),
     fontSize: cssNumber('--acx-body-5-font-size'),
     lineHeight: cssNumber('--acx-body-5-line-height'),
-    fontWeight: 400
+    fontWeight: cssNumber('--acx-body-font-weight')
   }
 })
 
@@ -54,7 +54,7 @@ export const axisLabelOptions = () => ({
   color: cssStr('--acx-neutrals-50'),
   fontFamily: cssStr('--acx-neutral-brand-font'),
   fontSize: cssNumber('--acx-body-5-font-size'),
-  fontWeight: 400
+  fontWeight: cssNumber('--acx-body-font-weight')
 })
 
 export const dateAxisFormatter = () => ({
@@ -70,7 +70,7 @@ export const tooltipOptions = () => ({
     fontFamily: cssStr('--acx-neutral-brand-font'),
     fontSize: cssNumber('--acx-body-5-font-size'),
     lineHeight: cssNumber('--acx-body-5-line-height'),
-    fontWeight: 400
+    fontWeight: cssNumber('--acx-body-font-weight')
   },
   backgroundColor: 'rgba(255, 255, 255, 0.9)',
   borderRadius: 2,

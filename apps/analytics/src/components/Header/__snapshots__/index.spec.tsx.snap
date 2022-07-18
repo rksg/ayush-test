@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Analytics dumb header should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+  >
+    <div
+      class="ant-page-header ant-page-header-ghost"
+    >
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography"
+            >
+              title
+            </h1>
+          </span>
+          <span
+            class="ant-page-header-heading-sub-title"
+          >
+            <span
+              title="1"
+            >
+              1: 1
+              <div
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1neyjyv-0 SjZWI"
+                role="separator"
+              />
+            </span>
+            <span
+              title="1, 2"
+            >
+              12: 1 (2)
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+   
+</DocumentFragment>
+`;

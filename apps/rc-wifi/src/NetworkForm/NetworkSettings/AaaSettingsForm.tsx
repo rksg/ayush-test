@@ -12,13 +12,12 @@ import {
   Row,
   Select,
   Switch,
-  Tooltip,
-  Typography
+  Tooltip
 } from 'antd'
 
-import { StepsForm, Button }                        from '@acx-ui/components'
+import { StepsForm, Button, Subtitle }              from '@acx-ui/components'
 import { useGetAllUserSettingsQuery, UserSettings } from '@acx-ui/rc/services'
-import { 
+import {
   Constants,
   WlanSecurityEnum,
   getUserSettingsFromDict,
@@ -98,113 +97,119 @@ function SettingsForm () {
   const wpa3Description = AaaMessages.WPA3_DESCRIPTION
 
   return (
-    <>
-      <StepsForm.Title>AAA Settings</StepsForm.Title>
-      {supportTriBandRadio && 
-        <Form.Item
-          label='Security Protocol'
-          name='wlanSecurity'
-          initialValue={WlanSecurityEnum.WPA2Enterprise}
-          extra={
-            wlanSecurity === WlanSecurityEnum.WPA2Enterprise
-              ? wpa2Description
-              : wpa3Description
-          }
-        >
-          <Select>
-            <Option value={WlanSecurityEnum.WPA2Enterprise}>
-              WPA2 (Recommended)
-            </Option>
-            <Option value={WlanSecurityEnum.WPA3}>WPA3</Option>
-          </Select>
+    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+      <div>
+        <StepsForm.Title>AAA Settings</StepsForm.Title>
+        {supportTriBandRadio &&
+          <Form.Item
+            label='Security Protocol'
+            name='wlanSecurity'
+            initialValue={WlanSecurityEnum.WPA2Enterprise}
+            extra={
+              wlanSecurity === WlanSecurityEnum.WPA2Enterprise
+                ? wpa2Description
+                : wpa3Description
+            }
+          >
+            <Select>
+              <Option value={WlanSecurityEnum.WPA2Enterprise}>
+                WPA2 (Recommended)
+              </Option>
+              <Option value={WlanSecurityEnum.WPA3}>WPA3</Option>
+            </Select>
+          </Form.Item>
+        }
+        <Form.Item>
+          <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
+            <Switch />
+          </Form.Item>
+          <span>Use Cloudpath Server</span>
         </Form.Item>
-      }
-      <Form.Item>
-        <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
-          <Switch />
-        </Form.Item>
-        <span>Use Cloudpath Server</span>
-      </Form.Item>
-
-      {isCloudpathEnabled ? <CloudpathServerForm /> : aaaService()}
-    </>
+      </div>
+      <div>
+        {isCloudpathEnabled ? <CloudpathServerForm /> : <AaaService />}
+      </div>
+    </Space>
   )
 
-  function aaaService () {
+  function AaaService () {
     return (
-      <React.Fragment>
-        <StepsForm.Title>Authentication Service</StepsForm.Title>
-        {getAaaServer(
-          AaaServerTypeEnum.AUTHENTICATION,
-          AaaServerOrderEnum.PRIMARY
-        )}
+      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+        <div>
+          <Subtitle level={3}>Authentication Service</Subtitle>
+          {getAaaServer(
+            AaaServerTypeEnum.AUTHENTICATION,
+            AaaServerOrderEnum.PRIMARY
+          )}
 
-        <Form.Item noStyle name='enableSecondaryAuthServer'>
-          <ToggleButtonInput
-            enableText='Remove Secondary Server'
-            disableText='Add Secondary Server'
-          />
-        </Form.Item>
+          <Form.Item noStyle name='enableSecondaryAuthServer'>
+            <ToggleButtonInput
+              enableText='Remove Secondary Server'
+              disableText='Add Secondary Server'
+            />
+          </Form.Item>
 
-        {enableSecondaryAuthServer && getAaaServer(
-          AaaServerTypeEnum.AUTHENTICATION,
-          AaaServerOrderEnum.SECONDARY
-        )}
+          {enableSecondaryAuthServer && getAaaServer(
+            AaaServerTypeEnum.AUTHENTICATION,
+            AaaServerOrderEnum.SECONDARY
+          )}
 
-        <Form.Item>
-          <Form.Item
-            noStyle
-            name='enableAuthProxy'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}
-          />
-          <span>Proxy Service</span>
-          <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP} placement='bottom'>
-            <QuestionCircleOutlined />
-          </Tooltip>
-        </Form.Item>
+          <Form.Item>
+            <Form.Item
+              noStyle
+              name='enableAuthProxy'
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch />}
+            />
+            <span>Proxy Service</span>
+            <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP} placement='bottom'>
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </Form.Item>
+        </div>
+        <div>
+          <Subtitle level={3}>Accounting Service</Subtitle>
+          <Form.Item name='enableAccountingService' valuePropName='checked'>
+            <Switch />
+          </Form.Item>
 
-        <StepsForm.Title>Accounting Service</StepsForm.Title>
-        <Form.Item name='enableAccountingService' valuePropName='checked'>
-          <Switch />
-        </Form.Item>
+          {enableAccountingService && (
+            <>
+              {getAaaServer(
+                AaaServerTypeEnum.ACCOUNTING,
+                AaaServerOrderEnum.PRIMARY
+              )}
 
-        {enableAccountingService && (
-          <React.Fragment>
-            {getAaaServer(
-              AaaServerTypeEnum.ACCOUNTING,
-              AaaServerOrderEnum.PRIMARY
-            )}
+              <Form.Item noStyle name='enableSecondaryAcctServer'>
+                <ToggleButtonInput
+                  enableText='Remove Secondary Server'
+                  disableText='Add Secondary Server'
+                />
+              </Form.Item>
 
-            <Form.Item noStyle name='enableSecondaryAcctServer'>
-              <ToggleButtonInput
-                enableText='Remove Secondary Server'
-                disableText='Add Secondary Server'
-              />
-            </Form.Item>
+              {enableSecondaryAcctServer && getAaaServer(
+                AaaServerTypeEnum.ACCOUNTING,
+                AaaServerOrderEnum.SECONDARY
+              )}
 
-            {enableSecondaryAcctServer && getAaaServer(
-              AaaServerTypeEnum.ACCOUNTING,
-              AaaServerOrderEnum.SECONDARY
-            )}
-
-            <Form.Item>
-              <Form.Item
-                noStyle
-                name='enableAccountingProxy'
-                valuePropName='checked'
-                initialValue={false}
-                children={<Switch />}
-              />
-              <span>Proxy Service</span>
-              <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP}>
-                <QuestionCircleOutlined />
-              </Tooltip>
-            </Form.Item>
-          </React.Fragment>
-        )}
-      </React.Fragment>
+              <Form.Item>
+                <Form.Item
+                  noStyle
+                  name='enableAccountingProxy'
+                  valuePropName='checked'
+                  initialValue={false}
+                  children={<Switch />}
+                />
+                <span>Proxy Service</span>
+                <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP}>
+                  <QuestionCircleOutlined />
+                </Tooltip>
+              </Form.Item>
+            </>
+          )}
+        </div>
+      </Space>
     )
   }
 }
@@ -215,8 +220,8 @@ function getAaaServer (
 ) {
   const title = AaaServerTitle[order]
   return (
-    <React.Fragment>
-      <Typography.Title level={4} children={title} />
+    <>
+      <Subtitle level={4} children={title} />
       <Form.Item
         name={`${serverType}.${order}.ip`}
         label='IP Address'
@@ -241,7 +246,7 @@ function getAaaServer (
       <Form.Item
         name={`${serverType}.${order}.sharedSecret`}
         label='Shared secret'
-        rules={[{ 
+        rules={[{
           required: true,
           whitespace: false
         },{
@@ -249,7 +254,7 @@ function getAaaServer (
         }]}
         children={<Input.Password />}
       />
-    </React.Fragment>
+    </>
   )
 }
 
@@ -262,7 +267,6 @@ function ToggleButtonInput (props: {
   const [enabled, setEnabled] = useState(props.value ?? false)
   return <Button
     type='link'
-    style={{ padding: 0 }}
     onClick={() => {
       props.onChange?.(!enabled)
       setEnabled(!enabled)

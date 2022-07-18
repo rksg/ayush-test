@@ -1,4 +1,4 @@
-import { PassphraseExpirationEnum, PassphraseFormatEnum } from '../constants'
+import { PassphraseExpirationEnum, PassphraseFormatEnum, WlanSecurityEnum } from '../constants'
 
 export enum DpskNetworkType {
   FORMAT = 'PassphraseFormat',
@@ -6,7 +6,7 @@ export enum DpskNetworkType {
   EXPIRATION = 'PassphraseExpiration'
 }
 
-export function transformDpskNetwork (type: DpskNetworkType, value: string | number) {
+export function transformDpskNetwork (type: DpskNetworkType, value?: string | number) {
   let displayValue = ''
   if (type === DpskNetworkType.FORMAT) {
     switch (value) {
@@ -59,4 +59,13 @@ export function transformDpskNetwork (type: DpskNetworkType, value: string | num
   }
 
   return displayValue
+}
+
+export function transformNetworkEncryption (type: WlanSecurityEnum | undefined) {
+  const map: { [key: string]: string } = {
+    [WlanSecurityEnum.WPA2Personal]: 'WPA2',
+    [WlanSecurityEnum.WEP]: 'WEP',
+    [WlanSecurityEnum.WPAPersonal]: 'WPA'
+  }
+  return type ? map[type] : ''
 }

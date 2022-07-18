@@ -1,5 +1,5 @@
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { useNetworkListQuery, Network }                  from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { useNetworkListQuery, useDeleteNetworkMutation, Network }         from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
@@ -7,7 +7,7 @@ import {
   WlanSecurityEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 const columns: TableProps<Network>['columns'] = [
   {
@@ -196,15 +196,41 @@ export function NetworksTable () {
       useQuery: useNetworkListQuery,
       defaultPayload
     })
+    const { tenantId } = useParams()
+    const [
+      deleteNetwork,
+      { isLoading: isDeleteNetworkUpdating }
+    ] = useDeleteNetworkMutation()
+
+    const actions: TableProps<Network>['actions'] = [{
+      label: 'Delete',
+      onClick: ([{ name, id }], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: 'Network',
+            entityValue: name
+          },
+          onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
+            .then(clearSelection)
+        })
+      }
+    }]
 
     return (
-      <Loader states={[tableQuery]}>
+      <Loader states={[
+        tableQuery,
+        { isLoading: false, isFetching: isDeleteNetworkUpdating }
+      ]}>
         <Table
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
+          actions={actions}
+          rowSelection={{ type: 'radio' }}
         />
       </Loader>
     )

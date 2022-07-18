@@ -1,10 +1,10 @@
 import React from 'react'
 
 import { StepsForm as ProAntStepsForm } from '@ant-design/pro-form'
-import { useIntl }                      from '@ant-design/pro-provider'
 import { Steps, Space, Row }            from 'antd'
 import _                                from 'lodash'
 import toArray                          from 'rc-util/lib/Children/toArray'
+import { useIntl }                      from 'react-intl'
 
 import { Button } from '../Button'
 
@@ -60,7 +60,7 @@ export function StepsForm <FormValue = any> (
     onCancel,
     ...otherProps
   } = props
-  const intl = useIntl()
+  const { $t } = useIntl()
   const formRef = useRef()
   const [current, setStep] = useState(propCurrent ?? 0)
 
@@ -105,25 +105,28 @@ export function StepsForm <FormValue = any> (
     </>
   )
 
+  const buttonLabel = {
+    next: $t({ id: 'stepsForm.next', defaultMessage: 'Next' }),
+    submit: $t({ id: 'stepsForm.submit', defaultMessage: 'Finish' }),
+    cancel: $t({ id: 'stepsForm.cancel', defaultMessage: 'Cancel' })
+  }
+
   const cancel = <Button
     key='cancel'
     onClick={() => onCancel?.()}
-    children={intl.getMessage('stepsForm.cancel', 'Cancel')}
+    children={buttonLabel.cancel}
   />
 
   const submitter: ProAntStepsFormProps<FormValue>['submitter'] = {
     render (_, submitterDom) {
       const button = Array.from(submitterDom).pop() as React.ReactElement<ButtonProps>
       const key = button.key as 'next' | 'submit'
-      const messages = {
-        next: 'Next',
-        submit: 'Finish'
-      }
+
       const submitButton = <Button
         {...button.props}
         key={key}
         type='secondary'
-        children={intl.getMessage(`stepsForm.${key}`, messages[key])}
+        children={buttonLabel[key]}
       />
       return [submitButton, cancel]
     }
@@ -150,7 +153,7 @@ function StepForm <FormValue = any> (
 
   return <ProAntStepsForm.StepForm<FormValue>
     {...formProps}
-    requiredMark={false}
+    requiredMark={true}
   >
     <Row>
       <UI.FormContainer

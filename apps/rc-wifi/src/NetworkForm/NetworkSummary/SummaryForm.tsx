@@ -1,7 +1,7 @@
-import { EnvironmentOutlined }                        from '@ant-design/icons'
-import { Col, Divider, Form, Input, Row, Typography } from 'antd'
+import { EnvironmentOutlined }            from '@ant-design/icons'
+import { Col, Divider, Form, Input, Row } from 'antd'
 
-import { StepsForm }                                              from '@acx-ui/components'
+import { StepsForm, Subtitle }                                    from '@acx-ui/components'
 import { useCloudpathListQuery }                                  from '@acx-ui/rc/services'
 import { NetworkSaveData, NetworkTypeEnum, transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
@@ -47,9 +47,9 @@ export function SummaryForm (props: {
       <StepsForm.Title>Summary</StepsForm.Title>
       <Row gutter={20}>
         <Col flex={1}>
-          <Typography.Title level={4}>
+          <Subtitle level={4}>
             Network Info
-          </Typography.Title>
+          </Subtitle>
           <Form.Item label='Network Name:' children={summaryData.name} />
           <Form.Item
             label='Info:'
@@ -67,19 +67,19 @@ export function SummaryForm (props: {
             <>
               <Form.Item
                 label='Cloudpath Server'
-                children={ selected.name }
+                children={selected.name}
               />
               <Form.Item
                 label='Deployment Type'
-                children={ selected.deploymentType }
+                children={selected.deploymentType}
               />
               <Form.Item
                 label='Authentication Server'
-                children={ `${selected.authRadius.primary.ip}:${selected.authRadius.primary.port}` }
+                children={`${selected.authRadius.primary.ip}:${selected.authRadius.primary.port}`}
               />
               <Form.Item
                 label='Shared Secret'
-                children={ <Input.Password
+                children={<Input.Password
                   readOnly
                   bordered={false}
                   value={selected.authRadius.primary.sharedSecret}
@@ -96,9 +96,9 @@ export function SummaryForm (props: {
         </Col>
         <Divider type='vertical' style={{ height: '300px' }}/>
         <Col flex={1}>
-          <Typography.Title level={4}>
+          <Subtitle level={4}>
             Activated in venues
-          </Typography.Title>
+          </Subtitle>
           <Form.Item children={getVenues()} />
         </Col>
       </Row>
