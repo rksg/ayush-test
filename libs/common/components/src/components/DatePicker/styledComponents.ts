@@ -66,7 +66,8 @@ export const Wrapper = styled.div<WrapperProps>`
  } 
 .ant-picker-footer-extra{
   background-color:white;
-  padding: 0
+  padding: 0;
+  border-bottom: 1px solid var(--acx-neutrals-10);
 }
 .ant-picker-panels{
   background-color:white;
