@@ -40,7 +40,7 @@ export const getApDonutChartData = (overviewData?: Dashboard): DonutChartData[] 
       if (key === ApVenueStatusEnum.OFFLINE && apsSummary[key]) {
         const setupPhase = find(chartData, { name: 'In Setup Phase' })
         if (setupPhase) {
-          setupPhase.name = setupPhase.name + ' + ' + name
+          setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${apsSummary[key]}`
           setupPhase.value = setupPhase.value + apsSummary[key]
         } else {
           chartData.push({
