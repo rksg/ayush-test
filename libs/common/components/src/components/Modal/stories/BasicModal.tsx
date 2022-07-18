@@ -7,9 +7,7 @@ export function BasicModal () {
   const [visible, setVisible] = useState(false)
 
   const content = <>
-    <p>Some contents...</p>
-    <p>Some contents...</p>
-    <p>Some contents...</p>
+    {Array(100).fill(null).map((_, index) => <p key={index}>Some contents...</p>)}
   </>
 
   const showModal = () => {
