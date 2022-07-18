@@ -10,6 +10,7 @@ export const Wrapper = styled.div<WrapperProps>`
 .ant-picker{
   background: var(--acx-primary-white);
   width: 85%;
+  border-color: var(--acx-primary-black);
 }
 .acx-range-picker > div:first-of-type{
   margin-left: 22px
@@ -22,14 +23,16 @@ export const Wrapper = styled.div<WrapperProps>`
 .ant-picker:hover,
 .ant-picker-focused  {
     border-color: var(--acx-accents-blue-50);
-    box-shadow: 0 0 0 2px rgb(84 150 233/20%)
+    box-shadow:  0px 6px 16px rgba(51, 51, 51, 0.2)
     }
 .ant-picker-panel-container {
-    border-radius: 0px 4px 4px 0;
+    border-radius:${(props) => (props.hasTimePicker  
+    ?'0 4px 4px 0;'
+    :'4px 4px 4px 4px;')}
     background: var(--acx-primary-white);
     box-shadow: ${(props) => (props.hasTimePicker 
-    ? '6px 4px 6px 2px rgb(0 0 0 / 5%), 6px 4px 6px 2px rgb(0 0 0 / 5%);' 
-    : '0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);')} 
+    ? '6px 2px 6px 2px rgb(51 51 51 / 5%), 6px 2px 6px 2px rgb(51 51 51 / 5%);' 
+    : '0 3px 6px -4px rgb(51 51 51 / 12%), 0 6px 16px 0 rgb(51 51 51 / 8%), 0 9px 28px 8px rgb(51 51 51 / 5%);')} 
 }   
 .ant-picker-range .ant-picker-active-bar {
     background: var(--acx-accents-blue-50);
@@ -59,7 +62,7 @@ export const Wrapper = styled.div<WrapperProps>`
   padding: 20px;
   top: 9px;
   border-radius: 4px 0 0 4px;
-  box-shadow:  -8px 4px 6px 4px rgb(0 0 0 / 5%), -8px 4px 6px -2px rgb(0 0 0 / 5%);
+  box-shadow:  -8px 2px 6px 4px rgb(51 51 51 / 5%), -8px 2px 6px -2px rgb(51 51 51 / 5%);
  } 
 .ant-picker-footer-extra{
   background-color:white;
