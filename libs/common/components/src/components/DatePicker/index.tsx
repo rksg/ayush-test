@@ -84,7 +84,9 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
       if ((componentRef.current && !componentRef.current.contains(event.target as Node)) 
       || Object.values(DateRange).includes(target.innerText as DateRange)
       ){
-        onDateApply(range)
+        onDateApply({ 
+          startDate: range.startDate?.format(),
+          endDate: range.endDate?.format() })
         setIscalenderOpen(false) 
       }
     }

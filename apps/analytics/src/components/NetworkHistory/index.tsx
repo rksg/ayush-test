@@ -2,7 +2,7 @@ import React from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter }          from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter }       from '@acx-ui/analytics/utils'
 import { getSeriesData }            from '@acx-ui/analytics/utils'
 import { Card }                     from '@acx-ui/components'
 import { Loader }                   from '@acx-ui/components'
@@ -25,7 +25,7 @@ const lineColors = [
 ]
 
 function NetworkHistoryWidget () {
-  const filters = useGlobalFilter()
+  const filters = useAnalyticsFilter()
   const queryResults = useNetworkHistoryQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({

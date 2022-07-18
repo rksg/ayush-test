@@ -2,8 +2,6 @@ export * from './constants'
 export * from './timeseries'
 export {
   useAnalyticsFilter,
-  AnalyticsFilterProvider,
-  defaultRanges,
-  DateRange
+  AnalyticsFilterProvider
 } from './analyticsFilter'
 export type { AnalyticsFilter } from './analyticsFilter'

@@ -1,5 +1,6 @@
 import React from 'react'
 
+
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
@@ -32,9 +33,6 @@ export default function Dashboard () {
 
 function DashboardPageHeader () {
   const { startDate,endDate, setDateFilter } = useDateFilter()
-  console.log(startDate)
-  console.log(endDate)
-
   const { $t } = useIntl()
   return (
     <PageHeader
@@ -44,8 +42,8 @@ function DashboardPageHeader () {
         <Button key='hierarchy-filter'>Entire Organization <ArrowExpand /></Button>,
         <DatePicker
           selectedRange={{ 
-            startDate: startDate,
-            endDate: endDate }}
+            startDate: moment(startDate),
+            endDate: moment(endDate) }}
           rangeOptions
           enableDates={[moment().subtract(3, 'months').seconds(0),
             moment().seconds(0)]}

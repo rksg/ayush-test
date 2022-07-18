@@ -57,7 +57,9 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
     if(type === 'cancel')
       setRange(defaultValue)
     else   
-      onDateApply(range)  
+      onDateApply({ 
+        startDate: range.startDate?.format(),
+        endDate: range.endDate?.format() })
     setIscalenderOpen(false)
   }
   const onTimePickerSelect = (config : typeof timePickerConfig[number], time: Moment) => {

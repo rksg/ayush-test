@@ -1,11 +1,11 @@
-import { createContext, useContext,ReactNode, useState } from 'react'
+import { createContext, useContext,ReactNode, useState, useEffect } from 'react'
 
-import { pick } from 'lodash'
-import moment   from 'moment-timezone'
-interface DateFilter {
-  startDate: moment.Moment,
-  endDate: moment.Moment
-}
+import { Buffer } from 'buffer'
+
+import { pick }            from 'lodash'
+import moment              from 'moment-timezone'
+import { useSearchParams } from 'react-router-dom'
+
 export type DateFilterContextprops = {
   dateFilter: DateFilter,
   setDateFilter:(c: DateFilter) => void
@@ -18,23 +18,33 @@ export enum DateRange {
   lastMonth = 'Last Month',
   custom = 'Custom'
 }
-
+interface DateFilter {
+  range:DateRange
+  startDate: string,
+  endDate: string
+}
 export const defaultDateFilter = {
   dateFilter: { ...getDateRangeFilter(DateRange.last24Hours) },
   setDateFilter: () => {}
 } as const
 export const DateFilterContext = createContext<DateFilterContextprops>(defaultDateFilter)
 export const useDateFilter = () => {
-  const { dateFilter, ...filters } = useContext(DateFilterContext)
+  const { dateFilter, setDateFilter } = useContext(DateFilterContext)
   return {
-    ...filters,
+    setDateFilter,
     ...dateFilter
   } as const
 }
 
 export function DateFilterProvider (props: { children: ReactNode }) {
   const [dateFilter, setDateFilter] = useState<DateFilter>(defaultDateFilter.dateFilter)
-  console.log(dateFilter)
+  const [,setSearch] = useSearchParams()
+
+  // useEffect(()=>{
+  //   const params = new URLSearchParams()
+  //   params.append('period',Buffer.from(JSON.stringify({ dateFilter })).toString('base64'))
+  //   setSearch(params)
+  // },[dateFilter, setSearch])
   return <DateFilterContext.Provider {...props} value={{ dateFilter, setDateFilter }} />
 }
 export function defaultRanges (subRange?: DateRange[]) {
@@ -64,7 +74,7 @@ export function getDateRangeFilter ( range : DateRange) {
   const ranges = defaultRanges()
   const [startDate, endDate] = (
     ranges as Record<string, [moment.Moment, moment.Moment]>
-  )[range].map((date: moment.Moment) => date )
-  return { startDate, endDate }
+  )[range].map((date: moment.Moment) => date.format() )
+  return { startDate, endDate, range }
 }
 

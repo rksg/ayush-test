@@ -10,7 +10,6 @@ import { MultiLineTimeSeriesChart }          from '@acx-ui/components'
 import { cssStr }                            from '@acx-ui/components'
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/components'
 import { formatter }                         from '@acx-ui/utils'
-import { useDateFilter }                     from '@acx-ui/utils'
 
 import {
   useTrafficByVolumeQuery,
@@ -34,15 +33,13 @@ const lineColors = [
 
 function TrafficByVolumeWidget () {
   const filters = useAnalyticsFilter()
-  const { startDate,endDate } = useDateFilter()
-  const queryResults = useTrafficByVolumeQuery({ path: filters.path,
-    startDate: startDate?.format() , endDate: endDate?.format() },
-  {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(data!, seriesMapping),
-      ...rest
+  const queryResults = useTrafficByVolumeQuery(filters,
+    {
+      selectFromResult: ({ data, ...rest }) => ({
+        data: getSeriesData(data!, seriesMapping),
+        ...rest
+      })
     })
-  })
   return (
     <Loader states={[queryResults]}>
       <Card title='Traffic by Volume' >
