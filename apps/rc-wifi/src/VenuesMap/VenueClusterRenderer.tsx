@@ -41,14 +41,14 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
   clusterInfoWindow: google.maps.InfoWindow ) => {
   let data: VenueClusterTooltipData[] = []
 
-  markers.sort((a,b) => {
+  const sortedMarkers = Array.from(markers).sort((a,b) => {
     const { venueData: dataA } = a as VenueMarkerWithLabel
     const { venueData: dataB } = b as VenueMarkerWithLabel
     return getVenueStatusSeverity(dataA.status as string)
       - getVenueStatusSeverity(dataB.status as string)
   })
 
-  data = markers.map((marker)=>{
+  data = sortedMarkers.map((marker)=>{
     const { venueData } = marker as VenueMarkerWithLabel
     return {
       icon: <Icon component={getVenueInfoMarkerIcon(venueData.status as string)}/>,
@@ -62,7 +62,7 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
 
   const pageSize = 5
   const header = <div className='venueInfoHeader'>
-    <span>{markers?.length} Venues</span>
+    <span>{sortedMarkers?.length} Venues</span>
     <span style={{ float: 'right', cursor: 'pointer' }}
       onClick={() => {
         clusterInfoWindow.close()
@@ -127,7 +127,7 @@ export default class VenueClusterRenderer implements Renderer {
 
     google.maps.event.addListener(clusterMarker, 'click',
       ()=>{
-        const content=generateClusterInfoContent([...markers || [new google.maps.Marker({})]],
+        const content=generateClusterInfoContent(markers || [new google.maps.Marker({})],
           clusterInfoWindow)
 
         const infoDiv = document.createElement('div')

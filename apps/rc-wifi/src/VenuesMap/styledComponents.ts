@@ -1,7 +1,8 @@
 import { Checkbox, Space } from 'antd'
 import styled              from 'styled-components/macro'
 
-import { ReactComponent as CloseIconSvg }          from '../assets/images/common/Close.svg'
+import { Close } from '@acx-ui/icons'
+
 import { ReactComponent as VenueInfoMarkerGreen }  from '../assets/map/VenueInfoMarkerGreen.svg'
 import { ReactComponent as VenueInfoMarkerGrey }   from '../assets/map/VenueInfoMarkerGrey.svg'
 import { ReactComponent as VenueInfoMarkerOrange } from '../assets/map/VenueInfoMarkerOrange.svg'
@@ -67,7 +68,7 @@ export const VenueInfoMarkerOrangeIcon = styled(VenueInfoMarkerOrange)`
 export const VenueInfoMarkerRedIcon = styled(VenueInfoMarkerRed)`
   ${venueMarkerIconStyle}`
 
-export const CloseIcon = styled(CloseIconSvg)`
+export const CloseIcon = styled(Close)`
   font-size: large;
   margin-top: 2px;
 `
