@@ -1519,7 +1519,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                   "componentId": "styledComponents__CloseIcon-sc-mzsngu-11",
                   "isStatic": false,
                   "rules": Array [
-                    "font-size:large;margin-top:3px;",
+                    "font-size:large;margin-top:2px;",
                   ],
                   "staticRulesId": "",
                 },
@@ -4014,7 +4014,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                   "componentId": "styledComponents__CloseIcon-sc-mzsngu-11",
                   "isStatic": false,
                   "rules": Array [
-                    "font-size:large;margin-top:3px;",
+                    "font-size:large;margin-top:2px;",
                   ],
                   "staticRulesId": "",
                 },
@@ -4375,7 +4375,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                   "componentId": "styledComponents__CloseIcon-sc-mzsngu-11",
                   "isStatic": false,
                   "rules": Array [
-                    "font-size:large;margin-top:3px;",
+                    "font-size:large;margin-top:2px;",
                   ],
                   "staticRulesId": "",
                 },
