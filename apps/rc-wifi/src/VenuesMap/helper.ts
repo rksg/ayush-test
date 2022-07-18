@@ -8,6 +8,7 @@ import {
   ApVenueStatusEnum,
   SwitchStatusEnum } from '@acx-ui/rc/services'
 
+import * as UI                from './styledComponents'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
 export const getDeviceConnectionStatusColors = () => [
@@ -44,6 +45,36 @@ export const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
     case SwitchStatusEnum.APPLYING_FIRMWARE:
     default:
       return 'In Setup Phase'
+  }
+}
+
+export const getVenueInfoMarkerIcon = (status: string) => {
+  switch (status) {
+    case ApVenueStatusEnum.IN_SETUP_PHASE || ApVenueStatusEnum.OFFLINE:
+      return UI.VenueInfoMarkerGreyIcon
+    case ApVenueStatusEnum.OPERATIONAL:
+      return UI.VenueInfoMarkerGreenIcon
+    case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return UI.VenueInfoMarkerOrangeIcon
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
+      return UI.VenueInfoMarkerRedIcon
+    default:
+      return UI.VenueInfoMarkerGreyIcon
+  }
+}
+
+export const getVenueStatusSeverity = (status: string) => {
+  switch (status) {
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
+      return 1
+    case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return 2
+    case ApVenueStatusEnum.OPERATIONAL:
+      return 3
+    case ApVenueStatusEnum.IN_SETUP_PHASE || ApVenueStatusEnum.OFFLINE:
+      return 4
+    default:
+      return 4
   }
 }
 
