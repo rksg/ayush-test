@@ -14,8 +14,9 @@ import { Button } from '../../Button'
 
 export function FormModal () {
   const [visible, setVisible] = useState(false)
+  const [form] = Form.useForm()
 
-  const formContent = <Form layout='vertical'>
+  const formContent = <Form form={form} layout='vertical' onFinish={() => setVisible(false)}>
     <Form.Item
       label='Name'
       name='Name'
@@ -51,11 +52,12 @@ export function FormModal () {
   }
 
   const handleOk = () => {
-    setVisible(false)
+    form.submit()
   }
 
   const handleCancel = () => {
     setVisible(false)
+    form.resetFields()
   }
 
   return (
@@ -74,5 +76,5 @@ export function FormModal () {
         {formContent}
       </Modal>
     </>
-  )  
+  )
 }
