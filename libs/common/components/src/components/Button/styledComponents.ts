@@ -11,11 +11,19 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
     }
   ` : ''}
 
+  padding: 4px 12px;
   vertical-align: bottom;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
+  text-shadow: unset;
+  box-shadow: unset;
+
+  &.ant-btn-icon-only {
+    padding-left: 0;
+    padding-right: 0;
+  }
 
   svg {
     &:before {
@@ -26,5 +34,19 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
     path {
       stroke: var(--acx-primary-black);
     }
+  }
+
+  &[disabled] {
+    svg { path { stroke: var(--acx-neutrals-10); } }
+
+    &.ant-btn-default {
+      color: var(--acx-neutrals-40);
+      background-color: var(--acx-neutrals-10);
+      svg { path { stroke: var(--acx-neutrals-40); } }
+    }
+  }
+
+  &.ant-btn-link {
+    padding: 0;
   }
 `

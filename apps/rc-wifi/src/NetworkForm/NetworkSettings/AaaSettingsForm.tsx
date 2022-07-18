@@ -267,7 +267,6 @@ function ToggleButtonInput (props: {
   const [enabled, setEnabled] = useState(props.value ?? false)
   return <Button
     type='link'
-    style={{ padding: 0 }}
     onClick={() => {
       props.onChange?.(!enabled)
       setEnabled(!enabled)

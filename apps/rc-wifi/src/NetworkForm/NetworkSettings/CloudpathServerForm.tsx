@@ -32,7 +32,7 @@ export function CloudpathServerForm () {
         <Select placeholder='Select...' children={selectOptions} />
       </Form.Item>
 
-      <Button type='link' style={{ padding: 0 }}>Add Server</Button>
+      <Button type='link'>Add Server</Button>
 
       {selected && (<>
         <Form.Item
