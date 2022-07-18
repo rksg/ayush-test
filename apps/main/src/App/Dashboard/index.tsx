@@ -1,6 +1,7 @@
 import React from 'react'
 
-import moment from 'moment'
+import moment      from 'moment'
+import { useIntl } from 'react-intl'
 
 import { AnalyticsFilterProvider } from '@acx-ui/analytics/utils'
 import {
@@ -34,9 +35,10 @@ function DashboardPageHeader () {
   console.log(startDate)
   console.log(endDate)
 
+  const { $t } = useIntl()
   return (
     <PageHeader
-      title='Dashboard'
+      title={$t({ id: 'title', defaultMessage: 'Dashboard' })}
       extra={[
         <Button key='add' type='primary'>Add...</Button>,
         <Button key='hierarchy-filter'>Entire Organization <ArrowExpand /></Button>,

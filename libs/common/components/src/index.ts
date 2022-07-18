@@ -1,6 +1,7 @@
 export * from './components/Boundary'
 export * from './components/Button'
 export * from './components/Card'
+export * from './components/ConfigProvider'
 export * from './components/DashboardGrid'
 export * from './components/DashboardGrid'
 export * from './components/DonutChart'

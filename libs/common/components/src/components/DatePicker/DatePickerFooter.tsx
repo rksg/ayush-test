@@ -1,15 +1,16 @@
-import  React from 'react'
+import  React,{ useCallback } from 'react'
 
-import { TimePicker, Row, Col } from 'antd'
-import moment                   from 'moment'
+import { TimePicker, Row, Col }     from 'antd'
+import { range as timepickerRange } from 'lodash'
 
 import { ArrowDown } from '@acx-ui/icons'
 
 import { Button } from '../Button'
 
-import type { Moment  } from 'moment'
+import { DateRangeType, dateFormat,dateWithTimeFormat } from '.'
 
-type DateRangeType = { startDate: moment.Moment | null, endDate : moment.Moment | null }
+
+import type { Moment  } from 'moment'
 interface DatePickerFooterProps {
   showTimePicker?: boolean;
   setRange: React.Dispatch<React.SetStateAction<DateRangeType>>;
@@ -18,6 +19,11 @@ interface DatePickerFooterProps {
   defaultValue: DateRangeType,
   onDateApply:Function
 };
+ type DisabledTimes = {
+  disabledHours?: () => number[];
+  disabledMinutes?: (hour: number) => number[];
+  disabledSeconds?: (hour: number, minute: number) => number[];
+}
 const styles = {
   timePicker: {
     width: '50px',
@@ -27,8 +33,7 @@ const styles = {
   row: { marginLeft: 24 },
   timePickerCol2: { marginLeft: 3, marginRight: 3 },
   timePickerCol3: { marginLeft: 17, marginRight: 17 },
-  button: { height: '24px',width: '56px',fontSize: '12px' },
-  rangePicker: { width: '100%' }
+  button: { height: '24px',width: '56px',fontSize: '12px' }
 }
 const timePickerConfig = [
   { id: 1, range: 'startDate', value: 'hour', format: 'HH', offset: 6, hasSemiColon: true },
@@ -36,11 +41,15 @@ const timePickerConfig = [
   { id: 3, range: 'endDate', value: 'hour', format: 'HH', offset: 0, hasSemiColon: true },
   { id: 4, range: 'endDate', value: 'minutes', format: 'mm', offset: 0 }
 ]
-const dateFormat = 'DD/MM/YYYY'
-const dateWithTimeFormat= 'DD/MM/YYYY HH:mm'
+
 const getCustomisedDate = (date: Moment | null, showTimePicker?: boolean ) =>
   showTimePicker ? date?.format(dateWithTimeFormat) : date?.format(dateFormat)
 
+
+const defaultselectionForDisabledDates = {  
+  disabledHours: () =>[],
+  disabledMinutes: () => []
+}
 export const DatePickerFooter = ({ showTimePicker, range, defaultValue, 
   setRange, setIscalenderOpen, onDateApply }: DatePickerFooterProps) => {
     
@@ -51,8 +60,24 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
       onDateApply(range)  
     setIscalenderOpen(false)
   }
-  const onTimePickerSelect = (config : typeof timePickerConfig[number], time: Moment) => 
-    setRange({ ...range, [config.range]: time })
+  const onTimePickerSelect = (config : typeof timePickerConfig[number], time: Moment) => {
+    if(config.range === 'startDate' && time && time.isAfter(range.endDate)){
+      setRange({ startDate: time, endDate: time })
+    }
+    else {
+      setRange({ ...range, [config.range]: time })
+    }
+  }
+  const disabledDateTime = useCallback(() : DisabledTimes=>{
+    if(range.startDate && range.endDate && range.startDate.isSame(range.endDate, 'day'))
+    {
+      return {  
+        disabledHours: () =>timepickerRange(0, range.startDate?.hour()),
+        disabledMinutes: () => timepickerRange(0, range.startDate?.minute())
+      }
+    }
+    return defaultselectionForDisabledDates
+  },[range])
 
   return <>
     {showTimePicker &&
@@ -76,6 +101,9 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
               onSelect={(time) => onTimePickerSelect(config, time)}
               value={range[config.range as keyof DateRangeType]}
               disabled={!range[config.range as keyof DateRangeType]}
+              disabledTime={config.range === 'endDate' 
+                ? disabledDateTime 
+                : () => defaultselectionForDisabledDates} 
             />
           </Col>
           {config.hasSemiColon &&

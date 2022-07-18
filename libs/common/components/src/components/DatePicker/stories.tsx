@@ -1,9 +1,7 @@
 import { storiesOf } from '@storybook/react'
 import moment        from 'moment'
 
-import { DateRange } from '@acx-ui/analytics/utils'
-
-import { DatePicker } from '.'
+import { DatePicker,DateRange } from '.'
 
 storiesOf('DatePicker', module).add('Basic', () => (
   <div style={{
@@ -12,8 +10,8 @@ storiesOf('DatePicker', module).add('Basic', () => (
     left: 500
   }}>
     <DatePicker 
-      selectedRange={{ start: moment().subtract(1, 'days').seconds(0),
-        end: moment().seconds(0) }}
+      selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
+        endDate: moment().seconds(0) }}
       onDateApply={()=>{}}
     />
   </div>
@@ -25,8 +23,8 @@ storiesOf('DatePicker', module).add('with default Ranges', () => (
     left: 500
   }}>
     <DatePicker
-      selectedRange={{ start: moment().subtract(1, 'days').seconds(0),
-        end: moment().seconds(0) }}
+      selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
+        endDate: moment().seconds(0) }}
       rangeOptions
       onDateApply={()=>{}}
     />
@@ -39,8 +37,8 @@ storiesOf('DatePicker', module).add('with custom ranges', () => (
     left: 500
   }}>
     <DatePicker 
-      selectedRange={{ start: moment().subtract(1, 'days').seconds(0),
-        end: moment().seconds(0) }}
+      selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
+        endDate: moment().seconds(0) }}
       rangeOptions={[DateRange.today, DateRange.last7Days]}
       onDateApply={()=>{}}/>
   </div>
@@ -54,8 +52,8 @@ storiesOf('DatePicker', module).add('with custom time picker and ranges ', () =>
     <DatePicker
       showTimePicker
       rangeOptions
-      selectedRange={{ start: moment().subtract(1, 'days').seconds(0),
-        end: moment().seconds(0) }}
+      selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
+        endDate: moment().seconds(0) }}
       onDateApply={()=>{}}
     />
   </div>
@@ -72,8 +70,8 @@ storiesOf('DatePicker', module).add('with restricted date selection', () => (
       showTimePicker
       enableDates={[moment().subtract(7, 'days').seconds(0),
         moment().seconds(0)]}
-      selectedRange={{ start: moment().subtract(1, 'days').seconds(0),
-        end: moment().seconds(0) }}
+      selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
+        endDate: moment().seconds(0) }}
       onDateApply={()=>{}}
     />
   </div>
@@ -89,8 +87,8 @@ storiesOf('DatePicker', module).add('with user default selected date', () => (
       showTimePicker
       enableDates={[moment().subtract(1, 'month').seconds(0),
         moment().seconds(0)]}
-      selectedRange={{ start: moment().subtract(7, 'days').seconds(0),
-        end: moment().seconds(0) }}
+      selectedRange={{ startDate: moment().subtract(7, 'days').seconds(0),
+        endDate: moment().seconds(0) }}
       onDateApply={()=>{}}
     />
   </div>

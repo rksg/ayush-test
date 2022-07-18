@@ -18,6 +18,7 @@
           "apps/main/src/favicon.ico",
           "apps/main/src/env.json",
           "apps/main/src/assets",
+          "apps/main/src/locales",
           "apps/main/src/robots.txt"
         ],
         "styles": [],
