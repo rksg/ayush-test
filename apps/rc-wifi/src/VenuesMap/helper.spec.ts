@@ -1,15 +1,9 @@
 import { initialize, mockInstances } from '@googlemaps/jest-mocks'
 
 import { ApVenueStatusEnum, Dashboard, SwitchStatusEnum } from '@acx-ui/rc/services'
-import { mockLightTheme }                                 from '@acx-ui/test-utils'
 
 import { getClusterSVG, getDeviceConnectionStatusColors,
   getIcon, getMarkerColor, getMarkerSVG, massageVenuesData } from './helper'
-
-jest.mock('@acx-ui/components', () => ({
-  __esModule: true,
-  cssStr: jest.fn(property => mockLightTheme[property])
-}))
 
 describe('Venues Map Helper', () => {
   describe('massageVenuesData', () => {

@@ -5,17 +5,9 @@ import { Provider  }          from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
   mockAutoSizer,
-  mockLightTheme,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import Devices, { getApDonutChartData, getSwitchDonutChartData } from '.'
-
-jest.mock('@acx-ui/components', () => ({
-  __esModule: true,
-  ...(jest.requireActual('@acx-ui/components')),
-  cssStr: jest.fn(property => mockLightTheme[property]),
-  cssNumber: jest.fn(property => parseInt(mockLightTheme[property], 10))
-}))
 
 describe('Devices widget', () => {
   mockAutoSizer()

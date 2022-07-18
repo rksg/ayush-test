@@ -101,7 +101,7 @@ export function DonutChart ({
         data,
         type: 'pie',
         center: [props.showLegend ? '32%' : '50%', '50%'],
-        radius: ['78%', '90%'],
+        radius: ['76%', '90%'],
         cursor: isEmpty ? 'auto' : 'pointer',
         avoidLabelOverlap: true,
         label: {
@@ -137,7 +137,7 @@ export function DonutChart ({
         },
         itemStyle: {
           borderWidth: 1,
-          borderColor: isEmpty ? cssStr('--acx-neutrals-20') : cssStr('--acx-primary-white')
+          borderColor: isEmpty ? cssStr('--acx-neutrals-25') : cssStr('--acx-primary-white')
         }
       }
     ]
