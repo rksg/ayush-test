@@ -54,7 +54,7 @@ export const getSymbol = (selected: number) =>
     : getSelectedDot(hexToRGB(mapping.filter(({ key }) => key === value[2].type)[0].color))
 
 export const getDragPosition = (
-  boundary: {min: number, max: number}, actualAreas: number[][], index: number
+  boundary: { min: number, max: number }, actualAreas: number[][], index: number
 ) => {
   const range = index === 0
     ? [boundary.min, Math.min(actualAreas[1][0], boundary.max)]
@@ -72,7 +72,7 @@ export const getDragPosition = (
 export const getDrawPosition = (
   xPosition: number,
   brushWidth: number,
-  boundary: {min: number, max: number},
+  boundary: { min: number, max: number },
   actualAreas: number[][],
   index: number
 ) => {
@@ -85,13 +85,13 @@ export const getDrawPosition = (
   return { actual: newShowAreas, show: newShowAreas }
 }
 export const getZoomPosition = (
-  boundary: {min: number, max: number}, actualArea: number[][], index: number
+  boundary: { min: number, max: number }, actualArea: number[][], index: number
 ) => {
   const range = index === 0
     ? [boundary.min, Math.min(actualArea[1][0], boundary.max)]
     : [Math.max(actualArea[0][1], boundary.min), boundary.max]
   return [
-    actualArea[index][0] < range[0]? range[0]: actualArea[index][0],
+    actualArea[index][0] < range[0] ? range[0]: actualArea[index][0],
     actualArea[index][1] > range[1] ? range[1]: actualArea[index][1]
   ]
 }
@@ -113,14 +113,14 @@ export const useDotClick = (
   }, [eChartsRef, setSelected, onDotClick])
 }
 export const useBoundaryChange = (
-  boundary: { min: number, max: number},
+  boundary: { min: number, max: number },
   brushPositions: { actual: number[][], show: number[][] },
   setBrushPositions: Dispatch<SetStateAction<{ actual: number[][], show: number[][] }>>,
   getZoomPosition: (
-    boundary: {min: number, max: number},
+    boundary: { min: number, max: number },
     actualArea: number[][], index: number
   ) => number[],
-  draw: (areas: {actual: number[][], show:number[][]}) => void
+  draw: (areas: { actual: number[][], show:number[][] }) => void
 ) => {
   useEffect(() => {
     const newShowAreas = brushPositions.actual
@@ -145,9 +145,9 @@ export const tooltipFormatter = (params: TooltipFormatterParams | TooltipFormatt
 }
 
 export const useDatazoom = (
-  chartBoundary: number[], setBoundary: Dispatch<SetStateAction<{min: number, max: number}>>
+  chartBoundary: number[], setBoundary: Dispatch<SetStateAction<{ min: number, max: number }>>
 ) => {
-  return useCallback((params: { batch: [{start: number, end: number}]}) => {
+  return useCallback((params: { batch: [{ start: number, end: number }] }) => {
     const min = chartBoundary[0]
     const inverval = chartBoundary[1] - min
     setBoundary({
@@ -207,7 +207,7 @@ export function ConfigChangeChart ({
       return selected
     }, {} as Record<string, boolean>))
 
-  const draw =(areas: {actual: number[][], show:number[][]}) => {
+  const draw =(areas: { actual: number[][], show:number[][] }) => {
     if (!eChartsRef || !eChartsRef.current) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
 
@@ -272,7 +272,7 @@ export function ConfigChangeChart ({
                     invisible: true,
                     slient: width <= 0,
                     x: position[0],
-                    y: (placeholderRows-1) * rowHeight,
+                    y: (placeholderRows - 1) * rowHeight,
                     z: 100,
                     shape: { width, height: rowHeight },
                     draggable: width <= 0 ? false : 'horizontal',
@@ -304,7 +304,7 @@ export function ConfigChangeChart ({
                     },
                     textConfig: { position: 'insideBottom' },
                     x: position[0],
-                    y: (placeholderRows-2) * rowHeight,
+                    y: (placeholderRows - 2) * rowHeight,
                     z: 100,
                     shape: { width, height: rowHeight, r: 3 },
                     style: {
@@ -332,7 +332,7 @@ export function ConfigChangeChart ({
                     },
                     textConfig: { position: 'inside' },
                     x: position[0],
-                    y: (placeholderRows-1) * rowHeight,
+                    y: (placeholderRows - 1) * rowHeight,
                     z: 1,
                     shape: { width, height: rowHeight, r: 3 },
                     style: {

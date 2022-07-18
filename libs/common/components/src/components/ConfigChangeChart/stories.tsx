@@ -4,7 +4,7 @@ import { ConfigChangeChart } from '.'
 
 const types = ['ap', 'apGroup', 'wlan', 'venue']
 const chartBoundary = [1654423052112, 1657015052112]
-const sampleData = new Array((chartBoundary[1]-chartBoundary[0])/(12*60*60*1000))
+const sampleData = new Array((chartBoundary[1] - chartBoundary[0])/(12 * 60 * 60 * 1000))
   .fill(0).map((_,index)=>({
     id: index,
     timestamp: `${chartBoundary[0] + 12 * 60 * 60 * 1000 * index}`,
