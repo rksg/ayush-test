@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
 import moment             from 'moment'
 
-import { DatePicker,DateRange } from '.'
+import { RangePicker,DateRange } from '.'
 jest.mock('@acx-ui/icons', () => ({
   ArrowDown: () => <div>ArrowDown</div>,
   ClockOutlined: () => <div>ClockOutlined</div>
@@ -12,8 +12,7 @@ jest.mock('@acx-ui/icons', () => ({
 describe('CalenderRangePicker', () => {
   it('should render default CalenderRangePicker', () => {
     const { asFragment } = render(
-      <DatePicker 
-        rangeOptions
+      <RangePicker 
         onDateApply={()=>{}}
         selectedRange={{ startDate: moment('01/01/2022').subtract(1, 'days').seconds(0),
           endDate: moment('01/01/2022').seconds(0) }}/>)
@@ -21,7 +20,7 @@ describe('CalenderRangePicker', () => {
   })
   it('should render CalenderRangePicker when click on date select',async () => {
     render(
-      <DatePicker
+      <RangePicker
         selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
           endDate: moment().seconds(0) }}
         onDateApply={()=>{}}
@@ -36,7 +35,7 @@ describe('CalenderRangePicker', () => {
   })
   it('should close CalenderRangePicker when click on apply',async () => {
     render(
-      <DatePicker
+      <RangePicker
         onDateApply={()=>{}}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         showTimePicker
@@ -53,7 +52,7 @@ describe('CalenderRangePicker', () => {
   })
   it('should close CalenderRangePicker when click on cancel',async () => {
     render(
-      <DatePicker
+      <RangePicker
         onDateApply={()=>{}}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         selectedRange={{ startDate: moment().subtract(7, 'days').seconds(0),
@@ -68,7 +67,7 @@ describe('CalenderRangePicker', () => {
   it('should select date when click on date selection',async () => {
     const onDateChange = jest.fn()
     render(
-      <DatePicker
+      <RangePicker
         selectedRange={{ startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
           endDate: moment('03/01/2022').seconds(0) }}
         onDateChange={onDateChange}
@@ -85,7 +84,7 @@ describe('CalenderRangePicker', () => {
   })
   it('should select time when click on time selection',async () => {
     const onDateChange = jest.fn()
-    render(<DatePicker
+    render(<RangePicker
       showTimePicker
       rangeOptions={[DateRange.today, DateRange.last7Days]}
       onDateChange={onDateChange}
@@ -106,7 +105,7 @@ describe('CalenderRangePicker', () => {
   })
   it('should reset endTime to startTime when select on startTime greater than endTime',async () => {
     const onDateChange = jest.fn()
-    render(<DatePicker
+    render(<RangePicker
       showTimePicker
       rangeOptions={[DateRange.today, DateRange.last7Days]}
       onDateChange={onDateChange}

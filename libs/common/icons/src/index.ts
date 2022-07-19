@@ -4,6 +4,7 @@ export { ReactComponent as AccountCircleSolid } from './icons/AccountCircleSolid
 export { ReactComponent as AccountCircleSolidSmall } from './icons/AccountCircleSolidSmall.svg'
 export { ReactComponent as ArrowChevronLeft } from './icons/ArrowChevronLeft.svg'
 export { ReactComponent as ArrowChevronRight } from './icons/ArrowChevronRight.svg'
+export { ReactComponent as ArrowDown } from './icons/ArrowDown.svg'
 export { ReactComponent as ArrowExpand } from './icons/ArrowExpand.svg'
 export { ReactComponent as ArrowsOut } from './icons/ArrowsOut.svg'
 export { ReactComponent as BulbOutlined } from './icons/BulbOutlined.svg'
@@ -35,4 +36,3 @@ export { ReactComponent as ServicesOutlined } from './icons/ServicesOutlined.svg
 export { ReactComponent as ServicesSolid } from './icons/ServicesSolid.svg'
 export { ReactComponent as SpeedIndicatorOutlined } from './icons/SpeedIndicatorOutlined.svg'
 export { ReactComponent as SpeedIndicatorSolid } from './icons/SpeedIndicatorSolid.svg'
-export { ReactComponent as ArrowDown } from './icons/ArrowDown.svg'

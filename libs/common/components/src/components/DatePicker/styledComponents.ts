@@ -39,14 +39,14 @@ export const Wrapper = styled.div<WrapperProps>`
   margin-left: 33px;
 }
 .acx-range-picker-popup {
-  font-size: 12px;
+  font-size: var(--acx-body-4-font-size);
   & .ant-picker-panel {border: none;}
   & .ant-picker-header-super-prev-btn,
   & .ant-picker-header-super-next-btn {
     display: none;
 }
 & .acx-calender {
-  font-size: 12px;
+  font-size: var(--acx-body-4-font-size);
   & .ant-picker-footer {
     display: none;
   }

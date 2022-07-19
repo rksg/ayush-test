@@ -29,7 +29,7 @@ type RangesType = Record<string, Exclude<RangeBoundType, null>
 interface DatePickerProps {
   showTimePicker?: boolean;
   enableDates?: [Moment, Moment];
-  rangeOptions?: DateRange[] | boolean;
+  rangeOptions?: DateRange[];
   selectedRange: DateRangeType;
   onDateChange?: Function;
   onDateApply: Function
@@ -38,9 +38,9 @@ interface DatePickerProps {
 export const dateFormat = 'DD/MM/YYYY'
 export const dateWithTimeFormat= 'DD/MM/YYYY HH:mm'
 
-const { RangePicker } = AntdDatePicker
+const AntdRangePicker = AntdDatePicker.RangePicker
 
-const defaultRanges = (subRange?: DateRange[] | boolean) => {
+const defaultRanges = (subRange?: DateRange[]) => {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
     [DateRange.last1Hour]: [
       moment().subtract(1, 'hours').seconds(0),
@@ -57,13 +57,13 @@ const defaultRanges = (subRange?: DateRange[] | boolean) => {
       moment().seconds(0)
     ]
   }
-  if (subRange && typeof subRange !== 'boolean') {
+  if (subRange) {
     return pick(defaultRange, subRange)
   }
   return defaultRange
 }
 
-export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
+export const RangePicker = ({ showTimePicker, enableDates, rangeOptions,
   selectedRange, onDateChange,onDateApply }: DatePickerProps) => {
 
   const didMountRef = useRef(false)
@@ -102,11 +102,8 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
 
   return (
     <UI.Wrapper ref={componentRef} hasTimePicker={showTimePicker}>
-      <RangePicker
-        ranges={
-          rangeOptions
-            ? defaultRanges(rangeOptions) as RangesType
-            : undefined}
+      <AntdRangePicker
+        ranges={defaultRanges(rangeOptions) as RangesType}
         placement='bottomRight'
         disabledDate={disabledDate}
         className='acx-range-picker'
