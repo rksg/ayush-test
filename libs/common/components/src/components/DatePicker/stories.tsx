@@ -1,95 +1,69 @@
+import React from 'react'
+
 import { storiesOf } from '@storybook/react'
 import moment        from 'moment'
 
-import { DatePicker,DateRange } from '.'
+import { RangePicker, DateRange } from '.'
 
-storiesOf('DatePicker', module).add('Basic', () => (
-  <div style={{
-    position: 'absolute',
-    top: 100,
-    left: 500
-  }}>
-    <DatePicker 
-      selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
-        endDate: moment().seconds(0) }}
-      onDateApply={()=>{}}
-    />
-  </div>
-))
+function Wrapper (props: { children: React.ReactNode }) {
+  return <div
+    {...props}
+    style={{ position: 'absolute', top: 100, left: 500 }}
+  />
+}
+
 storiesOf('DatePicker', module).add('with default Ranges', () => (
-  <div style={{
-    position: 'absolute',
-    top: 100,
-    left: 500
-  }}>
-    <DatePicker
+  <Wrapper>
+    <RangePicker
       selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
         endDate: moment().seconds(0) }}
-      rangeOptions
-      onDateApply={()=>{}}
+      onDateApply={() => {}}
     />
-  </div>
+  </Wrapper>
 ))
 storiesOf('DatePicker', module).add('with custom ranges', () => (
-  <div style={{
-    position: 'absolute',
-    top: 100,
-    left: 500
-  }}>
-    <DatePicker 
+  <Wrapper>
+    <RangePicker
       selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
         endDate: moment().seconds(0) }}
       rangeOptions={[DateRange.today, DateRange.last7Days]}
-      onDateApply={()=>{}}/>
-  </div>
+      onDateApply={() => {}}/>
+  </Wrapper>
 ))
 storiesOf('DatePicker', module).add('with custom time picker and ranges ', () => (
-  <div style={{
-    position: 'absolute',
-    top: 100,
-    left: 500
-  }}>
-    <DatePicker
+  <Wrapper>
+    <RangePicker
       showTimePicker
-      rangeOptions
       selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
         endDate: moment().seconds(0) }}
-      onDateApply={()=>{}}
+      onDateApply={() => {}}
     />
-  </div>
+  </Wrapper>
 ))
 
 storiesOf('DatePicker', module).add('with restricted date selection', () => (
-  <div style={{
-    position: 'absolute',
-    top: 100,
-    left: 500
-  }}>
-    <DatePicker
+  <Wrapper>
+    <RangePicker
       rangeOptions={[DateRange.today, DateRange.last7Days]}
       showTimePicker
       enableDates={[moment().subtract(7, 'days').seconds(0),
         moment().seconds(0)]}
       selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
         endDate: moment().seconds(0) }}
-      onDateApply={()=>{}}
+      onDateApply={() => {}}
     />
-  </div>
+  </Wrapper>
 ))
 storiesOf('DatePicker', module).add('with user default selected date', () => (
-  <div style={{
-    position: 'absolute',
-    top: 100,
-    left: 500
-  }}>
-    <DatePicker
-      rangeOptions={[DateRange.today, DateRange.last7Days]}
+  <Wrapper>
+    <RangePicker
+      rangeOptions={[DateRange.today, DateRange.last7Days, DateRange.lastMonth]}
       showTimePicker
       enableDates={[moment().subtract(1, 'month').seconds(0),
         moment().seconds(0)]}
       selectedRange={{ startDate: moment().subtract(7, 'days').seconds(0),
         endDate: moment().seconds(0) }}
-      onDateApply={()=>{}}
+      onDateApply={() => {}}
     />
-  </div>
+  </Wrapper>
 ))

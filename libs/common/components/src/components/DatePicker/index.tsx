@@ -1,16 +1,17 @@
 
 import  { useEffect, useState, useRef, useCallback } from 'react'
 
-import { DatePicker as antdDatePicker } from 'antd'
+import { DatePicker as AntdDatePicker } from 'antd'
 import { pick }                         from 'lodash'
 import moment                           from 'moment'
 
-import { ClockOutlined } from '@acx-ui/icons'
+import { ClockOutlined }   from '@acx-ui/icons'
+import { dateTimeFormats } from '@acx-ui/utils'
 
 import { DatePickerFooter } from './DatePickerFooter'
 import * as UI              from './styledComponents'
 
-import type { Moment  } from 'moment'
+import type { Moment } from 'moment'
 
 
 export enum DateRange {
@@ -28,23 +29,21 @@ export type DateRangeType = {
 type RangeValueType = [Moment | null, Moment | null] | null
 type RangeBoundType= [Moment, Moment] | null
 type RangesType = Record<string, Exclude<RangeBoundType, null>
-| (() => Exclude<RangeBoundType, null>)>
+  | (() => Exclude<RangeBoundType, null>)>
 interface DatePickerProps {
   showTimePicker?: boolean;
   enableDates?: [Moment, Moment];
-  rangeOptions?: [DateRange,DateRange] | boolean;
+  rangeOptions?: DateRange[];
   selectedRange: DateRangeType;
   onDateChange?:Function;
   onDateApply:Function;
   selectionType?:DateRange
 };
 
-export const dateFormat = 'DD/MM/YYYY'
-export const dateWithTimeFormat= 'DD/MM/YYYY HH:mm'
+const AntdRangePicker = AntdDatePicker.RangePicker
+const { dateFormat, dateTimeFormat } = dateTimeFormats
 
-const { RangePicker } = antdDatePicker
-
-const defaultRanges = (subRange?: DateRange[] | boolean) => {
+const defaultRanges = (subRange?: DateRange[]) => {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
     [DateRange.last1Hour]: [
       moment().subtract(1, 'hours').seconds(0),
@@ -61,14 +60,14 @@ const defaultRanges = (subRange?: DateRange[] | boolean) => {
       moment().seconds(0)
     ]
   }
-  if (subRange && typeof subRange !== 'boolean') {
+  if (subRange) {
     return pick(defaultRange, subRange)
   }
   return defaultRange
 }
 
-export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
-  selectedRange, onDateChange,onDateApply }:DatePickerProps) => {
+export const RangePicker = ({ showTimePicker, enableDates, rangeOptions,
+  selectedRange, onDateChange,onDateApply }: DatePickerProps) => {
 
   const didMountRef = useRef(false)
   const componentRef = useRef<HTMLDivElement | null>(null)
@@ -83,7 +82,7 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
     }
     return enableDates[0] >= current ||
     enableDates[1] < current.seconds(0)
-  },[enableDates])
+  }, [enableDates])
   useEffect(()=>{
     const handleClickForDatePicker = (event : MouseEvent) => {
       const target = event.target as HTMLInputElement
@@ -100,27 +99,20 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
       didMountRef.current = true
       return
     }
-    if( typeof onDateChange === 'function')
-      onDateChange(range)
+    onDateChange?.(range)
     return () => {
       document.removeEventListener('click', handleClickForDatePicker)
     }
-  },[range])
+  },[range, onDateChange])
 
-useEffect(()=>{
-        onDateApply({ 
-          startDate: range.startDate?.format(),
-          endDate: range.endDate?.format(),
-           range : selectionRangeType})
-
-},[selectionRangeType])
+  useEffect(()=>{
+    onDateApply({ 
+      range: selectionRangeType })
+  },[selectionRangeType, onDateApply])
   return ( 
     <UI.Wrapper ref={componentRef} hasTimePicker={showTimePicker}>
-      <RangePicker 
-        ranges={
-          rangeOptions
-            ? defaultRanges(rangeOptions) as RangesType
-            : undefined}
+      <AntdRangePicker
+        ranges={defaultRanges(rangeOptions) as RangesType}
         placement='bottomRight'
         disabledDate={disabledDate}
         className='acx-range-picker'
@@ -129,28 +121,23 @@ useEffect(()=>{
         onClick={() => setIscalenderOpen (true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined/>}
-        onCalendarChange={(values: RangeValueType) =>{
-          setRange({
-            startDate: values
-              ? values[0]
-              : null ,
-            endDate: values
-              ? values[1]
-              : null })
-        }}
+        onCalendarChange={(values: RangeValueType) => values == null
+          ? setRange({ startDate: null, endDate: null })
+          : setRange({ startDate: values[0], endDate: values[1] })
+        }
         mode={['date', 'date']}
-        renderExtraFooter={() => 
-          <DatePickerFooter 
-            showTimePicker={showTimePicker} 
+        renderExtraFooter={() =>
+          <DatePickerFooter
+            showTimePicker={showTimePicker}
             range={range}
             setRange={setRange}
             defaultValue={selectedRange}
-            setIscalenderOpen={setIscalenderOpen}
+            setIsCalenderOpen={setIscalenderOpen}
             onDateApply={onDateApply}/>}
         value={[range?.startDate, range?.endDate]}
         format={
           showTimePicker
-            ? dateWithTimeFormat
+            ? dateTimeFormat
             : dateFormat
         }
         allowClear={false}
