@@ -50,12 +50,15 @@ export function CustomDrawer () {
       <Button onClick={onOpen}>Custom Drawer</Button>
       <Drawer
         title={'Custom Drawer'}
+        icon={<BulbOutlined />}
+        subtitle={'Subtitle'}
+        handleBackClick={onClose}
         visible={visible}
         onClose={onClose}
         children={content}
         footer={footer}
         destroyOnClose={resetField}
-        extra={<BulbOutlined />}
+        width={'600px'}
       />
     </>
   )
