@@ -1,8 +1,8 @@
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
+import IncidentDetailsPage from './pages/IncidentDetails'
 import IncidentListPage    from './pages/Incidents'
-import IncidentDetailsPage from './pages/Incidents/IncidentDetails'
 
 export default function AnalyticsRoutes () {
   const routes = rootRoutes(
