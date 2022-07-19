@@ -2,9 +2,9 @@ import { Row, Col } from 'antd'
 
 import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 
-import AaaDiagram           from '../../assets/images/network-wizard-diagrams/aaa.png'
-import DpskDiagram          from '../../assets/images/network-wizard-diagrams/dpsk.png'
-import OpenDiagram          from '../../assets/images/network-wizard-diagrams/open.png'
+import AaaDiagram           from '../../../assets/images/network-wizard-diagrams/aaa.png'
+import DpskDiagram          from '../../../assets/images/network-wizard-diagrams/dpsk.png'
+import OpenDiagram          from '../../../assets/images/network-wizard-diagrams/open.png'
 import { NetworkTypeLabel } from '../contentsMap'
 import { Diagram, Title }   from '../styledComponents'
 

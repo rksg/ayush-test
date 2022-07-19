@@ -8,7 +8,7 @@ import { Provider }                                                    from '@ac
 import { render, screen, mockRestApiQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { mockServer }                                                  from '@acx-ui/test-utils'
 
-import { Map } from './'
+import { Map } from '.'
 
 describe('Map', () => {
   beforeAll(async () => {

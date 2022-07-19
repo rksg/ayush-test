@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { getAPStatusDisplayName } from '../../VenuesMap/helper'
+import { getAPStatusDisplayName } from '../Map/VenuesMap/helper'
 
 const seriesMapping = [
   { key: ApVenueStatusEnum.REQUIRES_ATTENTION,

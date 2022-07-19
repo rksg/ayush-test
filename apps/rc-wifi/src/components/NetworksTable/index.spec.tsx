@@ -11,7 +11,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { NetworksTable } from './'
+import { NetworksTable } from '.'
 
 const list = {
   totalCount: 10,
@@ -154,7 +154,7 @@ const list = {
 }
 
 describe('Networks Table', () => {
-  let params
+  let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(
       rest.post(

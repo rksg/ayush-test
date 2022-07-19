@@ -2,9 +2,9 @@ import { ConfigProvider }    from '@acx-ui/components'
 import { rootRoutes, Route } from '@acx-ui/react-router-dom'
 import { Provider }          from '@acx-ui/store'
 
-import { NetworkDetails } from './NetworkDetails/NetworkDetails'
-import { NetworkForm }    from './NetworkForm/NetworkForm'
-import { NetworksTable }  from './NetworksTable'
+import { NetworkDetails } from './components/NetworkDetails/NetworkDetails'
+import { NetworkForm }    from './components/NetworkForm/NetworkForm'
+import { NetworksTable }  from './components/NetworksTable'
 
 export default function WifiRoutes () {
   const routes = rootRoutes(

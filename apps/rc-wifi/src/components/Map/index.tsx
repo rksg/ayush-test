@@ -3,8 +3,8 @@ import { useSplitTreatment }         from '@acx-ui/feature-toggle'
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import { useParams }                 from '@acx-ui/react-router-dom'
 
-import { VenuesMap }         from '../../VenuesMap'
-import { massageVenuesData } from '../../VenuesMap/helper'
+import { VenuesMap }         from './VenuesMap'
+import { massageVenuesData } from './VenuesMap/helper'
 
 export function Map () {
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
