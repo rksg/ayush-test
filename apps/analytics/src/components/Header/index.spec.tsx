@@ -18,7 +18,7 @@ describe('Analytics dumb header', () => {
 
   const props = {
     title: 'title',
-    replaceTitle: false,
+    replaceTitle: true,
     data: {
       title: 'title',
       subTitle: [{ key: '1', value: ['1'] }, { key: '12', value: ['1', '2'] }]
