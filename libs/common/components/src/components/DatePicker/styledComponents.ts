@@ -23,7 +23,7 @@ export const Wrapper = styled.div<WrapperProps>`
 .ant-picker:hover,
 .ant-picker-focused  {
     border-color: var(--acx-accents-blue-50);
-    box-shadow:  0px 6px 16px rgba(51, 51, 51, 0.2)
+    box-shadow:  none
     }
 .ant-picker-panel-container {
     border-radius:${(props) => (props.hasTimePicker  
