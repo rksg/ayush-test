@@ -1,7 +1,7 @@
 
 export interface NetworkPath extends Array<{ type: string; name: string }> {}
 
-export enum networkNodeTypeForDisplay {
+export enum NetworkNodeTypeForDisplay {
   network = 'Network',
   apGroup = 'AP Group',
   zone = 'Venue', // can be moved i18n translation later

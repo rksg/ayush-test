@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
 import { dataApi }                                              from '@acx-ui/analytics/services'
-import { GlobalFilter, NetworkPath, networkNodeTypeForDisplay } from '@acx-ui/analytics/utils'
+import { GlobalFilter, NetworkPath, NetworkNodeTypeForDisplay } from '@acx-ui/analytics/utils'
 
 import { HeaderData } from '.'
 
@@ -46,7 +46,7 @@ const lowPreferenceList = [
   '0.0.0.0', '0', 'Unknown'
 ]
 
-const getAttributesByNodeType = (type: keyof typeof networkNodeTypeForDisplay): string[] => {
+const getAttributesByNodeType = (type: keyof typeof NetworkNodeTypeForDisplay): string[] => {
   const defaultAttributes = ['type', 'apCount', 'clientCount' ]
  
   const attributes = {
@@ -111,7 +111,7 @@ const getQuery = (path: NetworkPath) : string => {
         network(start: $startDate, end: $endDate) {
           node: hierarchyNode(path:$path) {
             name
-            ${getAttributesByNodeType(type as keyof typeof networkNodeTypeForDisplay).join('\n')}
+            ${getAttributesByNodeType(type as keyof typeof NetworkNodeTypeForDisplay).join('\n')}
           }
         }
       }
@@ -120,11 +120,12 @@ const getQuery = (path: NetworkPath) : string => {
 }
 
 const getQueryVariables = (payload: GlobalFilter): QueryVariables => {
-  const { startDate, endDate, path } = payload
+  const { path } = payload
   const [{ type, name }] = path.slice(-1)
   switch(type) {
-    case 'AP': return { ...payload, startDate, endDate, mac: name }
-    case 'switch': return { ...payload, mac: name }
+    case 'AP': 
+    case 'switch':
+      return { ...payload, mac: name }
     default: return { ...payload }
   }
 }
@@ -134,13 +135,13 @@ const sortPreference = (values: string | string[]): string[] => Array.isArray(va
   : [values]
 
 export const transformForDisplay = (data: NetworkNodeInfo): HeaderData => {
-  const { name } = data
-  const subTitle = Object.entries(data)
-    .filter(([key, value]) => value && key !== 'name')
+  const { name, ...rest } = data
+  const subTitle = Object.entries(rest)
+    .filter(([, value]) => value)
     .map(([key, value]) => ({
       key: labelMap[key as keyof typeof labelMap],
       value: key === 'type'
-        ? [networkNodeTypeForDisplay[value as keyof typeof networkNodeTypeForDisplay]]
+        ? [NetworkNodeTypeForDisplay[value as keyof typeof NetworkNodeTypeForDisplay]]
         : sortPreference(value)
     }))
   return { title: name, subTitle }
