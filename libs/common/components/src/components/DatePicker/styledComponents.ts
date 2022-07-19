@@ -1,8 +1,11 @@
 import styled from 'styled-components/macro'
 
+import { DateRange, defaultRanges } from '@acx-ui/utils'
 
 type WrapperProps = {
-  hasTimePicker?: boolean
+  hasTimePicker?: boolean,
+  rangeOptions?: DateRange[],
+  selectionType: DateRange
 }
 /* eslint-disable max-len */
 export const Wrapper = styled.div<WrapperProps>`
@@ -150,4 +153,7 @@ export const Wrapper = styled.div<WrapperProps>`
 }
 .ant-picker-header-view {
   font-weight: var(--acx-body-font-weight-bold);
+}
+.ant-picker-ranges > li:nth-child(${(props) => (props.rangeOptions ? props.rangeOptions.indexOf(props.selectionType) + 1 : Object.keys(defaultRanges()).indexOf(props.selectionType) + 1)})  {
+  font-weight: 700;
 }`

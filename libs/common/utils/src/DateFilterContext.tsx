@@ -30,20 +30,24 @@ export const defaultDateFilter = {
 export const DateFilterContext = createContext<DateFilterContextprops>(defaultDateFilter)
 export const useDateFilter = () => {
   const { dateFilter, setDateFilter } = useContext(DateFilterContext)
+  const { range } = dateFilter
+  const { startDate, endDate } = getDateRangeFilter(range, dateFilter.startDate, dateFilter.endDate)
   return {
     setDateFilter,
-    ...dateFilter
+    startDate,
+    endDate,
+    range
   } as const
 }
 
 export function DateFilterProvider (props: { children: ReactNode }) {
   const [dateFilter, setDateFilter] = useState<DateFilter>(defaultDateFilter.dateFilter)
-  // const [,setSearch] = useSearchParams()
-  // useEffect(()=>{
-  //   const params = new URLSearchParams()
-  //   params.append('period',Buffer.from(JSON.stringify({ dateFilter })).toString('base64'))
-  //   setSearch(params)
-  // },[dateFilter, setSearch])
+  const [,setSearch] = useSearchParams()
+  useEffect(()=>{
+    const params = new URLSearchParams()
+    params.append('period',Buffer.from(JSON.stringify({ dateFilter })).toString('base64'))
+    setSearch(params)
+  },[dateFilter, setSearch])
   return <DateFilterContext.Provider {...props} value={{ dateFilter, setDateFilter }} />
 }
 export function defaultRanges (subRange?: DateRange[]) {
@@ -69,9 +73,9 @@ export function defaultRanges (subRange?: DateRange[]) {
   return defaultRange
 }
 
-export function getDateRangeFilter ( range : DateRange) {
+export function getDateRangeFilter ( range : DateRange, start?: string, end? : string) {
   const ranges = defaultRanges()
-  const [startDate, endDate] = (
+  const [startDate, endDate] = (range === DateRange.custom && start && end) ? [start, end] : (
     ranges as Record<string, [moment.Moment, moment.Moment]>
   )[range].map((date: moment.Moment) => date.format() )
   return { startDate, endDate, range }

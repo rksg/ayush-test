@@ -10,7 +10,7 @@ import {
   DashboardRow,
   DashboardCol,
   PageHeader,
-  DatePicker
+  RangePicker
 } from '@acx-ui/components'
 import {
   ArrowExpand,
@@ -33,7 +33,6 @@ export default function Dashboard () {
 
 function DashboardPageHeader () {
   const { startDate,endDate, setDateFilter, range } = useDateFilter()
-  console.log(range)
   const { $t } = useIntl()
   return (
     <PageHeader
@@ -41,15 +40,15 @@ function DashboardPageHeader () {
       extra={[
         <Button key='add' type='primary'>Add...</Button>,
         <Button key='hierarchy-filter'>Entire Organization <ArrowExpand /></Button>,
-        <DatePicker
+        <RangePicker
           selectedRange={{ 
             startDate: moment(startDate),
             endDate: moment(endDate) }}
-          rangeOptions
           enableDates={[moment().subtract(3, 'months').seconds(0),
             moment().seconds(0)]}
           onDateApply={setDateFilter}
           showTimePicker
+          selectionType={range}
         />,
         <Button key='download' icon={<DownloadOutlined />} />,
         <Button key='insight' icon={<BulbOutlined />} />

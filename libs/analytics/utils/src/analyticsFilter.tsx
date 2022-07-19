@@ -1,6 +1,6 @@
 import React, { ReactNode, useContext } from 'react'
 
-import { DateFilterContext } from '@acx-ui/utils'
+import { DateFilterContext, getDateRangeFilter } from '@acx-ui/utils'
 
 import { NetworkPath } from './constants'
 
@@ -19,9 +19,13 @@ export type AnalyticsFilter = ReturnType<typeof useAnalyticsFilter>
 export function useAnalyticsFilter () {
   const { ...filters } = useContext(AnalyticsFilterContext)
   const { dateFilter } = useContext(DateFilterContext)
+  const { range } = dateFilter
+  const { startDate, endDate } = getDateRangeFilter(range, dateFilter.startDate, dateFilter.endDate)
   return {
     ...filters,
-    ...dateFilter
+    startDate,
+    endDate,
+    range
   } as const
 }
 

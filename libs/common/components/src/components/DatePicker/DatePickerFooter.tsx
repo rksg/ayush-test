@@ -3,14 +3,14 @@ import  React,{ useCallback } from 'react'
 import { TimePicker, Row, Col }     from 'antd'
 import { range as timepickerRange } from 'lodash'
 
-import { ArrowDown }       from '@acx-ui/icons'
-import { dateTimeFormats } from '@acx-ui/utils'
+import { ArrowDown }                  from '@acx-ui/icons'
+import { dateTimeFormats, DateRange } from '@acx-ui/utils'
 
 import { Button } from '../Button'
 
 import { DateRangeType } from '.'
 
-import type { Moment  } from 'moment'
+import type { Moment } from 'moment'
 
 interface DatePickerFooterProps {
   showTimePicker?: boolean;
@@ -64,7 +64,8 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
     else {
       onDateApply({ 
         startDate: range.startDate?.format(),
-        endDate: range.endDate?.format() })
+        endDate: range.endDate?.format(),
+        range: DateRange.custom })
     }
     setIsCalenderOpen(false)
   }

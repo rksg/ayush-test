@@ -2,26 +2,16 @@
 import  { useEffect, useState, useRef, useCallback } from 'react'
 
 import { DatePicker as AntdDatePicker } from 'antd'
-import { pick }                         from 'lodash'
 import moment                           from 'moment'
 
-import { ClockOutlined }   from '@acx-ui/icons'
-import { dateTimeFormats } from '@acx-ui/utils'
+import { ClockOutlined }                             from '@acx-ui/icons'
+import { dateTimeFormats, DateRange, defaultRanges } from '@acx-ui/utils'
 
 import { DatePickerFooter } from './DatePickerFooter'
 import * as UI              from './styledComponents'
 
 import type { Moment } from 'moment'
 
-
-export enum DateRange {
-  today = 'Today',
-  last1Hour = 'Last 1 Hour',
-  last24Hours = 'Last 24 Hours',
-  last7Days = 'Last 7 Days',
-  lastMonth = 'Last Month',
-  custom = 'Custom'
-}
 export type DateRangeType = { 
   startDate: moment.Moment | null, 
   endDate : moment.Moment | null
@@ -37,43 +27,21 @@ interface DatePickerProps {
   selectedRange: DateRangeType;
   onDateChange?:Function;
   onDateApply:Function;
-  selectionType?:DateRange
+  selectionType:DateRange
 };
 
 const AntdRangePicker = AntdDatePicker.RangePicker
 const { dateFormat, dateTimeFormat } = dateTimeFormats
 
-const defaultRanges = (subRange?: DateRange[]) => {
-  const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
-    [DateRange.last1Hour]: [
-      moment().subtract(1, 'hours').seconds(0),
-      moment().seconds(0)
-    ],
-    [DateRange.today]: [moment().startOf('day').seconds(0), moment().seconds(0)],
-    [DateRange.last24Hours]: [
-      moment().subtract(1, 'days').seconds(0),
-      moment().seconds(0)
-    ],
-    [DateRange.last7Days]: [moment().subtract(7, 'days').seconds(0), moment().seconds(0)],
-    [DateRange.lastMonth]: [
-      moment().subtract(1, 'month').seconds(0),
-      moment().seconds(0)
-    ]
-  }
-  if (subRange) {
-    return pick(defaultRange, subRange)
-  }
-  return defaultRange
-}
 
 export const RangePicker = ({ showTimePicker, enableDates, rangeOptions,
-  selectedRange, onDateChange,onDateApply }: DatePickerProps) => {
+  selectedRange, onDateChange,onDateApply, selectionType }: DatePickerProps) => {
 
   const didMountRef = useRef(false)
+
   const componentRef = useRef<HTMLDivElement | null>(null)
 
   const [range, setRange] = useState<DateRangeType>(selectedRange)
-  const [selectionRangeType, setSelectionRangeType] = useState<DateRange>()
 
   const [isCalenderOpen, setIscalenderOpen] = useState<boolean>(false)
   const disabledDate = useCallback((current: Moment) => {
@@ -90,7 +58,8 @@ export const RangePicker = ({ showTimePicker, enableDates, rangeOptions,
         setIscalenderOpen(false) 
       }
       if (Object.values(DateRange).includes(target.innerText as DateRange)){
-        setSelectionRangeType(target.innerText as DateRange)
+        onDateApply({ 
+          range: target.innerText as DateRange })
         setIscalenderOpen(false) 
       }
     }
@@ -103,14 +72,13 @@ export const RangePicker = ({ showTimePicker, enableDates, rangeOptions,
     return () => {
       document.removeEventListener('click', handleClickForDatePicker)
     }
-  },[range, onDateChange])
-
-  useEffect(()=>{
-    onDateApply({ 
-      range: selectionRangeType })
-  },[selectionRangeType, onDateApply])
+  },[range, onDateChange, onDateApply])
+  
   return ( 
-    <UI.Wrapper ref={componentRef} hasTimePicker={showTimePicker}>
+    <UI.Wrapper ref={componentRef}
+      hasTimePicker={showTimePicker} 
+      rangeOptions={rangeOptions}
+      selectionType={selectionType}>
       <AntdRangePicker
         ranges={defaultRanges(rangeOptions) as RangesType}
         placement='bottomRight'
