@@ -12,7 +12,7 @@ function Assoc () {
     />
     <Row gutter={[20, 20]}>
       <Col span={4}>
-        <div>incident attribute assoc</div>
+        <div>incident attribute Assoc</div>
       </Col>
       <Col span={20}>
         <Row gutter={[20, 20]}>
