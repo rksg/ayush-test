@@ -127,7 +127,7 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
           style={styles.button}>Cancel</Button>
       </Col>
       <Col span={3} style={{ lineHeight: 'normal' }}>
-        <Button type={'primary'}
+        <Button type={'secondary'}
           style={styles.button}
           onClick={()=>onButtonClick('apply')}>Apply</Button>
       </Col>
