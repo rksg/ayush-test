@@ -32,7 +32,8 @@ export default function Dashboard () {
 }
 
 function DashboardPageHeader () {
-  const { startDate,endDate, setDateFilter } = useDateFilter()
+  const { startDate,endDate, setDateFilter, range } = useDateFilter()
+  console.log(range)
   const { $t } = useIntl()
   return (
     <PageHeader

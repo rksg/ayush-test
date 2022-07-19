@@ -38,8 +38,7 @@ export const useDateFilter = () => {
 
 export function DateFilterProvider (props: { children: ReactNode }) {
   const [dateFilter, setDateFilter] = useState<DateFilter>(defaultDateFilter.dateFilter)
-  const [,setSearch] = useSearchParams()
-
+  // const [,setSearch] = useSearchParams()
   // useEffect(()=>{
   //   const params = new URLSearchParams()
   //   params.append('period',Buffer.from(JSON.stringify({ dateFilter })).toString('base64'))

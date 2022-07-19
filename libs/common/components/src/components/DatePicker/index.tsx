@@ -21,7 +21,10 @@ export enum DateRange {
   lastMonth = 'Last Month',
   custom = 'Custom'
 }
-export type DateRangeType = { startDate: moment.Moment | null, endDate : moment.Moment | null }
+export type DateRangeType = { 
+  startDate: moment.Moment | null, 
+  endDate : moment.Moment | null
+}
 type RangeValueType = [Moment | null, Moment | null] | null
 type RangeBoundType= [Moment, Moment] | null
 type RangesType = Record<string, Exclude<RangeBoundType, null>
@@ -32,7 +35,8 @@ interface DatePickerProps {
   rangeOptions?: [DateRange,DateRange] | boolean;
   selectedRange: DateRangeType;
   onDateChange?:Function;
-  onDateApply:Function
+  onDateApply:Function;
+  selectionType?:DateRange
 };
 
 export const dateFormat = 'DD/MM/YYYY'
@@ -70,6 +74,8 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
   const componentRef = useRef<HTMLDivElement | null>(null)
 
   const [range, setRange] = useState<DateRangeType>(selectedRange)
+  const [selectionRangeType, setSelectionRangeType] = useState<DateRange>()
+
   const [isCalenderOpen, setIscalenderOpen] = useState<boolean>(false)
   const disabledDate = useCallback((current: Moment) => {
     if (!enableDates) {
@@ -81,16 +87,15 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
   useEffect(()=>{
     const handleClickForDatePicker = (event : MouseEvent) => {
       const target = event.target as HTMLInputElement
-      if ((componentRef.current && !componentRef.current.contains(event.target as Node)) 
-      || Object.values(DateRange).includes(target.innerText as DateRange)
-      ){
-        onDateApply({ 
-          startDate: range.startDate?.format(),
-          endDate: range.endDate?.format() })
+      if (componentRef.current && !componentRef.current.contains(event.target as Node)){
+        setIscalenderOpen(false) 
+      }
+      if (Object.values(DateRange).includes(target.innerText as DateRange)){
+        setSelectionRangeType(target.innerText as DateRange)
         setIscalenderOpen(false) 
       }
     }
-    document.addEventListener('click', handleClickForDatePicker, true)
+    document.addEventListener('click', handleClickForDatePicker)
     if (!didMountRef.current) {
       didMountRef.current = true
       return
@@ -98,13 +103,17 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
     if( typeof onDateChange === 'function')
       onDateChange(range)
     return () => {
-      document.removeEventListener('click', handleClickForDatePicker, true)
+      document.removeEventListener('click', handleClickForDatePicker)
     }
-    
-  }
-  ,[range, onDateChange,setIscalenderOpen,onDateApply])
+  },[range])
 
+useEffect(()=>{
+        onDateApply({ 
+          startDate: range.startDate?.format(),
+          endDate: range.endDate?.format(),
+           range : selectionRangeType})
 
+},[selectionRangeType])
   return ( 
     <UI.Wrapper ref={componentRef} hasTimePicker={showTimePicker}>
       <RangePicker 
@@ -120,7 +129,7 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
         onClick={() => setIscalenderOpen (true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined/>}
-        onCalendarChange={(values: RangeValueType) =>
+        onCalendarChange={(values: RangeValueType) =>{
           setRange({
             startDate: values
               ? values[0]
@@ -128,7 +137,7 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
             endDate: values
               ? values[1]
               : null })
-        }
+        }}
         mode={['date', 'date']}
         renderExtraFooter={() => 
           <DatePickerFooter 

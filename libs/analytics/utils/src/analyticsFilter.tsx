@@ -1,6 +1,6 @@
 import React, { ReactNode, useContext } from 'react'
 
-import { useDateFilter } from '@acx-ui/utils'
+import { DateFilterContext } from '@acx-ui/utils'
 
 import { NetworkPath } from './constants'
 
@@ -18,11 +18,10 @@ export type AnalyticsFilter = ReturnType<typeof useAnalyticsFilter>
 
 export function useAnalyticsFilter () {
   const { ...filters } = useContext(AnalyticsFilterContext)
-  const { startDate, endDate } = useDateFilter()
+  const { dateFilter } = useContext(DateFilterContext)
   return {
     ...filters,
-    startDate,
-    endDate
+    ...dateFilter
   } as const
 }
 

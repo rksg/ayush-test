@@ -1,6 +1,7 @@
 export * from './formatter'
 export {
   DateFilterProvider,
-  useDateFilter
+  useDateFilter,
+  DateFilterContext
 } from './DateFilterContext'
 export * from './locales'
