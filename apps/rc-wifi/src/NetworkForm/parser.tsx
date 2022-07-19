@@ -14,7 +14,8 @@ import {
   ManagementFrameMinimumPhyRateEnum,
   ManagementFrameMinimumPhyRateEnum6G,
   DnsProxy,
-  IDpskWlanAdvancedCustomization
+  IDpskWlanAdvancedCustomization,
+  GuestNetwork
 } from '@acx-ui/rc/utils'
 
 const clientIsolationOptions: IClientIsolationOptions = {
@@ -248,19 +249,11 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
 
 const parseCaptivePortalDataToSave = (data: NetworkSaveData) => {
   let saveData = {}
-
+  const defaultNetwork = new GuestNetwork() 
   saveData = {
-    ...saveData,
-    enableDhcp: false,
-    // TODO:
-    wlan: {
-      advancedCustomization: OpenWlanAdvancedCustomization,
-      enable: true,
-      vlanId: 1
-    },
-    guestPortal:{}
+    ...defaultNetwork,
+    ...data
   }
-
   return saveData
 }
 
@@ -308,7 +301,7 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data),
     [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data),
     [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data),
-    [NetworkTypeEnum.CAPTIVEPORTAL]: parseCaptivePortalDataToSave(data), // TODO: Remove
+    [NetworkTypeEnum.CAPTIVEPORTAL]: parseCaptivePortalDataToSave(data) 
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }

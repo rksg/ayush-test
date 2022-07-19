@@ -442,14 +442,13 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                         style="margin-bottom: 8px;"
                                       >
                                         <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                         >
                                           <span
-                                            class="ant-radio ant-radio-disabled"
+                                            class="ant-radio"
                                           >
                                             <input
                                               class="ant-radio-input"
-                                              disabled=""
                                               type="radio"
                                               value="guest"
                                             />
