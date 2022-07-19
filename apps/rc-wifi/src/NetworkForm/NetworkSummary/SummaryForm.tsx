@@ -1,19 +1,24 @@
 import { EnvironmentOutlined }            from '@ant-design/icons'
 import { Col, Divider, Form, Input, Row } from 'antd'
 
-import { StepsForm, Subtitle }                                    from '@acx-ui/components'
-import { useCloudpathListQuery }                                  from '@acx-ui/rc/services'
-import { NetworkSaveData, NetworkTypeEnum, transformDisplayText } from '@acx-ui/rc/utils'
-import { useParams }                                              from '@acx-ui/react-router-dom'
+import { StepsForm, Subtitle }   from '@acx-ui/components'
+import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import { 
+  CreateNetworkFormFields,
+  NetworkTypeEnum,
+  transformDisplayText
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { transformNetworkType } from '../parser'
 
 import { AaaSummaryForm }  from './AaaSummaryForm'
 import { DpskSummaryForm } from './DpskSummaryForm'
+import { PskSummaryForm }  from './PskSummaryForm'
 
 
 export function SummaryForm (props: {
-  summaryData: NetworkSaveData
+  summaryData: CreateNetworkFormFields
 }) {
   const { summaryData } = props
   const selectedId = summaryData.cloudpathServerId
@@ -59,10 +64,12 @@ export function SummaryForm (props: {
             label='Type:'
             children={transformNetworkType(summaryData.type)}
           />
+          {summaryData.type !== 'psk' &&
           <Form.Item
             label='Use Cloudpath Server:'
             children={summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
           />
+          }
           {summaryData.isCloudpathEnabled && selected &&
             <>
               <Form.Item
@@ -92,6 +99,9 @@ export function SummaryForm (props: {
           }
           {summaryData.type === NetworkTypeEnum.DPSK && 
             <DpskSummaryForm summaryData={summaryData} />
+          }
+          {summaryData.type === NetworkTypeEnum.PSK && 
+            <PskSummaryForm summaryData={summaryData} />
           }
         </Col>
         <Divider type='vertical' style={{ height: '300px' }}/>

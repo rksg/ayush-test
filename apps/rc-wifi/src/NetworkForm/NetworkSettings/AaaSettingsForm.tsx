@@ -14,7 +14,12 @@ import {
   Tooltip
 } from 'antd'
 
-import { StepsForm, Button, Subtitle }              from '@acx-ui/components'
+import {
+  StepsForm,
+  Button,
+  Subtitle,
+  ToggleButtonInput
+} from '@acx-ui/components'
 import { useGetAllUserSettingsQuery, UserSettings } from '@acx-ui/rc/services'
 import { useCloudpathListQuery }                    from '@acx-ui/rc/services'
 import {
@@ -23,7 +28,6 @@ import {
   getUserSettingsFromDict,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  AaaServerTitle,
   IpPortSecretForm
 } from '@acx-ui/rc/utils'
 import { NetworkTypeEnum } from '@acx-ui/rc/utils'
@@ -181,8 +185,7 @@ function SettingsForm () {
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
           <Subtitle level={3}>Authentication Service</Subtitle>
-          <IpPortSecretForm 
-            title={AaaServerTitle[AaaServerOrderEnum.PRIMARY]} 
+          <IpPortSecretForm
             serverType={AaaServerTypeEnum.AUTHENTICATION}
             order={AaaServerOrderEnum.PRIMARY}
           />
@@ -195,8 +198,7 @@ function SettingsForm () {
           </Form.Item>
 
           {enableSecondaryAuthServer && 
-            <IpPortSecretForm 
-              title={AaaServerTitle[AaaServerOrderEnum.SECONDARY]} 
+            <IpPortSecretForm
               serverType={AaaServerTypeEnum.AUTHENTICATION}
               order={AaaServerOrderEnum.SECONDARY}
             />
@@ -224,8 +226,7 @@ function SettingsForm () {
 
           {enableAccountingService && (
             <>
-              <IpPortSecretForm 
-                title={AaaServerTitle[AaaServerOrderEnum.PRIMARY]} 
+              <IpPortSecretForm
                 serverType={AaaServerTypeEnum.ACCOUNTING}
                 order={AaaServerOrderEnum.PRIMARY}
               />
@@ -238,8 +239,7 @@ function SettingsForm () {
               </Form.Item>
 
               {enableSecondaryAcctServer &&
-                <IpPortSecretForm 
-                  title={AaaServerTitle[AaaServerOrderEnum.SECONDARY]} 
+                <IpPortSecretForm
                   serverType={AaaServerTypeEnum.ACCOUNTING}
                   order={AaaServerOrderEnum.SECONDARY}
                 />
@@ -264,22 +264,4 @@ function SettingsForm () {
       </Space>
     )
   }
-}
-
-function ToggleButtonInput (props: {
-  value?: boolean
-  onChange?: (value: boolean) => void
-  enableText: React.ReactNode
-  disableText: React.ReactNode
-}) {
-  const [enabled, setEnabled] = useState(props.value ?? false)
-  return <Button
-    type='link'
-    onClick={() => {
-      props.onChange?.(!enabled)
-      setEnabled(!enabled)
-    }}
-  >
-    {enabled ? props.enableText : props.disableText}
-  </Button>
 }

@@ -24,6 +24,7 @@ import NetworkFormContext    from './NetworkFormContext'
 import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
 import { DpskSettingsForm }  from './NetworkSettings/DpskSettingsForm'
 import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }   from './NetworkSettings/PskSettingsForm'
 import { SummaryForm }       from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
@@ -110,9 +111,26 @@ export function NetworkForm () {
           title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
           validateTrigger='onBlur'
           onFinish={async (data) => {
+            let wlan = {}
+            if(networkType === 'psk'){
+              wlan = {
+                wlan: {
+                  passphrase: data.passphrase,
+                  saePassphrase: data.saePassphrase,
+                  managementFrameProtection: data.managementFrameProtection,
+                  macAddressAuthentication: data.macAddressAuthentication,
+                  macAuthMacFormat: data.macAuthMacFormat,
+                  wlanSecurity: data.wlanSecurity
+                }
+              }
+            }
             data = {
               ...data,
-              ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
+              ...{ 
+                type: state.type,
+                isCloudpathEnabled: data.isCloudpathEnabled,
+                ...wlan
+              }
             }
             const settingSaveData = tranferSettingsToSave(data)
             updateData(data)
@@ -123,6 +141,7 @@ export function NetworkForm () {
           {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
           {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
           {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
+          {state.type === NetworkTypeEnum.PSK && <PskSettingsForm formRef={formRef} />}
         </StepsForm.StepForm>
 
         <StepsForm.StepForm

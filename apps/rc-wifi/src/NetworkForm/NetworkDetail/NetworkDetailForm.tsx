@@ -43,7 +43,7 @@ export function NetworkDetailForm () {
         >
           <Radio.Group onChange={onChange}>
             <Space direction='vertical'>
-              <Radio value={NetworkTypeEnum.PSK} disabled>
+              <Radio value={NetworkTypeEnum.PSK}>
                 {NetworkTypeLabel.psk}
                 <RadioDescription>
                   {NetworkTypeDescription.psk}

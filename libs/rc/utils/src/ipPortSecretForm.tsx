@@ -1,17 +1,12 @@
 import { Form, Input } from 'antd'
-import { Subtitle }    from '@acx-ui/components'
-import {
-  AaaServerTypeEnum,
-  AaaServerOrderEnum,
-  networkWifiIpRegExp,
-  networkWifiPortRegExp,
-  stringContainSpace
-} from '@acx-ui/rc/utils'
 
-export function IpPortSecretForm ({title, serverType, order}: {title: string, serverType: AaaServerTypeEnum, order: AaaServerOrderEnum}) {
+import { AaaServerTypeEnum, AaaServerOrderEnum }                          from './constants'
+import { networkWifiIpRegExp, networkWifiPortRegExp, stringContainSpace } from './validator' 
+
+export function IpPortSecretForm ({ serverType, order }: 
+  { serverType: AaaServerTypeEnum, order: AaaServerOrderEnum }) {
   return (
     <>
-      <Subtitle level={4} children={title} />
       <Form.Item
         name={`${serverType}.${order}.ip`}
         label='IP Address'
@@ -34,9 +29,10 @@ export function IpPortSecretForm ({title, serverType, order}: {title: string, se
         }]}
         children={<Input type='number'/>}
         style={{ display: 'inline-block', width: 'calc(20%)' }}
+        initialValue={serverType === 'authRadius' ? 1812 : 1813}
       />
       <Form.Item
-        name={`${serverType}.${order}.secretName`}
+        name={`${serverType}.${order}.sharedSecret`}
         label='Shared secret'
         rules={[{
           required: true,

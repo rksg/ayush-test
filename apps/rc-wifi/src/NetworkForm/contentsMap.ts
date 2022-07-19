@@ -19,6 +19,7 @@ export const NetworkTypeLabel: Record<NetworkTypeEnum, string> = {
 }
 
 export const NetworkTypeTitle: Partial<Record<NetworkTypeEnum, string>> = {
+  [NetworkTypeEnum.PSK]: 'Settings',
   [NetworkTypeEnum.AAA]: 'AAA Settings',
   [NetworkTypeEnum.OPEN]: 'Settings',
   [NetworkTypeEnum.DPSK]: 'DPSK Settings'

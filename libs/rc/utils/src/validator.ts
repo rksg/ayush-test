@@ -23,3 +23,10 @@ export const stringContainSpace = (value: string) => {
   }
   return Promise.resolve()
 }
+
+export const trailingNorLeadingSpaces = (value: string) => {
+  if (value && (value.endsWith(' ') || value.startsWith(' '))) {
+    return Promise.reject('No leading or trailing spaces allowed')
+  }
+  return Promise.resolve()
+}
