@@ -5,6 +5,7 @@ export const AlertStyle = styled(Alert)`
 &.ant-alert {
   font-size: var(--acx-body-4-font-size);
   padding: 10px 15px;
+  margin-bottom: var(--acx-content-vertical-space);
   svg {
     font-size: var(--acx-body-3-font-size);
   }

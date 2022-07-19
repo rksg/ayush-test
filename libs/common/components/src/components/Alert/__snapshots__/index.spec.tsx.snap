@@ -3,7 +3,7 @@
 exports[`Alert should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="ant-alert ant-alert-info styledComponents__AlertStyle-sc-1c2evo5-0 gzdXzc"
+    class="ant-alert ant-alert-info styledComponents__AlertStyle-sc-1c2evo5-0 lfjPoV"
     data-show="true"
     role="alert"
   >
@@ -47,7 +47,7 @@ exports[`Alert should render correctly 1`] = `
   </div>
   <p />
   <div
-    class="ant-alert ant-alert-error styledComponents__AlertStyle-sc-1c2evo5-0 gzdXzc"
+    class="ant-alert ant-alert-error styledComponents__AlertStyle-sc-1c2evo5-0 lfjPoV"
     data-show="true"
     role="alert"
   >
