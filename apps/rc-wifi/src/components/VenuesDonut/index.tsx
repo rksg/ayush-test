@@ -45,7 +45,7 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
   return chartData
 }
 
-function Venues () {
+function VenuesDonutWidget () {
   const basePath = useTenantLink('/venues/')
   const navigate = useNavigate()
 
@@ -80,4 +80,4 @@ function Venues () {
   )
 }
 
-export default Venues
+export default VenuesDonutWidget

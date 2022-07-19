@@ -20,7 +20,7 @@ function NetworkTabs () {
     data?.activeVenueCount ?? 0,
     0
   ]
-  
+
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab='Overview' key='overview' />

@@ -7,7 +7,7 @@ import { render,
   mockAutoSizer,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import Devices, { getApDonutChartData, getSwitchDonutChartData } from '.'
+import DevicesDonutWidget, { getApDonutChartData, getSwitchDonutChartData } from '.'
 
 describe('Devices widget', () => {
   mockAutoSizer()
@@ -20,7 +20,8 @@ describe('Devices widget', () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
-    const { asFragment } = render(<Provider><Devices /></Provider>, { route: { params } })
+    const { asFragment } = render(<Provider><DevicesDonutWidget /></Provider>,
+      { route: { params } })
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('Devices')

@@ -47,7 +47,7 @@ export const getSwitchClientChartData = (overviewData?: Dashboard): DonutChartDa
   return chartData
 }
 
-function Clients () {
+function ClientsDonutWidget () {
   const basePath = useTenantLink('/users/')
   const navigate = useNavigate()
 
@@ -96,4 +96,4 @@ function Clients () {
   )
 }
 
-export default Clients
+export default ClientsDonutWidget

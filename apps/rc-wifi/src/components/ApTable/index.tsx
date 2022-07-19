@@ -81,7 +81,7 @@ const getApStatus = function (status: ApDeviceStatusEnum) {
   )
 }
 
-export function Aps () {
+export function ApTable () {
   const params = useParams()
   const filters = getFilters(params)
   const tableQuery = useTableQuery({

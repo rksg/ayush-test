@@ -304,7 +304,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                   style="padding-left: 4px; padding-right: 4px;"
                 >
                   <div
-                    class="styledComponents__FieldExtraTooltip-sc-106zpbm-3 gUujJJ"
+                    class="styledComponents__FieldExtraTooltip-sc-1fsct6a-3 eTyuiz"
                   >
                     <span
                       aria-label="question-circle"
@@ -576,12 +576,12 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
             class="ant-col"
           >
             <h1
-              class="styledComponents__Title-sc-106zpbm-1 jGpmzJ"
+              class="styledComponents__Title-sc-1fsct6a-1 fUfRlv"
             >
               Dynamic Pre-Shared Key (DPSK)
             </h1>
             <div
-              class="styledComponents__Diagram-sc-106zpbm-0 bgEoOh"
+              class="styledComponents__Diagram-sc-1fsct6a-0 iuCTVv"
             >
               <img
                 alt="Dynamic Pre-Shared Key (DPSK)"

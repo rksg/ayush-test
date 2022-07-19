@@ -107,7 +107,7 @@ export const getSwitchDonutChartData = (overviewData?: Dashboard): DonutChartDat
   return chartData
 }
 
-function Devices () {
+function DevicesDonutWidget () {
   const basePath = useTenantLink('/devices/')
   const navigate = useNavigate()
 
@@ -154,4 +154,4 @@ function Devices () {
   )
 }
 
-export default Devices
+export default DevicesDonutWidget

@@ -6,7 +6,7 @@ import { render,
   mockAutoSizer,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import Venues, { getVenuesDonutChartData } from '.'
+import VenuesDonutWidget, { getVenuesDonutChartData } from '.'
 
 const data: Dashboard = {
   summary: {
@@ -32,7 +32,7 @@ describe('Venues widget', () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
-    const { asFragment } = render(<Provider><Venues /></Provider>, { route: { params } })
+    const { asFragment } = render(<Provider><VenuesDonutWidget /></Provider>, { route: { params } })
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('Venues')

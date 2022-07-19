@@ -2,10 +2,10 @@ import { Card }              from '@acx-ui/components'
 import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import { Provider }          from '@acx-ui/store'
 
-import Clients from './components/Clients'
-import Devices from './components/Devices'
+import Clients from './components/ClientsDonut'
+import Devices from './components/DevicesDonut'
 import { Map } from './components/Map'
-import Venues  from './components/Venues'
+import Venues  from './components/VenuesDonut'
 
 const SPLIT_NAME = 'sara-demo-toggle' // this is sample splitName, needs to be switched based on the epic level FF name
 

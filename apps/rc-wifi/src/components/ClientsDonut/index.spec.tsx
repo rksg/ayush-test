@@ -5,7 +5,7 @@ import { render,
   mockAutoSizer,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import Clients, { getAPClientChartData, getSwitchClientChartData } from '.'
+import ClientsDonutWidget, { getAPClientChartData, getSwitchClientChartData } from '.'
 
 describe('Clients widget', () => {
   mockAutoSizer()
@@ -18,7 +18,8 @@ describe('Clients widget', () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
-    const { asFragment } = render(<Provider><Clients /></Provider>, { route: { params } })
+    const { asFragment } = render(<Provider><ClientsDonutWidget /></Provider>,
+      { route: { params } })
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('Clients')

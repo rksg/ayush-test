@@ -3,15 +3,15 @@ import { render, screen }    from '@acx-ui/test-utils'
 
 import WifiWidgets from './Widgets'
 
-jest.mock('./components/Venues', () => ({
+jest.mock('./components/VenuesDonut', () => ({
   __esModule: true,
   default: () => <div>Venues Widget</div>
 }))
-jest.mock('./components/Devices', () => ({
+jest.mock('./components/DevicesDonut', () => ({
   __esModule: true,
   default: () => <div>Devices Widget</div>
 }))
-jest.mock('./components/Clients', () => ({
+jest.mock('./components/ClientsDonut', () => ({
   __esModule: true,
   default: () => <div>Clients Widget</div>
 }))

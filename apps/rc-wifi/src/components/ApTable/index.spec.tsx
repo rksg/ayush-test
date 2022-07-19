@@ -5,7 +5,7 @@ import { CommonUrlsInfo }                                                from '@
 import { Provider }                                                      from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { Aps } from './Aps'
+import { ApTable } from '.'
 
 const list = {
   totalCount: 1,
@@ -188,7 +188,7 @@ describe('Aps', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
-    const { asFragment } = render(<Provider><Aps /></Provider>, {
+    const { asFragment } = render(<Provider><ApTable /></Provider>, {
       route: { params, path: '/:tenantId' }
     })
 
