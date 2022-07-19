@@ -5,7 +5,7 @@ export const SubTitleWrapper = styled.div`
   font-size: var(--acx-body-3-font-size);
   line-height: var(--acx-body-3-line-height);
   color:  var(--acx-neutrals-50);
-  font-weight: 400;
+  font-weight: var(--acx-body-font-weight);
   height: var(--acx-body-3-line-height);
   padding-top: 4px;
 `
