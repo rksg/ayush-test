@@ -10,26 +10,21 @@ describe('incident details', () => {
   it('should render assoc properly', () => {
     const { asFragment } = render(<Assoc />)
     expect(asFragment()).toMatchSnapshot()
-    screen.getByText('incident attribute Assoc')
   })
   it('should render auth properly', () => {
     const { asFragment } = render(<Auth />)
     expect(asFragment()).toMatchSnapshot()
-    screen.getByText('incident attribute Auth')
   })
   it('should render dhcp properly', () => {
     const { asFragment } = render(<Dhcp />)
     expect(asFragment()).toMatchSnapshot()
-    screen.getByText('incident attribute Dhcp')
   })
   it('should render eap properly', () => {
     const { asFragment } = render(<Eap />)
     expect(asFragment()).toMatchSnapshot()
-    screen.getByText('incident attribute Eap')
   })
   it('should render radius properly', () => {
     const { asFragment } = render(<Radius />)
     expect(asFragment()).toMatchSnapshot()
-    screen.getByText('incident attribute Radius')
   })
 })
