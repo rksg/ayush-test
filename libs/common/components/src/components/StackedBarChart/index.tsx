@@ -164,9 +164,9 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
     },
     series: massageData(data, showTotal)
   }
-  if (props.setBarColor) {
-    option = { ...option, series: { ...option.series, itemStyle: { color: props.setBarColor } } }
-  }
+  // if (props.setBarColor) {
+  //   option = { ...option, series: { ...option.series, itemStyle: { color: props.setBarColor } } }
+  // }
   return (
     <ReactECharts
       {...props}

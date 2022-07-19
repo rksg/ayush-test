@@ -26,7 +26,10 @@ export const seriesMapping = [
 const data = [{
   category: 'P1',
   series: [
-    { name: 'p1', value: 10 }
+    { name: 'p1', value: 10 },
+    { name: 'p2', value: 0 },
+    { name: 'p3', value: 0 },
+    { name: 'p4', value: 0 }
   ]
 },{
   category: 'P2',
@@ -69,7 +72,7 @@ function IncidentBySeverityWidget () {
        <Subtitle level={3}>90</Subtitle>
        <StackedBarChart
          style={{ height: 85 }}
-         data={data.slice(0, 1)}
+         data={data}
          showLabels={true}
          showTotal={true}
          axisLabelWidth={15}
