@@ -112,4 +112,14 @@ describe('Venue Marker Tooltip', () => {
       <VenueMarkerTooltip venue={venue} onNavigate={onNavigateMock} />)
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should render tooltip without padding', async () => {
+    const venue: VenueMarkerOptions = {
+      ...common,
+      ...withoutCounts
+    }
+    const onNavigateMock = jest.fn()
+    const { asFragment } = render(
+      <VenueMarkerTooltip venue={venue} onNavigate={onNavigateMock} needPadding={false}/>)
+    expect(asFragment()).toMatchSnapshot()
+  })
 })
