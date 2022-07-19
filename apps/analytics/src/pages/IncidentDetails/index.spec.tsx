@@ -1,9 +1,9 @@
-import { render, screen } from '@acx-ui/test-utils'
+import { render } from '@acx-ui/test-utils'
 
-import Assoc from './Details/Assoc'
-import Auth from './Details/Auth'
-import Dhcp from './Details/Dhcp'
-import Eap from './Details/Eap'
+import Assoc  from './Details/Assoc'
+import Auth   from './Details/Auth'
+import Dhcp   from './Details/Dhcp'
+import Eap    from './Details/Eap'
 import Radius from './Details/Radius'
 
 describe('incident details', () => {
