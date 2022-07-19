@@ -16,7 +16,12 @@ export function FormModal () {
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()
 
-  const formContent = <Form form={form} layout='vertical' onFinish={() => setVisible(false)}>
+  const formContent = <Form
+    form={form}
+    layout='vertical'
+    validateTrigger='onBlur'
+    onFinish={() => setVisible(false)}
+  >
     <Form.Item
       label='Name'
       name='Name'
