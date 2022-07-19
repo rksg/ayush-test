@@ -1,6 +1,8 @@
-import { act, render } from '@acx-ui/test-utils'
+import { message } from 'antd'
 
-import { CountdownNode, showTxToast, TxStatus } from './toastService'
+import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+
+import { CountdownNode, showActivityMessage, showTxToast, TxStatus } from './toastService'
 
 const tx = { 
   requestId: '6470931c-c9ce-42f4-b9a3-48324f109bd5',
@@ -46,7 +48,7 @@ describe('Toast Service: basic', () => {
   it('Invalid transaction status', async () => {
     const invalidTx = {
       ...tx,
-      status: TxStatus.WAITING
+      status: TxStatus.IN_PROGRESS
     }
     const error = jest.spyOn(console, 'error').mockImplementation(() => {})
     act(() => {
@@ -54,4 +56,39 @@ describe('Toast Service: basic', () => {
     })
     expect(error).toHaveBeenCalled()
   })
+})
+
+describe('Toast Service: showTxToast', () => {
+  afterEach((done) => {
+    const toast = screen.queryByRole('img')
+    if (toast) {
+      waitForElementToBeRemoved(toast).then(done)
+      message.destroy()
+    } else {
+      done()
+    }
+  })
+
+  it('renders showActivityMessage successful content', async () => {
+    act(() => {
+      showActivityMessage(tx, ['AddNetworkDeep'])
+    })
+    /* eslint-disable max-len */
+    await screen.findByText('Network "open-network" was added by FisrtName 1094 LastName 1094 (dog1094@email.com)')
+    const link = await screen.findByText('View')
+    fireEvent.click(link)
+  })
+
+  it('renders showActivityMessage failed content', async () => {
+    const failedTx = {
+      ...tx,
+      status: TxStatus.FAIL,
+      descriptionTemplate: 'Network "@@networkName" was not added'
+    }
+    act(() => {
+      showActivityMessage(failedTx, ['AddNetworkDeep'])
+    })
+    await screen.findByText('Network "open-network" was not added')
+  })
+
 })
