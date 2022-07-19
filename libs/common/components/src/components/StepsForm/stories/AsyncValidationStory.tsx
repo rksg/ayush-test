@@ -47,17 +47,16 @@ export function AsyncValidationStory () {
         <Form.Item
           name='field1'
           label='Field 1'
-          // validate rules 1 by 1 to avoid calling external validation service
-          // default `validateFirst` value runs all rules
-          validateFirst
-          // Trigger validation `onBlur`, default is `onChange`
-          validateTrigger='onBlur'
           extra='Try enter "value" to trigger validation failed'
           // rules uses https://github.com/yiminghe/async-validator behind the scene
           rules={[
             { required: true },
             { validator: remoteValidation, message: 'Value in use' }
-          ]}>
+          ]}
+          // validate rules 1 by 1 to avoid calling external validation service unnecessarily
+          validateFirst
+          hasFeedback
+        >
           <Input suffix={loadingStates.field1 ? <LoadingOutlined /> : null} />
         </Form.Item>
         <Form.Item name='field2' label='Field 2'>
