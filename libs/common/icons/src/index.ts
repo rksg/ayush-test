@@ -11,6 +11,7 @@ export { ReactComponent as CalendarDateOutlined } from './icons/CalendarDateOutl
 export { ReactComponent as CalendarDateSolid } from './icons/CalendarDateSolid.svg'
 export { ReactComponent as CancelCircle } from './icons/CancelCircle.svg'
 export { ReactComponent as ClockOutlined } from './icons/ClockOutlined.svg'
+export { ReactComponent as Close } from './icons/Close.svg'
 export { ReactComponent as ConfigurationOutlined } from './icons/ConfigurationOutlined.svg'
 export { ReactComponent as ConfigurationSolid } from './icons/ConfigurationSolid.svg'
 export { ReactComponent as DevicesOutlined } from './icons/DevicesOutlined.svg'
