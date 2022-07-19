@@ -93,9 +93,9 @@ export const Wrapper = styled.div<WrapperProps>`
   background: var(--acx-accents-blue-50);
   border-radius: 20px;
 }
-.ant-picker-cell-in-view.ant-picker-cell-range-hover .ant-picker-cell-inner::before,
-.ant-picker-cell-in-view.ant-picker-cell-range-hover-start .ant-picker-cell-inner::before,
-.ant-picker-cell-in-view.ant-picker-cell-range-hover-end .ant-picker-cell-inner::before {
+.ant-picker-cell-in-view. ant-picker-cell-range-hover .ant-picker-cell-inner::before,
+.ant-picker-cell-in-view. ant-picker-cell-range-hover-start .ant-picker-cell-inner::before,
+.ant-picker-cell-in-view. ant-picker-cell-range-hover-end .ant-picker-cell-inner::before {
   background: var(--acx-accents-blue-10);
 }
 .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover::before,
@@ -143,11 +143,11 @@ export const Wrapper = styled.div<WrapperProps>`
 }
 .calender-range-apply-row,
 .ant-picker-content td {
-  font-weight: 600;
+  font-weight: var(--acx-body-font-weight);
 }
 .ant-picker-header {
   border-bottom: none;
 }
 .ant-picker-header-view {
-  font-weight: 700;
+  font-weight: var(--acx-body-font-weight-bold);
 }`

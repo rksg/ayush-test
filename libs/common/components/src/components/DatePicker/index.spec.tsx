@@ -79,7 +79,7 @@ describe('CalenderRangePicker', () => {
     const dateSelect = await screen.findAllByTitle(moment('01/01/2022').format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
     expect( screen.getByRole('display-date-range'))
-      .toHaveTextContent('01/01/2022')
+      .toHaveTextContent('Jan 01 2022 - Mar 01 2022')
     expect(onDateChange).toBeCalledTimes(1)
   })
   it('should select time when click on time selection',async () => {

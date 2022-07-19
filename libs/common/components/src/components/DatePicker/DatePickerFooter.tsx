@@ -3,11 +3,12 @@ import  React,{ useCallback } from 'react'
 import { TimePicker, Row, Col }     from 'antd'
 import { range as timepickerRange } from 'lodash'
 
-import { ArrowDown } from '@acx-ui/icons'
+import { ArrowDown }       from '@acx-ui/icons'
+import { dateTimeFormats } from '@acx-ui/utils'
 
 import { Button } from '../Button'
 
-import { DateRangeType, dateFormat,dateWithTimeFormat } from '.'
+import { DateRangeType } from '.'
 
 import type { Moment  } from 'moment'
 
@@ -24,6 +25,7 @@ type DisabledTimes = {
   disabledMinutes?: (hour: number) => number[];
   disabledSeconds?: (hour: number, minute: number) => number[];
 }
+const { dateFormat, dateTimeFormat } = dateTimeFormats
 const styles = {
   timePicker: {
     width: '50px',
@@ -43,7 +45,9 @@ const timePickerConfig = [
 ]
 
 const getCustomisedDate = (date: Moment | null, showTimePicker?: boolean ) =>
-  showTimePicker ? date?.format(dateWithTimeFormat) : date?.format(dateFormat)
+  showTimePicker 
+    ? date?.format(dateTimeFormat) 
+    : date?.format(dateFormat)
 
 
 const defaultselectionForDisabledDates = {

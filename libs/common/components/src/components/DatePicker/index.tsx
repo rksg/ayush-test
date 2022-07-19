@@ -5,12 +5,13 @@ import { DatePicker as AntdDatePicker } from 'antd'
 import { pick }                         from 'lodash'
 import moment                           from 'moment'
 
-import { ClockOutlined } from '@acx-ui/icons'
+import { ClockOutlined }   from '@acx-ui/icons'
+import { dateTimeFormats } from '@acx-ui/utils'
 
 import { DatePickerFooter } from './DatePickerFooter'
 import * as UI              from './styledComponents'
 
-import type { Moment  } from 'moment'
+import type { Moment } from 'moment'
 
 
 export enum DateRange {
@@ -35,10 +36,8 @@ interface DatePickerProps {
   onDateApply: Function
 };
 
-export const dateFormat = 'DD/MM/YYYY'
-export const dateWithTimeFormat= 'DD/MM/YYYY HH:mm'
-
 const AntdRangePicker = AntdDatePicker.RangePicker
+const { dateFormat, dateTimeFormat } = dateTimeFormats
 
 const defaultRanges = (subRange?: DateRange[]) => {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
@@ -128,7 +127,7 @@ export const RangePicker = ({ showTimePicker, enableDates, rangeOptions,
         value={[range?.startDate, range?.endDate]}
         format={
           showTimePicker
-            ? dateWithTimeFormat
+            ? dateTimeFormat
             : dateFormat
         }
         allowClear={false}
