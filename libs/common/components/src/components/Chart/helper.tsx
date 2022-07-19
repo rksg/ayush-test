@@ -66,13 +66,13 @@ export const dateAxisFormatter = () => ({
 
 export const tooltipOptions = () => ({
   textStyle: {
-    color: cssStr('--acx-primary-black'),
+    color: cssStr('--acx-primary-white'),
     fontFamily: cssStr('--acx-neutral-brand-font'),
     fontSize: cssNumber('--acx-body-5-font-size'),
     lineHeight: cssNumber('--acx-body-5-line-height'),
     fontWeight: cssNumber('--acx-body-font-weight')
   },
-  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  backgroundColor: cssStr('--acx-primary-black'),
   borderRadius: 2,
   borderWidth: 0,
   padding: 8,
