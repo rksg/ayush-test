@@ -29,7 +29,7 @@ type RangesType = Record<string, Exclude<RangeBoundType, null>
 interface DatePickerProps {
   showTimePicker?: boolean;
   enableDates?: [Moment, Moment];
-  rangeOptions?: [DateRange,DateRange] | boolean;
+  rangeOptions?: DateRange[] | boolean;
   selectedRange: DateRangeType;
   onDateChange?:Function;
   onDateApply:Function

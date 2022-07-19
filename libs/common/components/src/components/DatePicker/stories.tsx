@@ -83,7 +83,7 @@ storiesOf('DatePicker', module).add('with user default selected date', () => (
     left: 500
   }}>
     <DatePicker
-      rangeOptions={[DateRange.today, DateRange.last7Days]}
+      rangeOptions={[DateRange.today, DateRange.last7Days, DateRange.lastMonth]}
       showTimePicker
       enableDates={[moment().subtract(1, 'month').seconds(0),
         moment().seconds(0)]}
