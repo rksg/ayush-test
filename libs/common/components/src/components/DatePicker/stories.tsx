@@ -1,8 +1,7 @@
 import React from 'react'
 
-import { storiesOf }                   from '@storybook/react'
-import { DatePicker as AntDatePicker } from 'antd'
-import moment                          from 'moment'
+import { storiesOf } from '@storybook/react'
+import moment        from 'moment'
 
 import { DatePicker, DateRange } from '.'
 
@@ -15,7 +14,6 @@ function Wrapper (props: { children: React.ReactNode }) {
 
 storiesOf('DatePicker', module).add('Basic', () => (
   <Wrapper>
-    <AntDatePicker />
     <DatePicker
       selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
         endDate: moment().seconds(0) }}
