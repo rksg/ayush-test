@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { showToast } from '@acx-ui/components'
 import {
   CommonUrlsInfo,
   createHttpRequest,
   onSocketActivityChanged,
   RequestPayload,
+  showActivityMessage,
   TableResult
 } from '@acx-ui/rc/utils'
 
@@ -32,21 +32,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          if (msg.status !== 'SUCCESS') return
-          if (!['DeleteNetwork', 'AddNetworkDeep'].includes(msg.useCase)) return
-
-          if (msg.useCase === 'AddNetworkDeep') {
-            showToast({
-              type: 'success',
-              content: 'Created successfully'
-            })
-          } else if (msg.useCase === 'DeleteNetwork') {
-            showToast({
-              type: 'success',
-              content: 'Deleted successfully'
-            })
-          }
-          api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
+          showActivityMessage(msg, ['AddNetworkDeep', 'DeleteNetwork'], () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
+          })
         })
       }
     }),
@@ -104,7 +92,14 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...networkDetailReq
         }
       },
-      providesTags: [{ type: 'Network', id: 'DETAIL' }]
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
+        })
+      }
     }),
     venueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
