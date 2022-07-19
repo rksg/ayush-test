@@ -41,7 +41,7 @@ export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
   )
 }
 
-export default (props: PageHeaderProps) => {
+const ConnectedHeader = (props: PageHeaderProps) => {
   const filters = useGlobalFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
   return <div>
@@ -53,3 +53,5 @@ export default (props: PageHeaderProps) => {
     </Loader>
   </div>
 }
+
+export default ConnectedHeader

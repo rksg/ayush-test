@@ -3,7 +3,7 @@ import { gql } from 'graphql-request'
 import { dataApi }                                              from '@acx-ui/analytics/services'
 import { GlobalFilter, NetworkPath, networkNodeTypeForDisplay } from '@acx-ui/analytics/utils'
 
-import { HeaderData } from './index'
+import { HeaderData } from '.'
 
 interface NetworkNodeInfo {
   type: string,
@@ -12,9 +12,9 @@ interface NetworkNodeInfo {
   apCount?: number,
   switchCount?: number,
   mac?: string,
-  model?: [string],
-  internalIp?: [string],
-  version?: [string],
+  model?: string[],
+  internalIp?: string[],
+  version?: string[],
   firmware?: string,
   portCount?: number,
 }
