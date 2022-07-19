@@ -24,7 +24,7 @@ type Dimensions = [
 interface StackedBarOptionalProps {
   animation: boolean
   showLabels: boolean
-  barColors: string[]
+  barColors?: string[]
   showTotal: boolean
   showTooltip: boolean
 }
@@ -32,12 +32,6 @@ interface StackedBarOptionalProps {
 const defaultProps: StackedBarOptionalProps = {
   animation: true,
   showLabels: true,
-  barColors: [
-    cssStr('--acx-semantics-yellow-40'), // P4
-    cssStr('--acx-accents-orange-50'), //.. P3
-    cssStr('--acx-semantics-red-50'), //... P2
-    cssStr('--acx-semantics-red-70') //.... P1
-  ],
   showTotal: true,
   showTooltip: true
 }
@@ -115,8 +109,14 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   dataFormatter,
   ...props
 }: StackedBarChartProps<TChartData>) {
-  const { animation, showTotal, showLabels, barColors, showTooltip } = props
-
+  
+  const { animation, showTotal, showLabels, showTooltip } = props
+  const barColors = props.barColors ?? [
+    cssStr('--acx-semantics-yellow-40'), // P4
+    cssStr('--acx-accents-orange-50'), //.. P3
+    cssStr('--acx-semantics-red-50'), //... P2
+    cssStr('--acx-semantics-red-70') //.... P1
+  ]
   const option: EChartsOption = {
     animation,
     silent: !showTooltip,

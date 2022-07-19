@@ -1,9 +1,15 @@
 import React from 'react'
 
-import { Col, Row } from 'antd'
+//import { DashboardCol, DashboardRow } from 'antd'
 
-import { Button, PageHeader } from '@acx-ui/components'
+import styled                    from 'styled-components/macro'
 
+import { Button, PageHeader, DashboardCol, DashboardRow } from '@acx-ui/components'
+import IncidentBySeverityWidget from '../../components/IncidentBySeverity'
+
+const Wrapper = styled.div`
+  display:flex;
+`
 function Incidents () {
   return <>
     <PageHeader
@@ -13,17 +19,20 @@ function Incidents () {
         <Button key='date-filter'>date filter</Button>
       ]}
     />
-    <Row gutter={[20, 20]}>
-      <Col span={4}>
-        <div>bar chart</div>
-      </Col>
-      <Col span={20}>
+    <DashboardRow gutter={[20, 80]} >
+    <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
+      <IncidentBySeverityWidget />
+      </DashboardCol>
+      <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
         timeseries
-      </Col>
-      <Col span={24}>
+      </DashboardCol>
+     
+    </DashboardRow>
+    <DashboardRow >
+    <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
         table
-      </Col>
-    </Row>
+      </DashboardCol>
+      </DashboardRow>
   </>
 }
 export default Incidents
