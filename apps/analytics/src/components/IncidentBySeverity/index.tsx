@@ -4,12 +4,14 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { useGlobalFilter }          from '@acx-ui/analytics/utils'
 import { getSeriesData }            from '@acx-ui/analytics/utils'
-import { Card }                     from '@acx-ui/components'
-import { Loader }                   from '@acx-ui/components'
-import { StackedBarChart }          from '@acx-ui/components'
-import { cssStr }                   from '@acx-ui/components'
-import { formatter }                from '@acx-ui/utils'
+import {
+  Card,
+  Subtitle,
+  StackedBarChart,
+  Loader
+ }                     from '@acx-ui/components'
 
+import { formatter }                from '@acx-ui/utils'
 import { TrafficByVolumeData }     from './services'
 import { useTrafficByVolumeQuery } from './services'
 
@@ -20,53 +22,38 @@ export const seriesMapping = [
   { key: 'totalTraffic_6', name: formatter('radioFormat')('6') }
 ] as Array<{ key: keyof Omit<TrafficByVolumeData, 'time'>, name: string }>
 
-const lineColors = [
-  cssStr('--acx-primary-black'),
-  cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-orange-50'),
-  cssStr('--acx-semantics-yellow-40')
-]
-// const data = [{
-//   category: 'P1',
-//   series: [
-//     { name: 'i', value: 10 }
-//   ]
-// },{
-//   category: 'P2',
-//   series: [
-//     { name: 'i', value: 5 }
-//   ]
-// }, {
-//   category: 'P3',
-//   series: [
-//     { name: 'i', value: 7 }
-//   ]
-// }]
+
 const data = [{
-  category: 'Infrastructure',
+  category: 'P1',
   series: [
-    { name: 'P3', value: 0 },
-    { name: 'P1', value: 0 },
-    { name: 'P2', value: 5 },
-    { name: 'P4', value: 0 }
+    { name: 'p1', value: 10 }
+  ]
+},{
+  category: 'P2',
+  series: [
+    { name: 'p1', value: 0 },
+    { name: 'p2', value: 5 },
+    { name: 'p3', value: 0 },
+    { name: 'p4', value: 0 }
   ]
 }, {
-  category: 'Performance',
+  category: 'P3',
   series: [
-    { name: 'P1', value: 0 },
-    { name: 'P2', value: 2 },
-    { name: 'P3', value: 5 },
-    { name: 'P4', value: 0 }
+    { name: 'p1', value: 0 },
+    { name: 'p2', value: 0 },
+    { name: 'p3', value: 7 },
+    { name: 'p4', value: 0 }
   ]
 }, {
-  category: 'Connection',
+  category: 'P4',
   series: [
-    { name: 'P1', value: 2 },
-    { name: 'P2', value: 3 },
-    { name: 'P3', value: 0 },
-    { name: 'P4', value: 7 }
+    { name: 'p1', value: 0 },
+    { name: 'p2', value: 0 },
+    { name: 'p3', value: 0 },
+    { name: 'p4', value: 2 }
   ]
-}]
+}].reverse()
+
 function IncidentBySeverityWidget () {
   // const filters = useGlobalFilter()
   // const queryResults = useTrafficByVolumeQuery(filters,
@@ -79,17 +66,26 @@ function IncidentBySeverityWidget () {
   return (
     // <Loader states={[queryResults]}>
       <Card title='Total Incidents'>
-        <AutoSizer>
-          {({ height, width }) => (
-            <StackedBarChart
-            style={{ height, width }}
-            data={data}
-            showLabels={true}
-            showTotal={true} />
-          )}
-        </AutoSizer> 
+       <Subtitle level={3}>90</Subtitle>
+       <StackedBarChart
+         style={{ height: 85 }}
+         data={data.slice(0, 1)}
+         showLabels={true}
+         showTotal={true}
+         axisLabelWidth={15}
+         setBarColor={(data: any) => console.log(data)}
+        />
         
       </Card>
+    //    <AutoSizer>
+    //    {({ height, width }) => (
+    //      <StackedBarChart
+    //      style={{ height, width }}
+    //      data={data}
+    //      showLabels={true}
+    //      showTotal={true} />
+    //    )}
+    //  </AutoSizer> 
     // </Loader>
   )
 }

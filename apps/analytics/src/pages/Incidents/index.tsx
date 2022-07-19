@@ -1,6 +1,6 @@
 import React from 'react'
 
-//import { DashboardCol, DashboardRow } from 'antd'
+import { Row } from 'antd'
 
 import styled                    from 'styled-components/macro'
 
@@ -19,20 +19,19 @@ function Incidents () {
         <Button key='date-filter'>date filter</Button>
       ]}
     />
-    <DashboardRow gutter={[20, 80]} >
-    <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
+    <Row gutter={[20, 80]} >
+    <DashboardCol col={{ span: 5 }} style={{ height: '160px' }}>
       <IncidentBySeverityWidget />
       </DashboardCol>
-      <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
+      <DashboardCol col={{ span: 15 }} style={{ height: '160px' }}>
         timeseries
       </DashboardCol>
-     
-    </DashboardRow>
-    <DashboardRow >
-    <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
+    </Row>
+    <Row >
+    <DashboardCol col={{ span: 6 }}>
         table
-      </DashboardCol>
-      </DashboardRow>
+    </DashboardCol>
+    </Row>
   </>
 }
 export default Incidents
