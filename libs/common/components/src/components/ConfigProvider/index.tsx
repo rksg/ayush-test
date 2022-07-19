@@ -1,9 +1,7 @@
 import React from 'react'
 
-import { OnErrorFn, IntlErrorCode, MissingTranslationError } from '@formatjs/intl'
-import {
-  ConfigProvider as AntConfigProvider
-}    from 'antd'
+import { OnErrorFn, IntlErrorCode }               from '@formatjs/intl'
+import { ConfigProvider as AntConfigProvider }    from 'antd'
 import {
   default as AntProConfigProvider,
   ConfigProviderProps as AntConfigProviderProps
