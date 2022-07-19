@@ -1,7 +1,7 @@
 
 import  { useEffect, useState, useRef, useCallback } from 'react'
 
-import { DatePicker as antdDatePicker } from 'antd'
+import { DatePicker as AntdDatePicker } from 'antd'
 import { pick }                         from 'lodash'
 import moment                           from 'moment'
 
@@ -25,20 +25,20 @@ export type DateRangeType = { startDate: moment.Moment | null, endDate : moment.
 type RangeValueType = [Moment | null, Moment | null] | null
 type RangeBoundType= [Moment, Moment] | null
 type RangesType = Record<string, Exclude<RangeBoundType, null>
-| (() => Exclude<RangeBoundType, null>)>
+  | (() => Exclude<RangeBoundType, null>)>
 interface DatePickerProps {
   showTimePicker?: boolean;
   enableDates?: [Moment, Moment];
   rangeOptions?: DateRange[] | boolean;
   selectedRange: DateRangeType;
-  onDateChange?:Function;
-  onDateApply:Function
+  onDateChange?: Function;
+  onDateApply: Function
 };
 
 export const dateFormat = 'DD/MM/YYYY'
 export const dateWithTimeFormat= 'DD/MM/YYYY HH:mm'
 
-const { RangePicker } = antdDatePicker
+const { RangePicker } = AntdDatePicker
 
 const defaultRanges = (subRange?: DateRange[] | boolean) => {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
@@ -64,7 +64,7 @@ const defaultRanges = (subRange?: DateRange[] | boolean) => {
 }
 
 export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
-  selectedRange, onDateChange,onDateApply }:DatePickerProps) => {
+  selectedRange, onDateChange,onDateApply }: DatePickerProps) => {
 
   const didMountRef = useRef(false)
   const componentRef = useRef<HTMLDivElement | null>(null)
@@ -77,15 +77,15 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
     }
     return enableDates[0] >= current ||
     enableDates[1] < current.seconds(0)
-  },[enableDates])
+  }, [enableDates])
   useEffect(()=>{
     const handleClickForDatePicker = (event : MouseEvent) => {
       const target = event.target as HTMLInputElement
-      if ((componentRef.current && !componentRef.current.contains(event.target as Node)) 
-      || Object.values(DateRange).includes(target.innerText as DateRange)
-      ){
+      if ((componentRef.current && !componentRef.current.contains(event.target as Node))
+        || Object.values(DateRange).includes(target.innerText as DateRange)
+      ) {
         onDateApply(range)
-        setIscalenderOpen(false) 
+        setIscalenderOpen(false)
       }
     }
     document.addEventListener('click', handleClickForDatePicker, true)
@@ -93,19 +93,16 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
       didMountRef.current = true
       return
     }
-    if( typeof onDateChange === 'function')
-      onDateChange(range)
+    onDateChange?.(range)
     return () => {
       document.removeEventListener('click', handleClickForDatePicker, true)
     }
-    
-  }
-  ,[range, onDateChange,setIscalenderOpen,onDateApply])
+  }, [range, onDateChange, setIscalenderOpen, onDateApply])
 
 
-  return ( 
+  return (
     <UI.Wrapper ref={componentRef} hasTimePicker={showTimePicker}>
-      <RangePicker 
+      <RangePicker
         ranges={
           rangeOptions
             ? defaultRanges(rangeOptions) as RangesType
@@ -118,23 +115,18 @@ export const DatePicker = ({ showTimePicker, enableDates, rangeOptions,
         onClick={() => setIscalenderOpen (true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined/>}
-        onCalendarChange={(values: RangeValueType) =>
-          setRange({
-            startDate: values
-              ? values[0]
-              : null ,
-            endDate: values
-              ? values[1]
-              : null })
+        onCalendarChange={(values: RangeValueType) => values == null
+          ? setRange({ startDate: null, endDate: null })
+          : setRange({ startDate: values[0], endDate: values[1] })
         }
         mode={['date', 'date']}
-        renderExtraFooter={() => 
-          <DatePickerFooter 
-            showTimePicker={showTimePicker} 
+        renderExtraFooter={() =>
+          <DatePickerFooter
+            showTimePicker={showTimePicker}
             range={range}
             setRange={setRange}
             defaultValue={selectedRange}
-            setIscalenderOpen={setIscalenderOpen}
+            setIsCalenderOpen={setIscalenderOpen}
             onDateApply={onDateApply}/>}
         value={[range?.startDate, range?.endDate]}
         format={

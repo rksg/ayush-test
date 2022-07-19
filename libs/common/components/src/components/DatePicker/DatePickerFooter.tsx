@@ -9,17 +9,17 @@ import { Button } from '../Button'
 
 import { DateRangeType, dateFormat,dateWithTimeFormat } from '.'
 
-
 import type { Moment  } from 'moment'
+
 interface DatePickerFooterProps {
   showTimePicker?: boolean;
   setRange: React.Dispatch<React.SetStateAction<DateRangeType>>;
   range: DateRangeType;
-  setIscalenderOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsCalenderOpen: React.Dispatch<React.SetStateAction<boolean>>;
   defaultValue: DateRangeType,
-  onDateApply:Function
+  onDateApply: Function
 };
- type DisabledTimes = {
+type DisabledTimes = {
   disabledHours?: () => number[];
   disabledMinutes?: (hour: number) => number[];
   disabledSeconds?: (hour: number, minute: number) => number[];
@@ -46,45 +46,44 @@ const getCustomisedDate = (date: Moment | null, showTimePicker?: boolean ) =>
   showTimePicker ? date?.format(dateWithTimeFormat) : date?.format(dateFormat)
 
 
-const defaultselectionForDisabledDates = {  
-  disabledHours: () =>[],
+const defaultselectionForDisabledDates = {
+  disabledHours: () => [],
   disabledMinutes: () => []
 }
-export const DatePickerFooter = ({ showTimePicker, range, defaultValue, 
-  setRange, setIscalenderOpen, onDateApply }: DatePickerFooterProps) => {
-    
+export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
+  setRange, setIsCalenderOpen, onDateApply }: DatePickerFooterProps) => {
+
   const onButtonClick = (type: string) =>{
-    if(type === 'cancel')
+    if (type === 'cancel') {
       setRange(defaultValue)
-    else   
-      onDateApply(range)  
-    setIscalenderOpen(false)
-  }
-  const onTimePickerSelect = (config : typeof timePickerConfig[number], time: Moment) => {
-    if(config.range === 'startDate' && time && time.isAfter(range.endDate)){
-      setRange({ startDate: time, endDate: time })
+    } else {
+      onDateApply(range)
     }
-    else {
+    setIsCalenderOpen(false)
+  }
+  const onTimePickerSelect = (config: typeof timePickerConfig[number], time: Moment) => {
+    if (config.range === 'startDate' && time && time.isAfter(range.endDate)) {
+      setRange({ startDate: time, endDate: time })
+    } else {
       setRange({ ...range, [config.range]: time })
     }
   }
-  const disabledDateTime = useCallback(() : DisabledTimes=>{
-    if(range.startDate && range.endDate && range.startDate.isSame(range.endDate, 'day'))
-    {
-      return {  
-        disabledHours: () =>timepickerRange(0, range.startDate?.hour()),
+  const disabledDateTime = useCallback((): DisabledTimes => {
+    if (range.startDate && range.endDate && range.startDate.isSame(range.endDate, 'day')) {
+      return {
+        disabledHours: () => timepickerRange(0, range.startDate?.hour()),
         disabledMinutes: () => timepickerRange(0, range.startDate?.minute())
       }
     }
     return defaultselectionForDisabledDates
-  },[range])
+  }, [range])
 
   return <>
     {showTimePicker &&
     <Row style={styles.row}>
       {timePickerConfig.map((config)=>
         <React.Fragment key={config.id}>
-          <Col 
+          <Col
             span={2.5}
             offset={config.offset}
           >
@@ -101,9 +100,9 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
               onSelect={(time) => onTimePickerSelect(config, time)}
               value={range[config.range as keyof DateRangeType]}
               disabled={!range[config.range as keyof DateRangeType]}
-              disabledTime={config.range === 'endDate' 
-                ? disabledDateTime 
-                : () => defaultselectionForDisabledDates} 
+              disabledTime={config.range === 'endDate'
+                ? disabledDateTime
+                : () => defaultselectionForDisabledDates}
             />
           </Col>
           {config.hasSemiColon &&
@@ -123,13 +122,13 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
         - ${getCustomisedDate(range?.endDate, showTimePicker) || ''}`}
       </Col>
       <Col span={3} style={{ lineHeight: 'normal' }}>
-        <Button onClick={()=>onButtonClick('cancel')}
+        <Button onClick={() => onButtonClick('cancel')}
           style={styles.button}>Cancel</Button>
       </Col>
       <Col span={3} style={{ lineHeight: 'normal' }}>
         <Button type={'secondary'}
           style={styles.button}
-          onClick={()=>onButtonClick('apply')}>Apply</Button>
+          onClick={() => onButtonClick('apply')}>Apply</Button>
       </Col>
     </Row>
   </>
