@@ -273,6 +273,9 @@
       .ant-btn:not(.ant-btn-link) {
         min-width: 85px;
         padding: 6px 16px;
+        max-width: 200px;
+        height: auto;
+        white-space: break-spaces;
       }
       &.ant-modal-confirm-error {
         .ant-modal-content {
@@ -282,6 +285,24 @@
       &.ant-modal-confirm-info {
         .ant-modal-content {
           border-color: var(--acx-accents-blue-50);
+        }
+        .ant-btn-primary {
+          border-color: var(--acx-accents-blue-50);
+          background: var(--acx-accents-blue-50);
+        }
+      }
+      &.ant-modal-confirm-warning {
+        .ant-modal-content {
+          border-color: var(--acx-accents-orange-50);
+        }
+      }
+      &.ant-modal-confirm {
+        &-error,
+        &-warning {
+          .ant-btn-primary {
+            border-color: var(--acx-accents-orange-50);
+            background: var(--acx-accents-orange-50);
+          }
         }
       }
     }

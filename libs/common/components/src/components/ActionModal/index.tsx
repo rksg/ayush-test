@@ -6,31 +6,32 @@ import { ModalFuncProps }               from 'antd/lib/modal'
 
 import { ExpandSquareUp, ExpandSquareDown } from '@acx-ui/icons'
 
-import { Button } from '../Button'
+import { Button, ButtonProps } from '../Button'
 
 import * as UI from './styledComponents'
 
 const { Panel } = Collapse
 const { TextArea } = Input
 
-export type ModalType = 'info' | 'error' | 'confirm'
+export type ModalType = 'info' | 'error' | 'confirm' | 'warning'
 
 type DeleteContent = {
   action: 'DELETE',
   entityName: string,
-  entityValue: string,
+  entityValue?: string,
   numOfEntities?: number,
   confirmationText?: string
 }
 
-type ErrorContent = {
-  action: 'SHOW_ERRORS',
-  errorDetails: ErrorDetailsProps
+type CustomFootersContent = {
+  action: 'CUSTOM_FOOTERS',
+  errorDetails?: ErrorDetailsProps
+  footers?: CustomButtonProps[]
 }
 
 export interface ModalProps extends ModalFuncProps {
   type: ModalType,
-  customContent?: DeleteContent | ErrorContent
+  customContent?: DeleteContent | CustomFootersContent
 }
 
 export interface ModalRef {
@@ -50,6 +51,13 @@ export interface ErrorDetailsProps {
   name?: string,
   message?: string,
   error?: string
+}
+
+interface CustomButtonProps {
+  text: string,
+  type: ButtonProps['type'],
+  key: string,
+  handler: () => void;
 }
 
 export const convertToJSON = (content: ErrorDetailsProps) => {
@@ -72,7 +80,7 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
       const entityNameText = numOfEntities ? `${numOfEntities} ${entityName}` : entityValue
       const desp = (<>
         {`Are you sure you want to delete ${numOfEntities ? 'these' : 'this'} ${entityName}?`}
-        {confirmationText ? <ConfirmForm text={confirmationText} modal={modal} /> : null}
+        { confirmationText && <ConfirmForm text={confirmationText} modal={modal} /> }
       </>)
       props = {
         ...props,
@@ -82,38 +90,25 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
         okButtonProps: { disabled: !!confirmationText }
       }
       break
-    case 'SHOW_ERRORS':
-      const customContent = <ErrorTemplate
-        content={props.content}
-        errors={props.customContent.errorDetails}
-        modal={modal} />
+    case 'CUSTOM_FOOTERS':
       props = {
         ...props,
-        content: customContent,
+        content: (
+          <>
+            <UI.Content>{props.content}</UI.Content>
+            <CustomFooters
+              errors={props.customContent?.errorDetails}
+              footers={props.customContent?.footers}
+              modal={modal}
+            />
+          </>
+        ),
         okText: ' ',
         className: 'modal-custom'
       }
       break
   }
   return props
-}
-
-function ErrorTemplate (props: {
-  content: React.ReactNode,
-  errors: ErrorDetailsProps,
-  modal: ModalRef
-}) {
-  return (
-    <>
-      <UI.Content>{props.content}</UI.Content>
-      <UI.Footer>
-        <CollapsePanel header='Technical details' content={props.errors} />
-        <UI.FooterButtons>
-          <Button type='primary' onClick={() => props.modal.destroy()}>OK</Button>
-        </UI.FooterButtons>
-      </UI.Footer>
-    </>
-  )
 }
 
 function CollapsePanel (props: {
@@ -156,5 +151,49 @@ function ConfirmForm (props: {
         }} />
       </Form.Item>
     </Form>
+  )
+}
+
+function CustomFooters (props: {
+  errors?: ErrorDetailsProps,
+  footers?: CustomButtonProps[],
+  modal: ModalRef
+}) {
+
+  const destroyModal = () => props.modal.destroy()
+
+  const WithErrorDetails = () => {
+    return (
+      <>
+        { props.errors && <CollapsePanel header='Technical details' content={props.errors} /> }
+        <UI.FooterFixedButtons>
+          <Button type='primary' onClick={destroyModal}>OK</Button>
+        </UI.FooterFixedButtons>
+      </>
+    )
+  }
+
+  const WithButtons = () => {
+    return (
+      <UI.FooterButtons>{
+        props.footers?.map((b: CustomButtonProps)=>{
+          return (
+            <Button
+              type={b.type}
+              key={b.key}
+              onClick={() => b.key === 'cancel' ? destroyModal() : b.handler()}
+            >
+              {b.text}
+            </Button>
+          )
+        })
+      }</UI.FooterButtons>
+    )
+  }
+
+  return (
+    <UI.Footer>
+      { props.errors ? <WithErrorDetails /> : <WithButtons /> }
+    </UI.Footer>
   )
 }

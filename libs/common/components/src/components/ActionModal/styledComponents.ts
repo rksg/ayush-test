@@ -7,13 +7,18 @@ export const Content = styled.div`
 export const Footer = styled.div`
   display: flex;
   margin-top: 24px;
+  justify-content: flex-end;
 `
 export const FooterButtons = styled.div`
-  position: absolute;
-  right: 24px;
+  display: flex;
+  align-items: center;
   .ant-btn + .ant-btn {
     margin-left: 8px;
   }
+`
+export const FooterFixedButtons = styled(FooterButtons)`
+  position: absolute;
+  right: 24px;
 `
 
 export const Collapse = styled(AntCollapse)`
