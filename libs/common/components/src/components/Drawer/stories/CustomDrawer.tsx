@@ -52,7 +52,7 @@ export function CustomDrawer () {
         title={'Custom Drawer'}
         icon={<BulbOutlined />}
         subtitle={'Subtitle'}
-        handleBackClick={onClose}
+        OnBackClick={onClose}
         visible={visible}
         onClose={onClose}
         children={content}
