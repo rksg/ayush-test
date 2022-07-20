@@ -12,7 +12,8 @@ interface DrawerHeaderProps {
 }
 
 export interface DrawerProps extends
-  Omit<AntdDrawerProps, 'title'|'placement'|'extra'>, DrawerHeaderProps {}
+  Omit<AntdDrawerProps, 'title'|'placement'|'extra'|'footerStyle'>,
+  DrawerHeaderProps {}
 
 const Header = (props: DrawerHeaderProps) => {
   return <>

@@ -62,10 +62,10 @@ describe('Drawer', () => {
   })
 
   it('should render custom drawer correctly', async () => {
-    const footer = <>
-      <button onClick={onClose} >Save</button>
+    const footer = [
+      <button onClick={onClose} >Save</button>,
       <button onClick={resetFields}>Reset</button>
-    </>
+    ]
     const handleBackClick = jest.fn()
     render(<Drawer
       title={'Test Custom Drawer'}

@@ -40,10 +40,10 @@ export function CustomDrawer () {
     />
   </Form>
 
-  const footer = <Space>
-    <Button onClick={() => form.submit()} type={'primary'}>Save</Button>
+  const footer = [
+    <Button onClick={() => form.submit()} type={'primary'}>Save</Button>,
     <Button onClick={resetFields}>Reset</Button>
-  </Space>
+  ]
 
   return (
     <>
