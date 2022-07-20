@@ -11,7 +11,7 @@ export const incidentDetailsTemplate = <>
   />
   <Row gutter={[20, 20]}>
     <Col span={4}>
-      <div>incident attribute Auth</div>
+      <div>incident attribute</div>
     </Col>
     <Col span={20}>
       <Row gutter={[20, 20]}>
