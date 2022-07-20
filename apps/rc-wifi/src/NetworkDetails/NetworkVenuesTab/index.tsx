@@ -156,7 +156,6 @@ export function NetworkVenuesTab () {
             if (!row.activated.isDisabled) {
               row.activated.isActivated = true
               row.deepVenue = defaultVenueData
-              row.deepVenue.scheduler = defaultVenueData.scheduler
               networkVenues.push(row.deepVenue)
             }
           }
