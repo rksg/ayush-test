@@ -1,4 +1,4 @@
-import { incidentDetailsTemplate } from './Auth'
+import { incidentDetailsTemplate } from '.'
 
 function Assoc () {
   return incidentDetailsTemplate
