@@ -23,5 +23,5 @@ export const SubTitle = styled.div`
   line-height: var(--acx-headline-5-line-height);
   padding-top: 8px;
   color: var(--acx-neutrals-60);
-  font-weight: 400;
+  font-weight: var(--acx-headline-5-font-weight);
 `
