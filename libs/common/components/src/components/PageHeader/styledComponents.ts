@@ -26,6 +26,7 @@ export const Wrapper = styled.div`
       }
       &-title {
         overflow: visible;
+        align-self: flex-start;        
       }
       margin-bottom: var(--acx-content-vertical-space);
     }
