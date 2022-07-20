@@ -8,9 +8,9 @@ import { createRoot }           from 'react-dom/client'
 import { cssStr } from '@acx-ui/components'
 
 import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon, getVenueSeverityByStatus } from './helper'
-import { VenueClusterTooltip, CloseIcon }                                                         from './styledComponents'
-import { VenueMarkerTooltip }                                                                     from './VenueMarkerTooltip'
-import VenueMarkerWithLabel                                                                       from './VenueMarkerWithLabel'
+import { VenueClusterTooltip, CloseIcon }                                                           from './styledComponents'
+import { VenueMarkerTooltip }                                                                       from './VenueMarkerTooltip'
+import VenueMarkerWithLabel                                                                         from './VenueMarkerWithLabel'
 
 let currentInfoWindow: google.maps.InfoWindow
 
@@ -18,7 +18,7 @@ export interface VenueClusterTooltipData {
   icon: ReactNode,
   title: string,
   popoverContent: ReactNode
- }
+}
 
 export const renderItemForList = (item:VenueClusterTooltipData) => (
   <Popover
