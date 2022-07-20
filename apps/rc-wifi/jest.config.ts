@@ -9,10 +9,10 @@ module.exports = {
   coverageDirectory: '../../coverage/apps/rc-wifi',
   coverageThreshold: {
     global: {
-      statements: 87.6,
-      branches: 79,
-      functions: 79.5,
-      lines: 87.9
+      statements: 86.7,
+      branches: 77.8,
+      functions: 79,
+      lines: 86.9
     }
   }
 }

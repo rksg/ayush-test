@@ -1,3 +1,4 @@
+import { ConfigProvider }    from '@acx-ui/components'
 import { rootRoutes, Route } from '@acx-ui/react-router-dom'
 import { Provider }          from '@acx-ui/store'
 
@@ -21,6 +22,8 @@ export default function WifiRoutes () {
     </Route>
   )
   return (
-    <Provider children={routes} />
+    <ConfigProvider>
+      <Provider children={routes} />
+    </ConfigProvider>
   )
 }

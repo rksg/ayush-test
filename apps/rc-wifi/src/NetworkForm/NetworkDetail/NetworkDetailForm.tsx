@@ -3,8 +3,10 @@ import { useContext } from 'react'
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
 
-import { StepsForm }       from '@acx-ui/components'
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { StepsForm }                             from '@acx-ui/components'
+import { useLazyNetworkListQuery }               from '@acx-ui/rc/services'
+import { NetworkTypeEnum, checkObjectNotExists } from '@acx-ui/rc/utils'
+import { useParams }                             from '@acx-ui/react-router-dom'
 
 import { NetworkTypeDescription, NetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                           from '../NetworkDiagram/NetworkDiagram'
@@ -22,6 +24,23 @@ export function NetworkDetailForm (props: { editMode?: boolean }) {
   const onChange = (e: RadioChangeEvent) => {
     setSettingStepTitle(e.target.value as NetworkTypeEnum)
   }
+  const networkListPayload = {
+    searchString: '',
+    fields: ['name', 'id'],
+    searchTargetFields: ['name'],
+    filters: {},
+    pageSize: 10000
+  }
+  const [getNetworkList] = useLazyNetworkListQuery()
+  const params = useParams()
+
+  const nameValidator = async (value: string) => {
+    const payload = { ...networkListPayload, searchString: value }
+    const list = (await getNetworkList({ params, payload }, true)
+      .unwrap()).data.map(n => ({ name: n.name }))
+    return checkObjectNotExists(list, value, 'Network')
+  }
+
   return (
     <Row gutter={20}>
       <Col span={10}>
@@ -29,7 +48,14 @@ export function NetworkDetailForm (props: { editMode?: boolean }) {
         <Form.Item
           name='name'
           label='Network Name'
-          rules={[{ required: true }, { min: 2 }, { max: 32 }]}
+          rules={[
+            { required: true },
+            { min: 2 },
+            { max: 32 },
+            { validator: (_, value) => nameValidator(value) }
+          ]}
+          validateFirst
+          hasFeedback
           children={<Input />}
         />
         <Form.Item

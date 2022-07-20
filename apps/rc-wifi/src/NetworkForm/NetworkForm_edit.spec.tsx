@@ -1,11 +1,21 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider }           from '@acx-ui/store'
+import { 
+  mockServer,
+  render, screen,
+  fireEvent,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
 import { NetworkForm } from './NetworkForm'
+import { 
+  networksResponse,
+  venuesResponse,
+  successResponse
+} from './NetworkForm.spec'
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -21,30 +31,14 @@ Object.defineProperty(window, 'matchMedia', {
   }))
 })
 
-const venuesResponse = {
-  fields: [
-    'country','city','aps','latitude','switches','description',
-    'networks','switchClients','vlan','radios','name','scheduling',
-    'id','aggregatedApStatus','mesh','activated','longitude','status'
-  ],
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      id: '6cf550cdb67641d798d804793aaa82db',name: 'My-Venue',
-      description: 'My-Venue',city: 'New York',country: 'United States',
-      latitude: '40.7690084',longitude: '-73.9431541',switches: 2,
-      status: '1_InSetupPhase',mesh: { enabled: false }
-    },{
-      id: 'c6ae1e4fb6144d27886eb7693ae895c8',name: 'TDC_Venue',
-      description: 'Taipei',city: 'Zhongzheng District, Taipei City',
-      country: 'Taiwan',latitude: '25.0346703',longitude: '121.5218293',
-      networks: { count: 1,names: ['JK-Network'],vlans: [1] },
-      aggregatedApStatus: { '2_00_Operational': 1 },
-      switchClients: 1,switches: 1,status: '2_Operational',
-      mesh: { enabled: false }
-    }
-  ]
+async function fillInBeforeSettings (networkName: string) {
+  const insertInput = screen.getByLabelText('Network Name')
+  fireEvent.change(insertInput, { target: { value: networkName } })
+  fireEvent.blur(insertInput)
+  const validating = await screen.findByRole('img', { name: 'loading' })
+  await waitForElementToBeRemoved(validating)
+
+  fireEvent.click(screen.getByText('Next'))
 }
 
 const networkResponse = {
@@ -108,48 +102,36 @@ const networkResponse = {
   id: '5d45082c812c45fbb9aab24420f39bf0'
 }
 
-const successResponse = { requestId: 'request-id' }
-
 
 describe('NetworkForm', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+        (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
+      rest.get(CommonUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkResponse))),
+      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json(networksResponse))),
+      rest.post(CommonUrlsInfo.updateNetworkDeep.url,
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(CommonUrlsInfo.getCloudpathList.url,
+        (_, res, ctx) => res(ctx.json([])))
+    )
+  })
+
   it('should edit open network successfully', async () => {
-    const params = { networkId: 'network-id', tenantId: 'tenant-id', action: 'edit' }
+    const params = { networkId: '5d45082c812c45fbb9aab24420f39bf0'
+      , tenantId: 'tenant-id', action: 'edit' }
 
     const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
       route: { params }
     })
 
     expect(asFragment()).toMatchSnapshot()
-
-    mockServer.use(
-      rest.get(CommonUrlsInfo.getNetwork.url,
-        (req, res, ctx) => {
-          return res(
-            ctx.status(200),
-            ctx.json(networkResponse)
-          )
-        }),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => {
-          return res(
-            ctx.status(200),
-            ctx.json(venuesResponse)
-          )
-        }),
-      rest.post(CommonUrlsInfo.updateNetworkDeep.url,
-        (req, res, ctx) => {
-          return res(
-            ctx.status(200),
-            ctx.json(successResponse)
-          )
-        }),
-      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) => res(ctx.json([])))
-    )
     
-    await expect(waitFor(() => {
-      expect(screen.getByRole('input')).toHaveValue('open network test')
-    }, { timeout: 1000 })).rejects.toThrow()
-    fireEvent.click(screen.getByText('Next'))
+    await fillInBeforeSettings('open network edit test')
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
     fireEvent.click(screen.getByText('Next'))

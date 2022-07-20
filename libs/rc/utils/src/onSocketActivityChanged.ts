@@ -8,7 +8,7 @@ import {
 import { Params } from 'react-router-dom'
 import io         from 'socket.io-client'
 
-import { websocketServerUrl } from '.'
+import { Transaction, websocketServerUrl } from '.'
 
 
 type RTKBaseQuery = BaseQueryFn<
@@ -18,11 +18,6 @@ type RTKBaseQuery = BaseQueryFn<
   unknown,
   FetchBaseQueryMeta
 >
-
-interface ActivityResponse {
-  useCase: string
-  status: 'SUCCESS'
-}
 
 export async function onSocketActivityChanged <
   ReducerPath extends string,
@@ -36,7 +31,7 @@ export async function onSocketActivityChanged <
     Response,
     ReducerPath
   >,
-  handler: (activityData: ActivityResponse) => void
+  handler: (activityData: Transaction) => void
 ) {
   const { cacheDataLoaded, cacheEntryRemoved } = api
 
