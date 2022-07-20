@@ -12,7 +12,7 @@ function Wrapper (props: { children: React.ReactNode }) {
   />
 }
 
-storiesOf('DatePicker', module).add('with default Ranges', () => (
+storiesOf('DatePicker', module).add('with default ranges', () => (
   <Wrapper>
     <RangePicker
       selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),

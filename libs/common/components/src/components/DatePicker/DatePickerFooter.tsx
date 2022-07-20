@@ -34,8 +34,7 @@ const styles = {
   },
   row: { marginLeft: 24 },
   timePickerCol2: { marginLeft: 3, marginRight: 3 },
-  timePickerCol3: { marginLeft: 17, marginRight: 17 },
-  button: { height: '24px',width: '56px',fontSize: '12px' }
+  timePickerCol3: { marginLeft: 17, marginRight: 17 }
 }
 const timePickerConfig = [
   { id: 1, range: 'startDate', value: 'hour', format: 'HH', offset: 6, hasSemiColon: true },
@@ -45,8 +44,8 @@ const timePickerConfig = [
 ]
 
 const getCustomisedDate = (date: Moment | null, showTimePicker?: boolean ) =>
-  showTimePicker 
-    ? date?.format(dateTimeFormat) 
+  showTimePicker
+    ? date?.format(dateTimeFormat)
     : date?.format(dateFormat)
 
 
@@ -127,14 +126,13 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
       </Col>
       <Col span={3} style={{ lineHeight: 'normal' }}>
         <Button onClick={() => onButtonClick('cancel')}
-          style={styles.button}>Cancel</Button>
+          size={'small'}>Cancel</Button>
       </Col>
       <Col span={3} style={{ lineHeight: 'normal' }}>
         <Button type={'secondary'}
-          style={styles.button}
+          size={'small'}
           onClick={() => onButtonClick('apply')}>Apply</Button>
       </Col>
     </Row>
   </>
 }
-

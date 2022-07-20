@@ -34,6 +34,33 @@ export const Wrapper = styled.div<WrapperProps>`
     ? '6px 2px 6px 2px rgb(51 51 51 / 5%), 6px 2px 6px 2px rgb(51 51 51 / 5%)'
     : '0 3px 6px -4px rgb(51 51 51 / 12%), 0 6px 16px 0 rgb(51 51 51 / 8%), 0 9px 28px 8px rgb(51 51 51 / 5%)')};
 }
+.ant-picker-date-panel {
+  .ant-picker-header {
+    align-items: baseline;
+    border-bottom: none;
+    .ant-picker-header-view {
+      font-family: var(--acx-accent-brand-font);
+      font-size: var(--acx-headline-5-font-size);
+      font-weight: var(--acx-headline-5-font-weight-semi-bold);
+      color: var(--acx-neutrals-70);
+      button:hover {
+        color: inherit;
+        cursor: default;
+      }
+    }
+  }
+  .ant-picker-body {
+    th {
+      font-size: var(--acx-subtitle-6-font-size);
+      font-weight: var(--acx-subtitle-6-font-weight-bold);
+      color: var(--acx-neutrals-60);
+    }
+    td {
+      font-size: var(--acx-subtitle-5-font-size);
+      font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+    }
+  }
+}
 .ant-picker-range .ant-picker-active-bar {
   background: var(--acx-accents-blue-50);
   margin-left: 33px;
@@ -133,21 +160,21 @@ export const Wrapper = styled.div<WrapperProps>`
 .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
   border-radius: 20px;
 }
-.ant-picker-header-view button:hover {
-  color: inherit;
-  cursor: default;
+.ant-picker-footer {
+  .ant-picker {
+    background: transparent;
+    border-color: var(--acx-neutrals-50);
+  }
+  .ant-picker-input > input {
+    font-size: var(--acx-body-4-font-size);
+    padding-left: 4px;
+  }
+  div[role='display-date-range'] {
+    font-size: var(--acx-subtitle-5-font-size);
+    font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+  }
 }
-.ant-picker-input > input {
-  font-size: 12px;
-  padding-left: 4px;
-}
-.calender-range-apply-row,
-.ant-picker-content td {
+.calender-range-apply-row {
   font-weight: var(--acx-body-font-weight);
 }
-.ant-picker-header {
-  border-bottom: none;
-}
-.ant-picker-header-view {
-  font-weight: var(--acx-body-font-weight-bold);
-}`
+`
