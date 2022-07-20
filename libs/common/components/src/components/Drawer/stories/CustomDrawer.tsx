@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Form, Input, Space } from 'antd'
+import { Form, Input } from 'antd'
 
 import { BulbOutlined } from '@acx-ui/icons'
 
