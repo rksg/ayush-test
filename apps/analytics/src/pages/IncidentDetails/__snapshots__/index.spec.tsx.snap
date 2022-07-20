@@ -1,0 +1,461 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`incident details should render assoc properly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+  >
+    <div
+      class="ant-page-header styledComponents__IncidentHeader-sc-p93n3j-0 kuCgrY ant-page-header-ghost"
+    >
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography"
+            >
+              Incident Details
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <svg>
+                BulbOutlined.svg
+              </svg>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div>
+        incident attribute
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="ant-row"
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            Insights
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            network impact
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            time series section
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`incident details should render auth properly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+  >
+    <div
+      class="ant-page-header styledComponents__IncidentHeader-sc-p93n3j-0 kuCgrY ant-page-header-ghost"
+    >
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography"
+            >
+              Incident Details
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <svg>
+                BulbOutlined.svg
+              </svg>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div>
+        incident attribute
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="ant-row"
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            Insights
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            network impact
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            time series section
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`incident details should render dhcp properly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+  >
+    <div
+      class="ant-page-header styledComponents__IncidentHeader-sc-p93n3j-0 kuCgrY ant-page-header-ghost"
+    >
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography"
+            >
+              Incident Details
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <svg>
+                BulbOutlined.svg
+              </svg>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div>
+        incident attribute
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="ant-row"
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            Insights
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            network impact
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            time series section
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`incident details should render eap properly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+  >
+    <div
+      class="ant-page-header styledComponents__IncidentHeader-sc-p93n3j-0 kuCgrY ant-page-header-ghost"
+    >
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography"
+            >
+              Incident Details
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <svg>
+                BulbOutlined.svg
+              </svg>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div>
+        incident attribute
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="ant-row"
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            Insights
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            network impact
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            time series section
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`incident details should render radius properly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+  >
+    <div
+      class="ant-page-header styledComponents__IncidentHeader-sc-p93n3j-0 kuCgrY ant-page-header-ghost"
+    >
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography"
+            >
+              Incident Details
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <svg>
+                BulbOutlined.svg
+              </svg>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-4"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div>
+        incident attribute
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="ant-row"
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            Insights
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            network impact
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div>
+            time series section
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

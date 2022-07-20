@@ -56,3 +56,11 @@ test('should navigate to analytics/occupancy', () => {
   })
   screen.getByText('Occupancy')
 })
+test('should navigate to analytics/incidentDetails', () => {
+  render(<AnalyticsRoutes />, {
+    route: {
+      path: '/t/tenantId/analytics/incidents/1',
+      wrapRoutes: false
+    }
+  })
+})
