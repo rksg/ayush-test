@@ -22,7 +22,7 @@ export function DrawerWithBackButton () {
       <Button onClick={onOpen}>Drawer With BackButton</Button>
       <Drawer
         title={'With BackButton'}
-        OnBackClick={onClose}
+        onBackClick={onClose}
         visible={visible}
         onClose={onClose}
         children={content}

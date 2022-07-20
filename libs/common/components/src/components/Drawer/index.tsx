@@ -8,7 +8,7 @@ interface DrawerHeaderProps {
   title: string,
   icon?: React.ReactNode,
   subtitle?: string,
-  OnBackClick?: () => void
+  onBackClick?: () => void
 }
 
 export interface DrawerProps extends
@@ -16,8 +16,8 @@ export interface DrawerProps extends
 
 const Header = (props: DrawerHeaderProps) => {
   return <>
-    {props.OnBackClick
-      ? <UI.BackButton onClick={props.OnBackClick}><ArrowBack/>Back</UI.BackButton>
+    {props.onBackClick
+      ? <UI.BackButton onClick={props.onBackClick}><ArrowBack/>Back</UI.BackButton>
       : null
     }
     <UI.Title>
@@ -29,8 +29,8 @@ const Header = (props: DrawerHeaderProps) => {
 }
 
 export const Drawer = (props: DrawerProps) => {
-  const { title, icon, subtitle, OnBackClick, ...rest } = props
-  const headerProps = { title, icon, subtitle, OnBackClick }
+  const { title, icon, subtitle, onBackClick, ...rest } = props
+  const headerProps = { title, icon, subtitle, onBackClick }
   return (
     <AntdDrawer
       {...rest}
