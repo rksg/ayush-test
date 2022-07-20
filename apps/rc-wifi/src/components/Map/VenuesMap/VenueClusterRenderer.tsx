@@ -7,7 +7,7 @@ import { createRoot }           from 'react-dom/client'
 
 import { cssStr } from '@acx-ui/components'
 
-import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon, getVenueStatusSeverity } from './helper'
+import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon, getVenueSeverityByStatus } from './helper'
 import { VenueClusterTooltip, CloseIcon }                                                         from './styledComponents'
 import { VenueMarkerTooltip }                                                                     from './VenueMarkerTooltip'
 import VenueMarkerWithLabel                                                                       from './VenueMarkerWithLabel'
@@ -44,8 +44,8 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
   const sortedMarkers = Array.from(markers).sort((a,b) => {
     const { venueData: dataA } = a as VenueMarkerWithLabel
     const { venueData: dataB } = b as VenueMarkerWithLabel
-    return getVenueStatusSeverity(dataA.status as string)
-      - getVenueStatusSeverity(dataB.status as string)
+    return getVenueSeverityByStatus(dataA.status as string)
+      - getVenueSeverityByStatus(dataB.status as string)
   })
 
   data = sortedMarkers.map((marker)=>{
@@ -132,20 +132,20 @@ export default class VenueClusterRenderer implements Renderer {
 
         const infoDiv = document.createElement('div')
         createRoot(infoDiv).render(content)
-  
+
         clusterInfoWindow.setContent(infoDiv)
 
-        if (typeof(currentInfoWindow) != 'undefined') { 
+        if (typeof(currentInfoWindow) != 'undefined') {
           currentInfoWindow.close()
-        } 
-  
+        }
+
         clusterInfoWindow.open({
           shouldFocus: true,
           anchor: clusterMarker
         })
         currentInfoWindow = clusterInfoWindow
       })
-      
+
     google.maps.event.addListener(this.map, 'click', () => {
       if (typeof(currentInfoWindow) != 'undefined') {
         currentInfoWindow.close()

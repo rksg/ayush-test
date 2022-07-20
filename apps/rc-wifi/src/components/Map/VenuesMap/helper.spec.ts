@@ -11,7 +11,10 @@ import {
   getIcon, getMarkerColor,
   getMarkerSVG,
   massageVenuesData,
-  getVenueInfoMarkerIcon } from './helper'
+  getVenueInfoMarkerIcon,
+  getVenueSeverityByStatus,
+  getSwitchStatusDisplayName,
+  getAPStatusDisplayName } from './helper'
 
 describe('Venues Map Helper', () => {
   describe('massageVenuesData', () => {
@@ -396,12 +399,48 @@ describe('Venues Map Helper', () => {
       ApVenueStatusEnum.REQUIRES_ATTENTION,
       ApVenueStatusEnum.TRANSIENT_ISSUE
     ]
-    const iconList = listOfStatuses.map(status=>getVenueInfoMarkerIcon(status))
+    let iconList = listOfStatuses.map(status=>getVenueInfoMarkerIcon(status))
     expect(iconList).toMatchSnapshot()
   })
-  it('should test getVenueInfoMarkerIcon method for unknown status',()=>{
-    const icon = getVenueInfoMarkerIcon('unkownStatus')
-    expect(icon).toMatchSnapshot()
+
+  it('should test getVenueSeverityByStatus method', () => {
+    const listOfStatuses:ApVenueStatusEnum[] = [
+      ApVenueStatusEnum.IN_SETUP_PHASE,
+      ApVenueStatusEnum.OFFLINE,
+      ApVenueStatusEnum.OPERATIONAL,
+      ApVenueStatusEnum.REQUIRES_ATTENTION,
+      ApVenueStatusEnum.TRANSIENT_ISSUE
+    ]
+    const output = listOfStatuses.map(status=>getVenueSeverityByStatus(status))
+    expect(output).toMatchSnapshot()
+  })
+
+  it('should test getSwitchStatusDisplayName method', () => {
+    const listOfStatuses:SwitchStatusEnum[] = [
+      SwitchStatusEnum.INITIALIZING,
+      SwitchStatusEnum.DISCONNECTED,
+      SwitchStatusEnum.OPERATIONAL,
+      SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+      SwitchStatusEnum.APPLYING_FIRMWARE
+    ]
+    const output = listOfStatuses.map(status=>getSwitchStatusDisplayName(status))
+    expect(output).toMatchSnapshot()
+  })
+
+  it('should test getAPStatusDisplayName method', () => {
+    const listOfStatuses:ApVenueStatusEnum[] = [
+      ApVenueStatusEnum.IN_SETUP_PHASE,
+      ApVenueStatusEnum.OFFLINE,
+      ApVenueStatusEnum.OPERATIONAL,
+      ApVenueStatusEnum.REQUIRES_ATTENTION,
+      ApVenueStatusEnum.TRANSIENT_ISSUE
+    ]
+    let output = listOfStatuses.map(status=>getAPStatusDisplayName(status))
+    expect(output).toMatchSnapshot()
+
+    // Return only Names without severity
+    output = listOfStatuses.map(status=>getAPStatusDisplayName(status, false))
+    expect(output).toMatchSnapshot()
   })
 
   it('should return cluster svg string with the given fill color', ()=>{

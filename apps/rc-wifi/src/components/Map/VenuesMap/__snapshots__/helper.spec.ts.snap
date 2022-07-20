@@ -1,5 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Venues Map Helper should test getAPStatusDisplayName method 1`] = `
+Array [
+  "3 In Setup Phase",
+  "3 Offline",
+  "4 Operational",
+  "1 Requires Attention",
+  "2 Transient Issue",
+]
+`;
+
+exports[`Venues Map Helper should test getAPStatusDisplayName method 2`] = `
+Array [
+  "In Setup Phase",
+  "Offline",
+  "Operational",
+  "Requires Attention",
+  "Transient Issue",
+]
+`;
+
+exports[`Venues Map Helper should test getSwitchStatusDisplayName method 1`] = `
+Array [
+  "In Setup Phase",
+  "Requires Attention",
+  "Operational",
+  "In Setup Phase",
+  "In Setup Phase",
+]
+`;
+
 exports[`Venues Map Helper should test getVenueInfoMarkerIcon method 1`] = `
 Array [
   Object {
@@ -155,35 +185,12 @@ Array [
 ]
 `;
 
-exports[`Venues Map Helper should test getVenueInfoMarkerIcon method for unknown status 1`] = `
-Object {
-  "$$typeof": Symbol(react.forward_ref),
-  "attrs": Array [],
-  "componentStyle": e {
-    "baseHash": -136483550,
-    "baseStyle": undefined,
-    "componentId": "styledComponents__VenueInfoMarkerGreyIcon-sc-aq95s2-8",
-    "isStatic": false,
-    "rules": Array [
-      "
-  height: 20px;
-  width: 32px;
-  vertical-align: text-bottom;
-  fill: var(--acx-neutrals-50);
-",
-    ],
-    "staticRulesId": "",
-  },
-  "foldedComponentIds": Array [],
-  "render": [Function],
-  "shouldForwardProp": undefined,
-  "styledComponentId": "styledComponents__VenueInfoMarkerGreyIcon-sc-aq95s2-8",
-  "target": Object {
-    "$$typeof": Symbol(react.forward_ref),
-    "render": [Function],
-  },
-  "toString": [Function],
-  "warnTooManyClasses": [Function],
-  "withComponent": [Function],
-}
+exports[`Venues Map Helper should test getVenueSeverityByStatus method 1`] = `
+Array [
+  3,
+  3,
+  4,
+  1,
+  2,
+]
 `;

@@ -50,29 +50,29 @@ export const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
 
 export const getVenueInfoMarkerIcon = (status: string) => {
   switch (status) {
-    case ApVenueStatusEnum.IN_SETUP_PHASE || ApVenueStatusEnum.OFFLINE:
-      return UI.VenueInfoMarkerGreyIcon
     case ApVenueStatusEnum.OPERATIONAL:
       return UI.VenueInfoMarkerGreenIcon
     case ApVenueStatusEnum.TRANSIENT_ISSUE:
       return UI.VenueInfoMarkerOrangeIcon
     case ApVenueStatusEnum.REQUIRES_ATTENTION:
       return UI.VenueInfoMarkerRedIcon
+    case ApVenueStatusEnum.IN_SETUP_PHASE:
+    case ApVenueStatusEnum.OFFLINE:
     default:
       return UI.VenueInfoMarkerGreyIcon
   }
 }
 
-export const getVenueStatusSeverity = (status: string) => {
+export const getVenueSeverityByStatus = (status: string) => {
   switch (status) {
     case ApVenueStatusEnum.REQUIRES_ATTENTION:
       return 1
     case ApVenueStatusEnum.TRANSIENT_ISSUE:
       return 2
-    case ApVenueStatusEnum.OPERATIONAL:
+    case ApVenueStatusEnum.IN_SETUP_PHASE:
+    case ApVenueStatusEnum.OFFLINE:
       return 3
-    case ApVenueStatusEnum.IN_SETUP_PHASE || ApVenueStatusEnum.OFFLINE:
-      return 4
+    case ApVenueStatusEnum.OPERATIONAL:
     default:
       return 4
   }
