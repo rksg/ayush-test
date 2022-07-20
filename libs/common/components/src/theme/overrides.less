@@ -395,10 +395,11 @@
   }
 
   .ant-drawer {
-    padding-top: 76px;
+    --acx-drawer-top-space: calc(var(--acx-header-height) + 16px);
+    padding-top: var(--acx-drawer-top-space);
     border-radius: 12px 0px 0px 0px;
     box-shadow: 0px 6px 16px rgb(51 51 51 / 10%);
-    height: calc(100vh - 76px);
+    height: calc(100vh - var(--acx-drawer-top-space));
     .ant-drawer-content-wrapper {
       border-radius: inherit;
       .ant-drawer-content {
@@ -416,7 +417,7 @@
             .ant-drawer-title {
               font-size: var(--acx-subtitle-3-font-size);
               line-height: var(--acx-subtitle-3-line-height);
-              font-weight: 600;
+              font-weight: var(--acx-subtitle-3-font-weight);
             }
             .ant-drawer-close {
               margin-right: 0;
@@ -431,7 +432,7 @@
           padding: 8px 20px 16px 20px;
         }
         .ant-drawer-footer {
-          border-top-color: var(--acx-neutrals-25);
+          border-top: 0;
           padding: 16px 0px 12px 0px;
           margin: 0px 20px;
         }
