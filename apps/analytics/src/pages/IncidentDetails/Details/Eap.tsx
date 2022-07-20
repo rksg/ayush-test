@@ -1,6 +1,2 @@
-import { incidentDetailsTemplate } from './Auth'
-
-function Eap () {
-  return incidentDetailsTemplate
-}
-export default Eap
+import { IncidentDetailsTemplate } from './Auth'
+export default IncidentDetailsTemplate

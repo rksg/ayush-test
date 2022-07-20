@@ -1,6 +1,2 @@
-import { incidentDetailsTemplate } from './Auth'
-
-function Radius () {
-  return incidentDetailsTemplate
-}
-export default Radius
+import { IncidentDetailsTemplate } from './Auth'
+export default IncidentDetailsTemplate
