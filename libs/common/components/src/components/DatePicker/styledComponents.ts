@@ -91,11 +91,6 @@ export const Wrapper = styled.div<WrapperProps>`
   border-radius: 4px 0 0 4px;
   box-shadow:  -8px 2px 6px 4px rgb(51 51 51 / 5%), -8px 2px 6px -2px rgb(51 51 51 / 5%);
  }
-.ant-picker-footer-extra {
-  background-color: var(--acx-primary-white);
-  padding: 0;
-  border-bottom: 1px solid var(--acx-neutrals-10);
-}
 .ant-picker-panels {
   background-color: var(--acx-primary-white);
   padding-left: 14px;
@@ -172,6 +167,11 @@ export const Wrapper = styled.div<WrapperProps>`
   div[role='display-date-range'] {
     font-size: var(--acx-subtitle-5-font-size);
     font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+  }
+  border-bottom: 0;
+  .ant-picker-footer-extra {
+    padding: 0;
+    border-bottom: 0;
   }
 }
 .calender-range-apply-row {
