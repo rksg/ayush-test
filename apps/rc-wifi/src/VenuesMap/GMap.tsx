@@ -45,8 +45,7 @@ const GMap: React.FC<MapProps> = ({
 
   React.useEffect(() => {
     if (ref.current) {
-      const map = new window.google.maps.Map(ref.current, {})
-      setMap(map)
+      setMap(new window.google.maps.Map(ref.current, {}))
     }
     return () => setMap(undefined)
   }, [ref])
@@ -164,7 +163,7 @@ const GMap: React.FC<MapProps> = ({
           setMarkerClusterer(new MarkerClusterer({
             map,
             markers,
-            renderer: new VenueClusterRenderer(),
+            renderer: new VenueClusterRenderer(map),
             algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
             onClusterClick: onClusterClick
           }))
