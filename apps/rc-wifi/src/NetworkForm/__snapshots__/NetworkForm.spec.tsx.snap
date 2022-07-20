@@ -277,12 +277,19 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                 <div
                                   class="ant-form-item-control-input-content"
                                 >
-                                  <input
-                                    class="ant-input"
-                                    id="details_name"
-                                    type="text"
-                                    value=""
-                                  />
+                                  <span
+                                    class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
+                                  >
+                                    <input
+                                      class="ant-input"
+                                      id="details_name"
+                                      type="text"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-input-suffix"
+                                    />
+                                  </span>
                                 </div>
                               </div>
                             </div>
