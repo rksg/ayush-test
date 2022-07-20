@@ -3,7 +3,7 @@
 exports[`Networks Table should delete selected row 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -55,7 +55,7 @@ exports[`Networks Table should delete selected row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-2 byKOXo"
+      class="styledComponents__Wrapper-sc-1abm7iv-2 dmYsKE"
     >
       <div
         class="ant-pro-table"
@@ -1644,7 +1644,7 @@ exports[`Networks Table should delete selected row 1`] = `
 exports[`Networks Table should render table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -1696,7 +1696,7 @@ exports[`Networks Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-2 byKOXo"
+      class="styledComponents__Wrapper-sc-1abm7iv-2 dmYsKE"
     >
       <div
         class="ant-pro-table"
