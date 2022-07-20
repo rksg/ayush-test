@@ -1,6 +1,2 @@
-import { incidentDetailsTemplate } from '.'
-
-function Eap () {
-  return incidentDetailsTemplate
-}
-export default Eap
+import { IncidentDetailsTemplate } from '.'
+export default IncidentDetailsTemplate

@@ -4,14 +4,17 @@ import { BulbOutlined } from '@acx-ui/icons'
 
 import { IncidentHeader } from '../styledComponents'
 
-export const incidentDetailsTemplate = <>
+import { IncidentAttributes } from '../IncidentAttributes'
+import type { IncidentDetailsProps } from '../types'
+
+export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => <>
   <IncidentHeader
     title='Incident Details'
     extra={<BulbOutlined />}
   />
   <Row gutter={[20, 20]}>
     <Col span={4}>
-      <div>incident attribute</div>
+      <IncidentAttributes {...props}/>
     </Col>
     <Col span={20}>
       <Row gutter={[20, 20]}>
@@ -28,3 +31,5 @@ export const incidentDetailsTemplate = <>
     </Col>
   </Row>
 </>
+
+export default IncidentDetailsTemplate

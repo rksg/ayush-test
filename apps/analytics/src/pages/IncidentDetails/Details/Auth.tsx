@@ -1,6 +1,2 @@
-import { incidentDetailsTemplate } from '.'
-
-function Dhcp () {
-  return incidentDetailsTemplate
-}
-export default Dhcp
+import { IncidentDetailsTemplate } from '.'
+export default IncidentDetailsTemplate

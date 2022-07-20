@@ -1,6 +1,2 @@
-import { incidentDetailsTemplate } from '.'
-
-function Assoc () {
-  return incidentDetailsTemplate
-}
-export default Assoc
+import { IncidentDetailsTemplate } from '.'
+export default IncidentDetailsTemplate
