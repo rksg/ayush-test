@@ -4,7 +4,7 @@ exports[`Drawer should match snapshot for basic drawer 1`] = `
 <div
   class="ant-drawer ant-drawer-right ant-drawer-open no-mask"
   data-testid="basic-drawer"
-  style="width: 400px;"
+  style="width: 336px;"
   tabindex="-1"
 >
   <div
@@ -60,7 +60,7 @@ exports[`Drawer should match snapshot for custom drawer 1`] = `
 <div
   class="ant-drawer ant-drawer-right ant-drawer-open no-mask"
   data-testid="custom-drawer"
-  style="width: 400px;"
+  style="width: 336px;"
   tabindex="-1"
 >
   <div
