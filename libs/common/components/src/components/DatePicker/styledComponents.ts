@@ -8,7 +8,7 @@ type WrapperProps = {
 export const Wrapper = styled.div<WrapperProps>`
 
 .ant-picker {
-  background: var(--acx-primary-white);
+  background: var(--acx-neutrals-10);
   width: 85%;
   border-color: var(--acx-primary-black);
 }
