@@ -4,10 +4,11 @@ export const BackButton = styled.button`
   border: none;
   background: transparent;
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
   font-size: var(--acx-headline-5-font-size);
   line-height: var(--acx-headline-5-line-height);
+  padding: 0;
   padding-bottom: 8px;
 `
 

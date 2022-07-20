@@ -92,7 +92,7 @@ exports[`Drawer should match snapshot for custom drawer 1`] = `
               class="ant-drawer-title"
             >
               <button
-                class="sc-bczRLJ buhJFz"
+                class="sc-bczRLJ elZUnp"
               >
                 <div
                   data-testid="arrow-back"
