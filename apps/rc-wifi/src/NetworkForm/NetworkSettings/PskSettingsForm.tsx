@@ -37,7 +37,8 @@ import {
   NetworkTypeEnum,
   WlanSecurityEnum,
   WifiNetworkMessages,
-  CreateNetworkFormFields
+  CreateNetworkFormFields,
+  hexRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -157,7 +158,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
     while (hexKey.length < 26) {
       hexKey += Math.random().toString(16).substring(2)
     }
-    props.formRef?.current?.setFieldsValue({ passphrase: hexKey.substring(0, 26) })
+    props.formRef?.current?.setFieldsValue({ wepHexKey: hexKey.substring(0, 26) })
   }
   const securityOnChange = (value: string) => {
     switch(value){
@@ -183,25 +184,41 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <StepsForm.Title>Settings</StepsForm.Title>
       <div>
-        <Form.Item
-          name='passphrase'
-          label={SecurityOptionsPassphraseLabel[wlanSecurity as keyof typeof PskWlanSecurityEnum]??
-            SecurityOptionsPassphraseLabel.WPA2Personal}
-          rules={[{
-            required: true,
-            whitespace: false,
-            min: 8
-          },{
-            validator: (_, value) => trailingNorLeadingSpaces(value)
-          }]}
-          extra={wlanSecurity===WlanSecurityEnum.WEP?
-            'Must be 26 hex characters':'8 characters minimum'}
-          children={<Input.Password />}
-        />
+        {wlanSecurity !== 'WEP' &&
+          <Form.Item
+            name='passphrase'
+            label={SecurityOptionsPassphraseLabel[wlanSecurity as keyof typeof PskWlanSecurityEnum]
+              ??SecurityOptionsPassphraseLabel.WPA2Personal}
+            rules={[{
+              required: true,
+              whitespace: false,
+              min: 8
+            },{
+              validator: (_, value) => trailingNorLeadingSpaces(value)
+            }]}
+            extra={'8 characters minimum'}
+            children={<Input.Password />}
+          />
+        }
         {wlanSecurity === 'WEP' &&
+        <React.Fragment>
+          <Form.Item
+            name='wepHexKey'
+            label={SecurityOptionsPassphraseLabel[PskWlanSecurityEnum.WEP]}
+            rules={[{
+              required: true,
+              whitespace: false,
+              min: 26
+            },{
+              validator: (_, value) => hexRegExp(value)
+            }]}
+            extra={'Must be 26 hex characters'}
+            children={<Input.Password />}
+          />
           <div style={{ position: 'absolute', top: '105px', right: '15px' }}>
             <Button type='link' onClick={generateHexKey}>Generate</Button>
           </div>
+        </React.Fragment>
         }
         {wlanSecurity===WlanSecurityEnum.WPA23Mixed &&
           <Form.Item

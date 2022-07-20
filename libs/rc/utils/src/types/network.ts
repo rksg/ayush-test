@@ -21,6 +21,7 @@ export interface CreateNetworkFormFields {
   wlanSecurity?: WlanSecurityEnum;
   passphrase?: string;
   saePassphrase?: string;
+  wepHexKey?: string;
   managementFrameProtection?: string;
   macAddressAuthentication?: boolean;
   macAuthMacFormat?: string;

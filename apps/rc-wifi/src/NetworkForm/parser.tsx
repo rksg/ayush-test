@@ -282,7 +282,7 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }
 
-export const transformNetworkType = (value: any) => {
+export const transformNetworkType = (value: NetworkTypeEnum) => {
   let displayValue = ''
   switch (value) {
     case NetworkTypeEnum.OPEN:
