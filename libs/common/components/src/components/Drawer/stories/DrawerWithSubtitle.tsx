@@ -22,7 +22,7 @@ export function DrawerWithSubtitle () {
       <Button onClick={onOpen}>Drawer With Subtitle</Button>
       <Drawer
         title={'With Subtitle'}
-        subtitle={'Subtitle'}
+        subTitle={'Subtitle'}
         visible={visible}
         onClose={onClose}
         children={content}

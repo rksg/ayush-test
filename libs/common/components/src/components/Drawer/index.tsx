@@ -7,7 +7,7 @@ import * as UI from './styledComponents'
 interface DrawerHeaderProps {
   title: string,
   icon?: React.ReactNode,
-  subtitle?: string,
+  subTitle?: string,
   onBackClick?: () => void
 }
 
@@ -24,13 +24,13 @@ const Header = (props: DrawerHeaderProps) => {
       {props.icon ? props.icon : null}
       {props.title}
     </UI.Title>
-    {props.subtitle ? <UI.SubTitle>{props.subtitle}</UI.SubTitle> : null}
+    {props.subTitle ? <UI.SubTitle>{props.subTitle}</UI.SubTitle> : null}
   </>
 }
 
 export const Drawer = (props: DrawerProps) => {
-  const { title, icon, subtitle, onBackClick, ...rest } = props
-  const headerProps = { title, icon, subtitle, onBackClick }
+  const { title, icon, subTitle, onBackClick, ...rest } = props
+  const headerProps = { title, icon, subTitle, onBackClick }
   return (
     <AntdDrawer
       {...rest}

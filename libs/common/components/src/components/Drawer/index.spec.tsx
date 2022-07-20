@@ -33,7 +33,7 @@ describe('Drawer', () => {
     render(<Drawer
       title={'Test Drawer'}
       icon={<BulbOutlined/>}
-      subtitle={'Test Drawer Subtitle'}
+      subTitle={'Test Drawer Subtitle'}
       onBackClick={jest.fn()}
       visible={true}
       onClose={onClose}
@@ -70,7 +70,7 @@ describe('Drawer', () => {
     render(<Drawer
       title={'Test Custom Drawer'}
       icon={<BulbOutlined/>}
-      subtitle={'Test Custom DrawerSubtitle'}
+      subTitle={'Test Custom DrawerSubtitle'}
       onBackClick={handleBackClick}
       visible={true}
       onClose={onClose}

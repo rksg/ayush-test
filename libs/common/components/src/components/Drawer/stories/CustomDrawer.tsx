@@ -51,7 +51,7 @@ export function CustomDrawer () {
       <Drawer
         title={'Custom Drawer'}
         icon={<BulbOutlined />}
-        subtitle={'Subtitle'}
+        subTitle={'Subtitle'}
         onBackClick={onClose}
         visible={visible}
         onClose={onClose}
