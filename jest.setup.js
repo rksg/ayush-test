@@ -37,3 +37,5 @@ jest.mock('@acx-ui/feature-toggle', () => ({
 
 // For Error: Not implemented: HTMLCanvasElement.prototype.getContext (without installing the canvas npm package)
 HTMLCanvasElement.prototype.getContext = () => null
+
+jest.setTimeout(10000)

@@ -27,7 +27,7 @@ describe('NetworkTabs', () => {
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(url, (req, res, ctx) => res(ctx.json(networkDetailHeaderData)))
+      rest.get(url, (_, res, ctx) => res(ctx.json(networkDetailHeaderData)))
     )
   })
 
