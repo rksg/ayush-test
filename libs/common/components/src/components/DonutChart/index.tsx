@@ -77,7 +77,7 @@ export function DonutChart ({
     legend: {
       show: props.showLegend,
       top: 'middle',
-      left: '65%',
+      left: '55%',
       orient: 'vertical',
       icon: 'circle',
       selectedMode: false,
@@ -91,7 +91,8 @@ export function DonutChart ({
         borderWidth: 0
       },
       formatter: name => {
-        return `${find(data, (pie) => pie.name === name)?.value}`
+        const value = find(data, (pie) => pie.name === name)?.value
+        return `${dataFormatter ? dataFormatter(value) : value}`
       }
     },
     color: colors,
@@ -100,7 +101,7 @@ export function DonutChart ({
         animation: !isEmpty,
         data,
         type: 'pie',
-        center: [props.showLegend ? '32%' : '50%', '50%'],
+        center: [props.showLegend && !isEmpty ? '26%' : '50%', '50%'],
         radius: ['76%', '90%'],
         cursor: isEmpty ? 'auto' : 'pointer',
         avoidLabelOverlap: true,
@@ -108,7 +109,10 @@ export function DonutChart ({
           show: true,
           position: 'center',
           formatter: () => {
-            return props.title ? `{title|${props.title}}\n\n{value|${sum}}` : `{value|${sum}}`
+            const value = dataFormatter ? dataFormatter(sum) : sum
+            return props.title
+              ? `{title|${props.title}}\n\n{value|${value}}`
+              : `{value|${value}}`
           },
           rich: {
             title: {

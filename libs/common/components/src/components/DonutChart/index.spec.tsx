@@ -1,4 +1,5 @@
 import { render, screen, mockLightTheme } from '@acx-ui/test-utils'
+import { formatter }                      from '@acx-ui/utils'
 
 import { cssStr } from '../../theme/helper'
 
@@ -25,6 +26,7 @@ describe('DonutChart', () => {
   it('should render the chart properly with data', async () => {
     const { asFragment } = render(<DonutChart
       data={data}
+      dataFormatter={formatter('noFormat')}
       title='Donut Chart'/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('Donut Chart').getAttribute('style'))
@@ -47,12 +49,22 @@ describe('DonutChart', () => {
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
   it('should not render the legend when false', async () => {
-    const { asFragment } = render(<DonutChart data={data} showLegend={false}/>)
+    const { asFragment } = render(<DonutChart data={data}
+      showLegend={false}
+      dataFormatter={formatter('countFormat')}/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('145').getAttribute('style'))
       .toEqual("font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;")
     const numbers = await screen.findAllByText(/\d+/)
     expect(numbers.length).toEqual(1)
+  })
+  it('should render the legend properly when formatter not available', async () => {
+    const { asFragment } = render(<DonutChart data={data}/>)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(screen.getByText('145').getAttribute('style'))
+      .toEqual("font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;")
+    const numbers = await screen.findAllByText(/\d+/)
+    expect(numbers.length).toEqual(5)
   })
 })
 
