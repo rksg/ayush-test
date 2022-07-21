@@ -537,7 +537,11 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                             >
                               <div
                                 class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
-                              />
+                              >
+                                <img
+                                  src="none.png"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1426,7 +1430,11 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <div
                                 class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
-                              />
+                              >
+                                <img
+                                  src="none.png"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>

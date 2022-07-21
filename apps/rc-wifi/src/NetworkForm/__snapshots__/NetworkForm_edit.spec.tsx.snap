@@ -537,7 +537,11 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <div
                                 class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
-                              />
+                              >
+                                <img
+                                  src="none.png"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1285,7 +1289,11 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                             >
                               <div
                                 class="styledComponents__Diagram-sc-bfjsxr-0 blexPE"
-                              />
+                              >
+                                <img
+                                  src="none.png"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1339,7 +1347,8 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                                 >
                                   <button
                                     aria-checked="false"
-                                    class="ant-switch"
+                                    class="ant-switch ant-switch-disabled"
+                                    disabled=""
                                     id="Settings_isCloudpathEnabled"
                                     role="switch"
                                     type="button"

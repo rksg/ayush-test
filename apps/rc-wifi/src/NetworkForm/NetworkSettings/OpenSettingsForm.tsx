@@ -7,7 +7,10 @@ import {
   Switch
 } from 'antd'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }             from '@acx-ui/components'
+import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import { NetworkTypeEnum }       from '@acx-ui/rc/utils'
+import { useParams }             from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
@@ -16,14 +19,26 @@ import { CloudpathServerForm } from './CloudpathServerForm'
 
 const { useWatch } = Form
 
-export function OpenSettingsForm (){
+export function OpenSettingsForm () {
+  const selectedId = useWatch('cloudpathServerId')
+  const { selected } = useCloudpathListQuery({ params: useParams() }, {
+    selectFromResult ({ data }) {
+      return {
+        selected: data?.find((item) => item.id === selectedId)
+      }
+    }
+  })
+
   return (
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
       </Col>
       <Col span={14}>
-        <NetworkDiagram type='open' />
+        <NetworkDiagram
+          type={NetworkTypeEnum.OPEN}
+          cloudpathType={selected?.deploymentType}
+        />
       </Col>
     </Row>
   )
