@@ -42,6 +42,32 @@ export const venuesResponse = {
 
 export const successResponse = { requestId: 'request-id' }
 
+export const cloudpathResponse = [{
+  authRadius: {
+    primary: {
+      ip: '5.54.58.5',
+      port: 56,
+      sharedSecret: '454545'
+    },
+    id: 'c615bf8c82dc404ebb98c7e89672ef29'
+  },
+  deploymentType: 'Cloud',
+  id: '6edb22ef74b143f280f2eb3105053840',
+  name: 'cloud_02'
+}, {
+  authRadius: {
+    primary: {
+      ip: '3.2.34.5',
+      port: 56,
+      sharedSecret: 'GFHFGH'
+    },
+    id: '296ee3f68c434aa4bc3b3ba1f7272806'
+  },
+  deploymentType: 'Cloud',
+  id: '5cc1d4a21c4d41b8ab1a839a0e03cc8c',
+  name: 'cloud_01'
+}]
+
 describe('NetworkForm', () => {
   it('should create open network successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -62,7 +88,7 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json([])))
+        (_, res, ctx) => res(ctx.json(cloudpathResponse)))
     )
 
     const insertInput = screen.getByLabelText('Network Name')
