@@ -145,7 +145,7 @@ export function StepsForm <FormValue = any> (
 }
 
 function StepForm <FormValue = any> (
-  props: StepFormProps<FormValue>
+  props: Omit<StepFormProps<FormValue>, 'requireMark' | 'validateTrigger'>
 ) {
   const keys = ['state']
   const internalProps = _.pick(props, keys) as InternalStepFormProps<FormValue>
@@ -154,6 +154,7 @@ function StepForm <FormValue = any> (
   return <ProAntStepsForm.StepForm<FormValue>
     {...formProps}
     requiredMark={true}
+    validateTrigger={'onBlur'}
   >
     <Row>
       <UI.FormContainer
