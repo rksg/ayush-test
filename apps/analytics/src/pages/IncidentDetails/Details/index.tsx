@@ -1,16 +1,15 @@
 import { Col, Row } from 'antd'
 
-import { BulbOutlined } from '@acx-ui/icons'
-
-import { IncidentHeader } from '../styledComponents'
-
 import { IncidentAttributes } from '../IncidentAttributes'
+
+import { PageHeader } from '@acx-ui/components'
+
 import type { IncidentDetailsProps } from '../types'
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => <>
-  <IncidentHeader
+  <PageHeader 
     title='Incident Details'
-    extra={<BulbOutlined />}
+    sideHeader={<div>pill</div>}
   />
   <Row gutter={[20, 20]}>
     <Col span={4}>

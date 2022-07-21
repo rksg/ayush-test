@@ -1,19 +1,13 @@
-import { useGlobalFilter }          from '@acx-ui/analytics/utils'
-import { getSeriesData }            from '@acx-ui/analytics/utils'
+import { useParams }       from '@acx-ui/react-router-dom'
 
-import { IncidentDetailsData, useIncidentDetailsQuery } from './services'
-
-import Assoc  from './Details/Assoc'
-import Auth   from './Details/Auth'
-import Dhcp   from './Details/Dhcp'
-import Eap    from './Details/Eap'
-import Radius from './Details/Radius'
+import Assoc                       from './Details/Assoc'
+import Auth                        from './Details/Auth'
+import Dhcp                        from './Details/Dhcp'
+import Eap                         from './Details/Eap'
+import Radius                      from './Details/Radius'
+import { useIncidentDetailsQuery } from './services'
 
 import type { IncidentDetailsProps } from './types'
-
-export const seriesMapping = [
-  { key: 'code', name: 'code' }
-] as Array<{ key: keyof IncidentDetailsData, name: string }>
 
 export const incidentDetailsMap = {
   'radius-failure': Radius,
@@ -80,20 +74,10 @@ const sample = {
 } as IncidentDetailsProps
 
 function IncidentDetails () {
-  const filters = useGlobalFilter()
-  const queryResults = useIncidentDetailsQuery(filters,
-    {
-      selectFromResult: ({ data, ...rest }) => ({
-        data: getSeriesData(data!, seriesMapping),
-        ...rest
-      })
-    })
-  console.log(queryResults)
-  // const code = queryResults.data.code
-  // const code = 'radius'
-  // const IncidentDetail = incidentDetailsMap[code]
-  // return <IncidentDetail />
-  // query code to render correct incident detail
+  let { incidentId } = useParams()
+  console.log(incidentId)
+  const newQueryResults = useIncidentDetailsQuery(incidentId)
+  console.log(newQueryResults)
   const IncidentDetail = incidentDetailsMap[sample.code as keyof typeof incidentDetailsMap]
   return <IncidentDetail {...sample}/>
 }

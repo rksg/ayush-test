@@ -63,4 +63,5 @@ test('should navigate to analytics/incidentDetails', () => {
       wrapRoutes: false
     }
   })
+  screen.getByText('Incident Details')
 })

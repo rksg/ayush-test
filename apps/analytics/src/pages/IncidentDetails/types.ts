@@ -17,7 +17,7 @@ export interface IncidentDetailsProps {
   clientCount: number
   impactedClientCount: number
   metadata: Metadata
-  path: Array<{type: string, name: string}>
+  path: Array<{ type: string, name: string }>
   apCount: number
   impactedApCount: number
   switchCount: number

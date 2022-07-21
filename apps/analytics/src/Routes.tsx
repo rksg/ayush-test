@@ -9,7 +9,7 @@ export default function AnalyticsRoutes () {
     <Route path='t/:tenantId'>
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents' element={<IncidentListPage />} />
-      <Route path='analytics/incidents/:id' element={<IncidentDetailsPage />} />
+      <Route path='analytics/incidents/:incidentId' element={<IncidentDetailsPage />} />
       <Route path='analytics/recommendations' element={<div>Recommendations</div>} />
       <Route path='analytics/health' element={<div>Health</div>} />
       <Route path='analytics/configChange' element={<div>Config Change</div>} />
