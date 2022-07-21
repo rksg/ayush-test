@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+import { TimePicker, Row, Col }     from 'antd'
 
 
 type WrapperProps = {
@@ -26,13 +27,9 @@ export const Wrapper = styled.div<WrapperProps>`
   box-shadow:  none;
 }
 .ant-picker-panel-container {
-  border-radius:${(props) => (props.hasTimePicker
-    ? '0 4px 4px 0'
-    : '4px 4px 4px 4px')};
+  border-radius: 4px;
   background: var(--acx-primary-white);
-  box-shadow: ${(props) => (props.hasTimePicker
-    ? '6px 2px 6px 2px rgb(51 51 51 / 5%), 6px 2px 6px 2px rgb(51 51 51 / 5%)'
-    : '0 3px 6px -4px rgb(51 51 51 / 12%), 0 6px 16px 0 rgb(51 51 51 / 8%), 0 9px 28px 8px rgb(51 51 51 / 5%)')};
+  box-shadow: 6px 2px 6px 2px rgb(51 51 51 / 5%), 6px 2px 6px 2px rgb(51 51 51 / 5%);
 }
 .ant-picker-date-panel {
   .ant-picker-header {
@@ -95,11 +92,6 @@ export const Wrapper = styled.div<WrapperProps>`
   background-color: var(--acx-primary-white);
   padding-left: 14px;
   padding-right: 12px;
-}
-.calender-range-apply-row {
-  background-color:var(--acx-neutrals-10);
-  height: 48px;
-  align-items: center;
 }
 .ant-picker-ranges .ant-picker-preset > .ant-tag-blue {
   color: var(--acx-neutrals-100);
@@ -177,4 +169,28 @@ export const Wrapper = styled.div<WrapperProps>`
 .calender-range-apply-row {
   font-weight: var(--acx-body-font-weight);
 }
+`
+export const TimePickerWrapper = styled(TimePicker)`
+ height: 24px;
+ padding: 4px;
+ width: 50px !important;
+`
+export const TimePickerRow = styled(Row)`
+ margin-left: 24px;
+`
+export const RangeApplyRow = styled(Row)`
+ background-color:var(--acx-neutrals-10);
+ height: 48px;
+ align-items: center;
+`
+export const ButtonColumn = styled(Col)`
+ line-height: normal
+`
+export const TimePickerCol1 = styled(Col)`
+ margin-left: 3px;
+ margin-right: 3px; 
+`
+export const TimePickerCol2 = styled(Col)`
+ margin-left: 17px;
+ margin-right: 17px; 
 `

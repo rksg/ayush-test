@@ -1,12 +1,14 @@
 import  React,{ useCallback } from 'react'
 
-import { TimePicker, Row, Col }     from 'antd'
+import { Col }                      from 'antd'
 import { range as timepickerRange } from 'lodash'
 
 import { ArrowDown }       from '@acx-ui/icons'
 import { dateTimeFormats } from '@acx-ui/utils'
 
 import { Button } from '../Button'
+
+import * as UI from './styledComponents'
 
 import { DateRangeType } from '.'
 
@@ -26,16 +28,7 @@ type DisabledTimes = {
   disabledSeconds?: (hour: number, minute: number) => number[];
 }
 const { dateFormat, dateTimeFormat } = dateTimeFormats
-const styles = {
-  timePicker: {
-    width: '50px',
-    height: '24px',
-    padding: '4px'
-  },
-  row: { marginLeft: 24 },
-  timePickerCol2: { marginLeft: 3, marginRight: 3 },
-  timePickerCol3: { marginLeft: 17, marginRight: 17 }
-}
+
 const timePickerConfig = [
   { id: 1, range: 'startDate', value: 'hour', format: 'HH', offset: 6, hasSemiColon: true },
   { id: 2, range: 'startDate', value: 'minutes', format: 'mm', offset: 0, hasHyphen: true },
@@ -47,7 +40,6 @@ const getCustomisedDate = (date: Moment | null, showTimePicker?: boolean ) =>
   showTimePicker
     ? date?.format(dateTimeFormat)
     : date?.format(dateFormat)
-
 
 const defaultselectionForDisabledDates = {
   disabledHours: () => [],
@@ -83,14 +75,11 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
 
   return <>
     {showTimePicker &&
-    <Row style={styles.row}>
+    <UI.TimePickerRow>
       {timePickerConfig.map((config)=>
         <React.Fragment key={config.id}>
-          <Col
-            span={2.5}
-            offset={config.offset}
-          >
-            <TimePicker
+          <Col span={2.5} offset={config.offset}>
+            <UI.TimePickerWrapper
               role='time-picker'
               showNow={false}
               format={config.format}
@@ -98,7 +87,6 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
               placeholder=''
               suffixIcon={<ArrowDown/>}
               allowClear={false}
-              style={styles.timePicker}
               getPopupContainer={(node: HTMLElement) => node}
               onSelect={(time) => onTimePickerSelect(config, time)}
               value={range[config.range as keyof DateRangeType]}
@@ -109,30 +97,30 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
             />
           </Col>
           {config.hasSemiColon &&
-          <Col style={styles.timePickerCol2}>:
-          </Col>}
+          <UI.TimePickerCol1>:
+          </UI.TimePickerCol1>}
           {config.hasHyphen &&
-          <Col style={styles.timePickerCol3}>-
-          </Col>}
+          <UI.TimePickerCol2>-
+          </UI.TimePickerCol2>}
         </React.Fragment>
       )}
-    </Row>}
-    <Row className='calender-range-apply-row'>
+    </UI.TimePickerRow>}
+    <UI.RangeApplyRow>
       <Col role='display-date-range'
         span={showTimePicker ? 12 : 10}
         offset={showTimePicker ? 6 : 8}>
         {`${getCustomisedDate(range?.startDate, showTimePicker) || ''}
         - ${getCustomisedDate(range?.endDate, showTimePicker) || ''}`}
       </Col>
-      <Col span={3} style={{ lineHeight: 'normal' }}>
+      <UI.ButtonColumn span={3}>
         <Button onClick={() => onButtonClick('cancel')}
           size={'small'}>Cancel</Button>
-      </Col>
-      <Col span={3} style={{ lineHeight: 'normal' }}>
+      </UI.ButtonColumn >
+      <UI.ButtonColumn span={3}>
         <Button type={'secondary'}
           size={'small'}
           onClick={() => onButtonClick('apply')}>Apply</Button>
-      </Col>
-    </Row>
+      </UI.ButtonColumn>
+    </UI.RangeApplyRow>
   </>
 }
