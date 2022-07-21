@@ -952,14 +952,13 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                         style="margin-bottom: 8px;"
                                       >
                                         <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                         >
                                           <span
-                                            class="ant-radio ant-radio-disabled"
+                                            class="ant-radio"
                                           >
                                             <input
                                               class="ant-radio-input"
-                                              disabled=""
                                               type="radio"
                                               value="psk"
                                             />
@@ -1218,13 +1217,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                       >
                                         Authentication Service
                                       </h3>
-                                      <h4
-                                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                                      >
-                                        Primary Server
-                                      </h4>
                                       <div
                                         class="ant-row ant-form-item"
+                                        style="display: inline-block; width: calc(80%); padding-right: 20px;"
                                       >
                                         <div
                                           class="ant-col ant-form-item-label"
@@ -1258,6 +1253,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                       </div>
                                       <div
                                         class="ant-row ant-form-item"
+                                        style="display: inline-block; width: calc(20%);"
                                       >
                                         <div
                                           class="ant-col ant-form-item-label"
@@ -1283,7 +1279,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                 class="ant-input"
                                                 id="Settings_authRadius.primary.port"
                                                 type="number"
-                                                value=""
+                                                value="1812"
                                               />
                                             </div>
                                           </div>
@@ -1355,7 +1351,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                         </div>
                                       </div>
                                       <button
-                                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
+                                        class="ant-btn ant-btn-link"
                                         type="button"
                                       >
                                         <span>
