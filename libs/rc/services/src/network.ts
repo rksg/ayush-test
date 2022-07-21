@@ -149,13 +149,13 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 })
 export const {
   useNetworkListQuery,
-  useCreateNetworkMutation,
-  useUpdateNetworkDeepMutation,
   useGetNetworkQuery,
   useNetworkDetailHeaderQuery,
+  useCreateNetworkMutation,
+  useUpdateNetworkDeepMutation,
+  useDeleteNetworkMutation,
   useVenueListQuery,
-  useDashboardOverviewQuery,
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
-  useDeleteNetworkMutation
+  useDashboardOverviewQuery,
 } = networkApi
