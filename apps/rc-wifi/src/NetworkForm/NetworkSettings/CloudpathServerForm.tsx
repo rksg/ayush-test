@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import {
   Form,
@@ -10,9 +10,12 @@ import { Button, Subtitle }      from '@acx-ui/components'
 import { useCloudpathListQuery } from '@acx-ui/rc/services'
 import { useParams }             from '@acx-ui/react-router-dom'
 
+import NetworkFormContext from '../NetworkFormContext'
+
 const { Option } = Select
 
 export function CloudpathServerForm () {
+  const { editMode } = useContext(NetworkFormContext)
   const selectedId = Form.useWatch('cloudpathServerId')
   const { selectOptions, selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -29,7 +32,7 @@ export function CloudpathServerForm () {
         name='cloudpathServerId'
         label='Cloudpath Server'
         rules={[{ required: true }]}>
-        <Select placeholder='Select...' children={selectOptions} />
+        <Select placeholder='Select...' children={selectOptions} disabled={editMode} />
       </Form.Item>
 
       <Button type='link'>Add Server</Button>

@@ -70,7 +70,8 @@ export function NetworkForm () {
   const { data } = useGetNetworkQuery({ params })
 
   if(data){
-    formRef?.current?.setFieldsValue({ ...data, 
+    formRef?.current?.resetFields()
+    formRef?.current?.setFieldsValue({ ...data,
       isCloudpathEnabled: typeof data.cloudpathServerId !== 'undefined'
     })
   }
@@ -101,76 +102,76 @@ export function NetworkForm () {
   return (
     <>
       <PageHeader
-        title={editMode?'Edit Network':'Create New Network'}
+        title={editMode ? 'Edit Network' : 'Create New Network'}
         breadcrumb={[
           { text: 'Networks', link: '/networks' }
         ]}
       />
-      <StepsForm<CreateNetworkFormFields>
-        formRef={formRef}
-        editMode={editMode}
-        onCancel={() => navigate(linkToNetworks)}
-        onFinish={editMode ? handleEditNetwork: handleAddNetwork}
-      >
-        <StepsForm.StepForm<CreateNetworkFormFields>
-          name='details'
-          title='Network Details'
-          onFinish={async (data) => {
-            const detailsSaveData = transferDetailToSave(data)
-            updateData(data)
-            updateSaveData(detailsSaveData)
-            return true
-          }}
-        >
-          <NetworkFormContext.Provider value={{ setNetworkType }}>
-            <NetworkDetailForm editMode={editMode}/>
-          </NetworkFormContext.Provider>
-        </StepsForm.StepForm>
-
-        <StepsForm.StepForm
+      <NetworkFormContext.Provider value={{ setNetworkType, editMode }}>
+        <StepsForm<CreateNetworkFormFields>
           formRef={formRef}
-          name='Settings'
-          title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
-          onFinish={async (data) => {
-            data = {
-              ...data,
-              ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
-            }
-            const settingSaveData = tranferSettingsToSave(data)
-            updateData(data)
-            updateSaveData(settingSaveData)
-            return true
-          }}
+          editMode={editMode}
+          onCancel={() => navigate(linkToNetworks)}
+          onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
-          {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-          {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
-          {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
-        </StepsForm.StepForm>
+          <StepsForm.StepForm<CreateNetworkFormFields>
+            name='details'
+            title='Network Details'
+            onFinish={async (data) => {
+              const detailsSaveData = transferDetailToSave(data)
+              updateData(data)
+              updateSaveData(detailsSaveData)
+              return true
+            }}
+          >
+            <NetworkDetailForm />
+          </StepsForm.StepForm>
 
-        <StepsForm.StepForm
-          initialValues={data}
-          params={data}
-          request={(params) => {
-            return Promise.resolve({
-              data: params,
-              success: true
-            })
-          }}
-          name='venues'
-          title='Venues'
-          onFinish={async (data) => {
-            updateData(data)
-            updateSaveData(data)
-            return true
-          }}
-        >
-          <Venues formRef={formRef} editMode={editMode} />
-        </StepsForm.StepForm>
+          <StepsForm.StepForm
+            formRef={formRef}
+            name='Settings'
+            title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
+            onFinish={async (data) => {
+              data = {
+                ...data,
+                ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
+              }
+              const settingSaveData = tranferSettingsToSave(data)
+              updateData(data)
+              updateSaveData(settingSaveData)
+              return true
+            }}
+          >
+            {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+            {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
+            {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
+          </StepsForm.StepForm>
 
-        <StepsForm.StepForm name='summary' title='Summary'>
-          <SummaryForm summaryData={state} />
-        </StepsForm.StepForm>
-      </StepsForm>
+          <StepsForm.StepForm
+            initialValues={data}
+            params={data}
+            request={(params) => {
+              return Promise.resolve({
+                data: params,
+                success: true
+              })
+            }}
+            name='venues'
+            title='Venues'
+            onFinish={async (data) => {
+              updateData(data)
+              updateSaveData(data)
+              return true
+            }}
+          >
+            <Venues formRef={formRef} />
+          </StepsForm.StepForm>
+
+          <StepsForm.StepForm name='summary' title='Summary'>
+            <SummaryForm summaryData={state} />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </NetworkFormContext.Provider>
     </>
   )
 }

@@ -3,10 +3,10 @@ import { useContext } from 'react'
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
 
-import { StepsForm }                             from '@acx-ui/components'
-import { useLazyNetworkListQuery }               from '@acx-ui/rc/services'
-import { NetworkTypeEnum, checkObjectNotExists } from '@acx-ui/rc/utils'
-import { useParams }                             from '@acx-ui/react-router-dom'
+import { StepsForm }                                              from '@acx-ui/components'
+import { useLazyNetworkListQuery }                                from '@acx-ui/rc/services'
+import { NetworkTypeEnum, checkObjectNotExists, NetworkSaveData } from '@acx-ui/rc/utils'
+import { useParams }                                              from '@acx-ui/react-router-dom'
 
 import { NetworkTypeDescription, NetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                           from '../NetworkDiagram/NetworkDiagram'
@@ -17,10 +17,10 @@ import type { RadioChangeEvent } from 'antd'
 
 const { useWatch } = Form
 
-export function NetworkDetailForm (props: { editMode?: boolean }) {
-  const { editMode } = props
+export function NetworkDetailForm () {
+  let name = useWatch<NetworkSaveData>('name')
   let type = useWatch<NetworkTypeEnum>('type')
-  const { setNetworkType: setSettingStepTitle } = useContext(NetworkFormContext)
+  const { setNetworkType: setSettingStepTitle, editMode } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
     setSettingStepTitle(e.target.value as NetworkTypeEnum)
   }
@@ -37,7 +37,10 @@ export function NetworkDetailForm (props: { editMode?: boolean }) {
   const nameValidator = async (value: string) => {
     const payload = { ...networkListPayload, searchString: value }
     const list = (await getNetworkList({ params, payload }, true)
-      .unwrap()).data.map(n => ({ name: n.name }))
+      .unwrap()).data.map(n => ({ id: n.id, name: n.name }))
+    if(params.networkId === list[0]?.id && name === list[0]?.name){
+      return
+    }
     return checkObjectNotExists(list, value, 'Network')
   }
 

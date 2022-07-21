@@ -30,7 +30,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
 import { CloudpathServerForm } from './CloudpathServerForm'

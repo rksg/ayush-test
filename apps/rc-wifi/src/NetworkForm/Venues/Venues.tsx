@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import { Form, Switch } from 'antd'
 
@@ -10,6 +10,8 @@ import {
 } from '@acx-ui/components'
 import { useVenueListQuery, Venue } from '@acx-ui/rc/services'
 import { useTableQuery }            from '@acx-ui/rc/utils'
+
+import NetworkFormContext from '../NetworkFormContext'
 
 const defaultPayload = {
   searchString: '',
@@ -47,8 +49,9 @@ const getNetworkId = () => {
   return 'UNKNOWN-NETWORK-ID'
 }
 
-export function Venues (props: { formRef: any, editMode: boolean }) {
-  const { formRef, editMode } = props
+export function Venues (props: { formRef: any }) {
+  const { formRef } = props
+  const { editMode } = useContext(NetworkFormContext)
   const venues = Form.useWatch('venues')
 
   const tableQuery = useTableQuery({
