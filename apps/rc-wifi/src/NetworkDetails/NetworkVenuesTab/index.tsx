@@ -179,8 +179,7 @@ export function NetworkVenuesTab () {
             </div>
             {enabledNotActivatedVenues.map(venue =>(<div key={venue}> {venue} </div>))}
           </div>
-        ),
-        onOk () {}
+        )
       })
     }
 
