@@ -98,6 +98,10 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     selectedVenues = _.uniq(selectedVenues)
     setActivateVenues(selectedVenues)
     handleVenueSaveData(selectedVenues)
+    setTableDataActivate(selectedVenues)
+  }
+
+  const setTableDataActivate = (selectedVenues:Venue[]) => {
     const data:Venue[] = []
     tableData.forEach(item => {
       let activated = { isActivated: false }
@@ -132,7 +136,11 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
         // work around of read-only records from RTKQ
         activated: { ...item.activated }
       }))
-      setTableData(data)
+      if (tableData.length && activateVenues.length) {
+        setTableDataActivate(activateVenues)
+      } else {
+        setTableData(data)
+      }
     }
   }, [tableQuery.data])
 
