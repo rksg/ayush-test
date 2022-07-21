@@ -1,15 +1,16 @@
 import { Col, Row } from 'antd'
 
+import { PageHeader, Pill } from '@acx-ui/components'
+
 import { IncidentAttributes } from '../IncidentAttributes'
 
-import { PageHeader } from '@acx-ui/components'
 
 import type { IncidentDetailsProps } from '../types'
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => <>
   <PageHeader 
     title='Incident Details'
-    sideHeader={<div>pill</div>}
+    sideHeader={<Pill value='123' trend='positive' />}
   />
   <Row gutter={[20, 20]}>
     <Col span={4}>

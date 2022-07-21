@@ -1,4 +1,4 @@
-import { useParams }       from '@acx-ui/react-router-dom'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import Assoc                       from './Details/Assoc'
 import Auth                        from './Details/Auth'
