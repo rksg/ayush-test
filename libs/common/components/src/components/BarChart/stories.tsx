@@ -76,8 +76,8 @@ function switchUsageLabelFormatter (params: CallbackDataParams): string {
   const usage = Array.isArray(params.data) ? params.data[1] : params.data
   const utilisation_per = Array.isArray(params.data) ? params.data[2] : params.data
   return '{poe_usage|' +
-    numberFormat(1000, watts, usage as unknown as number) + '} ({utilisationPer|' +
-    utilisation_per + '%})'
+    numberFormat(1000, watts, usage as unknown as number) + '\n}{utilisationPer|' +
+    utilisation_per + '%}'
 }
 
 function switchTrafficLabelFormatter (params: CallbackDataParams): string {
@@ -118,20 +118,20 @@ const getSwitchTrafficRichStyle = () => ({
 storiesOf('BarChart', module)
   .addDecorator(withKnobs)
   .add('Single Series - Default', () => <BarChart
-    style={{ width: 524, height: 150 }}
+    style={{ width: 524, height: 174 }}
     data={data()}
     barColors={barColors}
   />)
   //
   .add('Single Series - Custom formatter', () => <BarChart
-    style={{ width: 524, height: 150 }}
+    style={{ width: 524, height: 174 }}
     labelFormatter={switchUsageLabelFormatter}
     labelRichStyle={getSwitchUsageRichStyle()}
     data={data()}
     barColors={barColors}
   />)
   .add('Multi Series', () => <BarChart
-    style={{ width: 524, height: 200 }}
+    style={{ width: 524, height: 174 }}
     labelFormatter={switchTrafficLabelFormatter}
     labelRichStyle={getSwitchTrafficRichStyle()}
     data={data(true)}
