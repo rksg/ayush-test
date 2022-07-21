@@ -1,14 +1,20 @@
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { rest } from 'msw'
 
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { NetworkForm } from './NetworkForm'
 
-const venuesResponse = {
+export const networksResponse = {
+  fields: ['name', 'id'],
+  totalCount: 0,
+  page: 1,
+  data: []
+}
+
+export const venuesResponse = {
   fields: [
     'country','city','aps','latitude','switches','description',
     'networks','switchClients','vlan','radios','name','scheduling',
@@ -34,8 +40,7 @@ const venuesResponse = {
   ]
 }
 
-const successResponse = { requestId: 'request-id' }
-
+export const successResponse = { requestId: 'request-id' }
 
 describe('NetworkForm', () => {
   it('should create open network successfully', async () => {
@@ -48,33 +53,25 @@ describe('NetworkForm', () => {
     expect(asFragment()).toMatchSnapshot()
 
     mockServer.use(
+      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+        (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => {
-          return res(
-            ctx.status(200),
-            ctx.json(venuesResponse)
-          )
-        }),
+        (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
-        (req, res, ctx) => {
-          return res(
-            ctx.status(200),
-            ctx.json(successResponse)
-          )
-        }),
-      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) => res(ctx.json([])))
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(CommonUrlsInfo.getCloudpathList.url,
+        (_, res, ctx) => res(ctx.json([])))
     )
 
     const insertInput = screen.getByLabelText('Network Name')
-    userEvent.type(
-      screen.getByRole('textbox', { name: /Network Name/i }),
-      'open network test'
-    )
-
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
-    expect(insertInput).toHaveValue('open network test')
+    fireEvent.blur(insertInput)
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
 
-    fireEvent.click(screen.getByText('Open Network'))
+    fireEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
@@ -84,6 +81,7 @@ describe('NetworkForm', () => {
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
+
     fireEvent.click(screen.getByText('Finish'))
   })
 })

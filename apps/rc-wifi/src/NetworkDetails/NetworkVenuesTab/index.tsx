@@ -304,8 +304,8 @@ export function NetworkVenuesTab () {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       {
-        !networkQuery.data?.venues?.length &&  
-        <Alert message={notificationMessage} type='info' closable />
+        !networkQuery.data?.venues?.length &&
+        <Alert message={notificationMessage} type='info' showIcon closable />
       }
       <Table
         rowKey='id'

@@ -1,33 +1,65 @@
 import '@testing-library/jest-dom'
-import { render } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 
 import { Modal } from '.'
 
-describe('Modal', () => {
+jest.mock('@acx-ui/icons', ()=> ({
+  CloseSymbol: () => <div data-testid='close-symbol'/>
+}), { virtual: true })
 
+describe('Modal', () => {
+  const handleCancel = jest.fn()
+  const handleConfirm = jest.fn()
+  const content = <>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+  </>
+  const footer = [
+    <button key='cancel' onClick={handleCancel}>
+      CustomFooterCancel
+    </button>,
+    <button key='confirm' onClick={handleConfirm}>
+      CustomFooterConfirm
+    </button>
+  ]
   it('should match snapshot', async () => {
-    const handleCancel = jest.fn()
-    const handleConfirm = jest.fn()
-    const content = <>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-    </>
-    const footer = [
-      <button key='cancel' onClick={handleCancel}>
-        Cancel
-      </button>,
-      <button key='confirm' onClick={handleConfirm}>
-        Confirm
-      </button>
-    ]
-    const { asFragment } = render(<Modal
+    render(<Modal
       title='Basic Modal'
       closable={false}
-      content={content}
       footer={footer}
+      content={content}
+      visible={true}
+      data-testid={'basic-modal'}
     />)
-    // TODO: snapshow showing DocumentFragment only, need to fix
-    expect(asFragment()).toMatchSnapshot()
+    const modalComponent = screen.getByTestId('basic-modal')
+    expect(modalComponent).toMatchSnapshot()
+  })
+
+  it('should render modal correctly', async () => {
+    render(<Modal
+      title='Long Modal Title'
+      okText='Add'
+      onCancel={handleCancel}
+      onOk={handleConfirm}
+      subTitle='Subtitle Description'
+      content={content}
+      visible={true}
+    />)
+    const closeButton = screen.getByRole('button', { name: /close/i })
+    const cancelButton = screen.getByRole('button', { name: /cancel/i })
+    const addButton = screen.getByRole('button', { name: /add/i })
+
+    await screen.findByText('Long Modal Title')
+    await screen.findByText('Subtitle Description')
+
+    fireEvent.click(closeButton)
+    expect(handleCancel).toBeCalled()
+
+    fireEvent.click(cancelButton)
+    expect(handleCancel).toBeCalled()
+
+    fireEvent.click(addButton)
+    expect(handleConfirm).toBeCalled()
   })
 })

@@ -11,7 +11,7 @@ describe('Alert', () => {
   it('should render correctly', () => {
     const { asFragment } = render(
       <>
-        <Alert message='Informational Notes' type='info' closable /> 
+        <Alert message='Informational Notes' type='info' showIcon closable />
         <p />
         <Alert message='Error' type='error' showIcon closable />
       </>

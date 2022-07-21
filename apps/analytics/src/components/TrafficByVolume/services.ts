@@ -3,7 +3,7 @@ import { gql } from 'graphql-request'
 import { dataApi }      from '@acx-ui/analytics/services'
 import { GlobalFilter } from '@acx-ui/analytics/utils'
 
-export interface TrafficByVolumeData {
+export type TrafficByVolumeData = {
   time: string[]
   totalTraffic_all: number[]
   totalTraffic_6: number[]

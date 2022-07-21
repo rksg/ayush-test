@@ -1,8 +1,6 @@
-import { ConfigProvider as ProProvider, enUSIntl } from '@ant-design/pro-provider'
-import { ConfigProvider }                          from 'antd'
-import enUS                                        from 'antd/lib/locale/en_US'
-
 import '@acx-ui/theme'
+
+import { ConfigProvider } from '@acx-ui/components'
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -17,10 +15,10 @@ export const parameters = {
 export const decorators = [
   (Story) => {
     return (
-      <ConfigProvider locale={enUS}>
-        <ProProvider value={{ intl: enUSIntl }}>
+      <ConfigProvider lang='en-US'>
+        <div>
           <Story />
-        </ProProvider>
+        </div>
       </ConfigProvider>
     )
   }
