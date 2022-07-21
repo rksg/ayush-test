@@ -2,25 +2,47 @@ import { gql } from 'graphql-request'
 
 import { dataApi } from '@acx-ui/analytics/services'
 
-import { IncidentDetailsProps } from './types'
+const detailQueryProps = {
+  incident: `
+    severity
+    startTime
+    endTime
+    code
+    sliceType
+    sliceValue
+    id
+    path { type name }
+    metadata
+    clientCount
+    impactedClientCount
+    isMuted
+    mutedBy
+    mutedAt
+    slaThreshold
+    currentSlaThreshold
+    apCount
+    impactedApCount
+    switchCount
+    vlanCount
+    connectedPowerDeviceCount
+  `
+}
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentDetails: build.query({
-      query: (payload) => {
-        return {
-          document: gql`
-          query IncidentDetails ($id: String) {
-            incident(id: $id) {
-              id
-              code
-            }
+      query: (payload) => ({
+        document: gql`
+        query IncidentDetails ($id: String) {
+          incident(id: $id) {
+            ${detailQueryProps.incident}
           }
-        `,
-          variables: {
-            id: payload
-          }
-        }}
+        }
+      `,
+        variables: {
+          id: payload.id
+        }
+      })
     })
   })
 })

@@ -4,7 +4,6 @@ import { PageHeader, Pill } from '@acx-ui/components'
 
 import { IncidentAttributes } from '../IncidentAttributes'
 
-
 import type { IncidentDetailsProps } from '../types'
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => <>
