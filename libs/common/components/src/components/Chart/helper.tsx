@@ -77,7 +77,7 @@ export const tooltipOptions = () => ({
   borderWidth: 0,
   padding: 8,
   confine: true,
-  extraCssText: `box-shadow: 0px 4px 8px ${cssStr('--acx-primary-black')}26;`
+  extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08);'
 })
 
 type Unified<T> = Exclude<T, T[]>
