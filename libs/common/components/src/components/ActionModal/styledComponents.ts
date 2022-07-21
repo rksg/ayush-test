@@ -11,9 +11,6 @@ export const Footer = styled.div`
 export const FooterButtons = styled.div`
   position: absolute;
   right: 24px;
-  .ant-btn + .ant-btn {
-    margin-left: 8px;
-  }
 `
 
 export const Collapse = styled(AntCollapse)`
