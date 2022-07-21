@@ -387,23 +387,24 @@ export function ConfigChangeChart ({
         axis: 'x',
         animation: false,
         lineStyle: {
-          color: cssStr('--acx-primary-back'),
+          color: cssStr('--acx-neutrals-70'),
           type: 'solid',
           width: 1
         }
       },
       formatter: tooltipFormatter,
       textStyle: {
-        color: cssStr('--acx-neutrals-50'),
+        color: cssStr('--acx-primary-white'),
         fontFamily: cssStr('--acx-neutral-brand-font'),
         fontSize: cssNumber('--acx-body-5-font-size'),
         lineHeight: cssNumber('--acx-body-5-line-height'),
         fontWeight: 400
       },
+      backgroundColor: cssStr('--acx-primary-black'),
       borderRadius: 2,
-      borderColor: cssStr('--acx-neutrals-20'),
-      padding: [3,5],
-      extraCssText: 'box-shadow: none;',
+      borderColor: cssStr('--acx-primary-black'),
+      padding: [3, 5],
+      extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.15);',
       position: (point) => [point[0] + 10, 0] // 10 for gap between tooltip and tracker
     },
     legend: {
