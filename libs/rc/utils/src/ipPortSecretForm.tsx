@@ -1,7 +1,7 @@
 import { Form, Input } from 'antd'
 
-import { AaaServerTypeEnum, AaaServerOrderEnum }                          from './constants'
-import { networkWifiIpRegExp, networkWifiPortRegExp, stringContainSpace } from './validator' 
+import { AaaServerTypeEnum, AaaServerOrderEnum }      from './constants'
+import { ipV4RegExp, portRegExp, stringContainSpace } from './validator' 
 
 export function IpPortSecretForm ({ serverType, order }: 
   { serverType: AaaServerTypeEnum, order: AaaServerOrderEnum }) {
@@ -14,7 +14,7 @@ export function IpPortSecretForm ({ serverType, order }:
           required: true,
           whitespace: false
         },{
-          validator: (_, value) => networkWifiIpRegExp(value)
+          validator: (_, value) => ipV4RegExp(value)
         }]}
         children={<Input />}
         style={{ display: 'inline-block', width: 'calc(80%)' , paddingRight: '20px' }}
@@ -25,7 +25,7 @@ export function IpPortSecretForm ({ serverType, order }:
         rules={[{
           required: true
         },{
-          validator: (_, value) => networkWifiPortRegExp(value)
+          validator: (_, value) => portRegExp(value)
         }]}
         children={<Input type='number'/>}
         style={{ display: 'inline-block', width: 'calc(20%)' }}

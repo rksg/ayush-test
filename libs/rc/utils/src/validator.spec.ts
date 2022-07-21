@@ -1,25 +1,25 @@
-import { networkWifiIpRegExp, networkWifiPortRegExp, stringContainSpace, checkObjectNotExists } from './validator'
+import { ipV4RegExp, portRegExp, stringContainSpace, checkObjectNotExists } from './validator'
 
 describe('validator', () => {
-  describe('networkWifiIpRegExp', () => {
+  describe('ipV4RegExp', () => {
     it('Should take care of ip address values correctly', async () => {
-      await expect(networkWifiIpRegExp('111.111.111.111')).resolves.toEqual(undefined)
+      await expect(ipV4RegExp('111.111.111.111')).resolves.toEqual(undefined)
     })
     it('Should display error meesage if ip address values incorrectly', async () => {
-      await expect(networkWifiIpRegExp('000.000.000.000'))
+      await expect(ipV4RegExp('000.000.000.000'))
         .rejects.toEqual('Please enter a valid IP address')
     })
   })
-  describe('networkWifiPortRegExp', () => {
+  describe('portRegExp', () => {
     it('Should take care of port values correctly', async () => {
-      await expect(networkWifiPortRegExp(80)).resolves.toEqual(undefined)
+      await expect(portRegExp(80)).resolves.toEqual(undefined)
     })
     it('Should display error message if port values lower than 1', async () => {
-      await expect(networkWifiPortRegExp(-1))
+      await expect(portRegExp(-1))
         .rejects.toEqual('This value should be higher than or equal to 1')
     })
     it('Should display error meesage if port values greater than 65535', async () => {
-      await expect(networkWifiPortRegExp(65536))
+      await expect(portRegExp(65536))
         .rejects.toEqual('This value should be lower than or equal to 65535')
     })
   })

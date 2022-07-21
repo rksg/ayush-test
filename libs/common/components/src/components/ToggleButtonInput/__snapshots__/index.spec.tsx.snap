@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ToggleButtonInput true should render correctly 1`] = `
+<DocumentFragment>
+  <button
+    class="ant-btn ant-btn-link"
+    type="button"
+  >
+    <span>
+      Add Secondary Server
+    </span>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`ToggleButtonInput true should render false status correctly 1`] = `
+<DocumentFragment>
+  <button
+    class="ant-btn ant-btn-link"
+    type="button"
+  >
+    <span>
+      Add Secondary Server
+    </span>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`ToggleButtonInput true should render true status correctly 1`] = `
+<DocumentFragment>
+  <button
+    class="ant-btn ant-btn-link"
+    type="button"
+  >
+    <span>
+      Remove Secondary Server
+    </span>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`ToggleButtonInput true should trigger onChange event correctly 1`] = `
+<DocumentFragment>
+  <button
+    class="ant-btn ant-btn-link"
+    type="button"
+  >
+    <span>
+      Remove Secondary Server
+    </span>
+  </button>
+</DocumentFragment>
+`;
