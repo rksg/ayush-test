@@ -80,7 +80,7 @@ export function Venues (props: { formRef: any }) {
   }
   useEffect(()=>{
     if(editMode){
-      if(tableQuery.data){
+      if(tableQuery.data && activateVenues.length === 0){
         const selected: Venue[] = []
         const tableData = tableQuery.data.data.map((item: Venue) => 
         {
