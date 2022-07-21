@@ -207,8 +207,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
             label={SecurityOptionsPassphraseLabel[PskWlanSecurityEnum.WEP]}
             rules={[{
               required: true,
-              whitespace: false,
-              min: 26
+              whitespace: false
             },{
               validator: (_, value) => hexRegExp(value)
             }]}

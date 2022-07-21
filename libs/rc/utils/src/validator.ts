@@ -44,7 +44,7 @@ export function checkObjectNotExists (
 }
 
 export const hexRegExp = (value: string) => {
-  const re = new RegExp(/^[0-9a-fA-F]$/)
+  const re = new RegExp(/^[0-9a-fA-F]{26}$/)
   if (value!=='' && !re.test(value)) {
     return Promise.reject('Invalid Hex Key')
   }
