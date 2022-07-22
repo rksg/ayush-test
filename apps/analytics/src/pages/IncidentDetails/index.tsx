@@ -1,5 +1,5 @@
-import { Loader, PageHeader } from '@acx-ui/components'
-import { useParams }          from '@acx-ui/react-router-dom'
+import { Loader }    from '@acx-ui/components'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import Assoc                       from './Details/Assoc'
 import Auth                        from './Details/Auth'
@@ -7,6 +7,7 @@ import Dhcp                        from './Details/Dhcp'
 import Eap                         from './Details/Eap'
 import Radius                      from './Details/Radius'
 import { useIncidentDetailsQuery } from './services'
+import { IncidentDetailsProps }    from './types'
 
 export const incidentDetailsMap = {
   'radius-failure': Radius,
@@ -16,20 +17,22 @@ export const incidentDetailsMap = {
   'assoc-failure': Assoc
 }
 
-function IncidentDetails () {
-  let { incidentId } = useParams()
-  const results = useIncidentDetailsQuery({ id: incidentId })
-  if (results.status === 'fulfilled') {
-    const incident = results.data
-    const code = results.data.incident.code
-    const IncidentDetail = incidentDetailsMap[code as keyof typeof incidentDetailsMap]
-    return <IncidentDetail {...incident}/> 
-  } else {
-    return <>
-      <PageHeader title='Incident Details'/>
-      <Loader states={[{ isLoading: true }]}/>
-    </>
-  }
+function IncidentDetails (props: { data?: IncidentDetailsProps }) {
+  const data = props.data as IncidentDetailsProps
+  const IncidentDetailsComponent = incidentDetailsMap[data?.code as keyof typeof incidentDetailsMap]
+  return (
+    <IncidentDetailsComponent {...data}/>
+  )
 }
 
-export default IncidentDetails
+function IncidentDetailsPage () {
+  let { incidentId } = useParams()
+  const queryResults = useIncidentDetailsQuery({ id: incidentId })
+  return (
+    <Loader states={[queryResults]}>
+      <IncidentDetails data={queryResults.data}/>
+    </Loader>
+  )
+}
+
+export default IncidentDetailsPage
