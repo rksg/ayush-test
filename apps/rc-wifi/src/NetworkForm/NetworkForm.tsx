@@ -61,6 +61,12 @@ export function NetworkForm () {
     }else{
       delete saveState?.cloudpathServerId
     }
+
+    if(!saveData.wlan?.macAddressAuthentication){
+      delete saveState?.authRadius
+      delete saveState?.accountingRadius
+    }
+    
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -109,9 +115,9 @@ export function NetworkForm () {
           name='Settings'
           title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
           onFinish={async (data) => {
-            let wlan = {}
+            let wlanData = {}
             if(networkType === 'psk'){
-              wlan = {
+              wlanData = {
                 wlan: {
                   passphrase: data.passphrase,
                   saePassphrase: data.saePassphrase,
@@ -127,7 +133,7 @@ export function NetworkForm () {
               ...{ 
                 type: state.type,
                 isCloudpathEnabled: data.isCloudpathEnabled,
-                ...wlan
+                ...wlanData
               }
             }
             const settingSaveData = tranferSettingsToSave(data)

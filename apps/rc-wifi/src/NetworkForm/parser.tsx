@@ -169,74 +169,65 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
 const parsePskSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {}
 
-  let authRadius = {}
-  if (get(data, 'authRadius.primary.ip')) {
-    authRadius = {
-      ...authRadius,
-      ...{
-        primary: {
-          ip: get(data, 'authRadius.primary.ip'),
-          port: get(data, 'authRadius.primary.port'),
-          sharedSecret: get(data, 'authRadius.primary.sharedSecret')
+  if (data.wlan?.macAddressAuthentication) {
+    let authRadius = {
+      primary: {
+        ip: get(data, 'authRadius.primary.ip'),
+        port: get(data, 'authRadius.primary.port'),
+        sharedSecret: get(data, 'authRadius.primary.sharedSecret')
+      }
+    }
+    if (data.enableSecondaryAuthServer) {
+      authRadius = {
+        ...authRadius,
+        ...{
+          secondary: {
+            ip: get(data, 'authRadius.secondary.ip'),
+            port: get(data, 'authRadius.secondary.port'),
+            sharedSecret: get(data, 'authRadius.secondary.sharedSecret')
+          }
         }
       }
     }
-  }
-  if (data.enableSecondaryAuthServer) {
-    authRadius = {
-      ...authRadius,
+  
+    saveData = {
+      ...saveData,
       ...{
-        secondary: {
-          ip: get(data, 'authRadius.secondary.ip'),
-          port: get(data, 'authRadius.secondary.port'),
-          sharedSecret: get(data, 'authRadius.secondary.sharedSecret')
-        }
+        authRadius
       }
     }
-  }
 
-  saveData = {
-    ...saveData,
-    ...{
-      enableAuthProxy: data.enableAuthProxy,
-      authRadius
-    }
-  }
-
-  if (data.enableAccountingService) {
-    let accountingRadius = {}
-    accountingRadius = {
-      ...accountingRadius,
-      ...{
+    if (data.enableAccountingService) {
+      let accountingRadius = {
         primary: {
           ip: get(data, 'accountingRadius.primary.ip'),
           port: get(data, 'accountingRadius.primary.port'),
           sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
         }
+        
       }
-    }
-
-    if (data.enableSecondaryAcctServer) {
-      accountingRadius = {
-        ...accountingRadius,
-        ...{
-          secondary: {
-            ip: get(data, 'accountingRadius.secondary.ip'),
-            port: get(data, 'accountingRadius.secondary.port'),
-            sharedSecret: get(
-              data,
-              'accountingRadius.secondary.sharedSecret'
-            )
+  
+      if (data.enableSecondaryAcctServer) {
+        accountingRadius = {
+          ...accountingRadius,
+          ...{
+            secondary: {
+              ip: get(data, 'accountingRadius.secondary.ip'),
+              port: get(data, 'accountingRadius.secondary.port'),
+              sharedSecret: get(
+                data,
+                'accountingRadius.secondary.sharedSecret'
+              )
+            }
           }
         }
       }
-    }
-
-    saveData = {
-      ...saveData,
-      ...{
-        enableAccountingProxy: data.enableAccountingProxy,
-        accountingRadius
+  
+      saveData = {
+        ...saveData,
+        ...{
+          accountingRadius
+        }
       }
     }
   }

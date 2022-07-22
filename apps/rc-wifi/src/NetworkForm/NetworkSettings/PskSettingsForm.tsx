@@ -107,6 +107,7 @@ export function PskSettingsForm (props: StepFormProps<CreateNetworkFormFields>) 
 }
 
 function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
+  const { formRef } = props
   const [
     wlanSecurity,
     enableSecondaryAuthServer,
@@ -122,7 +123,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
   ]
 
   const securityDescription = () => {
-    const wlanSecurity = props.formRef?.current?.getFieldValue('wlanSecurity')
+    const wlanSecurity = formRef?.current?.getFieldValue('wlanSecurity')
     return (
       <>
         {SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum]}
@@ -158,22 +159,22 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
     while (hexKey.length < 26) {
       hexKey += Math.random().toString(16).substring(2)
     }
-    props.formRef?.current?.setFieldsValue({ wepHexKey: hexKey.substring(0, 26) })
+    formRef?.current?.setFieldsValue({ wepHexKey: hexKey.substring(0, 26) })
   }
   const securityOnChange = (value: string) => {
     switch(value){
       case WlanSecurityEnum.WPA2Personal:
-        props.formRef?.current?.setFieldsValue({ 
+        formRef?.current?.setFieldsValue({ 
           managementFrameProtection: ManagementFrameProtectionEnum.Disabled
         })
         break
       case WlanSecurityEnum.WPA3:
-        props.formRef?.current?.setFieldsValue({
+        formRef?.current?.setFieldsValue({
           managementFrameProtection: ManagementFrameProtectionEnum.Required
         })
         break
       case WlanSecurityEnum.WPA23Mixed:
-        props.formRef?.current?.setFieldsValue({
+        formRef?.current?.setFieldsValue({
           managementFrameProtection: ManagementFrameProtectionEnum.Optional
         })
         break
@@ -285,14 +286,14 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
                 {macAuthOptions}
               </Select>
             </Form.Item>
-            <PskService />
+            <MACAuthService />
           </React.Fragment>
         }
       </div>
     </Space>
   )
 
-  function PskService () {
+  function MACAuthService () {
     return (
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>

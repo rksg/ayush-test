@@ -38,31 +38,31 @@ export function PskSummaryForm (props: {
       <Form.Item
         label='Use MAC Auth:'
         children={summaryData.macAddressAuthentication? 'Enabled' : 'Disabled'} />
-      <Form.Item
-        label='MAC Address Format:'
-        children={
-          macAuthMacFormatOptions[
-            summaryData.macAuthMacFormat as keyof typeof macAuthMacFormatOptions
-          ]
-        } />
-      {
-        get(summaryData, 'authRadius.primary.ip') !== undefined && 
-            <>
-              Authentication Service
-              {getAaaServer(
-                AaaServerTypeEnum.AUTHENTICATION,
-                summaryData
-              )}
-            </>
-      }
-      {
-        summaryData.enableAccountingService && 
+      {summaryData.macAddressAuthentication &&
+        <React.Fragment>
+          <Form.Item
+            label='MAC Address Format:'
+            children={
+              macAuthMacFormatOptions[
+                summaryData.macAuthMacFormat as keyof typeof macAuthMacFormatOptions
+              ]
+            }/>
+            
+          Authentication Service
+          {getAaaServer(
+            AaaServerTypeEnum.AUTHENTICATION,
+            summaryData
+          )}
+
+          {summaryData.enableAccountingService && 
             <>Accounting Service
               {getAaaServer(
                 AaaServerTypeEnum.ACCOUNTING,
                 summaryData
               )}
             </>
+          }
+        </React.Fragment>
       }
     </>
 
