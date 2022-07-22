@@ -14,8 +14,10 @@ import {
 } from 'antd'
 
 import { StepsForm, Subtitle }                     from '@acx-ui/components'
+import { useCloudpathListQuery }                   from '@acx-ui/rc/services'
 import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkType,
   transformDpskNetwork, PassphraseExpirationEnum }      from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram }    from '../NetworkDiagram/NetworkDiagram'
 import { FieldExtraTooltip } from '../styledComponents'
@@ -27,13 +29,25 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function DpskSettingsForm () {
+  const selectedId = useWatch('cloudpathServerId')
+  const { selected } = useCloudpathListQuery({ params: useParams() }, {
+    selectFromResult ({ data }) {
+      return {
+        selected: data?.find((item) => item.id === selectedId)
+      }
+    }
+  })
+
   return (
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
       </Col>
       <Col span={14}>
-        <NetworkDiagram type={NetworkTypeEnum.DPSK} />
+        <NetworkDiagram
+          type={NetworkTypeEnum.DPSK}
+          cloudpathType={selected?.deploymentType}
+        />
       </Col>
     </Row>
   )
