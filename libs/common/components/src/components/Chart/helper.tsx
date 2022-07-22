@@ -1,5 +1,5 @@
-import { TooltipComponentOption } from 'echarts/components'
-import { renderToString }         from 'react-dom/server'
+import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import { renderToString }                          from 'react-dom/server'
 
 import { TimeStamp } from '@acx-ui/types'
 import { formatter } from '@acx-ui/utils'
@@ -7,6 +7,11 @@ import { formatter } from '@acx-ui/utils'
 import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
+
+export type TooltipFormatterParams = Exclude<
+  TooltipComponentFormatterCallbackParams,
+  Array<unknown>
+>
 
 export const gridOptions = () => ({
   left: '0%',
@@ -80,10 +85,6 @@ export const tooltipOptions = () => ({
   extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08);'
 })
 
-type Unified<T> = Exclude<T, T[]>
-type TooltipFormatterCallback = Exclude<TooltipComponentOption['formatter'], string|undefined>
-export type TooltipFormatterParams = Unified<Parameters<TooltipFormatterCallback>[0]>
-
 export const timeSeriesTooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null)
 ) => (
@@ -116,14 +117,15 @@ export const timeSeriesTooltipFormatter = (
 export const stackedBarTooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null)
 ) => (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  parameters: any // Since the value has been changed to array, the original type cannot be used.
+  parameters: TooltipComponentFormatterCallbackParams
 ) => {
+  const param = parameters as TooltipFormatterParams
+  const value = param.value as string[]
   return renderToString(
     <UI.TooltipWrapper>
       <UI.Badge
-        color={parameters.color?.toString()}
-        text={dataFormatter ? dataFormatter(parameters.value[0]) : parameters.value[0]}
+        color={param.color?.toString()}
+        text={dataFormatter ? dataFormatter(value[0]) : value[0]}
       />
     </UI.TooltipWrapper>
   )
