@@ -161,14 +161,12 @@ function CustomFooters (props: {
   const destroyModal = () => props.modal.destroy()
 
   const WithErrorDetails = () => {
-    return (
-      <>
-        <CollapsePanel header='Technical details' content={props.errors} />
-        <UI.FooterFixedButtons>
-          <Button type='primary' onClick={destroyModal}>OK</Button>
-        </UI.FooterFixedButtons>
-      </>
-    )
+    return (<>
+      { props.errors && <CollapsePanel header='Technical details' content={props.errors} />}
+      <UI.FooterFixedButtons>
+        <Button type='primary' onClick={destroyModal}>OK</Button>
+      </UI.FooterFixedButtons>
+    </>)
   }
 
   const WithButtons = () => {
