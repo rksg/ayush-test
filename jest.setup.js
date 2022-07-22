@@ -4,7 +4,7 @@ require('@testing-library/jest-dom')
 const { registerTsProject } = require('nx/src/utils/register')
 const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
 
-const { mockServer } = require('@acx-ui/test-utils')
+const { mockServer, mockLightTheme } = require('@acx-ui/test-utils')
 
 beforeAll(() => mockServer.listen())
 afterEach(() => mockServer.resetHandlers())
@@ -27,6 +27,13 @@ Object.defineProperty(window, 'matchMedia', {
   }))
 })
 
+jest.mock('@acx-ui/components', () => ({
+  __esModule: true,
+  ...(jest.requireActual('@acx-ui/components')),
+  cssStr: jest.fn(property => mockLightTheme[property]),
+  cssNumber: jest.fn(property => parseInt(mockLightTheme[property], 10))
+}))
+
 jest.mock('@acx-ui/feature-toggle', () => ({
   SplitProvider: ({ children }) =>
     require('react').createElement('div', null, children),
@@ -37,3 +44,5 @@ jest.mock('@acx-ui/feature-toggle', () => ({
 
 // For Error: Not implemented: HTMLCanvasElement.prototype.getContext (without installing the canvas npm package)
 HTMLCanvasElement.prototype.getContext = () => null
+
+jest.setTimeout(10000)
