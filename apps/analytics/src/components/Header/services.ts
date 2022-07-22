@@ -48,14 +48,14 @@ const lowPreferenceList = [
 
 const getAttributesByNodeType = (type: keyof typeof NetworkNodeTypeForDisplay): string[] => {
   const defaultAttributes = ['type', 'apCount', 'clientCount' ]
- 
+
   const attributes = {
     network: [...defaultAttributes, 'switchCount'],
     zone: defaultAttributes,
     apGroup: defaultAttributes,
     AP: [
       'model',
-      'version',            
+      'version',
       'mac',
       'internalIp',
       'clientCount'
@@ -72,7 +72,7 @@ const getAttributesByNodeType = (type: keyof typeof NetworkNodeTypeForDisplay): 
       'portCount'
     ]
   }
-  return attributes[type]
+  return attributes[type as keyof typeof attributes]
 }
 
 const getQuery = (path: NetworkPath) : string => {
@@ -123,7 +123,7 @@ const getQueryVariables = (payload: GlobalFilter): QueryVariables => {
   const { path } = payload
   const [{ type, name }] = path.slice(-1)
   switch(type) {
-    case 'AP': 
+    case 'AP':
     case 'switch':
       return { ...payload, mac: name }
     default: return { ...payload }
@@ -142,7 +142,7 @@ export const transformForDisplay = (data: NetworkNodeInfo): HeaderData => {
       key: labelMap[key as keyof typeof labelMap],
       value: key === 'type'
         ? [NetworkNodeTypeForDisplay[value as keyof typeof NetworkNodeTypeForDisplay]]
-        : sortPreference(value)
+        : sortPreference(value as string)
     }))
   return { title: name, subTitle }
 }

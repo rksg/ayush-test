@@ -6,6 +6,11 @@ export interface Metadata {
   }
 }
 
+export interface PathNode {
+  type: string
+  name: string
+}
+
 export interface IncidentDetailsProps {
   id: string
   sliceType: string
@@ -17,7 +22,7 @@ export interface IncidentDetailsProps {
   clientCount: number
   impactedClientCount: number
   metadata: Metadata
-  path: Array<{ type: string, name: string }>
+  path: Array<PathNode>
   apCount: number
   impactedApCount: number
   switchCount: number
@@ -29,3 +34,16 @@ export interface IncidentDetailsProps {
   slaThreshold: number|null
   currentSlaThreshold: number|null
 }
+
+interface IncidentInformation {
+  category: string
+  subCategory: string
+  shortDescription: string
+  longDescription: string
+  incidentType: string
+}
+
+export interface IncidentAttributesProps
+  extends IncidentDetailsProps, IncidentInformation {}
+
+
