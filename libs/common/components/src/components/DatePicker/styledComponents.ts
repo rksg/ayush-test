@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro'
 import { TimePicker, Row, Col }     from 'antd'
 
+import styled from 'styled-components/macro'
 
 type WrapperProps = {
   hasTimePicker?: boolean
