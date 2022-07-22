@@ -14,12 +14,19 @@ import * as UI from './styledComponents'
 
 export interface PageHeaderProps extends Omit<AntPageHeaderProps, 'title' | 'breadcrumb'> {
   title: string,
-  breadcrumb?: { text: string, link: string }[]
+  breadcrumb?: { text: string, link: string }[],
+  sideHeader?: React.ReactNode
 }
 
 function PageHeader (props: PageHeaderProps) {
   const pageHeaderProps: AntPageHeaderProps = _.omit(props, 'breadcrumb')
   pageHeaderProps.title = <Typography.Title>{props.title}</Typography.Title>
+  if (props.sideHeader) {
+    pageHeaderProps.title = <>
+      {pageHeaderProps.title}
+      {<UI.SideHeader>{props.sideHeader}</UI.SideHeader>}
+    </>
+  }
   if (props.breadcrumb) {
     pageHeaderProps.breadcrumb = <Breadcrumb>
       {props.breadcrumb.map((breadcrumb, index) => {

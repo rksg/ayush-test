@@ -3,10 +3,10 @@
 exports[`incident details should render assoc properly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+    class="styledComponents__Wrapper-sc-xov27h-0 cRXIjL"
   >
     <div
-      class="ant-page-header styledComponents__IncidentHeader-sc-p93n3j-0 kuCgrY ant-page-header-ghost"
+      class="ant-page-header ant-page-header-ghost"
     >
       <div
         class="ant-page-header-heading"
@@ -22,23 +22,17 @@ exports[`incident details should render assoc properly 1`] = `
             >
               Incident Details
             </h1>
+            <div
+              class="styledComponents__SideHeader-sc-xov27h-2 iXwvey"
+            >
+              <span
+                class="styledComponents__Pill-sc-j61ge1-0 iMfUiN"
+              >
+                123
+              </span>
+            </div>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <svg>
-                BulbOutlined.svg
-              </svg>
-            </div>
-          </div>
-        </span>
       </div>
     </div>
   </div>
@@ -50,9 +44,7 @@ exports[`incident details should render assoc properly 1`] = `
       class="ant-col ant-col-4"
       style="padding: 10px 10px 10px 10px;"
     >
-      <div>
-        incident attribute
-      </div>
+      IncidentAttributes
     </div>
     <div
       class="ant-col ant-col-20"
@@ -95,10 +87,10 @@ exports[`incident details should render assoc properly 1`] = `
 exports[`incident details should render auth properly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+    class="styledComponents__Wrapper-sc-xov27h-0 cRXIjL"
   >
     <div
-      class="ant-page-header styledComponents__IncidentHeader-sc-p93n3j-0 kuCgrY ant-page-header-ghost"
+      class="ant-page-header ant-page-header-ghost"
     >
       <div
         class="ant-page-header-heading"
@@ -114,23 +106,17 @@ exports[`incident details should render auth properly 1`] = `
             >
               Incident Details
             </h1>
+            <div
+              class="styledComponents__SideHeader-sc-xov27h-2 iXwvey"
+            >
+              <span
+                class="styledComponents__Pill-sc-j61ge1-0 iMfUiN"
+              >
+                123
+              </span>
+            </div>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <svg>
-                BulbOutlined.svg
-              </svg>
-            </div>
-          </div>
-        </span>
       </div>
     </div>
   </div>
@@ -142,9 +128,7 @@ exports[`incident details should render auth properly 1`] = `
       class="ant-col ant-col-4"
       style="padding: 10px 10px 10px 10px;"
     >
-      <div>
-        incident attribute
-      </div>
+      IncidentAttributes
     </div>
     <div
       class="ant-col ant-col-20"
@@ -187,10 +171,10 @@ exports[`incident details should render auth properly 1`] = `
 exports[`incident details should render dhcp properly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+    class="styledComponents__Wrapper-sc-xov27h-0 cRXIjL"
   >
     <div
-      class="ant-page-header styledComponents__IncidentHeader-sc-p93n3j-0 kuCgrY ant-page-header-ghost"
+      class="ant-page-header ant-page-header-ghost"
     >
       <div
         class="ant-page-header-heading"
@@ -206,23 +190,17 @@ exports[`incident details should render dhcp properly 1`] = `
             >
               Incident Details
             </h1>
+            <div
+              class="styledComponents__SideHeader-sc-xov27h-2 iXwvey"
+            >
+              <span
+                class="styledComponents__Pill-sc-j61ge1-0 iMfUiN"
+              >
+                123
+              </span>
+            </div>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <svg>
-                BulbOutlined.svg
-              </svg>
-            </div>
-          </div>
-        </span>
       </div>
     </div>
   </div>
@@ -234,9 +212,7 @@ exports[`incident details should render dhcp properly 1`] = `
       class="ant-col ant-col-4"
       style="padding: 10px 10px 10px 10px;"
     >
-      <div>
-        incident attribute
-      </div>
+      IncidentAttributes
     </div>
     <div
       class="ant-col ant-col-20"
@@ -279,10 +255,10 @@ exports[`incident details should render dhcp properly 1`] = `
 exports[`incident details should render eap properly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+    class="styledComponents__Wrapper-sc-xov27h-0 cRXIjL"
   >
     <div
-      class="ant-page-header styledComponents__IncidentHeader-sc-p93n3j-0 kuCgrY ant-page-header-ghost"
+      class="ant-page-header ant-page-header-ghost"
     >
       <div
         class="ant-page-header-heading"
@@ -298,23 +274,17 @@ exports[`incident details should render eap properly 1`] = `
             >
               Incident Details
             </h1>
+            <div
+              class="styledComponents__SideHeader-sc-xov27h-2 iXwvey"
+            >
+              <span
+                class="styledComponents__Pill-sc-j61ge1-0 iMfUiN"
+              >
+                123
+              </span>
+            </div>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <svg>
-                BulbOutlined.svg
-              </svg>
-            </div>
-          </div>
-        </span>
       </div>
     </div>
   </div>
@@ -326,9 +296,7 @@ exports[`incident details should render eap properly 1`] = `
       class="ant-col ant-col-4"
       style="padding: 10px 10px 10px 10px;"
     >
-      <div>
-        incident attribute
-      </div>
+      IncidentAttributes
     </div>
     <div
       class="ant-col ant-col-20"
@@ -371,10 +339,10 @@ exports[`incident details should render eap properly 1`] = `
 exports[`incident details should render radius properly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+    class="styledComponents__Wrapper-sc-xov27h-0 cRXIjL"
   >
     <div
-      class="ant-page-header styledComponents__IncidentHeader-sc-p93n3j-0 kuCgrY ant-page-header-ghost"
+      class="ant-page-header ant-page-header-ghost"
     >
       <div
         class="ant-page-header-heading"
@@ -390,23 +358,17 @@ exports[`incident details should render radius properly 1`] = `
             >
               Incident Details
             </h1>
+            <div
+              class="styledComponents__SideHeader-sc-xov27h-2 iXwvey"
+            >
+              <span
+                class="styledComponents__Pill-sc-j61ge1-0 iMfUiN"
+              >
+                123
+              </span>
+            </div>
           </span>
         </div>
-        <span
-          class="ant-page-header-heading-extra"
-        >
-          <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
-          >
-            <div
-              class="ant-space-item"
-            >
-              <svg>
-                BulbOutlined.svg
-              </svg>
-            </div>
-          </div>
-        </span>
       </div>
     </div>
   </div>
@@ -418,9 +380,7 @@ exports[`incident details should render radius properly 1`] = `
       class="ant-col ant-col-4"
       style="padding: 10px 10px 10px 10px;"
     >
-      <div>
-        incident attribute
-      </div>
+      IncidentAttributes
     </div>
     <div
       class="ant-col ant-col-20"

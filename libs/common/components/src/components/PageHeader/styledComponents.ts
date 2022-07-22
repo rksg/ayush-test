@@ -26,7 +26,7 @@ export const Wrapper = styled.div`
       }
       &-title {
         overflow: visible;
-        align-self: flex-start;        
+        display: flex;
       }
       margin-bottom: var(--acx-content-vertical-space);
     }
@@ -58,4 +58,8 @@ export const Wrapper = styled.div`
 
 export const Spacer = styled.div`
   height: var(--acx-content-vertical-space);
+`
+
+export const SideHeader = styled.div`
+  padding-left: 8px;
 `
