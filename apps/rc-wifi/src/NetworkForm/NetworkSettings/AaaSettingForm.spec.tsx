@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                                                        from '@acx-ui/rc/utils'
+import { Provider }                                                              from '@acx-ui/store'
+import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { NetworkForm }                                       from '../NetworkForm'
-import { networksResponse, venuesResponse, successResponse } from '../NetworkForm.spec'
+import { NetworkForm }                                                          from '../NetworkForm'
+import { cloudpathResponse, networksResponse, venuesResponse, successResponse } from '../NetworkForm.spec'
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText('Network Name')
@@ -46,7 +46,7 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json([])))
+        (_, res, ctx) => res(ctx.json(cloudpathResponse)))
     )
   })
 
@@ -107,5 +107,36 @@ describe('NetworkForm', () => {
       expect(screen.getByText('222.222.222.222:2222')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
     })
+  })
+
+  it('should render Network AAA diagram with AAA buttons', async () => {
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    
+    await fillInBeforeSettings('AAA network test')
+
+    let toggle = screen.getAllByRole('switch', { checked: false })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(toggle[1]) // Proxy Service
+      fireEvent.click(toggle[2]) // Accounting Service
+    })
+    
+    let diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
+    let authBtn = screen.getByRole('button', { name: 'Authentication Service' })
+    let accBtn = screen.getByRole('button', { name: 'Accounting Service' })
+    expect(authBtn).toBeVisible()
+    expect(authBtn).toBeDisabled()
+    expect(accBtn).toBeVisible()
+    expect(diagram[1].src).toContain('aaa-proxy.png')
+    
+    fireEvent.click(accBtn)
+    diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
+    authBtn = screen.getByRole('button', { name: 'Authentication Service' })
+    expect(diagram[1].src).toContain('aaa.png')
+    expect(accBtn).not.toBeDisabled()
+
+    fireEvent.click(authBtn)
+    diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
+    expect(diagram[1].src).toContain('aaa-proxy.png')
   })
 })
