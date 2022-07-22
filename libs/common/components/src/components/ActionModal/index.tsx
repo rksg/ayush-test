@@ -53,7 +53,7 @@ export interface ErrorDetailsProps {
   error?: string
 }
 
-interface CustomButtonProps {
+export interface CustomButtonProps {
   text: string,
   type: ButtonProps['type'],
   key: string,
@@ -93,16 +93,14 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
     case 'CUSTOM_FOOTERS':
       props = {
         ...props,
-        content: (
-          <>
-            <UI.Content>{props.content}</UI.Content>
-            <CustomFooters
-              errors={props.customContent?.errorDetails}
-              footers={props.customContent?.footers}
-              modal={modal}
-            />
-          </>
-        ),
+        content: (<>
+          <UI.Content>{props.content}</UI.Content>
+          <CustomFooters
+            errors={props.customContent?.errorDetails}
+            footers={props.customContent?.footers}
+            modal={modal}
+          />
+        </>),
         okText: ' ',
         className: 'modal-custom'
       }
@@ -165,7 +163,7 @@ function CustomFooters (props: {
   const WithErrorDetails = () => {
     return (
       <>
-        { props.errors && <CollapsePanel header='Technical details' content={props.errors} /> }
+        <CollapsePanel header='Technical details' content={props.errors} />
         <UI.FooterFixedButtons>
           <Button type='primary' onClick={destroyModal}>OK</Button>
         </UI.FooterFixedButtons>
