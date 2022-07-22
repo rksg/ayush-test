@@ -7,8 +7,6 @@ import { IncidentAttributes } from '../IncidentAttributes'
 
 import type { IncidentDetailsProps } from '../types'
 
-
-
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const info = incidentInformation[props.code as keyof typeof incidentInformation]
   return <>

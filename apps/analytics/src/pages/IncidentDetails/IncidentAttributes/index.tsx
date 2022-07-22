@@ -1,18 +1,16 @@
 import React, { useState } from 'react'
 
-import moment from 'moment-timezone'
+import moment                from 'moment-timezone'
+import { FormattedMessage  } from 'react-intl'
 
-// import { useIntl, FormattedMessage } from 'react-intl'
 import { NetworkNodeTypeForDisplay, noDataSymbol } from '@acx-ui/analytics/utils'
-import { Drawer }                                  from '@acx-ui/components'
 import { formatter }                               from '@acx-ui/utils'
 
-import { AttributeRowProps, AttributesSection } from '../../components/AttributesSection'
+import { AttributeRowProps, AttributesSection } from '../../../components/AttributesSection'
 
-import { ImpactedAPsTable }     from './ImpactedTable/ImpactedAPsTable'
-import { ImpactedClientsTable } from './ImpactedTable/ImpactedClientsTable'
+import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
 
-import type { PathNode, IncidentAttributesProps } from './types'
+import type { PathNode, IncidentAttributesProps } from '../types'
 
 const durationOf = (start: string, end: string) =>
   moment(end).diff(moment(start), 'milliseconds', true)
@@ -24,9 +22,6 @@ export const formattedNodeName = (node: PathNode, sliceValue: string) =>
 
 export const formattedSliceType = (type: string) =>
   NetworkNodeTypeForDisplay[type as keyof typeof NetworkNodeTypeForDisplay] || type
-// useIntl().$t({
-//   defaultMessage: NetworkNodeTypeForDisplay[type as keyof typeof NetworkNodeTypeForDisplay] || type
-// })
 
 export const formattedPath = (path: IncidentAttributesProps['path'], sliceValue: string) => path
   .map(node => `${formattedNodeName(node, sliceValue)} (${formattedSliceType(node.type)})`)
@@ -40,7 +35,6 @@ export const getImpactedArea = (path: IncidentAttributesProps['path'], sliceValu
 }
 
 export const getImpactValues = (type: string, count: number, impactedCount: number) => {
-  // const { $t } = useIntl()
   if (
     count === -1 || impactedCount === -1 ||
     count === 0 || impactedCount === 0
@@ -56,8 +50,7 @@ export const getImpactValues = (type: string, count: number, impactedCount: numb
       [`${type}Impact`]: null,
       [`${type}ImpactFormatted`]: '',
       [`${type}ImpactCountFormatted`]: '',
-      [`${type}ImpactDescription`]: 'Calculating...'
-      // [`${type}ImpactDescription`]: $t({ defaultMessage: 'Calculating...' })
+      [`${type}ImpactDescription`]: <FormattedMessage defaultMessage='Calculating...'/>
     }
   } else {
     const impact = impactedCount / count
@@ -66,17 +59,16 @@ export const getImpactValues = (type: string, count: number, impactedCount: numb
       [`${type}Impact`]: impact,
       [`${type}ImpactFormatted`]: formattedImpact,
       [`${type}ImpactCountFormatted`]: formatter('countFormat')(impactedCount),
-      [`${type}ImpactDescription`]: `${type}ImpactDescription` //todo
-      // $t({
-      //   defaultMessage: '{{impactedCount}} of {{count}} {{type}}{{isPlural}} ({{impact}})'
-      //   // {
-      //   //   impactedCount,
-      //   //   count,
-      //   //   type: type === 'ap' ? type.toUpperCase() : type,
-      //   //   isPlural: count > 1 ? 's' : '',
-      //   //   impact: formattedImpact
-      //   // }
-      // })
+      [`${type}ImpactDescription`]: <FormattedMessage
+        defaultMessage='{impactedCount} of {count} {type}{isPlural} ({impact})'
+        values={{
+          impactedCount,
+          count,
+          type: type === 'ap' ? type.toUpperCase() : type,
+          isPlural: count > 1 ? 's' : '',
+          impact: formattedImpact
+        }}
+      />
     }
   }
 }
@@ -95,13 +87,11 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
       children: getImpactValues(
         'client', details.clientCount, details.impactedClientCount).clientImpactDescription,
       onClick: () => onOpen('client')
-      // popover: details.impactedClientCount > 0 ? <ClientImpactPopover /> : null
     }),
     (details: IncidentAttributesProps) => ({
       label: 'AP Impact Count',
       children: getImpactValues('ap', details.apCount, details.impactedApCount).apImpactDescription,
       onClick: () => onOpen('ap')
-      // popover: details.impactedApCount > 0 ? <APImpactPopover /> : null
     }),
     (details: IncidentAttributesProps) => ({
       label: 'Incident Category',
@@ -138,12 +128,7 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
     .map(field => field(props) as AttributeRowProps)
   return <>
     <AttributesSection fields={computedFields}/>
-    <Drawer
-      title={visible === 'ap' ? 'Impacted AP': 'Impacted Client'}
-      visible={!!visible}
-      onClose={onClose}
-      children={visible === 'ap'
-        ? <ImpactedAPsTable {...props}/> : <ImpactedClientsTable {...props}/>}
-    />
+    <ImpactedAPsDrawer visible={visible==='ap'} onClose={onClose} {...props}/>
+    <ImpactedClientsDrawer visible={visible==='client'} onClose={onClose} {...props}/>
   </>
 }

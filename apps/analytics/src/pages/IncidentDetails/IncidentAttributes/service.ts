@@ -52,7 +52,6 @@ export const impactedAPsApi = dataApi.injectEndpoints({
     })
   })
 })
-
 export const { useImpactedAPsQuery } = impactedAPsApi
 
 export const impactedClientsApi = dataApi.injectEndpoints({
@@ -81,5 +80,4 @@ export const impactedClientsApi = dataApi.injectEndpoints({
     })
   })
 })
-
 export const { useImpactedClientsQuery } = impactedClientsApi

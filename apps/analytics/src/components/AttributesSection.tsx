@@ -18,9 +18,13 @@ export const AttributeRow: React.FC<AttributeRowProps> = (props) => {
   </div>
 }
 
-export const AttributesSection: React.FC<{ fields: AttributeRowProps[] }> = props => {
-  return <Descriptions>
-    {props.fields.map(field =>
-      <Descriptions.Item label={field.label}>{field.children}</Descriptions.Item>)}
+export const AttributesSection: React.FC<{
+  fields: AttributeRowProps[], column?: number
+}> = props => {
+  return <Descriptions column={props.column || 1} layout='vertical'>
+    {props.fields.map((field, key) =>
+      <Descriptions.Item key={key} label={field.label}>
+        <AttributeRow {...field}/>
+      </Descriptions.Item>)}
   </Descriptions>
 }
