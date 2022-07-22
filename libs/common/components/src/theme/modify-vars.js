@@ -103,8 +103,8 @@ module.exports = {
 
   '@tooltip-arrow-width': '14px',
   '@tooltip-distance': '@tooltip-arrow-width - 2px',
-  '@tooltip-color': 'var(--acx-primary-black)',
-  '@tooltip-bg': '#FFFFFF', // var(--acx-primary-white)
+  '@tooltip-color': 'var(--acx-primary-white)',
+  '@tooltip-bg': '#333333', // var(--acx-primary-black)
 
   '@switch-min-width': '28px',
   '@switch-height': '16px',
