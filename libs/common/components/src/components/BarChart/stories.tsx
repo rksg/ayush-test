@@ -46,7 +46,7 @@ export const data = (multiseries = false): BarChartData => ({
 })
 
 
-const barColors = [
+export const barColors = [
   cssStr('--acx-semantics-yellow-40'),
   cssStr('--acx-accents-orange-25'),
   cssStr('--acx-accents-orange-50'),
@@ -76,7 +76,7 @@ function switchUsageLabelFormatter (params: CallbackDataParams): string {
   const usage = Array.isArray(params.data) ? params.data[1] : params.data
   const utilisation_per = Array.isArray(params.data) ? params.data[2] : params.data
   return '{poe_usage|' +
-    numberFormat(1000, watts, usage as unknown as number) + '\n}{utilisationPer|' +
+    numberFormat(1000, watts, usage as unknown as number) + '\n} {utilisationPer|' +
     utilisation_per + '%}'
 }
 
@@ -125,28 +125,29 @@ storiesOf('BarChart', module)
   //
   .add('Single Series - Custom formatter', () => <BarChart
     style={{ width: 524, height: 174 }}
+    data={data()}
+    grid={{ right: '7%' }}
+    barColors={barColors}
     labelFormatter={switchUsageLabelFormatter}
     labelRichStyle={getSwitchUsageRichStyle()}
-    data={data()}
-    barColors={barColors}
   />)
   .add('Multi Series', () => <BarChart
     style={{ width: 524, height: 174 }}
-    labelFormatter={switchTrafficLabelFormatter}
-    labelRichStyle={getSwitchTrafficRichStyle()}
     data={data(true)}
     barWidth={10}
     barColors={[
       cssStr('--acx-accents-blue-50'),
       cssStr('--acx-accents-orange-30')
     ]}
+    labelFormatter={switchTrafficLabelFormatter}
+    labelRichStyle={getSwitchTrafficRichStyle()}
   />)
   .add('With Knobs', () =>
     <BarChart
       style={{ width: 524, height: 150 }}
-      labelFormatter={switchUsageLabelFormatter}
-      labelRichStyle={getSwitchUsageRichStyle()}
       data={object('data', data())}
       barWidth={12}
       barColors={barColors}
+      labelFormatter={switchUsageLabelFormatter}
+      labelRichStyle={getSwitchUsageRichStyle()}
     />)
