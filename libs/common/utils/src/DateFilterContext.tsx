@@ -1,14 +1,13 @@
-import { createContext, useContext,ReactNode, useState, useEffect } from 'react'
+import { createContext, useContext,ReactNode, useState, useEffect, useRef } from 'react'
 
 import { Buffer } from 'buffer'
 
 import { pick }            from 'lodash'
 import moment              from 'moment-timezone'
 import { useSearchParams } from 'react-router-dom'
-
 export type DateFilterContextprops = {
   dateFilter: DateFilter,
-  setDateFilter:(c: DateFilter) => void
+  setDateFilter?: (c: DateFilter) => void
 }
 export enum DateRange {
   today = 'Today',
@@ -24,8 +23,7 @@ interface DateFilter {
   endDate: string
 }
 export const defaultDateFilter = {
-  dateFilter: { ...getDateRangeFilter(DateRange.last24Hours) },
-  setDateFilter: () => {}
+  dateFilter: { ...getDateRangeFilter(DateRange.last24Hours) }
 } as const
 export const DateFilterContext = createContext<DateFilterContextprops>(defaultDateFilter)
 export const useDateFilter = () => {
@@ -39,13 +37,23 @@ export const useDateFilter = () => {
     range
   } as const
 }
-
 export function DateFilterProvider (props: { children: ReactNode }) {
-  const [dateFilter, setDateFilter] = useState<DateFilter>(defaultDateFilter.dateFilter)
-  const [,setSearch] = useSearchParams()
+  const [search,setSearch] = useSearchParams()
+  const didMountRef = useRef(false)
+  const period = search.has('period') 
+    ? JSON.parse(Buffer.from(search.get('period') as string,'base64').toString('ascii')) : {}
+  const defaultFilter = search.has('period') 
+    ? getDateRangeFilter(period.range, period.startDate, period.endDate) 
+    : defaultDateFilter.dateFilter
+
+  const [dateFilter, setDateFilter] = useState<DateFilter>(defaultFilter)
   useEffect(()=>{
+    if (!didMountRef.current) {
+      didMountRef.current = true
+      return
+    }
     const params = new URLSearchParams()
-    params.append('period',Buffer.from(JSON.stringify({ dateFilter })).toString('base64'))
+    params.append('period',Buffer.from(JSON.stringify({ ...dateFilter })).toString('base64'))
     setSearch(params)
   },[dateFilter, setSearch])
   return <DateFilterContext.Provider {...props} value={{ dateFilter, setDateFilter }} />

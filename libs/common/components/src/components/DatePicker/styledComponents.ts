@@ -12,7 +12,7 @@ export const Wrapper = styled.div<WrapperProps>`
 
 .ant-picker {
   background: var(--acx-primary-white);
-  width: 85%;
+  width: ${(props) => (props.hasTimePicker ? '22em' : '18em')};
   border-color: var(--acx-primary-black);
 }
 .acx-range-picker > div:first-of-type {

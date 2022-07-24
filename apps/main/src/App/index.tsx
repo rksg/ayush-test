@@ -8,7 +8,7 @@ import Layout from '../App/Layout'
 
 function App () {
   return <SplitProvider>
-    < DateFilterProvider>
+    <DateFilterProvider>
       <Layout content={<Outlet />} />
     </DateFilterProvider>
   </SplitProvider>
