@@ -11,7 +11,7 @@ import {
   getDateRangeFilter,
   useDateFilter,
   DateFilterProvider
-} from './DateFilterContext'
+} from './dateFilterContext'
 
 describe('useGlobalFilter', ()=>{
   beforeEach(() => {
@@ -48,7 +48,8 @@ describe('GlobalFilterProvider', ()=>{
       const filters = useDateFilter()
       useEffect(()=>{
         filters?.setDateFilter?.({ ...getDateRangeFilter(DateRange.lastMonth) })
-      })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      },[])
       return <div>{JSON.stringify(filters)}</div>
     }
 
