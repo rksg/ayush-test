@@ -19,7 +19,7 @@ export const seriesMapping = [
 ] as Array<{ key: keyof Omit<NetworkHistoryData, 'time'>, name: string }>
 
 const lineColors = [
-  cssStr('--acx-primary-black'),
+  cssStr('--acx-accents-blue-30'),
   cssStr('--acx-accents-blue-50'),
   cssStr('--acx-accents-orange-50')
 ]

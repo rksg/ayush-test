@@ -47,7 +47,7 @@ export function MultiLineTimeSeriesChart
 }: MultiLineTimeSeriesChartProps<TChartData>) {
   const option: EChartsOption = {
     color: props.lineColors || [
-      cssStr('--acx-primary-black'),
+      cssStr('--acx-accents-blue-30'),
       cssStr('--acx-accents-blue-50'),
       cssStr('--acx-accents-orange-50'),
       cssStr('--acx-semantics-yellow-40')
