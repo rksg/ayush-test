@@ -101,3 +101,8 @@ export const AaaServerTitle = {
   [AaaServerOrderEnum.PRIMARY]: 'Primary Server',
   [AaaServerOrderEnum.SECONDARY]: 'Secondary Server'
 }
+
+export enum CloudpathDeploymentTypeEnum {
+  OnPremise = 'OnPremise',
+  Cloud = 'Cloud',
+}
