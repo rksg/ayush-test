@@ -117,8 +117,8 @@ export function formatter (
   name: keyof typeof formats | keyof typeof dateTimeFormats = 'countFormat'
 ) {
   return function formatter (value: unknown, tz?: string) {
-    if (value === null) {
-      return null
+    if (value === null || value === '-') {
+      return value
     }
 
     if (dateTimeFormats[name as keyof typeof dateTimeFormats]) {
