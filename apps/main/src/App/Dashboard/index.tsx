@@ -20,7 +20,7 @@ import { useDateFilter } from '@acx-ui/utils'
 
 const WifiWidgets = React.lazy(() => import('rc-wifi/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
-const defaultEnabledDates = [moment().subtract(1, 'months').seconds(0),moment().seconds(0)]
+const defaultEnabledDates = [moment().subtract(1, 'months').seconds(0), moment().seconds(0)]
 export default function Dashboard () {
   return (
     <AnalyticsFilterProvider>
@@ -31,7 +31,7 @@ export default function Dashboard () {
 }
 
 function DashboardPageHeader () {
-  const { startDate,endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { $t } = useIntl()
   return (
     <PageHeader
@@ -40,7 +40,7 @@ function DashboardPageHeader () {
         <Button key='add' type='primary'>Add...</Button>,
         <Button key='hierarchy-filter'>Entire Organization <ArrowExpand /></Button>,
         <RangePicker
-          selectedRange={{ startDate: moment(startDate),endDate: moment(endDate) }}
+          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           enableDates={defaultEnabledDates as [moment.Moment, moment.Moment]}
           onDateApply={setDateFilter as Function}
           showTimePicker

@@ -23,6 +23,7 @@ interface DateFilter {
   startDate: string,
   endDate: string
 }
+
 export const defaultDateFilter = {
   dateFilter: { ...getDateRangeFilter(DateRange.last24Hours) }
 } as const
