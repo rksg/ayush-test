@@ -6,7 +6,7 @@ import { FormattedMessage  } from 'react-intl'
 import { NetworkNodeTypeForDisplay, noDataSymbol } from '@acx-ui/analytics/utils'
 import { formatter }                               from '@acx-ui/utils'
 
-import { AttributeRowProps, AttributesSection } from '../../../components/AttributesSection'
+import { DescriptionRowProps, DescriptionSection } from '../../../components/DescriptionSection'
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
 import { Wrapper }                                  from './styledComponents'
@@ -126,9 +126,9 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
   ]
 
   const computedFields = fields
-    .map(field => field(props) as AttributeRowProps)
+    .map(field => field(props) as DescriptionRowProps)
   return <Wrapper>
-    <AttributesSection fields={computedFields}/>
+    <DescriptionSection fields={computedFields}/>
     <ImpactedAPsDrawer visible={visible==='ap'} onClose={onClose} {...props}/>
     <ImpactedClientsDrawer visible={visible==='client'} onClose={onClose} {...props}/>
   </Wrapper>
