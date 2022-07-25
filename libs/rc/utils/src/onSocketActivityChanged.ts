@@ -6,9 +6,10 @@ import {
   FetchBaseQueryMeta
 } from '@reduxjs/toolkit/query/react'
 import { Params } from 'react-router-dom'
-import io         from 'socket.io-client'
 
-import { Transaction, websocketServerUrl } from '.'
+import { initialSocket } from './initialSocket'
+
+import { Transaction } from '.'
 
 
 type RTKBaseQuery = BaseQueryFn<
@@ -35,20 +36,15 @@ export async function onSocketActivityChanged <
 ) {
   const { cacheDataLoaded, cacheEntryRemoved } = api
 
-  const socket = io.connect(`/activity?tenantId=${payload.params?.tenantId}`, {
-    path: websocketServerUrl,
-    secure: true,
-    reconnection: true,
-    transports: ['websocket'],
-    rejectUnauthorized: false
-  })
+  const socket = initialSocket(`/activity?tenantId=${payload.params?.tenantId}`)
+
   try {
     await cacheDataLoaded
 
-    socket.on('activityChangedEvent', (data: string) => handler(JSON.parse(data)))
-  } finally {
-    await cacheEntryRemoved
+    if(!socket.hasListeners('activityChangedEvent')){
+      socket.on('activityChangedEvent', (data: string) => handler(JSON.parse(data)))
+    }
 
-    socket.off('activityChangedEvent')
-  }
+    await cacheEntryRemoved
+  } catch {}
 }
