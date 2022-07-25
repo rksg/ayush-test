@@ -40,6 +40,7 @@ function DashboardPageHeader () {
         <Button key='add' type='primary'>Add...</Button>,
         <Button key='hierarchy-filter'>Entire Organization <ArrowExpand /></Button>,
         <RangePicker
+          key='range-picker'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           enableDates={defaultEnabledDates as [moment.Moment, moment.Moment]}
           onDateApply={setDateFilter as Function}
