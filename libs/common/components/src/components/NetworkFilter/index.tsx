@@ -42,6 +42,8 @@ export type CascaderProps = AntCascaderProps<Option> & {
 export function NetworkFilter (props: CascaderProps) {
   const [ isOpen, setIsOpen ] = React.useState(false)
   const [ radioSelected, setRadioSelected ] = React.useState([] as string[])
+  const [ singleSelect, setSingleSelect ] = React.useState<DefaultOptionType[]>([])
+  const [ multiSelect, setMultiSelect ] = React.useState<DefaultOptionType[][]>([])
 
   const cascaderProps = _.omit(
     props, ['withRadio', 'onApply', 'onCancel']
@@ -59,7 +61,11 @@ export function NetworkFilter (props: CascaderProps) {
   const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     // selection between single or multiple cascader
     if (onApply) {
-      onApply(event, radioSelected, [])
+      if (multiple) {
+        onApply(event, radioSelected, multiSelect)
+      } else {
+        onApply(event, radioSelected, singleSelect)
+      }
     }
     setIsOpen(!isOpen)
   }
@@ -85,6 +91,8 @@ export function NetworkFilter (props: CascaderProps) {
     if (onChange && multiple) {
       onChange(triggeredValue, selectedValues)
     }
+
+    setMultiSelect(selectedValues)
   }
 
   const onChangeSingle = (
@@ -94,6 +102,8 @@ export function NetworkFilter (props: CascaderProps) {
     if (onChange && !multiple) {
       onChange(triggeredValue, selectedValues)
     }
+
+    setSingleSelect(selectedValues)
   }
 
   const RadioDropDown = (menus: JSX.Element) => {
