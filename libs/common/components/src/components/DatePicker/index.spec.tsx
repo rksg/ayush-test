@@ -134,4 +134,40 @@ describe('CalenderRangePicker', () => {
       .toHaveTextContent('20:')
     expect(onDateChange).toBeCalledTimes(1)
   })
+  it('should display selection for null values',async () => {
+    const onDateChange = jest.fn()
+    render(
+      <RangePicker
+        selectionType={DateRange.custom}
+        selectedRange={{ startDate: null,
+          endDate: null }}
+        onDateChange={onDateChange}
+        onDateApply={()=>{}}
+      />)
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    expect( screen.getByRole('display-date-range'))
+      .toHaveTextContent('-')
+  })
+  it('should disable future time selection when startdate and end date are same',async () => {
+    const onDateChange = jest.fn()
+    render(
+      <RangePicker
+        selectionType={DateRange.custom}
+        selectedRange={{ startDate: moment('03/01/2022').hours(12),
+          endDate: moment('03/01/2022').hours(12) }}
+        onDateChange={onDateChange}
+        onDateApply={()=>{}}
+        showTimePicker
+      />)
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const timeSelect = await screen.findAllByRole('time-picker')
+    await user.click(timeSelect[2])
+    const hourSelect = await screen.findAllByText('11')
+    await user.click(hourSelect[hourSelect.length-1])
+    expect( screen.getByRole('display-date-range')).not.toHaveTextContent('11:')
+  })
 })
