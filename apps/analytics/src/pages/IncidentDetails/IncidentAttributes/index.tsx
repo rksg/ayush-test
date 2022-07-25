@@ -9,6 +9,7 @@ import { formatter }                               from '@acx-ui/utils'
 import { AttributeRowProps, AttributesSection } from '../../../components/AttributesSection'
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
+import { Wrapper }                                  from './styledComponents'
 
 import type { PathNode, IncidentAttributesProps } from '../types'
 
@@ -126,9 +127,9 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
 
   const computedFields = fields
     .map(field => field(props) as AttributeRowProps)
-  return <>
+  return <Wrapper>
     <AttributesSection fields={computedFields}/>
     <ImpactedAPsDrawer visible={visible==='ap'} onClose={onClose} {...props}/>
     <ImpactedClientsDrawer visible={visible==='client'} onClose={onClose} {...props}/>
-  </>
+  </Wrapper>
 }

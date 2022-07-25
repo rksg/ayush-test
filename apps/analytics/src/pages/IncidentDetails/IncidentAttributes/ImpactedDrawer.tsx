@@ -1,21 +1,10 @@
 import React, { useState } from 'react'
 
-import { Input }   from 'antd'
-import { useIntl } from 'react-intl'
-
-import { Drawer, Loader, Table } from '@acx-ui/components'
-import { SearchOutlined }        from '@acx-ui/icons'
+import { Drawer, Loader, Table, SearchBar } from '@acx-ui/components'
 
 import { IncidentDetailsProps } from '../types'
 
 import { useImpactedAPsQuery, useImpactedClientsQuery } from './service'
-
-export const SearchBar = (props: { onChange: (value: string) => void }) =>
-  <Input
-    placeholder={useIntl().$t({ defaultMessage: 'Search' })}
-    prefix={<SearchOutlined />}
-    onChange={({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => props.onChange(value)}
-  />
 
 export interface impactedDrawer extends IncidentDetailsProps {
   visible: boolean
@@ -63,12 +52,15 @@ export const ImpactedClientsDrawer: React.FC<impactedDrawer> = (props) => {
     isFetching: states.isLoading || states.isFetching
   }) })
   return <Drawer
-    title={`${queryResults.data?.length || ''} Impacted AP`}
+    width={'620px'}
+    title={`${queryResults.data?.length || ''} Impacted Client`}
     visible={props.visible}
     onClose={props.onClose}
     children={<Loader states={[queryResults]}>
       <SearchBar onChange={setSearch}/>
-      <Table columns={impactedClientsColumns} dataSource={queryResults.data}/>
+      <Table
+        columns={impactedClientsColumns}
+        dataSource={queryResults.data?.map((row, key)=>({ key, ...row }))}/>
     </Loader>}
   />
 }
@@ -108,12 +100,15 @@ export const ImpactedAPsDrawer: React.FC<impactedDrawer> = (props) => {
     isFetching: states.isLoading || states.isFetching
   }) })
   return <Drawer
+    width={'620px'}
     title={`${queryResults.data?.length} Impacted AP`}
     visible={props.visible}
     onClose={props.onClose}
     children={<Loader states={[queryResults]}>
       <SearchBar onChange={setSearch}/>
-      <Table columns={impactedAPsColumns} dataSource={queryResults.data}/>
+      <Table
+        columns={impactedAPsColumns}
+        dataSource={queryResults.data?.map((row, key)=>({ key, ...row }))}/>
     </Loader>}
   />
 }

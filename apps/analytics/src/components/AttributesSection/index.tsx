@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Descriptions } from 'antd'
 
+import { Row } from './styledComponents'
+
 export interface AttributeRowProps {
   label: string
   title: string
@@ -10,12 +12,12 @@ export interface AttributeRowProps {
 }
 
 export const AttributeRow: React.FC<AttributeRowProps> = (props) => {
-  return <div
+  return <Row
     title={props.title || ((typeof props.children === 'string') ? props.children : undefined)}
     onClick={props.onClick}
   >
     {props.children}
-  </div>
+  </Row>
 }
 
 export const AttributesSection: React.FC<{
