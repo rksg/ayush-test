@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { TimePicker, Row, Col } from 'antd'
+import styled                   from 'styled-components/macro'
 
 import { DateRange, defaultRanges } from '@acx-ui/utils'
 
@@ -11,8 +12,8 @@ type WrapperProps = {
 export const Wrapper = styled.div<WrapperProps>`
 
 .ant-picker {
-  background: var(--acx-primary-white);
   width: ${(props) => (props.hasTimePicker ? '22em' : '18em')};
+  background: var(--acx-neutrals-10);
   border-color: var(--acx-primary-black);
 }
 .acx-range-picker > div:first-of-type {
@@ -29,13 +30,36 @@ export const Wrapper = styled.div<WrapperProps>`
   box-shadow:  none;
 }
 .ant-picker-panel-container {
-  border-radius:${(props) => (props.hasTimePicker
-    ? '0 4px 4px 0'
-    : '4px 4px 4px 4px')};
+  border-radius: 4px;
   background: var(--acx-primary-white);
-  box-shadow: ${(props) => (props.hasTimePicker
-    ? '6px 2px 6px 2px rgb(51 51 51 / 5%), 6px 2px 6px 2px rgb(51 51 51 / 5%)'
-    : '0 3px 6px -4px rgb(51 51 51 / 12%), 0 6px 16px 0 rgb(51 51 51 / 8%), 0 9px 28px 8px rgb(51 51 51 / 5%)')};
+  box-shadow: 6px 2px 6px 2px rgb(51 51 51 / 5%), 6px 2px 6px 2px rgb(51 51 51 / 5%);
+}
+.ant-picker-date-panel {
+  .ant-picker-header {
+    align-items: baseline;
+    border-bottom: none;
+    .ant-picker-header-view {
+      font-family: var(--acx-accent-brand-font);
+      font-size: var(--acx-headline-5-font-size);
+      font-weight: var(--acx-headline-5-font-weight-semi-bold);
+      color: var(--acx-neutrals-70);
+      button:hover {
+        color: inherit;
+        cursor: default;
+      }
+    }
+  }
+  .ant-picker-body {
+    th {
+      font-size: var(--acx-subtitle-6-font-size);
+      font-weight: var(--acx-subtitle-6-font-weight-bold);
+      color: var(--acx-neutrals-60);
+    }
+    td {
+      font-size: var(--acx-subtitle-5-font-size);
+      font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+    }
+  }
 }
 .ant-picker-range .ant-picker-active-bar {
   background: var(--acx-accents-blue-50);
@@ -67,20 +91,10 @@ export const Wrapper = styled.div<WrapperProps>`
   border-radius: 4px 0 0 4px;
   box-shadow:  -8px 2px 6px 4px rgb(51 51 51 / 5%), -8px 2px 6px -2px rgb(51 51 51 / 5%);
  }
-.ant-picker-footer-extra {
-  background-color: var(--acx-primary-white);
-  padding: 0;
-  border-bottom: 1px solid var(--acx-neutrals-10);
-}
 .ant-picker-panels {
   background-color: var(--acx-primary-white);
   padding-left: 14px;
   padding-right: 12px;
-}
-.calender-range-apply-row {
-  background-color:var(--acx-neutrals-10);
-  height: 48px;
-  align-items: center;
 }
 .ant-picker-ranges .ant-picker-preset > .ant-tag-blue {
   color: var(--acx-neutrals-100);
@@ -136,16 +150,26 @@ export const Wrapper = styled.div<WrapperProps>`
 .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
   border-radius: 20px;
 }
-.ant-picker-header-view button:hover {
-  color: inherit;
-  cursor: default;
+.ant-picker-footer {
+  .ant-picker {
+    background: transparent;
+    border-color: var(--acx-neutrals-50);
+  }
+  .ant-picker-input > input {
+    font-size: var(--acx-body-4-font-size);
+    padding-left: 4px;
+  }
+  div[role='display-date-range'] {
+    font-size: var(--acx-subtitle-5-font-size);
+    font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+  }
+  border-bottom: 0;
+  .ant-picker-footer-extra {
+    padding: 0;
+    border-bottom: 0;
+  }
 }
-.ant-picker-input > input {
-  font-size: 12px;
-  padding-left: 4px;
-}
-.calender-range-apply-row,
-.ant-picker-content td {
+.calender-range-apply-row {
   font-weight: var(--acx-body-font-weight);
 }
 .ant-picker-header {
@@ -155,5 +179,29 @@ export const Wrapper = styled.div<WrapperProps>`
   font-weight: var(--acx-body-font-weight-bold);
 }
 .ant-picker-ranges > li:nth-child(${(props) => (props.rangeOptions ? props.rangeOptions.indexOf(props.selectionType) + 1 : Object.keys(defaultRanges()).indexOf(props.selectionType) + 1)})  {
-  font-weight: 700;
+  font-weight: var(--acx-body-font-weight-bold);
 }`
+export const TimePickerWrapper = styled(TimePicker)`
+ height: 24px;
+ padding: 4px;
+ width: 50px !important;
+`
+export const TimePickerRow = styled(Row)`
+ margin-left: 24px;
+`
+export const RangeApplyRow = styled(Row)`
+ background-color:var(--acx-neutrals-10);
+ height: 48px;
+ align-items: center;
+`
+export const ButtonColumn = styled(Col)`
+ line-height: normal
+`
+export const TimePickerCol1 = styled(Col)`
+ margin-left: 3px;
+ margin-right: 3px; 
+`
+export const TimePickerCol2 = styled(Col)`
+ margin-left: 17px;
+ margin-right: 17px; 
+`

@@ -14,7 +14,7 @@ function Wrapper (props: { children: React.ReactNode }) {
   />
 }
 
-storiesOf('DatePicker', module).add('with default Ranges', () => (
+storiesOf('DatePicker', module).add('with default ranges', () => (
   <Wrapper>
     <RangePicker
       selectionType={DateRange.last24Hours}
