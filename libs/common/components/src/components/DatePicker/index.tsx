@@ -100,13 +100,11 @@ export const RangePicker = ({ showTimePicker, enableDates, rangeOptions,
 
 
   return (
-    <UI.Wrapper ref={componentRef} hasTimePicker={showTimePicker}>
+    <UI.Wrapper ref={componentRef}>
       <AntdRangePicker
         ranges={defaultRanges(rangeOptions) as RangesType}
         placement='bottomRight'
         disabledDate={disabledDate}
-        className='acx-range-picker'
-        dropdownClassName='acx-range-picker-popup'
         open={isCalenderOpen}
         onClick={() => setIscalenderOpen (true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
