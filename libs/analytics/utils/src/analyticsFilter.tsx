@@ -19,13 +19,10 @@ export type AnalyticsFilter = ReturnType<typeof useAnalyticsFilter>
 export function useAnalyticsFilter () {
   const { ...filters } = useContext(AnalyticsFilterContext)
   const { dateFilter } = useContext(DateFilterContext)
-  const { range } = dateFilter
-  const { startDate, endDate } = getDateRangeFilter(range, dateFilter.startDate, dateFilter.endDate)
+  const { range, startDate, endDate } = dateFilter
   return {
     ...filters,
-    startDate,
-    endDate,
-    range
+    ...getDateRangeFilter(range, startDate, endDate)
   } as const
 }
 

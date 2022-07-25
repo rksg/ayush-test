@@ -1,3 +1,3 @@
 export * from './formatter'
-export * from './DateFilterContext'
+export * from './dateFilterContext'
 export * from './locales'

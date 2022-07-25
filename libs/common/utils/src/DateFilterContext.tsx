@@ -28,13 +28,10 @@ export const defaultDateFilter = {
 export const DateFilterContext = createContext<DateFilterContextprops>(defaultDateFilter)
 export const useDateFilter = () => {
   const { dateFilter, setDateFilter } = useContext(DateFilterContext)
-  const { range } = dateFilter
-  const { startDate, endDate } = getDateRangeFilter(range, dateFilter.startDate, dateFilter.endDate)
+  const { range, startDate, endDate } = dateFilter
   return {
     setDateFilter,
-    startDate,
-    endDate,
-    range
+    ...getDateRangeFilter(range, startDate, endDate)
   } as const
 }
 export function DateFilterProvider (props: { children: ReactNode }) {
