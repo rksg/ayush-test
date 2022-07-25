@@ -13,12 +13,12 @@ import {
   DateFilterProvider
 } from './dateFilterContext'
 
-describe('useGlobalFilter', ()=>{
+describe('useDateFilter', () => {
   beforeEach(() => {
     moment.tz.setDefault('Asia/Singapore')
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
-  it('should return correctly value',()=>{
+  it('should return correctly value', () => {
     const { result } = renderHook(useDateFilter)
     expect(result.current).toMatchObject({
       startDate: '2021-12-31T08:00:00+08:00',
@@ -28,54 +28,64 @@ describe('useGlobalFilter', ()=>{
   })
 })
 
-describe('GlobalFilterProvider', ()=>{
-  it('should render correctly',()=>{
+describe('DateFilterProvider', () => {
+  it('should render correctly', () => {
     function Component () {
       const filters = useDateFilter()
       return <div>{JSON.stringify(filters)}</div>
     }
-    const { asFragment } = render(<BrowserRouter>
-      <DateFilterProvider><Component/>
-      </DateFilterProvider>
-    </BrowserRouter>)
+    const { asFragment } = render(
+      <BrowserRouter>
+        <DateFilterProvider>
+          <Component />
+        </DateFilterProvider>
+      </BrowserRouter>
+    )
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should set url on rerender',()=>{
+  it('should set url on rerender', () => {
     function Component () {
       const filters = useDateFilter()
-      useEffect(()=>{
-        filters?.setDateFilter?.({ ...getDateRangeFilter(DateRange.lastMonth) })
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      },[])
+      useEffect(() => {
+        filters?.setDateFilter?.({
+          ...getDateRangeFilter(DateRange.lastMonth)
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [])
       return <div>{JSON.stringify(filters)}</div>
     }
 
-    const { asFragment } = render(<BrowserRouter>
-      <DateFilterProvider><Component/>
-      </DateFilterProvider>
-    </BrowserRouter>)
+    const { asFragment } = render(
+      <BrowserRouter>
+        <DateFilterProvider>
+          <Component />
+        </DateFilterProvider>
+      </BrowserRouter>
+    )
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should render correctly with default date from url',()=>{
-
+  it('should render correctly with default date from url', () => {
     function Component () {
       const filters = useDateFilter()
       return <div>{JSON.stringify(filters)}</div>
     }
     const location = {
       ...window.location,
-      // eslint-disable-next-line max-len
-      search: '?period=eyJzdGFydERhdGUiOiIyMDIyLTA3LTIzVDE4OjMxOjAwKzA4OjAwIiwiZW5kRGF0ZSI6IjIwMjItMDctMjRUMTg6MzE6MDArMDg6MDAiLCJyYW5nZSI6Ikxhc3QgMjQgSG91cnMifQ=='
+      search:
+        // eslint-disable-next-line max-len
+        '?period=eyJzdGFydERhdGUiOiIyMDIyLTA3LTIzVDE4OjMxOjAwKzA4OjAwIiwiZW5kRGF0ZSI6IjIwMjItMDctMjRUMTg6MzE6MDArMDg6MDAiLCJyYW5nZSI6Ikxhc3QgMjQgSG91cnMifQ=='
     }
     Object.defineProperty(window, 'location', {
       writable: true,
       value: location
     })
-    const { asFragment } = render(<BrowserRouter window={window}>
-      <DateFilterProvider>
-        <Component/>
-      </DateFilterProvider>
-    </BrowserRouter>)
+    const { asFragment } = render(
+      <BrowserRouter window={window}>
+        <DateFilterProvider>
+          <Component />
+        </DateFilterProvider>
+      </BrowserRouter>
+    )
     expect(asFragment()).toMatchSnapshot()
   })
 })
@@ -88,10 +98,12 @@ describe('defaultRanges', () => {
 
   it('should return defaultRange when no subRange', () => {
     const result = defaultRanges()
-    expect(Object.entries(result).reduce((agg, [key, values]) => {
-      agg[key as keyof typeof result] = values.map((t) => t.toISOString())
-      return agg
-    }, {} as Record<string, string[]>)).toStrictEqual({
+    expect(
+      Object.entries(result).reduce((agg, [key, values]) => {
+        agg[key as keyof typeof result] = values.map((t) => t.toISOString())
+        return agg
+      }, {} as Record<string, string[]>)
+    ).toStrictEqual({
       'Last 1 Hour': ['2021-12-31T23:00:00.000Z', '2022-01-01T00:00:00.000Z'],
       'Last 24 Hours': ['2021-12-31T00:00:00.000Z', '2022-01-01T00:00:00.000Z'],
       'Last 7 Days': ['2021-12-25T00:00:00.000Z', '2022-01-01T00:00:00.000Z'],
@@ -102,10 +114,12 @@ describe('defaultRanges', () => {
 
   it('should return defaultRange when having subRange', () => {
     const result = defaultRanges([DateRange.today])
-    expect(Object.entries(result).reduce((agg, [key, values]) => {
-      agg[key as keyof typeof result] = values.map((t) => t.toISOString())
-      return agg
-    }, {} as Record<string, string[]>)).toStrictEqual({
+    expect(
+      Object.entries(result).reduce((agg, [key, values]) => {
+        agg[key as keyof typeof result] = values.map((t) => t.toISOString())
+        return agg
+      }, {} as Record<string, string[]>)
+    ).toStrictEqual({
       Today: ['2021-12-31T16:00:00.000Z', '2022-01-01T00:00:00.000Z']
     })
   })
@@ -125,9 +139,13 @@ describe('getDateRangeFilter', () => {
     })
   })
   it('should return correct dateFilter for the custom range', () => {
-    expect(getDateRangeFilter(DateRange.custom, 
-      '2022-01-01T07:00:00+08:00', 
-      '2022-01-01T08:00:00+08:00')).toStrictEqual({
+    expect(
+      getDateRangeFilter(
+        DateRange.custom,
+        '2022-01-01T07:00:00+08:00',
+        '2022-01-01T08:00:00+08:00'
+      )
+    ).toStrictEqual({
       startDate: '2022-01-01T07:00:00+08:00',
       endDate: '2022-01-01T08:00:00+08:00',
       range: 'Custom'
