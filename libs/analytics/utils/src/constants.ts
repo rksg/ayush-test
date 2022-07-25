@@ -1,7 +1,5 @@
 export const noDataSymbol = '-'
 
-export interface NetworkPath extends Array<{ type: string; name: string }> {}
-
 export enum NetworkNodeTypeForDisplay {
   network = 'Network',
   apGroupName = 'AP Group',

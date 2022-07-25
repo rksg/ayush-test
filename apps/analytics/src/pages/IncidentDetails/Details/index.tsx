@@ -9,6 +9,17 @@ import type { IncidentDetailsProps } from '../types'
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const info = incidentInformation[props.code as keyof typeof incidentInformation]
+  const attributeList = [
+    'clientImpactCount',
+    'incidentCategory',
+    'incidentSubCategory',
+    'type',
+    'scope',
+    'duration',
+    'eventStartTime',
+    'eventEndTime'
+  ]
+
   return <>
     <PageHeader
       title='Incident Details'
@@ -16,7 +27,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
     />
     <Row gutter={[20, 20]}>
       <Col span={4}>
-        <IncidentAttributes {...props} {...info}/>
+        <IncidentAttributes {...props} {...info} visibleFields={attributeList}/>
       </Col>
       <Col span={20}>
         <Row gutter={[20, 20]}>

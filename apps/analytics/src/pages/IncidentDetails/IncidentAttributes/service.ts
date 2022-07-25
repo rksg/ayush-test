@@ -5,11 +5,11 @@ import { dataApi } from '@acx-ui/analytics/services'
 export interface ImpactedAP {
   name: string
   mac: string
-  modele: string
-  versione: string
+  model: string
+  version: string
 }
 
-export interface ImpactClient {
+export interface ImpactedClient {
   mac: string
   manufacturer: string
   ssid: string
@@ -57,7 +57,7 @@ export const { useImpactedAPsQuery } = impactedAPsApi
 export const impactedClientsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     impactedClients: build.query<
-      ImpactClient[], RequestPayload
+      ImpactedClient[], RequestPayload
     >({
       query: (payload) => ({
         document: gql`
@@ -75,7 +75,7 @@ export const impactedClientsApi = dataApi.injectEndpoints({
         `,
         variables: payload
       }),
-      transformResponse: (response: Response<{ impactedClients: ImpactClient[] }>) =>
+      transformResponse: (response: Response<{ impactedClients: ImpactedClient[] }>) =>
         response.incident.impactedClients
     })
   })

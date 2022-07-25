@@ -4,38 +4,54 @@ import { Drawer, Loader, Table, SearchBar } from '@acx-ui/components'
 
 import { IncidentDetailsProps } from '../types'
 
-import { useImpactedAPsQuery, useImpactedClientsQuery } from './service'
+import {
+  ImpactedAP,
+  ImpactedClient,
+  useImpactedAPsQuery,
+  useImpactedClientsQuery
+} from './service'
 
 export interface impactedDrawer extends IncidentDetailsProps {
   visible: boolean
   onClose: () => void
 }
 
+function sort<T, K extends keyof T> (column: K) {
+  return function (a: T, b: T) {
+    return a[column] > b[column]? 1: -1
+  }
+}
+
 const impactedClientsColumns = [
   {
     title: 'Client MAC',
     dataIndex: 'mac',
-    key: 'mac'
+    key: 'mac',
+    sorter: sort<ImpactedClient, 'mac'>('mac')
   },
   {
     title: 'Manufacturer',
     dataIndex: 'manufacturer',
-    key: 'manufacturer'
+    key: 'manufacturer',
+    sorter: sort<ImpactedClient, 'manufacturer'>('manufacturer')
   },
   {
     title: 'SSID',
     dataIndex: 'ssid',
-    key: 'ssid'
+    key: 'ssid',
+    sorter: sort<ImpactedClient, 'ssid'>('ssid')
   },
   {
     title: 'Username',
     dataIndex: 'username',
-    key: 'username'
+    key: 'username',
+    sorter: sort<ImpactedClient, 'username'>('username')
   },
   {
     title: 'Hostname',
     dataIndex: 'hostname',
-    key: 'hostname'
+    key: 'hostname',
+    sorter: sort<ImpactedClient, 'hostname'>('hostname')
   }
 ]
 
@@ -69,22 +85,26 @@ const impactedAPsColumns = [
   {
     title: 'AP Name',
     dataIndex: 'name',
-    key: 'name'
+    key: 'name',
+    sorter: sort<ImpactedAP, 'name'>('name')
   },
   {
     title: 'AP MAC',
     dataIndex: 'mac',
-    key: 'mac'
+    key: 'mac',
+    sorter: sort<ImpactedAP, 'mac'>('mac')
   },
   {
     title: 'AP Model',
     dataIndex: 'model',
-    key: 'model'
+    key: 'model',
+    sorter: sort<ImpactedAP, 'model'>('model')
   },
   {
     title: 'AP Version',
     dataIndex: 'version',
-    key: 'version'
+    key: 'version',
+    sorter: sort<ImpactedAP, 'version'>('version')
   }
 ]
 

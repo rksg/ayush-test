@@ -1,14 +1,11 @@
+import { NetworkPath } from '@acx-ui/analytics/utils'
+
 export interface Metadata {
   dominant: { ssid?: string }
   rootCauseChecks: {
     checks: Record<string,boolean>[]
     params: Record<string,string>
   }
-}
-
-export interface PathNode {
-  type: string
-  name: string
 }
 
 export interface IncidentDetailsProps {
@@ -22,7 +19,7 @@ export interface IncidentDetailsProps {
   clientCount: number
   impactedClientCount: number
   metadata: Metadata
-  path: Array<PathNode>
+  path: NetworkPath
   apCount: number
   impactedApCount: number
   switchCount: number
@@ -44,6 +41,8 @@ interface IncidentInformation {
 }
 
 export interface IncidentAttributesProps
-  extends IncidentDetailsProps, IncidentInformation {}
+  extends IncidentDetailsProps, IncidentInformation {
+    visibleFields: string[]
+  }
 
 

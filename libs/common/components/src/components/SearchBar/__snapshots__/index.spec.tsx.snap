@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchBar should match snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-m39lzu-0 fgTDiD"
+  >
+    <span
+      class="ant-input-affix-wrapper"
+    >
+      <span
+        class="ant-input-prefix"
+      >
+        <div
+          data-testid="search-icon"
+        />
+      </span>
+      <input
+        class="ant-input"
+        placeholder="Search for..."
+        type="text"
+        value=""
+      />
+    </span>
+  </div>
+</DocumentFragment>
+`;

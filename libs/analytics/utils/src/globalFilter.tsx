@@ -3,7 +3,7 @@ import React, { ReactNode, useContext } from 'react'
 import { pick } from 'lodash'
 import moment   from 'moment-timezone'
 
-import { NetworkPath } from './constants'
+import { NetworkPath } from './types'
 
 export enum DateRange {
   today = 'Today',
