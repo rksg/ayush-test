@@ -1,0 +1,155 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VenueFilterControlBox should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__VenueFilterContainer-sc-aq95s2-2 tVegZ"
+  >
+    <span
+      class="styledComponents__FilterBoxTitle-sc-aq95s2-1 hgkPML"
+    >
+      Show
+    </span>
+    <label
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-aq95s2-0 iBeDqm"
+    >
+      <span
+        class="ant-checkbox ant-checkbox-checked"
+      >
+        <input
+          checked=""
+          class="ant-checkbox-input"
+          name="3_RequiresAttention"
+          type="checkbox"
+          value=""
+        />
+        <span
+          class="ant-checkbox-inner"
+        />
+      </span>
+      <span>
+        <span
+          class="anticon"
+          role="img"
+        >
+          <svg
+            aria-hidden="true"
+            class="styledComponents__VenueMarkerRedIcon-sc-aq95s2-6 dKWsgp"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            width="1em"
+          >
+            VenueMarkerRed.svg
+          </svg>
+        </span>
+      </span>
+    </label>
+    <label
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-aq95s2-0 iBeDqm"
+    >
+      <span
+        class="ant-checkbox ant-checkbox-checked"
+      >
+        <input
+          checked=""
+          class="ant-checkbox-input"
+          name="4_TransientIssue"
+          type="checkbox"
+          value=""
+        />
+        <span
+          class="ant-checkbox-inner"
+        />
+      </span>
+      <span>
+        <span
+          class="anticon"
+          role="img"
+        >
+          <svg
+            aria-hidden="true"
+            class="styledComponents__VenueMarkerOrangeIcon-sc-aq95s2-5 fxdiLd"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            width="1em"
+          >
+            VenueMarkerOrange.svg
+          </svg>
+        </span>
+      </span>
+    </label>
+    <label
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-aq95s2-0 iBeDqm"
+    >
+      <span
+        class="ant-checkbox ant-checkbox-checked"
+      >
+        <input
+          checked=""
+          class="ant-checkbox-input"
+          name="1_InSetupPhase"
+          type="checkbox"
+          value=""
+        />
+        <span
+          class="ant-checkbox-inner"
+        />
+      </span>
+      <span>
+        <span
+          class="anticon"
+          role="img"
+        >
+          <svg
+            aria-hidden="true"
+            class="styledComponents__VenueMarkerGreyIcon-sc-aq95s2-4 bZZjYh"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            width="1em"
+          >
+            VenueMarkerGrey.svg
+          </svg>
+        </span>
+      </span>
+    </label>
+    <label
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-aq95s2-0 iBeDqm"
+    >
+      <span
+        class="ant-checkbox ant-checkbox-checked"
+      >
+        <input
+          checked=""
+          class="ant-checkbox-input"
+          name="2_Operational"
+          type="checkbox"
+          value=""
+        />
+        <span
+          class="ant-checkbox-inner"
+        />
+      </span>
+      <span>
+        <span
+          class="anticon"
+          role="img"
+        >
+          <svg
+            aria-hidden="true"
+            class="styledComponents__VenueMarkerGreenIcon-sc-aq95s2-3 dmBVo"
+            fill="currentColor"
+            focusable="false"
+            height="1em"
+            width="1em"
+          >
+            VenueMarkerGreen.svg
+          </svg>
+        </span>
+      </span>
+    </label>
+  </div>
+</DocumentFragment>
+`;
