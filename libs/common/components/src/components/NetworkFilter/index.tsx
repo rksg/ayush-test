@@ -78,11 +78,20 @@ export function NetworkFilter (props: CascaderProps) {
     setRadioSelected(checkedValues as string[])
   }
 
-  const onChangeProps: typeof cascaderProps.onChange = (
-    triggeredValue: SingleValueType & SingleValueType[],
-    selectedValues: DefaultOptionType[] & DefaultOptionType[][]
+  const onChangeMultiple = (
+    triggeredValue: SingleValueType[],
+    selectedValues: DefaultOptionType[][]
   ) => {
-    if (onChange) {
+    if (onChange && multiple) {
+      onChange(triggeredValue, selectedValues)
+    }
+  }
+
+  const onChangeSingle = (
+    triggeredValue: SingleValueType,
+    selectedValues: DefaultOptionType[]
+  ) => {
+    if (onChange && !multiple) {
       onChange(triggeredValue, selectedValues)
     }
   }
@@ -127,12 +136,23 @@ export function NetworkFilter (props: CascaderProps) {
     }
   }
 
+  if (multiple) {
+    return <AntCascader
+      {...cascaderProps}
+      multiple
+      onChange={onChangeMultiple}
+      onFocus={onFocusProps}
+      open={isOpen}
+      dropdownRender={DropDown}
+    />
+  } 
+
   return <AntCascader
     {...cascaderProps}
-    onChange={onChangeProps}
+    multiple={false}
+    onChange={onChangeSingle}
     onFocus={onFocusProps}
     open={isOpen}
-    multiple={multiple}
     dropdownRender={DropDown}
   />
 }
