@@ -2,14 +2,13 @@ import React from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useAnalyticsFilter }                from '@acx-ui/analytics/utils'
-import { getSeriesData }                     from '@acx-ui/analytics/utils'
-import { Card }                              from '@acx-ui/components'
-import { Loader }                            from '@acx-ui/components'
-import { MultiLineTimeSeriesChart }          from '@acx-ui/components'
-import { cssStr }                            from '@acx-ui/components'
-import type { MultiLineTimeSeriesChartData } from '@acx-ui/components'
-import { formatter }                         from '@acx-ui/utils'
+import { useAnalyticsFilter }       from '@acx-ui/analytics/utils'
+import { getSeriesData }            from '@acx-ui/analytics/utils'
+import { Card }                     from '@acx-ui/components'
+import { Loader }                   from '@acx-ui/components'
+import { MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { cssStr }                   from '@acx-ui/components'
+import { formatter }                from '@acx-ui/utils'
 
 import {
   useTrafficByVolumeQuery,
