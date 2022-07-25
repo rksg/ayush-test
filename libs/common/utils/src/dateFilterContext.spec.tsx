@@ -29,9 +29,6 @@ describe('useGlobalFilter', ()=>{
 })
 
 describe('GlobalFilterProvider', ()=>{
-  afterEach(() => {
-    jest.restoreAllMocks()
-  })
   it('should render correctly',()=>{
     function Component () {
       const filters = useDateFilter()

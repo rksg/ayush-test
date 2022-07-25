@@ -5,6 +5,7 @@ import { Buffer } from 'buffer'
 import { pick }            from 'lodash'
 import moment              from 'moment-timezone'
 import { useSearchParams } from 'react-router-dom'
+
 export type DateFilterContextprops = {
   dateFilter: DateFilter,
   setDateFilter?: (c: DateFilter) => void
@@ -25,7 +26,9 @@ interface DateFilter {
 export const defaultDateFilter = {
   dateFilter: { ...getDateRangeFilter(DateRange.last24Hours) }
 } as const
+
 export const DateFilterContext = createContext<DateFilterContextprops>(defaultDateFilter)
+
 export const useDateFilter = () => {
   const { dateFilter, setDateFilter } = useContext(DateFilterContext)
   const { range, startDate, endDate } = dateFilter
@@ -34,9 +37,11 @@ export const useDateFilter = () => {
     ...getDateRangeFilter(range, startDate, endDate)
   } as const
 }
+
 export function DateFilterProvider (props: { children: ReactNode }) {
   const [search,setSearch] = useSearchParams()
   const didMountRef = useRef(false)
+  
   const period = search.has('period') 
     ? JSON.parse(Buffer.from(search.get('period') as string,'base64').toString('ascii')) : {}
   const defaultFilter = search.has('period') 
@@ -44,6 +49,7 @@ export function DateFilterProvider (props: { children: ReactNode }) {
     : defaultDateFilter.dateFilter
 
   const [dateFilter, setDateFilter] = useState<DateFilter>(defaultFilter)
+
   useEffect(()=>{
     if (!didMountRef.current) {
       didMountRef.current = true
@@ -53,8 +59,10 @@ export function DateFilterProvider (props: { children: ReactNode }) {
     params.append('period',Buffer.from(JSON.stringify({ ...dateFilter })).toString('base64'))
     setSearch(params)
   },[dateFilter, setSearch])
+  
   return <DateFilterContext.Provider {...props} value={{ dateFilter, setDateFilter }} />
 }
+
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
     [DateRange.last1Hour]: [
