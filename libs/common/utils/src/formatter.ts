@@ -3,6 +3,8 @@ import numeral from 'numeral'
 
 const count = ['', ' k', ' m', ' b', ' t'] // from numeral, we could add more
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
+const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
+
 const networkSpeed = [
   ' Kbps',
   ' Mbps',
@@ -92,6 +94,7 @@ const formats = {
   countWithCommas: (number: number) => numeral(number).format('0,0'),
   decibelFormat: (number: number) => Math.round(number) + ' dB',
   decibelMilliWattsFormat: (number: number) => Math.round(number) + ' dBm',
+  milliWattsFormat: (number:number) => numberFormat(1000, watts, number),
   bytesFormat: (number:number) => numberFormat(1024, bytes, number),
   networkSpeedFormat: (number: number) => numberFormat(1024, networkSpeed, number),
   radioFormat: (value: string|number) => `${value} GHz`,

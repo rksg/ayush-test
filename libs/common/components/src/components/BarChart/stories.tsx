@@ -2,6 +2,8 @@ import { withKnobs, object }  from '@storybook/addon-knobs'
 import { storiesOf }          from '@storybook/react'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 
+import { formatter } from '@acx-ui/utils'
+
 import { cssNumber, cssStr } from '../../theme/helper'
 
 import { BarChart, BarChartData } from '.'
@@ -55,35 +57,17 @@ export const barColors = [
 ]
 
 
-//Todo: formatter helper functions
-const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
-const bytes = [' B', ' kB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
-const shorten = (value: number) => {
-  return parseFloat(value.toPrecision(4)).toString()
-}
-const numberFormat = (base: number, units: string[], value: number)
-  : string | null => {
-  for (let a = 1; a <= units.length; a++) {
-    const lowest = value / Math.pow(base, a - 1)
-    if (Math.abs(lowest) < base) {
-      return shorten(lowest) + units[a - 1]
-    }
-  }
-  return null
-}
-
 function switchUsageLabelFormatter (params: CallbackDataParams): string {
   const usage = Array.isArray(params.data) ? params.data[1] : params.data
   const utilisation_per = Array.isArray(params.data) ? params.data[2] : params.data
   return '{poe_usage|' +
-    numberFormat(1000, watts, usage as unknown as number) + '\n} {utilisationPer|' +
+    formatter('milliWattsFormat')(usage) + '\n} {utilisationPer|' +
     utilisation_per + '%}'
 }
 
 function switchTrafficLabelFormatter (params: CallbackDataParams): string {
   const usage = Array.isArray(params.data) ? params.data[params?.encode?.['x'][0]!] : params.data
-  return '{traffic|' +
-    numberFormat(1024, bytes, usage as unknown as number) + '}'
+  return '{traffic|' +formatter('bytesFormat')(usage) + '}'
 }
 
 
