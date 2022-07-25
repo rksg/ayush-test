@@ -3,7 +3,7 @@ import React from 'react'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilterProvider } from '@acx-ui/analytics/utils'
+import { AnalyticsFilterProvider, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   Button,
   DashboardRow,
@@ -32,6 +32,7 @@ export default function Dashboard () {
 
 function DashboardPageHeader () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
+
   const { $t } = useIntl()
   return (
     <PageHeader
@@ -55,6 +56,7 @@ function DashboardPageHeader () {
 }
 
 function DashboardWidgets () {
+  const filters = useAnalyticsFilter()
   return (
     <DashboardRow gutter={[20, 20]}>
       <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
@@ -82,10 +84,10 @@ function DashboardWidgets () {
       </DashboardCol>
 
       <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='trafficByVolume' />
+        <AnalyticsWidgets name='trafficByVolume' filters={filters} />
       </DashboardCol>
       <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='networkHistory' />
+        <AnalyticsWidgets name='networkHistory' filters={filters} />
       </DashboardCol>
 
       <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>

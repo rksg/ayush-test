@@ -18,6 +18,6 @@ declare module 'analytics/Routes' {
 }
 declare module 'analytics/Widgets' {
   // refer to modulefederation.config.js for correct mapping
-  function Widgets (props: { name: string }): React.ReactElement
+  function Widgets (props: { name: string, filters?: any }): React.ReactElement
   export = Widgets
 }

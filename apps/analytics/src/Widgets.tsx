@@ -5,14 +5,14 @@ import NetworkHistoryWidget  from './components/NetworkHistory'
 import TrafficByVolumeWidget from './components/TrafficByVolume'
 
 const widgetsMap = {
-  trafficByVolume: () => <TrafficByVolumeWidget/>,
-  networkHistory: () => <NetworkHistoryWidget/>
+  trafficByVolume: ({ filters } : { filters : any }) => <TrafficByVolumeWidget filters={filters}/>,
+  networkHistory: ({ filters } : { filters : any }) => <NetworkHistoryWidget filters={filters}/>
 }
 
-function AnalyticsWidgets ({ name }: { name: keyof typeof widgetsMap }) {
+function AnalyticsWidgets ({ name, filters }: { name: keyof typeof widgetsMap, filters? : any }) {
   const Widget = widgetsMap[name]
   return <Provider>
-    {Widget ? <Widget /> : <Card>{name}</Card>}
+    {Widget ? <Widget filters={filters}/> : <Card>{name}</Card>}
   </Provider>
 }
 
