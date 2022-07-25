@@ -1,7 +1,9 @@
 import { Col, Row } from 'antd'
 
-import { PageHeader, Pill } from '@acx-ui/components'
+import { incidentInformation } from '@acx-ui/analytics/utils'
+import { PageHeader, Pill }    from '@acx-ui/components'
 
+import { incidentDetailsMap } from '..'
 import { IncidentAttributes } from '../IncidentAttributes'
 
 import type { IncidentDetailsProps } from '../types'
@@ -10,6 +12,12 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => <>
   <PageHeader 
     title='Incident Details'
     sideHeader={<Pill value='123' trend='positive' />}
+    breadcrumb={[
+      { text: 'AI Analytics', link: '/analytics' },
+      { text: 'Incidents', link: '/analytics/incidents' },
+      { text: 'Incident Details', link: '/' }
+    ]}
+    subTitle={incidentInformation[props?.code as keyof typeof incidentDetailsMap].shortDescription}
   />
   <Row gutter={[20, 20]}>
     <Col span={4}>
