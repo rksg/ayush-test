@@ -1,5 +1,3 @@
-
-
 import { LabelFormatterCallback, RegisteredSeriesOption } from 'echarts'
 import ReactECharts                                       from 'echarts-for-react'
 import { CallbackDataParams, GridOption }                 from 'echarts/types/dist/shared'
