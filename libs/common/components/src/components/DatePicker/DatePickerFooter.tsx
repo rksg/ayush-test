@@ -2,7 +2,7 @@ import  React,{ useCallback } from 'react'
 
 import { range as timepickerRange } from 'lodash'
 
-import { ArrowDown }       from '@acx-ui/icons'
+import { CaretDownSolid }  from '@acx-ui/icons'
 import { dateTimeFormats } from '@acx-ui/utils'
 
 import { Button } from '../Button'
@@ -82,7 +82,7 @@ export const DatePickerFooter = ({ showTimePicker, range, defaultValue,
             showNow={false}
             format={config.format}
             placeholder=''
-            suffixIcon={<ArrowDown/>}
+            suffixIcon={<CaretDownSolid />}
             allowClear={false}
             getPopupContainer={(node: HTMLElement) => node}
             onSelect={(time) => onTimePickerSelect(config, time)}

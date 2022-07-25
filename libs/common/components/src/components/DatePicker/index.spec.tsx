@@ -5,14 +5,14 @@ import moment             from 'moment'
 
 import { RangePicker,DateRange } from '.'
 jest.mock('@acx-ui/icons', () => ({
-  ArrowDown: () => <div>ArrowDown</div>,
+  CaretDownSolid: () => <div>CaretDownSolid</div>,
   ClockOutlined: () => <div>ClockOutlined</div>
 }))
 
 describe('CalenderRangePicker', () => {
   it('should render default CalenderRangePicker', () => {
     const { asFragment } = render(
-      <RangePicker 
+      <RangePicker
         onDateApply={()=>{}}
         selectedRange={{ startDate: moment('01/01/2022').subtract(1, 'days').seconds(0),
           endDate: moment('01/01/2022').seconds(0) }}/>)
