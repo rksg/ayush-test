@@ -236,12 +236,8 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
     ...saveData,
     ...{
       wlan: {
+        ...data.wlan,
         advancedCustomization: new PskWlanAdvancedCustomization(),
-        macAddressAuthentication: data.wlan?.macAddressAuthentication,
-        macAuthMacFormat: data.wlan?.macAuthMacFormat,
-        managementFrameProtection: data.wlan?.managementFrameProtection,
-        passphrase: data.wlan?.passphrase,
-        wlanSecurity: data.wlan?.wlanSecurity,
         enable: true,
         vlanId: 1
       }

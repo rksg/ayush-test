@@ -185,7 +185,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <StepsForm.Title>Settings</StepsForm.Title>
       <div>
-        {wlanSecurity !== 'WEP' &&
+        {wlanSecurity !== WlanSecurityEnum.WEP && wlanSecurity !== WlanSecurityEnum.WPA3 &&
           <Form.Item
             name='passphrase'
             label={SecurityOptionsPassphraseLabel[wlanSecurity as keyof typeof PskWlanSecurityEnum]
@@ -220,10 +220,11 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
           </div>
         </React.Fragment>
         }
-        {wlanSecurity===WlanSecurityEnum.WPA23Mixed &&
+        {(wlanSecurity===WlanSecurityEnum.WPA23Mixed ||
+          wlanSecurity===WlanSecurityEnum.WPA3) &&
           <Form.Item
             name='saePassphrase'
-            label='WPA3 SAE Passphrase'
+            label={wlanSecurity===WlanSecurityEnum.WPA3?'SAE Passphrase':'WPA3 SAE Passphrase'}
             rules={[{
               required: true,
               whitespace: false,

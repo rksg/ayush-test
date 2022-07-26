@@ -20,9 +20,12 @@ export function PskSummaryForm (props: {
   const { summaryData } = props
   return (
     <>
-      {summaryData.passphrase &&
+      {summaryData.wlanSecurity !== WlanSecurityEnum.WPA3 && 
+       summaryData.wlanSecurity !== WlanSecurityEnum.WEP &&
+       summaryData.passphrase &&
         <Form.Item
-          label='Passphrase:'
+          label={summaryData.wlanSecurity === WlanSecurityEnum.WPA23Mixed ? 
+            'WPA2 Passphrase:' : 'Passphrase:'}
           children={<Input.Password
             readOnly
             bordered={false}
@@ -30,7 +33,20 @@ export function PskSummaryForm (props: {
           />}
         />
       }
-      {summaryData.wepHexKey &&
+      {(summaryData.wlanSecurity === WlanSecurityEnum.WPA3 ||
+        summaryData.wlanSecurity === WlanSecurityEnum.WPA23Mixed) &&
+        summaryData.saePassphrase &&
+        <Form.Item
+          label={summaryData.wlanSecurity === WlanSecurityEnum.WPA3?
+            'SAE Passphrase:' : 'WPA3 SAE Passphrase:'}
+          children={<Input.Password
+            readOnly
+            bordered={false}
+            value={summaryData.saePassphrase}
+          />}
+        />
+      }
+      {summaryData.wlanSecurity === WlanSecurityEnum.WEP && summaryData.wepHexKey &&
         <Form.Item
           label='Hex Key:'
           children={<Input.Password

@@ -61,8 +61,7 @@ export function NetworkForm () {
     }else{
       delete saveState?.cloudpathServerId
     }
-
-    if(!saveData.wlan?.macAddressAuthentication){
+    if(!saveState?.wlan?.macAddressAuthentication){
       delete saveState?.authRadius
       delete saveState?.accountingRadius
     }
@@ -124,7 +123,8 @@ export function NetworkForm () {
                   managementFrameProtection: data.managementFrameProtection,
                   macAddressAuthentication: data.macAddressAuthentication,
                   macAuthMacFormat: data.macAuthMacFormat,
-                  wlanSecurity: data.wlanSecurity
+                  wlanSecurity: data.wlanSecurity,
+                  wepHexKey: data.wepHexKey
                 }
               }
             }
