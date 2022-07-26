@@ -29,6 +29,7 @@ export const Wrapper = styled.div`
 
   .ant-picker-dropdown {
     font-size: var(--acx-body-4-font-size);
+    padding: 10px 0;
     & .ant-picker-panel { border: none; }
     & .ant-picker-header-super-prev-btn,
     & .ant-picker-header-super-next-btn {
@@ -74,7 +75,7 @@ export const Wrapper = styled.div`
     .ant-picker-ranges {
       position: absolute;
       width: var(--acx-date-picker-ranges-width);
-      top: 9px;
+      top: 10px;
       bottom: 10px;
       left: 0px;
       display: flex;
