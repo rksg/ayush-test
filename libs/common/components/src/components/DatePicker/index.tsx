@@ -109,9 +109,8 @@ export const RangePicker = ({ showTimePicker, enableDates, rangeOptions,
         onClick={() => setIscalenderOpen (true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined/>}
-        onCalendarChange={(values: RangeValueType) => values == null
-          ? setRange({ startDate: null, endDate: null })
-          : setRange({ startDate: values[0], endDate: values[1] })
+        onCalendarChange={(values: RangeValueType) => 
+          setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })
         }
         mode={['date', 'date']}
         renderExtraFooter={() =>

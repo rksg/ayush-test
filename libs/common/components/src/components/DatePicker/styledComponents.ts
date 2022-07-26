@@ -75,7 +75,7 @@ export const Wrapper = styled.div`
       position: absolute;
       width: var(--acx-date-picker-ranges-width);
       top: 9px;
-      bottom: 9px;
+      bottom: 10px;
       left: 0px;
       display: flex;
       flex-direction: column;
