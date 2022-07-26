@@ -15,23 +15,27 @@ const options = [
   }
 ]
 
-const helper = (val: DefaultOptionType[] | DefaultOptionType[][]) => {
-  let ret = ''
-  for (let i = 0; i < val.length; i++) {
-    ret += JSON.stringify(val[i]) + ' '
+const helper = (val?: DefaultOptionType[] | DefaultOptionType[][]) => {
+  if (val) {
+    let ret = ''
+    for (let i = 0; i < val.length; i++) {
+      ret += JSON.stringify(val[i]) + ' '
+    }
+    return ret
   }
-  return ret
+
+  return 'no cascader selection'
 }
 
 const onApply = (
-  selectedRadio: string[],
-  selectedOptions: DefaultOptionType[] | DefaultOptionType[][]
+  selectedRadio?: string[],
+  selectedOptions?: DefaultOptionType[] | DefaultOptionType[][]
 ) => {
   showToast({
     type: 'success',
-    content: 
+    content:
       `Radio selected: 
-        ${(selectedRadio && selectedRadio.length === 0) ? selectedRadio : 'no radio selected'}, 
+        ${(selectedRadio && selectedRadio.length !== 0) ? selectedRadio : 'no radio selected'}, 
       Cascader Options Selected: ${helper(selectedOptions)}`
   })
 }

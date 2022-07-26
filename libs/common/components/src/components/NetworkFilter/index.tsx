@@ -33,8 +33,8 @@ export type CascaderProps = AntCascaderProps<Option> & {
   withRadio?: { radioTitle: string, radioOptions: string[] }
   onCancel?: CallableFunction
   onApply?: (
-    selectedRadio: string[],
-    cascaderSelected: DefaultOptionType[] | DefaultOptionType[][]
+    selectedRadio: string[] | undefined,
+    cascaderSelected: DefaultOptionType[] | DefaultOptionType[][] | undefined
   ) => void
 }
 
@@ -98,7 +98,7 @@ export function NetworkFilter (props: CascaderProps) {
     setSingleSelect([...selectedValues])
 
     if (onApply) {
-      onApply(radioSelected, singleSelect)
+      onApply(radioSelected, selectedValues)
     }
   }
 
