@@ -72,7 +72,7 @@ const getAttributesByNodeType = (type: keyof typeof NetworkNodeTypeForDisplay): 
       'portCount'
     ]
   }
-  return attributes[type]
+  return attributes[type as keyof typeof attributes]
 }
 
 const getQuery = (path: NetworkPath) : string => {

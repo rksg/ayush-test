@@ -35,18 +35,17 @@ export const sliceTypePrettyNames = (type: string) => nodeType[type as keyof typ
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const { $t } = useIntl()
-
-
   const shortDescription = (incident: IncidentDetailsProps) => {
     const incidentInfo = incidentInformation[incident.code as keyof typeof incidentDetailsMap]
     /* eslint-disable-next-line max-len */
     const scope = `${sliceTypePrettyNames(incident.sliceType)}: ${getImpactedArea(incident.path, incident.sliceValue)}`
-    // return $t(incidentInfo.shortDescription, { scope })
-    return <FormattedMessage
-      id={incident.code}
-      defaultMessage={incidentInfo.shortDescription}
-      values={{scope: scope}}
-    />
+    const { shortDescription } = incidentInfo
+    const messageProps = {
+      id: incident.id,
+      defaultMessage: shortDescription,
+      values: { scope } 
+    }
+    return <FormattedMessage {...messageProps}/>
   }
 
   return (
@@ -55,9 +54,9 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
         title={$t({ id: 'title', defaultMessage: 'Incident Details' })}
         sideHeader={<Pill value='123' trend='positive' />}
         breadcrumb={[
-          { text: $t({ id: 'breadcrumb.analytics', defaultMessage: 'AI Analytics' }), link: '/analytics' },
-          { text: $t({ id: 'breadcrumb.incidents', defaultMessage: 'Incidents' }), link: '/analytics/incidents' },
-          { text: $t({ id: 'breadrcumb.incidentDetails', defaultMessage: 'Incident Details' }), link: '/' }
+          { text: $t({ defaultMessage: 'AI Analytics' }), link: '/analytics' },
+          { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' },
+          { text: $t({ defaultMessage: 'Incident Details' }), link: `/analytics/incidents/${props.id}` }
         ]}
         subTitle={shortDescription(props)}
       />
