@@ -63,12 +63,14 @@ const columns: TableProps<Venue>['columns'] = [
         ? Object.values(row.aggregatedApStatus)
           .reduce((a, b) => a + b, 0)
         : 0
-      return (
+
+      return (<Space direction='horizontal' size={8}>
+        {/* { row.aggregatedApStatus && getApStatusChart(row.aggregatedApStatus) } */}
         <TenantLink
           to={`/venues/${row.id}/network-devices/wifi`}
           children={count ? count : 0}
         />
-      )
+      </Space>)
     }
   },
   {

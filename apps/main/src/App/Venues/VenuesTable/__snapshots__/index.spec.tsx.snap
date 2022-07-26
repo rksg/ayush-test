@@ -388,11 +388,19 @@ exports[`Venues Table should render table 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/2c16284692364ab6a01f4c60f5941836/network-devices/wifi"
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
                                 >
-                                  1
-                                </a>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <a
+                                      href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/2c16284692364ab6a01f4c60f5941836/network-devices/wifi"
+                                    >
+                                      1
+                                    </a>
+                                  </div>
+                                </div>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -482,11 +490,19 @@ exports[`Venues Table should render table 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/a919812d11124e6c91b56b9d71eacc31/network-devices/wifi"
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
                                 >
-                                  0
-                                </a>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <a
+                                      href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/a919812d11124e6c91b56b9d71eacc31/network-devices/wifi"
+                                    >
+                                      0
+                                    </a>
+                                  </div>
+                                </div>
                               </td>
                               <td
                                 class="ant-table-cell"
