@@ -52,7 +52,7 @@ describe('NetworkForm', () => {
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-  it('should create PSK network successfully', async () => {
+  it('should create PSK network with WPA2 successfully', async () => {
     const { asFragment } = render(<Provider><NetworkForm /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
 
@@ -66,7 +66,7 @@ describe('NetworkForm', () => {
     })
   })
 
-  it('should create PSK network with mac auth', async () => {
+  it('should create PSK network with WPA2 and mac auth', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
 
     await fillInBeforeSettings('PSK network test')
@@ -90,7 +90,42 @@ describe('NetworkForm', () => {
       expect(screen.getByText('111.111.111.111:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  }, 7000)
+  }, 3000)
+
+
+  it('should create PSK network with WP3 and mac auth security protocol', async () => {
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+
+    await fillInBeforeSettings('PSK network test')
+
+    const securityProtocols = screen.getByRole('combobox')
+
+    fireEvent.mouseDown(securityProtocols)
+    
+    const option = screen.getAllByLabelText('WPA3')[0]
+    
+    fireEvent.click(option)
+
+    const passphraseTextbox = screen.getByLabelText('Passphrase')
+    fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
+
+    fireEvent.click(screen.getByRole('switch'))
+
+    const ipTextbox = screen.getByLabelText('IP Address')
+    fireEvent.change(ipTextbox, { target: { value: '111.111.111.111' } })
+
+    const portTextbox = screen.getByLabelText('Port')
+    fireEvent.change(portTextbox, { target: { value: '1111' } })
+
+    const secretTextbox = screen.getByLabelText('Shared secret')
+    fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
+
+    await fillInAfterSettings(async () => {
+      expect(screen.getByText('PSK network test')).toBeVisible()
+      expect(screen.getByText('111.111.111.111:1111')).toBeVisible()
+      expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
+    })
+  }, 3000)
 
   it('should create PSK network with WEP security protocol', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -110,5 +145,5 @@ describe('NetworkForm', () => {
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
     })
-  })
+  }, 3000)
 })

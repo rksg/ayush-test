@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NetworkForm should create PSK network successfully 1`] = `
+exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
