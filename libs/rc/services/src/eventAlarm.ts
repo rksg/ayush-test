@@ -52,7 +52,7 @@ export const {
 
 export const getMetaList = function (
   list: TableResult<AlarmBase>,
-  metaListInfo: { urlInfo: ApiInfo, fields: string[]}
+  metaListInfo: { urlInfo: ApiInfo, fields: string[] }
 ) {
   const httpRequest = metaListInfo.urlInfo
   const body = {

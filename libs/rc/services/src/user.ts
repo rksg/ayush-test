@@ -28,7 +28,7 @@ export const userApi = baseUserApi.injectEndpoints({
         }
       },
       transformResponse (userSettings: UserSettings) {
-        let result:{[key: string]: string} = {}
+        let result:{ [key: string]: string } = {}
         Object.keys(userSettings).forEach((key: string) => {
           result[key] = JSON.parse(userSettings[key])
         })

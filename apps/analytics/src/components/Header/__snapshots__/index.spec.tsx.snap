@@ -3,7 +3,7 @@
 exports[`Analytics dumb header should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 bAtkIT"
+    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -42,6 +42,39 @@ exports[`Analytics dumb header should render correctly 1`] = `
             </span>
           </span>
         </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+              style="margin-right: 8px;"
+            >
+              <button
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
+                type="button"
+              >
+                <span>
+                  network filter
+                </span>
+              </button>
+            </div>
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
+                type="button"
+              >
+                <span>
+                  date filter
+                </span>
+              </button>
+            </div>
+          </div>
+        </span>
       </div>
     </div>
   </div>

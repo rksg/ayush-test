@@ -5,7 +5,7 @@
  * - Override here if there isn't a wrapper for antd components, otherwise use styled-components
  */
 
-:root {
+ :root {
   // ACX medium form elements uses --acx-body-3-font-size and antd default form elements uses
   // @font-size-base so we can't override it, but bulk of ACX body text is --acx-body-4-font-size
   body {
@@ -48,6 +48,55 @@
     }
   }
 
+  .ant-drawer {
+    --acx-drawer-top-space: calc(var(--acx-header-height) + 16px);
+    padding-top: var(--acx-drawer-top-space);
+    border-radius: 12px 0px 0px 0px;
+    box-shadow: 0px 6px 16px rgb(51 51 51 / 10%);
+    height: calc(100vh - var(--acx-drawer-top-space));
+    .ant-drawer-content-wrapper {
+      border-radius: inherit;
+      .ant-drawer-content {
+        border-radius: inherit;
+        .ant-drawer-header {
+          border-bottom-color: var(--acx-neutrals-25);
+          padding: 16px 0px 8px 0px;
+          margin: 0px 20px;
+          display: flex;
+          flex-direction: row-reverse;
+          .ant-drawer-header-title {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: row-reverse;
+            .ant-drawer-title {
+              font-size: var(--acx-subtitle-3-font-size);
+              line-height: var(--acx-subtitle-3-line-height);
+              font-weight: var(--acx-subtitle-3-font-weight);
+            }
+            .ant-drawer-close {
+              margin-right: 0;
+              padding-right: 0;
+            }
+          }
+          .ant-drawer-extra {
+            padding-right: 5px;
+          }
+        }
+        .ant-drawer-body {
+          padding: 8px 20px 16px 20px;
+        }
+        .ant-drawer-footer {
+          border-top: 0;
+          padding: 16px 0px;
+          margin: 0px 20px;
+          .ant-btn + .ant-btn {
+            margin-left: 12px;
+          }
+        }
+      }
+    }
+  }
+
   .ant-form {
     &-item {
       margin-bottom: 16px;
@@ -82,6 +131,43 @@
     }
   }
 
+  .ant-input-affix-wrapper-readonly.ant-input-password {
+    width: fit-content;
+  }
+
+  .ant-input-suffix {
+    position: relative;
+    right: -30px;
+
+    .ant-form-item-feedback-icon {
+      span[role=img] {
+        svg { display: none; }
+
+        &::after {
+          content: '';
+          display: inline-block;
+          width: 12px;
+          height: 12px;
+          background-size: 12px 12px;
+        }
+      }
+    }
+
+    .ant-form-item-feedback-icon-validating {
+      span[role=img]::after {
+        // encodeURIComponent(renderToStaticMarkup(<LoadingSolid />))
+        background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M6.7742%200.590088V0.998907C6.7742%201.26404%206.95035%201.49362%207.20209%201.56496C9.07752%202.09633%2010.4516%203.84076%2010.4516%205.91399C10.4516%208.40948%208.46061%2010.4294%206.00001%2010.4294C3.53979%2010.4294%201.5484%208.40987%201.5484%205.91399C1.5484%203.84106%202.92225%202.09638%204.79788%201.56496C5.04966%201.49362%205.22581%201.26399%205.22581%200.998833V0.590284C5.22581%200.204779%204.86693%20-0.0760617%204.49889%200.0201123C1.9017%200.698704%20-0.0146495%203.09689%208.43825e-05%205.94667C0.0175037%209.30999%202.69711%2012.0071%206.01293%2012C9.32069%2011.9929%2012%209.27082%2012%205.91399C12%203.0763%2010.0853%200.692299%207.4949%200.0184926C7.12931%20-0.0766015%206.7742%200.207258%206.7742%200.590088Z%22%20fill%3D%22%23565758%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+      }
+    }
+
+    .ant-form-item-feedback-icon-success {
+      span[role=img]::after {
+        // encodeURIComponent(renderToStaticMarkup(<SuccessSolid />))
+        background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2214%22%20height%3D%2210%22%20viewBox%3D%220%200%2014%2010%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M13.0005%201L5.00018%209L1%205.00018%22%20stroke%3D%22%23258D36%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+      }
+    }
+  }
+
   .ant-radio {
     top: 0.25em;
     font-size: var(--acx-body-4-font-size);
@@ -111,9 +197,9 @@
   }
 
   .ant-tooltip {
-    font-size: var(--acx-body-4-font-size);
-    line-height: var(--acx-body-4-line-height);
-    filter: drop-shadow(0px 4px 4px rgba(51, 51, 51, 0.08));
+    font-size: var(--acx-body-5-font-size);
+    line-height: var(--acx-body-5-line-height);
+    filter: drop-shadow(0px 4px 8px rgba(51, 51, 51, 0.08));
 
     &-arrow {
       &-content { box-shadow: none; }
@@ -124,12 +210,7 @@
     }
 
     &.ant-menu-inline-collapsed-tooltip {
-      .ant-tooltip-arrow-content {
-        background-color: var(--acx-primary-black);
-      }
       .ant-tooltip-inner {
-        color: var(--acx-primary-white);
-        background-color: var(--acx-primary-black);
         font-family: var(--acx-accent-brand-font);
         font-size: var(--acx-headline-4-font-size);
         padding: 10px 14px 10px 10px;
@@ -141,7 +222,7 @@
   }
 
   .ant-switch {
-    background: transparent;
+    background-color: transparent;
     border: 1px solid var(--acx-neutrals-60);
     &-checked {
       border-color: var(--acx-accents-blue-50);
@@ -230,11 +311,90 @@
   }
 
   .ant-modal {
+    .ant-modal-content {
+      box-shadow: 0px 6px 16px rgba(51, 51, 51, 0.1);
+    }
+
     &:not(.ant-modal-confirm) {
+      .ant-modal-content {
+        border-radius: 12px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .ant-modal-header {
+        border-radius: inherit;
+        .ant-modal-title {
+          font-family: var(--acx-accent-brand-font);
+          font-size: var(--acx-headline-2-font-size);
+          font-weight: var(--acx-headline-2-font-weight);
+          line-height: var(--acx-headline-2-line-height);
+        }
+      }
+      .ant-modal-body {
+        padding-top: 0;
+        flex: 1;
+        overflow-y: scroll;
+      }
       .ant-modal-footer {
+        border-radius: inherit;
         .ant-btn + .ant-btn:not(.ant-dropdown-trigger) {
           margin-left: 16px;
         }
+      }
+      .ant-modal-close-x {
+        padding-top: 3px;
+      }
+    }
+
+    &.ant-modal-confirm {
+      .ant-modal-content {
+        border-radius: 0;
+        border-top: 4px solid var(--acx-primary-black);
+      }
+      .ant-modal-body {
+        padding: 24px;
+      }
+      .ant-modal-confirm-title {
+        font-family: var(--acx-accent-brand-font);
+        font-size: var(--acx-headline-3-font-size);
+        font-weight: var(--acx-headline-3-font-weight);
+        line-height: var(--acx-headline-3-line-height);
+      }
+      .ant-modal-confirm-content {
+        margin-top: 16px;
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        color: var(--acx-primary-black);
+        min-height: 44px;
+        .ant-form {
+          margin-top: 4px;
+        }
+      }
+      &.ant-modal-confirm-error {
+        .ant-modal-content {
+          border-color: var(--acx-semantics-red-60);
+        }
+      }
+      &.ant-modal-confirm-info {
+        .ant-modal-content {
+          border-color: var(--acx-accents-blue-50);
+        }
+      }
+      .ant-btn:not(.ant-btn-link) {
+        min-width: 85px;
+        padding: 6px 16px;
+      }
+      .ant-modal-confirm-btns {
+        .ant-btn + .ant-btn {
+          margin-left: 12px;
+        }
+      }
+    }
+
+    &.modal-custom {
+      .ant-modal-confirm-btns {
+        display: none;
       }
     }
   }
@@ -280,5 +440,6 @@
 
   .gm-style-iw-d {
     overflow: hidden !important;
+    max-height: 255px !important;
   }
 }

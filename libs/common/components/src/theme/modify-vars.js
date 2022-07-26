@@ -26,6 +26,9 @@ module.exports = {
   '@btn-font-size-lg': '16px', // var(--acx-body-2-font-size)
   '@btn-font-size-sm': '12px', // var(--acx-body-3-font-size)
   '@btn-primary-bg': 'var(--acx-primary-black)',
+  '@btn-disable-color': 'var(--acx-neutrals-10)',
+  '@btn-disable-bg': 'var(--acx-neutrals-40)',
+  '@btn-disable-border': 'var(--acx-neutrals-40)',
 
   '@card-background': 'var(--acx-primary-white)',
 
@@ -71,6 +74,7 @@ module.exports = {
   '@modal-header-padding': '20px 24px',
   '@modal-header-border-width': '0',
   '@modal-header-title-line-height': 'var(--acx-headline-2-line-height)',
+  '@modal-heading-color': 'var(--acx-primary-black)',
   '@modal-content-bg': 'var(--acx-primary-white)',
   '@modal-body-padding': '12px 24px',
   '@modal-footer-bg': 'var(--acx-neutrals-10)',
@@ -99,8 +103,8 @@ module.exports = {
 
   '@tooltip-arrow-width': '14px',
   '@tooltip-distance': '@tooltip-arrow-width - 2px',
-  '@tooltip-color': 'var(--acx-primary-black)',
-  '@tooltip-bg': '#FFFFFF', // var(--acx-primary-white)
+  '@tooltip-color': 'var(--acx-primary-white)',
+  '@tooltip-bg': '#333333', // var(--acx-primary-black)
 
   '@switch-min-width': '28px',
   '@switch-height': '16px',
