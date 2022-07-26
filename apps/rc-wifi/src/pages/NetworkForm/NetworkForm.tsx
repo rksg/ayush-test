@@ -69,7 +69,8 @@ export function NetworkForm () {
 
   const { data } = useGetNetworkQuery({ params })
 
-  if(data){
+
+  if(data && state.name === ''){
     formRef?.current?.resetFields()
     formRef?.current?.setFieldsValue({ ...data,
       isCloudpathEnabled: typeof data.cloudpathServerId !== 'undefined'
