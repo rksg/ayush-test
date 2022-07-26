@@ -1,10 +1,10 @@
 import { storiesOf } from '@storybook/react'
 
-import { withRadio }                     from './withRadio'
-import { WithSinglelistAndSingleSelect } from './withSinglelistAndSingleSelect'
+import { withRadio }      from './withRadio'
+import { WithSingleList } from './withSingleList'
 
 storiesOf('NetworkFilter', module)
-  .add('With singlelist and single select', WithSinglelistAndSingleSelect)
+  .add('With singlelist', WithSingleList)
   .add('With Radio', withRadio)
 
 export {}

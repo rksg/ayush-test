@@ -6,15 +6,16 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { NetworkFilter, CascaderProps } from './index'
 
-describe('HierarchyCascader', () => {
-  const CustomCascader: React.FC<CascaderProps> = (props) => (<NetworkFilter {...props} />)
+describe('NetworkFilter', () => {
+  const CustomCascader: React.FC<CascaderProps> = (props: CascaderProps) => (
+    <NetworkFilter {...props} />
+  )
 
-  it('renders hierachy cascader', async () => {
-    const onMock = jest.fn()
+  it('renders network filter', async () => {
     const placeholder = 'test cascader'
-    render(<CustomCascader placeholder={placeholder} onApply={onMock} onCancel={onMock}/>)
+    render(<CustomCascader placeholder={placeholder} />)
 
-    expect(await screen.findAllByPlaceholderText(placeholder)).toBeVisible()
+    expect(await screen.findAllByText(placeholder)).toBeTruthy()
   })
 
 })

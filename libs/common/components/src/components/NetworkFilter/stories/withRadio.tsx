@@ -67,11 +67,9 @@ const helper = (val: DefaultOptionType[] | DefaultOptionType[][]) => {
 }
 
 const onApply = (
-  event: React.MouseEvent<Element, MouseEvent>,
   selectedRadio: string[],
   selectedOptions: DefaultOptionType[] | DefaultOptionType[][]
-) => { 
-  event.preventDefault()
+) => {
   showToast({
     type: 'success',
     content: 
@@ -80,8 +78,7 @@ const onApply = (
   })
 }
 
-const onCancel = (event: React.MouseEvent<Element, MouseEvent>) => {
-  event.preventDefault()
+const onCancel = () => {
   showToast({
     type: 'info',
     content: 'cascader successfully closed'

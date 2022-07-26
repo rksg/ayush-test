@@ -24,30 +24,28 @@ const helper = (val: DefaultOptionType[] | DefaultOptionType[][]) => {
 }
 
 const onApply = (
-  event: React.MouseEvent<Element, MouseEvent>,
   selectedRadio: string[],
   selectedOptions: DefaultOptionType[] | DefaultOptionType[][]
-) => { 
-  event.preventDefault()
+) => {
   showToast({
     type: 'success',
     content: 
-      `Radio selected: ${selectedRadio ? selectedRadio : 'no radio selected'}, 
+      `Radio selected: 
+        ${(selectedRadio && selectedRadio.length === 0) ? selectedRadio : 'no radio selected'}, 
       Cascader Options Selected: ${helper(selectedOptions)}`
   })
 }
 
-const onCancel = (event: React.MouseEvent<Element, MouseEvent>) => {
-  event.preventDefault()
+const onCancel = () => {
   showToast({
     type: 'info',
     content: 'cascader successfully closed'
   })
 }
 
-export function WithSinglelistAndSingleSelect () {
+export function WithSingleList () {
   return <NetworkFilter
-    placeholder='Single List, Single Select'
+    placeholder='Single List, multi false'
     options={options}
     onApply={onApply}
     onCancel={onCancel}
