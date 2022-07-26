@@ -8,7 +8,7 @@
     "test": "nx test",
     "extract": "formatjs extract",
     "compile": "formatjs compile",
-    "extract-compile": "formatjs extract 'src/**/*.ts*' --out-file temp.json --flatten --id-interpolation-pattern '[sha512:contenthash:base64:6]' && formatjs compile 'temp.json' --out-file lang/en-US.json && rm temp.json"
+    "extract-compile": "formatjs extract 'apps/*/src/**/*.ts*' --ignore='**/*.d.ts' --out-file temp.json --flatten --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '[$t]' && formatjs compile 'temp.json' --out-file apps/main/src/locales/en-US.json && rm temp.json",
   },
   "private": true,
   "dependencies": {
