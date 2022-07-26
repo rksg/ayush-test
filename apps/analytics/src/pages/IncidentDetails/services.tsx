@@ -2,6 +2,8 @@ import { gql } from 'graphql-request'
 
 import { dataApi } from '@acx-ui/analytics/services'
 
+import { IncidentDetailsProps } from './types'
+
 const detailQueryProps = {
   incident: `
     severity
@@ -42,7 +44,9 @@ export const api = dataApi.injectEndpoints({
         variables: {
           id: payload.id
         }
-      })
+      }),
+      transformResponse: (response: { incident: IncidentDetailsProps }) =>
+        response.incident
     })
   })
 })

@@ -10,11 +10,12 @@ export const Wrapper = styled.div`
     padding: 0;
     &-heading {
       h1 {
-        margin-bottom: 0;
+        margin-bottom: 3px;
       }
       &-left{
         overflow: visible;
         flex-direction: column;
+        display: flow-root;
       }
       &-sub-title {
         align-self: flex-start;
