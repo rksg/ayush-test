@@ -16,7 +16,7 @@ import {
   BulbOutlined
 } from '@acx-ui/icons'
 
-const WifiWidgets = React.lazy(() => import('rc-wifi/Widgets'))
+const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
 export default function Dashboard () {
