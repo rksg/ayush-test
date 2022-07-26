@@ -2,50 +2,50 @@
   "ttc": {
     "category": "Connection",
     "subCategory": "Time To Connect",
-    "shortDescription": "Time to connect is greater than {{threshold}} in {{scope}}",
-    "longDescription": "Time to connect is high in {{scope}}, impacting connectivity for {{impact}} of clients.",
+    "shortDescription": "Time to connect is greater than {threshold} in {scope}",
+    "longDescription": "Time to connect is high in {scope}, impacting connectivity for {impact} of clients.",
     "incidentType": "network"
   },
   "radius-failure": {
     "category": "Connection",
     "subCategory": "RADIUS",
-    "shortDescription": "RADIUS failures are unusually high in {{scope}}",
-    "longDescription": "RADIUS failures are high in {{scope}} impacting connectivity for {{impact}} of clients.",
+    "shortDescription": "RADIUS failures are unusually high in {scope}",
+    "longDescription": "RADIUS failures are high in {scope} impacting connectivity for {impact} of clients.",
     "incidentType": "network"
   },
   "eap-failure": {
     "category": "Connection",
     "subCategory": "EAP",
-    "shortDescription": "EAP failures are unusually high in {{scope}}",
-    "longDescription": "EAP failures are high in {{scope}} impacting connectivity for {{impact}} of clients.",
+    "shortDescription": "EAP failures are unusually high in {scope}",
+    "longDescription": "EAP failures are high in {scope} impacting connectivity for {impact} of clients.",
     "incidentType": "network"
   },
   "dhcp-failure": {
     "category": "Connection",
     "subCategory": "DHCP",
-    "shortDescription": "DHCP failures are unusually high in {{scope}}",
-    "longDescription": "DHCP failures are high in {{scope}} impacting connectivity for {{impact}} of clients.",
+    "shortDescription": "DHCP failures are unusually high in {scope}",
+    "longDescription": "DHCP failures are high in {scope} impacting connectivity for {impact} of clients.",
     "incidentType": "network"
   },
   "auth-failure": {
     "category": "Connection",
     "subCategory": "802.11 Authentication",
-    "shortDescription": "802.11 Authentication failures are unusually high in {{scope}}",
-    "longDescription": "802.11 Authentication failures are high in {{scope}} impacting connectivity for {{impact}} of clients.",
+    "shortDescription": "802.11 Authentication failures are unusually high in {scope}",
+    "longDescription": "802.11 Authentication failures are high in {scope} impacting connectivity for {impact} of clients.",
     "incidentType": "network"
   },
   "assoc-failure": {
     "category": "Connection",
     "subCategory": "Association",
-    "shortDescription": "Association failures are unusually high in {{scope}}",
-    "longDescription": "Association failures are high in {{scope}} impacting connectivity for {{impact}} of clients.",
+    "shortDescription": "Association failures are unusually high in {scope}",
+    "longDescription": "Association failures are high in {scope} impacting connectivity for {impact} of clients.",
     "incidentType": "network"
   },
   "p-cov-clientrssi-low": {
     "category": "Performance",
     "subCategory": "Coverage",
-    "shortDescription": "Clients with low RSS are unusually high in {{scope}}",
-    "longDescription": "Clients with low RSS are unusually high in {{scope}}, impacting {{impact}} of connected clients.",
+    "shortDescription": "Clients with low RSS are unusually high in {scope}",
+    "longDescription": "Clients with low RSS are unusually high in {scope}, impacting {impact} of connected clients.",
     "incidentType": "network"
   },
   "i-net-time-future": {
@@ -72,15 +72,15 @@
   "p-load-sz-cpu-load": {
     "category": "Performance",
     "subCategory": "Load",
-    "shortDescription": "{{scope}} is experiencing unusually high CPU usage",
-    "longDescription": "{{scope}} is experiencing unusually high CPU usage. Prolonged high usage can cause CPU tasks to be queued, and also impact sending of data to northbound systems, including, but not limited to, RUCKUS Analytics.",
+    "shortDescription": "{scope} is experiencing unusually high CPU usage",
+    "longDescription": "{scope} is experiencing unusually high CPU usage. Prolonged high usage can cause CPU tasks to be queued, and also impact sending of data to northbound systems, including, but not limited to, RUCKUS Analytics.",
     "incidentType": "common"
   },
   "i-apserv-downtime-high": {
     "category": "Infrastructure",
     "subCategory": "Service Availability",
-    "shortDescription": "High AP-Controller connection failures in {{scope}}",
-    "longDescription": "High AP-Controller connection failures in {{scope}}.",
+    "shortDescription": "High AP-Controller connection failures in {scope}",
+    "longDescription": "High AP-Controller connection failures in {scope}.",
     "incidentType": "network"
   },
   "i-apserv-high-num-reboots": {
@@ -100,57 +100,57 @@
   "p-channeldist-suboptimal-plan-24g": {
     "category": "Performance",
     "subCategory": "Channel Conditions",
-    "shortDescription": "Sub-optimal channel conditions detected for 2.4 GHz in {{scope}}",
-    "longDescription": "Sub-optimal channel conditions detected for 2.4 GHz in {{scope}}.",
+    "shortDescription": "Sub-optimal channel conditions detected for 2.4 GHz in {scope}",
+    "longDescription": "Sub-optimal channel conditions detected for 2.4 GHz in {scope}.",
     "incidentType": "network"
   },
   "p-channeldist-suboptimal-plan-50g-outdoor": {
     "category": "Performance",
     "subCategory": "Channel Conditions",
-    "shortDescription": "Sub-optimal channel conditions detected for 5 GHz (outdoor) in {{scope}}",
-    "longDescription": "Sub-optimal channel conditions detected for 5 GHz (outdoor) in {{scope}}.",
+    "shortDescription": "Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}",
+    "longDescription": "Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}.",
     "incidentType": "network"
   },
   "p-channeldist-suboptimal-plan-50g-indoor": {
     "category": "Performance",
     "subCategory": "Channel Conditions",
-    "shortDescription": "Sub-optimal channel conditions detected for 5 GHz (indoor) in {{scope}}",
-    "longDescription": "Sub-optimal channel conditions detected for 5 GHz (indoor) in {{scope}}.",
+    "shortDescription": "Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}",
+    "longDescription": "Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}.",
     "incidentType": "network"
   },
   "i-switch-vlan-mismatch": {
     "category": "Infrastructure",
     "subCategory": "VLAN Mismatch",
-    "shortDescription": "VLAN mismatch found in {{scope}}",
-    "longDescription": "VLAN mismatch found in {{scope}}.",
+    "shortDescription": "VLAN mismatch found in {scope}",
+    "longDescription": "VLAN mismatch found in {scope}.",
     "incidentType": "switch"
   },
   "p-switch-memory-high": {
     "category": "Performance",
     "subCategory": "Memory",
-    "shortDescription": "High memory utilization detected in {{scope}}",
-    "longDescription": "High memory utilization detected in {{scope}}.",
+    "shortDescription": "High memory utilization detected in {scope}",
+    "longDescription": "High memory utilization detected in {scope}.",
     "incidentType": "switch"
   },
   "i-switch-poe-pd": {
     "category": "Infrastructure",
     "subCategory": "PoE",
-    "shortDescription": "PoE power denied in {{scope}}",
-    "longDescription": "PoE power denied in {{scope}}.",
+    "shortDescription": "PoE power denied in {scope}",
+    "longDescription": "PoE power denied in {scope}.",
     "incidentType": "switch"
   },
   "i-apinfra-poe-low": {
     "category": "Infrastructure",
     "subCategory": "PoE",
-    "shortDescription": "AP(s) operating in Low Power Mode: {{scope}}",
-    "longDescription": "AP(s) operating in Low Power Mode: {{scope}}.",
+    "shortDescription": "AP(s) operating in Low Power Mode: {scope}",
+    "longDescription": "AP(s) operating in Low Power Mode: {scope}.",
     "incidentType": "network"
   },
   "i-apinfra-wanthroughput-low": {
     "category": "Infrastructure",
     "subCategory": "WAN",
-    "shortDescription": "Sub-optimal WAN throughput - speed mismatch between AP and peer device: {{scope}}",
-    "longDescription": "Sub-optimal WAN throughput - speed mismatch between AP and peer device: {{scope}}.",
+    "shortDescription": "Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}",
+    "longDescription": "Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}.",
     "incidentType": "network"
   }
 }

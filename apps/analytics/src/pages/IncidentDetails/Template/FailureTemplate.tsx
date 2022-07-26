@@ -1,42 +1,86 @@
 import { Col, Row } from 'antd'
 
-import { incidentInformation } from '@acx-ui/analytics/utils'
+import { incidentInformation, severitiesDefinition } from '@acx-ui/analytics/utils'
 import { PageHeader, Pill }    from '@acx-ui/components'
 
 import { incidentDetailsMap } from '..'
-import { IncidentAttributes } from '../IncidentAttributes'
+
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import type { IncidentDetailsProps } from '../types'
 
-export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => <>
-  <PageHeader 
-    title='Incident Details'
-    sideHeader={<Pill value='123' trend='positive' />}
-    breadcrumb={[
-      { text: 'AI Analytics', link: '/analytics' },
-      { text: 'Incidents', link: '/analytics/incidents' },
-      { text: 'Incident Details', link: '/' }
-    ]}
-    subTitle={incidentInformation[props?.code as keyof typeof incidentDetailsMap].shortDescription}
-  />
-  <Row gutter={[20, 20]}>
-    <Col span={4}>
-      <IncidentAttributes {...props}/>
-    </Col>
-    <Col span={20}>
+import { getImpactedArea, IncidentAttributes } from '../IncidentAttributes'
+
+// export const severities = new Map(
+//   Object
+//     .keys(severitiesDefinition)
+//     .map(key => [key, severitiesDefinition[key]])
+//     .sort(([, { lte }], [, { lte2 }]) => lte - lte2)
+// )
+
+export const nodeType = {
+  network: 'Network',
+  zoneName: 'Zone',
+  zone: 'Zone',
+  apGroupName: 'AP Group',
+  apGroup: 'AP Group',
+  apMac: 'Access Point',
+  ap: 'Access Point',
+  AP: 'Access Point',
+  switchGroup: 'Switch Group',
+  switch: 'Switch'
+}
+
+export const sliceTypePrettyNames = (type: string) => nodeType[type as keyof typeof nodeType] || type
+
+export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
+  const { $t } = useIntl()
+
+
+  const shortDescription = (incident: IncidentDetailsProps) => {
+    const incidentInfo = incidentInformation[incident.code as keyof typeof incidentDetailsMap]
+    /* eslint-disable-next-line max-len */
+    const scope = `${sliceTypePrettyNames(incident.sliceType)}: ${getImpactedArea(incident.path, incident.sliceValue)}`
+    // return $t(incidentInfo.shortDescription, { scope })
+    return <FormattedMessage
+      id={incident.code}
+      defaultMessage={incidentInfo.shortDescription}
+      values={{scope: scope}}
+    />
+  }
+
+  return (
+    <>
+      <PageHeader 
+        title={$t({ id: 'title', defaultMessage: 'Incident Details' })}
+        sideHeader={<Pill value='123' trend='positive' />}
+        breadcrumb={[
+          { text: $t({ id: 'breadcrumb.analytics', defaultMessage: 'AI Analytics' }), link: '/analytics' },
+          { text: $t({ id: 'breadcrumb.incidents', defaultMessage: 'Incidents' }), link: '/analytics/incidents' },
+          { text: $t({ id: 'breadrcumb.incidentDetails', defaultMessage: 'Incident Details' }), link: '/' }
+        ]}
+        subTitle={shortDescription(props)}
+      />
       <Row gutter={[20, 20]}>
-        <Col span={24}>
-          <div>Insights</div>
+        <Col span={4}>
+          <IncidentAttributes visibleFields={[]} category={''} subCategory={''} shortDescription={''} longDescription={''} incidentType={''} {...props}/>
         </Col>
-        <Col span={24}>
-          <div>network impact</div>
-        </Col>
-        <Col span={24}>
-          <div>time series section</div>
+        <Col span={20}>
+          <Row gutter={[20, 20]}>
+            <Col span={24}>
+              <div>Insights</div>
+            </Col>
+            <Col span={24}>
+              <div>network impact</div>
+            </Col>
+            <Col span={24}>
+              <div>time series section</div>
+            </Col>
+          </Row>
         </Col>
       </Row>
-    </Col>
-  </Row>
-</>
+    </>
+  )
+}
 
 export default IncidentDetailsTemplate
