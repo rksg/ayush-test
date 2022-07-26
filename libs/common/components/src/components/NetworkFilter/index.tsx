@@ -14,9 +14,8 @@ import * as UI from './styledComponents'
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
-
 // taken from antd Cascader API: https://ant.design/components/cascader/#Option
-interface Option {
+export interface Option {
   value: string | number;
   label?: React.ReactNode;
   disabled?: boolean;
@@ -26,7 +25,6 @@ interface Option {
   // Show expand icon even if the current node has no children.
   isLeaf?: boolean;
 }
-
 
 export type CascaderProps = AntCascaderProps<Option> & {
   withRadio?: { radioTitle: string, radioOptions: string[] }

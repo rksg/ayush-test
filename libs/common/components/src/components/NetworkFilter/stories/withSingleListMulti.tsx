@@ -1,10 +1,10 @@
 import { DefaultOptionType } from 'antd/lib/cascader'
 
-import { NetworkFilter } from '..'
-import { showToast }     from '../../Toast'
+import { NetworkFilter, Option } from '..'
+import { showToast }             from '../../Toast'
 
 
-const options = [
+const options: Option[] = [
   {
     value: 'n1',
     label: 'SSID 1'

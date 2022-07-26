@@ -2,7 +2,7 @@ import React from 'react'
 
 import '@testing-library/jest-dom'
 
-import { render, screen } from '@acx-ui/test-utils'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { NetworkFilter, CascaderProps } from './index'
 
@@ -11,11 +11,22 @@ describe('NetworkFilter', () => {
     <NetworkFilter {...props} />
   )
 
-  it('renders network filter', async () => {
+  it('renders empty network filter with placeholder', async () => {
     const placeholder = 'test cascader'
-    render(<CustomCascader placeholder={placeholder} />)
+    const option = [
+      {
+        value: 'n1',
+        label: 'SSID 1'
+      },
+      {
+        value: 'n2',
+        label: 'SSID 2'
+      }
+    ]
+    render(<CustomCascader placeholder={placeholder} options={option} />)
 
-    expect(await screen.findAllByText(placeholder)).toBeTruthy()
+    expect(await screen.findByText(placeholder)).toBeVisible()
+    fireEvent.click(await screen.findByRole('combobox', { name: '' }))
   })
 
 })

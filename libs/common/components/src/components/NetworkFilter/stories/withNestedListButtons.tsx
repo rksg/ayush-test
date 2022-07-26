@@ -2,10 +2,10 @@ import React from 'react'
 
 import { DefaultOptionType } from 'antd/lib/cascader'
 
-import { NetworkFilter } from '..'
-import { showToast }     from '../../Toast'
+import { NetworkFilter, Option } from '..'
+import { showToast }             from '../../Toast'
 
-const options = [
+const options: Option[] = [
   {
     value: 'v1',
     label: 'Venue 1',
