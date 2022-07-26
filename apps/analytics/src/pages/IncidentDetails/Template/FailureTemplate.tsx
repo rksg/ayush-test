@@ -2,13 +2,12 @@ import { Col, Row }                  from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import { incidentInformation, severitiesDefinition } from '@acx-ui/analytics/utils'
-import { PageHeader, Pill }                          from '@acx-ui/components'
+import { PageHeader, Pill, TrendType }               from '@acx-ui/components'
 
 import { incidentDetailsMap }                  from '..'
 import { getImpactedArea, IncidentAttributes } from '../IncidentAttributes'
 
 import type { IncidentDetailsProps, SeveritiesProps } from '../types'
-import { TrendType } from 'libs/common/components/src/components/Pill/styledComponents'
 
 export const severities = new Map(
   Object
@@ -42,7 +41,9 @@ export const nodeType = {
   switch: 'Switch'
 }
 
-export const sliceTypePrettyNames = (type: string) => nodeType[type as keyof typeof nodeType] || type
+export const sliceTypePrettyNames = (type: string) => {
+  return nodeType[type as keyof typeof nodeType] || type
+}
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const { $t } = useIntl()
@@ -73,7 +74,15 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
       />
       <Row gutter={[20, 20]}>
         <Col span={4}>
-          <IncidentAttributes visibleFields={[]} category={''} subCategory={''} shortDescription={''} longDescription={''} incidentType={''} {...props}/>
+          <IncidentAttributes
+            visibleFields={[]}
+            category={''}
+            subCategory={''}
+            shortDescription={''}
+            longDescription={''}
+            incidentType={''}
+            {...props}
+          />
         </Col>
         <Col span={20}>
           <Row gutter={[20, 20]}>
