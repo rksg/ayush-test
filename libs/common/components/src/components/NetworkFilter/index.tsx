@@ -6,7 +6,6 @@ import {
   Checkbox as AntCheckbox
 } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
-import _                     from 'lodash'
 import { SingleValueType }   from 'rc-cascader/lib/Cascader'
 
 import { Button } from '../Button'
@@ -31,6 +30,7 @@ interface Option {
 
 export type CascaderProps = AntCascaderProps<Option> & {
   withRadio?: { radioTitle: string, radioOptions: string[] }
+  withControlButtons?: boolean
   onCancel?: CallableFunction
   onApply?: (
     selectedRadio: string[] | undefined,
@@ -44,13 +44,17 @@ export function NetworkFilter (props: CascaderProps) {
   const [ singleSelect, setSingleSelect ] = React.useState<DefaultOptionType[]>([])
   const [ multiSelect, setMultiSelect ] = React.useState<DefaultOptionType[][]>([])
 
-  React.useEffect(() => {}, [singleSelect, multiSelect])
+  const { 
+    withRadio, onCancel, onApply, onChange, multiple, onFocus, withControlButtons
+  } = props
 
-  const cascaderProps = _.omit(
-    props, ['withRadio', 'onApply', 'onCancel']
-  ) as AntCascaderProps<Option>
+  const onFocusProps = (event: React.FocusEvent<HTMLElement, Element>) => {
+    if (onFocus) {
+      onFocus(event)
+    }
 
-  const { withRadio, onCancel, onApply, onChange, multiple } = props
+    setIsOpen(!isOpen)
+  }
 
   const onCancelProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault()
@@ -73,7 +77,12 @@ export function NetworkFilter (props: CascaderProps) {
   }
 
   const onCheckboxChange = (checkedValues: CheckboxValueType[]) => {
-    setRadioSelected(checkedValues as string[])
+    const stringValues = checkedValues as string[]
+    setRadioSelected(stringValues)
+    if (onApply) {
+      const selectedOptions = (multiple) ? multiSelect : singleSelect
+      onApply(stringValues, selectedOptions)
+    }
   }
 
   const onChangeMultiple = (
@@ -84,7 +93,11 @@ export function NetworkFilter (props: CascaderProps) {
       onChange(triggeredValue, selectedValues)
     }
 
-    setMultiSelect([...selectedValues])
+    setMultiSelect(selectedValues)
+
+    if (onApply) {
+      onApply(radioSelected, selectedValues)
+    }
   }
 
   const onChangeSingle = (
@@ -95,8 +108,8 @@ export function NetworkFilter (props: CascaderProps) {
       onChange(triggeredValue, selectedValues)
     }
 
-    setSingleSelect([...selectedValues])
-
+    setSingleSelect(selectedValues)
+    
     if (onApply) {
       onApply(radioSelected, selectedValues)
     }
@@ -114,10 +127,14 @@ export function NetworkFilter (props: CascaderProps) {
         />
       </UI.RadioDiv>
       <UI.Divider />
-      <UI.ButtonDiv>
-        <Button size='small' onClick={onCancelProps}>Cancel</Button>
-        <Button size='small' type='secondary' onClick={onApplyProps}>Apply</Button>
-      </UI.ButtonDiv>
+      {
+        withControlButtons && (
+          <UI.ButtonDiv>
+            <Button size='small' onClick={onCancelProps}>Cancel</Button>
+            <Button size='small' type='secondary' onClick={onApplyProps}>Apply</Button>
+          </UI.ButtonDiv>
+        )
+      }
     </>
   }
   
@@ -125,10 +142,14 @@ export function NetworkFilter (props: CascaderProps) {
     return <>
       {menus}
       <UI.Divider />
-      <UI.ButtonDiv>
-        <Button size='small' onClick={onCancelProps}>Cancel</Button>
-        <Button size='small' type='secondary' onClick={onApplyProps}>Apply</Button>
-      </UI.ButtonDiv>
+      {
+        withControlButtons && (
+          <UI.ButtonDiv>
+            <Button size='small' onClick={onCancelProps}>Cancel</Button>
+            <Button size='small' type='secondary' onClick={onApplyProps}>Apply</Button>
+          </UI.ButtonDiv>
+        )
+      }
     </>
   }
 
@@ -144,15 +165,17 @@ export function NetworkFilter (props: CascaderProps) {
 
   if (multiple) {
     return <AntCascader
-      {...cascaderProps}
+      {...props}
       multiple
+      onFocus={onFocusProps}
+      open={isOpen}
       onChange={onChangeMultiple}
       dropdownRender={DropDown}
     />
   }
 
   return <AntCascader
-    {...cascaderProps}
+    {...props}
     multiple={false}
     changeOnSelect={true}
     onChange={onChangeSingle}

@@ -89,11 +89,12 @@ const onCancel = () => {
   })
 }
 
-export function withRadio () {
+export function WithCheckboxGroupMulti () {
   return <NetworkFilter
     multiple
-    placeholder='With Radio'
-    withRadio={{ radioTitle: 'Radio', radioOptions: ['6 GHz', '5 Ghz', '2.4 Ghz'] }}
+    withControlButtons
+    placeholder='With CheckboxGroup'
+    withRadio={{ radioTitle: 'Frequency', radioOptions: ['6 GHz', '5 Ghz', '2.4 Ghz'] }}
     options={options}
     onApply={onApply}
     onCancel={onCancel}

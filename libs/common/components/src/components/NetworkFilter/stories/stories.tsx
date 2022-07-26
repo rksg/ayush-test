@@ -1,10 +1,12 @@
 import { storiesOf } from '@storybook/react'
 
-import { withRadio }      from './withRadio'
-import { WithSingleList } from './withSingleList'
+import { WithCheckboxGroupMulti } from './withNestedListButtons'
+import { WithSingleList }         from './withSingleList'
+import { WithSingleListMulti }    from './withSingleListMulti'
 
 storiesOf('NetworkFilter', module)
   .add('with single list, single select', WithSingleList)
-  .add('With Radio', withRadio)
+  .add('with single list, multi select', WithSingleListMulti)
+  .add('with nested list, radio & multi select', WithCheckboxGroupMulti)
 
 export {}
