@@ -27,7 +27,7 @@ export const api = dataApi.injectEndpoints({
     >({
       query: (payload) => ({
         document: gql`
-        query TrafficByVolumeWidget(
+        query ConnectedClientsOverTimeWidget(
           $path: [HierarchyNodeInput]
           $start: DateTime
           $end: DateTime

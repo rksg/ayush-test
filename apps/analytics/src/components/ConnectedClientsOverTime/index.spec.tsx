@@ -18,10 +18,10 @@ const sample = {
     '2022-04-07T10:00:00.000Z',
     '2022-04-07T10:15:00.000Z'
   ],
-  totalTraffic_all: [1, 2, 3, 4, 5],
-  totalTraffic_6: [6, 7, 8, 9, 10],
-  totalTraffic_5: [11, 12, 13, 14, 15],
-  totalTraffic_24: [16, 17, 18, 19, 20]
+  uniqueUsers_all: [1, 2, 3, 4, 5],
+  uniqueUsers_6: [6, 7, 8, 9, 10],
+  uniqueUsers_5: [11, 12, 13, 14, 15],
+  uniqueUsers_24: [16, 17, 18, 19, 20]
 }
 
 describe('ConnectedClientsOverTimeWidget', () => {
@@ -43,7 +43,7 @@ describe('ConnectedClientsOverTimeWidget', () => {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
     const { asFragment } =render( <Provider> <ConnectedClientsOverTimeWidget/></Provider>)
-    await screen.findByText('Traffic by Volume')
+    await screen.findByText('Connected Clients Over Time')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
