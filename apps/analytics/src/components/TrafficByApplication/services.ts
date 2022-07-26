@@ -4,22 +4,20 @@ import { dataApi }      from '@acx-ui/analytics/services'
 import { GlobalFilter } from '@acx-ui/analytics/utils'
 
 export type HierarchyNodeData = {
-  totalTraffic: number
+  uploadAppTraffic: number
+  downloadAppTraffic: number
   topNAppByUpload: TrafficByApplicationData[]
   topNAppByDownload: TrafficByApplicationData[]
 }
 
 export type TrafficTimeseriesData = {
     timestamp: Date
-    traffic: number
     txBytes: number
     rxBytes: number
-    clientMacCount: number
 }
 
 export type TrafficByApplicationData = {
     appName: string
-    totalTraffic: number
     txBytes: number
     rxBytes: number
     clientMacCount: number
@@ -44,7 +42,8 @@ export const api = dataApi.injectEndpoints({
           $n: Int!, $granularity: String!) {
           network(end: $end, start: $start) {
             hierarchyNode(path: $path) {
-              totalTraffic
+              uploadAppTraffic: appTraffic(direction: "rx")
+              downloadAppTraffic: appTraffic(direction: "tx")
               topNAppByUpload:topNApplicationByTraffic(n: $n, direction: "rx") {
                 ...applicationTrafficData
               }
@@ -57,7 +56,6 @@ export const api = dataApi.injectEndpoints({
         
         fragment applicationTrafficData on ApplicationTraffic{
           appName
-          traffic
           rxBytes
           txBytes
           clientMacCount
@@ -65,8 +63,6 @@ export const api = dataApi.injectEndpoints({
             timestamp
             rxBytes
             txBytes
-            traffic
-            clientMacCount
           }
         }
         `,
@@ -74,7 +70,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: 'hour',
+          granularity: 'fifteen_minute',
           n: 5
         }
       }),

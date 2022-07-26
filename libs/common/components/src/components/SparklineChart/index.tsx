@@ -8,6 +8,7 @@ import type { EChartsReactProps } from 'echarts-for-react'
 
 export interface SparklineChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: number[]
+  color?: string
 }
 
 export function SparklineChart ({
@@ -16,14 +17,15 @@ export function SparklineChart ({
 }: SparklineChartProps) {
   // TODO:
   // come up with logic to know if current sparkline should be in red or green
-  const color = new graphic.LinearGradient(0, 0, 0, 1, [
+  const { color=cssStr('--acx-semantics-green-50') } = props
+  const colorLinearGradient = new graphic.LinearGradient(0, 0, 0, 1, [
     {
       offset: 0,
-      color: cssStr('--acx-semantics-green-20')
+      color
     },
     {
       offset: 1,
-      color: 'rgba(255, 255, 255, 0)'
+      color: 'rgba(255, 255, 255, 20)'
     }]
   )
   const option: EChartsOption = {
@@ -46,9 +48,9 @@ export function SparklineChart ({
       {
         data,
         type: 'line',
-        areaStyle: { color },
+        areaStyle: { color: colorLinearGradient },
         lineStyle: {
-          color: cssStr('--acx-semantics-green-50')
+          color
         },
         smooth: true,
         showSymbol: false

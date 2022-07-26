@@ -23,12 +23,7 @@ export function TrafficByApplicationWidget () {
       key: 'appName'
     },
     {
-      title: 'Clients',
-      dataIndex: 'clientMacCount',
-      key: 'clientMacCount'
-    },
-    {
-      title: 'Traffic',
+      title: 'Total Traffic',
       dataIndex: direction === 'download' ? 'download' : 'upload',
       key: 'traffic'
     },
@@ -36,25 +31,39 @@ export function TrafficByApplicationWidget () {
       title: 'Traffic History',
       dataIndex: direction === 'download' ? 'downloadTrafficHistory' : 'uploadTrafficHistory',
       key: 'trafficHistory'
+    },
+    {
+      title: 'Clients',
+      dataIndex: 'clientMacCount',
+      key: 'clientMacCount'
     }
   ])
+  const getSparkLineColor = (data:number[]) => {
+    const first = data[0]
+    const last = data[data.length-1]
+    return first > last ? 'red' : 'green'
+  }
 
-  const getDataSource= (data: TrafficByApplicationData[] | undefined) => {
+  const getDataSource= (data: TrafficByApplicationData[] | undefined, overallTrafic:number) => {
     if(!data)
       return []
     return data.map((item,index) => {
       const uploadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.rxBytes)
       const downloadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.txBytes)
-      const sparklineChartStyle = { height: 16, width: '100%', display: 'inline' }
+      const sparklineChartStyle = { height: 20, width: '100%', display: 'inline' }
       return {
         ...item,
-        upload: formatter('bytesFormat')(item.rxBytes),
+        upload: <span>{formatter('bytesFormat')(item.rxBytes)} &nbsp;
+         ({formatter('percentFormatRound')(item.rxBytes/overallTrafic)})</span>,
         uploadTrafficHistory: <SparklineChart 
+          color={getSparkLineColor(uploadSparkLineData)}
           key={index}
           data={uploadSparkLineData}
           style={sparklineChartStyle}/>,
-        download: formatter('bytesFormat')(item.txBytes),
+        download: <span>{formatter('bytesFormat')(item.txBytes)} &nbsp;
+        ({formatter('percentFormatRound')(item.txBytes/overallTrafic)})</span>,
         downloadTrafficHistory: <SparklineChart
+          color={getSparkLineColor(downloadSparkLineData)}
           key={index}
           data={downloadSparkLineData}
           style={sparklineChartStyle}/>
@@ -62,23 +71,22 @@ export function TrafficByApplicationWidget () {
     })
   }
 
-  // // eslint-disable-next-line no-console
-  // console.log('topNAppByUpload:', 
-  //   getDataSource(queryResults.data?.topNAppByUpload))
-  // // eslint-disable-next-line no-console
-  // console.log('topNAppByDownload:', 
-  //   getDataSource(queryResults.data?.topNAppByDownload))
+  // eslint-disable-next-line no-console
+  console.log('queryResults:', queryResults)
+  
+
+  const { data } = queryResults
 
   const uploadTable = <Table
     columns={columns('upload')}
-    dataSource={getDataSource(queryResults.data?.topNAppByUpload)}
+    dataSource={getDataSource(data?.topNAppByUpload, data?.uploadAppTraffic || 1)}
     type={'compact'}
     pagination={false}
   />
 
   const downloadTable = <Table
     columns={columns('download')}
-    dataSource={getDataSource(queryResults.data?.topNAppByDownload)}
+    dataSource={getDataSource(data?.topNAppByDownload, data?.downloadAppTraffic || 1)}
     type={'compact'}
     pagination={false}
   />

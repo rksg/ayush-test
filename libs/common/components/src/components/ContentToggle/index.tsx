@@ -28,7 +28,7 @@ export const ContentToggle: FC<ContentToggleProps> = (props) => {
   const [activeContent, setActiveContent] = useState(defaultValue || options[0].value)
   return(
     <>
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', paddingBottom: '10px' }}>
         <SelectionControl options={options}
           defaultValue={defaultValue || options[0].value}
           size={size}
