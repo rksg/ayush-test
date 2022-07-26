@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { Switch } from 'antd'
 
 import {
@@ -48,6 +50,7 @@ const defaultArray: Venue[] = []
 // TODO: const notificationMessage = 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues\n';
 
 export function NetworkVenuesTab () {
+  const { $t } = useIntl()
   const tableQuery = useTableQuery({
     useQuery: useVenueListQuery,
     defaultPayload
@@ -127,28 +130,28 @@ export function NetworkVenuesTab () {
 
   const columns: TableProps<Venue>['columns'] = [
     {
-      title: 'Venue',
+      title: $t({id: 'networkTableCol.venue', defaultMessage: 'Venue'}),
       dataIndex: 'name',
       sorter: true
     },
     {
-      title: 'City',
+      title: $t({id: 'networkTableCol.city', defaultMessage: 'City'}),
       dataIndex: 'city',
       sorter: true
     },
     {
-      title: 'Country',
+      title: $t({id: 'networkTableCol.country', defaultMessage: 'Country'}),
       dataIndex: 'country',
       sorter: true
     },
     {
-      title: 'Networks',
+      title: $t({id: 'networkTableCol.networks', defaultMessage: 'Networks'}),
       dataIndex: ['networks', 'count'],
       align: 'center',
       render: function (data) { return data ? data : 0 }
     },
     {
-      title: 'Wi-Fi APs',
+      title: $t({id: 'networkTableCol.wifiAps', defaultMessage: 'Wi-Fi APs'}),
       dataIndex: 'aggregatedApStatus',
       align: 'center',
       render: function (data, row) {
@@ -159,7 +162,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: 'Activated',
+      title: $t({id: 'networkTableCol.activated', defaultMessage: 'Activated'}),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
       render: function (data, row) {
@@ -173,7 +176,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: 'APs',
+      title: $t({id: 'networkTableCol.aps', defaultMessage: 'APs'}),
       dataIndex: 'aps',
       width: '80px',
       render: function (data, row) {
@@ -181,7 +184,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: 'Radios',
+      title: $t({id: 'networkTableCol.radios', defaultMessage: 'Radios'}),
       dataIndex: 'radios',
       width: '140px',
       render: function (data, row) {
@@ -189,7 +192,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: 'Scheduling',
+      title: $t({id: 'networkTableCol.scheduling', defaultMessage: 'Scheduling'}),
       dataIndex: 'scheduling',
       render: function (data, row) {
         return row.activated.isActivated ? '24/7' : ''

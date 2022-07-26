@@ -1,5 +1,7 @@
 import { useContext } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
 
@@ -16,6 +18,7 @@ import type { RadioChangeEvent } from 'antd'
 const { useWatch } = Form
 
 export function NetworkDetailForm () {
+  const { $t } = useIntl()
   const type = useWatch<string>('type')
   const { setNetworkType: setSettingStepTitle } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
@@ -24,21 +27,21 @@ export function NetworkDetailForm () {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>Network Details</StepsForm.Title>
+        <StepsForm.Title>{$t({ id: 'createNetworkForm.title', defaultMessage: 'Network Details'})}</StepsForm.Title>
         <Form.Item
           name='name'
-          label='Network Name'
+          label={$t({ id: 'createNetworkForm.name', defaultMessage: 'Network Name'})}
           rules={[{ required: true }, { min: 2 }, { max: 32 }]}
           children={<Input />}
         />
         <Form.Item
           name='description'
-          label='Description'
+          label={$t({ id: 'createNetworkForm.desc', defaultMessage: 'Description'})}
           children={<TextArea rows={4} maxLength={64} />}
         />
         <Form.Item
           name='type'
-          label='Network Type'
+          label={$t({ id: 'createNetworkForm.type', defaultMessage: 'Network Type'})}
           rules={[{ required: true }]}
         >
           <Radio.Group onChange={onChange}>

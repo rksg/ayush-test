@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useIntl } from 'react-intl'
 import {
   Col,
   Form,
@@ -30,16 +31,17 @@ export function OpenSettingsForm () {
 
 function SettingsForm () {
   const isCloudpathEnabled = useWatch<boolean>('isCloudpathEnabled')
+  const {$t} = useIntl()
 
   return (
     <>
-      <StepsForm.Title>Open Settings</StepsForm.Title>
+      <StepsForm.Title>{$t({id: 'stepForm.title', defaultMessage: 'Open Settings'})}</StepsForm.Title>
 
       <Form.Item>
         <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
           <Switch />
         </Form.Item>
-        <span>Use Cloudpath Server</span>
+        <span>{$t({id: 'stepForm.useCloudpathServer', defaultMessage: 'Use Cloudpath Server'})}</span>
       </Form.Item>
 
       {isCloudpathEnabled && <CloudpathServerForm />}

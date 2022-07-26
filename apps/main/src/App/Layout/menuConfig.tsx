@@ -1,5 +1,7 @@
 import { uniqueId } from 'lodash'
 
+import { useIntl } from 'react-intl'
+
 import * as UI from './styledComponents'
 
 const genPlaceholder = () => ({

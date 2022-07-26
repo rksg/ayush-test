@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import { Alarm, useAlarmsListQuery }             from '@acx-ui/rc/services'
 import { CommonUrlsInfo, useTableQuery }         from '@acx-ui/rc/utils'
+
+// const { $t } = useIntl()
 
 const columns: TableProps<Alarm>['columns'] = [
   {
