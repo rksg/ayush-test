@@ -113,9 +113,9 @@ export const Wrapper = styled.div<{
       }
     }
 
-    ${props => props.$rowSelection && `
+    ${props => props.$rowSelection && css`
       .ant-table-wrapper {
-        padding-top: var(--acx-table-action-area-height);
+        padding-top: calc(var(--acx-table-action-area-height));
       }
     `}
 
