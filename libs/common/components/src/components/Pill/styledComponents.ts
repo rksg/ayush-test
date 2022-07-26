@@ -1,12 +1,16 @@
 import styled from 'styled-components/macro'
 
-export type TrendType = 'none' | 'positive' | 'negative'
+export type TrendType = 'none' | 'positive' | 'negative' | 'P1' | 'P2' | 'P3' | 'P4'
 
 const pillColor = ({ trend }: { trend: TrendType }) => {
   switch (trend) {
     case 'positive': return '--acx-semantics-green-50'
     case 'negative': return '--acx-semantics-red-50'
     case 'none': return '--acx-neutrals-50'
+    case 'P1': return '--acx-semantics-red-70'
+    case 'P2': return '--acx-semantics-red-50'
+    case 'P3': return '--acx-accents-orange-50'
+    case 'P4': return '--acx-semantics-yellow-40'
   }
 }
 export const Pill = styled.span`

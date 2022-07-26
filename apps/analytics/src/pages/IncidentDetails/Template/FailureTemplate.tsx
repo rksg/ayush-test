@@ -7,16 +7,24 @@ import { incidentDetailsMap } from '..'
 
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import type { IncidentDetailsProps } from '../types'
+import type { IncidentDetailsProps, SeveritiesProps } from '../types'
 
 import { getImpactedArea, IncidentAttributes } from '../IncidentAttributes'
 
-// export const severities = new Map(
-//   Object
-//     .keys(severitiesDefinition)
-//     .map(key => [key, severitiesDefinition[key]])
-//     .sort(([, { lte }], [, { lte2 }]) => lte - lte2)
-// )
+export const severities = new Map(
+  Object
+    .keys(severitiesDefinition)
+    .map(key => [key, severitiesDefinition[key]])
+    .sort(([, { lte }], [, { lte2 }]) => lte - lte2)
+)
+
+export function calculateSeverity (severity: SeveritiesProps) {
+  for (let [p, filter] of severities) {
+    if (severity > filter.gt) {
+      return p as string
+    }
+  }
+}
 
 export const nodeType = {
   network: 'Network',
@@ -52,11 +60,10 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
     <>
       <PageHeader 
         title={$t({ id: 'title', defaultMessage: 'Incident Details' })}
-        sideHeader={<Pill value='123' trend='positive' />}
+        sideHeader={<Pill value={calculateSeverity(props.severity)} trend={calculateSeverity(props.severity)} />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'AI Analytics' }), link: '/analytics' },
-          { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' },
-          { text: $t({ defaultMessage: 'Incident Details' }), link: `/analytics/incidents/${props.id}` }
+          { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(props)}
       />
