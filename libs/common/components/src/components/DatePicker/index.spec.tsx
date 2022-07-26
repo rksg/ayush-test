@@ -22,7 +22,7 @@ describe('CalenderRangePicker', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should opem CalenderRangePicker when click on date select', async () => {
+  it('should open CalenderRangePicker when click on date select', async () => {
     const { container } = render(
       <RangePicker
         selectedRange={{
