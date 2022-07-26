@@ -9,6 +9,7 @@ import {
   AaaServerTitle,
   CreateNetworkFormFields,
   NetworkSaveData,
+  WlanSecurityEnum,
   PskWlanSecurityEnum,
   macAuthMacFormatOptions
 } from '@acx-ui/rc/utils'
@@ -19,22 +20,36 @@ export function PskSummaryForm (props: {
   const { summaryData } = props
   return (
     <>
-      <Form.Item
-        label='Passphrase:'
-        children={<Input.Password
-          readOnly
-          bordered={false}
-          value={summaryData.passphrase}
-        />}
-      />
+      {summaryData.passphrase &&
+        <Form.Item
+          label='Passphrase:'
+          children={<Input.Password
+            readOnly
+            bordered={false}
+            value={summaryData.passphrase}
+          />}
+        />
+      }
+      {summaryData.wepHexKey &&
+        <Form.Item
+          label='Hex Key:'
+          children={<Input.Password
+            readOnly
+            bordered={false}
+            value={summaryData.wepHexKey}
+          />}
+        />
+      }
       <Form.Item
         label='Security Protocol:'
         children={
           PskWlanSecurityEnum[summaryData.wlanSecurity as keyof typeof PskWlanSecurityEnum]
         } />
-      <Form.Item
-        label='Management Frame Protection:'
-        children={summaryData.managementFrameProtection} />
+      {summaryData.managementFrameProtection &&
+        <Form.Item
+          label='Management Frame Protection:'
+          children={summaryData.managementFrameProtection} />
+      }
       <Form.Item
         label='Use MAC Auth:'
         children={summaryData.macAddressAuthentication? 'Enabled' : 'Disabled'} />
