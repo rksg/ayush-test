@@ -9,14 +9,14 @@ import {
   ImpactedClient,
   useImpactedAPsQuery,
   useImpactedClientsQuery
-} from './service'
+} from './services'
 
-export interface impactedDrawer extends IncidentDetailsProps {
+export interface impactedDrawerProps extends Pick<IncidentDetailsProps, 'id'> {
   visible: boolean
   onClose: () => void
 }
 
-function sort<T, K extends keyof T> (column: K) {
+export function sort<T, K extends keyof T> (column: K) {
   return function (a: T, b: T) {
     return a[column] > b[column]? 1: -1
   }
@@ -55,7 +55,7 @@ const impactedClientsColumns = [
   }
 ]
 
-export const ImpactedClientsDrawer: React.FC<impactedDrawer> = (props) => {
+export const ImpactedClientsDrawer: React.FC<impactedDrawerProps> = (props) => {
   const [ search, setSearch ] = useState('')
 
   const queryResults = useImpactedClientsQuery({
@@ -108,7 +108,7 @@ const impactedAPsColumns = [
   }
 ]
 
-export const ImpactedAPsDrawer: React.FC<impactedDrawer> = (props) => {
+export const ImpactedAPsDrawer: React.FC<impactedDrawerProps> = (props) => {
   const [ search, setSearch ] = useState('')
   const queryResults = useImpactedAPsQuery({
     id: props.id,

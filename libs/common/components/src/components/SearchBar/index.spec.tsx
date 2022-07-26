@@ -1,10 +1,6 @@
-import { screen, render, fireEvent } from '@testing-library/react'
+import { screen, render, fireEvent } from '@acx-ui/test-utils'
 
 import { SearchBar } from '.'
-
-jest.mock('react-intl', () => ({
-  useIntl: jest.fn(()=>({ $t: jest.fn(v=>v.defaultMessage[0].value) }))
-}))
 
 jest.mock('@acx-ui/icons', ()=> ({
   SearchOutlined: () => <div data-testid='search-icon'/>

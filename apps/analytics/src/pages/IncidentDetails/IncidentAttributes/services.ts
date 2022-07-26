@@ -17,7 +17,7 @@ export interface ImpactedClient {
   username: string
 }
 
-interface RequestPayload {
+export interface RequestPayload {
   id: string
   search: string
   n: number

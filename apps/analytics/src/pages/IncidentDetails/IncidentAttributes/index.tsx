@@ -13,7 +13,7 @@ import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
 
 import type { IncidentAttributesProps } from '../types'
 
-const durationOf = (start: string, end: string) =>
+export const durationOf = (start: string, end: string) =>
   moment(end).diff(moment(start), 'milliseconds', true)
 
 export const formattedNodeName = (node: PathNode, sliceValue: string) =>
@@ -35,7 +35,7 @@ export const getImpactedArea = (path: IncidentAttributesProps['path'], sliceValu
     : sliceValue
 }
 
-export const getImpactValues = (type: string, count: number, impactedCount: number) => {
+export const getImpactValues = (type: string, count: number|null, impactedCount: number|null) => {
   if (
     count === -1 || impactedCount === -1 ||
     count === 0 || impactedCount === 0
