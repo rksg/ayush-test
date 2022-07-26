@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { PathNode }                                from '@acx-ui/analytics/utils'
-
+import { PathNode }                  from '@acx-ui/analytics/utils'
 import { NetworkNodeTypeForDisplay } from '@acx-ui/analytics/utils'
 
 import type { IncidentAttributesProps } from '../types'

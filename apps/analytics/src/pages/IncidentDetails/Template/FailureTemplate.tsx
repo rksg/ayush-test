@@ -1,15 +1,14 @@
-import { Col, Row } from 'antd'
+import { Col, Row }                  from 'antd'
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import { incidentInformation, severitiesDefinition } from '@acx-ui/analytics/utils'
-import { PageHeader, Pill }    from '@acx-ui/components'
+import { PageHeader, Pill }                          from '@acx-ui/components'
 
-import { incidentDetailsMap } from '..'
-
-import { useIntl, FormattedMessage } from 'react-intl'
+import { incidentDetailsMap }                  from '..'
+import { getImpactedArea, IncidentAttributes } from '../IncidentAttributes'
 
 import type { IncidentDetailsProps, SeveritiesProps } from '../types'
 
-import { getImpactedArea, IncidentAttributes } from '../IncidentAttributes'
 
 export const severities = new Map(
   Object
