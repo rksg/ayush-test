@@ -13,7 +13,8 @@ export function getSeriesData (
   return seriesMapping.map(({ key, name }) => ({
     name,
     data: (data['time'] as TimeStamp[]).map((t, index) => {
-      return [t, data[key][index] as number || '-']
+      const value = data[key][index] as number
+      return [t, value === null ? '-' : value]
     })
   }))
 }
