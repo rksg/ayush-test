@@ -90,7 +90,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('111.111.111.111:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  }, 3000)
+  }, 7000)
 
 
   it('should create PSK network with WP3 and mac auth security protocol', async () => {
@@ -125,7 +125,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('111.111.111.111:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  }, 3000)
+  }, 7000)
 
   it('should create PSK network with WEP security protocol', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -145,5 +145,5 @@ describe('NetworkForm', () => {
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
     })
-  }, 3000)
+  })
 })
