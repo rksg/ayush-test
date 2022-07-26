@@ -2,94 +2,95 @@ import React from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
+import moment from 'moment-timezone'
+
 import { useGlobalFilter }          from '@acx-ui/analytics/utils'
 import { getSeriesData }            from '@acx-ui/analytics/utils'
 import {
   Card,
   Subtitle,
-  StackedBarChart,
-  Loader
+  BarChart,
+  BarChartData,
+  Loader,
+  cssStr,
+  Pill
  }                     from '@acx-ui/components'
 
 import { formatter }                from '@acx-ui/utils'
-import { TrafficByVolumeData }     from './services'
-import { useTrafficByVolumeQuery } from './services'
+import { IncidentsBySeverityData }     from './services'
+import { useIncidentsBySeverityQuery } from './services'
 
-export const seriesMapping = [
-  { key: 'totalTraffic_all', name: 'All Radios' },
-  { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },
-  { key: 'totalTraffic_5', name: formatter('radioFormat')('5') },
-  { key: 'totalTraffic_6', name: formatter('radioFormat')('6') }
-] as Array<{ key: keyof Omit<TrafficByVolumeData, 'time'>, name: string }>
-
-
-const data = [{
-  category: 'P1',
-  series: [
-    { name: 'p1', value: 10 },
-    { name: 'p2', value: 0 },
-    { name: 'p3', value: 0 },
-    { name: 'p4', value: 0 }
-  ]
-},{
-  category: 'P2',
-  series: [
-    { name: 'p1', value: 0 },
-    { name: 'p2', value: 5 },
-    { name: 'p3', value: 0 },
-    { name: 'p4', value: 0 }
-  ]
-}, {
-  category: 'P3',
-  series: [
-    { name: 'p1', value: 0 },
-    { name: 'p2', value: 0 },
-    { name: 'p3', value: 7 },
-    { name: 'p4', value: 0 }
-  ]
-}, {
-  category: 'P4',
-  series: [
-    { name: 'p1', value: 0 },
-    { name: 'p2', value: 0 },
-    { name: 'p3', value: 0 },
-    { name: 'p4', value: 2 }
-  ]
-}].reverse()
-
+const data:BarChartData = {
+  dimensions: ['Severity', 'incidentCount'],
+  source: [
+    ['P1', 53],
+    ['P2', 73],
+    ['P3', 107],
+    ['P4', 234]
+  ],
+  seriesEncode:[{
+    x: 'incidentCount',
+    y: 'Severity'
+  }]
+}
+const barColors = [
+  cssStr('--acx-semantics-red-70'), //.... P1
+  cssStr('--acx-semantics-red-50'), //... P2
+  cssStr('--acx-accents-orange-50'), //.. P3  
+  cssStr('--acx-semantics-yellow-40') // P4
+]
 function IncidentBySeverityWidget () {
-  // const filters = useGlobalFilter()
-  // const queryResults = useTrafficByVolumeQuery(filters,
-  //   {
-  //     selectFromResult: ({ data, ...rest }) => ({
-  //       data: getSeriesData(data!, seriesMapping),
-  //       ...rest
-  //     })
-  //   })
+  const { startDate, endDate, path } = useGlobalFilter()
+  const currentResult = useIncidentsBySeverityQuery(
+    { startDate, endDate, path },
+    {
+      selectFromResult: ({ data, ...rest }) => ({
+        data: {...data},
+        ...rest
+      })
+    }
+  )
+  console.log('current', currentResult.data)
+  const prevResult = useIncidentsBySeverityQuery(
+    { 
+      startDate: moment(startDate).subtract(moment(endDate).diff(startDate)).format(),
+      endDate: startDate,
+      path
+    },
+    {
+      selectFromResult: ({ data, ...rest }) => ({
+        data: {...data},
+        ...rest
+      })
+    }
+  )
+  console.log('prev', prevResult.data)
   return (
     // <Loader states={[queryResults]}>
-      <Card title='Total Incidents'>
-       <Subtitle level={3}>90</Subtitle>
-       <StackedBarChart
-         style={{ height: 85 }}
-         data={data}
-         showLabels={true}
-         showTotal={true}
-         axisLabelWidth={15}
-         setBarColor={(data: any) => console.log(data)}
-        />
+  //     <Card title='Total Incidents'>
+  //      <Subtitle level={3}>90</Subtitle>
+  //      <BarChart
+  //   style={{ width: 524, height: 174 }}
+  //   data={data}
+  //   barColors={barColors}
+  // />
         
-      </Card>
-    //    <AutoSizer>
-    //    {({ height, width }) => (
-    //      <StackedBarChart
-    //      style={{ height, width }}
-    //      data={data}
-    //      showLabels={true}
-    //      showTotal={true} />
-    //    )}
-    //  </AutoSizer> 
-    // </Loader>
+  //     </Card>
+  <Card title='Total Incidents' >
+    <Subtitle level={1}>90<Pill value='-123' trend='negative' /></Subtitle>
+    
+       <AutoSizer>
+       {({ height, width }) => (
+          <BarChart
+            style={{ width, height: 75 }}
+            data={data}
+            barColors={barColors}
+          />
+       )}
+     </AutoSizer>
+     </Card>
+     
+    //</Loader>
   )
 }
 
