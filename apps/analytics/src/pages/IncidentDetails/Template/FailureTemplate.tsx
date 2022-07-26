@@ -8,19 +8,23 @@ import { incidentDetailsMap }                  from '..'
 import { getImpactedArea, IncidentAttributes } from '../IncidentAttributes'
 
 import type { IncidentDetailsProps, SeveritiesProps } from '../types'
-
+import { TrendType } from 'libs/common/components/src/components/Pill/styledComponents'
 
 export const severities = new Map(
   Object
     .keys(severitiesDefinition)
-    .map(key => [key, severitiesDefinition[key]])
-    .sort(([, { lte }], [, { lte2 }]) => lte - lte2)
-)
+    .map(key => [key, severitiesDefinition[key as keyof typeof severitiesDefinition]])
+    .sort((a: (string | SeveritiesProps)[], b: (string | SeveritiesProps)[]) => {
+      const [, { lte }] = a as SeveritiesProps[]
+      const [, { lte: lte2 }] = b as SeveritiesProps[]
+      return lte2 - lte
+    }) as Iterable<readonly [string, SeveritiesProps]>
+) as Map<string, SeveritiesProps>
 
-export function calculateSeverity (severity: SeveritiesProps) {
+export function calculateSeverity (severity: number): TrendType | void {
   for (let [p, filter] of severities) {
     if (severity > filter.gt) {
-      return p as string
+      return p as TrendType
     }
   }
 }
@@ -54,12 +58,13 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
     }
     return <FormattedMessage {...messageProps}/>
   }
+  const severityValue = calculateSeverity(props.severity)!
 
   return (
     <>
       <PageHeader 
         title={$t({ id: 'title', defaultMessage: 'Incident Details' })}
-        sideHeader={<Pill value={calculateSeverity(props.severity)} trend={calculateSeverity(props.severity)} />}
+        sideHeader={<Pill value={severityValue} trend={severityValue} />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'AI Analytics' }), link: '/analytics' },
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
