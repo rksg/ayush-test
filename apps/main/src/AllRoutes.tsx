@@ -9,7 +9,7 @@ import NetworksBase  from './App/Networks'
 import VenuesBase    from './App/Venues'
 import VenueRoutes   from './App/Venues/Routes'
 
-const WifiRoutes = React.lazy(() => import('rc-wifi/Routes'))
+const WifiRoutes = React.lazy(() => import('rc/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
 
 function AllRoutes () {
