@@ -43,8 +43,10 @@ export function NetworkFilter (props: CascaderProps) {
   const [ multiSelect, setMultiSelect ] = React.useState<DefaultOptionType[][]>([])
 
   const { 
-    withRadio, onCancel, onApply, onChange, multiple, onFocus, withControlButtons
+    withRadio, onCancel, onApply, onChange, multiple, onFocus, withControlButtons, options
   } = props
+
+  const isPopulated = Array.isArray(options) && options.length > 0
 
   const onFocusProps = (event: React.FocusEvent<HTMLElement, Element>) => {
     if (onFocus) {
@@ -125,14 +127,7 @@ export function NetworkFilter (props: CascaderProps) {
         />
       </UI.RadioDiv>
       <UI.Divider />
-      {
-        withControlButtons && (
-          <UI.ButtonDiv>
-            <Button size='small' onClick={onCancelProps}>Cancel</Button>
-            <Button size='small' type='secondary' onClick={onApplyProps}>Apply</Button>
-          </UI.ButtonDiv>
-        )
-      }
+      {RenderFooterButtons()}
     </>
   }
   
@@ -140,15 +135,19 @@ export function NetworkFilter (props: CascaderProps) {
     return <>
       {menus}
       <UI.Divider />
-      {
-        withControlButtons && (
-          <UI.ButtonDiv>
-            <Button size='small' onClick={onCancelProps}>Cancel</Button>
-            <Button size='small' type='secondary' onClick={onApplyProps}>Apply</Button>
-          </UI.ButtonDiv>
-        )
-      }
+      {RenderFooterButtons()}
     </>
+  }
+
+  const RenderFooterButtons = () => {
+    return (
+      (isPopulated && withControlButtons) && (
+        <UI.ButtonDiv>
+          <Button size='small' onClick={onCancelProps}>Cancel</Button>
+          <Button size='small' type='secondary' onClick={onApplyProps}>Apply</Button>
+        </UI.ButtonDiv>
+      )
+    )
   }
 
   const DropDown = (menus: JSX.Element) => {

@@ -5,54 +5,20 @@ import { showToast }             from '../../Toast'
 
 const options: Option[] = [
   {
-    value: 'v1',
-    label: 'Venue 1',
-    children: [
-      {
-        value: 'v1-a',
-        label: 'APs',
-        children: [
-          {
-            value: 'v1-a-ap3',
-            label: 'AP 3'
-          },
-          {
-            value: 'v1-a-ap4',
-            label: 'AP 4'
-          }
-        ]
-      },
-      {
-        value: 'v1-s',
-        label: 'Switches',
-        children: [
-          {
-            value: 'v1-s-s1',
-            label: 'Switch 1'
-          },
-          {
-            value: 'v1-s-s2',
-            label: 'Switch 2'
-          }
-        ]
-      }
-    ]
+    value: 'n1',
+    label: 'SSID 1'
   },
   {
-    value: 'v2',
-    label: 'Venue 2',
-    children: [
-      {
-        value: 'v2-a',
-        label: 'APs',
-        children: [
-          {
-            value: 'v2-a-ap5',
-            label: 'AP 5'
-          }
-        ]
-      }
-    ]
+    value: 'n2',
+    label: 'SSID 2'
+  },
+  {
+    value: 'n3',
+    label: 'SSID 3'
+  },
+  {
+    value: 'n4',
+    label: 'SSID 4'
   }
 ]
 
@@ -87,13 +53,14 @@ const onCancel = () => {
   })
 }
 
-export function WithCheckboxGroupMulti () {
+export function WithSingleListButtons () {
   return <NetworkFilter
     multiple
+    withControlButtons
     placeholder='With CheckboxGroup'
-    withRadio={{ radioTitle: 'Frequency', radioOptions: ['6 GHz', '5 Ghz', '2.4 Ghz'] }}
     options={options}
     onApply={onApply}
     onCancel={onCancel}
+    allowClear
   />
 }
