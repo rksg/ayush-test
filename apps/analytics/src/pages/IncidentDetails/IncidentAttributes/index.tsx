@@ -115,7 +115,7 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
       key: 'type',
       getValue: (details: IncidentAttributesProps) => ({
         label: 'Type',
-        children: getImpactedArea(details.path, details.sliceValue)
+        children: formattedSliceType(details.sliceType)
       })
     },
     {

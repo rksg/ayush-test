@@ -202,9 +202,9 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   >
                     <div
                       class="styledComponents__Row-sc-1627zcn-0 gcIaGA"
-                      title="RuckusAP (70:CA:97:01:A0:C0)"
+                      title="Access Point"
                     >
-                      RuckusAP (70:CA:97:01:A0:C0)
+                      Access Point
                     </div>
                   </span>
                 </div>

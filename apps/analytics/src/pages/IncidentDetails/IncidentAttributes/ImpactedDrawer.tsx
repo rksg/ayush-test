@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { Drawer, Loader, Table, SearchBar } from '@acx-ui/components'
 
 import { IncidentDetailsProps } from '../types'
@@ -56,8 +58,10 @@ const impactedClientsColumns = [
 ]
 
 export const ImpactedClientsDrawer: React.FC<impactedDrawerProps> = (props) => {
+  // TODO: aggregation clients
+  // TODO: fix bug - blinking
+  const { $t } = useIntl()
   const [ search, setSearch ] = useState('')
-
   const queryResults = useImpactedClientsQuery({
     id: props.id,
     search,
@@ -69,7 +73,10 @@ export const ImpactedClientsDrawer: React.FC<impactedDrawerProps> = (props) => {
   }) })
   return <Drawer
     width={'620px'}
-    title={`${queryResults.data?.length || ''} Impacted Client`}
+    title={$t(
+      { defaultMessage: '{count} Impacted {count, plural, one {Client} other {Clients}}' },
+      { count: `${queryResults.data?.length || ''}` }
+    )}
     visible={props.visible}
     onClose={props.onClose}
     children={<Loader states={[queryResults]}>
@@ -109,6 +116,7 @@ const impactedAPsColumns = [
 ]
 
 export const ImpactedAPsDrawer: React.FC<impactedDrawerProps> = (props) => {
+  const { $t } = useIntl()
   const [ search, setSearch ] = useState('')
   const queryResults = useImpactedAPsQuery({
     id: props.id,
@@ -121,7 +129,10 @@ export const ImpactedAPsDrawer: React.FC<impactedDrawerProps> = (props) => {
   }) })
   return <Drawer
     width={'620px'}
-    title={`${queryResults.data?.length} Impacted AP`}
+    title={$t(
+      { defaultMessage: '{count} Impacted {count, plural, one {AP} other {APs}}' },
+      { count: `${queryResults.data?.length || ''}` }
+    )}
     visible={props.visible}
     onClose={props.onClose}
     children={<Loader states={[queryResults]}>
