@@ -94,364 +94,384 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
   <div
     class="ant-row"
   >
-    <div
-      class="ant-col ant-col-4 syledComponents__LeftColumn-sc-qdn9ny-0 giOrrc"
-    >
+    <div>
       <div
-        class="styledComponents__Wrapper-sc-1627zcn-1 hxiQJS"
+        class=""
       >
         <div
-          class="ant-descriptions"
+          class="ant-anchor-wrapper syledComponents__LeftColumn-sc-qdn9ny-0 jzXElC"
+          style="max-height: calc(100vh - 200px);"
         >
           <div
-            class="ant-descriptions-view"
+            class="ant-anchor"
           >
-            <table>
-              <tbody>
-                <tr
-                  class="ant-descriptions-row"
+            <div
+              class="ant-anchor-ink"
+            >
+              <span
+                class="ant-anchor-ink-ball"
+              />
+            </div>
+            <div
+              class="styledComponents__Wrapper-sc-1627zcn-1 hxiQJS"
+            >
+              <div
+                class="ant-descriptions"
+              >
+                <div
+                  class="ant-descriptions-view"
                 >
-                  <th
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-label"
+                  <table>
+                    <tbody>
+                      <tr
+                        class="ant-descriptions-row"
                       >
-                        Client Impact Count
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <td
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-content"
-                      >
-                        <div
-                          class="styledComponents__Row-sc-1627zcn-0 hprNyK"
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
                         >
-                          5 of 27 clients (18.52%)
-                        </div>
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <th
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-label"
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Client Impact Count
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
                       >
-                        Incident Category
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <td
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-content"
-                      >
-                        <div
-                          class="styledComponents__Row-sc-1627zcn-0"
-                          title="Connection"
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
                         >
-                          Connection
-                        </div>
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <th
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-label"
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <div
+                                class="styledComponents__Row-sc-1627zcn-0 hprNyK"
+                              >
+                                5 of 27 clients (18.52%)
+                              </div>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
                       >
-                        Incident Sub-Category
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <td
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-content"
-                      >
-                        <div
-                          class="styledComponents__Row-sc-1627zcn-0"
-                          title="EAP"
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
                         >
-                          EAP
-                        </div>
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <th
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-label"
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Incident Category
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
                       >
-                        Type
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <td
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-content"
-                      >
-                        <div
-                          class="styledComponents__Row-sc-1627zcn-0"
-                          title="Access Point"
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
                         >
-                          Access Point
-                        </div>
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <th
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-label"
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <div
+                                class="styledComponents__Row-sc-1627zcn-0"
+                                title="Connection"
+                              >
+                                Connection
+                              </div>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
                       >
-                        Scope
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <td
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-content"
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Incident Sub-Category
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
                       >
-                        <div
-                          class="styledComponents__Row-sc-1627zcn-0"
-                          title="Edu2-vSZ-52 (system)
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <div
+                                class="styledComponents__Row-sc-1627zcn-0"
+                                title="EAP"
+                              >
+                                EAP
+                              </div>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Type
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <div
+                                class="styledComponents__Row-sc-1627zcn-0"
+                                title="Access Point"
+                              >
+                                Access Point
+                              </div>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Scope
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <div
+                                class="styledComponents__Row-sc-1627zcn-0"
+                                title="Edu2-vSZ-52 (system)
 > Edu2-611-Mesh (Venue)
 > 255_Edu2-611-group (AP Group)
 > RuckusAP (70:CA:97:01:A0:C0) (Access Point)"
+                              >
+                                RuckusAP (70:CA:97:01:A0:C0)
+                              </div>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
                         >
-                          RuckusAP (70:CA:97:01:A0:C0)
-                        </div>
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <th
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-label"
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Duration
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
                       >
-                        Duration
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <td
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-content"
-                      >
-                        <div
-                          class="styledComponents__Row-sc-1627zcn-0"
-                          title="21h 27m"
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
                         >
-                          21h 27m
-                        </div>
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <th
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-label"
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <div
+                                class="styledComponents__Row-sc-1627zcn-0"
+                                title="21h 27m"
+                              >
+                                21h 27m
+                              </div>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
                       >
-                        Event Start Time
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <td
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-content"
-                      >
-                        <div
-                          class="styledComponents__Row-sc-1627zcn-0"
-                          title="Jul 19 2022 13:15"
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
                         >
-                          Jul 19 2022 13:15
-                        </div>
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <th
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-label"
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Event Start Time
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
                       >
-                        Event End Time
-                      </span>
-                    </div>
-                  </th>
-                </tr>
-                <tr
-                  class="ant-descriptions-row"
-                >
-                  <td
-                    class="ant-descriptions-item"
-                    colspan="1"
-                  >
-                    <div
-                      class="ant-descriptions-item-container"
-                    >
-                      <span
-                        class="ant-descriptions-item-content"
-                      >
-                        <div
-                          class="styledComponents__Row-sc-1627zcn-0"
-                          title="Jul 20 2022 10:42"
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
                         >
-                          Jul 20 2022 10:42
-                        </div>
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <div
+                                class="styledComponents__Row-sc-1627zcn-0"
+                                title="Jul 19 2022 13:15"
+                              >
+                                Jul 19 2022 13:15
+                              </div>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Event End Time
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <div
+                                class="styledComponents__Row-sc-1627zcn-0"
+                                title="Jul 20 2022 10:42"
+                              >
+                                Jul 20 2022 10:42
+                              </div>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="ant-col ant-col-20 syledComponents__RightColumn-sc-qdn9ny-1 hczgsJ"
+      class="ant-col"
     >
       <div
         class="ant-row"
+        style="margin: -10px -10px -10px -10px;"
       >
         <div
           class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
         >
           <div>
             Insights
@@ -459,6 +479,7 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
         </div>
         <div
           class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
         >
           <div>
             network impact
@@ -466,6 +487,7 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
         </div>
         <div
           class="ant-col ant-col-24"
+          style="padding: 10px 10px 10px 10px;"
         >
           <div>
             time series section

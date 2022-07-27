@@ -1,10 +1,15 @@
-import { Col } from 'antd'
-import styled  from 'styled-components/macro'
+import { Anchor } from 'antd'
+import styled     from 'styled-components/macro'
 
-export const LeftColumn = styled(Col)`
-  position: fixed;
-`
+export const LeftColumn = styled(Anchor)`
+  min-width: 200px;
+  max-width: 300px;
+  width: 100%;
+  padding-right: 10px;
 
-export const RightColumn = styled(Col)`
-  padding-left: 250px;
+  .ant-anchor {
+    font-weight: var(--acx-body-font-weight);
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+  }
 `
