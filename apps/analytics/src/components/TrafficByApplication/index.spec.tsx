@@ -1,9 +1,7 @@
 /* eslint-disable testing-library/no-node-access */
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-
-import { dataApiURL }       from '@acx-ui/analytics/services'
-import { Provider, store }  from '@acx-ui/store'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import { dataApiURL }                                  from '@acx-ui/analytics/services'
+import { Provider, store }                             from '@acx-ui/store'
+import { fireEvent, render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import { fixture1 } from './fixtures'
 import { api }      from './services'
