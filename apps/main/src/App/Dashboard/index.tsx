@@ -67,7 +67,7 @@ function ApWidgets () {
         <AnalyticsWidgets name='connectedClientsOverTime' />
       </DashboardCol>
       <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topApplicationsByTrafficss' />
+        <AnalyticsWidgets name='topApplicationsByTraffic' />
       </DashboardCol>
     </DashboardRow>
   )
