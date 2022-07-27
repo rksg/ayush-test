@@ -132,11 +132,14 @@ export interface Dashboard {
       summary: {
         [prop: string]: number;
       },
+      clientDto: Array<{
+        [prop: string]: string
+      }>,
       totalCount: number;
     },
     switchClients?: {
       summary: {
-        [prop: string]: number;
+        [prop: string]: string;
       },
       totalCount: number;
     },
@@ -148,7 +151,7 @@ export interface Dashboard {
     },
     switches?: {
       summary: {
-        [prop: string]: number;
+        [prop: string]: string;
       },
       totalCount: number;
     },
