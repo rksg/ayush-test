@@ -34,7 +34,7 @@ export interface AggregatedImpactedClient{
   username: string[]
 }
 
-export function sort<T> (column: keyof T) {
+export function sortCell<T> (column: keyof T) {
   return function (a: T, b: T) {
     const dataA = a[column] as unknown as T[keyof T][]
     const dataB = b[column] as unknown as T[keyof T][]
@@ -42,7 +42,7 @@ export function sort<T> (column: keyof T) {
   }
 }
 
-function renderCell<T> (col: keyof T) {
+export function renderCell<T> (col: keyof T) {
   return function (_: React.ReactNode, row: T) {
     const data = row[col] as unknown as T[keyof T][]
     return <span title={data.join(', ')}>
@@ -57,35 +57,35 @@ const impactedClientsColumns: TableProps<AggregatedImpactedClient>['columns'] = 
     dataIndex: 'mac',
     key: 'mac',
     render: renderCell<AggregatedImpactedClient>('mac'),
-    sorter: sort<AggregatedImpactedClient>('mac')
+    sorter: sortCell<AggregatedImpactedClient>('mac')
   },
   {
     title: 'Manufacturer',
     dataIndex: 'manufacturer',
     key: 'manufacturer',
     render: renderCell<AggregatedImpactedClient>('manufacturer'),
-    sorter: sort<AggregatedImpactedClient>('manufacturer')
+    sorter: sortCell<AggregatedImpactedClient>('manufacturer')
   },
   {
     title: 'SSID',
     dataIndex: 'ssid',
     key: 'ssid',
     render: renderCell<AggregatedImpactedClient>('ssid'),
-    sorter: sort<AggregatedImpactedClient>('ssid')
+    sorter: sortCell<AggregatedImpactedClient>('ssid')
   },
   {
     title: 'Username',
     dataIndex: 'username',
     key: 'username',
     render: renderCell<AggregatedImpactedClient>('username'),
-    sorter: sort<AggregatedImpactedClient>('username')
+    sorter: sortCell<AggregatedImpactedClient>('username')
   },
   {
     title: 'Hostname',
     dataIndex: 'hostname',
     key: 'hostname',
     render: renderCell<AggregatedImpactedClient>('hostname'),
-    sorter: sort<AggregatedImpactedClient>('hostname')
+    sorter: sortCell<AggregatedImpactedClient>('hostname')
   }
 ]
 
@@ -126,28 +126,28 @@ const impactedAPsColumns: TableProps<AggregatedImpactedAP>['columns'] = [
     dataIndex: 'name',
     key: 'name',
     render: renderCell<AggregatedImpactedAP>('name'),
-    sorter: sort<AggregatedImpactedAP>('name')
+    sorter: sortCell<AggregatedImpactedAP>('name')
   },
   {
     title: 'AP MAC',
     dataIndex: 'mac',
     key: 'mac',
     render: renderCell<AggregatedImpactedAP>('mac'),
-    sorter: sort<AggregatedImpactedAP>('mac')
+    sorter: sortCell<AggregatedImpactedAP>('mac')
   },
   {
     title: 'AP Model',
     dataIndex: 'model',
     key: 'model',
     render: renderCell<AggregatedImpactedAP>('model'),
-    sorter: sort<AggregatedImpactedAP>('model')
+    sorter: sortCell<AggregatedImpactedAP>('model')
   },
   {
     title: 'AP Version',
     dataIndex: 'version',
     key: 'version',
     render: renderCell<AggregatedImpactedAP>('version'),
-    sorter: sort<AggregatedImpactedAP>('version')
+    sorter: sortCell<AggregatedImpactedAP>('version')
   }
 ]
 
