@@ -5,7 +5,7 @@ import { render, mockServer } from '@acx-ui/test-utils'
 
 import { IncidentDetailsProps } from './types'
 
-import { IncidentDetails } from '.'
+import IncidentDetailsPage, { IncidentDetails } from '.'
 
 describe('incident details', () => {
   const sampleIncident = {
@@ -81,6 +81,29 @@ describe('incident details', () => {
     const { asFragment } = render(
       <Provider>
         <IncidentDetails data={sampleIncident} />
+      </Provider>, {
+        route: { params }
+      })
+    
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render Incident Details Page correctly', async () => {
+    mockServer.use(
+      rest.get(
+        '/t/tenantId/analytics/incidents/:incidentId',
+        (req, res, ctx) => {
+          return res(ctx.json(sampleIncident))
+        }
+      )
+    )
+  
+    const params = {
+      incidentId: 'df5339ba-da3b-4110-a291-7f8993a274f3'
+    }
+  
+    const { asFragment } = render(
+      <Provider>
+        <IncidentDetailsPage />
       </Provider>, {
         route: { params }
       })

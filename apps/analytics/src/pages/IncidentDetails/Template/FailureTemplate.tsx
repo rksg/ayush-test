@@ -1,57 +1,21 @@
 import { Col, Row }                  from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import { incidentInformation, severitiesDefinition } from '@acx-ui/analytics/utils'
-import { PageHeader, Pill, TrendType }               from '@acx-ui/components'
+import { incidentInformation, calculateSeverity } from '@acx-ui/analytics/utils'
+import { PageHeader, Pill }                       from '@acx-ui/components'
 
-import { incidentDetailsMap }                  from '..'
-import { getImpactedArea, IncidentAttributes } from '../IncidentAttributes'
-import * as UI                                 from '../syledComponents'
+import { incidentDetailsMap }                                      from '..'
+import { getImpactedArea, IncidentAttributes, formattedSliceType } from '../IncidentAttributes'
+import * as UI                                                     from '../syledComponents'
 
-import type { IncidentDetailsProps, SeveritiesProps } from '../types'
-
-export const severities = new Map(
-  Object
-    .keys(severitiesDefinition)
-    .map(key => [key, severitiesDefinition[key as keyof typeof severitiesDefinition]])
-    .sort((a: (string | SeveritiesProps)[], b: (string | SeveritiesProps)[]) => {
-      const [, { lte }] = a as SeveritiesProps[]
-      const [, { lte: lte2 }] = b as SeveritiesProps[]
-      return lte2 - lte
-    }) as Iterable<readonly [string, SeveritiesProps]>
-) as Map<string, SeveritiesProps>
-
-export function calculateSeverity (severity: number): TrendType | void {
-  for (let [p, filter] of severities) {
-    if (severity > filter.gt) {
-      return p as TrendType
-    }
-  }
-}
-
-export const nodeType = {
-  network: 'Network',
-  zoneName: 'Zone',
-  zone: 'Zone',
-  apGroupName: 'AP Group',
-  apGroup: 'AP Group',
-  apMac: 'Access Point',
-  ap: 'Access Point',
-  AP: 'Access Point',
-  switchGroup: 'Switch Group',
-  switch: 'Switch'
-}
-
-export const sliceTypePrettyNames = (type: string) => {
-  return nodeType[type as keyof typeof nodeType] || type
-}
+import type { IncidentDetailsProps } from '../types'
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const { $t } = useIntl()
   const shortDescription = (incident: IncidentDetailsProps) => {
     const incidentInfo = incidentInformation[incident.code as keyof typeof incidentDetailsMap]
     /* eslint-disable-next-line max-len */
-    const scope = `${sliceTypePrettyNames(incident.sliceType)}: ${getImpactedArea(incident.path, incident.sliceValue)}`
+    const scope = `${formattedSliceType(incident.sliceType)}: ${getImpactedArea(incident.path, incident.sliceValue)}`
     const { shortDescription } = incidentInfo
     const messageProps = {
       id: incident.id,

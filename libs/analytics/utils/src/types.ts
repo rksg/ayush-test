@@ -4,3 +4,8 @@ export interface PathNode {
 }
 
 export interface NetworkPath extends Array<PathNode> {}
+
+export interface SeveritiesProps {
+  gt: number
+  lte: number
+}

@@ -38,11 +38,6 @@ interface IncidentInformation {
   incidentType: string
 }
 
-export interface SeveritiesProps {
-  gt: number
-  lte: number
-}
-
 export interface IncidentAttributesProps
   extends IncidentDetailsProps, IncidentInformation {
     visibleFields: string[]

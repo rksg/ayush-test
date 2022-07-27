@@ -1,8 +1,11 @@
-import { rest } from 'msw'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
-import { render, screen, mockServer } from '@acx-ui/test-utils'
+import AnalyticsRoutes from './Routes'
 
-import AnalyticsRoutes          from './Routes'
+jest.mock('./pages/IncidentDetails', () => () => {
+  return <div data-testid='incidentDetails' />
+})
 
 test('should redirect analytics to analytics/incidents', () => {
   render(<AnalyticsRoutes />, {
@@ -59,28 +62,11 @@ test('should navigate to analytics/occupancy', () => {
   screen.getByText('Occupancy')
 })
 test('should navigate to analytics/incidentDetails', async () => {
-  mockServer.use(
-    rest.get(
-      '/t/tenantId/analytics/incidents/:incidentId',
-      (req, res, ctx) => {
-        const { incidentId } = req.params
-        return res(ctx.json({
-          id: incidentId
-        }))
-      }
-    )
-  )
-
-  const params = {
-    incidentId: 'df5339ba-da3b-4110-a291-7f8993a274f3'
-  }
-
-  render(<AnalyticsRoutes />, {
+  render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      params,
-      path: '/t/tenantId/analytics/incidents/:incidentId',
+      path: '/t/tenantId/analytics/incidents/incidentId',
       wrapRoutes: false
     }
   })
-  screen.getByText('Incident Details')
+  await screen.findByTestId('incidentDetails')
 })

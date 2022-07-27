@@ -5,7 +5,7 @@ import { render, mockServer } from '@acx-ui/test-utils'
 
 import { IncidentDetailsProps } from '../types'
 
-import { calculateSeverity, IncidentDetailsTemplate } from './FailureTemplate'
+import { IncidentDetailsTemplate } from './FailureTemplate'
 
 describe('IncidentDetailsTemplate', () => {
   const sampleIncident = {
@@ -86,10 +86,5 @@ describe('IncidentDetailsTemplate', () => {
       })
 
     expect(asFragment()).toMatchSnapshot()
-  })
-
-  it('should calculate severity correctly', () => {
-    const test = calculateSeverity(sampleIncident.severity)
-    expect(test).toEqual('P3')
   })
 })

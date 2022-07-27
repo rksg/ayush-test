@@ -1,5 +1,6 @@
 export { default as incidentInformation } from './incidentInformation.json'
 export { default as severitiesDefinition } from './severities.json'
+export { calculateSeverity } from './calculateSeverities'
 export * from './types'
 export * from './constants'
 export * from './timeseries'
