@@ -65,7 +65,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   return (
     <>
       <PageHeader 
-        title={$t({ id: 'title', defaultMessage: 'Incident Details' })}
+        title={$t({ defaultMessage: 'Incident Details' })}
         sideHeader={<Pill value={severityValue} trend={severityValue} />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'AI Analytics' }), link: '/analytics' },

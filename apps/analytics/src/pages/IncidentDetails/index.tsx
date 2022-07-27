@@ -17,7 +17,7 @@ export const incidentDetailsMap = {
   'assoc-failure': Assoc
 }
 
-function IncidentDetails (props: { data?: IncidentDetailsProps }) {
+export function IncidentDetails (props: { data?: IncidentDetailsProps }) {
   const data = props.data as IncidentDetailsProps
   const IncidentDetailsComponent = incidentDetailsMap[data?.code as keyof typeof incidentDetailsMap]
   return (

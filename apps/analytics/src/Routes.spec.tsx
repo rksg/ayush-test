@@ -1,6 +1,8 @@
-import { render, screen } from '@acx-ui/test-utils'
+import { rest } from 'msw'
 
-import AnalyticsRoutes from './Routes'
+import { render, screen, mockServer } from '@acx-ui/test-utils'
+
+import AnalyticsRoutes          from './Routes'
 
 test('should redirect analytics to analytics/incidents', () => {
   render(<AnalyticsRoutes />, {
@@ -56,10 +58,27 @@ test('should navigate to analytics/occupancy', () => {
   })
   screen.getByText('Occupancy')
 })
-test('should navigate to analytics/incidentDetails', () => {
+test('should navigate to analytics/incidentDetails', async () => {
+  mockServer.use(
+    rest.get(
+      '/t/tenantId/analytics/incidents/:incidentId',
+      (req, res, ctx) => {
+        const { incidentId } = req.params
+        return res(ctx.json({
+          id: incidentId
+        }))
+      }
+    )
+  )
+
+  const params = {
+    incidentId: 'df5339ba-da3b-4110-a291-7f8993a274f3'
+  }
+
   render(<AnalyticsRoutes />, {
     route: {
-      path: '/t/tenantId/analytics/incidents/1',
+      params,
+      path: '/t/tenantId/analytics/incidents/:incidentId',
       wrapRoutes: false
     }
   })

@@ -3,11 +3,11 @@ import { rest } from 'msw'
 import { Provider }           from '@acx-ui/store'
 import { render, mockServer } from '@acx-ui/test-utils'
 
-import { IncidentDetailsProps } from './types'
+import { IncidentDetailsProps } from '../types'
 
-import { IncidentDetails } from '.'
+import { calculateSeverity, IncidentDetailsTemplate } from './FailureTemplate'
 
-describe('incident details', () => {
+describe('IncidentDetailsTemplate', () => {
   const sampleIncident = {
     apCount: -1,
     isMuted: false,
@@ -64,7 +64,7 @@ describe('incident details', () => {
     sliceValue: 'RuckusAP'
   } as IncidentDetailsProps
 
-  it('should render Incident Details correctly', async () => {
+  it('should render correctly', () => {
     mockServer.use(
       rest.get(
         '/t/tenantId/analytics/incidents/:incidentId',
@@ -80,11 +80,16 @@ describe('incident details', () => {
   
     const { asFragment } = render(
       <Provider>
-        <IncidentDetails data={sampleIncident} />
+        <IncidentDetailsTemplate {...sampleIncident} />
       </Provider>, {
         route: { params }
       })
-    
+
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should calculate severity correctly', () => {
+    const test = calculateSeverity(sampleIncident.severity)
+    expect(test).toEqual('P3')
   })
 })
