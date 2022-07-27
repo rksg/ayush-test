@@ -3,171 +3,310 @@ import { render, screen } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
 import moment             from 'moment'
 
-import {  DateRange } from '@acx-ui/utils'
+import { DateRange } from '@acx-ui/utils'
 
 import { RangePicker } from '.'
 
 jest.mock('@acx-ui/icons', () => ({
-  ArrowDown: () => <div>ArrowDown</div>,
+  CaretDownSolid: () => <div>CaretDownSolid</div>,
   ClockOutlined: () => <div>ClockOutlined</div>
 }))
 
 describe('CalenderRangePicker', () => {
   it('should render default CalenderRangePicker', () => {
     const { asFragment } = render(
-      <RangePicker 
+      <RangePicker
         selectionType={DateRange.custom}
-        onDateApply={()=>{}}
-        selectedRange={{ startDate: moment('01/01/2022').subtract(1, 'days').seconds(0),
-          endDate: moment('01/01/2022').seconds(0) }}/>)
+        onDateApply={() => {}}
+        selectedRange={{
+          startDate: moment('01/01/2022').subtract(1, 'days').seconds(0),
+          endDate: moment('01/01/2022').seconds(0)
+        }}
+      />
+    )
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should render CalenderRangePicker when click on date select',async () => {
-    render(
+  it('should open CalenderRangePicker when click on date select', async () => {
+    const { container } = render(
       <RangePicker
         selectionType={DateRange.last24Hours}
-        selectedRange={{ startDate: moment().subtract(1, 'days').seconds(0),
-          endDate: moment().seconds(0) }}
-        onDateApply={()=>{}}
+        selectedRange={{
+          startDate: moment().subtract(1, 'days').seconds(0),
+          endDate: moment().seconds(0)
+        }}
+        onDateApply={() => {}}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         showTimePicker
-        enableDates={[moment().subtract(7, 'days').seconds(0),
-          moment().seconds(0)]}/>)
+        enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
+      />
+    )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    expect(screen.getByText('Apply')).toBeInTheDocument()
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container).not.toHaveClass('ant-picker-dropdown-hidden')
   })
-  it('should close CalenderRangePicker when click on apply',async () => {
-    render(
+  it('should close CalenderRangePicker when click on apply', async () => {
+    const { container } = render(
       <RangePicker
         selectionType={DateRange.last7Days}
-        onDateApply={()=>{}}
+        onDateApply={() => {}}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         showTimePicker
-        selectedRange={{ startDate: moment().subtract(7, 'days').seconds(0),
-          endDate: moment().seconds(0) }}
-        enableDates={[moment().subtract(7, 'days').seconds(0),
-          moment().seconds(0)]}/>)
+        selectedRange={{
+          startDate: moment().subtract(7, 'days').seconds(0),
+          endDate: moment().seconds(0)
+        }}
+        enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
+      />
+    )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
     const applyButton = await screen.findByText('Apply')
     await user.click(applyButton)
-    expect(await screen.findByText('Apply')).toBeVisible()
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
-  it('should close CalenderRangePicker when click on cancel',async () => {
-    render(
+  it('should close CalenderRangePicker when click outside', async () => {
+    const { container } = render(
       <RangePicker
-        onDateApply={()=>{}}
+        onDateApply={() => {}}
         selectionType={DateRange.last7Days}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
-        selectedRange={{ startDate: moment().subtract(7, 'days').seconds(0),
-          endDate: moment().seconds(0) }}/>)
+        showTimePicker
+        selectedRange={{
+          startDate: moment().subtract(7, 'days').seconds(0),
+          endDate: moment().seconds(0)
+        }}
+        enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
+      />
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container).not.toHaveClass('ant-picker-dropdown-hidden')
+    await user.click(document.body)
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
+  })
+  it('should close CalenderRangePicker when click on cancel', async () => {
+    const { container } = render(
+      <RangePicker
+        onDateApply={() => {}}
+        selectionType={DateRange.last7Days}
+        rangeOptions={[DateRange.today, DateRange.last7Days]}
+        selectedRange={{
+          startDate: moment().subtract(7, 'days').seconds(0),
+          endDate: moment().seconds(0)
+        }}
+      />
+    )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
     const cancelButton = await screen.findByText('Cancel')
     await user.click(cancelButton)
-    expect(await screen.findByText('Cancel')).toBeVisible()
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
-  it('should select date when click on date selection',async () => {
+  it('should close CalenderRangePicker when click on ranges', async () => {
+    Object.defineProperty(HTMLElement.prototype, 'innerText', {
+      get () {
+        return this.textContent
+      }
+    })
+    const { container } = render(
+      <RangePicker
+        onDateApply={() => {}}
+        selectionType={DateRange.last7Days}
+        rangeOptions={[DateRange.today, DateRange.last7Days]}
+        selectedRange={{
+          startDate: moment().subtract(7, 'days').seconds(0),
+          endDate: moment().seconds(0)
+        }}
+      />
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    await user.click(await screen.findByText('Today'))
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
+  })
+  it('should select date when click on date selection', async () => {
     const onDateChange = jest.fn()
     render(
       <RangePicker
         selectionType={DateRange.custom}
-        selectedRange={{ startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
-          endDate: moment('03/01/2022').seconds(0) }}
+        selectedRange={{
+          startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
+          endDate: moment('03/01/2022').seconds(0)
+        }}
         onDateChange={onDateChange}
-        onDateApply={()=>{}}
-      />)
+        onDateApply={() => {}}
+      />
+    )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
     const dateSelect = await screen.findAllByTitle(moment('01/01/2022').format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
-    expect( screen.getByRole('display-date-range'))
-      .toHaveTextContent('Jan 01 2022 - Mar 01 2022')
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('Jan 01 2022 - Mar 01 2022')
     expect(onDateChange).toBeCalledTimes(1)
   })
-  it('should select time when click on time selection',async () => {
-    const onDateChange = jest.fn()
-    render(<RangePicker
-      selectionType={DateRange.last7Days}
-      showTimePicker
-      rangeOptions={[DateRange.today, DateRange.last7Days]}
-      onDateChange={onDateChange}
-      onDateApply={()=>{}}
-      selectedRange={{ startDate: moment().subtract(7, 'days').seconds(0),
-        endDate: moment().seconds(0) }}
-    />)
-    const user = userEvent.setup()
-    const calenderSelect = await screen.findByPlaceholderText('Start date')
-    await user.click(calenderSelect)
-    const timeSelect = await screen.findAllByRole('time-picker')
-    await user.click(timeSelect[0])
-    const hourSelect = await screen.findAllByText('20')
-    await user.click(hourSelect[hourSelect.length-1])
-    expect( screen.getByRole('display-date-range'))
-      .toHaveTextContent('20:')
-    expect(onDateChange).toBeCalledTimes(1)
-  })
-  it('should reset endTime to startTime when select on startTime greater than endTime',async () => {
-    const onDateChange = jest.fn()
-    render(<RangePicker
-      showTimePicker
-      rangeOptions={[DateRange.today, DateRange.last7Days]}
-      onDateChange={onDateChange}
-      selectionType={DateRange.custom}
-      onDateApply={()=>{}}
-      selectedRange={{ startDate: moment('03/01/2022').seconds(0),
-        endDate: moment('03/01/2022').seconds(0) }}
-    />)
-    const user = userEvent.setup()
-    const calenderSelect = await screen.findByPlaceholderText('Start date')
-    await user.click(calenderSelect)
-    const timeSelect = await screen.findAllByRole('time-picker')
-    await user.click(timeSelect[0])
-    const hourSelect = await screen.findAllByText('20')
-    await user.click(hourSelect[hourSelect.length-1])
-    expect( screen.getByRole('display-date-range'))
-      .toHaveTextContent('20:')
-    expect(onDateChange).toBeCalledTimes(1)
-  })
-  it('should display selection for null values',async () => {
+  it('should select time when click on time selection', async () => {
     const onDateChange = jest.fn()
     render(
       <RangePicker
-        selectionType={DateRange.custom}
-        selectedRange={{ startDate: null,
-          endDate: null }}
-        onDateChange={onDateChange}
-        onDateApply={()=>{}}
-      />)
-    const user = userEvent.setup()
-    const calenderSelect = await screen.findByPlaceholderText('Start date')
-    await user.click(calenderSelect)
-    expect( screen.getByRole('display-date-range'))
-      .toHaveTextContent('-')
-  })
-  it('should disable future time selection when startdate and end date are same',async () => {
-    const onDateChange = jest.fn()
-    render(
-      <RangePicker
-        selectionType={DateRange.custom}
-        selectedRange={{ startDate: moment('03/01/2022').hours(12),
-          endDate: moment('03/01/2022').hours(12) }}
-        onDateChange={onDateChange}
-        onDateApply={()=>{}}
+        selectionType={DateRange.last7Days}
         showTimePicker
-      />)
+        rangeOptions={[DateRange.today, DateRange.last7Days]}
+        onDateChange={onDateChange}
+        onDateApply={() => {}}
+        selectedRange={{
+          startDate: moment().subtract(7, 'days').seconds(0),
+          endDate: moment().seconds(0)
+        }}
+      />
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const timeSelect = await screen.findAllByRole('time-picker')
+    await user.click(timeSelect[0])
+    const hourSelect = await screen.findAllByText('20')
+    await user.click(hourSelect[hourSelect.length - 1])
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
+    expect(onDateChange).toBeCalledTimes(1)
+  })
+  it('should select end time when click on end time selection', async () => {
+    const onDateChange = jest.fn()
+    render(
+      <RangePicker
+        showTimePicker
+        selectionType={DateRange.last7Days}
+        rangeOptions={[DateRange.today, DateRange.last7Days]}
+        onDateChange={onDateChange}
+        onDateApply={() => {}}
+        selectedRange={{
+          startDate: moment().subtract(7, 'days').seconds(0),
+          endDate: moment().seconds(0)
+        }}
+      />
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const timeSelect = await screen.findAllByRole('time-picker')
+    await user.click(timeSelect[2])
+    const hourSelect = await screen.findAllByText('20')
+    await user.click(hourSelect[hourSelect.length - 1])
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
+    expect(onDateChange).toBeCalledTimes(1)
+  })
+  it('should reset endTime to startTime when select startTime greater than endTime', async () => {
+    const onDateChange = jest.fn()
+    render(
+      <RangePicker
+        showTimePicker
+        rangeOptions={[DateRange.today, DateRange.last7Days]}
+        onDateChange={onDateChange}
+        selectionType={DateRange.custom}
+        onDateApply={() => {}}
+        selectedRange={{
+          startDate: moment('03/01/2022').seconds(0),
+          endDate: moment('03/01/2022').seconds(0)
+        }}
+      />
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const timeSelect = await screen.findAllByRole('time-picker')
+    await user.click(timeSelect[0])
+    const hourSelect = await screen.findAllByText('20')
+    await user.click(hourSelect[hourSelect.length - 1])
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
+    expect(onDateChange).toBeCalledTimes(1)
+  })
+  it('should display selection for null values', async () => {
+    const onDateChange = jest.fn()
+    render(
+      <RangePicker
+        selectionType={DateRange.custom}
+        selectedRange={{ startDate: null, endDate: null }}
+        onDateChange={onDateChange}
+        onDateApply={() => {}}
+      />
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('-')
+  })
+  it('should display only start date when end date is not selected', async () => {
+    const onDateChange = jest.fn()
+    render(
+      <RangePicker
+        selectionType={DateRange.custom}
+        selectedRange={{
+          startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
+          endDate: null
+        }}
+        onDateChange={onDateChange}
+        onDateApply={() => {}}
+      />
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const dateSelect = await screen.findAllByTitle(moment('01/01/2022').format('YYYY-MM-DD'))
+    await user.click(dateSelect[0])
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('Jan 01 2022 -')
+  })
+  it('should display only end date when start date is not selected', async () => {
+    const onDateChange = jest.fn()
+    render(
+      <RangePicker
+        selectionType={DateRange.custom}
+        selectedRange={{
+          startDate: null,
+          endDate: moment('01/01/2022').subtract(7, 'days').seconds(0)
+        }}
+        onDateChange={onDateChange}
+        onDateApply={() => {}}
+      />
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('End date')
+    await user.click(calenderSelect)
+    const dateSelect = await screen.findAllByTitle(moment('01/01/2022').format('YYYY-MM-DD'))
+    await user.click(dateSelect[0])
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('- Jan 01 2022')
+  })
+  it('should disable future time selection when startdate and end date are same', async () => {
+    const onDateChange = jest.fn()
+    render(
+      <RangePicker
+        selectionType={DateRange.custom}
+        selectedRange={{
+          startDate: moment('03/01/2022').hours(12),
+          endDate: moment('03/01/2022').hours(12)
+        }}
+        onDateChange={onDateChange}
+        onDateApply={() => {}}
+        showTimePicker
+      />
+    )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
     const timeSelect = await screen.findAllByRole('time-picker')
     await user.click(timeSelect[2])
     const hourSelect = await screen.findAllByText('11')
-    await user.click(hourSelect[hourSelect.length-1])
-    expect( screen.getByRole('display-date-range')).not.toHaveTextContent('11:')
+    await user.click(hourSelect[hourSelect.length - 1])
+    expect(screen.getByRole('display-date-range')).not.toHaveTextContent('11:')
   })
 })

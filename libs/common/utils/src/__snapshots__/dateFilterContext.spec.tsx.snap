@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GlobalFilterProvider should render correctly 1`] = `
+exports[`DateFilterProvider should render correctly 1`] = `
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-31T08:00:00+08:00","endDate":"2022-01-01T08:00:00+08:00","range":"Last 24 Hours"}
@@ -8,7 +8,7 @@ exports[`GlobalFilterProvider should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`GlobalFilterProvider should render correctly with default date from url 1`] = `
+exports[`DateFilterProvider should render correctly with default date from url 1`] = `
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-31T08:00:00+08:00","endDate":"2022-01-01T08:00:00+08:00","range":"Last 24 Hours"}
@@ -16,7 +16,7 @@ exports[`GlobalFilterProvider should render correctly with default date from url
 </DocumentFragment>
 `;
 
-exports[`GlobalFilterProvider should set url on rerender 1`] = `
+exports[`DateFilterProvider should set url on rerender 1`] = `
 <DocumentFragment>
   <div>
     {"startDate":"2021-12-01T08:00:00+08:00","endDate":"2022-01-01T08:00:00+08:00","range":"Last Month"}
