@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Drawer, Loader, Table, SearchBar } from '@acx-ui/components'
+import { aggregateDataBy }                              from '@acx-ui/analytics/utils'
+import { Drawer, Loader, Table, SearchBar, TableProps } from '@acx-ui/components'
 
 import { IncidentDetailsProps } from '../types'
 
@@ -18,58 +19,89 @@ export interface impactedDrawerProps extends Pick<IncidentDetailsProps, 'id'> {
   onClose: () => void
 }
 
-export function sort<T, K extends keyof T> (column: K) {
+export interface AggregatedImpactedAP{
+  name: string[]
+  mac: string[]
+  model: string[]
+  version: string[]
+}
+
+export interface AggregatedImpactedClient{
+  mac: string []
+  manufacturer: string[]
+  ssid: string[]
+  hostname: string[]
+  username: string[]
+}
+
+export function sort<T> (column: keyof T) {
   return function (a: T, b: T) {
-    return a[column] > b[column]? 1: -1
+    const dataA = a[column] as unknown as T[keyof T][]
+    const dataB = b[column] as unknown as T[keyof T][]
+    return dataA[0] > dataB[0]? 1: -1
   }
 }
 
-const impactedClientsColumns = [
+function renderCell<T> (col: keyof T) {
+  return function (_: React.ReactNode, row: T) {
+    const data = row[col] as unknown as T[keyof T][]
+    return <span title={data.join(', ')}>
+      {`${data[0]} ${data.length > 1 ? `(${data.length})` : ''}`}
+    </span>
+  }
+}
+
+const impactedClientsColumns: TableProps<AggregatedImpactedClient>['columns'] = [
   {
     title: 'Client MAC',
     dataIndex: 'mac',
     key: 'mac',
-    sorter: sort<ImpactedClient, 'mac'>('mac')
+    render: renderCell<AggregatedImpactedClient>('mac'),
+    sorter: sort<AggregatedImpactedClient>('mac')
   },
   {
     title: 'Manufacturer',
     dataIndex: 'manufacturer',
     key: 'manufacturer',
-    sorter: sort<ImpactedClient, 'manufacturer'>('manufacturer')
+    render: renderCell<AggregatedImpactedClient>('manufacturer'),
+    sorter: sort<AggregatedImpactedClient>('manufacturer')
   },
   {
     title: 'SSID',
     dataIndex: 'ssid',
     key: 'ssid',
-    sorter: sort<ImpactedClient, 'ssid'>('ssid')
+    render: renderCell<AggregatedImpactedClient>('ssid'),
+    sorter: sort<AggregatedImpactedClient>('ssid')
   },
   {
     title: 'Username',
     dataIndex: 'username',
     key: 'username',
-    sorter: sort<ImpactedClient, 'username'>('username')
+    render: renderCell<AggregatedImpactedClient>('username'),
+    sorter: sort<AggregatedImpactedClient>('username')
   },
   {
     title: 'Hostname',
     dataIndex: 'hostname',
     key: 'hostname',
-    sorter: sort<ImpactedClient, 'hostname'>('hostname')
+    render: renderCell<AggregatedImpactedClient>('hostname'),
+    sorter: sort<AggregatedImpactedClient>('hostname')
   }
 ]
 
+
 export const ImpactedClientsDrawer: React.FC<impactedDrawerProps> = (props) => {
-  // TODO: aggregation clients
-  // TODO: fix bug - blinking
   const { $t } = useIntl()
   const [ search, setSearch ] = useState('')
   const queryResults = useImpactedClientsQuery({
     id: props.id,
     search,
     n: 100
-  },{ selectFromResult: (states) => ({
+  }, { selectFromResult: (states) => ({
     ...states,
     isLoading: false,
-    isFetching: states.isLoading || states.isFetching
+    isFetching: states.isLoading || states.isFetching,
+    data: states.data && aggregateDataBy<ImpactedClient>('mac')(states.data)
   }) })
   return <Drawer
     width={'620px'}
@@ -81,37 +113,41 @@ export const ImpactedClientsDrawer: React.FC<impactedDrawerProps> = (props) => {
     onClose={props.onClose}
     children={<Loader states={[queryResults]}>
       <SearchBar onChange={setSearch}/>
-      <Table
+      <Table<AggregatedImpactedClient>
         columns={impactedClientsColumns}
         dataSource={queryResults.data?.map((row, key)=>({ key, ...row }))}/>
     </Loader>}
   />
 }
 
-const impactedAPsColumns = [
+const impactedAPsColumns: TableProps<AggregatedImpactedAP>['columns'] = [
   {
     title: 'AP Name',
     dataIndex: 'name',
     key: 'name',
-    sorter: sort<ImpactedAP, 'name'>('name')
+    render: renderCell<AggregatedImpactedAP>('name'),
+    sorter: sort<AggregatedImpactedAP>('name')
   },
   {
     title: 'AP MAC',
     dataIndex: 'mac',
     key: 'mac',
-    sorter: sort<ImpactedAP, 'mac'>('mac')
+    render: renderCell<AggregatedImpactedAP>('mac'),
+    sorter: sort<AggregatedImpactedAP>('mac')
   },
   {
     title: 'AP Model',
     dataIndex: 'model',
     key: 'model',
-    sorter: sort<ImpactedAP, 'model'>('model')
+    render: renderCell<AggregatedImpactedAP>('model'),
+    sorter: sort<AggregatedImpactedAP>('model')
   },
   {
     title: 'AP Version',
     dataIndex: 'version',
     key: 'version',
-    sorter: sort<ImpactedAP, 'version'>('version')
+    render: renderCell<AggregatedImpactedAP>('version'),
+    sorter: sort<AggregatedImpactedAP>('version')
   }
 ]
 
@@ -125,7 +161,8 @@ export const ImpactedAPsDrawer: React.FC<impactedDrawerProps> = (props) => {
   },{ selectFromResult: (states) => ({
     ...states,
     isLoading: false,
-    isFetching: states.isLoading || states.isFetching
+    isFetching: states.isLoading || states.isFetching,
+    data: states.data && aggregateDataBy<ImpactedAP>('mac')(states.data)
   }) })
   return <Drawer
     width={'620px'}
@@ -137,7 +174,7 @@ export const ImpactedAPsDrawer: React.FC<impactedDrawerProps> = (props) => {
     onClose={props.onClose}
     children={<Loader states={[queryResults]}>
       <SearchBar onChange={setSearch}/>
-      <Table
+      <Table<AggregatedImpactedAP>
         columns={impactedAPsColumns}
         dataSource={queryResults.data?.map((row, key)=>({ key, ...row }))}/>
     </Loader>}
