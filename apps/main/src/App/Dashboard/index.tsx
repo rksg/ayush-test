@@ -20,7 +20,7 @@ import { useDateFilter } from '@acx-ui/utils'
 
 const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
-const defaultEnabledDates = [moment().subtract(1, 'months').seconds(0), moment().seconds(0)]
+const defaultEnabledDates = [moment().subtract(3, 'months').seconds(0), moment().seconds(0)]
 export default function Dashboard () {
   return (
     <AnalyticsFilterProvider>

@@ -4,12 +4,11 @@ import styled                from 'styled-components/macro'
 import { DateRange, defaultRanges } from '@acx-ui/utils'
 
 type WrapperProps = {
-  hasTimePicker?: boolean,
-  rangeOptions?: DateRange[],
-  selectionType: DateRange
+  rangeOptions?: DateRange[];
+  selectionType: DateRange;
 }
 /* eslint-disable max-len */
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<WrapperProps>`
   --acx-date-picker-ranges-width: 130px;
 
   > .ant-picker {
@@ -17,7 +16,7 @@ export const Wrapper = styled.div`
     background: var(--acx-neutrals-10);
     border-color: var(--acx-primary-black);
     > div:first-of-type {
-      margin-left: 22px
+      margin-left: 22px;
     }
     > .ant-picker-suffix {
       position: absolute;
@@ -37,7 +36,9 @@ export const Wrapper = styled.div`
   .ant-picker-dropdown {
     font-size: var(--acx-body-4-font-size);
     padding: 10px 0;
-    & .ant-picker-panel { border: none; }
+    & .ant-picker-panel {
+      border: none;
+    }
     & .ant-picker-header-super-prev-btn,
     & .ant-picker-header-super-next-btn {
       display: none;
@@ -78,8 +79,13 @@ export const Wrapper = styled.div`
         }
       }
     }
-
     .ant-picker-ranges {
+      li:nth-child(${(props) =>
+    props.rangeOptions
+      ? props.rangeOptions.indexOf(props.selectionType) + 1
+      : Object.keys(defaultRanges()).indexOf(props.selectionType) + 1}) {
+        font-weight: var(--acx-body-font-weight-bold);
+      }
       position: absolute;
       width: var(--acx-date-picker-ranges-width);
       top: 10px;
@@ -87,10 +93,9 @@ export const Wrapper = styled.div`
       left: 0px;
       display: flex;
       flex-direction: column;
-      background-color:var(--acx-neutrals-10);
+      background-color: var(--acx-neutrals-10);
       padding: 20px;
       border-radius: 4px 0 0 4px;
-
       .ant-picker-preset > .ant-tag-blue {
         color: var(--acx-neutrals-100);
         background: var(--acx-neutrals-10);
@@ -98,7 +103,6 @@ export const Wrapper = styled.div`
         cursor: pointer;
       }
     }
-
     .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
     .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
     .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
@@ -116,15 +120,23 @@ export const Wrapper = styled.div`
     .ant-picker-cell-in-view.ant-picker-cell-range-end.ant-picker-cell-range-hover::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single).ant-picker-cell-range-hover-start::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single).ant-picker-cell-range-hover-end::before,
-    .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,
-    .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
+    .ant-picker-panel
+      > :not(.ant-picker-date-panel)
+      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,
+    .ant-picker-panel
+      > :not(.ant-picker-date-panel)
+      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
     .ant-picker-cell-in-view.ant-picker-cell-in-range::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single)::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single)::before {
       background: var(--acx-accents-blue-10);
     }
-    .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start .ant-picker-cell-inner::after,
-    .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end .ant-picker-cell-inner::after {
+    .ant-picker-date-panel
+      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start
+      .ant-picker-cell-inner::after,
+    .ant-picker-date-panel
+      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end
+      .ant-picker-cell-inner::after {
       background: var(--acx-accents-blue-10);
     }
     .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
@@ -133,10 +145,12 @@ export const Wrapper = styled.div`
     .ant-picker-cell-in-view.ant-picker-cell-range-hover:not(.ant-picker-cell-in-range)::after,
     .ant-picker-cell-in-view.ant-picker-cell-range-hover-start:not(.ant-picker-cell-in-range)::after,
     .ant-picker-cell-in-view.ant-picker-cell-range-hover-end:not(.ant-picker-cell-in-range)::after {
-      border-color : var(--acx-accents-blue-50);
+      border-color: var(--acx-accents-blue-50);
     }
-    .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end) .ant-picker-cell-inner,
-    .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start) .ant-picker-cell-inner {
+    .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end)
+      .ant-picker-cell-inner,
+    .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start)
+      .ant-picker-cell-inner {
       border-radius: 20px;
     }
     .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
@@ -153,7 +167,7 @@ export const Wrapper = styled.div`
   }
 `
 
-export const TimePickerRow = styled.div<WrapperProps>`
+export const TimePickerRow = styled.div`
   height: 48px;
   text-align: center;
 
@@ -199,7 +213,7 @@ export const TimePickerWrapper = styled(TimePicker)`
 
 export const RangeApplyRow = styled.div`
   display: flex;
-  background-color:var(--acx-neutrals-10);
+  background-color: var(--acx-neutrals-10);
   align-items: center;
   height: 48px;
 `
@@ -215,31 +229,3 @@ export const Buttons = styled(Space).attrs({ size: 12 })`
     line-height: normal;
   }
 `
-
-
-// .ant-picker-input > input {
-//   font-size: var(--acx-body-4-font-size);
-//   padding-left: 4px;
-// }
-// div[role='display-date-range'] {
-//   font-size: var(--acx-subtitle-5-font-size);
-//   font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
-// }
-// border-bottom: 0;
-// .ant-picker-footer-extra {
-//   padding: 0;
-//   border-bottom: 0;
-// }
-// }
-// .calender-range-apply-row {
-// font-weight: var(--acx-body-font-weight);
-// }
-// .ant-picker-header {
-// border-bottom: none;
-// }
-// .ant-picker-header-view {
-// font-weight: var(--acx-body-font-weight-bold);
-// }
-// .ant-picker-ranges > li:nth-child(${(props) => (props.rangeOptions ? props.rangeOptions.indexOf(props.selectionType) + 1 : Object.keys(defaultRanges()).indexOf(props.selectionType) + 1)})  {
-// font-weight: var(--acx-body-font-weight-bold);
-// }`

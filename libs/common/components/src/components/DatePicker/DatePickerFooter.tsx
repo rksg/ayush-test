@@ -20,13 +20,11 @@ interface DatePickerFooterProps {
   setIsCalenderOpen: React.Dispatch<React.SetStateAction<boolean>>;
   defaultValue: DateRangeType;
   onDateApply: Function;
-  rangeOptions?: DateRange[];
-  selectionType: DateRange;
 }
 type DisabledTimes = {
-  disabledHours?: () => number[];
-  disabledMinutes?: (hour: number) => number[];
-  disabledSeconds?: (hour: number, minute: number) => number[];
+  disabledHours?: () => number[],
+  disabledMinutes?: (hour: number) => number[],
+  disabledSeconds?: (hour: number, minute: number) => number[]
 }
 const { dateFormat, dateTimeFormat } = dateTimeFormats
 
@@ -50,9 +48,7 @@ export const DatePickerFooter = ({
   defaultValue,
   setRange,
   setIsCalenderOpen,
-  onDateApply,
-  rangeOptions,
-  selectionType
+  onDateApply
 }: DatePickerFooterProps) => {
   const onButtonClick = (type: string) => {
     if (type === 'cancel') {
@@ -66,10 +62,7 @@ export const DatePickerFooter = ({
     }
     setIsCalenderOpen(false)
   }
-  const onTimePickerSelect = (
-    config: typeof timePickerConfig[number],
-    time: Moment
-  ) => {
+  const onTimePickerSelect = (config: typeof timePickerConfig[number], time: Moment) => {
     if (config.range === 'startDate' && time && time.isAfter(range.endDate)) {
       setRange({ startDate: time, endDate: time })
     } else {
@@ -77,11 +70,7 @@ export const DatePickerFooter = ({
     }
   }
   const disabledDateTime = useCallback((): DisabledTimes => {
-    if (
-      range.startDate &&
-      range.endDate &&
-      range.startDate.isSame(range.endDate, 'day')
-    ) {
+    if (range.startDate && range.endDate && range.startDate.isSame(range.endDate, 'day')) {
       return {
         disabledHours: () => timepickerRange(0, range.startDate?.hour()),
         disabledMinutes: () => timepickerRange(0, range.startDate?.minute())
@@ -89,52 +78,50 @@ export const DatePickerFooter = ({
     }
     return defaultselectionForDisabledDates
   }, [range])
-  console.log(rangeOptions)
-  console.log(selectionType)
 
-  return <>
-    {showTimePicker &&
-    <UI.TimePickerRow
-      rangeOptions={rangeOptions}
-      selectionType={selectionType}>
-      {timePickerConfig.map((config)=>
-        <React.Fragment key={config.id}>
-          <UI.TimePickerWrapper
-            role='time-picker'
-            showNow={false}
-            format={config.format}
-            placeholder=''
-            suffixIcon={<CaretDownSolid />}
-            allowClear={false}
-            getPopupContainer={(node: HTMLElement) => node}
-            onSelect={(time) => onTimePickerSelect(config, time)}
-            value={range[config.range as keyof DateRangeType]}
-            disabled={!range[config.range as keyof DateRangeType]}
-            disabledTime={config.range === 'endDate'
-              ? disabledDateTime
-              : () => defaultselectionForDisabledDates}
-          />
-          {config.hasColon &&
-          <UI.TimePickerColon>:
-          </UI.TimePickerColon>}
-          {config.hasHyphen &&
-          <UI.TimePickerHyphen>-
-          </UI.TimePickerHyphen>}
-        </React.Fragment>
+  return (
+    <>
+      {showTimePicker && (
+        <UI.TimePickerRow>
+          {timePickerConfig.map((config) => (
+            <React.Fragment key={config.id}>
+              <UI.TimePickerWrapper
+                role='time-picker'
+                showNow={false}
+                format={config.format}
+                placeholder=''
+                suffixIcon={<CaretDownSolid />}
+                allowClear={false}
+                getPopupContainer={(node: HTMLElement) => node}
+                onSelect={(time) => onTimePickerSelect(config, time)}
+                value={range[config.range as keyof DateRangeType]}
+                disabled={!range[config.range as keyof DateRangeType]}
+                disabledTime={
+                  config.range === 'endDate'
+                    ? disabledDateTime
+                    : () => defaultselectionForDisabledDates
+                }
+              />
+              {config.hasColon && <UI.TimePickerColon>:</UI.TimePickerColon>}
+              {config.hasHyphen && <UI.TimePickerHyphen>-</UI.TimePickerHyphen>}
+            </React.Fragment>
+          ))}
+        </UI.TimePickerRow>
       )}
-    </UI.TimePickerRow>}
-    <UI.RangeApplyRow>
-      <UI.SelectedRange role='display-date-range'>
-        {`${getCustomisedDate(range?.startDate, showTimePicker) || ''}
+      <UI.RangeApplyRow>
+        <UI.SelectedRange role='display-date-range'>
+          {`${getCustomisedDate(range?.startDate, showTimePicker) || ''}
         - ${getCustomisedDate(range?.endDate, showTimePicker) || ''}`}
-      </UI.SelectedRange>
-      <UI.Buttons>
-        <Button onClick={() => onButtonClick('cancel')}
-          size={'small'}>Cancel</Button>
-        <Button type={'secondary'}
-          size={'small'}
-          onClick={() => onButtonClick('apply')}>Apply</Button>
-      </UI.Buttons>
-    </UI.RangeApplyRow>
-  </>
+        </UI.SelectedRange>
+        <UI.Buttons>
+          <Button onClick={() => onButtonClick('cancel')} size={'small'}>
+            Cancel
+          </Button>
+          <Button type={'secondary'} size={'small'} onClick={() => onButtonClick('apply')}>
+            Apply
+          </Button>
+        </UI.Buttons>
+      </UI.RangeApplyRow>
+    </>
+  )
 }

@@ -62,10 +62,7 @@ export const RangePicker = ({
   useEffect(() => {
     const handleClickForDatePicker = (event: MouseEvent) => {
       const target = event.target as HTMLInputElement
-      if (
-        componentRef.current &&
-        !componentRef.current.contains(event.target as Node)
-      ) {
+      if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
         setIscalenderOpen(false)
       }
       if (Object.values(DateRange).includes(target.innerText as DateRange)) {
@@ -85,11 +82,8 @@ export const RangePicker = ({
       document.removeEventListener('click', handleClickForDatePicker)
     }
   }, [range, onDateChange, onDateApply])
-  console.log(selectionType)
-  console.log(rangeOptions)
-
   return (
-    <UI.Wrapper ref={componentRef}>
+    <UI.Wrapper ref={componentRef} rangeOptions={rangeOptions} selectionType={selectionType}>
       <AntdRangePicker
         ranges={defaultRanges(rangeOptions) as RangesType}
         placement='bottomRight'
@@ -97,8 +91,8 @@ export const RangePicker = ({
         open={isCalenderOpen}
         onClick={() => setIscalenderOpen(true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
-        suffixIcon={<ClockOutlined/>}
-        onCalendarChange={(values: RangeValueType) => 
+        suffixIcon={<ClockOutlined />}
+        onCalendarChange={(values: RangeValueType) =>
           setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })
         }
         mode={['date', 'date']}
@@ -110,8 +104,6 @@ export const RangePicker = ({
             defaultValue={selectedRange}
             setIsCalenderOpen={setIscalenderOpen}
             onDateApply={onDateApply}
-            rangeOptions={rangeOptions}
-            selectionType={selectionType}
           />
         )}
         value={[range?.startDate, range?.endDate]}
