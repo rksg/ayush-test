@@ -16,7 +16,10 @@ export type {
   MultiLineTimeSeriesChartData
 } from './components/MultiLineTimeSeriesChart'
 export * from './components/PageHeader'
-export * from './components/Pill'
+export type {
+  TrendType
+} from './components/Pill/styledComponents'
+export { Pill } from './components/Pill'
 export * from './components/SelectionControl'
 export * from './components/SparklineChart'
 export * from './components/StackedAreaChart'

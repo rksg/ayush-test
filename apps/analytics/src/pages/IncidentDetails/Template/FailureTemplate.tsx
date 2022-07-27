@@ -1,14 +1,14 @@
 import { Col, Row }                  from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import { incidentInformation } from '@acx-ui/analytics/utils'
-import { PageHeader, Pill }    from '@acx-ui/components'
+import { incidentInformation, calculateSeverity } from '@acx-ui/analytics/utils'
+import { PageHeader, Pill }                       from '@acx-ui/components'
 
 import { incidentDetailsMap }                                      from '..'
 import { getImpactedArea, IncidentAttributes, formattedSliceType } from '../IncidentAttributes'
+import * as UI                                                     from '../syledComponents'
 
 import type { IncidentDetailsProps } from '../types'
-
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const info = incidentInformation[props.code as keyof typeof incidentInformation]
@@ -36,26 +36,25 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
     }
     return <FormattedMessage {...messageProps}/>
   }
+  const severityValue = calculateSeverity(props.severity)!
 
   return (
     <>
       <PageHeader
-        title={$t({ id: 'title', defaultMessage: 'Incident Details' })}
-        sideHeader={<Pill value='123' trend='positive' />}
+        title={$t({ defaultMessage: 'Incident Details' })}
+        sideHeader={<Pill value={severityValue} trend={severityValue} />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'AI Analytics' }), link: '/analytics' },
-          { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' },
-          { text: $t({ defaultMessage: 'Incident Details' }),
-            link: `/analytics/incidents/${props.id}` }
+          { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(props)}
       />
-      <Row gutter={[20, 20]}>
-        <Col span={4}>
+      <Row>
+        <UI.LeftColumn span={4}>
           <IncidentAttributes {...props} {...info} visibleFields={attributeList}/>
-        </Col>
-        <Col span={20}>
-          <Row gutter={[20, 20]}>
+        </UI.LeftColumn>
+        <UI.RightColumn span={20}>
+          <Row>
             <Col span={24}>
               <div>Insights</div>
             </Col>
@@ -66,7 +65,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
               <div>time series section</div>
             </Col>
           </Row>
-        </Col>
+        </UI.RightColumn>
       </Row>
     </>
   )

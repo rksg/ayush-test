@@ -17,7 +17,7 @@ export const incidentDetailsMap = {
   'assoc-failure': Assoc
 }
 
-function IncidentDetails (props: { data?: IncidentDetailsProps }) {
+export function IncidentDetails (props: { data?: IncidentDetailsProps }) {
   const data = props.data as IncidentDetailsProps
   const IncidentDetailsComponent = incidentDetailsMap[data?.code as keyof typeof incidentDetailsMap]
   return (
@@ -26,7 +26,8 @@ function IncidentDetails (props: { data?: IncidentDetailsProps }) {
 }
 
 function IncidentDetailsPage () {
-  const queryResults = useIncidentDetailsQuery({ id: useParams().incidentId })
+  let { incidentId } = useParams()
+  const queryResults = useIncidentDetailsQuery({ id: incidentId })
   return (
     <Loader states={[queryResults]}>
       <IncidentDetails data={queryResults.data}/>
