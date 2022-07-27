@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'rc-wifi',
+  name: 'rc',
   exposes: {
     './Routes': './src/Routes',
     './Widgets': './src/Widgets'
