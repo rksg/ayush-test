@@ -7,7 +7,7 @@ export function CustomActionModal () {
       <button onClick={ConfirmDeleteModal}>Confirm Delete</button>
       <button onClick={ConfirmDeleteWithValidation}>Confirm Delete With Validation</button>
       <button onClick={ErrorDetailModal}>Error With Details</button>
-      <button onClick={CustomFootersModal}>Warning With Custom Footers</button>
+      <button onClick={CustomButtonsModal}>Warning With Custom Buttons</button>
     </>
   )
 }
@@ -59,23 +59,23 @@ const ErrorDetailModal = () => {
     title: 'Something went wrong',
     content: 'Some descriptions',
     customContent: {
-      action: 'CUSTOM_FOOTERS',
+      action: 'SHOW_ERRORS',
       errorDetails: mockErrorDetails
     }
   })
 }
 
-const CustomFootersModal = () => {
+const CustomButtonsModal = () => {
   showActionModal({
     type: 'warning',
     width: 600,
     title: 'Server Configuration Conflict',
     content: 'Some descriptions',
     customContent: {
-      action: 'CUSTOM_FOOTERS',
-      footers: [{
+      action: 'CUSTOM_BUTTONS',
+      buttons: [{
         text: 'cancel',
-        type: 'link',
+        type: 'link', // TODO: will change after DS update
         key: 'cancel',
         handler () {}
       }, {

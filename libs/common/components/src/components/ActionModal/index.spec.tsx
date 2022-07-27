@@ -74,7 +74,7 @@ describe('Action Modal', () => {
         title: 'Something went wrong',
         content: 'Some descriptions',
         customContent: {
-          action: 'CUSTOM_FOOTERS',
+          action: 'SHOW_ERRORS',
           errorDetails: mockErrorDetails
         }
       })
@@ -239,8 +239,8 @@ describe('Action Modal', () => {
       title: 'This is a warning message',
       content: 'Some warning descriptions',
       customContent: {
-        action: 'CUSTOM_FOOTERS',
-        footers: [{
+        action: 'CUSTOM_BUTTONS',
+        buttons: [{
           text: 'cancel',
           type: 'link',
           key: 'cancel',
