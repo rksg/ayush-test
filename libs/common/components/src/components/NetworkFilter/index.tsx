@@ -124,6 +124,7 @@ export function NetworkFilter (props: CascaderProps) {
       <UI.Divider />
       <UI.RadioDiv>
         <UI.Span>{withRadio?.radioTitle}:</UI.Span>
+        <UI.Space />
         <AntCheckbox.Group 
           options={withRadio?.radioOptions}
           onChange={onCheckboxChange}

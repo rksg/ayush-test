@@ -1,7 +1,6 @@
 import {
   Divider as AntDivider,
-  Space as AntSpace,
-  Checkbox as AntCheckbox
+  Space as AntSpace
 } from 'antd'
 import styled from 'styled-components/macro'
 
@@ -25,14 +24,15 @@ export const ButtonDiv = styled.div`
 
 export const RadioDiv = styled.div`
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
-  padding: 0px;
-`
-
-export const Checkbox = styled(AntCheckbox)`
-  padding: 2px;
+  justify-content: space-evenly;
+  padding: 5px;
 `
 
 export const Span = styled.span`
-  padding: 2px;
+  margin-right: 10px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  margin-left: 2px;
 `

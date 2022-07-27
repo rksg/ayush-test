@@ -1,7 +1,6 @@
-import { DefaultOptionType } from 'antd/lib/cascader'
-
 import { NetworkFilter, Option } from '..'
-import { showToast }             from '../../Toast'
+
+import { onApply, onCancel } from './utils'
 
 const options: Option[] = [
   {
@@ -55,37 +54,6 @@ const options: Option[] = [
     ]
   }
 ]
-
-const helper = (val?: DefaultOptionType[] | DefaultOptionType[][]) => {
-  if (val) {
-    let ret = ''
-    for (let i = 0; i < val.length; i++) {
-      ret += JSON.stringify(val[i]) + ' '
-    }
-    return ret
-  }
-
-  return 'no cascader selection'
-}
-
-const onApply = (
-  selectedRadio?: string[],
-  selectedOptions?: DefaultOptionType[] | DefaultOptionType[][]
-) => {
-  showToast({
-    type: 'success',
-    content: 
-      `Radio selected: ${selectedRadio ? selectedRadio : 'no radio selected'}, 
-      Cascader Options Selected: ${helper(selectedOptions)}`
-  })
-}
-
-const onCancel = () => {
-  showToast({
-    type: 'info',
-    content: 'cascader successfully closed'
-  })
-}
 
 export function NestedMultiCheckboxControl () {
   return <NetworkFilter

@@ -1,8 +1,6 @@
-import { DefaultOptionType } from 'antd/lib/cascader'
-
 import { NetworkFilter, Option } from '..'
-import { showToast }             from '../../Toast'
 
+import { onApply, onCancel } from './utils'
 
 const options: Option[] = [
   {
@@ -24,44 +22,16 @@ const options: Option[] = [
   {
     value: 'n5',
     label: 'SSID 5'
+  },
+  {
+    value: 'n6',
+    label: 'SSID 7'
   }
 ]
 
-const helper = (val?: DefaultOptionType[] | DefaultOptionType[][]) => {
-  if (val) {
-    let ret = ''
-    for (let i = 0; i < val.length; i++) {
-      ret += JSON.stringify(val[i]) + ' '
-    }
-    return ret
-  }
-
-  return 'no cascader selection'
-}
-
-const onApply = (
-  selectedRadio?: string[],
-  selectedOptions?: DefaultOptionType[] | DefaultOptionType[][]
-) => {
-  showToast({
-    type: 'success',
-    content:
-      `Radio selected: 
-        ${(selectedRadio && selectedRadio.length !== 0) ? selectedRadio : 'no radio selected'}, 
-      Cascader Options Selected: ${helper(selectedOptions)}`
-  })
-}
-
-const onCancel = () => {
-  showToast({
-    type: 'info',
-    content: 'cascader successfully closed'
-  })
-}
-
 export function FlatListMulti () {
   return <NetworkFilter
-    multiple
+    withControlButtons
     placeholder='flat list, multi-select'
     options={options}
     onApply={onApply}
