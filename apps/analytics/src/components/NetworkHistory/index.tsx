@@ -1,6 +1,7 @@
 import React from 'react'
 
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { useGlobalFilter }          from '@acx-ui/analytics/utils'
 import { getSeriesData }            from '@acx-ui/analytics/utils'
@@ -24,8 +25,11 @@ const lineColors = [
   cssStr('--acx-accents-orange-50')
 ]
 
-function NetworkHistoryWidget () {
+function NetworkHistoryWidget (
+  { hideTitle, useFullheight } : { hideTitle?: boolean, useFullheight?: boolean }
+) {
   const filters = useGlobalFilter()
+  const { $t } = useIntl()
   const queryResults = useNetworkHistoryQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
@@ -33,10 +37,10 @@ function NetworkHistoryWidget () {
         ...rest
       })
     })
-
+  const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
   return (
     <Loader states={[queryResults]}>
-      <Card title='Network History' >
+      <Card title={title} useFullHeight={useFullheight}>
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart
