@@ -1,8 +1,6 @@
-
-
 import { LabelFormatterCallback, RegisteredSeriesOption } from 'echarts'
 import ReactECharts                                       from 'echarts-for-react'
-import { CallbackDataParams }                             from 'echarts/types/dist/shared'
+import { CallbackDataParams, GridOption }                 from 'echarts/types/dist/shared'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import {
@@ -50,10 +48,11 @@ export interface BarChartProps
   <TChartData extends BarChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: TChartData,
+  grid?: GridOption,
   barColors: string[]
   barWidth?: number
-  labelFormatter?: string | LabelFormatterCallback<CallbackDataParams> | undefined
-  labelRichStyle?: object | undefined
+  labelFormatter?: string | LabelFormatterCallback<CallbackDataParams> 
+  labelRichStyle?: object
 }
 
 const getSeries = (
@@ -89,6 +88,7 @@ const getSeries = (
 export function BarChart<TChartData extends BarChartData>
 ({
   data,
+  grid: gridProps,
   labelFormatter,
   labelRichStyle,
   barColors,
@@ -96,7 +96,7 @@ export function BarChart<TChartData extends BarChartData>
   ...props
 }: BarChartProps<TChartData>) {
   const option: EChartsOption = {
-    grid: { ...gridOptions(), right: 30 },
+    grid: { ...gridOptions(), ...gridProps },
     dataset: {
       dimensions: data.dimensions,
       source: data.source
