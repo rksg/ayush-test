@@ -1,5 +1,45 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Pill renders P1 1`] = `
+<DocumentFragment>
+  <span
+    class="styledComponents__Pill-sc-j61ge1-0 jVBEYL"
+  >
+    P1
+  </span>
+</DocumentFragment>
+`;
+
+exports[`Pill renders P2 1`] = `
+<DocumentFragment>
+  <span
+    class="styledComponents__Pill-sc-j61ge1-0 hvJowx"
+  >
+    P2
+  </span>
+</DocumentFragment>
+`;
+
+exports[`Pill renders P3 1`] = `
+<DocumentFragment>
+  <span
+    class="styledComponents__Pill-sc-j61ge1-0 hWnMmO"
+  >
+    P3
+  </span>
+</DocumentFragment>
+`;
+
+exports[`Pill renders P4 1`] = `
+<DocumentFragment>
+  <span
+    class="styledComponents__Pill-sc-j61ge1-0 cYJsgH"
+  >
+    P4
+  </span>
+</DocumentFragment>
+`;
+
 exports[`Pill renders negative trend 1`] = `
 <DocumentFragment>
   <span

@@ -30,6 +30,43 @@ exports[`PageHeader should render basic page header 1`] = `
 </DocumentFragment>
 `;
 
+exports[`PageHeader should render page header with sideHeader 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ixsJrS"
+  >
+    <div
+      class="ant-page-header ant-page-header-ghost"
+    >
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography"
+            >
+              With Subtitle
+            </h1>
+            <div
+              class="styledComponents__SideHeader-sc-xov27h-2 iXwvey"
+            >
+              <div>
+                sideHeader
+              </div>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`PageHeader should render page header with tabs 1`] = `
 <DocumentFragment>
   <div

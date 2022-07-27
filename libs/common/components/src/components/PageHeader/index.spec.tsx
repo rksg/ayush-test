@@ -45,4 +45,16 @@ describe('PageHeader', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('should render page header with sideHeader', () => {
+    const { asFragment } = render(
+      <BrowserRouter>
+        <PageHeader
+          title='With Subtitle'
+          sideHeader={<div>sideHeader</div>}
+        />
+      </BrowserRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
 })
