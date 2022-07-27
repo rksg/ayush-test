@@ -129,7 +129,6 @@ export function NetworkFilter (props: CascaderProps) {
           onChange={onCheckboxChange}
         />
       </UI.RadioDiv>
-      <UI.Divider />
       {RenderFooterButtons()}
     </>
   }
@@ -137,7 +136,6 @@ export function NetworkFilter (props: CascaderProps) {
   const ApplyDropDown = (menus: JSX.Element) => {
     return <>
       {menus}
-      <UI.Divider />
       {RenderFooterButtons()}
     </>
   }
@@ -145,10 +143,13 @@ export function NetworkFilter (props: CascaderProps) {
   const RenderFooterButtons = () => {
     return (
       (isPopulated && withControlButtons) && (
-        <UI.ButtonDiv>
-          <Button size='small' onClick={onCancelProps}>Cancel</Button>
-          <Button size='small' type='secondary' onClick={onApplyProps}>Apply</Button>
-        </UI.ButtonDiv>
+        <>
+          <UI.Divider />
+          <UI.ButtonDiv>
+            <Button size='small' onClick={onCancelProps}>Cancel</Button>
+            <Button size='small' type='secondary' onClick={onApplyProps}>Apply</Button>
+          </UI.ButtonDiv>
+        </>
       )
     )
   }

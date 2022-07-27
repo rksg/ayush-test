@@ -12,6 +12,18 @@ const options: Option[] = [
   {
     value: 'n2',
     label: 'SSID 2'
+  },
+  {
+    value: 'n3',
+    label: 'SSID 3'
+  },
+  {
+    value: 'n4',
+    label: 'SSID 4'
+  },
+  {
+    value: 'n5',
+    label: 'SSID 5'
   }
 ]
 
@@ -47,9 +59,10 @@ const onCancel = () => {
   })
 }
 
-export function WithSingleList () {
+export function FlatListMulti () {
   return <NetworkFilter
-    placeholder='Single List, multi false'
+    multiple
+    placeholder='flat list, multi-select'
     options={options}
     onApply={onApply}
     onCancel={onCancel}

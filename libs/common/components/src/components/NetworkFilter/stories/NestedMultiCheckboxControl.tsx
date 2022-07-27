@@ -87,9 +87,10 @@ const onCancel = () => {
   })
 }
 
-export function WithCheckboxGroupMulti () {
+export function NestedMultiCheckboxControl () {
   return <NetworkFilter
     multiple
+    withControlButtons
     placeholder='With CheckboxGroup'
     withRadio={{ radioTitle: 'Frequency', radioOptions: ['6 GHz', '5 Ghz', '2.4 Ghz'] }}
     options={options}

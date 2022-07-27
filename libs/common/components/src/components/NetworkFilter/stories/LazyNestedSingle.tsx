@@ -3,7 +3,6 @@ import { DefaultOptionType } from 'antd/lib/cascader'
 import { NetworkFilter, Option } from '..'
 import { showToast }             from '../../Toast'
 
-
 const options: Option[] = [
   {
     value: 'n1',
@@ -20,10 +19,6 @@ const options: Option[] = [
   {
     value: 'n4',
     label: 'SSID 4'
-  },
-  {
-    value: 'n5',
-    label: 'SSID 5'
   }
 ]
 
@@ -45,9 +40,8 @@ const onApply = (
 ) => {
   showToast({
     type: 'success',
-    content:
-      `Radio selected: 
-        ${(selectedRadio && selectedRadio.length !== 0) ? selectedRadio : 'no radio selected'}, 
+    content: 
+      `Radio selected: ${selectedRadio ? selectedRadio : 'no radio selected'}, 
       Cascader Options Selected: ${helper(selectedOptions)}`
   })
 }
@@ -59,10 +53,10 @@ const onCancel = () => {
   })
 }
 
-export function WithSingleListMulti () {
+export function LazyNestedSingle () {
   return <NetworkFilter
-    placeholder='Single List, multi true'
     multiple
+    placeholder='With CheckboxGroup'
     options={options}
     onApply={onApply}
     onCancel={onCancel}
