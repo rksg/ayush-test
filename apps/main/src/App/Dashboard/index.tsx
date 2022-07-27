@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { GlobalFilterProvider } from '@acx-ui/analytics/utils'
 import {
   Button,
@@ -14,7 +16,7 @@ import {
   BulbOutlined
 } from '@acx-ui/icons'
 
-const WifiWidgets = React.lazy(() => import('rc-wifi/Widgets'))
+const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
 export default function Dashboard () {
@@ -27,13 +29,21 @@ export default function Dashboard () {
 }
 
 function DashboardPageHeader () {
+  const { $t } = useIntl()
   return (
     <PageHeader
-      title='Dashboard'
+      title={$t({ id: 'title', defaultMessage: 'Dashboard' })}
       extra={[
-        <Button key='add' type='primary'>Add...</Button>,
-        <Button key='hierarchy-filter'>Entire Organization <ArrowExpand /></Button>,
-        <Button key='date-filter' icon={<ClockOutlined />}>Last 24 Hours</Button>,
+        <Button key='add' type='primary'>
+          {$t({ id: 'pageHeaderMenu.add', defaultMessage: 'Add...' })}
+        </Button>,
+        <Button key='hierarchy-filter'>
+          {$t({ id: 'pageHeaderMenu.entireOrg', defaultMessage: 'Entire Organization' })}
+          <ArrowExpand />
+        </Button>,
+        <Button key='date-filter' icon={<ClockOutlined />}>
+          {$t({ id: 'pageHeaderMenu.last24Hrs', defaultMessage: 'Last 24 Hours' })}
+        </Button>,
         <Button key='download' icon={<DownloadOutlined />} />,
         <Button key='insight' icon={<BulbOutlined />} />
       ]}

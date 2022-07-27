@@ -103,7 +103,7 @@ const formats = {
     (txpowerMapping[value] ? txpowerMapping[value] : value)
 } as Record<string, (value: unknown)=> string>
 
-const dateTimeFormats = {
+export const dateTimeFormats = {
   dateFormat: 'MMM DD YYYY',
   timeFormat: 'HH:mm',
   secondFormat: 'HH:mm:ss',
@@ -117,8 +117,8 @@ export function formatter (
   name: keyof typeof formats | keyof typeof dateTimeFormats = 'countFormat'
 ) {
   return function formatter (value: unknown, tz?: string) {
-    if (value === null) {
-      return null
+    if (value === null || value === '-') {
+      return value
     }
 
     if (dateTimeFormats[name as keyof typeof dateTimeFormats]) {

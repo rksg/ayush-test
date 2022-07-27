@@ -23,15 +23,8 @@ import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
 
 export interface MultiLineTimeSeriesChartData extends Object {
-  /**
-   * Multi dimensional array which first item is timestamp and 2nd item is value
-   * @example
-   * [
-   *   [1603900800000, 64.12186646508322],
-   *   [1603987200000, 76]
-   * ]
-   */
-  data: [TimeStamp, number][]
+  name: string,
+  data: [TimeStamp, number | '-'][]
 }
 
 export interface MultiLineTimeSeriesChartProps
@@ -45,7 +38,7 @@ export interface MultiLineTimeSeriesChartProps
   }
 
 export function MultiLineTimeSeriesChart
-  <TChartData extends MultiLineTimeSeriesChartData = { name: string, data: [TimeStamp, number][] }>
+  <TChartData extends MultiLineTimeSeriesChartData>
 ({
   data,
   legendProp = 'name' as keyof TChartData,
@@ -54,7 +47,7 @@ export function MultiLineTimeSeriesChart
 }: MultiLineTimeSeriesChartProps<TChartData>) {
   const option: EChartsOption = {
     color: props.lineColors || [
-      cssStr('--acx-primary-black'),
+      cssStr('--acx-accents-blue-30'),
       cssStr('--acx-accents-blue-50'),
       cssStr('--acx-accents-orange-50'),
       cssStr('--acx-semantics-yellow-40')
