@@ -111,6 +111,30 @@ describe('CalenderRangePicker', () => {
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
+  it('should close CalenderRangePicker when click on ranges', async () => {
+    Object.defineProperty(HTMLElement.prototype, 'innerText', {
+      get () {
+        return this.textContent
+      }
+    })
+    const { container } = render(
+      <RangePicker
+        onDateApply={() => {}}
+        selectionType={DateRange.last7Days}
+        rangeOptions={[DateRange.today, DateRange.last7Days]}
+        selectedRange={{
+          startDate: moment().subtract(7, 'days').seconds(0),
+          endDate: moment().seconds(0)
+        }}
+      />
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    await user.click(await screen.findByText('Today'))
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
+  })
   it('should select date when click on date selection', async () => {
     const onDateChange = jest.fn()
     render(
