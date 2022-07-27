@@ -2,7 +2,8 @@ import React from 'react'
 
 import { Col, Row } from 'antd'
 
-import Header from '../../components/Header'
+import Header               from '../../components/Header'
+import NetworkHistoryWidget from '../../components/NetworkHistory'
 
 function Incidents () {
   return <>
@@ -11,8 +12,8 @@ function Incidents () {
       <Col span={4}>
         <div>bar chart</div>
       </Col>
-      <Col span={20}>
-        timeseries
+      <Col span={20} style={{ display: 'flex', height: 220 }}>
+        <NetworkHistoryWidget hideTitle useFullheight/>
       </Col>
       <Col span={24}>
         table

@@ -1,8 +1,7 @@
-import { render, screen } from '@testing-library/react'
 
-import { dataApiURL }                      from '@acx-ui/analytics/services'
-import { Provider, store }                 from '@acx-ui/store'
-import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
+import { dataApiURL }                                      from '@acx-ui/analytics/services'
+import { Provider, store }                                 from '@acx-ui/store'
+import { mockGraphqlQuery, mockAutoSizer, render, screen } from '@acx-ui/test-utils'
 
 import { api } from './services'
 
@@ -40,6 +39,19 @@ describe('NetworkHistoryWidget', () => {
     })
     const { asFragment } =render( <Provider> <NetworkHistoryWidget/></Provider>)
     await screen.findByText('Network History')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+  it('should render chart without title', async () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
+    })
+    const { asFragment } = render(<Provider>
+      <NetworkHistoryWidget hideTitle useFullheight/>
+    </Provider>)
+    await screen.findByText('3')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     // eslint-disable-next-line testing-library/no-node-access

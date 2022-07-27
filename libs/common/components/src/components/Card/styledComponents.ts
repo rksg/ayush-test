@@ -7,6 +7,7 @@ type WrapperProps = {
   hasTitle: boolean
   hasSubTitle: boolean
   hasTabs: boolean
+  useFullHeight: boolean
 }
 
 export const ArrowOutIcon = styled(ArrowsOut)``
@@ -53,10 +54,10 @@ export const Wrapper = styled.div<WrapperProps>`
     height: calc(
       100% -
         (
-          var(--acx-headline-4-line-height) +
+          ${(props) => props.hasTitle ? 'var(--acx-headline-4-line-height)' : '0px'} +
           ${(props) => props.hasSubTitle ? 'var(--acx-body-4-line-height)' : '0px'} +
-          ${cardPadding} +
-          ${headRowGap}
+          ${(props) => props.useFullHeight ? '0px' : cardPadding } +
+          ${(props) => props.useFullHeight ? '0px' : headRowGap }
         )
     );
     padding: 0;
