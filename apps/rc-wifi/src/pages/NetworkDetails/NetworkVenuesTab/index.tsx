@@ -167,7 +167,7 @@ export function NetworkVenuesTab () {
       render: function (data, row) {
         return <Switch
           checked={Boolean(data)}
-          onClick={(checked: boolean, event: Event) => {
+          onClick={(checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
             activateNetwork(checked, row)
             event.stopPropagation()
           }}

@@ -116,7 +116,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       title: 'Activated',
       dataIndex: ['activated', 'isActivated'],
       render: function (data, row) {
-        return <Switch onClick={(checked: boolean, event: Event) => {
+        return <Switch onClick={(checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
           event.stopPropagation()
           let selectedVenues = [...activateVenues]
           if (checked) {
