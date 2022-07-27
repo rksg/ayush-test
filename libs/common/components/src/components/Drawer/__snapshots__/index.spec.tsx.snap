@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Drawer should match snapshot for basic drawer 1`] = `
+<div
+  class="ant-drawer ant-drawer-right ant-drawer-open no-mask"
+  data-testid="basic-drawer"
+  style="width: 336px;"
+  tabindex="-1"
+>
+  <div
+    class="ant-drawer-content-wrapper"
+    style=""
+  >
+    <div
+      class="ant-drawer-content"
+    >
+      <div
+        class="ant-drawer-wrapper-body"
+      >
+        <div
+          class="ant-drawer-header"
+        >
+          <div
+            class="ant-drawer-header-title"
+          >
+            <button
+              aria-label="Close"
+              class="ant-drawer-close"
+              type="button"
+            >
+              <div
+                data-testid="close-symbol"
+              />
+            </button>
+            <div
+              class="ant-drawer-title"
+            >
+              <div
+                class="sc-gsnTZi kHHBkc"
+              >
+                Test Drawer
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-drawer-body"
+        >
+          <p>
+            some content
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Drawer should match snapshot for custom drawer 1`] = `
+<div
+  class="ant-drawer ant-drawer-right ant-drawer-open no-mask"
+  data-testid="custom-drawer"
+  style="width: 336px;"
+  tabindex="-1"
+>
+  <div
+    class="ant-drawer-content-wrapper"
+    style=""
+  >
+    <div
+      class="ant-drawer-content"
+    >
+      <div
+        class="ant-drawer-wrapper-body"
+      >
+        <div
+          class="ant-drawer-header"
+        >
+          <div
+            class="ant-drawer-header-title"
+          >
+            <button
+              aria-label="Close"
+              class="ant-drawer-close"
+              type="button"
+            >
+              <div
+                data-testid="close-symbol"
+              />
+            </button>
+            <div
+              class="ant-drawer-title"
+            >
+              <button
+                class="sc-bczRLJ elZUnp"
+              >
+                <div
+                  data-testid="arrow-back"
+                />
+                Back
+              </button>
+              <div
+                class="sc-gsnTZi kHHBkc"
+              >
+                <div
+                  data-testid="icon"
+                />
+                Test Drawer
+              </div>
+              <div
+                class="sc-dkzDqf kXySPe"
+              >
+                Test Drawer Subtitle
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-drawer-body"
+        >
+          <p>
+            some content
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,93 @@
+{
+  "sourceRoot": "apps/rc/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/rc",
+        "index": "apps/rc/src/index.html",
+        "baseHref": "/api/ui-beta/rc/",
+        "main": "apps/rc/src/main.ts",
+        "polyfills": "apps/rc/src/polyfills.ts",
+        "tsConfig": "apps/rc/tsconfig.app.json",
+        "assets": ["apps/rc/src/assets"],
+        "styles": [],
+        "scripts": [],
+        "webpackConfig": "apps/rc/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "webpackConfig": "apps/rc/webpack.config.prod.js"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/react:module-federation-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "baseHref": "/",
+        "buildTarget": "rc:build",
+        "hmr": true,
+        "port": 3001
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "rc:build:development"
+        },
+        "production": {
+          "buildTarget": "rc:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/rc/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/rc"],
+      "options": {
+        "jestConfig": "apps/rc/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "serve-static": {
+      "executor": "@nrwl/web:file-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "rc:build",
+        "port": 3001
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "rc:build:development"
+        },
+        "production": {
+          "buildTarget": "rc:build:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}
