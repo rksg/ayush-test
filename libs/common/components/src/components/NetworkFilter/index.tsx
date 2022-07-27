@@ -80,8 +80,11 @@ export function NetworkFilter (props: CascaderProps) {
     const stringValues = checkedValues as string[]
     setRadioSelected(stringValues)
     if (onApply) {
-      const selectedOptions = (multiple) ? multiSelect : singleSelect
-      onApply(stringValues, selectedOptions)
+      if (multiple) {
+        onApply(stringValues, multiSelect)
+      } else {
+        onApply(stringValues, singleSelect)
+      }
     }
   }
 

@@ -63,7 +63,6 @@ export function WithSingleListMulti () {
   return <NetworkFilter
     placeholder='Single List, multi true'
     multiple
-    withControlButtons
     options={options}
     onApply={onApply}
     onCancel={onCancel}
