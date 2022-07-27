@@ -41,9 +41,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 2057628698,
+                  "baseHash": 1292844796,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -58,7 +58,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -138,9 +138,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 2057628698,
+                  "baseHash": 1292844796,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -155,7 +155,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -235,9 +235,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 2057628698,
+                  "baseHash": 1292844796,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -252,7 +252,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -332,9 +332,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 2057628698,
+                  "baseHash": 1292844796,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -349,7 +349,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -429,9 +429,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 2057628698,
+                  "baseHash": 1292844796,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -446,7 +446,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -526,9 +526,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 2057628698,
+                  "baseHash": 1292844796,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -543,7 +543,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -623,9 +623,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 2057628698,
+                  "baseHash": 1292844796,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -640,7 +640,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -720,9 +720,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 2057628698,
+                  "baseHash": 1292844796,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -737,7 +737,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-aq95s2-9",
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-hcbyx3-9",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -817,9 +817,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -834,7 +834,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -914,9 +914,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -931,7 +931,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -1011,9 +1011,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -1028,7 +1028,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -1108,9 +1108,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -1125,7 +1125,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -1205,9 +1205,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -1222,7 +1222,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -1302,9 +1302,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -1319,7 +1319,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -1399,9 +1399,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -1416,7 +1416,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -1514,9 +1514,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 1292649732,
+                  "baseHash": -1275417758,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__CloseIcon-sc-aq95s2-11",
+                  "componentId": "styledComponents__CloseIcon-sc-hcbyx3-11",
                   "isStatic": false,
                   "rules": Array [
                     "font-size:large;margin-top:2px;",
@@ -1526,7 +1526,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__CloseIcon-sc-aq95s2-11",
+                "styledComponentId": "styledComponents__CloseIcon-sc-hcbyx3-11",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -1566,9 +1566,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -1583,7 +1583,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -1663,9 +1663,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -1680,7 +1680,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -1760,9 +1760,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -1777,7 +1777,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -1857,9 +1857,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -1874,7 +1874,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -1954,9 +1954,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -1971,7 +1971,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -2051,9 +2051,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -2068,7 +2068,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -2148,9 +2148,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -2165,7 +2165,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -2245,9 +2245,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -2262,7 +2262,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -2342,9 +2342,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -2359,7 +2359,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -2439,9 +2439,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -2456,7 +2456,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -2536,9 +2536,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -2553,7 +2553,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -2633,9 +2633,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -2650,7 +2650,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -2730,9 +2730,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": -1466634783,
+                  "baseHash": -295518137,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                  "componentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -2747,7 +2747,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-aq95s2-10",
+                "styledComponentId": "styledComponents__VenueInfoMarkerRedIcon-sc-hcbyx3-10",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -2827,9 +2827,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -2844,7 +2844,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -2924,9 +2924,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -2941,7 +2941,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -3021,9 +3021,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -3038,7 +3038,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -3118,9 +3118,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -3135,7 +3135,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -3215,9 +3215,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -3232,7 +3232,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -3312,9 +3312,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -3329,7 +3329,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -3409,9 +3409,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -3426,7 +3426,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -3506,9 +3506,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -3523,7 +3523,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -3603,9 +3603,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -3620,7 +3620,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -3700,9 +3700,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -3717,7 +3717,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -3797,9 +3797,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -3814,7 +3814,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -3894,9 +3894,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -3911,7 +3911,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -4009,9 +4009,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 1292649732,
+                  "baseHash": -1275417758,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__CloseIcon-sc-aq95s2-11",
+                  "componentId": "styledComponents__CloseIcon-sc-hcbyx3-11",
                   "isStatic": false,
                   "rules": Array [
                     "font-size:large;margin-top:2px;",
@@ -4021,7 +4021,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__CloseIcon-sc-aq95s2-11",
+                "styledComponentId": "styledComponents__CloseIcon-sc-hcbyx3-11",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -4061,9 +4061,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -4078,7 +4078,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -4158,9 +4158,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -4175,7 +4175,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -4255,9 +4255,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 412457119,
+                  "baseHash": -132633735,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -4272,7 +4272,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-aq95s2-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-hcbyx3-7",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -4370,9 +4370,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 1292649732,
+                  "baseHash": -1275417758,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__CloseIcon-sc-aq95s2-11",
+                  "componentId": "styledComponents__CloseIcon-sc-hcbyx3-11",
                   "isStatic": false,
                   "rules": Array [
                     "font-size:large;margin-top:2px;",
@@ -4382,7 +4382,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__CloseIcon-sc-aq95s2-11",
+                "styledComponentId": "styledComponents__CloseIcon-sc-hcbyx3-11",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],

@@ -85,28 +85,21 @@ export const RangePicker = ({
       document.removeEventListener('click', handleClickForDatePicker)
     }
   }, [range, onDateChange, onDateApply])
+  console.log(selectionType)
+  console.log(rangeOptions)
 
   return (
-    <UI.Wrapper
-      ref={componentRef}
-      hasTimePicker={showTimePicker}
-      rangeOptions={rangeOptions}
-      selectionType={selectionType}
-    >
+    <UI.Wrapper ref={componentRef}>
       <AntdRangePicker
         ranges={defaultRanges(rangeOptions) as RangesType}
         placement='bottomRight'
         disabledDate={disabledDate}
-        className='acx-range-picker'
-        dropdownClassName='acx-range-picker-popup'
         open={isCalenderOpen}
         onClick={() => setIscalenderOpen(true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
-        suffixIcon={<ClockOutlined />}
-        onCalendarChange={(values: RangeValueType) =>
-          values == null
-            ? setRange({ startDate: null, endDate: null })
-            : setRange({ startDate: values[0], endDate: values[1] })
+        suffixIcon={<ClockOutlined/>}
+        onCalendarChange={(values: RangeValueType) => 
+          setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })
         }
         mode={['date', 'date']}
         renderExtraFooter={() => (
@@ -117,6 +110,8 @@ export const RangePicker = ({
             defaultValue={selectedRange}
             setIsCalenderOpen={setIscalenderOpen}
             onDateApply={onDateApply}
+            rangeOptions={rangeOptions}
+            selectionType={selectionType}
           />
         )}
         value={[range?.startDate, range?.endDate]}

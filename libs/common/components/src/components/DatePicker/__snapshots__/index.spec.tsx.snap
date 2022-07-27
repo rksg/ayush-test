@@ -6,7 +6,7 @@ exports[`CalenderRangePicker should render default CalenderRangePicker 1`] = `
     class="styledComponents__Wrapper-sc-8afdnk-0 fDmQgy"
   >
     <div
-      class="ant-picker ant-picker-range acx-range-picker"
+      class="ant-picker ant-picker-range"
     >
       <div
         class="ant-picker-input ant-picker-input-active"
