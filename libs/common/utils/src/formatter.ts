@@ -106,7 +106,7 @@ const formats = {
     (txpowerMapping[value] ? txpowerMapping[value] : value)
 } as Record<string, (value: unknown)=> string>
 
-const dateTimeFormats = {
+export const dateTimeFormats = {
   dateFormat: 'MMM DD YYYY',
   timeFormat: 'HH:mm',
   secondFormat: 'HH:mm:ss',
