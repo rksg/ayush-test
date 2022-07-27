@@ -1,9 +1,12 @@
-import { Button as AntButton } from 'antd'
-import styled, { css }         from 'styled-components/macro'
+import {
+  Button as AntButton,
+  Typography
+} from 'antd'
+import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { CancelCircle } from '@acx-ui/icons'
 
-import type { TableProps as AntTableProps } from 'antd'
+import { Button } from '../Button'
 
 export const CloseButton = styled(AntButton).attrs({
   icon: <CancelCircle />
@@ -28,6 +31,71 @@ export const ActionButton = styled.button`
   background-color: transparent;
   color: var(--acx-accents-blue-50);
   cursor: pointer;
+`
+
+export const TableSettingTitle = styled(Typography.Title)
+  .attrs({ level: 5 })``
+
+export const TableSettingResetButton = styled(Button).attrs({ type: 'link' })`
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+`
+
+export const TableSettingsGlobalOverride = createGlobalStyle`
+  .ant-pro-table-column-setting {
+    &-overlay {
+      .ant-popover-inner {
+        position: relative;
+        padding-bottom: 48px;
+      }
+      .ant-popover-title {
+        min-height: unset;
+        padding: 16px;
+        padding-bottom: 4px;
+        border-bottom: 0;
+      }
+      .ant-popover-inner-content {
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--acx-neutrals-20);
+      }
+      .ant-tree-switcher-noop { display: none; }
+      .ant-tree-treenode-disabled {
+        .ant-tree-draggable-icon { visibility: hidden; }
+      }
+
+      .ant-tree-treenode {
+        padding: 4px 0;
+        align-items: center;
+        &:hover { background-color: unset; }
+        .ant-tree-checkbox { margin-left: 24px; }
+        .ant-tree-draggable-icon ~ .ant-tree-checkbox { margin-left: 0; }
+      }
+    }
+
+    &-title {
+      height: unset;
+
+      .ant-checkbox-wrapper { display: none; }
+
+      .ant-btn {
+        position: absolute;
+        left: 16px;
+        bottom: 8px;
+      }
+
+      h5${TableSettingTitle} {
+        font-size: var(--acx-subtitle-5-font-size);
+        font-weight: var(--acx-subtitle-5-font-weight);
+        line-height: var(--acx-subtitle-5-line-height);
+        margin-bottom: 0;
+      }
+    }
+
+    &-list-title,
+    &-list-item-option {
+      display: none !important;
+    }
+  }
 `
 
 const compactStyle = css`
@@ -99,7 +167,7 @@ const styles = {
 /* eslint-disable max-len */
 export const Wrapper = styled.div<{
   $type: 'tall' | 'compact' | 'tooltip',
-  $rowSelection: AntTableProps<any>['rowSelection'] // eslint-disable-line @typescript-eslint/no-explicit-any
+  $hasRowSelection: boolean
 }>`
   .ant-pro-table {
     --acx-table-cell-horizontal-space: 8px;
@@ -113,11 +181,26 @@ export const Wrapper = styled.div<{
       }
     }
 
-    ${props => props.$rowSelection && css`
+    ${props => props.$hasRowSelection && css`
       .ant-table-wrapper {
         padding-top: calc(var(--acx-table-action-area-height));
       }
     `}
+
+    &-list-toolbar {
+      &-container { padding: 0; }
+      &-right {
+        // setting to 0 due to empty toolbar still take up space
+        // need to revisit this if we intend to use toolbar for other usage
+        height: 0;
+      }
+      &-setting-items .ant-space-item:last-child {
+        position: absolute;
+        right: 0;
+        z-index: 3;
+        top: ${props => props.$hasRowSelection ? '45px' : '10px'};
+      }
+    }
 
     &-alert {
       margin: 0px;

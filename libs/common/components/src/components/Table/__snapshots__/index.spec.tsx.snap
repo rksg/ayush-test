@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Table component should render correctly 1`] = `
+exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-2 jxtkcu"
+    class="styledComponents__Wrapper-sc-1abm7iv-4 fbiew"
   >
     <div
       class="ant-pro-table"
@@ -16,6 +16,9 @@ exports[`Table component should render correctly 1`] = `
           style="padding-top: 0px;"
         >
           <div
+            class="ant-pro-table-list-toolbar"
+          />
+          <div
             class="ant-table-wrapper"
           >
             <div
@@ -25,21 +28,17 @@ exports[`Table component should render correctly 1`] = `
                 class="ant-spin-container"
               >
                 <div
-                  class="ant-table ant-table-middle"
+                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
                 >
-                  <div
-                    class="ant-table-title"
-                  >
-                    Basic
-                  </div>
                   <div
                     class="ant-table-container"
                   >
                     <div
                       class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="table-layout: auto;"
+                        style="min-width: 100%; table-layout: auto;"
                       >
                         <colgroup />
                         <thead
@@ -66,6 +65,225 @@ exports[`Table component should render correctly 1`] = `
                         <tbody
                           class="ant-table-tbody"
                         >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="1"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            />
+                            <td
+                              class="ant-table-cell"
+                            />
+                            <td
+                              class="ant-table-cell"
+                            />
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="2"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            />
+                            <td
+                              class="ant-table-cell"
+                            />
+                            <td
+                              class="ant-table-cell"
+                            />
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="3"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            />
+                            <td
+                              class="ant-table-cell"
+                            />
+                            <td
+                              class="ant-table-cell"
+                            />
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Table component should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1abm7iv-4 kDZACm"
+  >
+    <div
+      class="ant-pro-table"
+    >
+      <div
+        class="ant-pro-card"
+      >
+        <div
+          class="ant-pro-card-body"
+          style="padding-top: 0px;"
+        >
+          <div
+            class="ant-pro-table-list-toolbar"
+          >
+            <div
+              class="ant-pro-table-list-toolbar-container"
+            >
+              <div
+                class="ant-pro-table-list-toolbar-left"
+              />
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      <div
+                        class="ant-pro-table-list-toolbar-setting-item"
+                      >
+                        <div
+                          data-testid="settings"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-table-wrapper"
+          >
+            <div
+              class="ant-spin-nested-loading"
+            >
+              <div
+                class="ant-spin-container"
+              >
+                <div
+                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                >
+                  <div
+                    class="ant-table-container"
+                  >
+                    <div
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
+                    >
+                      <table
+                        style="min-width: 100%; table-layout: auto;"
+                      >
+                        <colgroup />
+                        <thead
+                          class="ant-table-thead"
+                        >
+                          <tr>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Name
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Age
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Address
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody
+                          class="ant-table-tbody"
+                        >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
                             data-row-key="1"
@@ -229,7 +447,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-2 dmYsKE"
+    class="styledComponents__Wrapper-sc-1abm7iv-4 ljGykM"
   >
     <div
       class="ant-pro-table"
@@ -242,6 +460,40 @@ exports[`Table component should render multi select table and render action butt
           style="padding-top: 0px;"
         >
           <div
+            class="ant-pro-table-list-toolbar"
+          >
+            <div
+              class="ant-pro-table-list-toolbar-container"
+            >
+              <div
+                class="ant-pro-table-list-toolbar-left"
+              />
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      <div
+                        class="ant-pro-table-list-toolbar-setting-item"
+                      >
+                        <div
+                          data-testid="settings"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
             class="ant-table-wrapper"
           >
             <div
@@ -251,21 +503,17 @@ exports[`Table component should render multi select table and render action butt
                 class="ant-spin-container"
               >
                 <div
-                  class="ant-table ant-table-middle"
+                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
                 >
-                  <div
-                    class="ant-table-title"
-                  >
-                    Selectable
-                  </div>
                   <div
                     class="ant-table-container"
                   >
                     <div
                       class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="table-layout: auto;"
+                        style="min-width: 100%; table-layout: auto;"
                       >
                         <colgroup>
                           <col
@@ -320,6 +568,48 @@ exports[`Table component should render multi select table and render action butt
                         <tbody
                           class="ant-table-tbody"
                         >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
                             data-row-key="1"
@@ -543,7 +833,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-2 dmYsKE"
+    class="styledComponents__Wrapper-sc-1abm7iv-4 ljGykM"
   >
     <div
       class="ant-pro-table"
@@ -555,6 +845,40 @@ exports[`Table component should render multi select table and render action butt
           class="ant-pro-card-body"
           style="padding-top: 0px;"
         >
+          <div
+            class="ant-pro-table-list-toolbar"
+          >
+            <div
+              class="ant-pro-table-list-toolbar-container"
+            >
+              <div
+                class="ant-pro-table-list-toolbar-left"
+              />
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      <div
+                        class="ant-pro-table-list-toolbar-setting-item"
+                      >
+                        <div
+                          data-testid="settings"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div
             class="ant-pro-table-alert"
           >
@@ -661,21 +985,17 @@ exports[`Table component should render multi select table and render action butt
                 class="ant-spin-container"
               >
                 <div
-                  class="ant-table ant-table-middle"
+                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
                 >
-                  <div
-                    class="ant-table-title"
-                  >
-                    Selectable
-                  </div>
                   <div
                     class="ant-table-container"
                   >
                     <div
                       class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="table-layout: auto;"
+                        style="min-width: 100%; table-layout: auto;"
                       >
                         <colgroup>
                           <col
@@ -731,6 +1051,48 @@ exports[`Table component should render multi select table and render action butt
                         <tbody
                           class="ant-table-tbody"
                         >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0 ant-table-row-selected"
                             data-row-key="1"
@@ -954,7 +1316,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-2 dmYsKE"
+    class="styledComponents__Wrapper-sc-1abm7iv-4 ljGykM"
   >
     <div
       class="ant-pro-table"
@@ -967,6 +1329,40 @@ exports[`Table component should render multi select table and render action butt
           style="padding-top: 0px;"
         >
           <div
+            class="ant-pro-table-list-toolbar"
+          >
+            <div
+              class="ant-pro-table-list-toolbar-container"
+            >
+              <div
+                class="ant-pro-table-list-toolbar-left"
+              />
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      <div
+                        class="ant-pro-table-list-toolbar-setting-item"
+                      >
+                        <div
+                          data-testid="settings"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
             class="ant-table-wrapper"
           >
             <div
@@ -976,21 +1372,17 @@ exports[`Table component should render multi select table and render action butt
                 class="ant-spin-container"
               >
                 <div
-                  class="ant-table ant-table-middle"
+                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
                 >
-                  <div
-                    class="ant-table-title"
-                  >
-                    Selectable
-                  </div>
                   <div
                     class="ant-table-container"
                   >
                     <div
                       class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="table-layout: auto;"
+                        style="min-width: 100%; table-layout: auto;"
                       >
                         <colgroup>
                           <col
@@ -1045,6 +1437,48 @@ exports[`Table component should render multi select table and render action butt
                         <tbody
                           class="ant-table-tbody"
                         >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
                             data-row-key="1"
