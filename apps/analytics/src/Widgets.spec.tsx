@@ -52,7 +52,6 @@ test('should render Traffic by Volume widget', async () => {
   })
   render( <Provider> <AnalyticsWidgets name='trafficByVolume' /></Provider>)
   await screen.findByText('Traffic by Volume')
-  screen.getByText('Traffic by Volume')
 })
 
 test('should render Network History widget', async () => {
@@ -61,7 +60,6 @@ test('should render Network History widget', async () => {
   })
   render( <Provider> <AnalyticsWidgets name='networkHistory' /></Provider>)
   await screen.findByText('Network History')
-  screen.getByText('Network History')
 })
 
 test('should render Connected Clients Over Time widget', async () => {
@@ -70,5 +68,4 @@ test('should render Connected Clients Over Time widget', async () => {
   })
   render( <Provider> <AnalyticsWidgets name='connectedClientsOverTime' /></Provider>)
   await screen.findByText('Connected Clients Over Time')
-  screen.getByText('Connected Clients Over Time')
 })
