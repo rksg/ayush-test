@@ -1,9 +1,19 @@
+import styled from 'styled-components/macro'
 
 import { useGlobalFilter }                                                        from '@acx-ui/analytics/utils'
 import { Card, Loader, Table, SparklineChart, ContentToggle, ContentToggleProps } from '@acx-ui/components'
 import { formatter }                                                              from '@acx-ui/utils'
 
 import { useTrafficByApplicationQuery, TrafficByApplicationData } from './services'
+
+const TableBgWhite = styled(Table)`
+  .ant-table {
+    background-color: white ! important;
+  }
+`
+const TrafficPercent = styled.span`
+  color: var(--acx-neutrals-60);
+`
 
 export function TrafficByApplicationWidget () {
   const filters = useGlobalFilter()
@@ -38,53 +48,52 @@ export function TrafficByApplicationWidget () {
       key: 'clientMacCount'
     }
   ])
-  const getSparkLineColor = (data:number[]) => {
-    const first = data[0]
-    const last = data[data.length-1]
-    return first > last ? 'red' : 'green'
-  }
-
-  const getDataSource= (data: TrafficByApplicationData[] | undefined, overallTrafic:number) => {
-    if(!data)
+  
+  const getDataSource= (appTrafficData: TrafficByApplicationData[] | undefined,
+    overallTrafic:number) => {
+    if(!appTrafficData)
       return []
-    return data.map((item,index) => {
+
+    return appTrafficData.map((item,index) => {
       const uploadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.rxBytes)
       const downloadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.txBytes)
-      const sparklineChartStyle = { height: 20, width: '100%', display: 'inline' }
+      const sparklineChartStyle = { height: 18, width: '100%', display: 'inline' }
       return {
         ...item,
-        upload: <span>{formatter('bytesFormat')(item.rxBytes)} &nbsp;
-         ({formatter('percentFormatRound')(item.rxBytes/overallTrafic)})</span>,
+        upload: <>{formatter('bytesFormat')(item.rxBytes)} &nbsp;
+          <TrafficPercent>
+          ({formatter('percentFormatRound')(item.rxBytes/overallTrafic)})
+          </TrafficPercent>
+        </>,
         uploadTrafficHistory: <SparklineChart 
-          color={getSparkLineColor(uploadSparkLineData)}
           key={index}
           data={uploadSparkLineData}
+          isTrendLine={true}
           style={sparklineChartStyle}/>,
-        download: <span>{formatter('bytesFormat')(item.txBytes)} &nbsp;
-        ({formatter('percentFormatRound')(item.txBytes/overallTrafic)})</span>,
+        download: <>{formatter('bytesFormat')(item.txBytes)} &nbsp;
+          <TrafficPercent>
+          ({formatter('percentFormatRound')(item.txBytes/overallTrafic)})
+          </TrafficPercent>
+        </>,
         downloadTrafficHistory: <SparklineChart
-          color={getSparkLineColor(downloadSparkLineData)}
           key={index}
           data={downloadSparkLineData}
+          isTrendLine={true}
           style={sparklineChartStyle}/>
       }
     })
   }
 
-  // eslint-disable-next-line no-console
-  console.log('queryResults:', queryResults)
-  
-
   const { data } = queryResults
 
-  const uploadTable = <Table
+  const uploadTable = <TableBgWhite
     columns={columns('upload')}
     dataSource={getDataSource(data?.topNAppByUpload, data?.uploadAppTraffic || 1)}
     type={'compact'}
     pagination={false}
   />
 
-  const downloadTable = <Table
+  const downloadTable = <TableBgWhite
     columns={columns('download')}
     dataSource={getDataSource(data?.topNAppByDownload, data?.downloadAppTraffic || 1)}
     type={'compact'}

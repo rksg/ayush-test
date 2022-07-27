@@ -1,10 +1,9 @@
-import { dataApiURL }       from '@acx-ui/analytics/services'
-import { Provider }         from '@acx-ui/store'
-import { render, screen }   from '@acx-ui/test-utils'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { Provider }                         from '@acx-ui/store'
+import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 
-
-import AnalyticsWidgets from './Widgets'
+import { fixture1 as TrafficByApplicationFixture } from './components/TrafficByApplication/fixtures'
+import AnalyticsWidgets                            from './Widgets'
 
 const sample = {
   time: [
@@ -48,4 +47,12 @@ test('should render Network History widget', async () => {
   render( <Provider> <AnalyticsWidgets name='networkHistory' /></Provider>)
   await screen.findByText('Network History')
   screen.getByText('Network History')
+})
+
+test('should render Traffic By Application Widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
+    data: { network: { hierarchyNode: TrafficByApplicationFixture } }
+  })
+  render( <Provider> <AnalyticsWidgets name='topApplicationsByTraffic' /></Provider>)
+  await screen.findByText('Top 5 Applications by Traffic')
 })

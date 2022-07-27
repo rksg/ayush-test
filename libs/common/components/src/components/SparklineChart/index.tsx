@@ -8,24 +8,49 @@ import type { EChartsReactProps } from 'echarts-for-react'
 
 export interface SparklineChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: number[]
-  color?: string
+  lineColor?: string
+  areaBaseColor?: string
+  isTrendLine?: boolean
 }
 
 export function SparklineChart ({
   data,
   ...props
 }: SparklineChartProps) {
-  // TODO:
-  // come up with logic to know if current sparkline should be in red or green
-  const { color=cssStr('--acx-semantics-green-50') } = props
+
+  const trendLineColors = {
+    red: {
+      lineColor: cssStr('--acx-semantics-red-50'),
+      areaBaseColor: cssStr('--acx-semantics-red-30')
+    },
+    green: {
+      lineColor: cssStr('--acx-semantics-green-50'),
+      areaBaseColor: cssStr('--acx-semantics-green-30')
+    }
+  }
+
+  let { 
+    lineColor=trendLineColors.green.lineColor,
+    areaBaseColor=trendLineColors.green.areaBaseColor,
+    isTrendLine=false
+  } = props
+
+  if(data.length && isTrendLine){
+    const first = data[0]
+    const last = data[data.length - 1]
+    const colorGroup = first > last ? trendLineColors.red : trendLineColors.green
+    lineColor = colorGroup.lineColor
+    areaBaseColor = colorGroup.areaBaseColor
+  }
+  
   const colorLinearGradient = new graphic.LinearGradient(0, 0, 0, 1, [
     {
       offset: 0,
-      color
+      color: areaBaseColor
     },
     {
       offset: 1,
-      color: 'rgba(255, 255, 255, 20)'
+      color: cssStr('--acx-primary-white')
     }]
   )
   const option: EChartsOption = {
@@ -50,7 +75,7 @@ export function SparklineChart ({
         type: 'line',
         areaStyle: { color: colorLinearGradient },
         lineStyle: {
-          color
+          color: lineColor
         },
         smooth: true,
         showSymbol: false

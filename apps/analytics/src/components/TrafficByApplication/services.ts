@@ -38,8 +38,8 @@ export const api = dataApi.injectEndpoints({
     >({
       query: (payload) => ({
         document: gql`
-        query HierarchyNode($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime,
-          $n: Int!, $granularity: String!) {
+        query TrafficByApplicationWidget($path: [HierarchyNodeInput],
+          $start: DateTime, $end: DateTime, $n: Int!, $granularity: String!) {
           network(end: $end, start: $start) {
             hierarchyNode(path: $path) {
               uploadAppTraffic: appTraffic(direction: "rx")
