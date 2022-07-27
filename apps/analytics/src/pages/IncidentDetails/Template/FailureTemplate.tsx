@@ -38,7 +38,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
         subTitle={shortDescription(props)}
       />
       <Row>
-        <UI.LeftColumn span={4}>
+        <UI.LeftColumn offsetTop={200}>
           <IncidentAttributes
             visibleFields={[]}
             category={''}
@@ -49,8 +49,8 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
             {...props}
           />
         </UI.LeftColumn>
-        <UI.RightColumn span={20}>
-          <Row>
+        <Col>
+          <Row gutter={[20, 20]}>
             <Col span={24}>
               <div>Insights</div>
             </Col>
@@ -61,7 +61,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
               <div>time series section</div>
             </Col>
           </Row>
-        </UI.RightColumn>
+        </Col>
       </Row>
     </>
   )
