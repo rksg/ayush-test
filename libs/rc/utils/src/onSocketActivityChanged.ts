@@ -38,13 +38,11 @@ export async function onSocketActivityChanged <
 
   const socket = initialSocket(`/activity?tenantId=${payload.params?.tenantId}`)
 
-  try {
-    await cacheDataLoaded
+  await cacheDataLoaded
 
-    if(!socket.hasListeners('activityChangedEvent')){
-      socket.on('activityChangedEvent', (data: string) => handler(JSON.parse(data)))
-    }
+  if(!socket.hasListeners('activityChangedEvent')){
+    socket.on('activityChangedEvent', (data: string) => handler(JSON.parse(data)))
+  }
 
-    await cacheEntryRemoved
-  } catch {}
+  await cacheEntryRemoved
 }
