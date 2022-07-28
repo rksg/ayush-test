@@ -11,5 +11,11 @@ export const LeftColumn = styled(Anchor)`
     font-weight: var(--acx-body-font-weight);
     font-size: var(--acx-body-4-font-size);
     line-height: var(--acx-body-4-line-height);
+
+    .ant-anchor-ink {
+      visibility: hidden;
+    }
   }
+
+  
 `
