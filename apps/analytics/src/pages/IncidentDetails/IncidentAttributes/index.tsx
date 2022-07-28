@@ -55,10 +55,15 @@ export const impactValues = (type: string, count: number|null, impactedCount: nu
   }
 }
 
-export const IncidentAttributes = (props: IncidentAttributesProps) => {
-  const [visible, setVisible] = useState<string|boolean>(false)
+export function useDrawer (init: string|boolean) {
+  const [visible, setVisible] = useState<string|boolean>(init)
   const onClose = () => setVisible(false)
   const onOpen = (type: 'ap'|'client' ) => setVisible(type)
+  return { visible, onOpen, onClose }
+}
+
+export const IncidentAttributes = (props: IncidentAttributesProps) => {
+  const { visible, onOpen, onClose } = useDrawer(false)
   const fields = [
     {
       key: 'clientImpactCount',

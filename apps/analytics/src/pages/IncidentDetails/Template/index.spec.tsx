@@ -7,6 +7,10 @@ import { IncidentDetailsProps } from '../types'
 
 import { IncidentDetailsTemplate } from './FailureTemplate'
 
+jest.mock('../IncidentDetails/IncidentAttributes', () => ({
+  IncidentAttributes: () => <div data-testid='incidentAttributes' />
+}))
+
 describe('IncidentDetailsTemplate', () => {
   const sampleIncident = {
     apCount: -1,
@@ -73,11 +77,11 @@ describe('IncidentDetailsTemplate', () => {
         }
       )
     )
-  
+
     const params = {
       incidentId: 'df5339ba-da3b-4110-a291-7f8993a274f3'
     }
-  
+
     const { asFragment } = render(
       <Provider>
         <IncidentDetailsTemplate {...sampleIncident} />

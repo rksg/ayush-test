@@ -1,9 +1,9 @@
 import moment from 'moment'
 
-import { dataApiURL }                                  from '@acx-ui/analytics/services'
-import { incidentInformation }                         from '@acx-ui/analytics/utils'
-import { Provider, store }                             from '@acx-ui/store'
-import { fireEvent, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { dataApiURL }                                                   from '@acx-ui/analytics/services'
+import { incidentInformation }                                          from '@acx-ui/analytics/utils'
+import { Provider, store }                                              from '@acx-ui/store'
+import { act, fireEvent, mockGraphqlQuery, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { IncidentDetailsProps } from '../types'
 
@@ -12,7 +12,8 @@ import { ImpactedAP, impactedAPsApi, ImpactedClient, impactedClientsApi } from '
 import {
   durationOf,
   impactValues,
-  IncidentAttributes
+  IncidentAttributes,
+  useDrawer
 } from '.'
 
 describe('durationOf', () => {
@@ -55,6 +56,27 @@ describe('impactValues', () => {
 
   it('formats impacted ap count', () => {
     expect(impactValues('ap', 1, 1)).toMatchSnapshot()
+  })
+})
+
+describe('useDrawer', () => {
+  it('should return correct value', () => {
+    const { result } = renderHook(() => useDrawer(false))
+    expect(result.current.visible).toEqual(false)
+  })
+  it('should set visible when onOpen', () => {
+    const { result } = renderHook(() => useDrawer(false))
+    act(() => {
+      result.current.onOpen('ap')
+    })
+    expect(result.current.visible).toEqual('ap')
+  })
+  it('should set visible when onClose', () => {
+    const { result } = renderHook(() => useDrawer(false))
+    act(() => {
+      result.current.onClose()
+    })
+    expect(result.current.visible).toEqual(false)
   })
 })
 

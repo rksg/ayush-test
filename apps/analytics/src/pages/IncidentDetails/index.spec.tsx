@@ -9,6 +9,9 @@ import { IncidentDetailsProps } from './types'
 
 import IncidentDetailsPage, { IncidentDetails } from '.'
 
+jest.mock('../IncidentDetails/IncidentAttributes', () => ({
+  IncidentAttributes: () => <div data-testid='incidentAttributes' />
+}))
 
 describe('incident details', () => {
   const sampleIncident = {
@@ -77,18 +80,18 @@ describe('incident details', () => {
         }
       )
     )
-  
+
     const params = {
       incidentId: 'df5339ba-da3b-4110-a291-7f8993a274f3'
     }
-  
+
     const { asFragment } = render(
       <Provider>
         <IncidentDetails data={sampleIncident} />
       </Provider>, {
         route: { params }
       })
-    
+
     expect(asFragment()).toMatchSnapshot()
   })
 
