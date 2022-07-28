@@ -1,8 +1,8 @@
 import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 
-import ReactECharts               from 'echarts-for-react'
-import { TooltipComponentOption } from 'echarts/components'
-import { renderToString }         from 'react-dom/server'
+import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import ReactECharts                                from 'echarts-for-react'
+import { renderToString }                          from 'react-dom/server'
 
 import { formatter } from '@acx-ui/utils'
 
@@ -13,9 +13,10 @@ import * as UI from './styledComponents'
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
 
-type Unified<T> = Exclude<T, T[]>
-type TooltipFormatterCallback = Exclude<TooltipComponentOption['formatter'], string|undefined>
-export type TooltipFormatterParams = Unified<Parameters<TooltipFormatterCallback>[0]>
+export type TooltipFormatterParams = Exclude<
+  TooltipComponentFormatterCallbackParams,
+  string | undefined
+>
 
 export interface ConfigChange {
   id: number;
@@ -101,16 +102,22 @@ export const useDotClick = (
   onDotClick: ((param:unknown) => void) | undefined,
   setSelected: Dispatch<SetStateAction<number | undefined>>
 ) => {
+  const handler = useCallback(function (params: {
+    componentSubType: string
+    data: unknown
+  }) {
+    if(params.componentSubType !== 'scatter') return
+    const data = params.data as [number, string, ConfigChange]
+    setSelected(data[2].id)
+    onDotClick && onDotClick(params)
+  }, [setSelected, onDotClick])
+
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
-    echartInstance.on('click', function (params ) {
-      if(params.componentSubType !== 'scatter') return
-      const data = params.data as [number, string, ConfigChange]
-      setSelected(data[2].id)
-      onDotClick && onDotClick(params)
-    })
-  }, [eChartsRef, setSelected, onDotClick])
+    echartInstance.on('click', handler)
+    return () => { echartInstance.off('click', handler) }
+  }, [eChartsRef, handler])
 }
 export const useBoundaryChange = (
   boundary: { min: number, max: number },

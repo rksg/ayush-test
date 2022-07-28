@@ -110,10 +110,12 @@ describe('ConfigChangeChart',() => {
         data: [1654423052112, 'ap', { id: 0 }]
       }
       const mockOnFn = jest.fn((_: string, fn: (params: unknown) => void) => fn(testParams))
+      const mockOffFn = jest.fn()
       const eChartsRef = {
         current: {
           getEchartsInstance: ()=>({
-            on: (eventType:string, fn: (params: unknown) => void) => mockOnFn(eventType, fn)
+            on: (eventType:string, fn: (params: unknown) => void) => mockOnFn(eventType, fn),
+            off: (eventType:string, fn: Function) => mockOffFn(eventType, fn)
           })
         }
       } as RefObject<ReactECharts>
@@ -132,10 +134,12 @@ describe('ConfigChangeChart',() => {
         data: [1654423052112, 'ap', { id: 0 }]
       }
       const mockOnFn = jest.fn((_: string, fn: (params: unknown) => void) => fn(testParams))
+      const mockOffFn = jest.fn()
       const eChartsRef = {
         current: {
           getEchartsInstance: ()=>({
-            on: (eventType:string, fn: (params: unknown) => void) => mockOnFn(eventType, fn)
+            on: (eventType:string, fn: (params: unknown) => void) => mockOnFn(eventType, fn),
+            off: (eventType:string, fn: Function) => mockOffFn(eventType, fn)
           })
         }
       } as RefObject<ReactECharts>
