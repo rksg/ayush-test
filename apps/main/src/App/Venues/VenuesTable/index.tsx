@@ -1,11 +1,17 @@
 import { Space } from 'antd'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { useVenuesListQuery, Venue }                     from '@acx-ui/rc/services'
 import {
-  useTableQuery
-} from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+  Button,
+  PageHeader,
+  Table,
+  TableProps,
+  Loader,
+  StackedBarChart,
+  getDeviceConnectionStatusColors
+} from '@acx-ui/components'
+import { useVenuesListQuery, Venue }         from '@acx-ui/rc/services'
+import { useTableQuery, ApDeviceStatusEnum } from '@acx-ui/rc/utils'
+import { TenantLink }                        from '@acx-ui/react-router-dom'
 
 const columns: TableProps<Venue>['columns'] = [
   {
@@ -63,13 +69,12 @@ const columns: TableProps<Venue>['columns'] = [
         ? Object.values(row.aggregatedApStatus)
           .reduce((a, b) => a + b, 0)
         : 0
-
-      return (<Space direction='horizontal' size={8}>
-        {/* { row.aggregatedApStatus && getApStatusChart(row.aggregatedApStatus) } */}
+      return (<Space direction='vertical' size={4}>
         <TenantLink
           to={`/venues/${row.id}/network-devices/wifi`}
           children={count ? count : 0}
         />
+        { row.aggregatedApStatus && getApStatusChart(row.aggregatedApStatus) }
       </Space>)
     }
   },
@@ -176,4 +181,46 @@ export function VenuesTable () {
       <VenuesTable />
     </>
   )
+}
+
+function getApStatusChart (apStatus: Venue['aggregatedApStatus']) {
+  const barColors = getDeviceConnectionStatusColors()
+  const apStatusMap = [[
+    ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD,
+    ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED,
+    ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED
+  ], [
+    ApDeviceStatusEnum.REBOOTING
+  ], [
+    ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
+    ApDeviceStatusEnum.INITIALIZING,
+    ApDeviceStatusEnum.OFFLINE
+
+  ], [
+    ApDeviceStatusEnum.OPERATIONAL,
+    ApDeviceStatusEnum.APPLYING_FIRMWARE,
+    ApDeviceStatusEnum.APPLYING_CONFIGURATION
+  ]]
+
+  const series = Object.entries(apStatus).reduce((counts, [key, value]) => {
+    const index = apStatusMap.findIndex(s => s.includes(key as ApDeviceStatusEnum))
+    counts[index] += value as number
+    return counts
+  }, [0, 0, 0, 0]).map((data, index) => {
+    return {
+      name: `P${index + 1}`,
+      value: data
+    }
+  })
+
+  return <StackedBarChart
+    style={{ height: 10, width: 100 }}
+    data={[{
+      category: 'apStatus',    
+      series: series
+    }]}
+    showLabels={false}
+    showTotal={false}
+    barColors={barColors}
+  />
 }
