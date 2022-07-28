@@ -126,9 +126,9 @@ function ErrorTemplate (props: {
       <UI.Content>{props.content}</UI.Content>
       <UI.Footer>
         <CollapsePanel header='Technical details' content={props.errors} />
-        <UI.FooterFixedButtons>
+        <UI.FooterButtons>
           <Button type='primary' onClick={() => props.modal.destroy()}>OK</Button>
-        </UI.FooterFixedButtons>
+        </UI.FooterButtons>
       </UI.Footer>
     </>
   )
