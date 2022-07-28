@@ -6,7 +6,7 @@ export const helper = (val?: DefaultOptionType[] | DefaultOptionType[][]) => {
   if (val) {
     let ret = ''
     for (let i = 0; i < val.length; i++) {
-      ret += JSON.stringify(val[i]) + ' '
+      ret += JSON.stringify(val[i], ['value', 'label']) + ' '
     }
     return ret
   }
