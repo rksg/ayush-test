@@ -124,7 +124,7 @@ describe('ConfigChangeChart',() => {
       renderHook(() => useDotClick(eChartsRef, onDotClick, setSelected))
       expect(mockOnFn).toBeCalledTimes(1) // for on
       expect(onDotClick).toBeCalledTimes(1)
-      expect(onDotClick).toBeCalledWith(testParams)
+      expect(onDotClick).toBeCalledWith(testParams.data[2])
       expect(setSelected).toBeCalledTimes(1)
       expect(setSelected).toBeCalledWith((testParams.data[2] as ConfigChange).id)
     })

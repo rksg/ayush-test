@@ -13,11 +13,6 @@ import * as UI from './styledComponents'
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
 
-export type TooltipFormatterParams = Exclude<
-  TooltipComponentFormatterCallbackParams,
-  string | undefined
->
-
 export interface ConfigChange {
   id: number;
   timestamp: string;
@@ -109,7 +104,7 @@ export const useDotClick = (
     if(params.componentSubType !== 'scatter') return
     const data = params.data as [number, string, ConfigChange]
     setSelected(data[2].id)
-    onDotClick && onDotClick(params)
+    onDotClick && onDotClick(data[2])
   }, [setSelected, onDotClick])
 
   useEffect(() => {
@@ -139,16 +134,16 @@ export const useBoundaryChange = (
 }
 
 export const axisLabelFormatter = (value: number) => {
-  if(formatter('dateTimeFormat')(value)?.includes('00:00')){
+  if((formatter('dateTimeFormat')(value) as string)?.includes('00:00')){
     return `${formatter('monthDateFormat')(value)}`
   }
   return `${formatter('monthDateFormat')(value)} ${formatter('timeFormat')(value)}`
 }
-export const tooltipFormatter = (params: TooltipFormatterParams | TooltipFormatterParams[]) => {
+export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
   const [ time ] = (Array.isArray(params)
     ? params[0].data : params.data) as [number]
   return renderToString(
-    <UI.TooltipTitleWrapper children={formatter('dateTimeFormat')(time)}/>)
+    <UI.TooltipTitleWrapper children={formatter('dateTimeFormat')(time) as string}/>)
 }
 
 export const useDatazoom = (
