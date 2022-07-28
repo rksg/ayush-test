@@ -4,7 +4,8 @@ import {
   ReactNode,
   useState,
   useEffect,
-  useRef
+  useRef,
+  useMemo
 } from 'react'
 
 import { Buffer } from 'buffer'
@@ -74,13 +75,11 @@ export function DateFilterProvider (props: { children: ReactNode }) {
     )
     setSearch(params)
   }, [dateFilter, setSearch])
-
-  return (
-    <DateFilterContext.Provider
-      {...props}
-      value={{ dateFilter, setDateFilter }}
-    />
+  const providerValue = useMemo(
+    () => ({ dateFilter, setDateFilter }),
+    [dateFilter, setDateFilter]
   )
+  return <DateFilterContext.Provider {...props} value={providerValue} />
 }
 
 export function defaultRanges (subRange?: DateRange[]) {
