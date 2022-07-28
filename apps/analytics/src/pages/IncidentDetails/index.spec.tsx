@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { dataApiURL }                                   from '@acx-ui/analytics/services'
-import { Provider, store }                              from '@acx-ui/store'
-import { render, mockServer, mockGraphqlQuery, screen } from '@acx-ui/test-utils'
+import { dataApiURL }                           from '@acx-ui/analytics/services'
+import { Provider, store }                      from '@acx-ui/store'
+import { render, mockServer, mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import { api }                  from './services'
 import { IncidentDetailsProps } from './types'
@@ -102,8 +102,8 @@ describe('incident details', () => {
       <Provider>
         <IncidentDetailsPage />
       </Provider>, {
-      route: { params }
-    })
+        route: { params }
+      })
 
     expect(asFragment()).toMatchSnapshot()
   })
