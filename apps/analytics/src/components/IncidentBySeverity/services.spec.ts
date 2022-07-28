@@ -5,7 +5,7 @@ import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
 import { api } from './services'
 
-describe('trafficByVolumeWidgetApi', () => {
+describe('IncidentsBySeverityApi', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
@@ -25,38 +25,29 @@ describe('trafficByVolumeWidgetApi', () => {
     const expectedResult = {
       network: {
         hierarchyNode: {
-          timeSeries: {
-            time: [
-              '2022-04-07T09:15:00.000Z',
-              '2022-04-07T09:30:00.000Z',
-              '2022-04-07T09:45:00.000Z',
-              '2022-04-07T10:00:00.000Z',
-              '2022-04-07T10:15:00.000Z'
-            ],
-            totalTraffic_all: [1, 2, 3, 4, 5],
-            totalTraffic_6: [6, 7, 8, 9, 10],
-            totalTraffic_5: [11, 12, 13, 14, 15],
-            traffic_24: [16, 17, 18, 19, 20]
-          }
+          P1: 1,
+          P2: 2,
+          P3: 3,
+          P4: 4
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficByVolume.initiate(props)
+      api.endpoints.incidentsBySeverity.initiate(props)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.network.hierarchyNode.timeSeries)
+    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficByVolume.initiate(props)
+      api.endpoints.incidentsBySeverity.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

@@ -1,11 +1,12 @@
 import React from 'react'
 
+import _         from 'lodash'
+import moment    from 'moment-timezone'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import moment from 'moment-timezone'
 
-import { useGlobalFilter }          from '@acx-ui/analytics/utils'
-import { getSeriesData }            from '@acx-ui/analytics/utils'
+
+import { useGlobalFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
   Subtitle,
@@ -13,44 +14,50 @@ import {
   BarChartData,
   Loader,
   cssStr,
-  Pill
- }                     from '@acx-ui/components'
+  Pill,
+  TrendType
+} from '@acx-ui/components'
 
-import { formatter }                from '@acx-ui/utils'
-import { IncidentsBySeverityData }     from './services'
-import { useIncidentsBySeverityQuery } from './services'
+import {
+  IncidentsBySeverityData,
+  useIncidentsBySeverityQuery
+} from './services'
+import { PillWrapper } from './styledComponents'
 
-const data:BarChartData = {
-  dimensions: ['Severity', 'incidentCount'],
-  source: [
-    ['P1', 53],
-    ['P2', 73],
-    ['P3', 107],
-    ['P4', 234]
-  ],
-  seriesEncode:[{
-    x: 'incidentCount',
-    y: 'Severity'
-  }]
-}
+type PillData = { delta: string, total: number, trend: string }
 const barColors = [
-  cssStr('--acx-semantics-red-70'), //.... P1
-  cssStr('--acx-semantics-red-50'), //... P2
+  cssStr('--acx-semantics-yellow-40'), // P4
   cssStr('--acx-accents-orange-50'), //.. P3  
-  cssStr('--acx-semantics-yellow-40') // P4
+  cssStr('--acx-semantics-red-50'), //... P2  
+  cssStr('--acx-semantics-red-70') //.... P1
 ]
+export const getPillData = (
+  curr: IncidentsBySeverityData, prev: IncidentsBySeverityData
+): PillData => {
+  const currTotal = _.sum(Object.entries(curr).map(([, value]) => value))
+  const prevTotal = _.sum(Object.entries(prev).map(([, value]) => value))
+  const trend = currTotal - prevTotal > 0
+    ? 'negative'
+    : currTotal - prevTotal < 0 ? 'positive' : 'none'
+  return { delta: `${Math.abs(currTotal - prevTotal)}`, trend, total: currTotal }
+}
+const getChartData = (data: IncidentsBySeverityData): BarChartData => ({
+  source: Object.entries(data).reverse(),
+  dimensions: ['severity', 'incidentCount'],
+  seriesEncode: [{ x: 'incidentCount', y: 'severity' }]
+})
+
 function IncidentBySeverityWidget () {
   const { startDate, endDate, path } = useGlobalFilter()
   const currentResult = useIncidentsBySeverityQuery(
     { startDate, endDate, path },
     {
       selectFromResult: ({ data, ...rest }) => ({
-        data: {...data},
+        data: { ...data } as IncidentsBySeverityData,
         ...rest
       })
     }
   )
-  console.log('current', currentResult.data)
   const prevResult = useIncidentsBySeverityQuery(
     { 
       startDate: moment(startDate).subtract(moment(endDate).diff(startDate)).format(),
@@ -59,39 +66,38 @@ function IncidentBySeverityWidget () {
     },
     {
       selectFromResult: ({ data, ...rest }) => ({
-        data: {...data},
+        data: { ...data } as IncidentsBySeverityData,
         ...rest
       })
     }
   )
-  console.log('prev', prevResult.data)
-  return (
-    // <Loader states={[queryResults]}>
-  //     <Card title='Total Incidents'>
-  //      <Subtitle level={3}>90</Subtitle>
-  //      <BarChart
-  //   style={{ width: 524, height: 174 }}
-  //   data={data}
-  //   barColors={barColors}
-  // />
-        
-  //     </Card>
-  <Card title='Total Incidents' >
-    <Subtitle level={1}>90<Pill value='-123' trend='negative' /></Subtitle>
-    
-       <AutoSizer>
-       {({ height, width }) => (
+  
+  let chart:BarChartData, pill:PillData = { total: 0, trend: 'none', delta: '0' }
+  
+  if (prevResult.data && currentResult.data) {
+    pill = getPillData(currentResult.data, prevResult.data)
+    chart = getChartData(currentResult.data)
+  }
+  return <Loader states={[prevResult, currentResult]}>
+    <Card title='Total Incidents' useFullHeight>
+      <Subtitle level={1} style={{ marginBottom: 0, display: 'flex' }}>
+        {pill.total}
+        <PillWrapper>
+          <Pill value={pill.delta} trend={pill.trend as TrendType} />
+        </PillWrapper>
+      </Subtitle>
+      <AutoSizer>
+        {({ width }) => (
           <BarChart
-            style={{ width, height: 75 }}
-            data={data}
+            style={{ width, height: 140 }}
+            data={chart}
+            grid={{ right: 25, top: 5 }}
             barColors={barColors}
           />
-       )}
-     </AutoSizer>
-     </Card>
-     
-    //</Loader>
-  )
+        )}
+      </AutoSizer>
+    </Card>
+  </Loader>
 }
 
 export default IncidentBySeverityWidget

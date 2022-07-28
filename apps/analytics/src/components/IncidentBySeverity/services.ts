@@ -1,13 +1,13 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }      from '@acx-ui/analytics/services'
+import { dataApi }                     from '@acx-ui/analytics/services'
 import { GlobalFilter, incidentCodes } from '@acx-ui/analytics/utils'
 
 export type IncidentsBySeverityData = {
-  p1: number
-  p2: number
-  p3: number
-  p4: number
+  P1: number
+  P2: number
+  P3: number
+  P4: number
 }
 
 interface Response <IncidentsBySeverityData> {
@@ -24,7 +24,9 @@ export const api = dataApi.injectEndpoints({
     >({
       query: (payload) => ({
         document: gql`
-        query Network($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $code: [String]) {
+        query IncidentsBySeverityWidget(
+          $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $code: [String]
+        ) {
           network(start: $start, end: $end) {
             hierarchyNode(path: $path) {
               P1: incidentCount(filter: {severity: {gt: 0.9, lte: 1}, code: $code})

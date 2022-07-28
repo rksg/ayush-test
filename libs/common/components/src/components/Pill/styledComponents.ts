@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+
 import { TrendType } from '.'
 
 const pillColor = ({ trend }:{ trend: TrendType }) => {
