@@ -72,7 +72,7 @@ export function NetworkVenuesTab () {
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkVenueMutation()
-  
+
   useEffect(()=>{
     if (tableQuery.data && networkQuery.data) {
       const data: React.SetStateAction<Venue[]> = []
@@ -113,7 +113,7 @@ export function NetworkVenuesTab () {
     //   }
     // }
     const network = networkQuery.data
-    const defaultVenueData = generateDefaultNetworkVenue(row.id) 
+    const defaultVenueData = generateDefaultNetworkVenue(row.id)
     const isWPA3security = row.wlan && row.wlan.wlanSecurity === 'WPA3'
     if (supportTriBandRadio && isWPA3security) {
       defaultVenueData.allApGroupsRadioTypes.push('6-GHz')
@@ -136,7 +136,7 @@ export function NetworkVenuesTab () {
       }
     }
   }
-    
+
   const handleEditNetwork = (network: NetworkSaveData, clearSelection: () => void) => {
     updateNetworkDeep({ params, payload: network }).then(clearSelection)
   }
@@ -175,7 +175,7 @@ export function NetworkVenuesTab () {
           <div>
             <div>
               <span>For the following {enabledNotActivatedVenues.length === 1 ? 'venue' : 'venues'},
-              the network could not be activated on all Venues: </span> 
+              the network could not be activated on all Venues: </span>
             </div>
             {enabledNotActivatedVenues.map(venue =>(<div key={venue}> {venue} </div>))}
           </div>
@@ -216,7 +216,7 @@ export function NetworkVenuesTab () {
     },
     {
       label: 'Deactivate',
-      onClick: (rows, clearSelection) => { 
+      onClick: (rows, clearSelection) => {
         const network = networkQuery.data
         const networkVenues = deActivateSelected(network?.venues || [], rows)
         handleEditNetwork({ ...network, venues: networkVenues }, clearSelection)
@@ -264,7 +264,7 @@ export function NetworkVenuesTab () {
       render: function (data, row) {
         return <Switch
           checked={Boolean(data)}
-          onClick={(checked: boolean, event: Event) => {
+          onClick={(checked, event) => {
             activateNetwork(checked, row)
             event.stopPropagation()
           }}

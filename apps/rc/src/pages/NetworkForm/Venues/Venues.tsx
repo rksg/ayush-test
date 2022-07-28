@@ -86,13 +86,13 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
           const index = selectedVenues.findIndex(i => i.id == item.id)
           if (index !== -1) {
             selectedVenues.splice(index, 1)
-          } 
+          }
         })
       } else {
         const index = selectedVenues.findIndex(i => i.id == row.id)
         if (index !== -1) {
           selectedVenues.splice(index, 1)
-        } 
+        }
       }
     }
     selectedVenues = _.uniq(selectedVenues)
@@ -118,13 +118,13 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     {
       label: 'Activate',
       onClick: (rows) => {
-        handleActivateVenue(true, rows) 
+        handleActivateVenue(true, rows)
       }
     },
     {
       label: 'Deactivate',
-      onClick: (rows) => { 
-        handleActivateVenue(false, rows) 
+      onClick: (rows) => {
+        handleActivateVenue(false, rows)
       }
     }
   ]
@@ -178,12 +178,12 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       title: 'Activated',
       dataIndex: ['activated', 'isActivated'],
       render: function (data, row) {
-        return <Switch 
-          checked={Boolean(data)} 
-          onClick={(checked: boolean, event:Event) => {
+        return <Switch
+          checked={Boolean(data)}
+          onClick={(checked, event) => {
             event.stopPropagation()
             handleActivateVenue(checked, row)
-          }} 
+          }}
         />
       }
     },
