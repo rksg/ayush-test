@@ -27,7 +27,7 @@ export interface BarChartData extends Object {
      ['Switch 2', 273780, 19.3],
      ['Switch 3', 1073780, 79.11],
    * **/
-  source: [string, ...number[]][]
+  source: (string | number)[][]
 
   /**
    * Dimension mapping to Axis, supports multiseries
