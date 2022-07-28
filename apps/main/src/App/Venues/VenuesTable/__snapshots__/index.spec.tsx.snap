@@ -389,16 +389,79 @@ exports[`Venues Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                  class="ant-space ant-space-vertical"
                                 >
                                   <div
                                     class="ant-space-item"
+                                    style="margin-bottom: 4px;"
                                   >
                                     <a
                                       href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/2c16284692364ab6a01f4c60f5941836/network-devices/wifi"
                                     >
                                       1
                                     </a>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <div
+                                      _echarts_instance_="ec_1659001010152"
+                                      class="echarts-for-react "
+                                      size-sensor-id="1"
+                                      style="height: 10px; width: 100px; position: relative;"
+                                    >
+                                      <div
+                                        style="position: relative; overflow: hidden; width: 100px; height: 10px;"
+                                      >
+                                        <svg
+                                          baseProfile="full"
+                                          height="10"
+                                          style="position:absolute;left:0;top:0;user-select:none"
+                                          version="1.1"
+                                          width="100"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        >
+                                          <rect
+                                            fill="none"
+                                            fill-opacity="1"
+                                            height="10"
+                                            id="0"
+                                            width="100"
+                                            x="0"
+                                            y="0"
+                                          />
+                                          <g>
+                                            <path
+                                              d="M0 1L0 9L0 1"
+                                              fill="none"
+                                            />
+                                            <path
+                                              d="M0 1L0 9L0 1"
+                                              fill="none"
+                                            />
+                                            <path
+                                              d="M100 1L100 9L100 1"
+                                              fill="none"
+                                            />
+                                            <path
+                                              d="M100 1L100 9L100 1"
+                                              fill="none"
+                                            />
+                                          </g>
+                                        </svg>
+                                      </div>
+                                      <div
+                                        class=""
+                                      />
+                                      <object
+                                        class="size-sensor-object"
+                                        data="about:blank"
+                                        style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                        tabindex="-1"
+                                        type="text/html"
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </td>
@@ -491,7 +554,7 @@ exports[`Venues Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                  class="ant-space ant-space-vertical"
                                 >
                                   <div
                                     class="ant-space-item"
