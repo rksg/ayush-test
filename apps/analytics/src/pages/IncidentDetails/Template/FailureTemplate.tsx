@@ -4,9 +4,10 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import { incidentInformation, calculateSeverity } from '@acx-ui/analytics/utils'
 import { PageHeader, Pill }                       from '@acx-ui/components'
 
-import { incidentDetailsMap }                                      from '..'
-import { getImpactedArea, IncidentAttributes, formattedSliceType } from '../IncidentAttributes'
-import * as UI                                                     from '../syledComponents'
+import { incidentDetailsMap }               from '..'
+import { IncidentAttributes }               from '../IncidentAttributes'
+import { formattedSliceType, impactedArea } from '../path'
+import * as UI                              from '../syledComponents'
 
 import type { IncidentDetailsProps } from '../types'
 
@@ -27,7 +28,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const shortDescription = (incident: IncidentDetailsProps) => {
     const incidentInfo = incidentInformation[incident.code as keyof typeof incidentDetailsMap]
     /* eslint-disable-next-line max-len */
-    const scope = `${formattedSliceType(incident.sliceType)}: ${getImpactedArea(incident.path, incident.sliceValue)}`
+    const scope = `${formattedSliceType(incident.sliceType)}: ${impactedArea(incident.path, incident.sliceValue)}`
     const { shortDescription } = incidentInfo
     const messageProps = {
       id: incident.id,

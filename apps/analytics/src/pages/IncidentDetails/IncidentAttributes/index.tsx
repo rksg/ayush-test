@@ -3,11 +3,11 @@ import React, { useState } from 'react'
 import moment                from 'moment-timezone'
 import { FormattedMessage  } from 'react-intl'
 
-import { PathNode }                                from '@acx-ui/analytics/utils'
-import { NetworkNodeTypeForDisplay, noDataSymbol } from '@acx-ui/analytics/utils'
-import { formatter }                               from '@acx-ui/utils'
+import { noDataSymbol } from '@acx-ui/analytics/utils'
+import { formatter }    from '@acx-ui/utils'
 
-import { DescriptionRowProps, DescriptionSection } from '../../../components/DescriptionSection'
+import { DescriptionRowProps, DescriptionSection }         from '../../../components/DescriptionSection'
+import { formattedPath, formattedSliceType, impactedArea } from '../path'
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
 
@@ -16,26 +16,7 @@ import type { IncidentAttributesProps } from '../types'
 export const durationOf = (start: string, end: string) =>
   moment(end).diff(moment(start), 'milliseconds', true)
 
-export const formattedNodeName = (node: PathNode, sliceValue: string) =>
-  ['ap', 'controller', 'switch'].includes(node.type.toLowerCase()) && sliceValue !== node.name
-    ? `${sliceValue} (${node.name})`
-    : node.name
-
-export const formattedSliceType = (type: string) =>
-  NetworkNodeTypeForDisplay[type as keyof typeof NetworkNodeTypeForDisplay] || type
-
-export const formattedPath = (path: IncidentAttributesProps['path'], sliceValue: string) => path
-  .map(node => `${formattedNodeName(node, sliceValue)} (${formattedSliceType(node.type)})`)
-  .join('\n> ')
-
-export const getImpactedArea = (path: IncidentAttributesProps['path'], sliceValue: string) => {
-  const lastNode = path[path.length - 1]
-  return lastNode
-    ? formattedNodeName(lastNode, sliceValue)
-    : sliceValue
-}
-
-export const getImpactValues = (type: string, count: number|null, impactedCount: number|null) => {
+export const impactValues = (type: string, count: number|null, impactedCount: number|null) => {
   if (
     count === -1 || impactedCount === -1 ||
     count === 0 || impactedCount === 0
@@ -83,7 +64,7 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
       key: 'clientImpactCount',
       getValue: (details: IncidentAttributesProps) => ({
         label: 'Client Impact Count',
-        children: getImpactValues(
+        children: impactValues(
           'client', details.clientCount, details.impactedClientCount).clientImpactDescription,
         onClick: () => onOpen('client')
       })
@@ -92,7 +73,7 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
       key: 'apImpactCount',
       getValue: (details: IncidentAttributesProps) => ({
         label: 'AP Impact Count',
-        children: getImpactValues(
+        children: impactValues(
           'ap', details.apCount, details.impactedApCount).apImpactDescription,
         onClick: () => onOpen('ap')
       })
@@ -122,7 +103,7 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
       key: 'scope',
       getValue: (details: IncidentAttributesProps) => ({
         label: 'Scope',
-        children: getImpactedArea(details.path, details.sliceValue),
+        children: impactedArea(details.path, details.sliceValue),
         title: formattedPath(details.path, details.sliceValue)
       })
     },

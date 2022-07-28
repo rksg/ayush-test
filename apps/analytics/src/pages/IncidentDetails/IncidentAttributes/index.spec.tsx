@@ -5,17 +5,13 @@ import { incidentInformation }                         from '@acx-ui/analytics/u
 import { Provider, store }                             from '@acx-ui/store'
 import { fireEvent, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { IncidentAttributesProps, IncidentDetailsProps } from '../types'
+import { IncidentDetailsProps } from '../types'
 
 import { ImpactedAP, impactedAPsApi, ImpactedClient, impactedClientsApi } from './services'
 
 import {
   durationOf,
-  formattedNodeName,
-  formattedSliceType,
-  formattedPath,
-  getImpactedArea,
-  getImpactValues,
+  impactValues,
   IncidentAttributes
 } from '.'
 
@@ -32,106 +28,33 @@ describe('durationOf', () => {
   })
 })
 
-describe('formattedNodeName', () => {
-  it('should return correct value', () => {
-    expect(formattedNodeName({ type: 'ap', name: '70:CA:97:01:A0:C0' }, 'RuckusAP'))
-      .toBe('RuckusAP (70:CA:97:01:A0:C0)')
-    expect(formattedNodeName({ type: 'ap', name: 'RuckusAP' }, 'RuckusAP'))
-      .toBe('RuckusAP')
-    expect(formattedNodeName({ type: 'apGroup', name: 'default' }, 'default'))
-      .toBe('default')
-  })
-})
-
-describe('formattedSliceType', () => {
-  it('should return correct value', () => {
-    expect(formattedSliceType('network')).toEqual('Network')
-    expect(formattedSliceType('apGroupName')).toEqual('AP Group')
-    expect(formattedSliceType('apGroup')).toEqual('AP Group')
-    expect(formattedSliceType('zoneName')).toEqual('Venue')
-    expect(formattedSliceType('zone')).toEqual('Venue')
-    expect(formattedSliceType('switchGroup')).toEqual('Venue')
-    expect(formattedSliceType('switch')).toEqual('Switch')
-    expect(formattedSliceType('apMac')).toEqual('Access Point')
-    expect(formattedSliceType('ap')).toEqual('Access Point')
-    expect(formattedSliceType('AP')).toEqual('Access Point')
-    expect(formattedSliceType('other')).toEqual('other')
-  })
-})
-
-describe('formattedPath', () => {
-  it('returns path with correct format', () => {
-    const path = [
-      { type: 'network', name: 'N' },
-      { type: 'zone', name: 'V' },
-      { type: 'apGroup', name: 'AG' }
-    ]
-    expect(formattedPath(path, 'Name'))
-      .toEqual('N (Network)\n> V (Venue)\n> AG (AP Group)')
-  })
-  it('returns path which contains AP with correct format', () => {
-    const path = [
-      { type: 'network', name: 'N' },
-      { type: 'zone', name: 'V' },
-      { type: 'apGroup', name: 'AG' },
-      { type: 'ap', name: 'IP' }
-    ]
-    expect(formattedPath(path, 'Name')).toEqual(
-      'N (Network)\n> V (Venue)\n> AG (AP Group)\n> Name (IP) (Access Point)'
-    )
-  })
-})
-
-describe('getImpactedArea', () => {
-  const path = [{ type: 'zone', name: 'Venue' }]
-  it('return correct value for normal incident', () => {
-    const sliceValue = 'Venue'
-    expect(getImpactedArea(path, sliceValue)).toEqual(sliceValue)
-  })
-  it('return correct value for AP incident', () => {
-    const apPath = [...path, { type: 'ap', name: 'IP' }]
-    const sliceValue = 'AP'
-    expect(getImpactedArea(apPath, sliceValue)).toEqual(`${sliceValue} (IP)`)
-  })
-  it('returns sliceValue when node name same as sliceValue', () => {
-    const sameNamePath = [...path, { type: 'ap', name: 'AP' }]
-    const sliceValue = 'AP'
-    expect(getImpactedArea(sameNamePath, sliceValue)).toEqual(sliceValue)
-  })
-  it('returns sliceValue when empty path', () => {
-    const emptyPath = [] as IncidentAttributesProps['path']
-    const sliceValue = 'AP'
-    expect(getImpactedArea(emptyPath, sliceValue)).toEqual(sliceValue)
-  })
-})
-
-describe('getImpactValues', () => {
+describe('impactValues', () => {
   it('handles when incident has no client impact', () => {
-    expect(getImpactValues('client', -1, -1)).toMatchSnapshot()
+    expect(impactValues('client', -1, -1)).toMatchSnapshot()
   })
 
   it('handles when incident is calculating', () => {
-    expect(getImpactValues('client', null, null)).toMatchSnapshot()
+    expect(impactValues('client', null, null)).toMatchSnapshot()
   })
 
   it('handles clientCount = 0', () => {
-    expect(getImpactValues('client', 0, 0)).toMatchSnapshot()
+    expect(impactValues('client', 0, 0)).toMatchSnapshot()
   })
 
   it('handles when incident has no client impact but has clinet count', () => {
-    expect(getImpactValues('client', 128, 0)).toMatchSnapshot()
+    expect(impactValues('client', 128, 0)).toMatchSnapshot()
   })
 
   it('handles when incident has client impact', () => {
-    expect(getImpactValues('client', 128, 55)).toMatchSnapshot()
+    expect(impactValues('client', 128, 55)).toMatchSnapshot()
   })
 
   it('formats impacted client count', () => {
-    expect(getImpactValues('client', 1500, 1300)).toMatchSnapshot()
+    expect(impactValues('client', 1500, 1300)).toMatchSnapshot()
   })
 
   it('formats impacted ap count', () => {
-    expect(getImpactValues('ap', 1, 1)).toMatchSnapshot()
+    expect(impactValues('ap', 1, 1)).toMatchSnapshot()
   })
 })
 
