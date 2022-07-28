@@ -94,13 +94,17 @@ describe('incident details', () => {
 
   it('should render Incident Details Page correctly', async () => {
     store.dispatch(api.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'IncidentDetails', { data: { incident: { sampleIncident } } })
-    render(
+    mockGraphqlQuery(dataApiURL, 'IncidentDetails', { data: { incident: sampleIncident } } )
+    const params = {
+      incidentId: '123'
+    }
+    const { asFragment } = render(
       <Provider>
         <IncidentDetailsPage />
-      </Provider>
-    )
-    const component = await screen.findByText('Incident Details')
+      </Provider>, {
+      route: { params }
+    })
 
+    expect(asFragment()).toMatchSnapshot()
   })
 })
