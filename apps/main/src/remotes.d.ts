@@ -1,13 +1,6 @@
 // Declare your remote Modules here
 // Example declare module 'about/Module';
-type AnalyticsFilter = {
-   startDate: string;
-   endDate: string;
-   range: DateRange;
-   path: Readonly<NetworkPath>;
-}
 
-interface NetworkPath extends Array<{ type: string; name: string }> {}
 declare module 'rc/Routes' {
   // refer to modulefederation.config.js for correct mapping
   function Routes (): React.ReactElement
@@ -24,6 +17,8 @@ declare module 'analytics/Routes' {
   export = Routes
 }
 declare module 'analytics/Widgets' {
+  // eslint-disable-next-line align-import/align-import
+  import { AnalyticsFilter } from '@acx-ui/analytics/utils'
   // refer to modulefederation.config.js for correct mapping
   function Widgets (props: { name: string, filters: AnalyticsFilter }): React.ReactElement
   export = Widgets
