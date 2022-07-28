@@ -1,9 +1,12 @@
+import { useIntl } from 'react-intl'
+
 import { Tabs } from 'antd'
 
 import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 function NetworkTabs () {
+  const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink(`/networks/${params.networkId}/network-details/`)
   const navigate = useNavigate()
@@ -23,12 +26,12 @@ function NetworkTabs () {
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-      <Tabs.TabPane tab='Overview' key='overview' />
-      <Tabs.TabPane tab={`APs (${apsCount})`} key='aps' />
-      <Tabs.TabPane tab={`Venues (${venuesCount})`} key='venues' />
-      <Tabs.TabPane tab={`Services (${servicesCount})`} key='services' />
-      <Tabs.TabPane tab='Events' key='events' />
-      <Tabs.TabPane tab='Incidents' key='incidents' />
+      <Tabs.TabPane tab={$t({defaultMessage: 'Overview'})} key='overview' />
+      <Tabs.TabPane tab={$t({defaultMessage: 'APs ({apsCount})'}, {apsCount})} key='aps' />
+      <Tabs.TabPane tab={$t({defaultMessage: 'Venues ({venuesCount})'}, {venuesCount})} key='venues' />
+      <Tabs.TabPane tab={$t({defaultMessage: 'Services ({servicesCount})'}, {servicesCount})} key='services' />
+      <Tabs.TabPane tab={$t({defaultMessage: 'Events'})} key='events' />
+      <Tabs.TabPane tab={$t({defaultMessage: 'Incidents'})} key='incidents' />
     </Tabs>
   )
 }

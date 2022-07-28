@@ -1,11 +1,99 @@
 {
-  "title": "Armaturenbrett",
-  "pageHeaderMenu": {
-    "add": "Hinzufügen",
-    "entireOrg": "Die ganze Organisation",
-    "last24Hrs": "Letzte 24 Stunden"
+  "Q8Qw5B": {
+    "defaultMessage": "Description"
   },
-  "stepsForm": {
-    "cancel": "Absagen"
+  "TK6vBu": {
+    "defaultMessage": "Alarm Time",
+    "description": "blah blah ..."
+  },
+  "XYVgGy": {
+    "defaultMessage": "Alarm Time"
+  },
+  "createNetworkForm.desc": {
+    "defaultMessage": "Description"
+  },
+  "createNetworkForm.name": {
+    "defaultMessage": "Network Name"
+  },
+  "createNetworkForm.title": {
+    "defaultMessage": "Network Details"
+  },
+  "createNetworkForm.type": {
+    "defaultMessage": "Network Type"
+  },
+  "mspSpace": {
+    "defaultMessage": "MSP Space"
+  },
+  "network.configure": {
+    "defaultMessage": "Configure"
+  },
+  "network.entireOrg": {
+    "defaultMessage": "Entire Organization"
+  },
+  "network.events.title": {
+    "defaultMessage": "Events"
+  },
+  "network.incidents.title": {
+    "defaultMessage": "Incidents"
+  },
+  "network.last24Hours": {
+    "defaultMessage": "Last 24 Hours"
+  },
+  "network.overview.title": {
+    "defaultMessage": "Overview"
+  },
+  "network.services.title": {
+    "defaultMessage": "Services"
+  },
+  "network.title": {
+    "defaultMessage": "Networks"
+  },
+  "networkTableCol.activated": {
+    "defaultMessage": "Activated"
+  },
+  "networkTableCol.aps": {
+    "defaultMessage": "APs"
+  },
+  "networkTableCol.city": {
+    "defaultMessage": "City"
+  },
+  "networkTableCol.country": {
+    "defaultMessage": "Country"
+  },
+  "networkTableCol.networks": {
+    "defaultMessage": "Networks"
+  },
+  "networkTableCol.radios": {
+    "defaultMessage": "Radios"
+  },
+  "networkTableCol.scheduling": {
+    "defaultMessage": "Scheduling"
+  },
+  "networkTableCol.venue": {
+    "defaultMessage": "Venue"
+  },
+  "networkTableCol.wifiAps": {
+    "defaultMessage": "Wi-Fi APs"
+  },
+  "pageHeaderMenu.add": {
+    "defaultMessage": "Add..."
+  },
+  "pageHeaderMenu.entireOrg": {
+    "defaultMessage": "Entire Organization"
+  },
+  "pageHeaderMenu.last24Hrs": {
+    "defaultMessage": "Last 24 Hours"
+  },
+  "stepForm.title": {
+    "defaultMessage": "Open Settings"
+  },
+  "stepForm.useCloudpathServer": {
+    "defaultMessage": "Use Cloudpath Server"
+  },
+  "title": {
+    "defaultMessage": "Dashboard"
+  },
+  "vCAhII": {
+    "defaultMessage": "Severity"
   }
 }

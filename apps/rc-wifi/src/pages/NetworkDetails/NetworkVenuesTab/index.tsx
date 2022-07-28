@@ -132,28 +132,28 @@ export function NetworkVenuesTab () {
 
   const columns: TableProps<Venue>['columns'] = [
     {
-      title: $t({id: 'networkTableCol.venue', defaultMessage: 'Venue'}),
+      title: $t({defaultMessage: 'Venue'}),
       dataIndex: 'name',
       sorter: true
     },
     {
-      title: $t({id: 'networkTableCol.city', defaultMessage: 'City'}),
+      title: $t({defaultMessage: 'City'}),
       dataIndex: 'city',
       sorter: true
     },
     {
-      title: $t({id: 'networkTableCol.country', defaultMessage: 'Country'}),
+      title: $t({defaultMessage: 'Country'}),
       dataIndex: 'country',
       sorter: true
     },
     {
-      title: $t({id: 'networkTableCol.networks', defaultMessage: 'Networks'}),
+      title: $t({ defaultMessage: 'Networks'}),
       dataIndex: ['networks', 'count'],
       align: 'center',
       render: function (data) { return data ? data : 0 }
     },
     {
-      title: $t({id: 'networkTableCol.wifiAps', defaultMessage: 'Wi-Fi APs'}),
+      title: $t({defaultMessage: 'Wi-Fi APs'}),
       dataIndex: 'aggregatedApStatus',
       align: 'center',
       render: function (data, row) {
@@ -164,7 +164,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: $t({id: 'networkTableCol.activated', defaultMessage: 'Activated'}),
+      title: $t({defaultMessage: 'Activated'}),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
       render: function (data, row) {
@@ -178,7 +178,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: $t({id: 'networkTableCol.aps', defaultMessage: 'APs'}),
+      title: $t({defaultMessage: 'APs'}),
       dataIndex: 'aps',
       width: '80px',
       render: function (data, row) {
@@ -186,7 +186,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: $t({id: 'networkTableCol.radios', defaultMessage: 'Radios'}),
+      title: $t({defaultMessage: 'Radios'}),
       dataIndex: 'radios',
       width: '140px',
       render: function (data, row) {
@@ -194,7 +194,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: $t({id: 'networkTableCol.scheduling', defaultMessage: 'Scheduling'}),
+      title: $t({defaultMessage: 'Scheduling'}),
       dataIndex: 'scheduling',
       render: function (data, row) {
         return row.activated.isActivated ? '24/7' : ''

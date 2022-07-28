@@ -36,7 +36,7 @@ export function Table <RecordType extends object> (
         <Space size={32}>
           <Space size={6}>
             <span>{selectedRowKeys.length} selected</span>
-            <UI.CloseButton onClick={onCleanSelected} title={ $t({ id: 'pageHeaderMenu.add', defaultMessage: 'Clear selection' }) } />
+            <UI.CloseButton onClick={onCleanSelected} title={$t({ defaultMessage: 'Clear selection' })} />
           </Space>
           <Space size={0} split={<Divider type='vertical' />}>
             {props.actions?.map((option) =>

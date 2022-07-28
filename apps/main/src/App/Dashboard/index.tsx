@@ -32,17 +32,17 @@ function DashboardPageHeader () {
   const { $t } = useIntl()
   return (
     <PageHeader
-      title={$t({ id: 'title', defaultMessage: 'Dashboard' })}
+      title={$t({ defaultMessage: 'Dashboard' })}
       extra={[
         <Button key='add' type='primary'>
-          {$t({ id: 'pageHeaderMenu.add', defaultMessage: 'Add...' })}
+          {$t({ defaultMessage: 'Add...' })}
         </Button>,
         <Button key='hierarchy-filter'>
-          {$t({ id: 'pageHeaderMenu.entireOrg', defaultMessage: 'Entire Organization' })}
+          {$t({ defaultMessage: 'Entire Organization' })}
           <ArrowExpand />
         </Button>,
         <Button key='date-filter' icon={<ClockOutlined />}>
-          {$t({ id: 'pageHeaderMenu.last24Hrs', defaultMessage: 'Last 24 Hours' })}
+          {$t({ defaultMessage: 'Last 24 Hours' })}
         </Button>,
         <Button key='download' icon={<DownloadOutlined />} />,
         <Button key='insight' icon={<BulbOutlined />} />

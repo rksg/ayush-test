@@ -1,2 +1,149 @@
 {
+  "+20FW7": {
+    "defaultMessage": "Devices"
+  },
+  "+8jGZ4": {
+    "defaultMessage": "network filter"
+  },
+  "34xBI0": {
+    "defaultMessage": "APs"
+  },
+  "4VPIXt": {
+    "defaultMessage": "Alarms"
+  },
+  "5lQx5r": {
+    "defaultMessage": "Scheduling"
+  },
+  "8Fo71r": {
+    "defaultMessage": "MSP Space"
+  },
+  "9GvlpZ": {
+    "defaultMessage": "Open Settings"
+  },
+  "9t1iiv": {
+    "defaultMessage": "Configure"
+  },
+  "9uOFF3": {
+    "defaultMessage": "Overview"
+  },
+  "AJBpR8": {
+    "defaultMessage": "Network Type"
+  },
+  "AfUjYu": {
+    "defaultMessage": "Config Change"
+  },
+  "CM0JAR": {
+    "defaultMessage": "Entire Organization"
+  },
+  "EnTkxu": {
+    "defaultMessage": "Recommendations"
+  },
+  "Nr2pru": {
+    "defaultMessage": "Network History"
+  },
+  "O17xiH": {
+    "defaultMessage": "date filter"
+  },
+  "PYmHhr": {
+    "defaultMessage": "Venue"
+  },
+  "Ppx673": {
+    "defaultMessage": "Reports"
+  },
+  "Q8Qw5B": {
+    "defaultMessage": "Description"
+  },
+  "QH7XOz": {
+    "defaultMessage": "New Clients"
+  },
+  "QfVD/H": {
+    "defaultMessage": "Use Cloudpath Server"
+  },
+  "S33j4r": {
+    "defaultMessage": "Services ({servicesCount})"
+  },
+  "TE4fIS": {
+    "defaultMessage": "City"
+  },
+  "XB8fV9": {
+    "defaultMessage": "Last 24 Hours"
+  },
+  "XYVgGy": {
+    "defaultMessage": "Alarm Time"
+  },
+  "YDMrKK": {
+    "defaultMessage": "Users"
+  },
+  "ZvKSfJ": {
+    "defaultMessage": "Events"
+  },
+  "b3loSF": {
+    "defaultMessage": "Occupancy"
+  },
+  "bS/cRP": {
+    "defaultMessage": "Venues"
+  },
+  "d63gFk": {
+    "defaultMessage": "AI Analytics"
+  },
+  "eOJNIA": {
+    "defaultMessage": "Connected Clients"
+  },
+  "eWzMDx": {
+    "defaultMessage": "Activated"
+  },
+  "f+sh2j": {
+    "defaultMessage": "Administration"
+  },
+  "fCkfBx": {
+    "defaultMessage": "APs ({apsCount})"
+  },
+  "hSGclh": {
+    "defaultMessage": "Network Name"
+  },
+  "hlmkcL": {
+    "defaultMessage": "Health"
+  },
+  "hzSNj4": {
+    "defaultMessage": "Dashboard"
+  },
+  "jNR5e0": {
+    "defaultMessage": "Network Details"
+  },
+  "lfIk1B": {
+    "defaultMessage": "Add..."
+  },
+  "mtr3R4": {
+    "defaultMessage": "Incidents"
+  },
+  "sMnDSO": {
+    "defaultMessage": "Wi-Fi APs"
+  },
+  "sZFybj": {
+    "defaultMessage": "Services"
+  },
+  "vCAhII": {
+    "defaultMessage": "Severity"
+  },
+  "vONi+O": {
+    "defaultMessage": "Country"
+  },
+  "xukzKg": {
+    "defaultMessage": "Networks"
+  },
+  "yV5oYe": {
+    "defaultMessage": "Policies"
+  },
+  "z5epQF": {
+    "defaultMessage": "Radios"
+  },
+  "zI1owl": {
+    "defaultMessage": "Venues ({venuesCount})"
+  },
+  "zT3YgI": {
+    "defaultMessage": "Impacted Clients"
+  },
+  "zWkvNO": {
+    "defaultMessage": "Timeline"
+  }
 }

@@ -4,6 +4,6 @@ export function NetworkOverviewTab () {
   const { $t } = useIntl()
 
   return (
-    <>{ $t({id:'network.overview.title', defaultMessage: 'Overview'})}</>
+    <>{ $t({ defaultMessage: 'Overview' })}</>
   )
 }

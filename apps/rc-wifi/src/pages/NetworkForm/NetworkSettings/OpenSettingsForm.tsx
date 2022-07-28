@@ -50,13 +50,13 @@ function SettingsForm () {
 
   return (
     <>
-      <StepsForm.Title>{$t({id: 'stepForm.title', defaultMessage: 'Open Settings'})}</StepsForm.Title>
+      <StepsForm.Title>{$t({defaultMessage: 'Open Settings'})}</StepsForm.Title>
 
       <Form.Item>
         <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
           <Switch />
         </Form.Item>
-        <span>{$t({id: 'stepForm.useCloudpathServer', defaultMessage: 'Use Cloudpath Server'})}</span>
+        <span>{$t({defaultMessage: 'Use Cloudpath Server'})}</span>
       </Form.Item>
 
       {isCloudpathEnabled && <CloudpathServerForm />}

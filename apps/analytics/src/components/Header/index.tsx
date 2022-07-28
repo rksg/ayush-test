@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { useGlobalFilter }                              from '@acx-ui/analytics/utils'
 import { PageHeader, PageHeaderProps , Button, Loader } from '@acx-ui/components'
 
@@ -29,14 +31,15 @@ export const getSubTitle = (subTitles: SubTitle[]) => {
   </>)
 }
 export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
+  const {$t} = useIntl()
   const { title, subTitle } = data
   const props = { ...otherProps, subTitle: getSubTitle(subTitle) }
   if (replaceTitle) props.title = title
   return (
     <PageHeader {...props}
       extra={[
-        <Button key='hierarchy-filter'>network filter</Button>,
-        <Button key='date-filter'>date filter</Button>
+        <Button key='hierarchy-filter'>{$t({ defaultMessage: 'network filter' })}</Button>,
+        <Button key='date-filter'>{$t({ defaultMessage: 'date filter' })}</Button>
       ]}/>
   )
 }
