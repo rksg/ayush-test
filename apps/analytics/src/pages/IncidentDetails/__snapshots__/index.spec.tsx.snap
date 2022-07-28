@@ -139,7 +139,7 @@ exports[`incident details should render Incident Details correctly 1`] = `
         class=""
       >
         <div
-          class="ant-anchor-wrapper syledComponents__LeftColumn-sc-qdn9ny-0 jzXElC"
+          class="ant-anchor-wrapper syledComponents__LeftColumn-sc-qdn9ny-0 jxtCIR"
           style="max-height: calc(100vh - 200px);"
         >
           <div

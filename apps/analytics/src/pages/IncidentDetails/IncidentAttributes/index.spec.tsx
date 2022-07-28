@@ -81,6 +81,13 @@ describe('useDrawer', () => {
 })
 
 describe('IncidentAttributes', () => {
+  const timezone = 'UTC'
+  beforeEach(() => {
+    moment.tz.setDefault(timezone)
+  })
+  afterEach(() => {
+    moment.tz.setDefault(moment.tz.guess())
+  })
   const attributeList = [
     'clientImpactCount',
     'apImpactCount',
