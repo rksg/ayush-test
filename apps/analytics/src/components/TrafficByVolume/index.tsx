@@ -1,8 +1,7 @@
-import React from 'react'
-
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { getSeriesData }            from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
 import { Card }                     from '@acx-ui/components'
 import { Loader }                   from '@acx-ui/components'
 import { MultiLineTimeSeriesChart } from '@acx-ui/components'
@@ -29,7 +28,7 @@ const lineColors = [
   cssStr('--acx-semantics-yellow-40')
 ]
 
-function TrafficByVolumeWidget ({ filters }: { filters : any }) {
+function TrafficByVolumeWidget ({ filters }: { filters : AnalyticsFilter }) {
   const queryResults = useTrafficByVolumeQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({

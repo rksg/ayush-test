@@ -63,10 +63,10 @@ function DashboardWidgets () {
         <WifiWidgets name='alarms' />
       </DashboardCol>
       <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
-        <AnalyticsWidgets name='incidents' />
+        <AnalyticsWidgets name='incidents' filters={filters}/>
       </DashboardCol>
       <DashboardCol col={{ span: 12 }} style={{ height: '384px' }}>
-        <AnalyticsWidgets name='health' />
+        <AnalyticsWidgets name='health' filters={filters}/>
       </DashboardCol>
 
       <DashboardCol col={{ span: 6 }} style={{ height: '176px' }}>
@@ -91,10 +91,10 @@ function DashboardWidgets () {
       </DashboardCol>
 
       <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='connectedClientsOverTime' />
+        <AnalyticsWidgets name='connectedClientsOverTime' filters={filters}/>
       </DashboardCol>
       <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topApplicationsByTraffic' />
+        <AnalyticsWidgets name='topApplicationsByTraffic' filters={filters}/>
       </DashboardCol>
 
     </DashboardRow>

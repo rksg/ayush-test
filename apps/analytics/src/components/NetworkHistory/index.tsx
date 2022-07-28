@@ -3,6 +3,7 @@ import React from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { getSeriesData }            from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
 import { Card }                     from '@acx-ui/components'
 import { Loader }                   from '@acx-ui/components'
 import { MultiLineTimeSeriesChart } from '@acx-ui/components'
@@ -15,7 +16,7 @@ export const seriesMapping = [
   { key: 'newClientCount', name: 'New Clients' },
   { key: 'impactedClientCount', name: 'Impacted Clients' },
   { key: 'connectedClientCount', name: 'Connected Clients' }
-] as Array<{ key: keyof Omit<NetworkHistoryData, 'time'>, name: string }>
+] as Array<{ key: keyof Omit<NetworkHistoryData, 'time'>; name: string }>
 
 const lineColors = [
   cssStr('--acx-accents-blue-30'),
@@ -23,19 +24,17 @@ const lineColors = [
   cssStr('--acx-accents-orange-50')
 ]
 
-function NetworkHistoryWidget ({ filters }: { filters : any }) {
-
-  const queryResults = useNetworkHistoryQuery(filters,
-    {
-      selectFromResult: ({ data, ...rest }) => ({
-        data: getSeriesData(data!, seriesMapping),
-        ...rest
-      })
+function NetworkHistoryWidget ({ filters }: { filters: AnalyticsFilter }) {
+  const queryResults = useNetworkHistoryQuery(filters, {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: getSeriesData(data!, seriesMapping),
+      ...rest
     })
+  })
 
   return (
     <Loader states={[queryResults]}>
-      <Card title='Network History' >
+      <Card title='Network History'>
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart

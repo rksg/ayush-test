@@ -4,7 +4,8 @@ import {
   ReactNode,
   useState,
   useEffect,
-  useRef
+  useRef,
+  useMemo
 } from 'react'
 
 import { Buffer } from 'buffer'
@@ -74,11 +75,14 @@ export function DateFilterProvider (props: { children: ReactNode }) {
     )
     setSearch(params)
   }, [dateFilter, setSearch])
-
+  const providerValue = useMemo(
+    () => ({ dateFilter, setDateFilter }), 
+    [dateFilter, setDateFilter]
+  )
   return (
     <DateFilterContext.Provider
       {...props}
-      value={{ dateFilter, setDateFilter }}
+      value={providerValue}
     />
   )
 }
