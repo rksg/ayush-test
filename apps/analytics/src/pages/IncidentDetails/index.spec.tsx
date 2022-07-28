@@ -1,11 +1,14 @@
 import { rest } from 'msw'
 
-import { Provider }           from '@acx-ui/store'
-import { render, mockServer } from '@acx-ui/test-utils'
+import { dataApiURL }                           from '@acx-ui/analytics/services'
+import { Provider, store }                      from '@acx-ui/store'
+import { render, mockServer, mockGraphqlQuery } from '@acx-ui/test-utils'
 
+import { api }                  from './services'
 import { IncidentDetailsProps } from './types'
 
 import IncidentDetailsPage, { IncidentDetails } from '.'
+
 
 describe('incident details', () => {
   const sampleIncident = {
@@ -64,6 +67,7 @@ describe('incident details', () => {
     sliceValue: 'RuckusAP'
   } as IncidentDetailsProps
 
+
   it('should render Incident Details correctly', async () => {
     mockServer.use(
       rest.get(
@@ -87,27 +91,20 @@ describe('incident details', () => {
     
     expect(asFragment()).toMatchSnapshot()
   })
+
   it('should render Incident Details Page correctly', async () => {
-    mockServer.use(
-      rest.get(
-        '/t/tenantId/analytics/incidents/:incidentId',
-        (req, res, ctx) => {
-          return res(ctx.json(sampleIncident))
-        }
-      )
-    )
-  
+    store.dispatch(api.util.resetApiState())
+    mockGraphqlQuery(dataApiURL, 'IncidentDetails', { data: { incident: sampleIncident } } )
     const params = {
-      incidentId: 'df5339ba-da3b-4110-a291-7f8993a274f3'
+      incidentId: '123'
     }
-  
     const { asFragment } = render(
       <Provider>
         <IncidentDetailsPage />
       </Provider>, {
         route: { params }
       })
-    
+
     expect(asFragment()).toMatchSnapshot()
   })
 })
