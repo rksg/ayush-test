@@ -6,9 +6,9 @@ import { renderToString }                          from 'react-dom/server'
 
 import { formatter } from '@acx-ui/utils'
 
-import { cssNumber, cssStr } from '../../theme/helper'
-
-import * as UI from './styledComponents'
+import { cssStr }                           from '../../theme/helper'
+import { tooltipOptions, axisLabelOptions } from '../Chart/helper'
+import { TooltipWrapper }                   from '../Chart/styledComponents'
 
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
@@ -143,7 +143,10 @@ export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams
   const [ time ] = (Array.isArray(params)
     ? params[0].data : params.data) as [number]
   return renderToString(
-    <UI.TooltipTitleWrapper children={formatter('dateTimeFormat')(time) as string}/>)
+    <TooltipWrapper>
+      <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
+    </TooltipWrapper>
+  )
 }
 
 export const useDatazoom = (
@@ -188,6 +191,7 @@ export function ConfigChangeChart ({
   const placeholderRows = 3 // for tracker
   const legendWidth = 85
   const brushHeight = mapping.length * rowHeight
+  const xAxisHeight = 30
 
   const eChartsRef = useRef<ReactECharts>(null)
 
@@ -374,12 +378,12 @@ export function ConfigChangeChart ({
   const option: EChartsOption = {
     animation: false,
     grid: {
-      containLabel: true,
       top: 0,
       bottom: 0,
       left: chartPadding,
       right: 0,
-      width: props.style?.width
+      width: props.style?.width,
+      height: (mapping.length + placeholderRows) * rowHeight
     },
     toolbox: { show: false },
     tooltip: {
@@ -395,18 +399,7 @@ export function ConfigChangeChart ({
         }
       },
       formatter: tooltipFormatter,
-      textStyle: {
-        color: cssStr('--acx-primary-white'),
-        fontFamily: cssStr('--acx-neutral-brand-font'),
-        fontSize: cssNumber('--acx-body-5-font-size'),
-        lineHeight: cssNumber('--acx-body-5-line-height'),
-        fontWeight: 400
-      },
-      backgroundColor: cssStr('--acx-primary-black'),
-      borderRadius: 2,
-      borderColor: cssStr('--acx-primary-black'),
-      padding: [3, 5],
-      extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.15);',
+      ...tooltipOptions(),
       position: (point) => [point[0] + 10, 0] // 10 for gap between tooltip and tracker
     },
     legend: {
@@ -432,9 +425,8 @@ export function ConfigChangeChart ({
         lineStyle: { color: 'transparent' }
       },
       axisLabel: {
-        color: cssStr('--acx-neutrals-60'),
-        fontSize: 10,
-        fontFamily: cssStr('--acx-neutral-brand-font'),
+        margin: 4,
+        ...axisLabelOptions(),
         formatter: axisLabelFormatter
       },
       min: chartBoundary[0],
@@ -507,7 +499,7 @@ export function ConfigChangeChart ({
           ...props.style,
           WebkitUserSelect: 'none',
           width: (props.style?.width as number) + legendWidth,
-          height: (mapping.length + placeholderRows + 1) * rowHeight // +1 for x-axis
+          height: (mapping.length + placeholderRows) * rowHeight + xAxisHeight // +1 for x-axis
         }
       }}
       ref={eChartsRef}
