@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 
-import { Space, Switch, Table } from 'antd'
+import { Switch }            from 'antd'
+import { DefaultRecordType } from 'rc-table/lib/interface'
 
-export interface IncidentTableProps {
-  columns: any
-  rowSelection: any
-  data: any
+import { Table, TableProps } from '../Table'
+
+import * as UI from './styledComponents'
+
+
+export type IncidentTableProps = TableProps<DefaultRecordType> & {
+  data: DefaultRecordType[]
 }
 
 
@@ -14,14 +18,11 @@ const IncidentTable = (props: IncidentTableProps) => {
   const { columns, rowSelection, data } = props
   return (
     <>
-      <Space
+      <UI.Space
         align='center'
-        style={{
-          marginBottom: 16
-        }}
       >
         CheckStrictly: <Switch checked={checkStrictly} onChange={setCheckStrictly} />
-      </Space>
+      </UI.Space>
       <Table
         columns={columns}
         rowSelection={{ ...rowSelection, checkStrictly }}

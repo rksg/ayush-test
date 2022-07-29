@@ -1,4 +1,8 @@
+import { TableRowSelection } from 'antd/lib/table/interface'
+import { DefaultRecordType } from 'rc-table/lib/interface'
+
 import IncidentTable from '..'
+
 
 const columns = [
   {
@@ -84,15 +88,23 @@ const data = [
   }
 ] // rowSelection objects indicates the need for row selection
 
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
+const rowSelection: TableRowSelection<DefaultRecordType> = {
+  onChange: (selectedRowKeys: DefaultRecordType, selectedRows: DefaultRecordType[]) => {
     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
   },
-  onSelect: (record, selected, selectedRows) => {
+  onSelect: (
+    record: DefaultRecordType, 
+    selected: boolean,
+    selectedRows: DefaultRecordType[]
+  ) => {
     console.log(record, selected, selectedRows)
   },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    console.log(selected, selectedRows, changeRows)
+  onSelectAll: (
+    selected: boolean, 
+    selectedRows: DefaultRecordType[], 
+    changeRows: DefaultRecordType[]
+  ) => {
+    console.log(typeof selected, selectedRows, changeRows)
   }
 }
 
