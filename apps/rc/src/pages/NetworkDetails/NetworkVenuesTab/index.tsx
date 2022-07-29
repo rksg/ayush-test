@@ -19,8 +19,8 @@ import {
   useVenueListQuery,
   Venue
 } from '@acx-ui/rc/services'
-import { Constants, useTableQuery, getUserSettingsFromDict, NetworkSaveData } from '@acx-ui/rc/utils'
-import { useParams }                                                          from '@acx-ui/react-router-dom'
+import { Constants, useTableQuery, getUserSettingsFromDict, NetworkSaveData, NetworkVenue } from '@acx-ui/rc/utils'
+import { useParams }                                                                        from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from '../services'
 
@@ -119,11 +119,11 @@ export function NetworkVenuesTab () {
       defaultVenueData.allApGroupsRadioTypes.push('6-GHz')
     }
 
-    let deactivateNetworkVenueId = ''
+    let deactivateNetworkVenueId
     if (!checked && network?.venues) {
-      network?.venues.forEach((venue: { venueId: string; id: string }) => {
+      network?.venues.forEach((venue: NetworkVenue) => {
         if (venue.venueId === row.id || venue.id === row.id) {
-          deactivateNetworkVenueId = venue.id
+          deactivateNetworkVenueId = venue.id || ''
         }
       })
     }
@@ -131,8 +131,11 @@ export function NetworkVenuesTab () {
       if (checked) { // activate
         addNetworkVenue({ params: { tenantId: params.tenantId }, payload: defaultVenueData })
       } else { // deactivate
-        /* eslint-disable max-len */
-        deleteNetworkVenue({ params: { tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId } })
+        deleteNetworkVenue({ 
+          params: { 
+            tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId 
+          } 
+        })
       }
     }
   }
@@ -141,7 +144,7 @@ export function NetworkVenuesTab () {
     updateNetworkDeep({ params, payload: network }).then(clearSelection)
   }
 
-  const activateSelected = (venues: any[], activatingVenues: any[]) => {
+  const activateSelected = (venues: NetworkVenue[], activatingVenues: Venue[]) => {
     const enabledNotActivatedVenues:string[] = []
     const networkVenues = [...venues]
     if (tableData && tableData.length > 0) {
@@ -186,7 +189,7 @@ export function NetworkVenuesTab () {
     return networkVenues
   }
 
-  const deActivateSelected = (venues: any[], activatingVenues: any[]) => {
+  const deActivateSelected = (venues: NetworkVenue[], activatingVenues: Venue[]) => {
     const networkVenues = [...venues]
     const selectedVenuesId = activatingVenues.map(row => row.id)
 
