@@ -13,11 +13,11 @@ import { cssStr }                   from '@acx-ui/components'
 import { NetworkHistoryData }     from './services'
 import { useNetworkHistoryQuery } from './services'
 
-export const seriesMapping = [
-  { key: 'newClientCount', name: 'New Clients' },
-  { key: 'impactedClientCount', name: 'Impacted Clients' },
-  { key: 'connectedClientCount', name: 'Connected Clients' }
-] as Array<{ key: keyof Omit<NetworkHistoryData, 'time'>, name: string }>
+export const seriesMapping = ($t: CallableFunction) => ([
+  { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
+  { key: 'impactedClientCount', name: $t({ defaultMessage: 'Impacted Clients' }) },
+  { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
+] as Array<{ key: keyof Omit<NetworkHistoryData, 'time'>, name: string }>)
 
 const lineColors = [
   cssStr('--acx-accents-blue-30'),
@@ -33,7 +33,7 @@ function NetworkHistoryWidget (
   const queryResults = useNetworkHistoryQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
-        data: getSeriesData(data!, seriesMapping),
+        data: getSeriesData(data!, seriesMapping($t)),
         ...rest
       })
     })
