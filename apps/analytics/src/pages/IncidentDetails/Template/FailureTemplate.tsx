@@ -10,6 +10,7 @@ import { formattedSliceType, impactedArea } from '../path'
 import * as UI                              from '../syledComponents'
 
 import type { IncidentDetailsProps } from '../types'
+import { Insights } from '../Insights'
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const info = incidentInformation[props.code as keyof typeof incidentInformation]
@@ -57,7 +58,8 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
         <Col>
           <Row gutter={[20, 20]}>
             <Col span={24}>
-              <div>Insights</div>
+              <Insights {...props}/>
+              {/* <div>Insight</div> */}
             </Col>
             <Col span={24}>
               <div>network impact</div>

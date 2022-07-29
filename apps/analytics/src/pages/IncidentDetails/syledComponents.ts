@@ -1,4 +1,4 @@
-import { Anchor } from 'antd'
+import { Anchor, Col, PageHeader } from 'antd'
 import styled     from 'styled-components/macro'
 
 export const LeftColumn = styled(Anchor)`
@@ -16,6 +16,30 @@ export const LeftColumn = styled(Anchor)`
       visibility: hidden;
     }
   }
+`
 
-  
+export const InsightComponent = styled.div`
+  background-color: var(--acx-neutrals-20);
+  border-radius: 8px;
+
+  .ant-page-header-heading {
+    // background-color: var(--acx-neutrals-20);
+    border-radius: inherit;
+  }
+
+  .ant-page-header {
+    border-radius: inherit;
+    padding-left: 14px;
+  }
+`
+
+export const InsightHeader = styled(PageHeader)`
+  .ant-page-header-heading {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+`
+
+export const InsightDetails = styled(Col)`
+  padding: 12px;
 `
