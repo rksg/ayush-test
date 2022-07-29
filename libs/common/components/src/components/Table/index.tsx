@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
 import ProTable                   from '@ant-design/pro-table'
-import { Space, Divider }         from 'antd'
+import { Space, Divider, Button } from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
@@ -58,7 +58,9 @@ export function Table <RecordType extends object> (
     checkedReset: false,
     extra: <div>
       <UI.TableSettingTitle children={$t(messages.columnsSettingTitle)} />
-      <UI.TableSettingResetButton
+      <Button
+        type='link'
+        size='small'
         onClick={columnsState.resetState}
         children={$t(messages.resetColumns)}
       />

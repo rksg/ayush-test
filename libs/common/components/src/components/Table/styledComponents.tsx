@@ -6,8 +6,6 @@ import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { CancelCircle } from '@acx-ui/icons'
 
-import { Button } from '../Button'
-
 export const CloseButton = styled(AntButton).attrs({
   icon: <CancelCircle />
 })`
@@ -35,11 +33,6 @@ export const ActionButton = styled.button`
 
 export const TableSettingTitle = styled(Typography.Title)
   .attrs({ level: 5 })``
-
-export const TableSettingResetButton = styled(Button).attrs({ type: 'link' })`
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-`
 
 export const TableSettingsGlobalOverride = createGlobalStyle`
   .ant-pro-table-column-setting {
@@ -80,7 +73,7 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
       .ant-btn {
         position: absolute;
         left: 16px;
-        bottom: 8px;
+        bottom: 13px;
       }
 
       h5${TableSettingTitle} {
