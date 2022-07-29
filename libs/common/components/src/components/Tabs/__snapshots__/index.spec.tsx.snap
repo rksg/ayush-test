@@ -1,0 +1,409 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ContentToggle should render component 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-space ant-space-horizontal ant-space-align-center"
+    style="justify-content: center; padding: 15px 0px;"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <div
+        class="styledComponents__Wrapper-sc-c4vpsp-0 jqIqXo"
+      >
+        <div
+          class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+        >
+          <label
+            class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+          >
+            <span
+              class="ant-radio-button ant-radio-button-checked"
+            >
+              <input
+                checked=""
+                class="ant-radio-button-input"
+                type="radio"
+                value="chart"
+              />
+              <span
+                class="ant-radio-button-inner"
+              />
+            </span>
+            <span>
+              <span
+                aria-label="bar-chart"
+                class="anticon anticon-bar-chart"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="bar-chart"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M888 792H200V168c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v688c0 4.4 3.6 8 8 8h752c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm-600-80h56c4.4 0 8-3.6 8-8V560c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v144c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V384c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v320c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V462c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v242c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V304c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v400c0 4.4 3.6 8 8 8z"
+                  />
+                </svg>
+              </span>
+              Chart
+            </span>
+          </label>
+          <label
+            class="ant-radio-button-wrapper"
+          >
+            <span
+              class="ant-radio-button"
+            >
+              <input
+                class="ant-radio-button-input"
+                type="radio"
+                value="table"
+              />
+              <span
+                class="ant-radio-button-inner"
+              />
+            </span>
+            <span>
+              <span
+                aria-label="table"
+                class="anticon anticon-table"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="table"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 208H676V232h212v136zm0 224H676V432h212v160zM412 432h200v160H412V432zm200-64H412V232h200v136zm-476 64h212v160H136V432zm0-200h212v136H136V232zm0 424h212v136H136V656zm276 0h200v136H412V656zm476 136H676V656h212v136z"
+                  />
+                </svg>
+              </span>
+              Table
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h1>
+    Chart content
+  </h1>
+</DocumentFragment>
+`;
+
+exports[`ContentToggle should render component with default selection 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-space ant-space-horizontal ant-space-align-center"
+    style="justify-content: center; padding: 15px 0px;"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <div
+        class="styledComponents__Wrapper-sc-c4vpsp-0 jqIqXo"
+      >
+        <div
+          class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+        >
+          <label
+            class="ant-radio-button-wrapper"
+          >
+            <span
+              class="ant-radio-button"
+            >
+              <input
+                class="ant-radio-button-input"
+                type="radio"
+                value="chart"
+              />
+              <span
+                class="ant-radio-button-inner"
+              />
+            </span>
+            <span>
+              <span
+                aria-label="bar-chart"
+                class="anticon anticon-bar-chart"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="bar-chart"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M888 792H200V168c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v688c0 4.4 3.6 8 8 8h752c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm-600-80h56c4.4 0 8-3.6 8-8V560c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v144c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V384c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v320c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V462c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v242c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V304c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v400c0 4.4 3.6 8 8 8z"
+                  />
+                </svg>
+              </span>
+              Chart
+            </span>
+          </label>
+          <label
+            class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+          >
+            <span
+              class="ant-radio-button ant-radio-button-checked"
+            >
+              <input
+                checked=""
+                class="ant-radio-button-input"
+                type="radio"
+                value="table"
+              />
+              <span
+                class="ant-radio-button-inner"
+              />
+            </span>
+            <span>
+              <span
+                aria-label="table"
+                class="anticon anticon-table"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="table"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 208H676V232h212v136zm0 224H676V432h212v160zM412 432h200v160H412V432zm200-64H412V232h200v136zm-476 64h212v160H136V432zm0-200h212v136H136V232zm0 424h212v136H136V656zm276 0h200v136H412V656zm476 136H676V656h212v136z"
+                  />
+                </svg>
+              </span>
+              Table
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Table content
+  </h2>
+</DocumentFragment>
+`;
+
+exports[`ContentToggle should render proper content while toggle: chartContent 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-space ant-space-horizontal ant-space-align-center"
+    style="justify-content: center; padding: 15px 0px;"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <div
+        class="styledComponents__Wrapper-sc-c4vpsp-0 jqIqXo"
+      >
+        <div
+          class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+        >
+          <label
+            class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+          >
+            <span
+              class="ant-radio-button ant-radio-button-checked"
+            >
+              <input
+                checked=""
+                class="ant-radio-button-input"
+                type="radio"
+                value="chart"
+              />
+              <span
+                class="ant-radio-button-inner"
+              />
+            </span>
+            <span>
+              <span
+                aria-label="bar-chart"
+                class="anticon anticon-bar-chart"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="bar-chart"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M888 792H200V168c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v688c0 4.4 3.6 8 8 8h752c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm-600-80h56c4.4 0 8-3.6 8-8V560c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v144c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V384c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v320c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V462c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v242c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V304c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v400c0 4.4 3.6 8 8 8z"
+                  />
+                </svg>
+              </span>
+              Chart
+            </span>
+          </label>
+          <label
+            class="ant-radio-button-wrapper"
+          >
+            <span
+              class="ant-radio-button"
+            >
+              <input
+                class="ant-radio-button-input"
+                type="radio"
+                value="table"
+              />
+              <span
+                class="ant-radio-button-inner"
+              />
+            </span>
+            <span>
+              <span
+                aria-label="table"
+                class="anticon anticon-table"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="table"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 208H676V232h212v136zm0 224H676V432h212v160zM412 432h200v160H412V432zm200-64H412V232h200v136zm-476 64h212v160H136V432zm0-200h212v136H136V232zm0 424h212v136H136V656zm276 0h200v136H412V656zm476 136H676V656h212v136z"
+                  />
+                </svg>
+              </span>
+              Table
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h1>
+    Chart content
+  </h1>
+</DocumentFragment>
+`;
+
+exports[`ContentToggle should render proper content while toggle: tableContent 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-space ant-space-horizontal ant-space-align-center"
+    style="justify-content: center; padding: 15px 0px;"
+  >
+    <div
+      class="ant-space-item"
+    >
+      <div
+        class="styledComponents__Wrapper-sc-c4vpsp-0 jqIqXo"
+      >
+        <div
+          class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+        >
+          <label
+            class="ant-radio-button-wrapper"
+          >
+            <span
+              class="ant-radio-button"
+            >
+              <input
+                checked=""
+                class="ant-radio-button-input"
+                type="radio"
+                value="chart"
+              />
+              <span
+                class="ant-radio-button-inner"
+              />
+            </span>
+            <span>
+              <span
+                aria-label="bar-chart"
+                class="anticon anticon-bar-chart"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="bar-chart"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M888 792H200V168c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v688c0 4.4 3.6 8 8 8h752c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm-600-80h56c4.4 0 8-3.6 8-8V560c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v144c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V384c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v320c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V462c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v242c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V304c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v400c0 4.4 3.6 8 8 8z"
+                  />
+                </svg>
+              </span>
+              Chart
+            </span>
+          </label>
+          <label
+            class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+          >
+            <span
+              class="ant-radio-button ant-radio-button-checked"
+            >
+              <input
+                class="ant-radio-button-input"
+                type="radio"
+                value="table"
+              />
+              <span
+                class="ant-radio-button-inner"
+              />
+            </span>
+            <span>
+              <span
+                aria-label="table"
+                class="anticon anticon-table"
+                role="img"
+              >
+                <svg
+                  aria-hidden="true"
+                  data-icon="table"
+                  fill="currentColor"
+                  focusable="false"
+                  height="1em"
+                  viewBox="64 64 896 896"
+                  width="1em"
+                >
+                  <path
+                    d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 208H676V232h212v136zm0 224H676V432h212v160zM412 432h200v160H412V432zm200-64H412V232h200v136zm-476 64h212v160H136V432zm0-200h212v136H136V232zm0 424h212v136H136V656zm276 0h200v136H412V656zm476 136H676V656h212v136z"
+                  />
+                </svg>
+              </span>
+              Table
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h2>
+    Table content
+  </h2>
+</DocumentFragment>
+`;

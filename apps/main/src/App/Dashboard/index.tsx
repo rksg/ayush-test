@@ -8,8 +8,8 @@ import {
   DashboardRow,
   DashboardCol,
   PageHeader,
-  ContentToggle,
-  ContentToggleProps
+  Tabs,
+  TabsProps
 } from '@acx-ui/components'
 import {
   ArrowExpand,
@@ -26,7 +26,7 @@ export default function Dashboard () {
     <GlobalFilterProvider>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
-      <ContentToggle tabDetails={tabDetails} size='large' />
+      <Tabs tabDetails={tabDetails} size='large' />
     </GlobalFilterProvider>
   )
 }
@@ -95,16 +95,16 @@ function SwitchWidgets () {
   )
 }
 
-const tabDetails: ContentToggleProps['tabDetails'] = [
+const tabDetails: TabsProps['tabDetails'] = [
   {
     label: 'Wi-Fi',
     value: 'ap',
-    content: ApWidgets()
+    children: ApWidgets()
   },
   {
     label: 'Switch',
     value: 'switch',
-    content: SwitchWidgets()
+    children: SwitchWidgets()
   }
 ]
 
