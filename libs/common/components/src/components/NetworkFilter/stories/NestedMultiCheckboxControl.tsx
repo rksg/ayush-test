@@ -60,7 +60,7 @@ export function NestedMultiCheckboxControl () {
     multiple
     withControlButtons
     placeholder='With CheckboxGroup'
-    withRadio={{ radioTitle: 'Frequency', radioOptions: ['6 GHz', '5 Ghz', '2.4 Ghz'] }}
+    withRadio={{ radioTitle: 'Radio', radioOptions: ['6 GHz', '5 Ghz', '2.4 Ghz'] }}
     options={options}
     onApply={onApply}
     onCancel={onCancel}

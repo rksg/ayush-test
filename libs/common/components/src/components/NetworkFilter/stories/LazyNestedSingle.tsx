@@ -10,15 +10,16 @@ import { onApply, onCancel } from './utils'
 const createNode: () => DefaultOptionType = () => {
   return {
     label: `Node ${(Math.random() * 1e18).toString(36).slice(0, 3).toUpperCase()}`,
-    value: Math.random() * 1e18,
+    value: (Math.random() * 1e18).toFixed(0),
     children: [],
-    isLeaf: false
+    isLeaf: false,
+    loading: false
   }
 }
 
 const mockData = () => {
   const children: DefaultOptionType[] = []
-  for (let i = 0; i < Math.random() * 1000; i++) {
+  for (let i = 0; i < Math.random() * 10; i++) {
     children.push(createNode())
   }
   return children
@@ -26,22 +27,25 @@ const mockData = () => {
 
 
 export function LazyNestedSingle () {
-  const [options, setOption] = React.useState<DefaultOptionType[]>([])
+  const [options, setOptions] = React.useState<DefaultOptionType[]>([])
+  const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
-    setOption(mockData)
+    setOptions(mockData)
   }, [])
 
   const loadData = (selectedOptions: DefaultOptionType[]) => {
     const targetOption = selectedOptions[selectedOptions.length - 1]
     targetOption['loading'] = true
+    setLoading(true)
 
+    // load options lazily
     setTimeout(() => {
+      setLoading(false)
       targetOption['loading'] = false
-      const childData = mockData()
-      targetOption.children = childData
-      setOption([...options])
-    }, 500)
+      targetOption.children = mockData()
+      setOptions([...options])
+    }, 1000)
   }
 
   return <NetworkFilter
@@ -50,5 +54,7 @@ export function LazyNestedSingle () {
     onApply={onApply}
     onCancel={onCancel}
     loadData={loadData}
+    loading={loading}
+    changeOnSelect
   />
 }

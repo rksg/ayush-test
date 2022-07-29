@@ -6,9 +6,9 @@ import { NestedListSingle }           from './NestedListSingle'
 import { NestedMultiCheckboxControl } from './NestedMultiCheckboxControl'
 
 storiesOf('NetworkFilter', module)
-  .add('nested list, single select', NestedListSingle)
-  .add('flat list, multi select', FlatListMulti)
-  .add('nested list, multi select, checkboxgroup & control button', NestedMultiCheckboxControl)
-  .add('lazy loaded, single select', LazyNestedSingle)
+  .add('With Nested List - single', NestedListSingle)
+  .add('With Simple List - multi', FlatListMulti)
+  .add('With Radio', NestedMultiCheckboxControl)
+  .add('With Lazy Loading', LazyNestedSingle)
 
 export {}

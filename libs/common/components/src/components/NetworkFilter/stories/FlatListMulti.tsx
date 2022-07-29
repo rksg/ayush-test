@@ -31,6 +31,7 @@ const options: Option[] = [
 
 export function FlatListMulti () {
   return <NetworkFilter
+    multiple
     withControlButtons
     placeholder='flat list, multi-select'
     options={options}
