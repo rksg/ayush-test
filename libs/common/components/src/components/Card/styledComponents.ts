@@ -7,7 +7,6 @@ type WrapperProps = {
   hasTitle: boolean
   hasSubTitle: boolean
   hasTabs: boolean
-  useFullHeight: boolean
 }
 
 export const ArrowOutIcon = styled(ArrowsOut)``

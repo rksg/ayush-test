@@ -25,9 +25,7 @@ const lineColors = [
   cssStr('--acx-accents-orange-50')
 ]
 
-function NetworkHistoryWidget (
-  { hideTitle, useFullheight } : { hideTitle?: boolean, useFullheight?: boolean }
-) {
+function NetworkHistoryWidget ({ hideTitle } : { hideTitle?: boolean }) {
   const filters = useGlobalFilter()
   const { $t } = useIntl()
   const queryResults = useNetworkHistoryQuery(filters,
@@ -40,7 +38,7 @@ function NetworkHistoryWidget (
   const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
   return (
     <Loader states={[queryResults]}>
-      <Card title={title} useFullHeight={useFullheight}>
+      <Card title={title}>
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart

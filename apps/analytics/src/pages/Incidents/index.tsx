@@ -13,7 +13,7 @@ function Incidents () {
         <div>bar chart</div>
       </Col>
       <Col span={20} style={{ display: 'flex', height: 220 }}>
-        <NetworkHistoryWidget hideTitle useFullheight/>
+        <NetworkHistoryWidget hideTitle/>
       </Col>
       <Col span={24}>
         table
