@@ -51,7 +51,7 @@ test('should render Traffic by Volume widget', async () => {
     data: { network: { hierarchyNode: { timeSeries: sample } } }
   })
   render( <Provider> <AnalyticsWidgets name='trafficByVolume' /></Provider>)
-  await screen.findByText('Traffic by Volume')
+  expect(await screen.findByText('Traffic by Volume')).not.toBe(null)
 })
 
 test('should render Network History widget', async () => {
@@ -59,7 +59,7 @@ test('should render Network History widget', async () => {
     data: { network: { hierarchyNode: { timeSeries: networkHistorySample } } }
   })
   render( <Provider> <AnalyticsWidgets name='networkHistory' /></Provider>)
-  await screen.findByText('Network History')
+  expect(await screen.findByText('Network History')).not.toBe(null)
 })
 
 test('should render Connected Clients Over Time widget', async () => {
@@ -67,5 +67,5 @@ test('should render Connected Clients Over Time widget', async () => {
     data: { network: { hierarchyNode: { timeSeries: connectedClientsOverTimeSample } } }
   })
   render( <Provider> <AnalyticsWidgets name='connectedClientsOverTime' /></Provider>)
-  await screen.findByText('Connected Clients Over Time')
+  expect(await screen.findByText('Connected Clients Over Time')).not.toBe(null)
 })
