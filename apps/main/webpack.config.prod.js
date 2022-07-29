@@ -23,7 +23,7 @@ module.exports = webpackConfigWithModuleFederation({
    * ]
    */
   remotes: [
-    ['rc-wifi', '/api/ui-beta/rc-wifi'],
+    ['rc', '/api/ui-beta/rc'],
     ['analytics', '/api/ui-beta/analytics']
   ]
 }, {

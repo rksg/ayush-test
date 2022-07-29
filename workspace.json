@@ -15,7 +15,7 @@
     "main": "apps/main",
     "rc-services": "libs/rc/services",
     "rc-utils": "libs/rc/utils",
-    "rc-wifi": "apps/rc-wifi",
+    "rc": "apps/rc",
     "react-router-dom": "libs/common/react-router-dom"
   }
 }

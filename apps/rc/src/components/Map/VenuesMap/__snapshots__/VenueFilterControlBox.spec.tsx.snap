@@ -3,15 +3,15 @@
 exports[`VenueFilterControlBox should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__VenueFilterContainer-sc-aq95s2-2 tVegZ"
+    class="styledComponents__VenueFilterContainer-sc-hcbyx3-2 cqGLbj"
   >
     <span
-      class="styledComponents__FilterBoxTitle-sc-aq95s2-1 hgkPML"
+      class="styledComponents__FilterBoxTitle-sc-hcbyx3-1 dhqbgd"
     >
       Show
     </span>
     <label
-      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-aq95s2-0 iBeDqm"
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-hcbyx3-0 lizKwc"
     >
       <span
         class="ant-checkbox ant-checkbox-checked"
@@ -34,7 +34,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="styledComponents__VenueMarkerRedIcon-sc-aq95s2-6 dKWsgp"
+            class="styledComponents__VenueMarkerRedIcon-sc-hcbyx3-6 eSsEmX"
             fill="currentColor"
             focusable="false"
             height="1em"
@@ -46,7 +46,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
       </span>
     </label>
     <label
-      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-aq95s2-0 iBeDqm"
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-hcbyx3-0 lizKwc"
     >
       <span
         class="ant-checkbox ant-checkbox-checked"
@@ -69,7 +69,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="styledComponents__VenueMarkerOrangeIcon-sc-aq95s2-5 fxdiLd"
+            class="styledComponents__VenueMarkerOrangeIcon-sc-hcbyx3-5 bALJuH"
             fill="currentColor"
             focusable="false"
             height="1em"
@@ -81,7 +81,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
       </span>
     </label>
     <label
-      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-aq95s2-0 iBeDqm"
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-hcbyx3-0 lizKwc"
     >
       <span
         class="ant-checkbox ant-checkbox-checked"
@@ -104,7 +104,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="styledComponents__VenueMarkerGreyIcon-sc-aq95s2-4 bZZjYh"
+            class="styledComponents__VenueMarkerGreyIcon-sc-hcbyx3-4 jKKrQb"
             fill="currentColor"
             focusable="false"
             height="1em"
@@ -116,7 +116,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
       </span>
     </label>
     <label
-      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-aq95s2-0 iBeDqm"
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-hcbyx3-0 lizKwc"
     >
       <span
         class="ant-checkbox ant-checkbox-checked"
@@ -139,7 +139,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="styledComponents__VenueMarkerGreenIcon-sc-aq95s2-3 dmBVo"
+            class="styledComponents__VenueMarkerGreenIcon-sc-hcbyx3-3 cHXAOS"
             fill="currentColor"
             focusable="false"
             height="1em"
