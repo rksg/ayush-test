@@ -8,8 +8,8 @@ import {
   DashboardRow,
   DashboardCol,
   PageHeader,
-  Tabs,
-  TabsProps
+  ContentSwitcher,
+  ContentSwitcherProps
 } from '@acx-ui/components'
 import {
   ArrowExpand,
@@ -26,7 +26,7 @@ export default function Dashboard () {
     <GlobalFilterProvider>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
-      <Tabs tabDetails={tabDetails} size='large' />
+      <ContentSwitcher tabDetails={tabDetails} size='large' />
     </GlobalFilterProvider>
   )
 }
@@ -95,7 +95,7 @@ function SwitchWidgets () {
   )
 }
 
-const tabDetails: TabsProps['tabDetails'] = [
+const tabDetails: ContentSwitcherProps['tabDetails'] = [
   {
     label: 'Wi-Fi',
     value: 'ap',

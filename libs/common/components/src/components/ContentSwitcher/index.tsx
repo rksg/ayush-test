@@ -11,14 +11,14 @@ export interface TabDetail {
   icon?: ReactNode
 }
 
-export interface TabsProps {
+export interface ContentSwitcherProps {
   defaultValue?:string
   tabDetails : Array<TabDetail>
-  size?: 'small' | 'middle' | 'large'
+  size?: 'small' | 'large'
   align?: 'left' | 'right' | 'center'
 }
 
-export const Tabs: FC<TabsProps> = (props) => {
+export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
   const { tabDetails, defaultValue, size, align } = props
 
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
@@ -46,7 +46,7 @@ export const Tabs: FC<TabsProps> = (props) => {
   )
 }
 
-Tabs.defaultProps={
+ContentSwitcher.defaultProps={
   size: 'small',
   align: 'center'
 }

@@ -39,20 +39,6 @@ export const Wrapper = styled.div`
 
   .ant-radio-group-small {
     svg {
-      width: var(--acx-body-5-font-size);
-      height: var(--acx-body-5-font-size);
-    }
-    .ant-radio-button-wrapper {
-      font-size: var(--acx-body-5-font-size);
-      line-height: var(--acx-body-5-line-height);
-      height: 16px;
-      span:nth-child(2) {
-        margin: 0px 8px;
-      }
-    }
-  }
-  .ant-radio-group-middle {
-    svg {
       width: var(--acx-body-4-font-size);
       height: var(--acx-body-4-font-size);
     }

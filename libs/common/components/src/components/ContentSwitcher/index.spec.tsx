@@ -2,9 +2,9 @@ import { BarChartOutlined, TableOutlined } from '@ant-design/icons'
 
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { Tabs, TabsProps } from '.'
+import { ContentSwitcher, ContentSwitcherProps } from '.'
 
-const tabDetails: TabsProps['tabDetails'] = [
+const tabDetails: ContentSwitcherProps['tabDetails'] = [
   {
     label: 'Chart',
     value: 'chart',
@@ -19,13 +19,13 @@ const tabDetails: TabsProps['tabDetails'] = [
   }
 ]
 
-describe('ContentToggle',()=>{
+describe('ContentSwitcher',()=>{
   it('should render component',() => {
-    const { asFragment } =render(<Tabs tabDetails={tabDetails}/>)
+    const { asFragment } =render(<ContentSwitcher tabDetails={tabDetails}/>)
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should render proper content while toggle',() => {
-    const { asFragment } =render(<Tabs tabDetails={tabDetails}/>)
+  it('should render properly with two tabs',() => {
+    const { asFragment } =render(<ContentSwitcher tabDetails={tabDetails}/>)
     const chartContent = asFragment()
     expect(chartContent).toMatchSnapshot('chartContent')
     fireEvent.click(screen.getByText('Table'))
@@ -34,7 +34,7 @@ describe('ContentToggle',()=>{
     expect(tableContent).not.toBe(chartContent)
   })
   it('should render component with default selection',() => {
-    const { asFragment } =render(<Tabs tabDetails={tabDetails} defaultValue={'table'}/>)
+    const { asFragment } =render(<ContentSwitcher tabDetails={tabDetails} defaultValue={'table'}/>)
     expect(asFragment()).toMatchSnapshot()
   })
 })

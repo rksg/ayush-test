@@ -5,22 +5,22 @@ import { StackedAreaChart }  from '../StackedAreaChart'
 import { data as chartData } from '../StackedAreaChart/stories'
 import { BasicTable }        from '../Table/stories/BasicTable'
 
-import { ContentToggle, ContentToggleProps } from '.'
+import { ContentSwitcher, ContentSwitcherProps } from '.'
 
-const tabDetails:ContentToggleProps['tabDetails']=[
+const tabDetails: ContentSwitcherProps['tabDetails'] = [
   {
     label: 'Chart',
     value: 'chart',
     icon: <BarChartOutlined />,
-    content: <StackedAreaChart data={chartData} />
+    children: <StackedAreaChart data={chartData} />
   },
   {
     label: 'Table',
     value: 'table',
     icon: <TableOutlined />,
-    content: <BasicTable />
+    children: <BasicTable />
   }
 ]
 
 storiesOf('Content Toggle', module)
-  .add('Basic',()=><ContentToggle tabDetails={tabDetails} size='middle'/>)
+  .add('Basic',()=><ContentSwitcher tabDetails={tabDetails} size='small'/>)

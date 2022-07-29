@@ -16,7 +16,7 @@ export interface SelectionControlProps {
   options: SelectionControlOptionProps[]
   onChange?: (e: RadioChangeEvent) => void
   /** @default 'small' */
-  size?: 'small' | 'middle' | 'large'
+  size?: 'small' | 'large'
 }
 
 export function SelectionControl (
