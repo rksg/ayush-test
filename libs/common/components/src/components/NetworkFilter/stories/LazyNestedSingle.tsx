@@ -8,12 +8,13 @@ import { onApply, onCancel } from './utils'
 
 
 const createNode: () => DefaultOptionType = () => {
+  const isChild = Math.random() > 0.5
   return {
     label: `Node ${(Math.random() * 1e18).toString(36).slice(0, 3).toUpperCase()}`,
     value: (Math.random() * 1e18).toFixed(0),
-    children: [],
-    isLeaf: false,
-    loading: false
+    children: (isChild) ? [] : undefined,
+    isLeaf: isChild,
+    loading: isChild
   }
 }
 
