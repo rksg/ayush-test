@@ -11,13 +11,14 @@ export interface TabDetail {
 
 export interface ContentToggleProps{
   defaultValue?:string
-  tabDetails : [TabDetail,TabDetail]
+  tabDetails : [TabDetail, TabDetail]
   size?: 'small' | 'middle' | 'large'
+  align?: 'left' | 'right' | 'center'
 }
 
 export const ContentToggle: FC<ContentToggleProps> = (props) => {
-  const { tabDetails, defaultValue, size } = props
-  
+  const { tabDetails, defaultValue, size, align } = props
+
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
     return {
       label: tabDetail.label,
@@ -28,7 +29,7 @@ export const ContentToggle: FC<ContentToggleProps> = (props) => {
   const [activeContent, setActiveContent] = useState(defaultValue || options[0].value)
   return(
     <>
-      <div style={{ textAlign: 'center', paddingBottom: '10px' }}>
+      <div style={{ textAlign: align, padding: '15px 0px' }}>
         <SelectionControl options={options}
           defaultValue={defaultValue || options[0].value}
           size={size}
@@ -44,5 +45,6 @@ export const ContentToggle: FC<ContentToggleProps> = (props) => {
 }
 
 ContentToggle.defaultProps={
-  size: 'small'
+  size: 'small',
+  align: 'center'
 }

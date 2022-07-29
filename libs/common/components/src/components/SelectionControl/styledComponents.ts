@@ -47,7 +47,7 @@ export const Wrapper = styled.div`
       line-height: var(--acx-body-5-line-height);
       height: 16px;
       span:nth-child(2) {
-        margin: 0px 10px;
+        margin: 0px 8px;
       }
     }
   }
@@ -61,21 +61,21 @@ export const Wrapper = styled.div`
       line-height: var(--acx-body-4-line-height);
       height: 24px;
       span:nth-child(2) {
-        margin: 4px 8px;
+        margin: 4px 16px;
       }
     }
   }
   .ant-radio-group-large {
     svg {
-      width: var(--acx-body-2-font-size);
-      height: var(--acx-body-2-font-size);
+      width: var(--acx-body-3-font-size);
+      height: var(--acx-body-3-font-size);
     }
     .ant-radio-button-wrapper {
-      font-size: var(--acx-body-2-font-size);
-      line-height: var(--acx-body-2-line-height);
-      height: 32px;
+      font-size: var(--acx-body-3-font-size);
+      line-height: var(--acx-body-3-line-height);
+      height: 28px;
       span:nth-child(2) {
-        margin: 6px 10px;
+        margin: 4px 32px;
       }
     }
   }
