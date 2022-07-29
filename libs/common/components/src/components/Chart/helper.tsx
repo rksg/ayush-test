@@ -1,4 +1,5 @@
 import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import moment                                      from 'moment-timezone'
 import { renderToString }                          from 'react-dom/server'
 
 import { TimeStamp } from '@acx-ui/types'
@@ -15,7 +16,7 @@ export type TooltipFormatterParams = Exclude<
 
 export const gridOptions = () => ({
   left: '0%',
-  right: '2%',
+  right: '0%',
   bottom: '0%',
   top: '15%',
   containLabel: true
@@ -25,14 +26,15 @@ export const legendOptions = () => ({
   icon: 'square',
   right: 15,
   itemWidth: 15,
-  itemGap: 15,
-  textStyle: {
-    color: cssStr('--acx-primary-black'),
-    fontFamily: cssStr('--acx-neutral-brand-font'),
-    fontSize: cssNumber('--acx-body-5-font-size'),
-    lineHeight: cssNumber('--acx-body-5-line-height'),
-    fontWeight: cssNumber('--acx-body-font-weight')
-  }
+  itemGap: 15
+})
+
+export const legendTextStyleOptions = () => ({
+  color: cssStr('--acx-primary-black'),
+  fontFamily: cssStr('--acx-neutral-brand-font'),
+  fontSize: cssNumber('--acx-body-5-font-size'),
+  lineHeight: cssNumber('--acx-body-5-line-height'),
+  fontWeight: cssNumber('--acx-body-font-weight')
 })
 
 export const xAxisOptions = () => ({
@@ -62,12 +64,18 @@ export const axisLabelOptions = () => ({
   fontWeight: cssNumber('--acx-body-font-weight')
 })
 
-export const dateAxisFormatter = () => ({
-  // TODO:
-  // handle smaller and larger time range
-  month: '{MMM}', // Jan, Feb, ...
-  day: '{d}' // 1, 2, ...
-})
+export const dateAxisFormatter = (value: number): string => {
+  const dateTime = moment(value).format('YYYY-MM-DD HH:mm')
+  let formatted
+  if (dateTime.match(/^\d{4}-01-01 00:00$/))
+    formatted = formatter('yearFormat')(value)
+  else if (dateTime.match(/^\d{4}-\d{2}-01 00:00$/))
+    formatted = formatter('monthFormat')(value)
+  else if (dateTime.match(/^\d{4}-\d{2}-\d{2} 00:00$/))
+    formatted = formatter('monthDateFormat')(value)
+  return formatted ||
+    formatter('shortDateTimeFormat')(value) as string
+}
 
 export const tooltipOptions = () => ({
   textStyle: {
