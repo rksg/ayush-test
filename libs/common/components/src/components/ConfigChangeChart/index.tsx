@@ -1,14 +1,23 @@
 import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 
-import { TooltipComponentFormatterCallbackParams } from 'echarts'
-import ReactECharts                                from 'echarts-for-react'
-import { renderToString }                          from 'react-dom/server'
+import {
+  XAXisComponentOption,
+  TooltipComponentFormatterCallbackParams
+} from 'echarts'
+import ReactECharts       from 'echarts-for-react'
+import { renderToString } from 'react-dom/server'
 
 import { formatter } from '@acx-ui/utils'
 
-import { cssStr }                           from '../../theme/helper'
-import { tooltipOptions, axisLabelOptions } from '../Chart/helper'
-import { TooltipWrapper }                   from '../Chart/styledComponents'
+import { cssStr }     from '../../theme/helper'
+import {
+  legendTextStyleOptions,
+  tooltipOptions,
+  axisLabelOptions,
+  xAxisOptions,
+  dateAxisFormatter
+} from '../Chart/helper'
+import { TooltipWrapper } from '../Chart/styledComponents'
 
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
@@ -133,12 +142,6 @@ export const useBoundaryChange = (
   }, [boundary])
 }
 
-export const axisLabelFormatter = (value: number) => {
-  if((formatter('dateTimeFormat')(value) as string)?.includes('00:00')){
-    return `${formatter('monthDateFormat')(value)}`
-  }
-  return `${formatter('monthDateFormat')(value)} ${formatter('timeFormat')(value)}`
-}
 export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
   const [ time ] = (Array.isArray(params)
     ? params[0].data : params.data) as [number]
@@ -410,24 +413,15 @@ export function ConfigChangeChart ({
       itemWidth: 8,
       itemGap: 3,
       padding: 0,
-      textStyle: { fontSize: 10 },
+      textStyle: legendTextStyleOptions(),
       selected: selectedLegend
     },
     xAxis: {
+      ...xAxisOptions() as XAXisComponentOption,
       type: 'time',
-      axisLine: {
-        show: true,
-        lineStyle: { color: 'transparent' }
-      },
-      axisTick: {
-        show: true,
-        interval: 60 * 60 * 1000, // hour
-        lineStyle: { color: 'transparent' }
-      },
       axisLabel: {
-        margin: 4,
         ...axisLabelOptions(),
-        formatter: axisLabelFormatter
+        formatter: dateAxisFormatter
       },
       min: chartBoundary[0],
       max: chartBoundary[1],
