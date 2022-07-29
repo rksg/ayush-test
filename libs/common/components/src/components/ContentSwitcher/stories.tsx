@@ -22,5 +22,5 @@ const tabDetails: ContentSwitcherProps['tabDetails'] = [
   }
 ]
 
-storiesOf('Content Toggle', module)
+storiesOf('ContentSwitcher', module)
   .add('Basic',()=><ContentSwitcher tabDetails={tabDetails} size='small'/>)
