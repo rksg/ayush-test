@@ -291,6 +291,17 @@
     }
   }
 
+  .ant-checkbox-wrapper {
+    & + * {
+      font-size: var(--acx-body-4-font-size);
+      line-height: var(--acx-body-4-line-height);
+      margin-left: 8px;
+      margin-right: 5px;
+      // making it display as inline-block to enable multiline contents
+      display: inline-block;
+    }
+  }
+
   .ant-message {
     top: initial;
     bottom: 20px;

@@ -18,6 +18,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { OnboardingForm }    from './CaptivePortal/OnboardingForm'
 import { PortalTypeForm }    from './CaptivePortal/PortalTypeForm'
 import { NetworkTypeTitle }  from './contentsMap'
 import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
@@ -53,6 +54,11 @@ export function NetworkForm () {
   }
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>()
+
+  const captivePortalSteps = {
+    onboarding: true,
+    portalweb: true
+  } 
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if( state.isCloudpathEnabled ){
@@ -124,6 +130,30 @@ export function NetworkForm () {
           {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
           {state.type === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm />}
         </StepsForm.StepForm>
+
+        { captivePortalSteps.onboarding && 
+        <StepsForm.StepForm<CreateNetworkFormFields>
+          name='onboarding'
+          title='Onboarding'
+          onFinish={async () => {
+            return true
+          }}
+        >
+          <OnboardingForm formRef={formRef} />
+        </StepsForm.StepForm>
+        }
+
+        { captivePortalSteps.portalweb && 
+        <StepsForm.StepForm<CreateNetworkFormFields>
+          name='portalweb'
+          title='Portal Web Page'
+          onFinish={async () => {
+            return true
+          }}
+        >
+          {/* <PortalWebForm /> */}
+        </StepsForm.StepForm>
+        }
 
         <StepsForm.StepForm
           name='venues'

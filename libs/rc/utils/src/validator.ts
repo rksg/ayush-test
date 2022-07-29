@@ -16,6 +16,15 @@ export function networkWifiPortRegExp (value: number) {
   return Promise.resolve()
 }
 
+export function URLRegExp (value: string) {
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject('Please enter a valid URL')
+  }
+  return Promise.resolve()
+}
+
 export function stringContainSpace (value: string) {
   const re = new RegExp(/[\s]/)
   if (re.test(value)) {

@@ -11,6 +11,7 @@ export interface CreateNetworkFormFields {
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
   venues: any;
+  redirectUrl?: string;
 }
 
 export interface NetworkSaveData {
