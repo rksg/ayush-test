@@ -1,10 +1,9 @@
-import {
-  Button as AntButton,
-  Typography
-} from 'antd'
+import { Button as AntButton }            from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { CancelCircle } from '@acx-ui/icons'
+
+import { Subtitle }     from '../Subtitle'
 
 export const CloseButton = styled(AntButton).attrs({
   icon: <CancelCircle />
@@ -31,7 +30,7 @@ export const ActionButton = styled.button`
   cursor: pointer;
 `
 
-export const TableSettingTitle = styled(Typography.Title)
+export const TableSettingTitle = styled(Subtitle)
   .attrs({ level: 5 })``
 
 export const TableSettingsGlobalOverride = createGlobalStyle`
@@ -43,8 +42,8 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
       }
       .ant-popover-title {
         min-height: unset;
-        padding: 16px;
-        padding-bottom: 4px;
+        padding: 16px 24px;
+        padding-bottom: 8px;
         border-bottom: 0;
       }
       .ant-popover-inner-content {
@@ -59,6 +58,9 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
       .ant-tree-treenode {
         padding: 4px 0;
         align-items: center;
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
         &:hover { background-color: unset; }
         .ant-tree-checkbox { margin-left: 24px; }
         .ant-tree-draggable-icon ~ .ant-tree-checkbox { margin-left: 0; }
@@ -77,9 +79,6 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
       }
 
       h5${TableSettingTitle} {
-        font-size: var(--acx-subtitle-5-font-size);
-        font-weight: var(--acx-subtitle-5-font-weight);
-        line-height: var(--acx-subtitle-5-line-height);
         margin-bottom: 0;
       }
     }
