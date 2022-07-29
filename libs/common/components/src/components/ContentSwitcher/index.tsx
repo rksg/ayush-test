@@ -1,9 +1,6 @@
 import { FC, ReactNode, useState } from 'react'
 
-import { Space } from 'antd'
-
 import { SelectionControl, SelectionControlOptionProps } from '../SelectionControl'
-
 export interface TabDetail {
   label: string
   value: string
@@ -31,14 +28,14 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
   const [activeContent, setActiveContent] = useState(defaultValue || options[0].value)
   return(
     <>
-      <Space style={{ justifyContent: align, padding: '15px 0px' }}>
+      <div style={{ textAlign: align, padding: '15px 0px' }}>
         <SelectionControl options={options}
           defaultValue={defaultValue || options[0].value}
           size={size}
           onChange={(e) => {
             setActiveContent(e.target.value)
           }} />
-      </Space>
+      </div>
       {
         tabDetails.find((tabDetail) => tabDetail.value === activeContent)?.children
       }

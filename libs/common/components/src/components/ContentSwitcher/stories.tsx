@@ -23,4 +23,4 @@ const tabDetails: ContentSwitcherProps['tabDetails'] = [
 ]
 
 storiesOf('ContentSwitcher', module)
-  .add('Basic',()=><ContentSwitcher tabDetails={tabDetails} size='small'/>)
+  .add('Basic',()=><ContentSwitcher tabDetails={tabDetails} size='small' align='left'/>)
