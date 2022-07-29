@@ -85,6 +85,16 @@ export interface UserSettings {
   [key: string]: string
 }
 
+export enum AlaramSeverity {
+  CRITICAL = 'critical',
+  MAJOR = 'major',
+  MINOR = 'minor',
+  WARNING = 'warning',
+  INDETERMINATE = 'indeterminate',
+  INFORMATIONAL = 'info',
+  CLEAR = 'clear'
+}
+
 export enum ApVenueStatusEnum {
   IN_SETUP_PHASE = '1_InSetupPhase',
   OFFLINE = '1_InSetupPhase_Offline',
@@ -167,7 +177,9 @@ export interface Dashboard {
       totalCount: number;
     }
     alarms?: {
-      summary?: { clear: number }
+      summary: {
+        [prop: string]: number;
+      },
       totalCount: number
     },
   };

@@ -12,6 +12,7 @@ export { ReactComponent as CalendarDateOutlined } from './icons/CalendarDateOutl
 export { ReactComponent as CalendarDateSolid } from './icons/CalendarDateSolid.svg'
 export { ReactComponent as CancelCircle } from './icons/CancelCircle.svg'
 export { ReactComponent as CaretDownSolid } from './icons/CaretDownSolid.svg'
+export { ReactComponent as CheckMarkCircleSolid } from './icons/CheckMarkCircleSolid.svg'
 export { ReactComponent as ClockOutlined } from './icons/ClockOutlined.svg'
 export { ReactComponent as CloseSymbol } from './icons/CloseSymbol.svg'
 export { ReactComponent as Close } from './icons/Close.svg'
