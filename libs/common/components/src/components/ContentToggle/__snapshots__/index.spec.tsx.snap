@@ -3,10 +3,10 @@
 exports[`ContentToggle should render component 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding-bottom: 10px;"
+    style="text-align: center; padding: 15px 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 hUVshH"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 jqIqXo"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -102,10 +102,10 @@ exports[`ContentToggle should render component 1`] = `
 exports[`ContentToggle should render component with default selection 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding-bottom: 10px;"
+    style="text-align: center; padding: 15px 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 hUVshH"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 jqIqXo"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -201,10 +201,10 @@ exports[`ContentToggle should render component with default selection 1`] = `
 exports[`ContentToggle should render proper content while toggle: chartContent 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding-bottom: 10px;"
+    style="text-align: center; padding: 15px 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 hUVshH"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 jqIqXo"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -300,10 +300,10 @@ exports[`ContentToggle should render proper content while toggle: chartContent 1
 exports[`ContentToggle should render proper content while toggle: tableContent 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding-bottom: 10px;"
+    style="text-align: center; padding: 15px 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 hUVshH"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 jqIqXo"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
