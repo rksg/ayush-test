@@ -103,14 +103,17 @@ const formats = {
     (txpowerMapping[value] ? txpowerMapping[value] : value)
 } as Record<string, (value: unknown)=> string>
 
-const dateTimeFormats = {
+export const dateTimeFormats = {
+  yearFormat: 'YYYY',
+  monthFormat: 'MMM',
   dateFormat: 'MMM DD YYYY',
-  timeFormat: 'HH:mm',
-  secondFormat: 'HH:mm:ss',
+  monthDateFormat: 'MMM DD',
+  shortDateTimeFormat: 'MMM DD HH:mm',
   dateTimeFormat: 'MMM DD YYYY HH:mm',
   dateTimeFormatWithSeconds: 'MMM DD YYYY HH:mm:ss',
-  monthDateFormat: 'MMM DD',
-  hourFormat: 'HH'
+  hourFormat: 'HH',
+  timeFormat: 'HH:mm',
+  secondFormat: 'HH:mm:ss'
 }
 
 export function formatter (
