@@ -15,7 +15,6 @@ import {
   useDotClick,
   useBoundaryChange,
   tooltipFormatter,
-  axisLabelFormatter,
   useDatazoom,
   useLegendSelectChanged,
   ConfigChangeChart,
