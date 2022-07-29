@@ -66,7 +66,7 @@ export const dateAxisFormatter = () => ({
   // TODO:
   // handle smaller and larger time range
   month: '{MMM}', // Jan, Feb, ...
-  day: '{d}' // 1, 2, ...
+  day: '{MMM} {d}'
 })
 
 export const tooltipOptions = () => ({
