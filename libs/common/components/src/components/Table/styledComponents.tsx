@@ -3,7 +3,7 @@ import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { CancelCircle } from '@acx-ui/icons'
 
-import { Subtitle }     from '../Subtitle'
+import { Subtitle } from '../Subtitle'
 
 export const CloseButton = styled(AntButton).attrs({
   icon: <CancelCircle />
