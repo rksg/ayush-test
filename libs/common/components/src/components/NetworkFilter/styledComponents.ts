@@ -1,4 +1,5 @@
 import {
+  Cascader as AntCascader,
   Divider as AntDivider,
   Space as AntSpace
 } from 'antd'
@@ -12,7 +13,7 @@ export const Divider = styled(AntDivider)`
   margin: 0;
 `
 export const ButtonDiv = styled.div`
-  background-color: #F8F8FA;
+  background-color: var(--acx-neutrals-10);
   text-align: right;
   display: flex;
   flex-direction: row;
@@ -35,4 +36,17 @@ export const Span = styled.span`
   margin-top: 2px;
   margin-bottom: 2px;
   margin-left: 2px;
+`
+
+export const Cascader = styled(AntCascader)`
+  .ant-cascader-menu-item {
+    &:hover, &focus {
+      background-color: var(--acx-accents-orange-10)
+    }
+
+    &:checked {
+      background-color: var(--acx-accents-orange-20)
+    }
+
+  }
 `
