@@ -140,7 +140,9 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
     .map(({ getValue }) => getValue(props) as DescriptionRowProps)
   return <>
     <DescriptionSection fields={computedFields}/>
-    <ImpactedAPsDrawer visible={visible==='ap'} onClose={onClose} {...props}/>
-    <ImpactedClientsDrawer visible={visible==='client'} onClose={onClose} {...props}/>
+    { visible==='ap' &&
+      <ImpactedAPsDrawer visible={visible==='ap'} onClose={onClose} {...props}/> }
+    { visible==='client' &&
+      <ImpactedClientsDrawer visible={visible==='client'} onClose={onClose} {...props}/> }
   </>
 }
