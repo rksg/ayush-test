@@ -190,19 +190,6 @@ describe('ConfigChangeChart',() => {
       expect(tooltipFormatter(multiParameters)).toMatchSnapshot()
     })
   })
-  describe('axisLabelFormatter',() => {
-    const timezone = 'UTC'
-    beforeEach(() => {
-      moment.tz.setDefault(timezone)
-    })
-    afterEach(() => {
-      moment.tz.setDefault(moment.tz.guess())
-    })
-    it('should return correct time format', async () => {
-      expect(axisLabelFormatter(1605571200000)).toEqual('Nov 17')
-      expect(axisLabelFormatter(1605628800000)).toEqual('Nov 17 16:00')
-    })
-  })
   describe('useDatazoom',() => {
     it('should return correct boundary',() => {
       const chartBoundary = [100, 1100]
