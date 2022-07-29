@@ -20,7 +20,7 @@ import {
   StepFormProps,
   Button,
   Subtitle,
-  ToggleButtonInput
+  ToggleButton
 } from '@acx-ui/components'
 import { useCloudpathListQuery } from '@acx-ui/rc/services'
 import {
@@ -305,7 +305,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
           />
 
           <Form.Item noStyle name='enableSecondaryAuthServer'>
-            <ToggleButtonInput
+            <ToggleButton
               enableText='Remove Secondary Server'
               disableText='Add Secondary Server'
             />
@@ -332,7 +332,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
               />
 
               <Form.Item noStyle name='enableSecondaryAcctServer'>
-                <ToggleButtonInput
+                <ToggleButton
                   enableText='Remove Secondary Server'
                   disableText='Add Secondary Server'
                 />

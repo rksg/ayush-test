@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
 
-import { ToggleButtonInput } from '.'
+import { ToggleButton } from '.'
 
 describe('ToggleButtonInput true', () => {
   it('should render correctly', () => {
     const { asFragment } = render(
-      <ToggleButtonInput
+      <ToggleButton
         enableText='Remove Secondary Server'
         disableText='Add Secondary Server'
       />)
@@ -14,7 +14,7 @@ describe('ToggleButtonInput true', () => {
   })
   it('should render true status correctly', () => {
     const { asFragment } = render(
-      <ToggleButtonInput
+      <ToggleButton
         value={true}
         enableText='Remove Secondary Server'
         disableText='Add Secondary Server'
@@ -23,7 +23,7 @@ describe('ToggleButtonInput true', () => {
   })
   it('should render false status correctly', () => {
     const { asFragment } = render(
-      <ToggleButtonInput
+      <ToggleButton
         value={false}
         enableText='Remove Secondary Server'
         disableText='Add Secondary Server'
@@ -32,7 +32,7 @@ describe('ToggleButtonInput true', () => {
   })
   it('should trigger onChange event correctly', async () => {
     const { asFragment } = render(
-      <ToggleButtonInput
+      <ToggleButton
         enableText='Remove Secondary Server'
         disableText='Add Secondary Server'
       />)

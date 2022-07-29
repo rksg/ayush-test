@@ -18,7 +18,7 @@ import {
   StepsForm,
   Button,
   Subtitle,
-  ToggleButtonInput
+  ToggleButton
 } from '@acx-ui/components'
 import { useGetAllUserSettingsQuery, UserSettings } from '@acx-ui/rc/services'
 import { useCloudpathListQuery }                    from '@acx-ui/rc/services'
@@ -191,7 +191,7 @@ function SettingsForm () {
           />
 
           <Form.Item noStyle name='enableSecondaryAuthServer'>
-            <ToggleButtonInput
+            <ToggleButton
               enableText='Remove Secondary Server'
               disableText='Add Secondary Server'
             />
@@ -232,7 +232,7 @@ function SettingsForm () {
               />
 
               <Form.Item noStyle name='enableSecondaryAcctServer'>
-                <ToggleButtonInput
+                <ToggleButton
                   enableText='Remove Secondary Server'
                   disableText='Add Secondary Server'
                 />

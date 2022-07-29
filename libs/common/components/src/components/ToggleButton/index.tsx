@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import { Button } from 'antd'
 
-export function ToggleButtonInput (props: {
+export function ToggleButton (props: {
     value?: boolean
     onChange?: (value: boolean) => void
     enableText: React.ReactNode
