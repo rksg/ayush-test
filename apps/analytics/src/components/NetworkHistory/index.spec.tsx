@@ -49,7 +49,7 @@ describe('NetworkHistoryWidget', () => {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
     const { asFragment } = render(<Provider>
-      <NetworkHistoryWidget hideTitle useFullheight/>
+      <NetworkHistoryWidget hideTitle/>
     </Provider>)
     await screen.findByText('3')
     // eslint-disable-next-line testing-library/no-node-access
