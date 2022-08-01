@@ -11,6 +11,7 @@ import { cssStr }              from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
+  legendTextStyleOptions,
   xAxisOptions,
   yAxisOptions,
   axisLabelOptions,
@@ -61,6 +62,7 @@ export function StackedAreaChart <
     grid: { ...gridOptions() },
     legend: {
       ...legendOptions(),
+      textStyle: legendTextStyleOptions(),
       data: data.map(datum => datum[legendProp]) as unknown as string[]
     },
     tooltip: {
@@ -73,7 +75,7 @@ export function StackedAreaChart <
       type: 'time',
       axisLabel: {
         ...axisLabelOptions(),
-        formatter: dateAxisFormatter()
+        formatter: dateAxisFormatter
       }
     },
     yAxis: {
