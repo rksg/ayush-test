@@ -29,8 +29,7 @@ export const seriesMapping: BarChartData['seriesEncode'] = [
 export function switchUsageLabelFormatter (params: CallbackDataParams): string {
   const usage = Array.isArray(params.data) ? params.data[1] : params.data
   const utilisation_per = Array.isArray(params.data) ? params.data[2] : params.data
-  return '{poe_usage|' +
-    formatter('milliWattsFormat')(usage) + '} {utilisationPer|(' +
+  return '{poe_usage|' + formatter('milliWattsFormat')(usage) + '} {utilisation_pct|(' +
     formatter('percentFormat')(utilisation_per) + ')}'
 }
 
@@ -42,7 +41,7 @@ const getSwitchUsageRichStyle = () => ({
     lineHeight: cssNumber('--acx-body-4-line-height'),
     fontWeight: cssNumber('--acx-body-font-weight-bold')
   },
-  utilisationPer: {
+  utilisation_pct: {
     color: cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-neutral-brand-font'),
     fontSize: cssNumber('--acx-body-5-font-size'),
