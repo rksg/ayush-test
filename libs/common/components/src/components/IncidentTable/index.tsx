@@ -8,14 +8,12 @@ import { Table, TableProps } from '../Table'
 import * as UI from './styledComponents'
 
 
-export type IncidentTableProps = TableProps<DefaultRecordType> & {
-  data: DefaultRecordType[]
-}
+export type IncidentTableProps = TableProps<DefaultRecordType>
 
 
 const IncidentTable = (props: IncidentTableProps) => {
   const [checkStrictly, setCheckStrictly] = useState(false)
-  const { columns, rowSelection, data } = props
+  const { columns, rowSelection, dataSource, ...rest } = props
   return (
     <>
       <UI.Space
@@ -24,9 +22,10 @@ const IncidentTable = (props: IncidentTableProps) => {
         CheckStrictly: <Switch checked={checkStrictly} onChange={setCheckStrictly} />
       </UI.Space>
       <Table
+        {...rest}
         columns={columns}
         rowSelection={{ ...rowSelection, checkStrictly }}
-        dataSource={data}
+        dataSource={dataSource}
       />
     </>
   )

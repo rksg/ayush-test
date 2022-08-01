@@ -109,5 +109,5 @@ const rowSelection: TableRowSelection<DefaultRecordType> = {
 }
 
 export const NestedTable = () => {
-  return <IncidentTable columns={columns} data={data} rowSelection={rowSelection} />
+  return <IncidentTable columns={columns} dataSource={data} rowSelection={rowSelection} />
 }
