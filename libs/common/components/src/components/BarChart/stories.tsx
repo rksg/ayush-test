@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { withKnobs, object }  from '@storybook/addon-knobs'
 import { storiesOf }          from '@storybook/react'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
@@ -5,6 +7,7 @@ import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { formatter } from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
+import { Card }              from '../Card'
 
 import { BarChart, BarChartData } from '.'
 
@@ -47,7 +50,6 @@ export const data = (multiseries = false): BarChartData => ({
 
 })
 
-
 export const barColors = [
   cssStr('--acx-semantics-yellow-40'),
   cssStr('--acx-accents-orange-25'),
@@ -55,7 +57,6 @@ export const barColors = [
   cssStr('--acx-accents-blue-40'),
   cssStr('--acx-accents-blue-50')
 ]
-
 
 function switchUsageLabelFormatter (params: CallbackDataParams): string {
   const usage = Array.isArray(params.data) ? params.data[1] : params.data
@@ -70,21 +71,20 @@ function switchTrafficLabelFormatter (params: CallbackDataParams): string {
   return '{traffic|' +formatter('bytesFormat')(usage) + '}'
 }
 
-
 const getSwitchUsageRichStyle = () => ({
   poe_usage: {
     color: cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-neutral-brand-font'),
-    fontSize: cssNumber('--acx-body-4-font-size'),
-    lineHeight: cssNumber('--acx-body-4-line-height'),
-    fontWeight: cssNumber('--acx-body-font-weight-bold')
+    fontSize: cssNumber('--acx-subtitle-5-font-size'),
+    lineHeight: cssNumber('--acx-subtitle-5-line-height'),
+    fontWeight: cssNumber('--acx-subtitle-5-font-weight')
   },
   utilisationPer: {
     color: cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-neutral-brand-font'),
     fontSize: cssNumber('--acx-body-5-font-size'),
-    lineHeight: cssNumber('--acx-body-4-line-height'),
-    fontWeight: cssNumber('--acx-body-font-weight')
+    lineHeight: cssNumber('--acx-body-5-line-height'),
+    fontWeight: cssNumber('--acx-body-5-font-weight')
   }
 })
 
@@ -92,46 +92,59 @@ const getSwitchTrafficRichStyle = () => ({
   traffic: {
     color: cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-neutral-brand-font'),
-    fontSize: cssNumber('--acx-body-4-font-size'),
-    lineHeight: cssNumber('--acx-body-4-line-height'),
-    fontWeight: cssNumber('--acx-body-font-weight')
+    fontSize: cssNumber('--acx-body-5-font-size'),
+    lineHeight: cssNumber('--acx-body-5-line-height'),
+    fontWeight: cssNumber('--acx-body-5-font-weight')
   }
 })
 
+const wrapInsideCard = (title: string, children: ReactNode) => (
+  <div style={{ width: 496, height: 280 }}>
+    <Card title={title}>
+      {children}
+    </Card>
+  </div>)
 
 storiesOf('BarChart', module)
   .addDecorator(withKnobs)
-  .add('Single Series - Default', () => <BarChart
-    style={{ width: 524, height: 174 }}
-    data={data()}
-    barColors={barColors}
-  />)
-  //
-  .add('Single Series - Custom formatter', () => <BarChart
-    style={{ width: 524, height: 174 }}
-    data={data()}
-    grid={{ right: '9%' }}
-    barColors={barColors}
-    labelFormatter={switchUsageLabelFormatter}
-    labelRichStyle={getSwitchUsageRichStyle()}
-  />)
-  .add('Multi Series', () => <BarChart
-    style={{ width: 524, height: 174 }}
-    data={data(true)}
-    barWidth={10}
-    barColors={[
-      cssStr('--acx-accents-blue-50'),
-      cssStr('--acx-accents-orange-30')
-    ]}
-    labelFormatter={switchTrafficLabelFormatter}
-    labelRichStyle={getSwitchTrafficRichStyle()}
-  />)
+  .add('Single Series - Default', () =>
+    wrapInsideCard('Top 5 Switches',
+      <BarChart
+        style={{ width: '100%', height: '100%' }}
+        data={data()}
+        barColors={barColors}
+      />))
+  .add('Single Series - Custom formatter', () =>
+    wrapInsideCard('Top 5 Switches by PoE Usage',
+      <BarChart
+        style={{ width: '100%', height: '100%' }}
+        data={data()}
+        grid={{ right: '15%' }}
+        barColors={barColors}
+        labelFormatter={switchUsageLabelFormatter}
+        labelRichStyle={getSwitchUsageRichStyle()}
+      />))
+  .add('Multi Series', () =>
+    wrapInsideCard('Top 5 Switches by Traffic',
+      <BarChart
+        style={{ width: '100%', height: '100%' }}
+        data={data(true)}
+        barWidth={8}
+        barColors={[
+          cssStr('--acx-accents-blue-50'),
+          cssStr('--acx-accents-orange-30')
+        ]}
+        labelFormatter={switchTrafficLabelFormatter}
+        labelRichStyle={getSwitchTrafficRichStyle()}
+      />))
   .add('With Knobs', () =>
-    <BarChart
-      style={{ width: 524, height: 150 }}
-      data={object('data', data())}
-      barWidth={12}
-      barColors={barColors}
-      labelFormatter={switchUsageLabelFormatter}
-      labelRichStyle={getSwitchUsageRichStyle()}
-    />)
+    wrapInsideCard('Top 5 Switches by PoE Usage',
+      <BarChart
+        style={{ width: '100%', height: '100%' }}
+        data={object('data', data())}
+        barWidth={12}
+        grid={{ right: '15%' }}
+        barColors={barColors}
+        labelFormatter={switchUsageLabelFormatter}
+        labelRichStyle={getSwitchUsageRichStyle()}
+      />))

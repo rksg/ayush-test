@@ -20,9 +20,9 @@ export interface BarChartData extends Object {
    */
   dimensions: string[]
 
-  /** 
+  /**
    * Multi dimensional dataset value array
-   * @example 
+   * @example
    * ['Switch 1', 73780, 7.3],
      ['Switch 2', 273780, 19.3],
      ['Switch 3', 1073780, 79.11],
@@ -31,7 +31,7 @@ export interface BarChartData extends Object {
 
   /**
    * Dimension mapping to Axis, supports multiseries
-   * * @example 
+   * * @example
    * [{
    // Map "poe_usage" to x-axis.
       x: 'poe_usage',
@@ -51,7 +51,7 @@ export interface BarChartProps
   grid?: GridOption,
   barColors: string[]
   barWidth?: number
-  labelFormatter?: string | LabelFormatterCallback<CallbackDataParams> 
+  labelFormatter?: string | LabelFormatterCallback<CallbackDataParams>
   labelRichStyle?: object
 }
 
@@ -102,6 +102,7 @@ export function BarChart<TChartData extends BarChartData>
       source: data.source
     },
     barWidth: barWidth || 12,
+    barGap: '50%',
     color: barColors,
     legend: { ...legendOptions() },
     xAxis: {
