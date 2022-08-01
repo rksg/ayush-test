@@ -1,6 +1,7 @@
 import React from 'react'
 
 import {
+  Cascader as AntCascader,
   CascaderProps as AntCascaderProps,
   Checkbox as AntCheckbox
 } from 'antd'
@@ -165,7 +166,7 @@ export function NetworkFilter (props: CascaderProps) {
   }
 
   if (multiple) {
-    return <UI.Cascader
+    return <AntCascader
       {...props}
       multiple
       onFocus={onFocusProps}
@@ -175,7 +176,7 @@ export function NetworkFilter (props: CascaderProps) {
     />
   }
 
-  return <UI.Cascader
+  return <AntCascader
     {...props}
     multiple={false}
     changeOnSelect={true}

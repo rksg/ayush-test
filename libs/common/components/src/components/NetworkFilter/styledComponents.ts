@@ -1,5 +1,4 @@
 import {
-  Cascader as AntCascader,
   Divider as AntDivider,
   Space as AntSpace
 } from 'antd'
@@ -36,22 +35,4 @@ export const Span = styled.span`
   margin-top: 2px;
   margin-bottom: 2px;
   margin-left: 2px;
-`
-
-export const Cascader = styled(AntCascader)`
-  .ant-cascader-menu-item {
-    &:hover, &:focus {
-      background-color: var(--acx-accents-orange-10)
-    }
-  }
-
-  .ant-select-dropdown {
-    &:hover, &:active, &:focus {
-      background-color: var(--acx-accents-orange-20)
-    }
-  }
-
-  .ant-cascader-menu-item-active {
-    background-color: var(--acx-accents-orange-20)
-  }
 `
