@@ -1,3 +1,5 @@
+import { useIntl } from 'react-intl'
+
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { useNetworkListQuery, useDeleteNetworkMutation, Network }         from '@acx-ui/rc/services'
 import {
@@ -191,6 +193,7 @@ const defaultPayload = {
 }
 
 export function NetworksTable () {
+  const { $t } = useIntl()
   const NetworksTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useNetworkListQuery,
@@ -203,13 +206,13 @@ export function NetworksTable () {
     ] = useDeleteNetworkMutation()
 
     const actions: TableProps<Network>['actions'] = [{
-      label: 'Delete',
+      label: $t({defaultMessage: 'Delete'}),
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: 'Network',
+            entityName: $t({defaultMessage: 'Network'}),
             entityValue: name
           },
           onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
@@ -239,10 +242,10 @@ export function NetworksTable () {
   return (
     <>
       <PageHeader
-        title='Networks'
+        title={ $t({defaultMessage: 'Networks'}) }
         extra={[
           <TenantLink to='/networks/create' key='add'>
-            <Button type='primary'>Add Wi-Fi Network</Button>
+            <Button type='primary'>{ $t({defaultMessage: 'Add Wi-Fi Network'}) }</Button>
           </TenantLink>
         ]}
       />

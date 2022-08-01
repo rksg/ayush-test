@@ -26,7 +26,7 @@ export default function Dashboard () {
     <GlobalFilterProvider>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
-      <ContentSwitcher tabDetails={tabDetails} size='large' />
+      <ContentSwitcher tabDetails={getCols(useIntl())} size='large' />
     </GlobalFilterProvider>
   )
 }
@@ -95,18 +95,21 @@ function SwitchWidgets () {
   )
 }
 
-const tabDetails: ContentSwitcherProps['tabDetails'] = [
-  {
-    label: 'Wi-Fi',
-    value: 'ap',
-    children: ApWidgets()
-  },
-  {
-    label: 'Switch',
-    value: 'switch',
-    children: SwitchWidgets()
-  }
-]
+function getCols ({ $t }: ReturnType<typeof useIntl>) {
+  const tabDetails: ContentSwitcherProps['tabDetails'] = [
+    {
+      label: $t({ defaultMessage: 'Wi-Fi'}),
+      value: 'ap',
+      children: ApWidgets()
+    },
+    {
+      label: $t({ defaultMessage: 'Switch'}),
+      value: 'switch',
+      children: SwitchWidgets()
+    }
+  ]
+  return tabDetails
+}
 
 function CommonDashboardWidgets () {
   return (

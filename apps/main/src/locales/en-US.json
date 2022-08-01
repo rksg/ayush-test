@@ -5,14 +5,44 @@
   "+8jGZ4": {
     "defaultMessage": "network filter"
   },
+  "0QEzt5": {
+    "defaultMessage": "AP Group"
+  },
+  "1EYCdR": {
+    "defaultMessage": "Tags"
+  },
+  "25rEb3": {
+    "defaultMessage": "Shared Secret"
+  },
   "34xBI0": {
     "defaultMessage": "APs"
+  },
+  "3KyZGF": {
+    "defaultMessage": "All Radios"
   },
   "4VPIXt": {
     "defaultMessage": "Alarms"
   },
+  "4dk4rO": {
+    "defaultMessage": "Accounting Service"
+  },
+  "5ezgA1": {
+    "defaultMessage": "MAC Address"
+  },
   "5lQx5r": {
     "defaultMessage": "Scheduling"
+  },
+  "6g0glr": {
+    "defaultMessage": "Networking Devices"
+  },
+  "724CrE": {
+    "defaultMessage": "Select..."
+  },
+  "7Kk96z": {
+    "defaultMessage": "Use Cloudpath Server:"
+  },
+  "8B04tJ": {
+    "defaultMessage": "WPA"
   },
   "8Fo71r": {
     "defaultMessage": "MSP Space"
@@ -20,29 +50,83 @@
   "9GvlpZ": {
     "defaultMessage": "Open Settings"
   },
+  "9MxQUk": {
+    "defaultMessage": "Shared Secret:"
+  },
   "9t1iiv": {
     "defaultMessage": "Configure"
   },
   "9uOFF3": {
     "defaultMessage": "Overview"
   },
+  "9wJSG8": {
+    "defaultMessage": "Map is not enabled"
+  },
   "AJBpR8": {
     "defaultMessage": "Network Type"
+  },
+  "AetaeJ": {
+    "defaultMessage": "Select venues to activate this network"
   },
   "AfUjYu": {
     "defaultMessage": "Config Change"
   },
+  "BNHFY1": {
+    "defaultMessage": "Only letters and numbers can be used"
+  },
+  "BeT3j9": {
+    "defaultMessage": "WPA3"
+  },
   "CM0JAR": {
     "defaultMessage": "Entire Organization"
+  },
+  "CasKsA": {
+    "defaultMessage": "Add Secondary Server"
+  },
+  "D3idYv": {
+    "defaultMessage": "Settings"
+  },
+  "Dnob31": {
+    "defaultMessage": "Operational"
   },
   "EnTkxu": {
     "defaultMessage": "Recommendations"
   },
+  "FbnpZB": {
+    "defaultMessage": "Cluster of {count} Venues"
+  },
+  "FoE42e": {
+    "defaultMessage": "Requires Attention"
+  },
+  "HuqGcJ": {
+    "defaultMessage": "WPA2 (Recommended)"
+  },
+  "I3JhPS": {
+    "defaultMessage": "Network"
+  },
+  "I3b4hn": {
+    "defaultMessage": "Version"
+  },
+  "K3r6DQ": {
+    "defaultMessage": "Delete"
+  },
+  "NV6/gE": {
+    "defaultMessage": "Create New Network"
+  },
   "Nr2pru": {
     "defaultMessage": "Network History"
   },
+  "Nt8DSX": {
+    "defaultMessage": "Authentication Service"
+  },
   "O17xiH": {
     "defaultMessage": "date filter"
+  },
+  "OT4kCw": {
+    "defaultMessage": "AP Name"
+  },
+  "Ok71Hw": {
+    "defaultMessage": "Security Protocol:"
   },
   "PYmHhr": {
     "defaultMessage": "Venue"
@@ -59,11 +143,26 @@
   "QfVD/H": {
     "defaultMessage": "Use Cloudpath Server"
   },
+  "RrCui3": {
+    "defaultMessage": "Summary"
+  },
+  "Ru1Owh": {
+    "defaultMessage": "Serial Number"
+  },
   "S33j4r": {
     "defaultMessage": "Services ({servicesCount})"
   },
+  "T3UF92": {
+    "defaultMessage": "Authentication Server"
+  },
   "TE4fIS": {
     "defaultMessage": "City"
+  },
+  "TY81Tv": {
+    "defaultMessage": "Passphrase Format:"
+  },
+  "UaCh1c": {
+    "defaultMessage": "Add Server"
   },
   "XB8fV9": {
     "defaultMessage": "Last 24 Hours"
@@ -74,6 +173,12 @@
   "YDMrKK": {
     "defaultMessage": "Users"
   },
+  "Z4WqBL": {
+    "defaultMessage": "Remove Secondary Server"
+  },
+  "ZWz5If": {
+    "defaultMessage": "Network Info"
+  },
   "ZvKSfJ": {
     "defaultMessage": "Events"
   },
@@ -83,8 +188,26 @@
   "bS/cRP": {
     "defaultMessage": "Venues"
   },
+  "c8uKl6": {
+    "defaultMessage": "Wi-Fi"
+  },
+  "c9uA84": {
+    "defaultMessage": "RF Channels"
+  },
+  "cRmipE": {
+    "defaultMessage": "Passphrase expiration"
+  },
+  "cq7z5N": {
+    "defaultMessage": "AAA Settings"
+  },
+  "d0A0aG": {
+    "defaultMessage": "Radius Authentication Service"
+  },
   "d63gFk": {
     "defaultMessage": "AI Analytics"
+  },
+  "dty181": {
+    "defaultMessage": "Traffic by Volume"
   },
   "eOJNIA": {
     "defaultMessage": "Connected Clients"
@@ -98,6 +221,12 @@
   "fCkfBx": {
     "defaultMessage": "APs ({apsCount})"
   },
+  "fUSCNN": {
+    "defaultMessage": "Deployment Type"
+  },
+  "fqiBvd": {
+    "defaultMessage": "Coming soon..."
+  },
   "hSGclh": {
     "defaultMessage": "Network Name"
   },
@@ -107,8 +236,26 @@
   "hzSNj4": {
     "defaultMessage": "Dashboard"
   },
+  "i5bVOD": {
+    "defaultMessage": "Network Name:"
+  },
+  "iCpuph": {
+    "defaultMessage": "Clients"
+  },
+  "iFh/mp": {
+    "defaultMessage": "Passphrase Generation Parameters"
+  },
+  "iI2oMQ": {
+    "defaultMessage": "Use the DPSK Service"
+  },
   "jNR5e0": {
     "defaultMessage": "Network Details"
+  },
+  "keJaJz": {
+    "defaultMessage": "Letters, numbers and symbols can be used"
+  },
+  "khS4NF": {
+    "defaultMessage": "TLS Encryption:"
   },
   "lfIk1B": {
     "defaultMessage": "Add..."
@@ -116,11 +263,62 @@
   "mtr3R4": {
     "defaultMessage": "Incidents"
   },
+  "n1Whvj": {
+    "defaultMessage": "Switch"
+  },
+  "nCMnED": {
+    "defaultMessage": "Passphrase Length:"
+  },
+  "nhKqj3": {
+    "defaultMessage": "Only numbers can be used"
+  },
+  "o5l+pK": {
+    "defaultMessage": "Proxy Service"
+  },
+  "ojxMGa": {
+    "defaultMessage": "In Setup Phase"
+  },
+  "ox304v": {
+    "defaultMessage": "An error occurred"
+  },
+  "p5WNkO": {
+    "defaultMessage": "Temporarily degraded"
+  },
+  "qQ6P9N": {
+    "defaultMessage": "Activated in venues"
+  },
+  "rhSI1/": {
+    "defaultMessage": "Model"
+  },
   "sMnDSO": {
     "defaultMessage": "Wi-Fi APs"
   },
   "sZFybj": {
     "defaultMessage": "Services"
+  },
+  "stDOc1": {
+    "defaultMessage": "Mesh Role"
+  },
+  "sw6FHg": {
+    "defaultMessage": "DPSK Settings"
+  },
+  "t071V3": {
+    "defaultMessage": "Info:"
+  },
+  "tzMNF3": {
+    "defaultMessage": "Status"
+  },
+  "uJV0wU": {
+    "defaultMessage": "IP Address"
+  },
+  "uS4sop": {
+    "defaultMessage": "Type:"
+  },
+  "ubGrOj": {
+    "defaultMessage": "Passphrase Expiration:"
+  },
+  "utCJRG": {
+    "defaultMessage": "Proxy Service:"
   },
   "vCAhII": {
     "defaultMessage": "Severity"
@@ -128,8 +326,17 @@
   "vONi+O": {
     "defaultMessage": "Country"
   },
+  "vXfkMH": {
+    "defaultMessage": "Add Wi-Fi Network"
+  },
+  "xGSuuE": {
+    "defaultMessage": "Security Protocol"
+  },
   "xukzKg": {
     "defaultMessage": "Networks"
+  },
+  "yJ7+dR": {
+    "defaultMessage": "Cloudpath Server"
   },
   "yV5oYe": {
     "defaultMessage": "Policies"
@@ -145,5 +352,8 @@
   },
   "zWkvNO": {
     "defaultMessage": "Timeline"
+  },
+  "zbjrr1": {
+    "defaultMessage": "Radius Shared secret"
   }
 }

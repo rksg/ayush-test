@@ -1,12 +1,15 @@
 import React from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { Col, Row } from 'antd'
 
 import Header from '../../components/Header'
 
 function Incidents () {
+  const { $t } = useIntl()
   return <>
-    <Header title='Incidents' />
+    <Header title={$t({ defaultMessage: 'Incidents' })} />
     <Row gutter={[20, 20]}>
       <Col span={4}>
         <div>bar chart</div>

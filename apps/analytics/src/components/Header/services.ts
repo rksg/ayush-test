@@ -1,5 +1,7 @@
 import { gql } from 'graphql-request'
 
+import { useIntl } from 'react-intl'
+
 import { dataApi }                                              from '@acx-ui/analytics/services'
 import { GlobalFilter, NetworkPath, NetworkNodeTypeForDisplay } from '@acx-ui/analytics/utils'
 

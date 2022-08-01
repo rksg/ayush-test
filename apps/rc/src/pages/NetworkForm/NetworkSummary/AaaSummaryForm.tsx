@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { Form, Input } from 'antd'
 import { get }         from 'lodash'
 
@@ -44,6 +46,7 @@ function getAaaServer (
   serverType: AaaServerTypeEnum,
   summaryData: NetworkSaveData
 ) {
+  const { $t } = useIntl()
   const primaryTitle = AaaServerTitle[AaaServerOrderEnum.PRIMARY]
   const secondaryTitle = AaaServerTitle[AaaServerOrderEnum.SECONDARY]
 
@@ -72,10 +75,10 @@ function getAaaServer (
         )
       }
       <Form.Item
-        label='Proxy Service:'
+        label={ $t({defaultMessage: 'Proxy Service:'}) }
         children={enableProxy ? 'Enabled' : 'Disabled'} />
       <Form.Item
-        label='TLS Encryption:'
+        label={ $t({defaultMessage: 'TLS Encryption:'}) }
         children='Disabled' />
     </React.Fragment>
   )
@@ -86,13 +89,14 @@ function getAaaServerData (
   ipPort: string,
   sharedSecret: string
 ) {
+  const { $t } = useIntl()
   return (    
     <React.Fragment>
       <Form.Item
         label={`${title}:`}
         children={ipPort} />
       <Form.Item
-        label='Shared Secret:'
+        label={ $t({defaultMessage: 'Shared Secret:'}) }
         children={<Input.Password
           readOnly
           bordered={false}

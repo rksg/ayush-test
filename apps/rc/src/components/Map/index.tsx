@@ -1,3 +1,5 @@
+import { useIntl } from 'react-intl'
+
 import { Loader }                    from '@acx-ui/components'
 import { useSplitTreatment }         from '@acx-ui/feature-toggle'
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
@@ -7,9 +9,10 @@ import { VenuesMap }         from './VenuesMap'
 import { massageVenuesData } from './VenuesMap/helper'
 
 export function Map () {
+  const { $t } = useIntl()
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
   if (!isMapEnabled) {
-    return <span>Map is not enabled</span>
+    return <span>{ $t({defaultMessage: 'Map is not enabled'}) }</span>
   }
   return (<ActualMap/>)
 }

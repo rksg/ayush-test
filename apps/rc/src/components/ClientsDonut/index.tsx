@@ -8,6 +8,7 @@ import type { DonutChartData }                   from '@acx-ui/components'
 import { useDashboardOverviewQuery }             from '@acx-ui/rc/services'
 import { Dashboard }                             from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useIntl }                               from 'react-intl'
 
 const seriesMapping = [
   { name: 'Poor', color: cssStr('--acx-semantics-red-50') },
@@ -35,11 +36,12 @@ export const getAPClientChartData = (overviewData?: Dashboard): DonutChartData[]
 }
 
 export const getSwitchClientChartData = (overviewData?: Dashboard): DonutChartData[] => {
+  const { $t } = useIntl()
   const chartData: DonutChartData[] = []
   const switchClients = overviewData?.summary?.switchClients
   if (switchClients && switchClients.totalCount > 0) {
     chartData.push({
-      name: 'Clients',
+      name: $t({ defaultMessage: 'Clients'}),
       value: switchClients.totalCount,
       color: cssStr('--acx-semantics-green-60')
     })
@@ -50,7 +52,7 @@ export const getSwitchClientChartData = (overviewData?: Dashboard): DonutChartDa
 function ClientsDonutWidget () {
   const basePath = useTenantLink('/users/')
   const navigate = useNavigate()
-
+  const { $t } = useIntl()
   const onClick = (param: string) => {
     navigate({
       ...basePath,
@@ -72,19 +74,19 @@ function ClientsDonutWidget () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title='Clients'>
+      <Card title={ $t({ defaultMessage: 'Clients'}) }>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'inline-flex' }}>
               <DonutChart
                 style={{ width: width/2 , height }}
-                title='Wi-Fi'
+                title={ $t({ defaultMessage: 'Wi-Fi'}) }
                 showLegend={false}
                 data={queryResults.data.apData}
                 onClick={() => onClick('TBD')}/>
               <DonutChart
                 style={{ width: width/2, height }}
-                title='Switch'
+                title={ $t({ defaultMessage: 'Switch'}) }
                 showLegend={false}
                 data={queryResults.data.switchData}
                 onClick={() => onClick('TBD')}/>

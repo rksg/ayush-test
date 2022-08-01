@@ -1,3 +1,5 @@
+import { useIntl } from 'react-intl'
+
 import { Card }              from '@acx-ui/components'
 import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import { Provider }          from '@acx-ui/store'
@@ -19,6 +21,7 @@ const widgetsMap = {
 }
 
 function WifiWidgets ({ name }: { name: keyof typeof widgetsMap }) {
+  const { $t } = useIntl()
   const treatment = useSplitTreatment(SPLIT_NAME)
   const Widget = widgetsMap[name]
 
@@ -27,7 +30,7 @@ function WifiWidgets ({ name }: { name: keyof typeof widgetsMap }) {
       ? <Widget />
       : <Card>
         { treatment && name }
-        { !treatment && 'Coming soon...' }
+        { !treatment && $t({defaultMessage: 'Coming soon...'}) }
       </Card>
     }
   </Provider>

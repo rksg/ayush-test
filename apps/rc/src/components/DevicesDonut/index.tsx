@@ -13,6 +13,7 @@ import {
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { getAPStatusDisplayName, getSwitchStatusDisplayName } from '../Map/VenuesMap/helper'
+import { useIntl } from 'react-intl'
 
 const seriesMappingAP = [
   { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
@@ -33,12 +34,13 @@ const seriesMappingAP = [
 ] as Array<{ key: string, name: string, color: string }>
 
 export const getApDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
+  const { $t } = useIntl()
   const chartData: DonutChartData[] = []
   const apsSummary = overviewData?.summary?.aps?.summary
   if (apsSummary) {
     seriesMappingAP.forEach(({ key, name, color }) => {
       if (key === ApVenueStatusEnum.OFFLINE && apsSummary[key]) {
-        const setupPhase = find(chartData, { name: 'In Setup Phase' })
+        const setupPhase = find(chartData, { name: $t({ defaultMessage: 'In Setup Phase'}) })
         if (setupPhase) {
           setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${apsSummary[key]}`
           setupPhase.value = setupPhase.value + apsSummary[key]
@@ -110,7 +112,7 @@ export const getSwitchDonutChartData = (overviewData?: Dashboard): DonutChartDat
 function DevicesDonutWidget () {
   const basePath = useTenantLink('/devices/')
   const navigate = useNavigate()
-
+  const { $t } = useIntl()
   const onClick = (param: string) => {
     navigate({
       ...basePath,
@@ -132,18 +134,18 @@ function DevicesDonutWidget () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title='Devices'>
+      <Card title={ $t({ defaultMessage: 'Devices'}) }>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'inline-flex' }}>
               <DonutChart
                 style={{ width: width/2 , height }}
-                title='Wi-Fi'
+                title={ $t({ defaultMessage: 'Wi-Fi'}) }
                 data={queryResults.data.apData}
                 onClick={() => onClick('TBD')}/>
               <DonutChart
                 style={{ width: width/2, height }}
-                title='Switch'
+                title={ $t({ defaultMessage: 'Switch'}) }
                 data={queryResults.data.switchData}
                 onClick={() => onClick('TBD')}/>
             </div>
