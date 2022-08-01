@@ -1,6 +1,7 @@
 import { ApDeviceStatusEnum, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 export * from './ap'
+export * from './venue'
 
 export interface CommonResult {
   requestId: string

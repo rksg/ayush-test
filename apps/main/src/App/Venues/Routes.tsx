@@ -1,18 +1,20 @@
-import { ConfigProvider }    from '@acx-ui/components'
 import { Route, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }          from '@acx-ui/store'
 
-import { VenuesTable } from './VenuesTable'
+import { VenueDetails } from './VenueDetails/VenueDetails'
+import { VenuesTable }  from './VenuesTable'
 
 export default function VenueRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='venues' element={<VenuesTable />} />
+      <Route
+        path='venues/:venueId/venue-details/:activeTab'
+        element={<VenueDetails />}
+      />
     </Route>
   )
   return (
-    <ConfigProvider>
-      <Provider children={routes} />
-    </ConfigProvider>
+    <Provider children={routes} />
   )
 }
