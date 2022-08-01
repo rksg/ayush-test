@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TrafficByApplicationWidget should render table with sparkline svg: contentToggle 1`] = `
+exports[`TrafficByApplicationWidget should render table with sparkline svg: contentSwitcher 1`] = `
 <div
   style="text-align: center; padding-bottom: 10px;"
 >

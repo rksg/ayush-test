@@ -1,23 +1,23 @@
 import { FC, ReactNode, useState } from 'react'
 
 import { SelectionControl, SelectionControlOptionProps } from '../SelectionControl'
-
 export interface TabDetail {
   label: string
   value: string
-  content: ReactNode,
+  children: ReactNode,
   icon?: ReactNode
 }
 
-export interface ContentToggleProps{
+export interface ContentSwitcherProps {
   defaultValue?:string
-  tabDetails : [TabDetail,TabDetail]
-  size?: 'small' | 'middle' | 'large'
+  tabDetails : Array<TabDetail>
+  size?: 'small' | 'large'
+  align?: 'left' | 'right' | 'center'
 }
 
-export const ContentToggle: FC<ContentToggleProps> = (props) => {
-  const { tabDetails, defaultValue, size } = props
-  
+export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
+  const { tabDetails, defaultValue, size, align } = props
+
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
     return {
       label: tabDetail.label,
@@ -28,7 +28,7 @@ export const ContentToggle: FC<ContentToggleProps> = (props) => {
   const [activeContent, setActiveContent] = useState(defaultValue || options[0].value)
   return(
     <>
-      <div style={{ textAlign: 'center', paddingBottom: '10px' }}>
+      <div style={{ textAlign: align, padding: '15px 0px' }}>
         <SelectionControl options={options}
           defaultValue={defaultValue || options[0].value}
           size={size}
@@ -36,13 +36,14 @@ export const ContentToggle: FC<ContentToggleProps> = (props) => {
             setActiveContent(e.target.value)
           }} />
       </div>
-      <div>
-        {tabDetails.find((tabDetail) => tabDetail.value === activeContent)?.content}
-      </div>
+      {
+        tabDetails.find((tabDetail) => tabDetail.value === activeContent)?.children
+      }
     </>
   )
 }
 
-ContentToggle.defaultProps={
-  size: 'small'
+ContentSwitcher.defaultProps={
+  size: 'small',
+  align: 'center'
 }

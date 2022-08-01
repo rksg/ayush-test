@@ -1,8 +1,8 @@
 import styled from 'styled-components/macro'
 
-import { useGlobalFilter }                                                        from '@acx-ui/analytics/utils'
-import { Card, Loader, Table, SparklineChart, ContentToggle, ContentToggleProps } from '@acx-ui/components'
-import { formatter }                                                              from '@acx-ui/utils'
+import { useGlobalFilter }                                                            from '@acx-ui/analytics/utils'
+import { Card, Loader, Table, SparklineChart, ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
+import { formatter }                                                                  from '@acx-ui/utils'
 
 import { useTrafficByApplicationQuery, TrafficByApplicationData } from './services'
 
@@ -100,7 +100,7 @@ export function TrafficByApplicationWidget () {
     pagination={false}
   />
   
-  const tabDetails:ContentToggleProps['tabDetails']=[
+  const tabDetails:ContentSwitcherProps['tabDetails']=[
     { label: 'Upload', content: uploadTable, value: 'upload' },
     { label: 'Download', content: downloadTable, value: 'download' }
   ]
@@ -108,7 +108,7 @@ export function TrafficByApplicationWidget () {
   return (
     <Loader states={[queryResults]}>
       <Card title='Top 5 Applications by Traffic' >
-        <ContentToggle tabDetails={tabDetails} size='middle' />
+        <ContentSwitcher tabDetails={tabDetails} size='middle' />
       </Card>
     </Loader>
   )

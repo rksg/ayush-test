@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ContentToggle should render component 1`] = `
+exports[`ContentSwitcher should render component 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding-bottom: 10px;"
+    style="text-align: center; padding: 15px 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 hUVshH"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -91,21 +91,19 @@ exports[`ContentToggle should render component 1`] = `
       </div>
     </div>
   </div>
-  <div>
-    <h1>
-      Chart content
-    </h1>
-  </div>
+  <h1>
+    Chart content
+  </h1>
 </DocumentFragment>
 `;
 
-exports[`ContentToggle should render component with default selection 1`] = `
+exports[`ContentSwitcher should render component with default selection 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding-bottom: 10px;"
+    style="text-align: center; padding: 15px 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 hUVshH"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -190,21 +188,19 @@ exports[`ContentToggle should render component with default selection 1`] = `
       </div>
     </div>
   </div>
-  <div>
-    <h2>
-      Table content
-    </h2>
-  </div>
+  <h2>
+    Table content
+  </h2>
 </DocumentFragment>
 `;
 
-exports[`ContentToggle should render proper content while toggle: chartContent 1`] = `
+exports[`ContentSwitcher should render properly with two tabs: chartContent 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding-bottom: 10px;"
+    style="text-align: center; padding: 15px 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 hUVshH"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -289,21 +285,19 @@ exports[`ContentToggle should render proper content while toggle: chartContent 1
       </div>
     </div>
   </div>
-  <div>
-    <h1>
-      Chart content
-    </h1>
-  </div>
+  <h1>
+    Chart content
+  </h1>
 </DocumentFragment>
 `;
 
-exports[`ContentToggle should render proper content while toggle: tableContent 1`] = `
+exports[`ContentSwitcher should render properly with two tabs: tableContent 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding-bottom: 10px;"
+    style="text-align: center; padding: 15px 0px;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 hUVshH"
+      class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -388,10 +382,8 @@ exports[`ContentToggle should render proper content while toggle: tableContent 1
       </div>
     </div>
   </div>
-  <div>
-    <h2>
-      Table content
-    </h2>
-  </div>
+  <h2>
+    Table content
+  </h2>
 </DocumentFragment>
 `;
