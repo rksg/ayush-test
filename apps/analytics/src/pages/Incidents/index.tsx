@@ -2,7 +2,8 @@ import React from 'react'
 
 import { Col, Row } from 'antd'
 
-import Header from '../../components/Header'
+import Header              from '../../components/Header'
+import IncidentTableWidget from '../../components/IncidentTable'
 
 function Incidents () {
   return <>
@@ -15,7 +16,7 @@ function Incidents () {
         timeseries
       </Col>
       <Col span={24}>
-        table
+        <IncidentTableWidget />
       </Col>
     </Row>
   </>
