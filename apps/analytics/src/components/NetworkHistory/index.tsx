@@ -1,6 +1,7 @@
 import React from 'react'
 
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData }            from '@acx-ui/analytics/utils'
 import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
@@ -12,11 +13,12 @@ import { cssStr }                   from '@acx-ui/components'
 import { NetworkHistoryData }     from './services'
 import { useNetworkHistoryQuery } from './services'
 
-export const seriesMapping = [
-  { key: 'newClientCount', name: 'New Clients' },
-  { key: 'impactedClientCount', name: 'Impacted Clients' },
-  { key: 'connectedClientCount', name: 'Connected Clients' }
-] as Array<{ key: keyof Omit<NetworkHistoryData, 'time'>; name: string }>
+export const seriesMapping = ($t: CallableFunction) =>
+  [
+    { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
+    { key: 'impactedClientCount', name: $t({ defaultMessage: 'Impacted Clients' }) },
+    { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
+  ] as Array<{ key: keyof Omit<NetworkHistoryData, 'time'>; name: string }>
 
 const lineColors = [
   cssStr('--acx-accents-blue-30'),
@@ -24,17 +26,24 @@ const lineColors = [
   cssStr('--acx-accents-orange-50')
 ]
 
-function NetworkHistoryWidget ({ filters }: { filters: AnalyticsFilter }) {
+function NetworkHistoryWidget ({
+  hideTitle,
+  filters
+}: {
+  hideTitle?: boolean;
+  filters: AnalyticsFilter;
+}) {
+  const { $t } = useIntl()
   const queryResults = useNetworkHistoryQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(data!, seriesMapping),
+      data: getSeriesData(data!, seriesMapping($t)),
       ...rest
     })
   })
-
+  const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
   return (
     <Loader states={[queryResults]}>
-      <Card title='Network History'>
+      <Card title={title}>
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart

@@ -9,7 +9,9 @@ import {
   DashboardRow,
   DashboardCol,
   PageHeader,
-  RangePicker
+  RangePicker,
+  ContentSwitcher,
+  ContentSwitcherProps
 } from '@acx-ui/components'
 import {
   ArrowExpand,
@@ -25,7 +27,8 @@ export default function Dashboard () {
   return (
     <AnalyticsFilterProvider>
       <DashboardPageHeader />
-      <DashboardWidgets />
+      <CommonDashboardWidgets />
+      <ContentSwitcher tabDetails={tabDetails} size='large' />
     </AnalyticsFilterProvider>
   )
 }
@@ -55,8 +58,66 @@ function DashboardPageHeader () {
   )
 }
 
-function DashboardWidgets () {
+function ApWidgets () {
   const filters = useAnalyticsFilter()
+
+  return (
+    <DashboardRow gutter={[20, 20]}>
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='trafficByVolume' filters={filters}/>
+      </DashboardCol>
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='networkHistory' filters={filters}/>
+      </DashboardCol>
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='connectedClientsOverTime' filters={filters}/>
+      </DashboardCol>
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='topApplicationsByTraffic' filters={filters}/>
+      </DashboardCol>
+    </DashboardRow>
+  )
+}
+
+function SwitchWidgets () {
+  const filters = useAnalyticsFilter()
+  return (
+    <DashboardRow gutter={[20, 20]}>
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='switchTrafficByVolume' filters={filters}/>
+      </DashboardCol>
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/>
+      </DashboardCol>
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
+      </DashboardCol>
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='topSwitchesByErrors'filters={filters} />
+      </DashboardCol>
+      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='topSwitchesByModels' filters={filters}/>
+      </DashboardCol>
+    </DashboardRow>
+  )
+}
+
+const tabDetails: ContentSwitcherProps['tabDetails'] = [
+  {
+    label: 'Wi-Fi',
+    value: 'ap',
+    children: <ApWidgets/>
+  },
+  {
+    label: 'Switch',
+    value: 'switch',
+    children: <SwitchWidgets/>
+  }
+]
+
+function CommonDashboardWidgets () {
+  const filters = useAnalyticsFilter()
+
   return (
     <DashboardRow gutter={[20, 20]}>
       <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
@@ -81,20 +142,6 @@ function DashboardWidgets () {
 
       <DashboardCol col={{ span: 24 }} style={{ height: '428px' }}>
         <WifiWidgets name='map' />
-      </DashboardCol>
-
-      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='trafficByVolume' filters={filters} />
-      </DashboardCol>
-      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='networkHistory' filters={filters} />
-      </DashboardCol>
-
-      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='connectedClientsOverTime' filters={filters}/>
-      </DashboardCol>
-      <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topApplicationsByTraffic' filters={filters}/>
       </DashboardCol>
 
     </DashboardRow>
