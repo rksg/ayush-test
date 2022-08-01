@@ -57,22 +57,6 @@ exports[`incident details should render Incident Details correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/undefined/analytics"
-              >
-                AI Analytics
-              </a>
-            </span>
-            <span
-              class="ant-breadcrumb-separator"
-            >
-              /
-            </span>
-          </li>
-          <li>
-            <span
-              class="ant-breadcrumb-link"
-            >
-              <a
                 href="/t/undefined/analytics/incidents"
               >
                 Incidents
@@ -134,31 +118,35 @@ exports[`incident details should render Incident Details correctly 1`] = `
   <div
     class="ant-row"
   >
-    <div>
-      <div
-        class=""
-      >
+    <div
+      class="ant-col ant-col-4"
+    >
+      <div>
         <div
-          class="ant-anchor-wrapper syledComponents__LeftColumn-sc-qdn9ny-0 jzXElC"
-          style="max-height: calc(100vh - 200px);"
+          class=""
         >
           <div
-            class="ant-anchor"
+            class="ant-anchor-wrapper syledComponents__LeftColumn-sc-qdn9ny-0 dUpEbl"
+            style="max-height: calc(100vh - 200px);"
           >
             <div
-              class="ant-anchor-ink"
+              class="ant-anchor"
             >
-              <span
-                class="ant-anchor-ink-ball"
-              />
+              <div
+                class="ant-anchor-ink"
+              >
+                <span
+                  class="ant-anchor-ink-ball"
+                />
+              </div>
+              IncidentAttributes
             </div>
-            IncidentAttributes
           </div>
         </div>
       </div>
     </div>
     <div
-      class="ant-col"
+      class="ant-col ant-col-20"
     >
       <div
         class="ant-row"
