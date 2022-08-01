@@ -80,7 +80,7 @@ function SwitchWidgets () {
         <AnalyticsWidgets name='switchTrafficByVolume' />
       </DashboardCol>
       <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByPoeUsage' />
+        <AnalyticsWidgets name='switchesByPoEUsage' />
       </DashboardCol>
       <DashboardCol col={{ span: 12 }} style={{ height: '280px' }}>
         <AnalyticsWidgets name='topSwitchesByTraffic' />
