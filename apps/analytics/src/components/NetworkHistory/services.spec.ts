@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
-import { api } from './services'
+import { api, calcGranularity } from './services'
 
 describe('networkHistoryWidgetApi', () => {
   const store = configureStore({
@@ -60,5 +60,20 @@ describe('networkHistoryWidgetApi', () => {
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
     expect(error).not.toBe(undefined)
+  })
+  it('should return correct granularity', () => {
+    const data = [{
+      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-02T00:00:00+08:00' },
+      output: 'PT30M'
+    }, {
+      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-02-02T00:00:00+08:00' },
+      output: 'PT1H'
+    }, {
+      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-01T00:10:00+08:00' },
+      output: 'PT180S'
+    }]
+    data.forEach(({ input, output }) => 
+      expect(calcGranularity(input.start, input.end)).toStrictEqual(output)
+    )
   })
 })

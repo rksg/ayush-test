@@ -45,16 +45,17 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
         title={$t({ defaultMessage: 'Incident Details' })}
         sideHeader={<Pill value={severityValue} trend={severityValue} />}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'AI Analytics' }), link: '/analytics' },
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(props)}
       />
       <Row>
-        <UI.LeftColumn offsetTop={200}>
-          <IncidentAttributes {...props} {...info} visibleFields={attributeList}/>
-        </UI.LeftColumn>
-        <Col>
+        <Col span={4}>
+          <UI.LeftColumn offsetTop={200}>
+            <IncidentAttributes {...props} {...info} visibleFields={attributeList}/>
+          </UI.LeftColumn>
+        </Col>
+        <Col span={20}>
           <Row gutter={[20, 20]}>
             <Col span={24}>
               <div>Insights</div>

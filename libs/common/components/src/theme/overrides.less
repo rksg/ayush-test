@@ -371,24 +371,27 @@
           margin-top: 4px;
         }
       }
-      &.ant-modal-confirm-error {
-        .ant-modal-content {
+      &.ant-modal-confirm {
+        &-error .ant-modal-content {
           border-color: var(--acx-semantics-red-60);
         }
-      }
-      &.ant-modal-confirm-info {
-        .ant-modal-content {
+        &-info .ant-modal-content {
           border-color: var(--acx-accents-blue-50);
+        }
+        &-warning .ant-modal-content {
+          border-color: var(--acx-accents-orange-50);
         }
       }
       .ant-btn:not(.ant-btn-link) {
         min-width: 85px;
+        max-width: 200px;
+        height: auto;
         padding: 6px 16px;
+        white-space: break-spaces;
+        margin-bottom: auto;
       }
-      .ant-modal-confirm-btns {
-        .ant-btn + .ant-btn {
-          margin-left: 12px;
-        }
+      .ant-btn + .ant-btn {
+        margin-left: 12px;
       }
     }
 

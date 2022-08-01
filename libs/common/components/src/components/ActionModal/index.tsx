@@ -6,19 +6,19 @@ import { ModalFuncProps }               from 'antd/lib/modal'
 
 import { ExpandSquareUp, ExpandSquareDown } from '@acx-ui/icons'
 
-import { Button } from '../Button'
+import { Button, ButtonProps } from '../Button'
 
 import * as UI from './styledComponents'
 
 const { Panel } = Collapse
 const { TextArea } = Input
 
-export type ModalType = 'info' | 'error' | 'confirm'
+export type ModalType = 'info' | 'error' | 'confirm' | 'warning'
 
 type DeleteContent = {
   action: 'DELETE',
   entityName: string,
-  entityValue: string,
+  entityValue?: string,
   numOfEntities?: number,
   confirmationText?: string
 }
@@ -28,9 +28,14 @@ type ErrorContent = {
   errorDetails: ErrorDetailsProps
 }
 
+type CustomButtonsContent = {
+  action: 'CUSTOM_BUTTONS',
+  buttons: CustomButtonProps[]
+}
+
 export interface ModalProps extends ModalFuncProps {
   type: ModalType,
-  customContent?: DeleteContent | ErrorContent
+  customContent?: DeleteContent | ErrorContent | CustomButtonsContent
 }
 
 export interface ModalRef {
@@ -50,6 +55,13 @@ export interface ErrorDetailsProps {
   name?: string,
   message?: string,
   error?: string
+}
+
+export interface CustomButtonProps {
+  text: string,
+  type: ButtonProps['type'],
+  key: string,
+  handler: () => void;
 }
 
 export const convertToJSON = (content: ErrorDetailsProps) => {
@@ -72,7 +84,7 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
       const entityNameText = numOfEntities ? `${numOfEntities} ${entityName}` : entityValue
       const desp = (<>
         {`Are you sure you want to delete ${numOfEntities ? 'these' : 'this'} ${entityName}?`}
-        {confirmationText ? <ConfirmForm text={confirmationText} modal={modal} /> : null}
+        { confirmationText && <ConfirmForm text={confirmationText} modal={modal} /> }
       </>)
       props = {
         ...props,
@@ -83,13 +95,19 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
       }
       break
     case 'SHOW_ERRORS':
-      const customContent = <ErrorTemplate
-        content={props.content}
-        errors={props.customContent.errorDetails}
-        modal={modal} />
+      const { errorDetails } = props.customContent
       props = {
         ...props,
-        content: customContent,
+        content: <ErrorTemplate content={props.content} errors={errorDetails} modal={modal} />,
+        okText: ' ',
+        className: 'modal-custom'
+      }
+      break
+    case 'CUSTOM_BUTTONS':
+      const { buttons } = props.customContent
+      props = {
+        ...props,
+        content: <CustomButtonsTemplate content={props.content} buttons={buttons} modal={modal} />,
         okText: ' ',
         className: 'modal-custom'
       }
@@ -114,6 +132,32 @@ function ErrorTemplate (props: {
       </UI.Footer>
     </>
   )
+}
+
+function CustomButtonsTemplate (props: {
+  content: React.ReactNode,
+  buttons?: CustomButtonProps[],
+  modal: ModalRef
+}) {
+  const destroyModal = () => props.modal.destroy()
+  return (<>
+    <UI.Content>{props.content}</UI.Content>
+    <UI.Footer>
+      <UI.FooterButtons>{
+        props.buttons?.map((b: CustomButtonProps)=>{
+          return (
+            <Button
+              type={b.type}
+              key={b.key}
+              onClick={() => b.key === 'cancel' ? destroyModal() : b.handler()}
+            >
+              {b.text}
+            </Button>
+          )
+        })
+      }</UI.FooterButtons>
+    </UI.Footer>
+  </>)
 }
 
 function CollapsePanel (props: {
