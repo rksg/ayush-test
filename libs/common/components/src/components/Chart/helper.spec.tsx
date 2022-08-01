@@ -1,8 +1,26 @@
 import moment from 'moment-timezone'
 
-import { timeSeriesTooltipFormatter, stackedBarTooltipFormatter, donutChartTooltipFormatter } from './helper'
+import { mockLightTheme } from '@acx-ui/test-utils'
+
+import {
+  timeSeriesTooltipFormatter,
+  stackedBarTooltipFormatter,
+  donutChartTooltipFormatter,
+  getDeviceConnectionStatusColors
+} from './helper'
 
 import type { TooltipFormatterParams } from './helper'
+
+jest.mock('../../theme/helper', () => ({
+  __esModule: true,
+  cssStr: jest.fn(property => mockLightTheme[property]),
+  deviceStatusColors: {
+    CONNECTED: '--acx-semantics-green-50',
+    INITIAL: '--acx-neutrals-50',
+    ALERTING: '--acx-semantics-yellow-40',
+    DISCONNECTED: '--acx-semantics-red-50'
+  }
+}))
 
 describe('timeSeriesTooltipFormatter',()=>{
   const timezone = 'UTC'
@@ -62,5 +80,16 @@ describe('donutChartTooltipFormatter', () => {
   })
   it('should handle when no formatter', async () => {
     expect(donutChartTooltipFormatter()(singleparameters)).toMatchSnapshot()
+  })
+})
+
+describe('getDeviceConnectionStatusColors', () => {
+  it('should return the correct color for the device status', ()=>{
+    expect(getDeviceConnectionStatusColors())
+      .toStrictEqual([
+        '#23AB36',
+        '#ACAEB0',
+        '#F9C34B',
+        '#ED1C24'])
   })
 })
