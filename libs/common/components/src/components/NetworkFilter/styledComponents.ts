@@ -40,13 +40,18 @@ export const Span = styled.span`
 
 export const Cascader = styled(AntCascader)`
   .ant-cascader-menu-item {
-    &:hover, &focus {
+    &:hover, &:focus {
       background-color: var(--acx-accents-orange-10)
     }
+  }
 
-    &:checked {
+  .ant-select-dropdown {
+    &:hover, &:active, &:focus {
       background-color: var(--acx-accents-orange-20)
     }
+  }
 
+  .ant-cascader-menu-item-active {
+    background-color: var(--acx-accents-orange-20)
   }
 `
