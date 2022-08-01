@@ -79,7 +79,7 @@ function IncidentBySeverityWidget () {
     chart = getChartData(currentResult.data)
   }
   return <Loader states={[prevResult, currentResult]}>
-    <Card title='Total Incidents' useFullHeight>
+    <Card title='Total Incidents'>
       <Subtitle level={1} style={{ marginBottom: 0, display: 'flex' }}>
         {pill.total}
         <PillWrapper>
