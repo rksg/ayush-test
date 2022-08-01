@@ -1,5 +1,5 @@
 import { Anchor, Col, PageHeader } from 'antd'
-import styled     from 'styled-components/macro'
+import styled                      from 'styled-components/macro'
 
 export const LeftColumn = styled(Anchor)`
   min-width: 200px;

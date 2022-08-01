@@ -1,3 +1,5 @@
+import { IncidentDetailsMetadata } from './types'
+
 const commonRecommendations = `
   <p>If the problem does not resolve on its own, check the infrastructure and client population for recent changes likely to produce this failure:</p>
   <ol>
@@ -15,6 +17,34 @@ const commonRecommendations2 = [
   'Was the AP firmware recently upgraded?',
   'Were the AP radio or WLAN settings recently modified?'
 ]
+
+const ccd80211CommonRecommendations = `
+  'This problem should resolve on its own, but if it persists, check the infrastructure and client population for recent changes likely to produce this failure:',
+  ...commonRecommendations.slice(1)
+`
+
+export const codeToFailureTypeMap = {
+  'radius-failure': 'radius',
+  'eap-failure': 'eap',
+  'dhcp-failure': 'dhcp',
+  'auth-failure': 'auth',
+  'assoc-failure': 'assoc'
+}
+
+const ttcFailureCodes = ['assoc', 'auth', 'dhcp', 'eap', 'radius']
+
+const extractFailureCode = (checks: IncidentDetailsMetadata['rootCauseChecks']['checks']) => {
+  return checks.length === 0
+    ? 'DEFAULT'
+    : checks.length > 1
+      ? 'VARIOUS_REASONS'
+      : Object.keys(checks[0]).filter(code => code.startsWith('CCD_REASON') || ttcFailureCodes.includes(code))[0]
+}
+
+interface rootCauseAndRecommendation {
+  rootCauses: string
+  recommendations: string
+}
 
 export const rootCauseRecommendationMap = {
   assoc: {
@@ -39,8 +69,8 @@ export const rootCauseRecommendationMap = {
     },
     // to verify that any incident with this reason code does not show up
     CCD_REASON_AUTH_WITHHELD: {
-      rootCauses: ['n/a'],
-      recommendations: []
+      rootCauses: 'n/a',
+      recommendations: ''
     },
     CCD_REASON_AUTH_FILTERED_BY_ACL: {
       rootCauses: `
@@ -479,4 +509,144 @@ export const rootCauseRecommendationMap = {
       `
     }
   }
+} as Readonly<Record<string, Record<string, rootCauseAndRecommendation>>>
+
+export const ccd80211RootCauseRecommendations = {
+  CCD_REASON_UNSPECIFIED: {
+    rootCauses: 'Clients are disconnected during the connection sequence, but the reason is unknown and unspecified by the disconnecting device.',
+    recommendations: `
+      'This disconnect reason can be difficult to troubleshoot because the reason is unspecified and may be initiated by the AP or client. Some high-level troubleshooting guidance follows:',
+      'Check for isolated areas of impact in the network (e.g. a specific WLAN, client OS, AP model, AP group, etc) with unique settings or behavior that may be causing this.',
+      'Check for recent OS upgrades or configuration changes that are having isolated impact.',
+      'Check the client troubleshooting page for impacted clients (see Client Impact details below) to diagnose the failure stage in the connection flow.'
+    `
+  },
+  CCD_REASON_PREV_AUTH_NOT_VALID: {
+    rootCauses: 'Client connection attempts are failing because the device is attempting to use a previously expired authentication key management (AKM) credential. This issue should be a transient problem in the network and should self-correct.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_DEAUTH_LEAVING: {
+    rootCauses: 'This issue happens when the client begins a connection attempt, but leaves the BSS before the connection is complete.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_DISASSOC_DUE_TO_INACTIVITY: {
+    rootCauses: 'This disconnect issue is happening because the device is being disassociated by the AP due to inactivity. The WLAN configuration includes an inactivity timeout, which allows the AP to disconnect client devices if it has not seen frames to/from the device for the duration of the timeout interval.',
+    recommendations: `
+      'This problem should self-correct when the client device actively uses the Wi-Fi network again. If the issue appears to be affecting active clients and is posing connectivity problems for users, check the following possible issues:',
+      ...ccd80211CommonRecommendations.slice(1)
+    `
+  },
+  CCD_REASON_DISASSOC_AP_BUSY: {
+    rootCauses: 'This disconnect issue is very uncommon, but may be caused if the AP is suffering from excessive performance load and cannot satisfy the client’s connection request.',
+    recommendations: 'If the issue does not resolve on its own, check the traffic and client load of the affected APs to see if there is a persistent load issue. Packet captures may also help to confirm the behavior is initiated by the AP. If that is the case, and clients cannot remain connected, an AP reboot may be necessary.'
+  },
+  CCD_REASON_CLASS2_FRAME_FROM_NONAUTH_STA: {
+    rootCauses: 'This disconnect issue is happening because clients are disconnected because they are sending unsupported frames (i.e. Class2) before forming a valid open authentication.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_CLASS3_FRAME_FROM_NONASSOC_STA: {
+    rootCauses: 'This disconnect issue is happening because clients are sending unsupported frames (i.e. Class3) before forming a valid open association.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_DISASSOC_STA_HAS_LEFT: {
+    rootCauses: 'The connection was not completed because the client has left, or is leaving, the network.',
+    recommendations: 'This problem should be a transient issue in a network if many clients leave at the same time; but, it is usually associated with disconnect events, and should not impact connection attempts. If it does, this may be a data issue that can be reported to RUCKUS Support if it persists in your network.'
+  },
+  CCD_REASON_STA_REQ_ASSOC_WITHOUT_AUTH: {
+    rootCauses: 'The connection is failing because of a mismatch in the connection state machine. Clients are attempting to associate prior to forming a successful open authentication.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_ASSOC_BTM: {
+    rootCauses: 'The client(s) was actively disconnected due to an 802.11v BSS Transition Management (BTM) action to improve client load distribution.',
+    recommendations: 'This event is a normal function of network load distribution and should not be a concern unless it persists in the network as a source of connection failures. A single incident of this type should not be a concern.'
+  },
+  CCD_REASON_IE_INVALID: {
+    rootCauses: 'This failure typically represents a behavioral bug in which a frame includes an information element that does not conform to 802.11 specifications.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_MICHAEL_MIC_FAILURE: {
+    rootCauses: 'This failure happens when the message integrity check (MIC) of connection frames fails, typically due to keying errors or expiration, or during passphrase authentication failures.',
+    recommendations: `
+      'This problem should be uncommon, and is most likely caused by transient security state machine mismatch. If the problem persists, check for these common issues that may introduce behavior issues:',
+      ...ccd80211CommonRecommendations.slice(1)
+    `
+  },
+  CCD_REASON_KICKOUT: {
+    rootCauses: 'The connection exchange is failing because the 4-way handshake is taking too long, typically because of busy RF environmental conditions, or possibly due to high latency if using an external PSK authentication mechanism (like external DPSK).',
+    recommendations: `
+      'Check for common areas of PSK authentication delay in the network:',
+      'If the WLAN is utilizing external DPSK, check the latency between the AP and the authentication store.',
+      'If the WLAN is utilizing a normal PSK or internal DPSK, this problem should not occur under normal performance situations. Check for RF contention or interference to see if the environment is causing frame errors and delays.'
+    `
+  },
+  CCD_REASON_80211_RSN_INCONSISTENT: {
+    rootCauses: 'The client connection exchange is failing because of a group key update timeout. Group keys are refreshed on a regular interval and should not typically interrupt the connection process.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_MGMT_GROUP_CIPHER_NOT_VALID: {
+    rootCauses: 'Connectivity is failing because the management frame information elements from the client are not valid or is not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_GROUP_CIPHER_NOT_VALID: {
+    rootCauses: 'Connectivity is failing because the security type (group cipher suite) from the client is not valid or is not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_PAIRWISE_CIPHER_NOT_VALID: {
+    rootCauses: 'Connectivity is failing because the security type (cipher suite) requested by the client is not valid or is not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_AKMP_NOT_VALID: {
+    rootCauses: 'Connectivity is failing because the security type (authentication and key management protocol (AKMP)) requested by the client is not valid or is not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_UNSUPPORTED_RSN_IE_VERSION: {
+    rootCauses: 'Connectivity is failing because the security type (Robust Security Network (RSN)) requested by the client is not valid or is not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_INVALID_RSN_IE_CAPAB: {
+    rootCauses: 'Connectivity is failing because the security type capabilities (Robust Security Network (RSN) Capabilities) requested by the client are not valid or are not supported by the AP/WLAN. This problem may be caused by new 802.11 connection mechanisms that have incomplete or problematic client-side implementations that lead to compatibility issues.',
+    recommendations: ccd80211CommonRecommendations
+  },
+  CCD_REASON_IEEE_802_1X_AUTH_FAILED: {
+    rootCauses: `
+      'Clients are failing 802.1X/EAP authentication, which is typically caused by:'
+      'Invalid EAP (PEAP or TTLS) username and password.'
+      'Invalid EAP certificates.'
+      'Expired or untrusted server certificates.'
+    `,
+    recommendations: `
+      'To resolve this issue, you may need to check RADIUS log details for authentication reject messages.\nRecent changes in the authentication infrastructure may cause a sudden spike of EAP failures like this:',
+      'RADIUS server certificate changes or expiration.',
+      'Mass user password changes or credential expiry.',
+      'Client onboarding or provisioning with wrong our outdated trust or credential profiles.'
+    `
+  },
+  CCD_REASON_CIPHER_SUITE_REJECTED: {
+    rootCauses: 'Connectivity is failing because the security type (cipher suite) requested by the client is not valid or is not supported by the AP/WLAN.',
+    recommendations: ccd80211CommonRecommendations
+  }
+} as Readonly<Record<string, rootCauseAndRecommendation>>
+
+export function getRootCauseAndRecommendations (code: keyof typeof codeToFailureTypeMap, rootCauseChecks: IncidentDetailsMetadata['rootCauseChecks']) {
+  // step 1 > get failure type from code ie: radius-failure = radius
+  const failureType = codeToFailureTypeMap[code]
+
+  // step 2 > handle error if metadata has no rootcause checks
+  if (!rootCauseChecks) return [{ rootCauses: 'Calculating...', recommendations: '' }]
+
+  // step 3 > destructure rootcausechecks to get checks (an array with failure type : CCD_REASON_AAA_AUTH_FAIL)
+  const { checks } = rootCauseChecks
+  // step 4 > use extractfailurecode fn to get the code 
+  const failureCode = extractFailureCode(checks)
+
+  // destructure rootcause and recommendations using failureType (radius) and failureCode (CCD_REASON_AAA_AUTH_FAIL)
+  const { rootCauses, recommendations } = rootCauseRecommendationMap[failureType]
+    ? rootCauseRecommendationMap[failureType][failureCode] ||
+      ccd80211RootCauseRecommendations[failureCode] ||
+        { rootCauses: 'TBD', recommendations: 'TBD' }
+    : { rootCauses: 'TBD', recommendations: 'TBD' }
+  return [{
+    rootCauses: rootCauses,
+    recommendations: recommendations
+  }]
 }

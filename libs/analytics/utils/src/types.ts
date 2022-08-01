@@ -9,3 +9,11 @@ export interface SeveritiesProps {
   gt: number
   lte: number
 }
+
+export interface IncidentDetailsMetadata {
+  dominant: { ssid?: string }
+  rootCauseChecks: {
+    checks: Record<string,boolean>[]
+    params: Record<string,string>
+  }
+}

@@ -1,4 +1,4 @@
-import { NetworkPath } from '@acx-ui/analytics/utils'
+import { IncidentDetailsMetadata, NetworkPath, codeToFailureTypeMap } from '@acx-ui/analytics/utils'
 
 export interface Metadata {
   dominant: { ssid?: string }
@@ -12,13 +12,13 @@ export interface IncidentDetailsProps {
   id: string
   sliceType: string
   sliceValue: string
-  code: string
+  code: keyof typeof codeToFailureTypeMap
   startTime: string
   endTime: string
   severity: number
   clientCount: number
   impactedClientCount: number
-  metadata: Metadata
+  metadata: IncidentDetailsMetadata
   path: NetworkPath
   apCount: number
   impactedApCount: number

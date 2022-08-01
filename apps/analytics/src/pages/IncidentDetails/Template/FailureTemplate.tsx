@@ -6,11 +6,11 @@ import { PageHeader, Pill }                       from '@acx-ui/components'
 
 import { incidentDetailsMap }               from '..'
 import { IncidentAttributes }               from '../IncidentAttributes'
+import { Insights }                         from '../Insights'
 import { formattedSliceType, impactedArea } from '../path'
 import * as UI                              from '../syledComponents'
 
 import type { IncidentDetailsProps } from '../types'
-import { Insights } from '../Insights'
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const info = incidentInformation[props.code as keyof typeof incidentInformation]
@@ -59,7 +59,6 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
           <Row gutter={[20, 20]}>
             <Col span={24}>
               <Insights {...props}/>
-              {/* <div>Insight</div> */}
             </Col>
             <Col span={24}>
               <div>network impact</div>
