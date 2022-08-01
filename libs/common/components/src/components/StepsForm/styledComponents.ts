@@ -1,6 +1,6 @@
 
-import { Col, Typography } from 'antd'
-import styled, { css }     from 'styled-components/macro'
+import { Typography }  from 'antd'
+import styled, { css } from 'styled-components/macro'
 
 const stepCompletedStyle = css`
   .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
@@ -220,14 +220,3 @@ export const Container = styled.div`
   }
 `
 
-export const FormContainer = styled(Col)<{ $state: 'active' | 'finish' | 'wait' }>`
-  ${props => props.$state === 'wait' ? css`
-    > * { display: none; }
-    > .ant-typography:first-child { display: block; }
-    > .ant-row:not(.ant-form-item) {
-      display: block;
-      .ant-col > * { display: none; }
-      .ant-col:first-child > .ant-typography { display: block; }
-    }
-  ` : ''}
-`

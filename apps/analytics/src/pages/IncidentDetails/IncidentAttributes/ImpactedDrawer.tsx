@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Tooltip }                   from 'antd'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { aggregateDataBy }                              from '@acx-ui/analytics/utils'
 import { Drawer, Loader, Table, SearchBar, TableProps } from '@acx-ui/components'
+import { InformationOutlined }                          from '@acx-ui/icons'
+import { TenantLink }                                   from '@acx-ui/react-router-dom'
 
 import { IncidentDetailsProps } from '../types'
 
@@ -13,6 +16,7 @@ import {
   useImpactedAPsQuery,
   useImpactedClientsQuery
 } from './services'
+import { Title } from './syledComponents'
 
 export interface impactedDrawerProps extends Pick<IncidentDetailsProps, 'id'> {
   visible: boolean
@@ -51,12 +55,19 @@ export function renderCell<T> (col: keyof T) {
   }
 }
 
+const tooltips = {
+  // eslint-disable-next-line max-len
+  username: <FormattedMessage defaultMessage='The username may only be known if the user has successfully passed authentication'/>,
+  // eslint-disable-next-line max-len
+  hostname: <FormattedMessage defaultMessage='The hostname may only be known if the user has successfully obtained an IP address from DHCP'/>
+}
+
 const impactedClientsColumns: TableProps<AggregatedImpactedClient>['columns'] = [
   {
     title: 'Client MAC',
     dataIndex: 'mac',
     key: 'mac',
-    render: renderCell<AggregatedImpactedClient>('mac'),
+    render: (_, row) => <TenantLink to={'TBD'}>{row.mac}</TenantLink>,
     sorter: sortCell<AggregatedImpactedClient>('mac')
   },
   {
@@ -74,14 +85,28 @@ const impactedClientsColumns: TableProps<AggregatedImpactedClient>['columns'] = 
     sorter: sortCell<AggregatedImpactedClient>('ssid')
   },
   {
-    title: 'Username',
+    title: (
+      <Title>
+        Username
+        <Tooltip title={tooltips.username}>
+          <InformationOutlined/>
+        </Tooltip>
+      </Title>
+    ),
     dataIndex: 'username',
     key: 'username',
     render: renderCell<AggregatedImpactedClient>('username'),
     sorter: sortCell<AggregatedImpactedClient>('username')
   },
   {
-    title: 'Hostname',
+    title: (
+      <Title>
+        Hostname
+        <Tooltip placement='topLeft' title={tooltips.hostname}>
+          <InformationOutlined/>
+        </Tooltip>
+      </Title>
+    ),
     dataIndex: 'hostname',
     key: 'hostname',
     render: renderCell<AggregatedImpactedClient>('hostname'),
@@ -132,7 +157,7 @@ const impactedAPsColumns: TableProps<AggregatedImpactedAP>['columns'] = [
     title: 'AP MAC',
     dataIndex: 'mac',
     key: 'mac',
-    render: renderCell<AggregatedImpactedAP>('mac'),
+    render: (_, row) => <TenantLink to={'TBD'}>{row.mac}</TenantLink>,
     sorter: sortCell<AggregatedImpactedAP>('mac')
   },
   {
