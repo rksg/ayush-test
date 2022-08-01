@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom'
 
+import React from 'react'
+
 import { dataApiURL }                                from '@acx-ui/analytics/services'
+import { BrowserRouter as Router }                   from '@acx-ui/react-router-dom'
 import { Provider, store }                           from '@acx-ui/store'
 import { render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { mockGraphqlQuery }                          from '@acx-ui/test-utils'
@@ -13,6 +16,18 @@ import {
   AggregatedImpactedAP
 }                 from './ImpactedDrawer'
 import { impactedAPsApi, impactedClientsApi, ImpactedAP, ImpactedClient } from './services'
+
+
+jest.mock('@acx-ui/icons', ()=> ({
+  ...(jest.requireActual('@acx-ui/icons')),
+  InformationOutlined: () => <div data-testid='information'/>
+}), { virtual: true })
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...(jest.requireActual('@acx-ui/react-router-dom')),
+  TenantLink: ({ to, children }: { to: string, children: React.ReactNode }) =>
+    <div>{to} - {children}</div>
+}), { virtual: true })
 
 describe('Drawer', () => {
   beforeAll(() => jest.spyOn(console, 'error').mockImplementation(() => {}))
@@ -32,11 +47,11 @@ describe('Drawer', () => {
     it('should render drawer', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
         data: { incident: { impactedAPs: sample } } })
-      render(<Provider><ImpactedAPsDrawer {...props}/></Provider>)
+      render(<Router><Provider><ImpactedAPsDrawer {...props}/></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
       await screen.findByPlaceholderText('Search for...')
       await screen.findByText(sample[0].name)
-      await screen.findByText(sample[0].mac)
+      await screen.findByText(`TBD - ${sample[0].mac}`)
       await screen.findByText(sample[0].model)
       await screen.findByText(sample[0].version)
       await screen.findByText(`${sample.length} Impacted AP`)
@@ -66,15 +81,17 @@ describe('Drawer', () => {
     it('should render drawer', async () => {
       mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
         data: { incident: { impactedClients: sample } } })
-      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>)
+      render(<Router><Provider><ImpactedClientsDrawer {...props}/></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
       await screen.findByPlaceholderText('Search for...')
-      await screen.findByText(sample[0].mac)
+      await screen.findByText(`TBD - ${sample[0].mac}`)
       await screen.findByText(sample[0].manufacturer)
       await screen.findByText(sample[0].ssid)
       await screen.findByText(sample[0].hostname)
       await screen.findByText(sample[0].username)
       await screen.findByText(`${sample.length} Impacted Client`)
+      const icons = await screen.findAllByTestId('information')
+      expect(icons.length).toBe(2)
     })
     it('should render error', async () => {
       mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
@@ -96,12 +113,11 @@ describe('sortCell', () => {
 
 describe('renderCell', () => {
   it('should return correct sort order', () => {
-
     expect(renderCell<Pick<AggregatedImpactedAP,'mac'>>('mac')(null, { mac: ['mac1', 'mac2'] }))
       .toMatchSnapshot()
-    // expect(sortCell<Pick<AggregatedImpactedAP,'mac'>>('mac')({ mac: ['mac1'] },{ mac: ['mac2'] }))
-      // .toBe(-1)
-    // expect(sortCell<Pick<AggregatedImpactedAP,'mac'>>('mac')({ mac: ['mac2'] },{ mac: ['mac1'] }))
-      // .toBe(1)
+    expect(sortCell<Pick<AggregatedImpactedAP,'mac'>>('mac')({ mac: ['mac1'] },{ mac: ['mac2'] }))
+      .toBe(-1)
+    expect(sortCell<Pick<AggregatedImpactedAP,'mac'>>('mac')({ mac: ['mac2'] },{ mac: ['mac1'] }))
+      .toBe(1)
   })
 })
