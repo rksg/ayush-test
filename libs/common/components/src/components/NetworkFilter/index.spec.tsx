@@ -15,7 +15,7 @@ describe('NetworkFilter', () => {
     <NetworkFilter {...props} />
   )
 
-  it('no data with placeholder', async () => {
+  it('empty list & placeholder', async () => {
     const placeholder = 'test cascader'
     render(<CustomCascader placeholder={placeholder} multiple={false}/>)
 
@@ -25,7 +25,7 @@ describe('NetworkFilter', () => {
     expect(screen.getByText('No Data')).toBeInTheDocument()
   })
 
-  it('single-select, checkboxgroup, onChange & onApply', async () => {
+  it('single select, onChange, onApply & control-button', async () => {
     const options: Option[] = [
       {
         value: 'n1',
@@ -80,7 +80,7 @@ describe('NetworkFilter', () => {
     expect(onChangeMock).toBeCalledTimes(4)
   })
 
-  it('flat list, onApply & multi-select', async () => {
+  it('simple list, onApply & multi-select', async () => {
     const options: Option[] = [
       {
         value: 'n1',
@@ -121,7 +121,7 @@ describe('NetworkFilter', () => {
   })
 
 
-  it('renders single select & checkboxgroup', async () => {
+  it('single select & checkboxgroup', async () => {
     const onApplyMock = jest.fn()
     const onChangeMock = jest.fn()
     const radioOptions = ['6 GHz', '5 Ghz', '2.4 Ghz']
@@ -180,7 +180,7 @@ describe('NetworkFilter', () => {
     expect(onChangeMock).toBeCalledTimes(3)
   })
 
-  it('renders footer button, onCancel, onChange & onFocus test', async () => {
+  it('footer button, onCancel, onChange & onFocus test', async () => {
     const options: Option[] = [
       {
         value: 'n1',
@@ -242,6 +242,36 @@ describe('NetworkFilter', () => {
     expect(checkboxGroup[1]).toBeChecked()
     expect(checkboxGroup[0]).not.toBeChecked()
   })
+
+  it('no onApply, onCancel & onChange', async () => {
+    const options: Option[] = [
+      {
+        value: 'n1',
+        label: 'SSID 1'
+      },
+      {
+        value: 'n2',
+        label: 'SSID 2'
+      }]
+
+    render(<CustomCascader 
+      options={options} 
+      onApply={undefined}
+      onChange={undefined}
+      onCancel={undefined}
+      withControlButtons
+      multiple
+    />)
+    expect(screen.getByRole('combobox')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('combobox'))
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
+    screen.getByRole('button', { name: 'Cancel' }).click()
+    expect(screen.getByRole('combobox')).toBeInTheDocument()
+
+    screen.getByRole('combobox').click()
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument()
+    screen.getByRole('button', { name: 'Apply' }).click()
+    expect(screen.getByRole('combobox')).toBeInTheDocument()
+  })
+
 })
-
-
