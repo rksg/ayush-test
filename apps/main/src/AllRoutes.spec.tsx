@@ -13,7 +13,7 @@ jest.mock('./App/Dashboard', () => () => {
 jest.mock('analytics/Routes', () => () => {
   return <div data-testid='analytics' />
 },{ virtual: true })
-jest.mock('rc-wifi/Routes', () => () => {
+jest.mock('rc/Routes', () => () => {
   return <div data-testid='networks' />
 },{ virtual: true })
 
