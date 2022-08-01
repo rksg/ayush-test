@@ -12,7 +12,7 @@ export const Wrapper = styled.div<WrapperProps>`
   --acx-date-picker-ranges-width: 130px;
 
   > .ant-picker {
-    width: 22em;
+    width: 23em;
     background: var(--acx-neutrals-10);
     border-color: var(--acx-primary-black);
     > div:first-of-type {
