@@ -6,3 +6,5 @@ export const Space = styled((props: SpaceProps) =>
 )`
   margin-bottom: 16px;
 `
+
+export const Div = styled.div``
