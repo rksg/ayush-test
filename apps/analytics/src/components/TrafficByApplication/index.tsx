@@ -57,7 +57,7 @@ export function TrafficByApplicationWidget () {
     return appTrafficData.map((item,index) => {
       const uploadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.rxBytes)
       const downloadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.txBytes)
-      const sparklineChartStyle = { height: 18, width: '100%', display: 'inline' }
+      const sparklineChartStyle = { height: 14, width: '100%', display: 'inline' }
       return {
         ...item,
         upload: <>{formatter('bytesFormat')(item.rxBytes)} &nbsp;
@@ -101,14 +101,14 @@ export function TrafficByApplicationWidget () {
   />
   
   const tabDetails:ContentSwitcherProps['tabDetails']=[
-    { label: 'Upload', content: uploadTable, value: 'upload' },
-    { label: 'Download', content: downloadTable, value: 'download' }
+    { label: 'Upload', children: uploadTable, value: 'upload' },
+    { label: 'Download', children: downloadTable, value: 'download' }
   ]
     
   return (
     <Loader states={[queryResults]}>
       <Card title='Top 5 Applications by Traffic' >
-        <ContentSwitcher tabDetails={tabDetails} size='middle' />
+        <ContentSwitcher tabDetails={tabDetails} size='large' />
       </Card>
     </Loader>
   )
