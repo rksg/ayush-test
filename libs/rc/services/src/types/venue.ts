@@ -1,21 +1,35 @@
+import { ApStatusDetails } from './ap'
+
+import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
+
 export interface VenueDetailHeader {
 	activeLteNetworkCount: number,
 	activeNetworkCount: number,
 	aps: {
-		summary: any,
+		summary: {
+			[key in ApVenueStatusEnum]?: number
+    },
 		totalApCount: number,
-		detail: any
+		detail: {
+			[key in ApVenueStatusEnum]?: ApStatusDetails[]
+    }
 	},
 	lteAps: {
-		summary: any,
+		summary: {
+      [key in ApVenueStatusEnum]?: number
+    },
 		totalApCount: number,
-		detail: any
+		detail: {
+      [key in ApVenueStatusEnum]?: ApStatusDetails[]
+    }
 	},
 	switchClients: {
 		totalCount: number
 	},
 	switches: {
-		summary: any,
+		summary: {
+			[key in SwitchStatusEnum]?: number
+		},
 		totalCount: number
 	},
 	totalClientCount: string
