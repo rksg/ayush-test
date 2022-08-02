@@ -4,7 +4,7 @@ require('@testing-library/jest-dom')
 const { registerTsProject } = require('nx/src/utils/register')
 const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
 
-const { mockServer } = require('@acx-ui/test-utils')
+const { mockServer, mockLightTheme } = require('@acx-ui/test-utils')
 
 beforeAll(() => mockServer.listen())
 afterEach(() => mockServer.resetHandlers())
@@ -26,6 +26,12 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn()
   }))
 })
+
+jest.mock('libs/common/components/src/theme/helper', () => ({
+  __esModule: true,
+  cssStr: jest.fn(property => mockLightTheme[property]),
+  cssNumber: jest.fn(property => parseInt(mockLightTheme[property], 10))
+}))
 
 jest.mock('@acx-ui/feature-toggle', () => ({
   SplitProvider: ({ children }) =>

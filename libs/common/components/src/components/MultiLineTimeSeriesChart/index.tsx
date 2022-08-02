@@ -11,6 +11,7 @@ import { cssStr }              from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
+  legendTextStyleOptions,
   xAxisOptions,
   yAxisOptions,
   axisLabelOptions,
@@ -47,7 +48,7 @@ export function MultiLineTimeSeriesChart
 }: MultiLineTimeSeriesChartProps<TChartData>) {
   const option: EChartsOption = {
     color: props.lineColors || [
-      cssStr('--acx-primary-black'),
+      cssStr('--acx-accents-blue-30'),
       cssStr('--acx-accents-blue-50'),
       cssStr('--acx-accents-orange-50'),
       cssStr('--acx-semantics-yellow-40')
@@ -55,6 +56,7 @@ export function MultiLineTimeSeriesChart
     grid: { ...gridOptions() },
     legend: {
       ...legendOptions(),
+      textStyle: legendTextStyleOptions(),
       data: data.map(datum => datum[legendProp]) as unknown as string[]
     },
     tooltip: {
@@ -67,7 +69,7 @@ export function MultiLineTimeSeriesChart
       type: 'time',
       axisLabel: {
         ...axisLabelOptions(),
-        formatter: dateAxisFormatter()
+        formatter: dateAxisFormatter
       }
     },
     yAxis: {

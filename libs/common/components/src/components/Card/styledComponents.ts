@@ -32,6 +32,8 @@ export const Wrapper = styled.div<WrapperProps>`
   .ant-card {
     padding: ${cardPadding};
     height: 100%;
+    display:flex;
+    flex-direction:column;
   }
   .ant-card-head {
     padding: 0;
@@ -50,15 +52,8 @@ export const Wrapper = styled.div<WrapperProps>`
     padding: 0;
   }
   .ant-card-body {
-    height: calc(
-      100% -
-        (
-          var(--acx-headline-4-line-height) +
-          ${(props) => props.hasSubTitle ? 'var(--acx-body-4-line-height)' : '0px'} +
-          ${cardPadding} +
-          ${headRowGap}
-        )
-    );
+    display: flex;
+    flex-grow: 1;
     padding: 0;
   }
 `

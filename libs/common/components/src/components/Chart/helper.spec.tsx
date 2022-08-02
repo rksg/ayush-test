@@ -1,10 +1,29 @@
 import moment from 'moment-timezone'
 
-import { timeSeriesTooltipFormatter, stackedBarTooltipFormatter } from './helper'
+import {
+  dateAxisFormatter,
+  timeSeriesTooltipFormatter,
+  stackedBarTooltipFormatter,
+  donutChartTooltipFormatter
+} from './helper'
 
 import type { TooltipFormatterParams } from './helper'
 
-describe('timeSeriesTooltipFormatter',()=>{
+describe('dateAxisFormatter', () => {
+  it('formats date time correctly', () => {
+    moment.tz.setDefault('Asia/Tokyo')
+    expect(dateAxisFormatter((new Date('2020-01-01T00:00+09:00')).valueOf()))
+      .toEqual('2020')
+    expect(dateAxisFormatter((new Date('2020-02-01T00:00+09:00')).valueOf()))
+      .toEqual('Feb')
+    expect(dateAxisFormatter((new Date('2020-02-03T00:00+09:00')).valueOf()))
+      .toEqual('Feb 03')
+    expect(dateAxisFormatter((new Date('2020-02-03T07:00+09:00')).valueOf()))
+      .toEqual('Feb 03 07:00')
+  })
+})
+
+describe('timeSeriesTooltipFormatter', () => {
   const timezone = 'UTC'
   beforeEach(() => {
     moment.tz.setDefault(timezone)
@@ -48,5 +67,19 @@ describe('stackedBarTooltipFormatter', () => {
   })
   it('should handle when no formatter', async () => {
     expect(stackedBarTooltipFormatter()(singleparameters)).toMatchSnapshot()
+  })
+})
+
+describe('donutChartTooltipFormatter', () => {
+  const singleparameters = {
+    color: 'color1', value: 10
+  } as TooltipFormatterParams
+  it('should return correct Html string for single value', async () => {
+    const formatter = jest.fn(value=>`formatted-${value}`)
+    expect(donutChartTooltipFormatter(formatter)(singleparameters)).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(1)
+  })
+  it('should handle when no formatter', async () => {
+    expect(donutChartTooltipFormatter()(singleparameters)).toMatchSnapshot()
   })
 })
