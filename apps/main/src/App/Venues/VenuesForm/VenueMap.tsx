@@ -25,7 +25,7 @@ const VenueMap: React.FC<MapProps> = ({
 
   return (
     <>
-      <div ref={ref} style={{ height: '30vh', width: '40vw', margin: '0' }}/>
+      <div ref={ref} style={{ height: '100%', width: '100%', margin: '0' }}/>
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           return React.cloneElement(child, { map })

@@ -1,0 +1,274 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Venues Form should render venues form 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues"
+              >
+                Venues
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography"
+            >
+              Add New Venue
+            </h1>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form
+    class="ant-form ant-form-vertical"
+  >
+    <div
+      class="ant-row ant-form-item"
+    >
+      <div
+        class="ant-col ant-form-item-label"
+      >
+        <label
+          class="ant-form-item-required"
+          for="name"
+          title="Venue Name"
+        >
+          Venue Name
+        </label>
+      </div>
+      <div
+        class="ant-col ant-col-5 ant-form-item-control"
+      >
+        <div
+          class="ant-form-item-control-input"
+        >
+          <div
+            class="ant-form-item-control-input-content"
+          >
+            <span
+              class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
+            >
+              <input
+                class="ant-input"
+                id="name"
+                type="text"
+                value=""
+              />
+              <span
+                class="ant-input-suffix"
+              />
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-row ant-form-item"
+    >
+      <div
+        class="ant-col ant-form-item-label"
+      >
+        <label
+          class=""
+          for="description"
+          title="Description"
+        >
+          Description
+        </label>
+      </div>
+      <div
+        class="ant-col ant-col-5 ant-form-item-control"
+      >
+        <div
+          class="ant-form-item-control-input"
+        >
+          <div
+            class="ant-form-item-control-input-content"
+          >
+            <textarea
+              class="ant-input"
+              id="description"
+              rows="2"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-row ant-row-middle"
+    >
+      <div
+        class="ant-col ant-col-2"
+        style="text-align: left;"
+      >
+        <span
+          class="ant-form-item-label"
+        >
+          <label
+            class="ant-form-item-required"
+          >
+            Address
+          </label>
+        </span>
+      </div>
+      <div
+        class="ant-col ant-col-9"
+        style="text-align: left; padding-left: 2rem;"
+      >
+        <span
+          class="ant-form-item-label"
+        >
+          <label>
+            Make sure to include a city and country in the address
+          </label>
+        </span>
+      </div>
+    </div>
+    <div
+      style="width: 470px; height: 260px; position: relative; margin-bottom: 30px;"
+    >
+      <div
+        class="addressContainer"
+        style="position: absolute; z-index: 10; width: 450px; margin: 12px;"
+      >
+        <div
+          class="ant-row ant-form-item"
+        >
+          <div
+            class="ant-col ant-form-item-control"
+          >
+            <div
+              class="ant-form-item-control-input"
+            >
+              <div
+                class="ant-form-item-control-input-content"
+              >
+                <span
+                  class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled"
+                  style="border-radius: 20px;"
+                >
+                  <span
+                    class="ant-input-prefix"
+                  >
+                    <img
+                      alt="search icon"
+                      src="Search.png"
+                    />
+                  </span>
+                  <input
+                    class="ant-input ant-input-disabled"
+                    disabled=""
+                    id="address"
+                    role="address"
+                    type="text"
+                    value="350 W Java Dr, Sunnyvale, CA 94089, USA"
+                  />
+                  <span
+                    class="ant-input-suffix"
+                  >
+                    <span
+                      class="ant-input-clear-icon ant-input-clear-icon-hidden"
+                      role="button"
+                      tabindex="-1"
+                    >
+                      <img
+                        alt="close icon"
+                        src="Close.png"
+                      />
+                    </span>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2
+        class="ant-typography"
+        style="text-align: center; padding-top: 3em;"
+      >
+        Map is not enabled
+      </h2>
+    </div>
+  </form>
+  <main
+    class="ant-layout-content"
+  >
+    <div
+      style="bottom: 10px; position: fixed;"
+    >
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
+      >
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          <button
+            class="ant-btn ant-btn-primary"
+            type="button"
+          >
+            <span>
+              Add
+            </span>
+          </button>
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <button
+            class="ant-btn ant-btn-default"
+            type="button"
+          >
+            <span>
+              Cancel
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</DocumentFragment>
+`;

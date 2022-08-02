@@ -13,7 +13,7 @@ import {
   useDeleteNetworkVenueMutation,
   useGetAllUserSettingsQuery,
   UserSettings,
-  useVenueListQuery,
+  useNetworkVenueListQuery,
   Venue
 } from '@acx-ui/rc/services'
 import { Constants, useTableQuery, getUserSettingsFromDict } from '@acx-ui/rc/utils'
@@ -51,7 +51,7 @@ const notificationMessage = 'No venues activating this network. Use the ON/OFF s
 
 export function NetworkVenuesTab () {
   const tableQuery = useTableQuery({
-    useQuery: useVenueListQuery,
+    useQuery: useNetworkVenueListQuery,
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)

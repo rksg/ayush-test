@@ -65,5 +65,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenuesList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'
+  },
+  addVenue: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/venue'
   }
 }

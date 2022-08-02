@@ -9,7 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery, Venue }               from '@acx-ui/rc/services'
+import { useNetworkVenueListQuery, Venue }        from '@acx-ui/rc/services'
 import { useTableQuery, CreateNetworkFormFields } from '@acx-ui/rc/utils'
 
 const defaultPayload = {
@@ -50,7 +50,7 @@ const getNetworkId = () => {
 
 export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
   const tableQuery = useTableQuery({
-    useQuery: useVenueListQuery,
+    useQuery: useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
     defaultPayload
   })

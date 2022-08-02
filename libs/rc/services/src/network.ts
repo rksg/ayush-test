@@ -101,7 +101,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
-    venueList: build.query<TableResult<Venue>, RequestPayload>({
+    networkVenueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
         const venueListReq = createHttpRequest(CommonUrlsInfo.getNetworksVenuesList, params)
         return{
@@ -133,7 +133,7 @@ export const {
   useCreateNetworkMutation,
   useGetNetworkQuery,
   useNetworkDetailHeaderQuery,
-  useVenueListQuery,
+  useNetworkVenueListQuery,
   useDashboardOverviewQuery,
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
