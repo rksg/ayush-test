@@ -186,7 +186,7 @@ exports[`Venues Form should render venues form 1`] = `
                 class="ant-form-item-control-input-content"
               >
                 <span
-                  class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled"
+                  class="ant-input-affix-wrapper"
                   style="border-radius: 20px;"
                 >
                   <span
@@ -198,12 +198,11 @@ exports[`Venues Form should render venues form 1`] = `
                     />
                   </span>
                   <input
-                    class="ant-input ant-input-disabled"
-                    disabled=""
+                    class="ant-input"
                     id="address"
                     role="address"
                     type="text"
-                    value="350 W Java Dr, Sunnyvale, CA 94089, USA"
+                    value=""
                   />
                   <span
                     class="ant-input-suffix"
@@ -225,12 +224,9 @@ exports[`Venues Form should render venues form 1`] = `
           </div>
         </div>
       </div>
-      <h2
-        class="ant-typography"
-        style="text-align: center; padding-top: 3em;"
-      >
-        Map is not enabled
-      </h2>
+      <h1>
+        LOADING
+      </h1>
     </div>
   </form>
   <main
