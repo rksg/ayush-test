@@ -22,7 +22,7 @@ import {
   IncidentsBySeverityData,
   useIncidentsBySeverityQuery
 } from './services'
-import { PillWrapper } from './styledComponents'
+import { Container, Title } from './styledComponents'
 
 type PillData = { delta: string, total: number, trend: string }
 const barColors = [
@@ -80,22 +80,22 @@ function IncidentBySeverityWidget () {
   }
   return <Loader states={[prevResult, currentResult]}>
     <Card title='Total Incidents'>
-      <Subtitle level={1} style={{ marginBottom: 0, display: 'flex' }}>
-        {pill.total}
-        <PillWrapper>
+      <Container>
+        <Title>
+          <Subtitle level={1} style={{ marginBottom: 0 }}>{pill.total}</Subtitle>
           <Pill value={pill.delta} trend={pill.trend as TrendType} />
-        </PillWrapper>
-      </Subtitle>
-      <AutoSizer>
-        {({ width }) => (
-          <BarChart
-            style={{ width, height: 140 }}
-            data={chart}
-            grid={{ right: 25, top: 5 }}
-            barColors={barColors}
-          />
-        )}
-      </AutoSizer>
+        </Title>
+        <AutoSizer>
+          {({ width }) => (
+            <BarChart
+              style={{ width, height: 140 }}
+              data={chart}
+              grid={{ right: 25, top: 5 }}
+              barColors={barColors}
+            />
+          )}
+        </AutoSizer>
+      </Container>
     </Card>
   </Loader>
 }
