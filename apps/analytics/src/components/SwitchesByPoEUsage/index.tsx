@@ -11,8 +11,7 @@ import { formatter }                               from '@acx-ui/utils'
 
 import { useSwitchesByPoEUsageQuery } from './services'
 
-
-export const barColors = [
+const barColors = [
   cssStr('--acx-semantics-yellow-40'),
   cssStr('--acx-accents-orange-25'),
   cssStr('--acx-accents-orange-50'),
@@ -20,7 +19,7 @@ export const barColors = [
   cssStr('--acx-accents-blue-50')
 ]
 
-export const seriesMapping: BarChartData['seriesEncode'] = [
+const seriesMapping: BarChartData['seriesEncode'] = [
   { x: 'poeUtilization', y: 'name' }
 ] 
 
