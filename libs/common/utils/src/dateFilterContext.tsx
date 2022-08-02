@@ -76,15 +76,10 @@ export function DateFilterProvider (props: { children: ReactNode }) {
     setSearch(params)
   }, [dateFilter, setSearch])
   const providerValue = useMemo(
-    () => ({ dateFilter, setDateFilter }), 
+    () => ({ dateFilter, setDateFilter }),
     [dateFilter, setDateFilter]
   )
-  return (
-    <DateFilterContext.Provider
-      {...props}
-      value={providerValue}
-    />
-  )
+  return <DateFilterContext.Provider {...props} value={providerValue} />
 }
 
 export function defaultRanges (subRange?: DateRange[]) {

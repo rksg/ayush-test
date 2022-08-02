@@ -117,7 +117,12 @@ export const DatePickerFooter = ({
           <Button onClick={() => onButtonClick('cancel')} size={'small'}>
             Cancel
           </Button>
-          <Button type={'secondary'} size={'small'} onClick={() => onButtonClick('apply')}>
+          <Button
+            type={'secondary'}
+            size={'small'}
+            onClick={() => onButtonClick('apply')}
+            disabled={range.startDate === null || range.endDate === null}
+          >
             Apply
           </Button>
         </UI.Buttons>

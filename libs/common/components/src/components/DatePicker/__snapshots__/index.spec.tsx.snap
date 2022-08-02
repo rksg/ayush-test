@@ -3,7 +3,7 @@
 exports[`CalenderRangePicker should render default CalenderRangePicker 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-8afdnk-0 fxHYuv"
+    class="styledComponents__Wrapper-sc-8afdnk-0 gCfkZO"
   >
     <div
       class="ant-picker ant-picker-range"
