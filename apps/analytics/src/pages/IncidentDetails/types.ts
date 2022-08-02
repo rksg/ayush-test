@@ -32,15 +32,10 @@ export interface IncidentDetailsProps {
   currentSlaThreshold: number|null
 }
 
-interface IncidentInformation {
+export interface IncidentInformation {
   category: string
   subCategory: string
   shortDescription: string
   longDescription: string
   incidentType: string
 }
-
-export interface IncidentAttributesProps
-  extends IncidentDetailsProps, IncidentInformation {
-    visibleFields: string[]
-  }

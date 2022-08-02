@@ -11,7 +11,12 @@ import { formattedPath, formattedSliceType, impactedArea } from '../path'
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
 
-import type { IncidentAttributesProps } from '../types'
+import type { IncidentDetailsProps, IncidentInformation } from '../types'
+
+interface IncidentAttributesProps
+  extends IncidentDetailsProps, IncidentInformation {
+    visibleFields: string[]
+}
 
 export const durationOf = (start: string, end: string) =>
   moment(end).diff(moment(start), 'milliseconds', true)
