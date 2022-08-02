@@ -39,11 +39,9 @@ export const Insights = (props: IncidentDetailsProps) => {
   return (
     <UI.InsightComponent>
       <UI.InsightHeader>
-        <UI.InsightIcon>
-          <BulbOutlined />
-        </UI.InsightIcon>
+        <BulbOutlined />
         <UI.InsightTitle>
-          <Typography.Title level={2}>Insights</Typography.Title>
+          <Typography.Title level={3}>Insights</Typography.Title>
         </UI.InsightTitle>
       </UI.InsightHeader>
       <Row>

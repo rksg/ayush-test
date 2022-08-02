@@ -27,12 +27,15 @@ export const codeToFailureTypeMap = {
 
 const ttcFailureCodes = ['assoc', 'auth', 'dhcp', 'eap', 'radius']
 
-const extractFailureCode = (checks: IncidentDetailsMetadata['rootCauseChecks']['checks']) => {
+const extractFailureCode = (
+  checks: IncidentDetailsMetadata['rootCauseChecks']['checks']
+) => {
   return checks.length === 0
     ? 'DEFAULT'
     : checks.length > 1
       ? 'VARIOUS_REASONS'
-      : Object.keys(checks[0]).filter(code => code.startsWith('CCD_REASON') || ttcFailureCodes.includes(code))[0]
+      : Object.keys(checks[0]).filter(
+        code => code.startsWith('CCD_REASON') || ttcFailureCodes.includes(code))[0]
 }
 
 interface rootCauseAndRecommendation {
@@ -628,7 +631,10 @@ export const ccd80211RootCauseRecommendations = {
   }
 } as Readonly<Record<string, rootCauseAndRecommendation>>
 
-export function getRootCauseAndRecommendations (code: keyof typeof codeToFailureTypeMap, rootCauseChecks: IncidentDetailsMetadata['rootCauseChecks']) {
+export function getRootCauseAndRecommendations (
+  code: keyof typeof codeToFailureTypeMap,
+  rootCauseChecks: IncidentDetailsMetadata['rootCauseChecks']
+) {
   const failureType = codeToFailureTypeMap[code]
   if (!rootCauseChecks) return [{ rootCauses: 'Calculating...', recommendations: '' }]
   const { checks } = rootCauseChecks

@@ -2,36 +2,18 @@ import { Col } from 'antd'
 import styled  from 'styled-components/macro'
 
 export const InsightComponent = styled.div`
-  background-color: var(--acx-neutrals-20);
+  background-color: var(--acx-neutrals-10);
   border-radius: 8px;
 
-  .ant-page-header-heading {
-    border-radius: inherit;
-  }
-
-  .ant-page-header {
-    border-radius: inherit;
-    padding-left: 14px;
-  }
-
-  p {
-    padding-top: 5px;
-    margin-bottom: 7px;
-  }
   ol {
     padding-left: 15px;
-  }
-  li {
-    padding-bottom: 8px;
   }
 `
 
 export const InsightHeader = styled.div`
   display: flex;
   padding-top: 20px;
-  padding-left: 25px;
-  padding-bottom: 5px;
-  text-align: center;
+  padding-left: 20px;
 `
 
 export const LeftInsightDetails = styled(Col)`
@@ -44,8 +26,4 @@ export const RightInsightDetails = styled(Col)`
 
 export const InsightTitle = styled.div`
   padding-left: 5px;
-`
-
-export const InsightIcon = styled.div`
-  padding-top: 3px;
 `
