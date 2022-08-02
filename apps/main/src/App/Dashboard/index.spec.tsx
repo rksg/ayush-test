@@ -9,7 +9,7 @@ jest.mock(
   { virtual: true })
 
 jest.mock(
-  'rc-wifi/Widgets',
+  'rc/Widgets',
   () => ({ name }: { name: string }) =><div data-testid={`networks-${name}`} />,
   { virtual: true })
 
