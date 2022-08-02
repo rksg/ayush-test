@@ -5,9 +5,9 @@ import { getRootCauseAndRecommendations } from '@acx-ui/analytics/utils'
 import { Subtitle }                       from '@acx-ui/components'
 import { BulbOutlined }                   from '@acx-ui/icons'
 
-import * as UI                  from '../syledComponents'
 import { IncidentDetailsProps } from '../types'
 
+import * as UI from './styledComponents'
 
 export const incidentDetailsCodeMap = {
   'radius-failure': 'radius',
@@ -20,29 +20,40 @@ export const incidentDetailsCodeMap = {
 export const Insights = (props: IncidentDetailsProps) => {
   const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
     props.code, props.metadata.rootCauseChecks)
+  const values = {
+    p: (text: string) => <p>{text}</p>,
+    ol: (text: string) => <ol>{text}</ol>,
+    li: (text: string) => <li>{text}</li>
+  }
   const rootCauseProps = {
-    id: props.id,
-    defaultMessage: rootCauses
+    id: props.id + rootCauses,
+    defaultMessage: rootCauses,
+    values: values
   }
   const recommendationProps = {
-    id: props.id,
-    defaultMessage: recommendations
+    id: props.id + recommendations,
+    defaultMessage: recommendations,
+    values: values
   }
   return (
     <UI.InsightComponent>
-      <div>
-        <Typography.Title level={3}>Insights</Typography.Title>
-        <BulbOutlined />
-      </div>
+      <UI.InsightHeader>
+        <UI.InsightIcon>
+          <BulbOutlined />
+        </UI.InsightIcon>
+        <UI.InsightTitle>
+          <Typography.Title level={2}>Insights</Typography.Title>
+        </UI.InsightTitle>
+      </UI.InsightHeader>
       <Row>
-        <UI.InsightDetails span={8}>
-          <Subtitle level={5}>Root Cause Analysis</Subtitle>
+        <UI.LeftInsightDetails span={12}>
+          <Subtitle level={4}>Root Cause Analysis</Subtitle>
           <FormattedMessage {...rootCauseProps}/>
-        </UI.InsightDetails>
-        <UI.InsightDetails span={8}>
-          <Subtitle level={5}>Recommended Action</Subtitle>
+        </UI.LeftInsightDetails>
+        <UI.RightInsightDetails span={12}>
+          <Subtitle level={4}>Recommended Action</Subtitle>
           <FormattedMessage {...recommendationProps}/>
-        </UI.InsightDetails>
+        </UI.RightInsightDetails>
       </Row>
     </UI.InsightComponent>
   )
