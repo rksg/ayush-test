@@ -116,12 +116,12 @@ start the [MLISA dev environment](https://github.com/rksg/rsa-mlisa-helm/tree/de
 before executing the command.
 
 ```sh
-npx nx run main:serve --devRemotes=rc-wifi,analytics
+npx nx run main:serve --devRemotes=rc,analytics
 ```
 
 If you are not working on a particular app, you can choose to remove it from `--devRemotes`.
 E.g. `--devRemotes=analytics` will only run `analytics` in dev mode with changes being monitored
-while `rc-wifi` will be built statically.
+while `rc` will be built statically.
 
 ### Run tests
 
