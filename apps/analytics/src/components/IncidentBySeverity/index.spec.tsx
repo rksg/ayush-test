@@ -57,11 +57,11 @@ describe('IncidentBySeverityWidget', () => {
     }, {
       curr: { P1: 1, P2: 2, P3: 3, P4: 4 },
       prev: { P1: 1, P2: 1, P3: 1, P4: 1 },
-      result: { total: 10, delta: '6', trend: 'negative' }
+      result: { total: 10, delta: '+6', trend: 'negative' }
     }, {
       curr: { P1: 1, P2: 2, P3: 3, P4: 4 },
       prev: { P1: 10, P2: 2, P3: 3, P4: 4 },
-      result: { total: 10, delta: '9', trend: 'positive' }
+      result: { total: 10, delta: '-9', trend: 'positive' }
     }]
     data.forEach(({ curr, prev, result }) => {
       expect(

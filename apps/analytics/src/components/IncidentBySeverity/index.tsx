@@ -34,10 +34,12 @@ export const getPillData = (
 ): PillData => {
   const currTotal = _.sum(Object.entries(curr).map(([, value]) => value))
   const prevTotal = _.sum(Object.entries(prev).map(([, value]) => value))
-  const trend = currTotal - prevTotal > 0
-    ? 'negative'
-    : currTotal - prevTotal < 0 ? 'positive' : 'none'
-  return { delta: `${Math.abs(currTotal - prevTotal)}`, trend, total: currTotal }
+  const delta = currTotal - prevTotal
+  return {
+    delta: delta > 0 ? `+${delta}` : `${delta}`,
+    trend: delta > 0 ? 'negative' : (delta < 0 ? 'positive' : 'none'),
+    total: currTotal
+  }
 }
 const getChartData = (data: IncidentsBySeverityData): BarChartData => ({
   source: Object.entries(data).reverse(),
