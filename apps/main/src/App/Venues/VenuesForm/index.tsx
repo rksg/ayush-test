@@ -12,10 +12,12 @@ import {
   Typography
 } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
+import styled   from 'styled-components/macro'
 
 import { PageHeader, showToast }                        from '@acx-ui/components'
 import { get }                                          from '@acx-ui/config'
 import { useSplitTreatment }                            from '@acx-ui/feature-toggle'
+import { Close, SearchOutlined }                        from '@acx-ui/icons'
 import { useAddVenueMutation, useLazyVenuesListQuery }  from '@acx-ui/rc/services'
 import { Address, VenueSaveData, checkObjectNotExists } from '@acx-ui/rc/utils'
 import {
@@ -24,11 +26,16 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import CloseIconSrc  from '../../../assets/icons/Close.png'
-import SearchIconSrc from '../../../assets/icons/Search.png'
-
 import VenueMap from './VenueMap'
 // import ReactDOM            from 'react-dom'
+
+export const CloseIcon = styled.svg`
+  width: 10px;
+  height: 10px;
+  path {
+    stroke: var(--acx-primary-black);
+  }
+`
 
 const { Content } = Layout
 
@@ -276,8 +283,10 @@ export function VenuesForm () {
               }]}
             >
               <Input
-                allowClear={{ clearIcon: <img src={CloseIconSrc} alt='close icon' /> }}
-                prefix={<img src={SearchIconSrc} alt='search icon' />}
+                allowClear={{ clearIcon: 
+                  <CloseIcon><Close width='10' height='10' /></CloseIcon>
+                }}
+                prefix={<SearchOutlined />}
                 onChange={addressOnChange}
                 role='address'
                 defaultValue={!isMapEnabled ? '350 W Java Dr, Sunnyvale, CA 94089, USA' : ''}
