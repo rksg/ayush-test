@@ -2,21 +2,21 @@ export interface VenueDetailHeader {
 	activeLteNetworkCount: number,
 	activeNetworkCount: number,
 	aps: {
-		summary: {},
-		totalApCount: 0,
-		detail: {}
+		summary: any,
+		totalApCount: number,
+		detail: any
 	},
 	lteAps: {
-		summary: {},
-		totalApCount: 0,
-		detail: {}
+		summary: any,
+		totalApCount: number,
+		detail: any
 	},
 	switchClients: {
-		totalCount: 0
+		totalCount: number
 	},
 	switches: {
-		summary: {},
-		totalCount: 0
+		summary: any,
+		totalCount: number
 	},
 	totalClientCount: string
 	venue: {
