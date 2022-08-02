@@ -7,6 +7,7 @@ export const Title = styled.div`
   align-items: center;
 `
 export const Container = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
 `

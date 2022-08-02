@@ -4,8 +4,6 @@ import _         from 'lodash'
 import moment    from 'moment-timezone'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-
-
 import { useGlobalFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
