@@ -20,15 +20,13 @@ export const barColors = [
   cssStr('--acx-accents-blue-50')
 ]
 
-
 export const seriesMapping: BarChartData['seriesEncode'] = [
   { x: 'poeUtilization', y: 'name' }
 ] 
 
-
 export function switchUsageLabelFormatter (params: CallbackDataParams): string {
-  const usage = Array.isArray(params.data) ? params.data[1] : params.data
-  const utilisation_per = Array.isArray(params.data) ? params.data[2] : params.data
+  const usage = Array.isArray(params.data) && params.data[1] 
+  const utilisation_per = Array.isArray(params.data) && params.data[2]
   return '{poe_usage|' + formatter('milliWattsFormat')(usage) + '} {utilisation_pct|(' +
     formatter('percentFormat')(utilisation_per) + ')}'
 }
@@ -49,9 +47,6 @@ const getSwitchUsageRichStyle = () => ({
     fontWeight: cssNumber('--acx-body-font-weight')
   }
 })
-
-
-
 
 function SwitchesByPoEUsageWidget () {
   const filters = useGlobalFilter()

@@ -3,8 +3,8 @@ import { Provider }         from '@acx-ui/store'
 import { render, screen }   from '@acx-ui/test-utils'
 import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
-
-import AnalyticsWidgets from './Widgets'
+import { topSwitchesByPoEUsageResponse } from './components/SwitchesByPoEUsage/services.spec'
+import AnalyticsWidgets                  from './Widgets'
 
 const sample = {
   time: [
@@ -48,4 +48,11 @@ test('should render Network History widget', async () => {
   render( <Provider> <AnalyticsWidgets name='networkHistory' /></Provider>)
   await screen.findByText('Network History')
   screen.getByText('Network History')
+})
+
+test('should render Top 5 Switches by PoE Usage widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', { data: topSwitchesByPoEUsageResponse })
+  render( <Provider> <AnalyticsWidgets name='switchesByPoEUsage' /></Provider>)
+  expect(await screen.findByText('Top 5 Switches by PoE Usage')).toBeVisible()
+  
 })
