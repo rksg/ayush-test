@@ -1,7 +1,5 @@
 import moment from 'moment-timezone'
 
-import { mockLightTheme } from '@acx-ui/test-utils'
-
 import {
   dateAxisFormatter,
   timeSeriesTooltipFormatter,
@@ -11,17 +9,6 @@ import {
 } from './helper'
 
 import type { TooltipFormatterParams } from './helper'
-
-jest.mock('../../theme/helper', () => ({
-  __esModule: true,
-  cssStr: jest.fn(property => mockLightTheme[property]),
-  deviceStatusColors: {
-    CONNECTED: '--acx-semantics-green-50',
-    INITIAL: '--acx-neutrals-50',
-    ALERTING: '--acx-semantics-yellow-40',
-    DISCONNECTED: '--acx-semantics-red-50'
-  }
-}))
 
 describe('dateAxisFormatter', () => {
   it('formats date time correctly', () => {

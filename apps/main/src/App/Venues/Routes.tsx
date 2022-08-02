@@ -1,4 +1,3 @@
-import { ConfigProvider }    from '@acx-ui/components'
 import { Route, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }          from '@acx-ui/store'
 
@@ -11,8 +10,6 @@ export default function VenueRoutes () {
     </Route>
   )
   return (
-    <ConfigProvider>
-      <Provider children={routes} />
-    </ConfigProvider>
+    <Provider children={routes} />
   )
 }

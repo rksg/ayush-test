@@ -5,7 +5,7 @@ import { renderToString }                          from 'react-dom/server'
 import { TimeStamp } from '@acx-ui/types'
 import { formatter } from '@acx-ui/utils'
 
-import { cssStr, cssNumber, deviceStatusColors } from '../../theme/helper'
+import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
 
@@ -193,9 +193,16 @@ export type EventParams = {
   color: string
 }
 
+export const deviceStatusColors = {
+  Connected: '--acx-semantics-green-50',
+  Initial: '--acx-neutrals-50',
+  Alerting: '--acx-semantics-yellow-40',
+  Disconnected: '--acx-semantics-red-50'
+}
+
 export const getDeviceConnectionStatusColors = () => [
-  cssStr(deviceStatusColors.CONNECTED), // Operational
-  cssStr(deviceStatusColors.INITIAL), // Setup Phase
-  cssStr(deviceStatusColors.ALERTING), // Transient Issue
-  cssStr(deviceStatusColors.DISCONNECTED) // Requires Attention
+  cssStr(deviceStatusColors.Connected), // Operational
+  cssStr(deviceStatusColors.Initial), // Setup Phase
+  cssStr(deviceStatusColors.Alerting), // Transient Issue
+  cssStr(deviceStatusColors.Disconnected) // Requires Attention
 ]

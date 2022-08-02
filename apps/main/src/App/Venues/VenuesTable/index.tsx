@@ -21,7 +21,7 @@ const columns: TableProps<Venue>['columns'] = [
     defaultSortOrder: 'ascend',
     render: function (data, row) {
       return (
-        <TenantLink to={`/venues/${row.id}`}>{data}</TenantLink>
+        <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{data}</TenantLink>
       )
     }
   },
@@ -71,7 +71,7 @@ const columns: TableProps<Venue>['columns'] = [
         : 0
       return (<Space direction='vertical' size={4}>
         <TenantLink
-          to={`/venues/${row.id}/network-devices/wifi`}
+          to={`/venues/${row.id}/venue-details/devices`}
           children={count ? count : 0}
         />
         { row.aggregatedApStatus && getApStatusChart(row.aggregatedApStatus) }
@@ -85,7 +85,7 @@ const columns: TableProps<Venue>['columns'] = [
     render: function (data, row) {
       return (
         <TenantLink
-          to={`/venues/${row.id}/clients/wifi`}
+          to={`/venues/${row.id}/venue-details/clients`}
           children={data ? data : 0}
         />
       )
@@ -98,7 +98,7 @@ const columns: TableProps<Venue>['columns'] = [
     render: function (data, row) {
       return (
         <TenantLink
-          to={`/venues/${row.id}/network-devices/wifi`}
+          to={`/venues/${row.id}/venue-details/devices`}
           children={data ? data : 0}
         />
       )
@@ -111,7 +111,7 @@ const columns: TableProps<Venue>['columns'] = [
     render: function (data, row) {
       return (
         <TenantLink
-          to={`/venues/${row.id}/clients/wifi`}
+          to={`/venues/${row.id}/venue-details/clients`}
           children={data ? data : 0}
         />
       )
