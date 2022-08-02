@@ -141,8 +141,8 @@ const getQueryVariables = (payload: GlobalFilter): QueryVariables => {
   }
 }
 
-const sortPreference = (values: string | string[]): string[] => Array.isArray(values)
-  ? [...values].sort(value => lowPreferenceList.includes(value) ? 1 : -1)
+const sortPreference = <T>(values: T | T[]): T[] => Array.isArray(values)
+  ? [...values].sort(value => lowPreferenceList.includes(String(value)) ? 1 : -1)
   : [values]
 
 export const transformForDisplay = (data: NetworkNodeInfo): HeaderData => {
