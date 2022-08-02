@@ -5,16 +5,20 @@ export const Content = styled.div`
   min-height: 43px;
 `
 export const Footer = styled.div`
-  display: flex;
   margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr;
 `
+
 export const FooterButtons = styled.div`
-  position: absolute;
-  right: 24px;
+  grid-area: 1 / 1 / 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 `
 
 export const Collapse = styled(AntCollapse)`
-  width: 100%;
+  grid-area: 1 / 1 / 1 / 1;
   .ant-collapse-item {
     flex: 1;
     > .ant-collapse-content >.ant-collapse-content-box {
