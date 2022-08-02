@@ -3,6 +3,7 @@ import moment from 'moment-timezone'
 import { mockLightTheme } from '@acx-ui/test-utils'
 
 import {
+  dateAxisFormatter,
   timeSeriesTooltipFormatter,
   stackedBarTooltipFormatter,
   donutChartTooltipFormatter,
@@ -22,7 +23,21 @@ jest.mock('../../theme/helper', () => ({
   }
 }))
 
-describe('timeSeriesTooltipFormatter',()=>{
+describe('dateAxisFormatter', () => {
+  it('formats date time correctly', () => {
+    moment.tz.setDefault('Asia/Tokyo')
+    expect(dateAxisFormatter((new Date('2020-01-01T00:00+09:00')).valueOf()))
+      .toEqual('2020')
+    expect(dateAxisFormatter((new Date('2020-02-01T00:00+09:00')).valueOf()))
+      .toEqual('Feb')
+    expect(dateAxisFormatter((new Date('2020-02-03T00:00+09:00')).valueOf()))
+      .toEqual('Feb 03')
+    expect(dateAxisFormatter((new Date('2020-02-03T07:00+09:00')).valueOf()))
+      .toEqual('Feb 03 07:00')
+  })
+})
+
+describe('timeSeriesTooltipFormatter', () => {
   const timezone = 'UTC'
   beforeEach(() => {
     moment.tz.setDefault(timezone)
