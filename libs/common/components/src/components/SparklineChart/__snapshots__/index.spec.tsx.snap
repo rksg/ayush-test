@@ -31,7 +31,7 @@ exports[`SparklineChart should render component 1`] = `
       <path
         d="M0 240C0 240 0 210 0 180C0 150 0 150 0 120C0 90 0 90 0 60C0 30 0 0 0 0"
         fill="none"
-        stroke="none"
+        stroke="#23AB36"
         stroke-linejoin="bevel"
         stroke-width="2"
       />
@@ -56,11 +56,11 @@ exports[`SparklineChart should render component 1`] = `
     >
       <stop
         offset="0%"
-        stop-color="none"
+        stop-color="#88D392"
       />
       <stop
         offset="100%"
-        stop-color="none"
+        stop-color="#FFFFFF"
       />
     </lineargradient>
   </defs>
@@ -98,7 +98,7 @@ exports[`SparklineChart should render component with trendLine having green 1`] 
       <path
         d="M0 250C0 250 0 225 0 200C0 175 0 175 0 150C0 125 0 125 0 100C0 75 0 75 0 50C0 25 0 0 0 0"
         fill="none"
-        stroke="none"
+        stroke="#23AB36"
         stroke-linejoin="bevel"
         stroke-width="2"
       />
@@ -123,11 +123,11 @@ exports[`SparklineChart should render component with trendLine having green 1`] 
     >
       <stop
         offset="0%"
-        stop-color="none"
+        stop-color="#88D392"
       />
       <stop
         offset="100%"
-        stop-color="none"
+        stop-color="#FFFFFF"
       />
     </lineargradient>
   </defs>
@@ -165,7 +165,7 @@ exports[`SparklineChart should render component with trendLine having red 1`] = 
       <path
         d="M0 240C0 240 0 210 0 180C0 150 0 150 0 120C0 90 0 90 0 60C0 30 0 0 0 0C0 0 0 300 0 300"
         fill="none"
-        stroke="none"
+        stroke="#ED1C24"
         stroke-linejoin="bevel"
         stroke-width="2"
       />
@@ -190,11 +190,11 @@ exports[`SparklineChart should render component with trendLine having red 1`] = 
     >
       <stop
         offset="0%"
-        stop-color="none"
+        stop-color="#F4777C"
       />
       <stop
         offset="100%"
-        stop-color="none"
+        stop-color="#FFFFFF"
       />
     </lineargradient>
   </defs>

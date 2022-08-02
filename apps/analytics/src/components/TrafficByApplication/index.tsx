@@ -107,8 +107,10 @@ export function TrafficByApplicationWidget () {
     
   return (
     <Loader states={[queryResults]}>
-      <Card title='Top 5 Applications by Traffic' >
-        <ContentSwitcher tabDetails={tabDetails} size='large' />
+      <Card title='Top 5 Applications by Traffic'>
+        <div style={{ display: 'block' }}>
+          <ContentSwitcher tabDetails={tabDetails} size='large' align='center' />
+        </div>
       </Card>
     </Loader>
   )
