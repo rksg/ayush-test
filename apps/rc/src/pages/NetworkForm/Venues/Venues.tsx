@@ -98,12 +98,12 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     selectedVenues = _.uniq(selectedVenues)
     setActivateVenues(selectedVenues)
     handleVenueSaveData(selectedVenues)
-    setTableDataActivate(selectedVenues)
+    setTableDataActivate(tableData ,selectedVenues)
   }
 
-  const setTableDataActivate = (selectedVenues:Venue[]) => {
+  const setTableDataActivate = (dataOfTable:Venue[], selectedVenues:Venue[]) => {
     const data:Venue[] = []
-    tableData.forEach(item => {
+    dataOfTable.forEach(item => {
       let activated = { isActivated: false }
       if(selectedVenues.find(i => i.id == item.id)) {
         activated.isActivated = true
@@ -137,7 +137,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
         activated: { ...item.activated }
       }))
       if (tableData.length && activateVenues.length) {
-        setTableDataActivate(activateVenues)
+        setTableDataActivate(data, activateVenues)
       } else {
         setTableData(data)
       }
