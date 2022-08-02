@@ -166,7 +166,7 @@ export const rootCauseRecommendationMap = {
     CCD_REASON_AUTH_FT_ROAM_FAILURE: {
       rootCauses: `
         <p>Clients are failing at the authentication stage of an 802.11r (Fast Transition) roam. The client is including PMKID information from its roam-from AP, but the roam-to AP does not have the key. <br></br> <br></br> This scenario is most commonly caused in the following scenarios:</p>
-        </ol>
+        <ol>
           <li>The roam-from and roam-to APs cannot share keys with one another, which happens if they are not RF neighbors or if they do not have IP connectivity for AP-to-AP communication.</li>
           <li>The roam-from and roam-to APs are not RF neighbors. Clients may assume that all APs sharing an SSID will have the key, but the key may only be shared with RF neighbors.</li>
         </ol>

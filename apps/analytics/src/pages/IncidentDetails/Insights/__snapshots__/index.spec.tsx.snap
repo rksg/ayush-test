@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Insights Component should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__InsightComponent-sc-117mefi-0 bPTtMu"
+  >
+    <div
+      class="styledComponents__InsightHeader-sc-117mefi-1 eUsZde"
+    >
+      <svg>
+        BulbOutlined.svg
+      </svg>
+      <div
+        class="styledComponents__InsightTitle-sc-117mefi-4 cZoUaT"
+      >
+        <h3
+          class="ant-typography"
+        >
+          Insights
+        </h3>
+      </div>
+    </div>
+    <div
+      class="ant-row"
+    >
+      <div
+        class="ant-col ant-col-12 styledComponents__LeftInsightDetails-sc-117mefi-2 hprICq"
+      >
+        <h4
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+        >
+          Root Cause Analysis
+        </h4>
+        
+        
+        <p>
+          Clients are failing at the authentication stage of an 802.11r (Fast Transition) roam. The client is including PMKID information from its roam-from AP, but the roam-to AP does not have the key. 
+          <br />
+           
+          <br />
+           This scenario is most commonly caused in the following scenarios:
+        </p>
+        
+        
+        <ol>
+          
+          
+          <li>
+            The roam-from and roam-to APs cannot share keys with one another, which happens if they are not RF neighbors or if they do not have IP connectivity for AP-to-AP communication.
+          </li>
+          
+          
+          <li>
+            The roam-from and roam-to APs are not RF neighbors. Clients may assume that all APs sharing an SSID will have the key, but the key may only be shared with RF neighbors.
+          </li>
+          
+        
+        </ol>
+        
+      
+      </div>
+      <div
+        class="ant-col ant-col-12 styledComponents__RightInsightDetails-sc-117mefi-3 cVAiGK"
+      >
+        <h4
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+        >
+          Recommended Action
+        </h4>
+        <p>
+          In most cases, clients will immediately fall back to a "slow roam" if 802.11r (FT) roams fail. 
+          <br />
+           
+          <br />
+           To enable 802.11r roaming, make sure that APs are able to communicate with their RF neighbors via the IP (wired) infrastructure.
+        </p>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

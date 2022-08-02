@@ -158,8 +158,53 @@ exports[`incident details should render Incident Details correctly 1`] = `
           class="ant-col ant-col-24"
           style="padding: 10px 10px 10px 10px;"
         >
-          <div>
-            Insights
+          <div
+            class="styledComponents__InsightComponent-sc-117mefi-0 bPTtMu"
+          >
+            <div
+              class="styledComponents__InsightHeader-sc-117mefi-1 eUsZde"
+            >
+              <svg>
+                BulbOutlined.svg
+              </svg>
+              <div
+                class="styledComponents__InsightTitle-sc-117mefi-4 cZoUaT"
+              >
+                <h3
+                  class="ant-typography"
+                >
+                  Insights
+                </h3>
+              </div>
+            </div>
+            <div
+              class="ant-row"
+            >
+              <div
+                class="ant-col ant-col-12 styledComponents__LeftInsightDetails-sc-117mefi-2 hprICq"
+              >
+                <h4
+                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                >
+                  Root Cause Analysis
+                </h4>
+                <p>
+                  The connection was not completed because the client has left, or is leaving, the network.
+                </p>
+              </div>
+              <div
+                class="ant-col ant-col-12 styledComponents__RightInsightDetails-sc-117mefi-3 cVAiGK"
+              >
+                <h4
+                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                >
+                  Recommended Action
+                </h4>
+                <p>
+                  This problem should be a transient issue in a network if many clients leave at the same time; but, it is usually associated with disconnect events, and should not impact connection attempts. If it does, this may be a data issue that can be reported to RUCKUS Support if it persists in your network.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
         <div
