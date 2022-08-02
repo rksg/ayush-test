@@ -43,15 +43,15 @@ interface rootCauseAndRecommendation {
 export const rootCauseRecommendationMap = {
   assoc: {
     CCD_REASON_NOT_AUTHED: {
-      rootCauses: 'Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.',
+      rootCauses: '<p>Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.</p>',
       recommendations: commonRecommendations
     },
     CCD_REASON_NOT_ASSOCED: {
-      rootCauses: 'Clients are failing to connect during the association stage, but the exact reason for the failures is unclear.',
+      rootCauses: '<p>Clients are failing to connect during the association stage, but the exact reason for the failures is unclear.</p>',
       recommendations: commonRecommendations
     },
     CCD_REASON_AUTH_ALG: {
-      rootCauses: 'Clients are failing in the 802.11 open authentication stage because the authentication algorithm in the authentication request is not supported by the WLAN/AP.',
+      rootCauses: '<p>Clients are failing in the 802.11 open authentication stage because the authentication algorithm in the authentication request is not supported by the WLAN/AP.</p>',
       recommendations: `
         <p>Though this issue is uncommon, it may occur due to unexpected configuration changes or incompatibilities:</p>
         <ol>
@@ -63,7 +63,7 @@ export const rootCauseRecommendationMap = {
     },
     // to verify that any incident with this reason code does not show up
     CCD_REASON_AUTH_WITHHELD: {
-      rootCauses: 'n/a',
+      rootCauses: '<p>n/a</p>',
       recommendations: ''
     },
     CCD_REASON_AUTH_FILTERED_BY_ACL: {
@@ -83,16 +83,16 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_AUTH_FILTERED_BY_TCM: {
-      rootCauses: 'Client connections are temporarily suppressed by Transient Client Management behavior configured on the WLAN.',
-      recommendations: 'This issue is typically the result of an intended policy configuration. No action may be needed, but if this behavior is creating unwanted user disruption, consider disabling Transient Client Management or make the logic more conservative.'
+      rootCauses: '<p>Client connections are temporarily suppressed by Transient Client Management behavior configured on the WLAN.</p>',
+      recommendations: '<p>This issue is typically the result of an intended policy configuration. No action may be needed, but if this behavior is creating unwanted user disruption, consider disabling Transient Client Management or make the logic more conservative.</p>'
     },
     CCD_REASON_AUTH_MDID_MISMATCH: {
-      rootCauses: 'Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.',
-      recommendations: 'This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue). <br></br> This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.'
+      rootCauses: '<p>Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.</p>',
+      recommendations: '<p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue). <br></br> This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>'
     },
     CCD_REASON_ASSOC_DOS_ATTACK: {
-      rootCauses: 'Impacted clients are failing association because of a DoS prevention feature that temporarily blocks their connections after they have excessive authentication failures in a short period of time.',
-      recommendations: 'This issue is caused by a DoS protection feature, which can be enabled/disabled in the RUCKUS UI. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.'
+      rootCauses: '<p>Impacted clients are failing association because of a DoS prevention feature that temporarily blocks their connections after they have excessive authentication failures in a short period of time.</p>',
+      recommendations: '<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in the RUCKUS UI. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>'
     },
     CCD_REASON_ASSOC_TOOMANY: {
       rootCauses: `
@@ -114,7 +114,7 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_ASSOC_NOT_AUTHED: {
-      rootCauses: 'Clients are attempting to associate without first performing 802.11 open authentication, or if the prior open authentication has expired. Typically this happens when the client/AP state machine is out of sync.',
+      rootCauses: '<p>Clients are attempting to associate without first performing 802.11 open authentication, or if the prior open authentication has expired. Typically this happens when the client/AP state machine is out of sync.</p>',
       recommendations: `
         <p>This state machine mismatch problem happens somewhat regularly in Wi-Fi as a transient problem, but is usually self-corrected by the client/AP. If the problem is having a noticeable impact on user connectivity, double-check the common situations that introduce misbehavior like this:</p>
         <ol>
@@ -124,7 +124,7 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_ASSOC_RSN_REQUIRED: {
-      rootCauses: 'Clients are failing association because the association request is missing the WPA/RSN information element(s), which typically indicates interoperability issues.',
+      rootCauses: '<p>Clients are failing association because the association request is missing the WPA/RSN information element(s), which typically indicates interoperability issues.</p>',
       recommendations: `
         <p>This behavior is uncommon in Wi-Fi and represents a protocol incompatibility. If clients are exhibiting this behavior, double-check the common situations that introduce interoperability problems like this:</p>
         <ol>
@@ -134,7 +134,7 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_ASSOC_IE_INVALID: {
-      rootCauses: 'Clients are failing association because the association request has unsupported or malformed security information in the WPA/RSN information element(s), which typically indicates interoperability issues.',
+      rootCauses: '<p>Clients are failing association because the association request has unsupported or malformed security information in the WPA/RSN information element(s), which typically indicates interoperability issues.</p>',
       recommendations: `
         <p>This behavior is uncommon in Wi-Fi and represents a protocol incompatibility. If clients are exhibiting this behavior, double-check the common situations that introduce interoperability problems like this:</p>
         <ol>
@@ -144,11 +144,11 @@ export const rootCauseRecommendationMap = {
       `
     },
     DEFAULT: {
-      rootCauses: 'No specific root cause.',
-      recommendations: 'No recommendation.'
+      rootCauses: '<p>No specific root cause.</p>',
+      recommendations: '<p>No recommendation.</p>'
     },
     VARIOUS_REASONS: {
-      rootCauses: 'Users are failing to successfully connect at the 802.11 association stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.',
+      rootCauses: '<p>Users are failing to successfully connect at the 802.11 association stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>',
       recommendations: `
         <p>In these multi-issue failures, there are a few general recommendations to check:</p>
         <ol>
@@ -168,18 +168,18 @@ export const rootCauseRecommendationMap = {
           <li>The roam-from and roam-to APs are not RF neighbors. Clients may assume that all APs sharing an SSID will have the key, but the key may only be shared with RF neighbors.</li>
         </ol>
       `,
-      recommendations: 'In most cases, clients will immediately fall back to a "slow roam" if 802.11r (FT) roams fail. <br></br> <br></br> To enable 802.11r roaming, make sure that APs are able to communicate with their RF neighbors via the IP (wired) infrastructure.'
+      recommendations: '<p>In most cases, clients will immediately fall back to a "slow roam" if 802.11r (FT) roams fail. <br></br> <br></br> To enable 802.11r roaming, make sure that APs are able to communicate with their RF neighbors via the IP (wired) infrastructure.</p>'
     },
     CCD_REASON_NOT_AUTHED: {
-      rootCauses: 'Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.',
+      rootCauses: '<p>Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.</p>',
       recommendations: commonRecommendations
     },
     CCD_REASON_NOT_ASSOCED: {
-      rootCauses: 'Clients are failing to connect during the association stage, but the exact reason for the failures is unclear.',
+      rootCauses: '<p>Clients are failing to connect during the association stage, but the exact reason for the failures is unclear.</p>',
       recommendations: commonRecommendations
     },
     CCD_REASON_AUTH_ALG: {
-      rootCauses: 'Clients are failing in the 802.11 open authentication stage because the authentication algorithm in the authentication request is not supported by the WLAN/AP.',
+      rootCauses: '<p>Clients are failing in the 802.11 open authentication stage because the authentication algorithm in the authentication request is not supported by the WLAN/AP.</p>',
       recommendations: `
         <p>Though this issue is uncommon, it may occur due to unexpected configuration changes or incompatibilities:</p>
         <ol>
@@ -190,7 +190,7 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_AUTH_WITHHELD: {
-      rootCauses: 'n/a',
+      rootCauses: '<p>n/a</p>',
       recommendations: ''
     },
     CCD_REASON_AUTH_FILTERED_BY_ACL: {
@@ -210,16 +210,16 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_AUTH_FILTERED_BY_TCM: {
-      rootCauses: 'Client connections are temporarily suppressed by Transient Client Management behavior configured on the WLAN.',
-      recommendations: 'This issue is typically the result of an intended policy configuration. No action may be needed, but if this behavior is creating unwanted user disruption, consider disabling Transient Client Management or make the logic more conservative.'
+      rootCauses: '<p>Client connections are temporarily suppressed by Transient Client Management behavior configured on the WLAN.</p>',
+      recommendations: '<p>This issue is typically the result of an intended policy configuration. No action may be needed, but if this behavior is creating unwanted user disruption, consider disabling Transient Client Management or make the logic more conservative.</p>'
     },
     CCD_REASON_AUTH_MDID_MISMATCH: {
-      rootCauses: 'Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.',
-      recommendations: 'This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue). <br></br> This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.'
+      rootCauses: '<p>Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.</p>',
+      recommendations: '<p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue). <br></br> This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>'
     },
     CCD_REASON_ASSOC_DOS_ATTACK: {
-      rootCauses: 'Impacted clients are failing association because of a DoS prevention feature that temporarily blocks their connections after they have excessive authentication failures in a short period of time.',
-      recommendations: 'This issue is caused by a DoS protection feature, which can be enabled/disabled in the RUCKUS UI. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.'
+      rootCauses: '<p>Impacted clients are failing association because of a DoS prevention feature that temporarily blocks their connections after they have excessive authentication failures in a short period of time.</p>',
+      recommendations: '<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in the RUCKUS UI. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>'
     },
     CCD_REASON_ASSOC_TOOMANY: {
       rootCauses: `
@@ -241,7 +241,7 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_ASSOC_NOT_AUTHED: {
-      rootCauses: 'Clients are attempting to associate without first performing 802.11 open authentication. Typically this happens when the client/AP state machine is out of sync.',
+      rootCauses: '<p>Clients are attempting to associate without first performing 802.11 open authentication. Typically this happens when the client/AP state machine is out of sync.</p>',
       recommendations: `
         <p>This state machine mismatch problem happens somewhat regularly in Wi-Fi as a transient problem, but is usually self-corrected by the client/AP. If the problem is having a noticeable impact on user connectivity, double-check the common situations that introduce misbehavior like this:</p>
         <ol>
@@ -251,7 +251,7 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_ASSOC_RSN_REQUIRED: {
-      rootCauses: 'Clients are failing association because the association request is missing the WPA/RSN information element(s), which typically indicates interoperability issues.',
+      rootCauses: '<p>Clients are failing association because the association request is missing the WPA/RSN information element(s), which typically indicates interoperability issues.</p>',
       recommendations: `
         <p>This behavior is uncommon in Wi-Fi and represents a protocol incompatibility. If clients are exhibiting this behavior, double-check the common situations that introduce interoperability problems like this:</p>
         <ol>
@@ -261,7 +261,7 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_ASSOC_IE_INVALID: {
-      rootCauses: 'Clients are failing association because the association request has unsupported or malformed security information in the WPA/RSN information element(s), which typically indicates interoperability issues.',
+      rootCauses: '<p>Clients are failing association because the association request has unsupported or malformed security information in the WPA/RSN information element(s), which typically indicates interoperability issues.</p>',
       recommendations: `
         <p>This behavior is uncommon in Wi-Fi and represents a protocol incompatibility. If clients are exhibiting this behavior, double-check the common situations that introduce interoperability problems like this:</p>
         <ol>
@@ -271,11 +271,11 @@ export const rootCauseRecommendationMap = {
       `
     },
     DEFAULT: {
-      rootCauses: 'No specific root cause.',
-      recommendations: 'No recommendation.'
+      rootCauses: '<p>No specific root cause.</p>',
+      recommendations: '<p>No recommendation.</p>'
     },
     VARIOUS_REASONS: {
-      rootCauses: 'Users are failing to successfully connect at the 802.11 authentication stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.',
+      rootCauses: '<p>Users are failing to successfully connect at the 802.11 authentication stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>',
       recommendations: `
         <p>In these multi-issue failures, there are a few general recommendations to check:</p>
         <ol>
@@ -288,7 +288,7 @@ export const rootCauseRecommendationMap = {
   },
   eap: {
     CCD_REASON_EAPOL_STATE_INVALID: {
-      rootCauses: 'Clients are failing authentication (4-way handshake) because the AP is receiving EAPOL keys (typically msg2 or msg4) from clients in an incorrect sequence.',
+      rootCauses: '<p>Clients are failing authentication (4-way handshake) because the AP is receiving EAPOL keys (typically msg2 or msg4) from clients in an incorrect sequence.</p>',
       recommendations: `
         <p>This invalid key sequence issue happens in Wi-Fi as a transient problem, but is usually self-corrected by the client/AP. If the problem is having a noticeable impact on user connectivity, double-check the common situations that introduce misbehavior like this:</p>
         <ol>
@@ -299,7 +299,7 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_EAPOL_KEY_INVALID: {
-      rootCauses: 'Clients are failing authentication because of key data errors in msg2 of the 4-way handshake (sent from client to AP). This may be caused by cipher/key incompatibilities or invalid key data.',
+      rootCauses: '<p>Clients are failing authentication because of key data errors in msg2 of the 4-way handshake (sent from client to AP). This may be caused by cipher/key incompatibilities or invalid key data.</p>',
       recommendations: `
         <p>Invalid key data is an uncommon issue in the 4-way handshake. If this is happening, packet captures may be required to investigate the nature of invalid keys. <br></br> If the problem persists, check common situations that may have introduced this interoperability behavior:</p>
         <ol>
@@ -310,7 +310,7 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_RSN_INCONSISTENT: {
-      rootCauses: 'Clients are failing authentication because the WPA Information Element in msg2 of the 4-way handshake (sent from client to AP) does not match the WPA Information Element sent in the Association Request.',
+      rootCauses: '<p>Clients are failing authentication because the WPA Information Element in msg2 of the 4-way handshake (sent from client to AP) does not match the WPA Information Element sent in the Association Request.</p>',
       recommendations: `
         <p>This WPA Information Element mismatch issue is an uncommon issue in the 4-way handshake. If this is happening, packet captures may be required to investigate the nature of Information Element mismatches. <br></br> If the problem persists, check common situations that may have introduced this interoperability behavior:</p>
         <ol>
@@ -321,7 +321,7 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_MIC_FAILURE: {
-      rootCauses: 'Clients are failing authentication because the passphrase (PSK) does not match the AP/SSID configuration.',
+      rootCauses: '<p>Clients are failing authentication because the passphrase (PSK) does not match the AP/SSID configuration.</p>',
       recommendations: `
         <p>This is a common problem in networks where passphrase authentication (e.g. WPA2-Personal) is used. To resolve the issue, check the following:</p>
         <ol>
@@ -349,7 +349,7 @@ export const rootCauseRecommendationMap = {
       `
     },
     CCD_REASON_EAP_IDENTIFIER_MISMATCH: {
-      rootCauses: 'This is an uncommon client authentication failure type, which happens when the client sends a different Identifier in the Response and Request messages.',
+      rootCauses: '<p>This is an uncommon client authentication failure type, which happens when the client sends a different Identifier in the Response and Request messages.</p>',
       recommendations: `
         <p>If this issue does not resolve on its own, this is often a case of client compatibility issues, which may be caused by:</p>
         <ol>
@@ -359,11 +359,11 @@ export const rootCauseRecommendationMap = {
       `
     },
     DEFAULT: {
-      rootCauses: 'No specific root cause.',
-      recommendations: 'No recommendation.'
+      rootCauses: '<p>No specific root cause.</p>',
+      recommendations: '<p>No recommendation.</p>'
     },
     VARIOUS_REASONS: {
-      rootCauses: 'Users are failing to successfully connect at the authentication stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.',
+      rootCauses: '<p>Users are failing to successfully connect at the authentication stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>',
       recommendations: `
         <p>In many cases with authentication failure, each client device behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to double-check any recent changes:</p>
         <ol>
@@ -378,11 +378,11 @@ export const rootCauseRecommendationMap = {
   },
   dhcp: {
     DEFAULT: {
-      rootCauses: 'No specific root cause.',
-      recommendations: 'No recommendation.'
+      rootCauses: '<p>No specific root cause.</p>',
+      recommendations: '<p>No recommendation.</p>'
     },
     VARIOUS_REASONS: {
-      rootCauses: 'Users are failing to successfully connect at the DHCP stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.',
+      rootCauses: '<p>Users are failing to successfully connect at the DHCP stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>',
       recommendations: `
         <p>In many cases with DHCP failure, each client device behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end DHCP setup:</p>
         <ol>
@@ -435,11 +435,11 @@ export const rootCauseRecommendationMap = {
   },
   radius: {
     DEFAULT: {
-      rootCauses: 'No specific root cause.',
-      recommendations: 'No recommendation.'
+      rootCauses: '<p>No specific root cause.</p>',
+      recommendations: '<p>No recommendation.</p>'
     },
     VARIOUS_REASONS: {
-      rootCauses: 'Users are failing to successfully connect at the RADIUS stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.',
+      rootCauses: '<p>Users are failing to successfully connect at the RADIUS stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>',
       recommendations: `
         <p>In many cases with RADIUS failure, each client device or RADIUS server behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end RADIUS setup and network performance:</p>
         <ol>
@@ -460,7 +460,7 @@ export const rootCauseRecommendationMap = {
           <li>The RADIUS server is unreachable on the network (e.g. network path or routing issues).</li>
         </ol>
       `,
-      recommendations: 'To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between the Controller/AP and the RADIUS server. <br></br> If all services are up and functional, double-check the RADIUS configuration on the Controller/AP.'
+      recommendations: '<p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between the Controller/AP and the RADIUS server. <br></br> If all services are up and functional, double-check the RADIUS configuration on the Controller/AP.</p>'
     },
     CCD_REASON_AAA_AUTH_FAIL: {
       rootCauses: `
