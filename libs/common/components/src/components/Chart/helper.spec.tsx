@@ -1,8 +1,7 @@
 import moment from 'moment-timezone'
 
-import { mockLightTheme } from '@acx-ui/test-utils'
-
 import {
+  dateAxisFormatter,
   timeSeriesTooltipFormatter,
   stackedBarTooltipFormatter,
   donutChartTooltipFormatter,
@@ -11,18 +10,21 @@ import {
 
 import type { TooltipFormatterParams } from './helper'
 
-jest.mock('../../theme/helper', () => ({
-  __esModule: true,
-  cssStr: jest.fn(property => mockLightTheme[property]),
-  deviceStatusColors: {
-    CONNECTED: '--acx-semantics-green-50',
-    INITIAL: '--acx-neutrals-50',
-    ALERTING: '--acx-semantics-yellow-40',
-    DISCONNECTED: '--acx-semantics-red-50'
-  }
-}))
+describe('dateAxisFormatter', () => {
+  it('formats date time correctly', () => {
+    moment.tz.setDefault('Asia/Tokyo')
+    expect(dateAxisFormatter((new Date('2020-01-01T00:00+09:00')).valueOf()))
+      .toEqual('2020')
+    expect(dateAxisFormatter((new Date('2020-02-01T00:00+09:00')).valueOf()))
+      .toEqual('Feb')
+    expect(dateAxisFormatter((new Date('2020-02-03T00:00+09:00')).valueOf()))
+      .toEqual('Feb 03')
+    expect(dateAxisFormatter((new Date('2020-02-03T07:00+09:00')).valueOf()))
+      .toEqual('Feb 03 07:00')
+  })
+})
 
-describe('timeSeriesTooltipFormatter',()=>{
+describe('timeSeriesTooltipFormatter', () => {
   const timezone = 'UTC'
   beforeEach(() => {
     moment.tz.setDefault(timezone)

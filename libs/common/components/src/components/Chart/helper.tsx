@@ -1,10 +1,11 @@
 import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import moment                                      from 'moment-timezone'
 import { renderToString }                          from 'react-dom/server'
 
 import { TimeStamp } from '@acx-ui/types'
 import { formatter } from '@acx-ui/utils'
 
-import { cssStr, cssNumber, deviceStatusColors } from '../../theme/helper'
+import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
 
@@ -15,7 +16,7 @@ export type TooltipFormatterParams = Exclude<
 
 export const gridOptions = () => ({
   left: '0%',
-  right: '2%',
+  right: '0%',
   bottom: '0%',
   top: '15%',
   containLabel: true
@@ -25,14 +26,15 @@ export const legendOptions = () => ({
   icon: 'square',
   right: 15,
   itemWidth: 15,
-  itemGap: 15,
-  textStyle: {
-    color: cssStr('--acx-primary-black'),
-    fontFamily: cssStr('--acx-neutral-brand-font'),
-    fontSize: cssNumber('--acx-body-5-font-size'),
-    lineHeight: cssNumber('--acx-body-5-line-height'),
-    fontWeight: cssNumber('--acx-body-font-weight')
-  }
+  itemGap: 15
+})
+
+export const legendTextStyleOptions = () => ({
+  color: cssStr('--acx-primary-black'),
+  fontFamily: cssStr('--acx-neutral-brand-font'),
+  fontSize: cssNumber('--acx-body-5-font-size'),
+  lineHeight: cssNumber('--acx-body-5-line-height'),
+  fontWeight: cssNumber('--acx-body-font-weight')
 })
 
 export const xAxisOptions = () => ({
@@ -51,6 +53,14 @@ export const xAxisOptions = () => ({
   }
 })
 
+
+export const barChartAxisLabelOptions = () => ({
+  color: cssStr('--acx-primary-black'),
+  fontFamily: cssStr('--acx-neutral-brand-font'),
+  fontSize: cssNumber('--acx-body-4-font-size'),
+  fontWeight: cssNumber('--acx-body-font-weight')
+})
+
 export const yAxisOptions = () => ({
   boundaryGap: [0, '10%']
 })
@@ -59,15 +69,22 @@ export const axisLabelOptions = () => ({
   color: cssStr('--acx-neutrals-50'),
   fontFamily: cssStr('--acx-neutral-brand-font'),
   fontSize: cssNumber('--acx-body-5-font-size'),
+  lineHeight: cssNumber('--acx-body-5-line-height'),
   fontWeight: cssNumber('--acx-body-font-weight')
 })
 
-export const dateAxisFormatter = () => ({
-  // TODO:
-  // handle smaller and larger time range
-  month: '{MMM}', // Jan, Feb, ...
-  day: '{d}' // 1, 2, ...
-})
+export const dateAxisFormatter = (value: number): string => {
+  const dateTime = moment(value).format('YYYY-MM-DD HH:mm')
+  let formatted
+  if (dateTime.match(/^\d{4}-01-01 00:00$/))
+    formatted = formatter('yearFormat')(value)
+  else if (dateTime.match(/^\d{4}-\d{2}-01 00:00$/))
+    formatted = formatter('monthFormat')(value)
+  else if (dateTime.match(/^\d{4}-\d{2}-\d{2} 00:00$/))
+    formatted = formatter('monthDateFormat')(value)
+  return formatted ||
+    formatter('shortDateTimeFormat')(value) as string
+}
 
 export const tooltipOptions = () => ({
   textStyle: {
@@ -176,9 +193,16 @@ export type EventParams = {
   color: string
 }
 
+export const deviceStatusColors = {
+  Connected: '--acx-semantics-green-50',
+  Initial: '--acx-neutrals-50',
+  Alerting: '--acx-semantics-yellow-40',
+  Disconnected: '--acx-semantics-red-50'
+}
+
 export const getDeviceConnectionStatusColors = () => [
-  cssStr(deviceStatusColors.CONNECTED), // Operational
-  cssStr(deviceStatusColors.INITIAL), // Setup Phase
-  cssStr(deviceStatusColors.ALERTING), // Transient Issue
-  cssStr(deviceStatusColors.DISCONNECTED) // Requires Attention
+  cssStr(deviceStatusColors.Connected), // Operational
+  cssStr(deviceStatusColors.Initial), // Setup Phase
+  cssStr(deviceStatusColors.Alerting), // Transient Issue
+  cssStr(deviceStatusColors.Disconnected) // Requires Attention
 ]
