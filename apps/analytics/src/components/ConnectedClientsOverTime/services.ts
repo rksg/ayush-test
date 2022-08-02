@@ -37,10 +37,10 @@ export const api = dataApi.injectEndpoints({
             hierarchyNode(path: $path) {
               timeSeries(granularity: $granularity) {
                 time
-                uniqueUsers_all: clientCountByRadio
-                uniqueUsers_6: clientCountByRadio(radio: "6")
-                uniqueUsers_5: clientCountByRadio(radio: "5")
-                uniqueUsers_24: clientCountByRadio(radio: "2.4")
+                uniqueUsers_all: clientCount
+                uniqueUsers_6: clientCount(band: "6")
+                uniqueUsers_5: clientCount(band: "5")
+                uniqueUsers_24: clientCount(band: "2.4")
               }
             }
           }
