@@ -29,6 +29,7 @@ export function Table <RecordType extends object> (
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
       columns={props.columns}
       columnEmptyText={false}
+      showSorterTooltip={false}
       tableAlertRender={({ selectedRowKeys, selectedRows, onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>

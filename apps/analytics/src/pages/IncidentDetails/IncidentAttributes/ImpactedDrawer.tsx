@@ -67,7 +67,10 @@ const impactedClientsColumns: TableProps<AggregatedImpactedClient>['columns'] = 
     title: 'Client MAC',
     dataIndex: 'mac',
     key: 'mac',
-    render: (_, row) => <TenantLink to={'TBD'}>{row.mac}</TenantLink>,
+    render: (_, row) =>
+      <Tooltip title={<FormattedMessage defaultMessage='Client Troubleshoot'/>}>
+        <TenantLink to={'TBD'}>{row.mac}</TenantLink>
+      </Tooltip>,
     sorter: sortCell<AggregatedImpactedClient>('mac')
   },
   {
@@ -157,7 +160,10 @@ const impactedAPsColumns: TableProps<AggregatedImpactedAP>['columns'] = [
     title: 'AP MAC',
     dataIndex: 'mac',
     key: 'mac',
-    render: (_, row) => <TenantLink to={'TBD'}>{row.mac}</TenantLink>,
+    render: (_, row) =>
+      <Tooltip title={<FormattedMessage defaultMessage='AP Details'/>}>
+        <TenantLink to={'TBD'}>{row.mac}</TenantLink>
+      </Tooltip>,
     sorter: sortCell<AggregatedImpactedAP>('mac')
   },
   {
