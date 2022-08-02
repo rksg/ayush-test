@@ -57,7 +57,7 @@ export function TrafficByApplicationWidget () {
     return appTrafficData.map((item,index) => {
       const uploadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.rxBytes)
       const downloadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.txBytes)
-      const sparklineChartStyle = { height: 14, width: '100%', display: 'inline' }
+      const sparklineChartStyle = { height: 15, width: '100%', display: 'inline' }
       return {
         ...item,
         upload: <>{formatter('bytesFormat')(item.rxBytes)} &nbsp;
