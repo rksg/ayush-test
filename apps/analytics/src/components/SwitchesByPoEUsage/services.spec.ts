@@ -30,7 +30,7 @@ export const topSwitchesByPoEUsageResponse = {
   }
 }
 
-describe('topNSwitchesByPoEUsageApi', () => {
+describe('topSwitchesByPoEUsageApi', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
