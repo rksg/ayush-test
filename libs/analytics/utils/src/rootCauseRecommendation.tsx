@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 import { IncidentDetailsMetadata } from './types'
 
 const commonRecommendationsList = `
