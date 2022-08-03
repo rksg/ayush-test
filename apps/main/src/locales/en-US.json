@@ -5,6 +5,9 @@
   "+8jGZ4": {
     "defaultMessage": "network filter"
   },
+  "+U6ozc": {
+    "defaultMessage": "Type"
+  },
   "0QEzt5": {
     "defaultMessage": "AP Group"
   },
@@ -25,6 +28,12 @@
   },
   "4dk4rO": {
     "defaultMessage": "Accounting Service"
+  },
+  "4upJyO": {
+    "defaultMessage": "Portal - Captive Portal"
+  },
+  "5Bx7xE": {
+    "defaultMessage": "Portal - Host Approval"
   },
   "5ezgA1": {
     "defaultMessage": "MAC Address"
@@ -107,8 +116,20 @@
   "I3b4hn": {
     "defaultMessage": "Version"
   },
+  "IBNdTs": {
+    "defaultMessage": "VLAN"
+  },
+  "JkubB5": {
+    "defaultMessage": "Enterprise AAA (802.1X)"
+  },
   "K3r6DQ": {
     "defaultMessage": "Delete"
+  },
+  "MfsDo3": {
+    "defaultMessage": "Portal - Click-Through"
+  },
+  "NH/H5U": {
+    "defaultMessage": "Dynamic Pre-Shared Key (DPSK)"
   },
   "NV6/gE": {
     "defaultMessage": "Create New Network"
@@ -151,6 +172,9 @@
   },
   "S33j4r": {
     "defaultMessage": "Services ({servicesCount})"
+  },
+  "SIIVza": {
+    "defaultMessage": "Portal - 3rd Party Captive Portal (WISPr)"
   },
   "T3UF92": {
     "defaultMessage": "Authentication Server"
@@ -197,6 +221,9 @@
   "cRmipE": {
     "defaultMessage": "Passphrase expiration"
   },
+  "cp8inc": {
+    "defaultMessage": "Open Network"
+  },
   "cq7z5N": {
     "defaultMessage": "AAA Settings"
   },
@@ -232,6 +259,9 @@
   },
   "hlmkcL": {
     "defaultMessage": "Health"
+  },
+  "hnL/gB": {
+    "defaultMessage": "Portal - Self Sign-In"
   },
   "hzSNj4": {
     "defaultMessage": "Dashboard"
@@ -275,6 +305,9 @@
   "o5l+pK": {
     "defaultMessage": "Proxy Service"
   },
+  "o7sOC4": {
+    "defaultMessage": "Portal - Managed Guest Pass"
+  },
   "ojxMGa": {
     "defaultMessage": "In Setup Phase"
   },
@@ -286,6 +319,9 @@
   },
   "qQ6P9N": {
     "defaultMessage": "Activated in venues"
+  },
+  "rXq1Sc": {
+    "defaultMessage": "Pre-Shared Key (PSK)"
   },
   "rhSI1/": {
     "defaultMessage": "Model"
@@ -355,5 +391,8 @@
   },
   "zbjrr1": {
     "defaultMessage": "Radius Shared secret"
+  },
+  "zhfC+x": {
+    "defaultMessage": "Captive"
   }
 }

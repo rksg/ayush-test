@@ -75,16 +75,16 @@ export function NetworkForm () {
     } catch {
       showToast({
         type: 'error',
-        content: $t({defaultMessage: 'An error occurred'})
+        content: $t({ defaultMessage: 'An error occurred' })
       })
     }
   }
   return (
     <>
       <PageHeader
-        title={ $t({defaultMessage: 'Create New Network'}) }
+        title={$t({ defaultMessage: 'Create New Network' })}
         breadcrumb={[
-          { text: $t({defaultMessage: 'Networks'}), link: '/networks' }
+          { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
       <StepsForm<CreateNetworkFormFields>
@@ -94,7 +94,7 @@ export function NetworkForm () {
       >
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='details'
-          title={ $t({defaultMessage: 'Network Details'}) }
+          title={$t({ defaultMessage: 'Network Details' })}
           onFinish={async (data) => {
             const detailsSaveData = transferDetailToSave(data)
             updateData(data)
@@ -108,8 +108,8 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
-          name={ $t({defaultMessage: 'Settings'}) }
-          title={networkType ? NetworkTypeTitle[networkType] : $t({defaultMessage: 'Settings'}) }
+          name={$t({ defaultMessage: 'Settings' })}
+          title={networkType ? NetworkTypeTitle[networkType] : $t({ defaultMessage: 'Settings' })}
           onFinish={async (data) => {
             data = {
               ...data,
@@ -128,7 +128,7 @@ export function NetworkForm () {
 
         <StepsForm.StepForm
           name='venues'
-          title={ $t({defaultMessage: 'Venues'}) }
+          title={$t({ defaultMessage: 'Venues' })}
           onFinish={async (data) => {
             updateData(data)
             updateSaveData(data)
@@ -138,7 +138,7 @@ export function NetworkForm () {
           <Venues formRef={formRef} />
         </StepsForm.StepForm>
 
-        <StepsForm.StepForm name='summary' title={ $t({defaultMessage: 'Summary'}) }>
+        <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
           <SummaryForm summaryData={state} />
         </StepsForm.StepForm>
       </StepsForm>

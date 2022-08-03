@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import { useIntl } from 'react-intl'
 
 import {
   ExclamationCircleFilled,
@@ -16,6 +15,7 @@ import {
   Switch,
   Tooltip
 } from 'antd'
+import { useIntl } from 'react-intl'
 
 import { StepsForm, Button, Subtitle }              from '@acx-ui/components'
 import { useGetAllUserSettingsQuery, UserSettings } from '@acx-ui/rc/services'
@@ -104,10 +104,10 @@ export function AaaSettingsForm () {
     return (
       <Space align='center' style={{ display: 'flex', justifyContent: 'center' }}>
         <Button type='link' disabled={enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(true)}>
-          { $t({defaultMessage: 'Authentication Service'}) }
+          { $t({ defaultMessage: 'Authentication Service' }) }
         </Button>
         <Button type='link' disabled={!enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(false)}>
-          { $t({defaultMessage: 'Accounting Service'}) }
+          { $t({ defaultMessage: 'Accounting Service' }) }
         </Button>
       </Space>
     )
@@ -150,7 +150,7 @@ function SettingsForm () {
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
-        <StepsForm.Title>{ $t({defaultMessage: 'AAA Settings'}) }</StepsForm.Title>
+        <StepsForm.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsForm.Title>
         {supportTriBandRadio &&
           <Form.Item
             label='Security Protocol'
@@ -164,9 +164,9 @@ function SettingsForm () {
           >
             <Select>
               <Option value={WlanSecurityEnum.WPA2Enterprise}>
-                { $t({defaultMessage: 'WPA2 (Recommended)'}) }
+                { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
               </Option>
-              <Option value={WlanSecurityEnum.WPA3}>{ $t({defaultMessage: 'WPA3'}) }</Option>
+              <Option value={WlanSecurityEnum.WPA3}>{ $t({ defaultMessage: 'WPA3' }) }</Option>
             </Select>
           </Form.Item>
         }
@@ -174,7 +174,7 @@ function SettingsForm () {
           <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
             <Switch />
           </Form.Item>
-          <span>{ $t({defaultMessage: 'Use Cloudpath Server'}) }</span>
+          <span>{ $t({ defaultMessage: 'Use Cloudpath Server' }) }</span>
         </Form.Item>
       </div>
       <div>
@@ -188,7 +188,7 @@ function SettingsForm () {
     return (
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
-          <Subtitle level={3}>{ $t({defaultMessage: 'Authentication Service'}) }</Subtitle>
+          <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
           {getAaaServer(
             AaaServerTypeEnum.AUTHENTICATION,
             AaaServerOrderEnum.PRIMARY
@@ -196,8 +196,8 @@ function SettingsForm () {
 
           <Form.Item noStyle name='enableSecondaryAuthServer'>
             <ToggleButtonInput
-              enableText={ $t({defaultMessage: 'Remove Secondary Server'}) }
-              disableText={ $t({defaultMessage: 'Add Secondary Server'}) }
+              enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
+              disableText={$t({ defaultMessage: 'Add Secondary Server' })}
             />
           </Form.Item>
 
@@ -214,14 +214,14 @@ function SettingsForm () {
               initialValue={false}
               children={<Switch />}
             />
-            <span>{ $t({defaultMessage: 'Proxy Service'}) }</span>
+            <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
             <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP} placement='bottom'>
               <QuestionCircleOutlined />
             </Tooltip>
           </Form.Item>
         </div>
         <div>
-          <Subtitle level={3}>{ $t({defaultMessage: 'Accounting Service'}) }</Subtitle>
+          <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
           <Form.Item name='enableAccountingService' valuePropName='checked'>
             <Switch />
           </Form.Item>
@@ -235,8 +235,8 @@ function SettingsForm () {
 
               <Form.Item noStyle name='enableSecondaryAcctServer'>
                 <ToggleButtonInput
-                  enableText={ $t({defaultMessage: 'Remove Secondary Server'}) }
-                  disableText={ $t({defaultMessage: 'Add Secondary Server'}) }
+                  enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
+                  disableText={$t({ defaultMessage: 'Add Secondary Server' })}
                 />
               </Form.Item>
 
@@ -253,7 +253,7 @@ function SettingsForm () {
                   initialValue={false}
                   children={<Switch />}
                 />
-                <span>{ $t({defaultMessage: 'Proxy Service'}) }</span>
+                <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
                 <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP}>
                   <QuestionCircleOutlined />
                 </Tooltip>

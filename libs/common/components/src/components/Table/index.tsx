@@ -1,7 +1,6 @@
 import ProTable           from '@ant-design/pro-table'
 import { Space, Divider } from 'antd'
-
-import { useIntl } from 'react-intl'
+import { useIntl }        from 'react-intl'
 
 import * as UI from './styledComponents'
 
@@ -36,7 +35,8 @@ export function Table <RecordType extends object> (
         <Space size={32}>
           <Space size={6}>
             <span>{selectedRowKeys.length} selected</span>
-            <UI.CloseButton onClick={onCleanSelected} title={$t({ defaultMessage: 'Clear selection' })} />
+            <UI.CloseButton onClick={onCleanSelected} 
+              title={$t({ defaultMessage: 'Clear selection' })} />
           </Space>
           <Space size={0} split={<Divider type='vertical' />}>
             {props.actions?.map((option) =>

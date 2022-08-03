@@ -1,7 +1,6 @@
 import { EnvironmentOutlined }            from '@ant-design/icons'
 import { Col, Divider, Form, Input, Row } from 'antd'
-
-import { useIntl } from 'react-intl'
+import { useIntl }                        from 'react-intl'
 
 import { StepsForm, Subtitle }                                    from '@acx-ui/components'
 import { useCloudpathListQuery }                                  from '@acx-ui/rc/services'
@@ -47,41 +46,41 @@ export function SummaryForm (props: {
 
   return (
     <>
-      <StepsForm.Title>{ $t({defaultMessage: 'Summary'}) }</StepsForm.Title>
+      <StepsForm.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsForm.Title>
       <Row gutter={20}>
         <Col flex={1}>
           <Subtitle level={4}>
-            { $t({defaultMessage: 'Network Info'}) }
+            { $t({ defaultMessage: 'Network Info' }) }
           </Subtitle>
-          <Form.Item label={ $t({defaultMessage: 'Network Name:'}) } children={summaryData.name} />
+          <Form.Item label={$t({ defaultMessage: 'Network Name:' })} children={summaryData.name} />
           <Form.Item
-            label={ $t({defaultMessage: 'Info:'}) }
+            label={$t({ defaultMessage: 'Info:' })}
             children={transformDisplayText(summaryData.description)}
           />
           <Form.Item
-            label={ $t({defaultMessage: 'Type:'}) }
+            label={$t({ defaultMessage: 'Type:' })}
             children={transformNetworkType(summaryData.type)}
           />
           <Form.Item
-            label={ $t({defaultMessage: 'Use Cloudpath Server:'}) }
+            label={$t({ defaultMessage: 'Use Cloudpath Server:' })}
             children={summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
           />
           {summaryData.isCloudpathEnabled && selected &&
             <>
               <Form.Item
-                label={ $t({defaultMessage: 'Cloudpath Server'}) }
+                label={$t({ defaultMessage: 'Cloudpath Server' })}
                 children={selected.name}
               />
               <Form.Item
-                label={ $t({defaultMessage: 'Deployment Type'}) }
+                label={$t({ defaultMessage: 'Deployment Type' })}
                 children={selected.deploymentType}
               />
               <Form.Item
-                label={ $t({defaultMessage: 'Authentication Server'}) }
+                label={$t({ defaultMessage: 'Authentication Server' })}
                 children={`${selected.authRadius.primary.ip}:${selected.authRadius.primary.port}`}
               />
               <Form.Item
-                label={ $t({defaultMessage: 'Shared Secret'}) }
+                label={$t({ defaultMessage: 'Shared Secret' })}
                 children={<Input.Password
                   readOnly
                   bordered={false}
@@ -100,7 +99,7 @@ export function SummaryForm (props: {
         <Divider type='vertical' style={{ height: '300px' }}/>
         <Col flex={1}>
           <Subtitle level={4}>
-            { $t({defaultMessage: 'Activated in venues'}) }
+            { $t({ defaultMessage: 'Activated in venues' }) }
           </Subtitle>
           <Form.Item children={getVenues()} />
         </Col>

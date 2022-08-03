@@ -9,7 +9,7 @@ import { VenueMarkerOptions }              from './VenueMarkerWithLabel'
 
 import { NavigateProps } from './index'
 
-function getCols({ $t }: ReturnType<typeof useIntl>) {
+function getCols ({ $t }: ReturnType<typeof useIntl>) {
   const columns = [
     {
       title: '',
@@ -18,13 +18,13 @@ function getCols({ $t }: ReturnType<typeof useIntl>) {
       width: 50
     },
     {
-      title: $t({defaultMessage: 'Networking Devices'}),
+      title: $t({ defaultMessage: 'Networking Devices' }),
       dataIndex: 'networkDevices',
       key: 'networkDevices',
       width: 162
     },
     {
-      title: $t({defaultMessage: 'Clients'}),
+      title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       key: 'clients',
       width: 162
@@ -65,7 +65,7 @@ export function VenueMarkerTooltip (
   const data = [
     {
       key: '1',
-      name: $t({defaultMessage: 'Wi-Fi'}),
+      name: $t({ defaultMessage: 'Wi-Fi' }),
       networkDevices: apsCount > 0
         ? <UI.CellWrapper>
           <StackedBarChart
@@ -90,7 +90,7 @@ export function VenueMarkerTooltip (
     },
     {
       key: '2',
-      name: $t({defaultMessage: 'Switch'}),
+      name: $t({ defaultMessage: 'Switch' }),
       networkDevices: switchesCount > 0
         ? <UI.CellWrapper>
           <StackedBarChart

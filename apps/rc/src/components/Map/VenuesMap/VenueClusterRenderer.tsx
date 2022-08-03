@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 
-import { useIntl } from 'react-intl'
 
 import Icon                     from '@ant-design/icons'
 import { Cluster,Renderer }     from '@googlemaps/markerclusterer'
 import { List, Space, Popover } from 'antd'
 import { createRoot }           from 'react-dom/client'
+import { useIntl }              from 'react-intl'
 
 import { cssStr } from '@acx-ui/components'
 
@@ -105,9 +105,8 @@ export default class VenueClusterRenderer implements Renderer {
     const clusterInfoWindow = new google.maps.InfoWindow({
       pixelOffset: new google.maps.Size(0,5)
     })
-    
     const { $t } = useIntl()
-    
+
     const clusterMarker = new google.maps.Marker({
       position,
       ...getIcon(getClusterSVG(clusterColor.default), scaledSize),
@@ -118,7 +117,7 @@ export default class VenueClusterRenderer implements Renderer {
         fontSize: cssStr('--acx-body-2-font-size'),
         fontWeight: 'semibold'
       },
-      title: $t({ defaultMessage: 'Cluster of {count} Venues'}, {count}),
+      title: $t({ defaultMessage: 'Cluster of {count} Venues' }, { count }),
       // adjust zIndex to be above other markers
       zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count
     })

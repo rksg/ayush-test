@@ -1,8 +1,7 @@
 import React from 'react'
 
 import { useIntl } from 'react-intl'
-
-import AutoSizer from 'react-virtualized-auto-sizer'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { useGlobalFilter }          from '@acx-ui/analytics/utils'
 import { getSeriesData }            from '@acx-ui/analytics/utils'

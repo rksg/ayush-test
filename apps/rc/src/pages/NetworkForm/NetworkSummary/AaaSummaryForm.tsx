@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { useIntl } from 'react-intl'
 
 import { Form, Input } from 'antd'
 import { get }         from 'lodash'
+import { useIntl }     from 'react-intl'
 
 import { 
   AaaServerTypeEnum,
@@ -22,7 +22,7 @@ export function AaaSummaryForm (props: {
         get(summaryData, 'authRadius.primary.ip') !== undefined && 
             <>
               Authentication Service
-              {getAaaServer(
+              {useAaaServer(
                 AaaServerTypeEnum.AUTHENTICATION,
                 summaryData
               )}
@@ -31,7 +31,7 @@ export function AaaSummaryForm (props: {
       {
         summaryData.enableAccountingService && 
             <>Accounting Service
-              {getAaaServer(
+              {useAaaServer(
                 AaaServerTypeEnum.ACCOUNTING,
                 summaryData
               )}
@@ -42,7 +42,7 @@ export function AaaSummaryForm (props: {
   )
 }
 
-function getAaaServer (
+function useAaaServer (
   serverType: AaaServerTypeEnum,
   summaryData: NetworkSaveData
 ) {
@@ -59,7 +59,7 @@ function getAaaServer (
 
   return (    
     <React.Fragment>
-      {getAaaServerData(
+      {useAaaServerData(
         primaryTitle,
         `${get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.ip`)}`+
         `:${get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.port`)}`,
@@ -67,7 +67,7 @@ function getAaaServer (
       )}
       {
         enableSecondaryServer && 
-        getAaaServerData(
+        useAaaServerData(
           secondaryTitle,
           `${get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.ip`)}`+
           `:${get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.port`)}`,
@@ -75,16 +75,16 @@ function getAaaServer (
         )
       }
       <Form.Item
-        label={ $t({defaultMessage: 'Proxy Service:'}) }
+        label={$t({ defaultMessage: 'Proxy Service:' })}
         children={enableProxy ? 'Enabled' : 'Disabled'} />
       <Form.Item
-        label={ $t({defaultMessage: 'TLS Encryption:'}) }
+        label={$t({ defaultMessage: 'TLS Encryption:' })}
         children='Disabled' />
     </React.Fragment>
   )
 }
 
-function getAaaServerData (
+function useAaaServerData (
   title: string,
   ipPort: string,
   sharedSecret: string
@@ -96,7 +96,7 @@ function getAaaServerData (
         label={`${title}:`}
         children={ipPort} />
       <Form.Item
-        label={ $t({defaultMessage: 'Shared Secret:'}) }
+        label={$t({ defaultMessage: 'Shared Secret:' })}
         children={<Input.Password
           readOnly
           bordered={false}

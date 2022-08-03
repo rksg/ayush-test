@@ -17,7 +17,7 @@ function Layout ({ content }: { content: React.ReactNode }) {
         menuConfig={getCols(useIntl())}
         content={content}
         leftHeaderContent={
-          <HeaderDropDown list={[$t({defaultMessage: 'MSP Space'})]} selected={'MSP Space'} />
+          <HeaderDropDown list={[$t({ defaultMessage: 'MSP Space' })]} selected={'MSP Space'} />
         }
         rightHeaderContent={<HeaderButtons />}
       />

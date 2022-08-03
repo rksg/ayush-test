@@ -76,7 +76,7 @@ export function AlarmsTable () {
 
   return <>
     <PageHeader
-      title={$t({defaultMessage: 'Alarms'})}
+      title={$t({ defaultMessage: 'Alarms' })}
     />
     <AlarmsTable />
   </>

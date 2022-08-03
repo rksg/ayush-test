@@ -31,7 +31,7 @@ export const getSubTitle = (subTitles: SubTitle[]) => {
   </>)
 }
 export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
-  const {$t} = useIntl()
+  const { $t } = useIntl()
   const { title, subTitle } = data
   const props = { ...otherProps, subTitle: getSubTitle(subTitle) }
   if (replaceTitle) props.title = title

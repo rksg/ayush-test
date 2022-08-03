@@ -1,8 +1,8 @@
 import React from 'react'
 
+import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Badge } from 'antd'
 
 import {
   Loader,
@@ -107,48 +107,48 @@ export function ApTable () {
     }
 
     return [{
-      title: $t({ defaultMessage: 'AP Name'}),
+      title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
       sorter: true
     }, {
-      title: $t({ defaultMessage: 'Status'}),
+      title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
       render: getApStatus
     }, {
-      title: $t({ defaultMessage: 'Model'}),
+      title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       sorter: true
     }, {
-      title: $t({ defaultMessage: 'IP Address'}),
+      title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'IP'
     }, {
-      title: $t({ defaultMessage: 'MAC Address'}),
+      title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'apMac',
       sorter: true
     }, {
-      title: $t({ defaultMessage: 'Venue'}),
+      title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
       sorter: true
     }, {
-      title: $t({ defaultMessage: 'Switch'}),
+      title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName'
     }, {
-      title: $t({ defaultMessage: 'Mesh Role'}),
+      title: $t({ defaultMessage: 'Mesh Role' }),
       dataIndex: 'meshRole',
       sorter: true,
       render: transformMeshRole
     }, {
-      title: $t({ defaultMessage: 'Connected Clients'}),
+      title: $t({ defaultMessage: 'Connected Clients' }),
       dataIndex: 'clients',
       align: 'center',
       render: transformDisplayNumber
     }, {
-      title: $t({ defaultMessage: 'AP Group'}),
+      title: $t({ defaultMessage: 'AP Group' }),
       dataIndex: 'deviceGroupName',
       sorter: true
     }, {
-      title: $t({ defaultMessage: 'RF Channels'}),
+      title: $t({ defaultMessage: 'RF Channels' }),
       children: Object.entries(extraParams)
         .map(([channel, visible]) => visible ? {
           key: channel,
@@ -159,15 +159,15 @@ export function ApTable () {
         } : null)
         .filter(Boolean)
     }, {
-      title: $t({ defaultMessage: 'Tags'}),
+      title: $t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
       sorter: true
     }, {
-      title: $t({ defaultMessage: 'Serial Number'}),
+      title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'serialNumber',
       sorter: true
     }, {
-      title: $t({ defaultMessage: 'Version'}),
+      title: $t({ defaultMessage: 'Version' }),
       dataIndex: 'fwVersion',
       sorter: true
     }] as TableProps<AP>['columns']

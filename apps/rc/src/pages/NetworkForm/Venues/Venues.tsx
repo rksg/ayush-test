@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
-
 import { Form, Switch } from 'antd'
+import { useIntl }      from 'react-intl'
+
 
 import {
   Loader,
@@ -87,26 +87,26 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
 
   const columns: TableProps<Venue>['columns'] = [
     {
-      title: $t({defaultMessage: 'Venue'}),
+      title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       sorter: true
     },
     {
-      title: $t({defaultMessage: 'City'}),
+      title: $t({ defaultMessage: 'City' }),
       dataIndex: 'city',
       sorter: true
     },
     {
-      title: $t({defaultMessage: 'Country'}),
+      title: $t({ defaultMessage: 'Country' }),
       dataIndex: 'country',
       sorter: true
     },
     {
-      title: $t({defaultMessage: 'Networks'}),
+      title: $t({ defaultMessage: 'Networks' }),
       dataIndex: ['networks', 'count']
     },
     {
-      title: $t({defaultMessage: 'Wi-Fi APs'}),
+      title: $t({ defaultMessage: 'Wi-Fi APs' }),
       dataIndex: 'aggregatedApStatus',
       render: function (data, row) {
         if (!row.aggregatedApStatus) { return 0 }
@@ -116,7 +116,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
-      title: $t({defaultMessage: 'Activated'}),
+      title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       render: function (data, row) {
         return <Switch onClick={(checked: boolean, event: Event) => {
@@ -133,7 +133,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
-      title: $t({defaultMessage: 'APs'}),
+      title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       width: '80px',
       render: function (data, row) {
@@ -141,7 +141,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
-      title: $t({defaultMessage: 'Radios'}),
+      title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
       width: '140px',
       render: function (data, row) {
@@ -149,7 +149,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
-      title: $t({defaultMessage: 'Scheduling'}),
+      title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {
         return row.activated.isActivated ? '24/7' : ''
@@ -159,8 +159,8 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
 
   return (
     <>
-      <StepsForm.Title>{ $t({defaultMessage: 'Venues'}) }</StepsForm.Title>
-      <p>{ $t({defaultMessage: 'Select venues to activate this network'}) }</p>
+      <StepsForm.Title>{ $t({ defaultMessage: 'Venues' }) }</StepsForm.Title>
+      <p>{ $t({ defaultMessage: 'Select venues to activate this network' }) }</p>
       <Form.Item name='venues'>
         <Loader states={[tableQuery]}>
           <Table

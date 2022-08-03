@@ -1,9 +1,9 @@
 import { useContext } from 'react'
 
-import { useIntl } from 'react-intl'
 
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
+import { useIntl }                             from 'react-intl'
 
 import { StepsForm }                             from '@acx-ui/components'
 import { useLazyNetworkListQuery }               from '@acx-ui/rc/services'
@@ -46,10 +46,10 @@ export function NetworkDetailForm () {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Network Details'})}</StepsForm.Title>
+        <StepsForm.Title>{$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
         <Form.Item
           name='name'
-          label={$t({ defaultMessage: 'Network Name'})}
+          label={$t({ defaultMessage: 'Network Name' })}
           rules={[
             { required: true },
             { min: 2 },
@@ -62,12 +62,12 @@ export function NetworkDetailForm () {
         />
         <Form.Item
           name='description'
-          label={$t({ defaultMessage: 'Description'})}
+          label={$t({ defaultMessage: 'Description' })}
           children={<TextArea rows={4} maxLength={64} />}
         />
         <Form.Item
           name='type'
-          label={$t({ defaultMessage: 'Network Type'})}
+          label={$t({ defaultMessage: 'Network Type' })}
           rules={[{ required: true }]}
         >
           <Radio.Group onChange={onChange}>

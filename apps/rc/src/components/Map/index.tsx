@@ -12,7 +12,7 @@ export function Map () {
   const { $t } = useIntl()
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
   if (!isMapEnabled) {
-    return <span>{ $t({defaultMessage: 'Map is not enabled'}) }</span>
+    return <span>{ $t({ defaultMessage: 'Map is not enabled' }) }</span>
   }
   return (<ActualMap/>)
 }

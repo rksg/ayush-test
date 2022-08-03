@@ -13,12 +13,14 @@ function NetworkPageHeader () {
     <PageHeader
       title={network.data?.name || ''}
       breadcrumb={[
-        { text: $t({defaultMessage: 'Networks'}), link: '/networks' }
+        { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
       ]}
       extra={[
-        <Button key='date-filter' icon={<ClockOutlined />}>{$t({defaultMessage: 'Last 24 Hours'})}</Button>,
-        <Button key='hierarchy-filter'>{$t({defaultMessage: 'Entire Organization'})}<ArrowExpand /></Button>,
-        <Button key='configure' type='primary'>{$t({defaultMessage: 'Configure'})}</Button>,
+        <Button key='date-filter' icon={<ClockOutlined />}>
+          {$t({ defaultMessage: 'Last 24 Hours' })}</Button>,
+        <Button key='hierarchy-filter'>
+          {$t({ defaultMessage: 'Entire Organization' })}<ArrowExpand /></Button>,
+        <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>,
         <Button key='insight' icon={<BulbOutlined />} />
       ]}
       footer={<NetworkTabs />}

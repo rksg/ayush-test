@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useIntl } from 'react-intl'
+import { useIntl }  from 'react-intl'
 
 import { Col, Row } from 'antd'
 

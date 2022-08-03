@@ -1,4 +1,5 @@
-import React from 'react'
+import React       from 'react'
+import { useIntl } from 'react-intl'
 
 export interface ErrorBoundaryProps {
   fallback?: React.ReactNode;
@@ -17,6 +18,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps & {
   defaultFallback () {
     // TODO:
     // hide detailed error/show summary in prod
+    const { $t } = useIntl()
     let error
     if (this.state.error instanceof Error) {
       const { name, message, stack } = this.state.error
@@ -28,7 +30,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps & {
       error = JSON.stringify(this.state.error)
     }
     return <>
-      <p>Something went wrong.</p>
+      <p>{ $t({defaultMessage: 'Something went wrong.'}) }</p>
       <p>{error}</p>
     </>
   }

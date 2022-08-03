@@ -1,6 +1,5 @@
 import { uniqueId } from 'lodash'
-
-import { useIntl } from 'react-intl'
+import { useIntl }  from 'react-intl'
 
 import * as UI from './styledComponents'
 
@@ -53,7 +52,7 @@ export function getCols ({ $t }: ReturnType<typeof useIntl>) {
     },
     {
       path: '/reports',
-      name: $t({ defaultMessage: 'Reports'}),
+      name: $t({ defaultMessage: 'Reports' }),
       disableIcon: UI.ReportsIcon,
       enableIcon: UI.EnabledReportsIcon
     },

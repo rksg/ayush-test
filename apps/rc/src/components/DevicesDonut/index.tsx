@@ -1,5 +1,6 @@
-import { find }  from 'lodash'
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { find }    from 'lodash'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader }                              from '@acx-ui/components'
 import { Card }                                        from '@acx-ui/components'
@@ -13,7 +14,6 @@ import {
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { getAPStatusDisplayName, getSwitchStatusDisplayName } from '../Map/VenuesMap/helper'
-import { useIntl } from 'react-intl'
 
 const seriesMappingAP = [
   { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
@@ -40,7 +40,7 @@ export const getApDonutChartData = (overviewData?: Dashboard): DonutChartData[] 
   if (apsSummary) {
     seriesMappingAP.forEach(({ key, name, color }) => {
       if (key === ApVenueStatusEnum.OFFLINE && apsSummary[key]) {
-        const setupPhase = find(chartData, { name: $t({ defaultMessage: 'In Setup Phase'}) })
+        const setupPhase = find(chartData, { name: $t({ defaultMessage: 'In Setup Phase' }) })
         if (setupPhase) {
           setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${apsSummary[key]}`
           setupPhase.value = setupPhase.value + apsSummary[key]
@@ -134,18 +134,18 @@ function DevicesDonutWidget () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={ $t({ defaultMessage: 'Devices'}) }>
+      <Card title={$t({ defaultMessage: 'Devices' })}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'inline-flex' }}>
               <DonutChart
                 style={{ width: width/2 , height }}
-                title={ $t({ defaultMessage: 'Wi-Fi'}) }
+                title={$t({ defaultMessage: 'Wi-Fi' })}
                 data={queryResults.data.apData}
                 onClick={() => onClick('TBD')}/>
               <DonutChart
                 style={{ width: width/2, height }}
-                title={ $t({ defaultMessage: 'Switch'}) }
+                title={$t({ defaultMessage: 'Switch' })}
                 data={queryResults.data.switchData}
                 onClick={() => onClick('TBD')}/>
             </div>

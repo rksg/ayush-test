@@ -30,7 +30,7 @@ function WifiWidgets ({ name }: { name: keyof typeof widgetsMap }) {
       ? <Widget />
       : <Card>
         { treatment && name }
-        { !treatment && $t({defaultMessage: 'Coming soon...'}) }
+        { !treatment && $t({ defaultMessage: 'Coming soon...' }) }
       </Card>
     }
   </Provider>

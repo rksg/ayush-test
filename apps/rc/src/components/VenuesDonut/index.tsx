@@ -1,6 +1,5 @@
 import { useIntl } from 'react-intl'
-
-import AutoSizer from 'react-virtualized-auto-sizer'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader }            from '@acx-ui/components'
 import { Card }                      from '@acx-ui/components'
@@ -69,7 +68,7 @@ function VenuesDonutWidget () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={ $t({defaultMessage: 'Venues'}) }>
+      <Card title={$t({ defaultMessage: 'Venues' })}>
         <AutoSizer>
           {({ height, width }) => (
             <DonutChart

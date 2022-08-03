@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import { useIntl } from 'react-intl'
 
 import {
   QuestionCircleOutlined
@@ -14,6 +13,7 @@ import {
   Select,
   Tooltip
 } from 'antd'
+import { useIntl } from 'react-intl'
 
 import { StepsForm, Subtitle }                     from '@acx-ui/components'
 import { useCloudpathListQuery }                   from '@acx-ui/rc/services'
@@ -66,17 +66,17 @@ function SettingsForm () {
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
-        <StepsForm.Title>{ $t({defaultMessage: 'DPSK Settings'}) }</StepsForm.Title>
+        <StepsForm.Title>{ $t({ defaultMessage: 'DPSK Settings' }) }</StepsForm.Title>
         <Form.Item
-          label={ $t({defaultMessage: 'Security Protocol'}) }
+          label={$t({ defaultMessage: 'Security Protocol' })}
           name='dpskWlanSecurity'
           initialValue={WlanSecurityEnum.WPA2Personal}
         >
           <Select>
             <Option value={WlanSecurityEnum.WPA2Personal}>
-              { $t({defaultMessage: 'WPA2 (Recommended)'}) }
+              { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
             </Option>
-            <Option value={WlanSecurityEnum.WPAPersonal}>{ $t({defaultMessage: 'WPA'}) }</Option>
+            <Option value={WlanSecurityEnum.WPAPersonal}>{ $t({ defaultMessage: 'WPA' }) }</Option>
           </Select>
         </Form.Item>
 
@@ -87,10 +87,10 @@ function SettingsForm () {
           <Radio.Group>
             <Space direction='vertical'>
               <Radio value={false}>
-                { $t({defaultMessage: 'Use the DPSK Service'}) }
+                { $t({ defaultMessage: 'Use the DPSK Service' }) }
               </Radio>
               <Radio value={true}>
-                { $t({defaultMessage: 'Use Cloudpath Server'}) }
+                { $t({ defaultMessage: 'Use Cloudpath Server' }) }
               </Radio>
             </Space>
           </Radio.Group>
@@ -133,9 +133,11 @@ function PassphraseGeneration () {
   }
 
   const passphraseFormatDescription = {
-    [PassphraseFormatEnum.MOST_SECURED]: $t({defaultMessage: 'Letters, numbers and symbols can be used'}),
-    [PassphraseFormatEnum.KEYBOARD_FRIENDLY]: $t({defaultMessage: 'Only letters and numbers can be used'}),
-    [PassphraseFormatEnum.NUMBERS_ONLY]: $t({defaultMessage: 'Only numbers can be used'})
+    [PassphraseFormatEnum.MOST_SECURED]: 
+      $t({ defaultMessage: 'Letters, numbers and symbols can be used' }),
+    [PassphraseFormatEnum.KEYBOARD_FRIENDLY]: 
+      $t({ defaultMessage: 'Only letters and numbers can be used' }),
+    [PassphraseFormatEnum.NUMBERS_ONLY]: $t({ defaultMessage: 'Only numbers can be used' })
   }
 
   const FIELD_TOOLTIP = {
@@ -150,7 +152,7 @@ function PassphraseGeneration () {
 
   return (
     <>
-      <Subtitle level={3}>{ $t({defaultMessage: 'Passphrase Generation Parameters'}) }</Subtitle>
+      <Subtitle level={3}>{ $t({ defaultMessage: 'Passphrase Generation Parameters' }) }</Subtitle>
       <Row align='middle' gutter={8}>
         <Col span={23}>
           <Form.Item

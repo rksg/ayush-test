@@ -98,12 +98,12 @@ function SwitchWidgets () {
 function getCols ({ $t }: ReturnType<typeof useIntl>) {
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
-      label: $t({ defaultMessage: 'Wi-Fi'}),
+      label: $t({ defaultMessage: 'Wi-Fi' }),
       value: 'ap',
       children: ApWidgets()
     },
     {
-      label: $t({ defaultMessage: 'Switch'}),
+      label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
       children: SwitchWidgets()
     }

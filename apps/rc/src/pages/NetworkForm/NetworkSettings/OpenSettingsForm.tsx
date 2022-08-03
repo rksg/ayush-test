@@ -1,12 +1,12 @@
 import React from 'react'
 
-import { useIntl } from 'react-intl'
 import {
   Col,
   Form,
   Row,
   Switch
 } from 'antd'
+import { useIntl } from 'react-intl'
 
 import { StepsForm }             from '@acx-ui/components'
 import { useCloudpathListQuery } from '@acx-ui/rc/services'
@@ -46,17 +46,17 @@ export function OpenSettingsForm () {
 
 function SettingsForm () {
   const isCloudpathEnabled = useWatch<boolean>('isCloudpathEnabled')
-  const {$t} = useIntl()
+  const { $t } = useIntl()
 
   return (
     <>
-      <StepsForm.Title>{$t({defaultMessage: 'Open Settings'})}</StepsForm.Title>
+      <StepsForm.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsForm.Title>
 
       <Form.Item>
         <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
           <Switch />
         </Form.Item>
-        <span>{$t({defaultMessage: 'Use Cloudpath Server'})}</span>
+        <span>{$t({ defaultMessage: 'Use Cloudpath Server' })}</span>
       </Form.Item>
 
       {isCloudpathEnabled && <CloudpathServerForm />}

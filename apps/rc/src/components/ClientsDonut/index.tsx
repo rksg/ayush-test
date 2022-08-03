@@ -1,4 +1,5 @@
 import { countBy } from 'lodash'
+import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader }                        from '@acx-ui/components'
@@ -8,7 +9,6 @@ import type { DonutChartData }                   from '@acx-ui/components'
 import { useDashboardOverviewQuery }             from '@acx-ui/rc/services'
 import { Dashboard }                             from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { useIntl }                               from 'react-intl'
 
 const seriesMapping = [
   { name: 'Poor', color: cssStr('--acx-semantics-red-50') },
@@ -41,7 +41,7 @@ export const getSwitchClientChartData = (overviewData?: Dashboard): DonutChartDa
   const switchClients = overviewData?.summary?.switchClients
   if (switchClients && switchClients.totalCount > 0) {
     chartData.push({
-      name: $t({ defaultMessage: 'Clients'}),
+      name: $t({ defaultMessage: 'Clients' }),
       value: switchClients.totalCount,
       color: cssStr('--acx-semantics-green-60')
     })
@@ -74,19 +74,19 @@ function ClientsDonutWidget () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={ $t({ defaultMessage: 'Clients'}) }>
+      <Card title={$t({ defaultMessage: 'Clients' })}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'inline-flex' }}>
               <DonutChart
                 style={{ width: width/2 , height }}
-                title={ $t({ defaultMessage: 'Wi-Fi'}) }
+                title={$t({ defaultMessage: 'Wi-Fi' })}
                 showLegend={false}
                 data={queryResults.data.apData}
                 onClick={() => onClick('TBD')}/>
               <DonutChart
                 style={{ width: width/2, height }}
-                title={ $t({ defaultMessage: 'Switch'}) }
+                title={$t({ defaultMessage: 'Switch' })}
                 showLegend={false}
                 data={queryResults.data.switchData}
                 onClick={() => onClick('TBD')}/>
