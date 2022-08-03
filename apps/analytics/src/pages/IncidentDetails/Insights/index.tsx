@@ -26,16 +26,6 @@ export const Insights = (props: IncidentDetailsProps) => {
     li: (text: string) => <li>{text}</li>,
     br: <br/>
   }
-  const rootCauseProps = {
-    id: props.id + rootCauses,
-    defaultMessage: rootCauses,
-    values: values
-  }
-  const recommendationProps = {
-    id: props.id + recommendations,
-    defaultMessage: recommendations,
-    values: values
-  }
   return (
     <UI.InsightComponent>
       <UI.InsightHeader>
@@ -47,11 +37,17 @@ export const Insights = (props: IncidentDetailsProps) => {
       <Row>
         <UI.LeftInsightDetails span={12}>
           <Subtitle level={4}>Root Cause Analysis</Subtitle>
-          <FormattedMessage {...rootCauseProps}/>
+          <FormattedMessage 
+            {...rootCauses}
+            values={values}
+          />
         </UI.LeftInsightDetails>
         <UI.RightInsightDetails span={12}>
           <Subtitle level={4}>Recommended Action</Subtitle>
-          <FormattedMessage {...recommendationProps}/>
+          <FormattedMessage
+            {...recommendations}
+            values={values}
+          />
         </UI.RightInsightDetails>
       </Row>
     </UI.InsightComponent>
