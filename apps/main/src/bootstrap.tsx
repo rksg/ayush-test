@@ -13,7 +13,7 @@ import '@acx-ui/theme'
 export async function init () {
   const container = document.getElementById('root')
   const root = createRoot(container!)
-  const lang = 'de-DE'
+  const lang = 'en-US'
 
   root.render(
     <React.StrictMode>
