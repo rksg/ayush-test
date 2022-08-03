@@ -1,8 +1,7 @@
-import React from 'react'
-
-import _         from 'lodash'
-import moment    from 'moment-timezone'
-import AutoSizer from 'react-virtualized-auto-sizer'
+import _           from 'lodash'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { useGlobalFilter } from '@acx-ui/analytics/utils'
 import {
@@ -49,6 +48,7 @@ const getChartData = (data: IncidentsBySeverityData): BarChartData => ({
 
 function IncidentBySeverityWidget () {
   const { startDate, endDate, path } = useGlobalFilter()
+  const { $t } = useIntl()
   const currentResult = useIncidentsBySeverityQuery(
     { startDate, endDate, path },
     {
@@ -79,7 +79,7 @@ function IncidentBySeverityWidget () {
     chart = getChartData(currentResult.data)
   }
   return <Loader states={[prevResult, currentResult]}>
-    <Card title='Total Incidents'>
+    <Card title={$t({ defaultMessage: 'Total Incidents' })}>
       <Container>
         <Title>
           <Subtitle level={1} style={{ marginBottom: 0 }}>{pill.total}</Subtitle>

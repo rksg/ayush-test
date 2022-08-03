@@ -15,7 +15,13 @@ interface Response <IncidentsBySeverityData> {
     hierarchyNode: IncidentsBySeverityData
   }
 }
-
+// move to lib/constants when required to be reused
+const severities = {
+  P1: { gt: 0.9, lte: 1 },
+  P2: { gt: 0.75, lte: 0.9 },
+  P3: { gt: 0.6, lte: 0.75 },
+  P4: { gt: 0, lte: 0.6 }
+}
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsBySeverity: build.query<
@@ -29,10 +35,9 @@ export const api = dataApi.injectEndpoints({
         ) {
           network(start: $start, end: $end) {
             hierarchyNode(path: $path) {
-              P1: incidentCount(filter: {severity: {gt: 0.9, lte: 1}, code: $code})
-              P2: incidentCount(filter: {severity: {gt: 0.75, lte: 0.9}, code: $code})
-              P3: incidentCount(filter: {severity: {gt: 0.6, lte: 0.75}, code: $code})
-              P4: incidentCount(filter: {severity: {gt: 0, lte: 0.6}, code: $code})
+              ${Object.entries(severities).map(([name, { gt, lte }]) => `
+              ${name}: incidentCount(filter: {severity: {gt: ${gt}, lte: ${lte}}, code: $code})
+            `).join('')}
             }
           }
         }
