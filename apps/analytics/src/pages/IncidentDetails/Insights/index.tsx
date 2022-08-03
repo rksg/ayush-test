@@ -24,7 +24,7 @@ export const Insights = (props: IncidentDetailsProps) => {
     p: (text: string) => <p>{text}</p>,
     ol: (text: string) => <ol>{text}</ol>,
     li: (text: string) => <li>{text}</li>,
-    br: () => <br></br>
+    br: <br/>
   }
   const rootCauseProps = {
     id: props.id + rootCauses,
