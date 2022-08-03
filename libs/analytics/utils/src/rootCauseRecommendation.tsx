@@ -284,7 +284,7 @@ export const rootCauseRecommendationMap = {
       recommendations: `
         <p>In these multi-issue failures, there are a few general recommendations to check:</p>
         <ol>
-          ...commonRecommendations.slice(1),
+          ${commonRecommendationsList}
           <li>Check for high levels of RF performance interference, which may be causing high error rates.</li>
           <li>Compare the configuration and operating deployment of the affected WLAN or network scope (AP, AP group, etc) with others to identify unique settings that may be causing issues.</li>
         </ol>
