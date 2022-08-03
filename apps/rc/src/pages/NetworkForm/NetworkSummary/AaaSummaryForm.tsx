@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 import { Form, Input } from 'antd'
 import { get }         from 'lodash'
 import { useIntl }     from 'react-intl'
@@ -15,6 +14,7 @@ import {
 export function AaaSummaryForm (props: {
   summaryData: NetworkSaveData;
 }) {
+  const intl = useIntl()
   const { summaryData } = props
   return (
     <>
@@ -22,18 +22,20 @@ export function AaaSummaryForm (props: {
         get(summaryData, 'authRadius.primary.ip') !== undefined && 
             <>
               Authentication Service
-              {useAaaServer(
+              {getAaaServer(
                 AaaServerTypeEnum.AUTHENTICATION,
-                summaryData
+                summaryData,
+                intl
               )}
             </>
       }
       {
         summaryData.enableAccountingService && 
             <>Accounting Service
-              {useAaaServer(
+              {getAaaServer(
                 AaaServerTypeEnum.ACCOUNTING,
-                summaryData
+                summaryData,
+                intl
               )}
             </>
       }
@@ -42,11 +44,11 @@ export function AaaSummaryForm (props: {
   )
 }
 
-function useAaaServer (
+function getAaaServer (
   serverType: AaaServerTypeEnum,
-  summaryData: NetworkSaveData
+  summaryData: NetworkSaveData,
+  intl: ReturnType<typeof useIntl>
 ) {
-  const { $t } = useIntl()
   const primaryTitle = AaaServerTitle[AaaServerOrderEnum.PRIMARY]
   const secondaryTitle = AaaServerTitle[AaaServerOrderEnum.SECONDARY]
 
@@ -59,37 +61,39 @@ function useAaaServer (
 
   return (    
     <React.Fragment>
-      {useAaaServerData(
+      {getAaaServerData(
         primaryTitle,
         `${get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.ip`)}`+
         `:${get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.port`)}`,
-        get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.sharedSecret`)
+        get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.sharedSecret`),
+        intl
       )}
       {
         enableSecondaryServer && 
-        useAaaServerData(
+        getAaaServerData(
           secondaryTitle,
           `${get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.ip`)}`+
           `:${get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.port`)}`,
-          get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.sharedSecret`)
+          get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.sharedSecret`),
+          intl
         )
       }
       <Form.Item
-        label={$t({ defaultMessage: 'Proxy Service:' })}
+        label={intl.$t({ defaultMessage: 'Proxy Service:' })}
         children={enableProxy ? 'Enabled' : 'Disabled'} />
       <Form.Item
-        label={$t({ defaultMessage: 'TLS Encryption:' })}
+        label={intl.$t({ defaultMessage: 'TLS Encryption:' })}
         children='Disabled' />
     </React.Fragment>
   )
 }
 
-function useAaaServerData (
+function getAaaServerData (
   title: string,
   ipPort: string,
-  sharedSecret: string
+  sharedSecret: string,
+  { $t }: ReturnType<typeof useIntl>
 ) {
-  const { $t } = useIntl()
   return (    
     <React.Fragment>
       <Form.Item

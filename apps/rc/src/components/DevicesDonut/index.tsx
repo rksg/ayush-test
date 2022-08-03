@@ -33,8 +33,8 @@ const seriesMappingAP = [
     color: cssStr('--acx-semantics-green-60') }
 ] as Array<{ key: string, name: string, color: string }>
 
-export const getApDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
-  const { $t } = useIntl()
+export const getApDonutChartData = (overviewData: Dashboard | undefined,
+  { $t }: ReturnType<typeof useIntl>): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   const apsSummary = overviewData?.summary?.aps?.summary
   if (apsSummary) {
@@ -120,13 +120,13 @@ function DevicesDonutWidget () {
       pathname: `${basePath.pathname}/${param}`
     })
   }
-
+  const intl = useIntl()
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   },{
     selectFromResult: ({ data, ...rest }) => ({
       data: {
-        apData: getApDonutChartData(data),
+        apData: getApDonutChartData(data, intl),
         switchData: getSwitchDonutChartData(data)
       },
       ...rest

@@ -32,18 +32,18 @@ const lineColors = [
 ]
 
 function TrafficByVolumeWidget () {
-  const { $t } = useIntl()
+  const intl = useIntl()
   const filters = useGlobalFilter()
   const queryResults = useTrafficByVolumeQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
-        data: getSeriesData(data!, getCols(useIntl())),
+        data: getSeriesData(data!, getCols(intl)),
         ...rest
       })
     })
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Traffic by Volume' })} >
+      <Card title={intl.$t({ defaultMessage: 'Traffic by Volume' })} >
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart

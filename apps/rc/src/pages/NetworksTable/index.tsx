@@ -11,10 +11,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-function getCols ({ $t }: ReturnType<typeof useIntl>) {
+function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
     {
-      title: $t({defaultMessage: 'Network Name'}),
+      title: intl.$t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
@@ -25,20 +25,20 @@ function getCols ({ $t }: ReturnType<typeof useIntl>) {
       }
     },
     {
-      title: $t({defaultMessage: 'Description'}),
+      title: intl.$t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
       sorter: true
     },
     {
-      title: $t({defaultMessage: 'Type'}),
+      title: intl.$t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
       render: function (data, row) {
-        return transformNetworkType(String(data), row)
+        return transformNetworkType(String(data), row, intl)
       }
     },
     {
-      title: $t({defaultMessage: 'Venues'}),
+      title: intl.$t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
       align: 'center',
@@ -52,7 +52,7 @@ function getCols ({ $t }: ReturnType<typeof useIntl>) {
       }
     },
     {
-      title: $t({defaultMessage: 'APs'}),
+      title: intl.$t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       sorter: true,
       align: 'center',
@@ -63,19 +63,19 @@ function getCols ({ $t }: ReturnType<typeof useIntl>) {
       }
     },
     {
-      title: $t({defaultMessage: 'Clients'}),
+      title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       sorter: true,
       align: 'center'
     },
     {
-      title: $t({defaultMessage: 'Services'}),
+      title: intl.$t({ defaultMessage: 'Services' }),
       dataIndex: 'services',
       sorter: true,
       align: 'center'
     },
     {
-      title: $t({defaultMessage: 'VLAN'}),
+      title: intl.$t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       sorter: true,
       render: function (data, row) {
@@ -83,12 +83,12 @@ function getCols ({ $t }: ReturnType<typeof useIntl>) {
       }
     },
     {
-      title: $t({defaultMessage: 'Health'}),
+      title: intl.$t({ defaultMessage: 'Health' }),
       dataIndex: 'health',
       sorter: true
     },
     {
-      title: $t({defaultMessage: 'Tags'}),
+      title: intl.$t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
       sorter: true
     }
@@ -105,57 +105,57 @@ const transformVLAN = (row: Network) => {
   return VLAN_PREFIX.VLAN + row.vlan
 }
 
-const transformNetworkType = (value: Network['nwSubType'], row: Network) => {
-  const { $t } = useIntl()
+const transformNetworkType = (value: Network['nwSubType'], row: Network,
+  { $t }: ReturnType<typeof useIntl>) => {
   let displayValue = ''
   const captiveType = row.captiveType
   const wlan = row?.deepNetwork?.wlan
   switch (value) {
     case NetworkTypeEnum.OPEN:
-      displayValue = $t({defaultMessage: 'Open Network'})
+      displayValue = $t({ defaultMessage: 'Open Network' })
       break
 
     case NetworkTypeEnum.PSK:
-      displayValue = $t({defaultMessage: 'Pre-Shared Key (PSK)'})
+      displayValue = $t({ defaultMessage: 'Pre-Shared Key (PSK)' })
       if (wlan && wlan.wlanSecurity) {
         displayValue += getWlanSecurity(wlan.wlanSecurity)
       }
       break
 
     case NetworkTypeEnum.DPSK:
-      displayValue = $t({defaultMessage: 'Dynamic Pre-Shared Key (DPSK)'})
+      displayValue = $t({ defaultMessage: 'Dynamic Pre-Shared Key (DPSK)' })
       if (wlan && wlan.wlanSecurity) {
         displayValue += getWlanSecurity(wlan.wlanSecurity)
       }
       break
 
     case NetworkTypeEnum.AAA:
-      displayValue = $t({defaultMessage: 'Enterprise AAA (802.1X)'})
+      displayValue = $t({ defaultMessage: 'Enterprise AAA (802.1X)' })
       if (wlan && wlan.wlanSecurity) {
         displayValue += getWlanSecurity(wlan.wlanSecurity)
       }
       break
 
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      displayValue = wlan ? $t({defaultMessage: 'Captive '}) : ''
+      displayValue = wlan ? $t({ defaultMessage: 'Captive' }) + ' ' : ''
       switch (captiveType) {
         case GuestNetworkTypeEnum.ClickThrough:
-          displayValue += $t({defaultMessage: 'Portal - Click-Through'})
+          displayValue += $t({ defaultMessage: 'Portal - Click-Through' })
           break
         case GuestNetworkTypeEnum.GuestPass:
-          displayValue += $t({defaultMessage: 'Portal - Managed Guest Pass'})
+          displayValue += $t({ defaultMessage: 'Portal - Managed Guest Pass' })
           break
         case GuestNetworkTypeEnum.SelfSignIn:
-          displayValue += $t({defaultMessage: 'Portal - Self Sign-In'})
+          displayValue += $t({ defaultMessage: 'Portal - Self Sign-In' })
           break
         case GuestNetworkTypeEnum.HostApproval:
-          displayValue += $t({defaultMessage: 'Portal - Host Approval'})
+          displayValue += $t({ defaultMessage: 'Portal - Host Approval' })
           break
         case GuestNetworkTypeEnum.WISPr:
-          displayValue += $t({defaultMessage: 'Portal - 3rd Party Captive Portal (WISPr)'})
+          displayValue += $t({ defaultMessage: 'Portal - 3rd Party Captive Portal (WISPr)' })
           break
         default:
-          displayValue += $t({defaultMessage: 'Portal - Captive Portal'})
+          displayValue += $t({ defaultMessage: 'Portal - Captive Portal' })
       }
       break
   }

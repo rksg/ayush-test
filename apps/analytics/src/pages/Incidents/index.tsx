@@ -1,8 +1,8 @@
 import React from 'react'
 
+import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Col, Row } from 'antd'
 
 import Header from '../../components/Header'
 

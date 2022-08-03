@@ -1,8 +1,10 @@
 import React from 'react'
 
+
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer'
 import * as _                                     from 'lodash'
 import { createRoot }                             from 'react-dom/client'
+import { useIntl }                                from 'react-intl'
 
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
@@ -38,6 +40,7 @@ const GMap: React.FC<MapProps> = ({
   style,
   ...options
 }) => {
+  const intl = useIntl()
   const ref = React.useRef<HTMLDivElement>(null)
   const [map, setMap] = React.useState<google.maps.Map>()
   const [markerClusterer, setMarkerClusterer] = React.useState<MarkerClusterer>()
@@ -156,14 +159,14 @@ const GMap: React.FC<MapProps> = ({
         })
         return marker
       })
-
+      
       markers = markers.filter(marker => marker.getVisible())
       if (markers && markers.length > 0) {
         if(cluster){
           setMarkerClusterer(new MarkerClusterer({
             map,
             markers,
-            renderer: new VenueClusterRenderer(map),
+            renderer: new VenueClusterRenderer(map, intl ),
             algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
             onClusterClick: onClusterClick
           }))

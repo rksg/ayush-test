@@ -35,8 +35,8 @@ export const getAPClientChartData = (overviewData?: Dashboard): DonutChartData[]
   return chartData
 }
 
-export const getSwitchClientChartData = (overviewData?: Dashboard): DonutChartData[] => {
-  const { $t } = useIntl()
+export const getSwitchClientChartData = (overviewData: Dashboard | undefined,
+  { $t }: ReturnType<typeof useIntl>): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   const switchClients = overviewData?.summary?.switchClients
   if (switchClients && switchClients.totalCount > 0) {
@@ -60,14 +60,15 @@ function ClientsDonutWidget () {
       pathname: `${basePath.pathname}/${param}`
     })
   }
-
+  
+  const intl = useIntl()
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   },{
     selectFromResult: ({ data, ...rest }) => ({
       data: {
         apData: getAPClientChartData(data),
-        switchData: getSwitchClientChartData(data)
+        switchData: getSwitchClientChartData(data, intl)
       },
       ...rest
     })

@@ -59,7 +59,7 @@ export function SummaryForm (props: {
           />
           <Form.Item
             label={$t({ defaultMessage: 'Type:' })}
-            children={transformNetworkType(summaryData.type)}
+            children={transformNetworkType(summaryData.type, useIntl())}
           />
           <Form.Item
             label={$t({ defaultMessage: 'Use Cloudpath Server:' })}

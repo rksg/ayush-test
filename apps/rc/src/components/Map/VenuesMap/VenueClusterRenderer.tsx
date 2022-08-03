@@ -92,8 +92,10 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
 
 export default class VenueClusterRenderer implements Renderer {
   private map:google.maps.Map
-  constructor (map:google.maps.Map) {
+  private intl: ReturnType<typeof useIntl>
+  constructor (map:google.maps.Map, intl: ReturnType<typeof useIntl>) {
     this.map = map
+    this.intl = intl
   }
   public render (
     { count, position, markers }: Cluster
@@ -105,7 +107,6 @@ export default class VenueClusterRenderer implements Renderer {
     const clusterInfoWindow = new google.maps.InfoWindow({
       pixelOffset: new google.maps.Size(0,5)
     })
-    const { $t } = useIntl()
 
     const clusterMarker = new google.maps.Marker({
       position,
@@ -117,7 +118,7 @@ export default class VenueClusterRenderer implements Renderer {
         fontSize: cssStr('--acx-body-2-font-size'),
         fontWeight: 'semibold'
       },
-      title: $t({ defaultMessage: 'Cluster of {count} Venues' }, { count }),
+      title: this.intl.$t({ defaultMessage: 'Cluster of {count} Venues' }, { count }),
       // adjust zIndex to be above other markers
       zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count
     })

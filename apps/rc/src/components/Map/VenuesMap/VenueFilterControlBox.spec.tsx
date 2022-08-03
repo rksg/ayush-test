@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { Provider } from '@acx-ui/store'
 

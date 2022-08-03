@@ -30,19 +30,19 @@ const lineColors = [
 ]
 
 function NetworkHistoryWidget () {
-  const { $t } = useIntl()
+  const intl = useIntl()
   const filters = useGlobalFilter()
   const queryResults = useNetworkHistoryQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
-        data: getSeriesData(data!, getCols(useIntl())),
+        data: getSeriesData(data!, getCols(intl)),
         ...rest
       })
     })
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Network History' })} >
+      <Card title={intl.$t({ defaultMessage: 'Network History' })} >
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart

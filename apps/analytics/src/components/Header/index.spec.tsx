@@ -1,18 +1,12 @@
-import { render, screen } from '@testing-library/react'
-
 import { dataApiURL }       from '@acx-ui/analytics/services'
 import { BrowserRouter }    from '@acx-ui/react-router-dom'
 import { Provider, store }  from '@acx-ui/store'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { api }   from './services'
 import { input } from './services.spec'
 
 import Header, { Header as DumbHeader } from './index'
-
-
-
-
 
 describe('Analytics dumb header', () => {
 
