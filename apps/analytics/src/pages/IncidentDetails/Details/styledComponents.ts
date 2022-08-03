@@ -13,6 +13,4 @@ export const LeftColumn = styled(Anchor)`
       visibility: hidden;
     }
   }
-
-  
 `

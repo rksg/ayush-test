@@ -6,7 +6,8 @@ import { PageHeader, Pill }                       from '@acx-ui/components'
 
 import { incidentDetailsMap }                                      from '..'
 import { getImpactedArea, IncidentAttributes, formattedSliceType } from '../IncidentAttributes'
-import * as UI                                                     from '../syledComponents'
+
+import * as UI from './styledComponents'
 
 import type { IncidentDetailsProps } from '../types'
 
