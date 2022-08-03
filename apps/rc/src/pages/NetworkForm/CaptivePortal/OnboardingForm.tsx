@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   QuestionCircleOutlined
@@ -18,6 +18,8 @@ import { StepFormProps, StepsForm }                            from '@acx-ui/com
 import { CreateNetworkFormFields, NetworkTypeEnum, URLRegExp } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import { useVenueListQuery, Venue } from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
 
 const OnboardingMessages = {
   REDIRECT_TOOLTIP: 'If unchecked, users will reach the page they originally requested',
@@ -40,13 +42,35 @@ export function OnboardingForm (props: StepFormProps<CreateNetworkFormFields>) {
   function OptionsForm () {
     const [
       redirectCheckbox,
-      redirectUrl
+      redirectUrl,
+      venues
     ] = [
       useWatch('redirectCheckbox'),
-      useWatch('redirectUrl')
+      useWatch('redirectUrl'),
+      useWatch('venues')
     ]
     const [redirectUrlValue, setRedirectUrlValue] = useState('')
     const [meshEnable, setMeshEnable] = useState(false)
+    const venueApi = useVenueListQuery({ 
+      params: { 
+        networkId: 'UNKNOWN-NETWORK-ID', ...useParams() 
+      },
+      payload: {
+        fields:['name','mesh','id'],
+        pageSize:10000
+      }
+    })
+
+    useEffect(() => {
+      if (venueApi.data && venues) {
+        venueApi.data.data?.forEach((venue:Venue) => {
+          if (venues.find((x:Venue) => x.venueId === venue.id) && venue.mesh && venue.mesh.enabled) {
+            setMeshEnable(true)
+          }
+        });
+      }
+    }, [venueApi.data, venues])
+
     const redirectCheckboxChange = (e: CheckboxChangeEvent) => {
       if (e.target.checked) {
         props.formRef?.current?.setFieldsValue({ redirectUrl: redirectUrlValue })
@@ -73,6 +97,7 @@ export function OnboardingForm (props: StepFormProps<CreateNetworkFormFields>) {
           </Tooltip>
           <Form.Item
             name='redirectUrl'
+            initialValue=""
             rules={[{
               validator: (_, value) => URLRegExp(value)
             }]}

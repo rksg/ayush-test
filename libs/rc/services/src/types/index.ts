@@ -36,6 +36,7 @@ export interface NetworkDetail {
 
 export interface Venue {
   id: string
+  venueId?: string
   name: string
   description: string
   status: string
