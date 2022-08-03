@@ -1,7 +1,4 @@
-interface ApiInfo {
-  url: string;
-  method: string;
-}
+import { ApiInfo } from "../apiService"
 
 export const websocketServerUrl = '/api/websocket/socket.io'
 
