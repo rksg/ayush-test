@@ -18,6 +18,7 @@ Object.assign(navigator, {
 describe('Action Modal', () => {
   let dialog
   const onOk = jest.fn()
+  const onOk2 = jest.fn()
   const onCancel = jest.fn()
   jest.spyOn(navigator.clipboard, 'writeText')
 
@@ -212,5 +213,65 @@ describe('Action Modal', () => {
       fireEvent.click(okButton)
       expect(onOk).toBeCalled()
     })
+  })
+
+  it('should open Warning modal', async () => {
+    showActionModal({
+      type: 'warning',
+      title: 'This is a warning message',
+      content: 'Some warning descriptions'
+    })
+
+    dialog = await screen.findByRole('dialog')
+    const okButton = await screen.findByText('OK')
+    await screen.findByText('This is a warning message')
+    await screen.findByText('Some warning descriptions')
+    expect(dialog).toHaveClass('ant-modal-confirm-warning')
+
+    fireEvent.click(okButton)
+    expect(onOk).toBeCalled()
+  })
+
+  it('should open Warning modal with custom buttons', async () => {
+    showActionModal({
+      type: 'warning',
+      width: 600,
+      title: 'This is a warning message',
+      content: 'Some warning descriptions',
+      customContent: {
+        action: 'CUSTOM_BUTTONS',
+        buttons: [{
+          text: 'cancel',
+          type: 'link',
+          key: 'cancel',
+          handler: onCancel
+        }, {
+          text: 'Action 1',
+          type: 'primary',
+          key: 'action1',
+          handler: onOk
+        }, {
+          text: 'Action 2',
+          type: 'primary',
+          key: 'action2',
+          handler: onOk2
+        }]
+      }
+    })
+
+    dialog = await screen.findByRole('dialog')
+    const cancelButton = await screen.findByText('cancel')
+    const actionButton1 = await screen.findByText('Action 1')
+    const actionButton2 = await screen.findByText('Action 2')
+    await screen.findByText('This is a warning message')
+    await screen.findByText('Some warning descriptions')
+    expect(dialog).toHaveClass('ant-modal-confirm-warning')
+
+    fireEvent.click(cancelButton)
+    fireEvent.click(actionButton1)
+    fireEvent.click(actionButton2)
+    expect(onCancel).toBeCalled()
+    expect(onOk).toBeCalled()
+    expect(onOk2).toBeCalled()
   })
 })
