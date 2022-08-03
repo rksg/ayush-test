@@ -1,3 +1,5 @@
+import { useIntl } from 'react-intl'
+
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider  }          from '@acx-ui/store'
 import { render,
@@ -5,7 +7,6 @@ import { render,
   mockAutoSizer,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { useIntl } from 'react-intl'
 
 import ClientsDonutWidget, { getAPClientChartData, getSwitchClientChartData } from '.'
 

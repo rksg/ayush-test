@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                      from '@acx-ui/analytics/services'
-import { Provider, store }                 from '@acx-ui/store'
+import { dataApiURL }                                      from '@acx-ui/analytics/services'
+import { Provider, store }                                 from '@acx-ui/store'
 import { mockGraphqlQuery, mockAutoSizer, render, screen } from '@acx-ui/test-utils'
 
 import { api } from './services'

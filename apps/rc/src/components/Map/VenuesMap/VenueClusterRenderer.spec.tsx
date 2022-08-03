@@ -1,11 +1,11 @@
 import { initialize, mockInstances } from '@googlemaps/jest-mocks'
 import { Cluster, MarkerClusterer }  from '@googlemaps/markerclusterer'
+import { useIntl }                   from 'react-intl'
 
 import { ApVenueStatusEnum } from '@acx-ui/rc/services'
 
 import VenueClusterRenderer, { generateClusterInfoContent, renderItemForList, VenueClusterTooltipData } from './VenueClusterRenderer'
 import VenueMarkerWithLabel                                                                             from './VenueMarkerWithLabel'
-import { useIntl } from 'react-intl'
 
 const series=[
   {

@@ -1,4 +1,5 @@
-import { omit } from 'lodash'
+import { omit }    from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider  }          from '@acx-ui/store'
@@ -8,7 +9,6 @@ import { render,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import DevicesDonutWidget, { getApDonutChartData, getSwitchDonutChartData } from '.'
-import { useIntl } from 'react-intl'
 
 describe('Devices widget', () => {
   mockAutoSizer()

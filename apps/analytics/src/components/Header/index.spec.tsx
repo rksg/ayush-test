@@ -1,6 +1,6 @@
-import { dataApiURL }       from '@acx-ui/analytics/services'
-import { BrowserRouter }    from '@acx-ui/react-router-dom'
-import { Provider, store }  from '@acx-ui/store'
+import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { BrowserRouter }                    from '@acx-ui/react-router-dom'
+import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { api }   from './services'
