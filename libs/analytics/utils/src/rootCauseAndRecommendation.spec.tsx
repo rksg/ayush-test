@@ -1,3 +1,5 @@
+import { defineMessage } from 'react-intl'
+
 import { getRootCauseAndRecommendations, codeToFailureTypeMap, rootCauseRecommendationMap } from './rootCauseRecommendation'
 import { IncidentDetailsMetadata }                                                          from './types'
 
@@ -45,8 +47,8 @@ describe('getRootCauseAndRecommendations', () => {
     } as InsightComponentProps
     const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
       incident.code, incident.metadata.rootCauseChecks)
-    expect(rootCauses).toEqual('<p>Calculating...</p>')
-    expect(recommendations).toEqual('')
+    expect(rootCauses).toEqual(defineMessage({ defaultMessage: '<p>Calculating...</p>' }))
+    expect(recommendations).toEqual(defineMessage({ defaultMessage: '<p>Calculating...</p>' }))
   })
 
   it('should return DEFAULT result if rootCauseChecks length is 0', () => {
@@ -128,8 +130,8 @@ describe('getRootCauseAndRecommendations', () => {
     } as InsightComponentProps
     const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
       incident.code, incident.metadata.rootCauseChecks)
-    expect(rootCauses).toEqual('<p>TBD</p>')
-    expect(recommendations).toEqual('<p>TBD</p>')
+    expect(rootCauses).toEqual(defineMessage({ defaultMessage: '<p>TBD</p>' }))
+    expect(recommendations).toEqual(defineMessage({ defaultMessage: '<p>TBD</p>' }))
   })
 
   it('should return TBD if failureType is not in list', () => {
@@ -154,7 +156,7 @@ describe('getRootCauseAndRecommendations', () => {
     } as unknown as InsightComponentProps
     const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
       incident.code, incident.metadata.rootCauseChecks)
-    expect(rootCauses).toEqual('<p>TBD</p>')
-    expect(recommendations).toEqual('<p>TBD</p>')
+    expect(rootCauses).toEqual(defineMessage({ defaultMessage: '<p>TBD</p>' }))
+    expect(recommendations).toEqual(defineMessage({ defaultMessage: '<p>TBD</p>' }))
   })
 })
