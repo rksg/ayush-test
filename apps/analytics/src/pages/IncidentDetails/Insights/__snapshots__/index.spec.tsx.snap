@@ -37,7 +37,6 @@ exports[`Insights Component should render correctly 1`] = `
         <p>
           Clients are failing at the authentication stage of an 802.11r (Fast Transition) roam. The client is including PMKID information from its roam-from AP, but the roam-to AP does not have the key. 
           <br />
-           
           <br />
            This scenario is most commonly caused in the following scenarios:
         </p>
@@ -71,7 +70,6 @@ exports[`Insights Component should render correctly 1`] = `
         <p>
           In most cases, clients will immediately fall back to a "slow roam" if 802.11r (FT) roams fail. 
           <br />
-           
           <br />
            To enable 802.11r roaming, make sure that APs are able to communicate with their RF neighbors via the IP (wired) infrastructure.
         </p>

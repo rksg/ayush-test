@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import { defineMessage } from 'react-intl'
 
 import { IncidentDetailsMetadata } from './types'
 
@@ -639,17 +638,16 @@ export function getRootCauseAndRecommendations (
   rootCauseChecks: IncidentDetailsMetadata['rootCauseChecks']
 ) {
   const failureType = codeToFailureTypeMap[code]
-  if (!rootCauseChecks) return [{ rootCauses: 'Calculating...', recommendations: '' }]
+  if (!rootCauseChecks) return [{ rootCauses: '<p>Calculating...</p>', recommendations: '' }]
   const { checks } = rootCauseChecks
   const failureCode = extractFailureCode(checks)
   const { rootCauses, recommendations } = rootCauseRecommendationMap[failureType]
     ? rootCauseRecommendationMap[failureType][failureCode] ||
       ccd80211RootCauseRecommendations[failureCode] ||
-        { rootCauses: 'TBD', recommendations: 'TBD' }
-    : { rootCauses: 'TBD', recommendations: 'TBD' }
+        { rootCauses: '<p>TBD</p>', recommendations: '<p>TBD</p>' }
+    : { rootCauses: '<p>TBD</p>', recommendations: '<p>TBD</p>' }
   return [{
-    // rootCauses: defineMessage({defaultMessage: rootCauses}),
-    rootCauses:rootCauses,
+    rootCauses: rootCauses,
     recommendations: recommendations
   }]
 }
