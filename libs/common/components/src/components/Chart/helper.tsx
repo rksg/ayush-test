@@ -53,6 +53,14 @@ export const xAxisOptions = () => ({
   }
 })
 
+
+export const barChartAxisLabelOptions = () => ({
+  color: cssStr('--acx-primary-black'),
+  fontFamily: cssStr('--acx-neutral-brand-font'),
+  fontSize: cssNumber('--acx-body-4-font-size'),
+  fontWeight: cssNumber('--acx-body-font-weight')
+})
+
 export const yAxisOptions = () => ({
   boundaryGap: [0, '10%']
 })
