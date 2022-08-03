@@ -1,15 +1,9 @@
-import { render, screen, mockLightTheme } from '@acx-ui/test-utils'
-import { formatter }                      from '@acx-ui/utils'
+import { render, screen } from '@acx-ui/test-utils'
+import { formatter }      from '@acx-ui/utils'
 
 import { cssStr } from '../../theme/helper'
 
 import { DonutChart } from '.'
-
-jest.mock('../../theme/helper', () => ({
-  __esModule: true,
-  cssStr: jest.fn(property => mockLightTheme[property]),
-  cssNumber: jest.fn(property => parseInt(mockLightTheme[property], 10))
-}))
 
 const data = [
   { value: 35, name: 'Requires Attention', color: cssStr('--acx-semantics-red-60') },

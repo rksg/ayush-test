@@ -4,7 +4,8 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import Incidents from '.'
 
-jest.mock('../../components/Header', () => () => <div>Incidents</div>) 
+jest.mock('../../components/Header', () => () => <div>Incidents</div>)
+jest.mock('../../components/NetworkHistory', () => () => <div>Network</div>) 
 jest.mock('antd', () => ({
   Col: () => <div>col</div>,
   Row: () => <div>row</div>

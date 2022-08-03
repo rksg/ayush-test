@@ -13,15 +13,11 @@ import { cssStr }                   from '@acx-ui/components'
 import { NetworkHistoryData }     from './services'
 import { useNetworkHistoryQuery } from './services'
 
-
-export function getCols ({ $t }: ReturnType<typeof useIntl>) {
-  const seriesMapping = [
-    { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
-    { key: 'impactedClientCount', name: $t({ defaultMessage: 'Impacted Clients' }) },
-    { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
-  ] as Array<{ key: keyof Omit<NetworkHistoryData, 'time'>, name: string }>
-  return seriesMapping
-}
+export const seriesMapping = ($t: CallableFunction) => ([
+  { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
+  { key: 'impactedClientCount', name: $t({ defaultMessage: 'Impacted Clients' }) },
+  { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
+] as Array<{ key: keyof Omit<NetworkHistoryData, 'time'>, name: string }>)
 
 const lineColors = [
   cssStr('--acx-accents-blue-30'),
@@ -29,20 +25,20 @@ const lineColors = [
   cssStr('--acx-accents-orange-50')
 ]
 
-function NetworkHistoryWidget () {
-  const intl = useIntl()
+function NetworkHistoryWidget ({ hideTitle } : { hideTitle?: boolean }) {
   const filters = useGlobalFilter()
+  const { $t } = useIntl()
   const queryResults = useNetworkHistoryQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
-        data: getSeriesData(data!, getCols(intl)),
+        data: getSeriesData(data!, seriesMapping($t)),
         ...rest
       })
     })
-
+  const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
   return (
     <Loader states={[queryResults]}>
-      <Card title={intl.$t({ defaultMessage: 'Network History' })} >
+      <Card title={title}>
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart

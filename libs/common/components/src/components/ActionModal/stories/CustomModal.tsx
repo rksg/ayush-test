@@ -7,6 +7,7 @@ export function CustomActionModal () {
       <button onClick={ConfirmDeleteModal}>Confirm Delete</button>
       <button onClick={ConfirmDeleteWithValidation}>Confirm Delete With Validation</button>
       <button onClick={ErrorDetailModal}>Error With Details</button>
+      <button onClick={CustomButtonsModal}>Warning With Custom Buttons</button>
     </>
   )
 }
@@ -60,6 +61,34 @@ const ErrorDetailModal = () => {
     customContent: {
       action: 'SHOW_ERRORS',
       errorDetails: mockErrorDetails
+    }
+  })
+}
+
+const CustomButtonsModal = () => {
+  showActionModal({
+    type: 'warning',
+    width: 600,
+    title: 'Server Configuration Conflict',
+    content: 'Some descriptions',
+    customContent: {
+      action: 'CUSTOM_BUTTONS',
+      buttons: [{
+        text: 'cancel',
+        type: 'link', // TODO: will change after DS update
+        key: 'cancel',
+        handler () {}
+      }, {
+        text: 'Use existing server configuration',
+        type: 'primary',
+        key: 'existing',
+        handler () {}
+      }, {
+        text: 'Override the conflicting server configuration',
+        type: 'primary',
+        key: 'override',
+        handler () {}
+      }]
     }
   })
 }
