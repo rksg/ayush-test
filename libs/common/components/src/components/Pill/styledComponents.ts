@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 
 export type TrendType = 'none' | 'positive' | 'negative' | 'P1' | 'P2' | 'P3' | 'P4'
 
-const pillColor = ({ trend }: { trend: TrendType }) => {
+const pillColor = ({ trend }:{ trend: TrendType }) => {
   switch (trend) {
     case 'positive': return '--acx-semantics-green-50'
     case 'negative': return '--acx-semantics-red-50'
