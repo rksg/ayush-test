@@ -14,15 +14,7 @@ import { formatter }                from '@acx-ui/utils'
 import { TrafficByVolumeData }     from './services'
 import { useTrafficByVolumeQuery } from './services'
 
-export function getCols ({ $t }: ReturnType<typeof useIntl>) {
-  const seriesMapping = [
-    { key: 'totalTraffic_all', name: $t({ defaultMessage: 'All Radios' }) },
-    { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },
-    { key: 'totalTraffic_5', name: formatter('radioFormat')('5') },
-    { key: 'totalTraffic_6', name: formatter('radioFormat')('6') }
-  ] as Array<{ key: keyof Omit<TrafficByVolumeData, 'time'>, name: string }>
-  return seriesMapping
-}
+type Key = keyof Omit<TrafficByVolumeData, 'time'>
 
 const lineColors = [
   cssStr('--acx-accents-blue-30'),
@@ -32,18 +24,23 @@ const lineColors = [
 ]
 
 function TrafficByVolumeWidget () {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const filters = useGlobalFilter()
-  const queryResults = useTrafficByVolumeQuery(filters,
-    {
-      selectFromResult: ({ data, ...rest }) => ({
-        data: getSeriesData(data!, getCols(intl)),
-        ...rest
-      })
+  const seriesMapping = [
+    { key: 'totalTraffic_all', name: $t({ defaultMessage: 'All Radios' }) },
+    { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },
+    { key: 'totalTraffic_5', name: formatter('radioFormat')('5') },
+    { key: 'totalTraffic_6', name: formatter('radioFormat')('6') }
+  ] as Array<{ key: Key, name: string }>
+  const queryResults = useTrafficByVolumeQuery(filters, {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: getSeriesData(data!, seriesMapping),
+      ...rest
     })
+  })
   return (
     <Loader states={[queryResults]}>
-      <Card title={intl.$t({ defaultMessage: 'Traffic by Volume' })} >
+      <Card title={$t({ defaultMessage: 'Traffic by Volume' })} >
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart
