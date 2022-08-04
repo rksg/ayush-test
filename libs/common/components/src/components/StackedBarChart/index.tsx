@@ -1,7 +1,7 @@
 import ReactECharts from 'echarts-for-react'
 import _            from 'lodash'
 
-import { cssStr } from '../../theme/helper'
+import { cssStr }              from '../../theme/helper'
 import {
   tooltipOptions,
   stackedBarTooltipFormatter,
