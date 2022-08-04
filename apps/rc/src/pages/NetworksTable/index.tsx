@@ -11,6 +11,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
+import { networkTypes } from '../NetworkForm/contentsMap'
+
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
     {
@@ -112,25 +114,25 @@ const transformNetworkType = (value: Network['nwSubType'], row: Network,
   const wlan = row?.deepNetwork?.wlan
   switch (value) {
     case NetworkTypeEnum.OPEN:
-      displayValue = $t({ defaultMessage: 'Open Network' })
+      displayValue = $t(networkTypes.open)
       break
 
     case NetworkTypeEnum.PSK:
-      displayValue = $t({ defaultMessage: 'Pre-Shared Key (PSK)' })
+      displayValue = $t(networkTypes.psk)
       if (wlan && wlan.wlanSecurity) {
         displayValue += getWlanSecurity(wlan.wlanSecurity)
       }
       break
 
     case NetworkTypeEnum.DPSK:
-      displayValue = $t({ defaultMessage: 'Dynamic Pre-Shared Key (DPSK)' })
+      displayValue = $t(networkTypes.dpsk)
       if (wlan && wlan.wlanSecurity) {
         displayValue += getWlanSecurity(wlan.wlanSecurity)
       }
       break
 
     case NetworkTypeEnum.AAA:
-      displayValue = $t({ defaultMessage: 'Enterprise AAA (802.1X)' })
+      displayValue = $t(networkTypes.aaa)
       if (wlan && wlan.wlanSecurity) {
         displayValue += getWlanSecurity(wlan.wlanSecurity)
       }

@@ -10,10 +10,10 @@ import { useLazyNetworkListQuery }               from '@acx-ui/rc/services'
 import { NetworkTypeEnum, checkObjectNotExists } from '@acx-ui/rc/utils'
 import { useParams }                             from '@acx-ui/react-router-dom'
 
-import { NetworkTypeDescription, NetworkTypeLabel } from '../contentsMap'
-import { NetworkDiagram }                           from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext                           from '../NetworkFormContext'
-import { RadioDescription }                         from '../styledComponents'
+import { networkTypesDescription, networkTypes } from '../contentsMap'
+import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext                        from '../NetworkFormContext'
+import { RadioDescription }                      from '../styledComponents'
 
 import type { RadioChangeEvent } from 'antd'
 
@@ -42,6 +42,14 @@ export function NetworkDetailForm () {
       .unwrap()).data.map(n => ({ name: n.name }))
     return checkObjectNotExists(list, value, 'Network')
   }
+
+  const types = [
+    { type: NetworkTypeEnum.PSK, disabled: true },
+    { type: NetworkTypeEnum.DPSK, disabled: false },
+    { type: NetworkTypeEnum.AAA, disabled: false },
+    { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: true },
+    { type: NetworkTypeEnum.OPEN, disabled: false }
+  ]
 
   return (
     <Row gutter={20}>
@@ -72,40 +80,14 @@ export function NetworkDetailForm () {
         >
           <Radio.Group onChange={onChange}>
             <Space direction='vertical'>
-              <Radio value={NetworkTypeEnum.PSK} disabled>
-                {NetworkTypeLabel.psk}
-                <RadioDescription>
-                  {NetworkTypeDescription.psk}
-                </RadioDescription>
-              </Radio>
-
-              <Radio value={NetworkTypeEnum.DPSK}>
-                {NetworkTypeLabel.dpsk}
-                <RadioDescription>
-                  {NetworkTypeDescription.dpsk}
-                </RadioDescription>
-              </Radio>
-
-              <Radio value={NetworkTypeEnum.AAA}>
-                {NetworkTypeLabel.aaa}
-                <RadioDescription>
-                  {NetworkTypeDescription.aaa}
-                </RadioDescription>
-              </Radio>
-
-              <Radio value={NetworkTypeEnum.CAPTIVEPORTAL} disabled>
-                {NetworkTypeLabel.guest}
-                <RadioDescription>
-                  {NetworkTypeDescription.guest}
-                </RadioDescription>
-              </Radio>
-
-              <Radio value={NetworkTypeEnum.OPEN}>
-                {NetworkTypeLabel.open}
-                <RadioDescription>
-                  {NetworkTypeDescription.open}
-                </RadioDescription>
-              </Radio>
+              {types.map(({ type, disabled }) => (
+                <Radio key={type} value={type} disabled={disabled}>
+                  {$t(networkTypes[type])}
+                  <RadioDescription>
+                    {$t(networkTypesDescription[type])}
+                  </RadioDescription>
+                </Radio>
+              ))}
             </Space>
           </Radio.Group>
         </Form.Item>

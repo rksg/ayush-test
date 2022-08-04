@@ -1,4 +1,5 @@
 import { Row, Col } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import { CloudpathServer } from '@acx-ui/rc/services'
 import {
@@ -27,7 +28,7 @@ import PskDiagram                    from '../../../assets/images/network-wizard
 import SelfSignInDiagram             from '../../../assets/images/network-wizard-diagrams/self-sign-in.png'
 import WISPrWithPskDiagram           from '../../../assets/images/network-wizard-diagrams/wispr-psk.png'
 import WISPrDiagram                  from '../../../assets/images/network-wizard-diagrams/wispr.png'
-import { NetworkTypeLabel }          from '../contentsMap'
+import { networkTypes }              from '../contentsMap'
 import { Diagram }                   from '../styledComponents'
 
 interface DiagramProps {
@@ -138,8 +139,9 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
 }
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
-  const type = props.type as NetworkTypeEnum
-  const title = NetworkTypeLabel[type]
+  const { $t } = useIntl()
+  const type = props.type as NetworkTypeEnum | undefined
+  const title = type ? $t(networkTypes[type]) : undefined
   const diagram = getDiagram({ ...props })
 
   return (

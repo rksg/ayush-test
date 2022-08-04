@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 
-import { useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   PageHeader,
@@ -20,7 +20,6 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkTypeTitle }  from './contentsMap'
 import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext    from './NetworkFormContext'
 import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
@@ -32,6 +31,14 @@ import {
   tranferSettingsToSave
 } from './parser'
 import { Venues } from './Venues/Venues'
+
+const settingTitle = defineMessage({
+  defaultMessage: `{type, select,
+    aaa {AAA Settings}
+    dpsk {DPSK Settings}
+    other {Settings}
+  }`
+})
 
 export function NetworkForm () {
   const { $t } = useIntl()
@@ -108,8 +115,8 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
-          name={$t({ defaultMessage: 'Settings' })}
-          title={networkType ? NetworkTypeTitle[networkType] : $t({ defaultMessage: 'Settings' })}
+          name='settings'
+          title={$t(settingTitle, { type: networkType })}
           onFinish={async (data) => {
             data = {
               ...data,

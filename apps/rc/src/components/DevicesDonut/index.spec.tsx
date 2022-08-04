@@ -1,13 +1,13 @@
 import { omit }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }      from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
   mockAutoSizer,
   waitForElementToBeRemoved,
-  renderHook} from '@acx-ui/test-utils'
+  renderHook } from '@acx-ui/test-utils'
 
 import DevicesDonutWidget, { getApDonutChartData, getSwitchDonutChartData } from '.'
 

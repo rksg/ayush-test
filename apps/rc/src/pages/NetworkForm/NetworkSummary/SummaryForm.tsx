@@ -2,19 +2,19 @@ import { EnvironmentOutlined }            from '@ant-design/icons'
 import { Col, Divider, Form, Input, Row } from 'antd'
 import { useIntl }                        from 'react-intl'
 
-import { StepsForm, Subtitle }                                    from '@acx-ui/components'
-import { useCloudpathListQuery }                                  from '@acx-ui/rc/services'
-import { NetworkSaveData, NetworkTypeEnum, transformDisplayText } from '@acx-ui/rc/utils'
-import { useParams }                                              from '@acx-ui/react-router-dom'
+import { StepsForm, Subtitle }                                            from '@acx-ui/components'
+import { useCloudpathListQuery }                                          from '@acx-ui/rc/services'
+import { CreateNetworkFormFields, NetworkTypeEnum, transformDisplayText } from '@acx-ui/rc/utils'
+import { useParams }                                                      from '@acx-ui/react-router-dom'
 
-import { transformNetworkType } from '../parser'
+import { networkTypes } from '../contentsMap'
 
 import { AaaSummaryForm }  from './AaaSummaryForm'
 import { DpskSummaryForm } from './DpskSummaryForm'
 
 
 export function SummaryForm (props: {
-  summaryData: NetworkSaveData
+  summaryData: CreateNetworkFormFields
 }) {
   const { $t } = useIntl()
   const { summaryData } = props
@@ -25,7 +25,7 @@ export function SummaryForm (props: {
         selected: data?.find((item) => item.id === selectedId)
       }
     }
-  })  
+  })
   const getVenues = function () {
     const venues = summaryData.venues
     const rows = []
@@ -59,7 +59,7 @@ export function SummaryForm (props: {
           />
           <Form.Item
             label={$t({ defaultMessage: 'Type:' })}
-            children={transformNetworkType(summaryData.type, useIntl())}
+            children={$t(networkTypes[summaryData.type])}
           />
           <Form.Item
             label={$t({ defaultMessage: 'Use Cloudpath Server:' })}
@@ -92,7 +92,7 @@ export function SummaryForm (props: {
           {summaryData.type === NetworkTypeEnum.AAA && !summaryData.isCloudpathEnabled &&
            <AaaSummaryForm summaryData={summaryData} />
           }
-          {summaryData.type === NetworkTypeEnum.DPSK && 
+          {summaryData.type === NetworkTypeEnum.DPSK &&
             <DpskSummaryForm summaryData={summaryData} />
           }
         </Col>

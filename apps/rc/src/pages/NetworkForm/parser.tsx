@@ -1,5 +1,4 @@
-import { get }     from 'lodash'
-import { useIntl } from 'react-intl'
+import { get } from 'lodash'
 
 import {
   NetworkTypeEnum,
@@ -293,26 +292,4 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
     [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
-}
-
-export const transformNetworkType = (value: any, { $t }: ReturnType<typeof useIntl>) => {
-  let displayValue = ''
-  switch (value) {
-    case NetworkTypeEnum.OPEN:
-      displayValue = $t({ defaultMessage: 'Open Network' })
-      break
-    case NetworkTypeEnum.PSK:
-      displayValue = $t({ defaultMessage: 'Pre-Shared Key (PSK)' })
-      break
-    case NetworkTypeEnum.DPSK:
-      displayValue = $t({ defaultMessage: 'Dynamic Pre-Shared Key (DPSK)' })
-      break
-    case NetworkTypeEnum.AAA:
-      displayValue = $t({ defaultMessage: 'Enterprise AAA (802.1X)' })
-      break
-    case NetworkTypeEnum.CAPTIVEPORTAL:
-      //TODO
-      break
-  }
-  return displayValue
 }
