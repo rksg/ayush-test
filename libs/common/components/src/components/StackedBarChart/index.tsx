@@ -1,9 +1,13 @@
-import { TooltipComponentOption } from 'echarts'
-import ReactECharts               from 'echarts-for-react'
-import _                          from 'lodash'
+import ReactECharts from 'echarts-for-react'
+import _            from 'lodash'
 
-import { cssNumber, cssStr }                          from '../../theme/helper'
-import { tooltipOptions, stackedBarTooltipFormatter } from '../Chart/helper'
+import { cssStr } from '../../theme/helper'
+import {
+  tooltipOptions,
+  stackedBarTooltipFormatter,
+  barChartAxisLabelOptions,
+  barChartSeriesLabelOptions
+} from '../Chart/helper'
 
 import type { EChartsOption, RegisteredSeriesOption } from 'echarts'
 import type { EChartsReactProps }                     from 'echarts-for-react'
@@ -78,12 +82,7 @@ const massageData = (
     stack: 'Total',
     barWidth: 8,
     label: {
-      position: 'right',
-      fontFamily: cssStr('--acx-neutral-brand-font'),
-      fontSize: cssNumber('--acx-body-3-font-size'),
-      lineHeight: cssNumber('--acx-body-3-line-height'),
-      color: cssStr('--acx-primary-black'),
-      fontWeight: cssNumber('--acx-body-font-weight'),
+      ...barChartSeriesLabelOptions(),
       formatter: '{@sum}'
     }
   }
@@ -111,7 +110,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   dataFormatter,
   ...props
 }: StackedBarChartProps<TChartData>) {
-  
+
   const { animation, showTotal, showLabels, showTooltip } = props
   const barColors = props.barColors ?? [
     cssStr('--acx-semantics-yellow-40'), // P4
@@ -146,18 +145,15 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
         formatter: '{label|{value}}',
         rich: {
           label: {
+            ...barChartAxisLabelOptions(),
             align: 'left',
-            width: props.axisLabelWidth || 75,
-            fontFamily: cssStr('--acx-neutral-brand-font'),
-            fontSize: cssNumber('--acx-body-4-font-size'),
-            lineHeight: cssNumber('--acx-body-4-line-height'),
-            fontWeight: cssNumber('--acx-body-font-weight')
+            width: props.axisLabelWidth || 75
           }
         }
       }
     },
     tooltip: {
-      ...tooltipOptions() as TooltipComponentOption,
+      ...tooltipOptions(),
       trigger: 'item',
       formatter: stackedBarTooltipFormatter(dataFormatter),
       show: showTooltip
