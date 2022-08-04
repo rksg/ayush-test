@@ -15,8 +15,8 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const { $t } = useIntl()
   const shortDescription = (incident: IncidentDetailsProps) => {
     const incidentInfo = incidentInformation[incident.code as keyof typeof incidentDetailsMap]
-    /* eslint-disable-next-line max-len */
-    const scope = `${formattedSliceType(incident.sliceType)}: ${getImpactedArea(incident.path, incident.sliceValue)}`
+    const scope = `${formattedSliceType(incident.sliceType)}: 
+      ${getImpactedArea(incident.path, incident.sliceValue)}`
     const { shortDescription } = incidentInfo
     const messageProps = {
       id: incident.id,
