@@ -8,7 +8,7 @@ import { Divider }                 from './styledComponents'
 
 export type SubTitle = {
   key: string,
-  value: string[]
+  value: (number | string)[]
 }
 
 export type HeaderData = {
@@ -46,7 +46,7 @@ const ConnectedHeader = (props: PageHeaderProps) => {
   const queryResults = useNetworkNodeInfoQuery(filters)
   return <div>
     <Loader states={[queryResults]}>
-      <Header {...props} 
+      <Header {...props}
         data={queryResults.data as HeaderData}
         replaceTitle={filters.path.length > 1}
       />

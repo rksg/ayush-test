@@ -6,8 +6,7 @@ import { PageHeader, Pill }                       from '@acx-ui/components'
 
 import { incidentDetailsMap }                                      from '..'
 import { getImpactedArea, IncidentAttributes, formattedSliceType } from '../IncidentAttributes'
-
-import * as UI from './styledComponents'
+import * as UI                                                     from '../styledComponents'
 
 import type { IncidentDetailsProps } from '../types'
 
@@ -21,7 +20,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
     const messageProps = {
       id: incident.id,
       defaultMessage: shortDescription,
-      values: { scope } 
+      values: { scope }
     }
     return <FormattedMessage {...messageProps}/>
   }
@@ -29,7 +28,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
 
   return (
     <>
-      <PageHeader 
+      <PageHeader
         title={$t({ defaultMessage: 'Incident Details' })}
         sideHeader={<Pill value={severityValue} trend={severityValue} />}
         breadcrumb={[
