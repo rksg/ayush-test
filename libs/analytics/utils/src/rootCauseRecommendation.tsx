@@ -45,8 +45,12 @@ const extractFailureCode = (
 }
 
 interface rootCauseAndRecommendation {
-  rootCauses: string
-  recommendations: string
+  rootCauses: {
+    defaultMessage: string
+  }
+  recommendations: {
+    defaultMessage: string
+  }
 }
 
 export const rootCauseRecommendationMap = {
@@ -61,7 +65,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_AUTH_ALG: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing in the 802.11 open authentication stage because the authentication algorithm in the authentication request is not supported by the WLAN/AP.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>Though this issue is uncommon, it may occur due to unexpected configuration changes or incompatibilities:</p>
         <ol>
           <li>Are the impacted clients configured to use a WLAN type that mismatches the AP/SSID settings?</li>
@@ -76,14 +81,16 @@ export const rootCauseRecommendationMap = {
       recommendations: defineMessage({ defaultMessage: '<p>n/a</p>' })
     },
     CCD_REASON_AUTH_FILTERED_BY_ACL: {
-      rootCauses: defineMessage({ defaultMessage: `
+      rootCauses: defineMessage({
+        defaultMessage: `
         <p>Clients are failing to associate due to one of the following permission features:</p>
         <ol>
           <li>The L2 MAC ACL settings do not permit this client (client MAC exists in denial list, or does not exist in permitted list).</li>
           <li>The client MAC is included in the blocked client list configured by the admin.</li>
         </ol>`
       }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This issue is typically the result of an intended policy configuration. No action may be needed, but if this behavior is creating unwanted user disruption, consider modifying the policy configurations:</p>
         <ol>
           <li>Confirm the L2 MAC ACL policy.</li>
@@ -104,7 +111,8 @@ export const rootCauseRecommendationMap = {
       recommendations: defineMessage({ defaultMessage: '<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in the RUCKUS UI. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>' })
     },
     CCD_REASON_ASSOC_TOOMANY: {
-      rootCauses: defineMessage({ defaultMessage: `
+      rootCauses: defineMessage({
+        defaultMessage: `
         <p>Client associations are failing on the AP due to one of several possible capacity conditions:</p>
         <ol>
           <li>The AP radio has reached its max client limit (fixed limit of HW/SW).</li>
@@ -112,7 +120,8 @@ export const rootCauseRecommendationMap = {
           <li>The AP radio has reached its max allowed client limit, as specified by the admin in the configuration.</li>
         </ol>`
       }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This behavior may be a desirable consequence of the admin's configuration-to prevent any one AP from serving too many clients. If so, no action is needed. {br} If this issue is having an undesirable client impact, there are a few possible recommendations:</p>
         <ol>
           <li>If the max configured limit is too low, change the SSID or AP radio settings to increase the max number of allowed clients.</li>
@@ -124,7 +133,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_ASSOC_NOT_AUTHED: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are attempting to associate without first performing 802.11 open authentication, or if the prior open authentication has expired. Typically this happens when the client/AP state machine is out of sync.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This state machine mismatch problem happens somewhat regularly in Wi-Fi as a transient problem, but is usually self-corrected by the client/AP. If the problem is having a noticeable impact on user connectivity, double-check the common situations that introduce misbehavior like this:</p>
         <ol>
           <li>Was the firmware recently updated on the infrastructure or impacted clients?</li>
@@ -134,7 +144,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_ASSOC_RSN_REQUIRED: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing association because the association request is missing the WPA/RSN information element(s), which typically indicates interoperability issues.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This behavior is uncommon in Wi-Fi and represents a protocol incompatibility. If clients are exhibiting this behavior, double-check the common situations that introduce interoperability problems like this:</p>
         <ol>
           <li>Were the firmware or drivers recently updated on the infrastructure or impacted clients?</li>
@@ -144,7 +155,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_ASSOC_IE_INVALID: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing association because the association request has unsupported or malformed security information in the WPA/RSN information element(s), which typically indicates interoperability issues.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This behavior is uncommon in Wi-Fi and represents a protocol incompatibility. If clients are exhibiting this behavior, double-check the common situations that introduce interoperability problems like this:</p>
         <ol>
           <li>Were the firmware or drivers recently updated on impacted clients?</li>
@@ -158,7 +170,8 @@ export const rootCauseRecommendationMap = {
     },
     VARIOUS_REASONS: {
       rootCauses: defineMessage({ defaultMessage: '<p>Users are failing to successfully connect at the 802.11 association stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>In these multi-issue failures, there are a few general recommendations to check:</p>
         <ol>
           <li>Were new clients or APs introduced in the environment?</li>
@@ -173,7 +186,8 @@ export const rootCauseRecommendationMap = {
   },
   auth: {
     CCD_REASON_AUTH_FT_ROAM_FAILURE: {
-      rootCauses: defineMessage({ defaultMessage: `
+      rootCauses: defineMessage({
+        defaultMessage: `
         <p>Clients are failing at the authentication stage of an 802.11r (Fast Transition) roam. The client is including PMKID information from its roam-from AP, but the roam-to AP does not have the key. {br}{br} This scenario is most commonly caused in the following scenarios:</p>
         <ol>
           <li>The roam-from and roam-to APs cannot share keys with one another, which happens if they are not RF neighbors or if they do not have IP connectivity for AP-to-AP communication.</li>
@@ -192,7 +206,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_AUTH_ALG: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing in the 802.11 open authentication stage because the authentication algorithm in the authentication request is not supported by the WLAN/AP.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>Though this issue is uncommon, it may occur due to unexpected configuration changes or incompatibilities:</p>
         <ol>
           <li>Are the impacted clients configured to use a WLAN type that mismatches the AP/SSID settings?</li>
@@ -203,17 +218,19 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_AUTH_WITHHELD: {
       rootCauses: defineMessage({ defaultMessage: '<p>n/a</p>' }),
-      recommendations: ''
+      recommendations: defineMessage({ defaultMessage: '<p>n/a</p>' })
     },
     CCD_REASON_AUTH_FILTERED_BY_ACL: {
-      rootCauses: defineMessage({ defaultMessage: `
+      rootCauses: defineMessage({
+        defaultMessage: `
         <p>Clients are failing to associate due to one of the following permission features:</p>
         <ol>
           <li>The L2 MAC ACL settings do not permit this client (client MAC exists in denial list, or does not exist in permitted list).</li>
           <li>The client MAC is included in the blocked client list configured by the admin.</li>
         </ol>`
       }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This issue is typically the result of an intended policy configuration. No action may be needed, but if this behavior is creating unwanted user disruption, consider modifying the policy configurations:</p>
         <ol>
           <li>Confirm the L2 MAC ACL policy.</li>
@@ -234,7 +251,8 @@ export const rootCauseRecommendationMap = {
       recommendations: defineMessage({ defaultMessage: '<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in the RUCKUS UI. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>' })
     },
     CCD_REASON_ASSOC_TOOMANY: {
-      rootCauses: defineMessage({ defaultMessage: `
+      rootCauses: defineMessage({
+        defaultMessage: `
         <p>Client associations are failing on the AP due to one of several possible capacity conditions:</p>
         <ol>
           <li>The AP radio has reached its max client limit (fixed limit of HW/SW).</li>
@@ -242,7 +260,8 @@ export const rootCauseRecommendationMap = {
           <li>The AP radio has reached its max allowed client limit, as specified by the admin in the configuration.</li>
         </ol>`
       }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This behavior may be a desirable consequence of the admin's configuration-to prevent any one AP from serving too many clients. If so, no action is needed. {br} If this issue is having an undesirable client impact, there are a few possible recommendations:</p>
         <ol>
           <li>If the max configured limit is too low, change the SSID or AP radio settings to increase the max number of allowed clients.</li>
@@ -254,7 +273,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_ASSOC_NOT_AUTHED: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are attempting to associate without first performing 802.11 open authentication. Typically this happens when the client/AP state machine is out of sync.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This state machine mismatch problem happens somewhat regularly in Wi-Fi as a transient problem, but is usually self-corrected by the client/AP. If the problem is having a noticeable impact on user connectivity, double-check the common situations that introduce misbehavior like this:</p>
         <ol>
           <li>Was the firmware recently updated on impacted clients?</li>
@@ -264,7 +284,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_ASSOC_RSN_REQUIRED: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing association because the association request is missing the WPA/RSN information element(s), which typically indicates interoperability issues.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This behavior is uncommon in Wi-Fi and represents a protocol incompatibility. If clients are exhibiting this behavior, double-check the common situations that introduce interoperability problems like this:</p>
         <ol>
           <li>Were the firmware or drivers recently updated on the infrastructure or impacted clients?</li>
@@ -274,7 +295,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_ASSOC_IE_INVALID: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing association because the association request has unsupported or malformed security information in the WPA/RSN information element(s), which typically indicates interoperability issues.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This behavior is uncommon in Wi-Fi and represents a protocol incompatibility. If clients are exhibiting this behavior, double-check the common situations that introduce interoperability problems like this:</p>
         <ol>
           <li>Were the firmware or drivers recently updated on impacted clients?</li>
@@ -288,7 +310,8 @@ export const rootCauseRecommendationMap = {
     },
     VARIOUS_REASONS: {
       rootCauses: defineMessage({ defaultMessage: '<p>Users are failing to successfully connect at the 802.11 authentication stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>In these multi-issue failures, there are a few general recommendations to check:</p>
         <ol>
           <li>Were new clients or APs introduced in the environment?</li>
@@ -304,7 +327,8 @@ export const rootCauseRecommendationMap = {
   eap: {
     CCD_REASON_EAPOL_STATE_INVALID: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing authentication (4-way handshake) because the AP is receiving EAPOL keys (typically msg2 or msg4) from clients in an incorrect sequence.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This invalid key sequence issue happens in Wi-Fi as a transient problem, but is usually self-corrected by the client/AP. If the problem is having a noticeable impact on user connectivity, double-check the common situations that introduce misbehavior like this:</p>
         <ol>
           <li>Was the AP's airtime utilization excessively high during the failure window? Busy RF conditions may manifest in this way.</li>
@@ -315,7 +339,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_EAPOL_KEY_INVALID: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing authentication because of key data errors in msg2 of the 4-way handshake (sent from client to AP). This may be caused by cipher/key incompatibilities or invalid key data.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>Invalid key data is an uncommon issue in the 4-way handshake. If this is happening, packet captures may be required to investigate the nature of invalid keys. {br} If the problem persists, check common situations that may have introduced this interoperability behavior:</p>
         <ol>
           <li>Are the impacted clients using problematic drivers or firmware?</li>
@@ -326,7 +351,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_RSN_INCONSISTENT: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing authentication because the WPA Information Element in msg2 of the 4-way handshake (sent from client to AP) does not match the WPA Information Element sent in the Association Request.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This WPA Information Element mismatch issue is an uncommon issue in the 4-way handshake. If this is happening, packet captures may be required to investigate the nature of Information Element mismatches. {br} If the problem persists, check common situations that may have introduced this interoperability behavior:</p>
         <ol>
           <li>Are the impacted clients using problematic drivers or firmware?</li>
@@ -337,7 +363,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_MIC_FAILURE: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing authentication because the passphrase (PSK) does not match the AP/SSID configuration.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>This is a common problem in networks where passphrase authentication (e.g. WPA2-Personal) is used. To resolve the issue, check the following:</p>
         <ol>
           <li>Was the passphrase recently changed on the infrastructure, while client devices still used the old passphrase?</li>
@@ -347,14 +374,16 @@ export const rootCauseRecommendationMap = {
       })
     },
     CCD_REASON_TIMEOUT: {
-      rootCauses: defineMessage({ defaultMessage: `
+      rootCauses: defineMessage({
+        defaultMessage: `
         <p>Client authentication is failing because of a timeout in the authentication exchange with the client. This is commonly caused by the following reasons:</p>
         <ol>
           <li>EAP Request timeout waiting for client EAP Response.</li>
           <li>4-way handshake timeout waiting for the client response.</li>
         </ol>`
       }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>To diagnose this issue further, check the following situations:</p>
         <ol>
           <li>High RF interference, airtime utilization, or other poor RF conditions, which disrupts normal channel access.</li>
@@ -365,7 +394,8 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_EAP_IDENTIFIER_MISMATCH: {
       rootCauses: defineMessage({ defaultMessage: '<p>This is an uncommon client authentication failure type, which happens when the client sends a different Identifier in the Response and Request messages.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>If this issue does not resolve on its own, this is often a case of client compatibility issues, which may be caused by:</p>
         <ol>
           <li>Client software issues or upgrades.</li>
@@ -379,7 +409,8 @@ export const rootCauseRecommendationMap = {
     },
     VARIOUS_REASONS: {
       rootCauses: defineMessage({ defaultMessage: '<p>Users are failing to successfully connect at the authentication stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>In many cases with authentication failure, each client device behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to double-check any recent changes:</p>
         <ol>
           <li>Credential changes.</li>
@@ -398,7 +429,8 @@ export const rootCauseRecommendationMap = {
     },
     VARIOUS_REASONS: {
       rootCauses: defineMessage({ defaultMessage: '<p>Users are failing to successfully connect at the DHCP stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>In many cases with DHCP failure, each client device behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end DHCP setup:</p>
         <ol>
           <li>Check DHCP server IP scopes are configured and enabled with available addresses.</li>
@@ -409,7 +441,8 @@ export const rootCauseRecommendationMap = {
       })
     },
     CCD_REASON_NACK: {
-      rootCauses: defineMessage({ defaultMessage: `
+      rootCauses: defineMessage({
+        defaultMessage: `
         <p>The user's connectivity is failing at DHCP because the server is unable to satisfy the client's request. This may be caused by one of several reasons:</p>
         <ol>
           <li>The server received duplicate DHCP requests from the same client.</li>
@@ -417,7 +450,8 @@ export const rootCauseRecommendationMap = {
           <li>There may be more than one DHCP server replying to the same client.</li>
         </ol>`
       }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>Some modest DHCP NAKs are normal in every network (e.g. client device sent duplicate DHCP Requests), but excessive DHCP failures with a NAK may be resolved by checking common DHCP server configuration or network design problems:</p>
         <ol>
           <li>Did the WLAN's IP subnet recently change, and is now causing DHCP renewal failures?</li>
@@ -427,7 +461,8 @@ export const rootCauseRecommendationMap = {
       })
     },
     CCD_REASON_TIMEOUT: {
-      rootCauses: defineMessage({ defaultMessage: `
+      rootCauses: defineMessage({
+        defaultMessage: `
         <p>The DHCP exchange is failing because of a timeout waiting for a response from the DHCP server. This is typically caused by the following reasons:</p>
         <ol>
           <li>The DHCP server is offline.</li>
@@ -437,7 +472,8 @@ export const rootCauseRecommendationMap = {
           <li>The DHCP helper IP address is not configured on the subnet.</li>
         </ol>`
       }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>DHCP timeouts will be resolved by isolating the DHCP server issue or network implementation problem:</p>
         <ol>
           <li>Is the DHCP server online with scopes configured and available addresses?</li>
@@ -455,7 +491,8 @@ export const rootCauseRecommendationMap = {
     },
     VARIOUS_REASONS: {
       rootCauses: defineMessage({ defaultMessage: '<p>Users are failing to successfully connect at the RADIUS stage. This connection failure issue is comprised of multiple failure types and reasons, making it difficult to pin down the exact cause.</p>' }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>In many cases with RADIUS failure, each client device or RADIUS server behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end RADIUS setup and network performance:</p>
         <ol>
           <li>Check the RADIUS server and controller settings to identify matching configurations (IP address, port, and shared secret).</li>
@@ -467,7 +504,8 @@ export const rootCauseRecommendationMap = {
       })
     },
     CCD_REASON_AAA_SERVER_UNAVAILABLE: {
-      rootCauses: defineMessage({ defaultMessage: `
+      rootCauses: defineMessage({
+        defaultMessage: `
         <p>The RADIUS server is offline or unreachable from the Controller/AP (message from Controller/AP to RADIUS is failing), which is often caused by:</p>
         <ol>
           <li>AP/SZ misconfiguration (Bad IP, bad port).</li>
@@ -478,7 +516,8 @@ export const rootCauseRecommendationMap = {
       recommendations: defineMessage({ defaultMessage: '<p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between the Controller/AP and the RADIUS server. {br} If all services are up and functional, double-check the RADIUS configuration on the Controller/AP.</p>' })
     },
     CCD_REASON_AAA_AUTH_FAIL: {
-      rootCauses: defineMessage({ defaultMessage: `
+      rootCauses: defineMessage({
+        defaultMessage: `
         <p>Clients are failing 802.1X/EAP authentication, which is typically caused by:</p>
         <ol>
           <li>Invalid EAP (PEAP or TTLS) username and password.</li>
@@ -486,7 +525,8 @@ export const rootCauseRecommendationMap = {
           <li>Expired or untrusted server certificates.</li>
         </ol>`
       }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>To resolve this issue, you may need to check RADIUS log details for authentication reject messages. {br} Recent changes in the authentication infrastructure may cause a sudden spike of EAP failures like this:</p>
         <ol>
           <li>RADIUS server certificate changes or expiration.</li>
@@ -496,7 +536,8 @@ export const rootCauseRecommendationMap = {
       })
     },
     CCD_REASON_TIMEOUT: {
-      rootCauses: defineMessage({ defaultMessage: `
+      rootCauses: defineMessage({
+        defaultMessage: `
         <p>The RADIUS authentication exchange is failing because of a timeout waiting for a response from the RADIUS server. This is typically caused by the following reasons:</p>
         <ol>
           <li>The RADIUS server is offline.</li>
@@ -505,7 +546,8 @@ export const rootCauseRecommendationMap = {
           <li>The wireless link is experiencing high congestion, retries/errors, or other unreliability issues.</li>
         </ol>`
       }),
-      recommendations: defineMessage({ defaultMessage: `
+      recommendations: defineMessage({
+        defaultMessage: `
         <p>RADIUS timeouts are most likely to be resolved by investigating the RADIUS server health directly, typically by focusing on load or service availability metrics and logs:</p>
         <ol>
           <li>Is the RADIUS server reliable and reachable (by ping from the AP or controller)?</li>
@@ -517,7 +559,7 @@ export const rootCauseRecommendationMap = {
       })
     }
   }
-} as unknown as Readonly<Record<string, Record<string, rootCauseAndRecommendation>>>
+} as Readonly<Record<string, Record<string, rootCauseAndRecommendation>>>
 
 export const ccd80211RootCauseRecommendations = {
   CCD_REASON_UNSPECIFIED: {
@@ -651,7 +693,7 @@ export const ccd80211RootCauseRecommendations = {
     rootCauses: defineMessage({ defaultMessage: '<p>Connectivity is failing because the security type (cipher suite) requested by the client is not valid or is not supported by the AP/WLAN.</p>' }),
     recommendations: ccd80211CommonRecommendations
   }
-} as unknown as Readonly<Record<string, rootCauseAndRecommendation>>
+} as Readonly<Record<string, rootCauseAndRecommendation>>
 
 export function getRootCauseAndRecommendations (
   code: keyof typeof codeToFailureTypeMap,
