@@ -144,31 +144,26 @@ export function NetworkVenuesTab () {
     updateNetworkDeep({ params, payload: network }).then(clearSelection)
   }
 
-  const activateSelected = (venues: NetworkVenue[], activatingVenues: Venue[]) => {
+  const activateSelected = (networkActivetedVenues: NetworkVenue[], activatingVenues: Venue[]) => {
     const enabledNotActivatedVenues:string[] = []
-    const networkVenues = [...venues]
-    if (tableData && tableData.length > 0) {
-      activatingVenues.forEach(activatingVenue => {
-        const defaultVenueData = generateDefaultNetworkVenue(activatingVenue.id)
+    const networkVenues = [...networkActivetedVenues]
+    activatingVenues.forEach(venue => {
+      const defaultVenueData = generateDefaultNetworkVenue(venue.id)
 
-        const alreadyActivatedVenue = networkVenues.find(x => x.venueId === activatingVenue.id)
-        if (!alreadyActivatedVenue && !activatingVenue.disabledActivation && !activatingVenue.allApDisabled) {
-          const row = tableData.find(v => v.id === activatingVenue.id)
-          if (row) {
-            row.activated = row.activated || { isActivated: false }
-            if (!row.activated.isDisabled) {
-              row.activated.isActivated = true
-              row.deepVenue = defaultVenueData
-              networkVenues.push(row.deepVenue)
-            }
-          }
+      const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
+      if (!alreadyActivatedVenue && !venue.disabledActivation && !venue.allApDisabled) {
+        venue.activated = venue.activated || { isActivated: false }
+        if (!venue.activated.isDisabled) {
+          venue.activated.isActivated = true
+          venue.deepVenue = defaultVenueData
+          networkVenues.push(venue.deepVenue)
         }
+      }
 
-        if (activatingVenue.allApDisabled) {
-          enabledNotActivatedVenues.push(activatingVenue.name)
-        }
-      })
-    }
+      if (venue.allApDisabled) {
+        enabledNotActivatedVenues.push(venue.name)
+      }
+    })
 
     if (enabledNotActivatedVenues.length > 0) {
       showActionModal({
@@ -189,16 +184,14 @@ export function NetworkVenuesTab () {
     return networkVenues
   }
 
-  const deActivateSelected = (venues: NetworkVenue[], activatingVenues: Venue[]) => {
-    const networkVenues = [...venues]
+  const deActivateSelected = (networkActivetedVenues: NetworkVenue[], activatingVenues: Venue[]) => {
+    const networkVenues = [...networkActivetedVenues]
     const selectedVenuesId = activatingVenues.map(row => row.id)
 
-    // Handle current page
-    tableData.forEach(row => {
-      if (selectedVenuesId.includes(row.id)) {
-        row.activated = row.activated || { isActivated: false }
-        row.activated.isActivated = false
-      }
+    // Handle toogle button
+    activatingVenues.forEach(venue => {
+      venue.activated = venue.activated || { isActivated: false }
+      venue.activated.isActivated = false
     })
 
     if (networkVenues) {
