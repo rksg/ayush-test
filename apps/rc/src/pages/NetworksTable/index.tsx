@@ -1,4 +1,4 @@
-import { FormattedMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { useNetworkListQuery, useDeleteNetworkMutation, Network }         from '@acx-ui/rc/services'
