@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-export type TrendType = 'none' | 'positive' | 'negative' | 'P1' | 'P2' | 'P3' | 'P4'
+import { TrendType } from '.'
 
 const pillColor = ({ trend }: { trend: TrendType }) => {
   switch (trend) {
