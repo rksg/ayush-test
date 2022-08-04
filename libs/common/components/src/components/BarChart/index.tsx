@@ -2,11 +2,12 @@ import { LabelFormatterCallback, RegisteredSeriesOption } from 'echarts'
 import ReactECharts                                       from 'echarts-for-react'
 import { CallbackDataParams, GridOption }                 from 'echarts/types/dist/shared'
 
-import { cssNumber, cssStr } from '../../theme/helper'
 import {
   gridOptions,
   barChartAxisLabelOptions,
-  legendOptions
+  barChartSeriesLabelOptions,
+  legendOptions,
+  legendTextStyleOptions
 } from '../Chart/helper'
 
 import type { EChartsOption }     from 'echarts'
@@ -63,6 +64,7 @@ const getSeries = (
 
   return data?.seriesEncode.map(encode => ({
     type: 'bar',
+    silent: true,
     colorBy: data?.seriesEncode?.length === 1 ? 'data' : undefined,
     color: data?.seriesEncode?.length === 1 ? barColors : undefined,
     encode: encode,
@@ -70,13 +72,7 @@ const getSeries = (
       borderRadius: [0, 4, 4, 0]
     },
     label: {
-      show: true,
-      position: 'right',
-      fontFamily: cssStr('--acx-neutral-brand-font'),
-      fontSize: cssNumber('--acx-body-3-font-size'),
-      lineHeight: cssNumber('--acx-body-3-line-height'),
-      color: cssStr('--acx-primary-black'),
-      fontWeight: cssNumber('--acx-body-font-weight'),
+      ...barChartSeriesLabelOptions(),
       formatter: labelFormatter,
       // Rich Type is not exported from ECharts lib.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,7 +100,10 @@ export function BarChart<TChartData extends BarChartData>
     barWidth: barWidth || 12,
     barGap: '50%',
     color: barColors,
-    legend: { ...legendOptions() },
+    legend: {
+      ...legendOptions(),
+      textStyle: legendTextStyleOptions()
+    },
     xAxis: {
       axisLabel: {
         show: false
