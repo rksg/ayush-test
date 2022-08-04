@@ -9,14 +9,16 @@ import {
   Dashboard,
   AlaramSeverity
 } from '@acx-ui/rc/services'
+import { Alarm, EventTypeEnum }                  from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import { AlarmList } from './AlarmList'
+import * as UI       from './styledComponents'
 
 const seriesMapping = [
   { key: AlaramSeverity.CRITICAL,
     name: 'Critical',
-    color: cssStr('--acx-semantics-red-60') },
+    color: cssStr('--acx-semantics-red-50') },
   { key: AlaramSeverity.MAJOR,
     name: 'Major',
     color: cssStr('--acx-accents-orange-30') }
@@ -40,13 +42,19 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
 }
 
 function AlarmWidget () {
-  const basePath = useTenantLink('/venues/')
+  const basePath = useTenantLink('/')
   const navigate = useNavigate()
 
-  const onClick = () => {
+  const onNavigate = (alarm: Alarm) => {
+    let path = ''
+    if (alarm.entityType === EventTypeEnum.AP) {
+      path = `aps/${alarm.serialNumber}/TBD`
+    } else if (alarm.entityType === EventTypeEnum.SWITCH) {
+      path = `switches/${alarm.serialNumber}/TBD`
+    }
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}`
+      pathname: `${basePath.pathname}/${path}`
     })
   }
 
@@ -66,10 +74,15 @@ function AlarmWidget () {
         <AutoSizer>
           {({ height, width }) => (
             data && data.length > 0
-              ? <DonutChart
-                style={{ width, height: height/3 }}
-                data={data}
-                onClick={onClick} />
+              ? <>
+                <DonutChart
+                  style={{ width, height: height / 3 }}
+                  data={data}/>
+                <AlarmList
+                  width={width - 10}
+                  height={height - (height / 3)}
+                  onNavigate={onNavigate} />
+              </>
               : <UI.NoDataWrapper>
                 <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
                 <UI.TextWrapper>No active alarms</UI.TextWrapper>

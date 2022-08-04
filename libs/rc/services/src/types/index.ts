@@ -70,19 +70,38 @@ export interface AlarmBase {
   serialNumber: string
   entityType: string
   entityId: string
-  sourceType: string
+  sourceType: string,
+  switchMacAddress: string
 }
 
 export interface AlarmMeta {
   id: AlarmBase['id']
   venueName: string
   apName: string
-  switchName: string
+  switchName: string,
+  isSwitchExists: boolean
 }
 
 export type Alarm = AlarmBase & AlarmMeta
 export interface UserSettings {
   [key: string]: string
+}
+
+export enum EventSeverityEnum {
+  CRITICAL = 'Critical',
+  MAJOR = 'Major',
+  MINOR = 'Minor',
+  WARNING = 'Warning',
+  INFORMATIONAL = 'Info'
+}
+
+export enum EventTypeEnum {
+  AP = 'AP',
+  CLIENT = 'CLIENT',
+  SWITCH = 'SWITCH',
+  NETWORK = 'NETWORK',
+  NOTIFICATION = 'Notification',
+  DP = 'DP'
 }
 
 export enum AlaramSeverity {
