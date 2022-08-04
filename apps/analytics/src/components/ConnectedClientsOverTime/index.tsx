@@ -7,15 +7,9 @@ import { useGlobalFilter, getSeriesData }                 from '@acx-ui/analytic
 import { Card, Loader, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
 import { formatter }                                      from '@acx-ui/utils'
 
-import { ConnectedClientsOverTimeData, 
-  useConnectedClientsOverTimeQuery }     from './services'
+import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
 
-export const seriesMapping = [
-  { key: 'uniqueUsers_all', name: 'All Radios' },
-  { key: 'uniqueUsers_24', name: formatter('radioFormat')('2.4') },
-  { key: 'uniqueUsers_5', name: formatter('radioFormat')('5') },
-  { key: 'uniqueUsers_6', name: formatter('radioFormat')('6') }
-] as Array<{ key: keyof Omit<ConnectedClientsOverTimeData, 'time'>, name: string }>
+type Key = keyof Omit<ConnectedClientsOverTimeData, 'time'>
 
 const lineColors = [
   cssStr('--acx-accents-blue-30'),
@@ -27,13 +21,19 @@ const lineColors = [
 function ConnectedClientsOverTimeWidget () {
   const filters = useGlobalFilter()
   const { $t } = useIntl()
-  const queryResults = useConnectedClientsOverTimeQuery(filters,
-    {
-      selectFromResult: ({ data, ...rest }) => ({
-        data: getSeriesData(data!, seriesMapping),
-        ...rest
-      })
+  const seriesMapping = [
+    { key: 'uniqueUsers_all', name: $t({ defaultMessage: 'All Radios' }) },
+    { key: 'uniqueUsers_24', name: formatter('radioFormat')('2.4') },
+    { key: 'uniqueUsers_5', name: formatter('radioFormat')('5') },
+    { key: 'uniqueUsers_6', name: formatter('radioFormat')('6') }
+  ] as Array<{ key: Key, name: string }>
+
+  const queryResults = useConnectedClientsOverTimeQuery(filters, {
+    selectFromResult: ({ data, ...rest }) => ({
+      ...rest,
+      data: getSeriesData(data!, seriesMapping)
     })
+  })
 
   return (
     <Loader states={[queryResults]}>
