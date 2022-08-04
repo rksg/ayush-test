@@ -17,7 +17,7 @@ function Incidents () {
       <Col span={20} style={{ display: 'flex', height: 220 }}>
         <NetworkHistoryWidget hideTitle/>
       </Col>
-      <Col span={24}>
+      <Col span={24} style={{ display: 'flex', height: 220 }}>
         <IncidentTableWidget />
       </Col>
     </Row>

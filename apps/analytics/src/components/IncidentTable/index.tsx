@@ -1,37 +1,108 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Switch }            from 'antd'
-import { DefaultRecordType } from 'rc-table/lib/interface'
-import AutoSizer             from 'react-virtualized-auto-sizer'
-
-import { useGlobalFilter }                 from '@acx-ui/analytics/utils'
-import { Card, Loader, Table, TableProps } from '@acx-ui/components'
-
-import { useIncidentsListQuery } from './services'
-import * as UI                   from './styledComponents'
+import AutoSizer from 'react-virtualized-auto-sizer'
 
 
-export type IncidentTableProps = TableProps<DefaultRecordType>
 
+import { useGlobalFilter }                            from '@acx-ui/analytics/utils'
+import { Card, Loader, Table, TableProps, showToast } from '@acx-ui/components'
+
+import { useIncidentsListQuery, IncidentNodeData, IncidentNodeInfo } from './services'
+import * as UI                                                       from './styledComponents'
+
+import type { ProColumns } from '@ant-design/pro-table'
+
+
+const ColumnHeaders: ProColumns<IncidentNodeInfo, 'text'>[] = [
+  {
+    title: 'Severity',
+    dataIndex: 'severity',
+    key: 'severity'
+  },
+  {
+    title: 'Date',
+    dataIndex: 'startTime',
+    valueType: 'dateTime',
+    key: 'startTime'
+  },
+  {
+    title: 'Duration',
+    dataIndex: 'endTime',
+    key: 'endTime'
+  },
+  {
+    title: 'Description',
+    dataIndex: 'code',
+    key: 'code'
+  },
+  {
+    title: 'Category',
+    dataIndex: 'code',
+    key: 'code'
+  },
+  {
+    title: 'Client Impact',
+    dataIndex: 'clientCount',
+    key: 'clientCount'
+  },
+  {
+    title: 'Impacted Clients',
+    dataIndex: 'impactedClientCount',
+    key: 'impactedClientCount'
+  }
+]
+
+export type IncidentTableProps = TableProps<IncidentNodeData>
+
+const actions: TableProps<(IncidentNodeData)[0]>['actions'] = [
+  {
+    label: 'Edit',
+    onClick: (selectedRows) => showToast({
+      type: 'info',
+      content: `Edit ${selectedRows[0]}`
+    })
+  },
+  {
+    label: 'Delete',
+    onClick: (selectedRows) => showToast({
+      type: 'info',
+      content: `Delete ${selectedRows[0]}`
+    })
+  },
+  {
+    label: 'Mute',
+    onClick: (selectedRows) => showToast({
+      type: 'info',
+      content: `Mute ${selectedRows[0]}`
+    })
+  }
+]
 
 const IncidentTableWidget = () => {
   const filters = useGlobalFilter()
   const queryResults = useIncidentsListQuery(filters)
-  
-  const [checkStrictly, setCheckStrictly] = useState(false)
+  const [data, setData] = useState<IncidentNodeData>([])
+
+  useEffect(() => {
+    if (queryResults && queryResults.data) {
+      setData(queryResults.data)
+    }
+  }, [queryResults, queryResults.data])
+
+
   return (
     <Loader states={[queryResults]}>
-      <Card title='Incident Table'>
+      <Card>
         <AutoSizer>
           {({ height, width }) => (
-            <UI.Div style={{ width, height }}>
-              <UI.Space
-                align='center'
-              >
-              CheckStrictly: <Switch checked={checkStrictly} onChange={setCheckStrictly} />
-              </UI.Space>
-              <Table dataSource={queryResults.data ? queryResults.data : []} />
-            </UI.Div>
+            <Table
+              type='tall'
+              style={{ height, width }}
+              dataSource={data}
+              columns={ColumnHeaders}
+              actions={actions}
+              rowSelection={{ type: 'checkbox' }}
+            />
           )}
         </AutoSizer>
       </Card>

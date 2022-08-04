@@ -1,7 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }      from '@acx-ui/analytics/services'
-import { GlobalFilter } from '@acx-ui/analytics/utils'
+import { dataApi }       from '@acx-ui/analytics/services'
+import { GlobalFilter }  from '@acx-ui/analytics/utils'
+import { incidentCodes } from '@acx-ui/analytics/utils'
 
 const listQueryProps = {
   incident: `
@@ -45,7 +46,7 @@ interface IncidentMetadata {
 
 }
 
-interface IncidentNodeInfo {
+export interface IncidentNodeInfo {
   severity?: number
   clientCount?: number
   code?: string
@@ -63,7 +64,7 @@ interface IncidentNodeInfo {
   metadata: IncidentMetadata
 }
 
-type IncidentNodeData = IncidentNodeInfo[]
+export type IncidentNodeData = IncidentNodeInfo[]
 
 interface Response<IncidentNodeData> {
   network: {
@@ -72,40 +73,6 @@ interface Response<IncidentNodeData> {
     }
   }
 }
-
-const IncidentFailureCode = 
-  ['ttc'
-    ,'ttc+radius-failure'
-    ,'ttc+auth-failure'
-    ,'ttc+assoc-failure'
-    ,'ttc+eap-failure'
-    ,'ttc+dhcp-failure'
-    ,'radius-failure'
-    ,'high-radius-failure'
-    ,'eap-failure'
-    ,'high-eap-failure'
-    ,'dhcp-failure'
-    ,'high-dhcp-failure'
-    ,'auth-failure'
-    ,'high-auth-failure'
-    ,'assoc-failure'
-    ,'high-assoc-failure'
-    ,'p-cov-clientrssi-low'
-    ,'p-load-sz-cpu-load'
-    ,'p-switch-memory-high'
-    ,'p-channeldist-suboptimal-plan-24g'
-    ,'p-channeldist-suboptimal-plan-50g-outdoor'
-    ,'p-channeldist-suboptimal-plan-50g-indoor'
-    ,'i-net-time-future'
-    ,'i-net-time-past'
-    ,'i-net-sz-net-latency'
-    ,'i-apserv-high-num-reboots'
-    ,'i-apserv-continuous-reboots'
-    ,'i-apserv-downtime-high'
-    ,'i-switch-vlan-mismatch'
-    ,'i-switch-poe-pd'
-    ,'i-apinfra-poe-low'
-    ,'i-apinfra-wanthroughput-low']
 
 
 export const api = dataApi.injectEndpoints({
@@ -141,7 +108,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          code: IncidentFailureCode
+          code: incidentCodes
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => 
