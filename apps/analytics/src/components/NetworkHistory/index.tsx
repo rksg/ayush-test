@@ -3,15 +3,10 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { useAnalyticsFilter }       from '@acx-ui/analytics/utils'
-import { getSeriesData }            from '@acx-ui/analytics/utils'
-import { Card }                     from '@acx-ui/components'
-import { Loader }                   from '@acx-ui/components'
-import { MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { cssStr }                   from '@acx-ui/components'
+import { useAnalyticsFilter, getSeriesData }              from '@acx-ui/analytics/utils'
+import { Card, Loader, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
 
-import { NetworkHistoryData }     from './services'
-import { useNetworkHistoryQuery } from './services'
+import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
 export const seriesMapping = ($t: CallableFunction) => ([
   { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
