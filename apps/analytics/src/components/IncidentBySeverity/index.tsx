@@ -21,16 +21,7 @@ import {
 import * as UI from './styledComponents'
 
 type PillData = { delta: string, total: number, trend: string }
-<<<<<<< HEAD
 const barColors = Object.values(severitiesDefinition).map(({ color }) => cssStr(color))
-=======
-const barColors = [
-  cssStr('--acx-semantics-yellow-40'), // P4
-  cssStr('--acx-accents-orange-50'), //.. P3
-  cssStr('--acx-semantics-red-50'), //... P2
-  cssStr('--acx-semantics-red-70') //.... P1
-]
->>>>>>> origin/master
 export const getPillData = (
   curr: IncidentsBySeverityData, prev: IncidentsBySeverityData
 ): PillData => {
