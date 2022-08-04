@@ -2,7 +2,7 @@ import { severitiesDefinition } from '.'
 
 import type { IncidentSeverity, SeveritiesProps } from './types'
 
-export const severities = new Map(
+const severities = new Map(
   Object
     .keys(severitiesDefinition)
     .map(key => [key, severitiesDefinition[key as IncidentSeverity]])

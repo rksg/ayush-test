@@ -18,7 +18,7 @@ import {
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
 
-export interface MultiLineTimeSeriesChartProps
+interface MultiLineTimeSeriesChartProps
   <TChartData extends MultiLineTimeSeriesChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[]
