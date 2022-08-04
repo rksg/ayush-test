@@ -87,6 +87,7 @@ export function StackedAreaChart <
       name: datum[legendProp] as unknown as string,
       data: datum.value,
       type: 'line',
+      silent: true,
       stack: 'Total',
       smooth: true,
       symbol: 'none',

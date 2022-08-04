@@ -74,7 +74,8 @@ export const barChartSeriesLabelOptions = () => ({
   fontSize: cssNumber('--acx-body-3-font-size'),
   lineHeight: cssNumber('--acx-body-3-line-height'),
   color: cssStr('--acx-primary-black'),
-  fontWeight: cssNumber('--acx-body-font-weight')
+  fontWeight: cssNumber('--acx-body-font-weight'),
+  silent: true
 } as RegisteredSeriesOption['bar']['label'])
 
 export const yAxisOptions = () => ({

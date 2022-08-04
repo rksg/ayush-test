@@ -81,6 +81,7 @@ export function MultiLineTimeSeriesChart
       name: datum[legendProp] as unknown as string,
       data: datum.data,
       type: 'line',
+      silent: true,
       smooth: true,
       symbol: 'none',
       lineStyle: { width: 1 }

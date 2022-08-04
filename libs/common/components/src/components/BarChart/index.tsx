@@ -64,6 +64,7 @@ const getSeries = (
 
   return data?.seriesEncode.map(encode => ({
     type: 'bar',
+    silent: true,
     colorBy: data?.seriesEncode?.length === 1 ? 'data' : undefined,
     color: data?.seriesEncode?.length === 1 ? barColors : undefined,
     encode: encode,

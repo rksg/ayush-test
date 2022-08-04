@@ -73,6 +73,7 @@ const massageData = (
   data: ChartData[], showTotal: boolean): RegisteredSeriesOption['bar'][] => {
   const seriesCommonConfig: RegisteredSeriesOption['bar'] = {
     type: 'bar',
+    cursor: 'default',
     dimensions: [
       { name: 'value', type: 'number' },
       'category',
