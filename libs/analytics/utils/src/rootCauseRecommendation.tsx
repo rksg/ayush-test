@@ -3,7 +3,8 @@ import { defineMessage } from 'react-intl'
 
 import { IncidentDetailsMetadata } from './types'
 
-const commonRecommendations = defineMessage({ defaultMessage: `
+const commonRecommendations = defineMessage({
+  defaultMessage: `
   <p>If the problem does not resolve on its own, check the infrastructure and client population for recent changes likely to produce this failure:</p>
   <ol>
     <li>Were new clients or APs introduced in the environment?</li>
@@ -13,7 +14,8 @@ const commonRecommendations = defineMessage({ defaultMessage: `
   </ol>`
 })
 
-const ccd80211CommonRecommendations = defineMessage({ defaultMessage: `
+const ccd80211CommonRecommendations = defineMessage({
+  defaultMessage: `
   <p>This problem should resolve on its own, but if it persists, check the infrastructure and client population for recent changes likely to produce this failure:</p>
   <ol>
     <li>Were new clients or APs introduced in the environment?</li>
