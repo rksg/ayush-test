@@ -1,4 +1,9 @@
 /* istanbul ignore file */
+
+// Copied from https://github.com/ant-design/pro-components/blob/03f8c790168f666c212f64413929a2c594555d0d/packages/form/src/layouts/StepsForm/StepForm.tsx
+// TODO: Upgrade `@ant-design/pro-form` after https://github.com/ant-design/pro-components/pull/5668
+// is merged and new version released. This file can then be removed.
+
 import { useContext, useEffect, useImperativeHandle, useRef } from 'react'
 
 import { BaseForm } from '@ant-design/pro-form/lib/BaseForm'
