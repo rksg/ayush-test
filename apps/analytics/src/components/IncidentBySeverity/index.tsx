@@ -3,7 +3,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter } from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
   Subtitle,
@@ -47,7 +47,7 @@ const getChartData = (data: IncidentsBySeverityData): BarChartData => ({
 })
 
 function IncidentBySeverityWidget () {
-  const { startDate, endDate, path } = useGlobalFilter()
+  const { startDate, endDate, path } = useAnalyticsFilter()
   const { $t } = useIntl()
   const currentResult = useIncidentsBySeverityQuery(
     { startDate, endDate, path },
