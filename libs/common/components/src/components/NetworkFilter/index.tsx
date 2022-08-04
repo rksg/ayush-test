@@ -43,7 +43,14 @@ export function NetworkFilter (props: CascaderProps) {
   const [ multiSelect, setMultiSelect ] = React.useState<DefaultOptionType[][]>([])
 
   const { 
-    withRadio, onCancel, onApply, onChange, multiple, onFocus, withControlButtons, options
+    withRadio,
+    onCancel,
+    onApply,
+    onChange,
+    multiple,
+    onFocus,
+    withControlButtons,
+    options
   } = props
 
   const isPopulated = Array.isArray(options) && options.length > 0
@@ -173,6 +180,9 @@ export function NetworkFilter (props: CascaderProps) {
       open={isOpen}
       onChange={onChangeMultiple}
       dropdownRender={DropDown}
+      expandTrigger='hover'
+      maxTagCount={1}
+      showSearch
     />
   }
 
@@ -182,5 +192,7 @@ export function NetworkFilter (props: CascaderProps) {
     changeOnSelect={true}
     onChange={onChangeSingle}
     dropdownRender={DropDown}
+    expandTrigger='hover'
+    showSearch
   />
 }

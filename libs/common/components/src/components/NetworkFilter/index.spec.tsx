@@ -117,7 +117,7 @@ describe('NetworkFilter', () => {
     expect(onApplyMock).toBeCalledTimes(2)
 
     expect(await screen.findAllByText(options[0].label as string)).toHaveLength(2)
-    expect(await screen.findAllByText(options[1].label as string)).toHaveLength(2)
+    expect(await screen.findAllByText(options[1].label as string)).toHaveLength(1)
   })
 
 
