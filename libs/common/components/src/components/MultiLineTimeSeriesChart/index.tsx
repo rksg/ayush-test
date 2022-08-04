@@ -1,8 +1,3 @@
-import {
-  XAXisComponentOption,
-  YAXisComponentOption,
-  TooltipComponentOption
-} from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
@@ -55,12 +50,12 @@ export function MultiLineTimeSeriesChart
       data: data.map(datum => datum[legendProp]) as unknown as string[]
     },
     tooltip: {
-      ...tooltipOptions() as TooltipComponentOption,
+      ...tooltipOptions(),
       trigger: 'axis',
       formatter: timeSeriesTooltipFormatter(dataFormatter)
     },
     xAxis: {
-      ...xAxisOptions() as XAXisComponentOption,
+      ...xAxisOptions(),
       type: 'time',
       axisLabel: {
         ...axisLabelOptions(),
@@ -68,7 +63,7 @@ export function MultiLineTimeSeriesChart
       }
     },
     yAxis: {
-      ...yAxisOptions() as YAXisComponentOption,
+      ...yAxisOptions(),
       type: 'value',
       axisLabel: {
         ...axisLabelOptions(),
@@ -81,6 +76,7 @@ export function MultiLineTimeSeriesChart
       name: datum[legendProp] as unknown as string,
       data: datum.data,
       type: 'line',
+      silent: true,
       smooth: true,
       symbol: 'none',
       lineStyle: { width: 1 }
