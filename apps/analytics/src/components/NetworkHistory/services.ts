@@ -19,26 +19,6 @@ interface Response <TimeSeriesData> {
   }
 }
 
-const severity = [
-  {
-    gt: 0.9,
-    lte: 1
-  },
-  {
-    gt: 0.75,
-    lte: 0.9
-  },
-  {
-    gt: 0.6,
-    lte: 0.75
-  },
-  {
-    gt: 0,
-    lte: 0.6
-  }
-]
-
-
 export const calcGranularity = (start: string, end: string): string => {
   const duration = moment.duration(moment(end).diff(moment(start))).asHours()
   if (duration > 24 * 7) return 'PT1H' // 1 hour if duration > 7 days
@@ -81,7 +61,7 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: calcGranularity(payload.startDate, payload.endDate),
-          severity: severity,
+          severity: [{ gt: 0, lte: 1 }], // all severities
           code: incidentCodes
         }
       }),
