@@ -1,6 +1,7 @@
 import React from 'react'
 
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { useGlobalFilter }          from '@acx-ui/analytics/utils'
 import { getSeriesData }            from '@acx-ui/analytics/utils'
@@ -29,6 +30,7 @@ const lineColors = [
 
 function ConnectedClientsOverTimeWidget () {
   const filters = useGlobalFilter()
+  const { $t } = useIntl()
   const queryResults = useConnectedClientsOverTimeQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
@@ -39,7 +41,7 @@ function ConnectedClientsOverTimeWidget () {
 
   return (
     <Loader states={[queryResults]}>
-      <Card title='Connected Clients Over Time' >
+      <Card title={$t({ defaultMessage: 'Connected Clients Over Time' })} >
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart
