@@ -10,10 +10,6 @@ import { input } from './services.spec'
 
 import Header, { Header as DumbHeader } from './index'
 
-
-
-
-
 describe('Analytics dumb header', () => {
 
   const props = {
