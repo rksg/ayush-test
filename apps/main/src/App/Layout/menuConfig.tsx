@@ -8,7 +8,8 @@ const genPlaceholder = () => ({
   name: ' '
 })
 
-export function getCols ({ $t }: ReturnType<typeof useIntl>) {
+export function useMenuConfig () {
+  const { $t } = useIntl()
   const config = [
     {
       path: '/dashboard',
