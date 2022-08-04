@@ -3,16 +3,12 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter }          from '@acx-ui/analytics/utils'
-import { getSeriesData }            from '@acx-ui/analytics/utils'
-import { Card }                     from '@acx-ui/components'
-import { Loader }                   from '@acx-ui/components'
-import { MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { cssStr }                   from '@acx-ui/components'
-import { formatter }                from '@acx-ui/utils'
+import { useGlobalFilter, getSeriesData }                 from '@acx-ui/analytics/utils'
+import { Card, Loader, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
+import { formatter }                                      from '@acx-ui/utils'
 
-import { ConnectedClientsOverTimeData }     from './services'
-import { useConnectedClientsOverTimeQuery } from './services'
+import { ConnectedClientsOverTimeData, 
+  useConnectedClientsOverTimeQuery }     from './services'
 
 export const seriesMapping = [
   { key: 'uniqueUsers_all', name: 'All Radios' },
