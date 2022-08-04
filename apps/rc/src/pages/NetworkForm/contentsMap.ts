@@ -1,6 +1,6 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { GuestNetworkTypeEnum, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 export const networkTypes: Record<NetworkTypeEnum, MessageDescriptor> = {
   [NetworkTypeEnum.OPEN]: defineMessage({ defaultMessage: 'Open Network' }),
@@ -34,3 +34,69 @@ export const networkTypesDescription: Record<NetworkTypeEnum, MessageDescriptor>
   })
 }
 /* eslint-enable */
+
+export const wlanSecurity: Record<WlanSecurityEnum, MessageDescriptor> = {
+  [WlanSecurityEnum.Open]: defineMessage({
+    defaultMessage: 'Open',
+    description: 'WLAN security type - Open'
+  }),
+  [WlanSecurityEnum.WPAPersonal]: defineMessage({
+    defaultMessage: 'WPA',
+    description: 'WLAN security type - WPA'
+  }),
+  [WlanSecurityEnum.WPA2Personal]: defineMessage({
+    defaultMessage: 'WPA2',
+    description: 'WLAN security type - WPA2'
+  }),
+  [WlanSecurityEnum.WPAEnterprise]: defineMessage({
+    defaultMessage: 'WPA Enterprise',
+    description: 'WLAN security type - WPA Enterprise'
+  }),
+  [WlanSecurityEnum.WPA2Enterprise]: defineMessage({
+    defaultMessage: 'WPA2 Enterprise',
+    description: 'WLAN security type - WPA2 Enterprise'
+  }),
+  [WlanSecurityEnum.OpenCaptivePortal]: defineMessage({
+    defaultMessage: 'Open Captive Portal',
+    description: 'WLAN security type - Open Captive Portal'
+  }),
+  [WlanSecurityEnum.WEP]: defineMessage({
+    defaultMessage: 'WEP',
+    description: 'WLAN security type - WEP'
+  }),
+  [WlanSecurityEnum.WPA23Mixed]: defineMessage({
+    defaultMessage: 'WPA3/WPA2 Mixed',
+    description: 'WLAN security type - WPA3/WPA2 Mixed'
+  }),
+  [WlanSecurityEnum.WPA3]: defineMessage({
+    defaultMessage: 'WPA3',
+    description: 'WLAN security type - WPA3'
+  })
+}
+
+export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor> = {
+  [GuestNetworkTypeEnum.ClickThrough]: defineMessage({
+    defaultMessage: 'Click-Through',
+    description: 'Guest network type - Click-Through'
+  }),
+  [GuestNetworkTypeEnum.GuestPass]: defineMessage({
+    defaultMessage: 'Managed Guest Pass',
+    description: 'Guest network type - Managed Guest Pass'
+  }),
+  [GuestNetworkTypeEnum.SelfSignIn]: defineMessage({
+    defaultMessage: 'Self Sign-In',
+    description: 'Guest network type - Self Sign-In'
+  }),
+  [GuestNetworkTypeEnum.HostApproval]: defineMessage({
+    defaultMessage: 'Host Approval',
+    description: 'Guest network type - Host Approval'
+  }),
+  [GuestNetworkTypeEnum.WISPr]: defineMessage({
+    defaultMessage: '3rd Party Captive Portal (WISPr)',
+    description: 'Guest network type - 3rd Party Captive Portal (WISPr)'
+  }),
+  [GuestNetworkTypeEnum.Cloudpath]: defineMessage({
+    defaultMessage: 'Captive Portal',
+    description: 'Guest network type - Captive Portal'
+  })
+}

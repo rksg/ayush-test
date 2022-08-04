@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { FormattedMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { useNetworkListQuery, useDeleteNetworkMutation, Network }         from '@acx-ui/rc/services'
@@ -6,12 +6,12 @@ import {
   VLAN_PREFIX,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  WlanSecurityEnum,
+  // WlanSecurityEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { networkTypes } from '../NetworkForm/contentsMap'
+import * as contents from '../NetworkForm/contentsMap'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
@@ -35,9 +35,10 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
-      render: function (data, row) {
-        return transformNetworkType(String(data), row, intl)
-      }
+      render: (data: unknown, row) => <NetworkType
+        networkType={data as NetworkTypeEnum}
+        row={row}
+      />
     },
     {
       title: intl.$t({ defaultMessage: 'Venues' }),
@@ -107,77 +108,47 @@ const transformVLAN = (row: Network) => {
   return VLAN_PREFIX.VLAN + row.vlan
 }
 
-const transformNetworkType = (value: Network['nwSubType'], row: Network,
-  { $t }: ReturnType<typeof useIntl>) => {
-  let displayValue = ''
+const NetworkType: React.FC<{
+  networkType: NetworkTypeEnum,
+  row: Network
+}> = ({ networkType, row }) => {
+  const { $t } = useIntl()
   const captiveType = row.captiveType
   const wlan = row?.deepNetwork?.wlan
-  switch (value) {
+
+  switch (networkType) {
     case NetworkTypeEnum.OPEN:
-      displayValue = $t(networkTypes.open)
-      break
-
+      return <FormattedMessage
+        {...contents.networkTypes[NetworkTypeEnum.OPEN]}
+      />
     case NetworkTypeEnum.PSK:
-      displayValue = $t(networkTypes.psk)
-      if (wlan && wlan.wlanSecurity) {
-        displayValue += getWlanSecurity(wlan.wlanSecurity)
-      }
-      break
-
     case NetworkTypeEnum.DPSK:
-      displayValue = $t(networkTypes.dpsk)
-      if (wlan && wlan.wlanSecurity) {
-        displayValue += getWlanSecurity(wlan.wlanSecurity)
-      }
-      break
-
     case NetworkTypeEnum.AAA:
-      displayValue = $t(networkTypes.aaa)
-      if (wlan && wlan.wlanSecurity) {
-        displayValue += getWlanSecurity(wlan.wlanSecurity)
-      }
-      break
-
+      const message = contents.networkTypes[networkType]
+      return wlan?.wlanSecurity
+        ? <FormattedMessage
+          defaultMessage={'{networkType} - {authMethod}'}
+          values={{
+            networkType: $t(message),
+            authMethod: $t(contents.wlanSecurity[wlan?.wlanSecurity!])
+          }}
+        />
+        : <FormattedMessage {...message} />
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      displayValue = wlan ? $t({ defaultMessage: 'Captive' }) + ' ' : ''
-      switch (captiveType) {
-        case GuestNetworkTypeEnum.ClickThrough:
-          displayValue += $t({ defaultMessage: 'Portal - Click-Through' })
-          break
-        case GuestNetworkTypeEnum.GuestPass:
-          displayValue += $t({ defaultMessage: 'Portal - Managed Guest Pass' })
-          break
-        case GuestNetworkTypeEnum.SelfSignIn:
-          displayValue += $t({ defaultMessage: 'Portal - Self Sign-In' })
-          break
-        case GuestNetworkTypeEnum.HostApproval:
-          displayValue += $t({ defaultMessage: 'Portal - Host Approval' })
-          break
-        case GuestNetworkTypeEnum.WISPr:
-          displayValue += $t({ defaultMessage: 'Portal - 3rd Party Captive Portal (WISPr)' })
-          break
-        default:
-          displayValue += $t({ defaultMessage: 'Portal - Captive Portal' })
-      }
-      break
+      return <FormattedMessage
+        defaultMessage={`
+          {isCaptiveNetwork, select, true {Captive Portal} other {Portal}}
+          -
+          {captiveNetworkType}
+        `}
+        values={{
+          isCaptiveNetwork: String(Boolean(wlan)),
+          captiveNetworkType: $t(contents.captiveNetworkTypes[
+            captiveType || GuestNetworkTypeEnum.Cloudpath
+          ])
+        }}
+      />
   }
-  return displayValue
-}
-
-const getWlanSecurity = (wlanSecurity: WlanSecurityEnum) => {
-  const securityMap = {
-    [WlanSecurityEnum.Open]: ' - Open',
-    [WlanSecurityEnum.WPAPersonal]: ' - WPA',
-    [WlanSecurityEnum.WPA2Personal]: ' - WPA2',
-    [WlanSecurityEnum.WPAEnterprise]: ' - WPA Enterprise',
-    [WlanSecurityEnum.WPA2Enterprise]: ' - WPA2 Enterprise',
-    [WlanSecurityEnum.OpenCaptivePortal]: ' - Open Captive Portal',
-    [WlanSecurityEnum.WEP]: ' - WEP',
-    [WlanSecurityEnum.WPA23Mixed]: ' - WPA3/WPA2 Mixed',
-    [WlanSecurityEnum.WPA3]: ' - WPA3'
-  }
-
-  return securityMap[wlanSecurity] || ''
 }
 
 const defaultPayload = {
