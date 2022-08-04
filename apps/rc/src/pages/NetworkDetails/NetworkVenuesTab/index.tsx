@@ -144,9 +144,9 @@ export function NetworkVenuesTab () {
     updateNetworkDeep({ params, payload: network }).then(clearSelection)
   }
 
-  const activateSelected = (networkActivetedVenues: NetworkVenue[], activatingVenues: Venue[]) => {
+  const activateSelected = (networkActivatedVenues: NetworkVenue[], activatingVenues: Venue[]) => {
     const enabledNotActivatedVenues:string[] = []
-    const networkVenues = [...networkActivetedVenues]
+    const networkVenues = [...networkActivatedVenues]
     activatingVenues.forEach(venue => {
       const defaultVenueData = generateDefaultNetworkVenue(venue.id)
 
@@ -184,8 +184,8 @@ export function NetworkVenuesTab () {
     return networkVenues
   }
 
-  const deActivateSelected = (networkActivetedVenues: NetworkVenue[], activatingVenues: Venue[]) => {
-    const networkVenues = [...networkActivetedVenues]
+  const deActivateSelected = (networkActivatedVenues: NetworkVenue[], activatingVenues: Venue[]) => {
+    const networkVenues = [...networkActivatedVenues]
     const selectedVenuesId = activatingVenues.map(row => row.id)
 
     // Handle toogle button
