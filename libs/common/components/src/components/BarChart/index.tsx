@@ -104,7 +104,10 @@ export function BarChart<TChartData extends BarChartData>
     barWidth: barWidth || 12,
     barGap: '50%',
     color: barColors,
-    legend: { ...legendOptions() },
+    legend: {
+      ...legendOptions(),
+      textStyle: legendTextStyleOptions()
+    },
     xAxis: {
       axisLabel: {
         show: false
