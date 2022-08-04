@@ -1,134 +1,1062 @@
 {
-  "+20FW7": "Devices",
-  "+8jGZ4": "network filter",
-  "+U6ozc": "Type",
-  "0QEzt5": "AP Group",
-  "1EYCdR": "Tags",
-  "25rEb3": "Shared Secret",
-  "34xBI0": "APs",
-  "3KyZGF": "All Radios",
-  "4VPIXt": "Alarms",
-  "4dk4rO": "Accounting Service",
-  "4upJyO": "Portal - Captive Portal",
-  "5Bx7xE": "Portal - Host Approval",
-  "5ezgA1": "MAC Address",
-  "5lQx5r": "Scheduling",
-  "6g0glr": "Networking Devices",
-  "724CrE": "Select...",
-  "7Kk96z": "Use Cloudpath Server:",
-  "8B04tJ": "WPA",
-  "8Fo71r": "MSP Space",
-  "9GvlpZ": "Open Settings",
-  "9MxQUk": "Shared Secret:",
-  "9t1iiv": "Configure",
-  "9uOFF3": "Overview",
-  "9wJSG8": "Map is not enabled",
-  "AJBpR8": "Network Type",
-  "AetaeJ": "Select venues to activate this network",
-  "AfUjYu": "Config Change",
-  "BNHFY1": "Only letters and numbers can be used",
-  "BeT3j9": "WPA3",
-  "CM0JAR": "Entire Organization",
-  "CasKsA": "Add Secondary Server",
-  "D3idYv": "Settings",
-  "Dnob31": "Operational",
-  "EnTkxu": "Recommendations",
-  "FbnpZB": "Cluster of {count} Venues",
-  "FoE42e": "Requires Attention",
-  "HuqGcJ": "WPA2 (Recommended)",
-  "I3JhPS": "Network",
-  "I3b4hn": "Version",
-  "IBNdTs": "VLAN",
-  "JkubB5": "Enterprise AAA (802.1X)",
-  "K3r6DQ": "Delete",
-  "MfsDo3": "Portal - Click-Through",
-  "NH/H5U": "Dynamic Pre-Shared Key (DPSK)",
-  "NV6/gE": "Create New Network",
-  "Nr2pru": "Network History",
-  "Nt8DSX": "Authentication Service",
-  "O17xiH": "date filter",
-  "OT4kCw": "AP Name",
-  "Ok71Hw": "Security Protocol:",
-  "PYmHhr": "Venue",
-  "Ppx673": "Reports",
-  "Q8Qw5B": "Description",
-  "QH7XOz": "New Clients",
-  "QfVD/H": "Use Cloudpath Server",
-  "RrCui3": "Summary",
-  "Ru1Owh": "Serial Number",
-  "S33j4r": "Services ({servicesCount})",
-  "SIIVza": "Portal - 3rd Party Captive Portal (WISPr)",
-  "T3UF92": "Authentication Server",
-  "TE4fIS": "City",
-  "TY81Tv": "Passphrase Format:",
-  "UaCh1c": "Add Server",
-  "XB8fV9": "Last 24 Hours",
-  "XYVgGy": "Alarm Time",
-  "YDMrKK": "Users",
-  "Z4WqBL": "Remove Secondary Server",
-  "ZWz5If": "Network Info",
-  "ZvKSfJ": "Events",
-  "b3loSF": "Occupancy",
-  "bS/cRP": "Venues",
-  "c8uKl6": "Wi-Fi",
-  "c9uA84": "RF Channels",
-  "cRmipE": "Passphrase expiration",
-  "cp8inc": "Open Network",
-  "cq7z5N": "AAA Settings",
-  "d0A0aG": "Radius Authentication Service",
-  "d63gFk": "AI Analytics",
-  "dty181": "Traffic by Volume",
-  "eOJNIA": "Connected Clients",
-  "eWzMDx": "Activated",
-  "f+sh2j": "Administration",
-  "fCkfBx": "APs ({apsCount})",
-  "fUSCNN": "Deployment Type",
-  "fqiBvd": "Coming soon...",
-  "hSGclh": "Network Name",
-  "hlmkcL": "Health",
-  "hnL/gB": "Portal - Self Sign-In",
-  "hzSNj4": "Dashboard",
-  "i5bVOD": "Network Name:",
-  "iCpuph": "Clients",
-  "iFh/mp": "Passphrase Generation Parameters",
-  "iI2oMQ": "Use the DPSK Service",
-  "jNR5e0": "Network Details",
-  "keJaJz": "Letters, numbers and symbols can be used",
-  "khS4NF": "TLS Encryption:",
-  "lfIk1B": "Add...",
-  "mtr3R4": "Incidents",
-  "n1Whvj": "Switch",
-  "nCMnED": "Passphrase Length:",
-  "nhKqj3": "Only numbers can be used",
-  "o5l+pK": "Proxy Service",
-  "o7sOC4": "Portal - Managed Guest Pass",
-  "ojxMGa": "In Setup Phase",
-  "ox304v": "An error occurred",
-  "p5WNkO": "Temporarily degraded",
-  "qQ6P9N": "Activated in venues",
-  "rXq1Sc": "Pre-Shared Key (PSK)",
-  "rhSI1/": "Model",
-  "sMnDSO": "Wi-Fi APs",
-  "sZFybj": "Services",
-  "stDOc1": "Mesh Role",
-  "sw6FHg": "DPSK Settings",
-  "t071V3": "Info:",
-  "tzMNF3": "Status",
-  "uJV0wU": "IP Address",
-  "uS4sop": "Type:",
-  "ubGrOj": "Passphrase Expiration:",
-  "utCJRG": "Proxy Service:",
-  "vCAhII": "Severity",
-  "vONi+O": "Country",
-  "vXfkMH": "Add Wi-Fi Network",
-  "xGSuuE": "Security Protocol",
-  "xukzKg": "Networks",
-  "yJ7+dR": "Cloudpath Server",
-  "yV5oYe": "Policies",
-  "z5epQF": "Radios",
-  "zI1owl": "Venues ({venuesCount})",
-  "zT3YgI": "Impacted Clients",
-  "zWkvNO": "Timeline",
-  "zbjrr1": "Radius Shared secret",
-  "zhfC+x": "Captive"
+  "+20FW7": [
+    {
+      "type": 0,
+      "value": "Devices"
+    }
+  ],
+  "+8jGZ4": [
+    {
+      "type": 0,
+      "value": "network filter"
+    }
+  ],
+  "+U6ozc": [
+    {
+      "type": 0,
+      "value": "Type"
+    }
+  ],
+  "0Hd1cr": [
+    {
+      "type": 0,
+      "value": "Allow users to access the network without any authentication/security (not recommended)"
+    }
+  ],
+  "0QEzt5": [
+    {
+      "type": 0,
+      "value": "AP Group"
+    }
+  ],
+  "1EYCdR": [
+    {
+      "type": 0,
+      "value": "Tags"
+    }
+  ],
+  "25rEb3": [
+    {
+      "type": 0,
+      "value": "Shared Secret"
+    }
+  ],
+  "34xBI0": [
+    {
+      "type": 0,
+      "value": "APs"
+    }
+  ],
+  "3KyZGF": [
+    {
+      "type": 0,
+      "value": "All Radios"
+    }
+  ],
+  "3LyeET": [
+    {
+      "type": 0,
+      "value": "3rd Party Captive Portal (WISPr)"
+    }
+  ],
+  "4VPIXt": [
+    {
+      "type": 0,
+      "value": "Alarms"
+    }
+  ],
+  "4dk4rO": [
+    {
+      "type": 0,
+      "value": "Accounting Service"
+    }
+  ],
+  "5G8/Fe": [
+    {
+      "type": 0,
+      "value": "Self Sign-In"
+    }
+  ],
+  "5ezgA1": [
+    {
+      "type": 0,
+      "value": "MAC Address"
+    }
+  ],
+  "5jeq8P": [
+    {
+      "type": 0,
+      "value": "Unknown"
+    }
+  ],
+  "5lQx5r": [
+    {
+      "type": 0,
+      "value": "Scheduling"
+    }
+  ],
+  "6g0glr": [
+    {
+      "type": 0,
+      "value": "Networking Devices"
+    }
+  ],
+  "6xap9L": [
+    {
+      "type": 0,
+      "value": "Good"
+    }
+  ],
+  "724CrE": [
+    {
+      "type": 0,
+      "value": "Select..."
+    }
+  ],
+  "7Kk96z": [
+    {
+      "type": 0,
+      "value": "Use Cloudpath Server:"
+    }
+  ],
+  "8B04tJ": [
+    {
+      "type": 0,
+      "value": "WPA"
+    }
+  ],
+  "8Fo71r": [
+    {
+      "type": 0,
+      "value": "MSP Space"
+    }
+  ],
+  "9GvlpZ": [
+    {
+      "type": 0,
+      "value": "Open Settings"
+    }
+  ],
+  "9MxQUk": [
+    {
+      "type": 0,
+      "value": "Shared Secret:"
+    }
+  ],
+  "9t1iiv": [
+    {
+      "type": 0,
+      "value": "Configure"
+    }
+  ],
+  "9uOFF3": [
+    {
+      "type": 0,
+      "value": "Overview"
+    }
+  ],
+  "9wJSG8": [
+    {
+      "type": 0,
+      "value": "Map is not enabled"
+    }
+  ],
+  "AJBpR8": [
+    {
+      "type": 0,
+      "value": "Network Type"
+    }
+  ],
+  "AetaeJ": [
+    {
+      "type": 0,
+      "value": "Select venues to activate this network"
+    }
+  ],
+  "AfUjYu": [
+    {
+      "type": 0,
+      "value": "Config Change"
+    }
+  ],
+  "BNHFY1": [
+    {
+      "type": 0,
+      "value": "Only letters and numbers can be used"
+    }
+  ],
+  "BeT3j9": [
+    {
+      "type": 0,
+      "value": "WPA3"
+    }
+  ],
+  "CM0JAR": [
+    {
+      "type": 0,
+      "value": "Entire Organization"
+    }
+  ],
+  "CasKsA": [
+    {
+      "type": 0,
+      "value": "Add Secondary Server"
+    }
+  ],
+  "CzRokW": [
+    {
+      "type": 0,
+      "value": "WEP"
+    }
+  ],
+  "Dnob31": [
+    {
+      "type": 0,
+      "value": "Operational"
+    }
+  ],
+  "EnTkxu": [
+    {
+      "type": 0,
+      "value": "Recommendations"
+    }
+  ],
+  "FbnpZB": [
+    {
+      "type": 0,
+      "value": "Cluster of "
+    },
+    {
+      "type": 1,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " Venues"
+    }
+  ],
+  "FnRTEV": [
+    {
+      "type": 0,
+      "value": "Average"
+    }
+  ],
+  "FoE42e": [
+    {
+      "type": 0,
+      "value": "Requires Attention"
+    }
+  ],
+  "GLV1Lq": [
+    {
+      "type": 0,
+      "value": "Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork"
+    }
+  ],
+  "GYphdA": [
+    {
+      "type": 0,
+      "value": "Open Captive Portal"
+    }
+  ],
+  "HuqGcJ": [
+    {
+      "type": 0,
+      "value": "WPA2 (Recommended)"
+    }
+  ],
+  "I3JhPS": [
+    {
+      "type": 0,
+      "value": "Network"
+    }
+  ],
+  "I3b4hn": [
+    {
+      "type": 0,
+      "value": "Version"
+    }
+  ],
+  "IBNdTs": [
+    {
+      "type": 0,
+      "value": "VLAN"
+    }
+  ],
+  "IDKI0Y": [
+    {
+      "type": 1,
+      "value": "ipAddress"
+    },
+    {
+      "type": 0,
+      "value": ":"
+    },
+    {
+      "type": 1,
+      "value": "port"
+    }
+  ],
+  "IShDlj": [
+    {
+      "type": 0,
+      "value": "WPA2 Enterprise"
+    }
+  ],
+  "JkubB5": [
+    {
+      "type": 0,
+      "value": "Enterprise AAA (802.1X)"
+    }
+  ],
+  "K3r6DQ": [
+    {
+      "type": 0,
+      "value": "Delete"
+    }
+  ],
+  "NH/H5U": [
+    {
+      "type": 0,
+      "value": "Dynamic Pre-Shared Key (DPSK)"
+    }
+  ],
+  "NV6/gE": [
+    {
+      "type": 0,
+      "value": "Create New Network"
+    }
+  ],
+  "Nr2pru": [
+    {
+      "type": 0,
+      "value": "Network History"
+    }
+  ],
+  "Nt8DSX": [
+    {
+      "type": 0,
+      "value": "Authentication Service"
+    }
+  ],
+  "O17xiH": [
+    {
+      "type": 0,
+      "value": "date filter"
+    }
+  ],
+  "OT4kCw": [
+    {
+      "type": 0,
+      "value": "AP Name"
+    }
+  ],
+  "Ok71Hw": [
+    {
+      "type": 0,
+      "value": "Security Protocol:"
+    }
+  ],
+  "P0HnjZ": [
+    {
+      "type": 0,
+      "value": "Click-Through"
+    }
+  ],
+  "PYmHhr": [
+    {
+      "type": 0,
+      "value": "Venue"
+    }
+  ],
+  "Ppx673": [
+    {
+      "type": 0,
+      "value": "Reports"
+    }
+  ],
+  "Q8Qw5B": [
+    {
+      "type": 0,
+      "value": "Description"
+    }
+  ],
+  "QH7XOz": [
+    {
+      "type": 0,
+      "value": "New Clients"
+    }
+  ],
+  "QfVD/H": [
+    {
+      "type": 0,
+      "value": "Use Cloudpath Server"
+    }
+  ],
+  "RAjs+g": [
+    {
+      "options": {
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Portal"
+            }
+          ]
+        },
+        "true": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Captive Portal"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "isCaptiveNetwork"
+    },
+    {
+      "type": 0,
+      "value": " - "
+    },
+    {
+      "type": 1,
+      "value": "captiveNetworkType"
+    }
+  ],
+  "RrCui3": [
+    {
+      "type": 0,
+      "value": "Summary"
+    }
+  ],
+  "Ru1Owh": [
+    {
+      "type": 0,
+      "value": "Serial Number"
+    }
+  ],
+  "S33j4r": [
+    {
+      "type": 0,
+      "value": "Services ("
+    },
+    {
+      "type": 1,
+      "value": "servicesCount"
+    },
+    {
+      "type": 0,
+      "value": ")"
+    }
+  ],
+  "T3UF92": [
+    {
+      "type": 0,
+      "value": "Authentication Server"
+    }
+  ],
+  "TE4fIS": [
+    {
+      "type": 0,
+      "value": "City"
+    }
+  ],
+  "TY81Tv": [
+    {
+      "type": 0,
+      "value": "Passphrase Format:"
+    }
+  ],
+  "UaCh1c": [
+    {
+      "type": 0,
+      "value": "Add Server"
+    }
+  ],
+  "V52jNn": [
+    {
+      "type": 0,
+      "value": "Enabled"
+    }
+  ],
+  "VebTZq": [
+    {
+      "type": 0,
+      "value": "WPA Enterprise"
+    }
+  ],
+  "Vl9Unn": [
+    {
+      "type": 0,
+      "value": "Host Approval"
+    }
+  ],
+  "XB8fV9": [
+    {
+      "type": 0,
+      "value": "Last 24 Hours"
+    }
+  ],
+  "XYVgGy": [
+    {
+      "type": 0,
+      "value": "Alarm Time"
+    }
+  ],
+  "YDMrKK": [
+    {
+      "type": 0,
+      "value": "Users"
+    }
+  ],
+  "Z4WqBL": [
+    {
+      "type": 0,
+      "value": "Remove Secondary Server"
+    }
+  ],
+  "ZWz5If": [
+    {
+      "type": 0,
+      "value": "Network Info"
+    }
+  ],
+  "ZvKSfJ": [
+    {
+      "type": 0,
+      "value": "Events"
+    }
+  ],
+  "b3loSF": [
+    {
+      "type": 0,
+      "value": "Occupancy"
+    }
+  ],
+  "bS/cRP": [
+    {
+      "type": 0,
+      "value": "Venues"
+    }
+  ],
+  "c8uKl6": [
+    {
+      "type": 0,
+      "value": "Wi-Fi"
+    }
+  ],
+  "c9uA84": [
+    {
+      "type": 0,
+      "value": "RF Channels"
+    }
+  ],
+  "cRmipE": [
+    {
+      "type": 0,
+      "value": "Passphrase expiration"
+    }
+  ],
+  "ciDg7D": [
+    {
+      "type": 0,
+      "value": "Primary Server"
+    }
+  ],
+  "cp8inc": [
+    {
+      "type": 0,
+      "value": "Open Network"
+    }
+  ],
+  "cq7z5N": [
+    {
+      "type": 0,
+      "value": "AAA Settings"
+    }
+  ],
+  "czpjyb": [
+    {
+      "type": 0,
+      "value": "Require users to enter a passphrase to connect. The passphrase is unique per device"
+    }
+  ],
+  "d0A0aG": [
+    {
+      "type": 0,
+      "value": "Radius Authentication Service"
+    }
+  ],
+  "d63gFk": [
+    {
+      "type": 0,
+      "value": "AI Analytics"
+    }
+  ],
+  "dty181": [
+    {
+      "type": 0,
+      "value": "Traffic by Volume"
+    }
+  ],
+  "eOJNIA": [
+    {
+      "type": 0,
+      "value": "Connected Clients"
+    }
+  ],
+  "eWzMDx": [
+    {
+      "type": 0,
+      "value": "Activated"
+    }
+  ],
+  "eoV49s": [
+    {
+      "type": 0,
+      "value": "Poor"
+    }
+  ],
+  "f+sh2j": [
+    {
+      "type": 0,
+      "value": "Administration"
+    }
+  ],
+  "fCkfBx": [
+    {
+      "type": 0,
+      "value": "APs ("
+    },
+    {
+      "type": 1,
+      "value": "apsCount"
+    },
+    {
+      "type": 0,
+      "value": ")"
+    }
+  ],
+  "fUSCNN": [
+    {
+      "type": 0,
+      "value": "Deployment Type"
+    }
+  ],
+  "fqiBvd": [
+    {
+      "type": 0,
+      "value": "Coming soon..."
+    }
+  ],
+  "hSGclh": [
+    {
+      "type": 0,
+      "value": "Network Name"
+    }
+  ],
+  "hdGKYY": [
+    {
+      "type": 0,
+      "value": "Require users to enter a passphrase (that you have defined for the network) to connect"
+    }
+  ],
+  "hlmkcL": [
+    {
+      "type": 0,
+      "value": "Health"
+    }
+  ],
+  "hzSNj4": [
+    {
+      "type": 0,
+      "value": "Dashboard"
+    }
+  ],
+  "i5bVOD": [
+    {
+      "type": 0,
+      "value": "Network Name:"
+    }
+  ],
+  "iCpuph": [
+    {
+      "type": 0,
+      "value": "Clients"
+    }
+  ],
+  "iFh/mp": [
+    {
+      "type": 0,
+      "value": "Passphrase Generation Parameters"
+    }
+  ],
+  "iI2oMQ": [
+    {
+      "type": 0,
+      "value": "Use the DPSK Service"
+    }
+  ],
+  "jNR5e0": [
+    {
+      "type": 0,
+      "value": "Network Details"
+    }
+  ],
+  "jr8yqe": [
+    {
+      "type": 0,
+      "value": "WPA"
+    }
+  ],
+  "keJaJz": [
+    {
+      "type": 0,
+      "value": "Letters, numbers and symbols can be used"
+    }
+  ],
+  "khS4NF": [
+    {
+      "type": 0,
+      "value": "TLS Encryption:"
+    }
+  ],
+  "lfIk1B": [
+    {
+      "type": 0,
+      "value": "Add..."
+    }
+  ],
+  "mtr3R4": [
+    {
+      "type": 0,
+      "value": "Incidents"
+    }
+  ],
+  "n1Whvj": [
+    {
+      "type": 0,
+      "value": "Switch"
+    }
+  ],
+  "nCMnED": [
+    {
+      "type": 0,
+      "value": "Passphrase Length:"
+    }
+  ],
+  "nCxCzM": [
+    {
+      "type": 0,
+      "value": "Managed Guest Pass"
+    }
+  ],
+  "naPxCD": [
+    {
+      "type": 0,
+      "value": "Captive Portal"
+    }
+  ],
+  "nfh3Qu": [
+    {
+      "type": 0,
+      "value": "WPA2"
+    }
+  ],
+  "nhKqj3": [
+    {
+      "type": 0,
+      "value": "Only numbers can be used"
+    }
+  ],
+  "o5l+pK": [
+    {
+      "type": 0,
+      "value": "Proxy Service"
+    }
+  ],
+  "ojxMGa": [
+    {
+      "type": 0,
+      "value": "In Setup Phase"
+    }
+  ],
+  "ox304v": [
+    {
+      "type": 0,
+      "value": "An error occurred"
+    }
+  ],
+  "p5WNkO": [
+    {
+      "type": 0,
+      "value": "Temporarily degraded"
+    }
+  ],
+  "pUlxda": [
+    {
+      "type": 0,
+      "value": "Total Incidents"
+    }
+  ],
+  "pyZg46": [
+    {
+      "options": {
+        "aaa": {
+          "value": [
+            {
+              "type": 0,
+              "value": "AAA Settings"
+            }
+          ]
+        },
+        "dpsk": {
+          "value": [
+            {
+              "type": 0,
+              "value": "DPSK Settings"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Settings"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "type"
+    }
+  ],
+  "qQ6P9N": [
+    {
+      "type": 0,
+      "value": "Activated in venues"
+    }
+  ],
+  "qYBnMW": [
+    {
+      "type": 0,
+      "value": "WPA3"
+    }
+  ],
+  "r9gciS": [
+    {
+      "type": 1,
+      "value": "networkType"
+    },
+    {
+      "type": 0,
+      "value": " - "
+    },
+    {
+      "type": 1,
+      "value": "authMethod"
+    }
+  ],
+  "rJPrzU": [
+    {
+      "type": 0,
+      "value": "Captive Portal"
+    }
+  ],
+  "rXq1Sc": [
+    {
+      "type": 0,
+      "value": "Pre-Shared Key (PSK)"
+    }
+  ],
+  "rhSI1/": [
+    {
+      "type": 0,
+      "value": "Model"
+    }
+  ],
+  "rsSUP3": [
+    {
+      "type": 0,
+      "value": "Port"
+    }
+  ],
+  "sMnDSO": [
+    {
+      "type": 0,
+      "value": "Wi-Fi APs"
+    }
+  ],
+  "sTAlko": [
+    {
+      "type": 0,
+      "value": "WPA3/WPA2 Mixed"
+    }
+  ],
+  "sZFybj": [
+    {
+      "type": 0,
+      "value": "Services"
+    }
+  ],
+  "stDOc1": [
+    {
+      "type": 0,
+      "value": "Mesh Role"
+    }
+  ],
+  "sw6FHg": [
+    {
+      "type": 0,
+      "value": "DPSK Settings"
+    }
+  ],
+  "t071V3": [
+    {
+      "type": 0,
+      "value": "Info:"
+    }
+  ],
+  "tthToS": [
+    {
+      "type": 0,
+      "value": "Disabled"
+    }
+  ],
+  "tvFSNq": [
+    {
+      "type": 0,
+      "value": "Secondary Server"
+    }
+  ],
+  "tzMNF3": [
+    {
+      "type": 0,
+      "value": "Status"
+    }
+  ],
+  "uJV0wU": [
+    {
+      "type": 0,
+      "value": "IP Address"
+    }
+  ],
+  "uS4sop": [
+    {
+      "type": 0,
+      "value": "Type:"
+    }
+  ],
+  "ubGrOj": [
+    {
+      "type": 0,
+      "value": "Passphrase Expiration:"
+    }
+  ],
+  "ubQ1f+": [
+    {
+      "type": 0,
+      "value": "Shared secret"
+    }
+  ],
+  "utCJRG": [
+    {
+      "type": 0,
+      "value": "Proxy Service:"
+    }
+  ],
+  "vCAhII": [
+    {
+      "type": 0,
+      "value": "Severity"
+    }
+  ],
+  "vONi+O": [
+    {
+      "type": 0,
+      "value": "Country"
+    }
+  ],
+  "vXfkMH": [
+    {
+      "type": 0,
+      "value": "Add Wi-Fi Network"
+    }
+  ],
+  "wsSxJK": [
+    {
+      "type": 0,
+      "value": "Open"
+    }
+  ],
+  "xGSuuE": [
+    {
+      "type": 0,
+      "value": "Security Protocol"
+    }
+  ],
+  "xukzKg": [
+    {
+      "type": 0,
+      "value": "Networks"
+    }
+  ],
+  "yJ7+dR": [
+    {
+      "type": 0,
+      "value": "Cloudpath Server"
+    }
+  ],
+  "yV5oYe": [
+    {
+      "type": 0,
+      "value": "Policies"
+    }
+  ],
+  "ymr68V": [
+    {
+      "type": 0,
+      "value": "Users are authorized through a captive portal in various methods"
+    }
+  ],
+  "z5epQF": [
+    {
+      "type": 0,
+      "value": "Radios"
+    }
+  ],
+  "zI1owl": [
+    {
+      "type": 0,
+      "value": "Venues ("
+    },
+    {
+      "type": 1,
+      "value": "venuesCount"
+    },
+    {
+      "type": 0,
+      "value": ")"
+    }
+  ],
+  "zT3YgI": [
+    {
+      "type": 0,
+      "value": "Impacted Clients"
+    }
+  ],
+  "zWkvNO": [
+    {
+      "type": 0,
+      "value": "Timeline"
+    }
+  ],
+  "zbjrr1": [
+    {
+      "type": 0,
+      "value": "Radius Shared secret"
+    }
+  ]
 }

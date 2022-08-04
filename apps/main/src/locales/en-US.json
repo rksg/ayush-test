@@ -8,6 +8,10 @@
   "+U6ozc": {
     "defaultMessage": "Type"
   },
+  "0Hd1cr": {
+    "defaultMessage": "Allow users to access the network without any authentication/security (not recommended)",
+    "description": "Description for Open Network"
+  },
   "0QEzt5": {
     "defaultMessage": "AP Group"
   },
@@ -23,26 +27,34 @@
   "3KyZGF": {
     "defaultMessage": "All Radios"
   },
+  "3LyeET": {
+    "defaultMessage": "3rd Party Captive Portal (WISPr)",
+    "description": "Guest network type - 3rd Party Captive Portal (WISPr)"
+  },
   "4VPIXt": {
     "defaultMessage": "Alarms"
   },
   "4dk4rO": {
     "defaultMessage": "Accounting Service"
   },
-  "4upJyO": {
-    "defaultMessage": "Portal - Captive Portal"
-  },
-  "5Bx7xE": {
-    "defaultMessage": "Portal - Host Approval"
+  "5G8/Fe": {
+    "defaultMessage": "Self Sign-In",
+    "description": "Guest network type - Self Sign-In"
   },
   "5ezgA1": {
     "defaultMessage": "MAC Address"
+  },
+  "5jeq8P": {
+    "defaultMessage": "Unknown"
   },
   "5lQx5r": {
     "defaultMessage": "Scheduling"
   },
   "6g0glr": {
     "defaultMessage": "Networking Devices"
+  },
+  "6xap9L": {
+    "defaultMessage": "Good"
   },
   "724CrE": {
     "defaultMessage": "Select..."
@@ -92,8 +104,9 @@
   "CasKsA": {
     "defaultMessage": "Add Secondary Server"
   },
-  "D3idYv": {
-    "defaultMessage": "Settings"
+  "CzRokW": {
+    "defaultMessage": "WEP",
+    "description": "WLAN security type - WEP"
   },
   "Dnob31": {
     "defaultMessage": "Operational"
@@ -104,8 +117,19 @@
   "FbnpZB": {
     "defaultMessage": "Cluster of {count} Venues"
   },
+  "FnRTEV": {
+    "defaultMessage": "Average"
+  },
   "FoE42e": {
     "defaultMessage": "Requires Attention"
+  },
+  "GLV1Lq": {
+    "defaultMessage": "Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork",
+    "description": "Description for Enterprise AAA (802.1X)"
+  },
+  "GYphdA": {
+    "defaultMessage": "Open Captive Portal",
+    "description": "WLAN security type - Open Captive Portal"
   },
   "HuqGcJ": {
     "defaultMessage": "WPA2 (Recommended)"
@@ -119,14 +143,18 @@
   "IBNdTs": {
     "defaultMessage": "VLAN"
   },
+  "IDKI0Y": {
+    "defaultMessage": "{ipAddress}:{port}"
+  },
+  "IShDlj": {
+    "defaultMessage": "WPA2 Enterprise",
+    "description": "WLAN security type - WPA2 Enterprise"
+  },
   "JkubB5": {
     "defaultMessage": "Enterprise AAA (802.1X)"
   },
   "K3r6DQ": {
     "defaultMessage": "Delete"
-  },
-  "MfsDo3": {
-    "defaultMessage": "Portal - Click-Through"
   },
   "NH/H5U": {
     "defaultMessage": "Dynamic Pre-Shared Key (DPSK)"
@@ -149,6 +177,10 @@
   "Ok71Hw": {
     "defaultMessage": "Security Protocol:"
   },
+  "P0HnjZ": {
+    "defaultMessage": "Click-Through",
+    "description": "Guest network type - Click-Through"
+  },
   "PYmHhr": {
     "defaultMessage": "Venue"
   },
@@ -164,6 +196,9 @@
   "QfVD/H": {
     "defaultMessage": "Use Cloudpath Server"
   },
+  "RAjs+g": {
+    "defaultMessage": "{isCaptiveNetwork, select, true {Captive Portal} other {Portal}} - {captiveNetworkType}"
+  },
   "RrCui3": {
     "defaultMessage": "Summary"
   },
@@ -172,9 +207,6 @@
   },
   "S33j4r": {
     "defaultMessage": "Services ({servicesCount})"
-  },
-  "SIIVza": {
-    "defaultMessage": "Portal - 3rd Party Captive Portal (WISPr)"
   },
   "T3UF92": {
     "defaultMessage": "Authentication Server"
@@ -187,6 +219,17 @@
   },
   "UaCh1c": {
     "defaultMessage": "Add Server"
+  },
+  "V52jNn": {
+    "defaultMessage": "Enabled"
+  },
+  "VebTZq": {
+    "defaultMessage": "WPA Enterprise",
+    "description": "WLAN security type - WPA Enterprise"
+  },
+  "Vl9Unn": {
+    "defaultMessage": "Host Approval",
+    "description": "Guest network type - Host Approval"
   },
   "XB8fV9": {
     "defaultMessage": "Last 24 Hours"
@@ -221,11 +264,19 @@
   "cRmipE": {
     "defaultMessage": "Passphrase expiration"
   },
+  "ciDg7D": {
+    "defaultMessage": "Primary Server",
+    "description": "AAA Server Order - Primary Server"
+  },
   "cp8inc": {
     "defaultMessage": "Open Network"
   },
   "cq7z5N": {
     "defaultMessage": "AAA Settings"
+  },
+  "czpjyb": {
+    "defaultMessage": "Require users to enter a passphrase to connect. The passphrase is unique per device",
+    "description": "Description for Dynamic Pre-Shared Key (DPSK)"
   },
   "d0A0aG": {
     "defaultMessage": "Radius Authentication Service"
@@ -242,6 +293,9 @@
   "eWzMDx": {
     "defaultMessage": "Activated"
   },
+  "eoV49s": {
+    "defaultMessage": "Poor"
+  },
   "f+sh2j": {
     "defaultMessage": "Administration"
   },
@@ -257,11 +311,12 @@
   "hSGclh": {
     "defaultMessage": "Network Name"
   },
+  "hdGKYY": {
+    "defaultMessage": "Require users to enter a passphrase (that you have defined for the network) to connect",
+    "description": "Description for Pre-Shared Key (PSK)"
+  },
   "hlmkcL": {
     "defaultMessage": "Health"
-  },
-  "hnL/gB": {
-    "defaultMessage": "Portal - Self Sign-In"
   },
   "hzSNj4": {
     "defaultMessage": "Dashboard"
@@ -281,6 +336,10 @@
   "jNR5e0": {
     "defaultMessage": "Network Details"
   },
+  "jr8yqe": {
+    "defaultMessage": "WPA",
+    "description": "WLAN security type - WPA"
+  },
   "keJaJz": {
     "defaultMessage": "Letters, numbers and symbols can be used"
   },
@@ -299,14 +358,23 @@
   "nCMnED": {
     "defaultMessage": "Passphrase Length:"
   },
+  "nCxCzM": {
+    "defaultMessage": "Managed Guest Pass",
+    "description": "Guest network type - Managed Guest Pass"
+  },
+  "naPxCD": {
+    "defaultMessage": "Captive Portal",
+    "description": "Guest network type - Captive Portal"
+  },
+  "nfh3Qu": {
+    "defaultMessage": "WPA2",
+    "description": "WLAN security type - WPA2"
+  },
   "nhKqj3": {
     "defaultMessage": "Only numbers can be used"
   },
   "o5l+pK": {
     "defaultMessage": "Proxy Service"
-  },
-  "o7sOC4": {
-    "defaultMessage": "Portal - Managed Guest Pass"
   },
   "ojxMGa": {
     "defaultMessage": "In Setup Phase"
@@ -317,8 +385,24 @@
   "p5WNkO": {
     "defaultMessage": "Temporarily degraded"
   },
+  "pUlxda": {
+    "defaultMessage": "Total Incidents"
+  },
+  "pyZg46": {
+    "defaultMessage": "{type, select, aaa {AAA Settings} dpsk {DPSK Settings} other {Settings} }"
+  },
   "qQ6P9N": {
     "defaultMessage": "Activated in venues"
+  },
+  "qYBnMW": {
+    "defaultMessage": "WPA3",
+    "description": "WLAN security type - WPA3"
+  },
+  "r9gciS": {
+    "defaultMessage": "{networkType} - {authMethod}"
+  },
+  "rJPrzU": {
+    "defaultMessage": "Captive Portal"
   },
   "rXq1Sc": {
     "defaultMessage": "Pre-Shared Key (PSK)"
@@ -326,8 +410,15 @@
   "rhSI1/": {
     "defaultMessage": "Model"
   },
+  "rsSUP3": {
+    "defaultMessage": "Port"
+  },
   "sMnDSO": {
     "defaultMessage": "Wi-Fi APs"
+  },
+  "sTAlko": {
+    "defaultMessage": "WPA3/WPA2 Mixed",
+    "description": "WLAN security type - WPA3/WPA2 Mixed"
   },
   "sZFybj": {
     "defaultMessage": "Services"
@@ -341,6 +432,13 @@
   "t071V3": {
     "defaultMessage": "Info:"
   },
+  "tthToS": {
+    "defaultMessage": "Disabled"
+  },
+  "tvFSNq": {
+    "defaultMessage": "Secondary Server",
+    "description": "AAA Server Order - Secondary Server"
+  },
   "tzMNF3": {
     "defaultMessage": "Status"
   },
@@ -352,6 +450,9 @@
   },
   "ubGrOj": {
     "defaultMessage": "Passphrase Expiration:"
+  },
+  "ubQ1f+": {
+    "defaultMessage": "Shared secret"
   },
   "utCJRG": {
     "defaultMessage": "Proxy Service:"
@@ -365,6 +466,10 @@
   "vXfkMH": {
     "defaultMessage": "Add Wi-Fi Network"
   },
+  "wsSxJK": {
+    "defaultMessage": "Open",
+    "description": "WLAN security type - Open"
+  },
   "xGSuuE": {
     "defaultMessage": "Security Protocol"
   },
@@ -376,6 +481,10 @@
   },
   "yV5oYe": {
     "defaultMessage": "Policies"
+  },
+  "ymr68V": {
+    "defaultMessage": "Users are authorized through a captive portal in various methods",
+    "description": "Description for Captive Portal"
   },
   "z5epQF": {
     "defaultMessage": "Radios"
@@ -391,8 +500,5 @@
   },
   "zbjrr1": {
     "defaultMessage": "Radius Shared secret"
-  },
-  "zhfC+x": {
-    "defaultMessage": "Captive"
   }
 }
