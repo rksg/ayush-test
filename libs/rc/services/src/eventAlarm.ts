@@ -23,7 +23,6 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
   endpoints: (build) => ({
     alarmsList: build.query<TableResult<Alarm>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        console.log('RTK: ', arg.payload)
         const alarmsListInfo = {
           ...createHttpRequest(CommonUrlsInfo.getAlarmsList, arg.params),
           body: arg.payload

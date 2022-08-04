@@ -9,11 +9,32 @@ import {
   Dashboard,
   AlaramSeverity
 } from '@acx-ui/rc/services'
-import { Alarm, EventTypeEnum }                  from '@acx-ui/rc/services'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Alarm, EventSeverityEnum, EventTypeEnum, useAlarmsListQuery } from '@acx-ui/rc/services'
+import { CommonUrlsInfo, useTableQuery }                               from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                       from '@acx-ui/react-router-dom'
 
 import { AlarmList } from './AlarmList'
 import * as UI       from './styledComponents'
+
+const defaultPayload = {
+  url: CommonUrlsInfo.getAlarmsList.url,
+  fields: [
+    'startTime',
+    'severity',
+    'message',
+    'entity_id',
+    'id',
+    'serialNumber',
+    'entityType',
+    'entityId',
+    'entity_type',
+    'venueName',
+    'apName',
+    'switchName',
+    'sourceType',
+    'switchMacAddress'
+  ]
+}
 
 const seriesMapping = [
   { key: AlaramSeverity.CRITICAL,
@@ -58,7 +79,8 @@ function AlarmWidget () {
     })
   }
 
-  const queryResults = useDashboardOverviewQuery({
+  // Dashboard overview query
+  const overviewQuery = useDashboardOverviewQuery({
     params: useParams()
   },{
     selectFromResult: ({ data, ...rest }) => ({
@@ -67,9 +89,19 @@ function AlarmWidget () {
     })
   })
 
-  const { data } = queryResults
+  // Alarms query
+  const alarmQuery = useTableQuery({
+    useQuery: useAlarmsListQuery,
+    defaultPayload,
+    sorter: {
+      sortField: 'startTime',
+      sortOrder: 'DESC'
+    }
+  })
+
+  const { data } = overviewQuery
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[overviewQuery, alarmQuery]}>
       <Card title='Alarms'>
         <AutoSizer>
           {({ height, width }) => (
@@ -79,6 +111,7 @@ function AlarmWidget () {
                   style={{ width, height: height / 3 }}
                   data={data}/>
                 <AlarmList
+                  data={alarmQuery.data?.data || []}
                   width={width - 10}
                   height={height - (height / 3)}
                   onNavigate={onNavigate} />
