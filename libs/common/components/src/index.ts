@@ -15,10 +15,7 @@ export * from './components/DropDown'
 export * from './components/Layout'
 export * from './components/Loader'
 export { MultiLineTimeSeriesChart } from './components/MultiLineTimeSeriesChart'
-export type {
-  MultiLineTimeSeriesChartProps,
-  MultiLineTimeSeriesChartData
-} from './components/MultiLineTimeSeriesChart'
+export type { MultiLineTimeSeriesChartProps } from './components/MultiLineTimeSeriesChart'
 export * from './components/PageHeader'
 export * from './components/Pill'
 export * from './components/SelectionControl'

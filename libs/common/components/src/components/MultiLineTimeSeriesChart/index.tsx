@@ -5,7 +5,7 @@ import {
 } from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
-import { TimeStamp } from '@acx-ui/types'
+import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
 
 import { cssStr }              from '../../theme/helper'
 import {
@@ -22,11 +22,6 @@ import {
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
-
-export interface MultiLineTimeSeriesChartData extends Object {
-  name: string,
-  data: [TimeStamp, number | '-'][]
-}
 
 export interface MultiLineTimeSeriesChartProps
   <TChartData extends MultiLineTimeSeriesChartData>

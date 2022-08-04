@@ -2,7 +2,7 @@ import { Col, Row }                  from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import { incidentInformation, calculateSeverity } from '@acx-ui/analytics/utils'
-import { PageHeader, Pill }                       from '@acx-ui/components'
+import { PageHeader, SeverityPill }               from '@acx-ui/components'
 
 import { incidentDetailsMap }                                      from '..'
 import { getImpactedArea, IncidentAttributes, formattedSliceType } from '../IncidentAttributes'
@@ -24,13 +24,12 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
     }
     return <FormattedMessage {...messageProps}/>
   }
-  const severityValue = calculateSeverity(props.severity)!
 
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Incident Details' })}
-        sideHeader={<Pill value={severityValue} trend={severityValue} />}
+        sideHeader={<SeverityPill severity={calculateSeverity(props.severity)!} />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}

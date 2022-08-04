@@ -61,6 +61,7 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
             >
               <span
                 class="styledComponents__Pill-sc-j61ge1-0 hWnMmO"
+                type="P3"
               >
                 P3
               </span>
@@ -69,7 +70,8 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
           <span
             class="ant-page-header-heading-sub-title"
           >
-            EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+            EAP failures are unusually high in Access Point:
+      RuckusAP (70:CA:97:01:A0:C0)
           </span>
         </div>
       </div>
@@ -86,7 +88,7 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
           class=""
         >
           <div
-            class="ant-anchor-wrapper styledComponents__LeftColumn-sc-cwxgii-0 hyMqHb"
+            class="ant-anchor-wrapper styledComponents__LeftColumn-sc-1d64a9q-0 gUIZaW"
             style="max-height: calc(100vh - 200px);"
           >
             <div

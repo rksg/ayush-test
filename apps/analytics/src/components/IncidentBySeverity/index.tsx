@@ -10,8 +10,8 @@ import {
   BarChart,
   BarChartData,
   Loader,
-  Pill,
   cssStr,
+  TrendPill,
   TrendType
 } from '@acx-ui/components'
 
@@ -78,7 +78,7 @@ function IncidentBySeverityWidget () {
       <Container>
         <Title>
           <Subtitle level={1} style={{ marginBottom: 0 }}>{pill.total}</Subtitle>
-          <Pill value={pill.delta} trend={pill.trend as TrendType} />
+          <TrendPill value={pill.delta} trend={pill.trend as TrendType} />
         </Title>
         <AutoSizer>
           {({ width }) => (

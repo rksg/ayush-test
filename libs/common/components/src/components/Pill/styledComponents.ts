@@ -1,16 +1,15 @@
 import styled from 'styled-components/macro'
 
-import { TrendType } from '.'
+import { severitiesDefinition } from '@acx-ui/analytics/utils'
 
-const pillColor = ({ trend }: { trend: TrendType }) => {
-  switch (trend) {
+import { TrendType, IncidentSeverity } from '.'
+
+const pillColor = ({ type }: { type: TrendType | IncidentSeverity }) => {
+  switch (type) {
     case 'positive': return '--acx-semantics-green-50'
     case 'negative': return '--acx-semantics-red-50'
     case 'none': return '--acx-neutrals-50'
-    case 'P1': return '--acx-semantics-red-70'
-    case 'P2': return '--acx-semantics-red-50'
-    case 'P3': return '--acx-accents-orange-50'
-    case 'P4': return '--acx-semantics-yellow-40'
+    default: return severitiesDefinition[type].color
   }
 }
 export const Pill = styled.span`

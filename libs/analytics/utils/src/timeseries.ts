@@ -1,8 +1,12 @@
-import type { MultiLineTimeSeriesChartData } from '@acx-ui/components'
-import type { TimeStamp }                    from '@acx-ui/types'
+import type { TimeStamp } from '@acx-ui/types'
 
 type TimeSeriesData = {
   [key: string]: (TimeStamp | number | null)[]
+}
+
+export interface MultiLineTimeSeriesChartData extends Object {
+  name: string,
+  data: [TimeStamp, number | '-'][]
 }
 
 export function getSeriesData (
