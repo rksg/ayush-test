@@ -1,11 +1,14 @@
 import { useIntl } from 'react-intl'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }      from '@acx-ui/store'
 import { render,
-  screen, mockRestApiQuery,
+  screen,
+  mockRestApiQuery,
   mockAutoSizer,
-  waitForElementToBeRemoved } from '@acx-ui/test-utils'
+  waitForElementToBeRemoved,
+  renderHook
+} from '@acx-ui/test-utils'
 
 
 import ClientsDonutWidget, { getAPClientChartData, getSwitchClientChartData } from '.'
@@ -30,7 +33,7 @@ describe('Clients widget', () => {
   })
 })
 
-xdescribe('getAPClientChartData', () => {
+describe('getAPClientChartData', () => {
   const data = {
     summary: {
       clients: {
@@ -68,7 +71,7 @@ xdescribe('getAPClientChartData', () => {
   })
 })
 
-xdescribe('getSwitchClientChartData', () => {
+describe('getSwitchClientChartData', () => {
   const data = {
     summary: {
       switchClients: {
@@ -80,15 +83,17 @@ xdescribe('getSwitchClientChartData', () => {
     }
   }
   it('should return correct formatted data', async () => {
-    const intl = useIntl()
-    expect(getSwitchClientChartData(data, intl)).toEqual([{
+    const { result } = renderHook(() =>
+      getSwitchClientChartData(data, useIntl()))
+    expect(result.current).toEqual([{
       color: '#258D36',
       name: 'Clients',
       value: 2
     }])
   })
   it('should return empty array if no data', () => {
-    const intl = useIntl()
-    expect(getSwitchClientChartData(undefined, intl)).toEqual([])
+    const { result } = renderHook(() =>
+      getSwitchClientChartData(undefined, useIntl()))
+    expect(result.current).toEqual([])
   })
 })
