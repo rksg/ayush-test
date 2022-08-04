@@ -52,7 +52,8 @@ describe('getAPClientChartData', () => {
     }
   }
   it('should return correct formatted data', async () => {
-    expect(getAPClientChartData(data)).toEqual([{
+    const { result } = renderHook(() => getAPClientChartData(data, useIntl()))
+    expect(result.current).toEqual([{
       color: '#ED1C24',
       name: 'Poor',
       value: 1
@@ -67,7 +68,8 @@ describe('getAPClientChartData', () => {
     }])
   })
   it('should return empty array if no data', ()=>{
-    expect(getAPClientChartData()).toEqual([])
+    const { result } = renderHook(() => getAPClientChartData(undefined, useIntl()))
+    expect(result.current).toEqual([])
   })
 })
 
@@ -83,8 +85,7 @@ describe('getSwitchClientChartData', () => {
     }
   }
   it('should return correct formatted data', async () => {
-    const { result } = renderHook(() =>
-      getSwitchClientChartData(data, useIntl()))
+    const { result } = renderHook(() => getSwitchClientChartData(data, useIntl()))
     expect(result.current).toEqual([{
       color: '#258D36',
       name: 'Clients',
@@ -92,8 +93,7 @@ describe('getSwitchClientChartData', () => {
     }])
   })
   it('should return empty array if no data', () => {
-    const { result } = renderHook(() =>
-      getSwitchClientChartData(undefined, useIntl()))
+    const { result } = renderHook(() => getSwitchClientChartData(undefined, useIntl()))
     expect(result.current).toEqual([])
   })
 })

@@ -171,7 +171,7 @@ export function ApTable () {
       dataIndex: 'fwVersion',
       sorter: true
     }] as TableProps<AP>['columns']
-  }, [tableQuery.data?.extra])
+  }, [$t, tableQuery.data?.extra])
 
   return (
     <Loader states={[tableQuery]}>
