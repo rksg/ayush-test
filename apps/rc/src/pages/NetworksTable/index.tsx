@@ -6,7 +6,6 @@ import {
   VLAN_PREFIX,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  // WlanSecurityEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'

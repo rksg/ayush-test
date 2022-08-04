@@ -1,6 +1,6 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { GuestNetworkTypeEnum, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { AaaServerOrderEnum, GuestNetworkTypeEnum, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 export const networkTypes: Record<NetworkTypeEnum, MessageDescriptor> = {
   [NetworkTypeEnum.OPEN]: defineMessage({ defaultMessage: 'Open Network' }),
@@ -99,4 +99,20 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
     defaultMessage: 'Captive Portal',
     description: 'Guest network type - Captive Portal'
   })
+}
+
+export const aaaServerTypes: Record<AaaServerOrderEnum, MessageDescriptor> = {
+  [AaaServerOrderEnum.PRIMARY]: defineMessage({
+    defaultMessage: 'Primary Server',
+    description: 'AAA Server Order - Primary Server'
+  }),
+  [AaaServerOrderEnum.SECONDARY]: defineMessage({
+    defaultMessage: 'Secondary Server',
+    description: 'AAA Server Order - Secondary Server'
+  })
+}
+
+export const states = {
+  enabled: defineMessage({ defaultMessage: 'Enabled' }),
+  disabled: defineMessage({ defaultMessage: 'Disabled' })
 }

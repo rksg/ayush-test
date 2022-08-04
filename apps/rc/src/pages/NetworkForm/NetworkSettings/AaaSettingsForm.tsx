@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-
 import {
   ExclamationCircleFilled,
   QuestionCircleOutlined
@@ -26,7 +25,6 @@ import {
   getUserSettingsFromDict,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  AaaServerTitle,
   networkWifiIpRegExp,
   networkWifiPortRegExp,
   stringContainSpace
@@ -35,6 +33,7 @@ import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 import { useParams }       from '@acx-ui/react-router-dom'
 
 
+import * as contents      from '../contentsMap'
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
@@ -189,10 +188,10 @@ function SettingsForm () {
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
-          {getAaaServer(
-            AaaServerTypeEnum.AUTHENTICATION,
-            AaaServerOrderEnum.PRIMARY
-          )}
+          <AaaServerFields
+            serverType={AaaServerTypeEnum.AUTHENTICATION}
+            order={AaaServerOrderEnum.PRIMARY}
+          />
 
           <Form.Item noStyle name='enableSecondaryAuthServer'>
             <ToggleButtonInput
@@ -201,10 +200,10 @@ function SettingsForm () {
             />
           </Form.Item>
 
-          {enableSecondaryAuthServer && getAaaServer(
-            AaaServerTypeEnum.AUTHENTICATION,
-            AaaServerOrderEnum.SECONDARY
-          )}
+          {enableSecondaryAuthServer && <AaaServerFields
+            serverType={AaaServerTypeEnum.AUTHENTICATION}
+            order={AaaServerOrderEnum.SECONDARY}
+          />}
 
           <Form.Item>
             <Form.Item
@@ -228,10 +227,10 @@ function SettingsForm () {
 
           {enableAccountingService && (
             <>
-              {getAaaServer(
-                AaaServerTypeEnum.ACCOUNTING,
-                AaaServerOrderEnum.PRIMARY
-              )}
+              <AaaServerFields
+                serverType={AaaServerTypeEnum.ACCOUNTING}
+                order={AaaServerOrderEnum.PRIMARY}
+              />
 
               <Form.Item noStyle name='enableSecondaryAcctServer'>
                 <ToggleButtonInput
@@ -240,10 +239,10 @@ function SettingsForm () {
                 />
               </Form.Item>
 
-              {enableSecondaryAcctServer && getAaaServer(
-                AaaServerTypeEnum.ACCOUNTING,
-                AaaServerOrderEnum.SECONDARY
-              )}
+              {enableSecondaryAcctServer && <AaaServerFields
+                serverType={AaaServerTypeEnum.ACCOUNTING}
+                order={AaaServerOrderEnum.SECONDARY}
+              />}
 
               <Form.Item>
                 <Form.Item
@@ -266,17 +265,18 @@ function SettingsForm () {
   }
 }
 
-function getAaaServer (
+function AaaServerFields ({ serverType, order }: {
   serverType: AaaServerTypeEnum,
   order: AaaServerOrderEnum
-) {
-  const title = AaaServerTitle[order]
+}) {
+  const { $t } = useIntl()
+  const title = $t(contents.aaaServerTypes[order])
   return (
     <>
       <Subtitle level={4} children={title} />
       <Form.Item
         name={`${serverType}.${order}.ip`}
-        label='IP Address'
+        label={$t({ defaultMessage: 'IP Address' })}
         rules={[{
           required: true,
           whitespace: false
@@ -287,7 +287,7 @@ function getAaaServer (
       />
       <Form.Item
         name={`${serverType}.${order}.port`}
-        label='Port'
+        label={$t({ defaultMessage: 'Port' })}
         rules={[{
           required: true
         },{
@@ -297,7 +297,7 @@ function getAaaServer (
       />
       <Form.Item
         name={`${serverType}.${order}.sharedSecret`}
-        label='Shared secret'
+        label={$t({ defaultMessage: 'Shared secret' })}
         rules={[{
           required: true,
           whitespace: false
