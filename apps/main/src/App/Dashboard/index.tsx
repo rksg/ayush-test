@@ -22,11 +22,24 @@ const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
 export default function Dashboard () {
+  const { $t } = useIntl()
+  const tabDetails: ContentSwitcherProps['tabDetails'] = [
+    {
+      label: $t({ defaultMessage: 'Wi-Fi' }),
+      value: 'ap',
+      children: <ApWidgets />
+    },
+    {
+      label: $t({ defaultMessage: 'Switch' }),
+      value: 'switch',
+      children: <SwitchWidgets />
+    }
+  ]
   return (
     <GlobalFilterProvider>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
-      <ContentSwitcher tabDetails={getCols(useIntl())} size='large' />
+      <ContentSwitcher tabDetails={tabDetails} size='large' />
     </GlobalFilterProvider>
   )
 }
@@ -93,22 +106,6 @@ function SwitchWidgets () {
       </DashboardCol>
     </DashboardRow>
   )
-}
-
-function getCols ({ $t }: ReturnType<typeof useIntl>) {
-  const tabDetails: ContentSwitcherProps['tabDetails'] = [
-    {
-      label: $t({ defaultMessage: 'Wi-Fi' }),
-      value: 'ap',
-      children: ApWidgets()
-    },
-    {
-      label: $t({ defaultMessage: 'Switch' }),
-      value: 'switch',
-      children: SwitchWidgets()
-    }
-  ]
-  return tabDetails
 }
 
 function CommonDashboardWidgets () {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -6,8 +6,9 @@ import { Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import { Alarm, useAlarmsListQuery }             from '@acx-ui/rc/services'
 import { CommonUrlsInfo, useTableQuery }         from '@acx-ui/rc/utils'
 
-function getCols ({ $t }: ReturnType<typeof useIntl>) {
-  const columns: TableProps<Alarm>['columns'] = [
+function useColumns () {
+  const { $t } = useIntl()
+  const columns: TableProps<Alarm>['columns'] = useMemo(() => [
     {
       title: $t({ defaultMessage: 'Alarm Time' }),
       dataIndex: 'startTime',
@@ -24,10 +25,11 @@ function getCols ({ $t }: ReturnType<typeof useIntl>) {
       dataIndex: 'message',
       sorter: false
     }
-  ]
+  ], [$t])
 
   return columns
 }
+
 const defaultPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
   fields: [
@@ -65,7 +67,7 @@ export function AlarmsTable () {
     }, [tableQuery.data])
 
     return <Loader states={[tableQuery]}>
-      <Table columns={getCols(useIntl())}
+      <Table columns={useColumns()}
         dataSource={tableData}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
