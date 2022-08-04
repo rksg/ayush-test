@@ -9,7 +9,7 @@ export default function VenueRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='venues' element={<VenuesTable />} />
-      <Route path='venues/create' element={<VenuesForm />} />
+      <Route path='venues/add' element={<VenuesForm />} />
     </Route>
   )
   return (

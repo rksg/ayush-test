@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ChangeEventHandler } from 'react'
 
 import { Wrapper } from '@googlemaps/react-wrapper'
 import {
@@ -40,7 +40,7 @@ export const CloseIcon = styled.svg`
 const { Content } = Layout
 
 
-const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
+export const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
   const [marker, setMarker] = React.useState<google.maps.Marker>()
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
   return null
 }
 
-const retrieveCityState = (address_components: Array<any>, country: string) => {
+export const retrieveCityState = (address_components: Array<any>, country: string) => {
 
   // array reverse applied since search should be done from general to specific, google provides from vice-versa
   const reversed_addr_components = address_components.reverse()
@@ -101,6 +101,7 @@ const retrieveCityState = (address_components: Array<any>, country: string) => {
     state: state_component ? state_component.long_name : null
   }
 }
+
 export function VenuesForm () {
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
   const navigate = useNavigate()
@@ -108,7 +109,7 @@ export function VenuesForm () {
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
-  const [createVenue] = useAddVenueMutation()
+  const [addVenue] = useAddVenueMutation()
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<any>({
     lat: 0,
@@ -145,7 +146,8 @@ export function VenuesForm () {
     return Promise.resolve()
   }
 
-  const addressOnChange = (event: { target: HTMLInputElement }) => {
+  const addressOnChange: ChangeEventHandler<HTMLInputElement> =
+  (event: { target: HTMLInputElement }) => {
     let address: Address = {}
     updateAddress(address)
     const autocomplete = new google.maps.places.Autocomplete(event.target)
@@ -200,7 +202,7 @@ export function VenuesForm () {
     try {
       const formData = { ...values }
       formData.address = address
-      await createVenue({ params, payload: formData }).unwrap()
+      await addVenue({ params, payload: formData }).unwrap()
       navigate(linkToVenues, { replace: true })
     } catch {
       showToast({
@@ -288,7 +290,7 @@ export function VenuesForm () {
                 }}
                 prefix={<SearchOutlined />}
                 onChange={addressOnChange}
-                role='address'
+                data-testid='address-input'
                 defaultValue={!isMapEnabled ? '350 W Java Dr, Sunnyvale, CA 94089, USA' : ''}
                 disabled={!isMapEnabled}
                 style={{ borderRadius: '20px' }}

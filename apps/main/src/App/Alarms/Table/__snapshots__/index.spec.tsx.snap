@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Venues Table should render table 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+  >
+    <div
+      class="ant-page-header ant-page-header-ghost"
+    >
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography"
+            >
+              Alarms
+            </h1>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 ekDfta"
+  >
+    <div
+      class="styledComponents__FallbackWrapper-sc-1352uh8-1 cnmeaO"
+    >
+      <span
+        aria-label="loader"
+        role="img"
+      >
+        <div
+          aria-busy="true"
+          aria-live="polite"
+          class="ant-spin ant-spin-lg ant-spin-spinning"
+        >
+          <span
+            class="ant-spin-dot ant-spin-dot-spin"
+          >
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+          </span>
+        </div>
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;

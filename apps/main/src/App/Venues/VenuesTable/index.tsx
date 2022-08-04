@@ -168,7 +168,7 @@ export function VenuesTable () {
       <PageHeader
         title='Venues'
         extra={[
-          <TenantLink to='/venues/create' key='add'>
+          <TenantLink to='/venues/add' key='add'>
             <Button type='primary'>Add Venue</Button>
           </TenantLink>
         ]}

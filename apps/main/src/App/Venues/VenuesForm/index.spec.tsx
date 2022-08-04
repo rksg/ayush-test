@@ -1,8 +1,8 @@
-import { initialize }      from '@googlemaps/jest-mocks'
-import { MarkerClusterer } from '@googlemaps/markerclusterer'
-import { rest }            from 'msw'
+import { initialize } from '@googlemaps/jest-mocks'
+import { rest }       from 'msw'
 
 import * as config            from '@acx-ui/config'
+import { useSplitTreatment }  from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import {
@@ -13,9 +13,134 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { VenuesForm } from '.'
+import { VenuesForm, retrieveCityState } from '.'
 
 export const successResponse = { requestId: 'request-id' }
+
+const list = {
+  totalCount: 10,
+  page: 1,
+  data: [{
+    city: 'New York',
+    country: 'United States',
+    description: 'My-Venue',
+    id: '2c16284692364ab6a01f4c60f5941836',
+    latitude: '40.769141',
+    longitude: '-73.9429713',
+    name: 'My-Venue',
+    status: '1_InSetupPhase',
+    aggregatedApStatus: { '1_01_NeverContactedCloud': 1 }
+  }, {
+    city: 'Sunnyvale, California',
+    country: 'United States',
+    description: '',
+    id: 'a919812d11124e6c91b56b9d71eacc31',
+    latitude: '37.4112751',
+    longitude: '-122.0191908',
+    name: 'test',
+    status: '1_InSetupPhase',
+    switchClients: 2,
+    switches: 1,
+    clients: 1
+  }]
+}
+
+const autocompleteResult = {
+  address_components: [
+    {
+      long_name: '350',
+      short_name: '350',
+      types: [
+        'street_number'
+      ]
+    },
+    {
+      long_name: 'West Java Drive',
+      short_name: 'W Java Dr',
+      types: [
+        'route'
+      ]
+    },
+    {
+      long_name: 'Sunnyvale',
+      short_name: 'Sunnyvale',
+      types: [
+        'locality',
+        'political'
+      ]
+    },
+    {
+      long_name: 'Santa Clara County',
+      short_name: 'Santa Clara County',
+      types: [
+        'administrative_area_level_2',
+        'political'
+      ]
+    },
+    {
+      long_name: 'California',
+      short_name: 'CA',
+      types: [
+        'administrative_area_level_1',
+        'political'
+      ]
+    },
+    {
+      long_name: 'United States',
+      short_name: 'US',
+      types: [
+        'country',
+        'political'
+      ]
+    },
+    {
+      long_name: '94089',
+      short_name: '94089',
+      types: [
+        'postal_code'
+      ]
+    },
+    {
+      long_name: '1026',
+      short_name: '1026',
+      types: [
+        'postal_code_suffix'
+      ]
+    }
+  ],
+  // eslint-disable-next-line max-len
+  adr_address: '<span class=\'street-address\'>350 W Java Dr</span>, <span class=\'locality\'>Sunnyvale</span>, <span class=\'region\'>CA</span> <span class=\'postal-code\'>94089-1026</span>, <span class=\'country-name\'>USA</span>',
+  formatted_address: '350 W Java Dr, Sunnyvale, CA 94089, USA',
+  geometry: {
+    location: {
+      lat: 37.4112751,
+      lng: -122.0191908
+    },
+    viewport: {
+      northeast: {
+        lat: 37.4128056302915,
+        lng: -122.0180266697085
+      },
+      southwest: {
+        lat: 37.4101076697085,
+        lng: -122.0207246302915
+      }
+    }
+  },
+  icon: 'https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/geocode-71.png',
+  icon_background_color: '#7B9EB0',
+  icon_mask_base_uri: 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/generic_pinlet',
+  name: '350 W Java Dr',
+  place_id: 'ChIJp5L7yL63j4ARCqQI-eAJu0A',
+  reference: 'ChIJp5L7yL63j4ARCqQI-eAJu0A',
+  types: [
+    'premise'
+  ],
+  // eslint-disable-next-line max-len
+  url: 'https://maps.google.com/?q=350+W+Java+Dr,+Sunnyvale,+CA+94089,+USA&ftid=0x808fb7bec8fb92a7:0x40bb09e0f908a40a',
+  utc_offset: -420,
+  vicinity: 'Sunnyvale'
+}
 
 describe('Venues Form', () => {
   beforeAll(async () => {
@@ -34,27 +159,23 @@ describe('Venues Form', () => {
       rest.post(
         CommonUrlsInfo.addVenue.url,
         (req, res, ctx) => res(ctx.json(successResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
       )
     )
     initialize()
-    const map = new google.maps.Map(document.createElement('div'))
-    google.maps.Marker = jest.fn() as never
-    google.maps.Marker.prototype.getVisible = jest.fn().mockReturnValue(true)
-    google.maps.Marker.prototype.getPosition = jest.fn()
-    google.maps.Marker.prototype.addListener = jest.fn()
-    google.maps.Marker.prototype.setMap = jest.fn().mockImplementation(() => map)
-    google.maps.Marker.prototype.getMap = jest.fn().mockImplementation(() => map)
-    MarkerClusterer.prototype.getMap = jest.fn().mockImplementation(() => map)
-    MarkerClusterer.prototype.setMap = jest.fn().mockImplementation(() => map)
-    MarkerClusterer.prototype.getProjection = jest.fn()
   })
 
   it('should render venues form', async () => {
+    jest.mocked(useSplitTreatment).mockReturnValue(true)
+
     const { asFragment } = render(
       <Provider>
         <VenuesForm />
       </Provider>, {
-        route: { params, path: '/:tenantId/venues/create' }
+        route: { params, path: '/:tenantId/venues/add' }
       })
 
     expect(asFragment()).toMatchSnapshot()
@@ -68,11 +189,64 @@ describe('Venues Form', () => {
     const descriptionInput = screen.getByLabelText('Description')
     fireEvent.change(descriptionInput, { target: { value: 'Ruckus Network Info' } })
 
-    const addressInput = screen.getByRole('address')
+    const addressInput = screen.getByTestId('address-input')
     fireEvent.change(addressInput, { target: 
       { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
     })
 
     fireEvent.click(screen.getByText('Add'))
+  })
+  it('should trigger autocomplete', async () => {
+    render(
+      <Provider>
+        <VenuesForm />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/add' }
+      })
+
+    const addressInput = screen.getByTestId('address-input')
+
+    fireEvent.change(addressInput, { target: 
+      { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
+    })
+  })
+  it('should call retrieveCityState', async () => {
+    retrieveCityState(autocompleteResult.address_components, 'United States')
+  })
+  it('google map is enabled', async () => {
+    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    render(
+      <Provider>
+        <VenuesForm />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/add' }
+      })
+
+    const addressInput = screen.getByTestId('address-input')
+    expect(addressInput).toBeEnabled()
+  })
+  it('should back to venues list', async () => {
+    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    render(
+      <Provider>
+        <VenuesForm />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/add' }
+      })
+
+    fireEvent.click(screen.getByText('Cancel'))
+  })
+  it('google map is not enabled', async () => {
+    jest.mocked(useSplitTreatment).mockReturnValue(false)
+    const { asFragment } = render(
+      <Provider>
+        <VenuesForm />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/add' }
+      })
+
+    expect(asFragment()).toMatchSnapshot()
+
+    await screen.findByText('Map is not enabled')
   })
 })

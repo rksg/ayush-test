@@ -34,7 +34,7 @@ exports[`Venues Table should render table 1`] = `
               class="ant-space-item"
             >
               <a
-                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/create"
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/add"
               >
                 <button
                   class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
