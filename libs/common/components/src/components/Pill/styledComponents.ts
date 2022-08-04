@@ -13,6 +13,7 @@ const pillColor = ({ type }: { type: TrendType | IncidentSeverity }) => {
   }
 }
 export const Pill = styled.span`
+  display: inline-block;
   border-radius: 10px;
   padding: 3px 8px;
   font-family: var(--acx-neutral-brand-font);

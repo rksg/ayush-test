@@ -43,7 +43,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
 exports[`incident details should render Incident Details correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ixsJrS"
+    class="styledComponents__Wrapper-sc-xov27h-0 ggigVG"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -96,16 +96,12 @@ exports[`incident details should render Incident Details correctly 1`] = `
             >
               Incident Details
             </h1>
-            <div
-              class="styledComponents__SideHeader-sc-xov27h-2 iXwvey"
+            <span
+              class="styledComponents__Pill-sc-j61ge1-0 jnJmAg"
+              type="P3"
             >
-              <span
-                class="styledComponents__Pill-sc-j61ge1-0 hWnMmO"
-                type="P3"
-              >
-                P3
-              </span>
-            </div>
+              P3
+            </span>
           </span>
           <span
             class="ant-page-header-heading-sub-title"

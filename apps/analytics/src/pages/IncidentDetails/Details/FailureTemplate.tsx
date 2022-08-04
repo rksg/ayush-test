@@ -29,7 +29,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Incident Details' })}
-        sideHeader={<SeverityPill severity={calculateSeverity(props.severity)!} />}
+        titleExtra={<SeverityPill severity={calculateSeverity(props.severity)!} />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
