@@ -24,20 +24,16 @@ type Dimensions = [
 interface StackedBarOptionalProps {
   animation: boolean
   showLabels: boolean
-  barColors: string[]
+  barColors?: string[]
   showTotal: boolean
   showTooltip: boolean
+  setBarColor?: object
+  axisLabelWidth?: number
 }
 
 const defaultProps: StackedBarOptionalProps = {
   animation: true,
   showLabels: true,
-  barColors: [
-    cssStr('--acx-semantics-yellow-40'), // P4
-    cssStr('--acx-accents-orange-50'), //.. P3
-    cssStr('--acx-semantics-red-50'), //... P2
-    cssStr('--acx-semantics-red-70') //.... P1
-  ],
   showTotal: true,
   showTooltip: true
 }
@@ -115,9 +111,15 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   dataFormatter,
   ...props
 }: StackedBarChartProps<TChartData>) {
-  const { animation, showTotal, showLabels, barColors, showTooltip } = props
-
-  const option: EChartsOption = {
+  
+  const { animation, showTotal, showLabels, showTooltip } = props
+  const barColors = props.barColors ?? [
+    cssStr('--acx-semantics-yellow-40'), // P4
+    cssStr('--acx-accents-orange-50'), //.. P3
+    cssStr('--acx-semantics-red-50'), //... P2
+    cssStr('--acx-semantics-red-70') //.... P1
+  ]
+  let option: EChartsOption = {
     animation,
     silent: !showTooltip,
     color: barColors,
@@ -145,7 +147,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
         rich: {
           label: {
             align: 'left',
-            width: 75,
+            width: props.axisLabelWidth || 75,
             fontFamily: cssStr('--acx-neutral-brand-font'),
             fontSize: cssNumber('--acx-body-4-font-size'),
             lineHeight: cssNumber('--acx-body-4-line-height'),
@@ -162,7 +164,6 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
     },
     series: massageData(data, showTotal)
   }
-
   return (
     <ReactECharts
       {...props}
