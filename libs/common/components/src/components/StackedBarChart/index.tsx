@@ -2,6 +2,8 @@ import { TooltipComponentOption } from 'echarts'
 import ReactECharts               from 'echarts-for-react'
 import _                          from 'lodash'
 
+import { severitiesDefinition } from '@acx-ui/analytics/utils'
+
 import { cssNumber, cssStr }                          from '../../theme/helper'
 import { tooltipOptions, stackedBarTooltipFormatter } from '../Chart/helper'
 
@@ -111,14 +113,10 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   dataFormatter,
   ...props
 }: StackedBarChartProps<TChartData>) {
-  
+
   const { animation, showTotal, showLabels, showTooltip } = props
-  const barColors = props.barColors ?? [
-    cssStr('--acx-semantics-yellow-40'), // P4
-    cssStr('--acx-accents-orange-50'), //.. P3
-    cssStr('--acx-semantics-red-50'), //... P2
-    cssStr('--acx-semantics-red-70') //.... P1
-  ]
+  const barColors = props.barColors ??
+    Object.values(severitiesDefinition).map(({ color }) => cssStr(color))
   let option: EChartsOption = {
     animation,
     silent: !showTooltip,

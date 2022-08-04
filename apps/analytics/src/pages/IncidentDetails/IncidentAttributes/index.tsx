@@ -24,6 +24,6 @@ export const getImpactedArea = (path: IncidentAttributesProps['path'], sliceValu
     : sliceValue
 }
 
-export const IncidentAttributes = (props: IncidentAttributesProps) => {
+export const IncidentAttributes = () => {
   return <>IncidentAttributes</>
 }

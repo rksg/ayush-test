@@ -3,15 +3,15 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter } from '@acx-ui/analytics/utils'
+import { useGlobalFilter, severitiesDefinition } from '@acx-ui/analytics/utils'
 import {
   Card,
   Subtitle,
   BarChart,
   BarChartData,
   Loader,
-  cssStr,
   Pill,
+  cssStr,
   TrendType
 } from '@acx-ui/components'
 
@@ -22,12 +22,7 @@ import {
 import { Container, Title } from './styledComponents'
 
 type PillData = { delta: string, total: number, trend: string }
-const barColors = [
-  cssStr('--acx-semantics-yellow-40'), // P4
-  cssStr('--acx-accents-orange-50'), //.. P3  
-  cssStr('--acx-semantics-red-50'), //... P2  
-  cssStr('--acx-semantics-red-70') //.... P1
-]
+const barColors = Object.values(severitiesDefinition).map(({ color }) => cssStr(color))
 export const getPillData = (
   curr: IncidentsBySeverityData, prev: IncidentsBySeverityData
 ): PillData => {
@@ -59,7 +54,7 @@ function IncidentBySeverityWidget () {
     }
   )
   const prevResult = useIncidentsBySeverityQuery(
-    { 
+    {
       startDate: moment(startDate).subtract(moment(endDate).diff(startDate)).format(),
       endDate: startDate,
       path
@@ -71,9 +66,9 @@ function IncidentBySeverityWidget () {
       })
     }
   )
-  
+
   let chart:BarChartData, pill:PillData = { total: 0, trend: 'none', delta: '0' }
-  
+
   if (prevResult.data && currentResult.data) {
     pill = getPillData(currentResult.data, prevResult.data)
     chart = getChartData(currentResult.data)
