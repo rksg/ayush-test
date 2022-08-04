@@ -46,6 +46,7 @@ export function SparklineChart ({
       {
         data,
         type: 'line',
+        silent: true,
         areaStyle: { color },
         lineStyle: {
           color: cssStr('--acx-semantics-green-50')

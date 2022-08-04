@@ -6,7 +6,6 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { useGlobalFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
-  Subtitle,
   BarChart,
   BarChartData,
   Loader,
@@ -19,13 +18,13 @@ import {
   IncidentsBySeverityData,
   useIncidentsBySeverityQuery
 } from './services'
-import { Container, Title } from './styledComponents'
+import * as UI from './styledComponents'
 
 type PillData = { delta: string, total: number, trend: string }
 const barColors = [
   cssStr('--acx-semantics-yellow-40'), // P4
-  cssStr('--acx-accents-orange-50'), //.. P3  
-  cssStr('--acx-semantics-red-50'), //... P2  
+  cssStr('--acx-accents-orange-50'), //.. P3
+  cssStr('--acx-semantics-red-50'), //... P2
   cssStr('--acx-semantics-red-70') //.... P1
 ]
 export const getPillData = (
@@ -59,7 +58,7 @@ function IncidentBySeverityWidget () {
     }
   )
   const prevResult = useIncidentsBySeverityQuery(
-    { 
+    {
       startDate: moment(startDate).subtract(moment(endDate).diff(startDate)).format(),
       endDate: startDate,
       path
@@ -71,20 +70,20 @@ function IncidentBySeverityWidget () {
       })
     }
   )
-  
+
   let chart:BarChartData, pill:PillData = { total: 0, trend: 'none', delta: '0' }
-  
+
   if (prevResult.data && currentResult.data) {
     pill = getPillData(currentResult.data, prevResult.data)
     chart = getChartData(currentResult.data)
   }
   return <Loader states={[prevResult, currentResult]}>
     <Card title={$t({ defaultMessage: 'Total Incidents' })}>
-      <Container>
-        <Title>
-          <Subtitle level={1} style={{ marginBottom: 0 }}>{pill.total}</Subtitle>
+      <UI.Container>
+        <UI.Title>
+          <UI.IncidentCount>{pill.total}</UI.IncidentCount>
           <Pill value={pill.delta} trend={pill.trend as TrendType} />
-        </Title>
+        </UI.Title>
         <AutoSizer>
           {({ width }) => (
             <BarChart
@@ -95,7 +94,7 @@ function IncidentBySeverityWidget () {
             />
           )}
         </AutoSizer>
-      </Container>
+      </UI.Container>
     </Card>
   </Loader>
 }

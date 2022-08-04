@@ -5,35 +5,39 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { useGlobalFilter, getSeriesData }                 from '@acx-ui/analytics/utils'
 import { Card, Loader, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
+import { formatter }                                      from '@acx-ui/utils'
 
-import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
+import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
 
-type Key = keyof Omit<NetworkHistoryData, 'time'>
+type Key = keyof Omit<ConnectedClientsOverTimeData, 'time'>
 
 const lineColors = [
   cssStr('--acx-accents-blue-30'),
   cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-orange-50')
+  cssStr('--acx-accents-orange-50'),
+  cssStr('--acx-semantics-yellow-40')
 ]
 
-function NetworkHistoryWidget ({ hideTitle } : { hideTitle?: boolean }) {
+function ConnectedClientsOverTimeWidget () {
   const filters = useGlobalFilter()
   const { $t } = useIntl()
   const seriesMapping = [
-    { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
-    { key: 'impactedClientCount', name: $t({ defaultMessage: 'Impacted Clients' }) },
-    { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
+    { key: 'uniqueUsers_all', name: $t({ defaultMessage: 'All Radios' }) },
+    { key: 'uniqueUsers_24', name: formatter('radioFormat')('2.4') },
+    { key: 'uniqueUsers_5', name: formatter('radioFormat')('5') },
+    { key: 'uniqueUsers_6', name: formatter('radioFormat')('6') }
   ] as Array<{ key: Key, name: string }>
-  const queryResults = useNetworkHistoryQuery(filters, {
+
+  const queryResults = useConnectedClientsOverTimeQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(data!, seriesMapping),
-      ...rest
+      ...rest,
+      data: getSeriesData(data!, seriesMapping)
     })
   })
-  const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
+
   return (
     <Loader states={[queryResults]}>
-      <Card title={title}>
+      <Card title={$t({ defaultMessage: 'Connected Clients Over Time' })} >
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart
@@ -48,4 +52,4 @@ function NetworkHistoryWidget ({ hideTitle } : { hideTitle?: boolean }) {
   )
 }
 
-export default NetworkHistoryWidget
+export default ConnectedClientsOverTimeWidget
