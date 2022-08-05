@@ -13,7 +13,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { VenuesForm, retrieveCityState } from '.'
+import { VenuesForm, addressParser } from '.'
 
 export const successResponse = { requestId: 'request-id' }
 
@@ -113,8 +113,8 @@ const autocompleteResult = {
   formatted_address: '350 W Java Dr, Sunnyvale, CA 94089, USA',
   geometry: {
     location: {
-      lat: 37.4112751,
-      lng: -122.0191908
+      lat: () => 37.4112751,
+      lng: () => -122.0191908
     },
     viewport: {
       northeast: {
@@ -142,12 +142,23 @@ const autocompleteResult = {
   vicinity: 'Sunnyvale'
 }
 
+const timezoneResult = {
+  dstOffset: 3600,
+  rawOffset: -28800,
+  status: 'OK',
+  timeZoneId: 'America/Los_Angeles',
+  timeZoneName: 'Pacific Daylight Time'
+}
+
 describe('Venues Form', () => {
   beforeAll(async () => {
     const env = {
       GOOGLE_MAPS_KEY: 'GOOGLE_MAPS_KEY'
     }
-    mockServer.use(rest.get('/env.json', (_, r, c) => r(c.json(env))))
+    mockServer.use(
+      rest.get('/env.json', (_, r, c) => r(c.json(env)))
+    )
+    
     await config.initialize()
   })
   let params: { tenantId: string }
@@ -163,9 +174,14 @@ describe('Venues Form', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.get(
+        'https://maps.googleapis.com/maps/api/timezone/*',
+        (req, res, ctx) => res(ctx.json(timezoneResult))
       )
     )
-    initialize()
+    
+    initialize()    
   })
 
   it('should render venues form', async () => {
@@ -196,22 +212,19 @@ describe('Venues Form', () => {
 
     fireEvent.click(screen.getByText('Add'))
   })
-  it('should trigger autocomplete', async () => {
-    render(
-      <Provider>
-        <VenuesForm />
-      </Provider>, {
-        route: { params, path: '/:tenantId/venues/add' }
-      })
-
-    const addressInput = screen.getByTestId('address-input')
-
-    fireEvent.change(addressInput, { target: 
-      { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
-    })
-  })
-  it('should call retrieveCityState', async () => {
-    retrieveCityState(autocompleteResult.address_components, 'United States')
+  it('should call address parser', async () => {
+    const { address } = await addressParser(autocompleteResult)
+    
+    const addressResult = {
+      addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
+      city: 'Sunnyvale, California',
+      country: 'United States',
+      latitude: 37.4112751,
+      longitude: -122.0191908,
+      timezone: 'America/Los_Angeles'
+    }
+  
+    expect(address).toEqual(addressResult)
   })
   it('google map is enabled', async () => {
     jest.mocked(useSplitTreatment).mockReturnValue(true)
@@ -225,17 +238,6 @@ describe('Venues Form', () => {
     const addressInput = screen.getByTestId('address-input')
     expect(addressInput).toBeEnabled()
   })
-  it('should back to venues list', async () => {
-    jest.mocked(useSplitTreatment).mockReturnValue(true)
-    render(
-      <Provider>
-        <VenuesForm />
-      </Provider>, {
-        route: { params, path: '/:tenantId/venues/add' }
-      })
-
-    fireEvent.click(screen.getByText('Cancel'))
-  })
   it('google map is not enabled', async () => {
     jest.mocked(useSplitTreatment).mockReturnValue(false)
     const { asFragment } = render(
@@ -248,5 +250,16 @@ describe('Venues Form', () => {
     expect(asFragment()).toMatchSnapshot()
 
     await screen.findByText('Map is not enabled')
+  })
+  it('should back to venues list', async () => {
+    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    render(
+      <Provider>
+        <VenuesForm />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/add' }
+      })
+
+    fireEvent.click(screen.getByText('Cancel'))
   })
 })
