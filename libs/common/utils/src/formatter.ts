@@ -84,8 +84,20 @@ function dateTimeFormatter (number: unknown, format: string, tz?: string ) {
     : moment(number as moment.MomentInput).format(format)
 }
 
+function calendarFormat (number: number) {
+  return moment(number).calendar({
+    lastDay: '[Yesterday,] HH:mm',
+    sameDay: '[Today,] HH:mm',
+    nextDay: '[Tomorrow,] HH:mm',
+    lastWeek: '[Last] dddd[,] HH:mm',
+    nextWeek: '[Next] dddd[,] HH:mm',
+    sameElse: 'MMM DD[,] HH:mm'
+  })
+}
+
 const formats = {
   durationFormat,
+  calendarFormat: (number: number) => calendarFormat(number),
   percentFormat: (number: number) => numeral(number).format('0.[00]%'),
   percentFormatWithoutScalingBy100: (number: number) => numeral(number / 100).format('0.[00]%'),
   percentFormatNoSign: (number: number) => formats['percentFormat'](number).replace('%', ''),

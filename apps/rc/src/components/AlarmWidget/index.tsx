@@ -9,9 +9,9 @@ import {
   Dashboard,
   AlaramSeverity
 } from '@acx-ui/rc/services'
-import { Alarm, EventSeverityEnum, EventTypeEnum, useAlarmsListQuery } from '@acx-ui/rc/services'
-import { CommonUrlsInfo, useTableQuery }                               from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                       from '@acx-ui/react-router-dom'
+import { Alarm, EventTypeEnum, useAlarmsListQuery } from '@acx-ui/rc/services'
+import { CommonUrlsInfo, useTableQuery }            from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
 
 import { AlarmList } from './AlarmList'
 import * as UI       from './styledComponents'

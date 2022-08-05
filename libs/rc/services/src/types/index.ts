@@ -65,7 +65,7 @@ export interface Venue {
 }
 
 export interface AlarmBase {
-  startTime: string
+  startTime: number
   severity: string
   message: string
   id: string
