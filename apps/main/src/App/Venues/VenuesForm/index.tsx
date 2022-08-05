@@ -102,6 +102,45 @@ export const retrieveCityState = (address_components: Array<any>, country: strin
   }
 }
 
+export const addressParser = async (place: any) => {
+  const address: Address = {}
+  const lat = place.geometry?.location?.lat()
+  const lng = place.geometry?.location?.lng()
+  address.latitude = lat
+  address.longitude = lng
+
+  // eslint-disable-next-line max-len
+  const timezoneResult = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
+  const timezone = await timezoneResult.json()
+  address.timezone = timezone.timeZoneId
+  
+  address.addressLine = place.formatted_address
+  
+
+  const latlng = new google.maps.LatLng({
+    lat: Number(lat),
+    lng: Number(lng)
+  })
+
+  const countryObj = place?.address_components?.find(
+    (el: any) => el.types.includes('country')
+  )
+  const country = countryObj && countryObj.long_name || ''
+  address.country = country
+
+  if (place && place.address_components) {
+    const city_obj = retrieveCityState(
+      place.address_components,
+      country
+    )
+    if (city_obj) {
+      address.city = city_obj.state
+        ? `${city_obj.city}, ${city_obj.state}` : city_obj.city
+    }
+  }
+  return { latlng, address }
+}
+
 export function VenuesForm () {
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
   const navigate = useNavigate()
@@ -147,53 +186,22 @@ export function VenuesForm () {
   }
 
   const addressOnChange: ChangeEventHandler<HTMLInputElement> =
-  (event: { target: HTMLInputElement }) => {
-    let address: Address = {}
-    updateAddress(address)
+  async (event: { target: HTMLInputElement }) => {
+
+    updateAddress({})
     const autocomplete = new google.maps.places.Autocomplete(event.target)
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
-      
-      const lat = place.geometry?.location?.lat()
-      const lng = place.geometry?.location?.lng()
-      address.latitude = lat
-      address.longitude = lng
-
-      // eslint-disable-next-line max-len
-      const timezoneResult = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
-      const timezone = await timezoneResult.json()
-      address.timezone = timezone.timeZoneId
-      
-      address.addressLine = place.formatted_address
       
       form.setFieldsValue({
         address: place.formatted_address
       })
 
-      const latlng = new google.maps.LatLng({
-        lat: Number(lat), 
-        lng: Number(lng)
-      })
+      const { latlng, address } = await addressParser(place)
 
-      const countryObj = place?.address_components?.find(
-        el => el.types.includes('country')
-      )
-      const country = countryObj && countryObj.long_name || ''
-      address.country = country
-
-      if (place && place.address_components) {
-        const city_obj = retrieveCityState(
-          place.address_components,
-          country
-        )
-        if (city_obj) {
-          address.city = city_obj.state
-            ? `${city_obj.city}, ${city_obj.state}` : city_obj.city
-        }
-      }
-      updateAddress(address)
       setMarkers(latlng)
       setCenter(latlng)
+      updateAddress(address)
       setZoom(16)
     })
   }
