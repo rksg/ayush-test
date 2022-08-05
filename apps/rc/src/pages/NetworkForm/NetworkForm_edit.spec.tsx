@@ -22,7 +22,7 @@ async function fillInBeforeSettings (networkName: string) {
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
   const validating = await screen.findByRole('img', { name: 'loading' })
-  await waitForElementToBeRemoved(validating)
+  await waitForElementToBeRemoved(validating, { timeout: 7000 })
 
   fireEvent.click(screen.getByText('Next'))
 }
