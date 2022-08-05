@@ -8,8 +8,8 @@ export * from './useTableQuery'
 export * from './ipUtilsService'
 
 export * from './types/network'
-export * from './types/network/GuestNetwork'
-export * from './types/network/DhcpServiceProfile'
+export * from './types/wifi/GuestNetwork'
+export * from './types/wifi/DhcpServiceProfile'
 
 export * from './pipes/networkPipes'
 export * from './pipes/apPipes'

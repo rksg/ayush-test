@@ -54,6 +54,7 @@ export function RedirectUrlInput (props: StepFormProps<CreateNetworkFormFields>)
       </Tooltip>
       <Form.Item
         name='redirectUrl'
+        initialValue=''
         rules={[
           { required: redirectCheckbox },
           { validator: (_, value) => URLRegExp(value) }]
