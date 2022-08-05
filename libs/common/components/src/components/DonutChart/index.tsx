@@ -4,8 +4,8 @@ import { find }     from 'lodash'
 import { cssNumber, cssStr }                                       from '../../theme/helper'
 import { tooltipOptions, donutChartTooltipFormatter, EventParams } from '../Chart/helper'
 
-import type { EChartsOption, TooltipComponentOption } from 'echarts'
-import type { EChartsReactProps }                     from 'echarts-for-react'
+import type { EChartsOption }     from 'echarts'
+import type { EChartsReactProps } from 'echarts-for-react'
 
 export type DonutChartData = {
   value: number,
@@ -128,7 +128,7 @@ export function DonutChart ({
           }
         },
         tooltip: {
-          ...tooltipOptions() as TooltipComponentOption,
+          ...tooltipOptions(),
           show: !isEmpty,
           formatter: donutChartTooltipFormatter(dataFormatter)
         },

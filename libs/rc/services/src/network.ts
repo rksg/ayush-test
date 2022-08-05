@@ -4,6 +4,7 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   onSocketActivityChanged,
+  refetchByUsecase,
   RequestPayload,
   showActivityMessage,
   TableResult
@@ -14,7 +15,7 @@ import { Network, Venue, NetworkDetailHeader, NetworkDetail, CommonResult, Dashb
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'networkApi',
-  tagTypes: ['Network'],
+  tagTypes: ['Network', 'Venue'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -52,21 +53,21 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
     }),
-    deleteNetwork: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.deleteNetwork, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'Network', id: 'LIST' }]
-    }),
     updateNetworkDeep: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateNetworkDeep, params)
         return {
           ...req,
           body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'LIST' }]
+    }),
+    deleteNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.deleteNetwork, params)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
@@ -109,9 +110,10 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
-            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
-          })
+          showActivityMessage(msg, 
+            ['AddNetworkVenue', 'DeleteNetworkVenue', 'UpdateNetworkDeep'], () => {
+              api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+            })
         })
       }
     }),
@@ -129,6 +131,14 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           activated: item.activated ?? { isActivated: false }
         }))
         return result
+      },
+      providesTags: [{ type: 'Venue', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          refetchByUsecase(msg, ['UpdateNetworkDeep'], () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
+          })
+        })
       }
     }),
     dashboardOverview: build.query<Dashboard, RequestPayload>({
@@ -144,13 +154,13 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 export const {
   useNetworkListQuery,
   useLazyNetworkListQuery,
-  useCreateNetworkMutation,
-  useUpdateNetworkDeepMutation,
   useGetNetworkQuery,
   useNetworkDetailHeaderQuery,
+  useCreateNetworkMutation,
+  useUpdateNetworkDeepMutation,
+  useDeleteNetworkMutation,
   useVenueListQuery,
-  useDashboardOverviewQuery,
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
-  useDeleteNetworkMutation
+  useDashboardOverviewQuery
 } = networkApi

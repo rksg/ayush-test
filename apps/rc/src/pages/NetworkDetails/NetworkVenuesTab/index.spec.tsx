@@ -2,9 +2,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { networkApi }         from '@acx-ui/rc/services'
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { networkApi }      from '@acx-ui/rc/services'
+import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -12,7 +12,8 @@ import {
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 
 import { NetworkVenuesTab } from './index'
@@ -206,6 +207,184 @@ describe('NetworkVenuesTab', () => {
     fireEvent.click(toogleButton)
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const rows = await screen.findAllByRole('switch')
+    expect(rows).toHaveLength(2)
+    await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
+  })
+
+  it('Table action bar activate Network', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getNetworksVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.get(
+        CommonUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json(network))
+      ),
+      rest.get(
+        CommonUrlsInfo.getAllUserSettings.url,
+        (req, res, ctx) => res(ctx.json(user))
+      )
+    )
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
+    }
+
+    render(<Provider><NetworkVenuesTab /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
+      ),
+      rest.delete(
+        CommonUrlsInfo.deleteNetworkVenue.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+      )
+    )
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText('My-Venue'))
+    const activateButton = screen.getByRole('button', { name: 'Activate' })
+    fireEvent.click(activateButton) 
+
+    mockServer.use(
+      rest.put(
+        CommonUrlsInfo.updateNetworkDeep.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+
+    const rows = await screen.findAllByRole('switch')
+    expect(rows).toHaveLength(2)
+    await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
+  })
+
+  it('Table action bar activate Network and show modal', async () => {
+    list.data[1].allApDisabled = true
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getNetworksVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.get(
+        CommonUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json(network))
+      ),
+      rest.get(
+        CommonUrlsInfo.getAllUserSettings.url,
+        (req, res, ctx) => res(ctx.json(user))
+      )
+    )
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
+    }
+
+    render(<Provider><NetworkVenuesTab /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
+      ),
+      rest.delete(
+        CommonUrlsInfo.deleteNetworkVenue.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+      )
+    )
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText('My-Venue'))
+    const activateButton = screen.getByRole('button', { name: 'Activate' })
+    fireEvent.click(activateButton)
+    await screen.findByRole('dialog')
+    const OKButton = await screen.findByText('OK')
+    await screen.findByText('Your Attention is Required')
+    fireEvent.click(OKButton)
+
+    mockServer.use(
+      rest.put(
+        CommonUrlsInfo.updateNetworkDeep.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+  })
+
+  it('Table action bar deactivate Network', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getNetworksVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.get(
+        CommonUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json(network))
+      ),
+      rest.get(
+        CommonUrlsInfo.getAllUserSettings.url,
+        (req, res, ctx) => res(ctx.json(user))
+      )
+    )
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
+    }
+
+    render(<Provider><NetworkVenuesTab /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
+      ),
+      rest.delete(
+        CommonUrlsInfo.deleteNetworkVenue.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+      )
+    )
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText('network-venue-1'))
+    const deactivateButton = screen.getByRole('button', { name: 'Deactivate' })
+    fireEvent.click(deactivateButton)
+
+    mockServer.use(
+      rest.put(
+        CommonUrlsInfo.updateNetworkDeep.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)

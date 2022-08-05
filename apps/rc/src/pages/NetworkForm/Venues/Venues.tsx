@@ -1,15 +1,17 @@
 import { useEffect, useState, useContext } from 'react'
 
 import { Form, Switch } from 'antd'
+import _                from 'lodash'
 
 import {
   Loader,
+  StepFormProps,
   StepsForm,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery, Venue } from '@acx-ui/rc/services'
-import { useTableQuery }            from '@acx-ui/rc/utils'
+import { useVenueListQuery, Venue }               from '@acx-ui/rc/services'
+import { useTableQuery, CreateNetworkFormFields } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -49,7 +51,7 @@ const getNetworkId = () => {
   return 'UNKNOWN-NETWORK-ID'
 }
 
-export function Venues (props: { formRef: any }) {
+export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
   const { formRef } = props
   const { editMode } = useContext(NetworkFormContext)
   const venues = Form.useWatch('venues')
@@ -78,6 +80,64 @@ export function Venues (props: { formRef: any }) {
 
     formRef?.current?.setFieldsValue({ venues: selected })
   }
+
+  const handleActivateVenue = (isActivate:boolean, row:Venue | Venue[]) => {
+    let selectedVenues = [...activateVenues]
+    if (isActivate) {
+      if (Array.isArray(row)) {
+        selectedVenues = [...selectedVenues, ...row]
+      } else {
+        selectedVenues = [...selectedVenues, row]
+      }
+    } else {
+      if (Array.isArray(row)) {
+        row.forEach(item => {
+          const index = selectedVenues.findIndex(i => i.id == item.id)
+          if (index !== -1) {
+            selectedVenues.splice(index, 1)
+          }
+        })
+      } else {
+        const index = selectedVenues.findIndex(i => i.id == row.id)
+        if (index !== -1) {
+          selectedVenues.splice(index, 1)
+        }
+      }
+    }
+    selectedVenues = _.uniq(selectedVenues)
+    setActivateVenues(selectedVenues)
+    handleVenueSaveData(selectedVenues)
+    setTableDataActivate(tableData ,selectedVenues)
+  }
+
+  const setTableDataActivate = (dataOfTable:Venue[], selectedVenues:Venue[]) => {
+    const data:Venue[] = []
+    dataOfTable.forEach(item => {
+      let activated = { isActivated: false }
+      if(selectedVenues.find(i => i.id == item.id)) {
+        activated.isActivated = true
+      }
+      item.activated = activated
+      data.push(item)
+    })
+    setTableData(data)
+  }
+
+  const actions: TableProps<Venue>['actions'] = [
+    {
+      label: 'Activate',
+      onClick: (rows) => {
+        handleActivateVenue(true, rows)
+      }
+    },
+    {
+      label: 'Deactivate',
+      onClick: (rows) => {
+        handleActivateVenue(false, rows)
+      }
+    }
+  ]
+
   useEffect(()=>{
     if(editMode){
       if(tableQuery.data && activateVenues.length === 0){
@@ -96,7 +156,7 @@ export function Venues (props: { formRef: any }) {
           }
         })
         setTableData(tableData)
-        setActivateVenues(selected)
+        setTableDataActivate(tableData, selected)
       }
     }else{
       if(tableQuery.data && tableData.length === 0){
@@ -146,22 +206,13 @@ export function Venues (props: { formRef: any }) {
     {
       title: 'Activated',
       dataIndex: ['activated', 'isActivated'],
-      render: function (status, row) {
-        const onToggle = (checked: boolean, event: Event) => {
-          event.stopPropagation()
-          row.activated.isActivated = checked
-          let selectedVenues = [...activateVenues]
-          if (checked) {
-            selectedVenues = [...selectedVenues, row]
-          } else {
-            selectedVenues.splice(selectedVenues.indexOf(row), 1)
-          }
-          setActivateVenues(selectedVenues)
-          handleVenueSaveData(selectedVenues)
-        }
-        return <Switch onChange={onToggle} 
-          defaultChecked={row.activated.isActivated}
-          checked={row.activated.isActivated}
+      render: function (data, row) {
+        return <Switch
+          checked={Boolean(data)}
+          onClick={(checked, event) => {
+            event.stopPropagation()
+            handleActivateVenue(checked, row)
+          }}
         />
       }
     },
@@ -198,15 +249,11 @@ export function Venues (props: { formRef: any }) {
         <Loader states={[tableQuery]}>
           <Table
             rowKey='id'
+            actions={actions}
             rowSelection={{
               type: 'checkbox',
               defaultSelectedRowKeys: venues?.map((item: Venue) => item.venueId)
             }}
-            onRow={(record: Venue) => ({
-              onClick: () => { 
-                tableQuery.onRowClick(record)
-              }
-            })}
             columns={columns}
             dataSource={[...tableData]}
             pagination={tableQuery.pagination}
