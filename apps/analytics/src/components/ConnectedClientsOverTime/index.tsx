@@ -3,7 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter, getSeriesData }                 from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter, getSeriesData }              from '@acx-ui/analytics/utils'
 import { Card, Loader, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
 import { formatter }                                      from '@acx-ui/utils'
 
@@ -19,7 +19,7 @@ const lineColors = [
 ]
 
 function ConnectedClientsOverTimeWidget () {
-  const filters = useGlobalFilter()
+  const filters = useAnalyticsFilter()
   const { $t } = useIntl()
   const seriesMapping = [
     { key: 'uniqueUsers_all', name: $t({ defaultMessage: 'All Radios' }) },

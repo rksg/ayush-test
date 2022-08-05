@@ -5,13 +5,8 @@ import moment                 from 'moment-timezone'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import {
-  defaultRanges,
-  DateRange,
-  getDateRangeFilter,
-  useDateFilter,
-  DateFilterProvider
-} from './dateFilterContext'
+import { useDateFilter, DateFilterProvider }            from './dateFilterContext'
+import { defaultRanges, DateRange, getDateRangeFilter } from './dateUtil'
 
 describe('useDateFilter', () => {
   beforeEach(() => {

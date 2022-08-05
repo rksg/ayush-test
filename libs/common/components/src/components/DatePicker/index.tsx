@@ -4,7 +4,7 @@ import { DatePicker as AntdDatePicker } from 'antd'
 import moment                           from 'moment'
 
 import { ClockOutlined }                             from '@acx-ui/icons'
-import { dateTimeFormats, DateRange, defaultRanges } from '@acx-ui/utils'
+import { dateTimeFormats, defaultRanges, DateRange } from '@acx-ui/utils'
 
 import { DatePickerFooter } from './DatePickerFooter'
 import * as UI              from './styledComponents'
@@ -30,7 +30,6 @@ interface DatePickerProps {
   onDateApply: Function;
   selectionType: DateRange;
 }
-
 const AntdRangePicker = AntdDatePicker.RangePicker
 const { dateFormat, dateTimeFormat } = dateTimeFormats
 
