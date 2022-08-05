@@ -26,7 +26,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsBySeverity: build.query<
       IncidentsBySeverityData,
-      Partial<AnalyticsFilter>
+      AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`
