@@ -55,11 +55,6 @@ export function NetworkForm () {
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>()
 
-  const captivePortalSteps = {
-    onboarding: true,
-    portalweb: true
-  } 
-
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if( state.isCloudpathEnabled ){
       delete saveState?.accountingRadius
@@ -131,7 +126,7 @@ export function NetworkForm () {
           {state.type === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm />}
         </StepsForm.StepForm>
 
-        { captivePortalSteps.onboarding && 
+        { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='onboarding'
           title='Onboarding'
@@ -143,7 +138,7 @@ export function NetworkForm () {
         </StepsForm.StepForm>
         }
 
-        { captivePortalSteps.portalweb && 
+        { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='portalweb'
           title='Portal Web Page'

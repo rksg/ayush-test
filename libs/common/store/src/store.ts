@@ -8,7 +8,8 @@ import {
   baseCloudpathApi as cloudpathApi,
   baseEventAlarmApi as eventAlarmApi,
   apApi,
-  baseUserApi as userApi
+  baseUserApi as userApi,
+  baseDhcpApi as dhcpApi
 } from '@acx-ui/rc/services'
 
 export const store = configureStore({
@@ -19,7 +20,8 @@ export const store = configureStore({
     [dataApi.reducerPath]: dataApi.reducer,
     [apApi.reducerPath]: apApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
-    [dataApi.reducerPath]: dataApi.reducer
+    [dataApi.reducerPath]: dataApi.reducer,
+    [dhcpApi.reducerPath]: dhcpApi.reducer
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -30,7 +32,8 @@ export const store = configureStore({
       dataApi.middleware,
       apApi.middleware,
       userApi.middleware,
-      dataApi.middleware
+      dataApi.middleware,
+      dhcpApi.middleware
     ]),
 
   devTools: process.env['NODE_ENV'] !== 'production'

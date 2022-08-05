@@ -5,9 +5,11 @@ export * from './constants'
 export * from './onSocketActivityChanged'
 export * from './toast/toastService'
 export * from './useTableQuery'
+export * from './ipUtilsService'
 
 export * from './types/network'
 export * from './types/network/GuestNetwork'
+export * from './types/network/DhcpServiceProfile'
 
 export * from './pipes/networkPipes'
 export * from './pipes/apPipes'

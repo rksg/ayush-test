@@ -110,4 +110,43 @@ describe('NetworkForm', () => {
 
     fireEvent.click(screen.getByText('Finish'))
   })
+  it('should create captive portal successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+
+    expect(asFragment()).toMatchSnapshot()
+
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+        (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
+      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json(networksResponse))),
+      rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(CommonUrlsInfo.getCloudpathList.url,
+        (_, res, ctx) => res(ctx.json(cloudpathResponse)))
+    )
+
+    const insertInput = screen.getByLabelText('Network Name')
+    fireEvent.change(insertInput, { target: { value: 'open network test' } })
+    fireEvent.blur(insertInput)
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
+    fireEvent.click(screen.getByRole('radio', { name: /Captive portal/ }))
+    fireEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Portal Type' })
+    fireEvent.click(screen.getByRole('radio', { name: /Click-Through/ }))
+    fireEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Onboarding' })
+    fireEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
+    fireEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
+  })
 })

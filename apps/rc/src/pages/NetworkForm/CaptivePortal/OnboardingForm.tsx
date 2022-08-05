@@ -1,136 +1,29 @@
-import { useEffect, useState } from 'react'
-
 import {
-  QuestionCircleOutlined
-} from '@ant-design/icons'
-import {
-  Checkbox,
   Col,
-  Form,
-  Input,
-  Row,
-  Tooltip
+  Row
 } from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { useWatch }            from 'antd/lib/form/Form'
 
-import { StepFormProps, StepsForm }                            from '@acx-ui/components'
-import { CreateNetworkFormFields, NetworkTypeEnum, URLRegExp } from '@acx-ui/rc/utils'
+import { StepFormProps, StepsForm }                 from '@acx-ui/components'
+import { CreateNetworkFormFields, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
-import { useVenueListQuery, Venue } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
 
-const OnboardingMessages = {
-  REDIRECT_TOOLTIP: 'If unchecked, users will reach the page they originally requested',
-  GUEST_DHCP_DISABLE_TOOLTIP: 'You cannot enable the DHCP service because the network is activated in a Mesh enabled Venue.',
-  GUEST_DHCP_TOOLTIP: 'Clients will recieve IP addresses in an isolated {guestDhcpIpSpec} network.'
-}
+import { DhcpCheckbox }     from './DhcpCheckbox'
+import { RedirectUrlInput } from './RedirectUrlInput'
 
 export function OnboardingForm (props: StepFormProps<CreateNetworkFormFields>) {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <OptionsForm />
+        <StepsForm.Title>Onboarding</StepsForm.Title>
+        <RedirectUrlInput formRef={props.formRef} />
+        <DhcpCheckbox />
       </Col>
       <Col span={14}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL} />
       </Col>
     </Row>
   )
-
-  function OptionsForm () {
-    const [
-      redirectCheckbox,
-      redirectUrl,
-      venues
-    ] = [
-      useWatch('redirectCheckbox'),
-      useWatch('redirectUrl'),
-      useWatch('venues')
-    ]
-    const [redirectUrlValue, setRedirectUrlValue] = useState('')
-    const [meshEnable, setMeshEnable] = useState(false)
-    const venueApi = useVenueListQuery({ 
-      params: { 
-        networkId: 'UNKNOWN-NETWORK-ID', ...useParams() 
-      },
-      payload: {
-        fields:['name','mesh','id'],
-        pageSize:10000
-      }
-    })
-
-    useEffect(() => {
-      if (venueApi.data && venues) {
-        venueApi.data.data?.forEach((venue:Venue) => {
-          if (venues.find((x:Venue) => x.venueId === venue.id) && venue.mesh && venue.mesh.enabled) {
-            setMeshEnable(true)
-          }
-        });
-      }
-    }, [venueApi.data, venues])
-
-    const redirectCheckboxChange = (e: CheckboxChangeEvent) => {
-      if (e.target.checked) {
-        props.formRef?.current?.setFieldsValue({ redirectUrl: redirectUrlValue })
-      } else {
-        setRedirectUrlValue(redirectUrl)
-        props.formRef?.current?.setFieldsValue({ redirectUrl: '' })
-      }
-    }
-  
-    return (
-      <>
-        <StepsForm.Title>Onboarding</StepsForm.Title>
-        <Form.Item>
-          <Form.Item
-            noStyle
-            name='redirectCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox onChange={redirectCheckboxChange} />}
-          />
-          <span>Redirect users to</span>
-          <Tooltip title={OnboardingMessages.REDIRECT_TOOLTIP} placement='bottom'>
-            <QuestionCircleOutlined />
-          </Tooltip>
-          <Form.Item
-            name='redirectUrl'
-            initialValue=""
-            rules={[{
-              validator: (_, value) => URLRegExp(value)
-            }]}
-            children={
-              <Input
-                style={{ marginTop: '5px' }} 
-                placeholder='e.g. http://www.example.com' 
-                disabled={!redirectCheckbox}
-              />
-            }
-          />
-        </Form.Item>
-        <Form.Item>
-          <Form.Item
-            noStyle
-            name='dhcpCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />
-          <span>Enable Ruckus DHCP service</span>
-          <Tooltip title={meshEnable ? 
-            OnboardingMessages.GUEST_DHCP_DISABLE_TOOLTIP :
-            OnboardingMessages.GUEST_DHCP_TOOLTIP
-          } 
-          placement='bottom'
-          >
-            <QuestionCircleOutlined />
-          </Tooltip>
-        </Form.Item>
-      </>
-    )
-  }
 }
 
 
