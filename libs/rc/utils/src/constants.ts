@@ -106,3 +106,28 @@ export enum CloudpathDeploymentTypeEnum {
   OnPremise = 'OnPremise',
   Cloud = 'Cloud',
 }
+
+export enum ServiceType {
+  PORTAL,
+  DHCP_WIFI,
+  WIFI_CALLING,
+  MDNS_PROXY,
+  DPSK
+}
+export enum ServiceCategory {
+  PORTAL,
+  CONNECTIVITY,
+  APPLICATION
+}
+export enum ServiceTechnology {
+  WIFI,
+  SWITCH
+}
+export enum ServiceStatus {
+  UP,
+  DOWN
+}
+export enum ServiceAdminState {
+  ENABLED,
+  DISABLED
+}

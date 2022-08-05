@@ -1,0 +1,138 @@
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { useServiceListQuery, Service, useDeleteServiceMutation }         from '@acx-ui/rc/services'
+import { useTableQuery }                                                  from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                          from '@acx-ui/react-router-dom'
+
+const columns: TableProps<Service>['columns'] = [
+  {
+    title: 'Service Name',
+    dataIndex: 'name',
+    sorter: true,
+    defaultSortOrder: 'ascend',
+    render: function (data, row) {
+      return (
+        <TenantLink to={`/services/${row.id}/service-details/overview`}>{data}</TenantLink>
+      )
+    }
+  },
+  {
+    title: 'Service Type',
+    dataIndex: 'type',
+    sorter: true
+  },
+  {
+    title: 'Service Category',
+    dataIndex: 'category',
+    sorter: true
+  },
+  {
+    title: 'Status',
+    dataIndex: 'status',
+    sorter: true
+  },
+  {
+    title: 'Admin State',
+    dataIndex: 'adminState',
+    sorter: true
+  },
+  {
+    title: 'Technology',
+    dataIndex: 'technology',
+    sorter: true
+  },
+  {
+    title: 'Scope',
+    dataIndex: 'scope',
+    sorter: true,
+    align: 'center'
+  },
+  {
+    title: 'Health',
+    dataIndex: 'health',
+    sorter: true
+  },
+  {
+    title: 'Tags',
+    dataIndex: 'tags',
+    sorter: true
+  }
+]
+
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'check-all',
+    'id',
+    'name',
+    'type',
+    'category',
+    'status',
+    'adminState',
+    'technology',
+    'scope',
+    'cog',
+    'health',
+    'tags'
+  ]
+}
+
+export function ServicesTable () {
+  const ServicesTable = () => {
+    const tableQuery = useTableQuery({
+      useQuery: useServiceListQuery,
+      defaultPayload
+    })
+    const { tenantId } = useParams()
+    const [
+      deleteService,
+      { isLoading: isDeleteServiceUpdating }
+    ] = useDeleteServiceMutation()
+
+    const actions: TableProps<Service>['actions'] = [{
+      label: 'Delete',
+      onClick: ([{ name, id }], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: 'Network',
+            entityValue: name
+          },
+          onOk: () => deleteService({ params: { tenantId, networkId: id } })
+            .then(clearSelection)
+        })
+      }
+    }]
+
+    return (
+      <Loader states={[
+        tableQuery,
+        { isLoading: false, isFetching: isDeleteServiceUpdating }
+      ]}>
+        <Table
+          columns={columns}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+          actions={actions}
+          rowSelection={{ type: 'radio' }}
+        />
+      </Loader>
+    )
+  }
+
+  return (
+    <>
+      <PageHeader
+        title='Services'
+        extra={[
+          <TenantLink to='/services/create' key='add'>
+            <Button type='primary'>Add Service</Button>
+          </TenantLink>
+        ]}
+      />
+      <ServicesTable />
+    </>
+  )
+}

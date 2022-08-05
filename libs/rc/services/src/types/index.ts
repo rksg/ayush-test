@@ -1,4 +1,4 @@
-import { GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { GuestNetworkTypeEnum, ServiceAdminState, ServiceCategory, ServiceStatus, ServiceTechnology, ServiceType, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 export * from './ap'
 
@@ -244,4 +244,17 @@ export interface CloudpathServer {
     id: string
     primary: RadiusService
   }
+}
+
+export interface Service {
+  id: string
+  name: string
+  type: ServiceType
+  category: ServiceCategory
+  status: ServiceStatus
+  adminState: ServiceAdminState
+  technology: ServiceTechnology
+  scope: number
+  health: string
+  tags: string
 }

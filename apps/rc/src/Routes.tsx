@@ -5,8 +5,9 @@ import { Provider }          from '@acx-ui/store'
 import { NetworkDetails } from './pages/NetworkDetails/NetworkDetails'
 import { NetworkForm }    from './pages/NetworkForm/NetworkForm'
 import { NetworksTable }  from './pages/NetworksTable'
+import { ServicesTable }  from './pages/ServicesTable'
 
-export default function WifiRoutes () {
+export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='networks' element={<NetworksTable />} />
@@ -15,6 +16,7 @@ export default function WifiRoutes () {
         path='networks/:networkId/network-details/:activeTab'
         element={<NetworkDetails />}
       />
+      <Route path='services' element={<ServicesTable />} />
     </Route>
   )
   return (
