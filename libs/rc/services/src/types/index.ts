@@ -1,4 +1,4 @@
-import { GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { GuestNetworkTypeEnum, WlanSecurityEnum, NetworkVenue } from '@acx-ui/rc/utils'
 
 export * from './ap'
 
@@ -30,7 +30,7 @@ export interface NetworkDetail {
   type: string
   tenantId: string
   name: string
-  venues: { venueId: string, id: string }[]
+  venues: NetworkVenue[]
   id: string
 }
 
@@ -60,7 +60,9 @@ export interface Venue {
   // switchClients ??
   // radios ??
   // scheduling ??
-  activated: { isActivated: boolean }
+  activated: { isActivated: boolean, isDisabled?: boolean }
+  deepVenue?: NetworkVenue
+  disabledActivation: boolean
 }
 
 export interface AlarmBase {
