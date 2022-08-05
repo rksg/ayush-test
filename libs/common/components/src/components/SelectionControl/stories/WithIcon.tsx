@@ -22,19 +22,11 @@ export function WithIcon () {
         />
       </div>
       <div style={{ height: '70px' }}>
-        <p>middle</p>
-        <SelectionControl
-          size={'middle'}
-          options={options}
-          defaultValue={options[1].value}
-        />
-      </div>
-      <div style={{ height: '70px' }}>
         <p>large</p>
         <SelectionControl
           size={'large'}
           options={options}
-          defaultValue={options[2].value}
+          defaultValue={options[1].value}
         />
       </div>
     </>

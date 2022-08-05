@@ -7,6 +7,7 @@ export function BasicActionModal () {
       <button onClick={InfoModal}>Info</button>
       <button onClick={ErrorModal}>Error</button>
       <button onClick={ConfirmModal}>Confirm</button>
+      <button onClick={WarningModal}>Warning</button>
     </>
   )
 }
@@ -40,5 +41,13 @@ const ErrorModal = () => {
     type: 'error',
     title: 'Something went wrong',
     content: 'Some descriptions'
+  })
+}
+
+const WarningModal = () => {
+  showActionModal({
+    type: 'warning',
+    title: 'Conflict warning...',
+    content: 'Ruckus Cloud needs you to be online, you appear to be offline.'
   })
 }

@@ -24,7 +24,7 @@ export interface NetworkSaveData {
   enableSecondaryAcctServer?: boolean;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
-  venues?: { venueId: string; name: string }[];
+  venues?: NetworkVenue[];
   wlan?: {
     ssid?: string;
     vlanId?: number;
@@ -62,6 +62,19 @@ export interface NetworkSaveData {
   expiration?: PassphraseExpirationEnum;
 }
 
+export interface NetworkVenue {
+  id?: string
+  apGroups: string[],
+  scheduler: {
+    type: string
+  },
+  isAllApGroups: boolean,
+  allApGroupsRadio: string,
+  allApGroupsRadioTypes: string[],
+  venueId: string,
+  networkId: string
+}
+
 export interface VenueSaveData {
   name?: string;
   description?: string;
@@ -83,6 +96,7 @@ export interface VenueSaveData {
   dhcp?: DhcpOptions;
   id?: string;
 }
+
 export interface Address {
   addressLine?: string;
   city?: string;
@@ -95,15 +109,18 @@ export interface Address {
 interface MeshOptions {
   enabled: boolean;
 }
+
 interface DhcpOptions {
   enabled: boolean;
   mode: DhcpModeEnum;
 }
+
 enum DhcpModeEnum {
   DHCPMODE_EACH_AP = 'DHCPMODE_EACH_AP',
   DHCPMODE_MULTIPLE_AP = 'DHCPMODE_MULTIPLE_AP',
   DHCPMODE_HIERARCHICAL_AP = 'DHCPMODE_HIERARCHICAL_AP'
 }
+
 export enum IsolatePacketsTypeEnum {
   UNICAST = 'UNICAST',
   MULTICAST = 'MULTICAST',
