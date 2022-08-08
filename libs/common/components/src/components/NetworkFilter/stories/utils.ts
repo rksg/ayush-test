@@ -15,15 +15,11 @@ export const helper = (val?: DefaultOptionType[] | DefaultOptionType[][]) => {
 }
 
 export const onApply = (
-  selectedRadio?: string[],
   selectedOptions?: DefaultOptionType[] | DefaultOptionType[][]
 ) => {
   showToast({
     type: 'success',
-    content:
-      `Radio selected: 
-        ${(selectedRadio && selectedRadio.length !== 0) ? selectedRadio : 'no radio selected'}, 
-      Cascader Options Selected: ${helper(selectedOptions)}`
+    content: `Cascader Options Selected: ${helper(selectedOptions)}`
   })
 }
 

@@ -2,8 +2,7 @@ import React from 'react'
 
 import {
   Cascader as AntCascader,
-  CascaderProps as AntCascaderProps,
-  Checkbox as AntCheckbox
+  CascaderProps as AntCascaderProps
 } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
 import { SingleValueType }   from 'rc-cascader/lib/Cascader'
@@ -11,8 +10,6 @@ import { SingleValueType }   from 'rc-cascader/lib/Cascader'
 import { Button } from '../Button'
 
 import * as UI from './styledComponents'
-
-import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
 // taken from antd Cascader API: https://ant.design/components/cascader/#Option
 export interface Option {
@@ -27,21 +24,17 @@ export interface Option {
 }
 
 export type CascaderProps = AntCascaderProps<Option> & {
-  withRadio?: { radioTitle: string, radioOptions: string[] }
   onCancel?: CallableFunction
   onApply?: (
-    selectedRadio: string[] | undefined,
     cascaderSelected: DefaultOptionType[] | DefaultOptionType[][] | undefined
   ) => void
 }
 
 export function NetworkFilter (props: CascaderProps) {
   const [ isOpen, setIsOpen ] = React.useState(false)
-  const [ radioSelected, setRadioSelected ] = React.useState([] as string[])
   const [ multiSelect, setMultiSelect ] = React.useState<DefaultOptionType[][]>([])
 
   const { 
-    withRadio,
     onCancel,
     onApply,
     onChange,
@@ -71,17 +64,9 @@ export function NetworkFilter (props: CascaderProps) {
   const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault()
     if (onApply && multiple) {
-      onApply(radioSelected, multiSelect)
+      onApply(multiSelect)
     }
     setIsOpen(!isOpen)
-  }
-
-  const onCheckboxChange = (checkedValues: CheckboxValueType[]) => {
-    const stringValues = checkedValues as string[]
-    setRadioSelected(stringValues)
-    if (onApply && multiple) {
-      onApply(stringValues, multiSelect)
-    }
   }
 
   const onChangeMultiple = (
@@ -95,7 +80,7 @@ export function NetworkFilter (props: CascaderProps) {
     setMultiSelect(selectedValues)
 
     if (onApply) {
-      onApply(radioSelected, selectedValues)
+      onApply(selectedValues)
     }
   }
 
@@ -107,26 +92,10 @@ export function NetworkFilter (props: CascaderProps) {
       onChange(triggeredValue, selectedValues)
     }
     if (onApply) {
-      onApply(radioSelected, selectedValues)
+      onApply(selectedValues)
     }
   }
 
-  const RadioDropDown = (menus: JSX.Element) => {
-    return <>
-      {menus}
-      <UI.Divider />
-      <UI.RadioDiv>
-        <UI.Span>{withRadio?.radioTitle}:</UI.Span>
-        <UI.Space />
-        <AntCheckbox.Group 
-          options={withRadio?.radioOptions}
-          onChange={onCheckboxChange}
-        />
-      </UI.RadioDiv>
-      {RenderFooterButtons()}
-    </>
-  }
-  
   const ApplyDropDown = (menus: JSX.Element) => {
     return <>
       {menus}
@@ -149,9 +118,7 @@ export function NetworkFilter (props: CascaderProps) {
   }
 
   const DropDown = (menus: JSX.Element) => {
-    if (withRadio) {
-      return RadioDropDown(menus)
-    } else if (multiple) {
+    if (multiple) {
       return ApplyDropDown(menus)
     } else {
       return menus

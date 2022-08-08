@@ -136,9 +136,6 @@ describe('NetworkFilter', () => {
     const onFocusMock = jest.fn()
     const onChangeMock = jest.fn()
 
-    const radioOptions = ['6 GHz', '5 Ghz', '2.4 Ghz']
-    const radioLabel = 'Frequency'
-
     render(
       <CustomCascader
         onApply={onApplyMock}
@@ -146,7 +143,6 @@ describe('NetworkFilter', () => {
         onFocus={onFocusMock}
         options={options}
         onChange={onChangeMock}
-        withRadio={{ radioTitle: radioLabel, radioOptions: radioOptions }}
         multiple
       />)
 
@@ -166,19 +162,6 @@ describe('NetworkFilter', () => {
     filterOptions[1].click()
     expect(onApplyMock).toBeCalledTimes(2)
     expect(onChangeMock).toBeCalledTimes(1)
-
-    await userEvent.click(await screen.findByRole('combobox'))
-    expect(screen.getByText(radioLabel, { exact: false })).toBeInTheDocument()
-    const checkboxGroup = screen.getAllByRole('checkbox')
-    expect(checkboxGroup).toHaveLength(radioOptions.length)
-
-    checkboxGroup[0].click()
-    checkboxGroup[1].click()
-    checkboxGroup[0].click()
-    expect(onApplyMock).toBeCalledTimes(5)
-    expect(onChangeMock).toBeCalledTimes(1)
-    expect(checkboxGroup[1]).toBeChecked()
-    expect(checkboxGroup[0]).not.toBeChecked()
   })
 
   it('no onApply, onCancel & onChange', async () => {
