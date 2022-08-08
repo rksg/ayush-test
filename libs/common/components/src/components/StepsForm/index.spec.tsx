@@ -119,4 +119,41 @@ describe('StepsForm', () => {
 
     expect(await screen.findByText('Step 2b')).toBeVisible()
   })
+
+  it('supports dynamically add/remove steps', async () => {
+    const Component: React.FC = () => {
+      const ref = React.useRef<StepsFormInstance>()
+      const [state, setState] = React.useState(false)
+
+      return (
+        <StepsForm formRef={ref}>
+          <StepsForm.StepForm title='Step 1'>
+            <StepsForm.Title>Step 1 Title</StepsForm.Title>
+            <button type='button' onClick={() => setState(!state)}>Toggle</button>
+          </StepsForm.StepForm>
+          {state ? <StepsForm.StepForm title='Step 2'>
+            <StepsForm.Title>Step 2 Title</StepsForm.Title>
+          </StepsForm.StepForm> : null}
+          <StepsForm.StepForm title='Step 3'>
+            <StepsForm.Title>Step 3 Title</StepsForm.Title>
+          </StepsForm.StepForm>
+          {state ? <StepsForm.StepForm title='Step 4'>
+            <StepsForm.Title>Step 4 Title</StepsForm.Title>
+          </StepsForm.StepForm> : null}
+        </StepsForm>
+      )
+    }
+
+    const { container } = render(<Component />)
+
+    /* eslint-disable testing-library/no-container, testing-library/no-node-access */
+    expect(container.querySelectorAll('.ant-steps-item')).toHaveLength(2)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle' }))
+    expect(container.querySelectorAll('.ant-steps-item')).toHaveLength(4)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle' }))
+    expect(container.querySelectorAll('.ant-steps-item')).toHaveLength(2)
+    /* eslint-enable testing-library/no-container, testing-library/no-node-access */
+  })
 })
