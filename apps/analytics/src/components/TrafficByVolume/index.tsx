@@ -1,17 +1,18 @@
-import React from 'react'
-
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter }          from '@acx-ui/analytics/utils'
 import { getSeriesData }            from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
 import { Card }                     from '@acx-ui/components'
 import { Loader }                   from '@acx-ui/components'
 import { MultiLineTimeSeriesChart } from '@acx-ui/components'
 import { cssStr }                   from '@acx-ui/components'
 import { formatter }                from '@acx-ui/utils'
 
-import { TrafficByVolumeData }     from './services'
-import { useTrafficByVolumeQuery } from './services'
+import {
+  useTrafficByVolumeQuery,
+  TrafficByVolumeData
+} from './services'
+
 
 export const seriesMapping = [
   { key: 'totalTraffic_all', name: 'All Radios' },
@@ -27,8 +28,7 @@ const lineColors = [
   cssStr('--acx-semantics-yellow-40')
 ]
 
-function TrafficByVolumeWidget () {
-  const filters = useGlobalFilter()
+function TrafficByVolumeWidget ({ filters }: { filters : AnalyticsFilter }) {
   const queryResults = useTrafficByVolumeQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
