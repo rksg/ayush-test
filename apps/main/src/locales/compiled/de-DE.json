@@ -17,6 +17,64 @@
       "value": "DE-Type"
     }
   ],
+  "/9+YKH": [
+    {
+      "type": 0,
+      "value": "DE-"
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Format options:"
+        }
+      ],
+      "type": 8,
+      "value": "p"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Most secured - all printable ASCII characters can be used"
+        }
+      ],
+      "type": 8,
+      "value": "p"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Keyboard friendly - only letters and numbers will be used"
+        }
+      ],
+      "type": 8,
+      "value": "p"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Numbers only - only numbers will be used"
+        }
+      ],
+      "type": 8,
+      "value": "p"
+    }
+  ],
   "0Hd1cr": [
     {
       "type": 0,
@@ -41,6 +99,40 @@
       "value": "DE-Shared Secret"
     }
   ],
+  "2n2eHo": [
+    {
+      "type": 0,
+      "value": "DE-For the following "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "venue"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "venues"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": ", the network could not be activated on all Venues:"
+    }
+  ],
   "34xBI0": [
     {
       "type": 0,
@@ -57,6 +149,12 @@
     {
       "type": 0,
       "value": "DE-3rd Party Captive Portal (WISPr)"
+    }
+  ],
+  "4RbqN8": [
+    {
+      "type": 0,
+      "value": "DE-No venues activating this network. Use the ON/OFF switches in the list to select the activating venues"
     }
   ],
   "4VPIXt": [
@@ -167,6 +265,12 @@
       "value": "DE-Network Type"
     }
   ],
+  "AcxDgz": [
+    {
+      "type": 0,
+      "value": "DE-Activate"
+    }
+  ],
   "AetaeJ": [
     {
       "type": 0,
@@ -189,6 +293,12 @@
     {
       "type": 0,
       "value": "DE-WPA3"
+    }
+  ],
+  "C5Rw0o": [
+    {
+      "type": 0,
+      "value": "DE-Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server."
     }
   ],
   "CM0JAR": [
@@ -459,6 +569,22 @@
       "value": ")"
     }
   ],
+  "SDi0Ka": [
+    {
+      "type": 0,
+      "value": "DE-WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise. "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " Security protocols other than WPA3 are not be supported in 6 GHz radio. "
+        }
+      ],
+      "type": 8,
+      "value": "highlight"
+    }
+  ],
   "T3UF92": [
     {
       "type": 0,
@@ -549,6 +675,12 @@
       "value": "DE-Venues"
     }
   ],
+  "bnaSLU": [
+    {
+      "type": 0,
+      "value": "DE-Connected Clients Over Time"
+    }
+  ],
   "c8uKl6": [
     {
       "type": 0,
@@ -603,10 +735,22 @@
       "value": "DE-AI Analytics"
     }
   ],
+  "dg6Mrs": [
+    {
+      "type": 0,
+      "value": "DE-Number of characters in passphrase. Valid range 8-63"
+    }
+  ],
   "dty181": [
     {
       "type": 0,
       "value": "DE-Traffic by Volume"
+    }
+  ],
+  "e0kEtS": [
+    {
+      "type": 0,
+      "value": "DE-Deactivate"
     }
   ],
   "eOJNIA": [
@@ -657,6 +801,12 @@
     {
       "type": 0,
       "value": "DE-Coming soon..."
+    }
+  ],
+  "gevCaB": [
+    {
+      "type": 0,
+      "value": "DE-Passphrase length"
     }
   ],
   "hSGclh": [
@@ -899,6 +1049,12 @@
       "value": "DE-Port"
     }
   ],
+  "rz46vg": [
+    {
+      "type": 0,
+      "value": "DE-Passphrase format"
+    }
+  ],
   "sMnDSO": [
     {
       "type": 0,
@@ -947,6 +1103,12 @@
       "value": "DE-Secondary Server"
     }
   ],
+  "tvJbQP": [
+    {
+      "type": 0,
+      "value": "DE-WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019."
+    }
+  ],
   "tzMNF3": [
     {
       "type": 0,
@@ -975,6 +1137,12 @@
     {
       "type": 0,
       "value": "DE-Shared secret"
+    }
+  ],
+  "ukFIyf": [
+    {
+      "type": 0,
+      "value": "DE-Your Attention is Required"
     }
   ],
   "utCJRG": [

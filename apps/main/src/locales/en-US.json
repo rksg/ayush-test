@@ -8,6 +8,9 @@
   "+U6ozc": {
     "defaultMessage": "Type"
   },
+  "/9+YKH": {
+    "defaultMessage": "<p>Format options:</p> <p>Most secured - all printable ASCII characters can be used</p> <p>Keyboard friendly - only letters and numbers will be used</p> <p>Numbers only - only numbers will be used</p>"
+  },
   "0Hd1cr": {
     "defaultMessage": "Allow users to access the network without any authentication/security (not recommended)",
     "description": "Description for Open Network"
@@ -21,6 +24,9 @@
   "25rEb3": {
     "defaultMessage": "Shared Secret"
   },
+  "2n2eHo": {
+    "defaultMessage": "For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:"
+  },
   "34xBI0": {
     "defaultMessage": "APs"
   },
@@ -30,6 +36,9 @@
   "3LyeET": {
     "defaultMessage": "3rd Party Captive Portal (WISPr)",
     "description": "Guest network type - 3rd Party Captive Portal (WISPr)"
+  },
+  "4RbqN8": {
+    "defaultMessage": "No venues activating this network. Use the ON/OFF switches in the list to select the activating venues"
   },
   "4VPIXt": {
     "defaultMessage": "Alarms"
@@ -86,6 +95,9 @@
   "AJBpR8": {
     "defaultMessage": "Network Type"
   },
+  "AcxDgz": {
+    "defaultMessage": "Activate"
+  },
   "AetaeJ": {
     "defaultMessage": "Select venues to activate this network"
   },
@@ -97,6 +109,9 @@
   },
   "BeT3j9": {
     "defaultMessage": "WPA3"
+  },
+  "C5Rw0o": {
+    "defaultMessage": "Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server."
   },
   "CM0JAR": {
     "defaultMessage": "Entire Organization"
@@ -208,6 +223,9 @@
   "S33j4r": {
     "defaultMessage": "Services ({servicesCount})"
   },
+  "SDi0Ka": {
+    "defaultMessage": "WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise. <highlight> Security protocols other than WPA3 are not be supported in 6 GHz radio. </highlight>"
+  },
   "T3UF92": {
     "defaultMessage": "Authentication Server"
   },
@@ -255,6 +273,9 @@
   "bS/cRP": {
     "defaultMessage": "Venues"
   },
+  "bnaSLU": {
+    "defaultMessage": "Connected Clients Over Time"
+  },
   "c8uKl6": {
     "defaultMessage": "Wi-Fi"
   },
@@ -284,8 +305,14 @@
   "d63gFk": {
     "defaultMessage": "AI Analytics"
   },
+  "dg6Mrs": {
+    "defaultMessage": "Number of characters in passphrase. Valid range 8-63"
+  },
   "dty181": {
     "defaultMessage": "Traffic by Volume"
+  },
+  "e0kEtS": {
+    "defaultMessage": "Deactivate"
   },
   "eOJNIA": {
     "defaultMessage": "Connected Clients"
@@ -307,6 +334,9 @@
   },
   "fqiBvd": {
     "defaultMessage": "Coming soon..."
+  },
+  "gevCaB": {
+    "defaultMessage": "Passphrase length"
   },
   "hSGclh": {
     "defaultMessage": "Network Name"
@@ -413,6 +443,9 @@
   "rsSUP3": {
     "defaultMessage": "Port"
   },
+  "rz46vg": {
+    "defaultMessage": "Passphrase format"
+  },
   "sMnDSO": {
     "defaultMessage": "Wi-Fi APs"
   },
@@ -439,6 +472,9 @@
     "defaultMessage": "Secondary Server",
     "description": "AAA Server Order - Secondary Server"
   },
+  "tvJbQP": {
+    "defaultMessage": "WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019."
+  },
   "tzMNF3": {
     "defaultMessage": "Status"
   },
@@ -453,6 +489,9 @@
   },
   "ubQ1f+": {
     "defaultMessage": "Shared secret"
+  },
+  "ukFIyf": {
+    "defaultMessage": "Your Attention is Required"
   },
   "utCJRG": {
     "defaultMessage": "Proxy Service:"
