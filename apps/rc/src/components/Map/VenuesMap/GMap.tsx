@@ -3,6 +3,7 @@ import React from 'react'
 
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer'
 import * as _                                     from 'lodash'
+import { createPortal }                           from 'react-dom'
 import { createRoot }                             from 'react-dom/client'
 import { useIntl }                                from 'react-intl'
 
@@ -58,8 +59,7 @@ const GMap: React.FC<MapProps> = ({
       if (enableVenueFilter && onFilterChange
         && map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
         const legendControlBoxDiv = document.createElement('div')
-        const root = createRoot(legendControlBoxDiv!)
-        root.render(<VenueFilterControlBox onChange={onFilterChange} />)
+        legendControlBoxDiv.id = 'mapLegendControlBox'
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(legendControlBoxDiv)
       }
 
@@ -99,7 +99,7 @@ const GMap: React.FC<MapProps> = ({
       let markers = venues?.map((venue: VenueMarkerOptions) => {
         let markerSize = 32
         // DEFINITIONS: No APs = 32px, minimum # of APs (>0) = 48 px, maximum # of APs = 96px
-      
+
         if(venue?.apsCount > 0){
           markerSize = 48 + (venue?.apsCount / maxVenueCountPerVenue!) * 48
         }
@@ -159,7 +159,7 @@ const GMap: React.FC<MapProps> = ({
         })
         return marker
       })
-      
+
       markers = markers.filter(marker => marker.getVisible())
       if (markers && markers.length > 0) {
         if(cluster){
@@ -187,9 +187,13 @@ const GMap: React.FC<MapProps> = ({
     }
   }, [map, options])
 
-  return (
+  return (<>
     <div id='map' ref={ref} style={style} />
-  )
+    {document.getElementById('mapLegendControlBox') && onFilterChange && createPortal(
+      <VenueFilterControlBox onChange={onFilterChange} />,
+      document.getElementById('mapLegendControlBox')!
+    )}
+  </>)
 }
 
 export default GMap
