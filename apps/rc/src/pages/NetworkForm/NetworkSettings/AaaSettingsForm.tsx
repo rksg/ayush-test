@@ -14,7 +14,7 @@ import {
   Switch,
   Tooltip
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { StepsForm, Button, Subtitle }              from '@acx-ui/components'
 import { useGetAllUserSettingsQuery, UserSettings } from '@acx-ui/rc/services'
@@ -39,18 +39,6 @@ import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import { CloudpathServerForm } from './CloudpathServerForm'
 
 const { Option } = Select
-
-/* eslint-disable max-len */
-const AaaMessages = {
-  ENABLE_PROXY_TOOLTIP: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.',
-
-  WPA2_DESCRIPTION: 'WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.',
-
-  WPA2_DESCRIPTION_WARNING: 'Security protocols other than WPA3 are not be supported in 6 GHz radio.',
-
-  WPA3_DESCRIPTION: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
-}
-/* eslint-enable */
 
 const { useWatch } = Form
 
@@ -134,17 +122,28 @@ function SettingsForm () {
   const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
     Constants.triRadioUserSettingsKey)) === 'true'
 
-  const wpa2Description = (
-    <>
-      {AaaMessages.WPA2_DESCRIPTION}
-      <Space align='start'>
+  const wpa2Description = <FormattedMessage
+    /* eslint-disable max-len */
+    defaultMessage={`
+      WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006.
+      WPA2 should be selected unless you have a specific reason to choose otherwise.
+      <highlight>
+        Security protocols other than WPA3 are not be supported in 6 GHz radio.
+      </highlight>
+    `}
+    /* eslint-enable */
+    values={{
+      highlight: (chunks) => <Space align='start'>
         <ExclamationCircleFilled />
-        {AaaMessages.WPA2_DESCRIPTION_WARNING}
+        {chunks}
       </Space>
-    </>
-  )
+    }}
+  />
 
-  const wpa3Description = AaaMessages.WPA3_DESCRIPTION
+  const wpa3Description = $t({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
+  })
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -184,6 +183,14 @@ function SettingsForm () {
 
   function AaaService () {
     const { $t } = useIntl()
+    const proxyServiceTooltip = <Tooltip
+      placement='bottom'
+      children={<QuestionCircleOutlined />}
+      title={$t({
+        // eslint-disable-next-line max-len
+        defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
+      })}
+    />
     return (
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
@@ -214,9 +221,7 @@ function SettingsForm () {
               children={<Switch />}
             />
             <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
-            <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP} placement='bottom'>
-              <QuestionCircleOutlined />
-            </Tooltip>
+            {proxyServiceTooltip}
           </Form.Item>
         </div>
         <div>
@@ -253,9 +258,7 @@ function SettingsForm () {
                   children={<Switch />}
                 />
                 <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
-                <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP}>
-                  <QuestionCircleOutlined />
-                </Tooltip>
+                {proxyServiceTooltip}
               </Form.Item>
             </>
           )}
