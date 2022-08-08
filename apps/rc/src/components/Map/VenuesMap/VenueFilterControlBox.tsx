@@ -45,7 +45,7 @@ export default function VenueFilterControlBox (props: VenueFilterControlBoxProps
 
   return (
     <UI.VenueFilterContainer>
-      <UI.FilterBoxTitle>Show</UI.FilterBoxTitle>
+      <UI.FilterBoxTitle>{$t({ defaultMessage: 'Show' })}</UI.FilterBoxTitle>
       <UI.FilterCheckbox
         name={ApVenueStatusEnum.REQUIRES_ATTENTION}
         onChange={onChange}

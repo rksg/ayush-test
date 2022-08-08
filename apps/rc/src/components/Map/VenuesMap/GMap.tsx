@@ -7,6 +7,8 @@ import { createPortal }                           from 'react-dom'
 import { createRoot }                             from 'react-dom/client'
 import { useIntl }                                from 'react-intl'
 
+import { ConfigProvider } from '@acx-ui/components'
+
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
 import VenueFilterControlBox, { FilterStateChange } from './VenueFilterControlBox'
@@ -132,7 +134,14 @@ const GMap: React.FC<MapProps> = ({
           marker.setIcon(getIcon(svgMarkerHover, scaledSize).icon)
 
           const infoDiv = document.createElement('div')
-          createRoot(infoDiv).render(<VenueMarkerTooltip venue={venue} onNavigate={onNavigate}/>)
+          createRoot(infoDiv).render(
+            <ConfigProvider lang='en-US'>
+              <VenueMarkerTooltip
+                venue={venue}
+                onNavigate={onNavigate}
+              />
+            </ConfigProvider>
+          )
           infoDiv.addEventListener('mouseover', () => {
             clearTimeout(closeInfoWindowWithTimeout)
           })
@@ -166,7 +175,7 @@ const GMap: React.FC<MapProps> = ({
           setMarkerClusterer(new MarkerClusterer({
             map,
             markers,
-            renderer: new VenueClusterRenderer(map, intl ),
+            renderer: new VenueClusterRenderer(map, intl),
             algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
             onClusterClick: onClusterClick
           }))
