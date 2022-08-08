@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                                              from '@acx-ui/analytics/services'
-import { GlobalFilter, NetworkPath, NetworkNodeTypeForDisplay } from '@acx-ui/analytics/utils'
+import { dataApi }                                                 from '@acx-ui/analytics/services'
+import { AnalyticsFilter, NetworkPath, NetworkNodeTypeForDisplay } from '@acx-ui/analytics/utils'
 
 import { HeaderData } from '.'
 
@@ -130,7 +130,7 @@ const getQuery = (path: NetworkPath) : string => {
   }
 }
 
-const getQueryVariables = (payload: GlobalFilter): QueryVariables => {
+const getQueryVariables = (payload: AnalyticsFilter): QueryVariables => {
   const { path } = payload
   const [{ type, name }] = path.slice(-1)
   switch(type) {
@@ -161,7 +161,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkNodeInfo: build.query<
       HeaderData,
-      GlobalFilter
+      AnalyticsFilter
     >({
       query: (payload) => ({
         document: getQuery(payload.path),

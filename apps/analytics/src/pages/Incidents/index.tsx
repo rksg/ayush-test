@@ -2,13 +2,15 @@ import React from 'react'
 
 import { Row, Col } from 'antd'
 
+import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
+
 import Header                   from '../../components/Header'
 import IncidentBySeverityWidget from '../../components/IncidentBySeverity'
 import NetworkHistoryWidget     from '../../components/NetworkHistory'
 
-
-
 function Incidents () {
+  const filters = useAnalyticsFilter()
+
   return <>
     <Header title='Incidents' />
     <Row gutter={[0, 20]}>
@@ -16,7 +18,7 @@ function Incidents () {
         <IncidentBySeverityWidget />
       </Col>
       <Col span={20} style={{ display: 'flex', height: 220 }}>
-        <NetworkHistoryWidget hideTitle/>
+        <NetworkHistoryWidget hideTitle filters={filters}/>
       </Col>
       <Col span={24}>
         table

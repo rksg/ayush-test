@@ -1,11 +1,5 @@
+export * from './analyticsFilter'
 export * from './constants'
-export {
-  useGlobalFilter,
-  GlobalFilterProvider,
-  defaultRanges,
-  DateRange
-} from './globalFilter'
-export type { GlobalFilter } from './globalFilter'
 export * from './incidents'
 export { default as incidentInformation } from './incidentInformation.json'
 export { default as incidentSeverities } from './incidentSeverities.json'
