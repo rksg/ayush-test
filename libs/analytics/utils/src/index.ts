@@ -1,7 +1,7 @@
 export * from './analyticsFilter'
 export * from './constants'
 export * from './incidents'
-export { default as incidentInformation } from './incidentInformation.json'
+export * from './incidentInformation'
 export { default as incidentSeverities } from './incidentSeverities.json'
 export * from './timeseries'
 export * from './types/incidents'
