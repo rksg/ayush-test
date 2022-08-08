@@ -74,67 +74,59 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
   </div>
   <div
     class="ant-row"
+    style="margin: -10px -10px -10px -10px;"
   >
     <div
       class="ant-col ant-col-4"
+      style="padding: 10px 10px 10px 10px;"
     >
-      <div>
+      <div
+        class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+        style="overflow: visible; height: 0px; width: 0px;"
+      >
         <div
-          class=""
+          style="width: -20px;"
+        >
+          incident attributes
+        </div>
+      </div>
+      <div
+        class="resize-triggers"
+      >
+        <div
+          class="expand-trigger"
         >
           <div
-            class="ant-anchor-wrapper styledComponents__LeftColumn-sc-cwxgii-0 hyMqHb"
-            style="max-height: calc(100vh - 200px);"
-          >
-            <div
-              class="ant-anchor"
-            >
-              <div
-                class="ant-anchor-ink"
-              >
-                <span
-                  class="ant-anchor-ink-ball"
-                />
-              </div>
-              <div>
-                incident attributes
-              </div>
-            </div>
-          </div>
+            style="width: 1px; height: 1px;"
+          />
         </div>
+        <div
+          class="contract-trigger"
+        />
       </div>
     </div>
     <div
       class="ant-col ant-col-20"
+      style="padding: 10px 10px 10px 10px;"
     >
-      <div
-        class="ant-row"
-        style="margin: -10px -10px -10px -10px;"
-      >
-        <div
-          class="ant-col ant-col-24"
-          style="padding: 10px 10px 10px 10px;"
-        >
-          <div>
-            insights
-          </div>
-        </div>
-        <div
-          class="ant-col ant-col-24"
-          style="padding: 10px 10px 10px 10px;"
-        >
-          <div>
-            network impact
-          </div>
-        </div>
-        <div
-          class="ant-col ant-col-24"
-          style="padding: 10px 10px 10px 10px;"
-        >
-          <div>
-            charts
-          </div>
-        </div>
+      <div>
+        insights
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div>
+        network impact
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div>
+        charts
       </div>
     </div>
   </div>
