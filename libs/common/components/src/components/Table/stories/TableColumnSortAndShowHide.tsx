@@ -21,35 +21,35 @@ const basicColumns: TableProps<(typeof basicData)[0]>['columns'] = [
   },
   {
     title: 'Address 1',
-    dataIndex: 'address',
-    key: 'address',
+    dataIndex: 'address1',
+    key: 'address1',
     disable: true
   },
   {
     title: 'Address 2',
-    dataIndex: 'address1',
-    key: 'address1',
+    dataIndex: 'address2',
+    key: 'address2',
     show: false
   },
   {
     title: 'Address 3',
-    dataIndex: 'address2',
-    key: 'address2'
-  },
-  {
-    title: 'Address 4',
     dataIndex: 'address3',
     key: 'address3'
   },
   {
-    title: 'Address 5',
+    title: 'Address 4',
     dataIndex: 'address4',
     key: 'address4'
   },
   {
-    title: 'Address 6',
+    title: 'Address 5',
     dataIndex: 'address5',
     key: 'address5'
+  },
+  {
+    title: 'Address 6',
+    dataIndex: 'address6',
+    key: 'address6'
   }
 ]
 
@@ -59,36 +59,36 @@ const basicData = [
     name: 'John Doe',
     age: 32,
     distance: 32,
-    address: 'sample address',
     address1: 'sample address',
     address2: 'sample address',
     address3: 'sample address',
     address4: 'sample address',
-    address5: 'sample address'
+    address5: 'sample address',
+    address6: 'sample address'
   },
   {
     key: '2',
     name: 'Jane Doe',
     age: 33,
     distance: 33,
-    address: 'new address',
-    address1: 'sample address',
+    address1: 'new address',
     address2: 'sample address',
     address3: 'sample address',
     address4: 'sample address',
-    address5: 'sample address'
+    address5: 'sample address',
+    address6: 'sample address'
   },
   {
     key: '3',
     name: 'Will Smith',
     age: 45,
     distance: 45,
-    address: 'address',
-    address1: 'sample address',
+    address1: 'address',
     address2: 'sample address',
     address3: 'sample address',
     address4: 'sample address',
-    address5: 'sample address'
+    address5: 'sample address',
+    address6: 'sample address'
   }
 ]
 
@@ -104,14 +104,13 @@ export function TableColumnSortAndShowHide () {
         defaultValue: {
           name: true,
           age: true,
-          address: true,
-          gg: true,
           address1: true,
           address2: true,
           address3: true,
+          address4: true,
           distance: true,
-          address4: false,
-          address5: true
+          address5: false,
+          address6: true
         }
       }}
     />
