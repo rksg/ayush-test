@@ -2,8 +2,9 @@ import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { Card }            from '@acx-ui/components'
 import { Provider }        from '@acx-ui/store'
 
-import NetworkHistoryWidget  from './components/NetworkHistory'
-import TrafficByVolumeWidget from './components/TrafficByVolume'
+import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
+import NetworkHistoryWidget           from './components/NetworkHistory'
+import TrafficByVolumeWidget          from './components/TrafficByVolume'
 
 const widgetsMap = {
   trafficByVolume: ({ filters }: { filters: AnalyticsFilter }) => (
@@ -11,6 +12,9 @@ const widgetsMap = {
   ),
   networkHistory: ({ filters }: { filters: AnalyticsFilter }) => (
     <NetworkHistoryWidget filters={filters} />
+  ),
+  connectedClientsOverTime: ({ filters }: { filters: AnalyticsFilter }) => (
+    <ConnectedClientsOverTimeWidget filters={filters}/>
   )
 }
 
