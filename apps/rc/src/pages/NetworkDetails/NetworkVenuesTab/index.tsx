@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Switch }                 from 'antd'
-import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { Switch }                                   from 'antd'
+import _                                            from 'lodash'
+import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 
 import {
@@ -173,16 +173,16 @@ export function NetworkVenuesTab () {
     if (enabledNotActivatedVenues.length > 0) {
       showActionModal({
         type: 'info',
-        title: 'Your Attention is Required',
-        content: (
+        title: $t({ defaultMessage: 'Your Attention is Required' }),
+        content: (<>
           <div>
-            <div>
-              <span>For the following {enabledNotActivatedVenues.length === 1 ? 'venue' : 'venues'},
-              the network could not be activated on all Venues: </span>
-            </div>
-            {enabledNotActivatedVenues.map(venue =>(<div key={venue}> {venue} </div>))}
+            {$t(
+              { defaultMessage: 'For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:' },
+              { count: enabledNotActivatedVenues.length }
+            )}
           </div>
-        )
+          {enabledNotActivatedVenues.map(venue =>(<div key={venue}> {venue} </div>))}
+        </>)
       })
     }
 
@@ -208,7 +208,7 @@ export function NetworkVenuesTab () {
 
   const actions: TableProps<Venue>['actions'] = [
     {
-      label: 'Activate',
+      label: $t({ defaultMessage: 'Activate' }),
       onClick: (rows, clearSelection) => {
         const network = networkQuery.data
         const networkVenues = activateSelected(network?.venues || [], rows)
@@ -216,7 +216,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      label: 'Deactivate',
+      label: $t({ defaultMessage: 'Deactivate' }),
       onClick: (rows, clearSelection) => {
         const network = networkQuery.data
         const networkVenues = deActivateSelected(network?.venues || [], rows)
