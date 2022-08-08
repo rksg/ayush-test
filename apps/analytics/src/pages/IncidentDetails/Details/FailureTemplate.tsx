@@ -37,24 +37,22 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
         ]}
         subTitle={shortDescription(props)}
       />
-      <Row>
+      <Row gutter={[20, 20]}>
         <Col span={4}>
-          <UI.LeftColumn offsetTop={200}>
-            <div>incident attributes</div>
-          </UI.LeftColumn>
+          <UI.FixedAutoSizer>
+            {({ width }) => (
+              <div style={{ width }}>incident attributes</div>
+            )}
+          </UI.FixedAutoSizer>
         </Col>
         <Col span={20}>
-          <Row gutter={[20, 20]}>
-            <Col span={24}>
-              <div>insights</div>
-            </Col>
-            <Col span={24}>
-              <div>network impact</div>
-            </Col>
-            <Col span={24}>
-              <div>charts</div>
-            </Col>
-          </Row>
+          <div>insights</div>
+        </Col>
+        <Col offset={4} span={20}>
+          <div>network impact</div>
+        </Col>
+        <Col offset={4} span={20}>
+          <div>charts</div>
         </Col>
       </Row>
     </>
