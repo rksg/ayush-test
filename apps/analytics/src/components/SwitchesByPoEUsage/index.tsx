@@ -1,9 +1,10 @@
 import React from 'react'
 
 import { CallbackDataParams } from 'echarts/types/dist/shared'
+import { useIntl }            from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter, getBarChartSeriesData }  from '@acx-ui/analytics/utils'
+import { getBarChartSeriesData, AnalyticsFilter }  from '@acx-ui/analytics/utils'
 import { BarChart, BarChartData, Card, cssNumber } from '@acx-ui/components'
 import { Loader }                                  from '@acx-ui/components'
 import { cssStr }                                  from '@acx-ui/components'
@@ -47,8 +48,8 @@ const getSwitchUsageRichStyle = () => ({
   }
 })
 
-function SwitchesByPoEUsageWidget () {
-  const filters = useGlobalFilter()
+function SwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
+  const { $t } = useIntl()
   const queryResults = useSwitchesByPoEUsageQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
@@ -59,7 +60,7 @@ function SwitchesByPoEUsageWidget () {
 
   return (
     <Loader states={[queryResults]}>
-      <Card title='Top 5 Switches by PoE Usage' >
+      <Card title={$t({ defaultMessage: 'Top 5 Switches by PoE Usage' })} >
         <AutoSizer>
           {({ height, width }) => (
             <BarChart

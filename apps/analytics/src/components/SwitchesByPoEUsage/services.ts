@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }      from '@acx-ui/analytics/services'
-import { GlobalFilter } from '@acx-ui/analytics/utils'
+import { dataApi }         from '@acx-ui/analytics/services'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
 export type SwitchesByPoEUsageData = {
   name: string
@@ -21,7 +21,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     switchesByPoEUsage: build.query<
       SwitchesByPoEUsageData[],
-      GlobalFilter
+      AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`

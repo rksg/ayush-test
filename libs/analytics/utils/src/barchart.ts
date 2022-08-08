@@ -8,7 +8,7 @@ export function getBarChartSeriesData (
   data: BarChartAPIData[], 
   seriesMapping: BarChartData['seriesEncode']
 ): BarChartData {
-  const dimensions: BarChartData['dimensions'] = data && Object.keys(data[0])
+  const dimensions: BarChartData['dimensions'] = data && data.length > 0 ? Object.keys(data[0]): []
   const source: BarChartData['source'] = []
   
   data && data.forEach(datum =>{
