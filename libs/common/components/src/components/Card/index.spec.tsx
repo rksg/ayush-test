@@ -12,7 +12,7 @@ describe('Card component', () => {
     expect(screen.getByText('title')).toBeVisible()
   })
   it('should render card with subtitle', () => {
-    render(<Card title='title' subTitle='sub title' useFullHeight/>)
+    render(<Card title='title' subTitle='sub title' />)
     expect(screen.getByText('sub title')).toBeVisible()
   })
   it('should render card with tabs', () => {

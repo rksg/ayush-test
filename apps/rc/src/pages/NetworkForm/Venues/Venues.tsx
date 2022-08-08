@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Form, Switch } from 'antd'
+import _                from 'lodash'
 
 import {
   Loader,
@@ -71,6 +72,63 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     props.formRef?.current?.setFieldsValue({ venues: selected })
   }
 
+  const handleActivateVenue = (isActivate:boolean, row:Venue | Venue[]) => {
+    let selectedVenues = [...activateVenues]
+    if (isActivate) {
+      if (Array.isArray(row)) {
+        selectedVenues = [...selectedVenues, ...row]
+      } else {
+        selectedVenues = [...selectedVenues, row]
+      }
+    } else {
+      if (Array.isArray(row)) {
+        row.forEach(item => {
+          const index = selectedVenues.findIndex(i => i.id == item.id)
+          if (index !== -1) {
+            selectedVenues.splice(index, 1)
+          }
+        })
+      } else {
+        const index = selectedVenues.findIndex(i => i.id == row.id)
+        if (index !== -1) {
+          selectedVenues.splice(index, 1)
+        }
+      }
+    }
+    selectedVenues = _.uniq(selectedVenues)
+    setActivateVenues(selectedVenues)
+    handleVenueSaveData(selectedVenues)
+    setTableDataActivate(tableData ,selectedVenues)
+  }
+
+  const setTableDataActivate = (dataOfTable:Venue[], selectedVenues:Venue[]) => {
+    const data:Venue[] = []
+    dataOfTable.forEach(item => {
+      let activated = { isActivated: false }
+      if(selectedVenues.find(i => i.id == item.id)) {
+        activated.isActivated = true
+      }
+      item.activated = activated
+      data.push(item)
+    })
+    setTableData(data)
+  }
+
+  const actions: TableProps<Venue>['actions'] = [
+    {
+      label: 'Activate',
+      onClick: (rows) => {
+        handleActivateVenue(true, rows)
+      }
+    },
+    {
+      label: 'Deactivate',
+      onClick: (rows) => {
+        handleActivateVenue(false, rows)
+      }
+    }
+  ]
+
   useEffect(()=>{
     if (tableQuery.data) {
       const data = tableQuery.data.data.map(item => ({
@@ -78,7 +136,11 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
         // work around of read-only records from RTKQ
         activated: { ...item.activated }
       }))
-      setTableData(data)
+      if (tableData.length && activateVenues.length) {
+        setTableDataActivate(data, activateVenues)
+      } else {
+        setTableData(data)
+      }
     }
   }, [tableQuery.data])
 
@@ -116,17 +178,13 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       title: 'Activated',
       dataIndex: ['activated', 'isActivated'],
       render: function (data, row) {
-        return <Switch onClick={(checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
-          event.stopPropagation()
-          let selectedVenues = [...activateVenues]
-          if (checked) {
-            selectedVenues = [...selectedVenues, row]
-          } else {
-            selectedVenues.splice(selectedVenues.indexOf(row), 1)
-          }
-          setActivateVenues(selectedVenues)
-          handleVenueSaveData(selectedVenues)
-        }} />
+        return <Switch
+          checked={Boolean(data)}
+          onClick={(checked, event) => {
+            event.stopPropagation()
+            handleActivateVenue(checked, row)
+          }}
+        />
       }
     },
     {
@@ -162,13 +220,10 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
         <Loader states={[tableQuery]}>
           <Table
             rowKey='id'
+            actions={actions}
             rowSelection={{
-              type: 'checkbox',
-              ...tableQuery.rowSelection
+              type: 'checkbox'
             }}
-            onRow={(record) => ({
-              onClick: () => { tableQuery.onRowClick(record) }
-            })}
             columns={columns}
             dataSource={tableData}
             pagination={tableQuery.pagination}

@@ -6,10 +6,4 @@ export * from './types'
 export * from './constants'
 export * from './types'
 export * from './timeseries'
-export {
-  useGlobalFilter,
-  GlobalFilterProvider,
-  defaultRanges,
-  DateRange
-} from './globalFilter'
-export type { GlobalFilter } from './globalFilter'
+export * from './analyticsFilter'

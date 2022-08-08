@@ -1,6 +1,12 @@
-import { TooltipComponentFormatterCallbackParams } from 'echarts'
-import moment                                      from 'moment-timezone'
-import { renderToString }                          from 'react-dom/server'
+import {
+  TooltipComponentFormatterCallbackParams,
+  XAXisComponentOption,
+  YAXisComponentOption,
+  RegisteredSeriesOption,
+  TooltipComponentOption
+} from 'echarts'
+import moment             from 'moment-timezone'
+import { renderToString } from 'react-dom/server'
 
 import { TimeStamp } from '@acx-ui/types'
 import { formatter } from '@acx-ui/utils'
@@ -51,11 +57,30 @@ export const xAxisOptions = () => ({
       color: cssStr('--acx-primary-black')
     }
   }
+} as XAXisComponentOption)
+
+export const barChartAxisLabelOptions = () => ({
+  color: cssStr('--acx-primary-black'),
+  fontFamily: cssStr('--acx-neutral-brand-font'),
+  fontSize: cssNumber('--acx-body-4-font-size'),
+  lineHeight: cssNumber('--acx-body-4-line-height'),
+  fontWeight: cssNumber('--acx-body-font-weight')
 })
+
+export const barChartSeriesLabelOptions = () => ({
+  show: true,
+  position: 'right',
+  fontFamily: cssStr('--acx-neutral-brand-font'),
+  fontSize: cssNumber('--acx-body-3-font-size'),
+  lineHeight: cssNumber('--acx-body-3-line-height'),
+  color: cssStr('--acx-primary-black'),
+  fontWeight: cssNumber('--acx-body-font-weight'),
+  silent: true
+} as RegisteredSeriesOption['bar']['label'])
 
 export const yAxisOptions = () => ({
   boundaryGap: [0, '10%']
-})
+} as YAXisComponentOption)
 
 export const axisLabelOptions = () => ({
   color: cssStr('--acx-neutrals-50'),
@@ -92,7 +117,7 @@ export const tooltipOptions = () => ({
   padding: 8,
   confine: true,
   extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08);'
-})
+} as TooltipComponentOption)
 
 export const timeSeriesTooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null)

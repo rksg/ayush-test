@@ -14,7 +14,7 @@ test('should redirect analytics to analytics/incidents', () => {
       wrapRoutes: false
     }
   })
-  screen.getByText('bar chart')
+  screen.getByText('table')
 })
 test('should navigate to analytics/incidents', () => {
   render(<AnalyticsRoutes />, {
@@ -23,7 +23,7 @@ test('should navigate to analytics/incidents', () => {
       wrapRoutes: false
     }
   })
-  screen.getByText('bar chart')
+  screen.getByText('table')
 })
 test('should navigate to analytics/recommendations', () => {
   render(<AnalyticsRoutes />, {

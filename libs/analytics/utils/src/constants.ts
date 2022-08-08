@@ -12,7 +12,7 @@ export enum NetworkNodeTypeForDisplay {
   ap = 'Access Point',
   AP = 'Access Point' // since data-api sends AP
 }
-
+// commented codes acc to prod rc config
 export const incidentCodes = [
   'ttc',
   'ttc+radius-failure',
@@ -33,9 +33,9 @@ export const incidentCodes = [
   'p-cov-clientrssi-low',
   'p-load-sz-cpu-load',
   'p-switch-memory-high',
-  'p-channeldist-suboptimal-plan-24g',
-  'p-channeldist-suboptimal-plan-50g-outdoor',
-  'p-channeldist-suboptimal-plan-50g-indoor',
+  //'p-channeldist-suboptimal-plan-24g',
+  //'p-channeldist-suboptimal-plan-50g-outdoor',
+  //'p-channeldist-suboptimal-plan-50g-indoor',
   'i-net-time-future',
   'i-net-time-past',
   'i-net-sz-net-latency',

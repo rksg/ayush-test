@@ -1,5 +1,6 @@
 export * from './components/ActionModal'
 export * from './components/Alert'
+export * from './components/BarChart'
 export * from './components/Boundary'
 export * from './components/Button'
 export * from './components/Card'
@@ -19,10 +20,7 @@ export type {
   MultiLineTimeSeriesChartData
 } from './components/MultiLineTimeSeriesChart'
 export * from './components/PageHeader'
-export type {
-  TrendType
-} from './components/Pill/styledComponents'
-export { Pill } from './components/Pill'
+export * from './components/Pill'
 export * from './components/SelectionControl'
 export * from './components/SparklineChart'
 export * from './components/StackedAreaChart'
