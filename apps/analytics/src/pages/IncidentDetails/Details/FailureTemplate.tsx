@@ -1,15 +1,19 @@
 import { Col, Row }                  from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import { incidentInformation, calculateSeverity } from '@acx-ui/analytics/utils'
-import { PageHeader, Pill }                       from '@acx-ui/components'
+import {
+  incidentInformation,
+  calculateSeverity,
+  impactedArea,
+  formattedSliceType,
+  IncidentDetailsProps
+} from '@acx-ui/analytics/utils'
+import { PageHeader, SeverityPill } from '@acx-ui/components'
 
-import { incidentDetailsMap }               from '..'
-import { IncidentAttributes }               from '../IncidentAttributes'
-import { formattedSliceType, impactedArea } from '../path'
-import * as UI                              from '../syledComponents'
+import { incidentDetailsMap } from '..'
+import { IncidentAttributes } from '../IncidentAttributes'
 
-import type { IncidentDetailsProps } from '../types'
+import * as UI from './styledComponents'
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const info = incidentInformation[props.code as keyof typeof incidentInformation]
@@ -27,8 +31,8 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
   const { $t } = useIntl()
   const shortDescription = (incident: IncidentDetailsProps) => {
     const incidentInfo = incidentInformation[incident.code as keyof typeof incidentDetailsMap]
-    /* eslint-disable-next-line max-len */
-    const scope = `${formattedSliceType(incident.sliceType)}: ${impactedArea(incident.path, incident.sliceValue)}`
+    const scope = `${formattedSliceType(incident.sliceType)}:` +
+      impactedArea(incident.path, incident.sliceValue)
     const { shortDescription } = incidentInfo
     const messageProps = {
       id: incident.id,
@@ -37,13 +41,12 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
     }
     return <FormattedMessage {...messageProps}/>
   }
-  const severityValue = calculateSeverity(props.severity)!
 
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Incident Details' })}
-        sideHeader={<Pill value={severityValue} trend={severityValue} />}
+        titleExtra={<SeverityPill severity={calculateSeverity(props.severity)!} />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}

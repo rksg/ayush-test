@@ -1,4 +1,26 @@
-import { NetworkPath } from '@acx-ui/analytics/utils'
+import { incidentSeverities } from '..'
+
+export interface IncidentInformation {
+  category: string
+  subCategory: string
+  shortDescription: string
+  longDescription: string
+  incidentType: string
+}
+
+export interface PathNode {
+  type: string
+  name?: string
+}
+
+export interface NetworkPath extends Array<PathNode> {}
+
+export type IncidentSeverities = keyof typeof incidentSeverities
+
+export interface SeverityRange {
+  gt: number
+  lte: number
+}
 
 export interface Metadata {
   dominant: { ssid?: string }
@@ -32,10 +54,7 @@ export interface IncidentDetailsProps {
   currentSlaThreshold: number|null
 }
 
-export interface IncidentInformation {
-  category: string
-  subCategory: string
-  shortDescription: string
-  longDescription: string
-  incidentType: string
-}
+export interface IncidentAttributesProps
+  extends IncidentDetailsProps, IncidentInformation {
+    visibleFields: string[]
+  }

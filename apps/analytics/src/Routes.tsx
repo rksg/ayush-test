@@ -13,7 +13,6 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/recommendations' element={<div>Recommendations</div>} />
       <Route path='analytics/health' element={<div>Health</div>} />
       <Route path='analytics/configChange' element={<div>Config Change</div>} />
-      <Route path='analytics/occupancy' element={<div>Occupancy</div>} />
     </Route>
   )
   return (

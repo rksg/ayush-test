@@ -1,8 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/analytics/services'
-
-import { IncidentDetailsProps } from './types'
+import { dataApi }              from '@acx-ui/analytics/services'
+import { IncidentDetailsProps } from '@acx-ui/analytics/utils'
 
 const detailQueryProps = {
   incident: `

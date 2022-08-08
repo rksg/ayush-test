@@ -3,20 +3,16 @@ import React, { useState } from 'react'
 import moment                from 'moment-timezone'
 import { FormattedMessage  } from 'react-intl'
 
-import { noDataSymbol } from '@acx-ui/analytics/utils'
-import { formatter }    from '@acx-ui/utils'
+import { noDataSymbol }                 from '@acx-ui/analytics/utils'
+import type { IncidentAttributesProps } from '@acx-ui/analytics/utils'
+import { formatter }                    from '@acx-ui/utils'
 
 import { DescriptionRowProps, DescriptionSection }         from '../../../components/DescriptionSection'
 import { formattedPath, formattedSliceType, impactedArea } from '../path'
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
 
-import type { IncidentDetailsProps, IncidentInformation } from '../types'
 
-interface IncidentAttributesProps
-  extends IncidentDetailsProps, IncidentInformation {
-    visibleFields: string[]
-}
 
 export const durationOf = (start: string, end: string) =>
   moment(end).diff(moment(start), 'milliseconds', true)

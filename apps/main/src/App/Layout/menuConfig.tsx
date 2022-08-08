@@ -35,10 +35,6 @@ const config = [
       {
         path: '/analytics/configChange',
         name: 'Config Change'
-      },
-      {
-        path: '/analytics/occupancy',
-        name: 'Occupancy'
       }
     ]
   },
