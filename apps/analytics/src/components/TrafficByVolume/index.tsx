@@ -1,10 +1,8 @@
-import React from 'react'
-
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { useAnalyticsFilter }       from '@acx-ui/analytics/utils'
 import { getSeriesData }            from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
 import { Card }                     from '@acx-ui/components'
 import { Loader }                   from '@acx-ui/components'
 import { MultiLineTimeSeriesChart } from '@acx-ui/components'
@@ -26,9 +24,8 @@ const lineColors = [
   cssStr('--acx-semantics-yellow-40')
 ]
 
-function TrafficByVolumeWidget () {
+function TrafficByVolumeWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
-  const filters = useAnalyticsFilter()
   const seriesMapping = [
     { key: 'totalTraffic_all', name: $t({ defaultMessage: 'All Radios' }) },
     { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },

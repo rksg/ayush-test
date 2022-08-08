@@ -43,4 +43,11 @@ describe('Dashboard', () => {
     ]
     switchWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
   })
+
+  it('should switch tab correctly', async () => {
+    render(<Dashboard />)
+    fireEvent.click(await screen.findByText('Switch'))
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
+    expect(await screen.findAllByTestId(/^networks/)).toHaveLength(5)
+  })
 })
