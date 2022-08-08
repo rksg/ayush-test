@@ -2,7 +2,7 @@ import { gql } from 'graphql-request'
 
 import { dataApi } from '@acx-ui/analytics/services'
 import {
-  severitiesDefinition,
+  incidentSeverities,
   GlobalFilter,
   incidentCodes
 } from '@acx-ui/analytics/utils'
@@ -32,7 +32,7 @@ export const api = dataApi.injectEndpoints({
         ) {
           network(start: $start, end: $end) {
             hierarchyNode(path: $path) {
-              ${Object.entries(severitiesDefinition).map(([name, { gt, lte }]) => `
+              ${Object.entries(incidentSeverities).map(([name, { gt, lte }]) => `
               ${name}: incidentCount(filter: {severity: {gt: ${gt}, lte: ${lte}}, code: $code})
             `).join('')}
             }

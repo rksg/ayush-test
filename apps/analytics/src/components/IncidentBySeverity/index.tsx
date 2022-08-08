@@ -3,7 +3,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter, severitiesDefinition } from '@acx-ui/analytics/utils'
+import { useGlobalFilter, incidentSeverities } from '@acx-ui/analytics/utils'
 import {
   Card,
   BarChart,
@@ -21,7 +21,7 @@ import {
 import * as UI from './styledComponents'
 
 type PillData = { delta: string, total: number, trend: string }
-const barColors = Object.values(severitiesDefinition).map(({ color }) => cssStr(color))
+const barColors = Object.values(incidentSeverities).map(({ color }) => cssStr(color))
 export const getPillData = (
   curr: IncidentsBySeverityData, prev: IncidentsBySeverityData
 ): PillData => {

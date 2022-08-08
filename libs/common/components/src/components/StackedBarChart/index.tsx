@@ -1,7 +1,7 @@
 import ReactECharts from 'echarts-for-react'
 import _            from 'lodash'
 
-import { severitiesDefinition } from '@acx-ui/analytics/utils'
+import { incidentSeverities } from '@acx-ui/analytics/utils'
 
 import { cssStr }              from '../../theme/helper'
 import {
@@ -116,7 +116,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
 
   const { animation, showTotal, showLabels, showTooltip } = props
   const barColors = props.barColors ??
-    Object.values(severitiesDefinition).map(({ color }) => cssStr(color))
+    Object.values(incidentSeverities).map(({ color }) => cssStr(color))
   let option: EChartsOption = {
     animation,
     silent: !showTooltip,

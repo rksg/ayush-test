@@ -1,11 +1,11 @@
 import React from 'react'
 
-import type { IncidentSeverity } from '@acx-ui/analytics/utils'
+import type { IncidentSeverities } from '@acx-ui/analytics/utils'
 
 import * as UI from './styledComponents'
 
 export type TrendType = 'none' | 'positive' | 'negative'
-export type { IncidentSeverity }
+export type { IncidentSeverities }
 
 interface TrendPillProps {
   trend: TrendType
@@ -18,7 +18,7 @@ export function TrendPill ({ trend, value }: TrendPillProps) {
 }
 
 interface SeverityPillProps {
-  severity: IncidentSeverity
+  severity: IncidentSeverities
 }
 export function SeverityPill ({ severity }: SeverityPillProps) {
   return (

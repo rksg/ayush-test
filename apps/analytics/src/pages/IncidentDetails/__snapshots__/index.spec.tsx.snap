@@ -97,7 +97,7 @@ exports[`incident details should render Incident Details correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 jnJmAg"
+              class="styledComponents__Pill-sc-j61ge1-0 ffqUYw"
               type="P3"
             >
               P3
@@ -106,8 +106,7 @@ exports[`incident details should render Incident Details correctly 1`] = `
           <span
             class="ant-page-header-heading-sub-title"
           >
-            EAP failures are unusually high in Access Point:
-      RuckusAP (70:CA:97:01:A0:C0)
+            EAP failures are unusually high in Access Point:RuckusAP (70:CA:97:01:A0:C0)
           </span>
         </div>
       </div>
@@ -124,7 +123,7 @@ exports[`incident details should render Incident Details correctly 1`] = `
           class=""
         >
           <div
-            class="ant-anchor-wrapper styledComponents__LeftColumn-sc-1d64a9q-0 gUIZaW"
+            class="ant-anchor-wrapper styledComponents__LeftColumn-sc-cwxgii-0 hyMqHb"
             style="max-height: calc(100vh - 200px);"
           >
             <div
@@ -137,7 +136,9 @@ exports[`incident details should render Incident Details correctly 1`] = `
                   class="ant-anchor-ink-ball"
                 />
               </div>
-              IncidentAttributes
+              <div>
+                incident attributes
+              </div>
             </div>
           </div>
         </div>
@@ -155,7 +156,7 @@ exports[`incident details should render Incident Details correctly 1`] = `
           style="padding: 10px 10px 10px 10px;"
         >
           <div>
-            Insights
+            insights
           </div>
         </div>
         <div
@@ -171,7 +172,7 @@ exports[`incident details should render Incident Details correctly 1`] = `
           style="padding: 10px 10px 10px 10px;"
         >
           <div>
-            time series section
+            charts
           </div>
         </div>
       </div>
