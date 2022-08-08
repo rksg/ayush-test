@@ -1,8 +1,9 @@
 import { gql } from 'graphql-request'
 import moment  from 'moment-timezone'
 
-import { dataApi }                     from '@acx-ui/analytics/services'
-import { GlobalFilter, incidentCodes } from '@acx-ui/analytics/utils'
+import { dataApi }                        from '@acx-ui/analytics/services'
+import { AnalyticsFilter, incidentCodes } from '@acx-ui/analytics/utils'
+
 
 export type NetworkHistoryData = {
   connectedClientCount: number[]
@@ -29,7 +30,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkHistory: build.query<
       NetworkHistoryData,
-      GlobalFilter
+      AnalyticsFilter
     >({
       // todo: Skipping the filter for impactedClientCount
       query: (payload) => ({
