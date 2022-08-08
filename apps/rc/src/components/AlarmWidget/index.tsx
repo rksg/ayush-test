@@ -45,7 +45,7 @@ const seriesMapping = [
     color: cssStr('--acx-accents-orange-30') }
 ] as Array<{ key: string, name: string, color: string }>
 
-export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
+export const getAlarmsDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   const alarmsSummary = overviewData?.summary?.alarms?.summary
   if (alarmsSummary) {
@@ -67,12 +67,10 @@ function AlarmWidget () {
   const navigate = useNavigate()
 
   const onNavigate = (alarm: Alarm) => {
-    let path = ''
-    if (alarm.entityType === EventTypeEnum.AP) {
-      path = `aps/${alarm.serialNumber}/TBD`
-    } else if (alarm.entityType === EventTypeEnum.SWITCH) {
-      path = `switches/${alarm.serialNumber}/TBD`
-    }
+    let path = alarm.entityType === EventTypeEnum.AP
+      ? `aps/${alarm.serialNumber}/TBD`
+      : `switches/${alarm.serialNumber}/TBD`
+
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${path}`
@@ -84,7 +82,7 @@ function AlarmWidget () {
     params: useParams()
   },{
     selectFromResult: ({ data, ...rest }) => ({
-      data: getVenuesDonutChartData(data),
+      data: getAlarmsDonutChartData(data),
       ...rest
     })
   })
@@ -96,6 +94,11 @@ function AlarmWidget () {
     sorter: {
       sortField: 'startTime',
       sortOrder: 'DESC'
+    },
+    pagination: {
+      pageSize: 5,
+      current: 1,
+      total: 0
     }
   })
 
@@ -111,7 +114,7 @@ function AlarmWidget () {
                   style={{ width, height: height / 3 }}
                   data={data}/>
                 <AlarmList
-                  data={alarmQuery.data?.data || []}
+                  data={alarmQuery.data?.data!}
                   width={width - 10}
                   height={height - (height / 3)}
                   onNavigate={onNavigate} />
