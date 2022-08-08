@@ -23,17 +23,17 @@ const venue1: VenueMarkerOptions = {
   visible: true,
   latitude: 14,
   longitude: 12,
-  ...common,      
+  ...common,
   ...withCounts
 }
 const venue2: VenueMarkerOptions = {
   visible: true,
   position: null,
-  ...common,      
+  ...common,
   ...withCounts
 }
 
-xdescribe('GMap', () => {
+describe('GMap', () => {
   beforeEach(() => {
     initialize()
     const map = new google.maps.Map(document.createElement('div'))
@@ -65,7 +65,7 @@ xdescribe('GMap', () => {
         onIdle={jest.fn()}
       />
     )
-    
+
     //rerender with venue 2
     rerender(
       <GMap
