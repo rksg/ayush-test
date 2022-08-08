@@ -44,7 +44,27 @@ const venueData = {
 }
 
 
-xdescribe('VenueClusterRenderer', () => {
+jest.mock('react-intl', () => {
+  const reactIntl = jest.requireActual('react-intl')
+  const intlProvider = new reactIntl.IntlProvider(
+    {
+      locale: 'en-US',
+      messages: {
+        FbnpZB: 'Cluster of {count} Venues'
+      }
+    },
+    {}
+  )
+  return {
+    ...reactIntl,
+    useIntl: () => {
+      return intlProvider.state.intl
+    }
+  }
+})
+
+
+describe('VenueClusterRenderer', () => {
   beforeAll(() => {
     initialize()
   })
@@ -55,10 +75,8 @@ xdescribe('VenueClusterRenderer', () => {
   })
 
   it('should call render for the markercluster', ()=>{
-    const intl = useIntl()
-
     const map = new google.maps.Map(document.createElement('div'))
-    const renderer = new VenueClusterRenderer(map, intl)
+    const renderer = new VenueClusterRenderer(map, useIntl())
     const spyRender = jest.spyOn(renderer, 'render')
     
     const markers: google.maps.Marker[] = [
