@@ -4,7 +4,6 @@ import moment  from 'moment-timezone'
 import { dataApi }                        from '@acx-ui/analytics/services'
 import { AnalyticsFilter, incidentCodes } from '@acx-ui/analytics/utils'
 
-
 export type NetworkHistoryData = {
   connectedClientCount: number[]
   impactedClientCount: number[]
