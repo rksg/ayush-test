@@ -53,7 +53,6 @@ describe('NetworkFilter', () => {
         onApply={onApplyMock} 
         multiple={false} 
         onChange={onChangeMock}
-        withControlButtons={true}
       />)
 
     fireEvent.mouseDown(await screen.findByRole('combobox'))
@@ -120,66 +119,6 @@ describe('NetworkFilter', () => {
     expect(await screen.findAllByText(options[1].label as string)).toHaveLength(1)
   })
 
-
-  it('single select & checkboxgroup', async () => {
-    const onApplyMock = jest.fn()
-    const onChangeMock = jest.fn()
-    const radioOptions = ['6 GHz', '5 Ghz', '2.4 Ghz']
-    const radioLabel = 'Frequency'
-    const options: Option[] = [
-      {
-        value: 'n1',
-        label: 'SSID 1'
-      },
-      {
-        value: 'n2',
-        label: 'SSID 2'
-      },
-      {
-        value: 'n3',
-        label: 'SSID 3'
-      },
-      {
-        value: 'n4',
-        label: 'SSID 4'
-      }
-    ]
-    render(
-      <CustomCascader
-        options={options}
-        onApply={onApplyMock}
-        onChange={onChangeMock}
-        withRadio={{ radioTitle: radioLabel, radioOptions: radioOptions }}
-        withControlButtons
-      />)
-
-    await userEvent.click(screen.getByRole('combobox'))
-    expect(screen.getByText(radioLabel, { exact: false })).toBeInTheDocument()
-    const checkboxGroup = screen.getAllByRole('checkbox')
-    expect(checkboxGroup).toHaveLength(radioOptions.length)
-
-    checkboxGroup[0].click()
-    checkboxGroup[1].click()
-    checkboxGroup[0].click()
-    expect(onApplyMock).toBeCalledTimes(3)
-    expect(onChangeMock).toBeCalledTimes(0)
-    expect(checkboxGroup[1]).toBeChecked()
-    expect(checkboxGroup[0]).not.toBeChecked()
-
-    await userEvent.click(screen.getByRole('combobox'))
-    expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument()
-    screen.getByRole('button', { name: 'Apply' }).click()
-    expect(onApplyMock).toBeCalledTimes(4)
-    expect(onChangeMock).toBeCalledTimes(0)
-
-    const selectOptions = screen.getAllByRole('menuitemcheckbox')
-    selectOptions[0].click()
-    selectOptions[1].click()
-    selectOptions[0].click()
-    expect(onApplyMock).toBeCalledTimes(7)
-    expect(onChangeMock).toBeCalledTimes(3)
-  })
-
   it('footer button, onCancel, onChange & onFocus test', async () => {
     const options: Option[] = [
       {
@@ -209,7 +148,6 @@ describe('NetworkFilter', () => {
         onChange={onChangeMock}
         withRadio={{ radioTitle: radioLabel, radioOptions: radioOptions }}
         multiple
-        withControlButtons
       />)
 
     await userEvent.click(screen.getByRole('combobox'))
@@ -259,7 +197,6 @@ describe('NetworkFilter', () => {
       onApply={undefined}
       onChange={undefined}
       onCancel={undefined}
-      withControlButtons
       multiple
     />)
     expect(screen.getByRole('combobox')).toBeInTheDocument()

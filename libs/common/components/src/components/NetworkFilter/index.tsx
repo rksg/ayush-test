@@ -28,7 +28,6 @@ export interface Option {
 
 export type CascaderProps = AntCascaderProps<Option> & {
   withRadio?: { radioTitle: string, radioOptions: string[] }
-  withControlButtons?: boolean
   onCancel?: CallableFunction
   onApply?: (
     selectedRadio: string[] | undefined,
@@ -39,7 +38,6 @@ export type CascaderProps = AntCascaderProps<Option> & {
 export function NetworkFilter (props: CascaderProps) {
   const [ isOpen, setIsOpen ] = React.useState(false)
   const [ radioSelected, setRadioSelected ] = React.useState([] as string[])
-  const [ singleSelect, setSingleSelect ] = React.useState<DefaultOptionType[]>([])
   const [ multiSelect, setMultiSelect ] = React.useState<DefaultOptionType[][]>([])
 
   const { 
@@ -49,7 +47,6 @@ export function NetworkFilter (props: CascaderProps) {
     onChange,
     multiple,
     onFocus,
-    withControlButtons,
     options
   } = props
 
@@ -73,12 +70,8 @@ export function NetworkFilter (props: CascaderProps) {
 
   const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault()
-    if (onApply) {
-      if (multiple) {
-        onApply(radioSelected, multiSelect)
-      } else {
-        onApply(radioSelected, singleSelect)
-      }
+    if (onApply && multiple) {
+      onApply(radioSelected, multiSelect)
     }
     setIsOpen(!isOpen)
   }
@@ -86,12 +79,8 @@ export function NetworkFilter (props: CascaderProps) {
   const onCheckboxChange = (checkedValues: CheckboxValueType[]) => {
     const stringValues = checkedValues as string[]
     setRadioSelected(stringValues)
-    if (onApply) {
-      if (multiple) {
-        onApply(stringValues, multiSelect)
-      } else {
-        onApply(stringValues, singleSelect)
-      }
+    if (onApply && multiple) {
+      onApply(stringValues, multiSelect)
     }
   }
 
@@ -117,9 +106,6 @@ export function NetworkFilter (props: CascaderProps) {
     if (onChange && !multiple) {
       onChange(triggeredValue, selectedValues)
     }
-
-    setSingleSelect(selectedValues)
-    
     if (onApply) {
       onApply(radioSelected, selectedValues)
     }
@@ -150,7 +136,7 @@ export function NetworkFilter (props: CascaderProps) {
 
   const RenderFooterButtons = () => {
     return (
-      (isPopulated && withControlButtons) && (
+      (isPopulated && multiple) && (
         <>
           <UI.Divider />
           <UI.ButtonDiv>
