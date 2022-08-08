@@ -13,7 +13,7 @@ import {
   Select,
   Tooltip
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { StepsForm, Subtitle }                     from '@acx-ui/components'
 import { useCloudpathListQuery }                   from '@acx-ui/rc/services'
@@ -105,23 +105,24 @@ function SettingsForm () {
 }
 
 function PassphraseGeneration () {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const $t = intl.$t
   const [state, updateState] = useState({
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
     passphraseLength: 18,
     expiration: PassphraseExpirationEnum.UNLIMITED
   })
 
-  const updateData = (newData: any) => {
+  const updateData = (newData: Partial<typeof state>) => {
     updateState({ ...state, ...newData })
   }
 
   const passphraseOptions = Object.keys(PassphraseFormatEnum).map((key =>
-    <Option key={key}>{transformDpskNetwork(DpskNetworkType.FORMAT, key)}</Option>
+    <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.FORMAT, key)}</Option>
   ))
 
   const expirationOptions = Object.keys(PassphraseExpirationEnum).map((key =>
-    <Option key={key}>{transformDpskNetwork(DpskNetworkType.EXPIRATION, key)}</Option>
+    <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.EXPIRATION, key)}</Option>
   ))
 
   const onFormatChange = function (passphraseFormat: PassphraseFormatEnum) {
@@ -133,22 +134,12 @@ function PassphraseGeneration () {
   }
 
   const passphraseFormatDescription = {
-    [PassphraseFormatEnum.MOST_SECURED]: 
+    [PassphraseFormatEnum.MOST_SECURED]:
       $t({ defaultMessage: 'Letters, numbers and symbols can be used' }),
-    [PassphraseFormatEnum.KEYBOARD_FRIENDLY]: 
+    [PassphraseFormatEnum.KEYBOARD_FRIENDLY]:
       $t({ defaultMessage: 'Only letters and numbers can be used' }),
     [PassphraseFormatEnum.NUMBERS_ONLY]: $t({ defaultMessage: 'Only numbers can be used' })
   }
-
-  const FIELD_TOOLTIP = {
-    FORMAT: `<p> Format options: </p>
-    <p> Most secured - all printable ASCII characters can be used </p>
-    <p> Keyboard friendly - only letters and numbers will be used </p>
-    Numbers only - only numbers will be used`,
-
-    LENGTH: 'Number of characters in passphrase. Valid range 8-63'
-  }
-
 
   return (
     <>
@@ -157,7 +148,7 @@ function PassphraseGeneration () {
         <Col span={23}>
           <Form.Item
             name='passphraseFormat'
-            label='Passphrase format'
+            label={$t({ defaultMessage: 'Passphrase format' })}
             rules={[{ required: true }]}
             initialValue={state.passphraseFormat}
             extra={passphraseFormatDescription[state.passphraseFormat]}
@@ -171,15 +162,18 @@ function PassphraseGeneration () {
         </Col>
         <Col span={1}>
           <FieldExtraTooltip>
-            <Tooltip title={
-              /* eslint-disable */
-                <div dangerouslySetInnerHTML={{ __html:FIELD_TOOLTIP.FORMAT }}></div>
-                /* eslint-disable */
-              }
+            <Tooltip
               placement='bottom'
-            >
-              <QuestionCircleOutlined />
-            </Tooltip>
+              title={<FormattedMessage
+                defaultMessage={`<p>Format options:</p>
+                  <p>Most secured - all printable ASCII characters can be used</p>
+                  <p>Keyboard friendly - only letters and numbers will be used</p>
+                  <p>Numbers only - only numbers will be used</p>
+                `}
+                values={{ p: (chunks) => <p>{chunks}</p> }}
+              />}
+              children={<QuestionCircleOutlined />}
+            />
           </FieldExtraTooltip>
         </Col>
       </Row>
@@ -188,22 +182,24 @@ function PassphraseGeneration () {
         <Col span={23}>
           <Form.Item
             name='passphraseLength'
-            label='Passphrase length'
+            label={$t({ defaultMessage: 'Passphrase length' })}
             rules={[{ required: true }]}
             initialValue={state.passphraseLength}
             children={<InputNumber min={8} max={63} style={{ width: '100%' }}/>}
           />
         </Col>
         <Col span={1}>
-          <Tooltip title={FIELD_TOOLTIP.LENGTH} placement='bottom'>
-            <QuestionCircleOutlined />
-          </Tooltip>
+          <Tooltip
+            title={$t({ defaultMessage: 'Number of characters in passphrase. Valid range 8-63' })}
+            placement='bottom'
+            children={<QuestionCircleOutlined />}
+          />
         </Col>
-       </Row>
+      </Row>
 
       <Form.Item
         name='expiration'
-        label={ $t({defaultMessage: 'Passphrase expiration'}) }
+        label={$t({ defaultMessage: 'Passphrase expiration' })}
         rules={[{ required: true }]}
         initialValue={state.expiration}
       >

@@ -7,7 +7,8 @@ export function DpskSummaryForm (props: {
   summaryData: NetworkSaveData;
 }) {
   const { summaryData } = props
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const $t = intl.$t
   return (
     <>
       <Form.Item
@@ -19,20 +20,32 @@ export function DpskSummaryForm (props: {
           <>
             <Form.Item
               label={$t({ defaultMessage: 'Passphrase Format:' })}
-              children={transformDpskNetwork(DpskNetworkType.FORMAT, summaryData.passphraseFormat)}
+              children={transformDpskNetwork(
+                intl,
+                DpskNetworkType.FORMAT,
+                summaryData.passphraseFormat
+              )}
             />
             <Form.Item
               label={$t({ defaultMessage: 'Passphrase Length:' })}
-              children={transformDpskNetwork(DpskNetworkType.LENGTH, summaryData.passphraseLength)}
+              children={transformDpskNetwork(
+                intl,
+                DpskNetworkType.LENGTH,
+                summaryData.passphraseLength
+              )}
             />
             <Form.Item
               label={$t({ defaultMessage: 'Passphrase Expiration:' })}
-              children={transformDpskNetwork(DpskNetworkType.EXPIRATION, summaryData.expiration)}
+              children={transformDpskNetwork(
+                intl,
+                DpskNetworkType.EXPIRATION,
+                summaryData.expiration
+              )}
             />
           </>
         )
       }
-    </> 
+    </>
   )
 }
 

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Switch }                                   from 'antd'
-import _                                            from 'lodash'
-import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
-
+import { Switch }                 from 'antd'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Alert,

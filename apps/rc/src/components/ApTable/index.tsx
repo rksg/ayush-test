@@ -72,8 +72,9 @@ const transformMeshRole = (value: APMeshRole) => {
   return transformDisplayText(meshRole)
 }
 
-const getApStatus = function (status: ApDeviceStatusEnum) {
-  const apStatus = transformApStatus(status, APView.AP_LIST)
+const APStatus = function ({ status }: { status: ApDeviceStatusEnum }) {
+  const intl = useIntl()
+  const apStatus = transformApStatus(intl, status, APView.AP_LIST)
   return (
     <span>
       <Badge color={handleStatusColor(apStatus.deviceStatus)}
@@ -114,7 +115,7 @@ export function ApTable () {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
-      render: getApStatus
+      render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
