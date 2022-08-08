@@ -22,14 +22,6 @@ export const ButtonDiv = styled.div`
   gap: 12px;
 `
 
-export const RadioDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-evenly;
-  padding: 5px;
-`
-
 export const Span = styled.span`
   margin-right: 10px;
   margin-top: 2px;
