@@ -63,4 +63,17 @@ describe('getBarChartSeriesData', () => {
         ]
       })
   })
+  it('should handle empty data', ()=>{
+    expect(getBarChartSeriesData([], seriesMapping))
+      .toEqual({
+        dimensions: [],
+        seriesEncode: [
+          {
+            x: 'name',
+            y: 'poeUtilization'
+          }
+        ],
+        source: []
+      })
+  })
 })
