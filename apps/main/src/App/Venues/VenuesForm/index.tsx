@@ -102,7 +102,7 @@ export const retrieveCityState = (address_components: Array<any>, country: strin
   }
 }
 
-export const addressParser = async (place: any) => {
+export const addressParser = async (place: google.maps.places.PlaceResult) => {
   const address: Address = {}
   const lat = place.geometry?.location?.lat()
   const lng = place.geometry?.location?.lng()
@@ -123,7 +123,7 @@ export const addressParser = async (place: any) => {
   })
 
   const countryObj = place?.address_components?.find(
-    (el: any) => el.types.includes('country')
+    el => el.types.includes('country')
   )
   const country = countryObj && countryObj.long_name || ''
   address.country = country
@@ -150,13 +150,20 @@ export function VenuesForm () {
   const linkToVenues = useTenantLink('/venues')
   const [addVenue] = useAddVenueMutation()
   const [zoom, setZoom] = useState(1)
-  const [center, setCenter] = useState<any>({
+  const [center, setCenter] = useState<google.maps.LatLngLiteral>({
     lat: 0,
     lng: 0
   })
   const [markers, setMarkers] = React.useState<google.maps.LatLng>()
 
-  const [address, updateAddress] = useState<Address>({})
+  const [address, updateAddress] = useState<Address>(isMapEnabled? {} : {
+    addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
+    city: 'Sunnyvale, California',
+    country: 'United States',
+    latitude: 37.4112751,
+    longitude: -122.0191908,
+    timezone: 'America/Los_Angeles'
+  })
 
   const render = (Status: string | null | undefined) => {
     return <h1>{Status}</h1>
@@ -200,7 +207,7 @@ export function VenuesForm () {
       const { latlng, address } = await addressParser(place)
 
       setMarkers(latlng)
-      setCenter(latlng)
+      setCenter(latlng.toJSON())
       updateAddress(address)
       setZoom(16)
     })
@@ -286,7 +293,7 @@ export function VenuesForm () {
             <Form.Item
               name='address'
               rules={[{
-                required: true
+                required: isMapEnabled ? true : false
               },{
                 validator: () => addressValidator(),
                 validateTrigger: 'onChange'
