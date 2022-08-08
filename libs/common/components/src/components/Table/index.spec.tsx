@@ -197,4 +197,56 @@ describe('Table component', () => {
     expect(after.filter(el => el.checked)).toHaveLength(0)
     expect(after.filter(el => !el.checked)).toHaveLength(3)
   })
+
+  it('single select row click', async () => {
+    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
+    const data = [
+      { key: '1', name: 'John Doe' },
+      { key: '2', name: 'Jane Doe' },
+      { key: '3', name: 'Will Smith' }
+    ]
+
+    render(<Table
+      columns={columns}
+      dataSource={data}
+      rowSelection={{ type: 'radio' }}
+    />)
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText('Jane Doe'))
+    const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
+    expect(selectedRow.filter(el => el.checked)).toHaveLength(1)
+  })
+
+  it('multible select row click', async () => {
+    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
+    const data = [
+      { key: '1', name: 'John Doe' },
+      { key: '2', name: 'Jane Doe' },
+      { key: '3', name: 'Will Smith' }
+    ]
+
+    render(<Table
+      columns={columns}
+      dataSource={data}
+      rowSelection={{ defaultSelectedRowKeys: ['1', '3'] }}
+    />)
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText('Jane Doe'))
+    const selectedRows = (await body.findAllByRole('checkbox')) as HTMLInputElement[]
+    expect(selectedRows.filter(el => el.checked)).toHaveLength(3)
+    fireEvent.click(await body.findByText('Will Smith'))
+    expect(selectedRows.filter(el => el.checked)).toHaveLength(2)
+  })
 })

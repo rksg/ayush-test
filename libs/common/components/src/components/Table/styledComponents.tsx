@@ -18,7 +18,7 @@ export const CloseButton = styled(AntButton).attrs({
   }
 `
 
-export const ActionButton = styled.button`
+export const ActionButton = styled.button.attrs({ type: 'button' })`
   border: none;
   box-shadow: none;
   padding: 0 6px;
@@ -43,7 +43,7 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
       .ant-popover-title {
         min-height: unset;
         padding: 16px 24px;
-        padding-bottom: 8px;
+        padding-bottom: 0;
         border-bottom: 0;
       }
       .ant-popover-inner-content {

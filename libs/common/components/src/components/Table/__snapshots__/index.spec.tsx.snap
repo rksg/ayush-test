@@ -944,6 +944,7 @@ exports[`Table component should render multi select table and render action butt
                             >
                               <button
                                 class="styledComponents__ActionButton-sc-1abm7iv-1 eOyDkA"
+                                type="button"
                               >
                                 Edit
                               </button>
@@ -962,6 +963,7 @@ exports[`Table component should render multi select table and render action butt
                             >
                               <button
                                 class="styledComponents__ActionButton-sc-1abm7iv-1 eOyDkA"
+                                type="button"
                               >
                                 Delete
                               </button>
