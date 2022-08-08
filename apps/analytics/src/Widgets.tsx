@@ -1,6 +1,7 @@
 import { Card }     from '@acx-ui/components'
 import { Provider } from '@acx-ui/store'
 
+import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
 import NetworkHistoryWidget           from './components/NetworkHistory'
 import { TrafficByApplicationWidget } from './components/TrafficByApplication'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
@@ -8,7 +9,8 @@ import TrafficByVolumeWidget          from './components/TrafficByVolume'
 const widgetsMap = {
   trafficByVolume: () => <TrafficByVolumeWidget/>,
   networkHistory: () => <NetworkHistoryWidget/>,
-  topApplicationsByTraffic: () => <TrafficByApplicationWidget/>
+  topApplicationsByTraffic: () => <TrafficByApplicationWidget/>,
+  connectedClientsOverTime: () => <ConnectedClientsOverTimeWidget/>
 }
 
 function AnalyticsWidgets ({ name }: { name: keyof typeof widgetsMap }) {
