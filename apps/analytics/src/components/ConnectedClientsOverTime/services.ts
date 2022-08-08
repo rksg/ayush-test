@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }      from '@acx-ui/analytics/services'
-import { GlobalFilter } from '@acx-ui/analytics/utils'
+import { dataApi }         from '@acx-ui/analytics/services'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
 export type ConnectedClientsOverTimeData = {
   uniqueUsers_all: number[]
@@ -23,7 +23,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     connectedClientsOverTime: build.query<
     ConnectedClientsOverTimeData,
-      GlobalFilter
+    AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`

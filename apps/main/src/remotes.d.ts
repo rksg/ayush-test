@@ -17,7 +17,9 @@ declare module 'analytics/Routes' {
   export = Routes
 }
 declare module 'analytics/Widgets' {
+  // eslint-disable-next-line align-import/align-import
+  import { AnalyticsFilter } from '@acx-ui/analytics/utils'
   // refer to modulefederation.config.js for correct mapping
-  function Widgets (props: { name: string }): React.ReactElement
+  function Widgets (props: { name: string, filters: AnalyticsFilter }): React.ReactElement
   export = Widgets
 }

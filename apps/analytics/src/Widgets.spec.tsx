@@ -2,6 +2,7 @@ import { dataApiURL }       from '@acx-ui/analytics/services'
 import { Provider }         from '@acx-ui/store'
 import { render, screen }   from '@acx-ui/test-utils'
 import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import { DateRange }        from '@acx-ui/utils'
 
 
 import AnalyticsWidgets from './Widgets'
@@ -32,6 +33,12 @@ const networkHistorySample = {
   impactedClientCount: [6, 7, 8, 9, 10],
   connectedClientCount: [11, 12, 13, 14, 15]
 }
+const filters = {
+  startDate: '2022-01-01T00:00:00+08:00',
+  endDate: '2022-01-02T00:00:00+08:00',
+  path: [{ type: 'network', name: 'Network' }],
+  range: DateRange.last24Hours
+}
 
 const connectedClientsOverTimeSample = {
   time: [
@@ -47,10 +54,11 @@ const connectedClientsOverTimeSample = {
   uniqueUsers_24: [16, 17, 18, 19, 20]
 }
 test('should render Traffic by Volume widget', async () => {
+
   mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
     data: { network: { hierarchyNode: { timeSeries: sample } } }
   })
-  render( <Provider> <AnalyticsWidgets name='trafficByVolume' /></Provider>)
+  render( <Provider> <AnalyticsWidgets name='trafficByVolume' filters={filters}/></Provider>)
   expect(await screen.findByText('Traffic by Volume')).not.toBe(null)
 })
 
@@ -58,7 +66,7 @@ test('should render Network History widget', async () => {
   mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
     data: { network: { hierarchyNode: { timeSeries: networkHistorySample } } }
   })
-  render( <Provider> <AnalyticsWidgets name='networkHistory' /></Provider>)
+  render( <Provider> <AnalyticsWidgets name='networkHistory' filters={filters}/></Provider>)
   expect(await screen.findByText('Network History')).not.toBe(null)
 })
 
@@ -66,6 +74,9 @@ test('should render Connected Clients Over Time widget', async () => {
   mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
     data: { network: { hierarchyNode: { timeSeries: connectedClientsOverTimeSample } } }
   })
-  render( <Provider> <AnalyticsWidgets name='connectedClientsOverTime' /></Provider>)
+  render( 
+    <Provider>
+      <AnalyticsWidgets name='connectedClientsOverTime' filters={filters}/>
+    </Provider>)
   expect(await screen.findByText('Connected Clients Over Time')).not.toBe(null)
 })

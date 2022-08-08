@@ -3,7 +3,10 @@ import { render, screen } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
 import moment             from 'moment'
 
-import { RangePicker, DateRange } from '.'
+import { DateRange } from '@acx-ui/utils'
+
+import { RangePicker } from '.'
+
 jest.mock('@acx-ui/icons', () => ({
   CaretDownSolid: () => <div>CaretDownSolid</div>,
   ClockOutlined: () => <div>ClockOutlined</div>
@@ -13,6 +16,7 @@ describe('CalenderRangePicker', () => {
   it('should render default CalenderRangePicker', () => {
     const { asFragment } = render(
       <RangePicker
+        selectionType={DateRange.custom}
         onDateApply={() => {}}
         selectedRange={{
           startDate: moment('01/01/2022').subtract(1, 'days').seconds(0),
@@ -25,6 +29,7 @@ describe('CalenderRangePicker', () => {
   it('should open CalenderRangePicker when click on date select', async () => {
     const { container } = render(
       <RangePicker
+        selectionType={DateRange.last24Hours}
         selectedRange={{
           startDate: moment().subtract(1, 'days').seconds(0),
           endDate: moment().seconds(0)
@@ -44,6 +49,7 @@ describe('CalenderRangePicker', () => {
   it('should close CalenderRangePicker when click on apply', async () => {
     const { container } = render(
       <RangePicker
+        selectionType={DateRange.last7Days}
         onDateApply={() => {}}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         showTimePicker
@@ -66,6 +72,7 @@ describe('CalenderRangePicker', () => {
     const { container } = render(
       <RangePicker
         onDateApply={() => {}}
+        selectionType={DateRange.last7Days}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         showTimePicker
         selectedRange={{
@@ -88,6 +95,7 @@ describe('CalenderRangePicker', () => {
     const { container } = render(
       <RangePicker
         onDateApply={() => {}}
+        selectionType={DateRange.last7Days}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         selectedRange={{
           startDate: moment().subtract(7, 'days').seconds(0),
@@ -103,10 +111,35 @@ describe('CalenderRangePicker', () => {
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
+  it('should close CalenderRangePicker when click on ranges', async () => {
+    Object.defineProperty(HTMLElement.prototype, 'innerText', {
+      get () {
+        return this.textContent
+      }
+    })
+    const { container } = render(
+      <RangePicker
+        onDateApply={() => {}}
+        selectionType={DateRange.last7Days}
+        rangeOptions={[DateRange.today, DateRange.last7Days]}
+        selectedRange={{
+          startDate: moment().subtract(7, 'days').seconds(0),
+          endDate: moment().seconds(0)
+        }}
+      />
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    await user.click(await screen.findByText('Today'))
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
+  })
   it('should select date when click on date selection', async () => {
     const onDateChange = jest.fn()
     render(
       <RangePicker
+        selectionType={DateRange.custom}
         selectedRange={{
           startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
           endDate: moment('03/01/2022').seconds(0)
@@ -127,6 +160,7 @@ describe('CalenderRangePicker', () => {
     const onDateChange = jest.fn()
     render(
       <RangePicker
+        selectionType={DateRange.last7Days}
         showTimePicker
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         onDateChange={onDateChange}
@@ -152,6 +186,7 @@ describe('CalenderRangePicker', () => {
     render(
       <RangePicker
         showTimePicker
+        selectionType={DateRange.last7Days}
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         onDateChange={onDateChange}
         onDateApply={() => {}}
@@ -178,6 +213,7 @@ describe('CalenderRangePicker', () => {
         showTimePicker
         rangeOptions={[DateRange.today, DateRange.last7Days]}
         onDateChange={onDateChange}
+        selectionType={DateRange.custom}
         onDateApply={() => {}}
         selectedRange={{
           startDate: moment('03/01/2022').seconds(0),
@@ -199,6 +235,7 @@ describe('CalenderRangePicker', () => {
     const onDateChange = jest.fn()
     render(
       <RangePicker
+        selectionType={DateRange.custom}
         selectedRange={{ startDate: null, endDate: null }}
         onDateChange={onDateChange}
         onDateApply={() => {}}
@@ -213,6 +250,7 @@ describe('CalenderRangePicker', () => {
     const onDateChange = jest.fn()
     render(
       <RangePicker
+        selectionType={DateRange.custom}
         selectedRange={{
           startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
           endDate: null
@@ -232,6 +270,7 @@ describe('CalenderRangePicker', () => {
     const onDateChange = jest.fn()
     render(
       <RangePicker
+        selectionType={DateRange.custom}
         selectedRange={{
           startDate: null,
           endDate: moment('01/01/2022').subtract(7, 'days').seconds(0)
@@ -251,6 +290,7 @@ describe('CalenderRangePicker', () => {
     const onDateChange = jest.fn()
     render(
       <RangePicker
+        selectionType={DateRange.custom}
         selectedRange={{
           startDate: moment('03/01/2022').hours(12),
           endDate: moment('03/01/2022').hours(12)
