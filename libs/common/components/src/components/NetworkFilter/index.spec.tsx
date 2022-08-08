@@ -15,9 +15,9 @@ describe('NetworkFilter', () => {
     <NetworkFilter {...props} />
   )
 
-  it('empty list & placeholder', async () => {
+  it('renders empty list & placeholder', async () => {
     const placeholder = 'test cascader'
-    render(<CustomCascader placeholder={placeholder} multiple={false}/>)
+    render(<CustomCascader options={[]} placeholder={placeholder} multiple={false}/>)
 
     expect(screen.getByText(placeholder)).toBeVisible()
 
@@ -25,61 +25,7 @@ describe('NetworkFilter', () => {
     expect(screen.getByText('No Data')).toBeInTheDocument()
   })
 
-  it('single select, onChange, onApply & control-button', async () => {
-    const options: Option[] = [
-      {
-        value: 'n1',
-        label: 'SSID 1'
-      },
-      {
-        value: 'n2',
-        label: 'SSID 2'
-      },
-      {
-        value: 'n3',
-        label: 'SSID 3'
-      },
-      {
-        value: 'n4',
-        label: 'SSID 4'
-      }
-    ]
-
-    const onApplyMock = jest.fn()
-    const onChangeMock = jest.fn()
-    render(
-      <CustomCascader
-        options={options} 
-        onApply={onApplyMock} 
-        multiple={false} 
-        onChange={onChangeMock}
-      />)
-
-    fireEvent.mouseDown(await screen.findByRole('combobox'))
-    const allOptions = screen.getAllByRole('menuitemcheckbox')
-    expect(allOptions).toHaveLength(options.length)
-
-    fireEvent.click(allOptions[0])
-    expect(onApplyMock).toBeCalledTimes(1)
-    expect(onChangeMock).toBeCalledTimes(1)
-
-    fireEvent.mouseDown(await screen.findByRole('combobox'))
-    fireEvent.click(allOptions[1])
-    expect(onApplyMock).toBeCalledTimes(2)
-    expect(onChangeMock).toBeCalledTimes(2)
-
-    fireEvent.mouseDown(await screen.findByRole('combobox'))
-    fireEvent.click(allOptions[2])
-    expect(onApplyMock).toBeCalledTimes(3)
-    expect(onChangeMock).toBeCalledTimes(3)
-
-    fireEvent.mouseDown(await screen.findByRole('combobox'))
-    fireEvent.click(allOptions[3])
-    expect(onApplyMock).toBeCalledTimes(4)
-    expect(onChangeMock).toBeCalledTimes(4)
-  })
-
-  it('simple list, onApply & multi-select', async () => {
+  it('renders single select, triggers onApply', async () => {
     const options: Option[] = [
       {
         value: 'n1',
@@ -104,22 +50,63 @@ describe('NetworkFilter', () => {
       <CustomCascader
         options={options}
         onApply={onApplyMock}
-        multiple={true} 
+        multiple={false}
+      />)
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    const allOptions = screen.getAllByRole('menuitemcheckbox')
+    expect(allOptions).toHaveLength(options.length)
+
+    fireEvent.click(allOptions[0])
+    expect(onApplyMock).toBeCalledTimes(1)
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    fireEvent.click(allOptions[1])
+    expect(onApplyMock).toBeCalledTimes(2)
+  })
+
+  it('renders simple list, triggers onApply with multi-select', async () => {
+    const options: Option[] = [
+      {
+        value: 'n1',
+        label: 'SSID 1'
+      },
+      {
+        value: 'n2',
+        label: 'SSID 2'
+      },
+      {
+        value: 'n3',
+        label: 'SSID 3'
+      },
+      {
+        value: 'n4',
+        label: 'SSID 4'
+      }
+    ]
+
+    const onApplyMock = jest.fn()
+    render(
+      <CustomCascader
+        options={options}
+        onApply={onApplyMock}
+        multiple={true}
       />)
 
     await userEvent.click(await screen.findByRole('combobox'))
     const allOptions = screen.getAllByRole('menuitemcheckbox')
     expect(allOptions).toHaveLength(options.length)
-    
+
     await userEvent.click(allOptions[0])
     await userEvent.click(allOptions[1])
-    expect(onApplyMock).toBeCalledTimes(2)
+    screen.getByRole('button', { name: 'Apply' }).click()
+    expect(onApplyMock).toBeCalledTimes(1)
 
     expect(await screen.findAllByText(options[0].label as string)).toHaveLength(2)
     expect(await screen.findAllByText(options[1].label as string)).toHaveLength(1)
   })
 
-  it('footer button, onCancel, onChange & onFocus test', async () => {
+  it('renders footer button, triggers onCancel, onFocus', async () => {
     const options: Option[] = [
       {
         value: 'n1',
@@ -134,7 +121,6 @@ describe('NetworkFilter', () => {
     const onApplyMock = jest.fn()
     const onCancelMock = jest.fn()
     const onFocusMock = jest.fn()
-    const onChangeMock = jest.fn()
 
     render(
       <CustomCascader
@@ -142,7 +128,6 @@ describe('NetworkFilter', () => {
         onCancel={onCancelMock}
         onFocus={onFocusMock}
         options={options}
-        onChange={onChangeMock}
         multiple
       />)
 
@@ -156,15 +141,9 @@ describe('NetworkFilter', () => {
     expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument()
     screen.getByRole('button', { name: 'Apply' }).click()
     expect(onApplyMock).toBeCalledTimes(1)
-
-    screen.getByRole('combobox').click()
-    const filterOptions = screen.getAllByRole('menuitemcheckbox')
-    filterOptions[1].click()
-    expect(onApplyMock).toBeCalledTimes(2)
-    expect(onChangeMock).toBeCalledTimes(1)
   })
 
-  it('no onApply, onCancel & onChange', async () => {
+  it('accepts no onCancel', async () => {
     const options: Option[] = [
       {
         value: 'n1',
@@ -174,11 +153,10 @@ describe('NetworkFilter', () => {
         value: 'n2',
         label: 'SSID 2'
       }]
-
-    render(<CustomCascader 
-      options={options} 
-      onApply={undefined}
-      onChange={undefined}
+    const onApplyMock = jest.fn()
+    render(<CustomCascader
+      options={options}
+      onApply={onApplyMock}
       onCancel={undefined}
       multiple
     />)
@@ -186,11 +164,6 @@ describe('NetworkFilter', () => {
     await userEvent.click(screen.getByRole('combobox'))
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
     screen.getByRole('button', { name: 'Cancel' }).click()
-    expect(screen.getByRole('combobox')).toBeInTheDocument()
-
-    screen.getByRole('combobox').click()
-    expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument()
-    screen.getByRole('button', { name: 'Apply' }).click()
     expect(screen.getByRole('combobox')).toBeInTheDocument()
   })
 

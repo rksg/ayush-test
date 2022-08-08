@@ -25,7 +25,7 @@ export interface Option {
 
 export type CascaderProps = AntCascaderProps<Option> & {
   onCancel?: CallableFunction
-  onApply?: (
+  onApply: (
     cascaderSelected: DefaultOptionType[] | DefaultOptionType[][] | undefined
   ) => void
 }
@@ -33,23 +33,14 @@ export type CascaderProps = AntCascaderProps<Option> & {
 export function NetworkFilter (props: CascaderProps) {
   const [ isOpen, setIsOpen ] = React.useState(false)
   const [ multiSelect, setMultiSelect ] = React.useState<DefaultOptionType[][]>([])
+  const { onCancel, onApply, multiple, onFocus, options } = props
 
-  const { 
-    onCancel,
-    onApply,
-    onChange,
-    multiple,
-    onFocus,
-    options
-  } = props
-
-  const isPopulated = Array.isArray(options) && options.length > 0
+  const isPopulated = options.length > 0
 
   const onFocusProps = (event: React.FocusEvent<HTMLElement, Element>) => {
     if (onFocus) {
       onFocus(event)
     }
-
     setIsOpen(!isOpen)
   }
 
@@ -63,9 +54,7 @@ export function NetworkFilter (props: CascaderProps) {
 
   const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault()
-    if (onApply && multiple) {
-      onApply(multiSelect)
-    }
+    onApply(multiSelect)
     setIsOpen(!isOpen)
   }
 
@@ -73,27 +62,14 @@ export function NetworkFilter (props: CascaderProps) {
     triggeredValue: SingleValueType[],
     selectedValues: DefaultOptionType[][]
   ) => {
-    if (onChange && multiple) {
-      onChange(triggeredValue, selectedValues)
-    }
-
     setMultiSelect(selectedValues)
-
-    if (onApply) {
-      onApply(selectedValues)
-    }
   }
 
   const onChangeSingle = (
     triggeredValue: SingleValueType,
     selectedValues: DefaultOptionType[]
   ) => {
-    if (onChange && !multiple) {
-      onChange(triggeredValue, selectedValues)
-    }
-    if (onApply) {
-      onApply(selectedValues)
-    }
+    onApply(selectedValues)
   }
 
   const ApplyDropDown = (menus: JSX.Element) => {
