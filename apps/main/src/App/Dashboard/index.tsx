@@ -1,26 +1,28 @@
 import React from 'react'
 
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { GlobalFilterProvider } from '@acx-ui/analytics/utils'
+import { AnalyticsFilterProvider } from '@acx-ui/analytics/utils'
 import {
   Button,
   DashboardRow,
   DashboardCol,
   PageHeader,
+  RangePicker,
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
 import {
   ArrowExpand,
-  ClockOutlined,
   DownloadOutlined,
   BulbOutlined
 } from '@acx-ui/icons'
+import { useDateFilter } from '@acx-ui/utils'
 
 const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
-
+const defaultEnabledDates = [moment().subtract(3, 'months').seconds(0), moment().seconds(0)]
 export default function Dashboard () {
   const { $t } = useIntl()
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -36,15 +38,16 @@ export default function Dashboard () {
     }
   ]
   return (
-    <GlobalFilterProvider>
+    <AnalyticsFilterProvider>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
       <ContentSwitcher tabDetails={tabDetails} size='large' />
-    </GlobalFilterProvider>
+    </AnalyticsFilterProvider>
   )
 }
 
 function DashboardPageHeader () {
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { $t } = useIntl()
   return (
     <PageHeader
@@ -57,9 +60,14 @@ function DashboardPageHeader () {
           {$t({ defaultMessage: 'Entire Organization' })}
           <ArrowExpand />
         </Button>,
-        <Button key='date-filter' icon={<ClockOutlined />}>
-          {$t({ defaultMessage: 'Last 24 Hours' })}
-        </Button>,
+        <RangePicker
+          key='range-picker'
+          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+          enableDates={defaultEnabledDates as [moment.Moment, moment.Moment]}
+          onDateApply={setDateFilter as CallableFunction}
+          showTimePicker
+          selectionType={range}
+        />,
         <Button key='download' icon={<DownloadOutlined />} />,
         <Button key='insight' icon={<BulbOutlined />} />
       ]}
@@ -111,7 +119,6 @@ function SwitchWidgets () {
 function CommonDashboardWidgets () {
   return (
     <DashboardRow gutter={[20, 20]}>
-
       <DashboardCol col={{ span: 6 }} style={{ height: '384px' }}>
         <WifiWidgets name='alarms' />
       </DashboardCol>

@@ -3,7 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter }          from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter }       from '@acx-ui/analytics/utils'
 import { getSeriesData }            from '@acx-ui/analytics/utils'
 import { Card }                     from '@acx-ui/components'
 import { Loader }                   from '@acx-ui/components'
@@ -11,8 +11,11 @@ import { MultiLineTimeSeriesChart } from '@acx-ui/components'
 import { cssStr }                   from '@acx-ui/components'
 import { formatter }                from '@acx-ui/utils'
 
-import { TrafficByVolumeData }     from './services'
-import { useTrafficByVolumeQuery } from './services'
+import {
+  useTrafficByVolumeQuery,
+  TrafficByVolumeData
+} from './services'
+
 
 type Key = keyof Omit<TrafficByVolumeData, 'time'>
 
@@ -25,7 +28,7 @@ const lineColors = [
 
 function TrafficByVolumeWidget () {
   const { $t } = useIntl()
-  const filters = useGlobalFilter()
+  const filters = useAnalyticsFilter()
   const seriesMapping = [
     { key: 'totalTraffic_all', name: $t({ defaultMessage: 'All Radios' }) },
     { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },
