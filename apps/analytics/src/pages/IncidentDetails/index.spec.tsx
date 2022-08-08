@@ -1,14 +1,17 @@
 import { rest } from 'msw'
 
 import { dataApiURL }                           from '@acx-ui/analytics/services'
+import { IncidentDetailsProps }                 from '@acx-ui/analytics/utils'
 import { Provider, store }                      from '@acx-ui/store'
 import { render, mockServer, mockGraphqlQuery } from '@acx-ui/test-utils'
 
-import { api }                  from './services'
-import { IncidentDetailsProps } from './types'
+import { api } from './services'
 
 import IncidentDetailsPage, { IncidentDetails } from '.'
 
+jest.mock('./NetworkImpact', () => ({
+  NetworkImpact: () => <div data-testid='networkImpact' />
+}))
 
 describe('incident details', () => {
   const sampleIncident = {
@@ -77,18 +80,18 @@ describe('incident details', () => {
         }
       )
     )
-  
+
     const params = {
       incidentId: 'df5339ba-da3b-4110-a291-7f8993a274f3'
     }
-  
+
     const { asFragment } = render(
       <Provider>
         <IncidentDetails data={sampleIncident} />
       </Provider>, {
         route: { params }
       })
-    
+
     expect(asFragment()).toMatchSnapshot()
   })
 

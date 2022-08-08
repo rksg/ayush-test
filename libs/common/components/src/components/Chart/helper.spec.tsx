@@ -82,4 +82,10 @@ describe('donutChartTooltipFormatter', () => {
   it('should handle when no formatter', async () => {
     expect(donutChartTooltipFormatter()(singleparameters)).toMatchSnapshot()
   })
+  it('should handle unit', async () => {
+    const withUnit = jest.fn((value: unknown) => `${value} unit`)
+    const formatter = jest.fn(value => `formatted-${value}`)
+    expect(donutChartTooltipFormatter(formatter, withUnit)(singleparameters)).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(1)
+  })
 })

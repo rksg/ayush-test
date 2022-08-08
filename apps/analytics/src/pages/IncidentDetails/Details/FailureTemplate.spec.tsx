@@ -1,11 +1,15 @@
 import { rest } from 'msw'
 
-import { Provider }           from '@acx-ui/store'
-import { render, mockServer } from '@acx-ui/test-utils'
+import { IncidentDetailsProps } from '@acx-ui/analytics/utils'
+import { Provider }             from '@acx-ui/store'
+import { render, mockServer }   from '@acx-ui/test-utils'
 
-import { IncidentDetailsProps } from '../types'
 
 import { IncidentDetailsTemplate } from './FailureTemplate'
+
+jest.mock('../NetworkImpact', () => ({
+  NetworkImpact: () => <div data-testid='networkImpact' />
+}))
 
 describe('IncidentDetailsTemplate', () => {
   const sampleIncident = {
@@ -73,11 +77,11 @@ describe('IncidentDetailsTemplate', () => {
         }
       )
     )
-  
+
     const params = {
       incidentId: 'df5339ba-da3b-4110-a291-7f8993a274f3'
     }
-  
+
     const { asFragment } = render(
       <Provider>
         <IncidentDetailsTemplate {...sampleIncident} />

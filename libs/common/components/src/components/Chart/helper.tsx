@@ -99,8 +99,8 @@ export const dateAxisFormatter = (value: number): string => {
     formatted = formatter('monthFormat')(value)
   else if (dateTime.match(/^\d{4}-\d{2}-\d{2} 00:00$/))
     formatted = formatter('monthDateFormat')(value)
-  return formatted ||
-    formatter('shortDateTimeFormat')(value) as string
+  return (formatted ||
+    formatter('shortDateTimeFormat')(value)) as string
 }
 
 export const tooltipOptions = () => ({
@@ -128,7 +128,7 @@ export const timeSeriesTooltipFormatter = (
     ? parameters[0].data : parameters.data) as [TimeStamp, number]
   return renderToString(
     <UI.TooltipWrapper>
-      <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time)}</time>
+      <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
       <ul>{
         (Array.isArray(parameters) ? parameters : [parameters])
           .map((parameter: TooltipFormatterParams)=> {
@@ -166,18 +166,26 @@ export const stackedBarTooltipFormatter = (
 }
 
 export const donutChartTooltipFormatter = (
-  dataFormatter?: ((value: unknown) => string | null)
+  dataFormatter?: ((value: unknown) => string | null),
+  withUnit?: (value: number, formattedValue: string) => string
 ) => (
   parameters: TooltipFormatterParams
 ) => {
+  const formatted = dataFormatter
+    ? dataFormatter(parameters.value) : parameters.value
   return renderToString(
     <UI.TooltipWrapper>
       <UI.Badge
         color={parameters.color?.toString()}
         text={<>
           {`${parameters.name}`}<br/>
-          <b><span>{`${dataFormatter
-            ? dataFormatter(parameters.value): parameters.value}`}</span></b>
+          <b>
+            <span>
+              {(withUnit
+                ? withUnit(parameters.value as number, formatted as string)
+                : formatted) as string}
+            </span>
+          </b>
         </>}
       />
     </UI.TooltipWrapper>

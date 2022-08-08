@@ -1,5 +1,6 @@
 import ReactECharts from 'echarts-for-react'
 import { find }     from 'lodash'
+import { useIntl }  from 'react-intl'
 
 import { cssNumber, cssStr }                                       from '../../theme/helper'
 import { tooltipOptions, donutChartTooltipFormatter, EventParams } from '../Chart/helper'
@@ -29,9 +30,17 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   Omit<EChartsReactProps, 'option' | 'opts'> {
   data: Array<DonutChartData>
   title?: string,
+  subTitle?: string | {
+    defaultMessage: string,
+    values: Record<string, string|number|undefined>
+  }
+  unit?: string
   dataFormatter?: (value: unknown) => string | null,
   onClick?: (params: EventParams) => void
 }
+
+export const onChartClick = (onClick: DonutChartProps['onClick']) =>
+  (params: EventParams) => onClick && onClick(params)
 
 export function DonutChart ({
   data,
@@ -58,25 +67,40 @@ export function DonutChart ({
     fontWeight: cssNumber('--acx-headline-3-font-weight')
   }
 
-  const onChartClick = (params: EventParams) => {
-    const { onClick } = props
-    if (onClick) {
-      onClick(params)
-    }
+  const { $t } = useIntl()
+  const toolTipIntlFormat = {
+    id: `${props.title}-tooltip`,
+    defaultMessage: `{formattedValue} ${props.unit}{isPlural}`
   }
-
-  const eventHandlers = {
-    click: onChartClick
-  }
-
   const option: EChartsOption = {
     animation: props.animation,
+    title: [{
+      subtext: (() => {
+        const intlProps = {
+          id: props.title,
+          defaultMessage: (
+            props.subTitle &&
+            typeof props.subTitle !== 'string' &&
+            props.subTitle.defaultMessage) as string }
+        return (props.subTitle && typeof props.subTitle !== 'string')
+          ? `{a|${$t(intlProps, props.subTitle.values)}}`
+          : props.subTitle
+            ? `{a|${props.subTitle}}`
+            : undefined
+      })(),
+      subtextStyle: {
+        width: 200,
+        overflow: 'break',
+        rich: { a: { align: 'center' } }
+      },
+      top: '75%'
+    }],
     tooltip: {
       show: false
     },
     legend: {
       show: props.showLegend,
-      top: 'middle',
+      top: 10,
       left: '55%',
       orient: 'vertical',
       icon: 'circle',
@@ -101,8 +125,9 @@ export function DonutChart ({
         animation: !isEmpty,
         data,
         type: 'pie',
-        center: [props.showLegend && !isEmpty ? '26%' : '50%', '50%'],
-        radius: ['76%', '90%'],
+        center: [
+          props.showLegend && !isEmpty ? '26%' : '50%', 60],
+        radius: props.subTitle ? ['58%', '68%'] : ['76%', '90%'],
         cursor: isEmpty ? 'auto' : 'pointer',
         avoidLabelOverlap: true,
         label: {
@@ -130,7 +155,17 @@ export function DonutChart ({
         tooltip: {
           ...tooltipOptions(),
           show: !isEmpty,
-          formatter: donutChartTooltipFormatter(dataFormatter)
+          formatter: donutChartTooltipFormatter(
+            dataFormatter,
+            props.unit
+              ? (value: number, formattedValue: string) =>
+                $t(toolTipIntlFormat, {
+                  unit: props.unit,
+                  isPlural: value > 1 ? 's' : '',
+                  formattedValue
+                })
+              : undefined
+          )
         },
         emphasis: {
           disabled: isEmpty,
@@ -152,6 +187,6 @@ export function DonutChart ({
       {...props}
       opts={{ renderer: 'svg' }}
       option={option}
-      onEvents={eventHandlers} />
+      onEvents={{ click: onChartClick(props.onClick) }} />
   )
 }

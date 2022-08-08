@@ -11,10 +11,13 @@ import {
 import { PageHeader, SeverityPill } from '@acx-ui/components'
 
 import { incidentDetailsMap } from '..'
+import { NetworkImpact }      from '../NetworkImpact'
 
 import * as UI from './styledComponents'
 
 export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
+  const donutCharts = [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
+
   const { $t } = useIntl()
   const shortDescription = (incident: IncidentDetailsProps) => {
     const incidentInfo = incidentInformation[incident.code as keyof typeof incidentDetailsMap]
@@ -51,7 +54,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
               <div>insights</div>
             </Col>
             <Col span={24}>
-              <div>network impact</div>
+              <NetworkImpact incident={props} charts={donutCharts}/>
             </Col>
             <Col span={24}>
               <div>charts</div>

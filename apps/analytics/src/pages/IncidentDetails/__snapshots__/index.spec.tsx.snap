@@ -163,9 +163,9 @@ exports[`incident details should render Incident Details correctly 1`] = `
           class="ant-col ant-col-24"
           style="padding: 10px 10px 10px 10px;"
         >
-          <div>
-            network impact
-          </div>
+          <div
+            data-testid="networkImpact"
+          />
         </div>
         <div
           class="ant-col ant-col-24"

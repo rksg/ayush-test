@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`donutChartsApi should return correct data 1`] = `
+Object {
+  "Client Manufacturers": Object {
+    "data": Array [
+      Object {
+        "key": "manufacturer1",
+        "name": "manufacturer1",
+        "value": 1,
+      },
+      Object {
+        "key": "manufacturer2",
+        "name": "manufacturer2",
+        "value": 1,
+      },
+    ],
+    "summary": Object {
+      "defaultMessage": "This incident impacted {count} client manufacturers",
+      "values": Object {
+        "count": 2,
+      },
+    },
+    "title": "Client Manufacturers",
+    "unit": "Client",
+  },
+  "Radio": Object {
+    "data": Array [
+      Object {
+        "key": "2.4",
+        "name": "2.4 GHz",
+        "value": 1,
+      },
+      Object {
+        "key": "5",
+        "name": "5 GHz",
+        "value": 1,
+      },
+    ],
+    "summary": Object {
+      "defaultMessage": "This incident impacted {count} bands",
+      "values": Object {
+        "count": 2,
+      },
+    },
+    "title": "Radio",
+    "unit": "Client",
+  },
+  "Reason": Object {
+    "data": Array [
+      Object {
+        "key": "CCD_REASON_AAA_AUTH_FAIL",
+        "name": "AAA Auth Failure",
+        "value": 2,
+      },
+    ],
+    "summary": Object {
+      "defaultMessage": "{percentage} % of failures caused by ''{transformedKey}''",
+      "values": Object {
+        "percentage": 100,
+        "transformedKey": "AAA Auth Failure",
+      },
+    },
+    "title": "Reason",
+    "unit": "Client",
+  },
+  "WLAN": Object {
+    "data": Array [
+      Object {
+        "key": "ssid1",
+        "name": "ssid1",
+        "value": 2,
+      },
+      Object {
+        "key": "ssid2",
+        "name": "ssid2",
+        "value": 1,
+      },
+    ],
+    "summary": Object {
+      "defaultMessage": "This incident impacted {count} WLANs",
+      "values": Object {
+        "count": 2,
+      },
+    },
+    "title": "WLAN",
+    "unit": "Client",
+  },
+}
+`;

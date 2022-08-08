@@ -27,9 +27,22 @@ storiesOf('Donut Chart', module)
     <div style={{ width: 238, height: 176 }}>
       <Card title='Venues'>
         <DonutChart
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '100%', height: 'auto' }}
           title='Wi-Fi'
-          dataFormatter={formatter('countFormat')}
+          dataFormatter={formatter('countFormat') as (value: unknown) => string | null}
+          data={data}/>
+      </Card>
+    </div>)
+  .add('With subTitle', () =>
+    <div style={{ width: 238, height: 211 }}>
+      <Card title='Venues'>
+        <DonutChart
+          showLegend={false}
+          style={{ width: '100%', height: 'auto' }}
+          title='Wi-Fi'
+          subTitle={'SubTitle comes here..............................'}
+          unit='device'
+          dataFormatter={formatter('countFormat') as (value: unknown) => string | null}
           data={data}/>
       </Card>
     </div>)
@@ -37,7 +50,7 @@ storiesOf('Donut Chart', module)
     <div style={{ width: 238, height: 176 }}>
       <Card title='Venues'>
         <DonutChart
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '100%', height: 'auto' }}
           title='Wi-Fi'
           data={[]}
           onClick={clickHandler}/>
@@ -47,8 +60,8 @@ storiesOf('Donut Chart', module)
     <div style={{ width: 238, height: 176 }}>
       <Card title='Venues'>
         <DonutChart
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '100%', height: 'auto' }}
           data={object('data', data)}
-          dataFormatter={formatter('countFormat')}/>
+          dataFormatter={formatter('countFormat') as (value: unknown) => string | null}/>
       </Card>
     </div>)
