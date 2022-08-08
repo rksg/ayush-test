@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
+import { DateRange }           from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -16,7 +17,8 @@ describe('trafficByVolumeWidgetApi', () => {
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'network', name: 'Network' }]
+    path: [{ type: 'network', name: 'Network' }],
+    range: DateRange.last24Hours
   }
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
