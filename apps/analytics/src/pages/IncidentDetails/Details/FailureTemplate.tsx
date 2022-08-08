@@ -7,6 +7,7 @@ import { PageHeader, Pill }                       from '@acx-ui/components'
 import { incidentDetailsMap }                                      from '..'
 import { getImpactedArea, IncidentAttributes, formattedSliceType } from '../IncidentAttributes'
 import * as UI                                                     from '../styledComponents'
+import TimeSeries from '../TimeSeries'
 
 import type { IncidentDetailsProps } from '../types'
 
@@ -59,7 +60,9 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
               <div>network impact</div>
             </Col>
             <Col span={24}>
-              <div>time series section</div>
+              <TimeSeries type={'detailed-failures'}/>
+              <TimeSeries type={'clients'}/>
+              <TimeSeries type={'failures'}/>
             </Col>
           </Row>
         </Col>
