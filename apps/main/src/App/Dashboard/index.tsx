@@ -1,6 +1,6 @@
 import React from 'react'
 
-import moment      from 'moment'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { AnalyticsFilterProvider } from '@acx-ui/analytics/utils'
@@ -40,13 +40,18 @@ function DashboardPageHeader () {
     <PageHeader
       title={$t({ id: 'title', defaultMessage: 'Dashboard' })}
       extra={[
-        <Button key='add' type='primary'>Add...</Button>,
-        <Button key='hierarchy-filter'>Entire Organization <ArrowExpand /></Button>,
+        <Button key='add' type='primary'>
+          {$t({ id: 'pageHeaderMenu.add', defaultMessage: 'Add...' })}
+        </Button>,
+        <Button key='hierarchy-filter'>
+          {$t({ id: 'pageHeaderMenu.entireOrg', defaultMessage: 'Entire Organization' })}
+          <ArrowExpand />
+        </Button>,
         <RangePicker
           key='range-picker'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           enableDates={defaultEnabledDates as [moment.Moment, moment.Moment]}
-          onDateApply={setDateFilter as Function}
+          onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
         />,
