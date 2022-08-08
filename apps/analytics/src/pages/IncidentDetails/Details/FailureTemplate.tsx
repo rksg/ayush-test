@@ -30,16 +30,14 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
 
   const { $t } = useIntl()
   const shortDescription = (incident: IncidentDetailsProps) => {
-    const incidentInfo = incidentInformation[incident.code as keyof typeof incidentDetailsMap]
+    const code = incident.code as keyof typeof incidentDetailsMap
+    const { shortDescription } = incidentInformation[code]
     const scope = `${formattedSliceType(incident.sliceType)}:` +
       impactedArea(incident.path, incident.sliceValue)
-    const { shortDescription } = incidentInfo
-    const messageProps = {
-      id: incident.id,
-      defaultMessage: shortDescription,
-      values: { scope }
-    }
-    return <FormattedMessage {...messageProps}/>
+    return <FormattedMessage
+      {...shortDescription}
+      values={{ scope }}
+    />
   }
 
   return (

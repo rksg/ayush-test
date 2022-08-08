@@ -57,7 +57,7 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
               Incident Details
             </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 ffqUYw"
+              class="styledComponents__Pill-sc-j61ge1-0 jnJmAg"
               type="P3"
             >
               P3
