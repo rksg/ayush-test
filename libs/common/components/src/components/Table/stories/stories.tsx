@@ -6,7 +6,7 @@ import { CustomTable }                from './CustomTable'
 import { MultipleSorterTable }        from './MultipleSorterTable'
 import { MultiSelectTable }           from './MultiSelectTable'
 import { SingleSelectTable }          from './SingleSelectTable'
-import { TableColumnSortAndShowHide } from './TableColumnSortAndShowHide'
+import { ColumnSortAndShowHideTable } from './ColumnSortAndShowHideTable'
 
 storiesOf('Table', module)
   .add('Basic', BasicTable)
@@ -14,7 +14,7 @@ storiesOf('Table', module)
   .add('Multiple Sorter', MultipleSorterTable)
   .add('Multi Select', MultiSelectTable)
   .add('Single Select', SingleSelectTable)
-  .add('Column Sort & Show/Hide', TableColumnSortAndShowHide)
+  .add('Column Sort & Show/Hide', ColumnSortAndShowHideTable)
   .add('Compact', CompactTable)
 
 export {}

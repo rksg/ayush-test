@@ -92,7 +92,7 @@ const basicData = [
   }
 ]
 
-export function TableColumnSortAndShowHide () {
+export function ColumnSortAndShowHideTable () {
   return (<>
     <p>Open Browser Debug Console to see updated state</p>
     <Table
