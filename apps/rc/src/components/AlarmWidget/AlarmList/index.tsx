@@ -36,7 +36,7 @@ export function AlarmList ({ data, width, height, onNavigate }: AlarmListProps) 
               alarm.entityType === EventTypeEnum.SWITCH && !alarm.isSwitchExists
                 ? <UI.NoLink>{alarm.switchName}</UI.NoLink>
                 : <UI.Link onClick={() => onNavigate(alarm)}>
-                  {alarm.apName || alarm.switchName || alarm.venueName}
+                  {alarm.apName || alarm.switchName}
                 </UI.Link>
             }
             <UI.TimeStamp>{formatter('calendarFormat')(alarm.startTime)}</UI.TimeStamp>

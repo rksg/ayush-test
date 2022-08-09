@@ -1,4 +1,5 @@
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader }            from '@acx-ui/components'
 import { Card }                      from '@acx-ui/components'
@@ -65,6 +66,7 @@ export const getAlarmsDonutChartData = (overviewData?: Dashboard): DonutChartDat
 function AlarmWidget () {
   const basePath = useTenantLink('/')
   const navigate = useNavigate()
+  const { $t } = useIntl()
 
   const onNavigate = (alarm: Alarm) => {
     let path = alarm.entityType === EventTypeEnum.AP
@@ -105,7 +107,7 @@ function AlarmWidget () {
   const { data } = overviewQuery
   return (
     <Loader states={[overviewQuery, alarmQuery]}>
-      <Card title='Alarms'>
+      <Card title={$t({ defaultMessage: 'Alarms' })}>
         <AutoSizer>
           {({ height, width }) => (
             data && data.length > 0
@@ -121,7 +123,7 @@ function AlarmWidget () {
               </>
               : <UI.NoDataWrapper>
                 <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
-                <UI.TextWrapper>No active alarms</UI.TextWrapper>
+                <UI.TextWrapper>{$t({ defaultMessage: 'No active alarms' })}</UI.TextWrapper>
               </UI.NoDataWrapper>
           )}
         </AutoSizer>
