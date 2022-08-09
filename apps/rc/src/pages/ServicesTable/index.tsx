@@ -1,7 +1,19 @@
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { useServiceListQuery, Service, useDeleteServiceMutation }         from '@acx-ui/rc/services'
-import { useTableQuery }                                                  from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                          from '@acx-ui/react-router-dom'
+import {
+  ServiceType,
+  serviceTypeLabelMapping,
+  serviceCategoryLabelMapping,
+  serviceTechnologyabelMapping,
+  serviceStatusLabelMapping,
+  serviceAdminStateLabelMapping,
+  useTableQuery,
+  ServiceCategory,
+  ServiceTechnology,
+  ServiceStatus,
+  ServiceAdminState
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 const columns: TableProps<Service>['columns'] = [
   {
@@ -18,27 +30,42 @@ const columns: TableProps<Service>['columns'] = [
   {
     title: 'Service Type',
     dataIndex: 'type',
-    sorter: true
+    sorter: true,
+    render: function (data) {
+      return serviceTypeLabelMapping[data as ServiceType]
+    }
   },
   {
     title: 'Service Category',
     dataIndex: 'category',
-    sorter: true
+    sorter: true,
+    render: function (data) {
+      return serviceCategoryLabelMapping[data as ServiceCategory]
+    }
   },
   {
     title: 'Status',
     dataIndex: 'status',
-    sorter: true
+    sorter: true,
+    render: function (data) {
+      return serviceStatusLabelMapping[data as ServiceStatus]
+    }
   },
   {
     title: 'Admin State',
     dataIndex: 'adminState',
-    sorter: true
+    sorter: true,
+    render: function (data) {
+      return serviceAdminStateLabelMapping[data as ServiceAdminState]
+    }
   },
   {
     title: 'Technology',
     dataIndex: 'technology',
-    sorter: true
+    sorter: true,
+    render: function (data) {
+      return serviceTechnologyabelMapping[data as ServiceTechnology]
+    }
   },
   {
     title: 'Scope',
@@ -95,10 +122,10 @@ export function ServicesTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: 'Network',
+            entityName: 'Service',
             entityValue: name
           },
-          onOk: () => deleteService({ params: { tenantId, networkId: id } })
+          onOk: () => deleteService({ params: { tenantId, serviceId: id } })
             .then(clearSelection)
         })
       }

@@ -108,26 +108,55 @@ export enum CloudpathDeploymentTypeEnum {
 }
 
 export enum ServiceType {
-  PORTAL,
-  DHCP_WIFI,
-  WIFI_CALLING,
-  MDNS_PROXY,
-  DPSK
+  PORTAL = 'PORTAL',
+  DHCP_WIFI = 'DHCP_WIFI',
+  WIFI_CALLING = 'WIFI_CALLING',
+  MDNS_PROXY = 'MDNS_PROXY',
+  DPSK = 'DPSK'
 }
 export enum ServiceCategory {
-  PORTAL,
-  CONNECTIVITY,
-  APPLICATION
+  PORTAL = 'PORTAL',
+  CONNECTIVITY = 'CONNECTIVITY',
+  APPLICATION = 'APPLICATION'
 }
 export enum ServiceTechnology {
-  WIFI,
-  SWITCH
+  WIFI = 'WIFI',
+  SWITCH = 'SWITCH'
 }
 export enum ServiceStatus {
-  UP,
-  DOWN
+  UP = 'UP',
+  DOWN = 'DOWN'
 }
 export enum ServiceAdminState {
-  ENABLED,
-  DISABLED
+  ENABLED = 'ENABLED',
+  DISABLED = 'DISABLED'
+}
+
+export const serviceTypeLabelMapping: { [key in ServiceType]: string } = {
+  [ServiceType.PORTAL]: 'Portal',
+  [ServiceType.DHCP_WIFI]: 'DHCP for Wi-Fi',
+  [ServiceType.WIFI_CALLING]: 'Wi-Fi Calling',
+  [ServiceType.MDNS_PROXY]: 'mDNS Proxy',
+  [ServiceType.DPSK]: 'DPSK'
+}
+
+export const serviceCategoryLabelMapping: { [key in ServiceCategory]: string } = {
+  [ServiceCategory.APPLICATION]: 'Aplication',
+  [ServiceCategory.CONNECTIVITY]: 'Connectivity',
+  [ServiceCategory.PORTAL]: 'Portal'
+}
+
+export const serviceTechnologyabelMapping: { [key in ServiceTechnology]: string } = {
+  [ServiceTechnology.WIFI]: 'Wi-Fi',
+  [ServiceTechnology.SWITCH]: 'Switch'
+}
+
+export const serviceStatusLabelMapping: { [key in ServiceStatus]: string } = {
+  [ServiceStatus.UP]: 'Up',
+  [ServiceStatus.DOWN]: 'Down'
+}
+
+export const serviceAdminStateLabelMapping: { [key in ServiceAdminState]: string } = {
+  [ServiceAdminState.ENABLED]: 'Enabled',
+  [ServiceAdminState.DISABLED]: 'Disabled'
 }

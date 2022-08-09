@@ -258,5 +258,5 @@ export interface Service {
   technology: ServiceTechnology
   scope: number
   health: string
-  tags: string
+  tags: string[]
 }
