@@ -18,6 +18,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
   },
+  updateNetworkDeep: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true'
+  },
   deleteNetwork: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/network/:networkId'
