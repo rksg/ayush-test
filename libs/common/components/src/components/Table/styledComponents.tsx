@@ -5,9 +5,7 @@ import { CancelCircle } from '@acx-ui/icons'
 
 import { Subtitle } from '../Subtitle'
 
-export const CloseButton = styled(AntButton).attrs({
-  icon: <CancelCircle />
-})`
+export const CloseButton = styled(AntButton).attrs({ icon: <CancelCircle /> })`
   border: none;
   box-shadow: none;
   &.ant-btn-icon-only {
@@ -30,8 +28,7 @@ export const ActionButton = styled.button.attrs({ type: 'button' })`
   cursor: pointer;
 `
 
-export const TableSettingTitle = styled(Subtitle)
-  .attrs({ level: 5 })``
+export const TableSettingTitle = styled(Subtitle).attrs({ level: 5 })``
 
 export const TableSettingsGlobalOverride = createGlobalStyle`
   .ant-pro-table-column-setting {
@@ -84,6 +81,60 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
     &-list-title,
     &-list-item-option {
       display: none !important;
+    }
+  }
+`
+
+type StyledTable = {
+  $type: 'tall' | 'compact' | 'tooltip',
+  $hasRowSelection: boolean
+}
+
+/* eslint-disable max-len */
+const tallStyle = css<StyledTable>`
+  .ant-pro-table {
+    ${props => props.$hasRowSelection && css`
+      .ant-table-wrapper {
+        padding-top: var(--acx-table-action-area-height);
+      }
+    `}
+
+    &-list-toolbar {
+      &-container { padding: 0; }
+      &-right {
+        // setting to 0 due to empty toolbar still take up space
+        // need to revisit this if we intend to use toolbar for other usage
+        height: 0;
+      }
+      &-setting-items .ant-space-item:last-child {
+        position: absolute;
+        right: 0;
+        z-index: 3;
+        top: ${props => props.$hasRowSelection ? 'calc(11px + var(--acx-table-action-area-height))' : '11px' };
+      }
+    }
+
+    &-alert {
+      margin: 0px;
+      position: absolute;
+      left: 0;
+      right: 0;
+
+      .ant-alert {
+        height: var(--acx-table-action-area-height);
+        background-color: var(--acx-accents-blue-10);
+        border: var(--acx-accents-blue-10);
+        padding: 10px 16px;
+
+        .ant-pro-table-alert-info {
+          font-size: var(--acx-body-4-font-size);
+          line-height: var(--acx-body-4-line-height);
+
+          .ant-divider-vertical {
+            border-left-color: var(--acx-neutrals-40);
+          }
+        }
+      }
     }
   }
 `
@@ -144,16 +195,12 @@ const tooltipStyle = css`
 `
 
 const styles = {
-  tall: '',
+  tall: tallStyle,
   compact: compactStyle,
   tooltip: tooltipStyle
 }
 
-/* eslint-disable max-len */
-export const Wrapper = styled.div<{
-  $type: 'tall' | 'compact' | 'tooltip',
-  $hasRowSelection: boolean
-}>`
+export const Wrapper = styled.div<StyledTable>`
   .ant-pro-table {
     --acx-table-cell-horizontal-space: 8px;
     --acx-table-action-area-height: 36px;
@@ -161,50 +208,6 @@ export const Wrapper = styled.div<{
     .ant-pro-card {
       .ant-pro-card-body {
         padding: 0px;
-      }
-    }
-
-    ${props => props.$hasRowSelection && css`
-      .ant-table-wrapper {
-        padding-top: var(--acx-table-action-area-height);
-      }
-    `}
-
-    &-list-toolbar {
-      &-container { padding: 0; }
-      &-right {
-        // setting to 0 due to empty toolbar still take up space
-        // need to revisit this if we intend to use toolbar for other usage
-        height: 0;
-      }
-      &-setting-items .ant-space-item:last-child {
-        position: absolute;
-        right: 0;
-        z-index: 3;
-        top: ${props => props.$hasRowSelection ? 'calc(11px + var(--acx-table-action-area-height))' : '11px' };
-      }
-    }
-
-    &-alert {
-      margin: 0px;
-      position: absolute;
-      left: 0;
-      right: 0;
-
-      .ant-alert {
-        height: var(--acx-table-action-area-height);
-        background-color: var(--acx-accents-blue-10);
-        border: var(--acx-accents-blue-10);
-        padding: 10px 16px;
-
-        .ant-pro-table-alert-info {
-          font-size: var(--acx-body-4-font-size);
-          line-height: var(--acx-body-4-line-height);
-
-          .ant-divider-vertical {
-            border-left-color: var(--acx-neutrals-40);
-          }
-        }
       }
     }
 
