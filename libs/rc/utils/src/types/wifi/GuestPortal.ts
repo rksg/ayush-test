@@ -8,7 +8,7 @@ import { WisprPage }                from './WisprPage'
 export class GuestPortal {
   smsPasswordDuration?: GuestSmsPasswordDuration
 
-  guestNetworkType: GuestNetworkTypeEnum
+  guestNetworkType?: GuestNetworkTypeEnum
 
   externalPortalKey?: string
 
@@ -16,13 +16,13 @@ export class GuestPortal {
 
   enableSmsLogin?: boolean
 
-  maxDevices: number
+  maxDevices?: number
 
   endOfDayReauthDelay?: boolean
 
-  macCredentialsDuration: number
+  macCredentialsDuration?: number
 
-  lockoutPeriod: number
+  lockoutPeriod?: number
 
   lockoutPeriodEnabled?: boolean
 
@@ -46,11 +46,11 @@ export class GuestPortal {
 
   // User session timeout in minutes
 
-  userSessionTimeout: number
+  userSessionTimeout?: number
 
   // User session grace period in minutes
 
-  userSessionGracePeriod: number
+  userSessionGracePeriod?: number
 
   // Allow unauthenticated users to access the listed destinations.<br>Each destination should be configured as a separate string item.<br>Accepted formats:<br>* IPv4 (e.g. 10.11.12.13)<br>* IPv4 range (e.g. 10.11.12.13-10.11.12.15)<br>* IPv4 CIDR (e.g. 10.11.12.100/28)<br>* IPv4 and mask (e.g. 10.11.12.13 255.255.255.0)<br>* Precise web site (e.g. www.ruckus.com)<br>* Web site with wildcard: *.ruckus.com
 
@@ -75,17 +75,13 @@ export class GuestPortal {
 
     this.lockoutPeriodEnabled = false
 
-    this.wisprPage = new WisprPage()
-
     this.guestPage = new GuestPage()
 
-    this.socialIdentities = new SocialIdentities()
+    this.socialIdentities = {}
 
     this.socialEmails = false
 
     this.socialDomains = []
-
-    this.hostGuestConfig = new HostGuestConfig()
 
     this.userSessionTimeout = 1440
 

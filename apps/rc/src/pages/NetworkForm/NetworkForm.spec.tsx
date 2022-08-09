@@ -146,7 +146,15 @@ describe('NetworkForm', () => {
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Onboarding' })
-    fireEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
-    fireEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
+    fireEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })
+    fireEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Venues' })
+    fireEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Summary' })
+    fireEvent.click(screen.getByText('Finish'))
   })
 })

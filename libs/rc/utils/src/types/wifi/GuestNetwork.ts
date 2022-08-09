@@ -16,12 +16,6 @@ export class GuestNetwork {
   // Enable DHCP (requires a bound DHCP Profile)
   enableDhcp?: boolean
 
-  cloudpathServerId?: string
-
-  name: string
-
-  description?: string
-
   id?: string
 
   constructor () {
@@ -30,7 +24,5 @@ export class GuestNetwork {
     this.guestPortal = new GuestPortal()
 
     this.enableDhcp = false
-
-    this.name = ''
   }
 }

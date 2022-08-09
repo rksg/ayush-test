@@ -4,6 +4,8 @@ import {
   WlanSecurityEnum
 } from '../constants'
 
+import { GuestPortal } from './wifi/GuestPortal'
+
 export interface CreateNetworkFormFields {
   name: string;
   description?: string;
@@ -12,6 +14,7 @@ export interface CreateNetworkFormFields {
   cloudpathServerId?: string;
   venues: any;
   redirectUrl?: string;
+  guestPortal?: GuestPortal;
 }
 
 export interface NetworkSaveData {
@@ -61,6 +64,11 @@ export interface NetworkSaveData {
   passphraseLength?: number;
   passphraseFormat?: PassphraseFormatEnum;
   expiration?: PassphraseExpirationEnum;
+  guestPortal?: GuestPortal;
+  tenantId?: string;
+  // Enable DHCP (requires a bound DHCP Profile)
+  enableDhcp?: boolean;
+  id?: string;
 }
 
 export interface NetworkVenue {

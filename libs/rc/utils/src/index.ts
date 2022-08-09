@@ -9,6 +9,8 @@ export * from './ipUtilsService'
 
 export * from './types/network'
 export * from './types/wifi/GuestNetwork'
+export * from './types/wifi/GuestPortal'
+export * from './types/wifi/GuestWlan'
 export * from './types/wifi/DhcpServiceProfile'
 
 export * from './pipes/networkPipes'

@@ -38,7 +38,7 @@ function TypesForm () {
     <>
       <StepsForm.Title>Portal Type</StepsForm.Title>
       <Form.Item
-        name='guestNetworkType'
+        name={['guestPortal', 'guestNetworkType']}
         label='Select the way users gain access to the network through the captive portal'
         rules={[{ required: true }]}
       >

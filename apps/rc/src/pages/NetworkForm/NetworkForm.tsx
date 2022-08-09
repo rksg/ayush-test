@@ -20,6 +20,7 @@ import {
 
 import { OnboardingForm }    from './CaptivePortal/OnboardingForm'
 import { PortalTypeForm }    from './CaptivePortal/PortalTypeForm'
+import { PortalWebForm }     from './CaptivePortal/PortalWebForm'
 import { NetworkTypeTitle }  from './contentsMap'
 import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext    from './NetworkFormContext'
@@ -55,7 +56,7 @@ export function NetworkForm () {
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>()
 
-  const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
+  const updateSaveData = (saveData: any) => {
     if( state.isCloudpathEnabled ){
       delete saveState?.accountingRadius
       delete saveState?.authRadius
@@ -142,11 +143,14 @@ export function NetworkForm () {
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='portalweb'
           title='Portal Web Page'
-          onFinish={async () => {
+          onFinish={async (data) => {
+            const tmpState = { ...saveState }
+            tmpState.guestPortal.guestPage = { ...data }
+            updateSaveData(tmpState)
             return true
           }}
         >
-          {/* <PortalWebForm /> */}
+          <PortalWebForm />
         </StepsForm.StepForm>
         }
 

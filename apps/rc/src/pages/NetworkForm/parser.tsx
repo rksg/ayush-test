@@ -15,7 +15,8 @@ import {
   ManagementFrameMinimumPhyRateEnum6G,
   DnsProxy,
   IDpskWlanAdvancedCustomization,
-  GuestNetwork
+  GuestPortal,
+  GuestWlan
 } from '@acx-ui/rc/utils'
 
 const clientIsolationOptions: IClientIsolationOptions = {
@@ -248,11 +249,14 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
 }
 
 const parseCaptivePortalDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
-  const defaultNetwork = new GuestNetwork() 
-  saveData = {
-    ...defaultNetwork,
-    ...data
+  const defaultGuestPortal = new GuestPortal()
+  let saveData = {
+    type: data.type,
+    isCloudpathEnabled: data.isCloudpathEnabled,
+    guestPortal: { ...defaultGuestPortal, ...data.guestPortal },
+    ...{
+      wlan: new GuestWlan()
+    }
   }
   return saveData
 }

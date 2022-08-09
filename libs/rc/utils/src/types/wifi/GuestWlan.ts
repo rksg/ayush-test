@@ -23,8 +23,6 @@ export class GuestWlan {
 
   vlanId: number
 
-  ssid: string
-
   enabled?: boolean
 
   bypassCNA?: boolean
@@ -45,8 +43,6 @@ export class GuestWlan {
     this.macAddressAuthentication = false
 
     this.vlanId = 1
-
-    this.ssid = ''
 
     this.enabled = true
 
