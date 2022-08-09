@@ -3,12 +3,10 @@ import { useServiceListQuery, Service, useDeleteServiceMutation }         from '
 import {
   ServiceType,
   serviceTypeLabelMapping,
-  serviceCategoryLabelMapping,
   serviceTechnologyabelMapping,
   serviceStatusLabelMapping,
   serviceAdminStateLabelMapping,
   useTableQuery,
-  ServiceCategory,
   ServiceTechnology,
   ServiceStatus,
   ServiceAdminState
@@ -33,14 +31,6 @@ const columns: TableProps<Service>['columns'] = [
     sorter: true,
     render: function (data) {
       return serviceTypeLabelMapping[data as ServiceType]
-    }
-  },
-  {
-    title: 'Service Category',
-    dataIndex: 'category',
-    sorter: true,
-    render: function (data) {
-      return serviceCategoryLabelMapping[data as ServiceCategory]
     }
   },
   {

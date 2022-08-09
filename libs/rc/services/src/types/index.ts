@@ -1,4 +1,4 @@
-import { GuestNetworkTypeEnum, ServiceAdminState, ServiceCategory, ServiceStatus, ServiceTechnology, ServiceType, WlanSecurityEnum, NetworkVenue } from '@acx-ui/rc/utils'
+import { GuestNetworkTypeEnum, ServiceAdminState, ServiceStatus, ServiceTechnology, ServiceType, WlanSecurityEnum, NetworkVenue } from '@acx-ui/rc/utils'
 
 export * from './ap'
 
@@ -252,7 +252,6 @@ export interface Service {
   id: string
   name: string
   type: ServiceType
-  category: ServiceCategory
   status: ServiceStatus
   adminState: ServiceAdminState
   technology: ServiceTechnology

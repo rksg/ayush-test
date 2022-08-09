@@ -114,11 +114,6 @@ export enum ServiceType {
   MDNS_PROXY = 'MDNS_PROXY',
   DPSK = 'DPSK'
 }
-export enum ServiceCategory {
-  PORTAL = 'PORTAL',
-  CONNECTIVITY = 'CONNECTIVITY',
-  APPLICATION = 'APPLICATION'
-}
 export enum ServiceTechnology {
   WIFI = 'WIFI',
   SWITCH = 'SWITCH'
@@ -139,23 +134,14 @@ export const serviceTypeLabelMapping: { [key in ServiceType]: string } = {
   [ServiceType.MDNS_PROXY]: 'mDNS Proxy',
   [ServiceType.DPSK]: 'DPSK'
 }
-
-export const serviceCategoryLabelMapping: { [key in ServiceCategory]: string } = {
-  [ServiceCategory.APPLICATION]: 'Aplication',
-  [ServiceCategory.CONNECTIVITY]: 'Connectivity',
-  [ServiceCategory.PORTAL]: 'Portal'
-}
-
 export const serviceTechnologyabelMapping: { [key in ServiceTechnology]: string } = {
   [ServiceTechnology.WIFI]: 'Wi-Fi',
   [ServiceTechnology.SWITCH]: 'Switch'
 }
-
 export const serviceStatusLabelMapping: { [key in ServiceStatus]: string } = {
   [ServiceStatus.UP]: 'Up',
   [ServiceStatus.DOWN]: 'Down'
 }
-
 export const serviceAdminStateLabelMapping: { [key in ServiceAdminState]: string } = {
   [ServiceAdminState.ENABLED]: 'Enabled',
   [ServiceAdminState.DISABLED]: 'Disabled'
