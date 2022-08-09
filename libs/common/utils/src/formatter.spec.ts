@@ -1,7 +1,12 @@
 import moment from 'moment-timezone'
 
-
 import { formatter } from './formatter'
+
+jest.mock('moment-timezone', () => {
+  const moment = jest.requireActual('moment-timezone')
+  moment.tz.setDefault('Asia/Kolkata')
+  return moment
+})
 
 function testFormat (
   format: string,
