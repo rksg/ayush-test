@@ -14,7 +14,12 @@ jest.mock('analytics/Routes', () => () => {
   return <div data-testid='analytics' />
 },{ virtual: true })
 jest.mock('rc/Routes', () => () => {
-  return <div data-testid='networks' />
+  return (
+    <>
+      <div data-testid='networks' />
+      <div data-testid='services' />
+    </>
+  )
 },{ virtual: true })
 
 describe('AllRoutes', () => {
@@ -50,5 +55,15 @@ describe('AllRoutes', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByTestId('networks')
+  })
+  test('should navigate to services/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/services/some-page',
+        wrapRoutes: false
+      }
+    })
+
+    await screen.findByTestId('services')
   })
 })
