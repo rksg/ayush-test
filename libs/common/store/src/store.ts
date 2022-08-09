@@ -1,7 +1,7 @@
 import { configureStore }                                 from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-import { dataApi }          from '@acx-ui/analytics/services'
+import { dataApi }         from '@acx-ui/analytics/services'
 import {
   baseNetworkApi as networkApi,
   baseCloudpathApi as cloudpathApi,
