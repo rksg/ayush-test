@@ -3,7 +3,7 @@
 exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 cDGorn"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 hkOMsx"
   >
     <div
       class="ant-pro-table"
@@ -158,7 +158,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 eBfjVF"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 jFDGgn"
   >
     <div
       class="ant-pro-table"
@@ -214,7 +214,7 @@ exports[`Table component should render correctly 1`] = `
                 class="ant-spin-container"
               >
                 <div
-                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                  class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                 >
                   <div
                     class="ant-table-container"
@@ -226,7 +226,14 @@ exports[`Table component should render correctly 1`] = `
                       <table
                         style="min-width: 100%; table-layout: auto;"
                       >
-                        <colgroup />
+                        <colgroup>
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
+                          />
+                        </colgroup>
                         <thead
                           class="ant-table-thead"
                         >
@@ -246,6 +253,10 @@ exports[`Table component should render correctly 1`] = `
                             >
                               Address
                             </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </thead>
                         <tbody
@@ -256,6 +267,15 @@ exports[`Table component should render correctly 1`] = `
                             class="ant-table-measure-row"
                             style="height: 0px; font-size: 0px;"
                           >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
                             <td
                               style="padding: 0px; border: 0px; height: 0px;"
                             >
@@ -303,6 +323,10 @@ exports[`Table component should render correctly 1`] = `
                             >
                               sample address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
@@ -323,6 +347,10 @@ exports[`Table component should render correctly 1`] = `
                             >
                               new address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
@@ -343,6 +371,10 @@ exports[`Table component should render correctly 1`] = `
                             >
                               address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </tbody>
                       </table>
@@ -447,7 +479,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 hbsFkr"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 glIyDM"
   >
     <div
       class="ant-pro-table"
@@ -503,7 +535,7 @@ exports[`Table component should render multi select table and render action butt
                 class="ant-spin-container"
               >
                 <div
-                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                  class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                 >
                   <div
                     class="ant-table-container"
@@ -518,6 +550,12 @@ exports[`Table component should render multi select table and render action butt
                         <colgroup>
                           <col
                             class="ant-table-selection-col"
+                          />
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
                           />
                         </colgroup>
                         <thead
@@ -563,6 +601,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               Address
                             </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </thead>
                         <tbody
@@ -573,6 +615,15 @@ exports[`Table component should render multi select table and render action butt
                             class="ant-table-measure-row"
                             style="height: 0px; font-size: 0px;"
                           >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
                             <td
                               style="padding: 0px; border: 0px; height: 0px;"
                             >
@@ -649,6 +700,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               sample address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
@@ -689,6 +744,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               new address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
@@ -729,6 +788,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </tbody>
                       </table>
@@ -833,7 +896,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 hbsFkr"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 glIyDM"
   >
     <div
       class="ant-pro-table"
@@ -987,7 +1050,7 @@ exports[`Table component should render multi select table and render action butt
                 class="ant-spin-container"
               >
                 <div
-                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                  class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                 >
                   <div
                     class="ant-table-container"
@@ -1002,6 +1065,12 @@ exports[`Table component should render multi select table and render action butt
                         <colgroup>
                           <col
                             class="ant-table-selection-col"
+                          />
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
                           />
                         </colgroup>
                         <thead
@@ -1048,6 +1117,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               Address
                             </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </thead>
                         <tbody
@@ -1058,6 +1131,15 @@ exports[`Table component should render multi select table and render action butt
                             class="ant-table-measure-row"
                             style="height: 0px; font-size: 0px;"
                           >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
                             <td
                               style="padding: 0px; border: 0px; height: 0px;"
                             >
@@ -1134,6 +1216,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               sample address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0 ant-table-row-selected"
@@ -1174,6 +1260,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               new address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
@@ -1214,6 +1304,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </tbody>
                       </table>
@@ -1318,7 +1412,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 hbsFkr"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 glIyDM"
   >
     <div
       class="ant-pro-table"
@@ -1374,7 +1468,7 @@ exports[`Table component should render multi select table and render action butt
                 class="ant-spin-container"
               >
                 <div
-                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                  class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                 >
                   <div
                     class="ant-table-container"
@@ -1389,6 +1483,12 @@ exports[`Table component should render multi select table and render action butt
                         <colgroup>
                           <col
                             class="ant-table-selection-col"
+                          />
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
                           />
                         </colgroup>
                         <thead
@@ -1434,6 +1534,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               Address
                             </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </thead>
                         <tbody
@@ -1444,6 +1548,15 @@ exports[`Table component should render multi select table and render action butt
                             class="ant-table-measure-row"
                             style="height: 0px; font-size: 0px;"
                           >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
                             <td
                               style="padding: 0px; border: 0px; height: 0px;"
                             >
@@ -1520,6 +1633,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               sample address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
@@ -1560,6 +1677,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               new address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
@@ -1600,6 +1721,10 @@ exports[`Table component should render multi select table and render action butt
                             >
                               address
                             </td>
+                            <td
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </tbody>
                       </table>

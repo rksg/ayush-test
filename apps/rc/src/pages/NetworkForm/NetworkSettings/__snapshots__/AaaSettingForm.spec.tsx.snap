@@ -3,7 +3,7 @@
 exports[`NetworkForm should create AAA network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+    class="styledComponents__Wrapper-sc-xov27h-0 fmXRDH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -973,7 +973,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__Wrapper-sc-1abm7iv-3 hbsFkr"
+                                  class="styledComponents__Wrapper-sc-1abm7iv-3 glIyDM"
                                 >
                                   <div
                                     class="ant-pro-table"
@@ -1029,7 +1029,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                               class="ant-spin-container"
                                             >
                                               <div
-                                                class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                                                class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                                               >
                                                 <div
                                                   class="ant-table-container"
@@ -1056,6 +1056,10 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                         />
                                                         <col
                                                           style="width: 140px;"
+                                                        />
+                                                        <col />
+                                                        <col
+                                                          style="width: 32px;"
                                                         />
                                                       </colgroup>
                                                       <thead
@@ -1296,6 +1300,10 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                           >
                                                             Scheduling
                                                           </th>
+                                                          <th
+                                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                            style="position: sticky; right: 0px;"
+                                                          />
                                                         </tr>
                                                       </thead>
                                                       <tbody
@@ -1306,6 +1314,15 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                           class="ant-table-measure-row"
                                                           style="height: 0px; font-size: 0px;"
                                                         >
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
                                                           <td
                                                             style="padding: 0px; border: 0px; height: 0px;"
                                                           >
@@ -1470,6 +1487,10 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                           <td
                                                             class="ant-table-cell"
                                                           />
+                                                          <td
+                                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                            style="position: sticky; right: 0px;"
+                                                          />
                                                         </tr>
                                                         <tr
                                                           class="ant-table-row ant-table-row-level-0"
@@ -1545,6 +1566,10 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                           />
                                                           <td
                                                             class="ant-table-cell"
+                                                          />
+                                                          <td
+                                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                            style="position: sticky; right: 0px;"
                                                           />
                                                         </tr>
                                                       </tbody>
@@ -1878,7 +1903,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
 exports[`NetworkForm should create open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+    class="styledComponents__Wrapper-sc-xov27h-0 fmXRDH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"

@@ -12,9 +12,9 @@ storiesOf('Table', module)
   .add('Basic', BasicTable)
   .add('With Custom Cell', CustomTable)
   .add('Multiple Sorter', MultipleSorterTable)
-  .add('Compact', CompactTable)
   .add('Multi Select', MultiSelectTable)
   .add('Single Select', SingleSelectTable)
   .add('Column Sort & Show/Hide', TableColumnSortAndShowHide)
+  .add('Compact', CompactTable)
 
 export {}

@@ -29,7 +29,7 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
               class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
             >
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-3 hbsFkr"
+                class="styledComponents__Wrapper-sc-1abm7iv-3 glIyDM"
               >
                 <div
                   class="ant-pro-table"
@@ -85,7 +85,7 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                             class="ant-spin-container"
                           >
                             <div
-                              class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                              class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                             >
                               <div
                                 class="ant-table-container"
@@ -112,6 +112,10 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                       />
                                       <col
                                         style="width: 140px;"
+                                      />
+                                      <col />
+                                      <col
+                                        style="width: 32px;"
                                       />
                                     </colgroup>
                                     <thead
@@ -352,6 +356,10 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                         >
                                           Scheduling
                                         </th>
+                                        <th
+                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                          style="position: sticky; right: 0px;"
+                                        />
                                       </tr>
                                     </thead>
                                     <tbody
@@ -362,6 +370,15 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                         class="ant-table-measure-row"
                                         style="height: 0px; font-size: 0px;"
                                       >
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
                                         <td
                                           style="padding: 0px; border: 0px; height: 0px;"
                                         >
@@ -528,6 +545,10 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                         <td
                                           class="ant-table-cell"
                                         />
+                                        <td
+                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                          style="position: sticky; right: 0px;"
+                                        />
                                       </tr>
                                       <tr
                                         class="ant-table-row ant-table-row-level-0"
@@ -601,6 +622,10 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                         />
                                         <td
                                           class="ant-table-cell"
+                                        />
+                                        <td
+                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                          style="position: sticky; right: 0px;"
                                         />
                                       </tr>
                                     </tbody>

@@ -47,12 +47,14 @@ export function Table <RecordType extends object> (
 ) {
   const { $t } = useIntl()
 
+  if (type === 'tall' && !props.columns.find(c => c.key === 'settings')) {
+    props.columns.push({ key: 'settings', fixed: 'right', width: 32 })
+  }
   const columns = useMemo(() => props.columns.map((column) => ({
     ...column,
     disable: Boolean(column.fixed || column.disable),
     show: Boolean(column.fixed || column.disable || (column.show ?? true))
   })), [props.columns])
-
   const columnsState = useColumnsState({ columns, columnState })
 
   const setting: SettingOptionType | false = type === 'tall' ? {
