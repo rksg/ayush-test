@@ -144,9 +144,15 @@ export function NetworkForm () {
           name='portalweb'
           title='Portal Web Page'
           onFinish={async (data) => {
-            const tmpState = { ...saveState }
-            tmpState.guestPortal.guestPage = { ...data }
-            updateSaveData(tmpState)
+            const tmpGuestPageState = { 
+              guestPortal: {
+                ...saveState?.guestPortal,
+                guestPage: {
+                  ...data
+                }
+              } 
+            }
+            updateSaveData({ ...saveState, ...tmpGuestPageState })
             return true
           }}
         >
