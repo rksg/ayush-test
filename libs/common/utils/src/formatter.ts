@@ -90,7 +90,7 @@ function calendarFormat (number: number) {
     sameDay: '[Today,] HH:mm',
     nextDay: '[Tomorrow,] HH:mm',
     lastWeek: '[Last] dddd[,] HH:mm',
-    nextWeek: '[Next] dddd[,] HH:mm',
+    nextWeek: 'dddd[,] HH:mm',
     sameElse: 'MMM DD[,] HH:mm'
   })
 }

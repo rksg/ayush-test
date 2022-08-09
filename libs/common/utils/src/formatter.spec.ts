@@ -1,5 +1,6 @@
 import moment from 'moment-timezone'
 
+
 import { formatter } from './formatter'
 
 function testFormat (
@@ -187,6 +188,39 @@ describe('formatter', () => {
       expect(formatter('txFormat')('_1DB')).toBe('-1dB')
       expect(formatter('txFormat')('_6DB')).toBe('-6dB(1/4)')
       expect(formatter('txFormat')('_MIN')).toBe('Min')
+    })
+  })
+  describe('calendarFormat', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(global.Date, 'now')
+        .mockImplementationOnce(() =>
+          new Date('2022-08-05T13:51:00.000Z').valueOf()
+        )
+    })
+    it('should format date to "[Today,] HH:mm"', () => {
+      expect(formatter('calendarFormat')(1659687682000))
+        .toBe('Today, 13:51')
+    })
+    it('should format date to "[Yesterday,] HH:mm"', () => {
+      expect(formatter('calendarFormat')(1659608482000))
+        .toBe('Yesterday, 15:51')
+    })
+    it('should format date to "[Tomorrow,] HH:mm"', () => {
+      expect(formatter('calendarFormat')(1659774082000))
+        .toBe('Tomorrow, 13:51')
+    })
+    it('should format date to "[Last] dddd[,] HH:mm"', () => {
+      expect(formatter('calendarFormat')(1659255682000))
+        .toBe('Last Sunday, 13:51')
+    })
+    it('should format date to "dddd[,] HH:mm"', () => {
+      expect(formatter('calendarFormat')(1659860482000))
+        .toBe('Sunday, 13:51')
+    })
+    it('should format date to "MMM DD[,] HH:mm"', () => {
+      expect(formatter('calendarFormat')(1654590082000))
+        .toBe('Jun 07, 13:51')
     })
   })
   describe('durationFormat', () => {
