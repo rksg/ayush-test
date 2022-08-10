@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }      from '@acx-ui/analytics/services'
-import { GlobalFilter } from '@acx-ui/analytics/utils'
+import { dataApi }         from '@acx-ui/analytics/services'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
 export type HierarchyNodeData = {
   uploadAppTraffic: number
@@ -34,7 +34,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     trafficByApplication: build.query<
       HierarchyNodeData,
-      GlobalFilter
+      AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`

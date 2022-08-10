@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { useIntl } from 'react-intl'
+import styled      from 'styled-components/macro'
 
 import { AnalyticsFilter }                                                            from '@acx-ui/analytics/utils'
 import { Card, Loader, Table, SparklineChart, ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
@@ -20,6 +21,8 @@ export function TrafficByApplicationWidget ({
 }: {
   filters: AnalyticsFilter;
 }) {
+  const { $t } = useIntl()
+  const widgetTitle = $t({ defaultMessage: 'Top 5 Applications by Traffic' })
   const queryResults = useTrafficByApplicationQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
@@ -110,7 +113,7 @@ export function TrafficByApplicationWidget ({
     
   return (
     <Loader states={[queryResults]}>
-      <Card title='Top 5 Applications by Traffic'>
+      <Card title={widgetTitle}>
         <div style={{ display: 'block' }}>
           <ContentSwitcher tabDetails={tabDetails} size='large' align='center' />
         </div>
