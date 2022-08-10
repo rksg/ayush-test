@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@acx-ui/test-utils'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import Dashboard from '.'
 
@@ -9,7 +9,7 @@ jest.mock(
   { virtual: true })
 
 jest.mock(
-  'rc-wifi/Widgets',
+  'rc/Widgets',
   () => ({ name }: { name: string }) =><div data-testid={`networks-${name}`} />,
   { virtual: true })
 
@@ -18,6 +18,12 @@ describe('Dashboard', () => {
     render(<Dashboard />)
 
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(6)
+    expect(await screen.findAllByTestId(/^networks/)).toHaveLength(5)
+  })
+  it('should switch tab correctly', async () => {
+    render(<Dashboard />)
+    fireEvent.click(await screen.findByText('Switch'))
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
     expect(await screen.findAllByTestId(/^networks/)).toHaveLength(5)
   })
 })

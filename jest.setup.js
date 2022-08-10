@@ -27,9 +27,8 @@ Object.defineProperty(window, 'matchMedia', {
   }))
 })
 
-jest.mock('@acx-ui/components', () => ({
+jest.mock('libs/common/components/src/theme/helper', () => ({
   __esModule: true,
-  ...(jest.requireActual('@acx-ui/components')),
   cssStr: jest.fn(property => mockLightTheme[property]),
   cssNumber: jest.fn(property => parseInt(mockLightTheme[property], 10))
 }))

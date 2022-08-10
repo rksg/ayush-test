@@ -1,8 +1,3 @@
-import {
-  XAXisComponentOption,
-  YAXisComponentOption,
-  TooltipComponentOption
-} from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
 import { TimeStamp } from '@acx-ui/types'
@@ -11,6 +6,7 @@ import { cssStr }              from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
+  legendTextStyleOptions,
   xAxisOptions,
   yAxisOptions,
   axisLabelOptions,
@@ -55,23 +51,24 @@ export function MultiLineTimeSeriesChart
     grid: { ...gridOptions() },
     legend: {
       ...legendOptions(),
+      textStyle: legendTextStyleOptions(),
       data: data.map(datum => datum[legendProp]) as unknown as string[]
     },
     tooltip: {
-      ...tooltipOptions() as TooltipComponentOption,
+      ...tooltipOptions(),
       trigger: 'axis',
       formatter: timeSeriesTooltipFormatter(dataFormatter)
     },
     xAxis: {
-      ...xAxisOptions() as XAXisComponentOption,
+      ...xAxisOptions(),
       type: 'time',
       axisLabel: {
         ...axisLabelOptions(),
-        formatter: dateAxisFormatter()
+        formatter: dateAxisFormatter
       }
     },
     yAxis: {
-      ...yAxisOptions() as YAXisComponentOption,
+      ...yAxisOptions(),
       type: 'value',
       axisLabel: {
         ...axisLabelOptions(),
@@ -84,6 +81,7 @@ export function MultiLineTimeSeriesChart
       name: datum[legendProp] as unknown as string,
       data: datum.data,
       type: 'line',
+      silent: true,
       smooth: true,
       symbol: 'none',
       lineStyle: { width: 1 }

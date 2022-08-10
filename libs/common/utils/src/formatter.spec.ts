@@ -121,6 +121,10 @@ describe('formatter', () => {
     '-77': '-77 dBm',
     '-105.011': '-105 dBm'
   }))
+  it('milliWattsFormat', () => testFormat('milliWattsFormat', {
+    1000: '1 W',
+    1000000: '1 kW'
+  }))
   it('bytesFormat', () => testFormat('bytesFormat', {
     7.131: '7.13 B',
     123456: '121 KB',

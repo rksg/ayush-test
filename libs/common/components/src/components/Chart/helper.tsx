@@ -1,5 +1,12 @@
-import { TooltipComponentFormatterCallbackParams } from 'echarts'
-import { renderToString }                          from 'react-dom/server'
+import {
+  TooltipComponentFormatterCallbackParams,
+  XAXisComponentOption,
+  YAXisComponentOption,
+  RegisteredSeriesOption,
+  TooltipComponentOption
+} from 'echarts'
+import moment             from 'moment-timezone'
+import { renderToString } from 'react-dom/server'
 
 import { TimeStamp } from '@acx-ui/types'
 import { formatter } from '@acx-ui/utils'
@@ -15,7 +22,7 @@ export type TooltipFormatterParams = Exclude<
 
 export const gridOptions = () => ({
   left: '0%',
-  right: '2%',
+  right: '0%',
   bottom: '0%',
   top: '15%',
   containLabel: true
@@ -25,14 +32,15 @@ export const legendOptions = () => ({
   icon: 'square',
   right: 15,
   itemWidth: 15,
-  itemGap: 15,
-  textStyle: {
-    color: cssStr('--acx-primary-black'),
-    fontFamily: cssStr('--acx-neutral-brand-font'),
-    fontSize: cssNumber('--acx-body-5-font-size'),
-    lineHeight: cssNumber('--acx-body-5-line-height'),
-    fontWeight: cssNumber('--acx-body-font-weight')
-  }
+  itemGap: 15
+})
+
+export const legendTextStyleOptions = () => ({
+  color: cssStr('--acx-primary-black'),
+  fontFamily: cssStr('--acx-neutral-brand-font'),
+  fontSize: cssNumber('--acx-body-5-font-size'),
+  lineHeight: cssNumber('--acx-body-5-line-height'),
+  fontWeight: cssNumber('--acx-body-font-weight')
 })
 
 export const xAxisOptions = () => ({
@@ -49,25 +57,51 @@ export const xAxisOptions = () => ({
       color: cssStr('--acx-primary-black')
     }
   }
+} as XAXisComponentOption)
+
+export const barChartAxisLabelOptions = () => ({
+  color: cssStr('--acx-primary-black'),
+  fontFamily: cssStr('--acx-neutral-brand-font'),
+  fontSize: cssNumber('--acx-body-4-font-size'),
+  lineHeight: cssNumber('--acx-body-4-line-height'),
+  fontWeight: cssNumber('--acx-body-font-weight')
 })
+
+export const barChartSeriesLabelOptions = () => ({
+  show: true,
+  position: 'right',
+  fontFamily: cssStr('--acx-neutral-brand-font'),
+  fontSize: cssNumber('--acx-body-3-font-size'),
+  lineHeight: cssNumber('--acx-body-3-line-height'),
+  color: cssStr('--acx-primary-black'),
+  fontWeight: cssNumber('--acx-body-font-weight'),
+  silent: true
+} as RegisteredSeriesOption['bar']['label'])
 
 export const yAxisOptions = () => ({
   boundaryGap: [0, '10%']
-})
+} as YAXisComponentOption)
 
 export const axisLabelOptions = () => ({
   color: cssStr('--acx-neutrals-50'),
   fontFamily: cssStr('--acx-neutral-brand-font'),
   fontSize: cssNumber('--acx-body-5-font-size'),
+  lineHeight: cssNumber('--acx-body-5-line-height'),
   fontWeight: cssNumber('--acx-body-font-weight')
 })
 
-export const dateAxisFormatter = () => ({
-  // TODO:
-  // handle smaller and larger time range
-  month: '{MMM}', // Jan, Feb, ...
-  day: '{d}' // 1, 2, ...
-})
+export const dateAxisFormatter = (value: number): string => {
+  const dateTime = moment(value).format('YYYY-MM-DD HH:mm')
+  let formatted
+  if (dateTime.match(/^\d{4}-01-01 00:00$/))
+    formatted = formatter('yearFormat')(value)
+  else if (dateTime.match(/^\d{4}-\d{2}-01 00:00$/))
+    formatted = formatter('monthFormat')(value)
+  else if (dateTime.match(/^\d{4}-\d{2}-\d{2} 00:00$/))
+    formatted = formatter('monthDateFormat')(value)
+  return formatted ||
+    formatter('shortDateTimeFormat')(value) as string
+}
 
 export const tooltipOptions = () => ({
   textStyle: {
@@ -83,7 +117,7 @@ export const tooltipOptions = () => ({
   padding: 8,
   confine: true,
   extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08);'
-})
+} as TooltipComponentOption)
 
 export const timeSeriesTooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null)
