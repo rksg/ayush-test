@@ -3,7 +3,7 @@ import React, { useMemo, useState, Key } from 'react'
 import ProTable                   from '@ant-design/pro-table'
 import { Space, Divider, Button } from 'antd'
 import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { useIntl }                from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
