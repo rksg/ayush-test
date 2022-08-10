@@ -3,7 +3,7 @@
 exports[`NetworkForm should create AAA network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+    class="styledComponents__Wrapper-sc-xov27h-0 fmXRDH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -973,7 +973,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__Wrapper-sc-1abm7iv-2 dmYsKE"
+                                  class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
                                 >
                                   <div
                                     class="ant-pro-table"
@@ -986,6 +986,40 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                         style="padding-top: 0px;"
                                       >
                                         <div
+                                          class="ant-pro-table-list-toolbar"
+                                        >
+                                          <div
+                                            class="ant-pro-table-list-toolbar-container"
+                                          >
+                                            <div
+                                              class="ant-pro-table-list-toolbar-left"
+                                            />
+                                            <div
+                                              class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                                            >
+                                              <div
+                                                class="ant-space-item"
+                                              >
+                                                <div
+                                                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                                                >
+                                                  <div
+                                                    class="ant-space-item"
+                                                  >
+                                                    <div
+                                                      class="ant-pro-table-list-toolbar-setting-item"
+                                                    >
+                                                      <svg>
+                                                        SettingsOutlined.svg
+                                                      </svg>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div
                                           class="ant-table-wrapper"
                                         >
                                           <div
@@ -995,16 +1029,17 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                               class="ant-spin-container"
                                             >
                                               <div
-                                                class="ant-table ant-table-middle"
+                                                class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                                               >
                                                 <div
                                                   class="ant-table-container"
                                                 >
                                                   <div
                                                     class="ant-table-content"
+                                                    style="overflow-x: auto; overflow-y: hidden;"
                                                   >
                                                     <table
-                                                      style="table-layout: auto;"
+                                                      style="min-width: 100%; table-layout: auto;"
                                                     >
                                                       <colgroup>
                                                         <col
@@ -1021,6 +1056,10 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                         />
                                                         <col
                                                           style="width: 140px;"
+                                                        />
+                                                        <col />
+                                                        <col
+                                                          style="width: 32px;"
                                                         />
                                                       </colgroup>
                                                       <thead
@@ -1261,11 +1300,120 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                           >
                                                             Scheduling
                                                           </th>
+                                                          <th
+                                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                            style="position: sticky; right: 0px;"
+                                                          />
                                                         </tr>
                                                       </thead>
                                                       <tbody
                                                         class="ant-table-tbody"
                                                       >
+                                                        <tr
+                                                          aria-hidden="true"
+                                                          class="ant-table-measure-row"
+                                                          style="height: 0px; font-size: 0px;"
+                                                        >
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
+                                                          <td
+                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          >
+                                                            <div
+                                                              style="height: 0px; overflow: hidden;"
+                                                            >
+                                                               
+                                                            </div>
+                                                          </td>
+                                                        </tr>
                                                         <tr
                                                           class="ant-table-row ant-table-row-level-0"
                                                           data-row-key="6cf550cdb67641d798d804793aaa82db"
@@ -1338,6 +1486,10 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                           />
                                                           <td
                                                             class="ant-table-cell"
+                                                          />
+                                                          <td
+                                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                            style="position: sticky; right: 0px;"
                                                           />
                                                         </tr>
                                                         <tr
@@ -1414,6 +1566,10 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                           />
                                                           <td
                                                             class="ant-table-cell"
+                                                          />
+                                                          <td
+                                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                            style="position: sticky; right: 0px;"
                                                           />
                                                         </tr>
                                                       </tbody>
@@ -1747,7 +1903,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
 exports[`NetworkForm should create open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+    class="styledComponents__Wrapper-sc-xov27h-0 fmXRDH"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
