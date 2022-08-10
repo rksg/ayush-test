@@ -76,7 +76,8 @@ export function SparklineChart ({
         silent: true,
         areaStyle: { color: colorLinearGradient },
         lineStyle: {
-          color: lineColor
+          color: lineColor,
+          width: 0.8
         },
         smooth: true,
         showSymbol: false
