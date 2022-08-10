@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import moment    from 'moment-timezone'
 import AutoSizer from 'react-virtualized-auto-sizer'
-
-
 
 import { useGlobalFilter }                            from '@acx-ui/analytics/utils'
 import { Card, Loader, Table, TableProps, showToast } from '@acx-ui/components'
+import { Link }                                       from '@acx-ui/react-router-dom'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentNodeInfo, getIncidentBySeverity } from './services'
-import * as UI                                                                              from './styledComponents'
 
 import type { ProColumns } from '@ant-design/pro-table'
 
@@ -23,7 +22,12 @@ const ColumnHeaders: ProColumns<IncidentNodeInfo, 'text'>[] = [
     title: 'Date',
     dataIndex: 'startTime',
     valueType: 'dateTime',
-    key: 'startTime'
+    key: 'startTime',
+    render: (_, value) => {
+      return <Link to={`/analytics/incident/details/${value.id}`}>{
+        moment(value.startTime).format('MMMM DD yyyy HH:mm')
+      }</Link>
+    }
   },
   {
     title: 'Duration',
@@ -54,26 +58,12 @@ const ColumnHeaders: ProColumns<IncidentNodeInfo, 'text'>[] = [
 
 export type IncidentTableProps = TableProps<IncidentNodeData>
 
-const actions: TableProps<(IncidentNodeData)[0]>['actions'] = [
-  {
-    label: 'Edit',
-    onClick: (selectedRows) => showToast({
-      type: 'info',
-      content: `Edit ${selectedRows[0]}`
-    })
-  },
-  {
-    label: 'Delete',
-    onClick: (selectedRows) => showToast({
-      type: 'info',
-      content: `Delete ${selectedRows[0]}`
-    })
-  },
+const actions: TableProps<IncidentNodeInfo>['actions'] = [
   {
     label: 'Mute',
     onClick: (selectedRows) => showToast({
       type: 'info',
-      content: `Mute ${selectedRows[0]}`
+      content: `Mute ${selectedRows.length}`
     })
   }
 ]
