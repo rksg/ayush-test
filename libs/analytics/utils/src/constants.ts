@@ -27,7 +27,7 @@ export const incidentCodes = [
   'high-auth-failure',
   'assoc-failure',
   'high-assoc-failure',
-  'p-cov-clientrssi-low',
+  'p-cov-clientrssi-low', 
   'p-load-sz-cpu-load',
   'p-switch-memory-high',
   //'p-channeldist-suboptimal-plan-24g',
@@ -44,3 +44,10 @@ export const incidentCodes = [
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low'
 ]
+
+export const Severities = {
+  P1: { gt: 0.9, lte: 1 },
+  P2: { gt: 0.75, lte: 0.9 },
+  P3: { gt: 0.6, lte: 0.75 },
+  P4: { gt: 0, lte: 0.6 }
+}
