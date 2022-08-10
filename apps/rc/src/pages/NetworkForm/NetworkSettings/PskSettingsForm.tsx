@@ -41,7 +41,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { IpPortSecretForm } from '../../../components/ipPortSecretForm'
+import { IpPortSecretForm } from '../../../components/IpPortSecretForm'
 import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
 
 const { Option } = Select

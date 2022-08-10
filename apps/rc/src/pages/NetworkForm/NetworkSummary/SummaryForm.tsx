@@ -64,7 +64,7 @@ export function SummaryForm (props: {
             label='Type:'
             children={transformNetworkType(summaryData.type)}
           />
-          {summaryData.type !== 'psk' &&
+          {summaryData.type !== NetworkTypeEnum.PSK &&
           <Form.Item
             label='Use Cloudpath Server:'
             children={summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
