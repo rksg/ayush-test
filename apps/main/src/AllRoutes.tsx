@@ -6,6 +6,8 @@ import App           from './App'
 import AnalyticsBase from './App/Analytics'
 import Dashboard     from './App/Dashboard'
 import NetworksBase  from './App/Networks'
+import VenuesBase    from './App/Venues'
+import VenueRoutes   from './App/Venues/Routes'
 
 const WifiRoutes = React.lazy(() => import('rc/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
@@ -20,6 +22,9 @@ function AllRoutes () {
       </Route>
       <Route path='networks/*' element={<NetworksBase />}>
         <Route path='*' element={<WifiRoutes />} />
+      </Route>
+      <Route path='venues/*' element={<VenuesBase />}>
+        <Route path='*' element={<VenueRoutes />} />
       </Route>
     </Route>
   )

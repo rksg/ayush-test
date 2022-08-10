@@ -1,6 +1,7 @@
-import { GuestNetworkTypeEnum, WlanSecurityEnum, NetworkVenue, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { ApDeviceStatusEnum, GuestNetworkTypeEnum, WlanSecurityEnum, NetworkVenue, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 export * from './ap'
+export * from './venue'
 
 export interface CommonResult {
   requestId: string
@@ -44,7 +45,7 @@ export interface Venue {
   latitude: string
   longitude: string
   mesh: { enabled: boolean }
-  aggregatedApStatus: Partial<Record<ApVenueStatusEnum, number>>
+  aggregatedApStatus: Partial<Record<ApDeviceStatusEnum, number>>
   networks: {
     count: number
     names: string[]

@@ -16,6 +16,9 @@ jest.mock('analytics/Routes', () => () => {
 jest.mock('rc/Routes', () => () => {
   return <div data-testid='networks' />
 },{ virtual: true })
+jest.mock('./App/Venues/Routes', () => () => {
+  return <div data-testid='venues' />
+},{ virtual: true })
 
 describe('AllRoutes', () => {
   beforeEach(() => {
@@ -50,5 +53,14 @@ describe('AllRoutes', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByTestId('networks')
+  })
+  test('should navigate to venues/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/venues/some-page',
+        wrapRoutes: false
+      }
+    })
+    await screen.findByTestId('venues')
   })
 })
