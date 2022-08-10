@@ -1,3 +1,4 @@
+import { useIntl } from 'react-intl'
 
 import { StackedBarChart }                 from '@acx-ui/components'
 import { Table }                           from '@acx-ui/components'
@@ -8,26 +9,30 @@ import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
 import { NavigateProps } from './index'
 
-const columns = [
-  {
-    title: '',
-    dataIndex: 'name',
-    key: 'name',
-    width: 50
-  },
-  {
-    title: 'Networking Devices',
-    dataIndex: 'networkDevices',
-    key: 'networkDevices',
-    width: 162
-  },
-  {
-    title: 'Clients',
-    dataIndex: 'clients',
-    key: 'clients',
-    width: 162
-  }
-]
+function getCols ({ $t }: ReturnType<typeof useIntl>) {
+  const columns = [
+    {
+      title: '',
+      dataIndex: 'name',
+      key: 'name',
+      width: 50
+    },
+    {
+      title: $t({ defaultMessage: 'Networking Devices' }),
+      dataIndex: 'networkDevices',
+      key: 'networkDevices',
+      width: 162
+    },
+    {
+      title: $t({ defaultMessage: 'Clients' }),
+      dataIndex: 'clients',
+      key: 'clients',
+      width: 162
+    }
+  ]
+  return columns
+}
+
 
 interface VenueMarkerTooltipProps {
   onNavigate?: (params: NavigateProps) => void;
@@ -36,6 +41,7 @@ interface VenueMarkerTooltipProps {
 
 export function VenueMarkerTooltip (
   props: { venue: VenueMarkerOptions } & VenueMarkerTooltipProps) {
+  const { $t } = useIntl()
   const {
     venueId,
     apStat,
@@ -59,7 +65,7 @@ export function VenueMarkerTooltip (
   const data = [
     {
       key: '1',
-      name: 'Wi-Fi',
+      name: $t({ defaultMessage: 'Wi-Fi' }),
       networkDevices: apsCount > 0
         ? <UI.CellWrapper>
           <StackedBarChart
@@ -70,7 +76,7 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No APs'}
+          {$t({ defaultMessage: 'No APs' })}
         </UI.CellWrapper>,
       clients: clientsCount && clientsCount > 0
         ? <UI.CellWrapper>
@@ -79,12 +85,12 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No AP Clients'}
+          {$t({ defaultMessage: 'No AP Clients' })}
         </UI.CellWrapper>
     },
     {
       key: '2',
-      name: 'Switch',
+      name: $t({ defaultMessage: 'Switch' }),
       networkDevices: switchesCount > 0
         ? <UI.CellWrapper>
           <StackedBarChart
@@ -95,7 +101,7 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No Switches'}
+          {$t({ defaultMessage: 'No Switches' })}
         </UI.CellWrapper>,
       clients: switchClientsCount && switchClientsCount > 0
         ? <UI.CellWrapper>
@@ -104,7 +110,7 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No Switch Clients'}
+          {$t({ defaultMessage: 'No Switch Clients' })}
         </UI.CellWrapper>
     }
   ]
@@ -117,7 +123,7 @@ export function VenueMarkerTooltip (
         </UI.Title>
       </UI.InfoWindowHeader>
       <Table
-        columns={columns}
+        columns={getCols(useIntl())}
         dataSource={data}
         type={'tooltip'}
       />
