@@ -3,7 +3,7 @@ import React, { useMemo, useState, Key } from 'react'
 import ProTable                   from '@ant-design/pro-table'
 import { Space, Divider, Button } from 'antd'
 import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { useIntl }                from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
@@ -13,21 +13,6 @@ import { useColumnsState } from './useColumnsState'
 import type { Columns, ColumnStateOption }  from './types'
 import type { SettingOptionType }           from '@ant-design/pro-table/lib/components/ToolBar'
 import type { TableProps as AntTableProps } from 'antd'
-
-const messages = {
-  columnsSettingTitle: defineMessage({
-    defaultMessage: 'Select Columns'
-  }),
-  resetColumns: defineMessage({
-    defaultMessage: 'Reset to default'
-  }),
-  clearSelection: defineMessage({
-    defaultMessage: 'Clear selection'
-  }),
-  selectedCount: defineMessage({
-    defaultMessage: '{count} selected'
-  })
-}
 
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' | 'title'> {
@@ -66,12 +51,12 @@ export function Table <RecordType extends object> (
     checkable: true,
     checkedReset: false,
     extra: <div>
-      <UI.TableSettingTitle children={$t(messages.columnsSettingTitle)} />
+      <UI.TableSettingTitle children={$t({ defaultMessage: 'Select Columns' })} />
       <Button
         type='link'
         size='small'
         onClick={columnsState.resetState}
-        children={$t(messages.resetColumns)}
+        children={$t({ defaultMessage: 'Reset to default' })}
       />
     </div>,
     children: <SettingsOutlined />
@@ -154,8 +139,13 @@ export function Table <RecordType extends object> (
       tableAlertRender={({ onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
-            <span>{$t(messages.selectedCount, { count: selectedRowKeys.length })}</span>
-            <UI.CloseButton onClick={onCleanSelected} title={$t(messages.clearSelection)} />
+            <span>
+              {$t({ defaultMessage: '{count} selected' }, { count: selectedRows.length })}
+            </span>
+            <UI.CloseButton
+              onClick={onCleanSelected}
+              title={$t({ defaultMessage: 'Clear selection' })}
+            />
           </Space>
           <Space size={0} split={<Divider type='vertical' />}>
             {props.actions?.map((option) =>

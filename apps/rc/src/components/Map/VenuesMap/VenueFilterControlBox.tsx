@@ -1,7 +1,9 @@
 import { useState } from 'react'
 
+
 import Icon                      from '@ant-design/icons'
 import { Tooltip as AntTooltip } from 'antd'
+import { useIntl }               from 'react-intl'
 
 import { ApVenueStatusEnum } from '@acx-ui/rc/services'
 
@@ -27,6 +29,7 @@ interface VenueFilterControlBoxProps {
 }
 
 export default function VenueFilterControlBox (props: VenueFilterControlBoxProps) {
+  const { $t } = useIntl()
   const [ filter, setFilter ] = useState<FilterState>({
     [ApVenueStatusEnum.REQUIRES_ATTENTION]: true,
     [ApVenueStatusEnum.TRANSIENT_ISSUE]: true,
@@ -42,33 +45,33 @@ export default function VenueFilterControlBox (props: VenueFilterControlBoxProps
 
   return (
     <UI.VenueFilterContainer>
-      <UI.FilterBoxTitle>Show</UI.FilterBoxTitle>
+      <UI.FilterBoxTitle>{$t({ defaultMessage: 'Show' })}</UI.FilterBoxTitle>
       <UI.FilterCheckbox
         name={ApVenueStatusEnum.REQUIRES_ATTENTION}
         onChange={onChange}
         defaultChecked={filter[ApVenueStatusEnum.REQUIRES_ATTENTION]}>
-        <AntTooltip title='Requires Attention' placement='right'>
+        <AntTooltip title={$t({ defaultMessage: 'Requires Attention' })} placement='right'>
           <Icon component={UI.VenueMarkerRedIcon} />
         </AntTooltip>
       </UI.FilterCheckbox>
       <UI.FilterCheckbox name={ApVenueStatusEnum.TRANSIENT_ISSUE}
         onChange={onChange}
         defaultChecked={filter[ApVenueStatusEnum.TRANSIENT_ISSUE]}>
-        <AntTooltip title='Temporarily degraded' placement='right'>
+        <AntTooltip title={$t({ defaultMessage: 'Temporarily degraded' })} placement='right'>
           <Icon component={UI.VenueMarkerOrangeIcon} />
         </AntTooltip>
       </UI.FilterCheckbox>
       <UI.FilterCheckbox name={ApVenueStatusEnum.IN_SETUP_PHASE}
         onChange={onChange}
         defaultChecked={filter[ApVenueStatusEnum.IN_SETUP_PHASE]}>
-        <AntTooltip title='In Setup Phase' placement='right'>
+        <AntTooltip title={$t({ defaultMessage: 'In Setup Phase' })} placement='right'>
           <Icon component={UI.VenueMarkerGreyIcon} />
         </AntTooltip>
       </UI.FilterCheckbox>
       <UI.FilterCheckbox name={ApVenueStatusEnum.OPERATIONAL}
         onChange={onChange}
         defaultChecked={filter[ApVenueStatusEnum.OPERATIONAL]}>
-        <AntTooltip title='Operational' placement='right'>
+        <AntTooltip title={$t({ defaultMessage: 'Operational' })} placement='right'>
           <Icon component={UI.VenueMarkerGreenIcon} />
         </AntTooltip>
       </UI.FilterCheckbox>
