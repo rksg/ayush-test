@@ -1,8 +1,8 @@
 /* eslint-disable testing-library/no-node-access */
-import { dataApiURL }                                  from '@acx-ui/analytics/services'
-import { Provider, store }                             from '@acx-ui/store'
-import { fireEvent, render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange }                                   from '@acx-ui/utils'
+import { dataApiURL }                                                 from '@acx-ui/analytics/services'
+import { Provider, store }                                            from '@acx-ui/store'
+import { fireEvent, render, screen, mockAutoSizer, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { DateRange }                                                  from '@acx-ui/utils'
 
 import { fixture1 } from './fixtures'
 import { api }      from './services'
@@ -31,6 +31,7 @@ const extractRows = (doc:DocumentFragment)=>{
 }
 
 describe('TrafficByApplicationWidget', () => {
+  mockAutoSizer()
   const filters = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
