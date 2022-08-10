@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { useGlobalFilter }                                                            from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }                                                            from '@acx-ui/analytics/utils'
 import { Card, Loader, Table, SparklineChart, ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
 import { formatter }                                                                  from '@acx-ui/utils'
 
@@ -15,8 +15,11 @@ const TrafficPercent = styled.span`
   color: var(--acx-neutrals-60);
 `
 
-export function TrafficByApplicationWidget () {
-  const filters = useGlobalFilter()
+export function TrafficByApplicationWidget ({
+  filters
+}: {
+  filters: AnalyticsFilter;
+}) {
   const queryResults = useTrafficByApplicationQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({

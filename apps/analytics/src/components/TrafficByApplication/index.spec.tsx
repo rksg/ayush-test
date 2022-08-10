@@ -2,6 +2,7 @@
 import { dataApiURL }                                  from '@acx-ui/analytics/services'
 import { Provider, store }                             from '@acx-ui/store'
 import { fireEvent, render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { DateRange }                                   from '@acx-ui/utils'
 
 import { fixture1 } from './fixtures'
 import { api }      from './services'
@@ -30,6 +31,12 @@ const extractRows = (doc:DocumentFragment)=>{
 }
 
 describe('TrafficByApplicationWidget', () => {
+  const filters = {
+    startDate: '2022-01-01T00:00:00+08:00',
+    endDate: '2022-01-02T00:00:00+08:00',
+    path: [{ type: 'network', name: 'Network' }],
+    range: DateRange.last24Hours
+  }
 
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
@@ -39,7 +46,7 @@ describe('TrafficByApplicationWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
       data: { network: { hierarchyNode: fixture1 } }
     })
-    render( <Provider> <TrafficByApplicationWidget/></Provider>)
+    render( <Provider> <TrafficByApplicationWidget filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
 
@@ -47,7 +54,8 @@ describe('TrafficByApplicationWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
       data: { network: { hierarchyNode: fixture1 } }
     })
-    const { asFragment } =render( <Provider> <TrafficByApplicationWidget/></Provider>)
+    const { asFragment } =render( <Provider> <TrafficByApplicationWidget
+      filters={filters}/></Provider>)
     await screen.findByText('Top 5 Applications by Traffic')
     const contentSwitcher = asFragment()
       .querySelector('div.ant-card-body > div > div:nth-child(1) > div')
