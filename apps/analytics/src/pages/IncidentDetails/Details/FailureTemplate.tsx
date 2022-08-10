@@ -1,31 +1,17 @@
-import { Col, Row }                  from 'antd'
-import { useIntl, FormattedMessage } from 'react-intl'
+import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import {
-  incidentInformation,
   calculateSeverity,
-  impactedArea,
-  formattedSliceType,
-  IncidentDetailsProps
+  Incident,
+  useShortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill } from '@acx-ui/components'
 
-import { incidentDetailsMap } from '..'
-
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
+export const IncidentDetailsTemplate = (props: Incident) => {
   const { $t } = useIntl()
-  const shortDescription = (incident: IncidentDetailsProps) => {
-    const code = incident.code as keyof typeof incidentDetailsMap
-    const { shortDescription } = incidentInformation[code]
-    const scope = `${formattedSliceType(incident.sliceType)}:` +
-      impactedArea(incident.path, incident.sliceValue)
-    return <FormattedMessage
-      {...shortDescription}
-      values={{ scope }}
-    />
-  }
 
   return (
     <>
@@ -35,7 +21,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={shortDescription(props)}
+        subTitle={<p>{useShortDescription(props)}</p>}
       />
       <Row gutter={[20, 20]}>
         <Col span={4}>
