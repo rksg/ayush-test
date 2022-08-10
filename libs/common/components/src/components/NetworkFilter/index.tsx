@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { CaretDownOutlined }          from '@ant-design/icons'
 import {
   Cascader as AntCascader,
   CascaderProps as AntCascaderProps
@@ -103,6 +104,7 @@ export function NetworkFilter (props: CascaderProps) {
       expandTrigger='hover'
       maxTagCount={1}
       showSearch
+      suffixIcon={<CaretDownOutlined />}
     />
   }
 
@@ -114,5 +116,6 @@ export function NetworkFilter (props: CascaderProps) {
     dropdownRender={DropDown}
     expandTrigger='hover'
     showSearch
+    suffixIcon={<CaretDownOutlined />}
   />
 }
