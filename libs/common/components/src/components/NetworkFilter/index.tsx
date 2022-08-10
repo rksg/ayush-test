@@ -33,7 +33,8 @@ export type CascaderProps = AntCascaderProps<Option> & {
 }
 
 export function NetworkFilter (props: CascaderProps) {
-  const [ multiSelect, setMultiSelect ] = React.useState<DefaultOptionType[][]>([])
+  const [multiSelect, setMultiSelect] = React.useState<DefaultOptionType[][]>([])
+  const [open, setOpen] = React.useState(false)
 
   const { onCancel, onApply, ...antProps } = props
   const { multiple, options } = antProps
@@ -45,11 +46,13 @@ export function NetworkFilter (props: CascaderProps) {
     if (onCancel) {
       onCancel()
     }
+    setOpen(!open)
   }
 
   const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault()
     onApply(multiSelect)
+    setOpen(!open)
   }
 
   const onChangeMultiple = (
@@ -105,6 +108,8 @@ export function NetworkFilter (props: CascaderProps) {
       maxTagCount={1}
       showSearch
       suffixIcon={<CaretDownOutlined />}
+      onDropdownVisibleChange={(state) => setOpen(state)}
+      open={open}
     />
   }
 
