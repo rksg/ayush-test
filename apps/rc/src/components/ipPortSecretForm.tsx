@@ -1,7 +1,12 @@
 import { Form, Input } from 'antd'
 
-import { AaaServerTypeEnum, AaaServerOrderEnum }      from './constants'
-import { ipV4RegExp, portRegExp, stringContainSpace } from './validator' 
+import { 
+  AaaServerTypeEnum,
+  AaaServerOrderEnum,
+  ipV4RegExp,
+  portRegExp,
+  stringContainSpace
+} from '@acx-ui/rc/utils'
 
 export function IpPortSecretForm ({ serverType, order }: 
   { serverType: AaaServerTypeEnum, order: AaaServerOrderEnum }) {

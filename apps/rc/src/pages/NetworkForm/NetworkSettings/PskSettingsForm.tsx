@@ -32,7 +32,6 @@ import {
   macAuthMacFormatOptions,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  IpPortSecretForm,
   trailingNorLeadingSpaces,
   NetworkTypeEnum,
   WlanSecurityEnum,
@@ -42,8 +41,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import { IpPortSecretForm } from '../../../components/ipPortSecretForm'
+import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
 
 const { Option } = Select
 

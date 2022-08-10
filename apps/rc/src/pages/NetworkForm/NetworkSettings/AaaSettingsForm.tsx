@@ -28,13 +28,12 @@ import {
   getUserSettingsFromDict,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  IpPortSecretForm
+  NetworkTypeEnum
 } from '@acx-ui/rc/utils'
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { useParams }       from '@acx-ui/react-router-dom'
+import { useParams } from '@acx-ui/react-router-dom'
 
-
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import { IpPortSecretForm } from '../../../components/ipPortSecretForm'
+import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
 
