@@ -58,12 +58,13 @@ const actions: TableProps<(typeof basicData)[0]>['actions'] = [
 ]
 
 export function MultiSelectTable () {
-  return (
+  return (<>
+    Multi Select
     <Table
       columns={basicColumns}
       dataSource={basicData}
       actions={actions}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />
-  )
+  </>)
 }

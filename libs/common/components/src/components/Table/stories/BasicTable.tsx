@@ -34,11 +34,11 @@ const basicData = [
 ]
 
 export function BasicTable () {
-  return (
+  return (<>
+    Basic
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      title={() => 'Basic'}
     />
-  )
+  </>)
 }

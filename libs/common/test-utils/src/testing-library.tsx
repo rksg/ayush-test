@@ -1,12 +1,12 @@
 import { ReactElement } from 'react'
 
-import { render, RenderOptions }                             from '@testing-library/react'
-import { ConfigProvider }                                    from 'antd'
-import enUS                                                  from 'antd/lib/locale/en_US'
-import { IntlProvider }                                      from 'react-intl'
-import { generatePath, MemoryRouter, Params, Route, Routes } from 'react-router-dom'
+import { render, RenderOptions, RenderHookOptions, renderHook } from '@testing-library/react'
+import { ConfigProvider }                                       from 'antd'
+import enUS                                                     from 'antd/lib/locale/en_US'
+import { IntlProvider }                                         from 'react-intl'
+import { generatePath, MemoryRouter, Params, Route, Routes }    from 'react-router-dom'
 
-type CustomRenderOptions = RenderOptions & {
+type CustomOptions = {
   /**
    * Wrap with MemoryRouter when set
    */
@@ -29,32 +29,60 @@ type CustomRenderOptions = RenderOptions & {
  */
 function customRender (
   ui: ReactElement,
-  options?: CustomRenderOptions
+  options?: RenderOptions & CustomOptions
 ) {
-  let wrappedUI = ui
-  if (options?.route) {
-    const {
-      wrapRoutes = true,
-      ...route
-    } = typeof options?.route === 'boolean' ? {} : options?.route
+  return render(ui, {
+    ...(options ?? {}),
+    wrapper: wrapper(options)
+  })
+}
 
-    const path = route.path ?? '/' + Object.keys(route.params ?? {})
-      .map(key => `:${key}`)
-      .join('/')
-    const entry = generatePath(path, route.params ?? {})
-
-    if (wrapRoutes) {
-      wrappedUI = <Routes>
-        <Route path={path} element={wrappedUI} />
-      </Routes>
-    }
-
-    wrappedUI = <MemoryRouter initialEntries={[entry]} children={wrappedUI} />
-  }
-  wrappedUI = <IntlProvider locale={enUS.locale} children={wrappedUI} />
-  wrappedUI = <ConfigProvider locale={enUS} children={wrappedUI} />
-  return render(wrappedUI, options)
+function customRenderHook <Result, Props> (
+  render: (initialProps: Props) => Result,
+  options?: RenderHookOptions<Props> & CustomOptions
+) {
+  return renderHook(render, {
+    ...(options ?? {}),
+    wrapper: wrapper(options)
+  })
 }
 
 export * from '@testing-library/react'
-export { customRender as render }
+export {
+  customRender as render,
+  customRenderHook as renderHook
+}
+
+function wrapper (options?: CustomOptions) {
+  return function Wrapper (props: { children: ReactElement }) {
+    let wrappedUI = props.children
+    if (options?.wrapper) {
+      const Wrapper = options?.wrapper
+      wrappedUI = <Wrapper {...props} />
+    }
+
+    if (options?.route) {
+      const {
+        wrapRoutes = true,
+        ...route
+      } = typeof options?.route === 'boolean' ? {} : options?.route
+
+      const path = route.path ?? '/' + Object.keys(route.params ?? {})
+        .map(key => `:${key}`)
+        .join('/')
+      const entry = generatePath(path, route.params ?? {})
+
+      if (wrapRoutes) {
+        wrappedUI = <Routes>
+          <Route path={path} element={wrappedUI} />
+        </Routes>
+      }
+
+      wrappedUI = <MemoryRouter initialEntries={[entry]} children={wrappedUI} />
+    }
+    wrappedUI = <IntlProvider locale={enUS.locale} children={wrappedUI} />
+    wrappedUI = <ConfigProvider locale={enUS} children={wrappedUI} />
+
+    return wrappedUI
+  }
+}
