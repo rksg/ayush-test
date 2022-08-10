@@ -1,12 +1,12 @@
 import { storiesOf } from '@storybook/react'
 
 import { BasicTable }                 from './BasicTable'
+import { ColumnSortAndShowHideTable } from './ColumnSortAndShowHideTable'
 import { CompactTable }               from './CompactTable'
 import { CustomTable }                from './CustomTable'
 import { MultipleSorterTable }        from './MultipleSorterTable'
 import { MultiSelectTable }           from './MultiSelectTable'
 import { SingleSelectTable }          from './SingleSelectTable'
-import { ColumnSortAndShowHideTable } from './ColumnSortAndShowHideTable'
 
 storiesOf('Table', module)
   .add('Basic', BasicTable)
