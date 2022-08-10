@@ -8,7 +8,7 @@ import { NetworkDiagram } from './NetworkDiagram'
 
 describe('NetworkDiagram', () => {
   it('should render default diagram successfully', async () => {
-    const { asFragment } = render(<NetworkDiagram type='' />)
+    const { asFragment } = render(<NetworkDiagram type={undefined} />)
     const diagram = screen.getByRole('img') as HTMLImageElement
     expect(diagram.src).toContain('none.png')
     expect(asFragment()).toMatchSnapshot()

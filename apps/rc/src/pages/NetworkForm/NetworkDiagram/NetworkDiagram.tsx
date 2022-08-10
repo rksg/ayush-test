@@ -32,10 +32,13 @@ import { networkTypes }              from '../contentsMap'
 import { Diagram }                   from '../styledComponents'
 
 interface DiagramProps {
-  type: NetworkTypeEnum;
+  type?: NetworkTypeEnum;
   cloudpathType?: CloudpathServer['deploymentType'];
 }
 
+interface DefaultDiagramProps extends DiagramProps {
+  type: undefined;
+}
 interface DpskDiagramProps extends DiagramProps {
   type: NetworkTypeEnum.DPSK;
 }
@@ -61,8 +64,12 @@ interface CaptivePortalDiagramProps extends DiagramProps {
   wisprWithPsk?: boolean;
 }
 
-type NetworkDiagramProps = DpskDiagramProps | OpenDiagramProps | PskDiagramProps
-                          | AaaDiagramProps | CaptivePortalDiagramProps
+type NetworkDiagramProps = DefaultDiagramProps
+  | DpskDiagramProps
+  | OpenDiagramProps
+  | PskDiagramProps
+  | AaaDiagramProps
+  | CaptivePortalDiagramProps
 
 const CloudpathCloudDiagramMap: Partial<Record<NetworkTypeEnum, string>> = {
   [NetworkTypeEnum.DPSK]: DpskCloudpathCloudDiagram,
@@ -100,10 +107,10 @@ function getDiagram (props: NetworkDiagramProps) {
       diagram = DefaultDiagram
   }
 
-  if (props?.cloudpathType) {
-    const isCloudDeployment = props?.cloudpathType === CloudpathDeploymentTypeEnum.Cloud
+  if (props.type && props?.cloudpathType) {
+    const isCloudDeployment = props.cloudpathType === CloudpathDeploymentTypeEnum.Cloud
     const cloudpathMap = isCloudDeployment ? CloudpathCloudDiagramMap : CloudpathOnPremDiagramMap
-    return cloudpathMap[props?.type]
+    return cloudpathMap[props.type]
   }
 
   return diagram
@@ -140,8 +147,7 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
   const { $t } = useIntl()
-  const type = props.type as NetworkTypeEnum | undefined
-  const title = type ? $t(networkTypes[type]) : undefined
+  const title = props.type ? $t(networkTypes[props.type]) : undefined
   const diagram = getDiagram({ ...props })
 
   return (
