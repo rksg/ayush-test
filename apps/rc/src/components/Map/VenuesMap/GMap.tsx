@@ -61,7 +61,11 @@ const GMap: React.FC<MapProps> = ({
         && map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
         const legendControlBoxDiv = document.createElement('div')
         const root = createRoot(legendControlBoxDiv!)
-        root.render(<VenueFilterControlBox onChange={onFilterChange} />)
+        root.render(
+          <ConfigProvider lang='en-US'>
+            <VenueFilterControlBox onChange={onFilterChange} />
+          </ConfigProvider>
+        )
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(legendControlBoxDiv)
       }
 
@@ -101,7 +105,7 @@ const GMap: React.FC<MapProps> = ({
       let markers = venues?.map((venue: VenueMarkerOptions) => {
         let markerSize = 32
         // DEFINITIONS: No APs = 32px, minimum # of APs (>0) = 48 px, maximum # of APs = 96px
-      
+
         if(venue?.apsCount > 0){
           markerSize = 48 + (venue?.apsCount / maxVenueCountPerVenue!) * 48
         }
@@ -168,7 +172,7 @@ const GMap: React.FC<MapProps> = ({
         })
         return marker
       })
-      
+
       markers = markers.filter(marker => marker.getVisible())
       if (markers && markers.length > 0) {
         if(cluster){
