@@ -1,9 +1,15 @@
 import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 import styled      from 'styled-components/macro'
 
-import { AnalyticsFilter }                                                            from '@acx-ui/analytics/utils'
-import { Card, Loader, Table, SparklineChart, ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
-import { formatter }                                                                  from '@acx-ui/utils'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import {
+  Card,
+  Loader, Table,
+  SparklineChart,
+  ContentSwitcher,
+  ContentSwitcherProps } from '@acx-ui/components'
+import { formatter } from '@acx-ui/utils'
 
 import { useTrafficByApplicationQuery, TrafficByApplicationData } from './services'
 
@@ -22,7 +28,6 @@ export function TrafficByApplicationWidget ({
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const widgetTitle = $t({ defaultMessage: 'Top 5 Applications by Traffic' })
   const queryResults = useTrafficByApplicationQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
@@ -31,7 +36,7 @@ export function TrafficByApplicationWidget ({
       })
     }
   )
-  
+
   const columns=(direction:string)=>([
     {
       title: 'Application',
@@ -41,20 +46,23 @@ export function TrafficByApplicationWidget ({
     {
       title: 'Total Traffic',
       dataIndex: direction === 'download' ? 'download' : 'upload',
-      key: 'traffic'
+      key: 'traffic',
+      width: '20%'
     },
     {
       title: 'Traffic History',
       dataIndex: direction === 'download' ? 'downloadTrafficHistory' : 'uploadTrafficHistory',
-      key: 'trafficHistory'
+      key: 'trafficHistory',
+      width: '16%'
     },
     {
       title: 'Clients',
       dataIndex: 'clientMacCount',
-      key: 'clientMacCount'
+      key: 'clientMacCount',
+      width: '15%'
     }
   ])
-  
+
   const getDataSource= (appTrafficData: TrafficByApplicationData[] | undefined,
     overallTrafic:number) => {
     if(!appTrafficData)
@@ -63,7 +71,7 @@ export function TrafficByApplicationWidget ({
     return appTrafficData.map((item,index) => {
       const uploadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.rxBytes)
       const downloadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.txBytes)
-      const sparklineChartStyle = { height: 15, width: '100%', display: 'inline' }
+      const sparklineChartStyle = { height: 18, width: '100%', display: 'inline' }
       return {
         ...item,
         upload: <>{formatter('bytesFormat')(item.rxBytes)} &nbsp;
@@ -71,7 +79,7 @@ export function TrafficByApplicationWidget ({
           ({formatter('percentFormatRound')(item.rxBytes/overallTrafic)})
           </TrafficPercent>
         </>,
-        uploadTrafficHistory: <SparklineChart 
+        uploadTrafficHistory: <SparklineChart
           key={index}
           data={uploadSparkLineData}
           isTrendLine={true}
@@ -105,20 +113,23 @@ export function TrafficByApplicationWidget ({
     type={'compact'}
     pagination={false}
   />
-  
+
   const tabDetails:ContentSwitcherProps['tabDetails']=[
     { label: 'Upload', children: uploadTable, value: 'upload' },
     { label: 'Download', children: downloadTable, value: 'download' }
   ]
-    
+
   return (
     <Loader states={[queryResults]}>
-      <Card title={widgetTitle}>
-        <div style={{ display: 'block' }}>
-          <ContentSwitcher tabDetails={tabDetails} size='large' align='center' />
-        </div>
+      <Card title={$t({ defaultMessage: 'Top 5 Applications by Traffic' })}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <div style={{ display: 'block', height, width }}>
+              <ContentSwitcher tabDetails={tabDetails} size='small' align='center' />
+            </div>
+          )}
+        </AutoSizer>
       </Card>
     </Loader>
   )
-
 }

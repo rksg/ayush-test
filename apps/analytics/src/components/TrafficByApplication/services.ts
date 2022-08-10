@@ -53,7 +53,7 @@ export const api = dataApi.injectEndpoints({
             }
           }
         }
-        
+
         fragment applicationTrafficData on ApplicationTraffic{
           appName
           rxBytes

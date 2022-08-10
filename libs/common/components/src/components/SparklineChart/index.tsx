@@ -29,7 +29,7 @@ export function SparklineChart ({
     }
   }
 
-  let { 
+  let {
     lineColor=trendLineColors.green.lineColor,
     areaBaseColor=trendLineColors.green.areaBaseColor,
     isTrendLine=false
@@ -42,7 +42,7 @@ export function SparklineChart ({
     lineColor = colorGroup.lineColor
     areaBaseColor = colorGroup.areaBaseColor
   }
-  
+
   const colorLinearGradient = new graphic.LinearGradient(0, 0, 0, 1, [
     {
       offset: 0,
@@ -63,10 +63,10 @@ export function SparklineChart ({
       show: false
     },
     grid: {
-      left: '0%',
-      right: '0%',
-      bottom: '0%',
-      top: '0%',
+      left: 0,
+      right: 0,
+      bottom: 2,
+      top: 2,
       containLabel: false
     },
     series: [
