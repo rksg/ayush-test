@@ -17,6 +17,9 @@ const TableBgWhite = styled(Table)`
   .ant-table {
     background-color: white ! important;
   }
+  .ant-table-thead > tr > th {
+    background: var(--acx-primary-white)
+  }
 `
 const TrafficPercent = styled.span`
   color: var(--acx-neutrals-60);
@@ -53,13 +56,14 @@ export function TrafficByApplicationWidget ({
       title: 'Traffic History',
       dataIndex: direction === 'download' ? 'downloadTrafficHistory' : 'uploadTrafficHistory',
       key: 'trafficHistory',
-      width: '16%'
+      width: '5%'
     },
     {
       title: 'Clients',
       dataIndex: 'clientMacCount',
       key: 'clientMacCount',
-      width: '15%'
+      width: '15%',
+      align: 'right' as const
     }
   ])
 
@@ -71,7 +75,7 @@ export function TrafficByApplicationWidget ({
     return appTrafficData.map((item,index) => {
       const uploadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.rxBytes)
       const downloadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.txBytes)
-      const sparklineChartStyle = { height: 18, width: '100%', display: 'inline' }
+      const sparklineChartStyle = { height: 18, width: 80, display: 'inline' }
       return {
         ...item,
         upload: <>{formatter('bytesFormat')(item.rxBytes)} &nbsp;
