@@ -60,7 +60,7 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
               <div>network impact</div>
             </Col>
             <Col span={24}>
-              <TimeSeries type={'clients'}/>
+              <TimeSeries {...props} type={'clients'}/>
             </Col>
           </Row>
         </Col>
