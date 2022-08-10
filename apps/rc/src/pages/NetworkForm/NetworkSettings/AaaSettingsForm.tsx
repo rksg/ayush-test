@@ -13,6 +13,7 @@ import {
   Switch,
   Tooltip
 } from 'antd'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   StepsForm,
@@ -38,18 +39,6 @@ import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
 import { CloudpathServerForm } from './CloudpathServerForm'
 
 const { Option } = Select
-
-/* eslint-disable max-len */
-const AaaMessages = {
-  ENABLE_PROXY_TOOLTIP: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.',
-
-  WPA2_DESCRIPTION: 'WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.',
-
-  WPA2_DESCRIPTION_WARNING: 'Security protocols other than WPA3 are not be supported in 6 GHz radio.',
-
-  WPA3_DESCRIPTION: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
-}
-/* eslint-enable */
 
 const { useWatch } = Form
 
@@ -98,13 +87,14 @@ export function AaaSettingsForm () {
   )
 
   function AaaButtons () {
+    const { $t } = useIntl()
     return (
       <Space align='center' style={{ display: 'flex', justifyContent: 'center' }}>
         <Button type='link' disabled={enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(true)}>
-          Authentication Service
+          { $t({ defaultMessage: 'Authentication Service' }) }
         </Button>
         <Button type='link' disabled={!enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(false)}>
-          Accounting Service
+          { $t({ defaultMessage: 'Accounting Service' }) }
         </Button>
       </Space>
     )
@@ -112,6 +102,7 @@ export function AaaSettingsForm () {
 }
 
 function SettingsForm () {
+  const { $t } = useIntl()
   const [
     isCloudpathEnabled,
     wlanSecurity,
@@ -131,22 +122,33 @@ function SettingsForm () {
   const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
     Constants.triRadioUserSettingsKey)) === 'true'
 
-  const wpa2Description = (
-    <>
-      {AaaMessages.WPA2_DESCRIPTION}
-      <Space align='start'>
+  const wpa2Description = <FormattedMessage
+    /* eslint-disable max-len */
+    defaultMessage={`
+      WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006.
+      WPA2 should be selected unless you have a specific reason to choose otherwise.
+      <highlight>
+        Security protocols other than WPA3 are not be supported in 6 GHz radio.
+      </highlight>
+    `}
+    /* eslint-enable */
+    values={{
+      highlight: (chunks) => <Space align='start'>
         <ExclamationCircleFilled />
-        {AaaMessages.WPA2_DESCRIPTION_WARNING}
+        {chunks}
       </Space>
-    </>
-  )
+    }}
+  />
 
-  const wpa3Description = AaaMessages.WPA3_DESCRIPTION
+  const wpa3Description = $t({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
+  })
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
-        <StepsForm.Title>AAA Settings</StepsForm.Title>
+        <StepsForm.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsForm.Title>
         {supportTriBandRadio &&
           <Form.Item
             label='Security Protocol'
@@ -160,9 +162,9 @@ function SettingsForm () {
           >
             <Select>
               <Option value={WlanSecurityEnum.WPA2Enterprise}>
-                WPA2 (Recommended)
+                { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
               </Option>
-              <Option value={WlanSecurityEnum.WPA3}>WPA3</Option>
+              <Option value={WlanSecurityEnum.WPA3}>{ $t({ defaultMessage: 'WPA3' }) }</Option>
             </Select>
           </Form.Item>
         }
@@ -170,7 +172,7 @@ function SettingsForm () {
           <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
             <Switch />
           </Form.Item>
-          <span>Use Cloudpath Server</span>
+          <span>{ $t({ defaultMessage: 'Use Cloudpath Server' }) }</span>
         </Form.Item>
       </div>
       <div>
@@ -180,10 +182,19 @@ function SettingsForm () {
   )
 
   function AaaService () {
+    const { $t } = useIntl()
+    const proxyServiceTooltip = <Tooltip
+      placement='bottom'
+      children={<QuestionCircleOutlined />}
+      title={$t({
+        // eslint-disable-next-line max-len
+        defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
+      })}
+    />
     return (
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
-          <Subtitle level={3}>Authentication Service</Subtitle>
+          <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
           <IpPortSecretForm
             serverType={AaaServerTypeEnum.AUTHENTICATION}
             order={AaaServerOrderEnum.PRIMARY}
@@ -191,8 +202,8 @@ function SettingsForm () {
 
           <Form.Item noStyle name='enableSecondaryAuthServer'>
             <ToggleButton
-              enableText='Remove Secondary Server'
-              disableText='Add Secondary Server'
+              enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
+              disableText={$t({ defaultMessage: 'Add Secondary Server' })}
             />
           </Form.Item>
 
@@ -211,14 +222,12 @@ function SettingsForm () {
               initialValue={false}
               children={<Switch />}
             />
-            <span>Proxy Service</span>
-            <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP} placement='bottom'>
-              <QuestionCircleOutlined />
-            </Tooltip>
+            <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
+            {proxyServiceTooltip}
           </Form.Item>
         </div>
         <div>
-          <Subtitle level={3}>Accounting Service</Subtitle>
+          <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
           <Form.Item name='enableAccountingService' valuePropName='checked'>
             <Switch />
           </Form.Item>
@@ -232,8 +241,8 @@ function SettingsForm () {
 
               <Form.Item noStyle name='enableSecondaryAcctServer'>
                 <ToggleButton
-                  enableText='Remove Secondary Server'
-                  disableText='Add Secondary Server'
+                  enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
+                  disableText={$t({ defaultMessage: 'Add Secondary Server' })}
                 />
               </Form.Item>
 
@@ -252,10 +261,8 @@ function SettingsForm () {
                   initialValue={false}
                   children={<Switch />}
                 />
-                <span>Proxy Service</span>
-                <Tooltip title={AaaMessages.ENABLE_PROXY_TOOLTIP}>
-                  <QuestionCircleOutlined />
-                </Tooltip>
+                <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
+                {proxyServiceTooltip}
               </Form.Item>
             </>
           )}

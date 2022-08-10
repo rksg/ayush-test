@@ -1,20 +1,29 @@
 import React from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { Layout as LayoutComponent } from '@acx-ui/components'
 
-import HeaderButtons  from './HeaderButtons'
-import HeaderDropDown from './HeaderDropDown'
-import menuConfig     from './menuConfig'
-import * as UI        from './styledComponents'
+import HeaderButtons     from './HeaderButtons'
+import HeaderDropDown    from './HeaderDropDown'
+import { useMenuConfig } from './menuConfig'
+import * as UI           from './styledComponents'
 
 function Layout ({ content }: { content: React.ReactNode }) {
+  const { $t } = useIntl()
+  const headerDropdownList = [
+    $t({ defaultMessage: 'MSP Space' })
+  ]
   return (
     <UI.Wrapper>
       <LayoutComponent
-        menuConfig={menuConfig}
+        menuConfig={useMenuConfig()}
         content={content}
         leftHeaderContent={
-          <HeaderDropDown list={['MSP Space']} selected={'MSP Space'} />
+          <HeaderDropDown
+            list={headerDropdownList}
+            selected={headerDropdownList[0]}
+          />
         }
         rightHeaderContent={<HeaderButtons />}
       />

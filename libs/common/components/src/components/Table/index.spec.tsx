@@ -4,7 +4,8 @@ import { render, fireEvent, screen, within } from '@acx-ui/test-utils'
 import { Table, TableProps } from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
-  CancelCircle: () => <div data-testid='cancel-circle'/>
+  CancelCircle: () => <div data-testid='cancel-circle'/>,
+  SettingsOutlined: () => <div data-testid='settings'/>
 }), { virtual: true })
 
 
@@ -38,7 +39,40 @@ describe('Table component', () => {
     const { asFragment } = render(<Table
       columns={basicColumns}
       dataSource={basicData}
-      title={() => 'Basic'}
+    />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders compact table', () => {
+    const basicColumns = [
+      { title: 'Name', key: 'name' },
+      { title: 'Age', key: 'age' },
+      { title: 'Address', key: 'address' }
+    ]
+    const basicData = [
+      {
+        key: '1',
+        name: 'John Doe',
+        age: 32,
+        address: 'sample address'
+      },
+      {
+        key: '2',
+        name: 'Jane Doe',
+        age: 33,
+        address: 'new address'
+      },
+      {
+        key: '3',
+        name: 'Will Smith',
+        age: 45,
+        address: 'address'
+      }
+    ]
+    const { asFragment } = render(<Table
+      type='compact'
+      columns={basicColumns}
+      dataSource={basicData}
     />)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -92,7 +126,6 @@ describe('Table component', () => {
       columns={columns}
       dataSource={data}
       actions={actions}
-      title={() => 'Selectable'}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />)
     expect(asFragment()).toMatchSnapshot()

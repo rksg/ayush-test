@@ -1,5 +1,6 @@
 import { EnvironmentOutlined }            from '@ant-design/icons'
 import { Col, Divider, Form, Input, Row } from 'antd'
+import { useIntl }                        from 'react-intl'
 
 import { StepsForm, Subtitle }   from '@acx-ui/components'
 import { useCloudpathListQuery } from '@acx-ui/rc/services'
@@ -10,7 +11,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { transformNetworkType } from '../parser'
+import { networkTypes } from '../contentsMap'
 
 import { AaaSummaryForm }  from './AaaSummaryForm'
 import { DpskSummaryForm } from './DpskSummaryForm'
@@ -20,6 +21,7 @@ import { PskSummaryForm }  from './PskSummaryForm'
 export function SummaryForm (props: {
   summaryData: CreateNetworkFormFields
 }) {
+  const { $t } = useIntl()
   const { summaryData } = props
   const selectedId = summaryData.cloudpathServerId
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
@@ -28,7 +30,7 @@ export function SummaryForm (props: {
         selected: data?.find((item) => item.id === selectedId)
       }
     }
-  })  
+  })
   const getVenues = function () {
     const venues = summaryData.venues
     const rows = []
@@ -49,43 +51,43 @@ export function SummaryForm (props: {
 
   return (
     <>
-      <StepsForm.Title>Summary</StepsForm.Title>
+      <StepsForm.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsForm.Title>
       <Row gutter={20}>
         <Col flex={1}>
           <Subtitle level={4}>
-            Network Info
+            { $t({ defaultMessage: 'Network Info' }) }
           </Subtitle>
-          <Form.Item label='Network Name:' children={summaryData.name} />
+          <Form.Item label={$t({ defaultMessage: 'Network Name:' })} children={summaryData.name} />
           <Form.Item
-            label='Info:'
+            label={$t({ defaultMessage: 'Info:' })}
             children={transformDisplayText(summaryData.description)}
           />
           <Form.Item
-            label='Type:'
-            children={transformNetworkType(summaryData.type)}
+            label={$t({ defaultMessage: 'Type:' })}
+            children={$t(networkTypes[summaryData.type])}
           />
           {summaryData.type !== NetworkTypeEnum.PSK &&
           <Form.Item
-            label='Use Cloudpath Server:'
+            label={$t({ defaultMessage: 'Use Cloudpath Server:' })}
             children={summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
           />
           }
           {summaryData.isCloudpathEnabled && selected &&
             <>
               <Form.Item
-                label='Cloudpath Server'
+                label={$t({ defaultMessage: 'Cloudpath Server' })}
                 children={selected.name}
               />
               <Form.Item
-                label='Deployment Type'
+                label={$t({ defaultMessage: 'Deployment Type' })}
                 children={selected.deploymentType}
               />
               <Form.Item
-                label='Authentication Server'
+                label={$t({ defaultMessage: 'Authentication Server' })}
                 children={`${selected.authRadius.primary.ip}:${selected.authRadius.primary.port}`}
               />
               <Form.Item
-                label='Shared Secret'
+                label={$t({ defaultMessage: 'Shared Secret' })}
                 children={<Input.Password
                   readOnly
                   bordered={false}
@@ -97,7 +99,7 @@ export function SummaryForm (props: {
           {summaryData.type === NetworkTypeEnum.AAA && !summaryData.isCloudpathEnabled &&
            <AaaSummaryForm summaryData={summaryData} />
           }
-          {summaryData.type === NetworkTypeEnum.DPSK && 
+          {summaryData.type === NetworkTypeEnum.DPSK &&
             <DpskSummaryForm summaryData={summaryData} />
           }
           {summaryData.type === NetworkTypeEnum.PSK && 
@@ -107,7 +109,7 @@ export function SummaryForm (props: {
         <Divider type='vertical' style={{ height: '300px' }}/>
         <Col flex={1}>
           <Subtitle level={4}>
-            Activated in venues
+            { $t({ defaultMessage: 'Activated in venues' }) }
           </Subtitle>
           <Form.Item children={getVenues()} />
         </Col>

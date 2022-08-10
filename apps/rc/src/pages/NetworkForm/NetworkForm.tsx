@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react'
 
+import { defineMessage, useIntl } from 'react-intl'
+
 import {
   PageHeader,
   showToast,
@@ -18,7 +20,6 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkTypeTitle }  from './contentsMap'
 import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext    from './NetworkFormContext'
 import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
@@ -32,7 +33,16 @@ import {
 } from './parser'
 import { Venues } from './Venues/Venues'
 
+const settingTitle = defineMessage({
+  defaultMessage: `{type, select,
+    aaa {AAA Settings}
+    dpsk {DPSK Settings}
+    other {Settings}
+  }`
+})
+
 export function NetworkForm () {
+  const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
@@ -78,16 +88,16 @@ export function NetworkForm () {
     } catch {
       showToast({
         type: 'error',
-        content: 'An error occurred'
+        content: $t({ defaultMessage: 'An error occurred' })
       })
     }
   }
   return (
     <>
       <PageHeader
-        title='Create New Network'
+        title={$t({ defaultMessage: 'Create New Network' })}
         breadcrumb={[
-          { text: 'Networks', link: '/networks' }
+          { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
       <StepsForm<CreateNetworkFormFields>
@@ -97,7 +107,7 @@ export function NetworkForm () {
       >
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='details'
-          title='Network Details'
+          title={$t({ defaultMessage: 'Network Details' })}
           onFinish={async (data) => {
             const detailsSaveData = transferDetailToSave(data)
             updateData(data)
@@ -111,8 +121,8 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm
-          name='Settings'
-          title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
+          name='settings'
+          title={$t(settingTitle, { type: networkType })}
           onFinish={async (data) => {
             let wlanData = {}
             if(networkType === 'psk'){
@@ -150,7 +160,7 @@ export function NetworkForm () {
 
         <StepsForm.StepForm
           name='venues'
-          title='Venues'
+          title={$t({ defaultMessage: 'Venues' })}
           onFinish={async (data) => {
             updateData(data)
             updateSaveData(data)
@@ -160,7 +170,7 @@ export function NetworkForm () {
           <Venues formRef={formRef} />
         </StepsForm.StepForm>
 
-        <StepsForm.StepForm name='summary' title='Summary'>
+        <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
           <SummaryForm summaryData={state} />
         </StepsForm.StepForm>
       </StepsForm>

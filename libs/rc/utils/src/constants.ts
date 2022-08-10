@@ -123,10 +123,10 @@ export enum APMeshRole {
 }
 
 export enum DeviceConnectionStatus {
-  DISCONNECTED = 'Disconnected',
-  ALERTING = 'Alerting',
-  CONNECTED = 'Connected',
-  INITIAL = 'Initial'
+  INITIAL = 'initial',
+  CONNECTED = 'connected',
+  DISCONNECTED = 'disconnected',
+  ALERTING = 'alerting'
 }
 
 export enum ApRadioBands {

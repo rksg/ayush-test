@@ -1,6 +1,7 @@
 import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
-import { 
+import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
   ipV4RegExp,
@@ -10,11 +11,12 @@ import {
 
 export function IpPortSecretForm ({ serverType, order }: 
   { serverType: AaaServerTypeEnum, order: AaaServerOrderEnum }) {
+  const { $t } = useIntl()
   return (
     <>
       <Form.Item
         name={`${serverType}.${order}.ip`}
-        label='IP Address'
+        label={$t({ defaultMessage: 'IP Address' })}
         rules={[{
           required: true,
           whitespace: false
@@ -26,7 +28,7 @@ export function IpPortSecretForm ({ serverType, order }:
       />
       <Form.Item
         name={`${serverType}.${order}.port`}
-        label='Port'
+        label={$t({ defaultMessage: 'Port' })}
         rules={[{
           required: true
         },{
@@ -38,7 +40,7 @@ export function IpPortSecretForm ({ serverType, order }:
       />
       <Form.Item
         name={`${serverType}.${order}.sharedSecret`}
-        label='Shared secret'
+        label={$t({ defaultMessage: 'Shared secret' })}
         rules={[{
           required: true,
           whitespace: false
