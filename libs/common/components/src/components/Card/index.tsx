@@ -6,7 +6,7 @@ import { SelectionControl } from '../SelectionControl'
 
 import * as UI from './styledComponents'
 
-import type { SelectionControlOptionProps } from '../SelectionControl'
+import type { SelectionControlOptionProps }  from '../SelectionControl'
 import type {
   CardProps as AntCardProps,
   RadioChangeEvent as AntRadioChangeEvent

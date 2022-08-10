@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import ProLayout   from '@ant-design/pro-layout'
 import { isEmpty } from 'lodash'
 
-import { Logo } from '@acx-ui/icons'
+import { Logo }  from '@acx-ui/icons'
 import {
   TenantNavLink,
   useLocation
