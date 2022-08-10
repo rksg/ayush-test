@@ -25,7 +25,7 @@ const ColumnHeaders: ProColumns<IncidentNodeInfo, 'text'>[] = [
     key: 'startTime',
     render: (_, value) => {
       return <Link to={`/analytics/incident/details/${value.id}`}>{
-        moment(value.startTime).format('MMMM DD yyyy HH:mm')
+        moment(value.startTime).format('MMM DD yyyy HH:mm')
       }</Link>
     }
   },

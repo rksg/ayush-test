@@ -76,12 +76,12 @@ interface Response<IncidentNodeData> {
 }
 
 export const getIncidentBySeverity = (value?: number | null) => {
-  if (!value) {
+  if (value === null || value === undefined) {
     return '-'
   }
 
   const severity = Object.entries(Severities).filter(((elem) => {
-    return value > elem[1].gt && value <= elem[1].lte
+    return value >= elem[1].gt && value <= elem[1].lte
   }))
 
   return severity[0][0]
