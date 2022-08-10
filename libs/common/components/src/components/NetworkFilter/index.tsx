@@ -25,37 +25,30 @@ export interface Option {
 
 export type CascaderProps = AntCascaderProps<Option> & {
   onCancel?: CallableFunction
+  // based on antd, the multiple flag determines the type of DefaultOptionType
   onApply: (
     cascaderSelected: DefaultOptionType[] | DefaultOptionType[][] | undefined
   ) => void
 }
 
 export function NetworkFilter (props: CascaderProps) {
-  const [ isOpen, setIsOpen ] = React.useState(false)
   const [ multiSelect, setMultiSelect ] = React.useState<DefaultOptionType[][]>([])
-  const { onCancel, onApply, multiple, onFocus, options } = props
 
-  const isPopulated = options.length > 0
+  const { onCancel, onApply, ...antProps } = props
+  const { multiple, options } = antProps
 
-  const onFocusProps = (event: React.FocusEvent<HTMLElement, Element>) => {
-    if (onFocus) {
-      onFocus(event)
-    }
-    setIsOpen(!isOpen)
-  }
+  const isPopulated = options && options.length > 0
 
   const onCancelProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault()
     if (onCancel) {
       onCancel()
     }
-    setIsOpen(!isOpen)
   }
 
   const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault()
     onApply(multiSelect)
-    setIsOpen(!isOpen)
   }
 
   const onChangeMultiple = (
@@ -103,10 +96,8 @@ export function NetworkFilter (props: CascaderProps) {
 
   if (multiple) {
     return <AntCascader
-      {...props}
+      {...antProps}
       multiple
-      onFocus={onFocusProps}
-      open={isOpen}
       onChange={onChangeMultiple}
       dropdownRender={DropDown}
       expandTrigger='hover'
@@ -116,7 +107,7 @@ export function NetworkFilter (props: CascaderProps) {
   }
 
   return <AntCascader
-    {...props}
+    {...antProps}
     multiple={false}
     changeOnSelect={true}
     onChange={onChangeSingle}

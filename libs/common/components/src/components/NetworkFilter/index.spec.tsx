@@ -17,7 +17,13 @@ describe('NetworkFilter', () => {
 
   it('renders empty list & placeholder', async () => {
     const placeholder = 'test cascader'
-    render(<CustomCascader options={[]} placeholder={placeholder} multiple={false}/>)
+    const onApplyMock = jest.fn()
+    render(<CustomCascader
+      options={[]}
+      placeholder={placeholder}
+      multiple={false}
+      onApply={onApplyMock}
+    />)
 
     expect(screen.getByText(placeholder)).toBeVisible()
 
