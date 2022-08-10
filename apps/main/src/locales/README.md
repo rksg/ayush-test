@@ -7,7 +7,7 @@ npx formatjs extract 'apps/*/src/**/*.ts*' --ignore='**/*.d.ts' --out-file apps/
 
 ### Compiling Messages
 ```sh
-npx formatjs compile apps/main/src/locales/en-US.json --ast --out-file apps/main/src/locales/compiled/en-US.json
+npx formatjs compile apps/main/src/locales/en-US.json --ast --out-file apps/main/src/locales/compiled/en-US.json --flatten 
 ```
 
 ### Extract & Compile

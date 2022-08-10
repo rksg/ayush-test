@@ -76,7 +76,7 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No APs'}
+          {$t({ defaultMessage: 'No APs'})}
         </UI.CellWrapper>,
       clients: clientsCount && clientsCount > 0
         ? <UI.CellWrapper>
@@ -85,7 +85,7 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No AP Clients'}
+          {$t({ defaultMessage: 'No AP Clients'})}
         </UI.CellWrapper>
     },
     {
@@ -101,7 +101,7 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No Switches'}
+          {$t({ defaultMessage: 'No Switches'})}
         </UI.CellWrapper>,
       clients: switchClientsCount && switchClientsCount > 0
         ? <UI.CellWrapper>
@@ -110,7 +110,7 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.CellWrapper>
-          {'No Switch Clients'}
+          {$t({ defaultMessage: 'No Switch Clients'})}
         </UI.CellWrapper>
     }
   ]

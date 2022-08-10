@@ -25,7 +25,7 @@
     "defaultMessage": "Shared Secret"
   },
   "2n2eHo": {
-    "defaultMessage": "For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:"
+    "defaultMessage": "{count,plural,one{For the following venue, the network could not be activated on all Venues:} other{For the following venues, the network could not be activated on all Venues:}}"
   },
   "34xBI0": {
     "defaultMessage": "APs"
@@ -36,6 +36,9 @@
   "3LyeET": {
     "defaultMessage": "3rd Party Captive Portal (WISPr)",
     "description": "Guest network type - 3rd Party Captive Portal (WISPr)"
+  },
+  "3mdxYI": {
+    "defaultMessage": "No Switch Clients"
   },
   "4RbqN8": {
     "defaultMessage": "No venues activating this network. Use the ON/OFF switches in the list to select the activating venues"
@@ -171,6 +174,9 @@
   "K3r6DQ": {
     "defaultMessage": "Delete"
   },
+  "K7AkdL": {
+    "defaultMessage": "Show"
+  },
   "NH/H5U": {
     "defaultMessage": "Dynamic Pre-Shared Key (DPSK)"
   },
@@ -212,7 +218,7 @@
     "defaultMessage": "Use Cloudpath Server"
   },
   "RAjs+g": {
-    "defaultMessage": "{isCaptiveNetwork, select, true {Captive Portal} other {Portal}} - {captiveNetworkType}"
+    "defaultMessage": "{isCaptiveNetwork,select,true{Captive Portal - {captiveNetworkType}} other{Portal - {captiveNetworkType}}}"
   },
   "RrCui3": {
     "defaultMessage": "Summary"
@@ -248,6 +254,9 @@
   "Vl9Unn": {
     "defaultMessage": "Host Approval",
     "description": "Guest network type - Host Approval"
+  },
+  "WEJ7ak": {
+    "defaultMessage": "No APs"
   },
   "XB8fV9": {
     "defaultMessage": "Last 24 Hours"
@@ -392,6 +401,9 @@
     "defaultMessage": "Managed Guest Pass",
     "description": "Guest network type - Managed Guest Pass"
   },
+  "nVdqEC": {
+    "defaultMessage": "No Switches"
+  },
   "naPxCD": {
     "defaultMessage": "Captive Portal",
     "description": "Guest network type - Captive Portal"
@@ -419,7 +431,7 @@
     "defaultMessage": "Total Incidents"
   },
   "pyZg46": {
-    "defaultMessage": "{type, select, aaa {AAA Settings} dpsk {DPSK Settings} other {Settings} }"
+    "defaultMessage": "{type,select,aaa{AAA Settings} dpsk{DPSK Settings} other{Settings}}"
   },
   "qQ6P9N": {
     "defaultMessage": "Activated in venues"
@@ -530,6 +542,9 @@
   },
   "zI1owl": {
     "defaultMessage": "Venues ({venuesCount})"
+  },
+  "zLM75r": {
+    "defaultMessage": "No AP Clients"
   },
   "zT3YgI": {
     "defaultMessage": "Impacted Clients"

@@ -1,1246 +1,180 @@
 {
-  "+20FW7": [
-    {
-      "type": 0,
-      "value": "DE-Devices"
-    }
-  ],
-  "+8jGZ4": [
-    {
-      "type": 0,
-      "value": "DE-network filter"
-    }
-  ],
-  "+U6ozc": [
-    {
-      "type": 0,
-      "value": "DE-Type"
-    }
-  ],
-  "/9+YKH": [
-    {
-      "type": 0,
-      "value": "DE-"
-    },
-    {
-      "children": [
-        {
-          "type": 0,
-          "value": "Format options:"
-        }
-      ],
-      "type": 8,
-      "value": "p"
-    },
-    {
-      "type": 0,
-      "value": " "
-    },
-    {
-      "children": [
-        {
-          "type": 0,
-          "value": "Most secured - all printable ASCII characters can be used"
-        }
-      ],
-      "type": 8,
-      "value": "p"
-    },
-    {
-      "type": 0,
-      "value": " "
-    },
-    {
-      "children": [
-        {
-          "type": 0,
-          "value": "Keyboard friendly - only letters and numbers will be used"
-        }
-      ],
-      "type": 8,
-      "value": "p"
-    },
-    {
-      "type": 0,
-      "value": " "
-    },
-    {
-      "children": [
-        {
-          "type": 0,
-          "value": "Numbers only - only numbers will be used"
-        }
-      ],
-      "type": 8,
-      "value": "p"
-    }
-  ],
-  "0Hd1cr": [
-    {
-      "type": 0,
-      "value": "DE-Allow users to access the network without any authentication/security (not recommended)"
-    }
-  ],
-  "0QEzt5": [
-    {
-      "type": 0,
-      "value": "DE-AP Group"
-    }
-  ],
-  "1EYCdR": [
-    {
-      "type": 0,
-      "value": "DE-Tags"
-    }
-  ],
-  "25rEb3": [
-    {
-      "type": 0,
-      "value": "DE-Shared Secret"
-    }
-  ],
-  "2n2eHo": [
-    {
-      "type": 0,
-      "value": "DE-For the following "
-    },
-    {
-      "offset": 0,
-      "options": {
-        "one": {
-          "value": [
-            {
-              "type": 0,
-              "value": "venue"
-            }
-          ]
-        },
-        "other": {
-          "value": [
-            {
-              "type": 0,
-              "value": "venues"
-            }
-          ]
-        }
-      },
-      "pluralType": "cardinal",
-      "type": 6,
-      "value": "count"
-    },
-    {
-      "type": 0,
-      "value": ", the network could not be activated on all Venues:"
-    }
-  ],
-  "34xBI0": [
-    {
-      "type": 0,
-      "value": "DE-APs"
-    }
-  ],
-  "3KyZGF": [
-    {
-      "type": 0,
-      "value": "DE-All Radios"
-    }
-  ],
-  "3LyeET": [
-    {
-      "type": 0,
-      "value": "DE-3rd Party Captive Portal (WISPr)"
-    }
-  ],
-  "4RbqN8": [
-    {
-      "type": 0,
-      "value": "DE-No venues activating this network. Use the ON/OFF switches in the list to select the activating venues"
-    }
-  ],
-  "4VPIXt": [
-    {
-      "type": 0,
-      "value": "DE-Alarms"
-    }
-  ],
-  "4dk4rO": [
-    {
-      "type": 0,
-      "value": "DE-Accounting Service"
-    }
-  ],
-  "5G8/Fe": [
-    {
-      "type": 0,
-      "value": "DE-Self Sign-In"
-    }
-  ],
-  "5ezgA1": [
-    {
-      "type": 0,
-      "value": "DE-MAC Address"
-    }
-  ],
-  "5jeq8P": [
-    {
-      "type": 0,
-      "value": "DE-Unknown"
-    }
-  ],
-  "5lQx5r": [
-    {
-      "type": 0,
-      "value": "DE-Scheduling"
-    }
-  ],
-  "6g0glr": [
-    {
-      "type": 0,
-      "value": "DE-Networking Devices"
-    }
-  ],
-  "6xap9L": [
-    {
-      "type": 0,
-      "value": "DE-Good"
-    }
-  ],
-  "724CrE": [
-    {
-      "type": 0,
-      "value": "DE-Select..."
-    }
-  ],
-  "7Kk96z": [
-    {
-      "type": 0,
-      "value": "DE-Use Cloudpath Server:"
-    }
-  ],
-  "8B04tJ": [
-    {
-      "type": 0,
-      "value": "DE-WPA"
-    }
-  ],
-  "8Fo71r": [
-    {
-      "type": 0,
-      "value": "DE-MSP Space"
-    }
-  ],
-  "9GvlpZ": [
-    {
-      "type": 0,
-      "value": "DE-Open Settings"
-    }
-  ],
-  "9MxQUk": [
-    {
-      "type": 0,
-      "value": "DE-Shared Secret:"
-    }
-  ],
-  "9t1iiv": [
-    {
-      "type": 0,
-      "value": "DE-Configure"
-    }
-  ],
-  "9uOFF3": [
-    {
-      "type": 0,
-      "value": "DE-Overview"
-    }
-  ],
-  "9wJSG8": [
-    {
-      "type": 0,
-      "value": "DE-Map is not enabled"
-    }
-  ],
-  "AJBpR8": [
-    {
-      "type": 0,
-      "value": "DE-Network Type"
-    }
-  ],
-  "AcxDgz": [
-    {
-      "type": 0,
-      "value": "DE-Activate"
-    }
-  ],
-  "AetaeJ": [
-    {
-      "type": 0,
-      "value": "DE-Select venues to activate this network"
-    }
-  ],
-  "AfUjYu": [
-    {
-      "type": 0,
-      "value": "DE-Config Change"
-    }
-  ],
-  "BNHFY1": [
-    {
-      "type": 0,
-      "value": "DE-Only letters and numbers can be used"
-    }
-  ],
-  "BeT3j9": [
-    {
-      "type": 0,
-      "value": "DE-WPA3"
-    }
-  ],
-  "C5Rw0o": [
-    {
-      "type": 0,
-      "value": "DE-Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server."
-    }
-  ],
-  "CM0JAR": [
-    {
-      "type": 0,
-      "value": "DE-Entire Organization"
-    }
-  ],
-  "CasKsA": [
-    {
-      "type": 0,
-      "value": "DE-Add Secondary Server"
-    }
-  ],
-  "CzRokW": [
-    {
-      "type": 0,
-      "value": "DE-WEP"
-    }
-  ],
-  "Dnob31": [
-    {
-      "type": 0,
-      "value": "DE-Operational"
-    }
-  ],
-  "EnTkxu": [
-    {
-      "type": 0,
-      "value": "DE-Recommendations"
-    }
-  ],
-  "FbnpZB": [
-    {
-      "type": 0,
-      "value": "DE-Cluster of "
-    },
-    {
-      "type": 1,
-      "value": "count"
-    },
-    {
-      "type": 0,
-      "value": " Venues"
-    }
-  ],
-  "FnRTEV": [
-    {
-      "type": 0,
-      "value": "DE-Average"
-    }
-  ],
-  "FoE42e": [
-    {
-      "type": 0,
-      "value": "DE-Requires Attention"
-    }
-  ],
-  "GLV1Lq": [
-    {
-      "type": 0,
-      "value": "DE-Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork"
-    }
-  ],
-  "GYphdA": [
-    {
-      "type": 0,
-      "value": "DE-Open Captive Portal"
-    }
-  ],
-  "HuqGcJ": [
-    {
-      "type": 0,
-      "value": "DE-WPA2 (Recommended)"
-    }
-  ],
-  "I3JhPS": [
-    {
-      "type": 0,
-      "value": "DE-Network"
-    }
-  ],
-  "I3b4hn": [
-    {
-      "type": 0,
-      "value": "DE-Version"
-    }
-  ],
-  "IBNdTs": [
-    {
-      "type": 0,
-      "value": "DE-VLAN"
-    }
-  ],
-  "IDKI0Y": [
-    {
-      "type": 0,
-      "value": "DE-"
-    },
-    {
-      "type": 1,
-      "value": "ipAddress"
-    },
-    {
-      "type": 0,
-      "value": ":"
-    },
-    {
-      "type": 1,
-      "value": "port"
-    }
-  ],
-  "IShDlj": [
-    {
-      "type": 0,
-      "value": "DE-WPA2 Enterprise"
-    }
-  ],
-  "JkubB5": [
-    {
-      "type": 0,
-      "value": "DE-Enterprise AAA (802.1X)"
-    }
-  ],
-  "K3r6DQ": [
-    {
-      "type": 0,
-      "value": "DE-Delete"
-    }
-  ],
-  "NH/H5U": [
-    {
-      "type": 0,
-      "value": "DE-Dynamic Pre-Shared Key (DPSK)"
-    }
-  ],
-  "NV6/gE": [
-    {
-      "type": 0,
-      "value": "DE-Create New Network"
-    }
-  ],
-  "Nr2pru": [
-    {
-      "type": 0,
-      "value": "DE-Network History"
-    }
-  ],
-  "Nt8DSX": [
-    {
-      "type": 0,
-      "value": "DE-Authentication Service"
-    }
-  ],
-  "O17xiH": [
-    {
-      "type": 0,
-      "value": "DE-date filter"
-    }
-  ],
-  "OT4kCw": [
-    {
-      "type": 0,
-      "value": "DE-AP Name"
-    }
-  ],
-  "Ok71Hw": [
-    {
-      "type": 0,
-      "value": "DE-Security Protocol:"
-    }
-  ],
-  "P0HnjZ": [
-    {
-      "type": 0,
-      "value": "DE-Click-Through"
-    }
-  ],
-  "PYmHhr": [
-    {
-      "type": 0,
-      "value": "DE-Venue"
-    }
-  ],
-  "Ppx673": [
-    {
-      "type": 0,
-      "value": "DE-Reports"
-    }
-  ],
-  "Q8Qw5B": [
-    {
-      "type": 0,
-      "value": "DE-Description"
-    }
-  ],
-  "QH7XOz": [
-    {
-      "type": 0,
-      "value": "DE-New Clients"
-    }
-  ],
-  "QfVD/H": [
-    {
-      "type": 0,
-      "value": "DE-Use Cloudpath Server"
-    }
-  ],
-  "RAjs+g": [
-    {
-      "type": 0,
-      "value": "DE-"
-    },
-    {
-      "options": {
-        "other": {
-          "value": [
-            {
-              "type": 0,
-              "value": "Portal"
-            }
-          ]
-        },
-        "true": {
-          "value": [
-            {
-              "type": 0,
-              "value": "Captive Portal"
-            }
-          ]
-        }
-      },
-      "type": 5,
-      "value": "isCaptiveNetwork"
-    },
-    {
-      "type": 0,
-      "value": " - "
-    },
-    {
-      "type": 1,
-      "value": "captiveNetworkType"
-    }
-  ],
-  "RrCui3": [
-    {
-      "type": 0,
-      "value": "DE-Summary"
-    }
-  ],
-  "Ru1Owh": [
-    {
-      "type": 0,
-      "value": "DE-Serial Number"
-    }
-  ],
-  "S33j4r": [
-    {
-      "type": 0,
-      "value": "DE-Services ("
-    },
-    {
-      "type": 1,
-      "value": "servicesCount"
-    },
-    {
-      "type": 0,
-      "value": ")"
-    }
-  ],
-  "SDi0Ka": [
-    {
-      "type": 0,
-      "value": "DE-WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise. "
-    },
-    {
-      "children": [
-        {
-          "type": 0,
-          "value": " Security protocols other than WPA3 are not be supported in 6 GHz radio. "
-        }
-      ],
-      "type": 8,
-      "value": "highlight"
-    }
-  ],
-  "T3UF92": [
-    {
-      "type": 0,
-      "value": "DE-Authentication Server"
-    }
-  ],
-  "TE4fIS": [
-    {
-      "type": 0,
-      "value": "DE-City"
-    }
-  ],
-  "TY81Tv": [
-    {
-      "type": 0,
-      "value": "DE-Passphrase Format:"
-    }
-  ],
-  "UaCh1c": [
-    {
-      "type": 0,
-      "value": "DE-Add Server"
-    }
-  ],
-  "V52jNn": [
-    {
-      "type": 0,
-      "value": "DE-Enabled"
-    }
-  ],
-  "VebTZq": [
-    {
-      "type": 0,
-      "value": "DE-WPA Enterprise"
-    }
-  ],
-  "Vl9Unn": [
-    {
-      "type": 0,
-      "value": "DE-Host Approval"
-    }
-  ],
-  "XB8fV9": [
-    {
-      "type": 0,
-      "value": "DE-Last 24 Hours"
-    }
-  ],
-  "XYVgGy": [
-    {
-      "type": 0,
-      "value": "DE-Alarm Time"
-    }
-  ],
-  "YDMrKK": [
-    {
-      "type": 0,
-      "value": "DE-Users"
-    }
-  ],
-  "Z4WqBL": [
-    {
-      "type": 0,
-      "value": "DE-Remove Secondary Server"
-    }
-  ],
-  "ZWz5If": [
-    {
-      "type": 0,
-      "value": "DE-Network Info"
-    }
-  ],
-  "ZvKSfJ": [
-    {
-      "type": 0,
-      "value": "DE-Events"
-    }
-  ],
-  "b3loSF": [
-    {
-      "type": 0,
-      "value": "DE-Occupancy"
-    }
-  ],
-  "bS/cRP": [
-    {
-      "type": 0,
-      "value": "DE-Venues"
-    }
-  ],
-  "bnaSLU": [
-    {
-      "type": 0,
-      "value": "DE-Connected Clients Over Time"
-    }
-  ],
-  "c8uKl6": [
-    {
-      "type": 0,
-      "value": "DE-Wi-Fi"
-    }
-  ],
-  "c9uA84": [
-    {
-      "type": 0,
-      "value": "DE-RF Channels"
-    }
-  ],
-  "cRmipE": [
-    {
-      "type": 0,
-      "value": "DE-Passphrase expiration"
-    }
-  ],
-  "ciDg7D": [
-    {
-      "type": 0,
-      "value": "DE-Primary Server"
-    }
-  ],
-  "cp8inc": [
-    {
-      "type": 0,
-      "value": "DE-Open Network"
-    }
-  ],
-  "cq7z5N": [
-    {
-      "type": 0,
-      "value": "DE-AAA Settings"
-    }
-  ],
-  "czpjyb": [
-    {
-      "type": 0,
-      "value": "DE-Require users to enter a passphrase to connect. The passphrase is unique per device"
-    }
-  ],
-  "d0A0aG": [
-    {
-      "type": 0,
-      "value": "DE-Radius Authentication Service"
-    }
-  ],
-  "d63gFk": [
-    {
-      "type": 0,
-      "value": "DE-AI Analytics"
-    }
-  ],
-  "dg6Mrs": [
-    {
-      "type": 0,
-      "value": "DE-Number of characters in passphrase. Valid range 8-63"
-    }
-  ],
-  "dty181": [
-    {
-      "type": 0,
-      "value": "DE-Traffic by Volume"
-    }
-  ],
-  "e0kEtS": [
-    {
-      "type": 0,
-      "value": "DE-Deactivate"
-    }
-  ],
-  "eOJNIA": [
-    {
-      "type": 0,
-      "value": "DE-Connected Clients"
-    }
-  ],
-  "eWzMDx": [
-    {
-      "type": 0,
-      "value": "DE-Activated"
-    }
-  ],
-  "eoV49s": [
-    {
-      "type": 0,
-      "value": "DE-Poor"
-    }
-  ],
-  "f+sh2j": [
-    {
-      "type": 0,
-      "value": "DE-Administration"
-    }
-  ],
-  "fCkfBx": [
-    {
-      "type": 0,
-      "value": "DE-APs ("
-    },
-    {
-      "type": 1,
-      "value": "apsCount"
-    },
-    {
-      "type": 0,
-      "value": ")"
-    }
-  ],
-  "fUSCNN": [
-    {
-      "type": 0,
-      "value": "DE-Deployment Type"
-    }
-  ],
-  "fqiBvd": [
-    {
-      "type": 0,
-      "value": "DE-Coming soon..."
-    }
-  ],
-  "gevCaB": [
-    {
-      "type": 0,
-      "value": "DE-Passphrase length"
-    }
-  ],
-  "hSGclh": [
-    {
-      "type": 0,
-      "value": "DE-Network Name"
-    }
-  ],
-  "hdGKYY": [
-    {
-      "type": 0,
-      "value": "DE-Require users to enter a passphrase (that you have defined for the network) to connect"
-    }
-  ],
-  "hlmkcL": [
-    {
-      "type": 0,
-      "value": "DE-Health"
-    }
-  ],
-  "hzSNj4": [
-    {
-      "type": 0,
-      "value": "DE-Dashboard"
-    }
-  ],
-  "i5bVOD": [
-    {
-      "type": 0,
-      "value": "DE-Network Name:"
-    }
-  ],
-  "iCpuph": [
-    {
-      "type": 0,
-      "value": "DE-Clients"
-    }
-  ],
-  "iFh/mp": [
-    {
-      "type": 0,
-      "value": "DE-Passphrase Generation Parameters"
-    }
-  ],
-  "iI2oMQ": [
-    {
-      "type": 0,
-      "value": "DE-Use the DPSK Service"
-    }
-  ],
-  "jNR5e0": [
-    {
-      "type": 0,
-      "value": "DE-Network Details"
-    }
-  ],
-  "jr8yqe": [
-    {
-      "type": 0,
-      "value": "DE-WPA"
-    }
-  ],
-  "keJaJz": [
-    {
-      "type": 0,
-      "value": "DE-Letters, numbers and symbols can be used"
-    }
-  ],
-  "khS4NF": [
-    {
-      "type": 0,
-      "value": "DE-TLS Encryption:"
-    }
-  ],
-  "lfIk1B": [
-    {
-      "type": 0,
-      "value": "DE-Add..."
-    }
-  ],
-  "mtr3R4": [
-    {
-      "type": 0,
-      "value": "DE-Incidents"
-    }
-  ],
-  "n1Whvj": [
-    {
-      "type": 0,
-      "value": "DE-Switch"
-    }
-  ],
-  "nCMnED": [
-    {
-      "type": 0,
-      "value": "DE-Passphrase Length:"
-    }
-  ],
-  "nCxCzM": [
-    {
-      "type": 0,
-      "value": "DE-Managed Guest Pass"
-    }
-  ],
-  "naPxCD": [
-    {
-      "type": 0,
-      "value": "DE-Captive Portal"
-    }
-  ],
-  "nfh3Qu": [
-    {
-      "type": 0,
-      "value": "DE-WPA2"
-    }
-  ],
-  "nhKqj3": [
-    {
-      "type": 0,
-      "value": "DE-Only numbers can be used"
-    }
-  ],
-  "o5l+pK": [
-    {
-      "type": 0,
-      "value": "DE-Proxy Service"
-    }
-  ],
-  "ojxMGa": [
-    {
-      "type": 0,
-      "value": "DE-In Setup Phase"
-    }
-  ],
-  "ox304v": [
-    {
-      "type": 0,
-      "value": "DE-An error occurred"
-    }
-  ],
-  "p5WNkO": [
-    {
-      "type": 0,
-      "value": "DE-Temporarily degraded"
-    }
-  ],
-  "pUlxda": [
-    {
-      "type": 0,
-      "value": "DE-Total Incidents"
-    }
-  ],
-  "pyZg46": [
-    {
-      "type": 0,
-      "value": "DE-"
-    },
-    {
-      "options": {
-        "aaa": {
-          "value": [
-            {
-              "type": 0,
-              "value": "AAA Settings"
-            }
-          ]
-        },
-        "dpsk": {
-          "value": [
-            {
-              "type": 0,
-              "value": "DPSK Settings"
-            }
-          ]
-        },
-        "other": {
-          "value": [
-            {
-              "type": 0,
-              "value": "Settings"
-            }
-          ]
-        }
-      },
-      "type": 5,
-      "value": "type"
-    }
-  ],
-  "qQ6P9N": [
-    {
-      "type": 0,
-      "value": "DE-Activated in venues"
-    }
-  ],
-  "qYBnMW": [
-    {
-      "type": 0,
-      "value": "DE-WPA3"
-    }
-  ],
-  "r9gciS": [
-    {
-      "type": 0,
-      "value": "DE-"
-    },
-    {
-      "type": 1,
-      "value": "networkType"
-    },
-    {
-      "type": 0,
-      "value": " - "
-    },
-    {
-      "type": 1,
-      "value": "authMethod"
-    }
-  ],
-  "rJPrzU": [
-    {
-      "type": 0,
-      "value": "DE-Captive Portal"
-    }
-  ],
-  "rXq1Sc": [
-    {
-      "type": 0,
-      "value": "DE-Pre-Shared Key (PSK)"
-    }
-  ],
-  "rhSI1/": [
-    {
-      "type": 0,
-      "value": "DE-Model"
-    }
-  ],
-  "rsSUP3": [
-    {
-      "type": 0,
-      "value": "DE-Port"
-    }
-  ],
-  "rz46vg": [
-    {
-      "type": 0,
-      "value": "DE-Passphrase format"
-    }
-  ],
-  "sMnDSO": [
-    {
-      "type": 0,
-      "value": "DE-Wi-Fi APs"
-    }
-  ],
-  "sTAlko": [
-    {
-      "type": 0,
-      "value": "DE-WPA3/WPA2 Mixed"
-    }
-  ],
-  "sZFybj": [
-    {
-      "type": 0,
-      "value": "DE-Services"
-    }
-  ],
-  "stDOc1": [
-    {
-      "type": 0,
-      "value": "DE-Mesh Role"
-    }
-  ],
-  "sw6FHg": [
-    {
-      "type": 0,
-      "value": "DE-DPSK Settings"
-    }
-  ],
-  "t071V3": [
-    {
-      "type": 0,
-      "value": "DE-Info:"
-    }
-  ],
-  "tthToS": [
-    {
-      "type": 0,
-      "value": "DE-Disabled"
-    }
-  ],
-  "tvFSNq": [
-    {
-      "type": 0,
-      "value": "DE-Secondary Server"
-    }
-  ],
-  "tvJbQP": [
-    {
-      "type": 0,
-      "value": "DE-WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019."
-    }
-  ],
-  "tzMNF3": [
-    {
-      "type": 0,
-      "value": "DE-Status"
-    }
-  ],
-  "uJV0wU": [
-    {
-      "type": 0,
-      "value": "DE-IP Address"
-    }
-  ],
-  "uS4sop": [
-    {
-      "type": 0,
-      "value": "DE-Type:"
-    }
-  ],
-  "ubGrOj": [
-    {
-      "type": 0,
-      "value": "DE-Passphrase Expiration:"
-    }
-  ],
-  "ubQ1f+": [
-    {
-      "type": 0,
-      "value": "DE-Shared secret"
-    }
-  ],
-  "ukFIyf": [
-    {
-      "type": 0,
-      "value": "DE-Your Attention is Required"
-    }
-  ],
-  "utCJRG": [
-    {
-      "type": 0,
-      "value": "DE-Proxy Service:"
-    }
-  ],
-  "vCAhII": [
-    {
-      "type": 0,
-      "value": "DE-Severity"
-    }
-  ],
-  "vONi+O": [
-    {
-      "type": 0,
-      "value": "DE-Country"
-    }
-  ],
-  "vXfkMH": [
-    {
-      "type": 0,
-      "value": "DE-Add Wi-Fi Network"
-    }
-  ],
-  "wsSxJK": [
-    {
-      "type": 0,
-      "value": "DE-Open"
-    }
-  ],
-  "xGSuuE": [
-    {
-      "type": 0,
-      "value": "DE-Security Protocol"
-    }
-  ],
-  "xukzKg": [
-    {
-      "type": 0,
-      "value": "DE-Networks"
-    }
-  ],
-  "yJ7+dR": [
-    {
-      "type": 0,
-      "value": "DE-Cloudpath Server"
-    }
-  ],
-  "yV5oYe": [
-    {
-      "type": 0,
-      "value": "DE-Policies"
-    }
-  ],
-  "ymr68V": [
-    {
-      "type": 0,
-      "value": "DE-Users are authorized through a captive portal in various methods"
-    }
-  ],
-  "z5epQF": [
-    {
-      "type": 0,
-      "value": "DE-Radios"
-    }
-  ],
-  "zI1owl": [
-    {
-      "type": 0,
-      "value": "DE-Venues ("
-    },
-    {
-      "type": 1,
-      "value": "venuesCount"
-    },
-    {
-      "type": 0,
-      "value": ")"
-    }
-  ],
-  "zT3YgI": [
-    {
-      "type": 0,
-      "value": "DE-Impacted Clients"
-    }
-  ],
-  "zWkvNO": [
-    {
-      "type": 0,
-      "value": "DE-Timeline"
-    }
-  ],
-  "zbjrr1": [
-    {
-      "type": 0,
-      "value": "DE-Radius Shared secret"
-    }
-  ]
+  "+20FW7": "DE-Devices",
+  "+8jGZ4": "DE-network filter",
+  "+U6ozc": "DE-Type",
+  "/9+YKH": "DE-<p>Format options:</p> <p>Most secured - all printable ASCII characters can be used</p> <p>Keyboard friendly - only letters and numbers will be used</p> <p>Numbers only - only numbers will be used</p>",
+  "0Hd1cr": "DE-Allow users to access the network without any authentication/security (not recommended)",
+  "0QEzt5": "DE-AP Group",
+  "1EYCdR": "DE-Tags",
+  "25rEb3": "DE-Shared Secret",
+  "2n2eHo": "DE-{count,plural,one{For the following venue, the network could not be activated on all Venues:} other{For the following venues, the network could not be activated on all Venues:}}",
+  "34xBI0": "DE-APs",
+  "3KyZGF": "DE-All Radios",
+  "3LyeET": "DE-3rd Party Captive Portal (WISPr)",
+  "3mdxYI": "DE-No Switch Clients",
+  "4RbqN8": "DE-No venues activating this network. Use the ON/OFF switches in the list to select the activating venues",
+  "4VPIXt": "DE-Alarms",
+  "4dk4rO": "DE-Accounting Service",
+  "5G8/Fe": "DE-Self Sign-In",
+  "5ezgA1": "DE-MAC Address",
+  "5jeq8P": "DE-Unknown",
+  "5lQx5r": "DE-Scheduling",
+  "6g0glr": "DE-Networking Devices",
+  "6xap9L": "DE-Good",
+  "724CrE": "DE-Select...",
+  "7Kk96z": "DE-Use Cloudpath Server:",
+  "8B04tJ": "DE-WPA",
+  "8Fo71r": "DE-MSP Space",
+  "9GvlpZ": "DE-Open Settings",
+  "9MxQUk": "DE-Shared Secret:",
+  "9t1iiv": "DE-Configure",
+  "9uOFF3": "DE-Overview",
+  "9wJSG8": "DE-Map is not enabled",
+  "AJBpR8": "DE-Network Type",
+  "AcxDgz": "DE-Activate",
+  "AetaeJ": "DE-Select venues to activate this network",
+  "AfUjYu": "DE-Config Change",
+  "BNHFY1": "DE-Only letters and numbers can be used",
+  "BeT3j9": "DE-WPA3",
+  "C5Rw0o": "DE-Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.",
+  "CM0JAR": "DE-Entire Organization",
+  "CasKsA": "DE-Add Secondary Server",
+  "CzRokW": "DE-WEP",
+  "Dnob31": "DE-Operational",
+  "EnTkxu": "DE-Recommendations",
+  "FbnpZB": "DE-Cluster of {count} Venues",
+  "FnRTEV": "DE-Average",
+  "FoE42e": "DE-Requires Attention",
+  "GLV1Lq": "DE-Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork",
+  "GYphdA": "DE-Open Captive Portal",
+  "HuqGcJ": "DE-WPA2 (Recommended)",
+  "I3JhPS": "DE-Network",
+  "I3b4hn": "DE-Version",
+  "IBNdTs": "DE-VLAN",
+  "IDKI0Y": "DE-{ipAddress}:{port}",
+  "IShDlj": "DE-WPA2 Enterprise",
+  "JkubB5": "DE-Enterprise AAA (802.1X)",
+  "K3r6DQ": "DE-Delete",
+  "K7AkdL": "DE-Show",
+  "NH/H5U": "DE-Dynamic Pre-Shared Key (DPSK)",
+  "NV6/gE": "DE-Create New Network",
+  "Nr2pru": "DE-Network History",
+  "Nt8DSX": "DE-Authentication Service",
+  "O17xiH": "DE-date filter",
+  "OT4kCw": "DE-AP Name",
+  "Ok71Hw": "DE-Security Protocol:",
+  "P0HnjZ": "DE-Click-Through",
+  "PYmHhr": "DE-Venue",
+  "Ppx673": "DE-Reports",
+  "Q8Qw5B": "DE-Description",
+  "QH7XOz": "DE-New Clients",
+  "QfVD/H": "DE-Use Cloudpath Server",
+  "RAjs+g": "DE-{isCaptiveNetwork,select,true{Captive Portal - {captiveNetworkType}} other{Portal - {captiveNetworkType}}}",
+  "RrCui3": "DE-Summary",
+  "Ru1Owh": "DE-Serial Number",
+  "S33j4r": "DE-Services ({servicesCount})",
+  "SDi0Ka": "DE-WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise. <highlight> Security protocols other than WPA3 are not be supported in 6 GHz radio. </highlight>",
+  "T3UF92": "DE-Authentication Server",
+  "TE4fIS": "DE-City",
+  "TY81Tv": "DE-Passphrase Format:",
+  "UaCh1c": "DE-Add Server",
+  "V52jNn": "DE-Enabled",
+  "VebTZq": "DE-WPA Enterprise",
+  "Vl9Unn": "DE-Host Approval",
+  "WEJ7ak": "DE-No APs",
+  "XB8fV9": "DE-Last 24 Hours",
+  "XYVgGy": "DE-Alarm Time",
+  "YDMrKK": "DE-Users",
+  "Z4WqBL": "DE-Remove Secondary Server",
+  "ZWz5If": "DE-Network Info",
+  "ZvKSfJ": "DE-Events",
+  "b3loSF": "DE-Occupancy",
+  "bS/cRP": "DE-Venues",
+  "bnaSLU": "DE-Connected Clients Over Time",
+  "c8uKl6": "DE-Wi-Fi",
+  "c9uA84": "DE-RF Channels",
+  "cRmipE": "DE-Passphrase expiration",
+  "ciDg7D": "DE-Primary Server",
+  "cp8inc": "DE-Open Network",
+  "cq7z5N": "DE-AAA Settings",
+  "czpjyb": "DE-Require users to enter a passphrase to connect. The passphrase is unique per device",
+  "d0A0aG": "DE-Radius Authentication Service",
+  "d63gFk": "DE-AI Analytics",
+  "dg6Mrs": "DE-Number of characters in passphrase. Valid range 8-63",
+  "dty181": "DE-Traffic by Volume",
+  "e0kEtS": "DE-Deactivate",
+  "eOJNIA": "DE-Connected Clients",
+  "eWzMDx": "DE-Activated",
+  "eoV49s": "DE-Poor",
+  "f+sh2j": "DE-Administration",
+  "fCkfBx": "DE-APs ({apsCount})",
+  "fUSCNN": "DE-Deployment Type",
+  "fqiBvd": "DE-Coming soon...",
+  "gevCaB": "DE-Passphrase length",
+  "hSGclh": "DE-Network Name",
+  "hdGKYY": "DE-Require users to enter a passphrase (that you have defined for the network) to connect",
+  "hlmkcL": "DE-Health",
+  "hzSNj4": "DE-Dashboard",
+  "i5bVOD": "DE-Network Name:",
+  "iCpuph": "DE-Clients",
+  "iFh/mp": "DE-Passphrase Generation Parameters",
+  "iI2oMQ": "DE-Use the DPSK Service",
+  "jNR5e0": "DE-Network Details",
+  "jr8yqe": "DE-WPA",
+  "keJaJz": "DE-Letters, numbers and symbols can be used",
+  "khS4NF": "DE-TLS Encryption:",
+  "lfIk1B": "DE-Add...",
+  "mtr3R4": "DE-Incidents",
+  "n1Whvj": "DE-Switch",
+  "nCMnED": "DE-Passphrase Length:",
+  "nCxCzM": "DE-Managed Guest Pass",
+  "nVdqEC": "DE-No Switches",
+  "naPxCD": "DE-Captive Portal",
+  "nfh3Qu": "DE-WPA2",
+  "nhKqj3": "DE-Only numbers can be used",
+  "o5l+pK": "DE-Proxy Service",
+  "ojxMGa": "DE-In Setup Phase",
+  "ox304v": "DE-An error occurred",
+  "p5WNkO": "DE-Temporarily degraded",
+  "pUlxda": "DE-Total Incidents",
+  "pyZg46": "DE-{type,select,aaa{AAA Settings} dpsk{DPSK Settings} other{Settings}}",
+  "qQ6P9N": "DE-Activated in venues",
+  "qYBnMW": "DE-WPA3",
+  "r9gciS": "DE-{networkType} - {authMethod}",
+  "rJPrzU": "DE-Captive Portal",
+  "rXq1Sc": "DE-Pre-Shared Key (PSK)",
+  "rhSI1/": "DE-Model",
+  "rsSUP3": "DE-Port",
+  "rz46vg": "DE-Passphrase format",
+  "sMnDSO": "DE-Wi-Fi APs",
+  "sTAlko": "DE-WPA3/WPA2 Mixed",
+  "sZFybj": "DE-Services",
+  "stDOc1": "DE-Mesh Role",
+  "sw6FHg": "DE-DPSK Settings",
+  "t071V3": "DE-Info:",
+  "tthToS": "DE-Disabled",
+  "tvFSNq": "DE-Secondary Server",
+  "tvJbQP": "DE-WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.",
+  "tzMNF3": "DE-Status",
+  "uJV0wU": "DE-IP Address",
+  "uS4sop": "DE-Type:",
+  "ubGrOj": "DE-Passphrase Expiration:",
+  "ubQ1f+": "DE-Shared secret",
+  "ukFIyf": "DE-Your Attention is Required",
+  "utCJRG": "DE-Proxy Service:",
+  "vCAhII": "DE-Severity",
+  "vONi+O": "DE-Country",
+  "vXfkMH": "DE-Add Wi-Fi Network",
+  "wsSxJK": "DE-Open",
+  "xGSuuE": "DE-Security Protocol",
+  "xukzKg": "DE-Networks",
+  "yJ7+dR": "DE-Cloudpath Server",
+  "yV5oYe": "DE-Policies",
+  "ymr68V": "DE-Users are authorized through a captive portal in various methods",
+  "z5epQF": "DE-Radios",
+  "zI1owl": "DE-Venues ({venuesCount})",
+  "zLM75r": "DE-No AP Clients",
+  "zT3YgI": "DE-Impacted Clients",
+  "zWkvNO": "DE-Timeline",
+  "zbjrr1": "DE-Radius Shared secret"
 }
