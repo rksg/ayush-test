@@ -57,7 +57,7 @@ const options: Option[] = [
 
 export function NestedListSingle () {
   return <NetworkFilter
-    placeholder='nested list, single select'
+    placeholder='Entire Organization'
     options={options}
     onApply={onApply}
     onCancel={onCancel}

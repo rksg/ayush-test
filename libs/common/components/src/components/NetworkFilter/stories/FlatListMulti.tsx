@@ -32,7 +32,7 @@ const options: Option[] = [
 export function FlatListMulti () {
   return <NetworkFilter
     multiple
-    placeholder='flat list, multi-select'
+    placeholder='Entire Organization'
     options={options}
     onApply={onApply}
     onCancel={onCancel}

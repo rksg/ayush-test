@@ -50,7 +50,7 @@ export function LazyNestedSingle () {
   }
 
   return <NetworkFilter
-    placeholder='lazy nested, single select'
+    placeholder='Entire Organization'
     options={options as Option[]}
     onApply={onApply}
     onCancel={onCancel}
