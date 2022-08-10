@@ -2,14 +2,23 @@
   "+20FW7": {
     "defaultMessage": "Devices"
   },
+  "+7PjfV": {
+    "defaultMessage": "1 day"
+  },
   "+8jGZ4": {
     "defaultMessage": "network filter"
   },
   "+U6ozc": {
     "defaultMessage": "Type"
   },
+  "+a1n2f": {
+    "defaultMessage": "AP never contacted cloud"
+  },
   "/9+YKH": {
     "defaultMessage": "<p>Format options:</p> <p>Most secured - all printable ASCII characters can be used</p> <p>Keyboard friendly - only letters and numbers will be used</p> <p>Numbers only - only numbers will be used</p>"
+  },
+  "/uhiJw": {
+    "defaultMessage": "AP disconnected from cloud"
   },
   "0Hd1cr": {
     "defaultMessage": "Allow users to access the network without any authentication/security (not recommended)",
@@ -24,11 +33,17 @@
   "25rEb3": {
     "defaultMessage": "Shared Secret"
   },
+  "2O2sfp": {
+    "defaultMessage": "Finish"
+  },
   "2n2eHo": {
     "defaultMessage": "{count,plural,one{For the following venue, the network could not be activated on all Venues:} other{For the following venues, the network could not be activated on all Venues:}}"
   },
   "34xBI0": {
     "defaultMessage": "APs"
+  },
+  "3HCg1n": {
+    "defaultMessage": "Configuration update failed"
   },
   "3KyZGF": {
     "defaultMessage": "All Radios"
@@ -39,6 +54,12 @@
   },
   "3mdxYI": {
     "defaultMessage": "No Switch Clients"
+  },
+  "47FYwb": {
+    "defaultMessage": "Cancel"
+  },
+  "4M0IEe": {
+    "defaultMessage": "Never contacted cloud"
   },
   "4RbqN8": {
     "defaultMessage": "No venues activating this network. Use the ON/OFF switches in the list to select the activating venues"
@@ -62,6 +83,9 @@
   "5lQx5r": {
     "defaultMessage": "Scheduling"
   },
+  "5mHBBz": {
+    "defaultMessage": "Operational - applying configuration"
+  },
   "6g0glr": {
     "defaultMessage": "Networking Devices"
   },
@@ -74,11 +98,23 @@
   "7Kk96z": {
     "defaultMessage": "Use Cloudpath Server:"
   },
+  "7UOvbT": {
+    "defaultMessage": "Offline"
+  },
+  "7xgyj8": {
+    "defaultMessage": "Numbers Only"
+  },
   "8B04tJ": {
     "defaultMessage": "WPA"
   },
   "8Fo71r": {
     "defaultMessage": "MSP Space"
+  },
+  "8cF6CF": {
+    "defaultMessage": "Error: Can not detect passphrase expiration value"
+  },
+  "9+Ddtu": {
+    "defaultMessage": "Next"
   },
   "9GvlpZ": {
     "defaultMessage": "Open Settings"
@@ -107,6 +143,15 @@
   "AfUjYu": {
     "defaultMessage": "Config Change"
   },
+  "Ao2xin": {
+    "defaultMessage": "Most Secured"
+  },
+  "AudUdt": {
+    "defaultMessage": "AP offline"
+  },
+  "AwuN57": {
+    "defaultMessage": "6 months"
+  },
   "BNHFY1": {
     "defaultMessage": "Only letters and numbers can be used"
   },
@@ -119,6 +164,9 @@
   "CM0JAR": {
     "defaultMessage": "Entire Organization"
   },
+  "CNTrZU": {
+    "defaultMessage": "2 years"
+  },
   "CasKsA": {
     "defaultMessage": "Add Secondary Server"
   },
@@ -128,6 +176,12 @@
   },
   "Dnob31": {
     "defaultMessage": "Operational"
+  },
+  "EP8xiD": {
+    "defaultMessage": "AP heartbeat lost"
+  },
+  "EYIw2M": {
+    "defaultMessage": "Clear selection"
   },
   "EnTkxu": {
     "defaultMessage": "Recommendations"
@@ -168,6 +222,9 @@
     "defaultMessage": "WPA2 Enterprise",
     "description": "WLAN security type - WPA2 Enterprise"
   },
+  "IdweXY": {
+    "defaultMessage": "Select Columns"
+  },
   "JkubB5": {
     "defaultMessage": "Enterprise AAA (802.1X)"
   },
@@ -177,8 +234,14 @@
   "K7AkdL": {
     "defaultMessage": "Show"
   },
+  "LTNKL8": {
+    "defaultMessage": "1 week"
+  },
   "NH/H5U": {
     "defaultMessage": "Dynamic Pre-Shared Key (DPSK)"
+  },
+  "NKPfmm": {
+    "defaultMessage": "{count} selected"
   },
   "NV6/gE": {
     "defaultMessage": "Create New Network"
@@ -220,6 +283,9 @@
   "RAjs+g": {
     "defaultMessage": "{isCaptiveNetwork,select,true{Captive Portal - {captiveNetworkType}} other{Portal - {captiveNetworkType}}}"
   },
+  "RUoi+Y": {
+    "defaultMessage": "Keyboard Friendly"
+  },
   "RrCui3": {
     "defaultMessage": "Summary"
   },
@@ -241,6 +307,9 @@
   "TY81Tv": {
     "defaultMessage": "Passphrase Format:"
   },
+  "U9tjJ5": {
+    "defaultMessage": "2 days"
+  },
   "UaCh1c": {
     "defaultMessage": "Add Server"
   },
@@ -255,6 +324,9 @@
     "defaultMessage": "Host Approval",
     "description": "Guest network type - Host Approval"
   },
+  "W/V6+Y": {
+    "defaultMessage": "Collapse"
+  },
   "WEJ7ak": {
     "defaultMessage": "No APs"
   },
@@ -263,6 +335,9 @@
   },
   "XYVgGy": {
     "defaultMessage": "Alarm Time"
+  },
+  "Y2pNUx": {
+    "defaultMessage": "AP operational - applying firmware"
   },
   "YDMrKK": {
     "defaultMessage": "Users"
@@ -279,6 +354,12 @@
   "b3loSF": {
     "defaultMessage": "Occupancy"
   },
+  "b5YpHX": {
+    "defaultMessage": "AP operational"
+  },
+  "bHHMAb": {
+    "defaultMessage": "Firmware update failed"
+  },
   "bS/cRP": {
     "defaultMessage": "Venues"
   },
@@ -293,6 +374,9 @@
   },
   "cRmipE": {
     "defaultMessage": "Passphrase expiration"
+  },
+  "cVVoGX": {
+    "defaultMessage": "Error: Can not detect passphrase format value"
   },
   "ciDg7D": {
     "defaultMessage": "Primary Server",
@@ -314,6 +398,9 @@
   "d63gFk": {
     "defaultMessage": "AI Analytics"
   },
+  "dP02B8": {
+    "defaultMessage": "Heartbeat lost"
+  },
   "dg6Mrs": {
     "defaultMessage": "Number of characters in passphrase. Valid range 8-63"
   },
@@ -329,6 +416,9 @@
   "eWzMDx": {
     "defaultMessage": "Activated"
   },
+  "ekXood": {
+    "defaultMessage": "Unlimited"
+  },
   "eoV49s": {
     "defaultMessage": "Poor"
   },
@@ -337,6 +427,9 @@
   },
   "fCkfBx": {
     "defaultMessage": "APs ({apsCount})"
+  },
+  "fKJjD9": {
+    "defaultMessage": "Initializing"
   },
   "fUSCNN": {
     "defaultMessage": "Deployment Type"
@@ -372,6 +465,9 @@
   "iI2oMQ": {
     "defaultMessage": "Use the DPSK Service"
   },
+  "ioS2ep": {
+    "defaultMessage": "Disconnected from cloud"
+  },
   "jNR5e0": {
     "defaultMessage": "Network Details"
   },
@@ -384,6 +480,15 @@
   },
   "khS4NF": {
     "defaultMessage": "TLS Encryption:"
+  },
+  "kmrE95": {
+    "defaultMessage": "2 weeks"
+  },
+  "ktaLzx": {
+    "defaultMessage": "AP operational - applying configuration"
+  },
+  "lPKfjk": {
+    "defaultMessage": "Rebooting"
   },
   "lfIk1B": {
     "defaultMessage": "Add..."
@@ -415,6 +520,9 @@
   "nhKqj3": {
     "defaultMessage": "Only numbers can be used"
   },
+  "o43JQW": {
+    "defaultMessage": "Operational - applying firmware"
+  },
   "o5l+pK": {
     "defaultMessage": "Proxy Service"
   },
@@ -423,6 +531,9 @@
   },
   "ox304v": {
     "defaultMessage": "An error occurred"
+  },
+  "p1dNds": {
+    "defaultMessage": "1 month"
   },
   "p5WNkO": {
     "defaultMessage": "Temporarily degraded"
@@ -455,6 +566,9 @@
   "rsSUP3": {
     "defaultMessage": "Port"
   },
+  "rwIPgH": {
+    "defaultMessage": "1 year"
+  },
   "rz46vg": {
     "defaultMessage": "Passphrase format"
   },
@@ -468,11 +582,17 @@
   "sZFybj": {
     "defaultMessage": "Services"
   },
+  "ss6kle": {
+    "defaultMessage": "Reset to default"
+  },
   "stDOc1": {
     "defaultMessage": "Mesh Role"
   },
   "sw6FHg": {
     "defaultMessage": "DPSK Settings"
+  },
+  "t/5Nxo": {
+    "defaultMessage": "{count} Characters"
   },
   "t071V3": {
     "defaultMessage": "Info:"
@@ -517,6 +637,9 @@
   "vXfkMH": {
     "defaultMessage": "Add Wi-Fi Network"
   },
+  "vhRKaX": {
+    "defaultMessage": "AP rebooting"
+  },
   "wsSxJK": {
     "defaultMessage": "Open",
     "description": "WLAN security type - Open"
@@ -554,5 +677,8 @@
   },
   "zbjrr1": {
     "defaultMessage": "Radius Shared secret"
+  },
+  "zg0sQG": {
+    "defaultMessage": "AP initializing"
   }
 }
