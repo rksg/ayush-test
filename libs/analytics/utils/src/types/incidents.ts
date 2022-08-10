@@ -8,8 +8,19 @@ interface IncidentInformation {
   incidentType: string
 }
 
+export type NodeType = 'network'
+  | 'apGroupName'
+  | 'apGroup'
+  | 'zoneName'
+  | 'zone'
+  | 'switchGroup'
+  | 'switch'
+  | 'apMac'
+  | 'ap'
+  | 'AP'
+
 export interface PathNode {
-  type: string
+  type: NodeType
   name?: string
 }
 
@@ -32,7 +43,7 @@ export interface Metadata {
 
 export interface IncidentDetailsProps {
   id: string
-  sliceType: string
+  sliceType: NodeType
   sliceValue: string
   code: string
   startTime: string
@@ -41,7 +52,7 @@ export interface IncidentDetailsProps {
   clientCount: number
   impactedClientCount: number
   metadata: Metadata
-  path: Array<{ type: string, name: string }>
+  path: NetworkPath
   apCount: number
   impactedApCount: number
   switchCount: number

@@ -1,11 +1,12 @@
-import { NetworkNodeTypeForDisplay } from './constants'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { incidentSeverities } from '.'
 
 import type {
   IncidentSeverities,
   SeverityRange,
-  PathNode
+  PathNode,
+  NodeType
 } from './types/incidents'
 
 export function calculateSeverity (severity: number): IncidentSeverities | void {
@@ -24,6 +25,37 @@ export function calculateSeverity (severity: number): IncidentSeverities | void 
     if (severity > filter.gt) {
       return p as IncidentSeverities
     }
+  }
+}
+
+type NormalizedNodeType = 'network'
+  | 'zone'
+  | 'switchGroup'
+  | 'apGroup'
+  | 'switch'
+  | 'AP'
+
+export function normalizeNodeType (nodeType: NodeType): NormalizedNodeType {
+  switch (nodeType) {
+    case 'ap': return 'AP'
+    case 'apMac': return 'AP'
+    case 'apGroupName': return 'apGroup'
+    case 'zoneName': return 'zone'
+    default: return nodeType
+  }
+}
+
+/**
+ * Returns message descriptor to the matching `nodeType`
+ */
+export function nodeTypes (nodeType: NodeType): MessageDescriptor {
+  switch (normalizeNodeType(nodeType)) {
+    case 'network': return defineMessage({ defaultMessage: 'Entire Organization' })
+    case 'apGroup': return defineMessage({ defaultMessage: 'AP Group' })
+    case 'zone': return defineMessage({ defaultMessage: 'Venue' })
+    case 'switchGroup': return defineMessage({ defaultMessage: 'Venue' })
+    case 'switch': return defineMessage({ defaultMessage: 'Switch' })
+    case 'AP': return defineMessage({ defaultMessage: 'Access Point' })
   }
 }
 
