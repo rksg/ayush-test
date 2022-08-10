@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Row, Col } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 
@@ -9,10 +10,11 @@ import IncidentBySeverityWidget from '../../components/IncidentBySeverity'
 import NetworkHistoryWidget     from '../../components/NetworkHistory'
 
 function Incidents () {
+  const { $t } = useIntl()
   const filters = useAnalyticsFilter()
 
   return <>
-    <Header title='Incidents' />
+    <Header title={$t({ defaultMessage: 'Incidents' })} />
     <Row gutter={[0, 20]}>
       <Col span={4} style={{ display: 'flex', height: 220 }}>
         <IncidentBySeverityWidget />

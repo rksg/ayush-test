@@ -1,4 +1,4 @@
-import { ApDeviceStatusEnum, GuestNetworkTypeEnum, WlanSecurityEnum, NetworkVenue } from '@acx-ui/rc/utils'
+import { ApDeviceStatusEnum, GuestNetworkTypeEnum, WlanSecurityEnum, NetworkVenue, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 export * from './ap'
 
@@ -27,7 +27,7 @@ export interface Network {
 }
 
 export interface NetworkDetail {
-  type: string
+  type: NetworkTypeEnum
   tenantId: string
   name: string
   venues: NetworkVenue[]

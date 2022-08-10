@@ -1,13 +1,11 @@
-import { Button as AntButton } from 'antd'
-import styled, { css }         from 'styled-components/macro'
+import { Button as AntButton }            from 'antd'
+import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { CancelCircle } from '@acx-ui/icons'
 
-import type { TableProps as AntTableProps } from 'antd'
+import { Subtitle } from '../Subtitle'
 
-export const CloseButton = styled(AntButton).attrs({
-  icon: <CancelCircle />
-})`
+export const CloseButton = styled(AntButton).attrs({ icon: <CancelCircle /> })`
   border: none;
   box-shadow: none;
   &.ant-btn-icon-only {
@@ -28,6 +26,117 @@ export const ActionButton = styled.button.attrs({ type: 'button' })`
   background-color: transparent;
   color: var(--acx-accents-blue-50);
   cursor: pointer;
+`
+
+export const TableSettingTitle = styled(Subtitle).attrs({ level: 5 })``
+
+export const TableSettingsGlobalOverride = createGlobalStyle`
+  .ant-pro-table-column-setting {
+    &-overlay {
+      .ant-popover-inner {
+        padding-bottom: 48px;
+      }
+      .ant-popover-title {
+        min-height: unset;
+        padding: 16px 24px;
+        padding-bottom: 8px;
+        border-bottom: 0;
+      }
+      .ant-popover-inner-content {
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--acx-neutrals-20);
+      }
+      .ant-tree-switcher { display: none; }
+      .ant-tree-treenode-disabled {
+        .ant-tree-draggable-icon { visibility: hidden; }
+      }
+      .ant-tree-treenode {
+        padding: 4px 0;
+        align-items: center;
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
+        &:hover { background-color: unset; }
+        .ant-tree-checkbox { margin-left: 24px; }
+        .ant-tree-draggable-icon ~ .ant-tree-checkbox { margin-left: 0; }
+      }
+      .ant-tree:last-of-type {
+        display: none;
+      }
+    }
+
+    &-title {
+      height: unset;
+      .ant-checkbox-wrapper { display: none; }
+      .ant-btn {
+        position: absolute;
+        left: 16px;
+        bottom: 13px;
+      }
+      h5${TableSettingTitle} {
+        margin-bottom: 0;
+      }
+    }
+
+    &-list-title,
+    &-list-item-option {
+      display: none !important;
+    }
+  }
+`
+
+type StyledTable = {
+  $type: 'tall' | 'compact' | 'tooltip',
+  $hasRowSelection: boolean
+}
+
+/* eslint-disable max-len */
+const tallStyle = css<StyledTable>`
+  .ant-pro-table {
+    ${props => props.$hasRowSelection && css`
+      .ant-table-wrapper {
+        padding-top: var(--acx-table-action-area-height);
+      }
+    `}
+
+    &-list-toolbar {
+      &-container { padding: 0; }
+      &-right {
+        // setting to 0 due to empty toolbar still take up space
+        // need to revisit this if we intend to use toolbar for other usage
+        height: 0;
+      }
+      &-setting-items .ant-space-item:last-child {
+        position: absolute;
+        right: 0;
+        z-index: 3;
+        top: ${props => props.$hasRowSelection ? 'calc(11px + var(--acx-table-action-area-height))' : '11px' };
+      }
+    }
+
+    &-alert {
+      margin: 0px;
+      position: absolute;
+      left: 0;
+      right: 0;
+
+      .ant-alert {
+        height: var(--acx-table-action-area-height);
+        background-color: var(--acx-accents-blue-10);
+        border: var(--acx-accents-blue-10);
+        padding: 10px 16px;
+
+        .ant-pro-table-alert-info {
+          font-size: var(--acx-body-4-font-size);
+          line-height: var(--acx-body-4-line-height);
+
+          .ant-divider-vertical {
+            border-left-color: var(--acx-neutrals-40);
+          }
+        }
+      }
+    }
+  }
 `
 
 const compactStyle = css`
@@ -81,64 +190,24 @@ const tooltipStyle = css`
         padding: 6px;
         border-bottom: 0px;
       }
-
-      .ant-table-tbody > tr.ant-table-row:hover > td,
-      .ant-table-tbody > tr > td.ant-table-cell-row-hover {
-        background: none;
-      }
     }
   }
 `
 
 const styles = {
-  tall: '',
+  tall: tallStyle,
   compact: compactStyle,
   tooltip: tooltipStyle
 }
 
-/* eslint-disable max-len */
-export const Wrapper = styled.div<{
-  $type: 'tall' | 'compact' | 'tooltip',
-  $rowSelection: AntTableProps<any>['rowSelection'] // eslint-disable-line @typescript-eslint/no-explicit-any
-}>`
+export const Wrapper = styled.div<StyledTable>`
   .ant-pro-table {
     --acx-table-cell-horizontal-space: 8px;
     --acx-table-action-area-height: 36px;
 
     .ant-pro-card {
-      background-color: transparent;
-
       .ant-pro-card-body {
         padding: 0px;
-      }
-    }
-
-    ${props => props.$rowSelection && css`
-      .ant-table-wrapper {
-        padding-top: calc(var(--acx-table-action-area-height));
-      }
-    `}
-
-    &-alert {
-      margin: 0px;
-      position: absolute;
-      left: 0;
-      right: 0;
-
-      .ant-alert {
-        height: var(--acx-table-action-area-height);
-        background-color: var(--acx-accents-blue-10);
-        border: var(--acx-accents-blue-10);
-        padding: 10px 16px;
-
-        .ant-pro-table-alert-info {
-          font-size: var(--acx-body-4-font-size);
-          line-height: var(--acx-body-4-line-height);
-
-          .ant-divider-vertical {
-            border-left-color: var(--acx-neutrals-40);
-          }
-        }
       }
     }
 
@@ -165,7 +234,6 @@ export const Wrapper = styled.div<{
 
       &-thead > tr > th {
         border-bottom: 0;
-        background: transparent;
         padding: 0px var(--acx-table-cell-horizontal-space);
         &:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
           width: 0px;
@@ -214,17 +282,16 @@ export const Wrapper = styled.div<{
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
 
-        &.ant-table-column-sort {
-          background: unset;
-        }
-
         a {
           font-size: unset;
         }
       }
 
-      &-tbody > tr.ant-table-row-selected > td {
-        background: unset;
+      &-tbody > tr.ant-table-row:hover > td,
+      &-tbody > tr.ant-table-row-selected > td,
+      &-tbody > tr > td.ant-table-column-sort,
+      &-tbody > tr > td.ant-table-cell-row-hover {
+        background-color: var(--acx-neutrals-10);
       }
     }
   }

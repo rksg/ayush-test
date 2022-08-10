@@ -6,7 +6,7 @@ exports[`Aps should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-2 jxtkcu"
+      class="styledComponents__Wrapper-sc-1abm7iv-3 kYgtfq"
     >
       <div
         class="ant-pro-table"
@@ -19,6 +19,40 @@ exports[`Aps should render correctly 1`] = `
             style="padding-top: 0px;"
           >
             <div
+              class="ant-pro-table-list-toolbar"
+            >
+              <div
+                class="ant-pro-table-list-toolbar-container"
+              >
+                <div
+                  class="ant-pro-table-list-toolbar-left"
+                />
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar-setting-item"
+                        >
+                          <svg>
+                            SettingsOutlined.svg
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
               class="ant-table-wrapper"
             >
               <div
@@ -28,18 +62,38 @@ exports[`Aps should render correctly 1`] = `
                   class="ant-spin-container"
                 >
                   <div
-                    class="ant-table ant-table-middle"
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                   >
                     <div
                       class="ant-table-container"
                     >
                       <div
                         class="ant-table-content"
+                        style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="table-layout: auto;"
+                          style="min-width: 100%; table-layout: auto;"
                         >
-                          <colgroup />
+                          <colgroup>
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col
+                              style="width: 32px;"
+                            />
+                          </colgroup>
                           <thead
                             class="ant-table-thead"
                           >
@@ -679,6 +733,11 @@ exports[`Aps should render correctly 1`] = `
                                   </span>
                                 </div>
                               </th>
+                              <th
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                rowspan="2"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr>
                               <th
@@ -698,6 +757,156 @@ exports[`Aps should render correctly 1`] = `
                           <tbody
                             class="ant-table-tbody"
                           >
+                            <tr
+                              aria-hidden="true"
+                              class="ant-table-measure-row"
+                              style="height: 0px; font-size: 0px;"
+                            >
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                            </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
                               data-row-key="000000000001"
@@ -787,6 +996,10 @@ exports[`Aps should render correctly 1`] = `
                               >
                                 6.2.0.103.261
                               </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -877,6 +1090,10 @@ exports[`Aps should render correctly 1`] = `
                               >
                                 6.2.0.103.261
                               </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -967,6 +1184,10 @@ exports[`Aps should render correctly 1`] = `
                               >
                                 6.2.0.103.261
                               </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -1057,6 +1278,10 @@ exports[`Aps should render correctly 1`] = `
                               >
                                 6.2.0.103.261
                               </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -1147,6 +1372,10 @@ exports[`Aps should render correctly 1`] = `
                               >
                                 6.2.0.103.261
                               </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                           </tbody>
                         </table>

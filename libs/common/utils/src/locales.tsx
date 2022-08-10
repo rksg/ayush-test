@@ -23,7 +23,7 @@ function flattenMessages (nestedMessages: NestedMessages, prefix = ''): Record<s
 }
 
 function localePath (locale: string) {
-  return `locales/${locale}.json`
+  return `locales/compiled/${locale}.json`
 }
 
 async function loadEnUS (): Promise<Messages> {

@@ -1,6 +1,9 @@
+import { useIntl } from 'react-intl'
 
 export function NetworkServicesTab () {
+  const { $t } = useIntl()
+
   return (
-    <>Services</>
+    <>{$t({ defaultMessage: 'Services' })}</>
   )
 }
