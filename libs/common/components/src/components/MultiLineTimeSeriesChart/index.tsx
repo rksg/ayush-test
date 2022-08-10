@@ -2,7 +2,7 @@ import ReactECharts from 'echarts-for-react'
 
 import { TimeStamp } from '@acx-ui/types'
 
-import { cssStr }               from '../../theme/helper'
+import { cssStr }              from '../../theme/helper'
 import {
   gridOptions,
   legendOptions,
