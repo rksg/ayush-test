@@ -62,6 +62,7 @@ export interface IncidentNodeInfo {
   mutedBy?: string | null
   path: IncidentPath[]
   metadata: IncidentMetadata
+  children?: IncidentNodeInfo[]
 }
 
 export type IncidentNodeData = IncidentNodeInfo[]
@@ -122,8 +123,13 @@ export const api = dataApi.injectEndpoints({
           code: incidentCodes
         }
       }),
-      transformResponse: (response: Response<IncidentNodeData>) => 
-        response.network.hierarchyNode.incidents
+      transformResponse: (response: Response<IncidentNodeData>) => {
+        return response.network.hierarchyNode.incidents.map((event) => {
+          event.children = event.relatedIncidents
+          delete event.relatedIncidents
+          return event
+        })
+      }
     })
   })
 })
