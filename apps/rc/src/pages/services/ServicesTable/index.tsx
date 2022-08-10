@@ -2,16 +2,14 @@ import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '
 import { useServiceListQuery, Service, useDeleteServiceMutation }         from '@acx-ui/rc/services'
 import {
   ServiceType,
-  serviceTypeLabelMapping,
-  serviceTechnologyabelMapping,
-  serviceStatusLabelMapping,
-  serviceAdminStateLabelMapping,
   useTableQuery,
   ServiceTechnology,
   ServiceStatus,
   ServiceAdminState
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import { serviceAdminStateLabelMapping, serviceStatusLabelMapping, serviceTechnologyabelMapping, serviceTypeLabelMapping } from '../contentsMap'
 
 const columns: TableProps<Service>['columns'] = [
   {
