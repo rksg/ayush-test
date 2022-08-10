@@ -1,6 +1,4 @@
-import React from 'react'
-
-import { useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { useGlobalFilter }          from '@acx-ui/analytics/utils'
@@ -39,7 +37,7 @@ function TimeSeries (type: TimeSeriesType) {
         ...rest
       })
     })
-  console.log(queryResults)
+
   const title = $t({ defaultMessage: 'Clients' })
   return (
     <Loader states={[queryResults]}>

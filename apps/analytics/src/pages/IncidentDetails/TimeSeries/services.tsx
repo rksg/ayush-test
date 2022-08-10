@@ -72,7 +72,7 @@ export const incidentChartsApi = dataApi.injectEndpoints({
 
 export const { useIncidentChartsQuery } = incidentChartsApi
 
-export const Api = dataApi.injectEndpoints({
+export const clientCountChartsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     clientCountChart: build.query<
       ClientCountCharts,
@@ -115,51 +115,7 @@ export const Api = dataApi.injectEndpoints({
   })
 })
 
-export const { useClientCountChartQuery } = Api
-
-export const clientCountChartsApi = dataApi.injectEndpoints({
-  endpoints: (build) => ({
-    clientCountCharts: build.query<
-      ClientCountCharts,
-      GlobalFilter
-    >({
-      query: (payload) => ({
-        document: gql`
-          query ClientCountCharts(
-            $path:[HierarchyNodeInput],
-            $start: DateTime,
-            $end: DateTime,
-            $granularity: String,
-            $code: [String]
-          ) {
-            network(start: $start end: $end){
-              hierarchyNode(path:$path){
-                clientCountCharts: timeSeries(granularity: $granularity) {
-                  time
-                    newClientCount: connectionAttemptCount
-                    impactedClientCount: impactedClientCountBySeverity(
-                        filter:{code: $code}
-                    )
-                    connectedClientCount
-                }
-              }
-            }
-          }
-        `,
-        variables: {
-          path: payload.path,
-          start: payload.startDate,
-          end: payload.endDate,
-          granularity: calcGranularity(payload.startDate, payload.endDate),
-          code: incidentCodes
-        }
-      }),
-      transformResponse : (response: Response<ClientCountCharts>) => response.network.hierarchyNode.timeSeries
-    })
-  })
-})
-
-export const { useClientCountChartsQuery } = clientCountChartsApi
+export const { useClientCountChartQuery } = clientCountChartsApi
 
 export const attemptAndFailureChartsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
@@ -211,18 +167,3 @@ export const relatedIncidentsApi = dataApi.injectEndpoints({
 })
 
 export const { useRelatedIncidentsQuery } = relatedIncidentsApi
-
-export type NetworkHistoryData = {
-  connectedClientCount: number[]
-  impactedClientCount: number[]
-  newClientCount: number[]
-  time: string[]
-}
-
-interface Response <TimeSeriesData> {
-  network: {
-    hierarchyNode: {
-      timeSeries: TimeSeriesData
-    }
-  }
-}
