@@ -1,11 +1,13 @@
-import { omit } from 'lodash'
+import { omit }    from 'lodash'
+import { useIntl } from 'react-intl'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }      from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
   mockAutoSizer,
-  waitForElementToBeRemoved } from '@acx-ui/test-utils'
+  waitForElementToBeRemoved,
+  renderHook } from '@acx-ui/test-utils'
 
 import DevicesDonutWidget, { getApDonutChartData, getSwitchDonutChartData } from '.'
 
@@ -43,7 +45,9 @@ describe('getVenuesDonutChartData', () => {
     }
   }
   it('should return correct formatted data', async () => {
-    expect(getApDonutChartData(data)).toEqual([{
+    const { result } = renderHook(() =>
+      getApDonutChartData(data, useIntl()))
+    expect(result.current).toEqual([{
       color: '#ED1C24',
       name: 'Requires Attention',
       value: 3
@@ -55,7 +59,9 @@ describe('getVenuesDonutChartData', () => {
 
     //Removing 1_InSetupPhase, and it should return 1_InSetupPhase_Offline count
     const modifiedData = omit(data, 'summary.aps.summary.1_InSetupPhase')
-    expect(getApDonutChartData(modifiedData)).toEqual([{
+    const { result: result2 } = renderHook(() =>
+      getApDonutChartData(modifiedData, useIntl()))
+    expect(result2.current).toEqual([{
       color: '#ED1C24',
       name: 'Requires Attention',
       value: 3
@@ -66,8 +72,9 @@ describe('getVenuesDonutChartData', () => {
     }])
   })
   it('should return empty array if no data', ()=>{
-    expect(getApDonutChartData())
-      .toEqual([])
+    const { result } = renderHook(() =>
+      getApDonutChartData(undefined, useIntl()))
+    expect(result.current).toEqual([])
   })
 })
 
