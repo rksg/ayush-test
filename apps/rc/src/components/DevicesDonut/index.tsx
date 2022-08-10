@@ -1,5 +1,6 @@
-import { find }  from 'lodash'
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { find }    from 'lodash'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader }                              from '@acx-ui/components'
 import { Card }                                        from '@acx-ui/components'
@@ -32,13 +33,14 @@ const seriesMappingAP = [
     color: cssStr('--acx-semantics-green-60') }
 ] as Array<{ key: string, name: string, color: string }>
 
-export const getApDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
+export const getApDonutChartData = (overviewData: Dashboard | undefined,
+  { $t }: ReturnType<typeof useIntl>): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   const apsSummary = overviewData?.summary?.aps?.summary
   if (apsSummary) {
     seriesMappingAP.forEach(({ key, name, color }) => {
       if (key === ApVenueStatusEnum.OFFLINE && apsSummary[key]) {
-        const setupPhase = find(chartData, { name: 'In Setup Phase' })
+        const setupPhase = find(chartData, { name: $t({ defaultMessage: 'In Setup Phase' }) })
         if (setupPhase) {
           setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${apsSummary[key]}`
           setupPhase.value = setupPhase.value + apsSummary[key]
@@ -110,7 +112,7 @@ export const getSwitchDonutChartData = (overviewData?: Dashboard): DonutChartDat
 function DevicesDonutWidget () {
   const basePath = useTenantLink('/devices/')
   const navigate = useNavigate()
-
+  const { $t } = useIntl()
   const onClick = (param: string) => {
     navigate({
       ...basePath,
@@ -118,13 +120,13 @@ function DevicesDonutWidget () {
       pathname: `${basePath.pathname}/${param}`
     })
   }
-
+  const intl = useIntl()
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
   },{
     selectFromResult: ({ data, ...rest }) => ({
       data: {
-        apData: getApDonutChartData(data),
+        apData: getApDonutChartData(data, intl),
         switchData: getSwitchDonutChartData(data)
       },
       ...rest
@@ -132,18 +134,18 @@ function DevicesDonutWidget () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title='Devices'>
+      <Card title={$t({ defaultMessage: 'Devices' })}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'inline-flex' }}>
               <DonutChart
                 style={{ width: width/2 , height }}
-                title='Wi-Fi'
+                title={$t({ defaultMessage: 'Wi-Fi' })}
                 data={queryResults.data.apData}
                 onClick={() => onClick('TBD')}/>
               <DonutChart
                 style={{ width: width/2, height }}
-                title='Switch'
+                title={$t({ defaultMessage: 'Switch' })}
                 data={queryResults.data.switchData}
                 onClick={() => onClick('TBD')}/>
             </div>

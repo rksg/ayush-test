@@ -3,7 +3,7 @@
 exports[`Networks Table should delete selected row 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ggigVG"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -55,7 +55,7 @@ exports[`Networks Table should delete selected row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-2 dmYsKE"
+      class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
     >
       <div
         class="ant-pro-table"
@@ -68,6 +68,40 @@ exports[`Networks Table should delete selected row 1`] = `
             style="padding-top: 0px;"
           >
             <div
+              class="ant-pro-table-list-toolbar"
+            >
+              <div
+                class="ant-pro-table-list-toolbar-container"
+              >
+                <div
+                  class="ant-pro-table-list-toolbar-left"
+                />
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar-setting-item"
+                        >
+                          <svg>
+                            SettingsOutlined.svg
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
               class="ant-table-wrapper"
             >
               <div
@@ -77,20 +111,34 @@ exports[`Networks Table should delete selected row 1`] = `
                   class="ant-spin-container"
                 >
                   <div
-                    class="ant-table ant-table-middle"
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                   >
                     <div
                       class="ant-table-container"
                     >
                       <div
                         class="ant-table-content"
+                        style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="table-layout: auto;"
+                          style="min-width: 100%; table-layout: auto;"
                         >
                           <colgroup>
                             <col
                               class="ant-table-selection-col"
+                            />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col
+                              style="width: 32px;"
                             />
                           </colgroup>
                           <thead
@@ -705,11 +753,129 @@ exports[`Networks Table should delete selected row 1`] = `
                                   </span>
                                 </div>
                               </th>
+                              <th
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                           </thead>
                           <tbody
                             class="ant-table-tbody"
                           >
+                            <tr
+                              aria-hidden="true"
+                              class="ant-table-measure-row"
+                              style="height: 0px; font-size: 0px;"
+                            >
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                            </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
                               data-row-key="c9d5f4c771c34ad2898f7078cebbb191"
@@ -791,6 +957,10 @@ exports[`Networks Table should delete selected row 1`] = `
                               />
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
                               />
                             </tr>
                             <tr
@@ -875,6 +1045,10 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -957,6 +1131,10 @@ exports[`Networks Table should delete selected row 1`] = `
                               />
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
                               />
                             </tr>
                             <tr
@@ -1041,6 +1219,10 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -1123,6 +1305,10 @@ exports[`Networks Table should delete selected row 1`] = `
                               />
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
                               />
                             </tr>
                             <tr
@@ -1207,6 +1393,10 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -1289,6 +1479,10 @@ exports[`Networks Table should delete selected row 1`] = `
                               />
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
                               />
                             </tr>
                             <tr
@@ -1373,6 +1567,10 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -1456,6 +1654,10 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -1538,6 +1740,10 @@ exports[`Networks Table should delete selected row 1`] = `
                               />
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
                               />
                             </tr>
                           </tbody>
@@ -1644,7 +1850,7 @@ exports[`Networks Table should delete selected row 1`] = `
 exports[`Networks Table should render table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ggigVG"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -1696,7 +1902,7 @@ exports[`Networks Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-2 dmYsKE"
+      class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
     >
       <div
         class="ant-pro-table"
@@ -1709,6 +1915,40 @@ exports[`Networks Table should render table 1`] = `
             style="padding-top: 0px;"
           >
             <div
+              class="ant-pro-table-list-toolbar"
+            >
+              <div
+                class="ant-pro-table-list-toolbar-container"
+              >
+                <div
+                  class="ant-pro-table-list-toolbar-left"
+                />
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar-setting-item"
+                        >
+                          <svg>
+                            SettingsOutlined.svg
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
               class="ant-table-wrapper"
             >
               <div
@@ -1718,20 +1958,34 @@ exports[`Networks Table should render table 1`] = `
                   class="ant-spin-container"
                 >
                   <div
-                    class="ant-table ant-table-middle"
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                   >
                     <div
                       class="ant-table-container"
                     >
                       <div
                         class="ant-table-content"
+                        style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="table-layout: auto;"
+                          style="min-width: 100%; table-layout: auto;"
                         >
                           <colgroup>
                             <col
                               class="ant-table-selection-col"
+                            />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col
+                              style="width: 32px;"
                             />
                           </colgroup>
                           <thead
@@ -2346,11 +2600,129 @@ exports[`Networks Table should render table 1`] = `
                                   </span>
                                 </div>
                               </th>
+                              <th
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                           </thead>
                           <tbody
                             class="ant-table-tbody"
                           >
+                            <tr
+                              aria-hidden="true"
+                              class="ant-table-measure-row"
+                              style="height: 0px; font-size: 0px;"
+                            >
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                            </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
                               data-row-key="c9d5f4c771c34ad2898f7078cebbb191"
@@ -2432,6 +2804,10 @@ exports[`Networks Table should render table 1`] = `
                               />
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
                               />
                             </tr>
                             <tr
@@ -2516,6 +2892,10 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -2598,6 +2978,10 @@ exports[`Networks Table should render table 1`] = `
                               />
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
                               />
                             </tr>
                             <tr
@@ -2682,6 +3066,10 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -2764,6 +3152,10 @@ exports[`Networks Table should render table 1`] = `
                               />
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
                               />
                             </tr>
                             <tr
@@ -2848,6 +3240,10 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -2930,6 +3326,10 @@ exports[`Networks Table should render table 1`] = `
                               />
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
                               />
                             </tr>
                             <tr
@@ -3014,6 +3414,10 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -3097,6 +3501,10 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
                             </tr>
                             <tr
                               class="ant-table-row ant-table-row-level-0"
@@ -3179,6 +3587,10 @@ exports[`Networks Table should render table 1`] = `
                               />
                               <td
                                 class="ant-table-cell"
+                              />
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
                               />
                             </tr>
                           </tbody>
