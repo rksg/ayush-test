@@ -47,15 +47,19 @@ export function Table <RecordType extends object> (
 ) {
   const { $t } = useIntl()
 
-  if (type === 'tall' && !props.columns.find(c => c.key === 'settings')) {
-    props.columns.push({ key: 'settings', fixed: 'right', width: 32 })
-  }
   const columns = useMemo(() => props.columns.map((column) => ({
     ...column,
     disable: Boolean(column.fixed || column.disable),
     show: Boolean(column.fixed || column.disable || (column.show ?? true))
   })), [props.columns])
   const columnsState = useColumnsState({ columns, columnState })
+
+  const settingsColumn = {
+    key: 'acx-table-settings',
+    fixed: 'right' as 'right',
+    width: 32,
+    children: []
+  }
 
   const setting: SettingOptionType | false = type === 'tall' ? {
     draggable: true,
@@ -138,7 +142,7 @@ export function Table <RecordType extends object> (
       {...props}
       bordered={false}
       search={false}
-      columns={columns}
+      columns={type === 'tall' ? [...columns, settingsColumn] : columns}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
       scroll={{ x: 'max-content' }}
