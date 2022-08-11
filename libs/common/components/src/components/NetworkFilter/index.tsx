@@ -84,7 +84,7 @@ export function NetworkFilter (props: CascaderProps) {
       triggeredValue: SingleValueType,
       selectedValues: DefaultOptionType[]
     ) => {
-      onApply(selectedValues.map(option => option.value))
+      onApply(selectedValues && selectedValues.map(option => option.value))
     }
     return <AntCascader
       {...antProps}
