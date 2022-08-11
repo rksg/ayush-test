@@ -3,7 +3,7 @@ import { rest } from 'msw'
 import { Provider }           from '@acx-ui/store'
 import { render, mockServer } from '@acx-ui/test-utils'
 
-import { IncidentDetailsProps } from '../types'
+import { Incident } from '@acx-ui/analytics/utils'
 
 import { IncidentDetailsTemplate } from './FailureTemplate'
 
@@ -62,7 +62,7 @@ describe('IncidentDetailsTemplate', () => {
     mutedAt: null,
     impactedClientCount: 5,
     sliceValue: 'RuckusAP'
-  } as IncidentDetailsProps
+  } as Incident
 
   it('should render correctly', () => {
     mockServer.use(
