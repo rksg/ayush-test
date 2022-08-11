@@ -4,7 +4,7 @@ import { Tooltip }                   from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { aggregateDataBy }                              from '@acx-ui/analytics/utils'
-import { IncidentDetailsProps }                         from '@acx-ui/analytics/utils'
+import { Incident }                                     from '@acx-ui/analytics/utils'
 import { Drawer, Loader, Table, SearchBar, TableProps } from '@acx-ui/components'
 import { InformationOutlined }                          from '@acx-ui/icons'
 import { TenantLink }                                   from '@acx-ui/react-router-dom'
@@ -17,7 +17,7 @@ import {
 } from './services'
 import { Title } from './syledComponents'
 
-export interface impactedDrawerProps extends Pick<IncidentDetailsProps, 'id'> {
+export interface impactedDrawerProps extends Pick<Incident, 'id'> {
   visible: boolean
   onClose: () => void
 }

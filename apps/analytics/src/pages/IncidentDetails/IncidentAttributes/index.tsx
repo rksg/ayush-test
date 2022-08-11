@@ -3,16 +3,14 @@ import React, { useState } from 'react'
 import moment                from 'moment-timezone'
 import { FormattedMessage  } from 'react-intl'
 
-import { noDataSymbol }                 from '@acx-ui/analytics/utils'
-import type { IncidentAttributesProps } from '@acx-ui/analytics/utils'
-import { formatter }                    from '@acx-ui/utils'
+import type { IncidentAttributesProps }                            from '@acx-ui/analytics/utils'
+import { noDataSymbol }                                            from '@acx-ui/analytics/utils'
+import { useFormattedPath, useFormattedNodeType, useImpactedArea } from '@acx-ui/analytics/utils'
+import { formatter }                                               from '@acx-ui/utils'
 
-import { DescriptionRowProps, DescriptionSection }         from '../../../components/DescriptionSection'
-import { formattedPath, formattedSliceType, impactedArea } from '../path'
+import { DescriptionRowProps, DescriptionSection } from '../../../components/DescriptionSection'
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
-
-
 
 export const durationOf = (start: string, end: string) =>
   moment(end).diff(moment(start), 'milliseconds', true)
@@ -105,15 +103,15 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
       key: 'type',
       getValue: (details: IncidentAttributesProps) => ({
         label: 'Type',
-        children: formattedSliceType(details.sliceType)
+        children: useFormattedNodeType(details.sliceType)
       })
     },
     {
       key: 'scope',
       getValue: (details: IncidentAttributesProps) => ({
         label: 'Scope',
-        children: impactedArea(details.path, details.sliceValue),
-        title: formattedPath(details.path, details.sliceValue)
+        children: useImpactedArea(details.path, details.sliceValue),
+        title: useFormattedPath(details.path, details.sliceValue)
       })
     },
     {

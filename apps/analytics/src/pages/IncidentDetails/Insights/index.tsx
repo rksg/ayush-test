@@ -2,22 +2,13 @@ import { Row, Typography }  from 'antd'
 import { FormattedMessage } from 'react-intl'
 
 import { getRootCauseAndRecommendations } from '@acx-ui/analytics/utils'
-import { IncidentDetailsProps }           from '@acx-ui/analytics/utils'
+import { Incident }                       from '@acx-ui/analytics/utils'
 import { Subtitle }                       from '@acx-ui/components'
 import { BulbOutlined }                   from '@acx-ui/icons'
 
-
 import * as UI from './styledComponents'
 
-export const incidentDetailsCodeMap = {
-  'radius-failure': 'radius',
-  'dhcp-failure': 'dhcp',
-  'eap-failure': 'eap',
-  'auth-failure': 'auth',
-  'assoc-failure': 'assoc'
-}
-
-export const Insights = (props: IncidentDetailsProps) => {
+export const Insights = (props: Incident) => {
   const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
     props.code, props.metadata.rootCauseChecks)
   const values = {

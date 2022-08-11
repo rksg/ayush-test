@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { defineMessage } from 'react-intl'
 
-import { Metadata } from './types/incidents'
+import { IncidentMetadata } from './types/incidents'
 
 const commonRecommendations = defineMessage({
   defaultMessage: `
@@ -26,17 +26,31 @@ const ccd80211CommonRecommendations = defineMessage({
 })
 
 export const codeToFailureTypeMap = {
+  'ttc': 'ttc',
   'radius-failure': 'radius',
   'eap-failure': 'eap',
   'dhcp-failure': 'dhcp',
   'auth-failure': 'auth',
-  'assoc-failure': 'assoc'
+  'assoc-failure': 'assoc',
+  'p-cov-clientrssi-low': 'rss',
+  'p-load-sz-cpu-load': 'sz-cpu-load',
+  'p-switch-memory-high': 'switch-memory-high',
+  'i-net-time-future': 'time-future',
+  'i-net-time-past': 'time-past',
+  'i-net-sz-net-latency': 'sz-net-latency',
+  'i-apserv-high-num-reboots': 'ap-reboot',
+  'i-apserv-continuous-reboots': 'ap-reboot',
+  'i-apserv-downtime-high': 'ap-sz-conn-failure',
+  'i-switch-vlan-mismatch': 'vlan-mismatch',
+  'i-switch-poe-pd': 'poe-pd',
+  'i-apinfra-poe-low': 'ap-poe-low',
+  'i-apinfra-wanthroughput-low': 'ap-wanthroughput-low'
 }
 
 const ttcFailureCodes = ['assoc', 'auth', 'dhcp', 'eap', 'radius']
 
 const extractFailureCode = (
-  checks: Metadata['rootCauseChecks']['checks']
+  checks: IncidentMetadata['rootCauseChecks']['checks']
 ) => {
   return checks.length === 0
     ? 'DEFAULT'
@@ -699,7 +713,7 @@ export const ccd80211RootCauseRecommendations = {
 
 export function getRootCauseAndRecommendations (
   code: keyof typeof codeToFailureTypeMap,
-  rootCauseChecks: Metadata['rootCauseChecks']
+  rootCauseChecks: IncidentMetadata['rootCauseChecks']
 ) {
   const failureType = codeToFailureTypeMap[code]
   if (!rootCauseChecks) return [{ rootCauses: defineMessage({ defaultMessage: '<p>Calculating...</p>' }), recommendations: defineMessage({ defaultMessage: '<p>Calculating...</p>' }) }]

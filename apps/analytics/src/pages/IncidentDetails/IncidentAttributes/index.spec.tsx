@@ -2,10 +2,10 @@ import moment from 'moment'
 
 import { dataApiURL }                                                   from '@acx-ui/analytics/services'
 import { incidentInformation }                                          from '@acx-ui/analytics/utils'
+import { Incident }                                                     from '@acx-ui/analytics/utils'
 import { Provider, store }                                              from '@acx-ui/store'
 import { act, fireEvent, mockGraphqlQuery, render, renderHook, screen } from '@acx-ui/test-utils'
 
-import { IncidentDetailsProps } from '../types'
 
 import { ImpactedAP, impactedAPsApi, ImpactedClient, impactedClientsApi } from './services'
 
@@ -101,7 +101,7 @@ describe('IncidentAttributes', () => {
   ]
   const props = {
     id: 'id',
-    code: 'code',
+    code: 'auth-failure',
     apCount: 1,
     impactedApCount: 1,
     clientCount: 27,
@@ -114,8 +114,33 @@ describe('IncidentAttributes', () => {
     startTime: '2022-07-19T05:15:00.000Z',
     endTime: '2022-07-20T02:42:00.000Z',
     sliceType: 'ap',
-    sliceValue: 'RuckusAP'
-  } as IncidentDetailsProps
+    sliceValue: 'RuckusAP',
+    isMuted: false,
+    mutedBy: null,
+    slaThreshold: null,
+    vlanCount: -1,
+    metadata: {
+      dominant: {},
+      rootCauseChecks: {
+        checks: [
+          {
+            AP_MODEL: false,
+            FW_VERSION: true,
+            CLIENT_OS_MFG: false,
+            CCD_REASON_AUTH_FT_ROAM_FAILURE: true
+          }
+        ],
+        params: {
+          FW_VERSION: '6.1.1.0.917'
+        }
+      }
+    },
+    switchCount: -1,
+    currentSlaThreshold: null,
+    severity: 0.674055825227442,
+    connectedPowerDeviceCount: -1,
+    mutedAt: null
+  } as Incident
   const info = incidentInformation[props.code as keyof typeof incidentInformation]
   const impactedAPs = [
     { name: 'name', mac: 'mac', model: 'model', version: 'version' }
