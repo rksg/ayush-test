@@ -19,9 +19,6 @@ export interface Option {
   label?: React.ReactNode;
   disabled?: boolean;
   children?: Option[];
-  // Determines if this is a leaf node(effective when `loadData` is specified).
-  // `false` will force trade TreeNode as a parent node.
-  // Show expand icon even if the current node has no children.
   isLeaf?: boolean;
 }
 
@@ -37,24 +34,21 @@ export function NetworkFilter (props: CascaderProps) {
   const { $t } = useIntl()
   const [multiSelect, setMultiSelect] = React.useState<DefaultOptionType[][]>([])
   const [open, setOpen] = React.useState(false)
-
   const { onCancel, onApply, ...antProps } = props
-  const { multiple, options } = antProps
-
-  const isPopulated = options && options.length > 0
+  const { multiple } = antProps
 
   const onCancelProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault()
     if (onCancel) {
       onCancel()
     }
-    setOpen(!open)
+    setOpen(false)
   }
 
   const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.preventDefault()
     onApply(multiSelect)
-    setOpen(!open)
+    setOpen(false)
   }
 
   const onChangeMultiple = (
@@ -71,60 +65,39 @@ export function NetworkFilter (props: CascaderProps) {
     onApply(selectedValues)
   }
 
-  const ApplyDropDown = (menus: JSX.Element) => {
+  const withFooter = (menus: JSX.Element) => {
     return <>
       {menus}
-      {RenderFooterButtons()}
+      <UI.Divider />
+      <UI.ButtonDiv>
+        <Button size='small' onClick={onCancelProps}>
+          {$t({ defaultMessage: 'Cancel' })}
+        </Button>
+        <Button size='small' type='secondary' onClick={onApplyProps}>
+          {$t({ defaultMessage: 'Apply' })}
+        </Button>
+      </UI.ButtonDiv>
     </>
   }
-
-  const RenderFooterButtons = () => {
-    return (
-      (isPopulated && multiple) && (
-        <>
-          <UI.Divider />
-          <UI.ButtonDiv>
-            <Button size='small' onClick={onCancelProps}>
-              {$t({ defaultMessage: 'Cancel' })}
-            </Button>
-            <Button size='small' type='secondary' onClick={onApplyProps}>
-              {$t({ defaultMessage: 'Apply' })}
-            </Button>
-          </UI.ButtonDiv>
-        </>
-      )
-    )
-  }
-
-  const DropDown = (menus: JSX.Element) => {
-    if (multiple) {
-      return ApplyDropDown(menus)
-    } else {
-      return menus
-    }
-  }
-
   if (multiple) {
     return <AntCascader
       {...antProps}
       multiple
       onChange={onChangeMultiple}
-      dropdownRender={DropDown}
+      dropdownRender={withFooter}
       expandTrigger='hover'
       maxTagCount={1}
       showSearch
       suffixIcon={<CaretDownOutlined />}
-      onDropdownVisibleChange={(state) => setOpen(state)}
+      onDropdownVisibleChange={setOpen}
       open={open}
     />
   }
-
   return <AntCascader
     {...antProps}
     multiple={false}
     changeOnSelect={true}
     onChange={onChangeSingle}
-    dropdownRender={DropDown}
     expandTrigger='hover'
     showSearch
     suffixIcon={<CaretDownOutlined />}
