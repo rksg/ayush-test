@@ -35,38 +35,26 @@ export function NetworkFilter (props: CascaderProps) {
   const [multiSelect, setMultiSelect] = React.useState<DefaultOptionType[][]>([])
   const [open, setOpen] = React.useState(false)
   const { onCancel, onApply, ...antProps } = props
-  const { multiple } = antProps
-
-  const onCancelProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    event.preventDefault()
-    if (onCancel) {
-      onCancel()
+  if (antProps.multiple) {
+    const onCancelProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      event.preventDefault()
+      if (onCancel) {
+        onCancel()
+      }
+      setOpen(false)
     }
-    setOpen(false)
-  }
-
-  const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    event.preventDefault()
-    onApply(multiSelect)
-    setOpen(false)
-  }
-
-  const onChangeMultiple = (
-    triggeredValue: SingleValueType[],
-    selectedValues: DefaultOptionType[][]
-  ) => {
-    setMultiSelect(selectedValues)
-  }
-
-  const onChangeSingle = (
-    triggeredValue: SingleValueType,
-    selectedValues: DefaultOptionType[]
-  ) => {
-    onApply(selectedValues)
-  }
-
-  const withFooter = (menus: JSX.Element) => {
-    return <>
+    const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      event.preventDefault()
+      onApply(multiSelect)
+      setOpen(false)
+    }
+    const onChangeMultiple = (
+      triggeredValue: SingleValueType[],
+      selectedValues: DefaultOptionType[][]
+    ) => {
+      setMultiSelect(selectedValues)
+    }
+    const withFooter = (menus: JSX.Element) => <>
       {menus}
       <UI.Divider />
       <UI.ButtonDiv>
@@ -78,8 +66,6 @@ export function NetworkFilter (props: CascaderProps) {
         </Button>
       </UI.ButtonDiv>
     </>
-  }
-  if (multiple) {
     return <AntCascader
       {...antProps}
       multiple
@@ -92,14 +78,20 @@ export function NetworkFilter (props: CascaderProps) {
       onDropdownVisibleChange={setOpen}
       open={open}
     />
+  } else {
+    const onChangeSingle = (
+      triggeredValue: SingleValueType,
+      selectedValues: DefaultOptionType[]
+    ) => {
+      onApply(selectedValues)
+    }
+    return <AntCascader
+      {...antProps}
+      changeOnSelect
+      onChange={onChangeSingle}
+      expandTrigger='hover'
+      showSearch
+      suffixIcon={<CaretDownOutlined />}
+    />
   }
-  return <AntCascader
-    {...antProps}
-    multiple={false}
-    changeOnSelect={true}
-    onChange={onChangeSingle}
-    expandTrigger='hover'
-    showSearch
-    suffixIcon={<CaretDownOutlined />}
-  />
 }
