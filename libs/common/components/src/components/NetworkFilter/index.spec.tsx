@@ -65,6 +65,7 @@ describe('NetworkFilter', () => {
 
     fireEvent.click(allOptions[0])
     expect(onApplyMock).toBeCalledTimes(1)
+    expect(onApplyMock).toHaveBeenCalledWith(['n1'])
 
     fireEvent.mouseDown(await screen.findByRole('combobox'))
     fireEvent.click(allOptions[1])
