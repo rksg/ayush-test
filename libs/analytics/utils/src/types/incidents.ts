@@ -1,4 +1,26 @@
-import { IncidentDetailsMetadata, NetworkPath, codeToFailureTypeMap } from '@acx-ui/analytics/utils'
+import { incidentSeverities, codeToFailureTypeMap } from '..'
+
+export interface IncidentInformation {
+  category: string
+  subCategory: string
+  shortDescription: string
+  longDescription: string
+  incidentType: string
+}
+
+export interface PathNode {
+  type: string
+  name?: string
+}
+
+export interface NetworkPath extends Array<PathNode> {}
+
+export type IncidentSeverities = keyof typeof incidentSeverities
+
+export interface SeverityRange {
+  gt: number
+  lte: number
+}
 
 export interface Metadata {
   dominant: { ssid?: string }
@@ -18,7 +40,7 @@ export interface IncidentDetailsProps {
   severity: number
   clientCount: number
   impactedClientCount: number
-  metadata: IncidentDetailsMetadata
+  metadata: Metadata
   path: NetworkPath
   apCount: number
   impactedApCount: number
@@ -30,14 +52,6 @@ export interface IncidentDetailsProps {
   mutedAt: Date|null
   slaThreshold: number|null
   currentSlaThreshold: number|null
-}
-
-interface IncidentInformation {
-  category: string
-  subCategory: string
-  shortDescription: string
-  longDescription: string
-  incidentType: string
 }
 
 export interface IncidentAttributesProps

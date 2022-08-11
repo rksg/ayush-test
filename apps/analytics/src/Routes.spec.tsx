@@ -14,7 +14,7 @@ test('should redirect analytics to analytics/incidents', () => {
       wrapRoutes: false
     }
   })
-  screen.getByText('bar chart')
+  screen.getByText('table')
 })
 test('should navigate to analytics/incidents', () => {
   render(<AnalyticsRoutes />, {
@@ -23,7 +23,7 @@ test('should navigate to analytics/incidents', () => {
       wrapRoutes: false
     }
   })
-  screen.getByText('bar chart')
+  screen.getByText('table')
 })
 test('should navigate to analytics/recommendations', () => {
   render(<AnalyticsRoutes />, {
@@ -51,15 +51,6 @@ test('should navigate to analytics/configChange', () => {
     }
   })
   screen.getByText('Config Change')
-})
-test('should navigate to analytics/occupancy', () => {
-  render(<AnalyticsRoutes />, {
-    route: {
-      path: '/t/tenantId/analytics/occupancy',
-      wrapRoutes: false
-    }
-  })
-  screen.getByText('Occupancy')
 })
 test('should navigate to analytics/incidentDetails', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {

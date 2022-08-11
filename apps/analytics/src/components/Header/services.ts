@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                                              from '@acx-ui/analytics/services'
-import { GlobalFilter, NetworkPath, NetworkNodeTypeForDisplay } from '@acx-ui/analytics/utils'
+import { dataApi }                                                 from '@acx-ui/analytics/services'
+import { AnalyticsFilter, NetworkPath, NetworkNodeTypeForDisplay } from '@acx-ui/analytics/utils'
 
 import { HeaderData } from '.'
 
@@ -48,14 +48,25 @@ const lowPreferenceList = [
 
 const getAttributesByNodeType = (type: keyof typeof NetworkNodeTypeForDisplay): string[] => {
   const defaultAttributes = ['type', 'apCount', 'clientCount' ]
- 
+
+  const keyMap: Partial<Record<
+    keyof typeof NetworkNodeTypeForDisplay,
+    keyof typeof attributes
+  >> = {
+    zoneName: 'zone',
+    ap: 'AP',
+    apMac: 'AP',
+    apGroupName: 'apGroup'
+  }
+
+  const key = keyMap[type] ?? type as keyof typeof attributes
   const attributes = {
     network: [...defaultAttributes, 'switchCount'],
     zone: defaultAttributes,
     apGroup: defaultAttributes,
     AP: [
       'model',
-      'version',            
+      'version',
       'mac',
       'internalIp',
       'clientCount'
@@ -72,7 +83,7 @@ const getAttributesByNodeType = (type: keyof typeof NetworkNodeTypeForDisplay): 
       'portCount'
     ]
   }
-  return attributes[type as keyof typeof attributes]
+  return attributes[key]
 }
 
 const getQuery = (path: NetworkPath) : string => {
@@ -119,19 +130,19 @@ const getQuery = (path: NetworkPath) : string => {
   }
 }
 
-const getQueryVariables = (payload: GlobalFilter): QueryVariables => {
+const getQueryVariables = (payload: AnalyticsFilter): QueryVariables => {
   const { path } = payload
   const [{ type, name }] = path.slice(-1)
   switch(type) {
-    case 'AP': 
+    case 'AP':
     case 'switch':
       return { ...payload, mac: name }
     default: return { ...payload }
   }
 }
 
-const sortPreference = (values: string | string[]): string[] => Array.isArray(values)
-  ? [...values].sort(value => lowPreferenceList.includes(value) ? 1 : -1)
+const sortPreference = <T>(values: T | T[]): T[] => Array.isArray(values)
+  ? [...values].sort(value => lowPreferenceList.includes(String(value)) ? 1 : -1)
   : [values]
 
 export const transformForDisplay = (data: NetworkNodeInfo): HeaderData => {
@@ -150,7 +161,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkNodeInfo: build.query<
       HeaderData,
-      GlobalFilter
+      AnalyticsFilter
     >({
       query: (payload) => ({
         document: getQuery(payload.path),

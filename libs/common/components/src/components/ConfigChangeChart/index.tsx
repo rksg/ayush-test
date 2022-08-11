@@ -1,11 +1,8 @@
 import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 
-import {
-  XAXisComponentOption,
-  TooltipComponentFormatterCallbackParams
-} from 'echarts'
-import ReactECharts       from 'echarts-for-react'
-import { renderToString } from 'react-dom/server'
+import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import ReactECharts                                from 'echarts-for-react'
+import { renderToString }                          from 'react-dom/server'
 
 import { formatter } from '@acx-ui/utils'
 
@@ -417,7 +414,7 @@ export function ConfigChangeChart ({
       selected: selectedLegend
     },
     xAxis: {
-      ...xAxisOptions() as XAXisComponentOption,
+      ...xAxisOptions(),
       type: 'time',
       axisLabel: {
         ...axisLabelOptions(),

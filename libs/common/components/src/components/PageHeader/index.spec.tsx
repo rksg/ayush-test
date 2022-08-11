@@ -46,12 +46,12 @@ describe('PageHeader', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should render page header with sideHeader', () => {
+  it('should render page header with titleExtra', () => {
     const { asFragment } = render(
       <BrowserRouter>
         <PageHeader
           title='With Subtitle'
-          sideHeader={<div>sideHeader</div>}
+          titleExtra={<div>Title Extra</div>}
         />
       </BrowserRouter>
     )

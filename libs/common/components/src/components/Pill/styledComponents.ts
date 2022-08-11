@@ -1,19 +1,19 @@
 import styled from 'styled-components/macro'
 
-export type TrendType = 'none' | 'positive' | 'negative' | 'P1' | 'P2' | 'P3' | 'P4'
+import { incidentSeverities } from '@acx-ui/analytics/utils'
 
-const pillColor = ({ trend }: { trend: TrendType }) => {
-  switch (trend) {
+import { TrendType, IncidentSeverities } from '.'
+
+const pillColor = ({ type }: { type: TrendType | IncidentSeverities }) => {
+  switch (type) {
     case 'positive': return '--acx-semantics-green-50'
     case 'negative': return '--acx-semantics-red-50'
     case 'none': return '--acx-neutrals-50'
-    case 'P1': return '--acx-semantics-red-70'
-    case 'P2': return '--acx-semantics-red-50'
-    case 'P3': return '--acx-accents-orange-50'
-    case 'P4': return '--acx-semantics-yellow-40'
+    default: return incidentSeverities[type].color
   }
 }
 export const Pill = styled.span`
+  display: inline-block;
   border-radius: 10px;
   padding: 3px 8px;
   font-family: var(--acx-neutral-brand-font);

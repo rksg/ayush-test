@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useGlobalFilter }                              from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter }                           from '@acx-ui/analytics/utils'
 import { PageHeader, PageHeaderProps , Button, Loader } from '@acx-ui/components'
 
 import { useNetworkNodeInfoQuery } from './services'
@@ -8,7 +8,7 @@ import { Divider }                 from './styledComponents'
 
 export type SubTitle = {
   key: string,
-  value: string[]
+  value: (number | string)[]
 }
 
 export type HeaderData = {
@@ -42,11 +42,11 @@ export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
 }
 
 const ConnectedHeader = (props: PageHeaderProps) => {
-  const filters = useGlobalFilter()
+  const filters = useAnalyticsFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
   return <div>
     <Loader states={[queryResults]}>
-      <Header {...props} 
+      <Header {...props}
         data={queryResults.data as HeaderData}
         replaceTitle={filters.path.length > 1}
       />
