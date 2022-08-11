@@ -7,7 +7,8 @@ import { cssStr }                   from '@acx-ui/components'
 
 import { useChartsQuery } from './services'
 import { formatter } from '@acx-ui/utils'
-import { IncidentDetailsProps } from '../types'
+import { Incident } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, getSeriesData }                 from '@acx-ui/analytics/utils'
 
 const lineColors = [
   cssStr('--acx-accents-blue-30'),
@@ -19,12 +20,7 @@ export interface TimeSeriesType {
   type: 'clients' | 'failures' | 'detailed-failures'
 }
 
-interface TimeSeriesProps 
-  extends IncidentDetailsProps {
-    incident: IncidentDetailsProps
-  }
-
-function TimeSeries (props) {
+function TimeSeries (props: Incident) {
   const { $t } = useIntl()
   const queryResults = useChartsQuery(props)
   const title = $t({ defaultMessage: 'Clients' })

@@ -40,7 +40,7 @@ export const IncidentDetailsTemplate = (props: Incident) => {
           <div>network impact</div>
         </Col>
         <Col offset={4} span={20}>
-          <TimeSeries {...props} type={'clients'}/>
+          <TimeSeries {...props}/>
         </Col>
       </Row>
     </>

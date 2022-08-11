@@ -1,14 +1,15 @@
 import { gql } from 'graphql-request'
 
 import { dataApi } from '@acx-ui/analytics/services'
-import { IncidentDetailsProps } from '../types'
+import { Incident } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
 export interface IncidentCharts {
   time: string[]
   failure: number[]
 }
 
-export type ClientCountCharts = {
+export interface ClientCountCharts {
   connectedClientCount: number[]
   impactedClientCount: number[]
   newClientCount: number[]
@@ -31,23 +32,45 @@ export interface RelatedIncidents {
 }
 
 export interface RequestPayload {
-  incident: IncidentDetailsProps
+  code: string
+  incident: Incident
 }
 
 interface Response <TimeSeriesData> {
   incident: Record<string, ClientCountCharts>
 }
 
-export interface ChartsData {
-  unit: string
+interface ChartsData {
+  incidentCharts: {
+    time: string[]
+    failure: number[]
+  },
+  relatedIncidents: {
+    id: string
+    severity: number
+    code: string
+    startTime: string
+    endTime: string
+  },
+  clientCountCharts: {
+    connectedClientCount: number[]
+    impactedClientCount: number[]
+    newClientCount: number[]
+    time: string[]
+  },
+  attemptAndFailureCharts: {
+    time: string[]
+    failureCount: number[]
+    totalFailureCount: number[]
+    attemptCount: number[]
+  }
 }
-
 
 export const Api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     Charts: build.query<
-      Record<string, ChartsData>,
-      RequestPayload
+      ChartsData,
+      AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`
@@ -80,7 +103,11 @@ export const Api = dataApi.injectEndpoints({
               }
             }
           }
-        `
+        `,
+        variables: {
+          code: payload.code,
+          codeMap: [payload.code]
+        }
       })
     })
   })
