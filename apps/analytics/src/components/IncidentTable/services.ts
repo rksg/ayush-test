@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                  from '@acx-ui/analytics/services'
-import { GlobalFilter, Severities } from '@acx-ui/analytics/utils'
-import { incidentCodes }            from '@acx-ui/analytics/utils'
+import { dataApi }                     from '@acx-ui/analytics/services'
+import { AnalyticsFilter, Severities } from '@acx-ui/analytics/utils'
+import { incidentCodes }               from '@acx-ui/analytics/utils'
 
 const listQueryProps = {
   incident: `
@@ -89,7 +89,7 @@ export const getIncidentBySeverity = (value?: number | null) => {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    incidentsList: build.query<IncidentNodeData, GlobalFilter>({
+    incidentsList: build.query<IncidentNodeData, AnalyticsFilter>({
       query: (payload) => ({
         document: gql`
           query IncidentTableWidget(

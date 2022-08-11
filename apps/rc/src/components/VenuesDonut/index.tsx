@@ -1,4 +1,5 @@
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader }            from '@acx-ui/components'
 import { Card }                      from '@acx-ui/components'
@@ -46,6 +47,7 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
 }
 
 function VenuesDonutWidget () {
+  const { $t } = useIntl()
   const basePath = useTenantLink('/venues/')
   const navigate = useNavigate()
 
@@ -66,7 +68,7 @@ function VenuesDonutWidget () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title='Venues'>
+      <Card title={$t({ defaultMessage: 'Venues' })}>
         <AutoSizer>
           {({ height, width }) => (
             <DonutChart

@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                                 from '@acx-ui/analytics/services'
-import { GlobalFilter, incidentCodes, Severities } from '@acx-ui/analytics/utils'
+import { dataApi }                                    from '@acx-ui/analytics/services'
+import { AnalyticsFilter, incidentCodes, Severities } from '@acx-ui/analytics/utils'
 
 
 export type IncidentsBySeverityData = {
@@ -21,7 +21,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsBySeverity: build.query<
       IncidentsBySeverityData,
-      GlobalFilter
+      AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`

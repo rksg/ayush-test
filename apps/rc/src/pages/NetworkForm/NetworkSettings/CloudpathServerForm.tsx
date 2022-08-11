@@ -5,6 +5,8 @@ import {
   Input,
   Select
 } from 'antd'
+import { useIntl } from 'react-intl'
+
 
 import { Button, Subtitle }      from '@acx-ui/components'
 import { useCloudpathListQuery } from '@acx-ui/rc/services'
@@ -13,6 +15,7 @@ import { useParams }             from '@acx-ui/react-router-dom'
 const { Option } = Select
 
 export function CloudpathServerForm () {
+  const { $t } = useIntl()
   const selectedId = Form.useWatch('cloudpathServerId')
   const { selectOptions, selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -27,23 +30,23 @@ export function CloudpathServerForm () {
     <>
       <Form.Item
         name='cloudpathServerId'
-        label='Cloudpath Server'
+        label={$t({ defaultMessage: 'Cloudpath Server' })}
         rules={[{ required: true }]}>
-        <Select placeholder='Select...' children={selectOptions} />
+        <Select placeholder={$t({ defaultMessage: 'Select...' })} children={selectOptions} />
       </Form.Item>
 
-      <Button type='link'>Add Server</Button>
+      <Button type='link'>{ $t({ defaultMessage: 'Add Server' }) }</Button>
 
       {selected && (<>
         <Form.Item
-          label='Deployment Type'
+          label={$t({ defaultMessage: 'Deployment Type' })}
           children={selected.deploymentType}
         />
         <Subtitle level={4}>
-          Radius Authentication Service
+          { $t({ defaultMessage: 'Radius Authentication Service' }) }
         </Subtitle>
         <Form.Item
-          label='IP Address'
+          label={$t({ defaultMessage: 'IP Address' })}
           children={
             selected.authRadius.primary.ip +
             ':' +
@@ -51,7 +54,7 @@ export function CloudpathServerForm () {
           }
         />
         <Form.Item
-          label='Radius Shared secret'
+          label={$t({ defaultMessage: 'Radius Shared secret' })}
           children={<Input.Password
             readOnly
             bordered={false}

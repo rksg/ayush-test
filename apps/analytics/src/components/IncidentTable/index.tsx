@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import moment    from 'moment-timezone'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter }                            from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter }                            from '@acx-ui/analytics/utils'
 import { Card, Loader, Table, TableProps, showToast } from '@acx-ui/components'
 import { Link }                                       from '@acx-ui/react-router-dom'
 
@@ -72,7 +72,7 @@ const actions: TableProps<IncidentNodeInfo>['actions'] = [
 ]
 
 const IncidentTableWidget = () => {
-  const filters = useGlobalFilter()
+  const filters = useAnalyticsFilter()
   const queryResults = useIncidentsListQuery(filters)
   const [data, setData] = useState<IncidentNodeData>([])
 
