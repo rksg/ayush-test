@@ -477,7 +477,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                     />
                                                   </span>
                                                   <span>
-                                                    Captive portal
+                                                    Captive Portal
                                                     <div
                                                       class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
                                                     >
@@ -509,7 +509,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                     <div
                                                       class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
                                                     >
-                                                      Allow users to access the network without any authentication/security(not recommended)
+                                                      Allow users to access the network without any authentication/security (not recommended)
                                                     </div>
                                                   </span>
                                                 </label>
@@ -596,7 +596,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                   <button
                                     aria-checked="false"
                                     class="ant-switch"
-                                    id="Settings_isCloudpathEnabled"
+                                    id="settings_isCloudpathEnabled"
                                     role="switch"
                                     type="button"
                                   >
