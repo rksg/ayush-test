@@ -11,8 +11,6 @@ import { DescriptionRowProps, DescriptionSection } from '../../../components/Des
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
 
-
-
 export const durationOf = (start: string, end: string) =>
   moment(end).diff(moment(start), 'milliseconds', true)
 
