@@ -1,20 +1,32 @@
 import { useEffect, useState } from 'react'
 
-import moment    from 'moment-timezone'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useAnalyticsFilter }                            from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter }                         from '@acx-ui/analytics/utils'
 import { Card, Loader, Table, TableProps, showToast } from '@acx-ui/components'
 import { Link }                                       from '@acx-ui/react-router-dom'
 
-import { useIncidentsListQuery, IncidentNodeData, IncidentNodeInfo, getIncidentBySeverity } from './services'
+import { useIncidentsListQuery, IncidentNodeData, IncidentNodeInfo }        from './services'
+import { 
+  getIncidentBySeverity,
+  formatDate,
+  formatDuration,
+  sorterCompare,
+  getLongIncidentDescription,
+  getCategory
+} from './utils'
+
 
 const ColumnHeaders: TableProps<IncidentNodeInfo>['columns'] = [
   {
     title: 'Severity',
     dataIndex: 'severity',
     key: 'severity',
-    render: (_, value) => getIncidentBySeverity(value.severity)
+    render: (_, value) => getIncidentBySeverity(value.severity),
+    sorter: {
+      compare: (a, b) => sorterCompare(a.severity, b.severity),
+      multiple: 1
+    }
   },
   {
     title: 'Date',
@@ -22,30 +34,30 @@ const ColumnHeaders: TableProps<IncidentNodeInfo>['columns'] = [
     valueType: 'dateTime',
     key: 'startTime',
     render: (_, value) => {
-      return <Link to={`/analytics/incident/${value.id}`}>{
-        moment(value.startTime).format('MMM DD yyyy HH:mm')
-      }</Link>
+      return <Link to={`/analytics/incident/${value.id}`}>{formatDate(value.startTime)}</Link>
+    },
+    sorter: {
+      compare: (a, b) => sorterCompare(a.startTime, b.startTime),
+      multiple: 2
     }
   },
   {
     title: 'Duration',
     dataIndex: 'endTime',
     key: 'endTime',
-    render: (_, value) => {
-      const start = moment(value.startTime, 'hh:mm:ss a')
-      const end = moment(value.endTime, 'hh:mm:ss a')
-      return end.diff(start, 'hours')
-    }
+    render: (_, value) => formatDuration(value.startTime, value.endTime)
   },
   {
     title: 'Description',
     dataIndex: 'code',
-    key: 'code'
+    key: 'code',
+    render: (_, value) => getLongIncidentDescription(value.code)
   },
   {
     title: 'Category',
-    dataIndex: 'code',
-    key: 'code'
+    dataIndex: 'sliceType',
+    key: 'sliceType',
+    render: (_, value) => getCategory(value.code)
   },
   {
     title: 'Client Impact',
@@ -64,10 +76,12 @@ export type IncidentTableProps = TableProps<IncidentNodeData>
 const actions: TableProps<IncidentNodeInfo>['actions'] = [
   {
     label: 'Mute',
-    onClick: (selectedRows) => showToast({
-      type: 'info',
-      content: `Mute ${selectedRows.length}`
-    })
+    onClick: (selectedRows) => {
+      showToast({
+        type: 'info',
+        content: `Mute ${selectedRows[0].id}`
+      })
+    }
   }
 ]
 
@@ -96,6 +110,8 @@ const IncidentTableWidget = () => {
               actions={actions}
               rowSelection={{ type: 'checkbox' }}
               pagination={{ pageSize: 10 }}
+              rowKey='id'
+              showSorterTooltip={false}
             />
           )}
         </AutoSizer>

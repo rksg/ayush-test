@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                     from '@acx-ui/analytics/services'
-import { AnalyticsFilter, Severities } from '@acx-ui/analytics/utils'
-import { incidentCodes }               from '@acx-ui/analytics/utils'
+import { dataApi }         from '@acx-ui/analytics/services'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { incidentCodes }   from '@acx-ui/analytics/utils'
 
 const listQueryProps = {
   incident: `
@@ -23,19 +23,19 @@ const listQueryProps = {
   `
 }
 
-interface IncidentPath {
+export interface IncidentPath {
   name: string
   type: string
 }
 
-interface IncidentApModel {
+export interface IncidentApModel {
   AP_MODEL: boolean | string
   CCD_REASON_DEAUTH_LEAVING?: boolean | string
   CLIENT_OS_MFG: boolean | string
   FW_VERSION: boolean | string
 }
 
-interface IncidentMetadata {
+export interface IncidentMetadata {
   dominant: {
     ssid: string
   }
@@ -67,7 +67,7 @@ export interface IncidentNodeInfo {
 
 export type IncidentNodeData = IncidentNodeInfo[]
 
-interface Response<IncidentNodeData> {
+export interface Response<IncidentNodeData> {
   network: {
     hierarchyNode: {
       incidents: IncidentNodeData
@@ -75,19 +75,7 @@ interface Response<IncidentNodeData> {
   }
 }
 
-export const getIncidentBySeverity = (value?: number | null) => {
-  if (value === null || value === undefined) {
-    return '-'
-  }
-
-  const severity = Object.entries(Severities).filter(((elem) => {
-    return value >= elem[1].gt && value <= elem[1].lte
-  }))
-
-  return severity[0][0]
-}
-
-export const api = dataApi.injectEndpoints({
+const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsList: build.query<IncidentNodeData, AnalyticsFilter>({
       query: (payload) => ({
@@ -125,8 +113,13 @@ export const api = dataApi.injectEndpoints({
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {
         return response.network.hierarchyNode.incidents.map((event) => {
+          // handle nested row transform
           event.children = event.relatedIncidents
           delete event.relatedIncidents
+          if (event.children && event.children.length <= 0) {
+            event.children = undefined
+          }
+
           return event
         })
       }
