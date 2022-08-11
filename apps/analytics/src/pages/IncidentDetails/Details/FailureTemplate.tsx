@@ -12,7 +12,7 @@ import { PageHeader, SeverityPill } from '@acx-ui/components'
 
 import { incidentDetailsMap } from '..'
 import { IncidentAttributes } from '../IncidentAttributes'
-import { Insights } from '../Insights'
+import { Insights }           from '../Insights'
 
 import * as UI from './styledComponents'
 

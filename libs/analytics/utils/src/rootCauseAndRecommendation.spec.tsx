@@ -1,11 +1,11 @@
 import { defineMessage } from 'react-intl'
 
 import { getRootCauseAndRecommendations, codeToFailureTypeMap, rootCauseRecommendationMap } from './rootCauseRecommendation'
-import { IncidentDetailsMetadata }                                                          from './types'
+import { Metadata }                                                                         from './types/incidents'
 
 interface InsightComponentProps {
   code: keyof typeof codeToFailureTypeMap
-  metadata: IncidentDetailsMetadata
+  metadata: Metadata
 }
 
 describe('getRootCauseAndRecommendations', () => {

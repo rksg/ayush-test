@@ -1,11 +1,21 @@
 import { incidentSeverities, codeToFailureTypeMap } from '..'
 
 export interface IncidentInformation {
-  category: string
-  subCategory: string
-  shortDescription: string
-  longDescription: string
-  incidentType: string
+  category: {
+    defaultMessage: string
+  } | string
+  subCategory: {
+    defaultMessage: string
+  } | string
+  shortDescription: {
+    defaultMessage: string
+  } | string
+  longDescription: {
+    defaultMessage: string
+  } | string
+  incidentType: {
+    defaultMessage: string
+  } | string
 }
 
 export interface PathNode {

@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { Provider }           from '@acx-ui/store'
-import { render, mockServer } from '@acx-ui/test-utils'
+import { IncidentDetailsProps } from '@acx-ui/analytics/utils'
+import { Provider }             from '@acx-ui/store'
+import { render, mockServer }   from '@acx-ui/test-utils'
 
-import { IncidentDetailsProps } from '../types'
 
 import { IncidentDetailsTemplate } from './FailureTemplate'
 

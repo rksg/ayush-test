@@ -2,10 +2,10 @@ import { Row, Typography }  from 'antd'
 import { FormattedMessage } from 'react-intl'
 
 import { getRootCauseAndRecommendations } from '@acx-ui/analytics/utils'
+import { IncidentDetailsProps }           from '@acx-ui/analytics/utils'
 import { Subtitle }                       from '@acx-ui/components'
 import { BulbOutlined }                   from '@acx-ui/icons'
 
-import { IncidentDetailsProps } from '../types'
 
 import * as UI from './styledComponents'
 

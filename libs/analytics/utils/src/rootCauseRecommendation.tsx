@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { defineMessage } from 'react-intl'
 
-import { IncidentDetailsMetadata } from './types'
+import { Metadata } from './types/incidents'
 
 const commonRecommendations = defineMessage({
   defaultMessage: `
@@ -36,7 +36,7 @@ export const codeToFailureTypeMap = {
 const ttcFailureCodes = ['assoc', 'auth', 'dhcp', 'eap', 'radius']
 
 const extractFailureCode = (
-  checks: IncidentDetailsMetadata['rootCauseChecks']['checks']
+  checks: Metadata['rootCauseChecks']['checks']
 ) => {
   return checks.length === 0
     ? 'DEFAULT'
@@ -699,7 +699,7 @@ export const ccd80211RootCauseRecommendations = {
 
 export function getRootCauseAndRecommendations (
   code: keyof typeof codeToFailureTypeMap,
-  rootCauseChecks: IncidentDetailsMetadata['rootCauseChecks']
+  rootCauseChecks: Metadata['rootCauseChecks']
 ) {
   const failureType = codeToFailureTypeMap[code]
   if (!rootCauseChecks) return [{ rootCauses: defineMessage({ defaultMessage: '<p>Calculating...</p>' }), recommendations: defineMessage({ defaultMessage: '<p>Calculating...</p>' }) }]
