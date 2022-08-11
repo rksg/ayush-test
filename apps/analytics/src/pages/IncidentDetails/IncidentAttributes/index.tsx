@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 
-import moment                from 'moment-timezone'
-import { FormattedMessage  } from 'react-intl'
+import moment                         from 'moment-timezone'
+import { FormattedMessage, useIntl  } from 'react-intl'
 
-import { noDataSymbol }                 from '@acx-ui/analytics/utils'
-import type { IncidentAttributesProps } from '@acx-ui/analytics/utils'
-import { formatter }                    from '@acx-ui/utils'
+import { noDataSymbol, nodeTypes, useFormattedPath, useImpactedArea } from '@acx-ui/analytics/utils'
+import type { IncidentAttributesProps }                               from '@acx-ui/analytics/utils'
+import { formatter }                                                  from '@acx-ui/utils'
 
-import { DescriptionRowProps, DescriptionSection }         from '../../../components/DescriptionSection'
-import { formattedPath, formattedSliceType, impactedArea } from '../path'
+import { DescriptionRowProps, DescriptionSection } from '../../../components/DescriptionSection'
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
 
@@ -36,20 +35,26 @@ export const impactValues = (type: string, count: number|null, impactedCount: nu
       [`${type}ImpactDescription`]: <FormattedMessage defaultMessage='Calculating...'/>
     }
   } else {
-    const impact = impactedCount / count
-    const formattedImpact = formatter('percentFormat')(impact)
+    const percentage = impactedCount / count
+    const formattedImpact = formatter('percentFormat')(percentage)
     return {
-      [`${type}Impact`]: impact,
+      [`${type}Impact`]: percentage,
       [`${type}ImpactFormatted`]: formattedImpact,
       [`${type}ImpactCountFormatted`]: formatter('countFormat')(impactedCount),
       [`${type}ImpactDescription`]: <FormattedMessage
-        defaultMessage='{impactedCount} of {count} {type}{isPlural} ({impact})'
+        defaultMessage={`
+          {count} of {total} {type, select,
+            ap {{total, plural, one {AP} other {APs}}}
+            client {{total, plural, one {client} other {clients}}}
+            other {Unknown}
+          }
+          ({percentage, number, ::percent .##})
+        `}
         values={{
-          impactedCount,
-          count,
-          type: type === 'ap' ? type.toUpperCase() : type,
-          isPlural: count > 1 ? 's' : '',
-          impact: formattedImpact
+          type,
+          percentage,
+          count: impactedCount,
+          total: count
         }}
       />
     }
@@ -64,7 +69,10 @@ export function useDrawer (init: string|boolean) {
 }
 
 export const IncidentAttributes = (props: IncidentAttributesProps) => {
+  const { $t } = useIntl()
   const { visible, onOpen, onClose } = useDrawer(false)
+  const scope = useFormattedPath(props.path, props.sliceValue)
+  const impactedArea = useImpactedArea(props.path, props.sliceValue)
   const fields = [
     {
       key: 'clientImpactCount',
@@ -91,29 +99,29 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
       key: 'incidentCategory',
       getValue: (details: IncidentAttributesProps) => ({
         label: 'Incident Category',
-        children: details.category
+        children: $t(details.category)
       })
     },
     {
       key: 'incidentSubCategory',
       getValue: (details: IncidentAttributesProps) => ({
         label: 'Incident Sub-Category',
-        children: details.subCategory
+        children: $t(details.subCategory)
       })
     },
     {
       key: 'type',
       getValue: (details: IncidentAttributesProps) => ({
         label: 'Type',
-        children: formattedSliceType(details.sliceType)
+        children: $t(nodeTypes(details.sliceType))
       })
     },
     {
       key: 'scope',
-      getValue: (details: IncidentAttributesProps) => ({
+      getValue: () => ({
         label: 'Scope',
-        children: impactedArea(details.path, details.sliceValue),
-        title: formattedPath(details.path, details.sliceValue)
+        children: impactedArea,
+        title: scope
       })
     },
     {
