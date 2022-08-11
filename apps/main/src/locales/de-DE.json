@@ -1,11 +1,684 @@
 {
-  "title": "Armaturenbrett",
-  "pageHeaderMenu": {
-    "add": "Hinzufügen",
-    "entireOrg": "Die ganze Organisation",
-    "last24Hrs": "Letzte 24 Stunden"
+  "+20FW7": {
+    "defaultMessage": "DE-Devices"
   },
-  "stepsForm": {
-    "cancel": "Absagen"
+  "+7PjfV": {
+    "defaultMessage": "DE-1 day"
+  },
+  "+8jGZ4": {
+    "defaultMessage": "DE-network filter"
+  },
+  "+U6ozc": {
+    "defaultMessage": "DE-Type"
+  },
+  "+a1n2f": {
+    "defaultMessage": "DE-AP never contacted cloud"
+  },
+  "/9+YKH": {
+    "defaultMessage": "DE-<p>Format options:</p> <p>Most secured - all printable ASCII characters can be used</p> <p>Keyboard friendly - only letters and numbers will be used</p> <p>Numbers only - only numbers will be used</p>"
+  },
+  "/uhiJw": {
+    "defaultMessage": "DE-AP disconnected from cloud"
+  },
+  "0Hd1cr": {
+    "defaultMessage": "DE-Allow users to access the network without any authentication/security (not recommended)",
+    "description": "Description for Open Network"
+  },
+  "0QEzt5": {
+    "defaultMessage": "DE-AP Group"
+  },
+  "1EYCdR": {
+    "defaultMessage": "DE-Tags"
+  },
+  "25rEb3": {
+    "defaultMessage": "DE-Shared Secret"
+  },
+  "2O2sfp": {
+    "defaultMessage": "DE-Finish"
+  },
+  "2n2eHo": {
+    "defaultMessage": "DE-{count,plural,one{For the following venue, the network could not be activated on all Venues:} other{For the following venues, the network could not be activated on all Venues:}}"
+  },
+  "34xBI0": {
+    "defaultMessage": "DE-APs"
+  },
+  "3HCg1n": {
+    "defaultMessage": "DE-Configuration update failed"
+  },
+  "3KyZGF": {
+    "defaultMessage": "DE-All Radios"
+  },
+  "3LyeET": {
+    "defaultMessage": "DE-3rd Party Captive Portal (WISPr)",
+    "description": "Guest network type - 3rd Party Captive Portal (WISPr)"
+  },
+  "3mdxYI": {
+    "defaultMessage": "DE-No Switch Clients"
+  },
+  "47FYwb": {
+    "defaultMessage": "DE-Cancel"
+  },
+  "4M0IEe": {
+    "defaultMessage": "DE-Never contacted cloud"
+  },
+  "4RbqN8": {
+    "defaultMessage": "DE-No venues activating this network. Use the ON/OFF switches in the list to select the activating venues"
+  },
+  "4VPIXt": {
+    "defaultMessage": "DE-Alarms"
+  },
+  "4dk4rO": {
+    "defaultMessage": "DE-Accounting Service"
+  },
+  "5G8/Fe": {
+    "defaultMessage": "DE-Self Sign-In",
+    "description": "Guest network type - Self Sign-In"
+  },
+  "5ezgA1": {
+    "defaultMessage": "DE-MAC Address"
+  },
+  "5jeq8P": {
+    "defaultMessage": "DE-Unknown"
+  },
+  "5lQx5r": {
+    "defaultMessage": "DE-Scheduling"
+  },
+  "5mHBBz": {
+    "defaultMessage": "DE-Operational - applying configuration"
+  },
+  "6g0glr": {
+    "defaultMessage": "DE-Networking Devices"
+  },
+  "6xap9L": {
+    "defaultMessage": "DE-Good"
+  },
+  "724CrE": {
+    "defaultMessage": "DE-Select..."
+  },
+  "7Kk96z": {
+    "defaultMessage": "DE-Use Cloudpath Server:"
+  },
+  "7UOvbT": {
+    "defaultMessage": "DE-Offline"
+  },
+  "7xgyj8": {
+    "defaultMessage": "DE-Numbers Only"
+  },
+  "8B04tJ": {
+    "defaultMessage": "DE-WPA"
+  },
+  "8Fo71r": {
+    "defaultMessage": "DE-MSP Space"
+  },
+  "8cF6CF": {
+    "defaultMessage": "DE-Error: Can not detect passphrase expiration value"
+  },
+  "9+Ddtu": {
+    "defaultMessage": "DE-Next"
+  },
+  "9GvlpZ": {
+    "defaultMessage": "DE-Open Settings"
+  },
+  "9MxQUk": {
+    "defaultMessage": "DE-Shared Secret:"
+  },
+  "9t1iiv": {
+    "defaultMessage": "DE-Configure"
+  },
+  "9uOFF3": {
+    "defaultMessage": "DE-Overview"
+  },
+  "9wJSG8": {
+    "defaultMessage": "DE-Map is not enabled"
+  },
+  "AJBpR8": {
+    "defaultMessage": "DE-Network Type"
+  },
+  "AcxDgz": {
+    "defaultMessage": "DE-Activate"
+  },
+  "AetaeJ": {
+    "defaultMessage": "DE-Select venues to activate this network"
+  },
+  "AfUjYu": {
+    "defaultMessage": "DE-Config Change"
+  },
+  "Ao2xin": {
+    "defaultMessage": "DE-Most Secured"
+  },
+  "AudUdt": {
+    "defaultMessage": "DE-AP offline"
+  },
+  "AwuN57": {
+    "defaultMessage": "DE-6 months"
+  },
+  "BNHFY1": {
+    "defaultMessage": "DE-Only letters and numbers can be used"
+  },
+  "BeT3j9": {
+    "defaultMessage": "DE-WPA3"
+  },
+  "C5Rw0o": {
+    "defaultMessage": "DE-Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server."
+  },
+  "CM0JAR": {
+    "defaultMessage": "DE-Entire Organization"
+  },
+  "CNTrZU": {
+    "defaultMessage": "DE-2 years"
+  },
+  "CasKsA": {
+    "defaultMessage": "DE-Add Secondary Server"
+  },
+  "CzRokW": {
+    "defaultMessage": "DE-WEP",
+    "description": "WLAN security type - WEP"
+  },
+  "Dnob31": {
+    "defaultMessage": "DE-Operational"
+  },
+  "EP8xiD": {
+    "defaultMessage": "DE-AP heartbeat lost"
+  },
+  "EYIw2M": {
+    "defaultMessage": "DE-Clear selection"
+  },
+  "EnTkxu": {
+    "defaultMessage": "DE-Recommendations"
+  },
+  "FbnpZB": {
+    "defaultMessage": "DE-Cluster of {count} Venues"
+  },
+  "FnRTEV": {
+    "defaultMessage": "DE-Average"
+  },
+  "FoE42e": {
+    "defaultMessage": "DE-Requires Attention"
+  },
+  "GLV1Lq": {
+    "defaultMessage": "DE-Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork",
+    "description": "Description for Enterprise AAA (802.1X)"
+  },
+  "GYphdA": {
+    "defaultMessage": "DE-Open Captive Portal",
+    "description": "WLAN security type - Open Captive Portal"
+  },
+  "HuqGcJ": {
+    "defaultMessage": "DE-WPA2 (Recommended)"
+  },
+  "I3JhPS": {
+    "defaultMessage": "DE-Network"
+  },
+  "I3b4hn": {
+    "defaultMessage": "DE-Version"
+  },
+  "IBNdTs": {
+    "defaultMessage": "DE-VLAN"
+  },
+  "IDKI0Y": {
+    "defaultMessage": "DE-{ipAddress}:{port}"
+  },
+  "IShDlj": {
+    "defaultMessage": "DE-WPA2 Enterprise",
+    "description": "WLAN security type - WPA2 Enterprise"
+  },
+  "IdweXY": {
+    "defaultMessage": "DE-Select Columns"
+  },
+  "JkubB5": {
+    "defaultMessage": "DE-Enterprise AAA (802.1X)"
+  },
+  "K3r6DQ": {
+    "defaultMessage": "DE-Delete"
+  },
+  "K7AkdL": {
+    "defaultMessage": "DE-Show"
+  },
+  "LTNKL8": {
+    "defaultMessage": "DE-1 week"
+  },
+  "NH/H5U": {
+    "defaultMessage": "DE-Dynamic Pre-Shared Key (DPSK)"
+  },
+  "NKPfmm": {
+    "defaultMessage": "DE-{count} selected"
+  },
+  "NV6/gE": {
+    "defaultMessage": "DE-Create New Network"
+  },
+  "Nr2pru": {
+    "defaultMessage": "DE-Network History"
+  },
+  "Nt8DSX": {
+    "defaultMessage": "DE-Authentication Service"
+  },
+  "O17xiH": {
+    "defaultMessage": "DE-date filter"
+  },
+  "OT4kCw": {
+    "defaultMessage": "DE-AP Name"
+  },
+  "Ok71Hw": {
+    "defaultMessage": "DE-Security Protocol:"
+  },
+  "P0HnjZ": {
+    "defaultMessage": "DE-Click-Through",
+    "description": "Guest network type - Click-Through"
+  },
+  "PYmHhr": {
+    "defaultMessage": "DE-Venue"
+  },
+  "Ppx673": {
+    "defaultMessage": "DE-Reports"
+  },
+  "Q8Qw5B": {
+    "defaultMessage": "DE-Description"
+  },
+  "QH7XOz": {
+    "defaultMessage": "DE-New Clients"
+  },
+  "QfVD/H": {
+    "defaultMessage": "DE-Use Cloudpath Server"
+  },
+  "RAjs+g": {
+    "defaultMessage": "DE-{isCaptiveNetwork,select,true{Captive Portal - {captiveNetworkType}} other{Portal - {captiveNetworkType}}}"
+  },
+  "RUoi+Y": {
+    "defaultMessage": "DE-Keyboard Friendly"
+  },
+  "RrCui3": {
+    "defaultMessage": "DE-Summary"
+  },
+  "Ru1Owh": {
+    "defaultMessage": "DE-Serial Number"
+  },
+  "S33j4r": {
+    "defaultMessage": "DE-Services ({servicesCount})"
+  },
+  "SDi0Ka": {
+    "defaultMessage": "DE-WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise. <highlight> Security protocols other than WPA3 are not be supported in 6 GHz radio. </highlight>"
+  },
+  "T3UF92": {
+    "defaultMessage": "DE-Authentication Server"
+  },
+  "TE4fIS": {
+    "defaultMessage": "DE-City"
+  },
+  "TY81Tv": {
+    "defaultMessage": "DE-Passphrase Format:"
+  },
+  "U9tjJ5": {
+    "defaultMessage": "DE-2 days"
+  },
+  "UaCh1c": {
+    "defaultMessage": "DE-Add Server"
+  },
+  "V52jNn": {
+    "defaultMessage": "DE-Enabled"
+  },
+  "VebTZq": {
+    "defaultMessage": "DE-WPA Enterprise",
+    "description": "WLAN security type - WPA Enterprise"
+  },
+  "Vl9Unn": {
+    "defaultMessage": "DE-Host Approval",
+    "description": "Guest network type - Host Approval"
+  },
+  "W/V6+Y": {
+    "defaultMessage": "DE-Collapse"
+  },
+  "WEJ7ak": {
+    "defaultMessage": "DE-No APs"
+  },
+  "XB8fV9": {
+    "defaultMessage": "DE-Last 24 Hours"
+  },
+  "XYVgGy": {
+    "defaultMessage": "DE-Alarm Time"
+  },
+  "Y2pNUx": {
+    "defaultMessage": "DE-AP operational - applying firmware"
+  },
+  "YDMrKK": {
+    "defaultMessage": "DE-Users"
+  },
+  "Z4WqBL": {
+    "defaultMessage": "DE-Remove Secondary Server"
+  },
+  "ZWz5If": {
+    "defaultMessage": "DE-Network Info"
+  },
+  "ZvKSfJ": {
+    "defaultMessage": "DE-Events"
+  },
+  "b3loSF": {
+    "defaultMessage": "DE-Occupancy"
+  },
+  "b5YpHX": {
+    "defaultMessage": "DE-AP operational"
+  },
+  "bHHMAb": {
+    "defaultMessage": "DE-Firmware update failed"
+  },
+  "bS/cRP": {
+    "defaultMessage": "DE-Venues"
+  },
+  "bnaSLU": {
+    "defaultMessage": "DE-Connected Clients Over Time"
+  },
+  "c8uKl6": {
+    "defaultMessage": "DE-Wi-Fi"
+  },
+  "c9uA84": {
+    "defaultMessage": "DE-RF Channels"
+  },
+  "cRmipE": {
+    "defaultMessage": "DE-Passphrase expiration"
+  },
+  "cVVoGX": {
+    "defaultMessage": "DE-Error: Can not detect passphrase format value"
+  },
+  "ciDg7D": {
+    "defaultMessage": "DE-Primary Server",
+    "description": "AAA Server Order - Primary Server"
+  },
+  "cp8inc": {
+    "defaultMessage": "DE-Open Network"
+  },
+  "cq7z5N": {
+    "defaultMessage": "DE-AAA Settings"
+  },
+  "czpjyb": {
+    "defaultMessage": "DE-Require users to enter a passphrase to connect. The passphrase is unique per device",
+    "description": "Description for Dynamic Pre-Shared Key (DPSK)"
+  },
+  "d0A0aG": {
+    "defaultMessage": "DE-Radius Authentication Service"
+  },
+  "d63gFk": {
+    "defaultMessage": "DE-AI Analytics"
+  },
+  "dP02B8": {
+    "defaultMessage": "DE-Heartbeat lost"
+  },
+  "dg6Mrs": {
+    "defaultMessage": "DE-Number of characters in passphrase. Valid range 8-63"
+  },
+  "dty181": {
+    "defaultMessage": "DE-Traffic by Volume"
+  },
+  "e0kEtS": {
+    "defaultMessage": "DE-Deactivate"
+  },
+  "eOJNIA": {
+    "defaultMessage": "DE-Connected Clients"
+  },
+  "eWzMDx": {
+    "defaultMessage": "DE-Activated"
+  },
+  "ekXood": {
+    "defaultMessage": "DE-Unlimited"
+  },
+  "eoV49s": {
+    "defaultMessage": "DE-Poor"
+  },
+  "f+sh2j": {
+    "defaultMessage": "DE-Administration"
+  },
+  "fCkfBx": {
+    "defaultMessage": "DE-APs ({apsCount})"
+  },
+  "fKJjD9": {
+    "defaultMessage": "DE-Initializing"
+  },
+  "fUSCNN": {
+    "defaultMessage": "DE-Deployment Type"
+  },
+  "fqiBvd": {
+    "defaultMessage": "DE-Coming soon..."
+  },
+  "gevCaB": {
+    "defaultMessage": "DE-Passphrase length"
+  },
+  "hSGclh": {
+    "defaultMessage": "DE-Network Name"
+  },
+  "hdGKYY": {
+    "defaultMessage": "DE-Require users to enter a passphrase (that you have defined for the network) to connect",
+    "description": "Description for Pre-Shared Key (PSK)"
+  },
+  "hlmkcL": {
+    "defaultMessage": "DE-Health"
+  },
+  "hzSNj4": {
+    "defaultMessage": "DE-Dashboard"
+  },
+  "i5bVOD": {
+    "defaultMessage": "DE-Network Name:"
+  },
+  "iCpuph": {
+    "defaultMessage": "DE-Clients"
+  },
+  "iFh/mp": {
+    "defaultMessage": "DE-Passphrase Generation Parameters"
+  },
+  "iI2oMQ": {
+    "defaultMessage": "DE-Use the DPSK Service"
+  },
+  "ioS2ep": {
+    "defaultMessage": "DE-Disconnected from cloud"
+  },
+  "jNR5e0": {
+    "defaultMessage": "DE-Network Details"
+  },
+  "jr8yqe": {
+    "defaultMessage": "DE-WPA",
+    "description": "WLAN security type - WPA"
+  },
+  "keJaJz": {
+    "defaultMessage": "DE-Letters, numbers and symbols can be used"
+  },
+  "khS4NF": {
+    "defaultMessage": "DE-TLS Encryption:"
+  },
+  "kmrE95": {
+    "defaultMessage": "DE-2 weeks"
+  },
+  "ktaLzx": {
+    "defaultMessage": "DE-AP operational - applying configuration"
+  },
+  "lPKfjk": {
+    "defaultMessage": "DE-Rebooting"
+  },
+  "lfIk1B": {
+    "defaultMessage": "DE-Add..."
+  },
+  "mtr3R4": {
+    "defaultMessage": "DE-Incidents"
+  },
+  "n1Whvj": {
+    "defaultMessage": "DE-Switch"
+  },
+  "nCMnED": {
+    "defaultMessage": "DE-Passphrase Length:"
+  },
+  "nCxCzM": {
+    "defaultMessage": "DE-Managed Guest Pass",
+    "description": "Guest network type - Managed Guest Pass"
+  },
+  "nVdqEC": {
+    "defaultMessage": "DE-No Switches"
+  },
+  "naPxCD": {
+    "defaultMessage": "DE-Captive Portal",
+    "description": "Guest network type - Captive Portal"
+  },
+  "nfh3Qu": {
+    "defaultMessage": "DE-WPA2",
+    "description": "WLAN security type - WPA2"
+  },
+  "nhKqj3": {
+    "defaultMessage": "DE-Only numbers can be used"
+  },
+  "o43JQW": {
+    "defaultMessage": "DE-Operational - applying firmware"
+  },
+  "o5l+pK": {
+    "defaultMessage": "DE-Proxy Service"
+  },
+  "ojxMGa": {
+    "defaultMessage": "DE-In Setup Phase"
+  },
+  "ox304v": {
+    "defaultMessage": "DE-An error occurred"
+  },
+  "p1dNds": {
+    "defaultMessage": "DE-1 month"
+  },
+  "p5WNkO": {
+    "defaultMessage": "DE-Temporarily degraded"
+  },
+  "pUlxda": {
+    "defaultMessage": "DE-Total Incidents"
+  },
+  "pyZg46": {
+    "defaultMessage": "DE-{type,select,aaa{AAA Settings} dpsk{DPSK Settings} other{Settings}}"
+  },
+  "qQ6P9N": {
+    "defaultMessage": "DE-Activated in venues"
+  },
+  "qYBnMW": {
+    "defaultMessage": "DE-WPA3",
+    "description": "WLAN security type - WPA3"
+  },
+  "r9gciS": {
+    "defaultMessage": "DE-{networkType} - {authMethod}"
+  },
+  "rJPrzU": {
+    "defaultMessage": "DE-Captive Portal"
+  },
+  "rXq1Sc": {
+    "defaultMessage": "DE-Pre-Shared Key (PSK)"
+  },
+  "rhSI1/": {
+    "defaultMessage": "DE-Model"
+  },
+  "rsSUP3": {
+    "defaultMessage": "DE-Port"
+  },
+  "rwIPgH": {
+    "defaultMessage": "DE-1 year"
+  },
+  "rz46vg": {
+    "defaultMessage": "DE-Passphrase format"
+  },
+  "sMnDSO": {
+    "defaultMessage": "DE-Wi-Fi APs"
+  },
+  "sTAlko": {
+    "defaultMessage": "DE-WPA3/WPA2 Mixed",
+    "description": "WLAN security type - WPA3/WPA2 Mixed"
+  },
+  "sZFybj": {
+    "defaultMessage": "DE-Services"
+  },
+  "ss6kle": {
+    "defaultMessage": "DE-Reset to default"
+  },
+  "stDOc1": {
+    "defaultMessage": "DE-Mesh Role"
+  },
+  "sw6FHg": {
+    "defaultMessage": "DE-DPSK Settings"
+  },
+  "t/5Nxo": {
+    "defaultMessage": "DE-{count} Characters"
+  },
+  "t071V3": {
+    "defaultMessage": "DE-Info:"
+  },
+  "tthToS": {
+    "defaultMessage": "DE-Disabled"
+  },
+  "tvFSNq": {
+    "defaultMessage": "DE-Secondary Server",
+    "description": "AAA Server Order - Secondary Server"
+  },
+  "tvJbQP": {
+    "defaultMessage": "DE-WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019."
+  },
+  "tzMNF3": {
+    "defaultMessage": "DE-Status"
+  },
+  "uJV0wU": {
+    "defaultMessage": "DE-IP Address"
+  },
+  "uS4sop": {
+    "defaultMessage": "DE-Type:"
+  },
+  "ubGrOj": {
+    "defaultMessage": "DE-Passphrase Expiration:"
+  },
+  "ubQ1f+": {
+    "defaultMessage": "DE-Shared secret"
+  },
+  "ukFIyf": {
+    "defaultMessage": "DE-Your Attention is Required"
+  },
+  "utCJRG": {
+    "defaultMessage": "DE-Proxy Service:"
+  },
+  "vCAhII": {
+    "defaultMessage": "DE-Severity"
+  },
+  "vONi+O": {
+    "defaultMessage": "DE-Country"
+  },
+  "vXfkMH": {
+    "defaultMessage": "DE-Add Wi-Fi Network"
+  },
+  "vhRKaX": {
+    "defaultMessage": "DE-AP rebooting"
+  },
+  "wsSxJK": {
+    "defaultMessage": "DE-Open",
+    "description": "WLAN security type - Open"
+  },
+  "xGSuuE": {
+    "defaultMessage": "DE-Security Protocol"
+  },
+  "xukzKg": {
+    "defaultMessage": "DE-Networks"
+  },
+  "yJ7+dR": {
+    "defaultMessage": "DE-Cloudpath Server"
+  },
+  "yV5oYe": {
+    "defaultMessage": "DE-Policies"
+  },
+  "ymr68V": {
+    "defaultMessage": "DE-Users are authorized through a captive portal in various methods",
+    "description": "Description for Captive Portal"
+  },
+  "z5epQF": {
+    "defaultMessage": "DE-Radios"
+  },
+  "zI1owl": {
+    "defaultMessage": "DE-Venues ({venuesCount})"
+  },
+  "zLM75r": {
+    "defaultMessage": "DE-No AP Clients"
+  },
+  "zT3YgI": {
+    "defaultMessage": "DE-Impacted Clients"
+  },
+  "zWkvNO": {
+    "defaultMessage": "DE-Timeline"
+  },
+  "zbjrr1": {
+    "defaultMessage": "DE-Radius Shared secret"
+  },
+  "zg0sQG": {
+    "defaultMessage": "DE-AP initializing"
   }
 }

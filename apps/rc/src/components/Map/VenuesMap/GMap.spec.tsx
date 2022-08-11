@@ -23,13 +23,13 @@ const venue1: VenueMarkerOptions = {
   visible: true,
   latitude: 14,
   longitude: 12,
-  ...common,      
+  ...common,
   ...withCounts
 }
 const venue2: VenueMarkerOptions = {
   visible: true,
   position: null,
-  ...common,      
+  ...common,
   ...withCounts
 }
 
@@ -65,7 +65,7 @@ describe('GMap', () => {
         onIdle={jest.fn()}
       />
     )
-    
+
     //rerender with venue 2
     rerender(
       <GMap
