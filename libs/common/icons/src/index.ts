@@ -187,7 +187,6 @@ export { ReactComponent as QuestionMarkCircleOutlined }
 export { ReactComponent as RocketSolid } from './icons/RocketSolid.svg'
 export { ReactComponent as SendMessageOutlined } from './icons/SendMessageOutlined.svg'
 export { ReactComponent as SendMessageSolid } from './icons/SendMessageSolid.svg'
-export { ReactComponent as SettingsOutlined } from './icons/SettingsOutlined.svg'
 export { ReactComponent as SettingsSolid } from './icons/SettingsSolid.svg'
 export { ReactComponent as ShareOutlined } from './icons/ShareOutlined.svg'
 export { ReactComponent as ShareSolid } from './icons/ShareSolid.svg'
