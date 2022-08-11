@@ -49,13 +49,15 @@ export function LazyNestedSingle () {
     }, 1000)
   }
 
-  return <NetworkFilter
-    placeholder='Entire Organization'
-    options={options as Option[]}
-    onApply={onApply}
-    onCancel={onCancel}
-    loadData={loadData}
-    loading={loading}
-    changeOnSelect
-  />
+  return <div style={{ width: 200 }}>
+    <NetworkFilter
+      placeholder='Entire Organization'
+      options={options as Option[]}
+      onApply={onApply}
+      onCancel={onCancel}
+      loadData={loadData}
+      loading={loading}
+      changeOnSelect
+    />
+  </div>
 }

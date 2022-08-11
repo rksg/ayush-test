@@ -107,9 +107,6 @@ describe('NetworkFilter', () => {
     await userEvent.click(allOptions[1])
     screen.getByRole('button', { name: 'Apply' }).click()
     expect(onApplyMock).toBeCalledTimes(1)
-
-    expect(await screen.findAllByText(options[0].label as string)).toHaveLength(2)
-    expect(await screen.findAllByText(options[1].label as string)).toHaveLength(1)
   })
 
   it('renders footer button, triggers onCancel, onFocus', async () => {

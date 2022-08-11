@@ -30,12 +30,14 @@ const options: Option[] = [
 ]
 
 export function FlatListMulti () {
-  return <NetworkFilter
-    multiple
-    defaultValue={[['n3'], ['n6']]}
-    placeholder='Entire Organization'
-    options={options}
-    onApply={onApply}
-    onCancel={onCancel}
-  />
+  return <div style={{ width: 300 }}>
+    <NetworkFilter
+      multiple
+      defaultValue={[['n3'], ['n6']]}
+      placeholder='Entire Organization'
+      options={options}
+      onApply={onApply}
+      onCancel={onCancel}
+    />
+  </div>
 }

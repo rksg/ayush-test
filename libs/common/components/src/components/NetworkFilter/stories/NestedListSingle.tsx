@@ -56,11 +56,13 @@ const options: Option[] = [
 ]
 
 export function NestedListSingle () {
-  return <NetworkFilter
-    placeholder='Entire Organization'
-    defaultValue={['v1', 'v1-s', 'v1-s-s2']}
-    options={options}
-    onApply={onApply}
-    onCancel={onCancel}
-  />
+  return <div style={{ width: 200 }}>
+    <NetworkFilter
+      placeholder='Entire Organization'
+      defaultValue={['v1', 'v1-s', 'v1-s-s2']}
+      options={options}
+      onApply={onApply}
+      onCancel={onCancel}
+    />
+  </div>
 }

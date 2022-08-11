@@ -72,7 +72,7 @@ export function NetworkFilter (props: CascaderProps) {
       onChange={onChangeMultiple}
       dropdownRender={withFooter}
       expandTrigger='hover'
-      maxTagCount={1}
+      maxTagCount='responsive'
       showSearch
       suffixIcon={<CaretDownOutlined />}
       onDropdownVisibleChange={setOpen}
