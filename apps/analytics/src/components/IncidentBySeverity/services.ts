@@ -1,8 +1,11 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                                    from '@acx-ui/analytics/services'
-import { AnalyticsFilter, incidentCodes, Severities } from '@acx-ui/analytics/utils'
-
+import { dataApi } from '@acx-ui/analytics/services'
+import {
+  AnalyticsFilter,
+  incidentSeverities,
+  incidentCodes
+} from '@acx-ui/analytics/utils'
 
 export type IncidentsBySeverityData = {
   P1: number
@@ -30,7 +33,7 @@ export const api = dataApi.injectEndpoints({
         ) {
           network(start: $start, end: $end) {
             hierarchyNode(path: $path) {
-              ${Object.entries(Severities).map(([name, { gt, lte }]) => `
+              ${Object.entries(incidentSeverities).map(([name, { gt, lte }]) => `
               ${name}: incidentCount(filter: {severity: {gt: ${gt}, lte: ${lte}}, code: $code})
             `).join('')}
             }

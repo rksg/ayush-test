@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Row, Col } from 'antd'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import { GridRow, GridCol }   from '@acx-ui/components'
 
 import Header                   from '../../components/Header'
 import IncidentBySeverityWidget from '../../components/IncidentBySeverity'
@@ -16,17 +16,17 @@ function Incidents () {
 
   return <>
     <Header title={$t({ defaultMessage: 'Incidents' })} />
-    <Row gutter={[0, 20]}>
-      <Col span={4} style={{ display: 'flex', height: 220 }}>
+    <GridRow gutter={[0, 20]}>
+      <GridCol col={{ span: 4 }} style={{ height: '220px' }}>
         <IncidentBySeverityWidget />
-      </Col>
-      <Col span={20} style={{ display: 'flex', height: 220 }}>
+      </GridCol>
+      <GridCol col={{ span: 20 }} style={{ height: '220px' }}>
         <NetworkHistoryWidget hideTitle filters={filters}/>
-      </Col>
-      <Col span={24} style={{ display: 'flex', height: 220 }}>
+      </GridCol>
+      <GridCol col={{ span: 24 }}>
         <IncidentTableWidget />
-      </Col>
-    </Row>
+      </GridCol>
+    </GridRow>
   </>
 }
 export default Incidents
