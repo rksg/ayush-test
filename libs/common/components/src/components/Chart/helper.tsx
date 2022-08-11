@@ -211,15 +211,16 @@ export type EventParams = {
 }
 
 export const deviceStatusColors = {
-  Connected: '--acx-semantics-green-50',
-  Initial: '--acx-neutrals-50',
-  Alerting: '--acx-semantics-yellow-40',
-  Disconnected: '--acx-semantics-red-50'
+  empty: '--acx-neutrals-20',
+  connected: '--acx-semantics-green-50',
+  initial: '--acx-neutrals-50',
+  alerting: '--acx-semantics-yellow-40',
+  disconnected: '--acx-semantics-red-50'
 }
 
 export const getDeviceConnectionStatusColors = () => [
-  cssStr(deviceStatusColors.Connected), // Operational
-  cssStr(deviceStatusColors.Initial), // Setup Phase
-  cssStr(deviceStatusColors.Alerting), // Transient Issue
-  cssStr(deviceStatusColors.Disconnected) // Requires Attention
+  cssStr(deviceStatusColors.connected), // Operational
+  cssStr(deviceStatusColors.initial), // Setup Phase
+  cssStr(deviceStatusColors.alerting), // Transient Issue
+  cssStr(deviceStatusColors.disconnected) // Requires Attention
 ]
