@@ -89,36 +89,35 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
         <div
           style="width: -20px;"
         >
-<<<<<<< HEAD
           <div
-            class="ant-anchor-wrapper styledComponents__LeftColumn-sc-cwxgii-0 hyMqHb"
-            style="max-height: calc(100vh - 200px);"
-          >
-            <div
-              class="ant-anchor"
-            >
-              <div
-                class="ant-anchor-ink"
-              >
-                <span
-                  class="ant-anchor-ink-ball"
-                />
-              </div>
-              <div
-                data-testid="incidentAttributes"
-              />
-            </div>
-          </div>
-=======
-          incident attributes
->>>>>>> feature/ACX-10741
+            data-testid="incidentAttributes"
+          />
         </div>
       </div>
       <div
         class="resize-triggers"
       >
         <div
-<<<<<<< HEAD
+          class="expand-trigger"
+        >
+          <div
+            style="width: 1px; height: 1px;"
+          />
+        </div>
+        <div
+          class="contract-trigger"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="ant-row"
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
           class="ant-col ant-col-24"
           style="padding: 10px 10px 10px 10px;"
         >
@@ -129,16 +128,12 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
         <div
           class="ant-col ant-col-24"
           style="padding: 10px 10px 10px 10px;"
-=======
-          class="expand-trigger"
->>>>>>> feature/ACX-10741
         >
-          <div
-            style="width: 1px; height: 1px;"
-          />
+          <div>
+            network impact
+          </div>
         </div>
         <div
-<<<<<<< HEAD
           class="ant-col ant-col-24"
           style="padding: 10px 10px 10px 10px;"
         >
@@ -146,34 +141,6 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
             time series section
           </div>
         </div>
-=======
-          class="contract-trigger"
-        />
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-20"
-      style="padding: 10px 10px 10px 10px;"
-    >
-      <div>
-        insights
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-20 ant-col-offset-4"
-      style="padding: 10px 10px 10px 10px;"
-    >
-      <div>
-        network impact
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-20 ant-col-offset-4"
-      style="padding: 10px 10px 10px 10px;"
-    >
-      <div>
-        charts
->>>>>>> feature/ACX-10741
       </div>
     </div>
   </div>

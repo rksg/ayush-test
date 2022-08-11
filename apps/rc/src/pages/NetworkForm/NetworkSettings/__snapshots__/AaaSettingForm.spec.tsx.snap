@@ -470,32 +470,20 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                           />
                                         </span>
                                         <span>
-                                          Captive portal
+                                          Captive Portal
                                           <div
                                             class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
                                           >
-                                            <input
-                                              class="ant-radio-input"
-                                              disabled=""
-                                              type="radio"
-                                              value="guest"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Captive Portal
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Users are authorized through a captive portal in various methods
-                                            </div>
-                                          </span>
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
+                                            Users are authorized through a captive portal in various methods
+                                          </div>
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <label
+                                        class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                       >
                                         <span
                                           class="ant-radio"
@@ -514,25 +502,10 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                           <div
                                             class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
                                           >
-                                            <input
-                                              class="ant-radio-input"
-                                              type="radio"
-                                              value="open"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Open Network
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Allow users to access the network without any authentication/security (not recommended)
-                                            </div>
-                                          </span>
-                                        </label>
-                                      </div>
+                                            Allow users to access the network without any authentication/security (not recommended)
+                                          </div>
+                                        </span>
+                                      </label>
                                     </div>
                                   </div>
                                 </div>
@@ -617,28 +590,20 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                       <button
                                         aria-checked="false"
                                         class="ant-switch"
-                                        id="Settings_isCloudpathEnabled"
+                                        id="settings_isCloudpathEnabled"
                                         role="switch"
                                         type="button"
                                       >
-                                        <button
-                                          aria-checked="false"
-                                          class="ant-switch"
-                                          id="settings_isCloudpathEnabled"
-                                          role="switch"
-                                          type="button"
-                                        >
-                                          <div
-                                            class="ant-switch-handle"
-                                          />
-                                          <span
-                                            class="ant-switch-inner"
-                                          />
-                                        </button>
-                                        <span>
-                                          Use Cloudpath Server
-                                        </span>
-                                      </div>
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                      <span>
+                                        Use Cloudpath Server
+                                      </span>
                                     </div>
                                   </div>
                                 </div>
@@ -680,33 +645,27 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                       >
                                         <label
                                           class="ant-form-item-required"
-                                          for="Settings_authRadius.primary.ip"
+                                          for="settings_authRadius.primary.ip"
                                           title="IP Address"
                                         >
-                                          <label
-                                            class="ant-form-item-required"
-                                            for="settings_authRadius.primary.ip"
-                                            title="IP Address"
-                                          >
-                                            IP Address
-                                          </label>
-                                        </div>
+                                          IP Address
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
+                                      >
                                         <div
                                           class="ant-form-item-control-input"
                                         >
                                           <div
                                             class="ant-form-item-control-input-content"
                                           >
-                                            <div
-                                              class="ant-form-item-control-input-content"
-                                            >
-                                              <input
-                                                class="ant-input"
-                                                id="settings_authRadius.primary.ip"
-                                                type="text"
-                                                value=""
-                                              />
-                                            </div>
+                                            <input
+                                              class="ant-input"
+                                              id="settings_authRadius.primary.ip"
+                                              type="text"
+                                              value=""
+                                            />
                                           </div>
                                         </div>
                                       </div>
@@ -723,33 +682,27 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                       >
                                         <label
                                           class="ant-form-item-required"
-                                          for="Settings_authRadius.primary.port"
+                                          for="settings_authRadius.primary.port"
                                           title="Port"
                                         >
-                                          <label
-                                            class="ant-form-item-required"
-                                            for="settings_authRadius.primary.port"
-                                            title="Port"
-                                          >
-                                            Port
-                                          </label>
-                                        </div>
+                                          Port
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
+                                      >
                                         <div
                                           class="ant-form-item-control-input"
                                         >
                                           <div
                                             class="ant-form-item-control-input-content"
                                           >
-                                            <div
-                                              class="ant-form-item-control-input-content"
-                                            >
-                                              <input
-                                                class="ant-input"
-                                                id="settings_authRadius.primary.port"
-                                                type="number"
-                                                value=""
-                                              />
-                                            </div>
+                                            <input
+                                              class="ant-input"
+                                              id="settings_authRadius.primary.port"
+                                              type="number"
+                                              value=""
+                                            />
                                           </div>
                                         </div>
                                       </div>
@@ -766,17 +719,15 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                       >
                                         <label
                                           class="ant-form-item-required"
-                                          for="Settings_authRadius.primary.sharedSecret"
+                                          for="settings_authRadius.primary.sharedSecret"
                                           title="Shared secret"
                                         >
-                                          <label
-                                            class="ant-form-item-required"
-                                            for="settings_authRadius.primary.sharedSecret"
-                                            title="Shared secret"
-                                          >
-                                            Shared secret
-                                          </label>
-                                        </div>
+                                          Shared secret
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
+                                      >
                                         <div
                                           class="ant-form-item-control-input"
                                         >
@@ -789,20 +740,13 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                               <input
                                                 action="click"
                                                 class="ant-input"
-                                                id="Settings_authRadius.primary.sharedSecret"
+                                                id="settings_authRadius.primary.sharedSecret"
                                                 type="password"
                                                 value=""
                                               />
                                               <span
                                                 class="ant-input-suffix"
                                               >
-                                                <input
-                                                  action="click"
-                                                  class="ant-input"
-                                                  id="settings_authRadius.primary.sharedSecret"
-                                                  type="password"
-                                                  value=""
-                                                />
                                                 <span
                                                   aria-label="eye-invisible"
                                                   class="anticon anticon-eye-invisible ant-input-password-icon"
@@ -859,7 +803,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                             <button
                                               aria-checked="false"
                                               class="ant-switch"
-                                              id="Settings_enableAuthProxy"
+                                              id="settings_enableAuthProxy"
                                               role="switch"
                                               type="button"
                                             >
@@ -878,12 +822,14 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                               class="anticon anticon-question-circle"
                                               role="img"
                                             >
-                                              <button
-                                                aria-checked="false"
-                                                class="ant-switch"
-                                                id="settings_enableAuthProxy"
-                                                role="switch"
-                                                type="button"
+                                              <svg
+                                                aria-hidden="true"
+                                                data-icon="question-circle"
+                                                fill="currentColor"
+                                                focusable="false"
+                                                height="1em"
+                                                viewBox="64 64 896 896"
+                                                width="1em"
                                               >
                                                 <path
                                                   d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"
@@ -927,25 +873,17 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                             <button
                                               aria-checked="false"
                                               class="ant-switch"
-                                              id="Settings_enableAccountingService"
+                                              id="settings_enableAccountingService"
                                               role="switch"
                                               type="button"
                                             >
-                                              <button
-                                                aria-checked="false"
-                                                class="ant-switch"
-                                                id="settings_enableAccountingService"
-                                                role="switch"
-                                                type="button"
-                                              >
-                                                <div
-                                                  class="ant-switch-handle"
-                                                />
-                                                <span
-                                                  class="ant-switch-inner"
-                                                />
-                                              </button>
-                                            </div>
+                                              <div
+                                                class="ant-switch-handle"
+                                              />
+                                              <span
+                                                class="ant-switch-inner"
+                                              />
+                                            </button>
                                           </div>
                                         </div>
                                       </div>
@@ -1052,10 +990,10 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                 </span>
                               </div>
                               <div
-                                class="styledComponents__Wrapper-sc-1abm7iv-2 dmYsKE"
+                                class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
                               >
                                 <div
-                                  class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
+                                  class="ant-pro-table"
                                 >
                                   <div
                                     class="ant-pro-card"
@@ -1065,91 +1003,91 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                       style="padding-top: 0px;"
                                     >
                                       <div
-                                        class="ant-table-wrapper"
+                                        class="ant-pro-table-list-toolbar"
                                       >
                                         <div
-                                          class="ant-pro-table-list-toolbar"
+                                          class="ant-pro-table-list-toolbar-container"
                                         >
                                           <div
-                                            class="ant-pro-table-list-toolbar-container"
+                                            class="ant-pro-table-list-toolbar-left"
+                                          />
+                                          <div
+                                            class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
                                           >
                                             <div
-                                              class="ant-pro-table-list-toolbar-left"
-                                            />
-                                            <div
-                                              class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                                              class="ant-space-item"
                                             >
                                               <div
-                                                class="ant-space-item"
+                                                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
                                               >
                                                 <div
-                                                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                                                  class="ant-space-item"
                                                 >
                                                   <div
-                                                    class="ant-space-item"
+                                                    class="ant-pro-table-list-toolbar-setting-item"
                                                   >
-                                                    <div
-                                                      class="ant-pro-table-list-toolbar-setting-item"
-                                                    >
-                                                      <svg>
-                                                        SettingsOutlined.svg
-                                                      </svg>
-                                                    </div>
+                                                    <svg>
+                                                      SettingsOutlined.svg
+                                                    </svg>
                                                   </div>
                                                 </div>
                                               </div>
                                             </div>
                                           </div>
                                         </div>
+                                      </div>
+                                      <div
+                                        class="ant-table-wrapper"
+                                      >
                                         <div
-                                          class="ant-table-wrapper"
+                                          class="ant-spin-nested-loading"
                                         >
                                           <div
                                             class="ant-spin-container"
                                           >
                                             <div
-                                              class="ant-table ant-table-middle"
+                                              class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                                             >
                                               <div
-                                                class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                                                class="ant-table-container"
                                               >
                                                 <div
                                                   class="ant-table-content"
+                                                  style="overflow-x: auto; overflow-y: hidden;"
                                                 >
-                                                  <div
-                                                    class="ant-table-content"
-                                                    style="overflow-x: auto; overflow-y: hidden;"
+                                                  <table
+                                                    style="min-width: 100%; table-layout: auto;"
                                                   >
-                                                    <table
-                                                      style="min-width: 100%; table-layout: auto;"
+                                                    <colgroup>
+                                                      <col
+                                                        class="ant-table-selection-col"
+                                                      />
+                                                      <col />
+                                                      <col />
+                                                      <col />
+                                                      <col />
+                                                      <col />
+                                                      <col />
+                                                      <col
+                                                        style="width: 80px;"
+                                                      />
+                                                      <col
+                                                        style="width: 140px;"
+                                                      />
+                                                      <col />
+                                                      <col
+                                                        style="width: 32px;"
+                                                      />
+                                                    </colgroup>
+                                                    <thead
+                                                      class="ant-table-thead"
                                                     >
-                                                      <colgroup>
-                                                        <col
-                                                          class="ant-table-selection-col"
-                                                        />
-                                                        <col />
-                                                        <col />
-                                                        <col />
-                                                        <col />
-                                                        <col />
-                                                        <col />
-                                                        <col
-                                                          style="width: 80px;"
-                                                        />
-                                                        <col
-                                                          style="width: 140px;"
-                                                        />
-                                                        <col />
-                                                        <col
-                                                          style="width: 32px;"
-                                                        />
-                                                      </colgroup>
-                                                      <thead
-                                                        class="ant-table-thead"
-                                                      >
-                                                        <tr>
-                                                          <th
-                                                            class="ant-table-cell ant-table-selection-column"
+                                                      <tr>
+                                                        <th
+                                                          class="ant-table-cell ant-table-selection-column"
+                                                        >
+                                                          <div
+                                                            class="ant-table-selection"
                                                           >
                                                             <label
                                                               class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
@@ -1346,155 +1284,159 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                                   </svg>
                                                                 </span>
                                                               </span>
-                                                            </div>
-                                                          </th>
-                                                          <th
-                                                            class="ant-table-cell"
-                                                          >
-                                                            Networks
-                                                          </th>
-                                                          <th
-                                                            class="ant-table-cell"
-                                                          >
-                                                            Wi-Fi APs
-                                                          </th>
-                                                          <th
-                                                            class="ant-table-cell"
-                                                          >
-                                                            Activated
-                                                          </th>
-                                                          <th
-                                                            class="ant-table-cell"
-                                                          >
-                                                            APs
-                                                          </th>
-                                                          <th
-                                                            class="ant-table-cell"
-                                                          >
-                                                            Radios
-                                                          </th>
-                                                          <th
-                                                            class="ant-table-cell"
-                                                          >
-                                                            Scheduling
-                                                          </th>
-                                                          <th
-                                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                                            style="position: sticky; right: 0px;"
-                                                          />
-                                                        </tr>
-                                                      </thead>
-                                                      <tbody
-                                                        class="ant-table-tbody"
-                                                      >
-                                                        <tr
-                                                          aria-hidden="true"
-                                                          class="ant-table-measure-row"
-                                                          style="height: 0px; font-size: 0px;"
+                                                            </span>
+                                                          </div>
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell"
                                                         >
-                                                          <td
-                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                          Networks
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell"
+                                                        >
+                                                          Wi-Fi APs
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell"
+                                                        >
+                                                          Activated
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell"
+                                                        >
+                                                          APs
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell"
+                                                        >
+                                                          Radios
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell"
+                                                        >
+                                                          Scheduling
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                          style="position: sticky; right: 0px;"
+                                                        />
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody
+                                                      class="ant-table-tbody"
+                                                    >
+                                                      <tr
+                                                        aria-hidden="true"
+                                                        class="ant-table-measure-row"
+                                                        style="height: 0px; font-size: 0px;"
+                                                      >
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
                                                           >
-                                                            <div
-                                                              style="height: 0px; overflow: hidden;"
-                                                            >
-                                                               
-                                                            </div>
-                                                          </td>
-                                                          <td
-                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
                                                           >
-                                                            <div
-                                                              style="height: 0px; overflow: hidden;"
-                                                            >
-                                                               
-                                                            </div>
-                                                          </td>
-                                                          <td
-                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
                                                           >
-                                                            <div
-                                                              style="height: 0px; overflow: hidden;"
-                                                            >
-                                                               
-                                                            </div>
-                                                          </td>
-                                                          <td
-                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
                                                           >
-                                                            <div
-                                                              style="height: 0px; overflow: hidden;"
-                                                            >
-                                                               
-                                                            </div>
-                                                          </td>
-                                                          <td
-                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
                                                           >
-                                                            <div
-                                                              style="height: 0px; overflow: hidden;"
-                                                            >
-                                                               
-                                                            </div>
-                                                          </td>
-                                                          <td
-                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
                                                           >
-                                                            <div
-                                                              style="height: 0px; overflow: hidden;"
-                                                            >
-                                                               
-                                                            </div>
-                                                          </td>
-                                                          <td
-                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
                                                           >
-                                                            <div
-                                                              style="height: 0px; overflow: hidden;"
-                                                            >
-                                                               
-                                                            </div>
-                                                          </td>
-                                                          <td
-                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
                                                           >
-                                                            <div
-                                                              style="height: 0px; overflow: hidden;"
-                                                            >
-                                                               
-                                                            </div>
-                                                          </td>
-                                                          <td
-                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
                                                           >
-                                                            <div
-                                                              style="height: 0px; overflow: hidden;"
-                                                            >
-                                                               
-                                                            </div>
-                                                          </td>
-                                                          <td
-                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
                                                           >
-                                                            <div
-                                                              style="height: 0px; overflow: hidden;"
-                                                            >
-                                                               
-                                                            </div>
-                                                          </td>
-                                                          <td
-                                                            style="padding: 0px; border: 0px; height: 0px;"
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
                                                           >
-                                                            <div
-                                                              style="height: 0px; overflow: hidden;"
-                                                            >
-                                                               
-                                                            </div>
-                                                          </td>
-                                                        </tr>
-                                                        <tr
-                                                          class="ant-table-row ant-table-row-level-0"
-                                                          data-row-key="6cf550cdb67641d798d804793aaa82db"
+                                                             
+                                                          </div>
+                                                        </td>
+                                                      </tr>
+                                                      <tr
+                                                        class="ant-table-row ant-table-row-level-0"
+                                                        data-row-key="6cf550cdb67641d798d804793aaa82db"
+                                                      >
+                                                        <td
+                                                          class="ant-table-cell ant-table-selection-column"
                                                         >
                                                           <label
                                                             class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
@@ -1510,25 +1452,11 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                               <span
                                                                 class="ant-checkbox-inner"
                                                               />
-                                                            </button>
-                                                          </td>
-                                                          <td
-                                                            class="ant-table-cell"
-                                                          />
-                                                          <td
-                                                            class="ant-table-cell"
-                                                          />
-                                                          <td
-                                                            class="ant-table-cell"
-                                                          />
-                                                          <td
-                                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                                            style="position: sticky; right: 0px;"
-                                                          />
-                                                        </tr>
-                                                        <tr
-                                                          class="ant-table-row ant-table-row-level-0"
-                                                          data-row-key="c6ae1e4fb6144d27886eb7693ae895c8"
+                                                            </span>
+                                                          </label>
+                                                        </td>
+                                                        <td
+                                                          class="ant-table-cell"
                                                         >
                                                           My-Venue
                                                         </td>
@@ -1576,6 +1504,10 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                         <td
                                                           class="ant-table-cell"
                                                         />
+                                                        <td
+                                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                          style="position: sticky; right: 0px;"
+                                                        />
                                                       </tr>
                                                       <tr
                                                         class="ant-table-row ant-table-row-level-0"
@@ -1598,25 +1530,67 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                               <span
                                                                 class="ant-checkbox-inner"
                                                               />
-                                                            </button>
-                                                          </td>
-                                                          <td
-                                                            class="ant-table-cell"
-                                                          />
-                                                          <td
-                                                            class="ant-table-cell"
-                                                          />
-                                                          <td
-                                                            class="ant-table-cell"
-                                                          />
-                                                          <td
-                                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                                            style="position: sticky; right: 0px;"
-                                                          />
-                                                        </tr>
-                                                      </tbody>
-                                                    </table>
-                                                  </div>
+                                                            </span>
+                                                          </label>
+                                                        </td>
+                                                        <td
+                                                          class="ant-table-cell"
+                                                        >
+                                                          TDC_Venue
+                                                        </td>
+                                                        <td
+                                                          class="ant-table-cell"
+                                                        >
+                                                          Zhongzheng District, Taipei City
+                                                        </td>
+                                                        <td
+                                                          class="ant-table-cell"
+                                                        >
+                                                          Taiwan
+                                                        </td>
+                                                        <td
+                                                          class="ant-table-cell"
+                                                        >
+                                                          1
+                                                        </td>
+                                                        <td
+                                                          class="ant-table-cell"
+                                                        >
+                                                          1
+                                                        </td>
+                                                        <td
+                                                          class="ant-table-cell"
+                                                        >
+                                                          <button
+                                                            aria-checked="false"
+                                                            class="ant-switch"
+                                                            role="switch"
+                                                            type="button"
+                                                          >
+                                                            <div
+                                                              class="ant-switch-handle"
+                                                            />
+                                                            <span
+                                                              class="ant-switch-inner"
+                                                            />
+                                                          </button>
+                                                        </td>
+                                                        <td
+                                                          class="ant-table-cell"
+                                                        />
+                                                        <td
+                                                          class="ant-table-cell"
+                                                        />
+                                                        <td
+                                                          class="ant-table-cell"
+                                                        />
+                                                        <td
+                                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                                          style="position: sticky; right: 0px;"
+                                                        />
+                                                      </tr>
+                                                    </tbody>
+                                                  </table>
                                                 </div>
                                               </div>
                                             </div>
@@ -2424,32 +2398,20 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                           />
                                         </span>
                                         <span>
-                                          Captive portal
+                                          Captive Portal
                                           <div
                                             class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
                                           >
-                                            <input
-                                              class="ant-radio-input"
-                                              disabled=""
-                                              type="radio"
-                                              value="guest"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Captive Portal
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Users are authorized through a captive portal in various methods
-                                            </div>
-                                          </span>
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
+                                            Users are authorized through a captive portal in various methods
+                                          </div>
+                                        </span>
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-space-item"
+                                    >
+                                      <label
+                                        class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                       >
                                         <span
                                           class="ant-radio"
@@ -2468,25 +2430,10 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                           <div
                                             class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
                                           >
-                                            <input
-                                              class="ant-radio-input"
-                                              type="radio"
-                                              value="open"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Open Network
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Allow users to access the network without any authentication/security (not recommended)
-                                            </div>
-                                          </span>
-                                        </label>
-                                      </div>
+                                            Allow users to access the network without any authentication/security (not recommended)
+                                          </div>
+                                        </span>
+                                      </label>
                                     </div>
                                   </div>
                                 </div>
@@ -2571,28 +2518,20 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                       <button
                                         aria-checked="false"
                                         class="ant-switch"
-                                        id="Settings_isCloudpathEnabled"
+                                        id="settings_isCloudpathEnabled"
                                         role="switch"
                                         type="button"
                                       >
-                                        <button
-                                          aria-checked="false"
-                                          class="ant-switch"
-                                          id="settings_isCloudpathEnabled"
-                                          role="switch"
-                                          type="button"
-                                        >
-                                          <div
-                                            class="ant-switch-handle"
-                                          />
-                                          <span
-                                            class="ant-switch-inner"
-                                          />
-                                        </button>
-                                        <span>
-                                          Use Cloudpath Server
-                                        </span>
-                                      </div>
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                      <span>
+                                        Use Cloudpath Server
+                                      </span>
                                     </div>
                                   </div>
                                 </div>
@@ -2634,33 +2573,27 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                       >
                                         <label
                                           class="ant-form-item-required"
-                                          for="Settings_authRadius.primary.ip"
+                                          for="settings_authRadius.primary.ip"
                                           title="IP Address"
                                         >
-                                          <label
-                                            class="ant-form-item-required"
-                                            for="settings_authRadius.primary.ip"
-                                            title="IP Address"
-                                          >
-                                            IP Address
-                                          </label>
-                                        </div>
+                                          IP Address
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
+                                      >
                                         <div
                                           class="ant-form-item-control-input"
                                         >
                                           <div
                                             class="ant-form-item-control-input-content"
                                           >
-                                            <div
-                                              class="ant-form-item-control-input-content"
-                                            >
-                                              <input
-                                                class="ant-input"
-                                                id="settings_authRadius.primary.ip"
-                                                type="text"
-                                                value=""
-                                              />
-                                            </div>
+                                            <input
+                                              class="ant-input"
+                                              id="settings_authRadius.primary.ip"
+                                              type="text"
+                                              value=""
+                                            />
                                           </div>
                                         </div>
                                       </div>
@@ -2677,33 +2610,27 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                       >
                                         <label
                                           class="ant-form-item-required"
-                                          for="Settings_authRadius.primary.port"
+                                          for="settings_authRadius.primary.port"
                                           title="Port"
                                         >
-                                          <label
-                                            class="ant-form-item-required"
-                                            for="settings_authRadius.primary.port"
-                                            title="Port"
-                                          >
-                                            Port
-                                          </label>
-                                        </div>
+                                          Port
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
+                                      >
                                         <div
                                           class="ant-form-item-control-input"
                                         >
                                           <div
                                             class="ant-form-item-control-input-content"
                                           >
-                                            <div
-                                              class="ant-form-item-control-input-content"
-                                            >
-                                              <input
-                                                class="ant-input"
-                                                id="settings_authRadius.primary.port"
-                                                type="number"
-                                                value=""
-                                              />
-                                            </div>
+                                            <input
+                                              class="ant-input"
+                                              id="settings_authRadius.primary.port"
+                                              type="number"
+                                              value=""
+                                            />
                                           </div>
                                         </div>
                                       </div>
@@ -2720,17 +2647,15 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                       >
                                         <label
                                           class="ant-form-item-required"
-                                          for="Settings_authRadius.primary.sharedSecret"
+                                          for="settings_authRadius.primary.sharedSecret"
                                           title="Shared secret"
                                         >
-                                          <label
-                                            class="ant-form-item-required"
-                                            for="settings_authRadius.primary.sharedSecret"
-                                            title="Shared secret"
-                                          >
-                                            Shared secret
-                                          </label>
-                                        </div>
+                                          Shared secret
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-col ant-form-item-control"
+                                      >
                                         <div
                                           class="ant-form-item-control-input"
                                         >
@@ -2743,20 +2668,13 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                               <input
                                                 action="click"
                                                 class="ant-input"
-                                                id="Settings_authRadius.primary.sharedSecret"
+                                                id="settings_authRadius.primary.sharedSecret"
                                                 type="password"
                                                 value=""
                                               />
                                               <span
                                                 class="ant-input-suffix"
                                               >
-                                                <input
-                                                  action="click"
-                                                  class="ant-input"
-                                                  id="settings_authRadius.primary.sharedSecret"
-                                                  type="password"
-                                                  value=""
-                                                />
                                                 <span
                                                   aria-label="eye-invisible"
                                                   class="anticon anticon-eye-invisible ant-input-password-icon"
@@ -2813,7 +2731,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                             <button
                                               aria-checked="false"
                                               class="ant-switch"
-                                              id="Settings_enableAuthProxy"
+                                              id="settings_enableAuthProxy"
                                               role="switch"
                                               type="button"
                                             >
@@ -2832,12 +2750,14 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                               class="anticon anticon-question-circle"
                                               role="img"
                                             >
-                                              <button
-                                                aria-checked="false"
-                                                class="ant-switch"
-                                                id="settings_enableAuthProxy"
-                                                role="switch"
-                                                type="button"
+                                              <svg
+                                                aria-hidden="true"
+                                                data-icon="question-circle"
+                                                fill="currentColor"
+                                                focusable="false"
+                                                height="1em"
+                                                viewBox="64 64 896 896"
+                                                width="1em"
                                               >
                                                 <path
                                                   d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"
@@ -2881,25 +2801,17 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                             <button
                                               aria-checked="false"
                                               class="ant-switch"
-                                              id="Settings_enableAccountingService"
+                                              id="settings_enableAccountingService"
                                               role="switch"
                                               type="button"
                                             >
-                                              <button
-                                                aria-checked="false"
-                                                class="ant-switch"
-                                                id="settings_enableAccountingService"
-                                                role="switch"
-                                                type="button"
-                                              >
-                                                <div
-                                                  class="ant-switch-handle"
-                                                />
-                                                <span
-                                                  class="ant-switch-inner"
-                                                />
-                                              </button>
-                                            </div>
+                                              <div
+                                                class="ant-switch-handle"
+                                              />
+                                              <span
+                                                class="ant-switch-inner"
+                                              />
+                                            </button>
                                           </div>
                                         </div>
                                       </div>

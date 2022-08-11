@@ -29,10 +29,10 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
               class="ant-form-item-control-input-content"
             >
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
+                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-2 dmYsKE"
+                  class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
                 >
                   <div
                     class="ant-pro-table"
@@ -41,42 +41,43 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                       class="ant-pro-card"
                     >
                       <div
-                        class="ant-pro-table-list-toolbar"
+                        class="ant-pro-card-body"
+                        style="padding-top: 0px;"
                       >
                         <div
-                          class="ant-pro-table-list-toolbar-container"
+                          class="ant-pro-table-list-toolbar"
                         >
                           <div
-                            class="ant-pro-table-list-toolbar-left"
-                          />
-                          <div
-                            class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                            class="ant-pro-table-list-toolbar-container"
                           >
                             <div
-                              class="ant-space-item"
+                              class="ant-pro-table-list-toolbar-left"
+                            />
+                            <div
+                              class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
                             >
                               <div
-                                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                                class="ant-space-item"
                               >
                                 <div
-                                  class="ant-space-item"
+                                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
                                 >
                                   <div
-                                    class="ant-pro-table-list-toolbar-setting-item"
+                                    class="ant-space-item"
                                   >
-                                    <svg>
-                                      SettingsOutlined.svg
-                                    </svg>
+                                    <div
+                                      class="ant-pro-table-list-toolbar-setting-item"
+                                    >
+                                      <svg>
+                                        SettingsOutlined.svg
+                                      </svg>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div
-                        class="ant-table-wrapper"
-                      >
                         <div
                           class="ant-table-wrapper"
                         >
@@ -84,41 +85,20 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                             class="ant-spin-nested-loading"
                           >
                             <div
-                              class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                              class="ant-spin-container"
                             >
                               <div
-                                class="ant-table ant-table-middle"
+                                class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                               >
                                 <div
-                                  class="ant-table-content"
-                                  style="overflow-x: auto; overflow-y: hidden;"
+                                  class="ant-table-container"
                                 >
-                                  <table
-                                    style="min-width: 100%; table-layout: auto;"
+                                  <div
+                                    class="ant-table-content"
+                                    style="overflow-x: auto; overflow-y: hidden;"
                                   >
-                                    <colgroup>
-                                      <col
-                                        class="ant-table-selection-col"
-                                      />
-                                      <col />
-                                      <col />
-                                      <col />
-                                      <col />
-                                      <col />
-                                      <col />
-                                      <col
-                                        style="width: 80px;"
-                                      />
-                                      <col
-                                        style="width: 140px;"
-                                      />
-                                      <col />
-                                      <col
-                                        style="width: 32px;"
-                                      />
-                                    </colgroup>
-                                    <thead
-                                      class="ant-table-thead"
+                                    <table
+                                      style="min-width: 100%; table-layout: auto;"
                                     >
                                       <colgroup>
                                         <col
@@ -135,6 +115,10 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                         />
                                         <col
                                           style="width: 140px;"
+                                        />
+                                        <col />
+                                        <col
+                                          style="width: 32px;"
                                         />
                                       </colgroup>
                                       <thead
@@ -343,157 +327,152 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                                   </span>
                                                 </span>
                                               </span>
-                                            </span>
-                                          </div>
-                                        </th>
-                                        <th
-                                          class="ant-table-cell"
-                                        >
-                                          Networks
-                                        </th>
-                                        <th
-                                          class="ant-table-cell"
-                                        >
-                                          Wi-Fi APs
-                                        </th>
-                                        <th
-                                          class="ant-table-cell"
-                                        >
-                                          Activated
-                                        </th>
-                                        <th
-                                          class="ant-table-cell"
-                                        >
-                                          APs
-                                        </th>
-                                        <th
-                                          class="ant-table-cell"
-                                        >
-                                          Radios
-                                        </th>
-                                        <th
-                                          class="ant-table-cell"
-                                        >
-                                          Scheduling
-                                        </th>
-                                        <th
-                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                          style="position: sticky; right: 0px;"
-                                        />
-                                      </tr>
-                                    </thead>
-                                    <tbody
-                                      class="ant-table-tbody"
-                                    >
-                                      <tr
-                                        aria-hidden="true"
-                                        class="ant-table-measure-row"
-                                        style="height: 0px; font-size: 0px;"
+                                            </div>
+                                          </th>
+                                          <th
+                                            class="ant-table-cell"
+                                          >
+                                            Networks
+                                          </th>
+                                          <th
+                                            class="ant-table-cell"
+                                          >
+                                            Wi-Fi APs
+                                          </th>
+                                          <th
+                                            class="ant-table-cell"
+                                          >
+                                            Activated
+                                          </th>
+                                          <th
+                                            class="ant-table-cell"
+                                          >
+                                            APs
+                                          </th>
+                                          <th
+                                            class="ant-table-cell"
+                                          >
+                                            Radios
+                                          </th>
+                                          <th
+                                            class="ant-table-cell"
+                                          >
+                                            Scheduling
+                                          </th>
+                                          <th
+                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                            style="position: sticky; right: 0px;"
+                                          />
+                                        </tr>
+                                      </thead>
+                                      <tbody
+                                        class="ant-table-tbody"
                                       >
-                                        <td
-                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        <tr
+                                          aria-hidden="true"
+                                          class="ant-table-measure-row"
+                                          style="height: 0px; font-size: 0px;"
                                         >
-                                          <div
-                                            style="height: 0px; overflow: hidden;"
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
                                           >
-                                             
-                                          </div>
-                                        </td>
-                                        <td
-                                          style="padding: 0px; border: 0px; height: 0px;"
-                                        >
-                                          <div
-                                            style="height: 0px; overflow: hidden;"
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
                                           >
-                                             
-                                          </div>
-                                        </td>
-                                        <td
-                                          style="padding: 0px; border: 0px; height: 0px;"
-                                        >
-                                          <div
-                                            style="height: 0px; overflow: hidden;"
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
                                           >
-                                             
-                                          </div>
-                                        </td>
-                                        <td
-                                          style="padding: 0px; border: 0px; height: 0px;"
-                                        >
-                                          <div
-                                            style="height: 0px; overflow: hidden;"
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
                                           >
-                                             
-                                          </div>
-                                        </td>
-                                        <td
-                                          style="padding: 0px; border: 0px; height: 0px;"
-                                        >
-                                          <div
-                                            style="height: 0px; overflow: hidden;"
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
                                           >
-                                             
-                                          </div>
-                                        </td>
-                                        <td
-                                          style="padding: 0px; border: 0px; height: 0px;"
-                                        >
-                                          <div
-                                            style="height: 0px; overflow: hidden;"
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
                                           >
-                                             
-                                          </div>
-                                        </td>
-                                        <td
-                                          style="padding: 0px; border: 0px; height: 0px;"
-                                        >
-                                          <div
-                                            style="height: 0px; overflow: hidden;"
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
                                           >
-                                             
-                                          </div>
-                                        </td>
-                                        <td
-                                          style="padding: 0px; border: 0px; height: 0px;"
-                                        >
-                                          <div
-                                            style="height: 0px; overflow: hidden;"
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
                                           >
-                                             
-                                          </div>
-                                        </td>
-                                        <td
-                                          style="padding: 0px; border: 0px; height: 0px;"
-                                        >
-                                          <div
-                                            style="height: 0px; overflow: hidden;"
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
                                           >
-                                             
-                                          </div>
-                                        </td>
-                                        <td
-                                          style="padding: 0px; border: 0px; height: 0px;"
-                                        >
-                                          <div
-                                            style="height: 0px; overflow: hidden;"
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
                                           >
-                                             
-                                          </div>
-                                        </td>
-                                        <td
-                                          style="padding: 0px; border: 0px; height: 0px;"
-                                        >
-                                          <div
-                                            style="height: 0px; overflow: hidden;"
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
                                           >
-                                             
-                                          </div>
-                                        </td>
-                                      </tr>
-                                      <tr
-                                        class="ant-table-row ant-table-row-level-0"
-                                        data-row-key="d7b1a9a350634115a92ee7b0f11c7e75"
-                                      >
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                        </tr>
                                         <tr
                                           class="ant-table-row ant-table-row-level-0"
                                           data-row-key="d7b1a9a350634115a92ee7b0f11c7e75"
@@ -569,6 +548,10 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                           <td
                                             class="ant-table-cell"
                                           />
+                                          <td
+                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                            style="position: sticky; right: 0px;"
+                                          />
                                         </tr>
                                         <tr
                                           class="ant-table-row ant-table-row-level-0"
@@ -577,37 +560,35 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                           <td
                                             class="ant-table-cell ant-table-selection-column"
                                           >
-                                            <div
-                                              class="ant-switch-handle"
-                                            />
-                                            <span
-                                              class="ant-switch-inner"
-                                            />
-                                          </button>
-                                        </td>
-                                        <td
-                                          class="ant-table-cell"
-                                        />
-                                        <td
-                                          class="ant-table-cell"
-                                        />
-                                        <td
-                                          class="ant-table-cell"
-                                        />
-                                        <td
-                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                          style="position: sticky; right: 0px;"
-                                        />
-                                      </tr>
-                                      <tr
-                                        class="ant-table-row ant-table-row-level-0"
-                                        data-row-key="02e2ddbc88e1428987666d31edbc3d9a"
-                                      >
-                                        <td
-                                          class="ant-table-cell ant-table-selection-column"
-                                        >
-                                          <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                                            <label
+                                              class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                                            >
+                                              <span
+                                                class="ant-checkbox"
+                                              >
+                                                <input
+                                                  class="ant-checkbox-input"
+                                                  type="checkbox"
+                                                  value=""
+                                                />
+                                                <span
+                                                  class="ant-checkbox-inner"
+                                                />
+                                              </span>
+                                            </label>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                          >
+                                            My-Venue
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                          >
+                                            New York
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
                                           >
                                             United States
                                           </td>
@@ -634,65 +615,25 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                               <span
                                                 class="ant-switch-inner"
                                               />
-                                            </span>
-                                          </label>
-                                        </td>
-                                        <td
-                                          class="ant-table-cell"
-                                        >
-                                          My-Venue
-                                        </td>
-                                        <td
-                                          class="ant-table-cell"
-                                        >
-                                          New York
-                                        </td>
-                                        <td
-                                          class="ant-table-cell"
-                                        >
-                                          United States
-                                        </td>
-                                        <td
-                                          class="ant-table-cell"
-                                        />
-                                        <td
-                                          class="ant-table-cell"
-                                        >
-                                          0
-                                        </td>
-                                        <td
-                                          class="ant-table-cell"
-                                        >
-                                          <button
-                                            aria-checked="false"
-                                            class="ant-switch"
-                                            role="switch"
-                                            type="button"
-                                          >
-                                            <div
-                                              class="ant-switch-handle"
-                                            />
-                                            <span
-                                              class="ant-switch-inner"
-                                            />
-                                          </button>
-                                        </td>
-                                        <td
-                                          class="ant-table-cell"
-                                        />
-                                        <td
-                                          class="ant-table-cell"
-                                        />
-                                        <td
-                                          class="ant-table-cell"
-                                        />
-                                        <td
-                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                          style="position: sticky; right: 0px;"
-                                        />
-                                      </tr>
-                                    </tbody>
-                                  </table>
+                                            </button>
+                                          </td>
+                                          <td
+                                            class="ant-table-cell"
+                                          />
+                                          <td
+                                            class="ant-table-cell"
+                                          />
+                                          <td
+                                            class="ant-table-cell"
+                                          />
+                                          <td
+                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                            style="position: sticky; right: 0px;"
+                                          />
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </div>
                               </div>
                               <ul

@@ -92,7 +92,9 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
           <div
             style="width: -20px;"
           >
-            incident attributes
+            <div
+              data-testid="incidentAttributes"
+            />
           </div>
         </div>
         <div
@@ -114,24 +116,34 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
         class="ant-col ant-col-20"
         style="padding: 10px 10px 10px 10px;"
       >
-        <div>
-          insights
-        </div>
-      </div>
-      <div
-        class="ant-col ant-col-20 ant-col-offset-4"
-        style="padding: 10px 10px 10px 10px;"
-      >
-        <div>
-          network impact
-        </div>
-      </div>
-      <div
-        class="ant-col ant-col-20 ant-col-offset-4"
-        style="padding: 10px 10px 10px 10px;"
-      >
-        <div>
-          charts
+        <div
+          class="ant-row"
+          style="margin: -10px -10px -10px -10px;"
+        >
+          <div
+            class="ant-col ant-col-24"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div>
+              Insights
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-24"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div>
+              network impact
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-24"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div>
+              time series section
+            </div>
+          </div>
         </div>
       </div>
     </div>
