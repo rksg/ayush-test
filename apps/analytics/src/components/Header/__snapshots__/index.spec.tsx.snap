@@ -3,7 +3,7 @@
 exports[`Analytics dumb header should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ixsJrS"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -29,7 +29,7 @@ exports[`Analytics dumb header should render correctly 1`] = `
             <span
               title="1"
             >
-              1: 1
+              APs: 1
               <div
                 class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1neyjyv-0 SjZWI"
                 role="separator"
@@ -38,7 +38,7 @@ exports[`Analytics dumb header should render correctly 1`] = `
             <span
               title="1, 2"
             >
-              12: 1 (2)
+              Firmware: 1 (2)
             </span>
           </span>
         </div>
@@ -78,6 +78,5 @@ exports[`Analytics dumb header should render correctly 1`] = `
       </div>
     </div>
   </div>
-   
 </DocumentFragment>
 `;

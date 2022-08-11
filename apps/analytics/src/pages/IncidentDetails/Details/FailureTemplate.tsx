@@ -1,68 +1,46 @@
-import { Col, Row }                  from 'antd'
-import { useIntl, FormattedMessage } from 'react-intl'
+import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
 
-import { incidentInformation, calculateSeverity } from '@acx-ui/analytics/utils'
-import { PageHeader, Pill }                       from '@acx-ui/components'
+import {
+  calculateSeverity,
+  Incident,
+  useShortDescription
+} from '@acx-ui/analytics/utils'
+import { PageHeader, SeverityPill } from '@acx-ui/components'
 
-import { incidentDetailsMap }                                      from '..'
-import { getImpactedArea, IncidentAttributes, formattedSliceType } from '../IncidentAttributes'
-import * as UI                                                     from '../styledComponents'
+import * as UI from './styledComponents'
+
 import TimeSeries from '../TimeSeries'
 
-import type { IncidentDetailsProps } from '../types'
-
-export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
+export const IncidentDetailsTemplate = (props: Incident) => {
   const { $t } = useIntl()
-  const shortDescription = (incident: IncidentDetailsProps) => {
-    const incidentInfo = incidentInformation[incident.code as keyof typeof incidentDetailsMap]
-    const scope = `${formattedSliceType(incident.sliceType)}: 
-      ${getImpactedArea(incident.path, incident.sliceValue)}`
-    const { shortDescription } = incidentInfo
-    const messageProps = {
-      id: incident.id,
-      defaultMessage: shortDescription,
-      values: { scope }
-    }
-    return <FormattedMessage {...messageProps}/>
-  }
-  const severityValue = calculateSeverity(props.severity)!
 
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Incident Details' })}
-        sideHeader={<Pill value={severityValue} trend={severityValue} />}
+        titleExtra={<SeverityPill severity={calculateSeverity(props.severity)!} />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={shortDescription(props)}
+        subTitle={<p>{useShortDescription(props)}</p>}
       />
-      <Row>
+      <Row gutter={[20, 20]}>
         <Col span={4}>
-          <UI.LeftColumn offsetTop={200}>
-            <IncidentAttributes
-              visibleFields={[]}
-              category={''}
-              subCategory={''}
-              shortDescription={''}
-              longDescription={''}
-              incidentType={''}
-              {...props}
-            />
-          </UI.LeftColumn>
+          <UI.FixedAutoSizer>
+            {({ width }) => (
+              <div style={{ width }}>incident attributes</div>
+            )}
+          </UI.FixedAutoSizer>
         </Col>
         <Col span={20}>
-          <Row gutter={[20, 20]}>
-            <Col span={24}>
-              <div>Insights</div>
-            </Col>
-            <Col span={24}>
-              <div>network impact</div>
-            </Col>
-            <Col span={24}>
-              <TimeSeries {...props} type={'clients'}/>
-            </Col>
-          </Row>
+          <div>insights</div>
+        </Col>
+        <Col offset={4} span={20}>
+          <div>network impact</div>
+        </Col>
+        <Col offset={4} span={20}>
+          <TimeSeries {...props} type={'clients'}/>
         </Col>
       </Row>
     </>

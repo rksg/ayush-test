@@ -4,7 +4,8 @@ import { render, fireEvent, screen, within } from '@acx-ui/test-utils'
 import { Table, TableProps } from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
-  CancelCircle: () => <div data-testid='cancel-circle'/>
+  CancelCircle: () => <div data-testid='cancel-circle'/>,
+  SettingsOutlined: () => <div data-testid='settings'/>
 }), { virtual: true })
 
 
@@ -38,7 +39,40 @@ describe('Table component', () => {
     const { asFragment } = render(<Table
       columns={basicColumns}
       dataSource={basicData}
-      title={() => 'Basic'}
+    />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders compact table', () => {
+    const basicColumns = [
+      { title: 'Name', key: 'name' },
+      { title: 'Age', key: 'age' },
+      { title: 'Address', key: 'address' }
+    ]
+    const basicData = [
+      {
+        key: '1',
+        name: 'John Doe',
+        age: 32,
+        address: 'sample address'
+      },
+      {
+        key: '2',
+        name: 'Jane Doe',
+        age: 33,
+        address: 'new address'
+      },
+      {
+        key: '3',
+        name: 'Will Smith',
+        age: 45,
+        address: 'address'
+      }
+    ]
+    const { asFragment } = render(<Table
+      type='compact'
+      columns={basicColumns}
+      dataSource={basicData}
     />)
     expect(asFragment()).toMatchSnapshot()
   })
@@ -92,7 +126,6 @@ describe('Table component', () => {
       columns={columns}
       dataSource={data}
       actions={actions}
-      title={() => 'Selectable'}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />)
     expect(asFragment()).toMatchSnapshot()
@@ -163,5 +196,57 @@ describe('Table component', () => {
     const after = (await body.findAllByRole('checkbox')) as HTMLInputElement[]
     expect(after.filter(el => el.checked)).toHaveLength(0)
     expect(after.filter(el => !el.checked)).toHaveLength(3)
+  })
+
+  it('single select row click', async () => {
+    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
+    const data = [
+      { key: '1', name: 'John Doe' },
+      { key: '2', name: 'Jane Doe' },
+      { key: '3', name: 'Will Smith' }
+    ]
+
+    render(<Table
+      columns={columns}
+      dataSource={data}
+      rowSelection={{ type: 'radio' }}
+    />)
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText('Jane Doe'))
+    const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
+    expect(selectedRow.filter(el => el.checked)).toHaveLength(1)
+  })
+
+  it('multible select row click', async () => {
+    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
+    const data = [
+      { key: '1', name: 'John Doe' },
+      { key: '2', name: 'Jane Doe' },
+      { key: '3', name: 'Will Smith' }
+    ]
+
+    render(<Table
+      columns={columns}
+      dataSource={data}
+      rowSelection={{ defaultSelectedRowKeys: ['1', '3'] }}
+    />)
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText('Jane Doe'))
+    const selectedRows = (await body.findAllByRole('checkbox')) as HTMLInputElement[]
+    expect(selectedRows.filter(el => el.checked)).toHaveLength(3)
+    fireEvent.click(await body.findByText('Will Smith'))
+    expect(selectedRows.filter(el => el.checked)).toHaveLength(2)
   })
 })

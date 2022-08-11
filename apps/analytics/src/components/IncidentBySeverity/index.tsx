@@ -3,15 +3,14 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { useGlobalFilter } from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter, incidentSeverities } from '@acx-ui/analytics/utils'
 import {
   Card,
-  Subtitle,
   BarChart,
   BarChartData,
   Loader,
   cssStr,
-  Pill,
+  TrendPill,
   TrendType
 } from '@acx-ui/components'
 
@@ -19,15 +18,10 @@ import {
   IncidentsBySeverityData,
   useIncidentsBySeverityQuery
 } from './services'
-import { Container, Title } from './styledComponents'
+import * as UI from './styledComponents'
 
 type PillData = { delta: string, total: number, trend: string }
-const barColors = [
-  cssStr('--acx-semantics-yellow-40'), // P4
-  cssStr('--acx-accents-orange-50'), //.. P3  
-  cssStr('--acx-semantics-red-50'), //... P2  
-  cssStr('--acx-semantics-red-70') //.... P1
-]
+const barColors = Object.values(incidentSeverities).map(({ color }) => cssStr(color))
 export const getPillData = (
   curr: IncidentsBySeverityData, prev: IncidentsBySeverityData
 ): PillData => {
@@ -47,10 +41,11 @@ const getChartData = (data: IncidentsBySeverityData): BarChartData => ({
 })
 
 function IncidentBySeverityWidget () {
-  const { startDate, endDate, path } = useGlobalFilter()
+  const filter = useAnalyticsFilter()
+  const { startDate, endDate } = filter
   const { $t } = useIntl()
   const currentResult = useIncidentsBySeverityQuery(
-    { startDate, endDate, path },
+    filter,
     {
       selectFromResult: ({ data, ...rest }) => ({
         data: { ...data } as IncidentsBySeverityData,
@@ -59,10 +54,10 @@ function IncidentBySeverityWidget () {
     }
   )
   const prevResult = useIncidentsBySeverityQuery(
-    { 
+    {
+      ...filter,
       startDate: moment(startDate).subtract(moment(endDate).diff(startDate)).format(),
-      endDate: startDate,
-      path
+      endDate: startDate
     },
     {
       selectFromResult: ({ data, ...rest }) => ({
@@ -71,20 +66,20 @@ function IncidentBySeverityWidget () {
       })
     }
   )
-  
+
   let chart:BarChartData, pill:PillData = { total: 0, trend: 'none', delta: '0' }
-  
+
   if (prevResult.data && currentResult.data) {
     pill = getPillData(currentResult.data, prevResult.data)
     chart = getChartData(currentResult.data)
   }
   return <Loader states={[prevResult, currentResult]}>
     <Card title={$t({ defaultMessage: 'Total Incidents' })}>
-      <Container>
-        <Title>
-          <Subtitle level={1} style={{ marginBottom: 0 }}>{pill.total}</Subtitle>
-          <Pill value={pill.delta} trend={pill.trend as TrendType} />
-        </Title>
+      <UI.Container>
+        <UI.Title>
+          <UI.IncidentCount>{pill.total}</UI.IncidentCount>
+          <TrendPill value={pill.delta} trend={pill.trend as TrendType} />
+        </UI.Title>
         <AutoSizer>
           {({ width }) => (
             <BarChart
@@ -95,7 +90,7 @@ function IncidentBySeverityWidget () {
             />
           )}
         </AutoSizer>
-      </Container>
+      </UI.Container>
     </Card>
   </Loader>
 }

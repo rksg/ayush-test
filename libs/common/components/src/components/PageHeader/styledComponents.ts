@@ -3,19 +3,18 @@ import styled from 'styled-components/macro'
 export const Wrapper = styled.div`
   position: sticky;
   top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
-  z-index: 3;
+  z-index: 4;
   background-color: var(--acx-neutrals-10);
 
   .ant-page-header {
     padding: 0;
     &-heading {
       h1 {
-        margin-bottom: 3px;
+        margin-bottom: 0;
       }
-      &-left{
+      &-left {
         overflow: visible;
         flex-direction: column;
-        display: flow-root;
       }
       &-sub-title {
         align-self: flex-start;
@@ -27,7 +26,10 @@ export const Wrapper = styled.div`
       }
       &-title {
         overflow: visible;
+        align-self: flex-start;
         display: flex;
+        gap: 10px;
+        align-items: center;
       }
       margin-bottom: var(--acx-content-vertical-space);
     }
@@ -59,8 +61,4 @@ export const Wrapper = styled.div`
 
 export const Spacer = styled.div`
   height: var(--acx-content-vertical-space);
-`
-
-export const SideHeader = styled.div`
-  padding-left: 8px;
 `

@@ -1,7 +1,9 @@
 import { initialize, mockInstances } from '@googlemaps/jest-mocks'
 import { Cluster, MarkerClusterer }  from '@googlemaps/markerclusterer'
+import { useIntl }                   from 'react-intl'
 
 import { ApVenueStatusEnum } from '@acx-ui/rc/services'
+import { renderHook }        from '@acx-ui/test-utils'
 
 import VenueClusterRenderer, { generateClusterInfoContent, renderItemForList, VenueClusterTooltipData } from './VenueClusterRenderer'
 import VenueMarkerWithLabel                                                                             from './VenueMarkerWithLabel'
@@ -42,7 +44,6 @@ const venueData = {
   switchClientsCount: 10
 }
 
-
 describe('VenueClusterRenderer', () => {
   beforeAll(() => {
     initialize()
@@ -55,8 +56,10 @@ describe('VenueClusterRenderer', () => {
 
   it('should call render for the markercluster', ()=>{
     const map = new google.maps.Map(document.createElement('div'))
-    const renderer = new VenueClusterRenderer(map)
-    const spyRender = jest.spyOn(renderer, 'render')
+    const { result } = renderHook(() => {
+      return new VenueClusterRenderer(map, useIntl())
+    })
+    const spyRender = jest.spyOn(result.current, 'render')
     
     const markers: google.maps.Marker[] = [
       new google.maps.Marker(),
@@ -65,7 +68,7 @@ describe('VenueClusterRenderer', () => {
     
     const markerClusterer = new MarkerClusterer({
       markers,
-      renderer
+      renderer: result.current
     })
 
     markerClusterer.getMap = jest.fn().mockImplementation(() => map)

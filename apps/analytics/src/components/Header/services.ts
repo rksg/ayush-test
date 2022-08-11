@@ -1,9 +1,9 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                                              from '@acx-ui/analytics/services'
-import { GlobalFilter, NetworkPath, NetworkNodeTypeForDisplay } from '@acx-ui/analytics/utils'
+import { dataApi }                                                   from '@acx-ui/analytics/services'
+import { AnalyticsFilter, NetworkPath, normalizeNodeType, NodeType } from '@acx-ui/analytics/utils'
 
-import { HeaderData } from '.'
+import { HeaderData, SubTitle } from '.'
 
 interface NetworkNodeInfo {
   type: string,
@@ -29,39 +29,14 @@ type QueryVariables = {
   endDate: string
   mac?: string
 }
-const labelMap = {
-  type: 'Type',
-  model: 'Model',
-  firmware: 'Firmware',
-  version: 'Firmware',
-  mac: 'MAC Address',
-  internalIp: 'IP Address',
-  apCount: 'APs',
-  clientCount: 'Clients',
-  portCount: 'Ports',
-  switchCount: 'Switches'
-}
 
-const lowPreferenceList = [
-  '0.0.0.0', '0', 'Unknown'
-]
+const lowPreferenceList = ['0.0.0.0', '0', 'Unknown']
 
-const getAttributesByNodeType = (type: keyof typeof NetworkNodeTypeForDisplay): string[] => {
-  const defaultAttributes = ['type', 'apCount', 'clientCount' ]
+const getAttributesByNodeType = (nodeType: NodeType) => {
+  const defaultAttributes = ['type', 'apCount', 'clientCount' ] as const
 
-  const keyMap: Partial<Record<
-    keyof typeof NetworkNodeTypeForDisplay,
-    keyof typeof attributes
-  >> = {
-    zoneName: 'zone',
-    ap: 'AP',
-    apMac: 'AP',
-    apGroupName: 'apGroup'
-  }
-
-  const key = keyMap[type] ?? type as keyof typeof attributes
   const attributes = {
-    network: [...defaultAttributes, 'switchCount'],
+    network: [...defaultAttributes, 'switchCount'] as const,
     zone: defaultAttributes,
     apGroup: defaultAttributes,
     AP: [
@@ -70,19 +45,20 @@ const getAttributesByNodeType = (type: keyof typeof NetworkNodeTypeForDisplay): 
       'mac',
       'internalIp',
       'clientCount'
-    ],
+    ] as const,
     switchGroup: [
       'switchCount'
-    ],
+    ] as const,
     switchSubGroup: [
       'switchCount'
-    ],
+    ] as const,
     switch: [
       'model',
       'firmware',
       'portCount'
-    ]
+    ] as const
   }
+  const key = normalizeNodeType(nodeType)
   return attributes[key]
 }
 
@@ -122,7 +98,7 @@ const getQuery = (path: NetworkPath) : string => {
         network(start: $startDate, end: $endDate) {
           node: hierarchyNode(path:$path) {
             name
-            ${getAttributesByNodeType(type as keyof typeof NetworkNodeTypeForDisplay).join('\n')}
+            ${getAttributesByNodeType(type).join('\n')}
           }
         }
       }
@@ -130,7 +106,7 @@ const getQuery = (path: NetworkPath) : string => {
   }
 }
 
-const getQueryVariables = (payload: GlobalFilter): QueryVariables => {
+const getQueryVariables = (payload: AnalyticsFilter): QueryVariables => {
   const { path } = payload
   const [{ type, name }] = path.slice(-1)
   switch(type) {
@@ -150,9 +126,9 @@ export const transformForDisplay = (data: NetworkNodeInfo): HeaderData => {
   const subTitle = Object.entries(rest)
     .filter(([, value]) => value)
     .map(([key, value]) => ({
-      key: labelMap[key as keyof typeof labelMap],
+      key: key as SubTitle['key'],
       value: key === 'type'
-        ? [NetworkNodeTypeForDisplay[value as keyof typeof NetworkNodeTypeForDisplay]]
+        ? [String(value)]
         : sortPreference(value)
     }))
   return { title: name, subTitle }
@@ -161,7 +137,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkNodeInfo: build.query<
       HeaderData,
-      GlobalFilter
+      AnalyticsFilter
     >({
       query: (payload) => ({
         document: getQuery(payload.path),
