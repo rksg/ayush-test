@@ -7,7 +7,7 @@ import { Wrapper, Row } from './styledComponents'
 export interface DescriptionRowProps {
   label: string
   title?: string
-  children: React.ReactNode | string
+  children: React.ReactNode
   onClick?: () => void
 }
 

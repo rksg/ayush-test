@@ -126,7 +126,10 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   >
                     <div
                       class="styledComponents__Row-sc-1627zcn-0"
-                    />
+                      title="Connection"
+                    >
+                      Connection
+                    </div>
                   </span>
                 </div>
               </td>
@@ -164,7 +167,10 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                   >
                     <div
                       class="styledComponents__Row-sc-1627zcn-0"
-                    />
+                      title="EAP"
+                    >
+                      EAP
+                    </div>
                   </span>
                 </div>
               </td>
@@ -393,7 +399,7 @@ Object {
       Array [
         Object {
           "type": 1,
-          "value": "impactedCount",
+          "value": "count",
         },
         Object {
           "type": 0,
@@ -401,27 +407,106 @@ Object {
         },
         Object {
           "type": 1,
-          "value": "count",
+          "value": "total",
         },
         Object {
           "type": 0,
           "value": " ",
         },
         Object {
-          "type": 1,
+          "options": Object {
+            "ap": Object {
+              "value": Array [
+                Object {
+                  "offset": 0,
+                  "options": Object {
+                    "one": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "AP",
+                        },
+                      ],
+                    },
+                    "other": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "APs",
+                        },
+                      ],
+                    },
+                  },
+                  "pluralType": "cardinal",
+                  "type": 6,
+                  "value": "total",
+                },
+              ],
+            },
+            "client": Object {
+              "value": Array [
+                Object {
+                  "offset": 0,
+                  "options": Object {
+                    "one": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "client",
+                        },
+                      ],
+                    },
+                    "other": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "clients",
+                        },
+                      ],
+                    },
+                  },
+                  "pluralType": "cardinal",
+                  "type": 6,
+                  "value": "total",
+                },
+              ],
+            },
+            "other": Object {
+              "value": Array [
+                Object {
+                  "type": 0,
+                  "value": "Unknown",
+                },
+              ],
+            },
+          },
+          "type": 5,
           "value": "type",
-        },
-        Object {
-          "type": 1,
-          "value": "isPlural",
         },
         Object {
           "type": 0,
           "value": " (",
         },
         Object {
-          "type": 1,
-          "value": "impact",
+          "style": Object {
+            "parsedOptions": Object {
+              "maximumFractionDigits": 2,
+              "style": "percent",
+            },
+            "tokens": Array [
+              Object {
+                "options": Array [],
+                "stem": "percent",
+              },
+              Object {
+                "options": Array [],
+                "stem": ".##",
+              },
+            ],
+            "type": 0,
+          },
+          "type": 2,
+          "value": "percentage",
         },
         Object {
           "type": 0,
@@ -429,14 +514,13 @@ Object {
         },
       ]
     }
-    id="2PBVN3"
+    id="810erc"
     values={
       Object {
         "count": 1,
-        "impact": "100%",
-        "impactedCount": 1,
-        "isPlural": "",
-        "type": "AP",
+        "percentage": 1,
+        "total": 1,
+        "type": "ap",
       }
     }
   />,
@@ -453,7 +537,7 @@ Object {
       Array [
         Object {
           "type": 1,
-          "value": "impactedCount",
+          "value": "count",
         },
         Object {
           "type": 0,
@@ -461,27 +545,106 @@ Object {
         },
         Object {
           "type": 1,
-          "value": "count",
+          "value": "total",
         },
         Object {
           "type": 0,
           "value": " ",
         },
         Object {
-          "type": 1,
+          "options": Object {
+            "ap": Object {
+              "value": Array [
+                Object {
+                  "offset": 0,
+                  "options": Object {
+                    "one": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "AP",
+                        },
+                      ],
+                    },
+                    "other": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "APs",
+                        },
+                      ],
+                    },
+                  },
+                  "pluralType": "cardinal",
+                  "type": 6,
+                  "value": "total",
+                },
+              ],
+            },
+            "client": Object {
+              "value": Array [
+                Object {
+                  "offset": 0,
+                  "options": Object {
+                    "one": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "client",
+                        },
+                      ],
+                    },
+                    "other": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "clients",
+                        },
+                      ],
+                    },
+                  },
+                  "pluralType": "cardinal",
+                  "type": 6,
+                  "value": "total",
+                },
+              ],
+            },
+            "other": Object {
+              "value": Array [
+                Object {
+                  "type": 0,
+                  "value": "Unknown",
+                },
+              ],
+            },
+          },
+          "type": 5,
           "value": "type",
-        },
-        Object {
-          "type": 1,
-          "value": "isPlural",
         },
         Object {
           "type": 0,
           "value": " (",
         },
         Object {
-          "type": 1,
-          "value": "impact",
+          "style": Object {
+            "parsedOptions": Object {
+              "maximumFractionDigits": 2,
+              "style": "percent",
+            },
+            "tokens": Array [
+              Object {
+                "options": Array [],
+                "stem": "percent",
+              },
+              Object {
+                "options": Array [],
+                "stem": ".##",
+              },
+            ],
+            "type": 0,
+          },
+          "type": 2,
+          "value": "percentage",
         },
         Object {
           "type": 0,
@@ -489,13 +652,12 @@ Object {
         },
       ]
     }
-    id="2PBVN3"
+    id="810erc"
     values={
       Object {
-        "count": 1500,
-        "impact": "86.67%",
-        "impactedCount": 1300,
-        "isPlural": "s",
+        "count": 1300,
+        "percentage": 0.8666666666666667,
+        "total": 1500,
         "type": "client",
       }
     }
@@ -522,7 +684,7 @@ Object {
       Array [
         Object {
           "type": 1,
-          "value": "impactedCount",
+          "value": "count",
         },
         Object {
           "type": 0,
@@ -530,27 +692,106 @@ Object {
         },
         Object {
           "type": 1,
-          "value": "count",
+          "value": "total",
         },
         Object {
           "type": 0,
           "value": " ",
         },
         Object {
-          "type": 1,
+          "options": Object {
+            "ap": Object {
+              "value": Array [
+                Object {
+                  "offset": 0,
+                  "options": Object {
+                    "one": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "AP",
+                        },
+                      ],
+                    },
+                    "other": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "APs",
+                        },
+                      ],
+                    },
+                  },
+                  "pluralType": "cardinal",
+                  "type": 6,
+                  "value": "total",
+                },
+              ],
+            },
+            "client": Object {
+              "value": Array [
+                Object {
+                  "offset": 0,
+                  "options": Object {
+                    "one": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "client",
+                        },
+                      ],
+                    },
+                    "other": Object {
+                      "value": Array [
+                        Object {
+                          "type": 0,
+                          "value": "clients",
+                        },
+                      ],
+                    },
+                  },
+                  "pluralType": "cardinal",
+                  "type": 6,
+                  "value": "total",
+                },
+              ],
+            },
+            "other": Object {
+              "value": Array [
+                Object {
+                  "type": 0,
+                  "value": "Unknown",
+                },
+              ],
+            },
+          },
+          "type": 5,
           "value": "type",
-        },
-        Object {
-          "type": 1,
-          "value": "isPlural",
         },
         Object {
           "type": 0,
           "value": " (",
         },
         Object {
-          "type": 1,
-          "value": "impact",
+          "style": Object {
+            "parsedOptions": Object {
+              "maximumFractionDigits": 2,
+              "style": "percent",
+            },
+            "tokens": Array [
+              Object {
+                "options": Array [],
+                "stem": "percent",
+              },
+              Object {
+                "options": Array [],
+                "stem": ".##",
+              },
+            ],
+            "type": 0,
+          },
+          "type": 2,
+          "value": "percentage",
         },
         Object {
           "type": 0,
@@ -558,13 +799,12 @@ Object {
         },
       ]
     }
-    id="2PBVN3"
+    id="810erc"
     values={
       Object {
-        "count": 128,
-        "impact": "42.97%",
-        "impactedCount": 55,
-        "isPlural": "s",
+        "count": 55,
+        "percentage": 0.4296875,
+        "total": 128,
         "type": "client",
       }
     }
