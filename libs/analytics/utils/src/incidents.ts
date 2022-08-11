@@ -101,9 +101,9 @@ export function useFormattedPath (path: PathNode[], sliceValue: string) {
       description: 'FormattedPath: Uses to show path node name & type'
     }, node))
     .reduce((nodeA, nodeB) => intl.$t({
-      defaultMessage: '{nodeA} > {nodeB}',
+      defaultMessage: '{nodeA}{newline}> {nodeB}',
       description: 'FormattedPath: Uses to join path nodes together in a chain'
-    }, { nodeA, nodeB }))
+    }, { nodeA, nodeB, newline: '\n' }))
 }
 
 export function useImpactedArea (path: PathNode[], sliceValue: string) {

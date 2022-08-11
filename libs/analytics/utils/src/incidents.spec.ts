@@ -61,7 +61,7 @@ describe('useFormattedPath', () => {
       { type: 'zone', name: 'V' },
       { type: 'apGroup', name: 'AG' }
     ], 'Name'))
-    expect(result.current).toEqual('V (Venue) > AG (AP Group)')
+    expect(result.current).toEqual('V (Venue)\n> AG (AP Group)')
   })
   it('returns path which contains AP with correct format', () => {
     const { result } = renderHook(() => useFormattedPath([
@@ -70,7 +70,7 @@ describe('useFormattedPath', () => {
       { type: 'apGroup', name: 'AG' },
       { type: 'ap', name: 'IP' }
     ], 'Name'))
-    expect(result.current).toEqual('V (Venue) > AG (AP Group) > Name (IP) (Access Point)')
+    expect(result.current).toEqual('V (Venue)\n> AG (AP Group)\n> Name (IP) (Access Point)')
   })
 })
 
