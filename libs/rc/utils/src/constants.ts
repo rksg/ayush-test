@@ -72,10 +72,10 @@ export enum APMeshRole {
 }
 
 export enum DeviceConnectionStatus {
-  DISCONNECTED = 'Disconnected',
-  ALERTING = 'Alerting',
-  CONNECTED = 'Connected',
-  INITIAL = 'Initial'
+  INITIAL = 'initial',
+  CONNECTED = 'connected',
+  DISCONNECTED = 'disconnected',
+  ALERTING = 'alerting'
 }
 
 export enum ApRadioBands {
@@ -95,11 +95,6 @@ export enum AaaServerTypeEnum {
 export enum AaaServerOrderEnum {
   PRIMARY = 'primary',
   SECONDARY = 'secondary',
-}
-
-export const AaaServerTitle = {
-  [AaaServerOrderEnum.PRIMARY]: 'Primary Server',
-  [AaaServerOrderEnum.SECONDARY]: 'Secondary Server'
 }
 
 export enum CloudpathDeploymentTypeEnum {

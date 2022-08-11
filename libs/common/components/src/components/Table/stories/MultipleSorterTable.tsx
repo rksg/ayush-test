@@ -58,11 +58,11 @@ const basicData = [
 
 
 export function MultipleSorterTable () {
-  return (
+  return (<>
+    Multiple Sorter
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      title={() => 'Multiple Sorter'}
     />
-  )
+  </>)
 }

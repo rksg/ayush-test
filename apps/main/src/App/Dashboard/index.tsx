@@ -24,6 +24,19 @@ const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 const defaultEnabledDates = [moment().subtract(3, 'months').seconds(0), moment().seconds(0)]
 export default function Dashboard () {
+  const { $t } = useIntl()
+  const tabDetails: ContentSwitcherProps['tabDetails'] = [
+    {
+      label: $t({ defaultMessage: 'Wi-Fi' }),
+      value: 'ap',
+      children: <ApWidgets />
+    },
+    {
+      label: $t({ defaultMessage: 'Switch' }),
+      value: 'switch',
+      children: <SwitchWidgets />
+    }
+  ]
   return (
     <AnalyticsFilterProvider>
       <DashboardPageHeader />
@@ -39,13 +52,13 @@ function DashboardPageHeader () {
   const { $t } = useIntl()
   return (
     <PageHeader
-      title={$t({ id: 'title', defaultMessage: 'Dashboard' })}
+      title={$t({ defaultMessage: 'Dashboard' })}
       extra={[
         <Button key='add' type='primary'>
-          {$t({ id: 'pageHeaderMenu.add', defaultMessage: 'Add...' })}
+          {$t({ defaultMessage: 'Add...' })}
         </Button>,
         <Button key='hierarchy-filter'>
-          {$t({ id: 'pageHeaderMenu.entireOrg', defaultMessage: 'Entire Organization' })}
+          {$t({ defaultMessage: 'Entire Organization' })}
           <ArrowExpand />
         </Button>,
         <RangePicker
@@ -106,19 +119,6 @@ function SwitchWidgets () {
     </DashboardRow>
   )
 }
-
-const tabDetails: ContentSwitcherProps['tabDetails'] = [
-  {
-    label: 'Wi-Fi',
-    value: 'ap',
-    children: <ApWidgets/>
-  },
-  {
-    label: 'Switch',
-    value: 'switch',
-    children: <SwitchWidgets/>
-  }
-]
 
 function CommonDashboardWidgets () {
   const filters = useAnalyticsFilter()
