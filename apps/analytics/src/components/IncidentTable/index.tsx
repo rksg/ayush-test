@@ -9,9 +9,7 @@ import { Link }                                       from '@acx-ui/react-router
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentNodeInfo, getIncidentBySeverity } from './services'
 
-import type { ProColumns } from '@ant-design/pro-table'
-
-const ColumnHeaders: ProColumns<IncidentNodeInfo, 'text'>[] = [
+const ColumnHeaders: TableProps<IncidentNodeInfo>['columns'] = [
   {
     title: 'Severity',
     dataIndex: 'severity',
