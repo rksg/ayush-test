@@ -1,23 +1,26 @@
 import { useContext } from 'react'
 
+
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
+import { useIntl }                             from 'react-intl'
 
 import { StepsForm }                                              from '@acx-ui/components'
 import { useLazyNetworkListQuery }                                from '@acx-ui/rc/services'
 import { NetworkTypeEnum, checkObjectNotExists, NetworkSaveData } from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 
-import { NetworkTypeDescription, NetworkTypeLabel } from '../contentsMap'
-import { NetworkDiagram }                           from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext                           from '../NetworkFormContext'
-import { RadioDescription }                         from '../styledComponents'
+import { networkTypesDescription, networkTypes } from '../contentsMap'
+import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext                        from '../NetworkFormContext'
+import { RadioDescription }                      from '../styledComponents'
 
 import type { RadioChangeEvent } from 'antd'
 
 const { useWatch } = Form
 
 export function NetworkDetailForm () {
+  const { $t } = useIntl()
   const name = useWatch<NetworkSaveData>('name')
   const type = useWatch<NetworkTypeEnum>('type')
   const { setNetworkType: setSettingStepTitle, editMode } = useContext(NetworkFormContext)
@@ -47,13 +50,21 @@ export function NetworkDetailForm () {
     return checkObjectNotExists(list, value, 'Network')
   }
 
+  const types = [
+    { type: NetworkTypeEnum.PSK, disabled: true },
+    { type: NetworkTypeEnum.DPSK, disabled: false },
+    { type: NetworkTypeEnum.AAA, disabled: false },
+    { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: true },
+    { type: NetworkTypeEnum.OPEN, disabled: false }
+  ]
+
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>Network Details</StepsForm.Title>
+        <StepsForm.Title>{$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
         <Form.Item
           name='name'
-          label='Network Name'
+          label={$t({ defaultMessage: 'Network Name' })}
           rules={[
             { required: true },
             { min: 2 },
@@ -66,52 +77,26 @@ export function NetworkDetailForm () {
         />
         <Form.Item
           name='description'
-          label='Description'
+          label={$t({ defaultMessage: 'Description' })}
           children={<TextArea rows={4} maxLength={64} />}
         />
         <Form.Item>
           {!editMode && 
             <Form.Item
               name='type'
-              label='Network Type'
+              label={$t({ defaultMessage: 'Network Type' })}
               rules={[{ required: true }]}
             >
               <Radio.Group onChange={onChange}>
                 <Space direction='vertical'>
-                  <Radio value={NetworkTypeEnum.PSK} disabled>
-                    {NetworkTypeLabel.psk}
-                    <RadioDescription>
-                      {NetworkTypeDescription.psk}
-                    </RadioDescription>
-                  </Radio>
-
-                  <Radio value={NetworkTypeEnum.DPSK}>
-                    {NetworkTypeLabel.dpsk}
-                    <RadioDescription>
-                      {NetworkTypeDescription.dpsk}
-                    </RadioDescription>
-                  </Radio>
-
-                  <Radio value={NetworkTypeEnum.AAA}>
-                    {NetworkTypeLabel.aaa}
-                    <RadioDescription>
-                      {NetworkTypeDescription.aaa}
-                    </RadioDescription>
-                  </Radio>
-
-                  <Radio value={NetworkTypeEnum.CAPTIVEPORTAL} disabled>
-                    {NetworkTypeLabel.guest}
-                    <RadioDescription>
-                      {NetworkTypeDescription.guest}
-                    </RadioDescription>
-                  </Radio>
-
-                  <Radio value={NetworkTypeEnum.OPEN}>
-                    {NetworkTypeLabel.open}
-                    <RadioDescription>
-                      {NetworkTypeDescription.open}
-                    </RadioDescription>
-                  </Radio>
+                  {types.map(({ type, disabled }) => (
+                    <Radio key={type} value={type} disabled={disabled}>
+                      {$t(networkTypes[type])}
+                      <RadioDescription>
+                        {$t(networkTypesDescription[type])}
+                      </RadioDescription>
+                    </Radio>
+                  ))}
                 </Space>
               </Radio.Group>
             </Form.Item>
@@ -123,12 +108,12 @@ export function NetworkDetailForm () {
               rules={[{ required: true }]}
             >
               <>
-                <div><h4 className='ant-typography'>{NetworkTypeLabel[type]}</h4></div>
-                <div><label>{NetworkTypeDescription[type]}</label></div>
+                <div><h4 className='ant-typography'>{type && $t(networkTypes[type])}</h4></div>
+                <div><label>{type && $t(networkTypesDescription[type])}</label></div>
               </>
             </Form.Item>     
           } 
-        </Form.Item>     
+        </Form.Item>
       </Col>
 
       <Col span={14}>

@@ -1,95 +1,103 @@
+import { FormattedMessage, useIntl } from 'react-intl'
+
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { useNetworkListQuery, useDeleteNetworkMutation, Network }         from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  WlanSecurityEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
-const columns: TableProps<Network>['columns'] = [
-  {
-    title: 'Network Name',
-    dataIndex: 'name',
-    sorter: true,
-    defaultSortOrder: 'ascend',
-    render: function (data, row) {
-      return (
-        <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
-      )
+import * as contents from '../NetworkForm/contentsMap'
+
+function getCols (intl: ReturnType<typeof useIntl>) {
+  const columns: TableProps<Network>['columns'] = [
+    {
+      title: intl.$t({ defaultMessage: 'Network Name' }),
+      dataIndex: 'name',
+      sorter: true,
+      defaultSortOrder: 'ascend',
+      render: function (data, row) {
+        return (
+          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+        )
+      }
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Description' }),
+      dataIndex: 'description',
+      sorter: true
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Type' }),
+      dataIndex: 'nwSubType',
+      sorter: true,
+      render: (data: unknown, row) => <NetworkType
+        networkType={data as NetworkTypeEnum}
+        row={row}
+      />
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Venues' }),
+      dataIndex: ['venues', 'count'],
+      sorter: true,
+      align: 'center',
+      render: function (count, row) {
+        return (
+          <TenantLink
+            to={`/networks/${row.id}/network-details/venues`}
+            children={count ? count : 0}
+          />
+        )
+      }
+    },
+    {
+      title: intl.$t({ defaultMessage: 'APs' }),
+      dataIndex: 'aps',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return (
+          <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+        )
+      }
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Clients' }),
+      dataIndex: 'clients',
+      sorter: true,
+      align: 'center'
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Services' }),
+      dataIndex: 'services',
+      sorter: true,
+      align: 'center'
+    },
+    {
+      title: intl.$t({ defaultMessage: 'VLAN' }),
+      dataIndex: 'vlan',
+      sorter: true,
+      render: function (data, row) {
+        return transformVLAN(row)
+      }
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Health' }),
+      dataIndex: 'health',
+      sorter: true
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Tags' }),
+      dataIndex: 'tags',
+      sorter: true
     }
-  },
-  {
-    title: 'Description',
-    dataIndex: 'description',
-    sorter: true
-  },
-  {
-    title: 'Type',
-    dataIndex: 'nwSubType',
-    sorter: true,
-    render: function (data, row) {
-      return transformNetworkType(String(data), row)
-    }
-  },
-  {
-    title: 'Venues',
-    dataIndex: ['venues', 'count'],
-    sorter: true,
-    align: 'center',
-    render: function (count, row) {
-      return (
-        <TenantLink
-          to={`/networks/${row.id}/network-details/venues`}
-          children={count ? count : 0}
-        />
-      )
-    }
-  },
-  {
-    title: 'APs',
-    dataIndex: 'aps',
-    sorter: true,
-    align: 'center',
-    render: function (data, row) {
-      return (
-        <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
-      )
-    }
-  },
-  {
-    title: 'Clients',
-    dataIndex: 'clients',
-    sorter: true,
-    align: 'center'
-  },
-  {
-    title: 'Services',
-    dataIndex: 'services',
-    sorter: true,
-    align: 'center'
-  },
-  {
-    title: 'VLAN',
-    dataIndex: 'vlan',
-    sorter: true,
-    render: function (data, row) {
-      return transformVLAN(row)
-    }
-  },
-  {
-    title: 'Health',
-    dataIndex: 'health',
-    sorter: true
-  },
-  {
-    title: 'Tags',
-    dataIndex: 'tags',
-    sorter: true
-  }
-]
+  ]
+  return columns
+}
+
 
 const transformVLAN = (row: Network) => {
   if (row.vlanPool) {
@@ -99,76 +107,47 @@ const transformVLAN = (row: Network) => {
   return VLAN_PREFIX.VLAN + row.vlan
 }
 
-const transformNetworkType = (value: Network['nwSubType'], row: Network) => {
-  let displayValue = ''
+const NetworkType: React.FC<{
+  networkType: NetworkTypeEnum,
+  row: Network
+}> = ({ networkType, row }) => {
+  const { $t } = useIntl()
   const captiveType = row.captiveType
   const wlan = row?.deepNetwork?.wlan
-  switch (value) {
+
+  switch (networkType) {
     case NetworkTypeEnum.OPEN:
-      displayValue = 'Open Network'
-      break
-
+      return <FormattedMessage
+        {...contents.networkTypes[NetworkTypeEnum.OPEN]}
+      />
     case NetworkTypeEnum.PSK:
-      displayValue = 'Pre-Shared Key (PSK)'
-      if (wlan && wlan.wlanSecurity) {
-        displayValue += getWlanSecurity(wlan.wlanSecurity)
-      }
-      break
-
     case NetworkTypeEnum.DPSK:
-      displayValue = 'Dynamic Pre-Shared Key (DPSK)'
-      if (wlan && wlan.wlanSecurity) {
-        displayValue += getWlanSecurity(wlan.wlanSecurity)
-      }
-      break
-
     case NetworkTypeEnum.AAA:
-      displayValue = 'Enterprise AAA (802.1X)'
-      if (wlan && wlan.wlanSecurity) {
-        displayValue += getWlanSecurity(wlan.wlanSecurity)
-      }
-      break
-
+      const message = contents.networkTypes[networkType]
+      return wlan?.wlanSecurity
+        ? <FormattedMessage
+          defaultMessage={'{networkType} - {authMethod}'}
+          values={{
+            networkType: $t(message),
+            authMethod: $t(contents.wlanSecurity[wlan?.wlanSecurity!])
+          }}
+        />
+        : <FormattedMessage {...message} />
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      displayValue = wlan ? 'Captive ' : ''
-      switch (captiveType) {
-        case GuestNetworkTypeEnum.ClickThrough:
-          displayValue += 'Portal - Click-Through'
-          break
-        case GuestNetworkTypeEnum.GuestPass:
-          displayValue += 'Portal - Managed Guest Pass'
-          break
-        case GuestNetworkTypeEnum.SelfSignIn:
-          displayValue += 'Portal - Self Sign-In'
-          break
-        case GuestNetworkTypeEnum.HostApproval:
-          displayValue += 'Portal - Host Approval'
-          break
-        case GuestNetworkTypeEnum.WISPr:
-          displayValue += 'Portal - 3rd Party Captive Portal (WISPr)'
-          break
-        default:
-          displayValue += 'Portal - Captive Portal'
-      }
-      break
+      return <FormattedMessage
+        defaultMessage={`
+          {isCaptiveNetwork, select, true {Captive Portal} other {Portal}}
+          -
+          {captiveNetworkType}
+        `}
+        values={{
+          isCaptiveNetwork: String(Boolean(wlan)),
+          captiveNetworkType: $t(contents.captiveNetworkTypes[
+            captiveType || GuestNetworkTypeEnum.Cloudpath
+          ])
+        }}
+      />
   }
-  return displayValue
-}
-
-const getWlanSecurity = (wlanSecurity: WlanSecurityEnum) => {
-  const securityMap = {
-    [WlanSecurityEnum.Open]: ' - Open',
-    [WlanSecurityEnum.WPAPersonal]: ' - WPA',
-    [WlanSecurityEnum.WPA2Personal]: ' - WPA2',
-    [WlanSecurityEnum.WPAEnterprise]: ' - WPA Enterprise',
-    [WlanSecurityEnum.WPA2Enterprise]: ' - WPA2 Enterprise',
-    [WlanSecurityEnum.OpenCaptivePortal]: ' - Open Captive Portal',
-    [WlanSecurityEnum.WEP]: ' - WEP',
-    [WlanSecurityEnum.WPA23Mixed]: ' - WPA3/WPA2 Mixed',
-    [WlanSecurityEnum.WPA3]: ' - WPA3'
-  }
-
-  return securityMap[wlanSecurity] || ''
 }
 
 const defaultPayload = {
@@ -191,6 +170,7 @@ const defaultPayload = {
 }
 
 export function NetworksTable () {
+  const { $t } = useIntl()
   const NetworksTable = () => {
     const navigate = useNavigate()
     const linkToEditNetwork = useTenantLink('/networks/')
@@ -206,19 +186,19 @@ export function NetworksTable () {
 
     const actions: TableProps<Network>['actions'] = [
       {
-        label: 'Edit',
+        label: $t({ defaultMessage: 'Edit' }),
         onClick: (selectedRows) => {
           navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
         }
       },
       {
-        label: 'Delete',
+        label: $t({ defaultMessage: 'Delete' }),
         onClick: ([{ name, id }], clearSelection) => {
           showActionModal({
             type: 'confirm',
             customContent: {
               action: 'DELETE',
-              entityName: 'Network',
+              entityName: $t({ defaultMessage: 'Network' }),
               entityValue: name
             },
             onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
@@ -233,7 +213,7 @@ export function NetworksTable () {
         { isLoading: false, isFetching: isDeleteNetworkUpdating }
       ]}>
         <Table
-          columns={columns}
+          columns={getCols(useIntl())}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
@@ -248,10 +228,10 @@ export function NetworksTable () {
   return (
     <>
       <PageHeader
-        title='Networks'
+        title={$t({ defaultMessage: 'Networks' })}
         extra={[
           <TenantLink to='/networks/create' key='add'>
-            <Button type='primary'>Add Wi-Fi Network</Button>
+            <Button type='primary'>{ $t({ defaultMessage: 'Add Wi-Fi Network' }) }</Button>
           </TenantLink>
         ]}
       />

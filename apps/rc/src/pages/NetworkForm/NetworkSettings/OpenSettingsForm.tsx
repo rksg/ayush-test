@@ -6,6 +6,7 @@ import {
   Row,
   Switch
 } from 'antd'
+import { useIntl } from 'react-intl'
 
 import { StepsForm }             from '@acx-ui/components'
 import { useCloudpathListQuery } from '@acx-ui/rc/services'
@@ -47,16 +48,17 @@ export function OpenSettingsForm () {
 function SettingsForm () {
   const isCloudpathEnabled = useWatch<boolean>('isCloudpathEnabled')
   const { editMode } = useContext(NetworkFormContext)
+  const { $t } = useIntl()
 
   return (
     <>
-      <StepsForm.Title>Open Settings</StepsForm.Title>
+      <StepsForm.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsForm.Title>
 
       <Form.Item>
         <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
           <Switch disabled={editMode} />
         </Form.Item>
-        <span>Use Cloudpath Server</span>
+        <span>{$t({ defaultMessage: 'Use Cloudpath Server' })}</span>
       </Form.Item>
 
       {isCloudpathEnabled && <CloudpathServerForm />}

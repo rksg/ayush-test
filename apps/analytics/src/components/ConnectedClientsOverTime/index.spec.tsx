@@ -3,10 +3,18 @@ import '@testing-library/jest-dom'
 import { dataApiURL }                                      from '@acx-ui/analytics/services'
 import { Provider, store }                                 from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
+import { DateRange }                                       from '@acx-ui/utils'
 
 import { api } from './services'
 
 import ConnectedClientsOverTimeWidget from '.'
+
+const filters = {
+  startDate: '2022-01-01T00:00:00+08:00',
+  endDate: '2022-01-02T00:00:00+08:00',
+  path: [{ type: 'network', name: 'Network' }],
+  range: DateRange.last24Hours
+}
 
 const sample = {
   time: [
@@ -33,14 +41,17 @@ describe('ConnectedClientsOverTimeWidget', () => {
     mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    render( <Provider> <ConnectedClientsOverTimeWidget/></Provider>)
+    render( <Provider> <ConnectedClientsOverTimeWidget filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    const { asFragment } =render( <Provider> <ConnectedClientsOverTimeWidget/></Provider>)
+    const { asFragment } =render( 
+      <Provider>
+        <ConnectedClientsOverTimeWidget filters={filters}/>
+      </Provider>)
     await screen.findByText('Connected Clients Over Time')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -50,7 +61,7 @@ describe('ConnectedClientsOverTimeWidget', () => {
     mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
       error: new Error('something went wrong!')
     })
-    render( <Provider> <ConnectedClientsOverTimeWidget/> </Provider>)
+    render( <Provider><ConnectedClientsOverTimeWidget filters={filters}/></Provider>)
     await screen.findByText('Something went wrong.')
     jest.resetAllMocks()
   })

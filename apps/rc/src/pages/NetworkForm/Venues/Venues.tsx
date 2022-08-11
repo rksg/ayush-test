@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from 'react'
 
 import { Form, Switch } from 'antd'
 import _                from 'lodash'
+import { useIntl }      from 'react-intl'
+
 
 import {
   Loader,
@@ -56,6 +58,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
   const { editMode } = useContext(NetworkFormContext)
   const venues = Form.useWatch('venues')
 
+  const { $t } = useIntl()
   const tableQuery = useTableQuery({
     useQuery: useVenueListQuery,
     apiParams: { networkId: getNetworkId() },
@@ -175,26 +178,26 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
 
   const columns: TableProps<Venue>['columns'] = [
     {
-      title: 'Venue',
+      title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       sorter: true
     },
     {
-      title: 'City',
+      title: $t({ defaultMessage: 'City' }),
       dataIndex: 'city',
       sorter: true
     },
     {
-      title: 'Country',
+      title: $t({ defaultMessage: 'Country' }),
       dataIndex: 'country',
       sorter: true
     },
     {
-      title: 'Networks',
+      title: $t({ defaultMessage: 'Networks' }),
       dataIndex: ['networks', 'count']
     },
     {
-      title: 'Wi-Fi APs',
+      title: $t({ defaultMessage: 'Wi-Fi APs' }),
       dataIndex: 'aggregatedApStatus',
       render: function (data, row) {
         if (!row.aggregatedApStatus) { return 0 }
@@ -204,7 +207,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
-      title: 'Activated',
+      title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       render: function (data, row) {
         return <Switch
@@ -217,7 +220,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
-      title: 'APs',
+      title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       width: '80px',
       render: function (data, row) {
@@ -225,7 +228,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
-      title: 'Radios',
+      title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
       width: '140px',
       render: function (data, row) {
@@ -233,7 +236,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
-      title: 'Scheduling',
+      title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {
         return row.activated.isActivated ? '24/7' : ''
@@ -243,8 +246,8 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
 
   return (
     <>
-      <StepsForm.Title>Venues</StepsForm.Title>
-      <p>Select venues to activate this network</p>
+      <StepsForm.Title>{ $t({ defaultMessage: 'Venues' }) }</StepsForm.Title>
+      <p>{ $t({ defaultMessage: 'Select venues to activate this network' }) }</p>
       <Form.Item name='venues'>
         <Loader states={[tableQuery]}>
           <Table
