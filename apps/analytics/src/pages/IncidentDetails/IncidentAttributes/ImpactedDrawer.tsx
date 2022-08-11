@@ -4,7 +4,7 @@ import { Tooltip }                   from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { aggregateDataBy }                              from '@acx-ui/analytics/utils'
-import { IncidentDetailsProps }                         from '@acx-ui/analytics/utils'
+import type { Incident }                                from '@acx-ui/analytics/utils'
 import { Drawer, Loader, Table, SearchBar, TableProps } from '@acx-ui/components'
 import { InformationOutlined }                          from '@acx-ui/icons'
 import { TenantLink }                                   from '@acx-ui/react-router-dom'
@@ -17,7 +17,7 @@ import {
 } from './services'
 import { Title } from './syledComponents'
 
-export interface impactedDrawerProps extends Pick<IncidentDetailsProps, 'id'> {
+export interface impactedDrawerProps extends Pick<Incident, 'id'> {
   visible: boolean
   onClose: () => void
 }
@@ -141,8 +141,9 @@ export const ImpactedClientsDrawer: React.FC<impactedDrawerProps> = (props) => {
     children={<Loader states={[queryResults]}>
       <SearchBar onChange={setSearch}/>
       <Table<AggregatedImpactedClient>
+        rowKey='mac'
         columns={impactedClientsColumns}
-        dataSource={queryResults.data?.map((row, key)=>({ key, ...row }))}/>
+        dataSource={queryResults.data}/>
     </Loader>}
   />
 }
@@ -205,8 +206,9 @@ export const ImpactedAPsDrawer: React.FC<impactedDrawerProps> = (props) => {
     children={<Loader states={[queryResults]}>
       <SearchBar onChange={setSearch}/>
       <Table<AggregatedImpactedAP>
+        rowKey='mac'
         columns={impactedAPsColumns}
-        dataSource={queryResults.data?.map((row, key)=>({ key, ...row }))}/>
+        dataSource={queryResults.data}/>
     </Loader>}
   />
 }
