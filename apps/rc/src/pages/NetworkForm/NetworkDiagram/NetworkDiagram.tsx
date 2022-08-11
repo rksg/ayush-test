@@ -1,4 +1,5 @@
 import { Row, Col } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import { CloudpathServer } from '@acx-ui/rc/services'
 import {
@@ -27,14 +28,17 @@ import PskDiagram                    from '../../../assets/images/network-wizard
 import SelfSignInDiagram             from '../../../assets/images/network-wizard-diagrams/self-sign-in.png'
 import WISPrWithPskDiagram           from '../../../assets/images/network-wizard-diagrams/wispr-psk.png'
 import WISPrDiagram                  from '../../../assets/images/network-wizard-diagrams/wispr.png'
-import { NetworkTypeLabel }          from '../contentsMap'
+import { networkTypes }              from '../contentsMap'
 import { Diagram }                   from '../styledComponents'
 
 interface DiagramProps {
-  type: NetworkTypeEnum;
+  type?: NetworkTypeEnum;
   cloudpathType?: CloudpathServer['deploymentType'];
 }
 
+interface DefaultDiagramProps extends DiagramProps {
+  type: undefined;
+}
 interface DpskDiagramProps extends DiagramProps {
   type: NetworkTypeEnum.DPSK;
 }
@@ -60,8 +64,12 @@ interface CaptivePortalDiagramProps extends DiagramProps {
   wisprWithPsk?: boolean;
 }
 
-type NetworkDiagramProps = DpskDiagramProps | OpenDiagramProps | PskDiagramProps
-                          | AaaDiagramProps | CaptivePortalDiagramProps
+type NetworkDiagramProps = DefaultDiagramProps
+  | DpskDiagramProps
+  | OpenDiagramProps
+  | PskDiagramProps
+  | AaaDiagramProps
+  | CaptivePortalDiagramProps
 
 const CloudpathCloudDiagramMap: Partial<Record<NetworkTypeEnum, string>> = {
   [NetworkTypeEnum.DPSK]: DpskCloudpathCloudDiagram,
@@ -99,10 +107,10 @@ function getDiagram (props: NetworkDiagramProps) {
       diagram = DefaultDiagram
   }
 
-  if (props?.cloudpathType) {
-    const isCloudDeployment = props?.cloudpathType === CloudpathDeploymentTypeEnum.Cloud
+  if (props.type && props?.cloudpathType) {
+    const isCloudDeployment = props.cloudpathType === CloudpathDeploymentTypeEnum.Cloud
     const cloudpathMap = isCloudDeployment ? CloudpathCloudDiagramMap : CloudpathOnPremDiagramMap
-    return cloudpathMap[props?.type]
+    return cloudpathMap[props.type]
   }
 
   return diagram
@@ -138,8 +146,8 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
 }
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
-  const type = props.type as NetworkTypeEnum
-  const title = NetworkTypeLabel[type]
+  const { $t } = useIntl()
+  const title = props.type ? $t(networkTypes[props.type]) : undefined
   const diagram = getDiagram({ ...props })
 
   return (

@@ -71,7 +71,10 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
       getValue: (details: IncidentAttributesProps) => ({
         label: 'Client Impact Count',
         children: impactValues(
-          'client', details.clientCount, details.impactedClientCount).clientImpactDescription,
+          'client',
+          details.clientCount,
+          details.impactedClientCount
+        ).clientImpactDescription,
         onClick: () => onOpen('client')
       })
     },
@@ -117,7 +120,10 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
       key: 'duration',
       getValue: (details: IncidentAttributesProps) => ({
         label: 'Duration',
-        children: formatter('durationFormat')(durationOf(details.startTime, details.endTime))
+        children: formatter('durationFormat')(durationOf(
+          details.startTime,
+          details.endTime
+        ))
       })
     },
     {

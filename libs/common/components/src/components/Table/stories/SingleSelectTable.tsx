@@ -65,12 +65,13 @@ const actions: TableProps<(typeof basicData)[0]>['actions'] = [
 ]
 
 export function SingleSelectTable () {
-  return (
+  return (<>
+    Single Select
     <Table
       columns={basicColumns}
       dataSource={basicData}
       actions={actions}
       rowSelection={{ type: 'radio' }}
     />
-  )
+  </>)
 }

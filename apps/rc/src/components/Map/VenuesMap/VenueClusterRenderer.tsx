@@ -1,11 +1,13 @@
 import { ReactNode } from 'react'
 
+
 import Icon                     from '@ant-design/icons'
 import { Cluster,Renderer }     from '@googlemaps/markerclusterer'
 import { List, Space, Popover } from 'antd'
 import { createRoot }           from 'react-dom/client'
+import { useIntl }              from 'react-intl'
 
-import { cssStr } from '@acx-ui/components'
+import { ConfigProvider, cssStr } from '@acx-ui/components'
 
 import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon, getVenueSeverityByStatus } from './helper'
 import { VenueClusterTooltip, CloseIcon }                                                           from './styledComponents'
@@ -90,8 +92,10 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
 
 export default class VenueClusterRenderer implements Renderer {
   private map:google.maps.Map
-  constructor (map:google.maps.Map) {
+  private intl: ReturnType<typeof useIntl>
+  constructor (map:google.maps.Map, intl: ReturnType<typeof useIntl>) {
     this.map = map
+    this.intl = intl
   }
   public render (
     { count, position, markers }: Cluster
@@ -114,7 +118,7 @@ export default class VenueClusterRenderer implements Renderer {
         fontSize: cssStr('--acx-body-2-font-size'),
         fontWeight: 'semibold'
       },
-      title: `Cluster of ${count} Venues`,
+      title: this.intl.$t({ defaultMessage: 'Cluster of {count} Venues' }, { count }),
       // adjust zIndex to be above other markers
       zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count
     })
@@ -125,26 +129,25 @@ export default class VenueClusterRenderer implements Renderer {
       clusterMarker.setIcon(getIcon(getClusterSVG(clusterColor.default), scaledSize).icon)
     })
 
-    google.maps.event.addListener(clusterMarker, 'click',
-      ()=>{
-        const content=generateClusterInfoContent(markers || [new google.maps.Marker({})],
-          clusterInfoWindow)
+    google.maps.event.addListener(clusterMarker, 'click', () => {
+      const content = generateClusterInfoContent(markers || [new google.maps.Marker({})],
+        clusterInfoWindow)
 
-        const infoDiv = document.createElement('div')
-        createRoot(infoDiv).render(content)
+      const infoDiv = document.createElement('div')
+      createRoot(infoDiv).render(<ConfigProvider lang='en-US' children={content} />)
 
-        clusterInfoWindow.setContent(infoDiv)
+      clusterInfoWindow.setContent(infoDiv)
 
-        if (typeof(currentInfoWindow) != 'undefined') {
-          currentInfoWindow.close()
-        }
+      if (typeof(currentInfoWindow) != 'undefined') {
+        currentInfoWindow.close()
+      }
 
-        clusterInfoWindow.open({
-          shouldFocus: true,
-          anchor: clusterMarker
-        })
-        currentInfoWindow = clusterInfoWindow
+      clusterInfoWindow.open({
+        shouldFocus: true,
+        anchor: clusterMarker
       })
+      currentInfoWindow = clusterInfoWindow
+    })
 
     google.maps.event.addListener(this.map, 'click', () => {
       if (typeof(currentInfoWindow) != 'undefined') {

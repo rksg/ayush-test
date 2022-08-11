@@ -1,29 +1,67 @@
-import React, { useState, Key } from 'react'
+import React, { useMemo, useState, Key } from 'react'
 
-import ProTable           from '@ant-design/pro-table'
-import { Space, Divider } from 'antd'
-import _                  from 'lodash'
+import ProTable                   from '@ant-design/pro-table'
+import { Space, Divider, Button } from 'antd'
+import _                          from 'lodash'
+import { useIntl }                from 'react-intl'
 
-import * as UI from './styledComponents'
+import { SettingsOutlined } from '@acx-ui/icons'
 
-import type { ProColumns }                  from '@ant-design/pro-table'
+import * as UI             from './styledComponents'
+import { useColumnsState } from './useColumnsState'
+
+import type { Columns, ColumnStateOption }  from './types'
+import type { SettingOptionType }           from '@ant-design/pro-table/lib/components/ToolBar'
 import type { TableProps as AntTableProps } from 'antd'
 
 export interface TableProps <RecordType>
-  extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' > {
+  extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' | 'title'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip'
     rowKey?: Exclude<AntTableProps<RecordType>['rowKey'], Function>
-    columns?: ProColumns<RecordType, 'text'>[]
+    columns: Columns<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
+    columnState?: ColumnStateOption
   }
 
 export function Table <RecordType extends object> (
-  { type = 'tall', ...props }: TableProps<RecordType>
+  { type = 'tall', columnState, ...props }: TableProps<RecordType>
 ) {
+  const { $t } = useIntl()
+
+  const columns = useMemo(() => props.columns.map((column) => ({
+    ...column,
+    disable: Boolean(column.fixed || column.disable),
+    show: Boolean(column.fixed || column.disable || (column.show ?? true))
+  })), [props.columns])
+  const columnsState = useColumnsState({ columns, columnState })
+
+  const settingsColumn = {
+    key: 'acx-table-settings',
+    fixed: 'right' as 'right',
+    width: 32,
+    children: []
+  }
+
+  const setting: SettingOptionType | false = type === 'tall' ? {
+    draggable: true,
+    checkable: true,
+    checkedReset: false,
+    extra: <div>
+      <UI.TableSettingTitle children={$t({ defaultMessage: 'Select Columns' })} />
+      <Button
+        type='link'
+        size='small'
+        onClick={columnsState.resetState}
+        children={$t({ defaultMessage: 'Reset to default' })}
+      />
+    </div>,
+    children: <SettingsOutlined />
+  } : false
+
   const rowKey = (props.rowKey ?? 'key') as keyof RecordType
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>(props.rowSelection?.selectedRowKeys
@@ -83,38 +121,44 @@ export function Table <RecordType extends object> (
     }
   }
 
-  const tableAlertRender = ({ onCleanSelected }: { onCleanSelected: () => void }) => (
-    <Space size={32}>
-      <Space size={6}>
-        <span>{selectedRows.length} selected</span>
-        <UI.CloseButton onClick={onCleanSelected} title='Clear selection' />
-      </Space>
-      <Space size={0} split={<Divider type='vertical' />}>
-        {props.actions?.map((option) =>
-          <UI.ActionButton
-            key={option.label}
-            onClick={() => option.onClick(selectedRows, () => { onCleanSelected() })}
-            children={option.label}
-          />
-        )}
-      </Space>
-    </Space>
-  )
-
-  return <UI.Wrapper $type={type} $rowSelection={props.rowSelection}>
+  return <UI.Wrapper $type={type} $hasRowSelection={Boolean(props.rowSelection)}>
+    <UI.TableSettingsGlobalOverride />
     <ProTable<RecordType>
       {...props}
       bordered={false}
-      options={false}
       search={false}
+      columns={type === 'tall' ? [...columns, settingsColumn] : columns}
+      options={{ setting, reload: false, density: false }}
+      columnsState={columnsState}
+      scroll={{ x: 'max-content' }}
       rowSelection={rowSelection}
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
-      columns={props.columns}
       columnEmptyText={false}
       onRow={onRow}
       showSorterTooltip={false}
-      tableAlertRender={tableAlertRender}
       tableAlertOptionRender={false}
+      tableAlertRender={({ onCleanSelected }) => (
+        <Space size={32}>
+          <Space size={6}>
+            <span>
+              {$t({ defaultMessage: '{count} selected' }, { count: selectedRows.length })}
+            </span>
+            <UI.CloseButton
+              onClick={onCleanSelected}
+              title={$t({ defaultMessage: 'Clear selection' })}
+            />
+          </Space>
+          <Space size={0} split={<Divider type='vertical' />}>
+            {props.actions?.map((option) =>
+              <UI.ActionButton
+                key={option.label}
+                onClick={() => option.onClick(selectedRows, () => { onCleanSelected() })}
+                children={option.label}
+              />
+            )}
+          </Space>
+        </Space>
+      )}
     />
   </UI.Wrapper>
 }

@@ -1,23 +1,22 @@
-import { Col, Row }                  from 'antd'
-import { useIntl, FormattedMessage } from 'react-intl'
+import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import {
-  incidentInformation,
   calculateSeverity,
-  impactedArea,
-  formattedSliceType,
-  IncidentDetailsProps
+  Incident,
+  incidentInformation,
+  useShortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill } from '@acx-ui/components'
 
-import { incidentDetailsMap } from '..'
 import { IncidentAttributes } from '../IncidentAttributes'
 import { Insights }           from '../Insights'
 
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
-  const info = incidentInformation[props.code as keyof typeof incidentInformation]
+export const IncidentDetailsTemplate = (props: Incident) => {
+  const { $t } = useIntl()
+  const info = incidentInformation[props.code]
   const attributeList = [
     'clientImpactCount',
     'incidentCategory',
@@ -29,18 +28,6 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
     'eventEndTime'
   ]
 
-  const { $t } = useIntl()
-  const shortDescription = (incident: IncidentDetailsProps) => {
-    const code = incident.code as keyof typeof incidentDetailsMap
-    const { shortDescription } = incidentInformation[code]
-    const scope = `${formattedSliceType(incident.sliceType)}:` +
-      impactedArea(incident.path, incident.sliceValue)
-    return <FormattedMessage
-      {...shortDescription}
-      values={{ scope }}
-    />
-  }
-
   return (
     <>
       <PageHeader
@@ -49,13 +36,15 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={shortDescription(props)}
+        subTitle={<p>{useShortDescription(props)}</p>}
       />
-      <Row>
+      <Row gutter={[20, 20]}>
         <Col span={4}>
-          <UI.LeftColumn offsetTop={200}>
-            <IncidentAttributes {...props} {...info} visibleFields={attributeList}/>
-          </UI.LeftColumn>
+          <UI.FixedAutoSizer>
+            {({ width }) => (<div style={{ width }}>
+              <IncidentAttributes {...props} {...info} visibleFields={attributeList} />
+            </div>)}
+          </UI.FixedAutoSizer>
         </Col>
         <Col span={20}>
           <Row gutter={[20, 20]}>

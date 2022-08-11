@@ -1,26 +1,30 @@
-import { incidentSeverities, codeToFailureTypeMap } from '..'
+import { MessageDescriptor } from 'react-intl'
+
+import { IncidentCode }   from '../constants'
+import incidentSeverities from '../incidentSeverities.json'
 
 export interface IncidentInformation {
-  category: {
-    defaultMessage: string
-  } | string
-  subCategory: {
-    defaultMessage: string
-  } | string
-  shortDescription: {
-    defaultMessage: string
-  } | string
-  longDescription: {
-    defaultMessage: string
-  } | string
-  incidentType: {
-    defaultMessage: string
-  } | string
+  category: MessageDescriptor
+  subCategory: MessageDescriptor
+  shortDescription: MessageDescriptor
+  longDescription: MessageDescriptor
+  incidentType: string
 }
 
+export type NodeType = 'network'
+  | 'apGroupName'
+  | 'apGroup'
+  | 'zoneName'
+  | 'zone'
+  | 'switchGroup'
+  | 'switch'
+  | 'apMac'
+  | 'ap'
+  | 'AP'
+
 export interface PathNode {
-  type: string
-  name?: string
+  type: NodeType
+  name: string
 }
 
 export interface NetworkPath extends Array<PathNode> {}
@@ -32,7 +36,7 @@ export interface SeverityRange {
   lte: number
 }
 
-export interface Metadata {
+export interface IncidentMetadata {
   dominant: { ssid?: string }
   rootCauseChecks: {
     checks: Record<string,boolean>[]
@@ -40,18 +44,18 @@ export interface Metadata {
   }
 }
 
-export interface IncidentDetailsProps {
+export interface Incident {
   id: string
-  sliceType: string
+  sliceType: NodeType
   sliceValue: string
-  code: keyof typeof codeToFailureTypeMap
+  code: IncidentCode
   startTime: string
   endTime: string
   severity: number
   clientCount: number
   impactedClientCount: number
-  metadata: Metadata
-  path: NetworkPath
+  metadata: IncidentMetadata
+  path: PathNode[]
   apCount: number
   impactedApCount: number
   switchCount: number
@@ -64,7 +68,6 @@ export interface IncidentDetailsProps {
   currentSlaThreshold: number|null
 }
 
-export interface IncidentAttributesProps
-  extends IncidentDetailsProps, IncidentInformation {
-    visibleFields: string[]
-  }
+export interface IncidentAttributesProps extends Incident, IncidentInformation {
+  visibleFields: string[]
+}
