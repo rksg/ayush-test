@@ -7,6 +7,7 @@ import {
 } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
 import { SingleValueType }   from 'rc-cascader/lib/Cascader'
+import { useIntl }           from 'react-intl'
 
 import { Button } from '../Button'
 
@@ -33,6 +34,7 @@ export type CascaderProps = AntCascaderProps<Option> & {
 }
 
 export function NetworkFilter (props: CascaderProps) {
+  const { $t } = useIntl()
   const [multiSelect, setMultiSelect] = React.useState<DefaultOptionType[][]>([])
   const [open, setOpen] = React.useState(false)
 
@@ -82,8 +84,12 @@ export function NetworkFilter (props: CascaderProps) {
         <>
           <UI.Divider />
           <UI.ButtonDiv>
-            <Button size='small' onClick={onCancelProps}>Cancel</Button>
-            <Button size='small' type='secondary' onClick={onApplyProps}>Apply</Button>
+            <Button size='small' onClick={onCancelProps}>
+              {$t({ defaultMessage: 'Cancel' })}
+            </Button>
+            <Button size='small' type='secondary' onClick={onApplyProps}>
+              {$t({ defaultMessage: 'Apply' })}
+            </Button>
           </UI.ButtonDiv>
         </>
       )
