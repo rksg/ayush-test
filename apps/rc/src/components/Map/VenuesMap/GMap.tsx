@@ -1,8 +1,12 @@
 import React from 'react'
 
+
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer'
 import * as _                                     from 'lodash'
 import { createRoot }                             from 'react-dom/client'
+import { useIntl }                                from 'react-intl'
+
+import { ConfigProvider } from '@acx-ui/components'
 
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
@@ -38,6 +42,7 @@ const GMap: React.FC<MapProps> = ({
   style,
   ...options
 }) => {
+  const intl = useIntl()
   const ref = React.useRef<HTMLDivElement>(null)
   const [map, setMap] = React.useState<google.maps.Map>()
   const [markerClusterer, setMarkerClusterer] = React.useState<MarkerClusterer>()
@@ -56,7 +61,11 @@ const GMap: React.FC<MapProps> = ({
         && map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
         const legendControlBoxDiv = document.createElement('div')
         const root = createRoot(legendControlBoxDiv!)
-        root.render(<VenueFilterControlBox onChange={onFilterChange} />)
+        root.render(
+          <ConfigProvider lang='en-US'>
+            <VenueFilterControlBox onChange={onFilterChange} />
+          </ConfigProvider>
+        )
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(legendControlBoxDiv)
       }
 
@@ -96,7 +105,7 @@ const GMap: React.FC<MapProps> = ({
       let markers = venues?.map((venue: VenueMarkerOptions) => {
         let markerSize = 32
         // DEFINITIONS: No APs = 32px, minimum # of APs (>0) = 48 px, maximum # of APs = 96px
-      
+
         if(venue?.apsCount > 0){
           markerSize = 48 + (venue?.apsCount / maxVenueCountPerVenue!) * 48
         }
@@ -129,7 +138,14 @@ const GMap: React.FC<MapProps> = ({
           marker.setIcon(getIcon(svgMarkerHover, scaledSize).icon)
 
           const infoDiv = document.createElement('div')
-          createRoot(infoDiv).render(<VenueMarkerTooltip venue={venue} onNavigate={onNavigate}/>)
+          createRoot(infoDiv).render(
+            <ConfigProvider lang='en-US'>
+              <VenueMarkerTooltip
+                venue={venue}
+                onNavigate={onNavigate}
+              />
+            </ConfigProvider>
+          )
           infoDiv.addEventListener('mouseover', () => {
             clearTimeout(closeInfoWindowWithTimeout)
           })
@@ -163,7 +179,7 @@ const GMap: React.FC<MapProps> = ({
           setMarkerClusterer(new MarkerClusterer({
             map,
             markers,
-            renderer: new VenueClusterRenderer(map),
+            renderer: new VenueClusterRenderer(map, intl),
             algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
             onClusterClick: onClusterClick
           }))

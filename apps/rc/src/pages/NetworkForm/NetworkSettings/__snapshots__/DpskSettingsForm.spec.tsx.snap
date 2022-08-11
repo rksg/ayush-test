@@ -614,7 +614,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
 exports[`NetworkForm should create open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ggigVG"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1085,6 +1085,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                           <div
                                             class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
                                           >
+<<<<<<< HEAD
                                             Users are authorized through a captive portal in various methods
                                           </div>
                                         </span>
@@ -1095,6 +1096,30 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                     >
                                       <label
                                         class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+=======
+                                            <input
+                                              class="ant-radio-input"
+                                              disabled=""
+                                              type="radio"
+                                              value="guest"
+                                            />
+                                            <span
+                                              class="ant-radio-inner"
+                                            />
+                                          </span>
+                                          <span>
+                                            Captive Portal
+                                            <div
+                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                            >
+                                              Users are authorized through a captive portal in various methods
+                                            </div>
+                                          </span>
+                                        </label>
+                                      </div>
+                                      <div
+                                        class="ant-space-item"
+>>>>>>> feature/ACX-10741
                                       >
                                         <span
                                           class="ant-radio"
@@ -1113,10 +1138,32 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                           <div
                                             class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
                                           >
+<<<<<<< HEAD
                                             Allow users to access the network without any authentication/security(not recommended)
                                           </div>
                                         </span>
                                       </label>
+=======
+                                            <input
+                                              class="ant-radio-input"
+                                              type="radio"
+                                              value="open"
+                                            />
+                                            <span
+                                              class="ant-radio-inner"
+                                            />
+                                          </span>
+                                          <span>
+                                            Open Network
+                                            <div
+                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                            >
+                                              Allow users to access the network without any authentication/security (not recommended)
+                                            </div>
+                                          </span>
+                                        </label>
+                                      </div>
+>>>>>>> feature/ACX-10741
                                     </div>
                                   </div>
                                 </div>
@@ -1155,7 +1202,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                 <form
                   autocomplete="off"
                   class="ant-form ant-form-vertical"
-                  id="Settings"
+                  id="settings"
                 >
                   <input
                     style="display: none;"
@@ -1205,6 +1252,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                         role="switch"
                                         type="button"
                                       >
+<<<<<<< HEAD
                                         <div
                                           class="ant-switch-handle"
                                         />
@@ -1215,6 +1263,26 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                       <span>
                                         Use Cloudpath Server
                                       </span>
+=======
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="settings_isCloudpathEnabled"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                        <span>
+                                          Use Cloudpath Server
+                                        </span>
+                                      </div>
+>>>>>>> feature/ACX-10741
                                     </div>
                                   </div>
                                 </div>
@@ -1259,24 +1327,48 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                           for="Settings_authRadius.primary.ip"
                                           title="IP Address"
                                         >
+<<<<<<< HEAD
                                           IP Address
                                         </label>
                                       </div>
                                       <div
                                         class="ant-col ant-form-item-control"
                                       >
+=======
+                                          <label
+                                            class="ant-form-item-required"
+                                            for="settings_authRadius.primary.ip"
+                                            title="IP Address"
+                                          >
+                                            IP Address
+                                          </label>
+                                        </div>
+>>>>>>> feature/ACX-10741
                                         <div
                                           class="ant-form-item-control-input"
                                         >
                                           <div
                                             class="ant-form-item-control-input-content"
                                           >
+<<<<<<< HEAD
                                             <input
                                               class="ant-input"
                                               id="Settings_authRadius.primary.ip"
                                               type="text"
                                               value=""
                                             />
+=======
+                                            <div
+                                              class="ant-form-item-control-input-content"
+                                            >
+                                              <input
+                                                class="ant-input"
+                                                id="settings_authRadius.primary.ip"
+                                                type="text"
+                                                value=""
+                                              />
+                                            </div>
+>>>>>>> feature/ACX-10741
                                           </div>
                                         </div>
                                       </div>
@@ -1296,24 +1388,48 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                           for="Settings_authRadius.primary.port"
                                           title="Port"
                                         >
+<<<<<<< HEAD
                                           Port
                                         </label>
                                       </div>
                                       <div
                                         class="ant-col ant-form-item-control"
                                       >
+=======
+                                          <label
+                                            class="ant-form-item-required"
+                                            for="settings_authRadius.primary.port"
+                                            title="Port"
+                                          >
+                                            Port
+                                          </label>
+                                        </div>
+>>>>>>> feature/ACX-10741
                                         <div
                                           class="ant-form-item-control-input"
                                         >
                                           <div
                                             class="ant-form-item-control-input-content"
                                           >
+<<<<<<< HEAD
                                             <input
                                               class="ant-input"
                                               id="Settings_authRadius.primary.port"
                                               type="number"
                                               value=""
                                             />
+=======
+                                            <div
+                                              class="ant-form-item-control-input-content"
+                                            >
+                                              <input
+                                                class="ant-input"
+                                                id="settings_authRadius.primary.port"
+                                                type="number"
+                                                value=""
+                                              />
+                                            </div>
+>>>>>>> feature/ACX-10741
                                           </div>
                                         </div>
                                       </div>
@@ -1333,12 +1449,23 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                           for="Settings_authRadius.primary.sharedSecret"
                                           title="Shared secret"
                                         >
+<<<<<<< HEAD
                                           Shared secret
                                         </label>
                                       </div>
                                       <div
                                         class="ant-col ant-form-item-control"
                                       >
+=======
+                                          <label
+                                            class="ant-form-item-required"
+                                            for="settings_authRadius.primary.sharedSecret"
+                                            title="Shared secret"
+                                          >
+                                            Shared secret
+                                          </label>
+                                        </div>
+>>>>>>> feature/ACX-10741
                                         <div
                                           class="ant-form-item-control-input"
                                         >
@@ -1358,6 +1485,16 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                               <span
                                                 class="ant-input-suffix"
                                               >
+<<<<<<< HEAD
+=======
+                                                <input
+                                                  action="click"
+                                                  class="ant-input"
+                                                  id="settings_authRadius.primary.sharedSecret"
+                                                  type="password"
+                                                  value=""
+                                                />
+>>>>>>> feature/ACX-10741
                                                 <span
                                                   aria-label="eye-invisible"
                                                   class="anticon anticon-eye-invisible ant-input-password-icon"
@@ -1418,6 +1555,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                               role="switch"
                                               type="button"
                                             >
+<<<<<<< HEAD
                                               <div
                                                 class="ant-switch-handle"
                                               />
@@ -1441,6 +1579,14 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                 height="1em"
                                                 viewBox="64 64 896 896"
                                                 width="1em"
+=======
+                                              <button
+                                                aria-checked="false"
+                                                class="ant-switch"
+                                                id="settings_enableAuthProxy"
+                                                role="switch"
+                                                type="button"
+>>>>>>> feature/ACX-10741
                                               >
                                                 <path
                                                   d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"
@@ -1488,6 +1634,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                               role="switch"
                                               type="button"
                                             >
+<<<<<<< HEAD
                                               <div
                                                 class="ant-switch-handle"
                                               />
@@ -1495,6 +1642,23 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                 class="ant-switch-inner"
                                               />
                                             </button>
+=======
+                                              <button
+                                                aria-checked="false"
+                                                class="ant-switch"
+                                                id="settings_enableAccountingService"
+                                                role="switch"
+                                                type="button"
+                                              >
+                                                <div
+                                                  class="ant-switch-handle"
+                                                />
+                                                <span
+                                                  class="ant-switch-inner"
+                                                />
+                                              </button>
+                                            </div>
+>>>>>>> feature/ACX-10741
                                           </div>
                                         </div>
                                       </div>

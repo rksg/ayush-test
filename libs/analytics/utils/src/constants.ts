@@ -1,17 +1,4 @@
 export const noDataSymbol = '-'
-
-export enum NetworkNodeTypeForDisplay {
-  network = 'Network',
-  apGroupName = 'AP Group',
-  apGroup = 'AP Group',
-  zoneName = 'Venue',
-  zone = 'Venue', // can be moved i18n translation later
-  switchGroup = 'Venue',
-  switch = 'Switch',
-  apMac = 'Access Point',
-  ap = 'Access Point',
-  AP = 'Access Point' // since data-api sends AP
-}
 // commented codes acc to prod rc config
 export const incidentCodes = [
   'ttc',
@@ -36,4 +23,6 @@ export const incidentCodes = [
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low'
-]
+] as const
+
+export type IncidentCode = typeof incidentCodes[number]

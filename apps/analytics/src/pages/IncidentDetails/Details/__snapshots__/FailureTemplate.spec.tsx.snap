@@ -3,7 +3,7 @@
 exports[`IncidentDetailsTemplate should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ggigVG"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -66,7 +66,9 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
           <span
             class="ant-page-header-heading-sub-title"
           >
-            EAP failures are unusually high in Access Point:RuckusAP (70:CA:97:01:A0:C0)
+            <p>
+              EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+            </p>
           </span>
         </div>
       </div>
@@ -74,14 +76,20 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
   </div>
   <div
     class="ant-row"
+    style="margin: -10px -10px -10px -10px;"
   >
     <div
       class="ant-col ant-col-4"
+      style="padding: 10px 10px 10px 10px;"
     >
-      <div>
+      <div
+        class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+        style="overflow: visible; height: 0px; width: 0px;"
+      >
         <div
-          class=""
+          style="width: -20px;"
         >
+<<<<<<< HEAD
           <div
             class="ant-anchor-wrapper styledComponents__LeftColumn-sc-cwxgii-0 hyMqHb"
             style="max-height: calc(100vh - 200px);"
@@ -101,17 +109,16 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
               />
             </div>
           </div>
+=======
+          incident attributes
+>>>>>>> feature/ACX-10741
         </div>
       </div>
-    </div>
-    <div
-      class="ant-col ant-col-20"
-    >
       <div
-        class="ant-row"
-        style="margin: -10px -10px -10px -10px;"
+        class="resize-triggers"
       >
         <div
+<<<<<<< HEAD
           class="ant-col ant-col-24"
           style="padding: 10px 10px 10px 10px;"
         >
@@ -122,12 +129,16 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
         <div
           class="ant-col ant-col-24"
           style="padding: 10px 10px 10px 10px;"
+=======
+          class="expand-trigger"
+>>>>>>> feature/ACX-10741
         >
-          <div>
-            network impact
-          </div>
+          <div
+            style="width: 1px; height: 1px;"
+          />
         </div>
         <div
+<<<<<<< HEAD
           class="ant-col ant-col-24"
           style="padding: 10px 10px 10px 10px;"
         >
@@ -135,6 +146,34 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
             time series section
           </div>
         </div>
+=======
+          class="contract-trigger"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div>
+        insights
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div>
+        network impact
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div>
+        charts
+>>>>>>> feature/ACX-10741
       </div>
     </div>
   </div>

@@ -1,4 +1,5 @@
-import { Form } from 'antd'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 import { NetworkSaveData, transformNetworkEncryption, transformDpskNetwork, DpskNetworkType } from '@acx-ui/rc/utils'
 
@@ -6,31 +7,45 @@ export function DpskSummaryForm (props: {
   summaryData: NetworkSaveData;
 }) {
   const { summaryData } = props
+  const intl = useIntl()
+  const $t = intl.$t
   return (
     <>
       <Form.Item
-        label='Security Protocol:'
+        label={$t({ defaultMessage: 'Security Protocol:' })}
         children={transformNetworkEncryption(summaryData.dpskWlanSecurity)}
       />
       {
         !summaryData.isCloudpathEnabled && (
           <>
             <Form.Item
-              label='Passphrase Format:'
-              children={transformDpskNetwork(DpskNetworkType.FORMAT, summaryData.passphraseFormat)}
+              label={$t({ defaultMessage: 'Passphrase Format:' })}
+              children={transformDpskNetwork(
+                intl,
+                DpskNetworkType.FORMAT,
+                summaryData.passphraseFormat
+              )}
             />
             <Form.Item
-              label='Passphrase Length:'
-              children={transformDpskNetwork(DpskNetworkType.LENGTH, summaryData.passphraseLength)}
+              label={$t({ defaultMessage: 'Passphrase Length:' })}
+              children={transformDpskNetwork(
+                intl,
+                DpskNetworkType.LENGTH,
+                summaryData.passphraseLength
+              )}
             />
             <Form.Item
-              label='Passphrase Expiration:'
-              children={transformDpskNetwork(DpskNetworkType.EXPIRATION, summaryData.expiration)}
+              label={$t({ defaultMessage: 'Passphrase Expiration:' })}
+              children={transformDpskNetwork(
+                intl,
+                DpskNetworkType.EXPIRATION,
+                summaryData.expiration
+              )}
             />
           </>
         )
       }
-    </> 
+    </>
   )
 }
 

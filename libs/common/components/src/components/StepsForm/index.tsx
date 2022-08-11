@@ -100,9 +100,9 @@ export function StepsForm <FormValue = any> (
   )
 
   const buttonLabel = {
-    next: $t({ id: 'stepsForm.next', defaultMessage: 'Next' }),
-    submit: $t({ id: 'stepsForm.submit', defaultMessage: 'Finish' }),
-    cancel: $t({ id: 'stepsForm.cancel', defaultMessage: 'Cancel' })
+    next: $t({ defaultMessage: 'Next' }),
+    submit: $t({ defaultMessage: 'Finish' }),
+    cancel: $t({ defaultMessage: 'Cancel' })
   }
 
   const cancel = <Button

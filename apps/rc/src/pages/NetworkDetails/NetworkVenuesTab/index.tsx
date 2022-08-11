@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Switch } from 'antd'
-import _          from 'lodash'
+import { Switch }                 from 'antd'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Alert,
@@ -50,9 +51,12 @@ const defaultPayload = {
 
 const defaultArray: Venue[] = []
 /* eslint-disable max-len */
-const notificationMessage = 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues'
+const notificationMessage = defineMessage({
+  defaultMessage: 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues'
+})
 
 export function NetworkVenuesTab () {
+  const { $t } = useIntl()
   const tableQuery = useTableQuery({
     useQuery: useVenueListQuery,
     defaultPayload
@@ -168,16 +172,16 @@ export function NetworkVenuesTab () {
     if (enabledNotActivatedVenues.length > 0) {
       showActionModal({
         type: 'info',
-        title: 'Your Attention is Required',
-        content: (
+        title: $t({ defaultMessage: 'Your Attention is Required' }),
+        content: (<>
           <div>
-            <div>
-              <span>For the following {enabledNotActivatedVenues.length === 1 ? 'venue' : 'venues'},
-              the network could not be activated on all Venues: </span>
-            </div>
-            {enabledNotActivatedVenues.map(venue =>(<div key={venue}> {venue} </div>))}
+            {$t(
+              { defaultMessage: 'For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:' },
+              { count: enabledNotActivatedVenues.length }
+            )}
           </div>
-        )
+          {enabledNotActivatedVenues.map(venue =>(<div key={venue}> {venue} </div>))}
+        </>)
       })
     }
 
@@ -203,7 +207,7 @@ export function NetworkVenuesTab () {
 
   const actions: TableProps<Venue>['actions'] = [
     {
-      label: 'Activate',
+      label: $t({ defaultMessage: 'Activate' }),
       onClick: (rows, clearSelection) => {
         const network = networkQuery.data
         const networkVenues = activateSelected(network?.venues || [], rows)
@@ -211,7 +215,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      label: 'Deactivate',
+      label: $t({ defaultMessage: 'Deactivate' }),
       onClick: (rows, clearSelection) => {
         const network = networkQuery.data
         const networkVenues = deActivateSelected(network?.venues || [], rows)
@@ -222,28 +226,28 @@ export function NetworkVenuesTab () {
 
   const columns: TableProps<Venue>['columns'] = [
     {
-      title: 'Venue',
+      title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       sorter: true
     },
     {
-      title: 'City',
+      title: $t({ defaultMessage: 'City' }),
       dataIndex: 'city',
       sorter: true
     },
     {
-      title: 'Country',
+      title: $t({ defaultMessage: 'Country' }),
       dataIndex: 'country',
       sorter: true
     },
     {
-      title: 'Networks',
+      title: $t({ defaultMessage: 'Networks' }),
       dataIndex: ['networks', 'count'],
       align: 'center',
       render: function (data) { return data ? data : 0 }
     },
     {
-      title: 'Wi-Fi APs',
+      title: $t({ defaultMessage: 'Wi-Fi APs' }),
       dataIndex: 'aggregatedApStatus',
       align: 'center',
       render: function (data, row) {
@@ -254,7 +258,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: 'Activated',
+      title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
       render: function (data, row) {
@@ -268,7 +272,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: 'APs',
+      title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       width: '80px',
       render: function (data, row) {
@@ -276,7 +280,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: 'Radios',
+      title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
       width: '140px',
       render: function (data, row) {
@@ -284,7 +288,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
-      title: 'Scheduling',
+      title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {
         return row.activated.isActivated ? '24/7' : ''
@@ -301,7 +305,7 @@ export function NetworkVenuesTab () {
     ]}>
       {
         !networkQuery.data?.venues?.length &&
-        <Alert message={notificationMessage} type='info' showIcon closable />
+        <Alert message={$t(notificationMessage)} type='info' showIcon closable />
       }
       <Table
         rowKey='id'

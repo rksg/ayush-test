@@ -1,13 +1,16 @@
-import { rest } from 'msw'
+import { dataApiURL }         from '@acx-ui/analytics/services'
+import { Incident }           from '@acx-ui/analytics/utils'
+import { Provider, store }    from '@acx-ui/store'
+import {
+  render,
+  screen,
+  mockGraphqlQuery,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
-import { dataApiURL }                           from '@acx-ui/analytics/services'
-import { Provider, store }                      from '@acx-ui/store'
-import { render, mockServer, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { api } from './services'
 
-import { api }                  from './services'
-import { IncidentDetailsProps } from './types'
-
-import IncidentDetailsPage, { IncidentDetails } from '.'
+import IncidentDetailsPage from '.'
 
 jest.mock('../IncidentDetails/IncidentAttributes', () => ({
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
@@ -68,46 +71,20 @@ describe('incident details', () => {
     mutedAt: null,
     impactedClientCount: 5,
     sliceValue: 'RuckusAP'
-  } as IncidentDetailsProps
+  } as Incident
 
-
-  it('should render Incident Details correctly', async () => {
-    mockServer.use(
-      rest.get(
-        '/t/tenantId/analytics/incidents/:incidentId',
-        (req, res, ctx) => {
-          return res(ctx.json(sampleIncident))
-        }
-      )
-    )
-
-    const params = {
-      incidentId: 'df5339ba-da3b-4110-a291-7f8993a274f3'
-    }
-
-    const { asFragment } = render(
-      <Provider>
-        <IncidentDetails data={sampleIncident} />
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(asFragment()).toMatchSnapshot()
-  })
+  beforeEach(() => store.dispatch(api.util.resetApiState()))
 
   it('should render Incident Details Page correctly', async () => {
-    store.dispatch(api.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'IncidentDetails', { data: { incident: sampleIncident } } )
     const params = {
-      incidentId: '123'
+      incidentId: sampleIncident.id
     }
-    const { asFragment } = render(
-      <Provider>
-        <IncidentDetailsPage />
-      </Provider>, {
-        route: { params }
-      })
+    const { asFragment } = render(<Provider>
+      <IncidentDetailsPage />
+    </Provider>, { route: { params } })
 
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     expect(asFragment()).toMatchSnapshot()
   })
 })
