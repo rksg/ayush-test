@@ -24,7 +24,7 @@ const ColumnHeaders: ProColumns<IncidentNodeInfo, 'text'>[] = [
     valueType: 'dateTime',
     key: 'startTime',
     render: (_, value) => {
-      return <Link to={`/analytics/incident/details/${value.id}`}>{
+      return <Link to={`/analytics/incident/${value.id}`}>{
         moment(value.startTime).format('MMM DD yyyy HH:mm')
       }</Link>
     }
@@ -32,7 +32,12 @@ const ColumnHeaders: ProColumns<IncidentNodeInfo, 'text'>[] = [
   {
     title: 'Duration',
     dataIndex: 'endTime',
-    key: 'endTime'
+    key: 'endTime',
+    render: (_, value) => {
+      const start = moment(value.startTime, 'hh:mm:ss a')
+      const end = moment(value.endTime, 'hh:mm:ss a')
+      return end.diff(start, 'hours')
+    }
   },
   {
     title: 'Description',
