@@ -1,21 +1,23 @@
+import { defineMessage, MessageDescriptor } from 'react-intl'
+
 import { ServiceAdminState, ServiceStatus, ServiceTechnology, ServiceType } from '@acx-ui/rc/utils'
 
-export const serviceTypeLabelMapping: { [key in ServiceType]: string } = {
-  [ServiceType.PORTAL]: 'Portal',
-  [ServiceType.DHCP_WIFI]: 'DHCP for Wi-Fi',
-  [ServiceType.WIFI_CALLING]: 'Wi-Fi Calling',
-  [ServiceType.MDNS_PROXY]: 'mDNS Proxy',
-  [ServiceType.DPSK]: 'DPSK'
+export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
+  [ServiceType.PORTAL]: defineMessage({ defaultMessage: 'Portal' }),
+  [ServiceType.DHCP_WIFI]: defineMessage({ defaultMessage: 'DHCP for Wi-Fi' }),
+  [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
+  [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
+  [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' })
 }
-export const serviceTechnologyabelMapping: { [key in ServiceTechnology]: string } = {
-  [ServiceTechnology.WIFI]: 'Wi-Fi',
-  [ServiceTechnology.SWITCH]: 'Switch'
+export const serviceTechnologyabelMapping: Record<ServiceTechnology, MessageDescriptor> = {
+  [ServiceTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
+  [ServiceTechnology.SWITCH]: defineMessage({ defaultMessage: 'Switch' })
 }
-export const serviceStatusLabelMapping: { [key in ServiceStatus]: string } = {
-  [ServiceStatus.UP]: 'Up',
-  [ServiceStatus.DOWN]: 'Down'
+export const serviceStatusLabelMapping: Record<ServiceStatus, MessageDescriptor> = {
+  [ServiceStatus.UP]: defineMessage({ defaultMessage: 'Up' }),
+  [ServiceStatus.DOWN]: defineMessage({ defaultMessage: 'Down' })
 }
-export const serviceAdminStateLabelMapping: { [key in ServiceAdminState]: string } = {
-  [ServiceAdminState.ENABLED]: 'Enabled',
-  [ServiceAdminState.DISABLED]: 'Disabled'
+export const serviceAdminStateLabelMapping: Record<ServiceAdminState, MessageDescriptor> = {
+  [ServiceAdminState.ENABLED]: defineMessage({ defaultMessage: 'Enabled' }),
+  [ServiceAdminState.DISABLED]: defineMessage({ defaultMessage: 'Disabled' })
 }
