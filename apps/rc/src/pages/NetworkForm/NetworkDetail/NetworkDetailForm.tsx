@@ -38,7 +38,10 @@ export function NetworkDetailForm () {
     const payload = { ...networkListPayload, searchString: value }
     const list = (await getNetworkList({ params, payload }, true)
       .unwrap()).data.map(n => ({ id: n.id, name: n.name }))
-    if(params.networkId === list[0]?.id && name === list[0]?.name){
+    const sameNameResult = list.filter(el => {
+      return el.id === params.networkId && el.name === name
+    })
+    if(sameNameResult.length > 0){
       return
     }
     return checkObjectNotExists(list, value, 'Network')
