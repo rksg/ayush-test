@@ -10,16 +10,22 @@ import { SettingsOutlined } from '@acx-ui/icons'
 import * as UI             from './styledComponents'
 import { useColumnsState } from './useColumnsState'
 
-import type { Columns, ColumnStateOption }  from './types'
-import type { SettingOptionType }           from '@ant-design/pro-table/lib/components/ToolBar'
-import type { TableProps as AntTableProps } from 'antd'
+import type { TableColumn, ColumnStateOption } from './types'
+import type { SettingOptionType }              from '@ant-design/pro-table/lib/components/ToolBar'
+import type { TableProps as AntTableProps }    from 'antd'
+
+export type {
+  ColumnType,
+  ColumnGroupType,
+  TableColumn
+} from './types'
 
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' | 'title'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip'
     rowKey?: Exclude<AntTableProps<RecordType>['rowKey'], Function>
-    columns: Columns<RecordType, 'text'>[]
+    columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
