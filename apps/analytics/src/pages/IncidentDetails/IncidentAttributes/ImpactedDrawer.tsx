@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { Tooltip }                   from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { aggregateDataBy }                              from '@acx-ui/analytics/utils'
-import type { Incident }                                from '@acx-ui/analytics/utils'
-import { Drawer, Loader, Table, SearchBar, TableProps } from '@acx-ui/components'
-import { InformationOutlined }                          from '@acx-ui/icons'
-import { TenantLink }                                   from '@acx-ui/react-router-dom'
+import { aggregateDataBy }                   from '@acx-ui/analytics/utils'
+import type { Incident }                     from '@acx-ui/analytics/utils'
+import { Drawer, Loader, Table, SearchBar  } from '@acx-ui/components'
+import type { TableColumn, ColumnType }      from '@acx-ui/components'
+import { InformationOutlined }               from '@acx-ui/icons'
+import { TenantLink }                        from '@acx-ui/react-router-dom'
 
 import {
   ImpactedAP,
@@ -17,19 +18,19 @@ import {
 } from './services'
 import { Title } from './syledComponents'
 
-export interface impactedDrawerProps extends Pick<Incident, 'id'> {
+export interface ImpactedDrawerProps extends Pick<Incident, 'id'> {
   visible: boolean
   onClose: () => void
 }
 
-export interface AggregatedImpactedAP{
+export interface AggregatedImpactedAP {
   name: string[]
   mac: string[]
   model: string[]
   version: string[]
 }
 
-export interface AggregatedImpactedClient{
+export interface AggregatedImpactedClient {
   mac: string []
   manufacturer: string[]
   ssid: string[]
@@ -37,20 +38,29 @@ export interface AggregatedImpactedClient{
   username: string[]
 }
 
-export function sortCell<T> (column: keyof T) {
-  return function (a: T, b: T) {
-    const dataA = a[column] as unknown as T[keyof T][]
-    const dataB = b[column] as unknown as T[keyof T][]
+export function column <RecordType> (
+  column: keyof RecordType,
+  columnProps: Partial<ColumnType<RecordType>> = {}
+): Partial<ColumnType<RecordType>> {
+  function sorter (a: RecordType, b: RecordType) {
+    const dataA = a[column] as unknown as RecordType[keyof RecordType][]
+    const dataB = b[column] as unknown as RecordType[keyof RecordType][]
     return dataA[0] > dataB[0]? 1: -1
   }
-}
 
-export function renderCell<T> (col: keyof T) {
-  return function (_: React.ReactNode, row: T) {
-    const data = row[col] as unknown as T[keyof T][]
+  function render (value: unknown) {
+    const data = value as RecordType[keyof RecordType][]
     return <span title={data.join(', ')}>
       {`${data[0]} ${data.length > 1 ? `(${data.length})` : ''}`}
     </span>
+  }
+
+  return {
+    dataIndex: column as string,
+    key: column as string,
+    render,
+    sorter,
+    ...columnProps
   }
 }
 
@@ -61,63 +71,7 @@ const tooltips = {
   hostname: <FormattedMessage defaultMessage='The hostname may only be known if the user has successfully obtained an IP address from DHCP'/>
 }
 
-const impactedClientsColumns: TableProps<AggregatedImpactedClient>['columns'] = [
-  {
-    title: 'Client MAC',
-    dataIndex: 'mac',
-    key: 'mac',
-    render: (_, row) =>
-      <Tooltip title={<FormattedMessage defaultMessage='Client Troubleshoot'/>}>
-        <TenantLink to={'TBD'}>{row.mac}</TenantLink>
-      </Tooltip>,
-    sorter: sortCell<AggregatedImpactedClient>('mac')
-  },
-  {
-    title: 'Manufacturer',
-    dataIndex: 'manufacturer',
-    key: 'manufacturer',
-    render: renderCell<AggregatedImpactedClient>('manufacturer'),
-    sorter: sortCell<AggregatedImpactedClient>('manufacturer')
-  },
-  {
-    title: 'SSID',
-    dataIndex: 'ssid',
-    key: 'ssid',
-    render: renderCell<AggregatedImpactedClient>('ssid'),
-    sorter: sortCell<AggregatedImpactedClient>('ssid')
-  },
-  {
-    title: (
-      <Title>
-        Username
-        <Tooltip title={tooltips.username}>
-          <InformationOutlined/>
-        </Tooltip>
-      </Title>
-    ),
-    dataIndex: 'username',
-    key: 'username',
-    render: renderCell<AggregatedImpactedClient>('username'),
-    sorter: sortCell<AggregatedImpactedClient>('username')
-  },
-  {
-    title: (
-      <Title>
-        Hostname
-        <Tooltip placement='topLeft' title={tooltips.hostname}>
-          <InformationOutlined/>
-        </Tooltip>
-      </Title>
-    ),
-    dataIndex: 'hostname',
-    key: 'hostname',
-    render: renderCell<AggregatedImpactedClient>('hostname'),
-    sorter: sortCell<AggregatedImpactedClient>('hostname')
-  }
-]
-
-
-export const ImpactedClientsDrawer: React.FC<impactedDrawerProps> = (props) => {
+export const ImpactedClientsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
   const { $t } = useIntl()
   const [ search, setSearch ] = useState('')
   const queryResults = useImpactedClientsQuery({
@@ -130,6 +84,35 @@ export const ImpactedClientsDrawer: React.FC<impactedDrawerProps> = (props) => {
     isFetching: states.isLoading || states.isFetching,
     data: states.data && aggregateDataBy<ImpactedClient>('mac')(states.data)
   }) })
+
+  const columns = useMemo(() => [
+    column('mac', {
+      title: $t({ defaultMessage: 'Client MAC' }),
+      render: (_, row) =>
+        <Tooltip title={$t({ defaultMessage: 'Client Troubleshoot' })}>
+          <TenantLink to={'TBD'}>{row.mac}</TenantLink>
+        </Tooltip>
+    }),
+    column('manufacturer', { title: $t({ defaultMessage: 'Manufacturer' }) }),
+    column('ssid', { title: $t({ defaultMessage: 'SSID' }) }),
+    column('username', {
+      title: <Title>
+        {$t({ defaultMessage: 'Username' })}
+        <Tooltip title={tooltips.username}>
+          <InformationOutlined/>
+        </Tooltip>
+      </Title>
+    }),
+    column('hostname', {
+      title: <Title>
+        {$t({ defaultMessage: 'Hostname' })}
+        <Tooltip placement='topLeft' title={tooltips.hostname}>
+          <InformationOutlined/>
+        </Tooltip>
+      </Title>
+    })
+  ] as TableColumn<AggregatedImpactedClient>[], [$t])
+
   return <Drawer
     width={'620px'}
     title={$t(
@@ -142,47 +125,14 @@ export const ImpactedClientsDrawer: React.FC<impactedDrawerProps> = (props) => {
       <SearchBar onChange={setSearch}/>
       <Table<AggregatedImpactedClient>
         rowKey='mac'
-        columns={impactedClientsColumns}
-        dataSource={queryResults.data}/>
+        columns={columns}
+        dataSource={queryResults.data}
+      />
     </Loader>}
   />
 }
 
-const impactedAPsColumns: TableProps<AggregatedImpactedAP>['columns'] = [
-  {
-    title: 'AP Name',
-    dataIndex: 'name',
-    key: 'name',
-    render: renderCell<AggregatedImpactedAP>('name'),
-    sorter: sortCell<AggregatedImpactedAP>('name')
-  },
-  {
-    title: 'AP MAC',
-    dataIndex: 'mac',
-    key: 'mac',
-    render: (_, row) =>
-      <Tooltip title={<FormattedMessage defaultMessage='AP Details'/>}>
-        <TenantLink to={'TBD'}>{row.mac}</TenantLink>
-      </Tooltip>,
-    sorter: sortCell<AggregatedImpactedAP>('mac')
-  },
-  {
-    title: 'AP Model',
-    dataIndex: 'model',
-    key: 'model',
-    render: renderCell<AggregatedImpactedAP>('model'),
-    sorter: sortCell<AggregatedImpactedAP>('model')
-  },
-  {
-    title: 'AP Version',
-    dataIndex: 'version',
-    key: 'version',
-    render: renderCell<AggregatedImpactedAP>('version'),
-    sorter: sortCell<AggregatedImpactedAP>('version')
-  }
-]
-
-export const ImpactedAPsDrawer: React.FC<impactedDrawerProps> = (props) => {
+export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
   const { $t } = useIntl()
   const [ search, setSearch ] = useState('')
   const queryResults = useImpactedAPsQuery({
@@ -195,6 +145,20 @@ export const ImpactedAPsDrawer: React.FC<impactedDrawerProps> = (props) => {
     isFetching: states.isLoading || states.isFetching,
     data: states.data && aggregateDataBy<ImpactedAP>('mac')(states.data)
   }) })
+
+  const columns = useMemo(() => [
+    column('name', { title: $t({ defaultMessage: 'AP Name' }) }),
+    column('mac', {
+      title: $t({ defaultMessage: 'AP MAC' }),
+      render: (_, row) =>
+        <Tooltip title={<FormattedMessage defaultMessage='AP Details'/>}>
+          <TenantLink to={'TBD'}>{row.mac}</TenantLink>
+        </Tooltip>
+    }),
+    column('model', { title: $t({ defaultMessage: 'AP Model' }) }),
+    column('version', { title: $t({ defaultMessage: 'AP Version' }) })
+  ] as TableColumn<AggregatedImpactedAP>[], [$t])
+
   return <Drawer
     width={'620px'}
     title={$t(
@@ -207,7 +171,7 @@ export const ImpactedAPsDrawer: React.FC<impactedDrawerProps> = (props) => {
       <SearchBar onChange={setSearch}/>
       <Table<AggregatedImpactedAP>
         rowKey='mac'
-        columns={impactedAPsColumns}
+        columns={columns}
         dataSource={queryResults.data}/>
     </Loader>}
   />

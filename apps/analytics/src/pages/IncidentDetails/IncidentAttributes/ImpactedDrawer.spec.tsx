@@ -11,8 +11,7 @@ import { mockGraphqlQuery }                          from '@acx-ui/test-utils'
 import {
   ImpactedAPsDrawer,
   ImpactedClientsDrawer,
-  sortCell,
-  renderCell,
+  column,
   AggregatedImpactedAP
 }                 from './ImpactedDrawer'
 import { impactedAPsApi, impactedClientsApi, ImpactedAP, ImpactedClient } from './services'
@@ -102,22 +101,17 @@ describe('Drawer', () => {
   })
 })
 
-describe('sortCell', () => {
+describe('column.sorter', () => {
+  const sorter = column<AggregatedImpactedAP>('mac').sorter! as CallableFunction
   it('should return correct sort order', () => {
-    expect(sortCell<Pick<AggregatedImpactedAP,'mac'>>('mac')({ mac: ['mac1'] },{ mac: ['mac2'] }))
-      .toBe(-1)
-    expect(sortCell<Pick<AggregatedImpactedAP,'mac'>>('mac')({ mac: ['mac2'] },{ mac: ['mac1'] }))
-      .toBe(1)
+    expect(sorter({ mac: ['mac1'] }, { mac: ['mac2'] })).toBe(-1)
+    expect(sorter({ mac: ['mac2'] }, { mac: ['mac1'] })).toBe(1)
   })
 })
 
-describe('renderCell', () => {
+describe('column.render', () => {
+  const render = column<AggregatedImpactedAP>('mac').render! as CallableFunction
   it('should return correct sort order', () => {
-    expect(renderCell<Pick<AggregatedImpactedAP,'mac'>>('mac')(null, { mac: ['mac1', 'mac2'] }))
-      .toMatchSnapshot()
-    expect(sortCell<Pick<AggregatedImpactedAP,'mac'>>('mac')({ mac: ['mac1'] },{ mac: ['mac2'] }))
-      .toBe(-1)
-    expect(sortCell<Pick<AggregatedImpactedAP,'mac'>>('mac')({ mac: ['mac2'] },{ mac: ['mac1'] }))
-      .toBe(1)
+    expect(render(['mac1', 'mac2'], { mac: ['mac1', 'mac2'] })).toMatchSnapshot()
   })
 })

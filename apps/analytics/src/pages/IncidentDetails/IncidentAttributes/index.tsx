@@ -75,7 +75,7 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
     {
       key: 'clientImpactCount',
       getValue: (details: IncidentAttributesProps) => ({
-        label: 'Client Impact Count',
+        label: $t({ defaultMessage: 'Client Impact Count' }),
         children: impactValues(
           'client',
           details.clientCount,
@@ -87,7 +87,7 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
     {
       key: 'apImpactCount',
       getValue: (details: IncidentAttributesProps) => ({
-        label: 'AP Impact Count',
+        label: $t({ defaultMessage: 'AP Impact Count' }),
         children: impactValues(
           'ap', details.apCount, details.impactedApCount).apImpactDescription,
         onClick: () => onOpen('ap')
@@ -103,21 +103,27 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
     {
       key: 'incidentSubCategory',
       getValue: (details: IncidentAttributesProps) => ({
-        label: 'Incident Sub-Category',
+        label: $t({ defaultMessage: 'Incident Sub-Category' }),
         children: $t(details.subCategory)
       })
     },
     {
       key: 'type',
       getValue: (details: IncidentAttributesProps) => ({
-        label: 'Type',
+        label: $t({
+          defaultMessage: 'Type',
+          description: 'Path node type'
+        }),
         children: $t(nodeTypes(details.sliceType))
       })
     },
     {
       key: 'scope',
       getValue: () => ({
-        label: 'Scope',
+        label: $t({
+          defaultMessage: 'Scope',
+          description: 'Incident impacted scope'
+        }),
         children: impactedArea,
         title: scope
       })
@@ -125,7 +131,7 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
     {
       key: 'duration',
       getValue: (details: IncidentAttributesProps) => ({
-        label: 'Duration',
+        label: $t({ defaultMessage: 'Duration' }),
         children: formatter('durationFormat')(durationOf(
           details.startTime,
           details.endTime
@@ -135,14 +141,14 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
     {
       key: 'eventStartTime',
       getValue: (details: IncidentAttributesProps) => ({
-        label: 'Event Start Time',
+        label: $t({ defaultMessage: 'Event Start Time' }),
         children: formatter('dateTimeFormat')(details.startTime)
       })
     },
     {
       key: 'eventEndTime',
       getValue: (details: IncidentAttributesProps) => ({
-        label: 'Event End Time',
+        label: $t({ defaultMessage: 'Event End Time' }),
         children: formatter('dateTimeFormat')(details.endTime)
       })
     }
