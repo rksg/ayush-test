@@ -108,6 +108,7 @@ describe('NetworkFilter', () => {
     await userEvent.click(allOptions[1])
     screen.getByRole('button', { name: 'Apply' }).click()
     expect(onApplyMock).toBeCalledTimes(1)
+    expect(onApplyMock).toHaveBeenCalledWith([['n1'], ['n2']])
   })
 
   it('reverts to previous values on cancel', async () => {
