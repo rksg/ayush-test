@@ -31,11 +31,11 @@ export type CascaderProps = AntCascaderProps<Option> & {
 }
 
 export function NetworkFilter (props: CascaderProps) {
-  const { $t } = useIntl()
-  const [multiSelect, setMultiSelect] = React.useState<DefaultOptionType[][]>([])
-  const [open, setOpen] = React.useState(false)
   const { onCancel, onApply, ...antProps } = props
-  if (antProps.multiple) {
+  const { $t } = useIntl()
+  const [values, setValues] = React.useState<DefaultOptionType[][]>(props.defaultValue || [])
+  const [open, setOpen] = React.useState(false)
+  if (props.multiple) {
     const onCancelProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       event.preventDefault()
       if (onCancel) {
@@ -45,14 +45,14 @@ export function NetworkFilter (props: CascaderProps) {
     }
     const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       event.preventDefault()
-      onApply(multiSelect)
+      onApply(values)
       setOpen(false)
     }
     const onChangeMultiple = (
       triggeredValue: SingleValueType[],
       selectedValues: DefaultOptionType[][]
     ) => {
-      setMultiSelect(selectedValues)
+      setValues(selectedValues)
     }
     const withFooter = (menus: JSX.Element) => <>
       {menus}
