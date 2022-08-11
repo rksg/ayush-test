@@ -109,7 +109,7 @@ describe('NetworkFilter', () => {
     expect(onApplyMock).toBeCalledTimes(1)
   })
 
-  it('renders footer button, triggers onCancel, onFocus', async () => {
+  it('reverts to previous values on cancel', async () => {
     const options: Option[] = [
       {
         value: 'n1',
@@ -120,54 +120,19 @@ describe('NetworkFilter', () => {
         label: 'SSID 2'
       }
     ]
-
     const onApplyMock = jest.fn()
-    const onCancelMock = jest.fn()
-    const onFocusMock = jest.fn()
-
     render(
       <CustomCascader
         onApply={onApplyMock}
-        onCancel={onCancelMock}
-        onFocus={onFocusMock}
         options={options}
         multiple
       />)
-
-    await userEvent.click(screen.getByRole('combobox'))
-    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('combobox'))
+    const allOptions = screen.getAllByRole('menuitemcheckbox')
+    await userEvent.click(allOptions[1])
     screen.getByRole('button', { name: 'Cancel' }).click()
-    expect(onCancelMock).toBeCalledTimes(1)
-
-    screen.getByRole('combobox').click()
-    expect(onFocusMock).toBeCalledTimes(1)
-    expect(screen.getByRole('button', { name: 'Apply' })).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('combobox'))
     screen.getByRole('button', { name: 'Apply' }).click()
-    expect(onApplyMock).toBeCalledTimes(1)
+    expect(onApplyMock).toHaveBeenCalledWith([])
   })
-
-  it('accepts no onCancel', async () => {
-    const options: Option[] = [
-      {
-        value: 'n1',
-        label: 'SSID 1'
-      },
-      {
-        value: 'n2',
-        label: 'SSID 2'
-      }]
-    const onApplyMock = jest.fn()
-    render(<CustomCascader
-      options={options}
-      onApply={onApplyMock}
-      onCancel={undefined}
-      multiple
-    />)
-    expect(screen.getByRole('combobox')).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('combobox'))
-    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
-    screen.getByRole('button', { name: 'Cancel' }).click()
-    expect(screen.getByRole('combobox')).toBeInTheDocument()
-  })
-
 })

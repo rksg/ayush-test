@@ -23,7 +23,6 @@ export interface Option {
 }
 
 export type CascaderProps = AntCascaderProps<Option> & {
-  onCancel?: CallableFunction
   // based on antd, the multiple flag determines the type of DefaultOptionType
   onApply: (
     cascaderSelected: DefaultOptionType[] | DefaultOptionType[][] | undefined
@@ -31,34 +30,35 @@ export type CascaderProps = AntCascaderProps<Option> & {
 }
 
 export function NetworkFilter (props: CascaderProps) {
-  const { onCancel, onApply, ...antProps } = props
+  const { onApply, ...antProps } = props
   const { $t } = useIntl()
-  const [values, setValues] = React.useState<DefaultOptionType[][]>(props.defaultValue || [])
+  const initialValues = props.defaultValue || []
+  const [currentValues, setCurrentValues] = React.useState<DefaultOptionType[][]>(initialValues)
+  const [savedValues, setSavedValues] = React.useState<DefaultOptionType[][]>(initialValues)
   const [open, setOpen] = React.useState(false)
   if (props.multiple) {
-    const onCancelProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    const onCancel = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       event.preventDefault()
-      if (onCancel) {
-        onCancel()
-      }
       setOpen(false)
+      setCurrentValues(savedValues)
     }
     const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       event.preventDefault()
-      onApply(values)
       setOpen(false)
+      setSavedValues(currentValues)
+      onApply(currentValues)
     }
     const onChangeMultiple = (
       triggeredValue: SingleValueType[],
       selectedValues: DefaultOptionType[][]
     ) => {
-      setValues(selectedValues)
+      setCurrentValues(selectedValues.map(selected => selected.map(option => option.value)))
     }
     const withFooter = (menus: JSX.Element) => <>
       {menus}
       <UI.Divider />
       <UI.ButtonDiv>
-        <Button size='small' onClick={onCancelProps}>
+        <Button size='small' onClick={onCancel}>
           {$t({ defaultMessage: 'Cancel' })}
         </Button>
         <Button size='small' type='secondary' onClick={onApplyProps}>
@@ -68,6 +68,7 @@ export function NetworkFilter (props: CascaderProps) {
     </>
     return <AntCascader
       {...antProps}
+      value={currentValues}
       multiple
       onChange={onChangeMultiple}
       dropdownRender={withFooter}
@@ -83,7 +84,7 @@ export function NetworkFilter (props: CascaderProps) {
       triggeredValue: SingleValueType,
       selectedValues: DefaultOptionType[]
     ) => {
-      onApply(selectedValues)
+      onApply(selectedValues.map(option => option.value))
     }
     return <AntCascader
       {...antProps}
