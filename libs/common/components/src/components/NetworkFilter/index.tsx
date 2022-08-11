@@ -77,7 +77,7 @@ export function NetworkFilter (props: CascaderProps) {
       showSearch
       suffixIcon={<CaretDownOutlined />}
       onDropdownVisibleChange={setOpen}
-      open={open}
+      open={currentValues !== savedValues || open}
     />
   } else {
     const onChangeSingle = (
