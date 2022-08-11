@@ -1,4 +1,5 @@
-import { incidentSeverities } from '..'
+import { IncidentCode }   from '../constants'
+import incidentSeverities from '../incidentSeverities.json'
 
 interface IncidentInformation {
   category: string
@@ -8,9 +9,20 @@ interface IncidentInformation {
   incidentType: string
 }
 
+export type NodeType = 'network'
+  | 'apGroupName'
+  | 'apGroup'
+  | 'zoneName'
+  | 'zone'
+  | 'switchGroup'
+  | 'switch'
+  | 'apMac'
+  | 'ap'
+  | 'AP'
+
 export interface PathNode {
-  type: string
-  name?: string
+  type: NodeType
+  name: string
 }
 
 export interface NetworkPath extends Array<PathNode> {}
@@ -22,7 +34,7 @@ export interface SeverityRange {
   lte: number
 }
 
-export interface Metadata {
+export interface IncidentMetadata {
   dominant: { ssid?: string }
   rootCauseChecks: {
     checks: Record<string,boolean>[]
@@ -30,18 +42,18 @@ export interface Metadata {
   }
 }
 
-export interface IncidentDetailsProps {
+export interface Incident {
   id: string
-  sliceType: string
+  sliceType: NodeType
   sliceValue: string
-  code: string
+  code: IncidentCode
   startTime: string
   endTime: string
   severity: number
   clientCount: number
   impactedClientCount: number
-  metadata: Metadata
-  path: Array<{ type: string, name: string }>
+  metadata: IncidentMetadata
+  path: PathNode[]
   apCount: number
   impactedApCount: number
   switchCount: number
@@ -55,6 +67,6 @@ export interface IncidentDetailsProps {
 }
 
 export interface IncidentAttributesProps
-  extends IncidentDetailsProps, IncidentInformation {
+  extends Incident, IncidentInformation {
     visibleFields: string[]
   }

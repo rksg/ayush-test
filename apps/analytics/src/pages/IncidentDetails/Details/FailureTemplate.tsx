@@ -1,36 +1,21 @@
-import { Col, Row }                  from 'antd'
-import { useIntl, FormattedMessage } from 'react-intl'
+import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import {
-  incidentInformation,
   calculateSeverity,
-  impactedArea,
-  formattedSliceType,
-  IncidentDetailsProps
+  Incident,
+  useShortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill } from '@acx-ui/components'
 
-import { incidentDetailsMap } from '..'
-import { NetworkImpact }      from '../NetworkImpact'
+import { NetworkImpact } from '../NetworkImpact'
 
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
+export const IncidentDetailsTemplate = (props: Incident) => {
   const donutCharts = [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
 
   const { $t } = useIntl()
-  const shortDescription = (incident: IncidentDetailsProps) => {
-    const incidentInfo = incidentInformation[incident.code as keyof typeof incidentDetailsMap]
-    const scope = `${formattedSliceType(incident.sliceType)}:` +
-      impactedArea(incident.path, incident.sliceValue)
-    const { shortDescription } = incidentInfo
-    const messageProps = {
-      id: incident.id,
-      defaultMessage: shortDescription,
-      values: { scope }
-    }
-    return <FormattedMessage {...messageProps}/>
-  }
 
   return (
     <>
@@ -40,26 +25,24 @@ export const IncidentDetailsTemplate = (props: IncidentDetailsProps) => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={shortDescription(props)}
+        subTitle={<p>{useShortDescription(props)}</p>}
       />
-      <Row>
+      <Row gutter={[20, 20]}>
         <Col span={4}>
-          <UI.LeftColumn offsetTop={200}>
-            <div>incident attributes</div>
-          </UI.LeftColumn>
+          <UI.FixedAutoSizer>
+            {({ width }) => (
+              <div style={{ width }}>incident attributes</div>
+            )}
+          </UI.FixedAutoSizer>
         </Col>
         <Col span={20}>
-          <Row gutter={[20, 20]}>
-            <Col span={24}>
-              <div>insights</div>
-            </Col>
-            <Col span={24}>
-              <NetworkImpact incident={props} charts={donutCharts}/>
-            </Col>
-            <Col span={24}>
-              <div>charts</div>
-            </Col>
-          </Row>
+          <div>insights</div>
+        </Col>
+        <Col offset={4} span={20}>
+          <NetworkImpact incident={props} charts={donutCharts}/>
+        </Col>
+        <Col offset={4} span={20}>
+          <div>charts</div>
         </Col>
       </Row>
     </>

@@ -3,177 +3,135 @@
 exports[`incident details should render Incident Details Page correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 ekDfta"
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__FallbackWrapper-sc-1352uh8-1 cnmeaO"
+      class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
     >
-      <span
-        aria-label="loader"
-        role="img"
-      >
-        <div
-          aria-busy="true"
-          aria-live="polite"
-          class="ant-spin ant-spin-lg ant-spin-spinning"
-        >
-          <span
-            class="ant-spin-dot ant-spin-dot-spin"
-          >
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-          </span>
-        </div>
-      </span>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`incident details should render Incident Details correctly 1`] = `
-<DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ggigVG"
-  >
-    <div
-      class="ant-page-header has-breadcrumb ant-page-header-ghost"
-    >
-      <nav
-        class="ant-breadcrumb"
-      >
-        <ol>
-          <li>
-            <span
-              class="ant-breadcrumb-link"
-            >
-              <a
-                href="/t/undefined/analytics/incidents"
-              >
-                Incidents
-              </a>
-            </span>
-            <span
-              class="ant-breadcrumb-separator"
-            >
-              /
-            </span>
-          </li>
-          <li>
-            <span
-              class="ant-breadcrumb-link"
-            >
-               
-            </span>
-            <span
-              class="ant-breadcrumb-separator"
-            >
-              /
-            </span>
-          </li>
-        </ol>
-      </nav>
       <div
-        class="ant-page-header-heading"
+        class="ant-page-header has-breadcrumb ant-page-header-ghost"
       >
-        <div
-          class="ant-page-header-heading-left"
+        <nav
+          class="ant-breadcrumb"
         >
-          <span
-            class="ant-page-header-heading-title"
+          <ol>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                <a
+                  href="/t/undefined/analytics/incidents"
+                >
+                  Incidents
+                </a>
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                 
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+          </ol>
+        </nav>
+        <div
+          class="ant-page-header-heading"
+        >
+          <div
+            class="ant-page-header-heading-left"
           >
-            <h1
-              class="ant-typography"
-            >
-              Incident Details
-            </h1>
             <span
-              class="styledComponents__Pill-sc-j61ge1-0 ffqUYw"
-              type="P3"
+              class="ant-page-header-heading-title"
             >
-              P3
+              <h1
+                class="ant-typography"
+              >
+                Incident Details
+              </h1>
+              <span
+                class="styledComponents__Pill-sc-j61ge1-0 jnJmAg"
+                type="P3"
+              >
+                P3
+              </span>
             </span>
-          </span>
-          <span
-            class="ant-page-header-heading-sub-title"
-          >
-            EAP failures are unusually high in Access Point:RuckusAP (70:CA:97:01:A0:C0)
-          </span>
+            <span
+              class="ant-page-header-heading-sub-title"
+            >
+              <p>
+                EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+              </p>
+            </span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div
-    class="ant-row"
-  >
     <div
-      class="ant-col ant-col-4"
+      class="ant-row"
+      style="margin: -10px -10px -10px -10px;"
     >
-      <div>
+      <div
+        class="ant-col ant-col-4"
+        style="padding: 10px 10px 10px 10px;"
+      >
         <div
-          class=""
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            class="ant-anchor-wrapper styledComponents__LeftColumn-sc-cwxgii-0 hyMqHb"
-            style="max-height: calc(100vh - 200px);"
+            style="width: -20px;"
+          >
+            incident attributes
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
           >
             <div
-              class="ant-anchor"
-            >
-              <div
-                class="ant-anchor-ink"
-              >
-                <span
-                  class="ant-anchor-ink-ball"
-                />
-              </div>
-              <div>
-                incident attributes
-              </div>
-            </div>
+              style="width: 1px; height: 1px;"
+            />
           </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-20"
-    >
-      <div
-        class="ant-row"
-        style="margin: -10px -10px -10px -10px;"
-      >
-        <div
-          class="ant-col ant-col-24"
-          style="padding: 10px 10px 10px 10px;"
-        >
-          <div>
-            insights
-          </div>
-        </div>
-        <div
-          class="ant-col ant-col-24"
-          style="padding: 10px 10px 10px 10px;"
-        >
           <div
-            data-testid="networkImpact"
+            class="contract-trigger"
           />
         </div>
+      </div>
+      <div
+        class="ant-col ant-col-20"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div>
+          insights
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-20 ant-col-offset-4"
+        style="padding: 10px 10px 10px 10px;"
+      >
         <div
-          class="ant-col ant-col-24"
-          style="padding: 10px 10px 10px 10px;"
-        >
-          <div>
-            charts
-          </div>
+          data-testid="networkImpact"
+        />
+      </div>
+      <div
+        class="ant-col ant-col-20 ant-col-offset-4"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div>
+          charts
         </div>
       </div>
     </div>

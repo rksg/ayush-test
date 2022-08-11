@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 
 import ProLayout   from '@ant-design/pro-layout'
 import { isEmpty } from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { Logo } from '@acx-ui/icons'
 import {
@@ -40,6 +41,7 @@ export function Layout ({
   leftHeaderContent,
   content
 }: LayoutProps) {
+  const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
@@ -69,12 +71,13 @@ export function Layout ({
       rightContentRender={() => rightHeaderContent}
       headerContentRender={() => leftHeaderContent}
       onCollapse={setCollapsed}
-      collapsedButtonRender={(collapsed: boolean) => {
-        return <>
-          {collapsed ? <UI.ArrowCollapsed /> : <UI.Arrow />}
-          <UI.TextWrapper className='ant-pro-menu-item-title'>{'Collapse'}</UI.TextWrapper>
-        </>
-      }}
+      collapsedButtonRender={(collapsed: boolean) => <>
+        {collapsed ? <UI.ArrowCollapsed /> : <UI.Arrow />}
+        <UI.TextWrapper
+          className='ant-pro-menu-item-title'
+          children={$t({ defaultMessage: 'Collapse' })}
+        />
+      </>}
       className={collapsed ? 'sider-collapsed' : ''}
     >
       <UI.Content>{content}</UI.Content>

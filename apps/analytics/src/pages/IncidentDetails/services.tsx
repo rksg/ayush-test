@@ -1,7 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }              from '@acx-ui/analytics/services'
-import { IncidentDetailsProps } from '@acx-ui/analytics/utils'
+import { dataApi }   from '@acx-ui/analytics/services'
+import { Incident }  from '@acx-ui/analytics/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 const detailQueryProps = {
   incident: `
@@ -44,10 +45,15 @@ export const api = dataApi.injectEndpoints({
           id: payload.id
         }
       }),
-      transformResponse: (response: { incident: IncidentDetailsProps }) =>
+      transformResponse: (response: { incident: Incident }) =>
         response.incident
     })
   })
 })
 
 export const { useIncidentDetailsQuery } = api
+
+export function useIncident () {
+  const { incidentId: id } = useParams()
+  return useIncidentDetailsQuery({ id })
+}

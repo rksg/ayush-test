@@ -19,7 +19,7 @@ export const Pill = styled.span`
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-6-font-weight-bold);
   font-size: var(--acx-subtitle-6-font-size);
-  line-height: var(--acx-subtitle-6-line-libs/analytics/utils/src/timeseries.tsheight);
+  line-height: var(--acx-subtitle-6-line-height);
   color: var(--acx-primary-white);
   background-color: var(${pillColor});
 `
