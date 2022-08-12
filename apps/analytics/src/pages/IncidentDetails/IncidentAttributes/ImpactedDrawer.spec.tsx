@@ -14,7 +14,7 @@ import {
   column,
   AggregatedImpactedAP
 }                 from './ImpactedDrawer'
-import { impactedAPsApi, impactedClientsApi, ImpactedAP, ImpactedClient } from './services'
+import { impactedApi, ImpactedAP, ImpactedClient } from './services'
 
 
 jest.mock('@acx-ui/icons', ()=> ({
@@ -32,7 +32,7 @@ describe('Drawer', () => {
   beforeAll(() => jest.spyOn(console, 'error').mockImplementation(() => {}))
   afterAll(() => jest.resetAllMocks())
   describe('ImpactedAPsDrawer', () => {
-    beforeEach(() => store.dispatch(impactedAPsApi.util.resetApiState()))
+    beforeEach(() => store.dispatch(impactedApi.util.resetApiState()))
     const props = { visible: true, onClose: jest.fn(), id: 'id' }
     const sample = [
       { name: 'name', mac: 'mac', model: 'model', version: 'version' }
@@ -40,13 +40,13 @@ describe('Drawer', () => {
     it('should render loader', () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
         data: { incident: { impactedAPs: sample } } })
-      render(<Provider><ImpactedAPsDrawer {...props}/></Provider>)
+      render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
       expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     })
     it('should render drawer', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
         data: { incident: { impactedAPs: sample } } })
-      render(<Router><Provider><ImpactedAPsDrawer {...props}/></Provider></Router>)
+      render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
       await screen.findByPlaceholderText('Search for...')
       await screen.findByText(sample[0].name)
@@ -58,12 +58,12 @@ describe('Drawer', () => {
     it('should render error', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
         error: new Error('something went wrong!') })
-      render(<Provider><ImpactedAPsDrawer {...props}/></Provider>)
+      render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
       await screen.findByText('Something went wrong.')
     })
   })
   describe('ImpactedClientsDrawer', () => {
-    beforeEach(() => store.dispatch(impactedClientsApi.util.resetApiState()))
+    beforeEach(() => store.dispatch(impactedApi.util.resetApiState()))
     const props = { visible: true, onClose: jest.fn(), id: 'id' }
     const sample = [{
       mac: 'mac',
@@ -74,13 +74,13 @@ describe('Drawer', () => {
     it('should render loader', () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedClients', {
         data: { incident: { impactedClients: sample } } })
-      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>)
+      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>, { route: true })
       expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     })
     it('should render drawer', async () => {
       mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
         data: { incident: { impactedClients: sample } } })
-      render(<Router><Provider><ImpactedClientsDrawer {...props}/></Provider></Router>)
+      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
       await screen.findByPlaceholderText('Search for...')
       await screen.findByText(`TBD - ${sample[0].mac}`)
@@ -95,7 +95,7 @@ describe('Drawer', () => {
     it('should render error', async () => {
       mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
         error: new Error('something went wrong!') })
-      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>)
+      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>, { route: true })
       await screen.findByText('Something went wrong.')
     })
   })

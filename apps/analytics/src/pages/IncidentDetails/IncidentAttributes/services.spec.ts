@@ -3,9 +3,9 @@ import { configureStore } from '@reduxjs/toolkit'
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
-import { impactedAPsApi, impactedClientsApi } from './services'
+import { impactedApi } from './services'
 
-describe('impactedAPsApi', () => {
+describe('impactedApi.impactedAPs', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
@@ -15,7 +15,7 @@ describe('impactedAPsApi', () => {
   })
   const payload = { id: 'id', search: '', n: 100 }
   afterEach(() =>
-    store.dispatch(impactedAPsApi.util.resetApiState())
+    store.dispatch(impactedApi.util.resetApiState())
   )
   it('should return correct data', async () => {
     const expectedResult = { incident: { impactedAPs: [] } }
@@ -23,7 +23,7 @@ describe('impactedAPsApi', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      impactedAPsApi.endpoints.impactedAPs.initiate(payload)
+      impactedApi.endpoints.impactedAPs.initiate(payload)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.incident.impactedAPs)
@@ -34,7 +34,7 @@ describe('impactedAPsApi', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      impactedAPsApi.endpoints.impactedAPs.initiate(payload)
+      impactedApi.endpoints.impactedAPs.initiate(payload)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
@@ -42,7 +42,7 @@ describe('impactedAPsApi', () => {
   })
 })
 
-describe('impactedClientsApi', () => {
+describe('impactedApi.impactedClients', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
@@ -52,7 +52,7 @@ describe('impactedClientsApi', () => {
   })
   const payload = { id: 'id', search: '', n: 100 }
   afterEach(() =>
-    store.dispatch(impactedClientsApi.util.resetApiState())
+    store.dispatch(impactedApi.util.resetApiState())
   )
   it('should return correct data', async () => {
     const expectedResult = { incident: { impactedClients: [] } }
@@ -60,7 +60,7 @@ describe('impactedClientsApi', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      impactedClientsApi.endpoints.impactedClients.initiate(payload)
+      impactedApi.endpoints.impactedClients.initiate(payload)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.incident.impactedClients)
@@ -71,7 +71,7 @@ describe('impactedClientsApi', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      impactedClientsApi.endpoints.impactedClients.initiate(payload)
+      impactedApi.endpoints.impactedClients.initiate(payload)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

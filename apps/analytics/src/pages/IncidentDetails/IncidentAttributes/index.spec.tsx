@@ -7,7 +7,7 @@ import { Provider, store }                                              from '@a
 import { act, fireEvent, mockGraphqlQuery, render, renderHook, screen } from '@acx-ui/test-utils'
 
 
-import { ImpactedAP, impactedAPsApi, ImpactedClient, impactedClientsApi } from './services'
+import { ImpactedAP, impactedApi, ImpactedClient } from './services'
 
 import {
   durationOf,
@@ -128,8 +128,7 @@ describe('IncidentAttributes', () => {
     hostname: 'hostname',
     username: 'username' }] as ImpactedClient[]
   beforeEach(() => {
-    store.dispatch(impactedAPsApi.util.resetApiState())
-    store.dispatch(impactedClientsApi.util.resetApiState())
+    store.dispatch(impactedApi.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'ImpactedAPs', { data: { incident: { impactedAPs } } })
     mockGraphqlQuery(dataApiURL, 'ImpactedClients', { data: { incident: { impactedClients } } })
   })

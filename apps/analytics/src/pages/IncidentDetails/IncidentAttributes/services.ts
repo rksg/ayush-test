@@ -27,7 +27,7 @@ interface Response <T> {
   incident: T
 }
 
-export const impactedAPsApi = dataApi.injectEndpoints({
+export const impactedApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     impactedAPs: build.query<
       ImpactedAP[], RequestPayload
@@ -49,13 +49,7 @@ export const impactedAPsApi = dataApi.injectEndpoints({
       }),
       transformResponse: (response: Response<{ impactedAPs: ImpactedAP[] }>) =>
         response.incident.impactedAPs
-    })
-  })
-})
-export const { useImpactedAPsQuery } = impactedAPsApi
-
-export const impactedClientsApi = dataApi.injectEndpoints({
-  endpoints: (build) => ({
+    }),
     impactedClients: build.query<
       ImpactedClient[], RequestPayload
     >({
@@ -80,4 +74,7 @@ export const impactedClientsApi = dataApi.injectEndpoints({
     })
   })
 })
-export const { useImpactedClientsQuery } = impactedClientsApi
+export const {
+  useImpactedAPsQuery,
+  useImpactedClientsQuery
+} = impactedApi
