@@ -18,7 +18,7 @@ const widgetsMap = {
   connectedClientsOverTime: ({ filters }: { filters: AnalyticsFilter }) => (
     <ConnectedClientsOverTimeWidget filters={filters}/>
   ),
-  switchesByPoEUsage: ({ filters }: { filters: AnalyticsFilter }) => (
+  topSwitchesByPoeUsage: ({ filters }: { filters: AnalyticsFilter }) => (
     <SwitchesByPoEUsageWidget filters={filters}/>
   )
 

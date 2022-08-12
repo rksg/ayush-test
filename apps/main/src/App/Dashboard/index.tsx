@@ -105,7 +105,7 @@ function SwitchWidgets () {
         <AnalyticsWidgets name='switchTrafficByVolume' filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='switchesByPoEUsage' filters={filters}/>
+        <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
