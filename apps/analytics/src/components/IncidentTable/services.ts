@@ -1,8 +1,11 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }         from '@acx-ui/analytics/services'
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { incidentCodes }   from '@acx-ui/analytics/utils'
+import { dataApi } from '@acx-ui/analytics/services'
+import { 
+  AnalyticsFilter,
+  incidentCodes,
+  Incident
+} from '@acx-ui/analytics/utils'
 
 const listQueryProps = {
   incident: `
@@ -65,7 +68,7 @@ export interface IncidentNodeInfo {
   children?: IncidentNodeInfo[]
 }
 
-export type IncidentNodeData = IncidentNodeInfo[]
+export type IncidentNodeData = Incident[]
 
 export interface Response<IncidentNodeData> {
   network: {
@@ -119,7 +122,6 @@ const api = dataApi.injectEndpoints({
           if (event.children && event.children.length <= 0) {
             event.children = undefined
           }
-
           return event
         })
       }

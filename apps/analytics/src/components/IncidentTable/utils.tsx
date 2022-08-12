@@ -1,19 +1,20 @@
-import moment from 'moment-timezone'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
-import { Severities } from '@acx-ui/analytics/utils'
-
-import incidentInformation from './incidentInformation'
+import { 
+  calculateSeverity,
+  incidentInformation
+} from '@acx-ui/analytics/utils'
 
 export const getIncidentBySeverity = (value?: number | null) => {
   if (value === null || value === undefined) {
     return '-'
   }
 
-  const severity = Object.entries(Severities).filter(((elem) => {
-    return value >= elem[1].gt && value <= elem[1].lte
-  }))
+  const severity = calculateSeverity(value)
+  if (!severity) return '-'
 
-  return severity[0][0]
+  return severity
 }
 
 export const formatDate = (datetimestamp?: string) => {
@@ -41,20 +42,43 @@ export const sorterCompare = (a?: unknown, b?: unknown) => {
   return a - b
 }
 
+interface FormatIntlStringProps {
+  message: {
+    defaultMessage: string
+  }
+}
+
+export const FormatIntlString = (props: FormatIntlStringProps) => {
+  const { $t } = useIntl()
+  const message = $t(props.message)
+  const truncMsg = truncateString(message)
+  return <span>{truncMsg}</span>
+}
+
+
 export const getShortIncidentDescription = (code?: string) => {
   if (typeof code !== 'string') return '-'
 
-  return incidentInformation[code].shortDescription
+  const shortDesc = incidentInformation[code].shortDescription
+  return <FormatIntlString message={shortDesc} />
 }
 
 export const getLongIncidentDescription = (code?: string) => {
   if (typeof code !== 'string') return '-'
   
-  return incidentInformation[code].longDescription
+  const longDesc = incidentInformation[code].longDescription
+  return <FormatIntlString message={longDesc} />
 }
 
 export const getCategory = (code?: string) => {
   if (typeof code !== 'string') return '-'
 
-  return incidentInformation[code].category
+  const category = incidentInformation[code].category
+  return <FormatIntlString message={category} />
+}
+
+export const truncateString = (text?: string) => {
+  if (typeof text !== 'string') return '-'
+  if (text.length < 25) return text
+  return text.slice(0, 25) + '...'
 }

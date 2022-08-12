@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useAnalyticsFilter }                         from '@acx-ui/analytics/utils'
+import { Incident, useAnalyticsFilter }               from '@acx-ui/analytics/utils'
 import { Card, Loader, Table, TableProps, showToast } from '@acx-ui/components'
 import { Link }                                       from '@acx-ui/react-router-dom'
 
-import { useIncidentsListQuery, IncidentNodeData, IncidentNodeInfo }        from './services'
+import { useIncidentsListQuery, IncidentNodeData } from './services'
 import { 
   getIncidentBySeverity,
   formatDate,
@@ -17,7 +17,7 @@ import {
 } from './utils'
 
 
-const ColumnHeaders: TableProps<IncidentNodeInfo>['columns'] = [
+const ColumnHeaders: TableProps<Incident>['columns'] = [
   {
     title: 'Severity',
     dataIndex: 'severity',
@@ -45,7 +45,14 @@ const ColumnHeaders: TableProps<IncidentNodeInfo>['columns'] = [
     title: 'Duration',
     dataIndex: 'endTime',
     key: 'endTime',
-    render: (_, value) => formatDuration(value.startTime, value.endTime)
+    render: (_, value) => formatDuration(value.startTime, value.endTime),
+    sorter: {
+      compare: (a, b) => sorterCompare(
+        formatDuration(a.startTime, a.endTime),
+        formatDuration(b.startTime, b.endTime)
+      ),
+      multiple: 2
+    }
   },
   {
     title: 'Description',
@@ -73,7 +80,7 @@ const ColumnHeaders: TableProps<IncidentNodeInfo>['columns'] = [
 
 export type IncidentTableProps = TableProps<IncidentNodeData>
 
-const actions: TableProps<IncidentNodeInfo>['actions'] = [
+const actions: TableProps<Incident>['actions'] = [
   {
     label: 'Mute',
     onClick: (selectedRows) => {

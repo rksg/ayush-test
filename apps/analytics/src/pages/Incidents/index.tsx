@@ -23,7 +23,7 @@ function Incidents () {
       <GridCol col={{ span: 20 }} style={{ height: '220px' }}>
         <NetworkHistoryWidget hideTitle filters={filters}/>
       </GridCol>
-      <GridCol col={{ span: 24 }}>
+      <GridCol col={{ span: 24 }} style={{ height: '400px' }}>
         <IncidentTableWidget />
       </GridCol>
     </GridRow>
