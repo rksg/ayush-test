@@ -1,12 +1,9 @@
-import React, { useState, useEffect, ChangeEventHandler } from 'react'
+import React, { useState, useEffect, useRef, ChangeEventHandler } from 'react'
 
 import { Wrapper } from '@googlemaps/react-wrapper'
 import {
   Form,
   Input,
-  Button,
-  Layout,
-  Space,
   Row,
   Col,
   Typography
@@ -14,12 +11,12 @@ import {
 import TextArea from 'antd/lib/input/TextArea'
 import styled   from 'styled-components/macro'
 
-import { PageHeader, showToast }                        from '@acx-ui/components'
-import { get }                                          from '@acx-ui/config'
-import { useSplitTreatment }                            from '@acx-ui/feature-toggle'
-import { Close, SearchOutlined }                        from '@acx-ui/icons'
-import { useAddVenueMutation, useLazyVenuesListQuery }  from '@acx-ui/rc/services'
-import { Address, VenueSaveData, checkObjectNotExists } from '@acx-ui/rc/utils'
+import { PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { get }                                                 from '@acx-ui/config'
+import { useSplitTreatment }                                   from '@acx-ui/feature-toggle'
+import { Close, SearchOutlined }                               from '@acx-ui/icons'
+import { useAddVenueMutation, useLazyVenuesListQuery }         from '@acx-ui/rc/services'
+import { Address, VenueSaveData, checkObjectNotExists }        from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -36,9 +33,6 @@ export const CloseIcon = styled.svg`
     stroke: var(--acx-primary-black);
   }
 `
-
-const { Content } = Layout
-
 
 export const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
   const [marker, setMarker] = React.useState<google.maps.Marker>()
@@ -144,7 +138,7 @@ export const addressParser = async (place: google.maps.places.PlaceResult) => {
 export function VenuesForm () {
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
   const navigate = useNavigate()
-  const [form] = Form.useForm()
+  const formRef = useRef<StepsFormInstance<VenueSaveData>>()
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
@@ -200,8 +194,8 @@ export function VenuesForm () {
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
       
-      form.setFieldsValue({
-        address: place.formatted_address
+      formRef.current?.setFieldsValue({
+        address: { addressLine: place.formatted_address }
       })
 
       const { latlng, address } = await addressParser(place)
@@ -235,116 +229,111 @@ export function VenuesForm () {
           { text: 'Venues', link: '/venues' }
         ]}
       />
-      <Form
-        layout='vertical'
-        form={form}
+      <StepsForm
+        formRef={formRef}
         onFinish={handleAddVenue}
+        onCancel={() => navigate(linkToVenues)}
       >
-        <Form.Item
-          name='name'
-          label='Venue Name'
-          rules={[{
-            required: true
-          },{
-            validator: (_, value) => nameValidator(value),
-            validateTrigger: 'onChange'
-          }]}
-          wrapperCol={{ span: 5 }}
-          validateFirst
-          hasFeedback
-          children={<Input />} />
-        <Form.Item
-          name='description'
-          label='Description'
-          wrapperCol={{ span: 5 }}
-          children={<TextArea rows={2} maxLength={180} />} />
-        {/*
+        <StepsForm.StepForm>
+          <Form.Item
+            name='name'
+            label='Venue Name'
+            rules={[{
+              required: true
+            },{
+              validator: (_, value) => nameValidator(value),
+              validateTrigger: 'onChange'
+            }]}
+            wrapperCol={{ span: 5 }}
+            validateFirst
+            hasFeedback
+            children={<Input />} />
+          <Form.Item
+            name='description'
+            label='Description'
+            wrapperCol={{ span: 5 }}
+            children={<TextArea rows={2} maxLength={180} />} />
+          {/*
         <Form.Item
         name='tags'
         label='Tags:'
         children={<Input />} />
         */}
-        <Row align='middle'>
-          <Col span={2} style={{ textAlign: 'left' }}>
-            <span className='ant-form-item-label'>
-              <label className='ant-form-item-required'>Address</label>
-            </span>
-          </Col>
-          <Col span={9} style={{ textAlign: 'left', paddingLeft: '2rem' }}>
-            <span className='ant-form-item-label'>
-              <label>Make sure to include a city and country in the address</label>
-            </span>
-          </Col>
-        </Row>
-        <div 
-          style={{
-            width: '470px',
-            height: '260px',
-            position: 'relative',
-            marginBottom: '30px' 
-          }}>
-          <div className='addressContainer' 
-            style={{ 
-              position: 'absolute',
-              zIndex: 10,
-              width: '450px',
-              margin: '12px' 
+          <Row align='middle'>
+            <Col span={2} style={{ textAlign: 'left' }}>
+              <span className='ant-form-item-label'>
+                <label className='ant-form-item-required'>Address</label>
+              </span>
+            </Col>
+            <Col span={9} style={{ textAlign: 'left', paddingLeft: '2rem' }}>
+              <span className='ant-form-item-label'>
+                <label>Make sure to include a city and country in the address</label>
+              </span>
+            </Col>
+          </Row>
+          <div 
+            style={{
+              width: '470px',
+              height: '260px',
+              position: 'relative',
+              marginBottom: '30px' 
             }}>
-            <Form.Item
-              name='address'
-              rules={[{
-                required: isMapEnabled ? true : false
-              },{
-                validator: () => addressValidator(),
-                validateTrigger: 'onChange'
-              }]}
-            >
-              <Input
-                allowClear={{ clearIcon: 
-                  <CloseIcon><Close width='10' height='10' /></CloseIcon>
-                }}
-                prefix={<SearchOutlined />}
-                onChange={addressOnChange}
-                data-testid='address-input'
-                defaultValue={!isMapEnabled ? '350 W Java Dr, Sunnyvale, CA 94089, USA' : ''}
-                disabled={!isMapEnabled}
-                style={{ borderRadius: '20px' }}
-              />
-            </Form.Item>
-          </div>
-          {isMapEnabled ? 
-            <Wrapper
-              apiKey={get('GOOGLE_MAPS_KEY')}
-              libraries={['places']}
-              render={render}
-            >
-              <VenueMap 
-                mapTypeControl={false}
-                streetViewControl={false}
-                fullscreenControl={false}
-                zoom={zoom}
-                center={center}
+            <div className='addressContainer' 
+              style={{ 
+                position: 'absolute',
+                zIndex: 10,
+                width: '450px',
+                margin: '12px' 
+              }}>
+              <Form.Item
+                name={['address', 'addressLine']}
+                rules={[{
+                  required: isMapEnabled ? true : false
+                },{
+                  validator: () => addressValidator(),
+                  validateTrigger: 'onChange'
+                }]}
               >
-                <Marker key={0} position={markers} />
-              </VenueMap>
-            </Wrapper>
-            :
-            <Typography.Title level={2}
-              style={{ textAlign: 'center', paddingTop: '3em' }}
-            >
+                <Input
+                  allowClear={{ clearIcon: 
+                  <CloseIcon><Close width='10' height='10' /></CloseIcon>
+                  }}
+                  prefix={<SearchOutlined />}
+                  onChange={addressOnChange}
+                  data-testid='address-input'
+                  defaultValue={!isMapEnabled ? '350 W Java Dr, Sunnyvale, CA 94089, USA' : ''}
+                  disabled={!isMapEnabled}
+                  style={{ borderRadius: '20px' }}
+                  value={address.addressLine}
+                />
+              </Form.Item>
+            </div>
+            {isMapEnabled ? 
+              <Wrapper
+                apiKey={get('GOOGLE_MAPS_KEY')}
+                libraries={['places']}
+                render={render}
+              >
+                <VenueMap 
+                  mapTypeControl={false}
+                  streetViewControl={false}
+                  fullscreenControl={false}
+                  zoom={zoom}
+                  center={center}
+                >
+                  <Marker key={0} position={markers} />
+                </VenueMap>
+              </Wrapper>
+              :
+              <Typography.Title level={2}
+                style={{ textAlign: 'center', paddingTop: '3em' }}
+              >
               Map is not enabled
-            </Typography.Title>
-          }
-        </div>
-      </Form>
-      <Content>
-        <div style={{ bottom: '10px', position: 'fixed' }}>
-          <Space>
-            <Button type='primary' onClick={form.submit}>Add</Button>
-            <Button onClick={() => navigate(linkToVenues)}>Cancel</Button>
-          </Space>
-        </div>
-      </Content>
+              </Typography.Title>
+            }
+          </div>
+        </StepsForm.StepForm>
+      </StepsForm>
     </>
   )
 }
