@@ -100,6 +100,8 @@ const defaultPayload = {
 }
 
 export function ServicesTable () {
+  const { $t } = useIntl()
+
   const ServicesTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useServiceListQuery,
@@ -112,13 +114,13 @@ export function ServicesTable () {
     ] = useDeleteServiceMutation()
 
     const actions: TableProps<Service>['actions'] = [{
-      label: 'Delete',
+      label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: 'Service',
+            entityName: $t({ defaultMessage: 'Service' }),
             entityValue: name
           },
           onOk: () => deleteService({ params: { tenantId, serviceId: id } })
@@ -148,7 +150,7 @@ export function ServicesTable () {
   return (
     <>
       <PageHeader
-        title='Services'
+        title={$t({ defaultMessage: 'Service' })}
         extra={[
           <TenantLink to='/services/create' key='add'>
             <Button type='primary'>Add Service</Button>
