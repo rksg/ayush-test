@@ -4,11 +4,15 @@ import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { useIntl }            from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { getBarChartSeriesData, AnalyticsFilter }  from '@acx-ui/analytics/utils'
-import { BarChart, BarChartData, Card, cssNumber } from '@acx-ui/components'
-import { Loader }                                  from '@acx-ui/components'
-import { cssStr }                                  from '@acx-ui/components'
-import { formatter }                               from '@acx-ui/utils'
+import { 
+  getBarChartSeriesData, 
+  AnalyticsFilter, 
+  BarChartData 
+}                                    from '@acx-ui/analytics/utils'
+import { BarChart, Card, cssNumber } from '@acx-ui/components'
+import { Loader }                    from '@acx-ui/components'
+import { cssStr }                    from '@acx-ui/components'
+import { formatter }                 from '@acx-ui/utils'
 
 import { useSwitchesByPoEUsageQuery } from './services'
 

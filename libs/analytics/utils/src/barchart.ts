@@ -1,4 +1,4 @@
-import type { BarChartData } from '@acx-ui/components'
+import type { BarChartData } from './types/barchart'
 
 type BarChartAPIData = {
   [key: string]: string | number
