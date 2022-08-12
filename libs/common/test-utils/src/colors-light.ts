@@ -41,7 +41,7 @@ export const mockLightTheme = {
   '--acx-semantics-green-60': '#258D36',
   '--acx-semantics-green-70': '#226D2C',
   '--acx-semantics-yellow-10': '#FDF0D2',
-  '--acx-semantics-yellow-20': '#FCE1A5',
+  '--acx-semantics-yellow-20': '#FFEBA4',
   '--acx-semantics-yellow-30': '#FAD278',
   '--acx-semantics-yellow-40': '#F9C34B',
   '--acx-semantics-yellow-50': '#F7B41E',

@@ -25,7 +25,7 @@ describe('StackedBarChart', () => {
   it('should have default barColors', async () => {
     const { asFragment } = render(
       <StackedBarChart data={data} />)
-    expect(asFragment().querySelector(`path[fill="${cssStr('--acx-semantics-red-70')}"]`))
+    expect(asFragment().querySelector(`path[fill="${cssStr('--acx-semantics-red-50')}"]`))
       .not.toBeNull()
   })
   it('should not render labels and total count', async () => {
