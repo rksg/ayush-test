@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Col, Row } from 'antd'
 
-import { IncidentDetailsProps }             from '@acx-ui/analytics/utils'
+import { Incident }                         from '@acx-ui/analytics/utils'
 import { Card, cssStr, DonutChart, Loader } from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/utils'
 
@@ -18,7 +18,7 @@ const colors = [
 ]
 
 interface NetworkImpactProps {
-  incident: IncidentDetailsProps,
+  incident: Incident,
   charts: string[]
 }
 

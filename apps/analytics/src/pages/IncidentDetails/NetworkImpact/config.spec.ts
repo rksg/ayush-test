@@ -1,4 +1,4 @@
-import { IncidentDetailsProps } from '@acx-ui/analytics/utils'
+import { Incident } from '@acx-ui/analytics/utils'
 
 import {
   getDataWithPercentage,
@@ -82,7 +82,7 @@ describe('getDominanceByThreshold', () => {
 
 describe('getWLANDominance', () => {
   it('should return null when no ssid', () => {
-    const incident = { id: 'id', metadata: { dominant: { } } } as IncidentDetailsProps
+    const incident = { id: 'id', metadata: { dominant: { } } } as Incident
     const data = [
       { key: 'ssid1', name: 'ssid1', value: 2 },
       { key: 'ssid2', name: 'ssid2', value: 1 }
@@ -90,7 +90,7 @@ describe('getWLANDominance', () => {
     expect(getWLANDominance(data, incident)).toEqual(null)
   })
   it('should return correct data', () => {
-    const incident = { id: 'id', metadata: { dominant: { ssid: 'ssid2' } } } as IncidentDetailsProps
+    const incident = { id: 'id', metadata: { dominant: { ssid: 'ssid2' } } } as Incident
     const data = [
       { key: 'ssid1', name: 'ssid1', value: 2 },
       { key: 'ssid2', name: 'ssid2', value: 1 }

@@ -1,12 +1,12 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }              from '@acx-ui/analytics/services'
-import { IncidentDetailsProps } from '@acx-ui/analytics/utils'
+import { dataApi }  from '@acx-ui/analytics/services'
+import { Incident } from '@acx-ui/analytics/utils'
 
 import { DonutChart, donutCharts } from './config'
 
 export interface RequestPayload {
-  incident: IncidentDetailsProps,
+  incident: Incident,
   charts: string[]
 }
 export interface DonutChartData {
@@ -18,7 +18,7 @@ export interface Response {
 }
 
 export const generateNetworkImpactSummary = (
-  metric: DonutChartData, config: DonutChart, incident: IncidentDetailsProps
+  metric: DonutChartData, config: DonutChart, incident: Incident
 ) => {
   const { count, data } = metric
   const dominance = config.dominanceFn && config.dominanceFn(data, incident)

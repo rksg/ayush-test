@@ -1,5 +1,5 @@
 import { dataApiURL }                                                  from '@acx-ui/analytics/services'
-import { IncidentDetailsProps }                                        from '@acx-ui/analytics/utils'
+import { Incident }                                                    from '@acx-ui/analytics/utils'
 import { Provider, store }                                             from '@acx-ui/store'
 import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
 
@@ -10,7 +10,7 @@ import { NetworkImpact } from '.'
 
 describe('NetworkImpact', () => {
   const props ={
-    incident: { id: 'id', metadata: { dominant: { } } } as IncidentDetailsProps,
+    incident: { id: 'id', metadata: { dominant: { } } } as Incident,
     charts: [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
   }
   it('should match snapshot', async () => {

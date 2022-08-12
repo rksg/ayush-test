@@ -1,9 +1,7 @@
 import _ from 'lodash'
 
-import { mapCodeToReason }      from '@acx-ui/analytics/utils'
-import { IncidentDetailsProps } from '@acx-ui/analytics/utils'
-import { formatter }            from '@acx-ui/utils'
-
+import { mapCodeToReason, Incident } from '@acx-ui/analytics/utils'
+import { formatter }                 from '@acx-ui/utils'
 
 import { DonutChartData } from './services'
 
@@ -13,7 +11,7 @@ export interface DonutChart {
   dimension: string
   type: string
   unit: string
-  dominanceFn?: (data: DonutChartData['data'], incident: IncidentDetailsProps) => {
+  dominanceFn?: (data: DonutChartData['data'], incident: Incident) => {
     key: string
     value: number
     percentage: number
@@ -45,7 +43,7 @@ export const getDominanceByThreshold = (threshold: number) => (
 }
 
 export const getWLANDominance = (
-  data: DonutChartData['data'], incident: IncidentDetailsProps
+  data: DonutChartData['data'], incident: Incident
 ) => {
   const dominant = incident.metadata.dominant.ssid
   const percentage = getDataWithPercentage(data)
