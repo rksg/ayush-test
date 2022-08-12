@@ -2,6 +2,8 @@
 // TODO: Upgrade `@ant-design/pro-form` after https://github.com/ant-design/pro-components/pull/5668
 // is merged and new version released. This file can then be removed.
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useContext, useEffect, useImperativeHandle, useRef } from 'react'
 
 import { BaseForm } from '@ant-design/pro-form/lib/BaseForm'
