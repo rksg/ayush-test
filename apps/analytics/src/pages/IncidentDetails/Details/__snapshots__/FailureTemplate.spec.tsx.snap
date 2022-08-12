@@ -83,8 +83,31 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        data-testid="incidentAttributes"
-      />
+        class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+        style="overflow: visible; height: 0px; width: 0px;"
+      >
+        <div
+          style="width: -20px;"
+        >
+          <div
+            data-testid="incidentAttributes"
+          />
+        </div>
+      </div>
+      <div
+        class="resize-triggers"
+      >
+        <div
+          class="expand-trigger"
+        >
+          <div
+            style="width: 1px; height: 1px;"
+          />
+        </div>
+        <div
+          class="contract-trigger"
+        />
+      </div>
     </div>
     <div
       class="ant-col ant-col-20"

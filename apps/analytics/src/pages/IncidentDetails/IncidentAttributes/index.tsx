@@ -15,7 +15,6 @@ import { formatter } from '@acx-ui/utils'
 import { DescriptionRowProps, DescriptionSection } from '../../../components/DescriptionSection'
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
-import { Container }                                from './syledComponents'
 
 interface IncidentAttributesProps extends Incident {
   visibleFields: string[]
@@ -167,11 +166,11 @@ export const IncidentAttributes = (props: IncidentAttributesProps) => {
   const computedFields = fields
     .filter(({ key }) => props.visibleFields.includes(key))
     .map(({ getValue }) => getValue(props) as DescriptionRowProps)
-  return <Container>
+  return <>
     <DescriptionSection fields={computedFields}/>
     { visible==='ap' &&
       <ImpactedAPsDrawer visible={visible==='ap'} onClose={onClose} {...props}/> }
     { visible==='client' &&
       <ImpactedClientsDrawer visible={visible==='client'} onClose={onClose} {...props}/> }
-  </Container>
+  </>
 }
