@@ -12,7 +12,7 @@ export const Wrapper = styled.div`
       h1 {
         margin-bottom: 0;
       }
-      &-left{
+      &-left {
         overflow: visible;
         flex-direction: column;
       }
@@ -27,6 +27,9 @@ export const Wrapper = styled.div`
       &-title {
         overflow: visible;
         align-self: flex-start;
+        display: flex;
+        gap: 10px;
+        align-items: center;
       }
       margin-bottom: var(--acx-content-vertical-space);
     }

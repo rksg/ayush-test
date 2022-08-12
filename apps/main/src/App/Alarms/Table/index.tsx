@@ -1,27 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+
+import { useIntl } from 'react-intl'
 
 import { Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import { Alarm, useAlarmsListQuery }             from '@acx-ui/rc/services'
 import { CommonUrlsInfo, useTableQuery }         from '@acx-ui/rc/utils'
 
-const columns: TableProps<Alarm>['columns'] = [
-  {
-    title: 'Alarm Time',
-    dataIndex: 'startTime',
-    sorter: true,
-    defaultSortOrder: 'ascend'
-  },
-  {
-    title: 'Severity',
-    dataIndex: 'severity',
-    sorter: true
-  },
-  {
-    title: 'Description',
-    dataIndex: 'message',
-    sorter: false
-  }
-]
+function useColumns () {
+  const { $t } = useIntl()
+  const columns: TableProps<Alarm>['columns'] = useMemo(() => [
+    {
+      title: $t({ defaultMessage: 'Alarm Time' }),
+      dataIndex: 'startTime',
+      sorter: true,
+      defaultSortOrder: 'ascend'
+    },
+    {
+      title: $t({ defaultMessage: 'Severity' }),
+      dataIndex: 'severity',
+      sorter: true
+    },
+    {
+      title: $t({ defaultMessage: 'Description' }),
+      dataIndex: 'message',
+      sorter: false
+    }
+  ], [$t])
+
+  return columns
+}
 
 const defaultPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
@@ -46,6 +53,7 @@ const defaultPayload = {
 const defaultArray: Alarm[] = []
 
 export function AlarmsTable () {
+  const { $t } = useIntl()
   const AlarmsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useAlarmsListQuery,
@@ -59,7 +67,7 @@ export function AlarmsTable () {
     }, [tableQuery.data])
 
     return <Loader states={[tableQuery]}>
-      <Table columns={columns}
+      <Table columns={useColumns()}
         dataSource={tableData}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -70,7 +78,7 @@ export function AlarmsTable () {
 
   return <>
     <PageHeader
-      title='Alarms'
+      title={$t({ defaultMessage: 'Alarms' })}
     />
     <AlarmsTable />
   </>
