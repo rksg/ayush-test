@@ -1,11 +1,9 @@
 import moment from 'moment'
 
 import { dataApiURL }                                                   from '@acx-ui/analytics/services'
-import { incidentInformation }                                          from '@acx-ui/analytics/utils'
-import type { Incident }                                                from '@acx-ui/analytics/utils'
+import { fakeIncident }                                                 from '@acx-ui/analytics/utils'
 import { Provider, store }                                              from '@acx-ui/store'
 import { act, fireEvent, mockGraphqlQuery, render, renderHook, screen } from '@acx-ui/test-utils'
-
 
 import { ImpactedAP, impactedApi, ImpactedClient } from './services'
 
@@ -15,7 +13,6 @@ import {
   IncidentAttributes,
   useDrawer
 } from '.'
-
 
 describe('durationOf', () => {
   const timezone = 'UTC'
@@ -100,7 +97,7 @@ describe('IncidentAttributes', () => {
     'eventStartTime',
     'eventEndTime'
   ]
-  const props = {
+  const props = fakeIncident({
     id: 'id',
     code: 'eap-failure',
     apCount: 1,
@@ -114,10 +111,8 @@ describe('IncidentAttributes', () => {
     ],
     startTime: '2022-07-19T05:15:00.000Z',
     endTime: '2022-07-20T02:42:00.000Z',
-    sliceType: 'ap',
     sliceValue: 'RuckusAP'
-  } as unknown as Incident
-  const info = incidentInformation[props.code as keyof typeof incidentInformation]
+  })
   const impactedAPs = [
     { name: 'name', mac: 'mac', model: 'model', version: 'version' }
   ] as ImpactedAP[]
@@ -134,13 +129,13 @@ describe('IncidentAttributes', () => {
   })
   it('should match snapshot', () => {
     const { asFragment } = render(<Provider>
-      <IncidentAttributes {...props} {...info} visibleFields={attributeList}/>
+      <IncidentAttributes {...props} visibleFields={attributeList}/>
     </Provider>)
     expect(asFragment()).toMatchSnapshot()
   })
   it('should trigger onOpen/onClose of implactedClientsDrawer', async () => {
     render(<Provider>
-      <IncidentAttributes {...props} {...info} visibleFields={attributeList}/>
+      <IncidentAttributes {...props} visibleFields={attributeList}/>
     </Provider>)
     const component = await screen.findByText('5 of 27 clients (18.52%)')
     fireEvent.click(component) // trigger onOpen
@@ -148,7 +143,7 @@ describe('IncidentAttributes', () => {
   })
   it('should trigger onOpen/onClose of implactedAPsDrawer', async () => {
     render(<Provider>
-      <IncidentAttributes {...props} {...info} visibleFields={attributeList}/>
+      <IncidentAttributes {...props} visibleFields={attributeList}/>
     </Provider>)
     const component = await screen.findByText('1 of 1 AP (100%)')
     fireEvent.click(component) // trigger onOpen

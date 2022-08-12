@@ -1,14 +1,18 @@
+import { omit } from 'lodash'
+
 import { renderHook } from '@acx-ui/test-utils'
 
+import { fakeIncident } from './fakeIncident'
 import {
   calculateSeverity,
+  transformIncidentQueryResult,
   useFormattedNodeType,
   useFormattedPath,
   useImpactedArea,
   useShortDescription
 } from './incidents'
 
-import type { Incident, NodeType, PathNode } from './types/incidents'
+import type { NodeType, PathNode } from './types/incidents'
 
 describe('calculateSeverity', () => {
   it('should return correct value', () => {
@@ -17,16 +21,42 @@ describe('calculateSeverity', () => {
   })
 })
 
+describe('transformIncidentQueryResult', () => {
+  it('adds incident information into the result', () => {
+    const incident = fakeIncident({
+      id: '1',
+      code: 'dhcp-failure',
+      startTime: '2022-08-12T00:00:00.000Z',
+      endTime: '2022-08-12T01:00:00.000Z',
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'Venue 1' }
+      ]
+    })
+    const result = omit(incident, [
+      'incidentType',
+      'shortDescription',
+      'longDescription',
+      'category',
+      'subCategory'
+    ])
+    expect(transformIncidentQueryResult(result)).toEqual(incident)
+  })
+})
+
 describe('useShortDescription', () => {
-  const incident = {
+  const incident = fakeIncident({
+    id: '1',
     code: 'eap-failure',
-    sliceType: 'zoneName',
-    sliceValue: 'Venue 1',
+    startTime: '2022-08-12T00:00:00.000Z',
+    endTime: '2022-08-12T01:00:00.000Z',
     path: [
       { type: 'network', name: 'Network' },
       { type: 'zone', name: 'Venue 1' }
-    ]
-  } as Incident
+    ],
+    sliceType: 'zoneName',
+    sliceValue: 'Venue 1'
+  })
   const renderShortDescription: typeof useShortDescription = (incident) =>
     renderHook(() => useShortDescription(incident)).result.current
 

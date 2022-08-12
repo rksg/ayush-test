@@ -45,7 +45,7 @@ export function column <RecordType> (
   function sorter (a: RecordType, b: RecordType) {
     const dataA = a[column] as unknown as RecordType[keyof RecordType][]
     const dataB = b[column] as unknown as RecordType[keyof RecordType][]
-    return dataA[0] > dataB[0]? 1: -1
+    return dataA[0] > dataB[0]? 1 : -1
   }
 
   function render (value: unknown) {

@@ -4,7 +4,6 @@ import { useIntl }  from 'react-intl'
 import {
   calculateSeverity,
   Incident,
-  incidentInformation,
   useShortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill } from '@acx-ui/components'
@@ -15,7 +14,6 @@ import * as UI from './styledComponents'
 
 export const IncidentDetailsTemplate = (props: Incident) => {
   const { $t } = useIntl()
-  const info = incidentInformation[props.code]
   const attributeList = [
     'clientImpactCount',
     'incidentCategory',
@@ -41,7 +39,7 @@ export const IncidentDetailsTemplate = (props: Incident) => {
         <Col span={4}>
           <UI.FixedAutoSizer>
             {({ width }) => (<div style={{ width }}>
-              <IncidentAttributes {...props} {...info} visibleFields={attributeList} />
+              <IncidentAttributes {...props} visibleFields={attributeList} />
             </div>)}
           </UI.FixedAutoSizer>
         </Col>

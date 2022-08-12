@@ -3,7 +3,6 @@ import '@testing-library/jest-dom'
 import React from 'react'
 
 import { dataApiURL }                                from '@acx-ui/analytics/services'
-import { BrowserRouter as Router }                   from '@acx-ui/react-router-dom'
 import { Provider, store }                           from '@acx-ui/store'
 import { render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { mockGraphqlQuery }                          from '@acx-ui/test-utils'

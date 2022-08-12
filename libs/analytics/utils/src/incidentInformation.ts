@@ -1,7 +1,17 @@
 /* eslint-disable max-len */
-import { defineMessage } from 'react-intl'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
-export const incidentInformation = {
+import { IncidentCode } from './constants'
+
+export interface IncidentInformation {
+  category: MessageDescriptor
+  subCategory: MessageDescriptor
+  shortDescription: MessageDescriptor
+  longDescription: MessageDescriptor
+  incidentType: 'common' | 'network' | 'switch'
+}
+
+export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
   'ttc': {
     category: defineMessage({ defaultMessage: 'Connection' }),
     subCategory: defineMessage({ defaultMessage: 'Time To Connect' }),

@@ -3,6 +3,7 @@ import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
 
+import type { IncidentInformation } from './incidentInformation'
 import type {
   IncidentSeverities,
   SeverityRange,
@@ -10,6 +11,17 @@ import type {
   NodeType,
   Incident
 } from './types/incidents'
+
+/**
+ * Uses to transform incident record loaded from API and
+ * adds incident infomation into it
+ */
+export function transformIncidentQueryResult (
+  incident: Omit<Incident, keyof IncidentInformation>
+): Incident {
+  const info = incidentInformation[incident.code]
+  return { ...incident, ...info }
+}
 
 export function calculateSeverity (severity: number): IncidentSeverities | void {
   const severityMap = new Map(
@@ -116,7 +128,6 @@ export function useImpactedArea (path: PathNode[], sliceValue: string) {
 
 export const useShortDescription = (incident: Incident) => {
   const { $t } = useIntl()
-  const { shortDescription } = incidentInformation[incident.code]
   const scope = $t({
     defaultMessage: '{nodeType}: {nodeName}',
     description: 'Uses to generate incident impacted scope for various incident descriptions'
@@ -124,5 +135,5 @@ export const useShortDescription = (incident: Incident) => {
     nodeType: useFormattedNodeType(incident.sliceType),
     nodeName: useImpactedArea(incident.path, incident.sliceValue)
   })
-  return $t(shortDescription, { scope })
+  return $t(incident.shortDescription, { scope })
 }

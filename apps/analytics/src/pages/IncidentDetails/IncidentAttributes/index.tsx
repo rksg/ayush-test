@@ -3,13 +3,22 @@ import React, { useState } from 'react'
 import moment                         from 'moment-timezone'
 import { FormattedMessage, useIntl  } from 'react-intl'
 
-import { noDataSymbol, nodeTypes, useFormattedPath, useImpactedArea } from '@acx-ui/analytics/utils'
-import type { IncidentAttributesProps }                               from '@acx-ui/analytics/utils'
-import { formatter }                                                  from '@acx-ui/utils'
+import {
+  Incident,
+  noDataSymbol,
+  nodeTypes,
+  useFormattedPath,
+  useImpactedArea
+} from '@acx-ui/analytics/utils'
+import { formatter } from '@acx-ui/utils'
 
 import { DescriptionRowProps, DescriptionSection } from '../../../components/DescriptionSection'
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
+
+interface IncidentAttributesProps extends Incident {
+  visibleFields: string[]
+}
 
 export const durationOf = (start: string, end: string) =>
   moment(end).diff(moment(start), 'milliseconds', true)
