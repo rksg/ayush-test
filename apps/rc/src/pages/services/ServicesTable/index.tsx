@@ -153,7 +153,7 @@ export function ServicesTable () {
         title={$t({ defaultMessage: 'Service' })}
         extra={[
           <TenantLink to='/services/create' key='add'>
-            <Button type='primary'>Add Service</Button>
+            <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>
         ]}
       />
