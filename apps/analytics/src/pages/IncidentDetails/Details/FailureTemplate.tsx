@@ -10,8 +10,6 @@ import { PageHeader, SeverityPill } from '@acx-ui/components'
 
 import { IncidentAttributes } from '../IncidentAttributes'
 
-import * as UI from './styledComponents'
-
 export const IncidentDetailsTemplate = (props: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
@@ -37,11 +35,7 @@ export const IncidentDetailsTemplate = (props: Incident) => {
       />
       <Row gutter={[20, 20]}>
         <Col span={4}>
-          <UI.FixedAutoSizer>
-            {({ width }) => (<div style={{ width }}>
-              <IncidentAttributes {...props} visibleFields={attributeList} />
-            </div>)}
-          </UI.FixedAutoSizer>
+          <IncidentAttributes {...props} visibleFields={attributeList} />
         </Col>
         <Col span={20}>
           <Row gutter={[20, 20]}>
