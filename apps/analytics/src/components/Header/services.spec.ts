@@ -17,9 +17,9 @@ export const input = [{
   transformedResult: {
     title: 'Network',
     subTitle: [
-      { key: 'Type', value: ['Network'] },
-      { key: 'APs', value: [50] },
-      { key: 'Clients', value: [100] }
+      { key: 'type', value: ['network'] },
+      { key: 'apCount', value: [50] },
+      { key: 'clientCount', value: [100] }
     ]
   }
 }, {
@@ -34,9 +34,9 @@ export const input = [{
   transformedResult: {
     title: 'Venue',
     subTitle: [
-      { key: 'Type', value: ['Venue'] },
-      { key: 'APs', value: [50] },
-      { key: 'Clients', value: [100] }
+      { key: 'type', value: ['zone'] },
+      { key: 'apCount', value: [50] },
+      { key: 'clientCount', value: [100] }
     ]
   }
 }, {
@@ -55,9 +55,9 @@ export const input = [{
   transformedResult: {
     title: 'AP Group',
     subTitle: [
-      { key: 'Type', value: ['AP Group'] },
-      { key: 'APs', value: [50] },
-      { key: 'Clients', value: [100] }
+      { key: 'type', value: ['apGroup'] },
+      { key: 'apCount', value: [50] },
+      { key: 'clientCount', value: [100] }
     ]
   }
 }, {
@@ -78,12 +78,12 @@ export const input = [{
   transformedResult: {
     title: 'Access Point',
     subTitle: [
-      { key: 'Type', value: ['Access Point'] },
-      { key: 'Clients', value: [100] },        
-      { key: 'Model', value: ['r710'] },
-      { key: 'Firmware', value: ['1', 'Unknown'] },
-      { key: 'MAC Address', value: ['AA'] },        
-      { key: 'IP Address', value: ['ip2', 'ip1'] }
+      { key: 'type', value: ['AP'] },
+      { key: 'clientCount', value: [100] },
+      { key: 'model', value: ['r710'] },
+      { key: 'version', value: ['1', 'Unknown'] },
+      { key: 'mac', value: ['AA'] },
+      { key: 'internalIp', value: ['ip2', 'ip1'] }
     ]
   }
 }, {
@@ -101,8 +101,8 @@ export const input = [{
   transformedResult: {
     title: 'Switch Group',
     subTitle: [
-      { key: 'Type', value: ['Venue'] },
-      { key: 'Switches', value: [100] }
+      { key: 'type', value: ['switchGroup'] },
+      { key: 'switchCount', value: [100] }
     ]
   }
 }, {
@@ -122,10 +122,10 @@ export const input = [{
   transformedResult: {
     title: 'Switch',
     subTitle: [
-      { key: 'Type', value: ['Switch'] },
-      { key: 'Model', value: ['m'] },
-      { key: 'Firmware', value: ['123'] },
-      { key: 'Ports', value: [20] }     
+      { key: 'type', value: ['switch'] },
+      { key: 'model', value: ['m'] },
+      { key: 'firmware', value: ['123'] },
+      { key: 'portCount', value: [20] }
     ]
   }
 }]

@@ -1,7 +1,7 @@
 import { FC, ReactNode, useState } from 'react'
 
 import { SelectionControl, SelectionControlOptionProps } from '../SelectionControl'
-export interface TabDetail {
+interface TabDetail {
   label: string
   value: string
   children: ReactNode,

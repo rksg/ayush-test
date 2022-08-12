@@ -6,8 +6,8 @@ import styled            from 'styled-components/macro'
 import type { ColProps as AntColProps } from 'antd'
 
 export {
-  Row as DashboardRow,
-  RowProps as DashboardRowProps
+  Row as GridRow,
+  RowProps as GridRowProps
 } from 'antd'
 
 const ColInner = styled(AntCol)`
@@ -16,7 +16,7 @@ const ColInner = styled(AntCol)`
   display: flex;
 `
 
-const WidgetContainer = styled.div`
+const Container = styled.div`
   // Appear in flex to take up full height
   display: flex;
   flex-direction: column;
@@ -25,12 +25,12 @@ const WidgetContainer = styled.div`
   overflow: auto;
 `
 
-export type DashboardColProps = React.HTMLAttributes<HTMLDivElement> & {
+export type GridColProps = React.HTMLAttributes<HTMLDivElement> & {
   col: AntColProps
 }
 
-export function DashboardCol ({ col, ...props }: DashboardColProps) {
+export function GridCol ({ col, ...props }: GridColProps) {
   return <ColInner {...col}>
-    <WidgetContainer {...props} />
+    <Container {...props} />
   </ColInner>
 }
