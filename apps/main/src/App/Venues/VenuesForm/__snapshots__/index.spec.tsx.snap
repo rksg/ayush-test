@@ -269,7 +269,6 @@ exports[`Venues Form google map is not enabled 1`] = `
                                 >
                                   <span
                                     class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled"
-                                    style="border-radius: 20px;"
                                   >
                                     <span
                                       class="ant-input-prefix"
@@ -634,7 +633,6 @@ exports[`Venues Form should render venues form 1`] = `
                                 >
                                   <span
                                     class="ant-input-affix-wrapper"
-                                    style="border-radius: 20px;"
                                   >
                                     <span
                                       class="ant-input-prefix"

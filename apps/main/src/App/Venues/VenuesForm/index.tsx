@@ -303,7 +303,6 @@ export function VenuesForm () {
                   data-testid='address-input'
                   defaultValue={!isMapEnabled ? '350 W Java Dr, Sunnyvale, CA 94089, USA' : ''}
                   disabled={!isMapEnabled}
-                  style={{ borderRadius: '20px' }}
                   value={address.addressLine}
                 />
               </Form.Item>
