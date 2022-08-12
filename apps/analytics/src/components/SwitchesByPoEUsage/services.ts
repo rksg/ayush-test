@@ -5,8 +5,8 @@ import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
 export type SwitchesByPoEUsageData = {
   name: string
-  poeUtilization: number
-  poeUtilizationPct: number
+  usage: number
+  usagePct: number
 }
 
 interface Response <SwitchesByPoeUsageData> {
@@ -34,8 +34,8 @@ export const api = dataApi.injectEndpoints({
               hierarchyNode(path: $path) {
                 topNSwitchesByPoEUsage(n: 5) {
                   name,
-                  poeUtilization,
-                  poeUtilizationPct
+                  usage: poeUtilization,
+                  usagePct: poeUtilizationPct
                 }
               }
             }

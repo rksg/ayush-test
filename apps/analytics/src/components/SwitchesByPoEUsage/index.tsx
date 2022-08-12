@@ -25,7 +25,7 @@ const barColors = [
 ]
 
 const seriesMapping: BarChartData['seriesEncode'] = [
-  { x: 'poeUtilization', y: 'name' }
+  { x: 'usage', y: 'name' }
 ] 
 
 export function switchUsageLabelFormatter (params: CallbackDataParams): string {
