@@ -38,10 +38,6 @@ export function useMenuConfig () {
         {
           path: '/analytics/configChange',
           name: $t({ defaultMessage: 'Config Change' })
-        },
-        {
-          path: '/analytics/occupancy',
-          name: $t({ defaultMessage: 'Occupancy' })
         }
       ]
     },
