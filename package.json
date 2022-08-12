@@ -19,7 +19,7 @@
     "@googlemaps/markerwithlabel": "2.0.13",
     "@googlemaps/react-wrapper": "1.1.34",
     "@googlemaps/typescript-guards": "2.0.0",
-    "@reduxjs/toolkit": "1.8.1",
+    "@reduxjs/toolkit": "1.8.4",
     "@rtk-query/graphql-request-base-query": "2.0.1",
     "@splitsoftware/splitio-react": "1.4.1",
     "antd": "4.22.0",
