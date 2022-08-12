@@ -88,7 +88,6 @@ const defaultPayload = {
     'id',
     'name',
     'type',
-    'category',
     'status',
     'adminState',
     'technology',
@@ -150,7 +149,7 @@ export function ServicesTable () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Service' })}
+        title={$t({ defaultMessage: 'Services' })}
         extra={[
           <TenantLink to='/services/create' key='add'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
