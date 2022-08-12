@@ -1,4 +1,5 @@
-import { gql } from 'graphql-request'
+import { gql }               from 'graphql-request'
+import { MessageDescriptor } from 'react-intl'
 
 import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
@@ -39,11 +40,12 @@ export const generateNetworkImpactSummary = (
 }
 
 export interface transformedDonutChartData {
-  title: string
-  unit: string
+  key: string
+  title: MessageDescriptor
+  unit: MessageDescriptor
   data: { key: string, name: string, value: number }[]
   summary: {
-    defaultMessage: string
+    defaultMessage: MessageDescriptor
     values: Record<string, string|number|undefined>
   }
 }
@@ -54,8 +56,9 @@ const transformResponse = (response: Response, _: {}, payload: RequestPayload) =
     .map(([, value]) => value)
     .sort((a, b) => (a.order as number) - (b.order as number))
     .map(config => {
-      const metricData = response.incident[config.dimensionAlias || config.dimension]
+      const metricData = response.incident[config.key]
       return {
+        key: config.key,
         title: config.title,
         unit: config.unit,
         data: metricData.data.map(item => ({
@@ -67,7 +70,7 @@ const transformResponse = (response: Response, _: {}, payload: RequestPayload) =
       }
     })
     .reduce((agg, chart) => {
-      agg[chart.title] = chart
+      agg[chart.key] = chart
       return agg
     }, {} as Record<string, transformedDonutChartData>)
 }
@@ -81,7 +84,7 @@ export const donutChartsApi = dataApi.injectEndpoints({
       query: (payload) => {
         const queries = payload.charts.map(
           chart => gql`
-            ${donutCharts[chart].dimensionAlias || donutCharts[chart].dimension}: topN(
+            ${donutCharts[chart].key}: topN(
               n: 10,
               by: "${donutCharts[chart].dimension}",
               type: "${donutCharts[chart].type}"

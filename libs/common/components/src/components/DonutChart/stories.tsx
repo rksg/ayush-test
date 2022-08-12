@@ -1,5 +1,6 @@
 import { withKnobs,object } from '@storybook/addon-knobs'
 import { storiesOf }        from '@storybook/react'
+import { defineMessage }    from 'react-intl'
 
 import { formatter } from '@acx-ui/utils'
 
@@ -41,7 +42,10 @@ storiesOf('Donut Chart', module)
           style={{ width: '100%', height: 'auto' }}
           title='Wi-Fi'
           subTitle={'SubTitle comes here..............................'}
-          unit='device'
+          unit={defineMessage({ defaultMessage: `{formattedCount} {count, plural,
+            one {Client}
+            other {Clients}
+          }` })}
           dataFormatter={formatter('countFormat') as (value: unknown) => string | null}
           data={data}/>
       </Card>

@@ -22,16 +22,16 @@ describe('donutChartsApi', () => {
   )
   it('should return correct data', async () => {
     const expectedResult = { incident: {
-      ssids: { count: 2, data: [
+      WLAN: { count: 2, data: [
         { key: 'ssid1', value: 2 }, { key: 'ssid2', value: 1 }
       ] },
-      reasonCodes: { count: 2, data: [
+      reason: { count: 2, data: [
         { key: 'CCD_REASON_AAA_AUTH_FAIL', value: 2 }
       ] },
-      radios: { count: 2, data: [
+      radio: { count: 2, data: [
         { key: '2.4', value: 1 }, { key: '5', value: 1 }
       ] },
-      manufacturer: { count: 2, data: [
+      clientManufacturer: { count: 2, data: [
         { key: 'manufacturer1', value: 1 }, { key: 'manufacturer2', value: 1 }
       ] }
     } }

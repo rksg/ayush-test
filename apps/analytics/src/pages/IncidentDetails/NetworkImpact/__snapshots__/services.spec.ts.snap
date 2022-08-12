@@ -2,68 +2,6 @@
 
 exports[`donutChartsApi should return correct data 1`] = `
 Object {
-  "Client Manufacturers": Object {
-    "data": Array [
-      Object {
-        "key": "manufacturer1",
-        "name": "manufacturer1",
-        "value": 1,
-      },
-      Object {
-        "key": "manufacturer2",
-        "name": "manufacturer2",
-        "value": 1,
-      },
-    ],
-    "summary": Object {
-      "defaultMessage": "This incident impacted {count} client manufacturers",
-      "values": Object {
-        "count": 2,
-      },
-    },
-    "title": "Client Manufacturers",
-    "unit": "Client",
-  },
-  "Radio": Object {
-    "data": Array [
-      Object {
-        "key": "2.4",
-        "name": "2.4 GHz",
-        "value": 1,
-      },
-      Object {
-        "key": "5",
-        "name": "5 GHz",
-        "value": 1,
-      },
-    ],
-    "summary": Object {
-      "defaultMessage": "This incident impacted {count} bands",
-      "values": Object {
-        "count": 2,
-      },
-    },
-    "title": "Radio",
-    "unit": "Client",
-  },
-  "Reason": Object {
-    "data": Array [
-      Object {
-        "key": "CCD_REASON_AAA_AUTH_FAIL",
-        "name": "AAA Auth Failure",
-        "value": 2,
-      },
-    ],
-    "summary": Object {
-      "defaultMessage": "{percentage} % of failures caused by ''{transformedKey}''",
-      "values": Object {
-        "percentage": 100,
-        "transformedKey": "AAA Auth Failure",
-      },
-    },
-    "title": "Reason",
-    "unit": "Client",
-  },
   "WLAN": Object {
     "data": Array [
       Object {
@@ -77,14 +15,324 @@ Object {
         "value": 1,
       },
     ],
+    "key": "WLAN",
     "summary": Object {
-      "defaultMessage": "This incident impacted {count} WLANs",
+      "defaultMessage": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "This incident impacted ",
+          },
+          Object {
+            "type": 1,
+            "value": "count",
+          },
+          Object {
+            "type": 0,
+            "value": " WLANs",
+          },
+        ],
+        "id": "xVy4yT",
+      },
       "values": Object {
         "count": 2,
       },
     },
-    "title": "WLAN",
-    "unit": "Client",
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "WLAN",
+        },
+      ],
+      "id": "1xvLbG",
+    },
+    "unit": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 1,
+          "value": "formattedCount",
+        },
+        Object {
+          "type": 0,
+          "value": " ",
+        },
+        Object {
+          "offset": 0,
+          "options": Object {
+            "one": Object {
+              "value": Array [
+                Object {
+                  "type": 0,
+                  "value": "Client",
+                },
+              ],
+            },
+            "other": Object {
+              "value": Array [
+                Object {
+                  "type": 0,
+                  "value": "Clients",
+                },
+              ],
+            },
+          },
+          "pluralType": "cardinal",
+          "type": 6,
+          "value": "count",
+        },
+      ],
+      "id": "p3MtTi",
+    },
+  },
+  "clientManufacturer": Object {
+    "data": Array [
+      Object {
+        "key": "manufacturer1",
+        "name": "manufacturer1",
+        "value": 1,
+      },
+      Object {
+        "key": "manufacturer2",
+        "name": "manufacturer2",
+        "value": 1,
+      },
+    ],
+    "key": "clientManufacturer",
+    "summary": Object {
+      "defaultMessage": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "This incident impacted ",
+          },
+          Object {
+            "type": 1,
+            "value": "count",
+          },
+          Object {
+            "type": 0,
+            "value": " client manufacturers",
+          },
+        ],
+        "id": "zSOuoc",
+      },
+      "values": Object {
+        "count": 2,
+      },
+    },
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Client Manufacturers",
+        },
+      ],
+      "id": "Ehr+GT",
+    },
+    "unit": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 1,
+          "value": "formattedCount",
+        },
+        Object {
+          "type": 0,
+          "value": " ",
+        },
+        Object {
+          "offset": 0,
+          "options": Object {
+            "one": Object {
+              "value": Array [
+                Object {
+                  "type": 0,
+                  "value": "Client",
+                },
+              ],
+            },
+            "other": Object {
+              "value": Array [
+                Object {
+                  "type": 0,
+                  "value": "Clients",
+                },
+              ],
+            },
+          },
+          "pluralType": "cardinal",
+          "type": 6,
+          "value": "count",
+        },
+      ],
+      "id": "p3MtTi",
+    },
+  },
+  "radio": Object {
+    "data": Array [
+      Object {
+        "key": "2.4",
+        "name": "2.4 GHz",
+        "value": 1,
+      },
+      Object {
+        "key": "5",
+        "name": "5 GHz",
+        "value": 1,
+      },
+    ],
+    "key": "radio",
+    "summary": Object {
+      "defaultMessage": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "This incident impacted ",
+          },
+          Object {
+            "type": 1,
+            "value": "count",
+          },
+          Object {
+            "type": 0,
+            "value": " bands",
+          },
+        ],
+        "id": "83YLsl",
+      },
+      "values": Object {
+        "count": 2,
+      },
+    },
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Radio",
+        },
+      ],
+      "id": "UkR6UT",
+    },
+    "unit": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 1,
+          "value": "formattedCount",
+        },
+        Object {
+          "type": 0,
+          "value": " ",
+        },
+        Object {
+          "offset": 0,
+          "options": Object {
+            "one": Object {
+              "value": Array [
+                Object {
+                  "type": 0,
+                  "value": "Client",
+                },
+              ],
+            },
+            "other": Object {
+              "value": Array [
+                Object {
+                  "type": 0,
+                  "value": "Clients",
+                },
+              ],
+            },
+          },
+          "pluralType": "cardinal",
+          "type": 6,
+          "value": "count",
+        },
+      ],
+      "id": "p3MtTi",
+    },
+  },
+  "reason": Object {
+    "data": Array [
+      Object {
+        "key": "CCD_REASON_AAA_AUTH_FAIL",
+        "name": "AAA Auth Failure",
+        "value": 2,
+      },
+    ],
+    "key": "reason",
+    "summary": Object {
+      "defaultMessage": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 1,
+            "value": "percentage",
+          },
+          Object {
+            "type": 0,
+            "value": " % of failures caused by '",
+          },
+          Object {
+            "type": 1,
+            "value": "transformedKey",
+          },
+          Object {
+            "type": 0,
+            "value": "'",
+          },
+        ],
+        "id": "G0Er+Q",
+      },
+      "values": Object {
+        "percentage": 100,
+        "transformedKey": "AAA Auth Failure",
+      },
+    },
+    "title": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 0,
+          "value": "Reason",
+        },
+      ],
+      "id": "AkCxS/",
+    },
+    "unit": Object {
+      "defaultMessage": Array [
+        Object {
+          "type": 1,
+          "value": "formattedCount",
+        },
+        Object {
+          "type": 0,
+          "value": " ",
+        },
+        Object {
+          "offset": 0,
+          "options": Object {
+            "one": Object {
+              "value": Array [
+                Object {
+                  "type": 0,
+                  "value": "Client",
+                },
+              ],
+            },
+            "other": Object {
+              "value": Array [
+                Object {
+                  "type": 0,
+                  "value": "Clients",
+                },
+              ],
+            },
+          },
+          "pluralType": "cardinal",
+          "type": 6,
+          "value": "count",
+        },
+      ],
+      "id": "p3MtTi",
+    },
   },
 }
 `;

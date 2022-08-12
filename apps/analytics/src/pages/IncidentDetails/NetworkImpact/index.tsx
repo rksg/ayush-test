@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import { Incident }                         from '@acx-ui/analytics/utils'
 import { Card, cssStr, DonutChart, Loader } from '@acx-ui/components'
@@ -23,6 +24,7 @@ interface NetworkImpactProps {
 }
 
 export const NetworkImpact: React.FC<NetworkImpactProps> = (props) => {
+  const { $t } = useIntl()
   const queryResults = useDonutChartsQuery(props)
   return <Loader states={[queryResults]}>
     <Row>
@@ -32,8 +34,8 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = (props) => {
             <DonutChart
               showLegend={false}
               style={{ width: '100%', height: '95%' }}
-              title={chartData.title}
-              subTitle={chartData.summary}
+              title={$t(chartData.title)}
+              subTitle={$t(chartData.summary.defaultMessage, chartData.summary.values)}
               unit={chartData.unit}
               dataFormatter={formatter('countFormat') as () => string}
               data={chartData.data.map((record, index) => ({ ...record, color: colors[index] }))}

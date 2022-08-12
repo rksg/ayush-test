@@ -1,4 +1,5 @@
-import moment from 'moment-timezone'
+import moment                                        from 'moment-timezone'
+import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 
 import {
   dateAxisFormatter,
@@ -8,6 +9,18 @@ import {
 } from './helper'
 
 import type { TooltipFormatterParams } from './helper'
+
+jest.mock('react-intl', () => ({
+  ...jest.requireActual('react-intl'),
+  useIntl: jest.fn(()=>({
+    $t: jest.fn((
+      format: MessageDescriptor, values: Record<string, string>
+    ) => {
+      const [{ value: unit }] = format.defaultMessage as { value: string }[]
+      return `${values['formattedCount']} ${unit}`
+    })
+  }))
+}))
 
 describe('dateAxisFormatter', () => {
   it('formats date time correctly', () => {
@@ -83,9 +96,10 @@ describe('donutChartTooltipFormatter', () => {
     expect(donutChartTooltipFormatter()(singleparameters)).toMatchSnapshot()
   })
   it('should handle unit', async () => {
-    const withUnit = jest.fn((value: unknown) => `${value} unit`)
+    const unit = defineMessage({ defaultMessage: 'unit' })
     const formatter = jest.fn(value => `formatted-${value}`)
-    expect(donutChartTooltipFormatter(formatter, withUnit)(singleparameters)).toMatchSnapshot()
+    expect(donutChartTooltipFormatter(
+      formatter, unit, useIntl())(singleparameters)).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(1)
   })
 })

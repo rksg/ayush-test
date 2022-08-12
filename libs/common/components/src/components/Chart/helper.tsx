@@ -5,8 +5,9 @@ import {
   RegisteredSeriesOption,
   TooltipComponentOption
 } from 'echarts'
-import moment             from 'moment-timezone'
-import { renderToString } from 'react-dom/server'
+import moment                           from 'moment-timezone'
+import { renderToString }               from 'react-dom/server'
+import { MessageDescriptor, IntlShape } from 'react-intl'
 
 import { TimeStamp } from '@acx-ui/types'
 import { formatter } from '@acx-ui/utils'
@@ -14,6 +15,7 @@ import { formatter } from '@acx-ui/utils'
 import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
+
 
 export type TooltipFormatterParams = Exclude<
   TooltipComponentFormatterCallbackParams,
@@ -167,12 +169,19 @@ export const stackedBarTooltipFormatter = (
 
 export const donutChartTooltipFormatter = (
   dataFormatter?: ((value: unknown) => string | null),
-  withUnit?: (value: number, formattedValue: string) => string
+  unit?: MessageDescriptor,
+  intl?: IntlShape
 ) => (
   parameters: TooltipFormatterParams
 ) => {
-  const formatted = dataFormatter
-    ? dataFormatter(parameters.value) : parameters.value
+  const formatted = (dataFormatter
+    ? dataFormatter(parameters.value) : parameters.value) as string
+  const formattedMsg = (unit && intl)
+    ? intl.$t(unit as MessageDescriptor, {
+      count: parameters.value as number,
+      formattedCount: formatted as string
+    })
+    : formatted
   return renderToString(
     <UI.TooltipWrapper>
       <UI.Badge
@@ -180,11 +189,7 @@ export const donutChartTooltipFormatter = (
         text={<>
           {`${parameters.name}`}<br/>
           <b>
-            <span>
-              {(withUnit
-                ? withUnit(parameters.value as number, formatted as string)
-                : formatted) as string}
-            </span>
+            <span>{formattedMsg}</span>
           </b>
         </>}
       />

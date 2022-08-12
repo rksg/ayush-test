@@ -1,6 +1,7 @@
-import ReactECharts from 'echarts-for-react'
-import { find }     from 'lodash'
-import { useIntl }  from 'react-intl'
+import ReactECharts          from 'echarts-for-react'
+import { find }              from 'lodash'
+import { useIntl }           from 'react-intl'
+import { MessageDescriptor } from 'react-intl'
 
 import { cssNumber, cssStr }                                       from '../../theme/helper'
 import { tooltipOptions, donutChartTooltipFormatter, EventParams } from '../Chart/helper'
@@ -30,11 +31,8 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   Omit<EChartsReactProps, 'option' | 'opts'> {
   data: Array<DonutChartData>
   title?: string,
-  subTitle?: string | {
-    defaultMessage: string,
-    values: Record<string, string|number|undefined>
-  }
-  unit?: string
+  subTitle?: string
+  unit?: MessageDescriptor
   dataFormatter?: (value: unknown) => string | null,
   onClick?: (params: EventParams) => void
 }
@@ -67,27 +65,10 @@ export function DonutChart ({
     fontWeight: cssNumber('--acx-headline-3-font-weight')
   }
 
-  const { $t } = useIntl()
-  const toolTipIntlFormat = {
-    id: `${props.title}-tooltip`,
-    defaultMessage: `{formattedValue} ${props.unit}{isPlural}`
-  }
   const option: EChartsOption = {
     animation: props.animation,
     title: [{
-      subtext: (() => {
-        const intlProps = {
-          id: props.title,
-          defaultMessage: (
-            props.subTitle &&
-            typeof props.subTitle !== 'string' &&
-            props.subTitle.defaultMessage) as string }
-        return (props.subTitle && typeof props.subTitle !== 'string')
-          ? `{a|${$t(intlProps, props.subTitle.values)}}`
-          : props.subTitle
-            ? `{a|${props.subTitle}}`
-            : undefined
-      })(),
+      subtext: props.subTitle ? `{a|${props.subTitle}}` : undefined,
       subtextStyle: {
         width: 200,
         overflow: 'break',
@@ -157,14 +138,8 @@ export function DonutChart ({
           show: !isEmpty,
           formatter: donutChartTooltipFormatter(
             dataFormatter,
-            props.unit
-              ? (value: number, formattedValue: string) =>
-                $t(toolTipIntlFormat, {
-                  unit: props.unit,
-                  isPlural: value > 1 ? 's' : '',
-                  formattedValue
-                })
-              : undefined
+            props.unit,
+            useIntl()
           )
         },
         emphasis: {

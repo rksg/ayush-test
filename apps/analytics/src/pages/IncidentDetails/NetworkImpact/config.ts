@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import _                                    from 'lodash'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { mapCodeToReason, Incident } from '@acx-ui/analytics/utils'
 import { formatter }                 from '@acx-ui/utils'
@@ -6,11 +7,12 @@ import { formatter }                 from '@acx-ui/utils'
 import { DonutChartData } from './services'
 
 export interface DonutChart {
-  title: string
+  key: string
+  title: MessageDescriptor
   dimensionAlias?: string
   dimension: string
   type: string
-  unit: string
+  unit: MessageDescriptor
   dominanceFn?: (data: DonutChartData['data'], incident: Incident) => {
     key: string
     value: number
@@ -19,8 +21,8 @@ export interface DonutChart {
   transformKeyFn?: (key: string) => string
   transformValueFn?: (val: number) => number
   summary: {
-    dominance: string,
-    broad: string
+    dominance: MessageDescriptor,
+    broad: MessageDescriptor
   },
   order?: number
 }
@@ -66,49 +68,73 @@ const enhanceDonutChart = (donutCharts: Record<string,DonutChart>) => Object.key
 
 export const donutCharts: Readonly<Record<string, DonutChart>> = enhanceDonutChart({
   WLAN: {
-    title: 'WLAN',
+    key: 'WLAN',
+    title: defineMessage({ defaultMessage: 'WLAN' }),
     dimension: 'ssids',
     type: 'client',
-    unit: 'Client',
+    unit: defineMessage({ defaultMessage: `{formattedCount} {count, plural,
+      one {Client}
+      other {Clients}
+    }` }),
     dominanceFn: getWLANDominance,
     summary: {
-      dominance: '{percentage} % of failures impacted {key} WLAN',
-      broad: 'This incident impacted {count} WLANs'
+      dominance: defineMessage({
+        defaultMessage: '{percentage} % of failures impacted {key} WLAN' }),
+      broad: defineMessage({
+        defaultMessage: 'This incident impacted {count} WLANs' })
     },
     order: 0
   },
   radio: {
-    title: 'Radio',
+    key: 'radio',
+    title: defineMessage({ defaultMessage: 'Radio' }),
     dimension: 'radios',
     type: 'client',
     transformKeyFn: (val: string) => formatter('radioFormat')(val) as string,
-    unit: 'Client',
+    unit: defineMessage({ defaultMessage: `{formattedCount} {count, plural,
+      one {Client}
+      other {Clients}
+    }` }),
     summary: {
-      dominance: '{percentage} % of failures impacted {transformedKey} band',
-      broad: 'This incident impacted {count} bands'
+      dominance: defineMessage({
+        defaultMessage: '{percentage} % of failures impacted {transformedKey} band' }),
+      broad: defineMessage({
+        defaultMessage: 'This incident impacted {count} bands' })
     },
     order: 5
   },
   reason: {
-    title: 'Reason',
+    key: 'reason',
+    title: defineMessage({ defaultMessage: 'Reason' }),
     dimension: 'reasonCodes',
     type: 'client',
     transformKeyFn: mapCodeToReason,
-    unit: 'Client',
+    unit: defineMessage({ defaultMessage: `{formattedCount} {count, plural,
+      one {Client}
+      other {Clients}
+    }` }),
     summary: {
-      dominance: "{percentage} % of failures caused by ''{transformedKey}''",
-      broad: '{count} reasons contributed to this incident'
+      dominance: defineMessage({
+        defaultMessage: "{percentage} % of failures caused by ''{transformedKey}''" }),
+      broad: defineMessage({
+        defaultMessage: '{count} reasons contributed to this incident' })
     },
     order: 1
   },
   clientManufacturer: {
-    title: 'Client Manufacturers',
+    key: 'clientManufacturer',
+    title: defineMessage({ defaultMessage: 'Client Manufacturers' }),
     dimension: 'manufacturer',
     type: 'client',
-    unit: 'Client',
+    unit: defineMessage({ defaultMessage: `{formattedCount} {count, plural,
+      one {Client}
+      other {Clients}
+    }` }),
     summary: {
-      dominance: '{percentage} % of failures impacted {key} client manufacturer',
-      broad: 'This incident impacted {count} client manufacturers'
+      dominance: defineMessage({
+        defaultMessage: '{percentage} % of failures impacted {key} client manufacturer' }),
+      broad: defineMessage({
+        defaultMessage: 'This incident impacted {count} client manufacturers' })
     },
     order: 2
   }

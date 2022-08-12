@@ -69,7 +69,7 @@ describe('DonutChart', () => {
     const numbers = await screen.findAllByText(/\d+/)
     expect(numbers.length).toEqual(5)
   })
-  it('should render string subTitle', async () => {
+  it('should render subTitle', async () => {
     render(<DonutChart
       data={data}
       dataFormatter={formatter('noFormat') as () => string}
@@ -77,19 +77,6 @@ describe('DonutChart', () => {
       subTitle='Donut Chart subTitle'
     />)
     await screen.findByText('Donut Chart subTitle')
-  })
-  it('should render intl subTitle', async () => {
-    render(<DonutChart
-      data={data}
-      dataFormatter={formatter('noFormat') as () => string}
-      title='Donut Chart'
-      subTitle={{
-        defaultMessage: 'Donut Chart subTitle with {count}',
-        values: { count: 10 }
-      }}
-      unit='device'
-    />)
-    await screen.findByText('Donut Chart subTitle with 10')
   })
 })
 
