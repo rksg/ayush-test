@@ -30,15 +30,13 @@ export function calculateSeverity (severity: number): IncidentSeverities | void 
   }
 
   // handles void severities
-  for (let value in Object.entries(incidentInformation)) {
-    const key = value[0]
-    const range = value[1] as unknown as SeverityRange
-    
-    if (severity >= range.gt && severity <= range.lte) {
+  const mapper = incidentSeverities as Record<IncidentSeverities, SeverityRange>
+  for (let key in mapper) {
+    const range = mapper[key as IncidentSeverities] as SeverityRange
+    if (range.gt >= severity && range.lte <= severity) {
       return key as IncidentSeverities
     }
   }
-
 }
 
 type NormalizedNodeType = 'network'

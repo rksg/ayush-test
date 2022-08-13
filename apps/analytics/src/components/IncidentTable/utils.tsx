@@ -1,5 +1,5 @@
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment                     from 'moment-timezone'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { 
   calculateSeverity,
@@ -45,33 +45,42 @@ export const sorterCompare = (a?: unknown, b?: unknown) => {
 interface FormatIntlStringProps {
   message: {
     defaultMessage: string
+    scope?: string
+    threshold?: string
   }
 }
 
 export const FormatIntlString = (props: FormatIntlStringProps) => {
   const { $t } = useIntl()
-  const message = $t(props.message)
+  
+  const message = $t(props.message, { scope: 'test', threshold: 'test1' })
   const truncMsg = truncateString(message)
   return <span>{truncMsg}</span>
 }
 
 
 export const getShortIncidentDescription = (code?: string) => {
-  if (typeof code !== 'string') return '-'
+  if (typeof code !== 'string') {
+    return <FormatIntlString message={defineMessage({ defaultMessage: '-' })} />
+  }
 
   const shortDesc = incidentInformation[code].shortDescription
   return <FormatIntlString message={shortDesc} />
 }
 
 export const getLongIncidentDescription = (code?: string) => {
-  if (typeof code !== 'string') return '-'
+  if (typeof code !== 'string') {
+    return <FormatIntlString message={defineMessage({ defaultMessage: '-' })} />
+  }
   
   const longDesc = incidentInformation[code].longDescription
   return <FormatIntlString message={longDesc} />
 }
 
 export const getCategory = (code?: string) => {
-  if (typeof code !== 'string') return '-'
+  if (typeof code !== 'string') {
+    return <FormatIntlString message={defineMessage({ defaultMessage: '-' })} />
+  }
 
   const category = incidentInformation[code].category
   return <FormatIntlString message={category} />

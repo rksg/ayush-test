@@ -26,48 +26,6 @@ const listQueryProps = {
   `
 }
 
-export interface IncidentPath {
-  name: string
-  type: string
-}
-
-export interface IncidentApModel {
-  AP_MODEL: boolean | string
-  CCD_REASON_DEAUTH_LEAVING?: boolean | string
-  CLIENT_OS_MFG: boolean | string
-  FW_VERSION: boolean | string
-}
-
-export interface IncidentMetadata {
-  dominant: {
-    ssid: string
-  }
-  rootCauseChecks: {
-    checks: IncidentApModel[]
-    params: IncidentApModel
-  }
-
-}
-
-export interface IncidentNodeInfo {
-  severity?: number
-  clientCount?: number
-  code?: string
-  id: string
-  impactedClientCount?: number
-  isMuted?: boolean
-  relatedIncidents?: IncidentNodeInfo[]
-  sliceType?: string
-  sliceValue?: string
-  startTime?: string
-  endTime?: string
-  mutedAt?: string | null
-  mutedBy?: string | null
-  path: IncidentPath[]
-  metadata: IncidentMetadata
-  children?: IncidentNodeInfo[]
-}
-
 export type IncidentNodeData = Incident[]
 
 export interface Response<IncidentNodeData> {
