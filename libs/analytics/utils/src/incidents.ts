@@ -172,29 +172,29 @@ export function useImpactedArea (path: PathNode[], sliceValue: string) {
     : sliceValue
 }
 
-export const useShortDescription = (incident: Incident) => {
+export const useIncidentScope = (incident: Incident) => {
   const { $t } = useIntl()
-  const { shortDescription } = incidentInformation[incident.code]
-  const scope = $t({
+
+  return $t({
     defaultMessage: '{nodeType}: {nodeName}',
     description: 'Uses to generate incident impacted scope for various incident descriptions'
   }, {
     nodeType: useFormattedNodeType(incident.sliceType),
     nodeName: useImpactedArea(incident.path, incident.sliceValue)
   })
+}
+
+export const useShortDescription = (incident: Incident) => {
+  const { $t } = useIntl()
+  const { shortDescription } = incidentInformation[incident.code]
+  const scope = useIncidentScope(incident)
   return $t(shortDescription, { scope })
 }
 
 export const useLongDesription = (incident: Incident, rootCauses: string) => {
   const { $t } = useIntl()
   const shortDesc = useShortDescription(incident)
-  const scope = $t({
-    defaultMessage: '{nodeType}: {nodeName}',
-    description: 'Uses to generate incident impacted scope for various incident descriptions'
-  }, {
-    nodeType: useFormattedNodeType(incident.sliceType),
-    nodeName: useImpactedArea(incident.path, incident.sliceValue)
-  })
+  const scope = useIncidentScope(incident)
   
   const { metadata: { dominant }, clientCount, impactedClientCount } = incident
   const { clientImpact, clientImpactFormatted } = 

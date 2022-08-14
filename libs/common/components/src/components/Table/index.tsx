@@ -1,9 +1,9 @@
 import React, { useMemo, useState, Key } from 'react'
 
-import ProTable                   from '@ant-design/pro-table'
-import { Space, Divider, Button } from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
+import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
+import { Space, Divider, Button }                      from 'antd'
+import _                                               from 'lodash'
+import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
@@ -11,20 +11,25 @@ import * as UI             from './styledComponents'
 import { useColumnsState } from './useColumnsState'
 
 import type { Columns, ColumnStateOption }  from './types'
+import type { ParamsType }                  from '@ant-design/pro-provider'
 import type { SettingOptionType }           from '@ant-design/pro-table/lib/components/ToolBar'
 import type { TableProps as AntTableProps } from 'antd'
 
 export interface TableProps <RecordType>
-  extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' | 'title'> {
+  extends Omit<ProAntTableProps<RecordType, ParamsType>, 
+  'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip'
-    rowKey?: Exclude<AntTableProps<RecordType>['rowKey'], Function>
+    rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: Columns<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
+    rowSelection?: (AntTableProps<RecordType>['rowSelection'] & {
+      alwaysShowAlert?: boolean;
+  })
   }
 
 export function Table <RecordType extends object> (

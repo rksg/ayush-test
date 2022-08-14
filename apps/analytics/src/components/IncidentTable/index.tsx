@@ -11,9 +11,10 @@ import {
   getIncidentBySeverity,
   formatDate,
   formatDuration,
-  sorterCompare,
+  clientImpactSort,
   LongIncidentDescription,
-  getCategory
+  getCategory,
+  GetScope
 } from './utils'
 
 
@@ -24,7 +25,7 @@ const ColumnHeaders: TableProps<Incident>['columns'] = [
     key: 'severity',
     render: (_, value) => getIncidentBySeverity(value.severity),
     sorter: {
-      compare: (a, b) => sorterCompare(a.severity, b.severity),
+      compare: (a, b) => clientImpactSort(a.severity, b.severity),
       multiple: 1
     }
   },
@@ -37,7 +38,7 @@ const ColumnHeaders: TableProps<Incident>['columns'] = [
       return <Link to={`/analytics/incident/${value.id}`}>{formatDate(value.startTime)}</Link>
     },
     sorter: {
-      compare: (a, b) => sorterCompare(a.startTime, b.startTime),
+      compare: (a, b) => clientImpactSort(a.startTime, b.startTime),
       multiple: 2
     }
   },
@@ -47,7 +48,7 @@ const ColumnHeaders: TableProps<Incident>['columns'] = [
     key: 'endTime',
     render: (_, value) => formatDuration(value.startTime, value.endTime),
     sorter: {
-      compare: (a, b) => sorterCompare(
+      compare: (a, b) => clientImpactSort(
         formatDuration(a.startTime, a.endTime),
         formatDuration(b.startTime, b.endTime)
       ),
@@ -58,23 +59,52 @@ const ColumnHeaders: TableProps<Incident>['columns'] = [
     title: 'Description',
     dataIndex: 'code',
     key: 'code',
-    render: (_, value) => LongIncidentDescription(value)
+    render: (_, value) => LongIncidentDescription(value),
+    sorter: {
+      compare: (a, b) => clientImpactSort(a.code, b.code)
+    }
   },
   {
     title: 'Category',
     dataIndex: 'sliceType',
     key: 'sliceType',
-    render: (_, value) => getCategory(value.code)
+    render: (_, value) => getCategory(value.code),
+    sorter: {
+      compare: (a, b) => clientImpactSort(a.sliceType, b.sliceType)
+    }
   },
   {
     title: 'Client Impact',
     dataIndex: 'clientCount',
-    key: 'clientCount'
+    key: 'clientCount',
+    sorter: {
+      compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount)
+    }
   },
   {
     title: 'Impacted Clients',
     dataIndex: 'impactedClientCount',
-    key: 'impactedClientCount'
+    key: 'impactedClientCount',
+    sorter: {
+      compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount)
+    }
+  },
+  {
+    title: 'Scope',
+    dataIndex: 'mutedBy',
+    key: 'mutedBy',
+    render: (_, value) => <GetScope incident={value} />,
+    sorter: {
+      compare: (a, b) => clientImpactSort(a.mutedBy, b.mutedBy)
+    }
+  }, 
+  {
+    title: 'Type',
+    dataIndex: 'sliceValue',
+    key: 'sliceValue',
+    sorter: {
+      compare: (a, b) => clientImpactSort(a.sliceValue, b.sliceValue)
+    }
   }
 ]
 
@@ -119,7 +149,7 @@ const IncidentTableWidget = () => {
               pagination={{ pageSize: 10 }}
               rowKey='id'
               showSorterTooltip={false}
-              scroll={{ y: 0 }}
+              scroll={{ y: 0, x: 0 }}
             />
           )}
         </AutoSizer>

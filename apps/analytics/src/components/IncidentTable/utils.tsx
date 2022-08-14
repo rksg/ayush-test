@@ -6,6 +6,7 @@ import {
   Incident,
   incidentInformation,
   noDataSymbol,
+  useIncidentScope,
   useLongDesription
 } from '@acx-ui/analytics/utils'
 
@@ -39,28 +40,29 @@ export const formatDuration = (startTimestamp?: string, endTimestamp?: string) =
   return `${hours}h ${minutes % 60}min`
 }
 
-export const sorterCompare = (a?: unknown, b?: unknown) => {
-  if ((typeof a !== 'number') || (typeof b !== 'number')) {
-    return -1
-  }
-
-  return a - b
+export const clientImpactSort = (a?: unknown, b?: unknown) => {
+  let c = (a === noDataSymbol) ? -1 : parseFloat(a as string)
+  let d = (b === noDataSymbol) ? -1 : parseFloat(b as string)
+  if (isNaN(c)) c = -2
+  if (isNaN(d)) d = -2
+  if (c > d) return -1
+  if (c < d) return 1
+  return 0
 }
 
 interface FormatIntlStringProps {
   message: {
     defaultMessage: string
-    scope?: string
-    threshold?: string
   }
+  scope?: string
+  threshold?: string
 }
 
 export const FormatIntlString = (props: FormatIntlStringProps) => {
   const { $t } = useIntl()
-  
-  const message = $t(props.message, { scope: 'test', threshold: 'test1', noDataSymbol })
-  const truncMsg = truncateString(message)
-  return <span>{truncMsg}</span>
+  const { message, scope, threshold } = props
+  const intlMessage = $t(message, { scope, threshold })
+  return <span>{intlMessage}</span>
 }
 
 
@@ -90,6 +92,17 @@ export const getCategory = (code?: string) => {
 
   const category = incidentInformation[code].category
   return <FormatIntlString message={category} />
+}
+
+export interface GetScopeProps {
+  incident: Incident
+}
+
+export const GetScope = (props: GetScopeProps) => {
+  const { incident } = props
+  const scope = useIncidentScope(incident)  
+  const message = defineMessage({ defaultMessage: '{scope}' })
+  return <FormatIntlString message={message} scope={scope}/>
 }
 
 export const truncateString = (text?: string) => {
