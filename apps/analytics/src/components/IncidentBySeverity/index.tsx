@@ -47,7 +47,11 @@ const getChartData = (data: IncidentsBySeverityData): BarChartData => ({
   seriesEncode: [{ x: 'incidentCount', y: 'severity' }]
 })
 
-function IncidentBySeverityWidget ({ filters }: { filters: any }) {
+function IncidentBySeverityWidget ({
+  filters
+}: {
+  filters: AnalyticsFilter & { code?: IncidentCode[] };
+}) {
   const { startDate, endDate } = filters
   const { $t } = useIntl()
   const currentResult = useIncidentsBySeverityQuery(filters, {

@@ -7,7 +7,7 @@ import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   categoryNames,
   categoryCodeMap,
-  incidentCodes
+  IncidentCode
 } from '@acx-ui/analytics/utils'
 import { GridRow, GridCol } from '@acx-ui/components'
 
@@ -19,15 +19,17 @@ const incidentTabs = [
   { text: 'Overview', value: 'overview' },
   ...categoryNames
 ]
-const IncidentTabContent = (props: any) => {
+type tabSelectionType =
+  | 'connection'
+  | 'performance'
+  | 'infrastructure'
+  | 'overview'
+const IncidentTabContent = (props: { tabSelection: tabSelectionType }) => {
   const { tabSelection } = props
   const filters = useAnalyticsFilter()
-  const tabWiseIncidentCodes =
-    tabSelection === 'overview'
-      ? incidentCodes
-      : categoryCodeMap[
-          tabSelection as 'connection' | 'performance' | 'infrastructure'
-      ].codes
+  const tabWiseIncidentCodes: IncidentCode[] | undefined = categoryCodeMap[
+    tabSelection as 'connection' | 'performance' | 'infrastructure'
+  ]?.codes as IncidentCode[]
 
   return (
     <GridRow gutter={[0, 20]}>
@@ -49,7 +51,9 @@ const IncidentTabContent = (props: any) => {
 
 function Incidents () {
   const { $t } = useIntl()
-  const [tabSelection, setTabSelection] = useState(incidentTabs[0].value)
+  const [tabSelection, setTabSelection] = useState<tabSelectionType>(
+    incidentTabs[0].value as tabSelectionType
+  )
 
   return (
     <>
@@ -57,7 +61,7 @@ function Incidents () {
       <Header title={$t({ defaultMessage: 'Incidents' })} />
       <Tabs
         defaultActiveKey={tabSelection}
-        onChange={(key) => setTabSelection(key)}
+        onChange={(key) => setTabSelection(key as tabSelectionType)}
         style={{ lineHeight: 2.33 }}
       >
         {incidentTabs.map((tabInfo) => (

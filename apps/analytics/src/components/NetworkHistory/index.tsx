@@ -30,8 +30,7 @@ function NetworkHistoryWidget ({
   filters
 }: {
   hideTitle?: boolean;
-  // filters: AnalyticsFilter & { code? : IncidentCode[] };
-  filters: any;
+  filters: AnalyticsFilter & { code? : IncidentCode[] };
 }) {
   const { $t } = useIntl()
   const seriesMapping = [
