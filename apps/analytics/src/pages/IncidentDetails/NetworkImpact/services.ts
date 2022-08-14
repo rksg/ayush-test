@@ -1,53 +1,21 @@
-import { gql }               from 'graphql-request'
-import { MessageDescriptor } from 'react-intl'
+import { gql } from 'graphql-request'
 
 import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
 
-import { DonutChart, donutCharts } from './config'
+import { donutCharts } from './config'
 
 export interface RequestPayload {
   incident: Incident,
   charts: string[]
 }
 export interface DonutChartData {
+  key: string
   count: number
   data: { key: string, name: string, value: number }[]
 }
 export interface Response {
-  incident: Record<string, DonutChartData>
-}
-
-export const generateNetworkImpactSummary = (
-  metric: DonutChartData, config: DonutChart, incident: Incident
-) => {
-  const { count, data } = metric
-  const dominance = config.dominanceFn && config.dominanceFn(data, incident)
-  if (dominance) {
-    return {
-      defaultMessage: config.summary.dominance,
-      values: {
-        percentage: Math.round(dominance.percentage * 100),
-        transformedKey: config.transformKeyFn && config.transformKeyFn(dominance.key)
-      }
-    }
-  } else {
-    return {
-      defaultMessage: config.summary.broad,
-      values: { count }
-    }
-  }
-}
-
-export interface transformedDonutChartData {
-  key: string
-  title: MessageDescriptor
-  unit: MessageDescriptor
-  data: { key: string, name: string, value: number }[]
-  summary: {
-    defaultMessage: MessageDescriptor
-    values: Record<string, string|number|undefined>
-  }
+  incident: Record<string, Omit<DonutChartData, 'key'>>
 }
 
 const transformResponse = (response: Response, _: {}, payload: RequestPayload) => {
@@ -55,30 +23,20 @@ const transformResponse = (response: Response, _: {}, payload: RequestPayload) =
     .filter(([key]) => payload.charts.includes(key))
     .map(([, value]) => value)
     .sort((a, b) => (a.order as number) - (b.order as number))
-    .map(config => {
-      const metricData = response.incident[config.key]
-      return {
+    .reduce((agg, config) => {
+      agg[config.key] = {
+        ...response.incident[config.key],
         key: config.key,
-        title: config.title,
-        unit: config.unit,
-        data: metricData.data.map(item => ({
-          ...item,
-          name: (config.transformKeyFn && config.transformKeyFn(item.key)) as string,
-          value: (config.transformValueFn && config.transformValueFn(item.value)) as number
-        })),
-        summary: generateNetworkImpactSummary(metricData, config, payload.incident)
+        data: response.incident[config.key].data.map(item => ({ ...item, name: item.key }))
       }
-    })
-    .reduce((agg, chart) => {
-      agg[chart.key] = chart
       return agg
-    }, {} as Record<string, transformedDonutChartData>)
+    }, {} as Record<string, DonutChartData>)
 }
 
 export const donutChartsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     donutCharts: build.query<
-      Record<string, transformedDonutChartData>,
+      Record<string, DonutChartData>,
       RequestPayload
     >({
       query: (payload) => {

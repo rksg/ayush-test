@@ -1,5 +1,5 @@
-import _                                    from 'lodash'
-import { defineMessage, MessageDescriptor } from 'react-intl'
+import _                                               from 'lodash'
+import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
 
 import { mapCodeToReason, Incident } from '@acx-ui/analytics/utils'
 import { formatter }                 from '@acx-ui/utils'
@@ -18,8 +18,8 @@ export interface DonutChart {
     value: number
     percentage: number
   } | null,
-  transformKeyFn?: (key: string) => string
-  transformValueFn?: (val: number) => number
+  transformKeyFn?: (key: string, intl: IntlShape) => string
+  transformValueFn?: (val: number, intl: IntlShape) => number
   summary: {
     dominance: MessageDescriptor,
     broad: MessageDescriptor
@@ -37,7 +37,7 @@ export const getDominance = (data: DonutChartData['data']) =>
 
 const dominanceThreshold = 0.7
 
-export const getDominanceByThreshold = (threshold: number) => (
+export const getDominanceByThreshold = (threshold: number = dominanceThreshold) => (
   data: DonutChartData['data']
 ) => {
   const max = getDominance(data)
@@ -52,21 +52,7 @@ export const getWLANDominance = (
   return _.pickBy(percentage, p => p.key === dominant)[1] || null
 }
 
-const enhanceDonutChart = (donutCharts: Record<string,DonutChart>) => Object.keys(donutCharts)
-  .reduce((acc, key) => {
-    const entry = donutCharts[key as keyof typeof donutCharts]
-    return {
-      ...acc,
-      [key]: {
-        ...entry,
-        dominanceFn: entry.dominanceFn || getDominanceByThreshold(dominanceThreshold),
-        transformKeyFn: entry.transformKeyFn || _.identity,
-        transformValueFn: entry.transformValueFn || _.identity
-      } as DonutChart
-    }
-  }, {} as Record<keyof typeof donutCharts, DonutChart>)
-
-export const donutCharts: Readonly<Record<string, DonutChart>> = enhanceDonutChart({
+export const donutCharts: Readonly<Record<string, DonutChart>> = {
   WLAN: {
     key: 'WLAN',
     title: defineMessage({ defaultMessage: 'WLAN' }),
@@ -79,7 +65,7 @@ export const donutCharts: Readonly<Record<string, DonutChart>> = enhanceDonutCha
     dominanceFn: getWLANDominance,
     summary: {
       dominance: defineMessage({
-        defaultMessage: '{percentage} % of failures impacted {key} WLAN' }),
+        defaultMessage: '{percentage} % of failures impacted {transformedKey} WLAN' }),
       broad: defineMessage({
         defaultMessage: 'This incident impacted {count} WLANs' })
     },
@@ -132,10 +118,11 @@ export const donutCharts: Readonly<Record<string, DonutChart>> = enhanceDonutCha
     }` }),
     summary: {
       dominance: defineMessage({
-        defaultMessage: '{percentage} % of failures impacted {key} client manufacturer' }),
+        defaultMessage:
+          '{percentage} % of failures impacted {transformedKey} client manufacturer' }),
       broad: defineMessage({
         defaultMessage: 'This incident impacted {count} client manufacturers' })
     },
     order: 2
   }
-})
+}

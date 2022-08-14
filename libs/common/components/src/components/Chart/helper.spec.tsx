@@ -1,5 +1,8 @@
-import moment                                        from 'moment-timezone'
-import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
+
+import moment                     from 'moment-timezone'
+import { defineMessage, useIntl } from 'react-intl'
+
+import { renderHook } from '@acx-ui/test-utils'
 
 import {
   dateAxisFormatter,
@@ -9,18 +12,6 @@ import {
 } from './helper'
 
 import type { TooltipFormatterParams } from './helper'
-
-jest.mock('react-intl', () => ({
-  ...jest.requireActual('react-intl'),
-  useIntl: jest.fn(()=>({
-    $t: jest.fn((
-      format: MessageDescriptor, values: Record<string, string>
-    ) => {
-      const [{ value: unit }] = format.defaultMessage as { value: string }[]
-      return `${values['formattedCount']} ${unit}`
-    })
-  }))
-}))
 
 describe('dateAxisFormatter', () => {
   it('formats date time correctly', () => {
@@ -96,10 +87,13 @@ describe('donutChartTooltipFormatter', () => {
     expect(donutChartTooltipFormatter()(singleparameters)).toMatchSnapshot()
   })
   it('should handle unit', async () => {
-    const unit = defineMessage({ defaultMessage: 'unit' })
+    const unit = defineMessage({ defaultMessage: `{formattedCount} {count, plural,
+      one {unit}
+      other {units}
+    }` })
     const formatter = jest.fn(value => `formatted-${value}`)
-    expect(donutChartTooltipFormatter(
-      formatter, unit, useIntl())(singleparameters)).toMatchSnapshot()
+    expect(renderHook(()=>donutChartTooltipFormatter(
+      formatter, unit, useIntl())(singleparameters)).result.current).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(1)
   })
 })
