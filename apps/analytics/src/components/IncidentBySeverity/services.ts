@@ -4,7 +4,8 @@ import { dataApi } from '@acx-ui/analytics/services'
 import {
   AnalyticsFilter,
   incidentSeverities,
-  incidentCodes
+  incidentCodes,
+  IncidentCode
 } from '@acx-ui/analytics/utils'
 
 export type IncidentsBySeverityData = {
@@ -23,7 +24,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsBySeverity: build.query<
       IncidentsBySeverityData,
-      AnalyticsFilter
+      AnalyticsFilter & { code? : IncidentCode[] }
     >({
       query: (payload) => ({
         document: gql`
@@ -43,7 +44,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          code: incidentCodes
+          code: payload.code ?? incidentCodes
         }
       }),
       transformResponse: (response: Response<IncidentsBySeverityData>) =>
