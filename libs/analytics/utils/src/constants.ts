@@ -34,3 +34,5 @@ export const Severities = {
 }
 
 export type IncidentCode = typeof incidentCodes[number]
+
+export const noDataSymbol = '-'

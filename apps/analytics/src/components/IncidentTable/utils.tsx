@@ -3,8 +3,13 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { 
   calculateSeverity,
-  incidentInformation
+  Incident,
+  incidentInformation,
+  noDataSymbol,
+  useLongDesription
 } from '@acx-ui/analytics/utils'
+
+import * as UI from './styledComponents'
 
 export const getIncidentBySeverity = (value?: number | null) => {
   if (value === null || value === undefined) {
@@ -53,7 +58,7 @@ interface FormatIntlStringProps {
 export const FormatIntlString = (props: FormatIntlStringProps) => {
   const { $t } = useIntl()
   
-  const message = $t(props.message, { scope: 'test', threshold: 'test1' })
+  const message = $t(props.message, { scope: 'test', threshold: 'test1', noDataSymbol })
   const truncMsg = truncateString(message)
   return <span>{truncMsg}</span>
 }
@@ -61,25 +66,26 @@ export const FormatIntlString = (props: FormatIntlStringProps) => {
 
 export const getShortIncidentDescription = (code?: string) => {
   if (typeof code !== 'string') {
-    return <FormatIntlString message={defineMessage({ defaultMessage: '-' })} />
+    return <FormatIntlString message={defineMessage({ defaultMessage: '{noDataSymbol}' })} />
   }
 
   const shortDesc = incidentInformation[code].shortDescription
   return <FormatIntlString message={shortDesc} />
 }
 
-export const getLongIncidentDescription = (code?: string) => {
-  if (typeof code !== 'string') {
-    return <FormatIntlString message={defineMessage({ defaultMessage: '-' })} />
+export const LongIncidentDescription = (incident: Incident) => {
+  const longDesc = useLongDesription(incident, 'cause')
+  
+  if (typeof incident.code !== 'string') {
+    return <FormatIntlString message={defineMessage({ defaultMessage: '{noDataSymbol}' })} />
   }
   
-  const longDesc = incidentInformation[code].longDescription
-  return <FormatIntlString message={longDesc} />
+  return <UI.DescriptionSpan>{longDesc}</UI.DescriptionSpan>
 }
 
 export const getCategory = (code?: string) => {
   if (typeof code !== 'string') {
-    return <FormatIntlString message={defineMessage({ defaultMessage: '-' })} />
+    return <FormatIntlString message={defineMessage({ defaultMessage: '{noDataSymbol}' })} />
   }
 
   const category = incidentInformation[code].category

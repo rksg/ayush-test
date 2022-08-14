@@ -1,5 +1,8 @@
 import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
+import { formatter } from '@acx-ui/utils'
+
+import { noDataSymbol }        from './constants'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
 
@@ -80,6 +83,52 @@ export function useFormattedNodeType (nodeType: NodeType) {
   return $t(nodeTypes(nodeType))
 }
 
+export function useImpactValues (type: string, count?: number, impactedCount?: number) {
+  const intl = useIntl()
+  if (typeof count !== 'number' || typeof impactedCount != 'number') {
+    return {
+      [`${type}Impact`]: null,
+      [`${type}ImpactFormatted`]: '',
+      [`${type}ImpactCountFormatted`]: '',
+      [`${type}ImpactDescription`]: intl.$t(defineMessage({ defaultMessage: 'Calculating...' }))
+    }
+  } else if (count === -1 || impactedCount === -1 ||
+      count === 0 || impactedCount === -1
+  ) {
+    return {
+      [`${type}Impact`]: intl.formatMessage({ defaultMessage: '{noDataSymbol}' }, { noDataSymbol }),
+      [`${type}ImpactFormatted`]: intl.formatMessage(
+        { defaultMessage: '{noDataSymbol}' }, { noDataSymbol }
+      ),
+      [`${type}ImpactCountFormatted`]: intl.formatMessage(
+        { defaultMessage: '{noDataSymbol}' }, { noDataSymbol }
+      ),
+      [`${type}ImpactDescription`]: intl.formatMessage(
+        { defaultMessage: '{noDataSymbol}' }, { noDataSymbol }
+      )
+    }
+  } else {
+    const impact = impactedCount / count
+    const formattedImpact = formatter('percentFormat')(impact)
+
+    return {
+      [`${type}Impact`]: impact,
+      [`${type}ImpactFormatted`]: formattedImpact,
+      [`${type}ImpactCountFormatted`]: formatter('countFormat')(impactedCount),
+      [`${type}ImpactDescription`]: intl.$t(
+        defineMessage({ defaultMessage: '{impactedCount} of {count} {type}{isPlural} ({impact})' }),
+        {
+          impactedCount,
+          count,
+          type: type === 'ap' ? type.toUpperCase() : type,
+          isPlural: count > 1 ? 's' : '',
+          impact: formattedImpact
+        }
+      )
+    }
+  }
+}
+
 function formattedNodeName (
   intl: IntlShape,
   node: PathNode,
@@ -134,4 +183,33 @@ export const useShortDescription = (incident: Incident) => {
     nodeName: useImpactedArea(incident.path, incident.sliceValue)
   })
   return $t(shortDescription, { scope })
+}
+
+export const useLongDesription = (incident: Incident, rootCauses: string) => {
+  const { $t } = useIntl()
+  const shortDesc = useShortDescription(incident)
+  const scope = $t({
+    defaultMessage: '{nodeType}: {nodeName}',
+    description: 'Uses to generate incident impacted scope for various incident descriptions'
+  }, {
+    nodeType: useFormattedNodeType(incident.sliceType),
+    nodeName: useImpactedArea(incident.path, incident.sliceValue)
+  })
+  
+  const { metadata: { dominant }, clientCount, impactedClientCount } = incident
+  const { clientImpact, clientImpactFormatted } = 
+    useImpactValues('client', clientCount, impactedClientCount)
+  
+  if (clientImpact === null) {
+    return shortDesc
+  } else {
+    const incidentInfo = incidentInformation[incident.code]
+
+    return [
+      $t(incidentInfo.longDescription, { scope, impact: clientImpactFormatted }),
+      // eslint-disable-next-line max-len
+      (dominant && dominant.ssid) ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid }) : '',
+      $t(defineMessage({ defaultMessage: 'Root cause: {rootCauses}' }), { rootCauses })
+    ].filter(Boolean).join('\n\n')
+  }
 }

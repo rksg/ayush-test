@@ -12,7 +12,7 @@ import {
   formatDate,
   formatDuration,
   sorterCompare,
-  getLongIncidentDescription,
+  LongIncidentDescription,
   getCategory
 } from './utils'
 
@@ -58,7 +58,7 @@ const ColumnHeaders: TableProps<Incident>['columns'] = [
     title: 'Description',
     dataIndex: 'code',
     key: 'code',
-    render: (_, value) => getLongIncidentDescription(value.code)
+    render: (_, value) => LongIncidentDescription(value)
   },
   {
     title: 'Category',
@@ -111,7 +111,7 @@ const IncidentTableWidget = () => {
           {({ height, width }) => (
             <Table
               type='tall'
-              style={{ height, width }}
+              style={{ width, height }}
               dataSource={data}
               columns={ColumnHeaders}
               actions={actions}
@@ -119,6 +119,7 @@ const IncidentTableWidget = () => {
               pagination={{ pageSize: 10 }}
               rowKey='id'
               showSorterTooltip={false}
+              scroll={{ y: 0 }}
             />
           )}
         </AutoSizer>
