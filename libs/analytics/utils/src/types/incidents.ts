@@ -46,10 +46,10 @@ export interface Incident extends IncidentInformation {
   startTime: string
   endTime: string
   severity: number
-  clientCount: number
-  impactedClientCount: number
-  apCount: number
-  impactedApCount: number
+  clientCount: number | null
+  impactedClientCount: number | null
+  apCount: number | null
+  impactedApCount: number | null
   switchCount: number
   vlanCount: number
   connectedPowerDeviceCount: number

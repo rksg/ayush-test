@@ -1,5 +1,6 @@
-import { incidentInformation, IncidentInformation } from './incidentInformation'
-import { Incident }                                 from './types/incidents'
+import { IncidentInformation }          from './incidentInformation'
+import { transformIncidentQueryResult } from './incidents'
+import { Incident }                     from './types/incidents'
 
 type RequiredFields = 'id'
   | 'code'
@@ -11,6 +12,10 @@ type FakeIncidentProps = Partial<Omit<Incident, keyof IncidentInformation>>
   & Pick<Incident, RequiredFields>
 
 const defaultValue = {
+  apCount: null,
+  impactedApCount: null,
+  clientCount: null,
+  impactedClientCount: null,
   isMuted: false,
   metadata: { dominant: {}, rootCauseChecks: { checks: [], params: {} } },
   mutedAt: null,
@@ -19,20 +24,18 @@ const defaultValue = {
 }
 
 export function fakeIncident (props: FakeIncidentProps): Incident {
-  const info = incidentInformation[props.code]
   let sliceType = props.sliceType
   let sliceValue = props.sliceValue
   const lastNode = props.path[props.path.length - 1]
-  if (!sliceType && lastNode) { sliceType = lastNode.type }
-  if (!sliceValue && lastNode) { sliceValue = lastNode.name }
+  if (!sliceType) { sliceType = lastNode.type }
+  if (!sliceValue) { sliceValue = lastNode.name }
 
-  return {
+  return transformIncidentQueryResult({
     ...defaultValue,
     ...props,
-    ...info,
     sliceType,
     sliceValue
-  } as Incident
+  } as Incident)
 }
 
 export const fakeIncident1 = fakeIncident({
@@ -66,11 +69,11 @@ export const fakeIncident1 = fakeIncident({
   apCount: -1,
   vlanCount: -1,
   clientCount: 27,
+  impactedClientCount: 5,
   impactedApCount: -1,
   switchCount: -1,
   currentSlaThreshold: null,
   severity: 0.674055825227442,
   connectedPowerDeviceCount: -1,
-  mutedAt: null,
-  impactedClientCount: 5
+  mutedAt: null
 })
