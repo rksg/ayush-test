@@ -239,6 +239,19 @@ export const Wrapper = styled.div<StyledTable>`
           width: 0px;
         }
 
+        &.react-resizable:not(.ant-table-selection-column) {
+          -webkit-user-select: none;
+          .react-resizable-handle {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            width: 20px;
+            height: 100%;
+            cursor: col-resize;
+          }
+        }
+
         &.ant-table-column-has-sorters {
           background: unset;
 

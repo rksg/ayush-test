@@ -1,9 +1,10 @@
-import React, { useMemo, useState, Key } from 'react'
+import React, { useState, Key, useRef, useEffect } from 'react'
 
-import ProTable                   from '@ant-design/pro-table'
-import { Space, Divider, Button } from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
+import ProTable                          from '@ant-design/pro-table'
+import { Space, Divider, Button }        from 'antd'
+import _                                 from 'lodash'
+import { useIntl }                       from 'react-intl'
+import { Resizable, ResizeCallbackData } from 'react-resizable'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
@@ -27,16 +28,54 @@ export interface TableProps <RecordType>
     columnState?: ColumnStateOption
   }
 
+interface ResizableColumnProps {
+  onResize: (e: React.SyntheticEvent<Element>, data: ResizeCallbackData) => void
+  width: number
+}
+
+const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
+  const { onResize, width: columnWidth, ...rest } = props
+  const [width, setWidth] = useState(columnWidth)
+  const refContainer = useRef<HTMLTableHeaderCellElement>(null)
+  useEffect(()=>{
+    if(refContainer){
+      setWidth(refContainer.current?.offsetWidth as number)
+    }
+  }, [refContainer])
+  if(!width) {
+    return <th ref={refContainer} {...rest} />
+  }
+  return <Resizable
+    width={width}
+    height={0}
+    handle={
+      <span
+        className='react-resizable-handle'
+        onClick={e => { e.stopPropagation() }}
+      />
+    }
+    onResize={(_: React.SyntheticEvent<Element>, callbackData: ResizeCallbackData)=>{
+      onResize(_, callbackData)
+      setWidth(callbackData.size.width)
+    }}
+    draggableOpts={{ enableUserSelectHack: false }}
+    children={<th ref={refContainer} {...rest} />}
+  />
+}
+
 export function Table <RecordType extends object> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>
 ) {
   const { $t } = useIntl()
 
-  const columns = useMemo(() => props.columns.map((column) => ({
-    ...column,
-    disable: Boolean(column.fixed || column.disable),
-    show: Boolean(column.fixed || column.disable || (column.show ?? true))
-  })), [props.columns])
+  const [columns, setColumns] = useState(
+    props.columns.map((column) => ({
+      ...column,
+      disable: Boolean(column.fixed || column.disable),
+      show: Boolean(column.fixed || column.disable || (column.show ?? true))
+    }))
+  )
+
   const columnsState = useColumnsState({ columns, columnState })
 
   const settingsColumn = {
@@ -121,13 +160,29 @@ export function Table <RecordType extends object> (
     }
   }
 
+  const onColumnResize = (index: number) =>
+    (_: React.SyntheticEvent<Element>, { size }: ResizeCallbackData) => {
+      const newColumns = [...columns]
+      newColumns[index] = { ...newColumns[index], width: size.width }
+      setColumns(newColumns)
+    }
+
+  const resizableColumns = columns.map((col, index) => ({
+    ...col,
+    onHeaderCell: (column: Columns<RecordType, 'text'>) => ({
+      width: column.width,
+      onResize: onColumnResize(index)
+    })
+  })) as Columns<RecordType, 'text'>[]
+
   return <UI.Wrapper $type={type} $hasRowSelection={Boolean(props.rowSelection)}>
     <UI.TableSettingsGlobalOverride />
     <ProTable<RecordType>
       {...props}
       bordered={false}
       search={false}
-      columns={type === 'tall' ? [...columns, settingsColumn] : columns}
+      columns={type === 'tall' ? [...resizableColumns, settingsColumn] : resizableColumns}
+      components={{ header: { cell: ResizableColumn } }}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
       scroll={{ x: 'max-content' }}

@@ -55,7 +55,7 @@ exports[`Networks Table should delete selected row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
+      class="styledComponents__Wrapper-sc-1abm7iv-3 gkjWJl"
     >
       <div
         class="ant-pro-table"
@@ -1902,7 +1902,7 @@ exports[`Networks Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
+      class="styledComponents__Wrapper-sc-1abm7iv-3 gkjWJl"
     >
       <div
         class="ant-pro-table"
