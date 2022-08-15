@@ -2,26 +2,22 @@
 
 exports[`SearchBar should match snapshot 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-m39lzu-0 fgTDiD"
+  <span
+    class="ant-input-affix-wrapper styledComponents__Input-sc-m39lzu-0 gplMZh"
   >
     <span
-      class="ant-input-affix-wrapper"
+      class="ant-input-prefix"
     >
-      <span
-        class="ant-input-prefix"
-      >
-        <div
-          data-testid="search-icon"
-        />
-      </span>
-      <input
-        class="ant-input"
-        placeholder="Search for..."
-        type="text"
-        value=""
+      <div
+        data-testid="search-icon"
       />
     </span>
-  </div>
+    <input
+      class="ant-input"
+      placeholder="Search for..."
+      type="text"
+      value=""
+    />
+  </span>
 </DocumentFragment>
 `;
