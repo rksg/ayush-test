@@ -5,6 +5,7 @@ import { PageHeader, PageHeaderProps, Button, Loader } from '@acx-ui/components'
 
 import { useNetworkNodeInfoQuery } from './services'
 import { Divider }                 from './styledComponents'
+import NetworkFilter              from '../NetworkFilter'
 
 const labelMap = {
   type: defineMessage({ defaultMessage: 'Type:' }),
@@ -58,7 +59,7 @@ export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
   return (
     <PageHeader {...props}
       extra={[
-        <Button key='hierarchy-filter'>{$t({ defaultMessage: 'network filter' })}</Button>,
+        <NetworkFilter key='network-filter' />,
         <Button key='date-filter'>{$t({ defaultMessage: 'date filter' })}</Button>
       ]}/>
   )

@@ -15,7 +15,7 @@ import * as UI from './styledComponents'
 
 // taken from antd Cascader API: https://ant.design/components/cascader/#Option
 export interface Option {
-  value: string | number;
+  value: string | number | object[];
   label?: React.ReactNode;
   disabled?: boolean;
   children?: Option[];
@@ -25,7 +25,7 @@ export interface Option {
 export type CascaderProps = AntCascaderProps<Option> & {
   // based on antd, the multiple flag determines the type of DefaultOptionType
   onApply: (
-    cascaderSelected: DefaultOptionType[] | DefaultOptionType[][] | undefined
+    cascaderSelected: SingleValueType | SingleValueType[] | undefined
   ) => void
 }
 
@@ -33,8 +33,8 @@ export function NetworkFilter (props: CascaderProps) {
   const { onApply, ...antProps } = props
   const { $t } = useIntl()
   const initialValues = props.defaultValue || []
-  const [currentValues, setCurrentValues] = React.useState<DefaultOptionType[][]>(initialValues)
-  const [savedValues, setSavedValues] = React.useState<DefaultOptionType[][]>(initialValues)
+  const [currentValues, setCurrentValues] = React.useState<SingleValueType | SingleValueType[]>(initialValues)
+  const [savedValues, setSavedValues] = React.useState(initialValues)
   const [open, setOpen] = React.useState(false)
   if (props.multiple) {
     const onCancel = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -48,12 +48,7 @@ export function NetworkFilter (props: CascaderProps) {
       setSavedValues(currentValues)
       onApply(currentValues)
     }
-    const onChangeMultiple = (
-      triggeredValue: SingleValueType[],
-      selectedValues: DefaultOptionType[][]
-    ) => {
-      setCurrentValues(selectedValues.map(selected => selected.map(option => option.value)))
-    }
+  
     const withFooter = (menus: JSX.Element) => <>
       {menus}
       <UI.Divider />
@@ -70,7 +65,7 @@ export function NetworkFilter (props: CascaderProps) {
       {...antProps}
       value={currentValues}
       multiple
-      onChange={onChangeMultiple}
+      onChange={setCurrentValues}
       dropdownRender={withFooter}
       expandTrigger='hover'
       maxTagCount='responsive'
@@ -80,18 +75,13 @@ export function NetworkFilter (props: CascaderProps) {
       open={currentValues !== savedValues || open}
     />
   } else {
-    const onChangeSingle = (
-      triggeredValue: SingleValueType,
-      selectedValues: DefaultOptionType[]
-    ) => {
-      onApply(selectedValues && selectedValues.map(option => option.value))
-    }
     return <AntCascader
       {...antProps}
       changeOnSelect
-      onChange={onChangeSingle}
+      onChange={onApply}
       expandTrigger='hover'
       showSearch
+      onDropdownVisibleChange={setOpen}
       suffixIcon={<CaretDownOutlined />}
     />
   }
