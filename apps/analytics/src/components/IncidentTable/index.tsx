@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { Incident, useAnalyticsFilter }               from '@acx-ui/analytics/utils'
+import { Incident, noDataSymbol, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import { Card, Loader, Table, TableProps, showToast } from '@acx-ui/components'
 import { Link }                                       from '@acx-ui/react-router-dom'
 
@@ -14,7 +14,8 @@ import {
   clientImpactSort,
   LongIncidentDescription,
   getCategory,
-  GetScope
+  GetScope,
+  severitySort
 } from './utils'
 
 
@@ -25,27 +26,27 @@ const ColumnHeaders: TableProps<Incident>['columns'] = [
     key: 'severity',
     render: (_, value) => getIncidentBySeverity(value.severity),
     sorter: {
-      compare: (a, b) => clientImpactSort(a.severity, b.severity),
+      compare: (a, b) => severitySort(a.severity, b.severity),
       multiple: 1
     }
   },
   {
     title: 'Date',
-    dataIndex: 'startTime',
+    dataIndex: 'endTime',
     valueType: 'dateTime',
-    key: 'startTime',
+    key: 'endTime',
     render: (_, value) => {
-      return <Link to={`/analytics/incident/${value.id}`}>{formatDate(value.startTime)}</Link>
+      return <Link to={value.id}>{formatDate(value.endTime)}</Link>
     },
     sorter: {
-      compare: (a, b) => clientImpactSort(a.startTime, b.startTime),
+      compare: (a, b) => clientImpactSort(a.endTime, b.endTime),
       multiple: 2
     }
   },
   {
     title: 'Duration',
-    dataIndex: 'endTime',
-    key: 'endTime',
+    dataIndex: 'startTime',
+    key: 'startTime',
     render: (_, value) => formatDuration(value.startTime, value.endTime),
     sorter: {
       compare: (a, b) => clientImpactSort(
@@ -62,7 +63,8 @@ const ColumnHeaders: TableProps<Incident>['columns'] = [
     render: (_, value) => LongIncidentDescription(value),
     sorter: {
       compare: (a, b) => clientImpactSort(a.code, b.code)
-    }
+    },
+    ellipsis: true
   },
   {
     title: 'Category',
@@ -149,7 +151,8 @@ const IncidentTableWidget = () => {
               pagination={{ pageSize: 10 }}
               rowKey='id'
               showSorterTooltip={false}
-              scroll={{ y: 0, x: 0 }}
+              columnEmptyText={noDataSymbol}
+              scroll={{ y: 'max-content' }}
             />
           )}
         </AutoSizer>

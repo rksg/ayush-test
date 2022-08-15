@@ -135,7 +135,6 @@ export function Table <RecordType extends object> (
       columns={type === 'tall' ? [...columns, settingsColumn] : columns}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
-      scroll={{ x: 'max-content' }}
       rowSelection={rowSelection}
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
       columnEmptyText={false}

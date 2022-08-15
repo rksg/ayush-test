@@ -32,14 +32,6 @@ export function calculateSeverity (severity: number): IncidentSeverities | void 
     }
   }
 
-  // handles void severities
-  const mapper = incidentSeverities as Record<IncidentSeverities, SeverityRange>
-  for (let key in mapper) {
-    const range = mapper[key as IncidentSeverities] as SeverityRange
-    if (range.gt >= severity && range.lte <= severity) {
-      return key as IncidentSeverities
-    }
-  }
 }
 
 type NormalizedNodeType = 'network'
@@ -83,7 +75,8 @@ export function useFormattedNodeType (nodeType: NodeType) {
   return $t(nodeTypes(nodeType))
 }
 
-export function useImpactValues (type: string, count?: number, impactedCount?: number) {
+export function useImpactValues (type: string, count?: number, impactedCount?: number): 
+  Record<string, unknown> {
   const intl = useIntl()
   if (typeof count !== 'number' || typeof impactedCount != 'number') {
     return {
@@ -206,7 +199,7 @@ export const useLongDesription = (incident: Incident, rootCauses: string) => {
     const incidentInfo = incidentInformation[incident.code]
 
     return [
-      $t(incidentInfo.longDescription, { scope, impact: clientImpactFormatted }),
+      $t(incidentInfo.longDescription, { scope, impact: clientImpactFormatted as string }),
       // eslint-disable-next-line max-len
       (dominant && dominant.ssid) ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid }) : '',
       $t(defineMessage({ defaultMessage: 'Root cause: {rootCauses}' }), { rootCauses })

@@ -14,24 +14,24 @@ import * as UI from './styledComponents'
 
 export const getIncidentBySeverity = (value?: number | null) => {
   if (value === null || value === undefined) {
-    return '-'
+    return noDataSymbol
   }
 
   const severity = calculateSeverity(value)
-  if (!severity) return '-'
+  if (!severity) return noDataSymbol
 
   return severity
 }
 
 export const formatDate = (datetimestamp?: string) => {
-  if (typeof datetimestamp !== 'string') return '-'
+  if (typeof datetimestamp !== 'string') return noDataSymbol
 
   return moment(datetimestamp).format('MMM DD yyyy HH:mm')
 }
 
 export const formatDuration = (startTimestamp?: string, endTimestamp?: string) => {
-  if (typeof startTimestamp !== 'string') return '-'
-  if (typeof endTimestamp !== 'string') return '-' 
+  if (typeof startTimestamp !== 'string') return noDataSymbol
+  if (typeof endTimestamp !== 'string') return noDataSymbol
 
   const start = moment(startTimestamp)
   const end = moment(endTimestamp)
@@ -47,6 +47,14 @@ export const clientImpactSort = (a?: unknown, b?: unknown) => {
   if (isNaN(d)) d = -2
   if (c > d) return -1
   if (c < d) return 1
+  return 0
+}
+
+export const severitySort = (a?: number, b?: number) => {
+  if (typeof a !== 'number' && typeof b !== 'number') return 0
+  const isDefined = typeof a !== 'undefined' && typeof b !== 'undefined'
+  if (isDefined && a > b) return -1
+  if (isDefined && a < b) return 1
   return 0
 }
 
@@ -103,10 +111,4 @@ export const GetScope = (props: GetScopeProps) => {
   const scope = useIncidentScope(incident)  
   const message = defineMessage({ defaultMessage: '{scope}' })
   return <FormatIntlString message={message} scope={scope}/>
-}
-
-export const truncateString = (text?: string) => {
-  if (typeof text !== 'string') return '-'
-  if (text.length < 25) return text
-  return text.slice(0, 25) + '...'
 }

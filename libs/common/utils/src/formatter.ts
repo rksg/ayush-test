@@ -104,7 +104,7 @@ const formats = {
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
   txFormat: (value: keyof typeof txpowerMapping) =>
     (txpowerMapping[value] ? txpowerMapping[value] : value)
-} as Record<string, (value: unknown)=> string>
+} as Record<string, (value: unknown) => string>
 
 export const dateTimeFormats = {
   yearFormat: 'YYYY',
@@ -124,7 +124,7 @@ export function formatter (
 ) {
   return function formatter (value: unknown, tz?: string) {
     if (value === null || value === '-') {
-      return value
+      return '-'
     }
 
     if (dateTimeFormats[name as keyof typeof dateTimeFormats]) {
