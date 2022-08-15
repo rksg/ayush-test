@@ -9,7 +9,6 @@ import { ImpactedAP, impactedApi, ImpactedClient } from './services'
 
 import {
   durationOf,
-  impactValues,
   IncidentAttributes,
   useDrawer
 } from '.'
@@ -24,36 +23,6 @@ describe('durationOf', () => {
   })
   it('should return correct value', () => {
     expect(durationOf('2022-07-19T05:15:00.000Z','2022-07-20T02:42:00.000Z')).toEqual(77220000)
-  })
-})
-
-describe('impactValues', () => {
-  it('handles when incident has no client impact', () => {
-    expect(impactValues('client', -1, -1)).toMatchSnapshot()
-  })
-
-  it('handles when incident is calculating', () => {
-    expect(impactValues('client', null, null)).toMatchSnapshot()
-  })
-
-  it('handles clientCount = 0', () => {
-    expect(impactValues('client', 0, 0)).toMatchSnapshot()
-  })
-
-  it('handles when incident has no client impact but has clinet count', () => {
-    expect(impactValues('client', 128, 0)).toMatchSnapshot()
-  })
-
-  it('handles when incident has client impact', () => {
-    expect(impactValues('client', 128, 55)).toMatchSnapshot()
-  })
-
-  it('formats impacted client count', () => {
-    expect(impactValues('client', 1500, 1300)).toMatchSnapshot()
-  })
-
-  it('formats impacted ap count', () => {
-    expect(impactValues('ap', 1, 1)).toMatchSnapshot()
   })
 })
 

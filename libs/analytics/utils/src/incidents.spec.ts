@@ -1,10 +1,12 @@
-import { omit } from 'lodash'
+import { capitalize, omit } from 'lodash'
+import { useIntl }          from 'react-intl'
 
 import { renderHook } from '@acx-ui/test-utils'
 
 import { fakeIncident } from './fakeIncident'
 import {
   calculateSeverity,
+  impactValues,
   transformIncidentQueryResult,
   useFormattedNodeType,
   useFormattedPath,
@@ -12,7 +14,7 @@ import {
   useShortDescription
 } from './incidents'
 
-import type { NodeType, PathNode } from './types/incidents'
+import type { Incident, NodeType, PathNode } from './types/incidents'
 
 describe('calculateSeverity', () => {
   it('should return correct value', () => {
@@ -127,5 +129,50 @@ describe('useImpactedArea', () => {
     const emptyPath = [] as PathNode[]
     const sliceValue = 'AP'
     expect(renderImpactedArea(emptyPath, sliceValue)).toEqual(sliceValue)
+  })
+})
+
+describe('impactValues', () => {
+  const incident = (type: 'ap' | 'client', count: number | null, impactedCount: number | null) => ({
+    [`${type}Count`]: count,
+    [`impacted${capitalize(type)}Count`]: impactedCount
+  }) as unknown as Incident
+
+  const renderImpactValues = (
+    type: 'ap' | 'client',
+    count: number | null,
+    impactedCount: number | null
+  ) => renderHook(() => impactValues(
+    useIntl(),
+    type,
+    incident(type, count, impactedCount)
+  )).result.current
+
+  it('handles when incident has no client impact', () => {
+    expect(renderImpactValues('client', -1, -1)).toMatchSnapshot()
+  })
+
+  it('handles when incident is calculating', () => {
+    expect(renderImpactValues('client', null, null)).toMatchSnapshot()
+  })
+
+  it('handles clientCount = 0', () => {
+    expect(renderImpactValues('client', 0, 0)).toMatchSnapshot()
+  })
+
+  it('handles when incident has no client impact but has clinet count', () => {
+    expect(renderImpactValues('client', 128, 0)).toMatchSnapshot()
+  })
+
+  it('handles when incident has client impact', () => {
+    expect(renderImpactValues('client', 128, 55)).toMatchSnapshot()
+  })
+
+  it('formats impacted client count', () => {
+    expect(renderImpactValues('client', 1500, 1300)).toMatchSnapshot()
+  })
+
+  it('formats impacted ap count', () => {
+    expect(renderImpactValues('ap', 1, 1)).toMatchSnapshot()
   })
 })

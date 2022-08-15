@@ -1,5 +1,9 @@
+import { capitalize }                                           from 'lodash'
 import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
+import { formatters } from '@acx-ui/utils'
+
+import { noDataSymbol }        from './constants'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
 
@@ -136,4 +140,60 @@ export const useShortDescription = (incident: Incident) => {
     nodeName: useImpactedArea(incident.path, incident.sliceValue)
   })
   return $t(incident.shortDescription, { scope })
+}
+
+export const impactValues = <Type extends 'ap' | 'client'> (
+  { $t }: IntlShape,
+  type: Type,
+  incident: Incident
+): (
+  Record<`${Type}ImpactRatio`, '-' | number | null> &
+  Record<
+    `${Type}ImpactRatioFormatted` | `${Type}ImpactCountFormatted` | `${Type}ImpactDescription`,
+    string
+  >
+) => {
+  const total = incident[`${type}Count` as const]
+  const count = incident[
+    `impacted${capitalize(type)}Count` as `impacted${Capitalize<typeof type>}Count`
+  ]
+  if (total === null || count === null) {
+    return {
+      [`${type}ImpactRatio`]: null,
+      [`${type}ImpactRatioFormatted`]: '',
+      [`${type}ImpactCountFormatted`]: '',
+      [`${type}ImpactDescription`]: $t({ defaultMessage: 'Calculating...' })
+    } as ReturnType<typeof impactValues>
+  }
+
+  if ([total, count].some(value => [0, -1].includes(value!))) {
+    return {
+      [`${type}ImpactRatio`]: noDataSymbol,
+      [`${type}ImpactRatioFormatted`]: noDataSymbol,
+      [`${type}ImpactCountFormatted`]: noDataSymbol,
+      [`${type}ImpactDescription`]: noDataSymbol
+    } as ReturnType<typeof impactValues>
+  }
+
+  const ratio = count! / total!
+  const formattedRatio = $t(formatters.percentFormat, { value: ratio })
+  const formattedTotal = $t(formatters.countFormat, { value: total })
+  const formattedCount = $t(formatters.countFormat, { value: count })
+  const formattedType = $t({
+    defaultMessage: `{type, select,
+      ap {{value, plural, one {AP} other {APs}}}
+      client {{value, plural, one {client} other {clients}}}
+      other {Unknown}
+    }`
+  }, { type, value: total })
+
+  return {
+    [`${type}ImpactRatio`]: ratio,
+    [`${type}ImpactRatioFormatted`]: formattedRatio,
+    [`${type}ImpactCountFormatted`]: formattedCount,
+    [`${type}ImpactDescription`]: $t({
+      defaultMessage: '{formattedCount} of {formattedTotal} {formattedType} ({formattedRatio})',
+      description: 'E.g. 1 of 10 clients (10%)'
+    }, { formattedCount, formattedTotal, formattedType, formattedRatio })
+  } as ReturnType<typeof impactValues>
 }
