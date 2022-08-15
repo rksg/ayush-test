@@ -3,11 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import {
-  getSeriesData,
-  AnalyticsFilter,
-  IncidentCode
-} from '@acx-ui/analytics/utils'
+import { getSeriesData } from '@acx-ui/analytics/utils'
 import {
   Card,
   Loader,
@@ -15,7 +11,11 @@ import {
   cssStr
 } from '@acx-ui/components'
 
-import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
+import {
+  NetworkHistoryData,
+  useNetworkHistoryQuery,
+  Filters
+} from './services'
 
 type Key = keyof Omit<NetworkHistoryData, 'time'>
 
@@ -30,7 +30,7 @@ function NetworkHistoryWidget ({
   filters
 }: {
   hideTitle?: boolean;
-  filters: AnalyticsFilter & { code? : IncidentCode[] };
+  filters: Filters;
 }) {
   const { $t } = useIntl()
   const seriesMapping = [

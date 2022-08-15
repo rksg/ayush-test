@@ -14,7 +14,7 @@ export type IncidentsBySeverityData = {
   P3: number
   P4: number
 }
-
+export type Filters = AnalyticsFilter & { code? : IncidentCode[] }
 interface Response <IncidentsBySeverityData> {
   network: {
     hierarchyNode: IncidentsBySeverityData
@@ -24,7 +24,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsBySeverity: build.query<
       IncidentsBySeverityData,
-      AnalyticsFilter & { code? : IncidentCode[] }
+      Filters
     >({
       query: (payload) => ({
         document: gql`

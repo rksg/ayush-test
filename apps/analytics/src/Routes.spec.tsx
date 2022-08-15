@@ -7,6 +7,7 @@ jest.mock('./pages/IncidentDetails', () => () => {
   return <div data-testid='incidentDetails' />
 })
 
+
 test('should redirect analytics to analytics/incidents', () => {
   render(<AnalyticsRoutes />, {
     route: {
@@ -60,4 +61,14 @@ test('should navigate to analytics/incidentDetails', async () => {
     }
   })
   await screen.findByTestId('incidentDetails')
+})
+
+test('should navigate to analytics/incidents/overview', async () => {
+  render(< Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/analytics/incidents/tab/overview',
+      wrapRoutes: false
+    }
+  })
+  await screen.findByText('table')
 })

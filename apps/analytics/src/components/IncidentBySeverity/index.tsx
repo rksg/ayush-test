@@ -3,11 +3,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import {
-  AnalyticsFilter,
-  incidentSeverities,
-  IncidentCode
-} from '@acx-ui/analytics/utils'
+import { incidentSeverities } from '@acx-ui/analytics/utils'
 import {
   Card,
   BarChart,
@@ -20,7 +16,8 @@ import {
 
 import {
   IncidentsBySeverityData,
-  useIncidentsBySeverityQuery
+  useIncidentsBySeverityQuery,
+  Filters
 } from './services'
 import * as UI from './styledComponents'
 
@@ -47,11 +44,7 @@ const getChartData = (data: IncidentsBySeverityData): BarChartData => ({
   seriesEncode: [{ x: 'incidentCount', y: 'severity' }]
 })
 
-function IncidentBySeverityWidget ({
-  filters
-}: {
-  filters: AnalyticsFilter & { code?: IncidentCode[] };
-}) {
+function IncidentBySeverityWidget ({ filters }: { filters: Filters }) {
   const { startDate, endDate } = filters
   const { $t } = useIntl()
   const currentResult = useIncidentsBySeverityQuery(filters, {

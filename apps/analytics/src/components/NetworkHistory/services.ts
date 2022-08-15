@@ -10,7 +10,7 @@ export type NetworkHistoryData = {
   newClientCount: number[]
   time: string[]
 }
-
+export type Filters = AnalyticsFilter & { code? : IncidentCode[] }
 interface Response <TimeSeriesData> {
   network: {
     hierarchyNode: {
@@ -29,7 +29,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkHistory: build.query<
       NetworkHistoryData,
-      AnalyticsFilter & { code? : IncidentCode[] }
+      Filters
     >({
       // todo: Skipping the filter for impactedClientCount
       query: (payload) => ({
