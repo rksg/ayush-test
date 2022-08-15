@@ -97,7 +97,7 @@ describe('IncidentAttributes', () => {
     'eventStartTime',
     'eventEndTime'
   ]
-  const props = fakeIncident({
+  const incident = fakeIncident({
     id: 'id',
     code: 'eap-failure',
     apCount: 1,
@@ -129,13 +129,13 @@ describe('IncidentAttributes', () => {
   })
   it('should match snapshot', () => {
     const { asFragment } = render(<Provider>
-      <IncidentAttributes {...props} visibleFields={attributeList}/>
+      <IncidentAttributes incident={incident} visibleFields={attributeList} />
     </Provider>)
     expect(asFragment()).toMatchSnapshot()
   })
   it('should trigger onOpen/onClose of implactedClientsDrawer', async () => {
     render(<Provider>
-      <IncidentAttributes {...props} visibleFields={attributeList}/>
+      <IncidentAttributes incident={incident} visibleFields={attributeList} />
     </Provider>)
     const component = await screen.findByText('5 of 27 clients (18.52%)')
     fireEvent.click(component) // trigger onOpen
@@ -143,7 +143,7 @@ describe('IncidentAttributes', () => {
   })
   it('should trigger onOpen/onClose of implactedAPsDrawer', async () => {
     render(<Provider>
-      <IncidentAttributes {...props} visibleFields={attributeList}/>
+      <IncidentAttributes incident={incident} visibleFields={attributeList} />
     </Provider>)
     const component = await screen.findByText('1 of 1 AP (100%)')
     fireEvent.click(component) // trigger onOpen
