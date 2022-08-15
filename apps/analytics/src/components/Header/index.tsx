@@ -1,19 +1,9 @@
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import {
-  NodeType,
-  nodeTypes,
-  useAnalyticsFilter
-} from '@acx-ui/analytics/utils'
-import {
-  PageHeader,
-  PageHeaderProps,
-  Button,
-  Loader,
-  RangePicker
-} from '@acx-ui/components'
-import { useDateFilter } from '@acx-ui/utils'
+import { NodeType, nodeTypes, useAnalyticsFilter }                  from '@acx-ui/analytics/utils'
+import { PageHeader, PageHeaderProps, Button, Loader, RangePicker } from '@acx-ui/components'
+import { useDateFilter }                                            from '@acx-ui/utils'
 
 import { useNetworkNodeInfoQuery } from './services'
 import { Divider }                 from './styledComponents'
@@ -32,23 +22,20 @@ const labelMap = {
 }
 
 export type SubTitle = {
-  key: string;
-  value: (number | string)[];
+  key: string
+  value: (number | string)[]
 }
 
 export type HeaderData = {
-  title: string;
-  subTitle: SubTitle[];
+  title: string
+  subTitle: SubTitle[]
 }
 
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
-  data: HeaderData;
-  replaceTitle: boolean;
+  data: HeaderData
+  replaceTitle: boolean
 }
-const defaultEnabledDates = [
-  moment().subtract(3, 'months').seconds(0),
-  moment().seconds(0)
-]
+const defaultEnabledDates = [moment().subtract(3, 'months').seconds(0), moment().seconds(0)]
 
 export const useSubTitle = (subTitles: SubTitle[]) => {
   const { $t } = useIntl()
@@ -65,9 +52,7 @@ export const useSubTitle = (subTitles: SubTitle[]) => {
         return (
           <span key={key} title={key === 'type' ? content : value.join(', ')}>
             {$t(labelMap[labelKey])} {content}
-            {index < subTitles.length - 1 && (
-              <Divider key={key} type='vertical' />
-            )}
+            {index < subTitles.length - 1 && <Divider key={key} type='vertical' />}
           </span>
         )
       })}
@@ -86,9 +71,7 @@ export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
     <PageHeader
       {...props}
       extra={[
-        <Button key='hierarchy-filter'>
-          {$t({ defaultMessage: 'network filter' })}
-        </Button>,
+        <Button key='hierarchy-filter'>{$t({ defaultMessage: 'network filter' })}</Button>,
         <RangePicker
           key='range-picker'
           selectedRange={{

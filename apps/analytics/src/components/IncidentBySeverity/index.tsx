@@ -14,17 +14,11 @@ import {
   TrendType
 } from '@acx-ui/components'
 
-import {
-  IncidentsBySeverityData,
-  useIncidentsBySeverityQuery,
-  Filters
-} from './services'
-import * as UI from './styledComponents'
+import { IncidentsBySeverityData, useIncidentsBySeverityQuery, Filters } from './services'
+import * as UI                                                           from './styledComponents'
 
-type PillData = { delta: string; total: number; trend: string }
-const barColors = Object.values(incidentSeverities).map(({ color }) =>
-  cssStr(color)
-)
+type PillData = { delta: string, total: number, trend: string }
+const barColors = Object.values(incidentSeverities).map(({ color }) => cssStr(color))
 export const getPillData = (
   curr: IncidentsBySeverityData,
   prev: IncidentsBySeverityData
@@ -56,9 +50,7 @@ function IncidentBySeverityWidget ({ filters }: { filters: Filters }) {
   const prevResult = useIncidentsBySeverityQuery(
     {
       ...filters,
-      startDate: moment(startDate)
-        .subtract(moment(endDate).diff(startDate))
-        .format(),
+      startDate: moment(startDate).subtract(moment(endDate).diff(startDate)).format(),
       endDate: startDate
     },
     {
