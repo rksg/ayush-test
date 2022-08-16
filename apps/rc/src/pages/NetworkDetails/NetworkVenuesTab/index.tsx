@@ -276,7 +276,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'aps',
       width: '80px',
       render: function (data, row) {
-        return row.activated.isActivated ? 'All APs' : ''
+        return row.activated.isActivated ? $t({ defaultMessage: 'All APs' }) : ''
       }
     },
     {
