@@ -38,7 +38,14 @@ const testIncident: Incident = {
   impactedClientCount: 2,
   isMuted: false,
   mutedBy: null,
-  mutedAt: null
+  mutedAt: null,
+  apCount: 0,
+  impactedApCount: 0,
+  switchCount: 0,
+  vlanCount: 0,
+  connectedPowerDeviceCount: 0,
+  slaThreshold: null,
+  currentSlaThreshold: null
 }
 
 describe('rootCauseReccomendation', () => {
