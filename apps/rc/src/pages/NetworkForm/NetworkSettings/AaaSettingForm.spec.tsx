@@ -5,8 +5,59 @@ import { CommonUrlsInfo }                                                       
 import { Provider }                                                              from '@acx-ui/store'
 import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { NetworkForm }                                                          from '../NetworkForm'
+import { NetworkForm, ErrorMessage, MultipleConflictMessage }                   from '../NetworkForm'
 import { cloudpathResponse, networksResponse, venuesResponse, successResponse } from '../NetworkForm.spec'
+
+const validateErrorResponse = [{
+  code: '',
+  message: 'Occured Some Error',
+  object: 'radiusProfiles.xxxxxxx'
+}, {
+  code: 'WIFI-10200',
+  message: 'Authentication Profile Mismatch [Shared Secret on Primary has changed]',
+  object: 'radiusProfiles.authRadius',
+  value: {
+    primary: {
+      ip: '1.1.1.1',
+      port: 10,
+      sharedSecret: '99999'
+    },
+    id: '007d6854e6294e97882b432185c1abd9'
+  }
+}, {
+  code: 'WIFI-10200',
+  message: 'Accounting Profile Mismatch [Shared Secret on Primary has changed]',
+  object: 'radiusProfiles.accountingRadius',
+  value: {
+    primary: {
+      ip: '1.1.1.1',
+      port: 20,
+      sharedSecret: '88888'
+    },
+    id: '3e90174d344749b1a1e36a1fd802510c' }  
+}, {
+  code: 'WIFI-10200',
+  message: 'multiple conflict xxxxx Authentication Profile Mismatch xxxxxx',
+  object: 'radiusProfiles.accountingRadius',
+  value: {
+    primary: {
+      ip: '1.1.1.1',
+      port: 10,
+      sharedSecret: '99999'
+    },
+    id: '007d6854e6294e97882b432185c1abd9' }  
+}, {
+  code: 'WIFI-10200',
+  message: 'Authentication Profile Mismatch xxxxxx multiple conflict xxxxxx',
+  object: 'radiusProfiles.authRadius',
+  value: {
+    primary: {
+      ip: '1.1.1.1',
+      port: 20,
+      sharedSecret: '88888'
+    },
+    id: '007d6854e6294e97882b432185c1abd9' }    
+}]
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText('Network Name')
@@ -23,6 +74,8 @@ async function fillInBeforeSettings (networkName: string) {
 
 async function fillInAfterSettings (checkSummary: Function) {
   fireEvent.click(screen.getByText('Next'))
+  const validating = await screen.findByRole('img', { name: 'loading' })
+  await waitForElementToBeRemoved(validating)
   await screen.findByRole('heading', { level: 3, name: 'Venues' })
 
   fireEvent.click(screen.getByText('Next'))
@@ -46,7 +99,9 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse)))
+        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => res(ctx.json(successResponse)))
     )
   })
 
@@ -138,5 +193,220 @@ describe('NetworkForm', () => {
     fireEvent.click(authBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
     expect(diagram[1].src).toContain('aaa-proxy.png')
+  })
+})
+
+
+describe('Server Configuration Conflict', () => {
+  let dialog
+
+  afterEach(async () => dialog?.remove())
+
+  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+  async function fillInAuthIpSettings () {
+    const ipTextbox = screen.getByLabelText('IP Address')
+    fireEvent.change(ipTextbox, { target: { value: '1.1.1.1' } })
+
+    const portTextbox = screen.getByLabelText('Port')
+    fireEvent.change(portTextbox, { target: { value: '10' } })
+
+    const secretTextbox = screen.getByLabelText('Shared secret')
+    fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
+
+    await fireEvent.click(screen.getByText('Next'))
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+  }
+
+  async function fillInAuthAndAccIpSettings () {
+    const toggle = screen.getAllByRole('switch', { checked: false })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(toggle[2]) // Accounting Service
+    })
+
+    const ipTextbox = screen.getAllByLabelText('IP Address')
+    fireEvent.change(ipTextbox[0], { target: { value: '1.1.1.1' } })
+    fireEvent.change(ipTextbox[1], { target: { value: '1.1.1.1' } })
+
+    const portTextbox = screen.getAllByLabelText('Port')
+    fireEvent.change(portTextbox[0], { target: { value: '10' } })
+    fireEvent.change(portTextbox[1], { target: { value: '20' } })
+
+    const secretTextbox = screen.getAllByLabelText('Shared secret')
+    fireEvent.change(secretTextbox[0], { target: { value: 'secret-1' } })
+    fireEvent.change(secretTextbox[1], { target: { value: 'secret-2' } })
+
+    await fireEvent.click(screen.getByText('Next'))
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+  }
+
+  it('should not open Server Configuration Conflict Modal', async () => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => {
+          return res(ctx.status(404), ctx.json({}))
+        })
+    )
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    
+    await fillInBeforeSettings('AAA network test')
+    await fillInAuthIpSettings()
+    await screen.findByRole('heading', { level: 3, name: 'Venues' })
+  })
+
+  it('should open Modal with correct error message', async () => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => {
+          return res(ctx.status(422), ctx.json({ errors: [validateErrorResponse[0]] }))
+        })
+    )
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    
+    await fillInBeforeSettings('AAA network test')
+    await fillInAuthIpSettings()
+
+    dialog = await screen.findByRole('dialog')
+    await screen.findByText('Server Configuration Conflict')
+    await screen.findByText('Occured Some Error')
+  })
+
+  it('should open Modal with auth error message', async () => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => {
+          return res(ctx.status(400), ctx.json({ errors: [validateErrorResponse[1]] }))
+        })
+    )
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    
+    await fillInBeforeSettings('AAA network test')
+    await fillInAuthIpSettings()
+
+    dialog = await screen.findByRole('dialog')
+    await screen.findByText('Server Configuration Conflict')
+    await screen.findByText(ErrorMessage.AUTH)
+    
+    fireEvent.click(screen.getByText('Use existing server configuration'))
+    await screen.findByRole('heading', { level: 3, name: 'Venues' })
+    fireEvent.click(screen.getByText('Next'))
+    await screen.findByRole('heading', { level: 3, name: 'Summary' })
+    expect(screen.getByText('1.1.1.1:10')).toBeVisible()
+    expect(screen.getAllByDisplayValue('99999')).toHaveLength(2)
+  })
+
+  it('should open Modal with accouting error message', async () => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => {
+          return res(ctx.status(400), ctx.json({ errors: [validateErrorResponse[2]] }))
+        })
+    )
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    
+    await fillInBeforeSettings('AAA network test')
+    await fillInAuthAndAccIpSettings()
+
+    dialog = await screen.findByRole('dialog')
+    await screen.findByText('Server Configuration Conflict')
+    await screen.findByText(ErrorMessage.ACCOUNTING)
+
+    fireEvent.click(screen.getByText('Use existing server configuration'))
+    await screen.findByRole('heading', { level: 3, name: 'Venues' })
+    fireEvent.click(screen.getByText('Next'))
+    await screen.findByRole('heading', { level: 3, name: 'Summary' })
+    expect(screen.getByText('1.1.1.1:20')).toBeVisible()
+    expect(screen.getAllByDisplayValue('88888')).toHaveLength(2)
+  })
+
+  it('should open Modal with auth and accouting error message', async () => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => {
+          return res(ctx.status(400), ctx.json({ errors: validateErrorResponse.slice(1, 3) }))
+        })
+    )
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    
+    await fillInBeforeSettings('AAA network test')
+    await fillInAuthAndAccIpSettings()
+
+    dialog = await screen.findByRole('dialog')
+    await screen.findByText('Server Configuration Conflict')
+    await screen.findByText(ErrorMessage.AUTH_AND_ACCOUNTING)
+
+    fireEvent.click(screen.getByText('Override the conflicting server configuration'))
+    await screen.findByRole('heading', { level: 3, name: 'AAA Settings' })
+  })
+
+  it('should open Modal with accouting multiple conflict message', async () => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => {
+          return res(ctx.status(400), ctx.json({ errors: [validateErrorResponse[3]] }))
+        })
+    )
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    
+    await fillInBeforeSettings('AAA network test')
+    await fillInAuthAndAccIpSettings()
+
+    dialog = await screen.findByRole('dialog')
+    await screen.findByText('Server Configuration Conflict')
+    await screen.findByText(MultipleConflictMessage.ACCOUNTING)
+  })
+
+  it('should open Modal with auth multiple conflict message', async () => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => {
+          return res(ctx.status(400), ctx.json({ errors: [validateErrorResponse[4]] }))
+        })
+    )
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    
+    await fillInBeforeSettings('AAA network test')
+    await fillInAuthIpSettings()
+
+    dialog = await screen.findByRole('dialog')
+    await screen.findByText('Server Configuration Conflict')
+    await screen.findByText(MultipleConflictMessage.AUTH)
+  })
+
+  it('should open Modal with auth and accouting multiple conflict message', async () => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => {
+          return res(ctx.status(400), ctx.json({ errors: validateErrorResponse.slice(3, 5) }))
+        })
+    )
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    
+    await fillInBeforeSettings('AAA network test')
+    await fillInAuthAndAccIpSettings()
+
+    dialog = await screen.findByRole('dialog')
+    await screen.findByText('Server Configuration Conflict')
+    await screen.findByText(MultipleConflictMessage.AUTH_AND_ACCOUNTING)
+  })
+
+  it('should open Modal with occured error message', async () => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => {
+          return res(ctx.status(400), ctx.json({ errors: [validateErrorResponse[0]] }))
+        })
+    )
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    
+    await fillInBeforeSettings('AAA network test')
+    await fillInAuthIpSettings()
+
+    dialog = await screen.findByRole('dialog')
+    await screen.findByText('Occured Error')
+    await screen.findByText('Occured Some Error')
   })
 })

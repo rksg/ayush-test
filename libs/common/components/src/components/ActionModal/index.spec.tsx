@@ -249,7 +249,8 @@ describe('Action Modal', () => {
           text: 'Action 1',
           type: 'primary',
           key: 'action1',
-          handler: onOk
+          handler: onOk,
+          closeAfterAction: true
         }, {
           text: 'Action 2',
           type: 'primary',

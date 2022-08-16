@@ -61,7 +61,8 @@ export interface CustomButtonProps {
   text: string,
   type: ButtonProps['type'],
   key: string,
-  handler: () => void;
+  handler?: () => void;
+  closeAfterAction?: boolean;
 }
 
 export const convertToJSON = (content: ErrorDetailsProps) => {
@@ -140,6 +141,14 @@ function CustomButtonsTemplate (props: {
   modal: ModalRef
 }) {
   const destroyModal = () => props.modal.destroy()
+  const handleClick = async (b: CustomButtonProps) => {
+    if (b.key === 'cancel') {
+      destroyModal()
+    } else {
+      b?.handler && await b.handler()
+      b?.closeAfterAction && destroyModal()
+    }
+  }
   return (<>
     <UI.Content>{props.content}</UI.Content>
     <UI.Footer>
@@ -149,7 +158,7 @@ function CustomButtonsTemplate (props: {
             <Button
               type={b.type}
               key={b.key}
-              onClick={() => b.key === 'cancel' ? destroyModal() : b.handler()}
+              onClick={() => handleClick(b)}
             >
               {b.text}
             </Button>

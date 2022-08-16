@@ -65,5 +65,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getAllUserSettings: {
     method: 'get',
     url: '/api/tenant/:tenantId/admin-settings/ui'
+  },
+  validateRadius: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   }
 }

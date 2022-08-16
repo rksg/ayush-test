@@ -247,3 +247,24 @@ export interface CloudpathServer {
     primary: RadiusService
   }
 }
+export interface RadiusValidate {
+  data: {
+    errors: RadiusValidateErrors[],
+    requestId: string
+  },
+  status: number
+}
+export interface RadiusValidateErrors {
+  code: string,
+  message: string,
+  object: string,
+  value: {
+    id: string,
+    primary?: RadiusService,
+    secondary?: RadiusService,
+    // tlsEnabled: any,
+    // cnSanIdentity: any,
+    // ocspUrl: any,
+    // trustedCAChain: any
+  }
+}

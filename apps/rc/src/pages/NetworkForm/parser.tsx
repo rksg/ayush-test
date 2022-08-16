@@ -315,3 +315,19 @@ export const transformNetworkType = (value: any) => {
   }
   return displayValue
 }
+
+export const flattenObject = (
+  obj: { [key: string]: any },
+  roots = [] as string[],
+  sep = '.'
+): Record<string, string> => {
+  return Object
+    .keys(obj)
+    .reduce((result, prop) => Object.assign(
+      {},
+      result,
+      typeof obj[prop] === 'object'
+        ? flattenObject(obj[prop], roots.concat([prop]), sep)
+        : { [roots.concat([prop]).join(sep)]: obj[prop] }
+    ), {})
+}
