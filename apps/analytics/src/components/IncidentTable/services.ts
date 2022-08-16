@@ -36,7 +36,7 @@ export interface Response<IncidentNodeData> {
   }
 }
 
-const api = dataApi.injectEndpoints({
+export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsList: build.query<IncidentNodeData, AnalyticsFilter>({
       query: (payload) => ({

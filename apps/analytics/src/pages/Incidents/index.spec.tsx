@@ -6,12 +6,15 @@ import Incidents from '.'
 
 jest.mock('../../components/Header', () => () => <div>Incidents</div>)
 jest.mock('../../components/NetworkHistory', () => () => <div>Network</div>)
-jest.mock('../../components/IncidentBySeverity', () => () => <div>bar chart</div>)
+jest.mock('../../components/IncidentBySeverity', () => () => <div>IncidentBySeverity</div>)
+jest.mock('../../components/IncidentTable', () => () => <div>IncidentTable</div>)
 
 describe('Incidents Page', () => {
   it('should render page header and grid layout', () => {
     render(<Incidents />)
     expect(screen.getByText('Incidents')).toBeVisible()
-    expect(screen.getByText('table')).toBeVisible()
+    expect(screen.getByText('IncidentTable')).toBeVisible()
+    expect(screen.getByText('Network')).toBeVisible()
+    expect(screen.getByText('IncidentBySeverity')).toBeVisible()
   })
 })
