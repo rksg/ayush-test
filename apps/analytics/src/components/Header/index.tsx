@@ -5,8 +5,8 @@ import { NodeType, nodeTypes, useAnalyticsFilter }                  from '@acx-u
 import { PageHeader, PageHeaderProps, Button, Loader, RangePicker } from '@acx-ui/components'
 import { useDateFilter, dateRangeForLast }                          from '@acx-ui/utils'
 
-import { useNetworkNodeInfoQuery } from './services'
-import { Divider }                 from './styledComponents'
+import { useNetworkNodeInfoQuery }         from './services'
+import { Divider, ConnectedHeaderWrapper } from './styledComponents'
 
 const labelMap = {
   type: defineMessage({ defaultMessage: 'Type:' }),
@@ -90,7 +90,7 @@ const ConnectedHeader = (props: PageHeaderProps) => {
   const filters = useAnalyticsFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
   return (
-    <div>
+    <ConnectedHeaderWrapper>
       <Loader states={[queryResults]}>
         <Header
           {...props}
@@ -98,7 +98,7 @@ const ConnectedHeader = (props: PageHeaderProps) => {
           replaceTitle={filters.path.length > 1}
         />
       </Loader>
-    </div>
+    </ConnectedHeaderWrapper>
   )
 }
 
