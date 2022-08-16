@@ -8,11 +8,9 @@ import {
   getBarChartSeriesData, 
   AnalyticsFilter, 
   BarChartData 
-}                                    from '@acx-ui/analytics/utils'
-import { BarChart, Card, cssNumber } from '@acx-ui/components'
-import { Loader }                    from '@acx-ui/components'
-import { cssStr }                    from '@acx-ui/components'
-import { formatter }                 from '@acx-ui/utils'
+}                             from '@acx-ui/analytics/utils'
+import { BarChart, Card, cssNumber, Loader, cssStr } from '@acx-ui/components'
+import { formatter }                                 from '@acx-ui/utils'
 
 import { useSwitchesByPoEUsageQuery } from './services'
 
