@@ -40,7 +40,7 @@ describe('Incidents Page', () => {
     expect(await screen.findByText('Incidents')).toBeVisible()
     expect(await screen.findByText('table')).toBeVisible()
   })
-  it('should render page with default tab selection', async () => {
+  it('should render page with Overview tab selection', async () => {
     render(
       <Provider>
         <Incidents />
@@ -49,7 +49,18 @@ describe('Incidents Page', () => {
     )
     expect(await screen.findByText('Overview')).toBeVisible()
   })
-
+  it('should render page with default tab selection when activeTab param is not set', async () => {
+    const params = {
+      tenantId: 'tenant-id'
+    }
+    render(
+      <Provider>
+        <Incidents />
+      </Provider>,
+      { route: { params } }
+    )
+    expect(await screen.findByText('Overview')).toBeVisible()
+  })
   it('should handle tab changes', async () => {
     render(
       <Provider>

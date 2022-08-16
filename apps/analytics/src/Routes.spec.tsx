@@ -6,25 +6,26 @@ import AnalyticsRoutes from './Routes'
 jest.mock('./pages/IncidentDetails', () => () => {
   return <div data-testid='incidentDetails' />
 })
-
-
-test('should redirect analytics to analytics/incidents', () => {
+jest.mock('./pages/Incidents', () => () => {
+  return <div data-testid='incidentsListPage' />
+})
+test('should redirect analytics to analytics/incidents', async () => {
   render(<AnalyticsRoutes />, {
     route: {
       path: '/t/tenantId/analytics',
       wrapRoutes: false
     }
   })
-  screen.getByText('table')
+  await screen.findByTestId('incidentsListPage')
 })
-test('should navigate to analytics/incidents', () => {
+test('should navigate to analytics/incidents', async () => {
   render(<AnalyticsRoutes />, {
     route: {
       path: '/t/tenantId/analytics/incidents',
       wrapRoutes: false
     }
   })
-  screen.getByText('table')
+  await screen.findByTestId('incidentsListPage')
 })
 test('should navigate to analytics/recommendations', () => {
   render(<AnalyticsRoutes />, {
@@ -62,13 +63,12 @@ test('should navigate to analytics/incidentDetails', async () => {
   })
   await screen.findByTestId('incidentDetails')
 })
-
-test('should navigate to analytics/incidents/overview', async () => {
+test('should navigate to analytics/incidents/tab/overview', async () => {  
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/analytics/incidents/tab/overview',
       wrapRoutes: false
     }
   })
-  await screen.findByText('table')
+  await screen.findByTestId('incidentsListPage')
 })
