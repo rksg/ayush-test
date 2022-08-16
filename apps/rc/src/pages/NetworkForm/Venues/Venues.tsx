@@ -193,7 +193,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     {
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
-      width: '80px',
+      width: 80,
       render: function (data, row) {
         return row.activated.isActivated ? 'All APs' : ''
       }
@@ -201,7 +201,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     {
       title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
-      width: '140px',
+      width: 140,
       render: function (data, row) {
         return row.activated.isActivated ? '2.4 GHz / 5 GHz' : ''
       }

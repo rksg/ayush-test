@@ -64,16 +64,20 @@ const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
 }
 
 export function Table <RecordType extends object> (
-  { type = 'tall', columnState, ...props }: TableProps<RecordType>
+  { type = 'tall', columnState, columns: initColumns, ...props }: TableProps<RecordType>
 ) {
   const { $t } = useIntl()
 
   const [columns, setColumns] = useState(
-    props.columns.map((column) => ({
+    initColumns.map((column, index) => ({
       ...column,
       disable: Boolean(column.fixed || column.disable),
-      show: Boolean(column.fixed || column.disable || (column.show ?? true))
-    }))
+      show: Boolean(column.fixed || column.disable || (column.show ?? true)),
+      onHeaderCell: (column: Columns<RecordType, 'text'>) => ({
+        width: column.width,
+        onResize: onColumnResize(index)
+      })
+    })) as unknown as typeof initColumns
   )
 
   const columnsState = useColumnsState({ columns, columnState })
@@ -167,21 +171,13 @@ export function Table <RecordType extends object> (
       setColumns(newColumns)
     }
 
-  const resizableColumns = columns.map((col, index) => ({
-    ...col,
-    onHeaderCell: (column: Columns<RecordType, 'text'>) => ({
-      width: column.width,
-      onResize: onColumnResize(index)
-    })
-  })) as Columns<RecordType, 'text'>[]
-
   return <UI.Wrapper $type={type} $hasRowSelection={Boolean(props.rowSelection)}>
     <UI.TableSettingsGlobalOverride />
     <ProTable<RecordType>
       {...props}
       bordered={false}
       search={false}
-      columns={type === 'tall' ? [...resizableColumns, settingsColumn] : resizableColumns}
+      columns={type === 'tall' ? [...columns, settingsColumn] : columns}
       components={{ header: { cell: ResizableColumn } }}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}

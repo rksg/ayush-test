@@ -21,6 +21,8 @@ type AdditionalColumnType = {
    * @default true
    */
   show?: boolean
+  // overwrite type of width to number for column resize
+  width?: number
 }
 
 type ProColumnTypeSubset <RecordType, ValueType> = Omit<
