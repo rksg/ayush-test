@@ -1,7 +1,7 @@
-
 import { dataApiURL }                                      from '@acx-ui/analytics/services'
 import { Provider, store }                                 from '@acx-ui/store'
 import { mockGraphqlQuery, mockAutoSizer, render, screen } from '@acx-ui/test-utils'
+import { DateRange }                                       from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -22,7 +22,12 @@ const sample = {
 
 describe('NetworkHistoryWidget', () => {
   mockAutoSizer()
-
+  const filters = {
+    startDate: '2022-01-01T00:00:00+08:00',
+    endDate: '2022-01-02T00:00:00+08:00',
+    path: [{ type: 'network', name: 'Network' }],
+    range: DateRange.last24Hours
+  }
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )
@@ -30,14 +35,14 @@ describe('NetworkHistoryWidget', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    render( <Provider> <NetworkHistoryWidget/></Provider>)
+    render( <Provider> <NetworkHistoryWidget filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    const { asFragment } =render( <Provider> <NetworkHistoryWidget/></Provider>)
+    const { asFragment } =render( <Provider> <NetworkHistoryWidget filters={filters}/></Provider>)
     await screen.findByText('Network History')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -49,7 +54,7 @@ describe('NetworkHistoryWidget', () => {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
     const { asFragment } = render(<Provider>
-      <NetworkHistoryWidget hideTitle/>
+      <NetworkHistoryWidget hideTitle filters={filters}/>
     </Provider>)
     await screen.findByText('3')
     // eslint-disable-next-line testing-library/no-node-access
@@ -62,7 +67,7 @@ describe('NetworkHistoryWidget', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
       error: new Error('something went wrong!')
     })
-    render( <Provider> <NetworkHistoryWidget/> </Provider>)
+    render( <Provider> <NetworkHistoryWidget filters={filters}/> </Provider>)
     await screen.findByText('Something went wrong.')
     jest.resetAllMocks()
   })

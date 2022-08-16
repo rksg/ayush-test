@@ -32,7 +32,7 @@ const messages = {
 describe('loadLocale', () => {
   it('loads locale translation json of correct language', async () => {
     mockServer.use(
-      rest.get('/locales/:locale.json', (req, res, ctx) => {
+      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
         const { locale } = req.params as { locale: keyof typeof messages }
         return res(ctx.json({ ...messages[locale], locale }))
       })
@@ -63,7 +63,7 @@ describe('loadLocale', () => {
     mockServer.close()
     mockServer.listen({ onUnhandledRequest: 'error' })
     mockServer.use(
-      rest.get('/locales/:locale.json', (req, res, ctx) => {
+      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
         const { locale } = req.params as { locale: keyof typeof messages }
         return res.once(ctx.json({ ...messages[locale], locale }))
       })
@@ -78,7 +78,7 @@ describe('loadLocale', () => {
 describe('LocaleProvider', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.get('/locales/:locale.json', (req, res, ctx) => {
+      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
         const { locale } = req.params as { locale: keyof typeof messages }
         return res(ctx.json({ ...messages[locale], locale }))
       })
