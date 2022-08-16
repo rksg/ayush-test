@@ -7,11 +7,11 @@ import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
   AaaServerTitle,
-  NetworkSaveData
+  CreateNetworkFormFields
 } from '@acx-ui/rc/utils'
 
 export function AaaSummaryForm (props: {
-  summaryData: NetworkSaveData;
+  summaryData: CreateNetworkFormFields
 }) {
   const { summaryData } = props
   return (
@@ -42,7 +42,7 @@ export function AaaSummaryForm (props: {
 
 function getAaaServer (
   serverType: AaaServerTypeEnum,
-  summaryData: NetworkSaveData
+  summaryData: CreateNetworkFormFields
 ) {
   const primaryTitle = AaaServerTitle[AaaServerOrderEnum.PRIMARY]
   const secondaryTitle = AaaServerTitle[AaaServerOrderEnum.SECONDARY]

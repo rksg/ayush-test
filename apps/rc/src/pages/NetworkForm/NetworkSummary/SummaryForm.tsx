@@ -1,10 +1,10 @@
 import { EnvironmentOutlined }            from '@ant-design/icons'
 import { Col, Divider, Form, Input, Row } from 'antd'
 
-import { StepsForm, Subtitle }                                    from '@acx-ui/components'
-import { useCloudpathListQuery }                                  from '@acx-ui/rc/services'
-import { NetworkSaveData, NetworkTypeEnum, transformDisplayText } from '@acx-ui/rc/utils'
-import { useParams }                                              from '@acx-ui/react-router-dom'
+import { StepsForm, Subtitle }                                            from '@acx-ui/components'
+import { useCloudpathListQuery }                                          from '@acx-ui/rc/services'
+import { CreateNetworkFormFields, NetworkTypeEnum, transformDisplayText } from '@acx-ui/rc/utils'
+import { useParams }                                                      from '@acx-ui/react-router-dom'
 
 import { transformNetworkType } from '../parser'
 
@@ -13,7 +13,7 @@ import { DpskSummaryForm } from './DpskSummaryForm'
 
 
 export function SummaryForm (props: {
-  summaryData: NetworkSaveData
+  summaryData: CreateNetworkFormFields
 }) {
   const { summaryData } = props
   const selectedId = summaryData.cloudpathServerId

@@ -1,9 +1,9 @@
 import { Form } from 'antd'
 
-import { NetworkSaveData, transformNetworkEncryption, transformDpskNetwork, DpskNetworkType } from '@acx-ui/rc/utils'
+import { CreateNetworkFormFields, transformNetworkEncryption, transformDpskNetwork, DpskNetworkType } from '@acx-ui/rc/utils'
 
 export function DpskSummaryForm (props: {
-  summaryData: NetworkSaveData;
+  summaryData: CreateNetworkFormFields;
 }) {
   const { summaryData } = props
   return (

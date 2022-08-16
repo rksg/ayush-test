@@ -3,143 +3,31 @@ import { get } from 'lodash'
 import {
   NetworkTypeEnum,
   CreateNetworkFormFields,
-  NetworkSaveData,
-  IClientIsolationOptions,
-  IWlanRadioCustomization,
-  IOpenWlanAdvancedCustomization,
-  RfBandUsageEnum,
-  BssMinimumPhyRateEnum,
-  BssMinimumPhyRateEnum6G,
-  PhyTypeConstraintEnum,
-  ManagementFrameMinimumPhyRateEnum,
-  ManagementFrameMinimumPhyRateEnum6G,
-  DnsProxy,
-  IDpskWlanAdvancedCustomization,
-  GuestPortal,
-  GuestWlan
+  OpenNetwork,
+  AAANetwork,
+  GuestNetwork,
+  DpskNetwork,
+  PassphraseFormatEnum,
+  PassphraseExpirationEnum,
+  Radius
 } from '@acx-ui/rc/utils'
 
-const clientIsolationOptions: IClientIsolationOptions = {
-  autoVrrp: false
-}
-
-const dnsProxy: DnsProxy = {
-  dnsProxyRules: []
-}
-
-const radioCustomization: IWlanRadioCustomization = {
-  rfBandUsage: RfBandUsageEnum.BOTH,
-  bssMinimumPhyRate: BssMinimumPhyRateEnum._default,
-  bssMinimumPhyRate6G: BssMinimumPhyRateEnum6G._6,
-  phyTypeConstraint: PhyTypeConstraintEnum.OFDM,
-  managementFrameMinimumPhyRate: ManagementFrameMinimumPhyRateEnum._6,
-  managementFrameMinimumPhyRate6G: ManagementFrameMinimumPhyRateEnum6G._6
-}
-
-const OpenWlanAdvancedCustomization: IOpenWlanAdvancedCustomization = {
-  clientIsolation: true,
-  maxClientsOnWlanPerRadio: 100,
-  enableBandBalancing: true,
-  clientIsolationOptions: clientIsolationOptions,
-  hideSsid: false,
-  forceMobileDeviceDhcp: false,
-  clientLoadBalancingEnable: true,
-  directedThreshold: 5,
-  enableNeighborReport: true,
-  radioCustomization: radioCustomization,
-  enableSyslog: false,
-  clientInactivityTimeout: 120,
-  accessControlEnable: false,
-  respectiveAccessControl: true,
-  vlanPool: null,
-  applicationPolicyEnable: false,
-  l2AclEnable: false,
-  l3AclEnable: false,
-  wifiCallingEnabled: false,
-  wifiCallingIds: [], //@Size(    max: 5 )
-  proxyARP: false,
-  enableAirtimeDecongestion: false,
-  enableJoinRSSIThreshold: false,
-  joinRSSIThreshold: -85,
-  enableTransientClientManagement: false,
-  joinWaitTime: 30,
-  joinExpireTime: 300,
-  joinWaitThreshold: 10,
-  enableOptimizedConnectivityExperience: false,
-  broadcastProbeResponseDelay: 15,
-  rssiAssociationRejectionThreshold: -75,
-  enableAntiSpoofing: false,
-  enableArpRequestRateLimit: true,
-  arpRequestRateLimit: 15,
-  enableDhcpRequestRateLimit: true,
-  dhcpRequestRateLimit: 15,
-  dnsProxyEnabled: false
-}
-
-const DpskWlanAdvancedCustomization: IDpskWlanAdvancedCustomization = {
-  maxClientsOnWlanPerRadio: 100,
-  enableBandBalancing: true,
-  clientIsolation: false,
-  clientIsolationOptions: clientIsolationOptions,
-  hideSsid: false,
-  forceMobileDeviceDhcp: false,
-  clientLoadBalancingEnable: true,
-  enableAaaVlanOverride: true,
-  directedThreshold: 5,
-  enableNeighborReport: true,
-  radioCustomization: radioCustomization,
-  enableSyslog: false,
-  clientInactivityTimeout: 120,
-  accessControlEnable: false,
-  respectiveAccessControl: true,
-  vlanPool: null,
-  applicationPolicyEnable: false,
-  l2AclEnable: false,
-  l3AclEnable: false,
-  wifiCallingEnabled: false,
-  wifiCallingIds: [],
-  proxyARP: false,
-  enableAirtimeDecongestion: false,
-  enableJoinRSSIThreshold: false,
-  joinRSSIThreshold: -85,
-  enableTransientClientManagement: false,
-  joinWaitTime: 30,
-  joinExpireTime: 300,
-  joinWaitThreshold: 10,
-  enableOptimizedConnectivityExperience: false,
-  broadcastProbeResponseDelay: 15,
-  rssiAssociationRejectionThreshold: -75,
-  enableAntiSpoofing: false,
-  enableArpRequestRateLimit: true,
-  arpRequestRateLimit: 15,
-  enableDhcpRequestRateLimit: true,
-  dhcpRequestRateLimit: 15,
-  dnsProxyEnabled: false,
-  dnsProxy: dnsProxy,
-  tunnelWlanEnable: false
-}
-
-const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+const parseAaaSettingDataToSave = (data: CreateNetworkFormFields) => {
+  let saveData = new AAANetwork()
 
   if (data.isCloudpathEnabled) {
-    saveData = {
-      ...saveData,
-      ...{
-        cloudpathServerId: data.cloudpathServerId,
-        enableAccountingProxy: false,
-        enableAuthProxy: false
-      }
-    }
+    saveData.cloudpathServerId = data.cloudpathServerId
+    saveData.enableAccountingProxy = false
+    saveData.enableAuthProxy = false
   } else {
-    let authRadius = {}
+    let authRadius = new Radius()
     if (get(data, 'authRadius.primary.ip')) {
       authRadius = {
         ...authRadius,
         ...{
           primary: {
             ip: get(data, 'authRadius.primary.ip'),
-            port: get(data, 'authRadius.primary.port'),
+            port: Number(get(data, 'authRadius.primary.port')),
             sharedSecret: get(data, 'authRadius.primary.sharedSecret')
           }
         }
@@ -151,29 +39,24 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
         ...{
           secondary: {
             ip: get(data, 'authRadius.secondary.ip'),
-            port: get(data, 'authRadius.secondary.port'),
+            port: Number(get(data, 'authRadius.secondary.port')),
             sharedSecret: get(data, 'authRadius.secondary.sharedSecret')
           }
         }
       }
     }
 
-    saveData = {
-      ...saveData,
-      ...{
-        enableAuthProxy: data.enableAuthProxy,
-        authRadius
-      }
-    }
+    saveData.enableAuthProxy = data.enableAuthProxy
+    saveData.authRadius = authRadius
 
     if (data.enableAccountingService) {
-      let accountingRadius = {}
+      let accountingRadius = new Radius()
       accountingRadius = {
         ...accountingRadius,
         ...{
           primary: {
             ip: get(data, 'accountingRadius.primary.ip'),
-            port: get(data, 'accountingRadius.primary.port'),
+            port: Number(get(data, 'accountingRadius.primary.port')),
             sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
           }
         }
@@ -185,7 +68,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
           ...{
             secondary: {
               ip: get(data, 'accountingRadius.secondary.ip'),
-              port: get(data, 'accountingRadius.secondary.port'),
+              port: Number(get(data, 'accountingRadius.secondary.port')),
               sharedSecret: get(
                 data,
                 'accountingRadius.secondary.sharedSecret'
@@ -195,94 +78,42 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
         }
       }
 
-      saveData = {
-        ...saveData,
-        ...{
-          enableAccountingProxy: data.enableAccountingProxy,
-          accountingRadius
-        }
-      }
-    }
-  }
-  saveData = {
-    ...saveData,
-    ...{
-      wlan: {
-        wlanSecurity: data.wlanSecurity,
-        advancedCustomization: OpenWlanAdvancedCustomization,
-        bypassCNA: false,
-        bypassCPUsingMacAddressAuthentication: false,
-        enable: true,
-        managementFrameProtection: 'Disabled',
-        vlanId: 1
-      }
+      saveData.enableAccountingProxy = data.enableAccountingProxy
+      saveData.accountingRadius = accountingRadius
     }
   }
 
   return saveData
 }
 
-const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+const parseOpenSettingDataToSave = (data: CreateNetworkFormFields) => {
+  let saveData = new OpenNetwork()
 
   if (data.cloudpathServerId) {
-    saveData = {
-      ...saveData,
-      ...{
-        cloudpathServerId: data.cloudpathServerId
-      }
-    }
-  }
-
-  saveData = {
-    ...saveData,
-    ...{
-      wlan: {
-        advancedCustomization: OpenWlanAdvancedCustomization,
-        enable: true,
-        vlanId: 1
-      }
-    }
+    saveData.cloudpathServerId = data.cloudpathServerId
   }
 
   return saveData
 }
 
-const parseCaptivePortalDataToSave = (data: NetworkSaveData) => {
-  const defaultGuestPortal = new GuestPortal()
-  let saveData = {
-    type: data.type,
-    isCloudpathEnabled: data.isCloudpathEnabled,
-    guestPortal: { ...defaultGuestPortal, ...data.guestPortal },
-    ...{
-      wlan: new GuestWlan()
-    }
-  }
+const parseCaptivePortalDataToSave = (data: CreateNetworkFormFields) => {
+  let saveData = new GuestNetwork()
+  saveData.type = data.type
+  saveData.guestPortal = { ...data.guestPortal }
   return saveData
 }
 
-const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+const parseDpskSettingDataToSave = (data: CreateNetworkFormFields) => {
+  let saveData = new DpskNetwork()
 
-  saveData = {
-    wlan: {
-      wlanSecurity: data.dpskWlanSecurity,
-      enable: true,
-      vlanId: 1,
-      advancedCustomization: DpskWlanAdvancedCustomization
-    },
-    dpskPassphraseGeneration: {
-      length: data.passphraseLength,
-      format: data.passphraseFormat,
-      expiration: data.expiration
-    }
+  saveData.dpskPassphraseGeneration = {
+    length: data.passphraseLength as number,
+    format: data.passphraseFormat as PassphraseFormatEnum,
+    expiration: data.expiration as PassphraseExpirationEnum
   }
 
   if (data.cloudpathServerId) {
-    saveData = {
-      ...saveData,
-      cloudpathServerId: data.cloudpathServerId
-    }
+    saveData.cloudpathServerId = data.cloudpathServerId
   }
 
   return saveData
@@ -300,7 +131,7 @@ export function transferDetailToSave (data: CreateNetworkFormFields) {
   }
 }
 
-export function tranferSettingsToSave (data: NetworkSaveData) {
+export function tranferSettingsToSave (data: CreateNetworkFormFields) {
   const networkSaveDataParser = {
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data),
     [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data),

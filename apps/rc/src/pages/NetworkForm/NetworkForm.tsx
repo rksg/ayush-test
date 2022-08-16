@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react'
 
+import _ from 'lodash'
+
 import {
   PageHeader,
   showToast,
@@ -10,7 +12,7 @@ import { useCreateNetworkMutation } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   CreateNetworkFormFields,
-  NetworkSaveData
+  AnyNetwork
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -45,8 +47,7 @@ export function NetworkForm () {
   const [state, updateState] = useState<CreateNetworkFormFields>({
     name: '',
     type: NetworkTypeEnum.AAA,
-    isCloudpathEnabled: false,
-    venues: []
+    isCloudpathEnabled: false
   })
   const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
 
@@ -54,18 +55,56 @@ export function NetworkForm () {
     updateState({ ...state, ...newData })
   }
 
-  const [saveState, updateSaveState] = useState<NetworkSaveData>()
+  const [saveState, updateSaveState] = useState<AnyNetwork>()
 
-  const updateSaveData = (saveData: any) => {
+  const updateSaveData = (saveData: AnyNetwork) => {
     if( state.isCloudpathEnabled ){
       delete saveState?.accountingRadius
       delete saveState?.authRadius
     }else{
       delete saveState?.cloudpathServerId
     }
-    const newSavedata = { ...saveState, ...saveData }
-    newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
-    updateSaveState({ ...saveState, ...newSavedata })
+    const wlan = _.merge(saveState?.wlan, saveData.wlan)
+    saveData.wlan = wlan
+    const newSavedata = _.merge(saveState, saveData)
+    updateSaveState(newSavedata)
+  }
+
+  const handleNetworkDetail = async (data: CreateNetworkFormFields) => {
+    const detailsSaveData = transferDetailToSave(data)
+    updateData(data)
+    updateSaveData(detailsSaveData as AnyNetwork)
+    return true
+  }
+
+  const handleSettings = async (data: CreateNetworkFormFields) => {
+    data = {
+      ...data,
+      ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
+    }
+    const settingSaveData = tranferSettingsToSave(data)
+    updateData(data)
+    updateSaveData(settingSaveData as AnyNetwork)
+    return true
+  }
+
+  const handlePortalWebPage = async (data: CreateNetworkFormFields) => {
+    const tmpGuestPageState = { 
+      guestPortal: {
+        ...saveState?.guestPortal,
+        guestPage: {
+          ...data
+        }
+      } 
+    }
+    updateSaveData({ ...saveState, ...tmpGuestPageState } as AnyNetwork)
+    return true
+  }
+
+  const handleVenues = async (data: CreateNetworkFormFields) => {
+    updateData(data)
+    updateSaveData(data as AnyNetwork)
+    return true
   }
 
   const handleAddNetwork = async () => {
@@ -87,20 +126,15 @@ export function NetworkForm () {
           { text: 'Networks', link: '/networks' }
         ]}
       />
-      <StepsForm<CreateNetworkFormFields>
+      <StepsForm<AnyNetwork>
         formRef={formRef}
         onCancel={() => navigate(linkToNetworks)}
         onFinish={handleAddNetwork}
       >
-        <StepsForm.StepForm<CreateNetworkFormFields>
+        <StepsForm.StepForm
           name='details'
           title='Network Details'
-          onFinish={async (data) => {
-            const detailsSaveData = transferDetailToSave(data)
-            updateData(data)
-            updateSaveData(detailsSaveData)
-            return true
-          }}
+          onFinish={handleNetworkDetail}
         >
           <NetworkFormContext.Provider value={{ setNetworkType }}>
             <NetworkDetailForm />
@@ -110,16 +144,7 @@ export function NetworkForm () {
         <StepsForm.StepForm
           name='Settings'
           title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
-          onFinish={async (data) => {
-            data = {
-              ...data,
-              ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
-            }
-            const settingSaveData = tranferSettingsToSave(data)
-            updateData(data)
-            updateSaveData(settingSaveData)
-            return true
-          }}
+          onFinish={handleSettings}
         >
           {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
           {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
@@ -128,7 +153,7 @@ export function NetworkForm () {
         </StepsForm.StepForm>
 
         { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
-        <StepsForm.StepForm<CreateNetworkFormFields>
+        <StepsForm.StepForm
           name='onboarding'
           title='Onboarding'
           onFinish={async () => {
@@ -140,21 +165,10 @@ export function NetworkForm () {
         }
 
         { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
-        <StepsForm.StepForm<CreateNetworkFormFields>
+        <StepsForm.StepForm
           name='portalweb'
           title='Portal Web Page'
-          onFinish={async (data) => {
-            const tmpGuestPageState = { 
-              guestPortal: {
-                ...saveState?.guestPortal,
-                guestPage: {
-                  ...data
-                }
-              } 
-            }
-            updateSaveData({ ...saveState, ...tmpGuestPageState })
-            return true
-          }}
+          onFinish={handlePortalWebPage}
         >
           <PortalWebForm />
         </StepsForm.StepForm>
@@ -163,11 +177,7 @@ export function NetworkForm () {
         <StepsForm.StepForm
           name='venues'
           title='Venues'
-          onFinish={async (data) => {
-            updateData(data)
-            updateSaveData(data)
-            return true
-          }}
+          onFinish={handleVenues}
         >
           <Venues formRef={formRef} />
         </StepsForm.StepForm>

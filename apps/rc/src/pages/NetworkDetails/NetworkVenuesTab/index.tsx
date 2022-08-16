@@ -19,8 +19,8 @@ import {
   useVenueListQuery,
   Venue
 } from '@acx-ui/rc/services'
-import { Constants, useTableQuery, getUserSettingsFromDict, NetworkSaveData, NetworkVenue } from '@acx-ui/rc/utils'
-import { useParams }                                                                        from '@acx-ui/react-router-dom'
+import { Constants, useTableQuery, getUserSettingsFromDict, AnyNetwork, NetworkVenue } from '@acx-ui/rc/utils'
+import { useParams }                                                                   from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from '../services'
 
@@ -140,7 +140,7 @@ export function NetworkVenuesTab () {
     }
   }
 
-  const handleEditNetwork = (network: NetworkSaveData, clearSelection: () => void) => {
+  const handleEditNetwork = (network: AnyNetwork, clearSelection: () => void) => {
     updateNetworkDeep({ params, payload: network }).then(clearSelection)
   }
 
@@ -207,7 +207,7 @@ export function NetworkVenuesTab () {
       onClick: (rows, clearSelection) => {
         const network = networkQuery.data
         const networkVenues = activateSelected(network?.venues || [], rows)
-        handleEditNetwork({ ...network, venues: networkVenues }, clearSelection)
+        handleEditNetwork({ ...network, venues: networkVenues } as AnyNetwork, clearSelection)
       }
     },
     {
@@ -215,7 +215,7 @@ export function NetworkVenuesTab () {
       onClick: (rows, clearSelection) => {
         const network = networkQuery.data
         const networkVenues = deActivateSelected(network?.venues || [], rows)
-        handleEditNetwork({ ...network, venues: networkVenues }, clearSelection)
+        handleEditNetwork({ ...network, venues: networkVenues } as AnyNetwork, clearSelection)
       }
     }
   ]

@@ -1,24 +1,17 @@
-/**
- *	GuestNetwork
- *	Guest Wi-Fi network
- **/
+import { GuestPortal }   from './GuestPortal'
+import { GuestWlan }     from './GuestWlan'
+import { NetworkDetail } from './NetworkDetail'
 
-import { GuestPortal } from './GuestPortal'
-import { GuestWlan }   from './GuestWlan'
-
-export class GuestNetwork {
+export class GuestNetwork extends NetworkDetail {
   wlan: GuestWlan
 
   guestPortal: GuestPortal
 
-  tenantId?: string
-
-  // Enable DHCP (requires a bound DHCP Profile)
   enableDhcp?: boolean
 
-  id?: string
-
   constructor () {
+    super()
+    
     this.wlan = new GuestWlan()
 
     this.guestPortal = new GuestPortal()
