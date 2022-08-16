@@ -184,7 +184,7 @@ export const useShortDescription = (incident: Incident) => {
   return $t(shortDescription, { scope })
 }
 
-export const useLongDesription = (incident: Incident, rootCauses: string) => {
+export const useLongDesription = (incident: Incident, rootCauses: string[]) => {
   const { $t } = useIntl()
   const shortDesc = useShortDescription(incident)
   const scope = useIncidentScope(incident)

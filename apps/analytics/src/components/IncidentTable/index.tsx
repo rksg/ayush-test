@@ -60,7 +60,7 @@ const ColumnHeaders: TableProps<Incident>['columns'] = [
     title: 'Description',
     dataIndex: 'code',
     key: 'code',
-    render: (_, value) => LongIncidentDescription(value),
+    render: (_, value) => <LongIncidentDescription incident={value}/>,
     sorter: {
       compare: (a, b) => clientImpactSort(a.code, b.code)
     },
@@ -152,7 +152,6 @@ const IncidentTableWidget = () => {
               rowKey='id'
               showSorterTooltip={false}
               columnEmptyText={noDataSymbol}
-              scroll={{ x: 'max-content' }}
             />
           )}
         </AutoSizer>

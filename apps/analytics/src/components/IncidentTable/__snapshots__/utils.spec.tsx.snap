@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IncidentTable: utils GetScope 1`] = `
+<DocumentFragment>
+  <span>
+    Venue: Venue-3-US
+  </span>
+</DocumentFragment>
+`;
+
+exports[`IncidentTable: utils LongIncidentDescription 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__DescriptionSpan-sc-1b20731-2 iWBNZc"
+  >
+    802.11 Authentication failures are high in Venue: Venue-3-US impacting connectivity for 100% of clients.
+
+Most impacted WLAN: qa-eric-acx-R760-psk
+
+Root cause: ,Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.
+  </div>
+</DocumentFragment>
+`;
