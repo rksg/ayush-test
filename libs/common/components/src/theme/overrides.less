@@ -97,6 +97,41 @@
     }
   }
 
+  .ant-cascader {
+    width: 100%;
+    &-menu {
+      &-item {
+        &:hover {
+          background-color: var(--acx-accents-orange-10);
+        }
+
+        &-active {
+          &:not(:disabled) {
+            background-color: var(--acx-accents-orange-20);
+          }
+        }
+      }
+    }
+  }
+
+  .ant-select {
+    &-arrow {
+      color: var(--acx-primary-black);
+    }
+
+    &-selector {
+      border-color: var(--acx-primary-black) !important;
+    }
+    &-selection-placeholder {
+      color: var(--acx-primary-black);
+    }
+  }
+  .ant-select-focused {
+    .ant-select-selection-placeholder {
+      color: var(--acx-neutrals-50);
+    }
+  }
+
   .ant-form {
     &-item {
       margin-bottom: 16px;
@@ -256,7 +291,7 @@
     }
   }
 
-  .ant-checkbox {
+  .ant-checkbox, .ant-cascader-checkbox {
     &-inner {
       background-color: transparent;
       border-color: var(--acx-accents-blue-50);

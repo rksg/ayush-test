@@ -140,25 +140,3 @@ export function tranferSettingsToSave (data: CreateNetworkFormFields) {
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }
-
-export const transformNetworkType = (value: any) => {
-  let displayValue = ''
-  switch (value) {
-    case NetworkTypeEnum.OPEN:
-      displayValue = 'Open Network'
-      break
-    case NetworkTypeEnum.PSK:
-      displayValue = 'Pre-Shared Key (PSK)'
-      break
-    case NetworkTypeEnum.DPSK:
-      displayValue = 'Dynamic Pre-Shared Key (DPSK)'
-      break
-    case NetworkTypeEnum.AAA:
-      displayValue = 'Enterprise AAA (802.1X)'
-      break
-    case NetworkTypeEnum.CAPTIVEPORTAL:
-      displayValue = 'Captive Portal - '
-      break
-  }
-  return displayValue
-}

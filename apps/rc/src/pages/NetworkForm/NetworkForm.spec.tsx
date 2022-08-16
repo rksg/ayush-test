@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -24,10 +24,10 @@ export const venuesResponse = {
   page: 1,
   data: [
     {
-      id: '6cf550cdb67641d798d804793aaa82db',name: 'My-Venue',
-      description: 'My-Venue',city: 'New York',country: 'United States',
+      id: '6cf550cdb67641d798d804793aaa82db', venueId: '6cf550cdb67641d798d804793aaa82db'
+      ,name: 'My-Venue',description: 'My-Venue',city: 'New York',country: 'United States',
       latitude: '40.7690084',longitude: '-73.9431541',switches: 2,
-      status: '1_InSetupPhase',mesh: { enabled: false }
+      status: '1_InSetupPhase',mesh: { enabled: true }
     },{
       id: 'c6ae1e4fb6144d27886eb7693ae895c8',name: 'TDC_Venue',
       description: 'Taipei',city: 'Zhongzheng District, Taipei City',
@@ -67,6 +67,18 @@ export const cloudpathResponse = [{
   id: '5cc1d4a21c4d41b8ab1a839a0e03cc8c',
   name: 'cloud_01'
 }]
+
+export const dhcpResponse = {
+  name: 'DHCP-Guest',
+  vlanId: 3000,
+  subnetAddress: '172.21.232.0',
+  subnetMask: '255.255.252.0',
+  startIpAddress: '172.21.232.2',
+  endIpAddress: '172.21.235.233',
+  leaseTimeHours: 12,
+  leaseTimeMinutes: 1,
+  id: 'UNPERSISTED-DEFAULT-PROFILE-ID'
+}
 
 describe('NetworkForm', () => {
   it('should create open network successfully', async () => {
@@ -129,7 +141,9 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse)))
+        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
+      rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
+        (_, res, ctx) => res(ctx.json(dhcpResponse)))
     )
 
     const insertInput = screen.getByLabelText('Network Name')
@@ -138,7 +152,7 @@ describe('NetworkForm', () => {
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
 
-    fireEvent.click(screen.getByRole('radio', { name: /Captive portal/ }))
+    fireEvent.click(screen.getByRole('radio', { name: /Captive Portal/ }))
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Portal Type' })
@@ -146,6 +160,11 @@ describe('NetworkForm', () => {
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Onboarding' })
+    fireEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
+    fireEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
+    fireEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
+    const redirectUrlInput = screen.getByPlaceholderText('e.g. http://www.example.com')
+    fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })

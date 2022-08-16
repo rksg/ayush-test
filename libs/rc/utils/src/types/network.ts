@@ -1,4 +1,5 @@
 import {
+  NetworkTypeEnum,
   PassphraseExpirationEnum,
   PassphraseFormatEnum,
   WlanSecurityEnum
@@ -10,7 +11,7 @@ export interface CreateNetworkFormFields {
   id?: string
   name: string;
   description?: string;
-  type: string;
+  type: NetworkTypeEnum;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
   venues?: NetworkVenue[];

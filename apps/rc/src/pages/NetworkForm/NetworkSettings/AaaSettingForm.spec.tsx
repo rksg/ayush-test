@@ -139,4 +139,24 @@ describe('NetworkForm', () => {
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
     expect(diagram[1].src).toContain('aaa-proxy.png')
   })
+
+
+  it('should create AAA network with cloudpath successfully', async () => {
+    const { asFragment } = render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    expect(asFragment()).toMatchSnapshot()
+
+    await fillInBeforeSettings('AAA network test')
+
+    let toggle = screen.getAllByRole('switch', { checked: false })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(toggle[0]) // Proxy Service
+    })
+
+    await screen.findByText('Select...')
+    fireEvent.keyDown(screen.getByLabelText('Cloudpath Server'), { keyCode: 40 })
+    fireEvent.click(screen.getByText('cloud_01'))
+
+    await fillInAfterSettings(async () => {})
+  })
 })

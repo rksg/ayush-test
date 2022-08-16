@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 
-import _ from 'lodash'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   PageHeader,
@@ -23,7 +24,6 @@ import {
 import { OnboardingForm }    from './CaptivePortal/OnboardingForm'
 import { PortalTypeForm }    from './CaptivePortal/PortalTypeForm'
 import { PortalWebForm }     from './CaptivePortal/PortalWebForm'
-import { NetworkTypeTitle }  from './contentsMap'
 import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext    from './NetworkFormContext'
 import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
@@ -36,7 +36,16 @@ import {
 } from './parser'
 import { Venues } from './Venues/Venues'
 
+const settingTitle = defineMessage({
+  defaultMessage: `{type, select,
+    aaa {AAA Settings}
+    dpsk {DPSK Settings}
+    other {Settings}
+  }`
+})
+
 export function NetworkForm () {
+  const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
@@ -114,16 +123,16 @@ export function NetworkForm () {
     } catch {
       showToast({
         type: 'error',
-        content: 'An error occurred'
+        content: $t({ defaultMessage: 'An error occurred' })
       })
     }
   }
   return (
     <>
       <PageHeader
-        title='Create New Network'
+        title={$t({ defaultMessage: 'Create New Network' })}
         breadcrumb={[
-          { text: 'Networks', link: '/networks' }
+          { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
       <StepsForm<AnyNetwork>
@@ -133,7 +142,7 @@ export function NetworkForm () {
       >
         <StepsForm.StepForm
           name='details'
-          title='Network Details'
+          title={$t({ defaultMessage: 'Network Details' })}
           onFinish={handleNetworkDetail}
         >
           <NetworkFormContext.Provider value={{ setNetworkType }}>
@@ -143,7 +152,7 @@ export function NetworkForm () {
 
         <StepsForm.StepForm
           name='Settings'
-          title={networkType ? NetworkTypeTitle[networkType] : 'Settings'}
+          title={$t(settingTitle, { type: networkType })}
           onFinish={handleSettings}
         >
           {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
@@ -155,7 +164,7 @@ export function NetworkForm () {
         { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
         <StepsForm.StepForm
           name='onboarding'
-          title='Onboarding'
+          title={$t({ defaultMessage: 'Onboarding' })}
           onFinish={async () => {
             return true
           }}
@@ -167,7 +176,7 @@ export function NetworkForm () {
         { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
         <StepsForm.StepForm
           name='portalweb'
-          title='Portal Web Page'
+          title={$t({ defaultMessage: 'Portal Web Page' })}
           onFinish={handlePortalWebPage}
         >
           <PortalWebForm />
@@ -176,13 +185,13 @@ export function NetworkForm () {
 
         <StepsForm.StepForm
           name='venues'
-          title='Venues'
+          title={$t({ defaultMessage: 'Venues' })}
           onFinish={handleVenues}
         >
           <Venues formRef={formRef} />
         </StepsForm.StepForm>
 
-        <StepsForm.StepForm name='summary' title='Summary'>
+        <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
           <SummaryForm summaryData={state} />
         </StepsForm.StepForm>
       </StepsForm>
