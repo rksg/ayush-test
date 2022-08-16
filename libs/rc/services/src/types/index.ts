@@ -6,6 +6,7 @@ export interface CommonResult {
   requestId: string
   response?:{}
 }
+
 export interface Network {
   id: string
   name: string

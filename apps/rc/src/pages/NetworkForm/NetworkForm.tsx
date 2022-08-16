@@ -8,7 +8,7 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateNetworkMutation, useGetNetworkQuery, useUpdateNetworkDeepMutation } from '@acx-ui/rc/services'
+import { useCreateNetworkMutation, useGetNetworkQuery, useUpdateNetworkMutation } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   CreateNetworkFormFields,
@@ -49,7 +49,8 @@ export function NetworkForm () {
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [createNetwork] = useCreateNetworkMutation()
-  const [updateNetworkDeep] = useUpdateNetworkDeepMutation()
+  const [updateNetwork] = useUpdateNetworkMutation()
+
   //DetailsState
   const [state, updateState] = useState<CreateNetworkFormFields>({
     name: '',
@@ -66,10 +67,10 @@ export function NetworkForm () {
   const [saveState, updateSaveState] = useState<NetworkSaveData>()
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
-    if( state.isCloudpathEnabled ){
+    if (state.isCloudpathEnabled){
       delete saveState?.accountingRadius
       delete saveState?.authRadius
-    }else{
+    } else{
       delete saveState?.cloudpathServerId
     }
     const newSavedata = { ...saveState, ...saveData }
@@ -101,7 +102,7 @@ export function NetworkForm () {
 
   const handleEditNetwork = async () => {
     try {
-      await updateNetworkDeep({ params, payload: saveState }).unwrap()
+      await updateNetwork({ params, payload: saveState }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -113,7 +114,7 @@ export function NetworkForm () {
   return (
     <>
       <PageHeader
-        title={editMode ? 
+        title={editMode ?
           $t({ defaultMessage: 'Edit Network' }) : $t({ defaultMessage: 'Create New Network' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
