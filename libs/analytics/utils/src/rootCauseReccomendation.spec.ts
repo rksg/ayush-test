@@ -4,7 +4,7 @@ import {
   RootCauseRecommendation,
   extractFailureCode
 } from './rootCauseReccomendationMap'
-import { Incident, IncidentMetadata } from './types/incidents'
+import { Incident } from './types/incidents'
 
 
 const testIncident: Incident = {
@@ -68,23 +68,31 @@ describe('rootCauseReccomendation', () => {
   it('rootCauseReccomendation should return empty reccomendation', () => {
     const emptyReccomendation = getRootCauseAndRecommendations(
       testIncident.code,
-      undefined as unknown as IncidentMetadata
+      {
+        dominant: {
+          ssid: 'qa-eric-acx-R760-psk'
+        },
+        rootCauseChecks: {
+          checks: [] as Record<string, boolean>[],
+          params: { test: 'test' } as Record<string, string>
+        }
+      }
     )
     
     expect(emptyReccomendation).toBeTruthy()
     expect(emptyReccomendation).toMatchObject<RootCauseRecommendation[]>([{ 
-      rootCauses: ['Calculating...'],
-      recommendations: []
+      rootCauses: ['No specific root cause.'],
+      recommendations: ['No recommendation.']
     }])
   })
 
   it('extractFailureCode should return string', () => {
     const validError = extractFailureCode(testIncident.metadata.rootCauseChecks.checks)
 
-    expect(validError).toBe('VARIOUS_REASONS')
+    expect(validError).toBe('CCD_REASON_NOT_AUTHED')
 
     const emptyError = extractFailureCode([])
-    expect(emptyError).toBe('CCD_REASON_NOT_AUTHED')
+    expect(emptyError).toBe('DEFAULT')
   })
 
 })

@@ -9,6 +9,7 @@ import {
   useIncidentScope,
   useLongDesription
 } from '@acx-ui/analytics/utils'
+import { formatter, durationFormat } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -25,8 +26,7 @@ export const getIncidentBySeverity = (value?: number | null) => {
 
 export const formatDate = (datetimestamp?: string) => {
   if (typeof datetimestamp !== 'string') return noDataSymbol
-
-  return moment(datetimestamp).format('MMM DD yyyy HH:mm')
+  return formatter('dateTimeFormat')(datetimestamp as string)
 }
 
 export const formatDuration = (startTimestamp?: string, endTimestamp?: string) => {
@@ -35,9 +35,9 @@ export const formatDuration = (startTimestamp?: string, endTimestamp?: string) =
 
   const start = moment(startTimestamp)
   const end = moment(endTimestamp)
-  const hours = end.diff(start, 'hours')
-  const minutes = end.diff(start, 'minutes')
-  return `${hours}h ${minutes % 60}min`
+
+  const diffInMillis = end.diff(start, 'millisecond')
+  return durationFormat(diffInMillis)
 }
 
 export const clientImpactSort = (a?: unknown, b?: unknown) => {

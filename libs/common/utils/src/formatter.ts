@@ -43,7 +43,7 @@ const shorten = (value: number) => {
   return parseFloat(value.toPrecision(3)).toString()
 }
 
-function durationFormat (milliseconds: number) {
+export function durationFormat (milliseconds: number) {
   const results = []
   let significance = 0
   for (let scale in durations) {

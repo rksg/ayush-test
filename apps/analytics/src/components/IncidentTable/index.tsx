@@ -152,7 +152,7 @@ const IncidentTableWidget = () => {
               rowKey='id'
               showSorterTooltip={false}
               columnEmptyText={noDataSymbol}
-              scroll={{ y: 'max-content' }}
+              scroll={{ x: 'max-content' }}
             />
           )}
         </AutoSizer>
