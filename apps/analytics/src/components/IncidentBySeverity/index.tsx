@@ -3,7 +3,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { incidentSeverities } from '@acx-ui/analytics/utils'
+import { incidentSeverities, IncidentFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
   BarChart,
@@ -14,8 +14,8 @@ import {
   TrendType
 } from '@acx-ui/components'
 
-import { IncidentsBySeverityData, useIncidentsBySeverityQuery, Filters } from './services'
-import * as UI                                                           from './styledComponents'
+import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from './services'
+import * as UI                                                  from './styledComponents'
 
 type PillData = { delta: string, total: number, trend: string }
 const barColors = Object.values(incidentSeverities).map(({ color }) => cssStr(color))
@@ -38,7 +38,7 @@ const getChartData = (data: IncidentsBySeverityData): BarChartData => ({
   seriesEncode: [{ x: 'incidentCount', y: 'severity' }]
 })
 
-function IncidentBySeverityWidget ({ filters }: { filters: Filters }) {
+function IncidentBySeverityWidget ({ filters }: { filters: IncidentFilter }) {
   const { startDate, endDate } = filters
   const { $t } = useIntl()
   const currentResult = useIncidentsBySeverityQuery(filters, {

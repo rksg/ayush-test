@@ -51,3 +51,15 @@ export function defaultRanges (subRange?: DateRange[]) {
   }
   return defaultRange
 }
+
+export function dateRangeForLast (
+  duration: number,
+  durationType: string
+): [moment.Moment, moment.Moment] {
+  return [
+    moment()
+      .subtract(duration as moment.DurationInputArg1, durationType as moment.DurationInputArg2)
+      .seconds(0),
+    moment().seconds(0)
+  ]
+}

@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 import moment  from 'moment-timezone'
 
-import { dataApi }                                      from '@acx-ui/analytics/services'
-import { AnalyticsFilter, incidentCodes, IncidentCode } from '@acx-ui/analytics/utils'
+import { dataApi }                        from '@acx-ui/analytics/services'
+import {  incidentCodes, IncidentFilter } from '@acx-ui/analytics/utils'
 
 export type NetworkHistoryData = {
   connectedClientCount: number[]
@@ -10,7 +10,6 @@ export type NetworkHistoryData = {
   newClientCount: number[]
   time: string[]
 }
-export type Filters = AnalyticsFilter & { code? : IncidentCode[] }
 interface Response <TimeSeriesData> {
   network: {
     hierarchyNode: {
@@ -29,7 +28,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkHistory: build.query<
       NetworkHistoryData,
-      Filters
+      IncidentFilter
     >({
       // todo: Skipping the filter for impactedClientCount
       query: (payload) => ({

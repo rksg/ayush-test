@@ -3,10 +3,10 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                                  from '@acx-ui/analytics/utils'
+import { getSeriesData, IncidentFilter }                  from '@acx-ui/analytics/utils'
 import { Card, Loader, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
 
-import { NetworkHistoryData, useNetworkHistoryQuery, Filters } from './services'
+import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
 type Key = keyof Omit<NetworkHistoryData, 'time'>
 
@@ -16,7 +16,13 @@ const lineColors = [
   cssStr('--acx-accents-orange-50')
 ]
 
-function NetworkHistoryWidget ({ hideTitle, filters }: { hideTitle?: boolean; filters: Filters }) {
+function NetworkHistoryWidget ({
+  hideTitle,
+  filters
+}: {
+  hideTitle?: boolean;
+  filters: IncidentFilter;
+}) {
   const { $t } = useIntl()
   const seriesMapping = [
     { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },

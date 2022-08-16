@@ -3,7 +3,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { NodeType, nodeTypes, useAnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { PageHeader, PageHeaderProps, Button, Loader, RangePicker } from '@acx-ui/components'
-import { useDateFilter }                                            from '@acx-ui/utils'
+import { useDateFilter, dateRangeForLast }                          from '@acx-ui/utils'
 
 import { useNetworkNodeInfoQuery } from './services'
 import { Divider }                 from './styledComponents'
@@ -35,7 +35,6 @@ type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
   data: HeaderData
   replaceTitle: boolean
 }
-const defaultEnabledDates = [moment().subtract(3, 'months').seconds(0), moment().seconds(0)]
 
 export const useSubTitle = (subTitles: SubTitle[]) => {
   const { $t } = useIntl()
@@ -43,12 +42,11 @@ export const useSubTitle = (subTitles: SubTitle[]) => {
     <>
       {subTitles.map(({ key, value }, index) => {
         const labelKey = key as keyof typeof labelMap
-        const content =
-          key === 'type'
-            ? $t(nodeTypes(value[0] as NodeType))
-            : value.length > 1
-              ? `${value[0]} (${value.length})`
-              : `${value[0]}`
+        const content = key === 'type'
+          ? $t(nodeTypes(value[0] as NodeType))
+          : value.length > 1
+            ? `${value[0]} (${value.length})`
+            : `${value[0]}`
         return (
           <span key={key} title={key === 'type' ? content : value.join(', ')}>
             {$t(labelMap[labelKey])} {content}
@@ -78,7 +76,7 @@ export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
             startDate: moment(startDate),
             endDate: moment(endDate)
           }}
-          enableDates={defaultEnabledDates as [moment.Moment, moment.Moment]}
+          enableDates={dateRangeForLast(3,'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
