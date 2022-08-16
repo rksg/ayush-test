@@ -73,14 +73,11 @@ export const api = dataApi.injectEndpoints({
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {
-        return response.network.hierarchyNode.incidents.map((event) => {
-          // handle nested row transform
-          event.children = event.relatedIncidents
-          delete event.relatedIncidents
-          if (event.children && event.children.length <= 0) {
-            event.children = undefined
-          }
-          return event
+        return response.network.hierarchyNode.incidents.map((incident) => {
+          const validRelatedIncidents = 
+            typeof incident.relatedIncidents !== 'undefined' && incident.relatedIncidents.length > 0
+          incident.children = validRelatedIncidents ? incident.relatedIncidents : undefined
+          return incident
         })
       }
     })
