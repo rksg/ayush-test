@@ -72,7 +72,7 @@ describe('IncidentTableWidget', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTest } } }
     })
-    render(<Provider><IncidentTableWidget/></Provider>, {
+    const { asFragment } = render(<Provider><IncidentTableWidget/></Provider>, {
       route: {
         path: '/t/tenantId/analytics/incidents',
         wrapRoutes: false
@@ -80,5 +80,6 @@ describe('IncidentTableWidget', () => {
     })
     await screen.findByText('P4')
     expect(screen.getByText('P4').textContent).toBe('P4')
+    expect(asFragment()).toMatchSnapshot()
   })
 })

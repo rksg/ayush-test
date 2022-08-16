@@ -179,8 +179,13 @@ export const useIncidentScope = (incident: Incident) => {
 
 export const useShortDescription = (incident: Incident) => {
   const { $t } = useIntl()
-  const { shortDescription } = incidentInformation[incident.code]
   const scope = useIncidentScope(incident)
+
+  if (typeof incident.code === 'undefined') {
+    return $t(defineMessage({ defaultMessage: '{noDataSymbol}' }), { noDataSymbol })
+  }
+  const { shortDescription } = incidentInformation[incident.code]
+  
   return $t(shortDescription, { scope })
 }
 
@@ -196,6 +201,11 @@ export const useLongDesription = (incident: Incident, rootCauses: string[]) => {
   if (clientImpact === null) {
     return shortDesc
   } else {
+
+    if (typeof incident.code === 'undefined') {
+      return $t(defineMessage({ defaultMessage: '{noDataSymbol}' }), { noDataSymbol })
+    }
+
     const incidentInfo = incidentInformation[incident.code]
 
     return [

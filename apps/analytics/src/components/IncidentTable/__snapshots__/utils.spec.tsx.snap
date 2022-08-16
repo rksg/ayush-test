@@ -8,10 +8,10 @@ exports[`IncidentTable: utils GetScope 1`] = `
 </DocumentFragment>
 `;
 
-exports[`IncidentTable: utils LongIncidentDescription 1`] = `
+exports[`IncidentTable: utils LongIncidentDescription: it renders on valid incident 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__DescriptionSpan-sc-1b20731-2 iWBNZc"
+    class="styledComponents__DescriptionSpan-sc-1b20731-0 grTcaS"
   >
     802.11 Authentication failures are high in Venue: Venue-3-US impacting connectivity for 100% of clients.
 
