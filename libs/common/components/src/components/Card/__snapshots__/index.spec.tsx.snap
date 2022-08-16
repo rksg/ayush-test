@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Card component should render card with no border 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-3 kgPVrt"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="styledComponents__HeaderContainer-sc-13w5wfx-4 jbxNCa"
+            >
+              <div
+                class="styledComponents__TitleWrapper-sc-13w5wfx-5 bxvIFk"
+              />
+              <div />
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        test
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
