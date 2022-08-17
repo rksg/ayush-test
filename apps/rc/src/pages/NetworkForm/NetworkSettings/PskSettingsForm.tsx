@@ -109,6 +109,7 @@ export function PskSettingsForm (props: StepFormProps<CreateNetworkFormFields>) 
 }
 
 function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
+  const { $t } = useIntl()
   const { formRef } = props
   const [
     wlanSecurity,
@@ -272,7 +273,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
             <Form.Item noStyle name='macAddressAuthentication' valuePropName='checked'>
               <Switch />
             </Form.Item>
-            <span>Use MAC Auth</span>
+            <span>{$t({ defaultMessage: 'Use MAC Auth' })}</span>
             <Tooltip title={WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP} placement='bottom'>
               <QuestionCircleOutlined />
             </Tooltip>
@@ -300,7 +301,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
     return (
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
-          <Subtitle level={3}>Authentication Service</Subtitle>
+          <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
           <IpPortSecretForm
             serverType={AaaServerTypeEnum.AUTHENTICATION}
             order={AaaServerOrderEnum.PRIMARY}
@@ -321,7 +322,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
           }
         </div>
         <div>
-          <Subtitle level={3}>Accounting Service</Subtitle>
+          <Subtitle level={3}>{$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
           <Form.Item name='enableAccountingService' valuePropName='checked'>
             <Switch />
           </Form.Item>
