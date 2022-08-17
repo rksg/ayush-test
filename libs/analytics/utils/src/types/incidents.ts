@@ -35,10 +35,10 @@ export interface SeverityRange {
 }
 
 export interface IncidentMetadata {
-  dominant: { ssid?: string }
-  rootCauseChecks: {
-    checks: Record<string,boolean>[]
-    params: Record<string,string>
+  dominant?: { ssid?: string }
+  rootCauseChecks?: {
+    checks?: Record<string,boolean>[]
+    params?: Record<string,string>
   }
 }
 
@@ -52,7 +52,7 @@ export interface Incident {
   severity: number
   clientCount: number
   impactedClientCount: number
-  metadata: IncidentMetadata
+  metadata?: IncidentMetadata
   path: PathNode[]
   apCount: number
   impactedApCount: number

@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useImpactedArea useLongDescription renders object on correct inputs 1`] = `
+"802.11 Authentication failures are high in Venue: Venue-3-US impacting connectivity for 100% of clients.
+
+Most impacted WLAN: qa-eric-acx-R760-psk
+
+Root cause: ,Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear."
+`;
+
+exports[`useImpactedArea useLongDescription renders object on wrong inputs 1`] = `"802.11 Authentication failures are unusually high in Unknown: "`;
+
+exports[`useImpactedArea useLongDescription renders object on wrong inputs 2`] = `"802.11 Authentication failures are unusually high in Unknown: "`;
+
+exports[`useImpactedArea useLongDescription renders object on wrong inputs 3`] = `"802.11 Authentication failures are unusually high in Unknown: "`;
+
+exports[`useImpactedArea useLongDescription renders object on wrong inputs 4`] = `"802.11 Authentication failures are unusually high in Unknown: "`;

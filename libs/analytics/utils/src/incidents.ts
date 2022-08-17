@@ -85,8 +85,7 @@ export function useImpactValues (type: string, count?: number, impactedCount?: n
       [`${type}ImpactCountFormatted`]: '',
       [`${type}ImpactDescription`]: intl.$t(defineMessage({ defaultMessage: 'Calculating...' }))
     }
-  } else if (count === -1 || impactedCount === -1 ||
-      count === 0 || impactedCount === -1
+  } else if (count === -1 || impactedCount === -1 || count === 0
   ) {
     return {
       [`${type}Impact`]: intl.formatMessage({ defaultMessage: '{noDataSymbol}' }, { noDataSymbol }),
@@ -159,7 +158,8 @@ export function useFormattedPath (path: PathNode[], sliceValue: string) {
 
 export function useImpactedArea (path: PathNode[], sliceValue: string) {
   const intl = useIntl()
-  const lastNode = path[path.length - 1]
+  const lastNode = 
+    (path && path.length > 0 && path[path.length - 1]) ? path[path.length - 1] : false
   return lastNode
     ? formattedNodeName(intl, lastNode, sliceValue)
     : sliceValue
@@ -181,9 +181,6 @@ export const useShortDescription = (incident: Incident) => {
   const { $t } = useIntl()
   const scope = useIncidentScope(incident)
 
-  if (typeof incident.code === 'undefined') {
-    return $t(defineMessage({ defaultMessage: '{noDataSymbol}' }), { noDataSymbol })
-  }
   const { shortDescription } = incidentInformation[incident.code]
   
   return $t(shortDescription, { scope })
@@ -193,19 +190,18 @@ export const useLongDesription = (incident: Incident, rootCauses: string[]) => {
   const { $t } = useIntl()
   const shortDesc = useShortDescription(incident)
   const scope = useIncidentScope(incident)
-  
-  const { metadata: { dominant }, clientCount, impactedClientCount } = incident
+  const { metadata, clientCount, impactedClientCount } = incident
   const { clientImpact, clientImpactFormatted } = 
     useImpactValues('client', clientCount, impactedClientCount)
+
+  if (typeof metadata === 'undefined') return shortDesc
+
+  const { dominant } = metadata
+  if (typeof dominant === 'undefined') return shortDesc
   
   if (clientImpact === null) {
     return shortDesc
   } else {
-
-    if (typeof incident.code === 'undefined') {
-      return $t(defineMessage({ defaultMessage: '{noDataSymbol}' }), { noDataSymbol })
-    }
-
     const incidentInfo = incidentInformation[incident.code]
 
     return [
