@@ -19,7 +19,8 @@ import {
 import {
   NetworkTypeEnum,
   CreateNetworkFormFields,
-  NetworkSaveData
+  NetworkSaveData,
+  RadiusErrorsType
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -27,6 +28,10 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import {
+  multipleConflictMessage,
+  radiusErrorMessage
+} from './contentsMap'
 import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext    from './NetworkFormContext'
 import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
@@ -40,24 +45,6 @@ import {
 } from './parser'
 import { Venues } from './Venues/Venues'
 
-/* eslint-disable max-len */
-export const MultipleConflictMessage = {
-  AUTH_AND_ACCOUNTING: 'The IP addresses you entered conflict with existing authentication and accounting server configuration in another network. Please change the IP address.',
-  AUTH: 'The IP addresses you entered conflict with existing authentication server configuration in another network. Please change the IP address.',
-  ACCOUNTING: 'The IP addresses you entered conflict with existing accounting server configuration in another network. Please change the IP address.'
-}
-
-export const ErrorMessage = {
-  AUTH_AND_ACCOUNTING: 'One of the values you entered conflicts with existing authentication and accounting server configurations in another network.',
-  AUTH: 'One of the values you entered conflicts with an existing authentication server configuration in another network.',
-  ACCOUNTING: 'One of the values you entered conflicts with an existing accounting server configuration in another network.'
-}
-
-export enum RadiusErrorsType {
-  AUTH_AND_ACCOUNTING = 'AUTH_AND_ACCOUNTING',
-  AUTH = 'AUTH',
-  ACCOUNTING = 'ACCOUNTING'
-}
 const settingTitle = defineMessage({
   defaultMessage: `{type, select,
     aaa {AAA Settings}
@@ -130,7 +117,7 @@ export function NetworkForm () {
     } else if (error?.status === 422) {
       showActionModal({
         type: 'error',
-        title: 'Server Configuration Conflict',
+        title: $t({ defaultMessage: 'Server Configuration Conflict' }),
         content: error?.data?.errors[0].message
       })
       return false
@@ -156,22 +143,24 @@ export function NetworkForm () {
       const conflictErrors = Object.keys(results)?.filter(x => x.includes('MultipleConflict'))
       if (conflictErrors.length) {
         const keys = conflictErrors.map(k => k.split('Radius')[0].toUpperCase())
-        const multipleConflictMessage = keys.length === 2
-          ? MultipleConflictMessage.AUTH_AND_ACCOUNTING
-          : MultipleConflictMessage[keys[0] as RadiusErrorsType]
+        const conflictMessage = keys.length === 2
+          ? $t( multipleConflictMessage[RadiusErrorsType.AUTH_AND_ACC] )
+          : $t( multipleConflictMessage[keys[0] as RadiusErrorsType] )
 
         showActionModal({
           type: 'error',
-          title: 'Server Configuration Conflict',
-          content: multipleConflictMessage
+          title: $t({ defaultMessage: 'Server Configuration Conflict' }),
+          content: conflictMessage
         })
 
       } else {
         const radiusErrors = radiusType.filter(x => Object.keys(results).includes(x))
           .map(x => x.split('Radius')[0].toUpperCase())
         const errorMessage = radiusErrors.length === 2
-          ? ErrorMessage.AUTH_AND_ACCOUNTING
-          : ErrorMessage[radiusErrors[0] as RadiusErrorsType]
+          ? $t( radiusErrorMessage[RadiusErrorsType.AUTH_AND_ACC] )
+          : (radiusErrors.length
+            ? $t( radiusErrorMessage[radiusErrors[0] as RadiusErrorsType] )
+            : '')
 
         if (radiusErrors.length) {
           openConfigConflictModal(
@@ -184,7 +173,7 @@ export function NetworkForm () {
         } else {
           showActionModal({
             type: 'error',
-            title: 'Occured Error',
+            title: $t({ defaultMessage: 'Occured Error' }),
             content: error?.data?.errors[0].message
           })
         }
@@ -204,16 +193,16 @@ export function NetworkForm () {
     showActionModal({
       type: 'warning',
       width: 600,
-      title: 'Server Configuration Conflict',
+      title: $t({ defaultMessage: 'Server Configuration Conflict' }),
       content: message,
       customContent: {
         action: 'CUSTOM_BUTTONS',
         buttons: [{
-          text: 'cancel',
+          text: $t({ defaultMessage: 'Cancel' }),
           type: 'link', // TODO: will change after DS update
           key: 'cancel'
         }, {
-          text: 'Use existing server configuration',
+          text: $t({ defaultMessage: 'Use existing server configuration' }),
           type: 'primary',
           key: 'existing',
           closeAfterAction: true,
@@ -226,7 +215,7 @@ export function NetworkForm () {
             formRef?.current?.submit
           )
         }, {
-          text: 'Override the conflicting server configuration',
+          text: $t({ defaultMessage: 'Override the conflicting server configuration' }),
           type: 'primary',
           key: 'override',
           closeAfterAction: true,
@@ -253,12 +242,23 @@ export function NetworkForm () {
     if (action === 'existing') {
       const authErrors = authIndex > -1 && errors[authIndex].value
       const accountErrors = accountIndex > -1 && errors[accountIndex].value
-      const updateField = ['primary', 'secondary', 'tlsEnabled', 'cnSanIdentity', 'ocspUrl', 'trustedCAChain']
+      const updateField = ['primary', 'secondary',
+        'tlsEnabled', 'cnSanIdentity', 'ocspUrl', 'trustedCAChain']
 
       const deleteRadiusSecondary = () => {
         let resetFields = [] as string[]
-        const authSecondaryFields = ['authRadius.secondary.ip', 'authRadius.secondary.port', 'authRadius.secondary.sharedSecret', 'enableSecondaryAuthServer']
-        const acctSecondaryFields = ['accountingRadius.secondary.ip', 'accountingRadius.secondary.port', 'accountingRadius.secondary.sharedSecret', 'enableSecondaryAcctServer']
+        const authSecondaryFields = [
+          'authRadius.secondary.ip',
+          'authRadius.secondary.port',
+          'authRadius.secondary.sharedSecret',
+          'enableSecondaryAuthServer'
+        ]
+        const acctSecondaryFields = [
+          'accountingRadius.secondary.ip',
+          'accountingRadius.secondary.port',
+          'accountingRadius.secondary.sharedSecret',
+          'enableSecondaryAcctServer'
+        ]
 
         if (authErrors) resetFields.push(...authSecondaryFields)
         if (accountErrors) resetFields.push(...acctSecondaryFields)
@@ -348,11 +348,12 @@ export function NetworkForm () {
               ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
             }
             const settingSaveData = tranferSettingsToSave(data) as Partial<NetworkSaveData>
-            const radiusesChanged = !isEqual(saveState?.authRadius, settingSaveData?.authRadius)
-                                    || !isEqual(saveState?.accountingRadius, settingSaveData?.accountingRadius)
-            const radiusesChecked = !data.cloudpathServerId && radiusesChanged ? await checkIpsValues(data) : true
+            const radiusChanged = !isEqual(saveState?.authRadius, settingSaveData?.authRadius)
+                        || !isEqual(saveState?.accountingRadius, settingSaveData?.accountingRadius)
+            const radiusChecked = !data.cloudpathServerId && radiusChanged
+              ? await checkIpsValues(data) : true
 
-            if (radiusesChecked) {
+            if (radiusChecked) {
               updateData(data)
               updateSaveData(settingSaveData)
               return true

@@ -101,3 +101,9 @@ export enum CloudpathDeploymentTypeEnum {
   OnPremise = 'OnPremise',
   Cloud = 'Cloud',
 }
+
+export enum RadiusErrorsType {
+  AUTH_AND_ACC = 'AUTH_AND_ACC',
+  AUTH = 'AUTH',
+  ACCOUNTING = 'ACCOUNTING'
+}

@@ -1,12 +1,26 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import { rest }    from 'msw'
+import { useIntl } from 'react-intl'
 
 import { CommonUrlsInfo }                                                        from '@acx-ui/rc/utils'
 import { Provider }                                                              from '@acx-ui/store'
 import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { NetworkForm, ErrorMessage, MultipleConflictMessage }                   from '../NetworkForm'
+import { radiusErrorMessage, multipleConflictMessage }                          from '../contentsMap'
+import { NetworkForm }                                                          from '../NetworkForm'
 import { cloudpathResponse, networksResponse, venuesResponse, successResponse } from '../NetworkForm.spec'
+
+jest.mock('react-intl', () => {
+  const reactIntl = jest.requireActual('react-intl')
+  const intl = reactIntl.createIntl({
+    locale: 'en'
+  })
+
+  return {
+    ...reactIntl,
+    useIntl: () => intl
+  }
+})
 
 const validateErrorResponse = [{
   code: '',
@@ -202,6 +216,7 @@ describe('Server Configuration Conflict', () => {
 
   afterEach(async () => dialog?.remove())
 
+  const { $t } = useIntl()
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
   async function fillInAuthIpSettings () {
@@ -288,7 +303,7 @@ describe('Server Configuration Conflict', () => {
 
     dialog = await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
-    await screen.findByText(ErrorMessage.AUTH)
+    await screen.findByText($t(radiusErrorMessage['AUTH']))
     
     fireEvent.click(screen.getByText('Use existing server configuration'))
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
@@ -312,7 +327,7 @@ describe('Server Configuration Conflict', () => {
 
     dialog = await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
-    await screen.findByText(ErrorMessage.ACCOUNTING)
+    await screen.findByText($t(radiusErrorMessage['ACCOUNTING']))
 
     fireEvent.click(screen.getByText('Use existing server configuration'))
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
@@ -336,7 +351,7 @@ describe('Server Configuration Conflict', () => {
 
     dialog = await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
-    await screen.findByText(ErrorMessage.AUTH_AND_ACCOUNTING)
+    await screen.findByText($t(radiusErrorMessage['AUTH_AND_ACC']))
 
     fireEvent.click(screen.getByText('Override the conflicting server configuration'))
     await screen.findByRole('heading', { level: 3, name: 'AAA Settings' })
@@ -356,7 +371,7 @@ describe('Server Configuration Conflict', () => {
 
     dialog = await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
-    await screen.findByText(MultipleConflictMessage.ACCOUNTING)
+    await screen.findByText($t(multipleConflictMessage['ACCOUNTING']))
   })
 
   it('should open Modal with auth multiple conflict message', async () => {
@@ -373,7 +388,7 @@ describe('Server Configuration Conflict', () => {
 
     dialog = await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
-    await screen.findByText(MultipleConflictMessage.AUTH)
+    await screen.findByText($t(multipleConflictMessage['AUTH']))
   })
 
   it('should open Modal with auth and accouting multiple conflict message', async () => {
@@ -390,7 +405,7 @@ describe('Server Configuration Conflict', () => {
 
     dialog = await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
-    await screen.findByText(MultipleConflictMessage.AUTH_AND_ACCOUNTING)
+    await screen.findByText($t(multipleConflictMessage['AUTH_AND_ACC']))
   })
 
   it('should open Modal with occured error message', async () => {
