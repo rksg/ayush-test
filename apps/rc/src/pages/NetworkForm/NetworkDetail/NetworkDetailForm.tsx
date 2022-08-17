@@ -5,10 +5,10 @@ import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
 import { useIntl }                             from 'react-intl'
 
-import { StepsForm }                                              from '@acx-ui/components'
-import { useLazyNetworkListQuery }                                from '@acx-ui/rc/services'
-import { NetworkTypeEnum, checkObjectNotExists, NetworkSaveData } from '@acx-ui/rc/utils'
-import { useParams }                                              from '@acx-ui/react-router-dom'
+import { StepsForm }                             from '@acx-ui/components'
+import { useLazyNetworkListQuery }               from '@acx-ui/rc/services'
+import { NetworkTypeEnum, checkObjectNotExists } from '@acx-ui/rc/utils'
+import { useParams }                             from '@acx-ui/react-router-dom'
 
 import { networkTypesDescription, networkTypes } from '../contentsMap'
 import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
@@ -21,7 +21,6 @@ const { useWatch } = Form
 
 export function NetworkDetailForm () {
   const { $t } = useIntl()
-  const name = useWatch<NetworkSaveData>('name')
   const type = useWatch<NetworkTypeEnum>('type')
   const { setNetworkType: setSettingStepTitle, editMode } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
@@ -39,14 +38,9 @@ export function NetworkDetailForm () {
 
   const nameValidator = async (value: string) => {
     const payload = { ...networkListPayload, searchString: value }
-    const list = (await getNetworkList({ params, payload }, true)
-      .unwrap()).data.map(n => ({ id: n.id, name: n.name }))
-    const sameNameResult = list.filter(el => {
-      return el.id === params.networkId && el.name === name
-    })
-    if(sameNameResult.length > 0){
-      return
-    }
+    const list = (await getNetworkList({ params, payload }, true).unwrap()).data
+      .filter(n => n.id === params.networkId)
+      .map(n => ({ id: n.id, name: n.name }))
     return checkObjectNotExists(list, value, 'Network')
   }
 
@@ -101,18 +95,14 @@ export function NetworkDetailForm () {
               </Radio.Group>
             </Form.Item>
           }
-          {editMode && 
-            <Form.Item
-              name='type'
-              label='Network Type'
-              rules={[{ required: true }]}
-            >
+          {editMode &&
+            <Form.Item name='type' label={$t({ defaultMessage: 'Network Type' })}>
               <>
-                <div><h4 className='ant-typography'>{type && $t(networkTypes[type])}</h4></div>
-                <div><label>{type && $t(networkTypesDescription[type])}</label></div>
+                <h4 className='ant-typography'>{type && $t(networkTypes[type])}</h4>
+                <label>{type && $t(networkTypesDescription[type])}</label>
               </>
-            </Form.Item>     
-          } 
+            </Form.Item>
+          }
         </Form.Item>
       </Col>
 

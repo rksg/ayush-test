@@ -1244,7 +1244,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                                       class="ant-col ant-form-item-label"
                                     >
                                       <label
-                                        class="ant-form-item-required"
+                                        class=""
                                         for="details_type"
                                         title="Network Type"
                                       >
@@ -1260,14 +1260,10 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                                         <div
                                           class="ant-form-item-control-input-content"
                                         >
-                                          <div>
-                                            <h4
-                                              class="ant-typography"
-                                            />
-                                          </div>
-                                          <div>
-                                            <label />
-                                          </div>
+                                          <h4
+                                            class="ant-typography"
+                                          />
+                                          <label />
                                         </div>
                                       </div>
                                     </div>
