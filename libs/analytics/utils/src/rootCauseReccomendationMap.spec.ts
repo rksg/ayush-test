@@ -48,8 +48,8 @@ const testIncident: Incident = {
   currentSlaThreshold: null
 }
 
-describe('rootCauseReccomendation', () => {
-  it('getrootCauseReccomendation should return RootCauseReccomendation', () => {
+describe('rootCauseRecommendation', () => {
+  it('getRootCauseRecommendation should return object', () => {
     const firstReccommendation = getRootCauseAndRecommendations(
       testIncident.code,
       testIncident.metadata
@@ -65,7 +65,7 @@ describe('rootCauseReccomendation', () => {
     }])
   })
 
-  it('rootCauseReccomendation should return empty reccomendation', () => {
+  it('getRootCauseAndRecommendation should return empty recommendation', () => {
     const emptyReccomendation = getRootCauseAndRecommendations(
       testIncident.code,
       {
@@ -84,17 +84,33 @@ describe('rootCauseReccomendation', () => {
       rootCauses: ['No specific root cause.'],
       recommendations: ['No recommendation.']
     }])
+  })
 
+  it('getRootCauseAndRecommendation should return undefined rootCauseChecks', () => {
     const undefinedRootCause = getRootCauseAndRecommendations(
       testIncident.code,
-      undefined as unknown as IncidentMetadata
+      { rootCauseChecks: undefined } as unknown as IncidentMetadata
     )
     expect(undefinedRootCause).toBeTruthy()
     expect(undefinedRootCause).toMatchObject([{
       rootCauses: ['Calculating...'],
       recommendations: []
     }])
+  })
 
+  it('getRootCauseAndRecommendation should return undefined checks', () => {
+    const undefinedChecks = getRootCauseAndRecommendations(
+      testIncident.code,
+      { rootCauseChecks: { checks: undefined } } as unknown as IncidentMetadata
+    )
+    expect(undefinedChecks).toBeTruthy()
+    expect(undefinedChecks).toMatchObject([{
+      rootCauses: ['Calculating...'],
+      recommendations: []
+    }])
+  })
+
+  it('getRootCauseAndRecommendation should return wifi recommendation', () => {
     const ccd80211RootCause = getRootCauseAndRecommendations('p-load-sz-cpu-load', 
     {
       rootCauseChecks: {
@@ -114,8 +130,9 @@ describe('rootCauseReccomendation', () => {
         'Were the AP radio or WLAN settings recently modified?'
       ]
     }])
+  })
 
-
+  it('rootCauseAndReccomendation should return invalid code recommendation', () => {
     const invalidCode = getRootCauseAndRecommendations('test', 
     {
       rootCauseChecks: {
@@ -127,15 +144,28 @@ describe('rootCauseReccomendation', () => {
       recommendations: ['TBD']
     }])
   })
+})
 
-  it('extractFailureCode should return string', () => {
-    const validError = extractFailureCode(testIncident.metadata.rootCauseChecks.checks)
+describe('extractFailureCode', () => {
+  it('returns string on correct input', () => {
+    const { rootCauseChecks } = testIncident.metadata as {
+      rootCauseChecks: {
+        checks: Record<string, boolean>[];
+        params: Record<string, string>;
+      }
+    }
+    const { checks } = rootCauseChecks
+    const validError = extractFailureCode(checks)
 
     expect(validError).toBe('CCD_REASON_NOT_AUTHED')
+  })
 
+  it('returns default on empty error', () => {
     const emptyError = extractFailureCode([])
     expect(emptyError).toBe('DEFAULT')
+  })
 
+  it('returns various reasons on multiple errors', () => {
     const variousError = extractFailureCode([
       {
         CCD_REASON_NOT_AUTHED: true
@@ -145,6 +175,15 @@ describe('rootCauseReccomendation', () => {
       }
     ])
     expect(variousError).toBe('VARIOUS_REASONS')
+  })
+
+  it('returns single non-ccd reason error string', () => {
+    const variousError = extractFailureCode([
+      {
+        assoc: true
+      }
+    ])
+    expect(variousError).toBe('assoc')
   })
 
 })

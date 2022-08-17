@@ -851,10 +851,8 @@ const codeToFailureTypeMap: Record<string, string> = {
   'i-apinfra-wanthroughput-low': 'ap-wanthroughput-low'
 }
 
-export function getRootCauseAndRecommendations (code: string, incidentMetaData?: IncidentMetadata) {
+export function getRootCauseAndRecommendations (code: string, incidentMetaData: IncidentMetadata) {
   const failureType = codeToFailureTypeMap[code]
-
-  if (typeof incidentMetaData === 'undefined') return [{ rootCauses: ['Calculating...'], recommendations: [] }]
 
   const { rootCauseChecks } = incidentMetaData
   if (typeof rootCauseChecks === 'undefined') return [{ rootCauses: ['Calculating...'], recommendations: [] }]
@@ -865,8 +863,7 @@ export function getRootCauseAndRecommendations (code: string, incidentMetaData?:
   const failureCode = extractFailureCode(checks)
   const { rootCauses, recommendations } = rootCauseRecommendationMap[failureType]
     ? rootCauseRecommendationMap[failureType][failureCode] ||
-      ccd80211RootCauseRecommendations[failureCode] ||
-        { rootCauses: ['TBD'], recommendations: ['TBD'] }
+      ccd80211RootCauseRecommendations[failureCode]
     : { rootCauses: ['TBD'], recommendations: ['TBD'] }
   return [{
     rootCauses: rootCauses,

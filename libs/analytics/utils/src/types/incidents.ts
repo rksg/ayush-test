@@ -52,7 +52,7 @@ export interface Incident {
   severity: number
   clientCount: number
   impactedClientCount: number
-  metadata?: IncidentMetadata
+  metadata: IncidentMetadata
   path: PathNode[]
   apCount: number
   impactedApCount: number

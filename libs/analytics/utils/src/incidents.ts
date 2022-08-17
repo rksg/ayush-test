@@ -85,7 +85,8 @@ export function useImpactValues (type: string, count?: number, impactedCount?: n
       [`${type}ImpactCountFormatted`]: '',
       [`${type}ImpactDescription`]: intl.$t(defineMessage({ defaultMessage: 'Calculating...' }))
     }
-  } else if (count === -1 || impactedCount === -1 || count === 0
+  } else if (count === -1 || impactedCount === -1 || 
+    count === 0 || impactedCount === 0
   ) {
     return {
       [`${type}Impact`]: intl.formatMessage({ defaultMessage: '{noDataSymbol}' }, { noDataSymbol }),
@@ -193,21 +194,19 @@ export const useLongDesription = (incident: Incident, rootCauses: string[]) => {
   const { metadata, clientCount, impactedClientCount } = incident
   const { clientImpact, clientImpactFormatted } = 
     useImpactValues('client', clientCount, impactedClientCount)
-
-  if (typeof metadata === 'undefined') return shortDesc
-
-  const { dominant } = metadata
-  if (typeof dominant === 'undefined') return shortDesc
+  const { dominant } = metadata 
   
   if (clientImpact === null) {
     return shortDesc
   } else {
     const incidentInfo = incidentInformation[incident.code]
+    const wlanInfo = (dominant && dominant.ssid) 
+      ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
+      : ''
 
     return [
       $t(incidentInfo.longDescription, { scope, impact: clientImpactFormatted as string }),
-      // eslint-disable-next-line max-len
-      (dominant && dominant.ssid) ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid }) : '',
+      wlanInfo,
       $t(defineMessage({ defaultMessage: 'Root cause: {rootCauses}' }), { rootCauses })
     ].filter(Boolean).join('\n\n')
   }

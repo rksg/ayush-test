@@ -125,6 +125,7 @@ describe('useImpactedArea', () => {
       })
     })
 
+    
     it('return object for count & impactArea of -1 / 0', () => {
       const type = 'test'
       expect(renderImpactValues(type, -1, -1)).toMatchObject({
@@ -219,36 +220,59 @@ describe('useImpactedArea', () => {
       slaThreshold: null,
       currentSlaThreshold: null
     }
+
+    const rootCauseAndRecomendation = 
+      getRootCauseAndRecommendations(testIncident.code, testIncident.metadata)
+    const { rootCauses } = rootCauseAndRecomendation[0]
     
     it('renders object on correct inputs', () => {
-      const rootCauseAndRecomendation = 
-        getRootCauseAndRecommendations(testIncident.code, testIncident.metadata)
-      const { rootCauses } = rootCauseAndRecomendation[0]
-      expect(renderLongDescription(testIncident, rootCauses)).toMatchSnapshot()
+      expect(renderLongDescription(testIncident, rootCauses)).toBe(
+        // eslint-disable-next-line max-len
+        '802.11 Authentication failures are high in Venue: Venue-3-US impacting connectivity for 100% of clients.\n\nMost impacted WLAN: qa-eric-acx-R760-psk\n\nRoot cause: ,Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.'
+      )
     })
 
-    it('renders object on wrong inputs', () => {
+    it('renders object on wrong inputs undefinedMetadata', () => {
       const undefinedMetadata = 
-        { metadata: undefined, code: testIncident.code } as Incident
+        { ...testIncident, metadata: {} } as unknown as Incident
+      expect(renderLongDescription(undefinedMetadata, rootCauses)).toBe(
+        // eslint-disable-next-line max-len
+        '802.11 Authentication failures are high in Venue: Venue-3-US impacting connectivity for 100% of clients.\n\nRoot cause: ,Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.'
+      )
+    })
+
+    it('renders object on wrong inputs undefined dominant', () => {
       const undefinedDominant = 
-        { metadata: { dominant: undefined }, code: testIncident.code } as Incident
+      { ...testIncident, metadata: { dominant: {} } } as Incident
+      expect(renderLongDescription(undefinedDominant, rootCauses)).toBe(
+        // eslint-disable-next-line max-len
+        '802.11 Authentication failures are high in Venue: Venue-3-US impacting connectivity for 100% of clients.\n\nRoot cause: ,Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.'
+      )
+    })
+
+    it('renders object on wrong inputs undefined clientImpact', () => {
       const undefinedClientImpact = { 
-        metadata: { dominant: 'testDominant' },
-        clientImpact: null, code: testIncident.code 
+        ...testIncident,
+        impactedClientCount: null
       } as unknown as Incident
+      expect(renderLongDescription(undefinedClientImpact, rootCauses)).toBe(
+        '802.11 Authentication failures are unusually high in Venue: Venue-3-US'
+      )
+    })
+
+    it('renders object on wrong inputs undefined SSID', () => {
       const undefinedSSID = { 
-        metadata: { dominant: { ssid: undefined } },
-        clientImpact: null, code: testIncident.code 
+        ...testIncident,
+        metadata: {
+          dominant: {
+            ssid: undefined
+          }
+        }
       } as unknown as Incident
-
-      const rootCauseAndRecomendation = 
-        getRootCauseAndRecommendations(testIncident.code, testIncident.metadata)
-      const { rootCauses } = rootCauseAndRecomendation[0]
-
-      expect(renderLongDescription(undefinedMetadata, rootCauses)).toMatchSnapshot()
-      expect(renderLongDescription(undefinedDominant, rootCauses)).toMatchSnapshot()
-      expect(renderLongDescription(undefinedClientImpact, rootCauses)).toMatchSnapshot()
-      expect(renderLongDescription(undefinedSSID, rootCauses)).toMatchSnapshot()
+      expect(renderLongDescription(undefinedSSID, rootCauses)).toBe(
+        // eslint-disable-next-line max-len
+        '802.11 Authentication failures are high in Venue: Venue-3-US impacting connectivity for 100% of clients.\n\nRoot cause: ,Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.'
+      )
     })
   })
 })
