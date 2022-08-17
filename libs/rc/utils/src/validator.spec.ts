@@ -1,3 +1,7 @@
+import { useIntl } from 'react-intl'
+
+import { renderHook } from '@acx-ui/test-utils'
+
 import { networkWifiIpRegExp, networkWifiPortRegExp, stringContainSpace, checkObjectNotExists } from './validator'
 
 describe('validator', () => {
@@ -32,15 +36,19 @@ describe('validator', () => {
     })
   })
   describe('checkObjectNotExists', () => {
-    const mockdata = [{ name: 'test01' }]
+    const mockdata = ['test01']
     it('Should not display error if object does not exist', async () => {
-      await expect(checkObjectNotExists(mockdata, 'test02', 'Network')).resolves.toEqual(undefined)
-      await expect(checkObjectNotExists(mockdata, 'test01', 'Network', 'pname'))
-        .resolves.toEqual(undefined)
+      const result = renderHook(() =>
+        checkObjectNotExists(useIntl(), mockdata, 'test02', 'Network')).result.current
+      await expect(result).resolves.toEqual(undefined)
     })
     it('Should return false when object exists', async () => {
-      await expect(checkObjectNotExists(mockdata, 'test01', 'Network'))
-        .rejects.toEqual('Network with that name already exists')
+      const result1 = renderHook(() =>
+        checkObjectNotExists(useIntl(), mockdata, 'test01', 'Network')).result.current
+      await expect(result1).rejects.toEqual('Network with that name already exists')
+      const result2 = renderHook(() =>
+        checkObjectNotExists(useIntl(), mockdata, 'test01', 'Network', 'pname')).result.current
+      await expect(result2).rejects.toEqual('Network with that value already exists')
     })
   })
 })

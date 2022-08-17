@@ -20,7 +20,7 @@ import type { RadioChangeEvent } from 'antd'
 const { useWatch } = Form
 
 export function NetworkDetailForm () {
-  const { $t } = useIntl()
+  const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
   const { setNetworkType: setSettingStepTitle, editMode } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
@@ -40,8 +40,9 @@ export function NetworkDetailForm () {
     const payload = { ...networkListPayload, searchString: value }
     const list = (await getNetworkList({ params, payload }, true).unwrap()).data
       .filter(n => n.id === params.networkId)
-      .map(n => ({ id: n.id, name: n.name }))
-    return checkObjectNotExists(list, value, 'Network')
+      .map(n => n.name)
+
+    return checkObjectNotExists(intl, list, value, intl.$t({ defaultMessage: 'Network' }))
   }
 
   const types = [
@@ -55,10 +56,10 @@ export function NetworkDetailForm () {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
+        <StepsForm.Title>{intl.$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
         <Form.Item
           name='name'
-          label={$t({ defaultMessage: 'Network Name' })}
+          label={intl.$t({ defaultMessage: 'Network Name' })}
           rules={[
             { required: true },
             { min: 2 },
@@ -71,23 +72,23 @@ export function NetworkDetailForm () {
         />
         <Form.Item
           name='description'
-          label={$t({ defaultMessage: 'Description' })}
+          label={intl.$t({ defaultMessage: 'Description' })}
           children={<TextArea rows={4} maxLength={64} />}
         />
         <Form.Item>
-          {!editMode && 
+          {!editMode &&
             <Form.Item
               name='type'
-              label={$t({ defaultMessage: 'Network Type' })}
+              label={intl.$t({ defaultMessage: 'Network Type' })}
               rules={[{ required: true }]}
             >
               <Radio.Group onChange={onChange}>
                 <Space direction='vertical'>
                   {types.map(({ type, disabled }) => (
                     <Radio key={type} value={type} disabled={disabled}>
-                      {$t(networkTypes[type])}
+                      {intl.$t(networkTypes[type])}
                       <RadioDescription>
-                        {$t(networkTypesDescription[type])}
+                        {intl.$t(networkTypesDescription[type])}
                       </RadioDescription>
                     </Radio>
                   ))}
@@ -96,10 +97,10 @@ export function NetworkDetailForm () {
             </Form.Item>
           }
           {editMode &&
-            <Form.Item name='type' label={$t({ defaultMessage: 'Network Type' })}>
+            <Form.Item name='type' label='Network Type'>
               <>
-                <h4 className='ant-typography'>{type && $t(networkTypes[type])}</h4>
-                <label>{type && $t(networkTypesDescription[type])}</label>
+                <h4 className='ant-typography'>{type && intl.$t(networkTypes[type])}</h4>
+                <label>{type && intl.$t(networkTypesDescription[type])}</label>
               </>
             </Form.Item>
           }

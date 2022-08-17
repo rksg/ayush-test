@@ -1,3 +1,6 @@
+import { isEqual }                  from 'lodash'
+import { defineMessage, IntlShape } from 'react-intl'
+
 export function networkWifiIpRegExp (value: string) {
   // eslint-disable-next-line max-len
   const re = new RegExp(/^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\p{N}\p{L}]+)?$/)
@@ -24,14 +27,22 @@ export function stringContainSpace (value: string) {
   return Promise.resolve()
 }
 
-export function checkObjectNotExists (
-  list: { [key: string]: string }[],
-  value: string,
+const checkObjectNotExistsMessage = defineMessage({
+  defaultMessage: `{entityName} with that {key, select,
+    name {name}
+    other {value}
+  } already exists`
+})
+
+export function checkObjectNotExists <ItemType> (
+  intl: IntlShape,
+  list: ItemType[],
+  value: ItemType,
   entityName: string,
   key = 'name'
 ) {
-  if (list.filter(l => l[key] === value).length !== 0) {
-    return Promise.reject(`${entityName} with that ${key} already exists`)
+  if (list.filter(item => isEqual(item, value)).length !== 0) {
+    return Promise.reject(intl.$t(checkObjectNotExistsMessage, { entityName, key }))
   }
   return Promise.resolve()
 }
