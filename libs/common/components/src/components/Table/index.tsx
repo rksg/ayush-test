@@ -8,8 +8,8 @@ import { Resizable, ResizeCallbackData } from 'react-resizable'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import * as UI             from './styledComponents'
-import { useColumnsState } from './useColumnsState'
+import * as UI                          from './styledComponents'
+import { settingsKey, useColumnsState } from './useColumnsState'
 
 import type { Columns, ColumnStateOption }  from './types'
 import type { SettingOptionType }           from '@ant-design/pro-table/lib/components/ToolBar'
@@ -64,12 +64,23 @@ const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
 }
 
 export function Table <RecordType extends object> (
-  { type = 'tall', columnState, columns: initColumns, ...props }: TableProps<RecordType>
+  { type = 'tall', columnState, ...props }: TableProps<RecordType>
 ) {
   const { $t } = useIntl()
 
-  const [columns, setColumns] = useState(
-    initColumns.map((column, index) => ({
+  const [columns, setColumns ] = useState(() => {
+    const settingsColumn = {
+      key: settingsKey,
+      fixed: 'right' as 'right',
+      width: 32,
+      children: []
+    }
+
+    const cols = type === 'tall'
+      ? [...props.columns, settingsColumn] as typeof props.columns
+      : props.columns
+
+    return cols.map((column, index) => ({
       ...column,
       disable: Boolean(column.fixed || column.disable),
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
@@ -77,17 +88,10 @@ export function Table <RecordType extends object> (
         width: column.width,
         onResize: onColumnResize(index)
       })
-    })) as unknown as typeof initColumns
-  )
+    })) as unknown as typeof props.columns
+  }) //, [props.columns, type])
 
   const columnsState = useColumnsState({ columns, columnState })
-
-  const settingsColumn = {
-    key: 'acx-table-settings',
-    fixed: 'right' as 'right',
-    width: 32,
-    children: []
-  }
 
   const setting: SettingOptionType | false = type === 'tall' ? {
     draggable: true,
@@ -177,7 +181,7 @@ export function Table <RecordType extends object> (
       {...props}
       bordered={false}
       search={false}
-      columns={type === 'tall' ? [...columns, settingsColumn] : columns}
+      columns={columns}
       components={{ header: { cell: ResizableColumn } }}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
