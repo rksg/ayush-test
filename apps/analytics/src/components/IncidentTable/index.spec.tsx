@@ -1,57 +1,74 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                                      from '@acx-ui/analytics/services'
-import { Incident }                                        from '@acx-ui/analytics/utils'
-import { Provider, store }                                 from '@acx-ui/store'
-import { mockGraphqlQuery, mockAutoSizer, render, screen } from '@acx-ui/test-utils'
+import { dataApiURL }                                               from '@acx-ui/analytics/services'
+import { Provider, store }                                          from '@acx-ui/store'
+import { mockGraphqlQuery, mockAutoSizer, render, screen, cleanup } from '@acx-ui/test-utils'
 
-import {
-  api,
-  IncidentNodeData
-} from './services'
+import { api } from './services'
 
 import IncidentTableWidget from '.'
 
-const incidentTest = [{
-  severity: 0.3813119146230035,
-  startTime: '2022-07-21T01:15:00.000Z',
-  endTime: '2022-07-21T01:18:00.000Z',
-  code: 'auth-failure',
-  sliceType: 'zone',
-  sliceValue: 'Venue-3-US',
-  id: '268a443a-e079-4633-9491-536543066e7d',
-  path: [
-    {
-      type: 'zone',
-      name: 'Venue-3-US'
-    }
-  ],
-  metadata: {
-    dominant: {
-      ssid: 'qa-eric-acx-R760-psk'
-    },
-    rootCauseChecks: {
-      checks: [
-        {
-          CCD_REASON_NOT_AUTHED: true
-        }
-      ],
-      params: {}
-    }
+const incidentTests = [
+  {
+    severity: 0.12098536225957168,
+    startTime: '2022-08-03T05:45:00.000Z',
+    endTime: '2022-08-03T05:54:00.000Z',
+    code: 'radius-failure',
+    sliceType: 'ap',
+    sliceValue: 'r710_!216',
+    id: 'c5917024-fd4f-4e11-b65d-610f0251242b',
+    path: [
+      {
+        type: 'zone',
+        name: 'Vaibhav-venue'
+      },
+      {
+        type: 'apGroup',
+        name: 'No group (inherit from Venue)'
+      },
+      {
+        type: 'ap',
+        name: '60:D0:2C:22:6B:90'
+      }
+    ],
+    metadata: {},
+    clientCount: 3,
+    impactedClientCount: 2,
+    isMuted: false,
+    mutedBy: null,
+    mutedAt: null
   },
-  clientCount: 2,
-  impactedClientCount: 2,
-  isMuted: false,
-  mutedBy: null,
-  mutedAt: null,
-  apCount: 0,
-  impactedApCount: 0,
-  switchCount: 0,
-  vlanCount: 0,
-  connectedPowerDeviceCount: 0,
-  slaThreshold: null,
-  currentSlaThreshold: null
-}] as Incident[] as IncidentNodeData
+
+  {
+    severity: 0.15997624339040492,
+    startTime: '2022-07-21T08:12:00.000Z',
+    endTime: '2022-07-21T08:21:00.000Z',
+    code: 'auth-failure',
+    sliceType: 'ap',
+    sliceValue: 'Unknown',
+    id: '24e8e00b-2564-4ce9-8933-c153273dfe2d',
+    path: [
+      {
+        type: 'zone',
+        name: 'Venue-3-US'
+      },
+      {
+        type: 'apGroup',
+        name: 'No group (inherit from Venue)'
+      },
+      {
+        type: 'ap',
+        name: '70:CA:97:3A:3A:40'
+      }
+    ],
+    metadata: {},
+    clientCount: 4,
+    impactedClientCount: 2,
+    isMuted: false,
+    mutedBy: null,
+    mutedAt: null
+  }
+]
 
 describe('IncidentTableWidget', () => {
   mockAutoSizer()
@@ -60,9 +77,11 @@ describe('IncidentTableWidget', () => {
     store.dispatch(api.util.resetApiState())
   )
 
+  afterEach(() => cleanup())
+
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
-      data: { network: { hierarchyNode: { incidents: incidentTest } } }
+      data: { network: { hierarchyNode: { incidents: [] } } }
     })
     render(<Provider><IncidentTableWidget/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
@@ -70,16 +89,65 @@ describe('IncidentTableWidget', () => {
 
   it('should render table', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
-      data: { network: { hierarchyNode: { incidents: incidentTest } } }
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-    const { asFragment } = render(<Provider><IncidentTableWidget/></Provider>, {
+
+    render(<Provider><IncidentTableWidget/></Provider>, {
       route: {
         path: '/t/tenantId/analytics/incidents',
         wrapRoutes: false
       }
     })
-    await screen.findByText('P4')
-    expect(screen.getByText('P4').textContent).toBe('P4')
-    expect(asFragment()).toMatchSnapshot()
+    await screen.findAllByText('P4')
+    expect(screen.getAllByText('P4')).toHaveLength(2)
   })
+
+  const columnHeaders = [
+    'Severity',
+    'Date',
+    'Duration',
+    'Description',
+    'Category',
+    'Client Impact',
+    'Impacted Clients',
+    'Scope',
+    'Type'
+  ]
+
+  it.each(columnHeaders)('column header "%s" presence check', async (header) => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+    render(<Provider><IncidentTableWidget/></Provider>, {
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+    await screen.findByText(header)
+    expect(screen.getByText(header).textContent).toBe(header)
+  })
+
+  it.each(columnHeaders)('column header "%s" sorting check', async (header) => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+    render(<Provider><IncidentTableWidget/></Provider>, {
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+    const elem = await screen.findByText(header)
+    elem.click()
+    await screen.findByRole('img', { hidden: true, name: 'caret-up' })
+    expect(screen.getByRole('img', { hidden: true, name: 'caret-up' })).toBeTruthy()
+  })
+
 })
