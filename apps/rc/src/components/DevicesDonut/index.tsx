@@ -2,7 +2,9 @@ import { find }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader , Card , DonutChart }          from '@acx-ui/components'
+import { cssStr, Loader }                              from '@acx-ui/components'
+import { Card }                                        from '@acx-ui/components'
+import { DonutChart }                                  from '@acx-ui/components'
 import type { DonutChartData }                         from '@acx-ui/components'
 import { SwitchStatusEnum, useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import {
@@ -28,7 +30,7 @@ const seriesMappingAP = [
     color: cssStr('--acx-neutrals-50') },
   { key: ApVenueStatusEnum.OPERATIONAL,
     name: getAPStatusDisplayName(ApVenueStatusEnum.OPERATIONAL, false),
-    color: cssStr('--acx-semantics-green-50') }
+    color: cssStr('--acx-semantics-green-60') }
 ] as Array<{ key: string, name: string, color: string }>
 
 export const getApDonutChartData = (overviewData: Dashboard | undefined,
@@ -74,7 +76,7 @@ const seriesMappingSwitch = [
     color: cssStr('--acx-neutrals-50') },
   { key: SwitchStatusEnum.OPERATIONAL,
     name: getSwitchStatusDisplayName(SwitchStatusEnum.OPERATIONAL),
-    color: cssStr('--acx-semantics-green-50') }
+    color: cssStr('--acx-semantics-green-60') }
 ] as Array<{ key: string, name: string, color: string }>
 
 export const getSwitchDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {

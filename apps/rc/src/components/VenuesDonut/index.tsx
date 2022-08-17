@@ -1,9 +1,11 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card , DonutChart } from '@acx-ui/components'
-import type { DonutChartData }               from '@acx-ui/components'
-import { useDashboardOverviewQuery }         from '@acx-ui/rc/services'
+import { cssStr, Loader }            from '@acx-ui/components'
+import { Card }                      from '@acx-ui/components'
+import { DonutChart }                from '@acx-ui/components'
+import type { DonutChartData }       from '@acx-ui/components'
+import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import {
   Dashboard,
   ApVenueStatusEnum
@@ -24,7 +26,7 @@ const seriesMapping = [
     color: cssStr('--acx-neutrals-50') },
   { key: ApVenueStatusEnum.OPERATIONAL,
     name: getAPStatusDisplayName(ApVenueStatusEnum.OPERATIONAL, false),
-    color: cssStr('--acx-semantics-green-50') }
+    color: cssStr('--acx-semantics-green-60') }
 ] as Array<{ key: string, name: string, color: string }>
 
 export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
