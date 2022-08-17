@@ -8,11 +8,17 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill } from '@acx-ui/components'
 
+import { TimeSeries } from '../TimeSeries'
+
 import * as UI from './styledComponents'
 
-import TimeSeries from '../TimeSeries'
-
 export const IncidentDetailsTemplate = (props: Incident) => {
+  const timeSeriesCharts = [
+    'incidentCharts',
+    'relatedIncidents',
+    'clientCountCharts',
+    'attemptAndFailureCharts'
+  ]
   const { $t } = useIntl()
 
   return (
@@ -40,7 +46,7 @@ export const IncidentDetailsTemplate = (props: Incident) => {
           <div>network impact</div>
         </Col>
         <Col offset={4} span={20}>
-          <TimeSeries {...props}/>
+          <TimeSeries incident={props} charts={timeSeriesCharts}/>
         </Col>
       </Row>
     </>

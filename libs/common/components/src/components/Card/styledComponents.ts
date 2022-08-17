@@ -7,6 +7,7 @@ type WrapperProps = {
   hasTitle: boolean
   hasSubTitle: boolean
   hasTabs: boolean
+  hasHeight: boolean
 }
 
 export const ArrowOutIcon = styled(ArrowsOut)``
@@ -25,9 +26,10 @@ export const Button = styled(AntButton)`
 
 const headRowGap = '5px'
 const cardPadding = '16px'
+const height = '250px'
 
 export const Wrapper = styled.div<WrapperProps>`
-  height: 100%;
+  height: ${(props) => (props.hasHeight ? height : '100%')};
   width: 100%;
   .ant-card {
     padding: ${cardPadding};

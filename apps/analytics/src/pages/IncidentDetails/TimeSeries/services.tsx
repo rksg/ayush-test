@@ -1,240 +1,97 @@
 import { gql } from 'graphql-request'
+import moment  from 'moment-timezone'
 
-import { dataApi } from '@acx-ui/analytics/services'
+import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
-export interface IncidentCharts {
-  time: string[]
-  failure: number[]
-}
+import { failureCharts } from './config'
 
-export interface ClientCountCharts {
-  connectedClientCount: number[]
-  impactedClientCount: number[]
-  newClientCount: number[]
-  time: string[]
-}
-
-export interface AttemptAndFailureCharts {
-  time: string[]
-  failureCount: number[]
-  totalFailureCount: number[]
-  attemptCount: number[]
-}
-
-export interface RelatedIncidents {
-  id: string
-  severity: number
-  code: string
-  startTime: string
-  endTime: string
-}
-
-export interface RequestPayload {
-  code: string
+export interface ChartDataProps {
+  charts: string[]
   incident: Incident
 }
 
-interface Response <TimeSeriesData> {
-  incident: Record<string, ClientCountCharts>
-}
-
-interface ChartsData {
-  incidentCharts: {
-    time: string[]
-    failure: number[]
-  },
-  relatedIncidents: {
-    id: string
-    severity: number
-    code: string
-    startTime: string
-    endTime: string
-  },
-  clientCountCharts: {
-    connectedClientCount: number[]
-    impactedClientCount: number[]
-    newClientCount: number[]
-    time: string[]
-  },
-  attemptAndFailureCharts: {
-    time: string[]
-    failureCount: number[]
-    totalFailureCount: number[]
-    attemptCount: number[]
+interface Response <T> {
+  network: {
+    hierarchyNode: T
   }
 }
+
+type ChartsData = {
+  relatedIncidents: [Partial<Incident>],
+} & Record<string, Record<string, number[] | string[]>>
+
+const calcGranularity = (start: string, end: string): string => {
+  const duration = moment.duration(moment(end).diff(moment(start))).asHours()
+  if (duration > 24 * 7) return 'PT1H' // 1 hour if duration > 7 days
+  if (duration > 1) return 'PT30M'
+  return 'PT180S'
+}
+
+function duration (
+  { start, end }: { start: moment.Moment, end: moment.Moment }
+) { return end.diff(start) }
+
+export function getIncidentTimeSeriesPeriods (incident: Incident) {
+  const { startTime, endTime } = incident
+
+  const visiblePeriod = {
+    start: moment(startTime),
+    end: moment(endTime)
+  }
+
+  let queryPeriod = {
+    start: moment(startTime).subtract(48, 'hours'),
+    end: visiblePeriod.end.clone()
+  }
+
+  if (duration(visiblePeriod) > duration(queryPeriod)) queryPeriod = visiblePeriod
+
+  return {
+    queryPeriod
+  }
+}
+
 
 export const Api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     Charts: build.query<
       ChartsData,
-      AnalyticsFilter
+      ChartDataProps
     >({
-      query: (payload) => ({
-        document: gql`
-          query Network($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $granularity: String) {
-            network(start: $start, end: $end) {
-              hierarchyNode(path: $path) {
-                incidentCharts: timeSeries(granularity: $granularity) {
-                  time
-                  radius: apConnectionFailureRatio(metric: "radius")
-                }
-                relatedIncidents: incidents(filter: {code: ["radius-failure"]}) {
-                  id
-                  severity
-                  code
-                  startTime
-                  endTime
-                }
-                clientCountCharts: timeSeries(granularity: $granularity) {
-                  time
-                  newClientCount: connectionAttemptCount
-                  impactedClientCount: impactedClientCountByCode(filter: {code: "radius-failure"})
-                  connectedClientCount
-                }
-                attemptAndFailureCharts: timeSeries(granularity: $granularity) {
-                  time
-                  failureCount(metric: "radius")
-                  totalFailureCount: failureCount
-                  attemptCount(metric: "radius")
+      query: (payload) => {
+        const queries = payload.charts.map(
+          chart => failureCharts[chart].query(payload.incident)
+        )
+        return {
+          document: gql`
+            query Network(
+              $path: [HierarchyNodeInput],
+              $start: DateTime,
+              $end: DateTime,
+              $granularity: String,
+              $code: String
+            ) {
+              network(start: $start, end: $end) {
+                hierarchyNode(path: $path) {
+                  ${queries.join('\n')}
                 }
               }
             }
+          `,
+          variables: {
+            code: payload.incident.code,
+            codeMap: [payload.incident.code],
+            start: getIncidentTimeSeriesPeriods(payload.incident).queryPeriod.start,
+            end: getIncidentTimeSeriesPeriods(payload.incident).queryPeriod.end,
+            path: payload.incident.path,
+            granularity: calcGranularity(payload.incident.startTime, payload.incident.endTime)
           }
-        `,
-        variables: {
-          code: payload.code,
-          codeMap: [payload.code]
         }
-      })
+      },
+      transformResponse: (response: Response<ChartsData>) => response.network.hierarchyNode
     })
   })
 })
 
 export const { useChartsQuery } = Api
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export const incidentChartsApi = dataApi.injectEndpoints({
-//   endpoints: (build) => ({
-//     incidentCharts: build.query<
-//       IncidentCharts,
-//       RequestPayload
-//     >({
-//       query: (payload) => ({
-//         document: gql`
-//           query IncidentCharts($granularity: String, $metric: String) {
-//             incidentCharts: timeSeries(granularity: $granularity) {
-//               time
-//               $metric: apConnectionFailureRatio(metric: $metric)
-//             }
-//           }
-//         `,
-//         variables: {
-//           id: payload.id
-//         }
-//       }),
-//       transformResponse : (response: { incidentCharts: IncidentCharts }) => response.incidentCharts
-//     })
-//   })
-// })
-
-// export const { useIncidentChartsQuery } = incidentChartsApi
-
-// export const clientCountChartsApi = dataApi.injectEndpoints({
-//   endpoints: (build) => ({
-//     clientCountChart: build.query<
-//       ClientCountCharts,
-//       RequestPayload
-//     >({
-//       query: (payload) => ({
-//         document: gql`
-//           clientCountCharts: timeSeries(granularity:$granularity) {
-//             time
-//             newClientCount: connectionAttemptCount,
-//             impactedClientCount: impactedClientCountByCode(filter:{code: "code"}),
-//             connectedClientCount
-//           }
-//         `,
-//         variables: {
-//           id: payload.id
-//         }
-//       }),
-//       transformResponse : (response: { clientCountChart: ClientCountCharts }) => response.clientCountChart
-//     })
-//   })
-// })
-
-// export const { useClientCountChartQuery } = clientCountChartsApi
-
-// export const attemptAndFailureChartsApi = dataApi.injectEndpoints({
-//   endpoints: (build) => ({
-//     attemptAndFailureCharts: build.query<
-//       AttemptAndFailureCharts, RequestPayload
-//     >({
-//       query: (payload) => ({
-//         document: gql`
-//           query AttemptAndFailureCharts($granularity: String, $metric: String) {
-//             attemptAndFailureCharts: timeSeries(granularity: $granularity) {
-//               time
-//               failureCount(metric: $metric)
-//               totalFailureCount: failureCount
-//               attemptCount(metric: $metric)
-//             }
-//           }
-//         `,
-//         variables: payload
-//       }),
-//       transformResponse : (response: { attemptAndFailureCharts: AttemptAndFailureCharts }) => response.attemptAndFailureCharts
-//     })
-//   })
-// })
-
-// export const { useAttemptAndFailureChartsQuery } = attemptAndFailureChartsApi
-
-// export const relatedIncidentsApi = dataApi.injectEndpoints({
-//   endpoints: (build) => ({
-//     relatedIncidents: build.query({
-//       query: (payload) => ({
-//         document: gql`
-//           query RelatedIncidents($code: String) {
-//             relatedIncidents: incidents (filter: {code: [$code]}) {
-//               id
-//               severity
-//               code
-//               startTime
-//               endTime
-//             }
-//           }
-//         `,
-//         variables: {
-//           code: payload
-//         }
-//       }),
-//       transformResponse : (response: { relatedIncidents: RelatedIncidents }) => response.relatedIncidents
-//     })
-//   })
-// })
-
-// export const { useRelatedIncidentsQuery } = relatedIncidentsApi

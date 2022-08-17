@@ -21,14 +21,16 @@ export interface CardProps extends Pick<AntCardProps, 'children'> {
   onTabChange?: (e: AntRadioChangeEvent) => void
   onExpandClick?: () => void
   onMoreClick?: () => void
+  height?: boolean
 }
 
-export const Card = function Card ({ title, subTitle, tabs, ...props }: CardProps) {
+export const Card = function Card ({ title, subTitle, tabs, height, ...props }: CardProps) {
   const [selectedTab, setSelectedTab] = useState(props.defaultTab)
   const wrapperProps = {
     hasTitle: Boolean(title),
     hasSubTitle: Boolean(subTitle),
-    hasTabs: Boolean(tabs)
+    hasTabs: Boolean(tabs),
+    hasHeight: Boolean(height)
   }
   return (
     <UI.Wrapper {...wrapperProps}>

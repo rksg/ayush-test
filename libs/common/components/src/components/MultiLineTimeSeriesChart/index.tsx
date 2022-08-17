@@ -26,6 +26,7 @@ interface MultiLineTimeSeriesChartProps
     legendProp?: keyof TChartData,
     lineColors?: string[],
     dataFormatter?: (value: unknown) => string | null
+    handleClick?: () => void
   }
 
 export function MultiLineTimeSeriesChart
