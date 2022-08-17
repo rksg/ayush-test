@@ -52,7 +52,7 @@ exports[`Networks Table should delete selected row 1`] = `
     </div>
   </div>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 fAUEwG"
   >
     <div
       class="styledComponents__Wrapper-sc-1abm7iv-3 kArFeu"
@@ -1899,7 +1899,7 @@ exports[`Networks Table should render table 1`] = `
     </div>
   </div>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 fAUEwG"
   >
     <div
       class="styledComponents__Wrapper-sc-1abm7iv-3 kArFeu"

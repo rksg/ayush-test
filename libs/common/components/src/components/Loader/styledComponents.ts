@@ -1,14 +1,10 @@
 import styled, { css } from 'styled-components/macro'
 
-export const Wrapper = styled.div<{ $isLoading?: boolean }>`
+export const Wrapper = styled.div`
   position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
-
-  ${props => props.$isLoading ? css`
-    background-color: var(--acx-neutrals-20);
-  ` : ''}
 `
 
 export const FallbackWrapper = styled.div<{ $isFetching?: boolean }>`

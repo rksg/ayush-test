@@ -35,7 +35,7 @@ export function Loader (props: LoaderProps) {
     : undefined
 
   return (
-    <UI.Wrapper $isLoading={isLoading}>
+    <UI.Wrapper>
       <ErrorBoundary fallback={errorFallback}>
         <ErrorContainer states={props.states} />
         <SuspenseBoundary fallback={fallback}>
