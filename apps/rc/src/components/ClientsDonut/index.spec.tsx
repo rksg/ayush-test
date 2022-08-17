@@ -58,7 +58,7 @@ describe('getAPClientChartData', () => {
       name: 'Poor',
       value: 1
     }, {
-      color: '#23AB36',
+      color: '#258D36',
       name: 'Good',
       value: 2
     }, {
@@ -87,7 +87,7 @@ describe('getSwitchClientChartData', () => {
   it('should return correct formatted data', async () => {
     const { result } = renderHook(() => getSwitchClientChartData(data, useIntl()))
     expect(result.current).toEqual([{
-      color: '#23AB36',
+      color: '#258D36',
       name: 'Clients',
       value: 2
     }])

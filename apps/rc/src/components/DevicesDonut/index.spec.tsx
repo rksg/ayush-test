@@ -97,7 +97,7 @@ describe('getSwitchDonutChartData', () => {
       name: 'In Setup Phase',
       value: 5
     }, {
-      color: '#23AB36',
+      color: '#258D36',
       name: 'Operational',
       value: 1
     }])
@@ -109,7 +109,7 @@ describe('getSwitchDonutChartData', () => {
       name: 'In Setup Phase',
       value: 3
     }, {
-      color: '#23AB36',
+      color: '#258D36',
       name: 'Operational',
       value: 1
     }])
