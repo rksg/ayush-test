@@ -16,12 +16,12 @@ function Incidents () {
 
   return <>
     <Header title={$t({ defaultMessage: 'Incidents' })} />
-    <GridRow gutter={[0, 20]}>
-      <GridCol col={{ span: 4 }} style={{ height: '220px' }}>
+    <GridRow>
+      <GridCol col={{ span: 4 }} style={{ height: '210px' }}>
         <IncidentBySeverityWidget />
       </GridCol>
-      <GridCol col={{ span: 20 }} style={{ height: '220px' }}>
-        <NetworkHistoryWidget hideTitle filters={filters}/>
+      <GridCol col={{ span: 20 }} style={{ height: '210px' }}>
+        <NetworkHistoryWidget hideTitle bordered={false} filters={filters} />
       </GridCol>
       <GridCol col={{ span: 24 }} style={{ height: '440px' }}>
         <IncidentTableWidget />

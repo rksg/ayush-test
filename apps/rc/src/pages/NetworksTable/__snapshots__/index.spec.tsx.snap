@@ -3,7 +3,7 @@
 exports[`Networks Table should delete selected row 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
+    class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -37,7 +37,7 @@ exports[`Networks Table should delete selected row 1`] = `
                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/create"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
                   type="button"
                 >
                   <span>
@@ -55,7 +55,7 @@ exports[`Networks Table should delete selected row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
+      class="styledComponents__Wrapper-sc-1abm7iv-3 kArFeu"
     >
       <div
         class="ant-pro-table"
@@ -1850,7 +1850,7 @@ exports[`Networks Table should delete selected row 1`] = `
 exports[`Networks Table should render table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
+    class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -1884,7 +1884,7 @@ exports[`Networks Table should render table 1`] = `
                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/create"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
                   type="button"
                 >
                   <span>
@@ -1902,7 +1902,7 @@ exports[`Networks Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
+      class="styledComponents__Wrapper-sc-1abm7iv-3 kArFeu"
     >
       <div
         class="ant-pro-table"
