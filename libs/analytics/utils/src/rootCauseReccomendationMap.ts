@@ -690,7 +690,7 @@ const ccd80211CommonRecommendations = [
   ...commonRecommendations.slice(1)
 ]
 
-export const ccd80211RootCauseRecommendations = {
+export const ccd80211RootCauseRecommendations: Record<string, RootCauseRecommendation> = {
   CCD_REASON_UNSPECIFIED: {
     rootCauses: ['Clients are disconnected during the connection sequence, but the reason is unknown and unspecified by the disconnecting device.'],
     recommendations: [
@@ -851,16 +851,17 @@ const codeToFailureTypeMap: Record<string, string> = {
   'i-apinfra-wanthroughput-low': 'ap-wanthroughput-low'
 }
 
-export function getRootCauseAndRecommendations (code: string, { rootCauseChecks }: IncidentMetadata) {
+export function getRootCauseAndRecommendations (code: string, incidentMetaData: IncidentMetadata) {
   const failureType = codeToFailureTypeMap[code]
 
-  if (!rootCauseChecks) return [{ rootCauses: ['Calculating...'], recommendations: [] }]
+  if (!incidentMetaData) return [{ rootCauses: ['Calculating...'], recommendations: [] }]
 
+  const { rootCauseChecks } = incidentMetaData
   const { checks } = rootCauseChecks
   const failureCode = extractFailureCode(checks)
   const { rootCauses, recommendations } = rootCauseRecommendationMap[failureType]
     ? rootCauseRecommendationMap[failureType][failureCode] ||
-      ccd80211RootCauseRecommendations ||
+      ccd80211RootCauseRecommendations[failureCode] ||
         { rootCauses: ['TBD'], recommendations: ['TBD'] }
     : { rootCauses: ['TBD'], recommendations: ['TBD'] }
   return [{
