@@ -1,4 +1,5 @@
 import {
+  GuestNetworkTypeEnum,
   NetworkTypeEnum,
   PassphraseExpirationEnum,
   PassphraseFormatEnum,
@@ -12,6 +13,38 @@ export interface CreateNetworkFormFields {
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
   venues: any;
+}
+
+export interface Network { // TODO: Move all Network type from libs/rc/services/src/type
+  id: string
+  name: string
+  description: string
+  nwSubType: string
+  ssid: string
+  vlan: number
+  aps: number
+  clients: number
+  venues: { count: number, names: string[] }
+  captiveType: GuestNetworkTypeEnum
+  deepNetwork?: NetworkDetail
+  vlanPool?: { name: string }
+  activated: { isActivated: boolean, isDisabled?: boolean, errors: string[] }
+  allApDisabled?: boolean
+}
+
+export interface NetworkDetail {
+  type: NetworkTypeEnum
+  tenantId: string
+  name: string
+  venues: NetworkVenue[]
+  id: string,
+  wlan: {
+    wlanSecurity: WlanSecurityEnum,
+    ssid?: string;
+    vlanId?: number;
+    enable?: boolean;
+    advancedCustomization?: IOpenWlanAdvancedCustomization;
+  },
 }
 
 export interface NetworkSaveData {

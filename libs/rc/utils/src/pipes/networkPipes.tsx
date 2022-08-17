@@ -2,11 +2,8 @@ import React from 'react'
 
 import { defineMessage, FormattedMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { Network } from '@acx-ui/rc/services'
-
 import { GuestNetworkTypeEnum, NetworkTypeEnum, PassphraseExpirationEnum, PassphraseFormatEnum, WlanSecurityEnum } from '../constants'
-
+import { Network }                                                                                                 from '../types/network'                                                                                              
 
 export enum DpskNetworkType {
   FORMAT = 'PassphraseFormat',
