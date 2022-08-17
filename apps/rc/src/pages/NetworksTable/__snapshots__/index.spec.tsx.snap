@@ -146,11 +146,15 @@ exports[`Networks Table should delete selected row 1`] = `
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-selection-column"
-                              />
+                                class="ant-table-cell ant-table-selection-column react-resizable"
+                              >
+                                <span
+                                  class="react-resizable-handle"
+                                />
+                              </th>
                               <th
                                 aria-sort="ascending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
                                 <div
@@ -208,9 +212,12 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
                                 <div
@@ -268,9 +275,12 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
                                 <div
@@ -328,9 +338,12 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -389,9 +402,12 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -450,9 +466,12 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -511,9 +530,12 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
@@ -572,9 +594,12 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
                                 <div
@@ -632,9 +657,12 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
                                 <div
@@ -692,9 +720,12 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
                                 <div
@@ -752,11 +783,18 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                 style="position: sticky; right: 0px;"
-                              />
+                              >
+                                <span
+                                  class="react-resizable-handle"
+                                />
+                              </th>
                             </tr>
                           </thead>
                           <tbody

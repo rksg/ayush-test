@@ -58,17 +58,27 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                           >
                             <tr>
                               <th
-                                class="ant-table-cell"
-                              />
-                              <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
-                                Networking Devices
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
+                              >
+                                Networking Devices
+                                <span
+                                  class="react-resizable-handle"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
                               >
                                 Clients
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                             </tr>
                           </thead>
@@ -254,17 +264,27 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                           >
                             <tr>
                               <th
-                                class="ant-table-cell"
-                              />
-                              <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
-                                Networking Devices
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
+                              >
+                                Networking Devices
+                                <span
+                                  class="react-resizable-handle"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
                               >
                                 Clients
+                                <span
+                                  class="react-resizable-handle"
+                                />
                               </th>
                             </tr>
                           </thead>

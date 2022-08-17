@@ -86,7 +86,7 @@ export function Table <RecordType extends object> (
       ...column,
       disable: Boolean(column.fixed || column.disable),
       show: Boolean(column.fixed || column.disable || (column.show ?? true))
-    })) as unknown as typeof props.columns
+    }))
   }, [props.columns, type])
 
   const columnsState = useColumnsState({ columns, columnState })
