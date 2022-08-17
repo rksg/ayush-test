@@ -166,6 +166,7 @@ export const stackedBarTooltipFormatter = (
 }
 
 export const donutChartTooltipFormatter = (
+  showTooltipPercentage: boolean,
   dataFormatter?: ((value: unknown) => string | null)
 ) => (
   parameters: TooltipFormatterParams
@@ -178,6 +179,11 @@ export const donutChartTooltipFormatter = (
           {`${parameters.name}`}<br/>
           <b><span>{`${dataFormatter
             ? dataFormatter(parameters.value): parameters.value}`}</span></b>
+          {
+            showTooltipPercentage
+              ? <span>{` (${Math.round(parameters.percent || 0)}%)`}</span>
+              : null
+          }
         </>}
       />
     </UI.TooltipWrapper>

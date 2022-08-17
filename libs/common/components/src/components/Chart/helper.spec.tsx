@@ -76,10 +76,10 @@ describe('donutChartTooltipFormatter', () => {
   } as TooltipFormatterParams
   it('should return correct Html string for single value', async () => {
     const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(donutChartTooltipFormatter(formatter)(singleparameters)).toMatchSnapshot()
+    expect(donutChartTooltipFormatter(false, formatter)(singleparameters)).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(1)
   })
   it('should handle when no formatter', async () => {
-    expect(donutChartTooltipFormatter()(singleparameters)).toMatchSnapshot()
+    expect(donutChartTooltipFormatter(true)(singleparameters)).toMatchSnapshot()
   })
 })

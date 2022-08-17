@@ -16,11 +16,19 @@ export type DonutChartData = {
 interface DonutChartOptionalProps {
   showLegend: boolean,
   animation: boolean,
+  showLabel: boolean,
+  showTotal: boolean,
+  showTooltipPercentage: boolean,
+  type: 'small' | 'large'
 }
 
 const defaultProps: DonutChartOptionalProps = {
   showLegend: true,
-  animation: true
+  animation: true,
+  showLabel: false,
+  showTotal: true,
+  showTooltipPercentage: false,
+  type: 'small'
 }
 
 DonutChart.defaultProps = { ...defaultProps }
@@ -29,6 +37,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   Omit<EChartsReactProps, 'option' | 'opts'> {
   data: Array<DonutChartData>
   title?: string,
+  subtitle?: string,
   dataFormatter?: (value: unknown) => string | null,
   onClick?: (params: EventParams) => void
 }
@@ -42,6 +51,7 @@ export function DonutChart ({
   const sum = data.reduce((acc, cur) => acc + cur.value, 0)
   const colors = data.map(series => series.color)
   const isEmpty = data.length === 0 || (data.length === 1 && data[0].name === '')
+  const isSmall = props.type === 'small'
 
   if (data.length === 0) { // Adding empty data to show center label
     data.push({
@@ -52,10 +62,50 @@ export function DonutChart ({
   }
 
   const commonStyles = {
+    color: cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-chart-font'),
     fontSize: cssNumber('--acx-headline-3-font-size'),
     lineHeight: cssNumber('--acx-headline-3-line-height'),
     fontWeight: cssNumber('--acx-headline-3-font-weight')
+  }
+
+  const commonFontStyle = {
+    color: cssStr('--acx-primary-black'),
+    fontFamily: cssStr('--acx-neutral-brand-font')
+  }
+
+  const styles = {
+    small: {
+      title: {
+        ...commonFontStyle,
+        fontSize: cssNumber('--acx-subtitle-6-font-size'),
+        lineHeight: cssNumber('--acx-subtitle-6-line-height'),
+        fontWeight: cssNumber('--acx-subtitle-6-font-weight')
+      },
+      subtitle: {
+        ...commonStyles
+      }
+    },
+    large: {
+      title: {
+        ...commonFontStyle,
+        fontSize: cssNumber('--acx-body-2-font-size'),
+        lineHeight: cssNumber('--acx-body-2-line-height'),
+        fontWeight: cssNumber('--acx-body-font-weight')
+      },
+      subtitle: {
+        ...commonFontStyle,
+        fontSize: cssNumber('--acx-subtitle-1-font-size'),
+        lineHeight: cssNumber('--acx-subtitle-1-line-height'),
+        fontWeight: cssNumber('--acx-subtitle-1-font-weight')
+      }
+    },
+    label: {
+      ...commonFontStyle,
+      fontSize: cssNumber('--acx-body-4-font-size'),
+      lineHeight: cssNumber('--acx-body-4-line-height'),
+      fontWeight: cssNumber('--acx-body-font-weight')
+    }
   }
 
   const onChartClick = (params: EventParams) => {
@@ -74,10 +124,24 @@ export function DonutChart ({
     tooltip: {
       show: false
     },
+    title: {
+      show: true,
+      text: props.title,
+      subtext: props.subtitle
+        ? props.subtitle
+        : props.showTotal ? `${dataFormatter ? dataFormatter(sum) : sum}` : undefined,
+      left: props.showLegend && !isEmpty ? '26%' : 'center',
+      top: 'center',
+      textVerticalAlign: 'top',
+      textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
+      itemGap: 4,
+      textStyle: styles[props.type].title,
+      subtextStyle: styles[props.type].subtitle
+    },
     legend: {
       show: props.showLegend,
       top: 'middle',
-      left: '55%',
+      left: '58%',
       orient: 'vertical',
       icon: 'circle',
       selectedMode: false,
@@ -101,46 +165,31 @@ export function DonutChart ({
         animation: !isEmpty,
         data,
         type: 'pie',
-        center: [props.showLegend && !isEmpty ? '26%' : '50%', '50%'],
-        radius: ['76%', '90%'],
-        cursor: isEmpty ? 'auto' : 'pointer',
+        center: [props.showLegend && !isEmpty ? '28%' : '50%', '50%'],
+        radius: isEmpty
+          ? ['82%', '92%']
+          : props.showLabel ? ['66%', '80%'] : ['78%', '92%'],
         avoidLabelOverlap: true,
         label: {
-          show: true,
-          position: 'center',
-          formatter: () => {
-            const value = dataFormatter ? dataFormatter(sum) : sum
-            return props.title
-              ? `{title|${props.title}}\n\n{value|${value}}`
-              : `{value|${value}}`
-          },
-          rich: {
-            title: {
-              fontFamily: cssStr('--acx-neutral-brand-font'),
-              fontSize: cssNumber('--acx-subtitle-6-font-size'),
-              lineHeight: cssNumber('--acx-subtitle-6-line-height'),
-              fontWeight: cssNumber('--acx-subtitle-6-font-weight'),
-              padding: [0, 0, -15, 0]
-            },
-            value: {
-              ...commonStyles
-            }
-          }
+          show: props.showLabel,
+          ...styles.label
         },
         tooltip: {
           ...tooltipOptions(),
           show: !isEmpty,
-          formatter: donutChartTooltipFormatter(dataFormatter)
+          formatter: donutChartTooltipFormatter(props.showTooltipPercentage, dataFormatter)
         },
         emphasis: {
           disabled: isEmpty,
           scaleSize: 5
         },
         labelLine: {
-          show: false
+          show: props.showLabel,
+          length: isSmall ? 10 : 20,
+          length2: isSmall ? 5 : 15
         },
         itemStyle: {
-          borderWidth: 1,
+          borderWidth: props.type === 'large' ? 2 : 1,
           borderColor: isEmpty ? cssStr('--acx-neutrals-25') : cssStr('--acx-primary-white')
         }
       }
