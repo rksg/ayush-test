@@ -1,0 +1,31 @@
+export interface BarChartData extends Object {
+  /**
+   * Dataset dimensions array
+   * @example
+   * ['switch_name', 'poe_usage', 'utilisation_per'],
+   */
+  dimensions: string[]
+
+  /**
+   * Multi dimensional dataset value array
+   * @example
+   * ['Switch 1', 73780, 7.3],
+     ['Switch 2', 273780, 19.3],
+     ['Switch 3', 1073780, 79.11],
+   * **/
+  source: (string | number)[][]
+
+  /**
+   * Dimension mapping to Axis, supports multiseries
+   * * @example
+   * [{
+   // Map "poe_usage" to x-axis.
+      x: 'poe_usage',
+   // Map "switch_name" to y-axis.
+      y: 'switch_name'
+   // Display name of the series, must be present into the dimensions array
+      seriesName: 'poe_usage'
+    * }]
+  */
+  seriesEncode: { x: string, y: string, seriesName?: string }[]
+}

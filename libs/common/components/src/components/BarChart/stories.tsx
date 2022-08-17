@@ -4,13 +4,12 @@ import { withKnobs, object }  from '@storybook/addon-knobs'
 import { storiesOf }          from '@storybook/react'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 
-import type { BarChartData } from '@acx-ui/analytics/utils'
-import { formatter }         from '@acx-ui/utils'
+import { formatter } from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import { Card }              from '../Card'
 
-import { BarChart } from '.'
+import { BarChart, BarChartData } from '.'
 
 export const data = (multiseries = false): BarChartData => ({
   dimensions: ['Switch Name', 'PoE Usage', 'Utilisation_per', 'Transmited', 'Received'],
