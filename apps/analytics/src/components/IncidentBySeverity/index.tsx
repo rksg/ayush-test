@@ -18,7 +18,6 @@ import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from './services
 import * as UI                                                  from './styledComponents'
 
 type PillData = { delta: string, total: number, trend: string }
-const barColors = Object.values(incidentSeverities).map(({ color }) => cssStr(color))
 export const getPillData = (
   curr: IncidentsBySeverityData,
   prev: IncidentsBySeverityData
@@ -62,11 +61,15 @@ function IncidentBySeverityWidget ({ filters }: { filters: IncidentFilter }) {
   )
 
   let chart: BarChartData,
+    barColors: string[],
     pill: PillData = { total: 0, trend: 'none', delta: '0' }
 
   if (prevResult.data && currentResult.data) {
     pill = getPillData(currentResult.data, prevResult.data)
     chart = getChartData(currentResult.data)
+    barColors = chart.source.map(([p]) =>
+      cssStr(incidentSeverities[p as keyof typeof incidentSeverities].color)
+    )
   }
   return (
     <Loader states={[prevResult, currentResult]}>
