@@ -1,5 +1,5 @@
-import { Tabs }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Tabs }                                      from 'antd'
+import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { useAnalyticsFilter }                           from '@acx-ui/analytics/utils'
 import { categoryNames, categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
@@ -12,6 +12,21 @@ import NetworkHistoryWidget     from '../../components/NetworkHistory'
 
 const incidentTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
 type IncidentListTabs = 'overview' | 'connection' | 'performance' | 'infrastructure'
+
+const tabsMap : Record<IncidentListTabs, MessageDescriptor> = {
+  connection: defineMessage({
+    defaultMessage: 'Connection'
+  }),
+  overview: defineMessage({
+    defaultMessage: 'Overview'
+  }),
+  performance: defineMessage({
+    defaultMessage: 'Performance'
+  }),
+  infrastructure: defineMessage({
+    defaultMessage: 'Infrastructure'
+  })
+}
 
 const IncidentTabContent = (props: { tabSelection: IncidentListTabs }) => {
   const { tabSelection } = props
@@ -55,7 +70,7 @@ function Incidents () {
           <Tabs activeKey={activeTab} onChange={onTabChange}>
             {incidentTabs.map((tabInfo) => (
               <Tabs.TabPane
-                tab={$t({ defaultMessage: '{tab}' }, { tab: tabInfo.text })}
+                tab={$t(tabsMap[tabInfo.value as IncidentListTabs])}
                 key={tabInfo.value}
               />
             ))}
