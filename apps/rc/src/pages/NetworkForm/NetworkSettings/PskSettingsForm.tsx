@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+
 import {
   QuestionCircleOutlined,
   ExclamationCircleFilled
@@ -14,6 +15,7 @@ import {
   Tooltip,
   Input
 } from 'antd'
+import { useIntl } from 'react-intl'
 
 import {
   StepsForm,
@@ -49,6 +51,7 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function PskSettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
+  const { $t } = useIntl()
   const [
     isCloudpathEnabled,
     selectedId,
@@ -95,10 +98,10 @@ export function PskSettingsForm (props: StepFormProps<CreateNetworkFormFields>) 
     return (
       <Space align='center' style={{ display: 'flex', justifyContent: 'center' }}>
         <Button type='link' disabled={enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(true)}>
-          Authentication Service
+          {$t({ defaultMessage: 'Authentication Service' })}
         </Button>
         <Button type='link' disabled={!enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(false)}>
-          Accounting Service
+          {$t({ defaultMessage: 'Accounting Service' })}
         </Button>
       </Space>
     )
