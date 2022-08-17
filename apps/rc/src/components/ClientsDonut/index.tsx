@@ -45,7 +45,7 @@ export const getSwitchClientChartData = (
     chartData.push({
       name: $t({ defaultMessage: 'Clients' }),
       value: switchClients.totalCount,
-      color: cssStr('--acx-semantics-green-60')
+      color: cssStr('--acx-semantics-green-50')
     })
   }
   return chartData
