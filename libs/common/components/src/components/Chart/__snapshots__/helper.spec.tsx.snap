@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`donutChartTooltipFormatter should handle when no formatter 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 dBFrws\\"><span class=\\"ant-badge ant-badge-status ant-badge-not-a-wrapper styledComponents__Badge-sc-ryy21w-1 cZsyee\\"><span class=\\"ant-badge-status-dot\\" style=\\"background:color1\\"></span><span class=\\"ant-badge-status-text\\">undefined<br/><b><span>10</span></b></span></span></div>"`;
+exports[`donutChartTooltipFormatter should handle when no formatter 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 dBFrws\\"><span class=\\"ant-badge ant-badge-status ant-badge-not-a-wrapper styledComponents__Badge-sc-ryy21w-1 cZsyee\\"><span class=\\"ant-badge-status-dot\\" style=\\"background:color1\\"></span><span class=\\"ant-badge-status-text\\">undefined<br/><b><span>10</span></b><span> (0%)</span></span></span></div>"`;
 
 exports[`donutChartTooltipFormatter should return correct Html string for single value 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 dBFrws\\"><span class=\\"ant-badge ant-badge-status ant-badge-not-a-wrapper styledComponents__Badge-sc-ryy21w-1 cZsyee\\"><span class=\\"ant-badge-status-dot\\" style=\\"background:color1\\"></span><span class=\\"ant-badge-status-text\\">undefined<br/><b><span>formatted-10</span></b></span></span></div>"`;
 
