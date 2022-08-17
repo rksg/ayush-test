@@ -107,12 +107,8 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                       <col />
                                       <col />
                                       <col />
-                                      <col
-                                        style="width: 80px;"
-                                      />
-                                      <col
-                                        style="width: 140px;"
-                                      />
+                                      <col />
+                                      <col />
                                       <col />
                                       <col
                                         style="width: 32px;"

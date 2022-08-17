@@ -149,25 +149,30 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
 
   const columns: TableProps<Venue>['columns'] = [
     {
+      key: 'name',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       sorter: true
     },
     {
+      key: 'city',
       title: $t({ defaultMessage: 'City' }),
       dataIndex: 'city',
       sorter: true
     },
     {
+      key: 'country',
       title: $t({ defaultMessage: 'Country' }),
       dataIndex: 'country',
       sorter: true
     },
     {
+      key: 'network',
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: ['networks', 'count']
     },
     {
+      key: 'aggregatedApStatus',
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       dataIndex: 'aggregatedApStatus',
       render: function (data, row) {
@@ -178,6 +183,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
+      key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       render: function (data, row) {
@@ -191,6 +197,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
+      key: 'aps',
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       width: 80,
@@ -199,6 +206,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
+      key: 'radios',
       title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
       width: 140,
@@ -207,6 +215,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     },
     {
+      key: 'scheduling',
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {

@@ -15,6 +15,7 @@ import * as contents from '../NetworkForm/contentsMap'
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
     {
+      key: 'name',
       title: intl.$t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
       sorter: true,
@@ -26,11 +27,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       }
     },
     {
+      key: 'description',
       title: intl.$t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
       sorter: true
     },
     {
+      key: 'nwSubType',
       title: intl.$t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
@@ -40,6 +43,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       />
     },
     {
+      key: 'venues',
       title: intl.$t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
@@ -54,6 +58,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       }
     },
     {
+      key: 'aps',
       title: intl.$t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       sorter: true,
@@ -65,18 +70,21 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       }
     },
     {
+      key: 'clients',
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       sorter: true,
       align: 'center'
     },
     {
+      key: 'services',
       title: intl.$t({ defaultMessage: 'Services' }),
       dataIndex: 'services',
       sorter: true,
       align: 'center'
     },
     {
+      key: 'vlan',
       title: intl.$t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       sorter: true,
@@ -85,11 +93,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       }
     },
     {
+      key: 'health',
       title: intl.$t({ defaultMessage: 'Health' }),
       dataIndex: 'health',
       sorter: true
     },
     {
+      key: 'tags',
       title: intl.$t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
       sorter: true

@@ -5,6 +5,8 @@ import type {
 } from '@ant-design/pro-table'
 
 type AdditionalColumnType = {
+  // mandatory column for mapping columns
+  key: string
   /**
    * Mark column as fixed
    */

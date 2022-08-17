@@ -10,17 +10,20 @@ function useColumns () {
   const { $t } = useIntl()
   const columns: TableProps<Alarm>['columns'] = useMemo(() => [
     {
+      key: 'startTime',
       title: $t({ defaultMessage: 'Alarm Time' }),
       dataIndex: 'startTime',
       sorter: true,
       defaultSortOrder: 'ascend'
     },
     {
+      key: 'severity',
       title: $t({ defaultMessage: 'Severity' }),
       dataIndex: 'severity',
       sorter: true
     },
     {
+      key: 'message',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
       sorter: false

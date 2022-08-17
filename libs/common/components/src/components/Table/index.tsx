@@ -1,4 +1,4 @@
-import React, { useState, Key, useRef, useEffect } from 'react'
+import React, { useState, Key, useRef, useEffect, useMemo } from 'react'
 
 import ProTable                          from '@ant-design/pro-table'
 import { Space, Divider, Button }        from 'antd'
@@ -29,7 +29,7 @@ export interface TableProps <RecordType>
   }
 
 interface ResizableColumnProps {
-  onResize: (e: React.SyntheticEvent<Element>, data: ResizeCallbackData) => void
+  onResize: (width: number) => void
   width: number
 }
 
@@ -42,7 +42,7 @@ const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
       setWidth(refContainer.current?.offsetWidth as number)
     }
   }, [refContainer])
-  if(!width) {
+  if(_.isNil(width)) {
     return <th ref={refContainer} {...rest} />
   }
   return <Resizable
@@ -55,7 +55,7 @@ const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
       />
     }
     onResize={(_: React.SyntheticEvent<Element>, callbackData: ResizeCallbackData)=>{
-      onResize(_, callbackData)
+      onResize(callbackData.size.width)
       setWidth(callbackData.size.width)
     }}
     draggableOpts={{ enableUserSelectHack: false }}
@@ -68,7 +68,9 @@ export function Table <RecordType extends object> (
 ) {
   const { $t } = useIntl()
 
-  const [columns, setColumns ] = useState(() => {
+  const [colWidth, setColWidth] = useState<Record<string, number>>({})
+
+  const columns = useMemo(() => {
     const settingsColumn = {
       key: settingsKey,
       fixed: 'right' as 'right',
@@ -80,16 +82,12 @@ export function Table <RecordType extends object> (
       ? [...props.columns, settingsColumn] as typeof props.columns
       : props.columns
 
-    return cols.map((column, index) => ({
+    return cols.map((column) => ({
       ...column,
       disable: Boolean(column.fixed || column.disable),
-      show: Boolean(column.fixed || column.disable || (column.show ?? true)),
-      onHeaderCell: (column: Columns<RecordType, 'text'>) => ({
-        width: column.width,
-        onResize: onColumnResize(index)
-      })
+      show: Boolean(column.fixed || column.disable || (column.show ?? true))
     })) as unknown as typeof props.columns
-  }) //, [props.columns, type])
+  }, [props.columns, type])
 
   const columnsState = useColumnsState({ columns, columnState })
 
@@ -168,20 +166,20 @@ export function Table <RecordType extends object> (
     }
   }
 
-  const onColumnResize = (index: number) =>
-    (_: React.SyntheticEvent<Element>, { size }: ResizeCallbackData) => {
-      const newColumns = [...columns]
-      newColumns[index] = { ...newColumns[index], width: size.width }
-      setColumns(newColumns)
-    }
-
   return <UI.Wrapper $type={type} $hasRowSelection={Boolean(props.rowSelection)}>
     <UI.TableSettingsGlobalOverride />
     <ProTable<RecordType>
       {...props}
       bordered={false}
       search={false}
-      columns={columns}
+      columns={columns.map(col=>({
+        ...col,
+        width: (col.key === settingsKey)? col.width : colWidth[col.key],
+        onHeaderCell: (column: Columns<RecordType, 'text'>) => ({
+          width: colWidth[column.key],
+          onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
+        })
+      })) as typeof columns}
       components={{ header: { cell: ResizableColumn } }}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
@@ -190,6 +188,7 @@ export function Table <RecordType extends object> (
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
       columnEmptyText={false}
       onRow={onRow}
+      showSorterTooltip={false}
       tableAlertOptionRender={false}
       tableAlertRender={({ onCleanSelected }) => (
         <Space size={32}>

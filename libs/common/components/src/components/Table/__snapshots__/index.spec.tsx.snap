@@ -46,19 +46,28 @@ exports[`Table component renders compact table 1`] = `
                         >
                           <tr>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Name
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Age
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Address
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                           </tr>
                         </thead>
@@ -239,24 +248,37 @@ exports[`Table component should render correctly 1`] = `
                         >
                           <tr>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Name
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Age
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Address
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <span
+                                class="react-resizable-handle"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody
@@ -563,7 +585,7 @@ exports[`Table component should render multi select table and render action butt
                         >
                           <tr>
                             <th
-                              class="ant-table-cell ant-table-selection-column"
+                              class="ant-table-cell ant-table-selection-column react-resizable"
                             >
                               <div
                                 class="ant-table-selection"
@@ -585,26 +607,42 @@ exports[`Table component should render multi select table and render action butt
                                   </span>
                                 </label>
                               </div>
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Name
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Age
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Address
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <span
+                                class="react-resizable-handle"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody
@@ -1078,7 +1116,7 @@ exports[`Table component should render multi select table and render action butt
                         >
                           <tr>
                             <th
-                              class="ant-table-cell ant-table-selection-column"
+                              class="ant-table-cell ant-table-selection-column react-resizable"
                             >
                               <div
                                 class="ant-table-selection"
@@ -1101,26 +1139,42 @@ exports[`Table component should render multi select table and render action butt
                                   </span>
                                 </label>
                               </div>
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Name
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Age
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Address
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <span
+                                class="react-resizable-handle"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody
@@ -1496,7 +1550,7 @@ exports[`Table component should render multi select table and render action butt
                         >
                           <tr>
                             <th
-                              class="ant-table-cell ant-table-selection-column"
+                              class="ant-table-cell ant-table-selection-column react-resizable"
                             >
                               <div
                                 class="ant-table-selection"
@@ -1518,26 +1572,42 @@ exports[`Table component should render multi select table and render action butt
                                   </span>
                                 </label>
                               </div>
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Name
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Age
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell react-resizable"
                             >
                               Address
+                              <span
+                                class="react-resizable-handle"
+                              />
                             </th>
                             <th
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <span
+                                class="react-resizable-handle"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody

@@ -52,17 +52,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                         <table
                           style="min-width: 100%; table-layout: auto;"
                         >
-                          <colgroup>
-                            <col
-                              style="width: 50px;"
-                            />
-                            <col
-                              style="width: 162px;"
-                            />
-                            <col
-                              style="width: 162px;"
-                            />
-                          </colgroup>
+                          <colgroup />
                           <thead
                             class="ant-table-thead"
                           >
@@ -258,17 +248,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                         <table
                           style="min-width: 100%; table-layout: auto;"
                         >
-                          <colgroup>
-                            <col
-                              style="width: 50px;"
-                            />
-                            <col
-                              style="width: 162px;"
-                            />
-                            <col
-                              style="width: 162px;"
-                            />
-                          </colgroup>
+                          <colgroup />
                           <thead
                             class="ant-table-thead"
                           >

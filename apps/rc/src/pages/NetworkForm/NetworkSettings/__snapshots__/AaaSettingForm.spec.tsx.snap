@@ -1051,12 +1051,8 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                                         <col />
                                                         <col />
                                                         <col />
-                                                        <col
-                                                          style="width: 80px;"
-                                                        />
-                                                        <col
-                                                          style="width: 140px;"
-                                                        />
+                                                        <col />
+                                                        <col />
                                                         <col />
                                                         <col
                                                           style="width: 32px;"

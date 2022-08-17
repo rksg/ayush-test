@@ -108,47 +108,58 @@ export function ApTable () {
     }
 
     return [{
+      key: 'name',
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
       sorter: true
     }, {
+      key: 'deviceStatus',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
       render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
+      key: 'model',
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       sorter: true
     }, {
+      key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'IP'
     }, {
+      key: 'apMac',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'apMac',
       sorter: true
     }, {
+      key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
       sorter: true
     }, {
+      key: 'switchName',
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName'
     }, {
+      key: 'meshRole',
       title: $t({ defaultMessage: 'Mesh Role' }),
       dataIndex: 'meshRole',
       sorter: true,
       render: transformMeshRole
     }, {
+      key: 'clients',
       title: $t({ defaultMessage: 'Connected Clients' }),
       dataIndex: 'clients',
       align: 'center',
       render: transformDisplayNumber
     }, {
+      key: 'deviceGroupName',
       title: $t({ defaultMessage: 'AP Group' }),
       dataIndex: 'deviceGroupName',
       sorter: true
     }, {
+      key: 'rf-channels',
       title: $t({ defaultMessage: 'RF Channels' }),
       children: Object.entries(extraParams)
         .map(([channel, visible]) => visible ? {
@@ -160,14 +171,17 @@ export function ApTable () {
         } : null)
         .filter(Boolean)
     }, {
+      key: 'tags',
       title: $t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
       sorter: true
     }, {
+      key: 'serialNumber',
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'serialNumber',
       sorter: true
     }, {
+      key: 'fwVersion',
       title: $t({ defaultMessage: 'Version' }),
       dataIndex: 'fwVersion',
       sorter: true
