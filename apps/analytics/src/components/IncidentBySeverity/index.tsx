@@ -74,7 +74,7 @@ function IncidentBySeverityWidget () {
     chart = getChartData(currentResult.data)
   }
   return <Loader states={[prevResult, currentResult]}>
-    <Card title={$t({ defaultMessage: 'Total Incidents' })}>
+    <Card title={$t({ defaultMessage: 'Total Incidents' })} bordered={false}>
       <UI.Container>
         <UI.Title>
           <UI.IncidentCount>{pill.total}</UI.IncidentCount>
