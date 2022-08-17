@@ -5,7 +5,7 @@ import {
   PhyTypeConstraintEnum,
   ManagementFrameMinimumPhyRateEnum,
   ManagementFrameMinimumPhyRateEnum6G
-} from '../constants'
+} from '../contents'
 
 export class WlanRadioCustomization {
   rfBandUsage: RfBandUsageEnum

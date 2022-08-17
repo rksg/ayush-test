@@ -3,8 +3,6 @@ import { Space }     from 'antd'
 
 import { DownloadOutlined } from '@acx-ui/icons'
 
-import { ToggleButton } from '../ToggleButton'
-
 import { Button } from '.'
 
 storiesOf('Button', module)
@@ -76,10 +74,4 @@ storiesOf('Button', module)
         </Space>
       </p>
     </>
-  )).add('Toggle', () => (
-    <p>
-      <Space>
-        <ToggleButton enableText='Remove' disableText='Add' />
-      </Space>
-    </p>
   ))

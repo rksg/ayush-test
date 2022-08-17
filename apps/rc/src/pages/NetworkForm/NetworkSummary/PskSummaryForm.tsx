@@ -2,17 +2,19 @@ import React from 'react'
 
 import { Form, Input } from 'antd'
 import { get }         from 'lodash'
+import { useIntl }     from 'react-intl'
 
 import { 
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  AaaServerTitle,
   CreateNetworkFormFields,
   NetworkSaveData,
   WlanSecurityEnum,
   PskWlanSecurityEnum,
   macAuthMacFormatOptions
 } from '@acx-ui/rc/utils'
+
+import * as contents from '../contentsMap'
 
 export function PskSummaryForm (props: {
   summaryData: CreateNetworkFormFields;
@@ -104,8 +106,10 @@ function getAaaServer (
   serverType: AaaServerTypeEnum,
   summaryData: NetworkSaveData
 ) {
-  const primaryTitle = AaaServerTitle[AaaServerOrderEnum.PRIMARY]
-  const secondaryTitle = AaaServerTitle[AaaServerOrderEnum.SECONDARY]
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { $t } = useIntl()
+  const primaryTitle = $t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])
+  const secondaryTitle = $t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])
 
   const enableSecondaryServer = serverType === AaaServerTypeEnum.AUTHENTICATION ? 
     summaryData.enableSecondaryAuthServer : 

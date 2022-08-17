@@ -3,7 +3,7 @@ import {
   PskWlanSecurityEnum,
   MacAuthMacFormatEnum,
   ManagementFrameProtectionEnum
-} from '../constants'
+} from '../contents'
 
 import { PskWlanAdvancedCustomization } from './PskWlanAdvancedCustomization'
 

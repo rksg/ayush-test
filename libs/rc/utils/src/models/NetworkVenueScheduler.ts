@@ -1,4 +1,4 @@
-import { SchedulerTypeEnum } from '../constants'
+import { SchedulerTypeEnum } from '../contents'
 
 export class NetworkVenueScheduler {
   type: SchedulerTypeEnum

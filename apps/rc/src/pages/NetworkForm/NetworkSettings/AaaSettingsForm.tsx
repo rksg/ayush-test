@@ -18,8 +18,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import {
   StepsForm,
   Button,
-  Subtitle,
-  ToggleButton
+  Subtitle
 } from '@acx-ui/components'
 import { useGetAllUserSettingsQuery, UserSettings } from '@acx-ui/rc/services'
 import { useCloudpathListQuery }                    from '@acx-ui/rc/services'
@@ -34,6 +33,7 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { IpPortSecretForm } from '../../../components/IpPortSecretForm'
+import { ToggleButton }     from '../../../components/ToggleButton'
 import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
