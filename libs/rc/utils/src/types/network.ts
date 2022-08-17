@@ -63,9 +63,17 @@ export interface NetworkSaveData {
   expiration?: PassphraseExpirationEnum;
 }
 
+export interface ApGroup {
+  id:string,
+  validationError?: boolean,
+  validationErrorReachedMaxConnectedNetworksLimit?: boolean,
+  validationErrorSsidAlreadyActivated?: boolean,
+  validationErrorReachedMaxConnectedCaptiveNetworksLimit?: boolean
+}
+
 export interface NetworkVenue {
-  id?: string
-  apGroups: string[],
+  id?: string,
+  apGroups: ApGroup[],
   scheduler: {
     type: string
   },
@@ -73,7 +81,7 @@ export interface NetworkVenue {
   allApGroupsRadio: string,
   allApGroupsRadioTypes: string[],
   venueId: string,
-  networkId: string
+  networkId: string  
 }
 
 export enum IsolatePacketsTypeEnum {

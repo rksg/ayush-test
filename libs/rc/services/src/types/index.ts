@@ -3,7 +3,8 @@ import {
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
   NetworkVenue,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  IOpenWlanAdvancedCustomization
 } from '@acx-ui/rc/utils'
 
 export * from './ap'
@@ -24,13 +25,10 @@ export interface Network {
   clients: number
   venues: { count: number, names: string[] }
   captiveType: GuestNetworkTypeEnum
-  deepNetwork?: {
-    wlan: {
-      wlanSecurity: WlanSecurityEnum
-    }
-  }
+  deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
-  // cog ??
+  activated: { isActivated: boolean, isDisabled?: boolean, errors: string[] }
+  allApDisabled?: boolean
 }
 
 export interface NetworkDetail {
@@ -38,7 +36,14 @@ export interface NetworkDetail {
   tenantId: string
   name: string
   venues: NetworkVenue[]
-  id: string
+  id: string,
+  wlan: {
+    wlanSecurity: WlanSecurityEnum,
+    ssid?: string;
+    vlanId?: number;
+    enable?: boolean;
+    advancedCustomization?: IOpenWlanAdvancedCustomization;
+  },
 }
 
 export interface Venue {

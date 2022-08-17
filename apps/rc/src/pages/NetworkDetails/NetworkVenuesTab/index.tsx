@@ -20,8 +20,8 @@ import {
   useVenueListQuery,
   Venue
 } from '@acx-ui/rc/services'
-import { Constants, useTableQuery, getUserSettingsFromDict, NetworkSaveData, NetworkVenue } from '@acx-ui/rc/utils'
-import { useParams }                                                                        from '@acx-ui/react-router-dom'
+import { Constants, useTableQuery, getUserSettingsFromDict, NetworkSaveData, NetworkVenue, generateDefaultNetworkVenue } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                     from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from '../services'
 
@@ -94,21 +94,6 @@ export function NetworkVenuesTab () {
     }
   }, [tableQuery.data, networkQuery.data])
 
-  const generateDefaultNetworkVenue = (venueId: string) => {
-    const network = networkQuery.data
-    return {
-      apGroups: [],
-      scheduler: {
-        type: 'ALWAYS_ON'
-      },
-      isAllApGroups: true,
-      allApGroupsRadio: 'Both',
-      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
-      venueId: venueId,
-      networkId: (network && network?.id) ? network.id : ''
-    }
-  }
-
   const activateNetwork = async (checked: boolean, row: Venue) => {
     // TODO: Service
     // if (checked) {
@@ -117,10 +102,10 @@ export function NetworkVenuesTab () {
     //   }
     // }
     const network = networkQuery.data
-    const defaultVenueData = generateDefaultNetworkVenue(row.id)
+    const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
     const isWPA3security = row.wlan && row.wlan.wlanSecurity === 'WPA3'
     if (supportTriBandRadio && isWPA3security) {
-      defaultVenueData.allApGroupsRadioTypes.push('6-GHz')
+      newNetworkVenue.allApGroupsRadioTypes.push('6-GHz')
     }
 
     let deactivateNetworkVenueId
@@ -133,7 +118,7 @@ export function NetworkVenuesTab () {
     }
     if (!row.allApDisabled || !checked) {
       if (checked) { // activate
-        addNetworkVenue({ params: { tenantId: params.tenantId }, payload: defaultVenueData })
+        addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
       } else { // deactivate
         deleteNetworkVenue({
           params: {
@@ -151,15 +136,16 @@ export function NetworkVenuesTab () {
   const activateSelected = (networkActivatedVenues: NetworkVenue[], activatingVenues: Venue[]) => {
     const enabledNotActivatedVenues:string[] = []
     const networkVenues = [...networkActivatedVenues]
+    const network = networkQuery.data
     activatingVenues.forEach(venue => {
-      const defaultVenueData = generateDefaultNetworkVenue(venue.id)
+      const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
 
       const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
       if (!alreadyActivatedVenue && !venue.disabledActivation && !venue.allApDisabled) {
         venue.activated = venue.activated || { isActivated: false }
         if (!venue.activated.isDisabled) {
           venue.activated.isActivated = true
-          venue.deepVenue = defaultVenueData
+          venue.deepVenue = newNetworkVenue
           networkVenues.push(venue.deepVenue)
         }
       }
