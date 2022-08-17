@@ -140,7 +140,7 @@ export function Table <RecordType extends object> (
         <Space size={32}>
           <Space size={6}>
             <span>
-              {$t({ defaultMessage: '{count} selected' }, { count: selectedRows.length })}
+              {$t({ defaultMessage: '{count} selected' }, { count: selectedRowKeys.length })}
             </span>
             <UI.CloseButton
               onClick={onCleanSelected}
