@@ -7,23 +7,27 @@ jest.mock('./pages/IncidentDetails', () => () => {
   return <div data-testid='incidentDetails' />
 })
 
-test('should redirect analytics to analytics/incidents', () => {
+jest.mock('./pages/Incidents', () => () => {
+  return <div data-testid='incidents' />
+})
+
+test('should redirect analytics to analytics/incidents', async () => {
   render(<AnalyticsRoutes />, {
     route: {
       path: '/t/tenantId/analytics',
       wrapRoutes: false
     }
   })
-  screen.getByText('table')
+  expect(screen.getByTestId('incidents')).toBeVisible()
 })
-test('should navigate to analytics/incidents', () => {
+test('should navigate to analytics/incidents', async () => {
   render(<AnalyticsRoutes />, {
     route: {
       path: '/t/tenantId/analytics/incidents',
       wrapRoutes: false
     }
   })
-  screen.getByText('table')
+  expect(screen.getByTestId('incidents')).toBeVisible()
 })
 test('should navigate to analytics/recommendations', () => {
   render(<AnalyticsRoutes />, {
@@ -32,7 +36,7 @@ test('should navigate to analytics/recommendations', () => {
       wrapRoutes: false
     }
   })
-  screen.getByText('Recommendations')
+  expect(screen.getByText('Recommendations')).toBeVisible()
 })
 test('should navigate to analytics/health', () => {
   render(<AnalyticsRoutes />, {
@@ -41,7 +45,7 @@ test('should navigate to analytics/health', () => {
       wrapRoutes: false
     }
   })
-  screen.getByText('Health')
+  expect(screen.getByText('Health')).toBeVisible()
 })
 test('should navigate to analytics/configChange', () => {
   render(<AnalyticsRoutes />, {
@@ -50,7 +54,7 @@ test('should navigate to analytics/configChange', () => {
       wrapRoutes: false
     }
   })
-  screen.getByText('Config Change')
+  expect(screen.getByText('Config Change')).toBeVisible()
 })
 test('should navigate to analytics/incidentDetails', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
@@ -59,5 +63,5 @@ test('should navigate to analytics/incidentDetails', async () => {
       wrapRoutes: false
     }
   })
-  await screen.findByTestId('incidentDetails')
+  expect(await screen.findByTestId('incidentDetails')).toBeVisible()
 })

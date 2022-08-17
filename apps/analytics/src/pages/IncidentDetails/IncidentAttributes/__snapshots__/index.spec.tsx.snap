@@ -3,849 +3,387 @@
 exports[`IncidentAttributes should match snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1627zcn-1 hxiQJS"
+    class="ant-descriptions styledComponents__Descriptions-sc-1627zcn-1 cLNauE"
   >
     <div
-      class="ant-descriptions"
+      class="ant-descriptions-view"
     >
-      <div
-        class="ant-descriptions-view"
-      >
-        <table>
-          <tbody>
-            <tr
-              class="ant-descriptions-row"
+      <table>
+        <tbody>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  Client Impact Count
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-label"
+                    class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
+                    title="5 of 27 clients (18.52%)"
                   >
-                    Client Impact Count
+                    5 of 27 clients (18.52%)
                   </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  AP Impact Count
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-content"
+                    class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
+                    title="1 of 1 AP (100%)"
                   >
-                    <div
-                      class="styledComponents__Row-sc-1627zcn-0 hprNyK"
-                    >
-                      5 of 27 clients (18.52%)
-                    </div>
+                    1 of 1 AP (100%)
                   </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  Incident Category
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-label"
+                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    title="Connection"
                   >
-                    AP Impact Count
+                    Connection
                   </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  Incident Sub-Category
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-content"
+                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    title="EAP"
                   >
-                    <div
-                      class="styledComponents__Row-sc-1627zcn-0 hprNyK"
-                    >
-                      1 of 1 AP (100%)
-                    </div>
+                    EAP
                   </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  Type
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-label"
+                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    title="Access Point"
                   >
-                    Incident Category
+                    Access Point
                   </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  Scope
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-content"
-                  >
-                    <div
-                      class="styledComponents__Row-sc-1627zcn-0"
-                      title="Connection"
-                    >
-                      Connection
-                    </div>
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-label"
-                  >
-                    Incident Sub-Category
-                  </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-content"
-                  >
-                    <div
-                      class="styledComponents__Row-sc-1627zcn-0"
-                      title="EAP"
-                    >
-                      EAP
-                    </div>
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-label"
-                  >
-                    Type
-                  </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-content"
-                  >
-                    <div
-                      class="styledComponents__Row-sc-1627zcn-0"
-                      title="Access Point"
-                    >
-                      Access Point
-                    </div>
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-label"
-                  >
-                    Scope
-                  </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-content"
-                  >
-                    <div
-                      class="styledComponents__Row-sc-1627zcn-0"
-                      title="Edu2-611-Mesh (Venue)
+                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    title="Edu2-611-Mesh (Venue)
 > 255_Edu2-611-group (AP Group)
 > RuckusAP (70:CA:97:01:A0:C0) (Access Point)"
-                    >
-                      RuckusAP (70:CA:97:01:A0:C0)
-                    </div>
+                  >
+                    RuckusAP (70:CA:97:01:A0:C0)
                   </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  Duration
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-label"
+                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    title="21h 27m"
                   >
-                    Duration
+                    21h 27m
                   </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  Event Start Time
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-content"
+                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    title="Jul 19 2022 05:15"
                   >
-                    <div
-                      class="styledComponents__Row-sc-1627zcn-0"
-                      title="21h 27m"
-                    >
-                      21h 27m
-                    </div>
+                    Jul 19 2022 05:15
                   </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  Event End Time
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-label"
+                    class="styledComponents__TextContent-sc-1627zcn-0"
+                    title="Jul 20 2022 02:42"
                   >
-                    Event Start Time
+                    Jul 20 2022 02:42
                   </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-content"
-                  >
-                    <div
-                      class="styledComponents__Row-sc-1627zcn-0"
-                      title="Jul 19 2022 05:15"
-                    >
-                      Jul 19 2022 05:15
-                    </div>
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-label"
-                  >
-                    Event End Time
-                  </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-content"
-                  >
-                    <div
-                      class="styledComponents__Row-sc-1627zcn-0"
-                      title="Jul 20 2022 02:42"
-                    >
-                      Jul 20 2022 02:42
-                    </div>
-                  </span>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </DocumentFragment>
-`;
-
-exports[`impactValues formats impacted ap count 1`] = `
-Object {
-  "apImpact": 1,
-  "apImpactCountFormatted": "1",
-  "apImpactDescription": <Memo(MemoizedFormattedMessage)
-    defaultMessage={
-      Array [
-        Object {
-          "type": 1,
-          "value": "count",
-        },
-        Object {
-          "type": 0,
-          "value": " of ",
-        },
-        Object {
-          "type": 1,
-          "value": "total",
-        },
-        Object {
-          "type": 0,
-          "value": " ",
-        },
-        Object {
-          "options": Object {
-            "ap": Object {
-              "value": Array [
-                Object {
-                  "offset": 0,
-                  "options": Object {
-                    "one": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "AP",
-                        },
-                      ],
-                    },
-                    "other": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "APs",
-                        },
-                      ],
-                    },
-                  },
-                  "pluralType": "cardinal",
-                  "type": 6,
-                  "value": "total",
-                },
-              ],
-            },
-            "client": Object {
-              "value": Array [
-                Object {
-                  "offset": 0,
-                  "options": Object {
-                    "one": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "client",
-                        },
-                      ],
-                    },
-                    "other": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "clients",
-                        },
-                      ],
-                    },
-                  },
-                  "pluralType": "cardinal",
-                  "type": 6,
-                  "value": "total",
-                },
-              ],
-            },
-            "other": Object {
-              "value": Array [
-                Object {
-                  "type": 0,
-                  "value": "Unknown",
-                },
-              ],
-            },
-          },
-          "type": 5,
-          "value": "type",
-        },
-        Object {
-          "type": 0,
-          "value": " (",
-        },
-        Object {
-          "style": Object {
-            "parsedOptions": Object {
-              "maximumFractionDigits": 2,
-              "style": "percent",
-            },
-            "tokens": Array [
-              Object {
-                "options": Array [],
-                "stem": "percent",
-              },
-              Object {
-                "options": Array [],
-                "stem": ".##",
-              },
-            ],
-            "type": 0,
-          },
-          "type": 2,
-          "value": "percentage",
-        },
-        Object {
-          "type": 0,
-          "value": ")",
-        },
-      ]
-    }
-    id="810erc"
-    values={
-      Object {
-        "count": 1,
-        "percentage": 1,
-        "total": 1,
-        "type": "ap",
-      }
-    }
-  />,
-  "apImpactFormatted": "100%",
-}
-`;
-
-exports[`impactValues formats impacted client count 1`] = `
-Object {
-  "clientImpact": 0.8666666666666667,
-  "clientImpactCountFormatted": "1.3 k",
-  "clientImpactDescription": <Memo(MemoizedFormattedMessage)
-    defaultMessage={
-      Array [
-        Object {
-          "type": 1,
-          "value": "count",
-        },
-        Object {
-          "type": 0,
-          "value": " of ",
-        },
-        Object {
-          "type": 1,
-          "value": "total",
-        },
-        Object {
-          "type": 0,
-          "value": " ",
-        },
-        Object {
-          "options": Object {
-            "ap": Object {
-              "value": Array [
-                Object {
-                  "offset": 0,
-                  "options": Object {
-                    "one": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "AP",
-                        },
-                      ],
-                    },
-                    "other": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "APs",
-                        },
-                      ],
-                    },
-                  },
-                  "pluralType": "cardinal",
-                  "type": 6,
-                  "value": "total",
-                },
-              ],
-            },
-            "client": Object {
-              "value": Array [
-                Object {
-                  "offset": 0,
-                  "options": Object {
-                    "one": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "client",
-                        },
-                      ],
-                    },
-                    "other": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "clients",
-                        },
-                      ],
-                    },
-                  },
-                  "pluralType": "cardinal",
-                  "type": 6,
-                  "value": "total",
-                },
-              ],
-            },
-            "other": Object {
-              "value": Array [
-                Object {
-                  "type": 0,
-                  "value": "Unknown",
-                },
-              ],
-            },
-          },
-          "type": 5,
-          "value": "type",
-        },
-        Object {
-          "type": 0,
-          "value": " (",
-        },
-        Object {
-          "style": Object {
-            "parsedOptions": Object {
-              "maximumFractionDigits": 2,
-              "style": "percent",
-            },
-            "tokens": Array [
-              Object {
-                "options": Array [],
-                "stem": "percent",
-              },
-              Object {
-                "options": Array [],
-                "stem": ".##",
-              },
-            ],
-            "type": 0,
-          },
-          "type": 2,
-          "value": "percentage",
-        },
-        Object {
-          "type": 0,
-          "value": ")",
-        },
-      ]
-    }
-    id="810erc"
-    values={
-      Object {
-        "count": 1300,
-        "percentage": 0.8666666666666667,
-        "total": 1500,
-        "type": "client",
-      }
-    }
-  />,
-  "clientImpactFormatted": "86.67%",
-}
-`;
-
-exports[`impactValues handles clientCount = 0 1`] = `
-Object {
-  "clientImpact": "-",
-  "clientImpactCountFormatted": "-",
-  "clientImpactDescription": "-",
-  "clientImpactFormatted": "-",
-}
-`;
-
-exports[`impactValues handles when incident has client impact 1`] = `
-Object {
-  "clientImpact": 0.4296875,
-  "clientImpactCountFormatted": "55",
-  "clientImpactDescription": <Memo(MemoizedFormattedMessage)
-    defaultMessage={
-      Array [
-        Object {
-          "type": 1,
-          "value": "count",
-        },
-        Object {
-          "type": 0,
-          "value": " of ",
-        },
-        Object {
-          "type": 1,
-          "value": "total",
-        },
-        Object {
-          "type": 0,
-          "value": " ",
-        },
-        Object {
-          "options": Object {
-            "ap": Object {
-              "value": Array [
-                Object {
-                  "offset": 0,
-                  "options": Object {
-                    "one": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "AP",
-                        },
-                      ],
-                    },
-                    "other": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "APs",
-                        },
-                      ],
-                    },
-                  },
-                  "pluralType": "cardinal",
-                  "type": 6,
-                  "value": "total",
-                },
-              ],
-            },
-            "client": Object {
-              "value": Array [
-                Object {
-                  "offset": 0,
-                  "options": Object {
-                    "one": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "client",
-                        },
-                      ],
-                    },
-                    "other": Object {
-                      "value": Array [
-                        Object {
-                          "type": 0,
-                          "value": "clients",
-                        },
-                      ],
-                    },
-                  },
-                  "pluralType": "cardinal",
-                  "type": 6,
-                  "value": "total",
-                },
-              ],
-            },
-            "other": Object {
-              "value": Array [
-                Object {
-                  "type": 0,
-                  "value": "Unknown",
-                },
-              ],
-            },
-          },
-          "type": 5,
-          "value": "type",
-        },
-        Object {
-          "type": 0,
-          "value": " (",
-        },
-        Object {
-          "style": Object {
-            "parsedOptions": Object {
-              "maximumFractionDigits": 2,
-              "style": "percent",
-            },
-            "tokens": Array [
-              Object {
-                "options": Array [],
-                "stem": "percent",
-              },
-              Object {
-                "options": Array [],
-                "stem": ".##",
-              },
-            ],
-            "type": 0,
-          },
-          "type": 2,
-          "value": "percentage",
-        },
-        Object {
-          "type": 0,
-          "value": ")",
-        },
-      ]
-    }
-    id="810erc"
-    values={
-      Object {
-        "count": 55,
-        "percentage": 0.4296875,
-        "total": 128,
-        "type": "client",
-      }
-    }
-  />,
-  "clientImpactFormatted": "42.97%",
-}
-`;
-
-exports[`impactValues handles when incident has no client impact 1`] = `
-Object {
-  "clientImpact": "-",
-  "clientImpactCountFormatted": "-",
-  "clientImpactDescription": "-",
-  "clientImpactFormatted": "-",
-}
-`;
-
-exports[`impactValues handles when incident has no client impact but has clinet count 1`] = `
-Object {
-  "clientImpact": "-",
-  "clientImpactCountFormatted": "-",
-  "clientImpactDescription": "-",
-  "clientImpactFormatted": "-",
-}
-`;
-
-exports[`impactValues handles when incident is calculating 1`] = `
-Object {
-  "clientImpact": null,
-  "clientImpactCountFormatted": "",
-  "clientImpactDescription": <Memo(MemoizedFormattedMessage)
-    defaultMessage={
-      Array [
-        Object {
-          "type": 0,
-          "value": "Calculating...",
-        },
-      ]
-    }
-    id="EXlQBN"
-  />,
-  "clientImpactFormatted": "",
-}
 `;

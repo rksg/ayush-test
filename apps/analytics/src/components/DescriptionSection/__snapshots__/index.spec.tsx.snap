@@ -2,198 +2,194 @@
 
 exports[`DescriptionRow should match snapshot 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Row-sc-1627zcn-0 hprNyK"
+  <span
+    class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
     title="title"
   >
     <div
       data-testid="children"
     />
-  </div>
+  </span>
 </DocumentFragment>
 `;
 
 exports[`DescriptionRow should match snapshot 2`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Row-sc-1627zcn-0"
+  <span
+    class="styledComponents__TextContent-sc-1627zcn-0"
     title="title"
   >
     <div
       data-testid="children"
     />
-  </div>
+  </span>
 </DocumentFragment>
 `;
 
 exports[`DescriptionRow should match snapshot 3`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Row-sc-1627zcn-0"
+  <span
+    class="styledComponents__TextContent-sc-1627zcn-0"
     title="children"
   >
     children
-  </div>
+  </span>
 </DocumentFragment>
 `;
 
 exports[`DescriptionRow should match snapshot 4`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Row-sc-1627zcn-0"
+  <span
+    class="styledComponents__TextContent-sc-1627zcn-0"
   >
     <div
       data-testid="children"
     />
-  </div>
+  </span>
 </DocumentFragment>
 `;
 
 exports[`DescriptionSection should match snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1627zcn-1 hxiQJS"
+    class="ant-descriptions styledComponents__Descriptions-sc-1627zcn-1 cLNauE"
   >
     <div
-      class="ant-descriptions"
+      class="ant-descriptions-view"
     >
-      <div
-        class="ant-descriptions-view"
-      >
-        <table>
-          <tbody>
-            <tr
-              class="ant-descriptions-row"
+      <table>
+        <tbody>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  label-0
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-label"
-                  >
-                    label-0
-                  </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-content"
-                  >
-                    <div
-                      class="styledComponents__Row-sc-1627zcn-0 hprNyK"
-                      title="title-0"
-                    >
-                      <div
-                        data-testid="children-0"
-                      />
-                    </div>
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-label"
-                  >
-                    label-1
-                  </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-content"
+                    class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
+                    title="title-0"
                   >
                     <div
-                      class="styledComponents__Row-sc-1627zcn-0 hprNyK"
-                      title="title-1"
-                    >
-                      <div
-                        data-testid="children-1"
-                      />
-                    </div>
+                      data-testid="children-0"
+                    />
                   </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  label-1
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-label"
-                  >
-                    label-2
-                  </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
-            >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-content"
+                    class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
+                    title="title-1"
                   >
                     <div
-                      class="styledComponents__Row-sc-1627zcn-0 hprNyK"
-                      title="title-2"
-                    >
-                      <div
-                        data-testid="children-2"
-                      />
-                    </div>
+                      data-testid="children-1"
+                    />
                   </span>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  label-2
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
+                >
+                  <span
+                    class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
+                    title="title-2"
+                  >
+                    <div
+                      data-testid="children-2"
+                    />
+                  </span>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </DocumentFragment>
@@ -202,132 +198,128 @@ exports[`DescriptionSection should match snapshot 1`] = `
 exports[`DescriptionSection should match snapshot 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1627zcn-1 hxiQJS"
+    class="ant-descriptions styledComponents__Descriptions-sc-1627zcn-1 cLNauE"
   >
     <div
-      class="ant-descriptions"
+      class="ant-descriptions-view"
     >
-      <div
-        class="ant-descriptions-view"
-      >
-        <table>
-          <tbody>
-            <tr
-              class="ant-descriptions-row"
+      <table>
+        <tbody>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
                 >
-                  <span
-                    class="ant-descriptions-item-label"
-                  >
-                    label-0
-                  </span>
-                </div>
-              </th>
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-label"
-                  >
-                    label-1
-                  </span>
-                </div>
-              </th>
-              <th
-                class="ant-descriptions-item"
-                colspan="1"
-              >
-                <div
-                  class="ant-descriptions-item-container"
-                >
-                  <span
-                    class="ant-descriptions-item-label"
-                  >
-                    label-2
-                  </span>
-                </div>
-              </th>
-            </tr>
-            <tr
-              class="ant-descriptions-row"
+                  label-0
+                </span>
+              </div>
+            </th>
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
             >
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  label-1
+                </span>
+              </div>
+            </th>
+            <th
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  label-2
+                </span>
+              </div>
+            </th>
+          </tr>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-content"
+                    class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
+                    title="title-0"
                   >
                     <div
-                      class="styledComponents__Row-sc-1627zcn-0 hprNyK"
-                      title="title-0"
-                    >
-                      <div
-                        data-testid="children-0"
-                      />
-                    </div>
+                      data-testid="children-0"
+                    />
                   </span>
-                </div>
-              </td>
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
+                </span>
+              </div>
+            </td>
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-content"
+                    class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
+                    title="title-1"
                   >
                     <div
-                      class="styledComponents__Row-sc-1627zcn-0 hprNyK"
-                      title="title-1"
-                    >
-                      <div
-                        data-testid="children-1"
-                      />
-                    </div>
+                      data-testid="children-1"
+                    />
                   </span>
-                </div>
-              </td>
-              <td
-                class="ant-descriptions-item"
-                colspan="1"
+                </span>
+              </div>
+            </td>
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
               >
-                <div
-                  class="ant-descriptions-item-container"
+                <span
+                  class="ant-descriptions-item-content"
                 >
                   <span
-                    class="ant-descriptions-item-content"
+                    class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
+                    title="title-2"
                   >
                     <div
-                      class="styledComponents__Row-sc-1627zcn-0 hprNyK"
-                      title="title-2"
-                    >
-                      <div
-                        data-testid="children-2"
-                      />
-                    </div>
+                      data-testid="children-2"
+                    />
                   </span>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </DocumentFragment>

@@ -3,14 +3,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import _ from 'lodash'
 
 import type {
-  Columns,
+  TableColumn,
   ColumnState,
   ColumnStateOption,
   TableColumnState
 } from './types'
 
 export interface UseColumnsStateOptions <RecordType> {
-  columns: Columns<RecordType>[]
+  columns: TableColumn<RecordType>[]
   columnState?: ColumnStateOption
 }
 

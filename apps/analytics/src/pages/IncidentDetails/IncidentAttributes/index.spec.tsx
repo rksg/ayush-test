@@ -1,21 +1,17 @@
 import moment from 'moment'
 
 import { dataApiURL }                                                   from '@acx-ui/analytics/services'
-import { incidentInformation }                                          from '@acx-ui/analytics/utils'
-import type { Incident }                                                from '@acx-ui/analytics/utils'
+import { fakeIncident }                                                 from '@acx-ui/analytics/utils'
 import { Provider, store }                                              from '@acx-ui/store'
 import { act, fireEvent, mockGraphqlQuery, render, renderHook, screen } from '@acx-ui/test-utils'
 
-
-import { ImpactedAP, impactedAPsApi, ImpactedClient, impactedClientsApi } from './services'
+import { ImpactedAP, impactedApi, ImpactedClient } from './services'
 
 import {
   durationOf,
-  impactValues,
   IncidentAttributes,
   useDrawer
 } from '.'
-
 
 describe('durationOf', () => {
   const timezone = 'UTC'
@@ -27,36 +23,6 @@ describe('durationOf', () => {
   })
   it('should return correct value', () => {
     expect(durationOf('2022-07-19T05:15:00.000Z','2022-07-20T02:42:00.000Z')).toEqual(77220000)
-  })
-})
-
-describe('impactValues', () => {
-  it('handles when incident has no client impact', () => {
-    expect(impactValues('client', -1, -1)).toMatchSnapshot()
-  })
-
-  it('handles when incident is calculating', () => {
-    expect(impactValues('client', null, null)).toMatchSnapshot()
-  })
-
-  it('handles clientCount = 0', () => {
-    expect(impactValues('client', 0, 0)).toMatchSnapshot()
-  })
-
-  it('handles when incident has no client impact but has clinet count', () => {
-    expect(impactValues('client', 128, 0)).toMatchSnapshot()
-  })
-
-  it('handles when incident has client impact', () => {
-    expect(impactValues('client', 128, 55)).toMatchSnapshot()
-  })
-
-  it('formats impacted client count', () => {
-    expect(impactValues('client', 1500, 1300)).toMatchSnapshot()
-  })
-
-  it('formats impacted ap count', () => {
-    expect(impactValues('ap', 1, 1)).toMatchSnapshot()
   })
 })
 
@@ -100,7 +66,7 @@ describe('IncidentAttributes', () => {
     'eventStartTime',
     'eventEndTime'
   ]
-  const props = {
+  const incident = fakeIncident({
     id: 'id',
     code: 'eap-failure',
     apCount: 1,
@@ -114,10 +80,8 @@ describe('IncidentAttributes', () => {
     ],
     startTime: '2022-07-19T05:15:00.000Z',
     endTime: '2022-07-20T02:42:00.000Z',
-    sliceType: 'ap',
     sliceValue: 'RuckusAP'
-  } as unknown as Incident
-  const info = incidentInformation[props.code as keyof typeof incidentInformation]
+  })
   const impactedAPs = [
     { name: 'name', mac: 'mac', model: 'model', version: 'version' }
   ] as ImpactedAP[]
@@ -128,20 +92,19 @@ describe('IncidentAttributes', () => {
     hostname: 'hostname',
     username: 'username' }] as ImpactedClient[]
   beforeEach(() => {
-    store.dispatch(impactedAPsApi.util.resetApiState())
-    store.dispatch(impactedClientsApi.util.resetApiState())
+    store.dispatch(impactedApi.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'ImpactedAPs', { data: { incident: { impactedAPs } } })
     mockGraphqlQuery(dataApiURL, 'ImpactedClients', { data: { incident: { impactedClients } } })
   })
   it('should match snapshot', () => {
     const { asFragment } = render(<Provider>
-      <IncidentAttributes {...props} {...info} visibleFields={attributeList}/>
+      <IncidentAttributes incident={incident} visibleFields={attributeList} />
     </Provider>)
     expect(asFragment()).toMatchSnapshot()
   })
   it('should trigger onOpen/onClose of implactedClientsDrawer', async () => {
     render(<Provider>
-      <IncidentAttributes {...props} {...info} visibleFields={attributeList}/>
+      <IncidentAttributes incident={incident} visibleFields={attributeList} />
     </Provider>)
     const component = await screen.findByText('5 of 27 clients (18.52%)')
     fireEvent.click(component) // trigger onOpen
@@ -149,7 +112,7 @@ describe('IncidentAttributes', () => {
   })
   it('should trigger onOpen/onClose of implactedAPsDrawer', async () => {
     render(<Provider>
-      <IncidentAttributes {...props} {...info} visibleFields={attributeList}/>
+      <IncidentAttributes incident={incident} visibleFields={attributeList} />
     </Provider>)
     const component = await screen.findByText('1 of 1 AP (100%)')
     fireEvent.click(component) // trigger onOpen
