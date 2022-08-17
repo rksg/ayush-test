@@ -266,13 +266,6 @@ describe('IncidentTable: utils', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('LongIncidentDescription: it renders on invalid incident', async () => {
-    const invalidTest = { ...testIncident, code: undefined as unknown as string }
-    render(<RenderLongDescription incident={invalidTest}/>)
-    await screen.findByText(noDataSymbol)
-    expect(screen.getByText(noDataSymbol).textContent).toBe(noDataSymbol)
-  })
-
   const RenderGetScope = (props: GetScopeProps) => {
     return <Provider><GetScope {...props} /></Provider>
   }

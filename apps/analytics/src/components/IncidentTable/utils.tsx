@@ -84,11 +84,7 @@ export const LongIncidentDescription = (props: LongIncidentDescriptionProps) => 
   const { incident } = props
   const { rootCauses } = getRootCauseAndRecommendations(incident.code, incident.metadata)[0]
   const longDesc = useLongDesription(incident, rootCauses)
-  
-  if (typeof incident.code !== 'string') {
-    return <FormatIntlString message={defineMessage({ defaultMessage: '{noDataSymbol}' })} />
-  }
-  
+    
   return <UI.DescriptionSpan>{longDesc}</UI.DescriptionSpan>
 }
 
