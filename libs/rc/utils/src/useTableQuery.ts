@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { TableProps }        from '@acx-ui/components'
@@ -82,9 +82,6 @@ export function useTableQuery <
     ...(sorter as unknown as Partial<Payload>)
   })
 
-  const [selectedRowsData, setSelectedRowsData] = useState([] as ResultType[])
-  const rowKey = ('id' || option.rowKey) as keyof ResultType
-
   // RTKQuery
   const api = option.useQuery({
     params: { ...useParams(), ...option.apiParams },
@@ -123,24 +120,6 @@ export function useTableQuery <
     setPayload({ ...payload, ...tableProps })
   }
 
-  // Select row data
-  const rowSelection: TableProps<ResultType>['rowSelection'] = {
-    selectedRowKeys: selectedRowsData.map(item => item[rowKey]) as unknown as React.Key[],
-    onChange: (selectedRowKeys, selectedRows) => {
-      setSelectedRowsData(selectedRows)
-    }
-  }
-  const onRowClick = (row: ResultType) => {
-    const rowIndex = selectedRowsData.indexOf(row)
-    if (rowIndex === -1) {
-      setSelectedRowsData([...selectedRowsData, row])
-    } else {
-      let tmp = [...selectedRowsData]
-      tmp.splice(rowIndex, 1)
-      setSelectedRowsData(tmp)
-    }
-  }
-
   return {
     pagination,
     sorter,
@@ -148,10 +127,6 @@ export function useTableQuery <
     handleTableChange,
     payload,
     setPayload,
-    rowSelection,
-    onRowClick,
-    selectedRowsData,
-    setSelectedRowsData,
     ...api
   }
 }
