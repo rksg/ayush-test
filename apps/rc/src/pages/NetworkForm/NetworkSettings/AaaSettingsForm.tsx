@@ -20,15 +20,15 @@ import {
   Button,
   Subtitle
 } from '@acx-ui/components'
-import { useGetAllUserSettingsQuery, UserSettings } from '@acx-ui/rc/services'
-import { useCloudpathListQuery }                    from '@acx-ui/rc/services'
+import { useGetAllUserSettingsQuery, useCloudpathListQuery } from '@acx-ui/rc/services'
 import {
   Constants,
   WlanSecurityEnum,
   getUserSettingsFromDict,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  UserSettings
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
