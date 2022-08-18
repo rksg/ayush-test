@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                                               from '@acx-ui/analytics/services'
-import { Provider, store }                                          from '@acx-ui/store'
-import { mockGraphqlQuery, mockAutoSizer, render, screen, cleanup } from '@acx-ui/test-utils'
+import { dataApiURL }                                                    from '@acx-ui/analytics/services'
+import { Provider, store }                                               from '@acx-ui/store'
+import { mockGraphqlQuery, mockAutoSizer, render, screen, cleanup, act } from '@acx-ui/test-utils'
 
 import { api } from './services'
 
@@ -98,6 +98,7 @@ describe('IncidentTableWidget', () => {
         wrapRoutes: false
       }
     })
+    
     await screen.findAllByText('P4')
     expect(screen.getAllByText('P4')).toHaveLength(2)
   })
@@ -114,7 +115,7 @@ describe('IncidentTableWidget', () => {
     'Type'
   ]
 
-  it.each(columnHeaders)('column header "%s" presence check', async (header) => {
+  it.each(columnHeaders)('should render column header: "%s"', async (header) => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
@@ -131,7 +132,7 @@ describe('IncidentTableWidget', () => {
     expect(screen.getByText(header).textContent).toBe(header)
   })
 
-  it.each(columnHeaders)('column header "%s" sorting check', async (header) => {
+  it.each(columnHeaders)('should "%s"', async (header) => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
@@ -145,9 +146,8 @@ describe('IncidentTableWidget', () => {
       }
     })
     const elem = await screen.findByText(header)
-    elem.click()
+    act(() => elem.click())
     await screen.findByRole('img', { hidden: true, name: 'caret-up' })
     expect(screen.getByRole('img', { hidden: true, name: 'caret-up' })).toBeTruthy()
   })
-
 })

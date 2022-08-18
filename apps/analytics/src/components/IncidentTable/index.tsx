@@ -19,7 +19,7 @@ import {
 } from './utils'
 
 
-const ColumnHeaders: TableProps<Incident>['columns'] = [
+export const ColumnHeaders: TableProps<Incident>['columns'] = [
   {
     title: 'Severity',
     dataIndex: 'severity',
