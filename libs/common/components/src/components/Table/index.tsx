@@ -1,4 +1,4 @@
-import React, { useState, Key, useMemo } from 'react'
+import React, { useMemo, useState, Key } from 'react'
 
 import ProTable                   from '@ant-design/pro-table'
 import { Space, Divider, Button } from 'antd'
@@ -153,7 +153,6 @@ export function Table <RecordType extends object> (
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
       columnEmptyText={false}
       onRow={onRow}
-      showSorterTooltip={false}
       tableAlertOptionRender={false}
       tableAlertRender={({ onCleanSelected }) => (
         <Space size={32}>
