@@ -12,7 +12,8 @@ import {
   Row,
   Select,
   Switch,
-  Tooltip
+  Tooltip,
+  InputNumber
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -295,7 +296,7 @@ function AaaServerFields ({ serverType, order }: {
         },{
           validator: (_, value) => networkWifiPortRegExp(value)
         }]}
-        children={<Input type='number'/>}
+        children={<InputNumber />}
       />
       <Form.Item
         name={`${serverType}.${order}.sharedSecret`}
