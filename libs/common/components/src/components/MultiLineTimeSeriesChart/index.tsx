@@ -1,6 +1,6 @@
 import ReactECharts from 'echarts-for-react'
 
-import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
+import type { Incident, MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
 
 import { cssStr }              from '../../theme/helper'
 import {
@@ -25,8 +25,9 @@ interface MultiLineTimeSeriesChartProps
     /** @default 'name' */
     legendProp?: keyof TChartData,
     lineColors?: string[],
-    dataFormatter?: (value: unknown) => string | null
-    handleClick?: () => void
+    dataFormatter?: (value: unknown) => string | null,
+    marker?: Partial<Incident>[],
+    areaColor?: string
   }
 
 export function MultiLineTimeSeriesChart
@@ -35,6 +36,8 @@ export function MultiLineTimeSeriesChart
   data,
   legendProp = 'name' as keyof TChartData,
   dataFormatter,
+  marker,
+  areaColor,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData>) {
   const option: EChartsOption = {
@@ -80,7 +83,24 @@ export function MultiLineTimeSeriesChart
       silent: true,
       smooth: true,
       symbol: 'none',
-      lineStyle: { width: 1 }
+      lineStyle: { width: 1 },
+      markArea: {
+        silent: true,
+        itemStyle: {
+          opacity: 0.4,
+          color: areaColor
+        },
+        data: marker?.map(mark => {
+          return [
+            {
+              xAxis: mark.startTime
+            },
+            {
+              xAxis: mark.endTime
+            }
+          ]
+        })
+      }
     }))
   }
 
