@@ -3,8 +3,8 @@ import styled from 'styled-components/macro'
 export const Wrapper = styled.div`
   position: sticky;
   top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
-  z-index: 3;
-  background-color: var(--acx-neutrals-10);
+  z-index: 4;
+  background-color: var(--acx-primary-white);
 
   .ant-page-header {
     padding: 0;
@@ -12,7 +12,7 @@ export const Wrapper = styled.div`
       h1 {
         margin-bottom: 0;
       }
-      &-left{
+      &-left {
         overflow: visible;
         flex-direction: column;
       }
@@ -26,7 +26,10 @@ export const Wrapper = styled.div`
       }
       &-title {
         overflow: visible;
-        align-self: flex-start;        
+        align-self: flex-start;
+        display: flex;
+        gap: 10px;
+        align-items: center;
       }
       margin-bottom: var(--acx-content-vertical-space);
     }

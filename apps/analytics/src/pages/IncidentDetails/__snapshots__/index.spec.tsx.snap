@@ -1,0 +1,140 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`incident details should render Incident Details Page correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
+    >
+      <div
+        class="ant-page-header has-breadcrumb ant-page-header-ghost"
+      >
+        <nav
+          class="ant-breadcrumb"
+        >
+          <ol>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                <a
+                  href="/t/undefined/analytics/incidents"
+                >
+                  Incidents
+                </a>
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                 
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+          </ol>
+        </nav>
+        <div
+          class="ant-page-header-heading"
+        >
+          <div
+            class="ant-page-header-heading-left"
+          >
+            <span
+              class="ant-page-header-heading-title"
+            >
+              <h1
+                class="ant-typography"
+              >
+                Incident Details
+              </h1>
+              <span
+                class="styledComponents__Pill-sc-j61ge1-0 fpazJI"
+                type="P3"
+              >
+                P3
+              </span>
+            </span>
+            <span
+              class="ant-page-header-heading-sub-title"
+            >
+              <p>
+                EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+              </p>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-row"
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-4"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            style="width: -20px;"
+          >
+            incident attributes
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 1px; height: 1px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-20"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div>
+          insights
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-20 ant-col-offset-4"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div>
+          network impact
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-20 ant-col-offset-4"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div>
+          charts
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

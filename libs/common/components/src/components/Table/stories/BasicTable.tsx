@@ -12,7 +12,10 @@ const basicColumns = [
     key: 'age'
   },
   {
-    title: 'Address',
+    title: <>
+      Address
+      <Table.SubTitle>Sub Title</Table.SubTitle>
+    </>,
     dataIndex: 'address',
     key: 'address'
   }
@@ -34,11 +37,11 @@ const basicData = [
 ]
 
 export function BasicTable () {
-  return (
+  return (<>
+    Basic
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      title={() => 'Basic'}
     />
-  )
+  </>)
 }

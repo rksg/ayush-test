@@ -1,26 +1,27 @@
 import React from 'react'
 
-import { StepsForm as ProAntStepsForm } from '@ant-design/pro-form'
-import { Steps, Space, Row }            from 'antd'
-import _                                from 'lodash'
-import toArray                          from 'rc-util/lib/Children/toArray'
-import { useIntl }                      from 'react-intl'
+import { Steps, Space, Row } from 'antd'
+import _                     from 'lodash'
+import toArray               from 'rc-util/lib/Children/toArray'
+import { useIntl }           from 'react-intl'
 
-import { Button } from '../Button'
+import { Button }                       from '../Button'
+import { StepsForm as ProAntStepsForm } from '../StepsFormProAnt'
 
 import * as UI from './styledComponents'
 
 import type { ButtonProps }              from '../Button'
 import type {
-  ProFormInstance,
   StepsFormProps as ProAntStepsFormProps,
   StepFormProps as ProAntStepFormProps
-} from '@ant-design/pro-form'
+} from '../StepsFormProAnt'
+import type { ProFormInstance } from '@ant-design/pro-form'
 
 export type { ProFormInstance as StepsFormInstance }
 
 const { useImperativeHandle, useRef, useState } = React
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StepsFormProps <FormValue = any> =
   Omit<ProAntStepsFormProps<FormValue>, 'stepsProps' | 'submitter'> &
   {
@@ -49,6 +50,7 @@ type InternalStepFormProps <FormValue> = StepFormProps<FormValue> & {
   state: 'finish' | 'active' | 'wait'
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function StepsForm <FormValue = any> (
   props: React.PropsWithChildren<StepsFormProps<FormValue>>
 ) {
@@ -82,14 +84,15 @@ export function StepsForm <FormValue = any> (
     if (otherProps.onCurrentChange) otherProps.onCurrentChange(next)
   }
 
-  const stepsRender: ProAntStepsFormProps['stepsRender'] = (steps) => (
+  const stepsRender: ProAntStepsFormProps['stepsRender'] = () => (
     <UI.StepsContainer>
       <Steps current={current} progressDot direction='vertical'>
-        {steps.map(({ key }, index) => {
-          const title = _children[index].props.title
+        {_children.map((child, index) => {
+          const title = child.props.title
           const onStepClick = (editMode || current > index) && current !== index
             ? setStep
             : undefined
+          const key = child.props.name ?? child.props.step ?? String(index)
           return <Steps.Step {...{ key, title, onStepClick }} />
         })}
       </Steps>
@@ -106,9 +109,9 @@ export function StepsForm <FormValue = any> (
   )
 
   const buttonLabel = {
-    next: $t({ id: 'stepsForm.next', defaultMessage: 'Next' }),
-    submit: $t({ id: 'stepsForm.submit', defaultMessage: 'Finish' }),
-    cancel: $t({ id: 'stepsForm.cancel', defaultMessage: 'Cancel' })
+    next: $t({ defaultMessage: 'Next' }),
+    submit: $t({ defaultMessage: 'Finish' }),
+    cancel: $t({ defaultMessage: 'Cancel' })
   }
 
   const cancel = <Button
@@ -144,6 +147,7 @@ export function StepsForm <FormValue = any> (
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function StepForm <FormValue = any> (
   props: Omit<StepFormProps<FormValue>, 'requireMark' | 'validateTrigger'>
 ) {

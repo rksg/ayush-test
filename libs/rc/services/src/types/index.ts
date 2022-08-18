@@ -1,4 +1,10 @@
-import { ApDeviceStatusEnum, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import {
+  ApDeviceStatusEnum,
+  GuestNetworkTypeEnum,
+  WlanSecurityEnum,
+  NetworkVenue,
+  NetworkTypeEnum
+} from '@acx-ui/rc/utils'
 
 export * from './ap'
 export * from './venue'
@@ -28,10 +34,10 @@ export interface Network {
 }
 
 export interface NetworkDetail {
-  type: string
+  type: NetworkTypeEnum
   tenantId: string
   name: string
-  venues: { venueId: string, id: string }[]
+  venues: NetworkVenue[]
   id: string
 }
 
@@ -60,7 +66,9 @@ export interface Venue {
   // switchClients ??
   // radios ??
   // scheduling ??
-  activated: { isActivated: boolean }
+  activated: { isActivated: boolean, isDisabled?: boolean }
+  deepVenue?: NetworkVenue
+  disabledActivation: boolean
 }
 
 export interface AlarmBase {
@@ -82,9 +90,6 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
-export interface UserSettings {
-  [key: string]: string
-}
 
 export enum ApVenueStatusEnum {
   IN_SETUP_PHASE = '1_InSetupPhase',
@@ -206,7 +211,7 @@ export interface Dashboard {
       country?: string,
       city?: string,
       latitude?: number,
-      crtTime?: any,
+      crtTime?: string,
       description?: string,
       type?: string,
       lastUpdTime?: string,

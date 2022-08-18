@@ -12,7 +12,7 @@ describe('Card component', () => {
     expect(screen.getByText('title')).toBeVisible()
   })
   it('should render card with subtitle', () => {
-    render(<Card title='title' subTitle='sub title' useFullHeight/>)
+    render(<Card title='title' subTitle='sub title' />)
     expect(screen.getByText('sub title')).toBeVisible()
   })
   it('should render card with tabs', () => {
@@ -45,5 +45,9 @@ describe('Card component', () => {
     act(() => screen.getByTitle('More').click())
     expect(onExpandClick).toBeCalledTimes(1)
     expect(onMoreClick).toBeCalledTimes(1)
+  })
+  it('should render card with no border', () => {
+    const { asFragment } = render(<Card bordered={false}>test</Card>)
+    expect(asFragment()).toMatchSnapshot()
   })
 })

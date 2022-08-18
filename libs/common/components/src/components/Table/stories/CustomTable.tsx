@@ -47,11 +47,11 @@ const customData = [
 ]
 
 export function CustomTable () {
-  return (
+  return (<>
+    With Custom Cell
     <Table
       columns={customColumns}
       dataSource={customData}
-      title={() => 'With Custom Cell'}
     />
-  )
+  </>)
 }

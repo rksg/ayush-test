@@ -1,13 +1,19 @@
 import styled from 'styled-components/macro'
 
-const pillColor = ({ trend }) => {
-  switch (trend) {
+import { incidentSeverities } from '@acx-ui/analytics/utils'
+
+import { TrendType, IncidentSeverities } from '.'
+
+const pillColor = ({ type }: { type: TrendType | IncidentSeverities }) => {
+  switch (type) {
     case 'positive': return '--acx-semantics-green-50'
     case 'negative': return '--acx-semantics-red-50'
     case 'none': return '--acx-neutrals-50'
+    default: return incidentSeverities[type].color
   }
 }
 export const Pill = styled.span`
+  display: inline-block;
   border-radius: 10px;
   padding: 3px 8px;
   font-family: var(--acx-neutral-brand-font);

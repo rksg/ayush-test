@@ -1,4 +1,5 @@
 import {
+  NetworkTypeEnum,
   PassphraseExpirationEnum,
   PassphraseFormatEnum,
   WlanSecurityEnum
@@ -7,16 +8,16 @@ import {
 export interface CreateNetworkFormFields {
   name: string;
   description?: string;
-  type: string;
+  type: NetworkTypeEnum;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
-  venues: any;
+  venues: NetworkVenue[];
 }
 
 export interface NetworkSaveData {
   name?: string;
   description?: string;
-  type?: string;
+  type?: NetworkTypeEnum;
   enableAccountingService?: boolean;
   enableAccountingProxy?: boolean;
   enableAuthProxy?: boolean;
@@ -24,7 +25,7 @@ export interface NetworkSaveData {
   enableSecondaryAcctServer?: boolean;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
-  venues?: { venueId: string; name: string }[];
+  venues?: NetworkVenue[];
   wlan?: {
     ssid?: string;
     vlanId?: number;
@@ -60,6 +61,20 @@ export interface NetworkSaveData {
   passphraseLength?: number;
   passphraseFormat?: PassphraseFormatEnum;
   expiration?: PassphraseExpirationEnum;
+}
+
+export interface NetworkVenue {
+  id?: string
+  name?: string
+  apGroups: string[]
+  scheduler: {
+    type: string
+  }
+  isAllApGroups: boolean
+  allApGroupsRadio: string
+  allApGroupsRadioTypes: string[]
+  venueId: string
+  networkId: string
 }
 
 export enum IsolatePacketsTypeEnum {

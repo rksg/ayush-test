@@ -12,7 +12,7 @@ import { LocaleProvider, LocaleContext, LocaleProviderProps } from '@acx-ui/util
 
 import { Loader } from '../Loader'
 
-export type ConfigProviderProps = Omit<AntConfigProviderProps, 'locale'> & {
+type ConfigProviderProps = Omit<AntConfigProviderProps, 'locale'> & {
   lang?: LocaleProviderProps['lang']
 }
 
