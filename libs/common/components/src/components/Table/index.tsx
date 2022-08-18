@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Key } from 'react'
+import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable                   from '@ant-design/pro-table'
 import { Space, Divider, Button } from 'antd'
@@ -26,6 +26,21 @@ export interface TableProps <RecordType>
     }>
     columnState?: ColumnStateOption
   }
+
+function useSelectedRowKeys <RecordType> (
+  rowSelection?: TableProps<RecordType>['rowSelection']
+): [Key[], React.Dispatch<React.SetStateAction<Key[]>>] {
+  const [selectedRowKeys, setSelectedRowKeys]
+    = useState<Key[]>(rowSelection?.defaultSelectedRowKeys ?? [])
+
+  useEffect(() => {
+    if (rowSelection?.selectedRowKeys !== undefined) {
+      setSelectedRowKeys(rowSelection?.selectedRowKeys)
+    }
+  }, [rowSelection?.selectedRowKeys])
+
+  return [selectedRowKeys, setSelectedRowKeys]
+}
 
 export function Table <RecordType extends object> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>
@@ -64,9 +79,7 @@ export function Table <RecordType extends object> (
 
   const rowKey = (props.rowKey ?? 'key') as keyof RecordType
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>(props.rowSelection?.selectedRowKeys
-    ?? props.rowSelection?.defaultSelectedRowKeys
-    ?? [])
+  const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
 
   // needed to store selectedRows because `tableAlertRender`
   // somehow doesn't pass in sync selected data between selectedRows & selectedRowKeys
