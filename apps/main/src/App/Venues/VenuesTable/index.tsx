@@ -21,7 +21,8 @@ function useColumns () {
   const columns: TableProps<Venue>['columns'] = [
     {
       title: $t({ defaultMessage: 'Venue' }),
-      dataIndex: 'name', 
+      key: 'name',
+      dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
@@ -32,6 +33,7 @@ function useColumns () {
     },
     {
       title: $t({ defaultMessage: 'Address' }),
+      key: 'city',
       dataIndex: 'city',
       sorter: true,
       width: 120,
@@ -40,26 +42,24 @@ function useColumns () {
       }
     },
     {
+      key: 'incidents',
       title: () => {
         return (
           <Space direction='vertical' size={0}>
             { $t({ defaultMessage: 'Incidents' }) }
-            <span style={{ fontSize: '12px', fontWeight: '400' }}>
-              { $t({ defaultMessage: 'Last 24 hours' }) }
-            </span>
+            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
           </Space>
         )
       },
       align: 'center'
     },
     {
+      key: 'health',
       title: () => {
         return (
           <Space direction='vertical' size={0}>
             { $t({ defaultMessage: 'Health Score' }) }
-            <span style={{ fontSize: '12px', fontWeight: '400' }}>
-              { $t({ defaultMessage: 'Last 24 hours' }) }
-            </span>
+            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
           </Space>
         )
       },
@@ -67,11 +67,13 @@ function useColumns () {
     },
     {
       title: $t({ defaultMessage: 'Services' }),
+      key: 'services',
       align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       align: 'center',
+      key: 'aggregatedApStatus',
       dataIndex: 'aggregatedApStatus',
       render: function (data, row) {
         const count = row.aggregatedApStatus
@@ -91,6 +93,7 @@ function useColumns () {
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Clients' }),
+      key: 'clients',
       dataIndex: 'clients',
       align: 'center',
       render: function (data, row) {
@@ -104,6 +107,7 @@ function useColumns () {
     },
     {
       title: $t({ defaultMessage: 'Switches' }),
+      key: 'switches',
       dataIndex: 'switches',
       align: 'center',
       render: function (data, row) {
@@ -117,6 +121,7 @@ function useColumns () {
     },
     {
       title: $t({ defaultMessage: 'Switch Clients' }),
+      key: 'switchClients',
       dataIndex: 'switchClients',
       align: 'center',
       render: function (data, row) {
@@ -129,6 +134,7 @@ function useColumns () {
       }
     },
     {
+      key: 'tags',
       title: $t({ defaultMessage: 'Tags' })
     }
   ]
@@ -238,7 +244,7 @@ function getApStatusChart (apStatus: Venue['aggregatedApStatus']) {
   return <StackedBarChart
     style={{ height: 10, width: 100 }}
     data={[{
-      category: 'apStatus',    
+      category: 'apStatus',
       series: series
     }]}
     showLabels={false}
@@ -261,5 +267,5 @@ function getEmptyStatusChart () {
     showLabels={false}
     showTotal={false}
     barColors={[cssStr(deviceStatusColors.empty)]}
-  />  
+  />
 }
