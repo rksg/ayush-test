@@ -138,7 +138,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
         class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
       >
         <img
-          alt="Captive portal"
+          alt="Captive Portal"
           src="click-through.png"
         />
       </div>
@@ -159,7 +159,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
         class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
       >
         <img
-          alt="Captive portal"
+          alt="Captive Portal"
           src="captive-portal-cloudpath-cloud-deployment.png"
         />
       </div>
@@ -180,7 +180,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
         class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
       >
         <img
-          alt="Captive portal"
+          alt="Captive Portal"
           src="captive-portal-cloudpath-on-prem-deployment.png"
         />
       </div>
@@ -201,7 +201,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
         class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
       >
         <img
-          alt="Captive portal"
+          alt="Captive Portal"
           src="guest-pass.png"
         />
       </div>
@@ -222,7 +222,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
         class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
       >
         <img
-          alt="Captive portal"
+          alt="Captive Portal"
           src="host-approval.png"
         />
       </div>
@@ -243,7 +243,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
         class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
       >
         <img
-          alt="Captive portal"
+          alt="Captive Portal"
           src="self-sign-in.png"
         />
       </div>
@@ -264,7 +264,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
         class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
       >
         <img
-          alt="Captive portal"
+          alt="Captive Portal"
           src="wispr-psk.png"
         />
       </div>
@@ -285,7 +285,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
         class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
       >
         <img
-          alt="Captive portal"
+          alt="Captive Portal"
           src="wispr.png"
         />
       </div>
@@ -306,7 +306,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
         class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
       >
         <img
-          alt="Captive portal"
+          alt="Captive Portal"
           src="click-through.png"
         />
       </div>

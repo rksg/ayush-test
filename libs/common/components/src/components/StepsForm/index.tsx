@@ -21,6 +21,7 @@ export type { ProFormInstance as StepsFormInstance }
 
 const { useImperativeHandle, useRef, useState } = React
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StepsFormProps <FormValue = any> =
   Omit<ProAntStepsFormProps<FormValue>, 'stepsProps' | 'submitter'> &
   {
@@ -49,6 +50,7 @@ type InternalStepFormProps <FormValue> = StepFormProps<FormValue> & {
   state: 'finish' | 'active' | 'wait'
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function StepsForm <FormValue = any> (
   props: React.PropsWithChildren<StepsFormProps<FormValue>>
 ) {
@@ -107,9 +109,9 @@ export function StepsForm <FormValue = any> (
   )
 
   const buttonLabel = {
-    next: $t({ id: 'stepsForm.next', defaultMessage: 'Next' }),
-    submit: $t({ id: 'stepsForm.submit', defaultMessage: 'Finish' }),
-    cancel: $t({ id: 'stepsForm.cancel', defaultMessage: 'Cancel' })
+    next: $t({ defaultMessage: 'Next' }),
+    submit: $t({ defaultMessage: 'Finish' }),
+    cancel: $t({ defaultMessage: 'Cancel' })
   }
 
   const cancel = <Button
@@ -145,6 +147,7 @@ export function StepsForm <FormValue = any> (
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function StepForm <FormValue = any> (
   props: Omit<StepFormProps<FormValue>, 'requireMark' | 'validateTrigger'>
 ) {

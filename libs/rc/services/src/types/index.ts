@@ -1,4 +1,4 @@
-import { GuestNetworkTypeEnum, WlanSecurityEnum, NetworkVenue } from '@acx-ui/rc/utils'
+import { GuestNetworkTypeEnum, WlanSecurityEnum, NetworkVenue, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 export * from './ap'
 
@@ -27,7 +27,7 @@ export interface Network {
 }
 
 export interface NetworkDetail {
-  type: string
+  type: NetworkTypeEnum
   tenantId: string
   name: string
   venues: NetworkVenue[]
@@ -85,9 +85,6 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
-export interface UserSettings {
-  [key: string]: string
-}
 
 export enum EventSeverityEnum {
   CRITICAL = 'Critical',
@@ -238,7 +235,7 @@ export interface Dashboard {
       country?: string,
       city?: string,
       latitude?: number,
-      crtTime?: any,
+      crtTime?: string,
       description?: string,
       type?: string,
       lastUpdTime?: string,

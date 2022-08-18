@@ -8,12 +8,7 @@ import { Card, Loader, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/componen
 
 import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
-export const seriesMapping = ($t: CallableFunction) =>
-  [
-    { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
-    { key: 'impactedClientCount', name: $t({ defaultMessage: 'Impacted Clients' }) },
-    { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
-  ] as Array<{ key: keyof Omit<NetworkHistoryData, 'time'>; name: string }>
+type Key = keyof Omit<NetworkHistoryData, 'time'>
 
 const lineColors = [
   cssStr('--acx-accents-blue-30'),
@@ -23,22 +18,29 @@ const lineColors = [
 
 function NetworkHistoryWidget ({
   hideTitle,
+  bordered = true,
   filters
 }: {
   hideTitle?: boolean;
+  bordered?: boolean;
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
+  const seriesMapping = [
+    { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
+    { key: 'impactedClientCount', name: $t({ defaultMessage: 'Impacted Clients' }) },
+    { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
+  ] as Array<{ key: Key, name: string }>
   const queryResults = useNetworkHistoryQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(data!, seriesMapping($t)),
+      data: getSeriesData(data!, seriesMapping),
       ...rest
     })
   })
   const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
   return (
     <Loader states={[queryResults]}>
-      <Card title={title}>
+      <Card title={title} bordered={bordered}>
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart
