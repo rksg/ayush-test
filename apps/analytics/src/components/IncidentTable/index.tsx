@@ -15,7 +15,10 @@ import {
   LongIncidentDescription,
   getCategory,
   GetScope,
-  severitySort
+  severitySort,
+  dateSort,
+  defaultSort,
+  durationSort
 } from './utils'
 
 
@@ -39,7 +42,7 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
       return <Link to={value.id}>{formatDate(value.endTime)}</Link>
     },
     sorter: {
-      compare: (a, b) => clientImpactSort(a.endTime, b.endTime),
+      compare: (a, b) => dateSort(a.endTime, b.endTime),
       multiple: 2
     }
   },
@@ -49,11 +52,8 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
     key: 'startTime',
     render: (_, value) => formatDuration(value.startTime, value.endTime),
     sorter: {
-      compare: (a, b) => clientImpactSort(
-        formatDuration(a.startTime, a.endTime),
-        formatDuration(b.startTime, b.endTime)
-      ),
-      multiple: 2
+      compare: (a, b) => durationSort(a.startTime, a.endTime, b.startTime, b.endTime),
+      multiple: 3
     }
   },
   {
@@ -62,7 +62,8 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
     key: 'code',
     render: (_, value) => <LongIncidentDescription incident={value}/>,
     sorter: {
-      compare: (a, b) => clientImpactSort(a.code, b.code)
+      compare: (a, b) => defaultSort(a.code, b.code),
+      multiple: 4
     },
     ellipsis: true
   },
@@ -72,7 +73,8 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
     key: 'sliceType',
     render: (_, value) => getCategory(value.code),
     sorter: {
-      compare: (a, b) => clientImpactSort(a.sliceType, b.sliceType)
+      compare: (a, b) => defaultSort(a.code, b.code),
+      multiple: 5
     }
   },
   {
@@ -80,7 +82,8 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
     dataIndex: 'clientCount',
     key: 'clientCount',
     sorter: {
-      compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount)
+      compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount),
+      multiple: 6
     }
   },
   {
@@ -88,7 +91,8 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
     dataIndex: 'impactedClientCount',
     key: 'impactedClientCount',
     sorter: {
-      compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount)
+      compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount),
+      multiple: 7
     }
   },
   {
@@ -97,7 +101,8 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
     key: 'mutedBy',
     render: (_, value) => <GetScope incident={value} />,
     sorter: {
-      compare: (a, b) => clientImpactSort(a.mutedBy, b.mutedBy)
+      compare: (a, b) => clientImpactSort(a.mutedBy, b.mutedBy),
+      multiple: 8
     }
   }, 
   {
@@ -105,7 +110,8 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
     dataIndex: 'sliceValue',
     key: 'sliceValue',
     sorter: {
-      compare: (a, b) => clientImpactSort(a.sliceValue, b.sliceValue)
+      compare: (a, b) => defaultSort(a.sliceValue, b.sliceValue),
+      multiple: 9
     }
   }
 ]

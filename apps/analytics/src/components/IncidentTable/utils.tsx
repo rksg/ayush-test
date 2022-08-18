@@ -41,26 +41,6 @@ export const formatDuration = (startTimestamp?: string, endTimestamp?: string) =
   return durationFormat(diffInMillis)
 }
 
-export const clientImpactSort = (a?: unknown, b?: unknown) => {
-  let c = (a === noDataSymbol) ? -1 : parseFloat(a as string)
-  let d = (b === noDataSymbol) ? -1 : parseFloat(b as string)
-  if (isNaN(c)) c = -2
-  if (isNaN(d)) d = -2
-  if (c > d) return -1
-  if (c < d) return 1
-  return 0
-}
-
-export const severitySort = (a?: unknown, b?: unknown) => {
-  if (typeof a !== 'number' && typeof b !== 'number') return 0
-  const isDefined = typeof a !== 'undefined' && typeof b !== 'undefined'
-  const c = a as number
-  const d = b as number
-  if (isDefined && c > d) return -1
-  if (isDefined && c < d) return 1
-  return 0
-}
-
 export interface FormatIntlStringProps {
   message: {
     defaultMessage: string
@@ -106,4 +86,39 @@ export const GetScope = (props: GetScopeProps) => {
   const scope = useIncidentScope(incident)  
   const message = defineMessage({ defaultMessage: '{scope}' })
   return <FormatIntlString message={message} scope={scope}/>
+}
+
+export const dateSort = (dateA: string, dateB: string) => 
+  Math.sign(moment(dateA).diff(moment(dateB)))
+
+export const defaultSort = (a: string | number, b: string | number) => {
+  if (a < b) return -1
+  if (a > b) return 1
+  return 0
+}
+
+export const durationSort = (startA: string, endA: string, startB: string, endB: string) => {
+  const diffA = moment(endA).diff(startA)
+  const diffB = moment(endB).diff(startB)
+  return defaultSort(diffA, diffB)
+}
+
+export const clientImpactSort = (a?: unknown, b?: unknown) => {
+  let c = (a === noDataSymbol) ? -1 : parseFloat(a as string)
+  let d = (b === noDataSymbol) ? -1 : parseFloat(b as string)
+  if (isNaN(c)) c = -2
+  if (isNaN(d)) d = -2
+  if (c > d) return -1
+  if (c < d) return 1
+  return 0
+}
+
+export const severitySort = (a?: unknown, b?: unknown) => {
+  if (typeof a !== 'number' && typeof b !== 'number') return 0
+  const isDefined = typeof a !== 'undefined' && typeof b !== 'undefined'
+  const c = a as number
+  const d = b as number
+  if (isDefined && c > d) return -1
+  if (isDefined && c < d) return 1
+  return 0
 }
