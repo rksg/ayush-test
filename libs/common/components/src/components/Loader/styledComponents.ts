@@ -7,7 +7,7 @@ export const Wrapper = styled.div<{ $isLoading?: boolean }>`
   flex-direction: column;
 
   ${props => props.$isLoading ? css`
-    background-color: var(--acx-neutrals-20);
+    background-color: var(--acx-neutrals-10);
   ` : ''}
 `
 
