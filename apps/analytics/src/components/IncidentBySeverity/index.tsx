@@ -3,14 +3,14 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter, incidentSeverities } from '@acx-ui/analytics/utils'
 import {
   Card,
   BarChart,
   BarChartData,
   Loader,
   cssStr,
-  Pill,
+  TrendPill,
   TrendType
 } from '@acx-ui/components'
 
@@ -21,12 +21,7 @@ import {
 import * as UI from './styledComponents'
 
 type PillData = { delta: string, total: number, trend: string }
-const barColors = [
-  cssStr('--acx-semantics-yellow-40'), // P4
-  cssStr('--acx-accents-orange-50'), //.. P3
-  cssStr('--acx-semantics-red-50'), //... P2
-  cssStr('--acx-semantics-red-70') //.... P1
-]
+const barColors = Object.values(incidentSeverities).map(({ color }) => cssStr(color))
 export const getPillData = (
   curr: IncidentsBySeverityData, prev: IncidentsBySeverityData
 ): PillData => {
@@ -79,11 +74,11 @@ function IncidentBySeverityWidget () {
     chart = getChartData(currentResult.data)
   }
   return <Loader states={[prevResult, currentResult]}>
-    <Card title={$t({ defaultMessage: 'Total Incidents' })}>
+    <Card title={$t({ defaultMessage: 'Total Incidents' })} bordered={false}>
       <UI.Container>
         <UI.Title>
           <UI.IncidentCount>{pill.total}</UI.IncidentCount>
-          <Pill value={pill.delta} trend={pill.trend as TrendType} />
+          <TrendPill value={pill.delta} trend={pill.trend as TrendType} />
         </UI.Title>
         <AutoSizer>
           {({ width }) => (

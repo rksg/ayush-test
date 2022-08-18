@@ -2,7 +2,7 @@ import React, { ReactNode, useContext } from 'react'
 
 import { DateFilterContext, getDateRangeFilter } from '@acx-ui/utils'
 
-import { NetworkPath } from './constants'
+import type { NetworkPath } from './types/incidents'
 
 interface AnalyticsFilterProps {
   path: Readonly<NetworkPath>;

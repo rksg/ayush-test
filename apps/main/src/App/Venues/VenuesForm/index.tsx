@@ -58,17 +58,22 @@ export const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
 
   return null
 }
+interface AddressComponent {
+  long_name?: string;
+  short_name?: string;
+  types?: Array<string>;
+}
 
-export const retrieveCityState = (address_components: Array<any>, country: string) => {
+export const retrieveCityState = (address_components: Array<AddressComponent>, country: string) => {
 
   // array reverse applied since search should be done from general to specific, google provides from vice-versa
   const reversed_addr_components = address_components.reverse()
 
   /** Step 1. Looking for locality / sublocality_level_X / postal_town */
   let city_component = reversed_addr_components.find(el => {
-    return el.types.includes('locality')
-      || el.types.some((t: string) => /sublocality_level_[1-5]/.test(t))
-      || el.types.includes('postal_town')
+    return el.types?.includes('locality')
+      || el.types?.some((t: string) => /sublocality_level_[1-5]/.test(t))
+      || el.types?.includes('postal_town')
   })
 
   /** Step 2. If nothing found, proceed with administrative_area_level_2-5 / neighborhood
@@ -76,13 +81,13 @@ export const retrieveCityState = (address_components: Array<any>, country: strin
    */
   if (!city_component) {
     city_component = reversed_addr_components.find(el => {
-      return el.types.includes('neighborhood')
-        || el.types.some((t: string) => /administrative_area_level_[2-5]/.test(t))
+      return el.types?.includes('neighborhood')
+        || el.types?.some((t: string) => /administrative_area_level_[2-5]/.test(t))
     })
   }
 
   const state_component = address_components
-    .find(el => el.types.includes('administrative_area_level_1'))
+    .find(el => el.types?.includes('administrative_area_level_1'))
 
 
   // Address in some country doesn't have city and state component, we will use the country as the default value of the city.

@@ -15,13 +15,19 @@ import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useGetAllUserSettingsQuery,
-  UserSettings,
   useNetworkVenueListQuery,
   useUpdateNetworkDeepMutation,
   Venue
 } from '@acx-ui/rc/services'
-import { Constants, useTableQuery, getUserSettingsFromDict, NetworkSaveData, NetworkVenue } from '@acx-ui/rc/utils'
-import { useParams }                                                                        from '@acx-ui/react-router-dom'
+import { UserSettings } from '@acx-ui/rc/utils'
+import {
+  Constants,
+  useTableQuery,
+  getUserSettingsFromDict,
+  NetworkSaveData,
+  NetworkVenue
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from '../services'
 

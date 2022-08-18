@@ -3,7 +3,7 @@
 exports[`Venues Form google map is not enabled 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fmXRDH"
+    class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -62,13 +62,13 @@ exports[`Venues Form google map is not enabled 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 hnQMwg"
+    class="styledComponents__Wrapper-sc-1ibvcih-0 jzCCYL"
   >
     <div
       class="ant-pro-steps-form"
     >
       <div
-        class="styledComponents__Container-sc-1ibvcih-4 kimQK"
+        class="styledComponents__Container-sc-1ibvcih-4 fAuOsZ"
       >
         <div
           class="ant-row"
@@ -79,7 +79,7 @@ exports[`Venues Form google map is not enabled 1`] = `
             style="padding-left: 12px; padding-right: 12px;"
           >
             <div
-              class="styledComponents__StepsContainer-sc-1ibvcih-2 jRRiLQ"
+              class="styledComponents__StepsContainer-sc-1ibvcih-2 gGLpjE"
             >
               <div
                 class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -327,7 +327,7 @@ exports[`Venues Form google map is not enabled 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-3 dZyVXD"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-3 jmOuwe"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
@@ -337,7 +337,7 @@ exports[`Venues Form google map is not enabled 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 gtfjWr"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 geFEjT"
               type="button"
             >
               <span>
@@ -349,7 +349,7 @@ exports[`Venues Form google map is not enabled 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
               type="button"
             >
               <span>
@@ -367,7 +367,7 @@ exports[`Venues Form google map is not enabled 1`] = `
 exports[`Venues Form should render venues form 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fmXRDH"
+    class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -426,13 +426,13 @@ exports[`Venues Form should render venues form 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 hnQMwg"
+    class="styledComponents__Wrapper-sc-1ibvcih-0 jzCCYL"
   >
     <div
       class="ant-pro-steps-form"
     >
       <div
-        class="styledComponents__Container-sc-1ibvcih-4 kimQK"
+        class="styledComponents__Container-sc-1ibvcih-4 fAuOsZ"
       >
         <div
           class="ant-row"
@@ -443,7 +443,7 @@ exports[`Venues Form should render venues form 1`] = `
             style="padding-left: 12px; padding-right: 12px;"
           >
             <div
-              class="styledComponents__StepsContainer-sc-1ibvcih-2 jRRiLQ"
+              class="styledComponents__StepsContainer-sc-1ibvcih-2 gGLpjE"
             >
               <div
                 class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -687,7 +687,7 @@ exports[`Venues Form should render venues form 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-3 dZyVXD"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-3 jmOuwe"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
@@ -697,7 +697,7 @@ exports[`Venues Form should render venues form 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 gtfjWr"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 geFEjT"
               type="button"
             >
               <span>
@@ -709,7 +709,7 @@ exports[`Venues Form should render venues form 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
               type="button"
             >
               <span>

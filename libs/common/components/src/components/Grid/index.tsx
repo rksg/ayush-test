@@ -1,13 +1,12 @@
 import React from 'react'
 
-import { Col as AntCol } from 'antd'
-import styled            from 'styled-components/macro'
+import { Row as AntRow, Col as AntCol } from 'antd'
+import styled                           from 'styled-components/macro'
 
 import type { ColProps as AntColProps } from 'antd'
 
 export {
-  Row as DashboardRow,
-  RowProps as DashboardRowProps
+  RowProps as GridRowProps
 } from 'antd'
 
 const ColInner = styled(AntCol)`
@@ -16,21 +15,22 @@ const ColInner = styled(AntCol)`
   display: flex;
 `
 
-const WidgetContainer = styled.div`
+const Container = styled.div`
   // Appear in flex to take up full height
   display: flex;
   flex-direction: column;
   // Set flex to 1 for it to take up full width
   flex: 1;
-  overflow: auto;
 `
 
-export type DashboardColProps = React.HTMLAttributes<HTMLDivElement> & {
+export const GridRow = styled(AntRow).attrs({ gutter: [20, 20] })``
+
+export type GridColProps = React.HTMLAttributes<HTMLDivElement> & {
   col: AntColProps
 }
 
-export function DashboardCol ({ col, ...props }: DashboardColProps) {
+export function GridCol ({ col, ...props }: GridColProps) {
   return <ColInner {...col}>
-    <WidgetContainer {...props} />
+    <Container {...props} />
   </ColInner>
 }

@@ -11,7 +11,7 @@ export interface CreateNetworkFormFields {
   type: NetworkTypeEnum;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
-  venues: any;
+  venues: NetworkVenue[];
 }
 
 export interface NetworkSaveData {
@@ -65,14 +65,15 @@ export interface NetworkSaveData {
 
 export interface NetworkVenue {
   id?: string
-  apGroups: string[],
+  name?: string
+  apGroups: string[]
   scheduler: {
     type: string
-  },
-  isAllApGroups: boolean,
-  allApGroupsRadio: string,
-  allApGroupsRadioTypes: string[],
-  venueId: string,
+  }
+  isAllApGroups: boolean
+  allApGroupsRadio: string
+  allApGroupsRadioTypes: string[]
+  venueId: string
   networkId: string
 }
 
@@ -87,7 +88,7 @@ export interface VenueSaveData {
   apCount?: number;
   clientCount?: number;
   activeNetworksToolTip?: string;
-  activatedNetworks?: Array<any>;
+  //activatedNetworks?: Array<any>;
   disabledActivation?: boolean;
   allApDisabled?: boolean;
   dataFulfilled?: boolean;

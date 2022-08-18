@@ -3,7 +3,7 @@
 exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 hEwfrE"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 iPsObj"
   >
     <div
       class="ant-pro-table"
@@ -158,7 +158,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 kYgtfq"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 eCJPQJ"
   >
     <div
       class="ant-pro-table"
@@ -479,7 +479,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 kArFeu"
   >
     <div
       class="ant-pro-table"
@@ -896,7 +896,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 kArFeu"
   >
     <div
       class="ant-pro-table"
@@ -1412,7 +1412,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-3 jLgUSB"
+    class="styledComponents__Wrapper-sc-1abm7iv-3 kArFeu"
   >
     <div
       class="ant-pro-table"
