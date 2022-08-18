@@ -81,11 +81,11 @@ export function Table <RecordType extends object> (
 
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
 
-  // needed to store selectedRows because `tableAlertRender`
-  // somehow doesn't pass in sync selected data between selectedRows & selectedRowKeys
-  const [selectedRows, setSelectedRows]
-    = useState<RecordType[]>(props.dataSource
-      ?.filter(item => selectedRowKeys.includes(item[rowKey] as unknown as Key)) ?? [])
+  const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
+    return props.dataSource?.filter(item => {
+      return selectedRowKeys.includes(item[rowKey] as unknown as Key)
+    })
+  }, [props.dataSource, rowKey])
 
   const onRowClick = (record: RecordType) => {
     if (!props.rowSelection) return
@@ -96,7 +96,6 @@ export function Table <RecordType extends object> (
     if (props.rowSelection.type === 'radio') {
       if (!isSelected) {
         setSelectedRowKeys([key])
-        setSelectedRows([record])
       }
     } else {
       setSelectedRowKeys(isSelected
@@ -104,11 +103,6 @@ export function Table <RecordType extends object> (
         ? selectedRowKeys.filter(k => k !== key)
         // add into collection if not selected
         : [...selectedRowKeys, key])
-      setSelectedRows(isSelected
-        // remove if selected
-        ? selectedRows.filter(item => item[rowKey] !== record[rowKey])
-        // add into collection if not selected
-        : [...selectedRows, record])
     }
   }
 
@@ -118,7 +112,6 @@ export function Table <RecordType extends object> (
     preserveSelectedRowKeys: true,
     onChange: (keys, rows, info) => {
       setSelectedRowKeys(keys)
-      setSelectedRows(rows)
       props.rowSelection?.onChange?.(keys, rows, info)
     }
   } : undefined
@@ -164,7 +157,8 @@ export function Table <RecordType extends object> (
             {props.actions?.map((option) =>
               <UI.ActionButton
                 key={option.label}
-                onClick={() => option.onClick(selectedRows, () => { onCleanSelected() })}
+                onClick={() =>
+                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
                 children={option.label}
               />
             )}
