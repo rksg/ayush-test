@@ -84,7 +84,7 @@ export function Table <RecordType extends object> (
   const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
     return props.dataSource?.filter(item => {
       return selectedRowKeys.includes(item[rowKey] as unknown as Key)
-    })
+    }) ?? []
   }, [props.dataSource, rowKey])
 
   const onRowClick = (record: RecordType) => {
