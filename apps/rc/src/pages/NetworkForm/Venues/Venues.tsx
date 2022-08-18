@@ -7,13 +7,12 @@ import { useIntl }      from 'react-intl'
 
 import {
   Loader,
-  StepFormProps,
   StepsForm,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery, Venue }               from '@acx-ui/rc/services'
-import { useTableQuery, CreateNetworkFormFields } from '@acx-ui/rc/utils'
+import { useVenueListQuery, Venue } from '@acx-ui/rc/services'
+import { useTableQuery }            from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -95,13 +94,13 @@ export function Venues () {
     } else {
       if (Array.isArray(row)) {
         row.forEach(item => {
-          const index = selectedVenues.findIndex(i => i.id == item.id)
+          const index = selectedVenues.findIndex(i => i.id === item.id)
           if (index !== -1) {
             selectedVenues.splice(index, 1)
           }
         })
       } else {
-        const index = selectedVenues.findIndex(i => i.id == row.id)
+        const index = selectedVenues.findIndex(i => i.id === row.id)
         if (index !== -1) {
           selectedVenues.splice(index, 1)
         }
@@ -117,7 +116,7 @@ export function Venues () {
     const data:Venue[] = []
     dataOfTable.forEach(item => {
       let activated = { isActivated: false }
-      if(selectedVenues.find(i => i.id == item.id)) {
+      if(selectedVenues.find(i => i.id === item.id)) {
         activated.isActivated = true
       }
       item.activated = activated
