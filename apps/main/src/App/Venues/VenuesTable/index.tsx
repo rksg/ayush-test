@@ -14,7 +14,7 @@ import {
 } from '@acx-ui/components'
 import { useVenuesListQuery, Venue }         from '@acx-ui/rc/services'
 import { useTableQuery, ApDeviceStatusEnum } from '@acx-ui/rc/utils'
-import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate }           from '@acx-ui/react-router-dom'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -161,11 +161,19 @@ const defaultPayload = {
 
 export function VenuesTable () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
   const VenuesTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useVenuesListQuery,
       defaultPayload
     })
+
+    const actions: TableProps<Venue>['actions'] = [{
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: (selectedRows) => {
+        navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
+      }
+    }]
 
     return (
       <Loader states={[
@@ -177,6 +185,7 @@ export function VenuesTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
+          actions={actions}
           rowSelection={{ type: 'checkbox' }}
         />
       </Loader>
