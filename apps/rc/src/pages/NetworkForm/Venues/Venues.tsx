@@ -64,7 +64,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     apiParams: { networkId: getNetworkId() },
     defaultPayload
   })
-  
+
   const [tableData, setTableData] = useState(defaultArray)
   const [activateVenues, setActivateVenues] = useState(defaultArray)
 
@@ -128,13 +128,13 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
 
   const actions: TableProps<Venue>['actions'] = [
     {
-      label: 'Activate',
+      label: $t({ defaultMessage: 'Activate' }),
       onClick: (rows) => {
         handleActivateVenue(true, rows)
       }
     },
     {
-      label: 'Deactivate',
+      label: $t({ defaultMessage: 'Deactivate' }),
       onClick: (rows) => {
         handleActivateVenue(false, rows)
       }
@@ -145,9 +145,9 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
     if(editMode){
       if(tableQuery.data && activateVenues.length === 0){
         const selected: Venue[] = []
-        const tableData = tableQuery.data.data.map((item: Venue) => 
+        const tableData = tableQuery.data.data.map((item: Venue) =>
         {
-          const isActivated = venues && 
+          const isActivated = venues &&
             venues.filter((venue: Venue) => venue.venueId === item.id).length > 0
           if(isActivated){
             selected.push(item)
@@ -163,7 +163,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       }
     }else{
       if(tableQuery.data && tableData.length === 0){
-        const tableData = tableQuery.data.data.map((item: Venue) => 
+        const tableData = tableQuery.data.data.map((item: Venue) =>
         {
           return {
             ...item,
