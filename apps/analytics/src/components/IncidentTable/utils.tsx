@@ -56,11 +56,11 @@ export const FormatIntlString = (props: FormatIntlStringProps) => {
   return <span>{intlMessage}</span>
 }
 
-export interface LongIncidentDescriptionProps {
+export interface IncidentTableComponentProps {
   incident: Incident
 }
 
-export const LongIncidentDescription = (props: LongIncidentDescriptionProps) => {
+export const LongIncidentDescription = (props: IncidentTableComponentProps) => {
   const { incident } = props
   const { rootCauses } = getRootCauseAndRecommendations(incident.code, incident.metadata)[0]
   const longDesc = useLongDesription(incident, rootCauses)
@@ -77,19 +77,17 @@ export const getCategory = (code: string) => {
   return <FormatIntlString message={category} />
 }
 
-export interface GetScopeProps {
-  incident: Incident
-}
-
-export const GetScope = (props: GetScopeProps) => {
+export const GetScope = (props: IncidentTableComponentProps) => {
   const { incident } = props
   const scope = useIncidentScope(incident)  
   const message = defineMessage({ defaultMessage: '{scope}' })
   return <FormatIntlString message={message} scope={scope}/>
 }
 
+export const durationValue = (dateA: string, dateB: string) => moment(dateA).diff(moment(dateB))
+
 export const dateSort = (dateA: string, dateB: string) => 
-  Math.sign(moment(dateA).diff(moment(dateB)))
+  Math.sign(durationValue(dateA, dateB))
 
 export const defaultSort = (a: string | number, b: string | number) => {
   if (a < b) return -1

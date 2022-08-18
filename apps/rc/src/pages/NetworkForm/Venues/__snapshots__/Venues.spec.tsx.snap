@@ -85,16 +85,17 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                             class="ant-spin-container"
                           >
                             <div
-                              class="ant-table ant-table-middle ant-table-has-fix-right"
+                              class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                             >
                               <div
                                 class="ant-table-container"
                               >
                                 <div
                                   class="ant-table-content"
+                                  style="overflow-x: auto; overflow-y: hidden;"
                                 >
                                   <table
-                                    style="table-layout: auto;"
+                                    style="min-width: 100%; table-layout: auto;"
                                   >
                                     <colgroup>
                                       <col
@@ -364,6 +365,111 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
                                     <tbody
                                       class="ant-table-tbody"
                                     >
+                                      <tr
+                                        aria-hidden="true"
+                                        class="ant-table-measure-row"
+                                        style="height: 0px; font-size: 0px;"
+                                      >
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                      </tr>
                                       <tr
                                         class="ant-table-row ant-table-row-level-0"
                                         data-row-key="d7b1a9a350634115a92ee7b0f11c7e75"

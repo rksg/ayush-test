@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react'
-
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { Incident, noDataSymbol, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import { Loader, Table, TableProps, showToast }       from '@acx-ui/components'
 import { Link }                                       from '@acx-ui/react-router-dom'
 
-import { useIncidentsListQuery, IncidentNodeData } from './services'
+import { useIncidentsListQuery, IncidentNodeData, IncidentTableRows } from './services'
 import { 
   getIncidentBySeverity,
   formatDate,
@@ -17,12 +15,11 @@ import {
   GetScope,
   severitySort,
   dateSort,
-  defaultSort,
-  durationSort
+  defaultSort
 } from './utils'
 
 
-export const ColumnHeaders: TableProps<Incident>['columns'] = [
+export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   {
     title: 'Severity',
     dataIndex: 'severity',
@@ -48,32 +45,32 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
   },
   {
     title: 'Duration',
-    dataIndex: 'startTime',
-    key: 'startTime',
+    dataIndex: 'duration',
+    key: 'duration',
     render: (_, value) => formatDuration(value.startTime, value.endTime),
     sorter: {
-      compare: (a, b) => durationSort(a.startTime, a.endTime, b.startTime, b.endTime),
+      compare: (a, b) => defaultSort(a.duration, b.duration),
       multiple: 3
     }
   },
   {
     title: 'Description',
-    dataIndex: 'code',
-    key: 'code',
+    dataIndex: 'description',
+    key: 'description',
     render: (_, value) => <LongIncidentDescription incident={value}/>,
     sorter: {
-      compare: (a, b) => defaultSort(a.code, b.code),
+      compare: (a, b) => defaultSort(a.description, b.description),
       multiple: 4
     },
     ellipsis: true
   },
   {
     title: 'Category',
-    dataIndex: 'sliceType',
-    key: 'sliceType',
+    dataIndex: 'category',
+    key: 'category',
     render: (_, value) => getCategory(value.code),
     sorter: {
-      compare: (a, b) => defaultSort(a.code, b.code),
+      compare: (a, b) => defaultSort(a.category, b.category),
       multiple: 5
     }
   },
@@ -97,20 +94,20 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
   },
   {
     title: 'Scope',
-    dataIndex: 'mutedBy',
-    key: 'mutedBy',
+    dataIndex: 'scope',
+    key: 'scope',
     render: (_, value) => <GetScope incident={value} />,
     sorter: {
-      compare: (a, b) => clientImpactSort(a.mutedBy, b.mutedBy),
+      compare: (a, b) => clientImpactSort(a.scope, b.scope),
       multiple: 8
     }
   }, 
   {
     title: 'Type',
-    dataIndex: 'sliceValue',
-    key: 'sliceValue',
+    dataIndex: 'type',
+    key: 'type',
     sorter: {
-      compare: (a, b) => defaultSort(a.sliceValue, b.sliceValue),
+      compare: (a, b) => defaultSort(a.type, b.type),
       multiple: 9
     }
   }
@@ -133,14 +130,6 @@ const actions: TableProps<Incident>['actions'] = [
 const IncidentTableWidget = () => {
   const filters = useAnalyticsFilter()
   const queryResults = useIncidentsListQuery(filters)
-  const [data, setData] = useState<IncidentNodeData>([])
-
-  useEffect(() => {
-    if (queryResults && queryResults.data) {
-      setData(queryResults.data)
-    }
-  }, [queryResults, queryResults.data])
-
 
   return (
     <Loader states={[queryResults]}>
@@ -149,7 +138,7 @@ const IncidentTableWidget = () => {
           <Table
             type='tall'
             style={{ width, height }}
-            dataSource={data}
+            dataSource={queryResults?.data}
             columns={ColumnHeaders}
             actions={actions}
             rowSelection={{ type: 'checkbox' }}

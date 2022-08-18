@@ -15,7 +15,7 @@ import {
   FormatIntlStringProps,
   getCategory,
   LongIncidentDescription,
-  LongIncidentDescriptionProps,
+  IncidentTableComponentProps,
   GetScopeProps,
   GetScope,
   dateSort,
@@ -319,7 +319,7 @@ describe('IncidentTable: utils', () => {
   })
 
   describe('LongIncidentDescription', () => {  
-    const RenderLongDescription = (props: LongIncidentDescriptionProps) => {
+    const RenderLongDescription = (props: IncidentTableComponentProps) => {
       return <Provider><LongIncidentDescription {...props}/></Provider>
     }
   

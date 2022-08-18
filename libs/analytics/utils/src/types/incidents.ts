@@ -65,7 +65,6 @@ export interface Incident {
   slaThreshold: number|null
   currentSlaThreshold: number|null
   relatedIncidents?: Incident[]
-  children?: Incident[]
 }
 
 export interface IncidentAttributesProps
