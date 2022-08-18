@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -8,8 +10,9 @@ import {
   noDataSymbol,
   getRootCauseAndRecommendations,
   useIncidentScope,
-  useLongDesription
+  useShortDescription
 } from '@acx-ui/analytics/utils'
+import {  Drawer }                   from '@acx-ui/components'
 import { formatter, durationFormat } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -79,13 +82,51 @@ export const FormatIntlString = (props: FormatIntlStringProps) => {
 export interface LongIncidentDescriptionProps {
   incident: Incident
 }
+const renderNumberedListFromArray = ( list : string[] ) => {
+  if (!Array.isArray(list)) return ''
+  return list.map((body, index) => (
+    (body !== '') &&
+    <UI.ActionRow key={index}>
+      { (index > 0) && <UI.ActionId>{index}. </UI.ActionId> }
+      <div>
+        { body.split('\\n').map(
+          (text : string) => <> {text}<br /></>
+        )}
+      </div>
+    </UI.ActionRow>)
+  )
+}
 
 export const LongIncidentDescription = (props: LongIncidentDescriptionProps) => {
   const { incident } = props
   const { rootCauses } = getRootCauseAndRecommendations(incident.code, incident.metadata)[0]
-  const longDesc = useLongDesription(incident, rootCauses)
-    
-  return <UI.DescriptionSpan>{longDesc}</UI.DescriptionSpan>
+  const desc = useShortDescription(incident)
+  const [visible, setVisible] = useState(false)
+  const onClose = () => {
+    setVisible(false)
+  }
+  const content = (
+    <UI.IncidentDrawerContent>
+      <UI.IncidentCause>{desc}</UI.IncidentCause>
+      <UI.IncidentRootCauses>{'Root cause:'}</UI.IncidentRootCauses>
+      {renderNumberedListFromArray(rootCauses)}
+    </UI.IncidentDrawerContent>
+  )
+  const onDrawerOpen = () => {
+    setVisible(true)
+  }
+  return (
+    <>
+      <UI.DescriptionSpan onClick={onDrawerOpen}>{desc}</UI.DescriptionSpan>
+      <Drawer
+        title={'Incident Description'}
+        visible={visible}
+        onClose={onClose}
+        children={content}
+        style={{ width: 450 }}
+      />
+    </>
+  )
 }
 
 export const getCategory = (code?: string) => {

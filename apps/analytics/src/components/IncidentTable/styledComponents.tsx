@@ -17,6 +17,30 @@ export const withDottedUnderline = `
 `
 
 export const DescriptionSpan = styled.div`
+  cursor: pointer;
   ${withEllipsis}
   ${withDottedUnderline}
+`
+
+export const ActionRow = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
+export const ActionId = styled.div`
+  margin-right: 10px;
+  max-width: 12px;
+  margin-left: 10px;
+`
+export const IncidentDrawerContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+`
+export const IncidentCause = styled.div`
+  font-weight: 600;
+  margin-top: 20px;
+`
+export const IncidentRootCauses = styled.div`
+ text-decoration: underline;
 `
