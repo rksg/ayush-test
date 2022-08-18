@@ -16,7 +16,7 @@ export interface CreateNetworkFormFields {
   type: NetworkTypeEnum;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
-  venues: unknown;
+  venues: NetworkVenue[];
   enableAccountingService?: boolean;
   enableAuthProxy?: boolean;
   wlanSecurity?: WlanSecurityEnum;
