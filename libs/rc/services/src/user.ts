@@ -3,10 +3,9 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
-  RequestPayload
+  RequestPayload,
+  UserSettings
 } from '@acx-ui/rc/utils'
-
-import { UserSettings } from './types'
 
 export const baseUserApi = createApi({
   baseQuery: fetchBaseQuery(),

@@ -5,6 +5,14 @@ import { CancelCircle } from '@acx-ui/icons'
 
 import { Subtitle } from '../Subtitle'
 
+export const SubTitle = styled.span`
+  display: block;
+  color: var(--acx-neutrals-70);
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+`
+
 export const CloseButton = styled(AntButton).attrs({ icon: <CancelCircle /> })`
   border: none;
   box-shadow: none;
@@ -63,6 +71,8 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
       .ant-tree:last-of-type {
         display: none;
       }
+      // prevent subtitle to appear in column setting
+      ${SubTitle} { display: none; }
     }
 
     &-title {
@@ -285,13 +295,6 @@ export const Wrapper = styled.div<StyledTable>`
         a {
           font-size: unset;
         }
-      }
-
-      &-tbody > tr.ant-table-row:hover > td,
-      &-tbody > tr.ant-table-row-selected > td,
-      &-tbody > tr > td.ant-table-column-sort,
-      &-tbody > tr > td.ant-table-cell-row-hover {
-        background-color: var(--acx-neutrals-10);
       }
     }
   }
