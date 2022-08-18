@@ -177,7 +177,7 @@ export function NetworkForm () {
               return true
             }}
           >
-            <Venues formRef={formRef} />
+            <Venues />
           </StepsForm.StepForm>
 
           <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>

@@ -53,8 +53,8 @@ const getNetworkId = () => {
   return 'UNKNOWN-NETWORK-ID'
 }
 
-export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
-  const { formRef } = props
+export function Venues () {
+  const form = Form.useFormInstance()
   const { editMode } = useContext(NetworkFormContext)
   const venues = Form.useWatch('venues')
 
@@ -81,7 +81,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       name: row.name
     }))
 
-    formRef?.current?.setFieldsValue({ venues: selected })
+    form.setFieldsValue({ venues: selected })
   }
 
   const handleActivateVenue = (isActivate:boolean, row:Venue | Venue[]) => {
