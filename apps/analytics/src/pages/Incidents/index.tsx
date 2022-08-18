@@ -36,14 +36,15 @@ const IncidentTabContent = (props: { tabSelection: IncidentListTabs }) => {
   ]?.codes as IncidentCode[]
 
   return (
-    <GridRow gutter={[0, 20]}>
-      <GridCol col={{ span: 4 }} style={{ height: '220px' }}>
+    <GridRow>
+      <GridCol col={{ span: 4 }} style={{ height: '210px' }}>
         <IncidentBySeverityWidget filters={{ ...filters, code: incidentCodesBasedOnCategory }} />
       </GridCol>
-      <GridCol col={{ span: 20 }} style={{ height: '220px' }}>
+      <GridCol col={{ span: 20 }} style={{ height: '210px' }}>
         <NetworkHistoryWidget
           hideTitle
           filters={{ ...filters, code: incidentCodesBasedOnCategory }}
+          bordered={false}
         />
       </GridCol>
       <GridCol col={{ span: 24 }}>table</GridCol>

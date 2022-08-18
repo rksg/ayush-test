@@ -18,9 +18,11 @@ const lineColors = [
 
 function NetworkHistoryWidget ({
   hideTitle,
+  bordered = true,
   filters
 }: {
   hideTitle?: boolean;
+  bordered?: boolean;
   filters: IncidentFilter;
 }) {
   const { $t } = useIntl()
@@ -44,7 +46,7 @@ function NetworkHistoryWidget ({
   const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
   return (
     <Loader states={[queryResults]}>
-      <Card title={title}>
+      <Card title={title} bordered={bordered}>
         <AutoSizer>
           {({ height, width }) => (
             <MultiLineTimeSeriesChart

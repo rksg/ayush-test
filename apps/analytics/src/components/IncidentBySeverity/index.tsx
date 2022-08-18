@@ -71,28 +71,26 @@ function IncidentBySeverityWidget ({ filters }: { filters: IncidentFilter }) {
       cssStr(incidentSeverities[p as keyof typeof incidentSeverities].color)
     )
   }
-  return (
-    <Loader states={[prevResult, currentResult]}>
-      <Card title={$t({ defaultMessage: 'Total Incidents' })}>
-        <UI.Container>
-          <UI.Title>
-            <UI.IncidentCount>{pill.total}</UI.IncidentCount>
-            <TrendPill value={pill.delta} trend={pill.trend as TrendType} />
-          </UI.Title>
-          <AutoSizer>
-            {({ width }) => (
-              <BarChart
-                style={{ width, height: 140 }}
-                data={chart}
-                grid={{ right: 25, top: 5 }}
-                barColors={barColors}
-              />
-            )}
-          </AutoSizer>
-        </UI.Container>
-      </Card>
-    </Loader>
-  )
+  return <Loader states={[prevResult, currentResult]}>
+    <Card title={$t({ defaultMessage: 'Total Incidents' })} bordered={false}>
+      <UI.Container>
+        <UI.Title>
+          <UI.IncidentCount>{pill.total}</UI.IncidentCount>
+          <TrendPill value={pill.delta} trend={pill.trend as TrendType} />
+        </UI.Title>
+        <AutoSizer>
+          {({ width }) => (
+            <BarChart
+              style={{ width, height: 140 }}
+              data={chart}
+              grid={{ right: 25, top: 5 }}
+              barColors={barColors}
+            />
+          )}
+        </AutoSizer>
+      </UI.Container>
+    </Card>
+  </Loader>
 }
 
 export default IncidentBySeverityWidget

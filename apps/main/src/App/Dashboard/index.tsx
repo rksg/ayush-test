@@ -79,7 +79,7 @@ function ApWidgets () {
   const filters = useAnalyticsFilter()
 
   return (
-    <GridRow gutter={[20, 20]}>
+    <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <AnalyticsWidgets name='trafficByVolume' filters={filters}/>
       </GridCol>
@@ -99,7 +99,7 @@ function ApWidgets () {
 function SwitchWidgets () {
   const filters = useAnalyticsFilter()
   return (
-    <GridRow gutter={[20, 20]}>
+    <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <AnalyticsWidgets name='switchTrafficByVolume' filters={filters}/>
       </GridCol>
@@ -123,7 +123,7 @@ function CommonDashboardWidgets () {
   const filters = useAnalyticsFilter()
 
   return (
-    <GridRow gutter={[20, 20]}>
+    <GridRow>
       <GridCol col={{ span: 6 }} style={{ height: '384px' }}>
         <WifiWidgets name='alarms' />
       </GridCol>
