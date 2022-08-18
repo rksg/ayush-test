@@ -254,8 +254,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
             rowKey='id'
             actions={actions}
             rowSelection={{
-              type: 'checkbox',
-              defaultSelectedRowKeys: venues?.map((item: Venue) => item.venueId)
+              type: 'checkbox'
             }}
             columns={columns}
             dataSource={[...tableData]}
