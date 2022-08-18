@@ -239,6 +239,22 @@ describe('Table component', () => {
     expect(after.filter(el => !el.checked)).toHaveLength(2)
   })
 
+  it('row click for table without rowSelection does nothing', async () => {
+    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
+    const data = [
+      { key: '1', name: 'John Doe' },
+      { key: '2', name: 'Jane Doe' },
+      { key: '3', name: 'Will Smith' }
+    ]
+
+    render(<Table
+      columns={columns}
+      dataSource={data}
+    />)
+
+    fireEvent.click(await screen.findByText('Jane Doe'))
+  })
+
   it('single select row click', async () => {
     const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
     const data = [
@@ -259,6 +275,8 @@ describe('Table component', () => {
     expect(tbody).toBeVisible()
 
     const body = within(tbody)
+    fireEvent.click(await body.findByText('Jane Doe'))
+    // to ensure it doesn't get unselected
     fireEvent.click(await body.findByText('Jane Doe'))
     const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
     expect(selectedRow.filter(el => el.checked)).toHaveLength(1)
