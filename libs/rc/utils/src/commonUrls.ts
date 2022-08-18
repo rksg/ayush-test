@@ -73,5 +73,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   deleteService: {
     method: 'delete',
     url: '/api/tenant/:tenantId/service/:serviceId'
+  },
+  getVenuesList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue'
   }
 }

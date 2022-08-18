@@ -13,7 +13,7 @@ jest.mock('./App/Dashboard', () => () => {
 })
 jest.mock('analytics/Routes', () => () => {
   return <div data-testid='analytics' />
-},{ virtual: true })
+}, { virtual: true })
 jest.mock('rc/Routes', () => () => {
   return (
     <>
@@ -22,6 +22,11 @@ jest.mock('rc/Routes', () => () => {
     </>
   )
 },{ virtual: true })
+jest.mock('./App/Venues/VenuesTable', () => ({
+  VenuesTable: () => {
+    return <div data-testid='venues' />
+  }
+}), { virtual: true })
 
 describe('AllRoutes', () => {
   beforeEach(() => {
@@ -57,6 +62,7 @@ describe('AllRoutes', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByTestId('networks')
   })
+
   test('should navigate to services/* if the feature flag is on', async () => {
     jest.mocked(useSplitTreatment).mockReturnValue(true)
 
@@ -81,5 +87,14 @@ describe('AllRoutes', () => {
     })
 
     await screen.findByText('Services is not enabled')
+  })
+
+  test('should navigate to venues/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/venues'
+      }
+    })
+    await screen.findByTestId('venues')
   })
 })

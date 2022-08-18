@@ -30,7 +30,7 @@ export const Wrapper = styled.div`
           background-color: var(--acx-primary-black);
         }
         &:after {
-          background-color: var(--acx-neutrals-10);
+          background-color: var(--acx-primary-white);
           border-top-left-radius: 20px;
         }
       }
@@ -145,7 +145,7 @@ export const Wrapper = styled.div`
 
   .ant-layout-content {
     margin: 0;
-    background-color: var(--acx-neutrals-10);
+    background-color: var(--acx-primary-white);
   }
 `
 
@@ -163,7 +163,7 @@ export const Content = styled.div`
     top: var(--acx-header-height);
     height: var(--acx-content-vertical-space);
     width: 100%;
-    background-color: var(--acx-neutrals-10);
+    background-color: var(--acx-primary-white);
     z-index: 4;
   }
 `
