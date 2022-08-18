@@ -10,6 +10,10 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validiation - IP address checks'
   }),
+  sharedSecret: defineMessage({
+    defaultMessage: 'This field is invalid',
+    description: 'Validiation - Shared secret checks'
+  }),
   duplication: defineMessage({
     defaultMessage: `
       {entityName} with that {key, select,

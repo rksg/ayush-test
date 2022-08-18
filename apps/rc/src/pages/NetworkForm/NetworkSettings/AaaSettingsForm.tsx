@@ -25,7 +25,8 @@ import {
   getUserSettingsFromDict,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  networkWifiIpRegExp
+  networkWifiIpRegExp,
+  networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'
 import { NetworkTypeEnum, UserSettings } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
@@ -300,7 +301,8 @@ function AaaServerFields ({ serverType, order }: {
         label={intl.$t({ defaultMessage: 'Shared secret' })}
         rules={[
           { required: true },
-          { whitespace: true }
+          { whitespace: false },
+          { validator: (_, value) => networkWifiSecretRegExp(intl, value) }
         ]}
         children={<Input.Password />}
       />
