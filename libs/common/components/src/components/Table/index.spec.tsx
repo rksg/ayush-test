@@ -8,34 +8,43 @@ jest.mock('@acx-ui/icons', ()=> ({
   SettingsOutlined: () => <div data-testid='settings'/>
 }), { virtual: true })
 
+jest.mock('react-resizable', () => ({
+  Resizable: jest.fn().mockImplementation((props) => {
+    return <td><div
+      data-testid='react-resizable'
+      onMouseDown={()=>{
+        props.onResize(null, { size: { width: 99 } })
+      }}/></td>
+  })
+}))
 
 describe('Table component', () => {
+  const basicColumns = [
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    { title: 'Age', dataIndex: 'age', key: 'age' },
+    { title: 'Address', dataIndex: 'address', key: 'address' }
+  ]
+  const basicData = [
+    {
+      key: '1',
+      name: 'John Doe',
+      age: 32,
+      address: 'sample address'
+    },
+    {
+      key: '2',
+      name: 'Jane Doe',
+      age: 33,
+      address: 'new address'
+    },
+    {
+      key: '3',
+      name: 'Will Smith',
+      age: 45,
+      address: 'address'
+    }
+  ]
   it('should render correctly', () => {
-    const basicColumns = [
-      { title: 'Name', dataIndex: 'name', key: 'name' },
-      { title: 'Age', dataIndex: 'age', key: 'age' },
-      { title: 'Address', dataIndex: 'address', key: 'address' }
-    ]
-    const basicData = [
-      {
-        key: '1',
-        name: 'John Doe',
-        age: 32,
-        address: 'sample address'
-      },
-      {
-        key: '2',
-        name: 'Jane Doe',
-        age: 33,
-        address: 'new address'
-      },
-      {
-        key: '3',
-        name: 'Will Smith',
-        age: 45,
-        address: 'address'
-      }
-    ]
     const { asFragment } = render(<Table
       columns={basicColumns}
       dataSource={basicData}
@@ -44,31 +53,6 @@ describe('Table component', () => {
   })
 
   it('renders compact table', () => {
-    const basicColumns = [
-      { title: 'Name', key: 'name' },
-      { title: 'Age', key: 'age' },
-      { title: 'Address', key: 'address' }
-    ]
-    const basicData = [
-      {
-        key: '1',
-        name: 'John Doe',
-        age: 32,
-        address: 'sample address'
-      },
-      {
-        key: '2',
-        name: 'Jane Doe',
-        age: 33,
-        address: 'new address'
-      },
-      {
-        key: '3',
-        name: 'Will Smith',
-        age: 45,
-        address: 'address'
-      }
-    ]
     const { asFragment } = render(<Table
       type='compact'
       columns={basicColumns}
@@ -78,44 +62,6 @@ describe('Table component', () => {
   })
 
   it('should render multi select table and render action buttons correctly', async () => {
-    const columns = [
-      {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name'
-      },
-      {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age'
-      },
-      {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address'
-      }
-    ]
-    const data = [
-      {
-        key: '1',
-        name: 'John Doe',
-        age: 32,
-        address: 'sample address'
-      },
-      {
-        key: '2',
-        name: 'Jane Doe',
-        age: 33,
-        address: 'new address'
-      },
-      {
-        key: '3',
-        name: 'Will Smith',
-        age: 45,
-        address: 'address'
-      }
-    ]
-
     const [onEdit, onDelete] = [jest.fn(), jest.fn()]
     const actions = [
       { label: 'Edit', onClick: onEdit },
@@ -123,8 +69,8 @@ describe('Table component', () => {
     ]
 
     const { asFragment } = render(<Table
-      columns={columns}
-      dataSource={data}
+      columns={basicColumns}
+      dataSource={basicData}
       actions={actions}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />)
@@ -149,10 +95,10 @@ describe('Table component', () => {
     expect(onDelete).not.toHaveBeenCalled()
 
     fireEvent.click(editButton)
-    expect(onEdit).toBeCalledWith(data.slice(0, 2), expect.anything())
+    expect(onEdit).toBeCalledWith(basicData.slice(0, 2), expect.anything())
 
     fireEvent.click(deleteButton)
-    expect(onDelete).toBeCalledWith(data.slice(0, 2), expect.anything())
+    expect(onDelete).toBeCalledWith(basicData.slice(0, 2), expect.anything())
 
     fireEvent.click(closeButton)
     expect(closeButton).not.toBeVisible()
@@ -163,20 +109,13 @@ describe('Table component', () => {
   })
 
   it('allow action to clear selection', async () => {
-    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
-    const data = [
-      { key: '1', name: 'John Doe' },
-      { key: '2', name: 'Jane Doe' },
-      { key: '3', name: 'Will Smith' }
-    ]
-
     const actions: TableProps<{ key: string, name: string }>['actions'] = [
       { label: 'Delete', onClick: (selected, clear) => clear() }
     ]
 
     render(<Table
-      columns={columns}
-      dataSource={data}
+      columns={basicColumns}
+      dataSource={basicData}
       actions={actions}
       rowSelection={{ defaultSelectedRowKeys: ['1', '2'] }}
     />)
@@ -199,16 +138,9 @@ describe('Table component', () => {
   })
 
   it('single select row click', async () => {
-    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
-    const data = [
-      { key: '1', name: 'John Doe' },
-      { key: '2', name: 'Jane Doe' },
-      { key: '3', name: 'Will Smith' }
-    ]
-
     render(<Table
-      columns={columns}
-      dataSource={data}
+      columns={basicColumns}
+      dataSource={basicData}
       rowSelection={{ type: 'radio' }}
     />)
 
@@ -224,16 +156,9 @@ describe('Table component', () => {
   })
 
   it('multible select row click', async () => {
-    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
-    const data = [
-      { key: '1', name: 'John Doe' },
-      { key: '2', name: 'Jane Doe' },
-      { key: '3', name: 'Will Smith' }
-    ]
-
     render(<Table
-      columns={columns}
-      dataSource={data}
+      columns={basicColumns}
+      dataSource={basicData}
       rowSelection={{ defaultSelectedRowKeys: ['1', '3'] }}
     />)
 
@@ -248,5 +173,17 @@ describe('Table component', () => {
     expect(selectedRows.filter(el => el.checked)).toHaveLength(3)
     fireEvent.click(await body.findByText('Will Smith'))
     expect(selectedRows.filter(el => el.checked)).toHaveLength(2)
+  })
+
+  it('should allow column resizing', async () => {
+    const { asFragment } = render(<Table
+      columns={basicColumns}
+      dataSource={basicData}
+    />)
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('col')?.style.width).toBe('')
+    fireEvent.mouseDown((await screen.findAllByTestId('react-resizable'))[0])
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('col')?.style.width).toBe('99px')
   })
 })

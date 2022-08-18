@@ -1,13 +1,13 @@
-import React, { useState, Key, useRef, useEffect, useMemo } from 'react'
+import React, { useState, Key, useMemo } from 'react'
 
-import ProTable                          from '@ant-design/pro-table'
-import { Space, Divider, Button }        from 'antd'
-import _                                 from 'lodash'
-import { useIntl }                       from 'react-intl'
-import { Resizable, ResizeCallbackData } from 'react-resizable'
+import ProTable                   from '@ant-design/pro-table'
+import { Space, Divider, Button } from 'antd'
+import _                          from 'lodash'
+import { useIntl }                from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
+import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
@@ -27,41 +27,6 @@ export interface TableProps <RecordType>
     }>
     columnState?: ColumnStateOption
   }
-
-interface ResizableColumnProps {
-  onResize: (width: number) => void
-  width: number
-}
-
-const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
-  const { onResize, width: columnWidth, ...rest } = props
-  const [width, setWidth] = useState(columnWidth)
-  const refContainer = useRef<HTMLTableHeaderCellElement>(null)
-  useEffect(()=>{
-    if(refContainer){
-      setWidth(refContainer.current?.offsetWidth as number)
-    }
-  }, [refContainer])
-  if(_.isNil(width)) {
-    return <th ref={refContainer} {...rest} />
-  }
-  return <Resizable
-    width={width}
-    height={0}
-    handle={
-      <span
-        className='react-resizable-handle'
-        onClick={e => { e.stopPropagation() }}
-      />
-    }
-    onResize={(_: React.SyntheticEvent<Element>, callbackData: ResizeCallbackData)=>{
-      onResize(callbackData.size.width)
-      setWidth(callbackData.size.width)
-    }}
-    draggableOpts={{ enableUserSelectHack: false }}
-    children={<th ref={refContainer} {...rest} />}
-  />
-}
 
 export function Table <RecordType extends object> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>

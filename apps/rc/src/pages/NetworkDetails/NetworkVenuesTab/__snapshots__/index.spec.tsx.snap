@@ -118,7 +118,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                     </span>
                                   </label>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -181,7 +181,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -244,7 +244,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -307,7 +307,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -316,7 +316,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                 style="text-align: center;"
                               >
                                 Networks
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -325,7 +325,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                 style="text-align: center;"
                               >
                                 Wi-Fi APs
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -334,7 +334,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                 style="text-align: center;"
                               >
                                 Activated
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -342,7 +342,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                 class="ant-table-cell react-resizable"
                               >
                                 APs
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -350,7 +350,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                 class="ant-table-cell react-resizable"
                               >
                                 Radios
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -358,7 +358,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                 class="ant-table-cell react-resizable"
                               >
                                 Scheduling
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -366,7 +366,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                 style="position: sticky; right: 0px;"
                               >
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>

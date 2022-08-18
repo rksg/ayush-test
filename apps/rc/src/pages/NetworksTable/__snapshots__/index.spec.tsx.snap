@@ -148,7 +148,7 @@ exports[`Networks Table should delete selected row 1`] = `
                               <th
                                 class="ant-table-cell ant-table-selection-column react-resizable"
                               >
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -212,7 +212,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -275,7 +275,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -338,7 +338,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -402,7 +402,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -466,7 +466,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -530,7 +530,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -594,7 +594,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -657,7 +657,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -720,7 +720,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -783,7 +783,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -791,7 +791,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                 style="position: sticky; right: 0px;"
                               >
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>

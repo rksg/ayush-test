@@ -60,7 +60,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                               <th
                                 class="ant-table-cell react-resizable"
                               >
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -68,7 +68,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell react-resizable"
                               >
                                 Networking Devices
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -76,7 +76,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell react-resizable"
                               >
                                 Clients
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -266,7 +266,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                               <th
                                 class="ant-table-cell react-resizable"
                               >
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -274,7 +274,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                                 class="ant-table-cell react-resizable"
                               >
                                 Networking Devices
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
@@ -282,7 +282,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                                 class="ant-table-cell react-resizable"
                               >
                                 Clients
-                                <span
+                                <div
                                   class="react-resizable-handle"
                                 />
                               </th>
