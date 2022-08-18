@@ -159,6 +159,7 @@ export function Venues () {
         })
         setTableData(tableData)
         setTableDataActivate(tableData, selected)
+        setActivateVenues(selected)
       }
     }else{
       if(tableQuery.data && tableData.length === 0){
