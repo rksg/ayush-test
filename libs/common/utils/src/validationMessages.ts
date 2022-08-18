@@ -8,11 +8,11 @@ export const validationMessages = {
   }),
   ipAddress: defineMessage({
     defaultMessage: 'Please enter a valid IP address',
-    description: 'Validiation - IP address checks'
+    description: 'Validation - IP address checks'
   }),
   sharedSecret: defineMessage({
     defaultMessage: 'This field is invalid',
-    description: 'Validiation - Shared secret checks'
+    description: 'Validation - Shared secret checks'
   }),
   duplication: defineMessage({
     defaultMessage: `
@@ -21,15 +21,15 @@ export const validationMessages = {
         other {value}
       } already exists
     `,
-    description: 'Validiation - duplication checks'
+    description: 'Validation - duplication checks'
   }),
   min: defineMessage({
     defaultMessage: "This value should be higher than or equal to $'{min'}",
-    description: 'Validiation - min checks'
+    description: 'Validation - min checks'
   }),
   max: defineMessage({
     defaultMessage: "This value should be lower than or equal to $'{max'}",
-    description: 'Validiation - max checks'
+    description: 'Validation - max checks'
   })
 }
 
