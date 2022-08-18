@@ -1,8 +1,14 @@
-import { transformDisplayText, transformDisplayNumber } from '.'
+import { transformDisplayText, transformDisplayNumber } from './commonPipes'
 
-describe('Common pipes service', () => {
-  it('should return value correctly', async () => {
-    transformDisplayText('eMap')
-    transformDisplayNumber(0)
+describe('Common Pipes', () => {
+  it('transformDisplayText : undefined value', async () => {
+    const result = transformDisplayText()
+    expect(result).toEqual('--')
   })
+
+  it('transformDisplayNumber : undefined value', async () => {
+    const result = transformDisplayNumber()
+    expect(result).toEqual(0)
+  })
+
 })
