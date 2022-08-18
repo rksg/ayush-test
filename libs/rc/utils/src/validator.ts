@@ -1,38 +1,17 @@
-import { isEqual }                  from 'lodash'
-import { defineMessage, IntlShape } from 'react-intl'
+import { isEqual }   from 'lodash'
+import { IntlShape } from 'react-intl'
 
-export function networkWifiIpRegExp (value: string) {
+import { validationMessages } from '@acx-ui/utils'
+
+
+export function networkWifiIpRegExp ({ $t }: IntlShape, value: string) {
   // eslint-disable-next-line max-len
   const re = new RegExp(/^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\p{N}\p{L}]+)?$/)
   if (value!=='' && !re.test(value)) {
-    return Promise.reject('Please enter a valid IP address')
+    return Promise.reject($t(validationMessages.ipAddress))
   }
   return Promise.resolve()
 }
-
-export function networkWifiPortRegExp (value: number) {
-  if (value && value <= 0){
-    return Promise.reject('This value should be higher than or equal to 1')
-  } else if (value && value > 65535) {
-    return Promise.reject('This value should be lower than or equal to 65535')
-  }
-  return Promise.resolve()
-}
-
-export function stringContainSpace (value: string) {
-  const re = new RegExp(/[\s]/)
-  if (re.test(value)) {
-    return Promise.reject('Spaces are not allowed')
-  }
-  return Promise.resolve()
-}
-
-const checkObjectNotExistsMessage = defineMessage({
-  defaultMessage: `{entityName} with that {key, select,
-    name {name}
-    other {value}
-  } already exists`
-})
 
 export function checkObjectNotExists <ItemType> (
   intl: IntlShape,
@@ -42,7 +21,7 @@ export function checkObjectNotExists <ItemType> (
   key = 'name'
 ) {
   if (list.filter(item => isEqual(item, value)).length !== 0) {
-    return Promise.reject(intl.$t(checkObjectNotExistsMessage, { entityName, key }))
+    return Promise.reject(intl.$t(validationMessages.duplication, { entityName, key }))
   }
   return Promise.resolve()
 }
