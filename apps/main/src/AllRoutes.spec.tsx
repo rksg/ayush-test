@@ -12,13 +12,15 @@ jest.mock('./App/Dashboard', () => () => {
 })
 jest.mock('analytics/Routes', () => () => {
   return <div data-testid='analytics' />
-},{ virtual: true })
+}, { virtual: true })
 jest.mock('rc/Routes', () => () => {
   return <div data-testid='networks' />
-},{ virtual: true })
-jest.mock('./App/Venues/Routes', () => () => {
-  return <div data-testid='venues' />
-},{ virtual: true })
+}, { virtual: true })
+jest.mock('./App/Venues/VenuesTable', () => ({
+  VenuesTable: () => {
+    return <div data-testid='venues' />
+  }
+}), { virtual: true })
 
 describe('AllRoutes', () => {
   beforeEach(() => {
@@ -57,8 +59,7 @@ describe('AllRoutes', () => {
   test('should navigate to venues/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/venues/some-page',
-        wrapRoutes: false
+        path: '/t/tenantId/venues'
       }
     })
     await screen.findByTestId('venues')
