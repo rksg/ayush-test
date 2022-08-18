@@ -100,7 +100,7 @@ describe('IncidentTableWidget', () => {
     })
     
     await screen.findAllByText('P4')
-    expect(screen.getAllByText('P4')).toHaveLength(2)
+    expect(screen.getAllByText('P4')).toHaveLength(incidentTests.length)
   })
 
   const columnHeaders = [
@@ -132,7 +132,7 @@ describe('IncidentTableWidget', () => {
     expect(screen.getByText(header).textContent).toBe(header)
   })
 
-  it.each(columnHeaders)('should "%s"', async (header) => {
+  it.each(columnHeaders)('should render column header sorting: "%s"', async (header) => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
@@ -149,5 +149,38 @@ describe('IncidentTableWidget', () => {
     act(() => elem.click())
     await screen.findByRole('img', { hidden: true, name: 'caret-up' })
     expect(screen.getByRole('img', { hidden: true, name: 'caret-up' })).toBeTruthy()
+
+    act(() => elem.click())
+    await screen.findByRole('img', { hidden: true, name: 'caret-down' })
+    expect(screen.getByRole('img', { hidden: true, name: 'caret-down' })).toBeTruthy()
+  })
+
+  it('should allow for muting',async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+    render(<Provider><IncidentTableWidget/></Provider>, {
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+
+    const rowElems = await screen.findAllByText('P4')
+    expect(rowElems).toHaveLength(incidentTests.length)
+
+    act(() => rowElems[0].click())
+    await screen.findByText('1 selected')
+    expect(screen.getByText('1 selected').textContent).toBe('1 selected')
+
+    const muteButton = await screen.findByText('Mute')
+    act(() => muteButton.click())
+    await screen.findByText(`Mute ${incidentTests[0].id}`)
+    expect(screen.getByText(`Mute ${incidentTests[0].id}`)
+      .textContent)
+      .toBe(`Mute ${incidentTests[0].id}`)
   })
 })

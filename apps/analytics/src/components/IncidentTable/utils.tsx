@@ -88,12 +88,12 @@ export const LongIncidentDescription = (props: LongIncidentDescriptionProps) => 
   return <UI.DescriptionSpan>{longDesc}</UI.DescriptionSpan>
 }
 
-export const getCategory = (code?: string) => {
-  if (typeof code !== 'string') {
+export const getCategory = (code: string) => {
+  const incidentInfo = incidentInformation[code]
+  if (typeof incidentInfo === 'undefined') {
     return <FormatIntlString message={defineMessage({ defaultMessage: '{noDataSymbol}' })} />
   }
-
-  const category = incidentInformation[code].category
+  const { category } = incidentInfo
   return <FormatIntlString message={category} />
 }
 

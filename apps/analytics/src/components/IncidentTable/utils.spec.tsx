@@ -156,7 +156,7 @@ describe('IncidentTable: utils', () => {
   }
 
   const RenderGetCategory = (props: RenderGetCategoryProps) => {
-    return <Provider>{getCategory(props.code)}</Provider>
+    return <Provider>{getCategory(props.code as string)}</Provider>
   }
 
   it('getCategory: valid codes', async () => {

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { Incident, noDataSymbol, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Card, Loader, Table, TableProps, showToast } from '@acx-ui/components'
+import { Loader, Table, TableProps, showToast }       from '@acx-ui/components'
 import { Link }                                       from '@acx-ui/react-router-dom'
 
 import { useIncidentsListQuery, IncidentNodeData } from './services'
@@ -138,24 +138,22 @@ const IncidentTableWidget = () => {
 
   return (
     <Loader states={[queryResults]}>
-      <Card>
-        <AutoSizer>
-          {({ height, width }) => (
-            <Table
-              type='tall'
-              style={{ width, height }}
-              dataSource={data}
-              columns={ColumnHeaders}
-              actions={actions}
-              rowSelection={{ type: 'checkbox' }}
-              pagination={{ pageSize: 10 }}
-              rowKey='id'
-              showSorterTooltip={false}
-              columnEmptyText={noDataSymbol}
-            />
-          )}
-        </AutoSizer>
-      </Card>
+      <AutoSizer>
+        {({ height, width }) => (
+          <Table
+            type='tall'
+            style={{ width, height }}
+            dataSource={data}
+            columns={ColumnHeaders}
+            actions={actions}
+            rowSelection={{ type: 'checkbox' }}
+            pagination={{ pageSize: 10 }}
+            rowKey='id'
+            showSorterTooltip={false}
+            columnEmptyText={noDataSymbol}
+          />
+        )}
+      </AutoSizer>
     </Loader>
   )
 }
