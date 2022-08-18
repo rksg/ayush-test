@@ -9,6 +9,8 @@ import type {
   TableColumnState
 } from './types'
 
+export const settingsKey = 'acx-table-settings'
+
 export interface UseColumnsStateOptions <RecordType> {
   columns: TableColumn<RecordType>[]
   columnState?: ColumnStateOption
@@ -72,7 +74,7 @@ function useDefaultAndInitialState <RecordType> ({
 }
 
 function stateToUserState (states: TableColumnState): ColumnState {
-  const pairs = _(states).toPairs()
+  const pairs = _(states).omit(settingsKey).toPairs()
   const fixed = pairs
     .filter(pair => Boolean(pair[1].fixed))
     .reduce<ColumnState>((agg, [key]) => ({ ...agg, [key]: true }), {})
