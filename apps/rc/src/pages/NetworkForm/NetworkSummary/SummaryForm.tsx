@@ -3,7 +3,7 @@ import { Col, Divider, Form, Input, Row } from 'antd'
 import { useIntl }                        from 'react-intl'
 
 import { StepsForm, Subtitle }                                    from '@acx-ui/components'
-import { useCloudpathListQuery, useVenueListQuery }               from '@acx-ui/rc/services'
+import { useCloudpathListQuery, useVenueListQuery, Venue }        from '@acx-ui/rc/services'
 import { NetworkSaveData, NetworkTypeEnum, transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 
@@ -33,12 +33,12 @@ export function SummaryForm (props: {
         selected: data?.find((item) => item.id === selectedId)
       }
     }
-  })  
+  })
 
   const { data } = useVenueListQuery({ params:
     { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' }, payload: defaultPayload })
 
-  const venueList = data?.data.reduce((map: any, obj: any) => {
+  const venueList = data?.data.reduce<Record<Venue['id'], Venue>>((map, obj) => {
     map[obj.id] = obj
     return map
   }, {})
@@ -49,9 +49,9 @@ export function SummaryForm (props: {
     if (venues && venues.length > 0) {
       for (const venue of venues) {
         rows.push(
-          <li key={(venue as any).venueId} style={{ margin: '10px 0px' }}>
+          <li key={venue.venueId} style={{ margin: '10px 0px' }}>
             <EnvironmentOutlined />
-            {venueList ? venueList[(venue as any).venueId].name: (venue as any).venueId}
+            {venueList ? venueList[venue.venueId].name : venue.venueId}
           </li>
         )
       }
