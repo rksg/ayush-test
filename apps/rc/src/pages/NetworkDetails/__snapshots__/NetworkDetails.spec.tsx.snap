@@ -3,7 +3,7 @@
 exports[`NetworkDetails should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fmXRDH"
+    class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -69,7 +69,7 @@ exports[`NetworkDetails should render correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
                 type="button"
               >
                 <svg>
@@ -85,7 +85,7 @@ exports[`NetworkDetails should render correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
                 type="button"
               >
                 <span>
@@ -101,7 +101,7 @@ exports[`NetworkDetails should render correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
                 type="button"
               >
                 <span>
@@ -113,7 +113,7 @@ exports[`NetworkDetails should render correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 bRqZMJ"
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 clMRFp"
                 type="button"
               >
                 <svg>

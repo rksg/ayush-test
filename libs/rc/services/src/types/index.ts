@@ -89,9 +89,6 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
-export interface UserSettings {
-  [key: string]: string
-}
 
 export enum ApVenueStatusEnum {
   IN_SETUP_PHASE = '1_InSetupPhase',
@@ -213,7 +210,7 @@ export interface Dashboard {
       country?: string,
       city?: string,
       latitude?: number,
-      crtTime?: any,
+      crtTime?: string,
       description?: string,
       type?: string,
       lastUpdTime?: string,

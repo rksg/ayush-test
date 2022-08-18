@@ -37,11 +37,11 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
   }
 
   &[disabled] {
-    svg { path { stroke: var(--acx-neutrals-10); } }
+    svg { path { stroke: var(--acx-primary-white); } }
 
     &.ant-btn-default {
       color: var(--acx-neutrals-40);
-      background-color: var(--acx-neutrals-10);
+      background-color: var(--acx-primary-white);
       svg { path { stroke: var(--acx-neutrals-40); } }
     }
   }

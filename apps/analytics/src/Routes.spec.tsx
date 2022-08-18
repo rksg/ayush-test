@@ -1,6 +1,11 @@
+import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
 import AnalyticsRoutes from './Routes'
+
+jest.mock('./pages/IncidentDetails', () => () => {
+  return <div data-testid='incidentDetails' />
+})
 
 test('should redirect analytics to analytics/incidents', () => {
   render(<AnalyticsRoutes />, {
@@ -47,12 +52,12 @@ test('should navigate to analytics/configChange', () => {
   })
   screen.getByText('Config Change')
 })
-test('should navigate to analytics/occupancy', () => {
-  render(<AnalyticsRoutes />, {
+test('should navigate to analytics/incidentDetails', async () => {
+  render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/analytics/occupancy',
+      path: '/t/tenantId/analytics/incidents/incidentId',
       wrapRoutes: false
     }
   })
-  screen.getByText('Occupancy')
+  await screen.findByTestId('incidentDetails')
 })
