@@ -299,13 +299,6 @@ export const Wrapper = styled.div<StyledTable>`
           font-size: unset;
         }
       }
-
-      &-tbody > tr.ant-table-row:hover > td,
-      &-tbody > tr.ant-table-row-selected > td,
-      &-tbody > tr > td.ant-table-column-sort,
-      &-tbody > tr > td.ant-table-cell-row-hover {
-        background-color: var(--acx-neutrals-10);
-      }
     }
   }
 
