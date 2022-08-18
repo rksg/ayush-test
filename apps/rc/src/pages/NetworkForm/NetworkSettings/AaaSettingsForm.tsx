@@ -17,9 +17,8 @@ import {
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Button, Subtitle }              from '@acx-ui/components'
-import { useGetAllUserSettingsQuery, UserSettings } from '@acx-ui/rc/services'
-import { useCloudpathListQuery }                    from '@acx-ui/rc/services'
+import { StepsForm, Button, Subtitle }                       from '@acx-ui/components'
+import { useGetAllUserSettingsQuery, useCloudpathListQuery } from '@acx-ui/rc/services'
 import {
   Constants,
   WlanSecurityEnum,
@@ -28,8 +27,8 @@ import {
   AaaServerOrderEnum,
   networkWifiIpRegExp
 } from '@acx-ui/rc/utils'
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { useParams }       from '@acx-ui/react-router-dom'
+import { NetworkTypeEnum, UserSettings } from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
 
 import * as contents      from '../contentsMap'
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'

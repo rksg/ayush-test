@@ -12,7 +12,7 @@ import { LocaleProvider, LocaleContext, LocaleProviderProps, prepareAntdValidate
 
 import { Loader } from '../Loader'
 
-export type ConfigProviderProps = Omit<AntConfigProviderProps, 'locale'> & {
+type ConfigProviderProps = Omit<AntConfigProviderProps, 'locale'> & {
   lang?: LocaleProviderProps['lang']
 }
 

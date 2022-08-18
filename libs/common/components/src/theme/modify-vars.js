@@ -10,7 +10,7 @@
 module.exports = {
   '@badge-status-size': '8px',
 
-  '@body-background': 'var(--acx-neutrals-10)',
+  '@body-background': 'var(--acx-primary-white)',
 
   '@border-radius-base': '4px',
 
@@ -32,7 +32,7 @@ module.exports = {
 
   '@card-background': 'var(--acx-primary-white)',
 
-  '@component-background': 'var(--acx-neutrals-10)',
+  '@component-background': 'var(--acx-primary-white)',
 
   '@font-family': 'var(--acx-neutral-brand-font)',
   '@font-size-base': '14px', // var(--acx-body-3-font-size)
@@ -97,6 +97,16 @@ module.exports = {
   '@tabs-active-color': 'var(--acx-primary-black)',
   '@tabs-horizontal-gutter': '18px',
   '@tabs-horizontal-padding': '0px',
+
+  '@table-bg': 'var(--acx-primary-white)',
+  '@table-header-bg': 'var(--acx-primary-white)',
+  '@table-header-sort-bg': 'var(--acx-primary-white)',
+  '@table-body-sort-bg': 'var(--acx-primary-white)',
+  '@table-row-hover-bg': 'var(--acx-primary-white)',
+  '@table-selected-row-bg': '#FFFFFF', // var(--acx-primary-white)
+  '@table-body-selected-sort-bg': 'var(--acx-primary-white)',
+  '@table-selected-row-hover-bg': 'var(--acx-primary-white)',
+  '@table-expanded-row-bg': 'var(--acx-primary-white)',
 
   '@text-color': 'var(--acx-primary-black)',
   '@text-selection-bg': 'var(--acx-neutrals-60)',
