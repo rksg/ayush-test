@@ -7,8 +7,8 @@ import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import * as UI             from './styledComponents'
-import { useColumnsState } from './useColumnsState'
+import * as UI                          from './styledComponents'
+import { settingsKey, useColumnsState } from './useColumnsState'
 
 import type { Columns, ColumnStateOption }  from './types'
 import type { ParamsType }                  from '@ant-design/pro-provider'
@@ -37,19 +37,26 @@ export function Table <RecordType extends object> (
 ) {
   const { $t } = useIntl()
 
-  const columns = useMemo(() => props.columns.map((column) => ({
-    ...column,
-    disable: Boolean(column.fixed || column.disable),
-    show: Boolean(column.fixed || column.disable || (column.show ?? true))
-  })), [props.columns])
-  const columnsState = useColumnsState({ columns, columnState })
+  const columns = useMemo(() => {
+    const settingsColumn = {
+      key: settingsKey,
+      fixed: 'right' as 'right',
+      width: 32,
+      children: []
+    }
 
-  const settingsColumn = {
-    key: 'acx-table-settings',
-    fixed: 'right' as 'right',
-    width: 32,
-    children: []
-  }
+    const cols = type === 'tall'
+      ? [...props.columns, settingsColumn] as typeof props.columns
+      : props.columns
+
+    return cols.map((column) => ({
+      ...column,
+      disable: Boolean(column.fixed || column.disable),
+      show: Boolean(column.fixed || column.disable || (column.show ?? true))
+    }))
+  }, [props.columns, type])
+
+  const columnsState = useColumnsState({ columns, columnState })
 
   const setting: SettingOptionType | false = type === 'tall' ? {
     draggable: true,
@@ -132,7 +139,7 @@ export function Table <RecordType extends object> (
       {...props}
       bordered={false}
       search={false}
-      columns={type === 'tall' ? [...columns, settingsColumn] : columns}
+      columns={columns}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
       rowSelection={rowSelection}

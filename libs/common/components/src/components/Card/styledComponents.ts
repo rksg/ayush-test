@@ -4,6 +4,7 @@ import styled                  from 'styled-components/macro'
 import { ArrowsOut, MoreVertical } from '@acx-ui/icons'
 
 type WrapperProps = {
+  hasBorder: boolean
   hasTitle: boolean
   hasSubTitle: boolean
   hasTabs: boolean
@@ -23,17 +24,19 @@ export const Button = styled(AntButton)`
   }
 `
 
-const headRowGap = '5px'
-const cardPadding = '16px'
-
 export const Wrapper = styled.div<WrapperProps>`
   height: 100%;
   width: 100%;
   .ant-card {
-    padding: ${cardPadding};
     height: 100%;
     display:flex;
     flex-direction:column;
+    ${(props) => (props.hasBorder ? `
+      padding: 12px 16px;
+      border: 1px solid var(--acx-neutrals-20);
+      border-radius: 8px;
+      box-shadow: 0px 2px 4px rgba(51, 51, 51, 0.08);
+    ` : '')}
   }
   .ant-card-head {
     padding: 0;
@@ -69,7 +72,7 @@ export const HeaderContainer = styled.div<WrapperProps>`
     : '"title tabs";'}
   grid-template-columns: auto 1fr;
   column-gap: ${(props) => (!props.hasTitle && props.hasTabs ? '0px' : '20px')};
-  row-gap: ${headRowGap};
+  row-gap: 5px;
 `
 
 export const TitleWrapper = styled.div`
