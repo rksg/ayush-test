@@ -47,9 +47,7 @@ function useColumns () {
         return (
           <Space direction='vertical' size={0}>
             { $t({ defaultMessage: 'Incidents' }) }
-            <span style={{ fontSize: '12px', fontWeight: '400' }}>
-              { $t({ defaultMessage: 'Last 24 hours' }) }
-            </span>
+            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
           </Space>
         )
       },
@@ -61,9 +59,7 @@ function useColumns () {
         return (
           <Space direction='vertical' size={0}>
             { $t({ defaultMessage: 'Health Score' }) }
-            <span style={{ fontSize: '12px', fontWeight: '400' }}>
-              { $t({ defaultMessage: 'Last 24 hours' }) }
-            </span>
+            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
           </Space>
         )
       },
