@@ -23,6 +23,7 @@ export class AnyWlan implements AAAWlan, PskWlan, OpenWlan, GuestWlan, DpskWlan 
   enabled: boolean
   ssid: string
   vlanId: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wlanSecurity: any
   managementFrameProtection?: ManagementFrameProtectionEnum
   bypassCNA?: boolean
@@ -47,6 +48,7 @@ export class AnyNetwork implements
   
   name: string
   description?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   venues?: any
   type: string
   tenandId?: string

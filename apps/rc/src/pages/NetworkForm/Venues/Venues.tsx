@@ -71,6 +71,7 @@ export function Venues (props: StepFormProps<CreateNetworkFormFields>) {
       ...defaultSetup,
       venueId: row.id,
       name: row.name
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     })) as any
     props.formRef?.current?.setFieldsValue({ venues: selected })
   }

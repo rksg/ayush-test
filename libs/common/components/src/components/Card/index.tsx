@@ -14,6 +14,7 @@ import type {
 
 
 export interface CardProps extends Pick<AntCardProps, 'children'> {
+  bordered?: boolean
   title?: string
   subTitle?: string
   tabs?: Array<SelectionControlOptionProps & { component: React.ReactNode }>
@@ -23,9 +24,16 @@ export interface CardProps extends Pick<AntCardProps, 'children'> {
   onMoreClick?: () => void
 }
 
-export const Card = function Card ({ title, subTitle, tabs, ...props }: CardProps) {
+export const Card = function Card ({
+  bordered = true,
+  title,
+  subTitle,
+  tabs,
+  ...props
+}: CardProps) {
   const [selectedTab, setSelectedTab] = useState(props.defaultTab)
   const wrapperProps = {
+    hasBorder: bordered,
     hasTitle: Boolean(title),
     hasSubTitle: Boolean(subTitle),
     hasTabs: Boolean(tabs)

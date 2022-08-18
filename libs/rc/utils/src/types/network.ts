@@ -35,6 +35,7 @@ export interface CreateNetworkFormFields {
 
 export interface NetworkVenue {
   id?: string
+  name?: string
   apGroups: string[]
   scheduler: {
     type: string
