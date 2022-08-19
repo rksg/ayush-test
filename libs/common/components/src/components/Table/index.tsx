@@ -27,7 +27,7 @@ export interface TableProps <RecordType>
     columnState?: ColumnStateOption
   }
 
-export function Table <RecordType extends object> (
+function Table <RecordType extends object> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>
 ) {
   const { $t } = useIntl()
@@ -168,3 +168,7 @@ export function Table <RecordType extends object> (
     />
   </UI.Wrapper>
 }
+
+Table.SubTitle = UI.SubTitle
+
+export { Table }
