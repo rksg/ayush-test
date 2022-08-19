@@ -130,8 +130,19 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
         class="ant-col ant-col-20 ant-col-offset-4"
         style="padding: 10px 10px 10px 10px;"
       >
-        <div>
-          charts
+        <div
+          class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+        >
+          <div
+            class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
+          >
+            <p>
+              Something went wrong.
+            </p>
+            <p>
+              {"name":"FetchError","message":"request to http://localhost/api/a4rc/api/rsa-data-api/graphql/analytics failed, reason: connect ECONNREFUSED 127.0.0.1:80","stack":"FetchError: request to http://localhost/api/a4rc/api/rsa-data-api/graphql/analytics failed, reason: connect ECONNREFUSED 127.0.0.1:80\\n    at NodeClientRequest.&lt;anonymous&gt; (/Users/lohwilson/Projects/acx-ui/node_modules/node-fetch/lib/index.js:1491:11)\\n    at NodeClientRequest.emit (node:events:532:35)\\n    at NodeClientRequest.Object.&lt;anonymous&gt;.NodeClientRequest.emit (/Users/lohwilson/Projects/acx-ui/node_modules/@mswjs/interceptors/src/interceptors/ClientRequest/NodeClientRequest.ts:284:22)\\n    at Socket.socketErrorListener (node:_http_client:442:9)\\n    at Socket.emit (node:events:520:28)\\n    at emitErrorNT (node:internal/streams/destroy:164:8)\\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\\n    at processTicksAndRejections (node:internal/process/task_queues:83:21)","code":"ECONNREFUSED"}
+            </p>
+          </div>
         </div>
       </div>
     </div>

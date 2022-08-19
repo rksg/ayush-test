@@ -31,7 +31,10 @@ export const TimeSeries : React.FC<ChartDataProps> = ({ charts, incident }) => {
       { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
     ],
     attemptAndFailureCharts: [
-      { key: 'totalFailureCount', name: $t({ defaultMessage: 'Total Failures' }) },
+      {
+        key: 'totalFailureCount',
+        name: $t({ defaultMessage: 'Total Failures' })
+      },
       { 
         key: 'failureCount',
         name: $t({ defaultMessage: '{title} Failures' }, { title: incidentTitle })
@@ -42,15 +45,15 @@ export const TimeSeries : React.FC<ChartDataProps> = ({ charts, incident }) => {
       }
     ]
   }
-  const incidentChart = ['relatedIncidents']
-  const filteredCharts = charts.filter(chart => !incidentChart.includes(chart))
+  const excludedIncident = ['relatedIncidents']
+  const filteredCharts = charts.filter(chart => !excludedIncident.includes(chart))
   const queryResults = useChartsQuery({ charts, incident })
 
   return (
     <Loader states={[queryResults]}>
       {filteredCharts.map((chart) => {
         if (queryResults.data) {
-          if (incidentChart.includes('relatedIncidents') && chart === 'incidentCharts') {
+          if (excludedIncident.includes('relatedIncidents') && chart === 'incidentCharts') {
             const combinedResults = {
               marker: queryResults.data['relatedIncidents'],
               incidentCharts: {
@@ -61,8 +64,8 @@ export const TimeSeries : React.FC<ChartDataProps> = ({ charts, incident }) => {
 
             return <Card
               key={chart}
-              title={$t({ defaultMessage: '{title}' }, { title: incidentTitle })}
-              height={true}
+              title={$t({ defaultMessage: '{title} FAILURES' }, { title: incidentTitle })}
+              setHeight={true}
             >
               <AutoSizer>
                 {({ height, width }) => (
@@ -82,7 +85,7 @@ export const TimeSeries : React.FC<ChartDataProps> = ({ charts, incident }) => {
           const queryChart = getSeriesData(queryData,
             seriesMapping[chart as keyof typeof seriesMapping])
 
-          return <Card key={chart} title={$t(failureCharts[chart].title)} height={true}>
+          return <Card key={chart} title={$t(failureCharts[chart].title)} setHeight={true}>
             <AutoSizer>
               {({ height, width }) => (
                 <MultiLineTimeSeriesChart

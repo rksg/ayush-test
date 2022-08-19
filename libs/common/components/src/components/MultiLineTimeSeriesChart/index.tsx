@@ -15,8 +15,9 @@ import {
   timeSeriesTooltipFormatter
 } from '../Chart/helper'
 
-import type { EChartsOption }     from 'echarts'
+import type { EChartsOption, ECharts }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
+import { useRef, useEffect, useCallback } from 'react'
 
 interface MultiLineTimeSeriesChartProps
   <TChartData extends MultiLineTimeSeriesChartData>
@@ -40,6 +41,17 @@ export function MultiLineTimeSeriesChart
   areaColor,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData>) {
+  const eChartsRef = useRef<ReactECharts>(null)
+
+  useCallback(() => {
+    console.log('test1')
+    if (!eChartsRef || !eChartsRef.current) return 
+    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
+    echartInstance.on('click', (e) => {
+      console.log(e)
+    })
+  }, [eChartsRef])
+  
   const option: EChartsOption = {
     color: props.lineColors || [
       cssStr('--acx-accents-blue-30'),
@@ -80,12 +92,10 @@ export function MultiLineTimeSeriesChart
       name: datum[legendProp] as unknown as string,
       data: datum.data,
       type: 'line',
-      silent: true,
       smooth: true,
       symbol: 'none',
       lineStyle: { width: 1 },
       markArea: {
-        silent: true,
         itemStyle: {
           opacity: 0.4,
           color: areaColor
@@ -108,6 +118,8 @@ export function MultiLineTimeSeriesChart
     <ReactECharts
       {...props}
       opts={{ renderer: 'svg' }}
-      option={option} />
+      option={option}
+      ref={eChartsRef}  
+    />
   )
 }
