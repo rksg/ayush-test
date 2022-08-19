@@ -3,7 +3,7 @@
 exports[`VenueDetails should active analytic teb correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -346,7 +346,7 @@ exports[`VenueDetails should active analytic teb correctly 1`] = `
 exports[`VenueDetails should active client teb correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -689,7 +689,7 @@ exports[`VenueDetails should active client teb correctly 1`] = `
 exports[`VenueDetails should active device teb correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1032,7 +1032,7 @@ exports[`VenueDetails should active device teb correctly 1`] = `
 exports[`VenueDetails should active network teb correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1368,14 +1368,48 @@ exports[`VenueDetails should active network teb correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  Networks
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 ekDfta"
+  >
+    <div
+      class="styledComponents__FallbackWrapper-sc-1352uh8-1 cnmeaO"
+    >
+      <span
+        aria-label="loader"
+        role="img"
+      >
+        <div
+          aria-busy="true"
+          aria-live="polite"
+          class="ant-spin ant-spin-lg ant-spin-spinning"
+        >
+          <span
+            class="ant-spin-dot ant-spin-dot-spin"
+          >
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+            <i
+              class="ant-spin-dot-item"
+            />
+          </span>
+        </div>
+      </span>
+    </div>
+  </div>
 </DocumentFragment>
 `;
 
 exports[`VenueDetails should active service teb correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1718,7 +1752,7 @@ exports[`VenueDetails should active service teb correctly 1`] = `
 exports[`VenueDetails should active timeline teb correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -2061,7 +2095,7 @@ exports[`VenueDetails should active timeline teb correctly 1`] = `
 exports[`VenueDetails should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 eSPZkA"
+    class="styledComponents__Wrapper-sc-xov27h-0 ilxTRF"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
