@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { useIntl }            from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
@@ -9,10 +7,15 @@ import {
   AnalyticsFilter, 
   BarChartData 
 }                             from '@acx-ui/analytics/utils'
-import { BarChart, Card, cssNumber, Loader, cssStr } from '@acx-ui/components'
-import { formatter }                                 from '@acx-ui/utils'
+import { 
+  BarChart, 
+  NoData, 
+  Card, 
+  cssNumber, 
+  Loader, 
+  cssStr }                   from '@acx-ui/components'
+import { formatter } from '@acx-ui/utils'
 
-import * as UI                        from './ styledComponents'
 import { useSwitchesByPoEUsageQuery } from './services'
 
 const barColors = [
@@ -78,9 +81,7 @@ function SwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
                 style={{ width, height }}
               />
               :
-              <UI.NoDataWrapper>
-                <UI.TextWrapper>{$t({ defaultMessage: 'No data to display' })}</UI.TextWrapper>
-              </UI.NoDataWrapper>
+              <NoData/>
           )}
         </AutoSizer>
       </Card>

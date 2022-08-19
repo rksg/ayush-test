@@ -99,7 +99,7 @@ const getSwitchTrafficRichStyle = () => ({
   }
 })
 
-const wrapInsideCard = (title: string, children: ReactNode) => (
+export const wrapInsideCard = (title: string, children: ReactNode) => (
   <div style={{ width: 496, height: 280 }}>
     <Card title={title}>
       {children}
