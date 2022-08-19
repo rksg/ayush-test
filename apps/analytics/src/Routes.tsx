@@ -13,6 +13,7 @@ export default function AnalyticsRoutes () {
     <Route path='t/:tenantId'>
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents' element={<IncidentListPage />} />
+      <Route path='analytics/incidents/tab/:activeTab' element={<IncidentListPage />} />
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetailsPage />} />
       <Route path='analytics/recommendations'
         element={<div>{ $t({ defaultMessage: 'Recommendations' }) } </div>} />

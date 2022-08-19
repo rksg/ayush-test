@@ -1,13 +1,15 @@
-/* eslint-disable no-console */
+import { UserSettings } from './types/user'
+
 const SEP_CHAR = '$'
 
-export const getUserSettingsFromDict = (userSettings: { [key: string]: any }, key: string) => {
+export const getUserSettingsFromDict = (userSettings: UserSettings, key: string) => {
   const value = getDeepProp(userSettings, key)
   return value
 }
 
-const getDeepProp = (obj: { [key: string]: any }, props:string) => {
-  return props.split(SEP_CHAR).reduce((acc, p) => {
+const getDeepProp = (obj: UserSettings, props: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return props.split(SEP_CHAR).reduce((acc: any, p) => {
     // if the accumulator is something
     // then lookup the next nested property
     // otherwise return null
