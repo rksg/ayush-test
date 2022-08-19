@@ -28,7 +28,7 @@ export interface Network { // TODO: Move all Network type from libs/rc/services/
   captiveType: GuestNetworkTypeEnum
   deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
-  activated: { isActivated: boolean, isDisabled?: boolean, errors: string[] }
+  activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
   allApDisabled?: boolean
 }
 

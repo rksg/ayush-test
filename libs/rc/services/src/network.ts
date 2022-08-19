@@ -173,27 +173,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
         const networkDeepListList = networkDeepListQuery.data as { response: NetworkDetail[] }
 
-        const tmp:Network[] = []
-        networkList.data.forEach(item => {
-          const networkApGroup = venueNetworkApGroupList?.response?.find(
-            i => i.networkId === item.id
-          )
-          const deepNetwork = networkDeepListList?.response?.find(
-            i => i.id === item.id
-          )
-          if (networkApGroup) {
-            tmp.push({
-              ...item,
-              activated: calculateNetworkActivated(networkApGroup),
-              deepNetwork: deepNetwork
-            })
-          }
-        })
-
-        const aggregatedList = {
-          ...networkList,
-          data: tmp
-        }
+        const aggregatedList = aggregatedVenueNetworksData(
+          networkList, venueNetworkApGroupList, networkDeepListList)
 
         return venueNetworkListQuery.data
           ? { data: aggregatedList }
@@ -211,6 +192,32 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     })
   })
 })
+
+export const aggregatedVenueNetworksData = (networkList: TableResult<Network>, 
+  venueNetworkApGroupList:{ response: NetworkVenue[] }, 
+  networkDeepListList:{ response: NetworkDetail[] }) => {
+  const data:Network[] = []
+  networkList.data.forEach(item => {
+    const networkApGroup = venueNetworkApGroupList?.response?.find(
+      i => i.networkId === item.id
+    )
+    const deepNetwork = networkDeepListList?.response?.find(
+      i => i.id === item.id
+    )
+    if (networkApGroup) {
+      data.push({
+        ...item,
+        activated: calculateNetworkActivated(networkApGroup),
+        deepNetwork: deepNetwork
+      })
+    }
+  })
+
+  return {
+    ...networkList,
+    data
+  }
+}
 
 const calculateNetworkActivated = (res: NetworkVenue) => {
   const activatedObj = { isActivated: false, isDisabled: false, errors: [] as string[] }
