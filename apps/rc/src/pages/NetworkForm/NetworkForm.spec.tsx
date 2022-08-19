@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
@@ -97,17 +98,17 @@ describe('NetworkForm', () => {
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
 
-    fireEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
-    fireEvent.click(screen.getByText('Next'))
+    userEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
+    userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
-    fireEvent.click(screen.getByText('Next'))
+    userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    fireEvent.click(screen.getByText('Next'))
+    userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
-    fireEvent.click(screen.getByText('Finish'))
+    userEvent.click(screen.getByText('Finish'))
   })
 })

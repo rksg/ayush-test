@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { CommonUrlsInfo }                                                        from '@acx-ui/rc/utils'
 import { Provider }                                                              from '@acx-ui/store'
@@ -15,22 +16,22 @@ async function fillInBeforeSettings (networkName: string) {
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating)
 
-  fireEvent.click(screen.getByRole('radio', { name: /802.1X standard/ }))
-  fireEvent.click(screen.getByText('Next'))
+  userEvent.click(screen.getByRole('radio', { name: /802.1X standard/ }))
+  userEvent.click(screen.getByText('Next'))
 
   await screen.findByRole('heading', { level: 3, name: 'AAA Settings' })
 }
 
 async function fillInAfterSettings (checkSummary: Function) {
-  fireEvent.click(screen.getByText('Next'))
+  userEvent.click(screen.getByText('Next'))
   await screen.findByRole('heading', { level: 3, name: 'Venues' })
 
-  fireEvent.click(screen.getByText('Next'))
+  userEvent.click(screen.getByText('Next'))
   await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
   checkSummary()
   const finish = screen.getByText('Finish')
-  fireEvent.click(finish)
+  userEvent.click(finish)
   await waitForElementToBeRemoved(finish)
 }
 
@@ -111,7 +112,7 @@ describe('NetworkForm', () => {
 
   it('should render Network AAA diagram with AAA buttons', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    
+
     await fillInBeforeSettings('AAA network test')
 
     let toggle = screen.getAllByRole('switch', { checked: false })
@@ -120,7 +121,7 @@ describe('NetworkForm', () => {
       fireEvent.click(toggle[1]) // Proxy Service
       fireEvent.click(toggle[2]) // Accounting Service
     })
-    
+
     let diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
     let authBtn = screen.getByRole('button', { name: 'Authentication Service' })
     let accBtn = screen.getByRole('button', { name: 'Accounting Service' })
@@ -128,7 +129,7 @@ describe('NetworkForm', () => {
     expect(authBtn).toBeDisabled()
     expect(accBtn).toBeVisible()
     expect(diagram[1].src).toContain('aaa-proxy.png')
-    
+
     fireEvent.click(accBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
     authBtn = screen.getByRole('button', { name: 'Authentication Service' })
