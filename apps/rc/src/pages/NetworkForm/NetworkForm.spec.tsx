@@ -94,8 +94,9 @@ describe('NetworkForm', () => {
     const insertInput = screen.getByLabelText('Network Name')
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     fireEvent.blur(insertInput)
-    const validating = await screen.findByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating)
+
+    // wait for duplicate name validation
+    await screen.findByRole('img', { name: 'check-circle' })
 
     fireEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
     fireEvent.click(screen.getByText('Next'))
