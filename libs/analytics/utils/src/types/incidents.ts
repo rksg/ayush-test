@@ -1,5 +1,5 @@
-
-import incidentSeverities from '../incidentSeverities.json'
+import { AnalyticsFilter } from '../analyticsFilter'
+import incidentSeverities  from '../incidentSeverities.json'
 
 import type { IncidentCode }        from '../constants'
 import type { IncidentInformation } from '../incidentInformation'
@@ -60,3 +60,10 @@ export interface Incident extends IncidentInformation {
   slaThreshold: number|null
   currentSlaThreshold: number|null
 }
+
+export interface IncidentAttributesProps
+  extends Incident, IncidentInformation {
+    visibleFields: string[]
+  }
+
+export type IncidentFilter = AnalyticsFilter & { code? : IncidentCode[] }

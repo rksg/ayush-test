@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { NetworkForm } from './NetworkForm'
 
@@ -94,20 +95,21 @@ describe('NetworkForm', () => {
     const insertInput = screen.getByLabelText('Network Name')
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     fireEvent.blur(insertInput)
-    const validating = await screen.findByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating)
 
-    fireEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
-    fireEvent.click(screen.getByText('Next'))
+    // wait for duplicate name validation
+    await screen.findByRole('img', { name: 'check-circle' })
+
+    userEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
+    userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
-    fireEvent.click(screen.getByText('Next'))
+    userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    fireEvent.click(screen.getByText('Next'))
+    userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
-    fireEvent.click(screen.getByText('Finish'))
+    userEvent.click(screen.getByText('Finish'))
   })
 })
