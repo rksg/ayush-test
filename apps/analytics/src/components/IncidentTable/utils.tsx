@@ -69,9 +69,6 @@ export const ShortIncidentDescription = (props: IncidentTableComponentProps) => 
 
 export const getCategory = (code: string) => {
   const incidentInfo = incidentInformation[code]
-  if (typeof incidentInfo === 'undefined') {
-    return <FormatIntlString message={defineMessage({ defaultMessage: '{noDataSymbol}' })} />
-  }
   const { category } = incidentInfo
   return <FormatIntlString message={category} />
 }

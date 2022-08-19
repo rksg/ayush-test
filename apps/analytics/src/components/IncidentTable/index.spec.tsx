@@ -119,24 +119,6 @@ describe('IncidentTableWidget', () => {
     expect(screen.getByText('No Data').textContent).toBe('No Data')
   })
 
-  it('should render error on undefined data', async () => {
-    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
-      data: undefined,
-      error: new Error('undefined data!')
-    })
-
-    render(<Provider><IncidentTableWidget/></Provider>, {
-      route: {
-        path: '/t/tenantId/analytics/incidents',
-        wrapRoutes: false
-      }
-    })
-
-    await screen.findByText('Something went wrong.')
-    expect(screen.getByText('Something went wrong.').textContent).toBe('Something went wrong.')
-    
-  })
-
   const columnHeaders = [
     'Severity',
     'Date',

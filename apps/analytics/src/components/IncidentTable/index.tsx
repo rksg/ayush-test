@@ -136,7 +136,6 @@ const IncidentTableWidget = () => {
     return data.filter((row) => row.isMuted === true).map((row) => row.id)
   }
 
-
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>

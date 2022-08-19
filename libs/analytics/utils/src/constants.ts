@@ -7,7 +7,7 @@ export const incidentCodes = [
   'dhcp-failure',
   'auth-failure',
   'assoc-failure',
-  'high-assoc-failure',
+  //'high-assoc-failure',
   'p-cov-clientrssi-low',
   'p-load-sz-cpu-load',
   'p-switch-memory-high',

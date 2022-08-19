@@ -309,12 +309,6 @@ describe('IncidentTable: utils', () => {
         expect(screen.getByText(category).textContent).toBe(category)
       })
     })
-  
-    it('getCategory: undefined code', async () => {
-      render(<RenderGetCategory code={undefined}/>)
-      await screen.findByText(noDataSymbol)
-      expect(screen.getByText(noDataSymbol).textContent).toBe(noDataSymbol)
-    })
   })
 
   describe('ShortIncidentDescription', () => {  
