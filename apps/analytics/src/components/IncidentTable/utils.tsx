@@ -6,9 +6,8 @@ import {
   Incident,
   incidentInformation,
   noDataSymbol,
-  getRootCauseAndRecommendations,
   useIncidentScope,
-  useLongDesription
+  useShortDescription
 } from '@acx-ui/analytics/utils'
 import { formatter, durationFormat } from '@acx-ui/utils'
 
@@ -25,9 +24,10 @@ export const getIncidentBySeverity = (value?: number | null) => {
   return severity
 }
 
-export const formatDate = (datetimestamp?: string) => {
-  if (typeof datetimestamp !== 'string') return noDataSymbol
-  return formatter('dateTimeFormat')(datetimestamp as string)
+export const formatDate = (datetimestamp: string) => {
+  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp)
+  if (formattedDatetime === null) return noDataSymbol
+  return formattedDatetime
 }
 
 export const formatDuration = (startTimestamp?: string, endTimestamp?: string) => {
@@ -60,12 +60,11 @@ export interface IncidentTableComponentProps {
   incident: Incident
 }
 
-export const LongIncidentDescription = (props: IncidentTableComponentProps) => {
+export const ShortIncidentDescription = (props: IncidentTableComponentProps) => {
   const { incident } = props
-  const { rootCauses } = getRootCauseAndRecommendations(incident.code, incident.metadata)[0]
-  const longDesc = useLongDesription(incident, rootCauses)
+  const shortDesc = useShortDescription(incident)
     
-  return <UI.DescriptionSpan>{longDesc}</UI.DescriptionSpan>
+  return <UI.DescriptionSpan>{shortDesc}</UI.DescriptionSpan>
 }
 
 export const getCategory = (code: string) => {

@@ -10,7 +10,7 @@ import {
   formatDate,
   formatDuration,
   clientImpactSort,
-  LongIncidentDescription,
+  ShortIncidentDescription,
   getCategory,
   GetScope,
   severitySort,
@@ -36,7 +36,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     valueType: 'dateTime',
     key: 'endTime',
     render: (_, value) => {
-      return <Link to={value.id}>{formatDate(value.endTime)}</Link>
+      return <Link to={value.id}>{formatDate(value.endTime) as string}</Link>
     },
     sorter: {
       compare: (a, b) => dateSort(a.endTime, b.endTime),
@@ -57,9 +57,9 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     title: 'Description',
     dataIndex: 'description',
     key: 'description',
-    render: (_, value) => <LongIncidentDescription incident={value}/>,
+    render: (_, value) => <ShortIncidentDescription incident={value}/>,
     sorter: {
-      compare: (a, b) => defaultSort(a.description, b.description),
+      compare: (a, b) => defaultSort(a.code, b.code),
       multiple: 4
     },
     ellipsis: true
@@ -70,7 +70,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     key: 'category',
     render: (_, value) => getCategory(value.code),
     sorter: {
-      compare: (a, b) => defaultSort(a.category, b.category),
+      compare: (a, b) => defaultSort(a.code, b.code),
       multiple: 5
     }
   },
@@ -98,7 +98,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     key: 'scope',
     render: (_, value) => <GetScope incident={value} />,
     sorter: {
-      compare: (a, b) => clientImpactSort(a.scope, b.scope),
+      compare: (a, b) => clientImpactSort(a.code, b.code),
       multiple: 8
     }
   }, 
@@ -107,7 +107,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     dataIndex: 'type',
     key: 'type',
     sorter: {
-      compare: (a, b) => defaultSort(a.type, b.type),
+      compare: (a, b) => defaultSort(a.sliceType, b.sliceType),
       multiple: 9
     }
   }
@@ -131,6 +131,11 @@ const IncidentTableWidget = () => {
   const filters = useAnalyticsFilter()
   const queryResults = useIncidentsListQuery(filters)
 
+  const mutedKeysFilter = (data?: IncidentNodeData) => {
+    return data.filter((row) => row.isMuted === true).map((row) => row.id)
+  }
+
+
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>
@@ -141,11 +146,17 @@ const IncidentTableWidget = () => {
             dataSource={queryResults?.data}
             columns={ColumnHeaders}
             actions={actions}
-            rowSelection={{ type: 'checkbox' }}
+            rowSelection={{ 
+              type: 'checkbox', 
+              defaultSelectedRowKeys: queryResults.data 
+                ? mutedKeysFilter(queryResults.data)
+                : undefined
+            }}
             pagination={{ pageSize: 10 }}
             rowKey='id'
             showSorterTooltip={false}
             columnEmptyText={noDataSymbol}
+            scroll={{ y: 'max-content' }}
           />
         )}
       </AutoSizer>

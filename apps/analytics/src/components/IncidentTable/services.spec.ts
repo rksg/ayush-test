@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { configureStore } from '@reduxjs/toolkit'
 
-import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { NetworkPath }         from '@acx-ui/analytics/utils'
-import { mockGraphqlQuery }    from '@acx-ui/test-utils'
-import { DateRange }           from '@acx-ui/utils'
+import { dataApi, dataApiURL }       from '@acx-ui/analytics/services'
+import { NetworkPath, noDataSymbol } from '@acx-ui/analytics/utils'
+import { mockGraphqlQuery }          from '@acx-ui/test-utils'
+import { DateRange }                 from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -238,7 +238,12 @@ describe('IncidentTable: services', () => {
         slaThreshold: null,
         currentSlaThreshold: null
       }
-    ] 
+    ],
+    duration: -180000,
+    category: noDataSymbol,
+    description: noDataSymbol,
+    scope: noDataSymbol,
+    type: noDataSymbol
   }]
 
   afterEach(() =>

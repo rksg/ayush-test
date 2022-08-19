@@ -142,6 +142,7 @@ export function Table <RecordType extends object> (
       columns={columns}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
+      scroll={props.scroll ? props.scroll : { x: 'max-content' }}
       rowSelection={rowSelection}
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
       columnEmptyText={false}

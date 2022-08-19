@@ -108,7 +108,9 @@ export const api = dataApi.injectEndpoints({
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {
-        return response.network.hierarchyNode.incidents.map((incident) => transformData(incident))
+        const { incidents } = response.network.hierarchyNode
+        if (typeof incidents === 'undefined') return []
+        return incidents.map((incident) => transformData(incident))
       }
     })
   })

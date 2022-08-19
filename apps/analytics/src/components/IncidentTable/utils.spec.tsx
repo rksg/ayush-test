@@ -14,13 +14,12 @@ import {
   FormatIntlString,
   FormatIntlStringProps,
   getCategory,
-  LongIncidentDescription,
   IncidentTableComponentProps,
-  GetScopeProps,
   GetScope,
   dateSort,
   defaultSort,
-  durationSort
+  durationSort,
+  ShortIncidentDescription
 } from './utils'
 
 describe('IncidentTable: utils', () => {
@@ -147,9 +146,9 @@ describe('IncidentTable: utils', () => {
       expect(testWorkingDate).toBe('Aug 15 2022 00:00')
     })
 
-    it('should show noDataSymbol for undefined date', () => {
-      const testUndefinedDate = formatDate()
-      expect(testUndefinedDate).toBe(noDataSymbol)
+    it('should show null for null date', () => {
+      const testNullDate = formatDate(null as unknown as string)
+      expect(testNullDate).toBe(noDataSymbol)
     })
   })
 
@@ -318,19 +317,22 @@ describe('IncidentTable: utils', () => {
     })
   })
 
-  describe('LongIncidentDescription', () => {  
-    const RenderLongDescription = (props: IncidentTableComponentProps) => {
-      return <Provider><LongIncidentDescription {...props}/></Provider>
+  describe('ShortIncidentDescription', () => {  
+    const RenderShortDescription = (props: IncidentTableComponentProps) => {
+      return <Provider><ShortIncidentDescription {...props}/></Provider>
     }
   
-    it('LongIncidentDescription: it renders on valid incident', async () => {
-      const { asFragment } = render(<RenderLongDescription incident={testIncident}/>)
-      expect(asFragment()).toMatchSnapshot()
+    it('ShortIncidentDescription: it renders on valid incident', async () => {
+      render(<RenderShortDescription incident={testIncident}/>)
+      // eslint-disable-next-line max-len
+      const expectedShortDesc = '802.11 Authentication failures are unusually high in Venue: Venue-3-US'
+      await screen.findByText(expectedShortDesc)
+      expect(screen.getByText(expectedShortDesc).textContent).toBe(expectedShortDesc)
     })
   })
 
   describe('GetScope', () => {
-    const RenderGetScope = (props: GetScopeProps) => {
+    const RenderGetScope = (props: IncidentTableComponentProps) => {
       return <Provider><GetScope {...props} /></Provider>
     }
   
