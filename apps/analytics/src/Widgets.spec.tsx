@@ -4,8 +4,8 @@ import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { fixture1 as TrafficByApplicationFixture } from './components/TrafficByApplication/fixtures'
-import AnalyticsWidgets                            from './Widgets'
+import { trafficByApplicationFixture } from './__tests__/fixtures'
+import AnalyticsWidgets                from './Widgets'
 
 const sample = {
   time: [
@@ -74,7 +74,7 @@ test('should render Connected Clients Over Time widget', async () => {
   mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
     data: { network: { hierarchyNode: { timeSeries: connectedClientsOverTimeSample } } }
   })
-  render( 
+  render(
     <Provider>
       <AnalyticsWidgets name='connectedClientsOverTime' filters={filters}/>
     </Provider>)
@@ -83,10 +83,10 @@ test('should render Connected Clients Over Time widget', async () => {
 
 test('should render Traffic By Application Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
-    data: { network: { hierarchyNode: TrafficByApplicationFixture } }
+    data: { network: { hierarchyNode: trafficByApplicationFixture } }
   })
-  render( <Provider> <AnalyticsWidgets 
-    name='topApplicationsByTraffic' 
+  render( <Provider> <AnalyticsWidgets
+    name='topApplicationsByTraffic'
     filters={filters} /></Provider>)
   await screen.findByText('Top 5 Applications by Traffic')
 })

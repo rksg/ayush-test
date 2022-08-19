@@ -1,4 +1,4 @@
-export const fixture1 = {
+export const trafficByApplicationFixture = {
   uploadAppTraffic: 46211506,
   downloadAppTraffic: 530303979,
   topNAppByUpload: [

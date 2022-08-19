@@ -5,8 +5,9 @@ import { Provider, store }                                            from '@acx
 import { fireEvent, render, screen, mockAutoSizer, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                                                  from '@acx-ui/utils'
 
-import { fixture1 } from './fixtures'
-import { api }      from './services'
+import { trafficByApplicationFixture } from '../../__tests__/fixtures'
+
+import { api } from './services'
 
 import { TrafficByApplicationWidget } from './index'
 
@@ -46,7 +47,7 @@ describe('TrafficByApplicationWidget', () => {
 
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
-      data: { network: { hierarchyNode: fixture1 } }
+      data: { network: { hierarchyNode: trafficByApplicationFixture } }
     })
     render( <Provider> <TrafficByApplicationWidget filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
@@ -54,7 +55,7 @@ describe('TrafficByApplicationWidget', () => {
 
   it('should render table with sparkline svg', async () => {
     mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
-      data: { network: { hierarchyNode: fixture1 } }
+      data: { network: { hierarchyNode: trafficByApplicationFixture } }
     })
     const { asFragment } =render( <Provider> <TrafficByApplicationWidget
       filters={filters}/></Provider>)

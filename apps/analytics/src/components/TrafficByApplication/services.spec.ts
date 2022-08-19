@@ -3,8 +3,9 @@ import { configureStore } from '@reduxjs/toolkit'
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
-import { fixture1 } from './fixtures'
-import { api }      from './services'
+import { trafficByApplicationFixture } from '../../__tests__/fixtures'
+
+import { api } from './services'
 
 describe('trafficByApplicationWidget', () => {
   const store = configureStore({
@@ -26,7 +27,7 @@ describe('trafficByApplicationWidget', () => {
   it('should return correct data', async () => {
     const expectedResult = {
       network: {
-        hierarchyNode: fixture1
+        hierarchyNode: trafficByApplicationFixture
       }
     }
     mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
