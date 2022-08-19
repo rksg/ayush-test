@@ -3,7 +3,7 @@
 exports[`NetworkForm should create AAA network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
+    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -972,7 +972,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__Wrapper-sc-1abm7iv-3 kArFeu"
+                                  class="styledComponents__Wrapper-sc-1abm7iv-4 feuYoB"
                                 >
                                   <div
                                     class="ant-pro-table"
@@ -1902,7 +1902,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
 exports[`NetworkForm should create AAA network with cloudpath successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
+    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -2871,7 +2871,7 @@ exports[`NetworkForm should create AAA network with cloudpath successfully 1`] =
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__Wrapper-sc-1abm7iv-3 kArFeu"
+                                  class="styledComponents__Wrapper-sc-1abm7iv-4 feuYoB"
                                 >
                                   <div
                                     class="ant-pro-table"
@@ -3801,7 +3801,7 @@ exports[`NetworkForm should create AAA network with cloudpath successfully 1`] =
 exports[`NetworkForm should create captive portal successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
+    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -4770,7 +4770,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__Wrapper-sc-1abm7iv-3 kArFeu"
+                                  class="styledComponents__Wrapper-sc-1abm7iv-4 feuYoB"
                                 >
                                   <div
                                     class="ant-pro-table"
@@ -5700,7 +5700,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
 exports[`NetworkForm should create open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
+    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"

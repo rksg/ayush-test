@@ -209,3 +209,18 @@ export type EventParams = {
   // color of the shape, works when componentType is 'series'.
   color: string
 }
+
+export const deviceStatusColors = {
+  empty: '--acx-neutrals-20',
+  connected: '--acx-semantics-green-50',
+  initial: '--acx-neutrals-50',
+  alerting: '--acx-semantics-yellow-40',
+  disconnected: '--acx-semantics-red-50'
+}
+
+export const getDeviceConnectionStatusColors = () => [
+  cssStr(deviceStatusColors.connected), // Operational
+  cssStr(deviceStatusColors.initial), // Setup Phase
+  cssStr(deviceStatusColors.alerting), // Transient Issue
+  cssStr(deviceStatusColors.disconnected) // Requires Attention
+]
