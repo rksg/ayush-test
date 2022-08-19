@@ -1,23 +1,19 @@
-import { Incident } from '@acx-ui/analytics/utils'
-import { Provider } from '@acx-ui/store'
-import { render }   from '@acx-ui/test-utils'
+import { fakeIncident } from '@acx-ui/analytics/utils'
+import { Provider }     from '@acx-ui/store'
+import { render }       from '@acx-ui/test-utils'
 
 
 import { Insights } from '.'
 
 describe('Insights Component', () => {
   it('should render correctly', () => {
-    const sampleIncident = {
+    const sampleIncident = fakeIncident({
       apCount: -1,
       isMuted: false,
       mutedBy: null,
       slaThreshold: null,
       clientCount: 27,
       path: [
-        {
-          type: 'system',
-          name: 'Edu2-vSZ-52'
-        },
         {
           type: 'zone',
           name: 'Edu2-611-Mesh'
@@ -61,11 +57,11 @@ describe('Insights Component', () => {
       mutedAt: null,
       impactedClientCount: 5,
       sliceValue: 'RuckusAP'
-    } as Incident
+    })
 
     const { asFragment } = render(
       <Provider>
-        <Insights {...sampleIncident} />
+        <Insights incident={sampleIncident} />
       </Provider>
     )
     expect(asFragment()).toMatchSnapshot()

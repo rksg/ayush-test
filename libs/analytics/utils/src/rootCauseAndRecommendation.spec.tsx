@@ -1,17 +1,26 @@
 import { defineMessage } from 'react-intl'
 
-import { getRootCauseAndRecommendations, codeToFailureTypeMap, rootCauseRecommendationMap } from './rootCauseRecommendation'
-import { IncidentMetadata }                                                                 from './types/incidents'
+import { IncidentCode }        from './constants'
+import { fakeIncident }        from './fakeIncident'
+import {
+  getRootCauseAndRecommendations,
+  codeToFailureTypeMap,
+  rootCauseRecommendationMap
+} from './rootCauseRecommendation'
 
-interface InsightComponentProps {
-  code: keyof typeof codeToFailureTypeMap
-  metadata: IncidentMetadata
-}
+
+const baseIncident = fakeIncident({
+  id: '1',
+  startTime: '2022-08-19T00:00:00.000Z',
+  endTime: '2022-08-19T00:01:00.000Z',
+  code: 'auth-failure',
+  path: [{ type: 'zone', name: 'Venue 1' }]
+})
 
 describe('getRootCauseAndRecommendations', () => {
   it('should return correct data', () => {
-    const incident = {
-      code: 'auth-failure',
+    const incident = fakeIncident({
+      ...baseIncident,
       metadata: {
         dominant: {},
         rootCauseChecks: {
@@ -28,9 +37,8 @@ describe('getRootCauseAndRecommendations', () => {
           }
         }
       }
-    } as InsightComponentProps
-    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
-      incident.code, incident.metadata.rootCauseChecks)
+    })
+    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
     const failureType = codeToFailureTypeMap[incident.code]
     expect(rootCauses).toEqual(
       rootCauseRecommendationMap[failureType]['CCD_REASON_AUTH_FT_ROAM_FAILURE'].rootCauses)
@@ -39,20 +47,21 @@ describe('getRootCauseAndRecommendations', () => {
   })
 
   it('should return correct data if no rootCauseChecks', () => {
-    const incident = {
+    const incident = fakeIncident({
+      ...baseIncident,
       code: 'dhcp-failure',
       metadata: {
         dominant: {}
       }
-    } as InsightComponentProps
-    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
-      incident.code, incident.metadata.rootCauseChecks)
+    })
+    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
     expect(rootCauses).toEqual(defineMessage({ defaultMessage: '<p>Calculating...</p>' }))
     expect(recommendations).toEqual(defineMessage({ defaultMessage: '<p>Calculating...</p>' }))
   })
 
   it('should return DEFAULT result if rootCauseChecks length is 0', () => {
-    const incident = {
+    const incident = fakeIncident({
+      ...baseIncident,
       code: 'eap-failure',
       metadata: {
         dominant: {},
@@ -63,9 +72,8 @@ describe('getRootCauseAndRecommendations', () => {
           }
         }
       }
-    } as InsightComponentProps
-    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
-      incident.code, incident.metadata.rootCauseChecks)
+    })
+    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
     const failureType = codeToFailureTypeMap[incident.code]
     expect(rootCauses).toEqual(
       rootCauseRecommendationMap[failureType]['DEFAULT'].rootCauses)
@@ -74,7 +82,8 @@ describe('getRootCauseAndRecommendations', () => {
   })
 
   it('should return VARIOUS_REASONS results if rootCauseChecks length is more than 1', () => {
-    const incident = {
+    const incident = fakeIncident({
+      ...baseIncident,
       code: 'radius-failure',
       metadata: {
         dominant: {},
@@ -98,9 +107,8 @@ describe('getRootCauseAndRecommendations', () => {
           }
         }
       }
-    } as InsightComponentProps
-    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
-      incident.code, incident.metadata.rootCauseChecks)
+    })
+    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
     const failureType = codeToFailureTypeMap[incident.code]
     expect(rootCauses).toEqual(
       rootCauseRecommendationMap[failureType]['VARIOUS_REASONS'].rootCauses)
@@ -109,7 +117,8 @@ describe('getRootCauseAndRecommendations', () => {
   })
 
   it('should return TBD if key is undefined', () => {
-    const incident = {
+    const incident = fakeIncident({
+      ...baseIncident,
       code: 'auth-failure',
       metadata: {
         dominant: {},
@@ -127,16 +136,16 @@ describe('getRootCauseAndRecommendations', () => {
           }
         }
       }
-    } as InsightComponentProps
-    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
-      incident.code, incident.metadata.rootCauseChecks)
+    })
+    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
     expect(rootCauses).toEqual(defineMessage({ defaultMessage: '<p>TBD</p>' }))
     expect(recommendations).toEqual(defineMessage({ defaultMessage: '<p>TBD</p>' }))
   })
 
   it('should return TBD if failureType is not in list', () => {
-    const incident = {
-      code: 'new-failure',
+    const incident = fakeIncident({
+      ...baseIncident,
+      code: 'new-failure' as unknown as IncidentCode,
       metadata: {
         dominant: {},
         rootCauseChecks: {
@@ -153,9 +162,8 @@ describe('getRootCauseAndRecommendations', () => {
           }
         }
       }
-    } as unknown as InsightComponentProps
-    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
-      incident.code, incident.metadata.rootCauseChecks)
+    })
+    const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
     expect(rootCauses).toEqual(defineMessage({ defaultMessage: '<p>TBD</p>' }))
     expect(recommendations).toEqual(defineMessage({ defaultMessage: '<p>TBD</p>' }))
   })

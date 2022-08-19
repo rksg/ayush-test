@@ -30,8 +30,8 @@ export interface SeverityRange {
 }
 
 export interface IncidentMetadata {
-  dominant: { ssid?: string }
-  rootCauseChecks: {
+  dominant?: { ssid?: string }
+  rootCauseChecks?: {
     checks: Record<string,boolean>[]
     params: Record<string,string>
   }

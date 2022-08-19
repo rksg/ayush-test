@@ -47,7 +47,7 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
         <Col span={20}>
           <Row gutter={[20, 20]}>
             <Col span={24}>
-              <Insights {...props}/>
+              <Insights incident={incident} />
             </Col>
             <Col span={24}>
               <div>network impact</div>

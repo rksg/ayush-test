@@ -9,10 +9,9 @@ import { BulbOutlined }                   from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
-export const Insights = (props: Incident) => {
+export const Insights = ({ incident }: { incident: Incident }) => {
   const { $t } = useIntl()
-  const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(
-    props.code, props.metadata.rootCauseChecks)
+  const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
   const values = {
     p: (text: string) => <p>{text}</p>,
     ol: (text: string) => <ol>{text}</ol>,
@@ -30,7 +29,7 @@ export const Insights = (props: Incident) => {
       <Row>
         <UI.LeftInsightDetails span={12}>
           <Subtitle level={4}>{$t({ defaultMessage: 'Root Cause Analysis' })}</Subtitle>
-          <FormattedMessage 
+          <FormattedMessage
             {...rootCauses}
             values={values}
           />

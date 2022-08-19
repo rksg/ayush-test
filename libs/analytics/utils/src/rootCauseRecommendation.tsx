@@ -1,7 +1,14 @@
 /* eslint-disable max-len */
-import { defineMessage } from 'react-intl'
+import _                                    from 'lodash'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { IncidentMetadata } from './types/incidents'
+import { IncidentCode }               from './constants'
+import { Incident, IncidentMetadata } from './types/incidents'
+
+interface RootCauseAndRecommendation {
+  rootCauses: MessageDescriptor
+  recommendations: MessageDescriptor
+}
 
 const commonRecommendations = defineMessage({
   defaultMessage: `
@@ -25,7 +32,7 @@ const ccd80211CommonRecommendations = defineMessage({
   </ol>`
 })
 
-export const codeToFailureTypeMap = {
+export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'ttc': 'ttc',
   'radius-failure': 'radius',
   'eap-failure': 'eap',
@@ -60,14 +67,6 @@ const extractFailureCode = (
         code => code.startsWith('CCD_REASON') || ttcFailureCodes.includes(code))[0]
 }
 
-interface rootCauseAndRecommendation {
-  rootCauses: {
-    defaultMessage: string
-  }
-  recommendations: {
-    defaultMessage: string
-  }
-}
 
 export const rootCauseRecommendationMap = {
   assoc: {
@@ -575,7 +574,7 @@ export const rootCauseRecommendationMap = {
       })
     }
   }
-} as Readonly<Record<string, Record<string, rootCauseAndRecommendation>>>
+} as Readonly<Record<string, Record<string, RootCauseAndRecommendation>>>
 
 export const ccd80211RootCauseRecommendations = {
   CCD_REASON_UNSPECIFIED: {
@@ -709,23 +708,18 @@ export const ccd80211RootCauseRecommendations = {
     rootCauses: defineMessage({ defaultMessage: '<p>Connectivity is failing because the security type (cipher suite) requested by the client is not valid or is not supported by the AP/WLAN.</p>' }),
     recommendations: ccd80211CommonRecommendations
   }
-} as Readonly<Record<string, rootCauseAndRecommendation>>
+} as Readonly<Record<string, RootCauseAndRecommendation>>
 
-export function getRootCauseAndRecommendations (
-  code: keyof typeof codeToFailureTypeMap,
-  rootCauseChecks: IncidentMetadata['rootCauseChecks']
-) {
+const TBD = defineMessage({ defaultMessage: '<p>TBD</p>' })
+const calculating = defineMessage({ defaultMessage: '<p>Calculating...</p>' })
+
+export function getRootCauseAndRecommendations ({ code, metadata }: Incident) {
   const failureType = codeToFailureTypeMap[code]
-  if (!rootCauseChecks) return [{ rootCauses: defineMessage({ defaultMessage: '<p>Calculating...</p>' }), recommendations: defineMessage({ defaultMessage: '<p>Calculating...</p>' }) }]
-  const { checks } = rootCauseChecks
+  if (!metadata.rootCauseChecks) return [{ rootCauses: calculating, recommendations: calculating }]
+  const { checks } = metadata.rootCauseChecks
   const failureCode = extractFailureCode(checks)
-  const { rootCauses, recommendations } = rootCauseRecommendationMap[failureType]
-    ? rootCauseRecommendationMap[failureType][failureCode] ||
-      ccd80211RootCauseRecommendations[failureCode] ||
-        { rootCauses: defineMessage({ defaultMessage: '<p>TBD</p>' }), recommendations: defineMessage({ defaultMessage: '<p>TBD</p>' }) }
-    : { rootCauses: defineMessage({ defaultMessage: '<p>TBD</p>' }), recommendations: defineMessage({ defaultMessage: '<p>TBD</p>' }) }
-  return [{
-    rootCauses: rootCauses,
-    recommendations: recommendations
-  }]
+  const result = _.get(rootCauseRecommendationMap, [failureType, failureCode])
+    ?? ccd80211RootCauseRecommendations[failureCode]
+    ?? { rootCauses: TBD, recommendations: TBD }
+  return [result]
 }
