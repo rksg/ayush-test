@@ -6,7 +6,6 @@ Array [
     aria-modal="true"
     class="ant-drawer-content"
     role="dialog"
-    style="width: 336px;"
   >
     <div
       class="ant-drawer-wrapper-body"
@@ -55,7 +54,6 @@ Array [
     aria-modal="true"
     class="ant-drawer-content"
     role="dialog"
-    style="width: 336px;"
   >
     <div
       class="ant-drawer-wrapper-body"
