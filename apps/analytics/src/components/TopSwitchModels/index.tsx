@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { Card, Loader, DonutChart, cssStr } from '@acx-ui/components'
-import type { DonutChartData }              from '@acx-ui/components'
+import { AnalyticsFilter }                          from '@acx-ui/analytics/utils'
+import type { DonutChartData }                      from '@acx-ui/components'
+import { Card, Loader, NoData, DonutChart, cssStr } from '@acx-ui/components'
 
 import { useTopSwitchModelsQuery } from './services'
 
@@ -40,21 +40,25 @@ function TopSwitchModelsWidget ({ filters }: { filters: AnalyticsFilter }) {
     })
   })
 
+  const isDataAvailable = queryResults.data && queryResults.data.length > 0
+
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: 'Top 5 Switch Models' })} >
         <AutoSizer>
           {({ height, width }) => (
-            <DonutChart
-              style={{ width, height }}
-              data={queryResults.data}
-              title={$t({ defaultMessage: 'Models' })}
-              showLabel={true}
-              showTotal={false}
-              showLegend={false}
-              showTooltipPercentage={true}
-              type={'large'}
-            />
+            isDataAvailable ?
+              <DonutChart
+                style={{ width, height }}
+                data={queryResults.data}
+                title={$t({ defaultMessage: 'Models' })}
+                showLabel={true}
+                showTotal={false}
+                showLegend={false}
+                showTooltipPercentage={true}
+                type={'large'}
+              />
+              : <NoData />
           )}
         </AutoSizer>
       </Card>

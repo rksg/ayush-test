@@ -9,34 +9,45 @@ import { topSwitchModelsResponse } from './services.spec'
 
 import TopSwitchModelsWidget from '.'
 
+const filters = {
+  startDate: '2022-01-01T00:00:00+08:00',
+  endDate: '2022-01-02T00:00:00+08:00',
+  path: [{ type: 'network', name: 'Network' }],
+  range: DateRange.last24Hours
+} as AnalyticsFilter
+
 describe('TopSwitchModelsWidget', () => {
   mockAutoSizer()
 
-  const filters = {
-    startDate: '2022-01-01T00:00:00+08:00',
-    endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'network', name: 'Network' }],
-    range: DateRange.last24Hours
-  } as AnalyticsFilter
-
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
-      data: topSwitchModelsResponse
-    })
   })
 
   it('should render loader', () => {
+    mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
+      data: topSwitchModelsResponse
+    })
     render(<Provider><TopSwitchModelsWidget filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
 
   it('should render chart', async () => {
-    const { asFragment } =render( <Provider> <TopSwitchModelsWidget filters={filters}/></Provider>)
+    mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
+      data: topSwitchModelsResponse
+    })
+    const { asFragment } = render( <Provider> <TopSwitchModelsWidget filters={filters}/></Provider>)
     await screen.findByText('Top 5 Switch Models')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+
+  it('should render "No data to display" when data is empty', async () => {
+    mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
+      data: { network: { hierarchyNode: { topNSwitchModelsByCount: [] } } }
+    })
+    render(<Provider><TopSwitchModelsWidget filters={filters}/></Provider>)
+    expect(await screen.findByText('No data to display')).toBeVisible()
   })
 })
