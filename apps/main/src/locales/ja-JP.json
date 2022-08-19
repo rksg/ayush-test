@@ -134,6 +134,9 @@
   "8Fo71r": {
     "defaultMessage": "JP-MSP Space"
   },
+  "8O9cAb": {
+    "defaultMessage": "JP-Last 24 hours"
+  },
   "8cF6CF": {
     "defaultMessage": "JP-Error: Can not detect passphrase expiration value"
   },
@@ -256,6 +259,9 @@
   },
   "Gk3sbv": {
     "defaultMessage": "JP-Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}."
+  },
+  "H44xvD": {
+    "defaultMessage": "JP-Switch Clients"
   },
   "HX3vfn": {
     "defaultMessage": "JP-The controller cluster is sending data with an incorrect future timestamp. To avoid false or misleading data analysis, all future timestamped data is dropped."
@@ -521,6 +527,9 @@
   "dA+hnZ": {
     "defaultMessage": "JP-Infrastructure"
   },
+  "dElQAw": {
+    "defaultMessage": "JP-Wi-Fi Clients"
+  },
   "dP02B8": {
     "defaultMessage": "JP-Heartbeat lost"
   },
@@ -538,6 +547,9 @@
   },
   "e0kEtS": {
     "defaultMessage": "JP-Deactivate"
+  },
+  "e6Ph5+": {
+    "defaultMessage": "JP-Address"
   },
   "eOJNIA": {
     "defaultMessage": "JP-Connected Clients"
@@ -842,6 +854,9 @@
   "voFdJV": {
     "defaultMessage": "JP-Association"
   },
+  "w0OUOh": {
+    "defaultMessage": "JP-Health Score"
+  },
   "wfZEER": {
     "defaultMessage": "JP-VLAN Mismatch"
   },
@@ -858,8 +873,14 @@
   "xKk/lt": {
     "defaultMessage": "JP-The network latency between the SZ nodes is unusually high."
   },
+  "xXDHjy": {
+    "defaultMessage": "JP-Add Venue"
+  },
   "xukzKg": {
     "defaultMessage": "JP-Networks"
+  },
+  "xzWp9X": {
+    "defaultMessage": "JP-Switches"
   },
   "y8zW5H": {
     "defaultMessage": "JP-PoE power denied in {scope}."

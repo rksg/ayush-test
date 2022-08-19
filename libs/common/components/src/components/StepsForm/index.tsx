@@ -21,6 +21,7 @@ export type { ProFormInstance as StepsFormInstance }
 
 const { useImperativeHandle, useRef, useState } = React
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StepsFormProps <FormValue = any> =
   Omit<ProAntStepsFormProps<FormValue>, 'stepsProps' | 'submitter'> &
   {
@@ -49,6 +50,7 @@ type InternalStepFormProps <FormValue> = StepFormProps<FormValue> & {
   state: 'finish' | 'active' | 'wait'
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function StepsForm <FormValue = any> (
   props: React.PropsWithChildren<StepsFormProps<FormValue>>
 ) {
@@ -145,6 +147,7 @@ export function StepsForm <FormValue = any> (
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function StepForm <FormValue = any> (
   props: Omit<StepFormProps<FormValue>, 'requireMark' | 'validateTrigger'>
 ) {

@@ -46,7 +46,7 @@
     "defaultMessage": "Finish"
   },
   "2n2eHo": {
-    "defaultMessage": "For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:"
+    "defaultMessage": "{count,plural,one{For the following venue, the network could not be activated on all Venues:} other{For the following venues, the network could not be activated on all Venues:}}"
   },
   "34xBI0": {
     "defaultMessage": "APs"
@@ -133,6 +133,9 @@
   },
   "8Fo71r": {
     "defaultMessage": "MSP Space"
+  },
+  "8O9cAb": {
+    "defaultMessage": "Last 24 hours"
   },
   "8cF6CF": {
     "defaultMessage": "Error: Can not detect passphrase expiration value"
@@ -257,6 +260,9 @@
   "Gk3sbv": {
     "defaultMessage": "Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}."
   },
+  "H44xvD": {
+    "defaultMessage": "Switch Clients"
+  },
   "HX3vfn": {
     "defaultMessage": "The controller cluster is sending data with an incorrect future timestamp. To avoid false or misleading data analysis, all future timestamped data is dropped."
   },
@@ -377,7 +383,7 @@
     "defaultMessage": "Use Cloudpath Server"
   },
   "RAjs+g": {
-    "defaultMessage": "{isCaptiveNetwork, select, true {Captive Portal} other {Portal}} - {captiveNetworkType}"
+    "defaultMessage": "{isCaptiveNetwork,select,true{Captive Portal - {captiveNetworkType}} other{Portal - {captiveNetworkType}}}"
   },
   "RUoi+Y": {
     "defaultMessage": "Keyboard Friendly"
@@ -521,6 +527,9 @@
   "dA+hnZ": {
     "defaultMessage": "Infrastructure"
   },
+  "dElQAw": {
+    "defaultMessage": "Wi-Fi Clients"
+  },
   "dP02B8": {
     "defaultMessage": "Heartbeat lost"
   },
@@ -538,6 +547,9 @@
   },
   "e0kEtS": {
     "defaultMessage": "Deactivate"
+  },
+  "e6Ph5+": {
+    "defaultMessage": "Address"
   },
   "eOJNIA": {
     "defaultMessage": "Connected Clients"
@@ -686,7 +698,7 @@
     "defaultMessage": "Only numbers can be used"
   },
   "nijCnW": {
-    "defaultMessage": "{isComplexName, select, true {{name} ({nodeName})} other {{nodeName}} }",
+    "defaultMessage": "{isComplexName,select,true{{name} ({nodeName})} other{{nodeName}}}",
     "description": "Uses to format path node name, when isComplexName = true the nodeName would be something like AP or Switch MAC address"
   },
   "nwViUa": {
@@ -720,7 +732,7 @@
     "defaultMessage": "Total Incidents"
   },
   "pyZg46": {
-    "defaultMessage": "{type, select, aaa {AAA Settings} dpsk {DPSK Settings} other {Settings} }"
+    "defaultMessage": "{type,select,aaa{AAA Settings} dpsk{DPSK Settings} other{Settings}}"
   },
   "q2wzm3": {
     "defaultMessage": "Time to connect is high in {scope}, impacting connectivity for {impact} of clients."
@@ -842,6 +854,9 @@
   "voFdJV": {
     "defaultMessage": "Association"
   },
+  "w0OUOh": {
+    "defaultMessage": "Health Score"
+  },
   "wfZEER": {
     "defaultMessage": "VLAN Mismatch"
   },
@@ -858,8 +873,14 @@
   "xKk/lt": {
     "defaultMessage": "The network latency between the SZ nodes is unusually high."
   },
+  "xXDHjy": {
+    "defaultMessage": "Add Venue"
+  },
   "xukzKg": {
     "defaultMessage": "Networks"
+  },
+  "xzWp9X": {
+    "defaultMessage": "Switches"
   },
   "y8zW5H": {
     "defaultMessage": "PoE power denied in {scope}."

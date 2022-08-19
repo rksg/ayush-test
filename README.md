@@ -92,7 +92,7 @@ Slack channel.
 
 ### Prerequisites
 
-- Node.js v14.19.x ([`nvm`](https://github.com/nvm-sh/nvm) is recommended to manage multiple versions of Node.js in your local dev env)
+- Node.js v16.15.0 ([`nvm`](https://github.com/nvm-sh/nvm) is recommended to manage multiple versions of Node.js in your local dev env)
 - Extract RC Cookie extension (see https://jira-wiki.ruckuswireless.com/display/Team/ACX-UI)
 
 Use of [Visual Studio Code](https://code.visualstudio.com/) or any other modern IDEs of your choice will work.

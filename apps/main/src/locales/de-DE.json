@@ -134,6 +134,9 @@
   "8Fo71r": {
     "defaultMessage": "DE-MSP Space"
   },
+  "8O9cAb": {
+    "defaultMessage": "DE-Last 24 hours"
+  },
   "8cF6CF": {
     "defaultMessage": "DE-Error: Can not detect passphrase expiration value"
   },
@@ -256,6 +259,9 @@
   },
   "Gk3sbv": {
     "defaultMessage": "DE-Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}."
+  },
+  "H44xvD": {
+    "defaultMessage": "DE-Switch Clients"
   },
   "HX3vfn": {
     "defaultMessage": "DE-The controller cluster is sending data with an incorrect future timestamp. To avoid false or misleading data analysis, all future timestamped data is dropped."
@@ -521,6 +527,9 @@
   "dA+hnZ": {
     "defaultMessage": "DE-Infrastructure"
   },
+  "dElQAw": {
+    "defaultMessage": "DE-Wi-Fi Clients"
+  },
   "dP02B8": {
     "defaultMessage": "DE-Heartbeat lost"
   },
@@ -538,6 +547,9 @@
   },
   "e0kEtS": {
     "defaultMessage": "DE-Deactivate"
+  },
+  "e6Ph5+": {
+    "defaultMessage": "DE-Address"
   },
   "eOJNIA": {
     "defaultMessage": "DE-Connected Clients"
@@ -842,6 +854,9 @@
   "voFdJV": {
     "defaultMessage": "DE-Association"
   },
+  "w0OUOh": {
+    "defaultMessage": "DE-Health Score"
+  },
   "wfZEER": {
     "defaultMessage": "DE-VLAN Mismatch"
   },
@@ -858,8 +873,14 @@
   "xKk/lt": {
     "defaultMessage": "DE-The network latency between the SZ nodes is unusually high."
   },
+  "xXDHjy": {
+    "defaultMessage": "DE-Add Venue"
+  },
   "xukzKg": {
     "defaultMessage": "DE-Networks"
+  },
+  "xzWp9X": {
+    "defaultMessage": "DE-Switches"
   },
   "y8zW5H": {
     "defaultMessage": "DE-PoE power denied in {scope}."
