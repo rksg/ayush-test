@@ -5,17 +5,19 @@ import { dataApi } from '@acx-ui/analytics/services'
 import {
   AnalyticsFilter,
   incidentCodes,
+  NetworkPath,
   PathNode
 } from '@acx-ui/analytics/utils'
 
-type NetworkData = PathNode & { path: PathNode[] }
-type AP = {
+type NetworkData = PathNode & { path: NetworkPath }
+export type ApOrSwitch = {
+  path: NetworkPath,
   name: string,
   mac: string,
   incidentSeverity: number
 }
-type APs = { aps: AP[] }
-type Child = APs & NetworkData
+type ApsOrSwictes = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
+type Child = ApsOrSwictes & NetworkData
 export type NetworkHierarchy = NetworkData & { children: Child[] }
 interface Response <NetworkHierarchy> {
   network: {
@@ -27,7 +29,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkFilter: build.query<
     NetworkHierarchy,
-      AnalyticsFilter
+      Omit<AnalyticsFilter, 'path'>
     >({
       query: (payload) => ({
         document: gql`
@@ -54,18 +56,24 @@ export const api = dataApi.injectEndpoints({
                     mac
                     incidentSeverity
                   }
+                  switches {
+                    name
+                    mac
+                    incidentSeverity
+                  }
                 }
               }
             }
           }
         `,
         variables: {
-          path: payload.path,
+          path: [{ type: 'network', name: 'Network' }],
           start: payload.startDate,
           end: payload.endDate,
           code: incidentCodes
         }
       }),
+      providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_FILTER' }],
       transformResponse: (response: Response<NetworkHierarchy>) =>
         response.network.hierarchyNode
     })

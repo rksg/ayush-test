@@ -77,7 +77,7 @@ function DashboardPageHeader () {
 }
 
 function ApWidgets () {
-  const filters = useAnalyticsFilter()
+  const { filters } = useAnalyticsFilter()
 
   return (
     <GridRow gutter={[20, 20]}>
@@ -98,7 +98,7 @@ function ApWidgets () {
 }
 
 function SwitchWidgets () {
-  const filters = useAnalyticsFilter()
+  const { filters } = useAnalyticsFilter()
   return (
     <GridRow gutter={[20, 20]}>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
@@ -121,7 +121,7 @@ function SwitchWidgets () {
 }
 
 function CommonDashboardWidgets () {
-  const filters = useAnalyticsFilter()
+  const { filters } = useAnalyticsFilter()
 
   return (
     <GridRow gutter={[20, 20]}>

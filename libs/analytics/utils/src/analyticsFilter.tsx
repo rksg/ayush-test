@@ -1,40 +1,82 @@
-import React, { ReactNode, useContext } from 'react'
+import React, { ReactNode, useContext, useState, useMemo, useEffect } from 'react'
 
-import { DateFilterContext, getDateRangeFilter } from '@acx-ui/utils'
+import { Buffer } from 'buffer'
+
+import { useSearchParams } from 'react-router-dom'
+
+import { DateFilterContext, getDateRangeFilter, DateFilter } from '@acx-ui/utils'
 
 import type { NetworkPath } from './types/incidents'
 
 interface AnalyticsFilterProps {
-  path: Readonly<NetworkPath>;
+  path: NetworkPath
+  raw?: object
+  setNetworkPath: CallableFunction
+  getNetworkFilter: CallableFunction
 }
+export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
 export const defaultAnalyticsFilter = {
-  path: [{ type: 'network', name: 'Network' }] as NetworkPath
+  path: defaultNetworkPath,
+  raw: [],
+  setNetworkPath: () => {}, // abstract, comsumer should wrap provider
+  getNetworkFilter: () => {}
 } as const
 
-const AnalyticsFilterContext = React.createContext<AnalyticsFilterProps>(
+export const AnalyticsFilterContext = React.createContext<AnalyticsFilterProps>(
   defaultAnalyticsFilter
 )
-
-export type AnalyticsFilter = ReturnType<typeof useAnalyticsFilter>
+export type AnalyticsFilter = DateFilter &  { path: NetworkPath }
 
 export function useAnalyticsFilter () {
-  const { ...filters } = useContext(AnalyticsFilterContext)
+  const { getNetworkFilter, setNetworkPath } = useContext(AnalyticsFilterContext)
+  const { path, raw } = getNetworkFilter()
   const { dateFilter } = useContext(DateFilterContext)
   const { range, startDate, endDate } = dateFilter
   return {
-    ...filters,
-    ...getDateRangeFilter(range, startDate, endDate)
-  } as const
+    filters: {
+      path: path.length ? path : defaultNetworkPath,
+      ...getDateRangeFilter(range, startDate, endDate)
+    } as const,
+    setNetworkPath,
+    raw    
+  }
 }
 
 export function AnalyticsFilterProvider (props: { children: ReactNode }) {
-  // TODO:
-  // Expose methods to change global filters
+  const [search, setSearch] = useSearchParams(window.location.search)
+  const getNetworkFilter = () => search.has('analyticsNetworkFilter')
+    ? JSON.parse(
+      Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
+    )
+    : { path: [], raw: []}
+  
+  const setNetworkPath = (networkFilter: NetworkPath, raw: object = []) => {
+    search.delete('analyticsNetworkFilter')
+    const filter = {
+      path: networkFilter,
+      raw
+    }
+    search.append(
+      'analyticsNetworkFilter',
+      Buffer.from(JSON.stringify(filter)).toString('base64')
+    )
+    console.log('setNetworkPath', filter, search)
+    setSearch(search)
+  }
+  const { path } = getNetworkFilter()
+  useEffect(() => {
+    console.log('effect', path, defaultNetworkPath)
+    if (!path.length) setNetworkPath(defaultNetworkPath)
+  }, [path, setNetworkPath])
+  const providerValue = useMemo(
+    () => ({ path, setNetworkPath, getNetworkFilter }),
+    [path, setNetworkPath, getNetworkFilter]
+  )
   return (
     <AnalyticsFilterContext.Provider
       {...props}
-      value={defaultAnalyticsFilter}
+      value={providerValue}
     />
   )
 }

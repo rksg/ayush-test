@@ -11,8 +11,8 @@ import NetworkHistoryWidget     from '../../components/NetworkHistory'
 
 function Incidents () {
   const { $t } = useIntl()
-  const filters = useAnalyticsFilter()
-
+  const { filters } = useAnalyticsFilter()
+console.log('incidents', filters)
   return <>
     <Header title={$t({ defaultMessage: 'Incidents' })} />
     <GridRow gutter={[0, 20]}>

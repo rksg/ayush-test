@@ -66,7 +66,7 @@ export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
 }
 
 const ConnectedHeader = (props: PageHeaderProps) => {
-  const filters = useAnalyticsFilter()
+  const { filters } = useAnalyticsFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
   return <div>
     <Loader states={[queryResults]}>

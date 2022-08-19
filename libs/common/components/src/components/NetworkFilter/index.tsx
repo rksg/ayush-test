@@ -12,6 +12,7 @@ import { useIntl }           from 'react-intl'
 import { Button } from '../Button'
 
 import * as UI from './styledComponents'
+import { CascaderRef } from 'antd/lib/cascader'
 
 // taken from antd Cascader API: https://ant.design/components/cascader/#Option
 export interface Option {
@@ -29,9 +30,11 @@ export type CascaderProps = AntCascaderProps<Option> & {
   ) => void
 }
 
+
 export function NetworkFilter (props: CascaderProps) {
   const { onApply, ...antProps } = props
   const { $t } = useIntl()
+  const wref = React.createRef<CascaderRef>()
   const initialValues = props.defaultValue || []
   const [currentValues, setCurrentValues] = React.useState<SingleValueType | SingleValueType[]>(initialValues)
   const [savedValues, setSavedValues] = React.useState(initialValues)
@@ -76,13 +79,25 @@ export function NetworkFilter (props: CascaderProps) {
     />
   } else {
     return <AntCascader
+      ref = {wref}
       {...antProps}
       changeOnSelect
-      onChange={onApply}
+      onChange={(value: SingleValueType | SingleValueType[] ) => {
+        if (value?.length === 2) return
+        onApply(value)
+      }}
       expandTrigger='hover'
       showSearch
       onDropdownVisibleChange={setOpen}
-      suffixIcon={<CaretDownOutlined />}
+      // suffixIcon={<CaretDownOutlined  onClick={() => { 
+      //   console.log('open', open)
+      //   if (!open) {
+      //     wref.current?.focus()
+      //   }
+      //   else wref.current?.blur()
+      //   setOpen(!open)
+      // }}
+      //   />}
     />
   }
 }

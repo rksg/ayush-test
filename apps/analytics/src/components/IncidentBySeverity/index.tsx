@@ -41,11 +41,11 @@ const getChartData = (data: IncidentsBySeverityData): BarChartData => ({
 })
 
 function IncidentBySeverityWidget () {
-  const filter = useAnalyticsFilter()
-  const { startDate, endDate } = filter
+  const { filters } = useAnalyticsFilter()
+  const { startDate, endDate } = filters
   const { $t } = useIntl()
   const currentResult = useIncidentsBySeverityQuery(
-    filter,
+    filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
         data: { ...data } as IncidentsBySeverityData,
@@ -55,7 +55,7 @@ function IncidentBySeverityWidget () {
   )
   const prevResult = useIncidentsBySeverityQuery(
     {
-      ...filter,
+      ...filters,
       startDate: moment(startDate).subtract(moment(endDate).diff(startDate)).format(),
       endDate: startDate
     },

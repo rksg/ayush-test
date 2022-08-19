@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
+import { AnalyticsFilterProvider } from '@acx-ui/analytics/utils'
 import IncidentDetailsPage from './pages/IncidentDetails'
 import IncidentListPage    from './pages/Incidents'
 
@@ -22,6 +23,6 @@ export default function AnalyticsRoutes () {
     </Route>
   )
   return (
-    <Provider children={routes} />
+    <Provider><AnalyticsFilterProvider children={routes} /></Provider>
   )
 }

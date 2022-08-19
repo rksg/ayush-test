@@ -1,4 +1,4 @@
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, AnalyticsFilterProvider } from '@acx-ui/analytics/utils'
 import { Card }            from '@acx-ui/components'
 import { Provider }        from '@acx-ui/store'
 
@@ -26,7 +26,7 @@ function AnalyticsWidgets ({
   filters: AnalyticsFilter;
 }) {
   const Widget = widgetsMap[name]
-  return <Provider>{Widget ? <Widget filters={filters} /> : <Card>{name}</Card>}</Provider>
+  return <Provider><AnalyticsFilterProvider>{Widget ? <Widget filters={filters} /> : <Card>{name}</Card>}</AnalyticsFilterProvider></Provider>
 }
 
 export default AnalyticsWidgets
