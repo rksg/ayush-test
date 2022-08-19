@@ -26,6 +26,7 @@
     "@reduxjs/toolkit": "1.8.1",
     "@rtk-query/graphql-request-base-query": "2.0.1",
     "@splitsoftware/splitio-react": "1.4.1",
+    "@types/react-highlight-words": "0.16.4",
     "antd": "4.21.2",
     "core-js": "3.6.5",
     "echarts": "5.3.3",

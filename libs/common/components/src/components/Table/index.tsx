@@ -206,6 +206,7 @@ export function Table <RecordType extends object> (
             key={i}
             maxTagCount='responsive'
             mode='multiple'
+            value={filterValues[key as keyof FilterValue]}
             onChange={value => setFilterValues({ ...filterValues, [key]: value })}
             placeholder={column.title as string}
             showArrow
@@ -216,6 +217,11 @@ export function Table <RecordType extends object> (
             )}
           </Select>
         })}
+        {Boolean(activeFilters.length) && <Button
+          onClick={() => setFilterValues({} as FilterValue)}
+        >
+          {$t({ defaultMessage: 'Clear Filters' })}
+        </Button>}
       </UI.Header>
     )}
     <UI.TableSettingsGlobalOverride />
