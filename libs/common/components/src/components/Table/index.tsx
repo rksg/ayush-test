@@ -217,8 +217,11 @@ export function Table <RecordType extends object> (
             )}
           </Select>
         })}
-        {Boolean(activeFilters.length) && <Button
-          onClick={() => setFilterValues({} as FilterValue)}
+        {(Boolean(activeFilters.length) || Boolean(searchValue)) && <Button
+          onClick={() => {
+            setFilterValues({} as FilterValue)
+            setSearchValue('')
+          }}
         >
           {$t({ defaultMessage: 'Clear Filters' })}
         </Button>}

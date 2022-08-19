@@ -69,10 +69,18 @@ const actions: TableProps<(typeof data)[0]>['actions'] = [
 ]
 
 export function FilteredTable () {
-  return <Table<RecordType>
-    columns={columns}
-    actions={actions}
-    dataSource={data}
-    rowSelection={{ defaultSelectedRowKeys: [] }}
-  />
+  return <>
+    with selection:
+    <Table<RecordType>
+      columns={columns}
+      actions={actions}
+      dataSource={data}
+      rowSelection={{ defaultSelectedRowKeys: [] }}
+    />
+    without selection:
+    <Table<RecordType>
+      columns={columns}
+      dataSource={data}
+    />
+  </>
 }
