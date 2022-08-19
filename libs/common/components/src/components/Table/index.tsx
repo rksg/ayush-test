@@ -1,8 +1,9 @@
 import React, { useMemo, useState, Key } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space, Divider, Button }                      from 'antd'
+import { Space, Divider, Button, Select, Input }       from 'antd'
 import _                                               from 'lodash'
+import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
@@ -16,7 +17,7 @@ import type { SettingOptionType }           from '@ant-design/pro-table/lib/comp
 import type { TableProps as AntTableProps } from 'antd'
 
 export interface TableProps <RecordType>
-  extends Omit<ProAntTableProps<RecordType, ParamsType>, 
+  extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip'
@@ -32,12 +33,18 @@ export interface TableProps <RecordType>
   })
   }
 
+interface FilterValue {
+  key: string[]
+}
+
 export function Table <RecordType extends object> (
-  { type = 'tall', columnState, ...props }: TableProps<RecordType>
+  { type = 'tall', columnState, dataSource, ...props }: TableProps<RecordType>
 ) {
   const { $t } = useIntl()
+  const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
+  const [searchValue, setSearchValue] = useState<string>('')
 
-  const columns = useMemo(() => {
+  let columns = useMemo(() => {
     const settingsColumn = {
       key: settingsKey,
       fixed: 'right' as 'right',
@@ -49,7 +56,7 @@ export function Table <RecordType extends object> (
       ? [...props.columns, settingsColumn] as typeof props.columns
       : props.columns
 
-    return cols.map((column) => ({
+    return cols.map(column => ({
       ...column,
       disable: Boolean(column.fixed || column.disable),
       show: Boolean(column.fixed || column.disable || (column.show ?? true))
@@ -83,7 +90,7 @@ export function Table <RecordType extends object> (
   // needed to store selectedRows because `tableAlertRender`
   // somehow doesn't pass in sync selected data between selectedRows & selectedRowKeys
   const [selectedRows, setSelectedRows]
-    = useState<RecordType[]>(props.dataSource
+    = useState<RecordType[]>(dataSource
       ?.filter(item => selectedRowKeys.includes(item[rowKey] as unknown as Key)) ?? [])
 
   const onRowClick = (record: RecordType) => {
@@ -111,6 +118,52 @@ export function Table <RecordType extends object> (
     }
   }
 
+  columns = columns.map(column => {
+    if (column.searchable) {
+      // TODO if render exists
+      column.render = text => text && <Highlighter
+        highlightStyle={{
+          fontWeight: 'bold',
+          background: 'none',
+          padding: 0
+        }}
+        searchWords={[searchValue]}
+        autoEscape
+        textToHighlight={text.toString()}
+      />
+    }
+    return column
+  })
+  const filterables = columns.filter(column => column.filterable)
+  const activeFilters = filterables.filter(column => {
+    const key = (column.dataIndex ?? column.key) as keyof RecordType
+    const filteredValue = filterValues[key as keyof FilterValue]
+    return filteredValue && filteredValue.length
+  })
+  const searchables = columns.filter(column => column.searchable)
+  const filteredData = dataSource && dataSource.filter(row => {
+    for (const column of activeFilters) {
+      const key = (column.dataIndex ?? column.key) as keyof RecordType
+      const filteredValue = filterValues[key as keyof FilterValue]
+      if (!filteredValue.includes(row[key] as unknown as string)) {
+        return false
+      }
+    }
+    if (searchValue) {
+      return searchables.some(column => {
+        const key = (column.dataIndex ?? column.key) as keyof RecordType
+        return (row[key] as unknown as string)
+          .toString()
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+      })
+    }
+    // TODO nested rows
+    return true
+  })
+
+  const hasRowSelected = Boolean(selectedRowKeys.length)
+  const hasHeader = !hasRowSelected && (Boolean(filterables.length) || Boolean(searchables.length))
   const rowSelection: TableProps<RecordType>['rowSelection'] = props.rowSelection ? {
     ..._.omit(props.rowSelection, 'defaultSelectedRowKeys'),
     selectedRowKeys,
@@ -133,10 +186,42 @@ export function Table <RecordType extends object> (
     }
   }
 
-  return <UI.Wrapper $type={type} $hasRowSelection={Boolean(props.rowSelection)}>
+  return <UI.Wrapper
+    $type={type}
+    $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
+  >
+    {hasHeader && (
+      <UI.Header>
+        {Boolean(searchables.length) && <Input
+          onChange={e => setSearchValue(e.target.value)}
+          placeholder={$t({ defaultMessage: 'Search {searchables}' }, {
+            searchables: searchables.map(column => column.title).join(', ')
+          })}
+          style={{ width: 292 }}
+          value={searchValue}
+        />}
+        {filterables.map((column, i) => {
+          const key = (column.dataIndex ?? column.key) as keyof RecordType
+          return <Select
+            key={i}
+            maxTagCount='responsive'
+            mode='multiple'
+            onChange={value => setFilterValues({ ...filterValues, [key]: value })}
+            placeholder={column.title as string}
+            showArrow
+            style={{ width: 200 }}
+          >
+            {_.uniq(dataSource?.map(datum => datum[key] as unknown as string)).map(value =>
+              <Select.Option value={value} key={value}>{value}</Select.Option>
+            )}
+          </Select>
+        })}
+      </UI.Header>
+    )}
     <UI.TableSettingsGlobalOverride />
     <ProTable<RecordType>
       {...props}
+      dataSource={filteredData}
       bordered={false}
       search={false}
       columns={columns}

@@ -1,4 +1,4 @@
-import { Button as AntButton }            from 'antd'
+import { Button as AntButton, Space }     from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { CancelCircle } from '@acx-ui/icons'
@@ -85,17 +85,19 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
   }
 `
 
+const actionsHeight = '36px'
+
 type StyledTable = {
-  $type: 'tall' | 'compact' | 'tooltip',
-  $hasRowSelection: boolean
+  $type: 'tall' | 'compact' | 'tooltip'
+  $rowSelectionActive: boolean
 }
 
 /* eslint-disable max-len */
 const tallStyle = css<StyledTable>`
   .ant-pro-table {
-    ${props => props.$hasRowSelection && css`
+    ${props => props.$rowSelectionActive && css`
       .ant-table-wrapper {
-        padding-top: var(--acx-table-action-area-height);
+        padding-top: ${actionsHeight};
       }
     `}
 
@@ -110,7 +112,7 @@ const tallStyle = css<StyledTable>`
         position: absolute;
         right: 0;
         z-index: 3;
-        top: ${props => props.$hasRowSelection ? 'calc(11px + var(--acx-table-action-area-height))' : '11px' };
+        top: ${props => props.$rowSelectionActive ? `calc(11px + ${actionsHeight})` : '11px' };
       }
     }
 
@@ -121,7 +123,7 @@ const tallStyle = css<StyledTable>`
       right: 0;
 
       .ant-alert {
-        height: var(--acx-table-action-area-height);
+        height: ${actionsHeight};
         background-color: var(--acx-accents-blue-10);
         border: var(--acx-accents-blue-10);
         padding: 10px 16px;
@@ -200,10 +202,13 @@ const styles = {
   tooltip: tooltipStyle
 }
 
+export const Header = styled(Space).attrs({ size: 12 })`
+  height: ${actionsHeight};
+`
+
 export const Wrapper = styled.div<StyledTable>`
   .ant-pro-table {
     --acx-table-cell-horizontal-space: 8px;
-    --acx-table-action-area-height: 36px;
 
     .ant-pro-card {
       .ant-pro-card-body {

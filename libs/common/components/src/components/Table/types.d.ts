@@ -21,6 +21,18 @@ type AdditionalColumnType = {
    * @default true
    */
   show?: boolean
+  /**
+   * Set the column to be searchable
+   * If one column has this to true the table will start showing search input
+   * @default false
+   */
+  searchable?: boolean
+  /**
+   * Set the column to be filterable
+   * the table will show a multi select dropdown to filter the column
+   * @default false
+   */
+  filterable?: boolean
 }
 
 type ProColumnTypeSubset <RecordType, ValueType> = Omit<
