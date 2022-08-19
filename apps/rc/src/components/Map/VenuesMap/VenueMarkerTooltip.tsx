@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { StackedBarChart } from '@acx-ui/components'
-import { Table }           from '@acx-ui/components'
+import { StackedBarChart }                 from '@acx-ui/components'
+import { Table }                           from '@acx-ui/components'
+import { getDeviceConnectionStatusColors } from '@acx-ui/components'
 
-import { getDeviceConnectionStatusColors } from './helper'
-import * as UI                             from './styledComponents'
-import { VenueMarkerOptions }              from './VenueMarkerWithLabel'
+import * as UI                from './styledComponents'
+import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
 import { NavigateProps } from './index'
 
