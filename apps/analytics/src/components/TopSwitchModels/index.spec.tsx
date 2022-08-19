@@ -4,26 +4,10 @@ import { Provider, store }                                 from '@acx-ui/store'
 import { mockGraphqlQuery, mockAutoSizer, render, screen } from '@acx-ui/test-utils'
 import { DateRange }                                       from '@acx-ui/utils'
 
-import { api } from './services'
+import { api }                     from './services'
+import { topSwitchModelsResponse } from './services.spec'
 
 import TopSwitchModelsWidget from '.'
-
-const switchModelData = [{
-  name: 'ICX7150-C12P',
-  count: 13
-}, {
-  name: 'Unknown',
-  count: 8
-}, {
-  name: 'ICX7150-24P',
-  count: 5
-}, {
-  name: 'ICX7250-48P',
-  count: 5
-}, {
-  name: 'ICX7650-48ZP',
-  count: 4
-}]
 
 describe('TopSwitchModelsWidget', () => {
   mockAutoSizer()
@@ -38,7 +22,7 @@ describe('TopSwitchModelsWidget', () => {
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
-      data: { network: { hierarchyNode: { topNSwitchModelsByCount: switchModelData } } }
+      data: topSwitchModelsResponse
     })
   })
 
