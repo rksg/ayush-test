@@ -1,6 +1,6 @@
-import { Row, Typography }  from 'antd'
-import { FormattedMessage } from 'react-intl'
-import { useIntl }          from 'react-intl'
+import { Col, Row, Space, Typography } from 'antd'
+import { FormattedMessage }            from 'react-intl'
+import { useIntl }                     from 'react-intl'
 
 import { getRootCauseAndRecommendations } from '@acx-ui/analytics/utils'
 import { Incident }                       from '@acx-ui/analytics/utils'
@@ -20,27 +20,25 @@ export const Insights = ({ incident }: { incident: Incident }) => {
   }
   return (
     <UI.InsightComponent>
-      <UI.InsightHeader>
+      <Space size={10} align='start'>
         <BulbOutlined />
-        <UI.InsightTitle>
-          <Typography.Title level={3}>{$t({ defaultMessage: 'Insights' })}</Typography.Title>
-        </UI.InsightTitle>
-      </UI.InsightHeader>
-      <Row>
-        <UI.LeftInsightDetails span={12}>
+        <Typography.Title level={2}>{$t({ defaultMessage: 'Insights' })}</Typography.Title>
+      </Space>
+      <Row gutter={25}>
+        <Col span={12}>
           <Subtitle level={4}>{$t({ defaultMessage: 'Root Cause Analysis' })}</Subtitle>
           <FormattedMessage
             {...rootCauses}
             values={values}
           />
-        </UI.LeftInsightDetails>
-        <UI.RightInsightDetails span={12}>
+        </Col>
+        <Col span={12}>
           <Subtitle level={4}>{$t({ defaultMessage: 'Recommended Action' })}</Subtitle>
           <FormattedMessage
             {...recommendations}
             values={values}
           />
-        </UI.RightInsightDetails>
+        </Col>
       </Row>
     </UI.InsightComponent>
   )

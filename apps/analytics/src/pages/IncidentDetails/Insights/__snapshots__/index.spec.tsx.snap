@@ -2,30 +2,37 @@
 
 exports[`Insights Component should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__InsightComponent-sc-117mefi-0 bPTtMu"
+  <section
+    class="styledComponents__InsightComponent-sc-117mefi-0 kTrGaQ"
   >
     <div
-      class="styledComponents__InsightHeader-sc-117mefi-1 eUsZde"
+      class="ant-space ant-space-horizontal ant-space-align-start"
     >
-      <svg>
-        BulbOutlined.svg
-      </svg>
       <div
-        class="styledComponents__InsightTitle-sc-117mefi-4 cZoUaT"
+        class="ant-space-item"
+        style="margin-right: 10px;"
       >
-        <h3
+        <svg>
+          BulbOutlined.svg
+        </svg>
+      </div>
+      <div
+        class="ant-space-item"
+      >
+        <h2
           class="ant-typography"
         >
           Insights
-        </h3>
+        </h2>
       </div>
     </div>
     <div
       class="ant-row"
+      style="margin-left: -12.5px; margin-right: -12.5px;"
     >
       <div
-        class="ant-col ant-col-12 styledComponents__LeftInsightDetails-sc-117mefi-2 hprICq"
+        class="ant-col ant-col-12"
+        style="padding-left: 12.5px; padding-right: 12.5px;"
       >
         <h4
           class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -52,7 +59,8 @@ exports[`Insights Component should render correctly 1`] = `
         </ol>
       </div>
       <div
-        class="ant-col ant-col-12 styledComponents__RightInsightDetails-sc-117mefi-3 cVAiGK"
+        class="ant-col ant-col-12"
+        style="padding-left: 12.5px; padding-right: 12.5px;"
       >
         <h4
           class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -67,6 +75,6 @@ exports[`Insights Component should render correctly 1`] = `
         </p>
       </div>
     </div>
-  </div>
+  </section>
 </DocumentFragment>
 `;
