@@ -1,9 +1,9 @@
 import { dataApiURL }       from '@acx-ui/analytics/services'
+import { AnalyticsFilter }  from '@acx-ui/analytics/utils'
 import { Provider }         from '@acx-ui/store'
 import { render, screen }   from '@acx-ui/test-utils'
 import { mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }        from '@acx-ui/utils'
-
 
 import AnalyticsWidgets from './Widgets'
 
@@ -38,7 +38,18 @@ const filters = {
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours
-}
+} as AnalyticsFilter
+
+const switchModelsData = [
+  {
+    name: 'ICX7150-C12P',
+    count: 13
+  },
+  {
+    name: 'Unknown',
+    count: 8
+  }
+]
 
 const connectedClientsOverTimeSample = {
   time: [
@@ -74,9 +85,20 @@ test('should render Connected Clients Over Time widget', async () => {
   mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
     data: { network: { hierarchyNode: { timeSeries: connectedClientsOverTimeSample } } }
   })
-  render( 
+  render(
     <Provider>
       <AnalyticsWidgets name='connectedClientsOverTime' filters={filters}/>
     </Provider>)
   expect(await screen.findByText('Connected Clients Over Time')).not.toBe(null)
+})
+
+test('should render Top 5 Switch Models widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
+    data: { network: { hierarchyNode: { topNSwitchModelsByCount: switchModelsData } } }
+  })
+  render(
+    <Provider>
+      <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
+    </Provider>)
+  expect(await screen.findByText('Top 5 Switch Models')).not.toBe(null)
 })

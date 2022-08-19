@@ -4,6 +4,7 @@ import { Provider }        from '@acx-ui/store'
 
 import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
 import NetworkHistoryWidget           from './components/NetworkHistory'
+import TopSwitchModelsWidget          from './components/TopSwitchModels'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
 
 const widgetsMap = {
@@ -15,6 +16,9 @@ const widgetsMap = {
   ),
   connectedClientsOverTime: ({ filters }: { filters: AnalyticsFilter }) => (
     <ConnectedClientsOverTimeWidget filters={filters}/>
+  ),
+  topSwitchModelsByCount: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TopSwitchModelsWidget filters={filters} />
   )
 }
 
