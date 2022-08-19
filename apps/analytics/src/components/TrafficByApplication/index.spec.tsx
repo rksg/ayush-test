@@ -9,7 +9,7 @@ import { trafficByApplicationFixture } from '../../__tests__/fixtures'
 
 import { api } from './services'
 
-import { TrafficByApplicationWidget } from './index'
+import TrafficByApplicationWidget from './index'
 
 type ColumnElements = Array<HTMLElement|SVGSVGElement>
 
@@ -56,8 +56,8 @@ describe('TrafficByApplicationWidget', () => {
   it('should render for empty data', async () => {
     mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
       data: { network: { hierarchyNode: {
-        uploadAppTraffic: 1,
-        downloadAppTraffic: 0,
+        uploadAppTraffic: null,
+        downloadAppTraffic: null,
         topNAppByUpload: [],
         topNAppByDownload: []
       } } }

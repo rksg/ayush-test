@@ -17,7 +17,7 @@ import { useTrafficByApplicationQuery, TrafficByApplicationData } from './servic
 import { TrafficPercent }                                         from './styledComponents'
 
 
-export function TrafficByApplicationWidget ({
+export default function TrafficByApplicationWidget ({
   filters
 }: {
   filters: AnalyticsFilter;
