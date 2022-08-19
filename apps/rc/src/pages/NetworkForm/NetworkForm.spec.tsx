@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { NetworkForm } from './NetworkForm'
 

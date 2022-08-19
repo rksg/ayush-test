@@ -13,8 +13,8 @@ async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText('Network Name')
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
-  const validating = await screen.findByRole('img', { name: 'loading' })
-  await waitForElementToBeRemoved(validating)
+
+  await screen.findByRole('img', { name: 'check-circle' })
 
   userEvent.click(screen.getByRole('radio', { name: /802.1X standard/ }))
   userEvent.click(screen.getByText('Next'))
