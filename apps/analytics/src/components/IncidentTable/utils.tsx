@@ -25,7 +25,7 @@ export const getIncidentBySeverity = (value?: number | null) => {
 }
 
 export const formatDate = (datetimestamp: string) => {
-  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp)
+  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp, 'UTC')
   if (formattedDatetime === null) return noDataSymbol
   return formattedDatetime
 }

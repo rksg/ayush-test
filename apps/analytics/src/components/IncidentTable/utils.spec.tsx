@@ -143,7 +143,7 @@ describe('IncidentTable: utils', () => {
   describe('formatDate', () => {
     it('should show correct date', () => {
       const testWorkingDate = formatDate('2022-08-15T00:00:00+08:00')
-      expect(testWorkingDate).toBe('Aug 15 2022 00:00')
+      expect(testWorkingDate).toBe('Aug 14 2022 16:00 UTC')
     })
 
     it('should show null for null date', () => {
