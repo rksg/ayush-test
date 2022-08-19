@@ -39,7 +39,7 @@ RUN npx nx run-many --target=test --all --coverage --runInBand --verbose
 ###############################################################
 
 FROM acx-ui as build
-COPY ./localesGenerator.sh /
+COPY tools/docker/localesGenerator.sh /
 RUN chmod +x /localesGenerator.sh
 RUN /localesGenerator.sh
 RUN npx nx run-many --target=build --all
