@@ -1,5 +1,141 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-13w5wfx-3 cqBRbN"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="styledComponents__HeaderContainer-sc-13w5wfx-4 jbxNCa"
+              >
+                <div
+                  class="styledComponents__TitleWrapper-sc-13w5wfx-5 bxvIFk"
+                >
+                  Top 5 Applications by Traffic
+                </div>
+                <div />
+              </div>
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        >
+          <div
+            style="overflow: visible; height: 0px; width: 0px;"
+          >
+            <div
+              style="display: block; height: 280px; width: 280px;"
+            >
+              <div
+                style="text-align: center; padding: 10px 0px;"
+              >
+                <div
+                  class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+                >
+                  <div
+                    class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+                  >
+                    <label
+                      class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+                    >
+                      <span
+                        class="ant-radio-button ant-radio-button-checked"
+                      >
+                        <input
+                          checked=""
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="upload"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        Upload
+                      </span>
+                    </label>
+                    <label
+                      class="ant-radio-button-wrapper"
+                    >
+                      <span
+                        class="ant-radio-button"
+                      >
+                        <input
+                          class="ant-radio-button-input"
+                          type="radio"
+                          value="download"
+                        />
+                        <span
+                          class="ant-radio-button-inner"
+                        />
+                      </span>
+                      <span>
+                        Download
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iVIXiF"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    No data to display
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 281px; height: 281px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`TrafficByApplicationWidget should render table with sparkline svg: contentSwitcher 1`] = `
 <div
   style="text-align: center; padding: 10px 0px;"

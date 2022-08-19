@@ -53,11 +53,27 @@ describe('TrafficByApplicationWidget', () => {
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
 
+  it('should render for empty data', async () => {
+    mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
+      data: { network: { hierarchyNode: {
+        uploadAppTraffic: 1,
+        downloadAppTraffic: 0,
+        topNAppByUpload: [],
+        topNAppByDownload: []
+      } } }
+    })
+    const { asFragment } = render( <Provider>
+      <TrafficByApplicationWidget filters={filters}/>
+    </Provider>)
+    await screen.findByText('No data to display')
+    expect(asFragment()).toMatchSnapshot('NoData')
+  })
+
   it('should render table with sparkline svg', async () => {
     mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
       data: { network: { hierarchyNode: trafficByApplicationFixture } }
     })
-    const { asFragment } =render( <Provider> <TrafficByApplicationWidget
+    const { asFragment } = render( <Provider> <TrafficByApplicationWidget
       filters={filters}/></Provider>)
     await screen.findByText('Top 5 Applications by Traffic')
     const contentSwitcher = asFragment()

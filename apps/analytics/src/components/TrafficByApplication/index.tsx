@@ -5,7 +5,9 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
-  Loader, Table,
+  Loader,
+  Table,
+  NoData,
   SparklineChart,
   ContentSwitcher,
   ContentSwitcherProps } from '@acx-ui/components'
@@ -83,19 +85,19 @@ export function TrafficByApplicationWidget ({
 
   const { data } = queryResults
 
-  const uploadTable = <Table
+  const uploadTable = data?.topNAppByUpload && data?.topNAppByUpload.length ? <Table
     columns={columns}
     dataSource={getDataSource(data?.topNAppByUpload, data?.uploadAppTraffic || 1)}
     type={'compact'}
     pagination={false}
-  />
+  /> : <NoData/>
 
-  const downloadTable = <Table
+  const downloadTable = data?.topNAppByDownload && data?.topNAppByDownload.length ? <Table
     columns={columns}
     dataSource={getDataSource(data?.topNAppByDownload, data?.downloadAppTraffic || 1)}
     type={'compact'}
     pagination={false}
-  />
+  /> : <NoData/>
 
   const tabDetails:ContentSwitcherProps['tabDetails']=[
     { label: $t({ defaultMessage: 'Upload' }) , children: uploadTable, value: 'upload' },
