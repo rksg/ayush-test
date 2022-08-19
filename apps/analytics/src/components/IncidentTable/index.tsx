@@ -131,7 +131,7 @@ const IncidentTableWidget = () => {
   const filters = useAnalyticsFilter()
   const queryResults = useIncidentsListQuery(filters)
 
-  const mutedKeysFilter = (data?: IncidentNodeData) => {
+  const mutedKeysFilter = (data: IncidentNodeData) => {
     return data.filter((row) => row.isMuted === true).map((row) => row.id)
   }
 
