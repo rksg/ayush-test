@@ -13,7 +13,7 @@ function testFormat (
 }
 describe('formatter', () => {
   it('Should take care of null values correctly', () => {
-    expect(formatter()(null)).toBe('-')
+    expect(formatter()(null)).toBe(null)
   })
   it('Should default to countFormat', () => {
     expect(formatter()(123.456789)).toBe('123')

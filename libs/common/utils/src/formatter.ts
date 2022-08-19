@@ -124,7 +124,7 @@ export function formatter (
 ) {
   return function formatter (value: unknown, tz?: string) {
     if (value === null || value === '-') {
-      return '-'
+      return value
     }
 
     if (dateTimeFormats[name as keyof typeof dateTimeFormats]) {

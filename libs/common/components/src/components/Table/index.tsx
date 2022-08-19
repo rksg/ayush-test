@@ -32,7 +32,7 @@ export interface TableProps <RecordType>
   })
   }
 
-export function Table <RecordType extends object> (
+function Table <RecordType extends object> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>
 ) {
   const { $t } = useIntl()
@@ -142,6 +142,7 @@ export function Table <RecordType extends object> (
       columns={columns}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
+      scroll={props.scroll ? props.scroll : { x: 'max-content' }}
       rowSelection={rowSelection}
       pagination={props.pagination || (type === 'tall' ? undefined : false)}
       columnEmptyText={false}
@@ -172,3 +173,7 @@ export function Table <RecordType extends object> (
     />
   </UI.Wrapper>
 }
+
+Table.SubTitle = UI.SubTitle
+
+export { Table }

@@ -1,25 +1,25 @@
-import { useEffect, useState } from 'react'
-
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { Incident, noDataSymbol, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Card, Loader, Table, TableProps, showToast } from '@acx-ui/components'
+import { Loader, Table, TableProps, showToast }       from '@acx-ui/components'
 import { Link }                                       from '@acx-ui/react-router-dom'
 
-import { useIncidentsListQuery, IncidentNodeData } from './services'
+import { useIncidentsListQuery, IncidentNodeData, IncidentTableRows } from './services'
 import { 
   getIncidentBySeverity,
   formatDate,
   formatDuration,
   clientImpactSort,
-  LongIncidentDescription,
+  ShortIncidentDescription,
   getCategory,
   GetScope,
-  severitySort
+  severitySort,
+  dateSort,
+  defaultSort
 } from './utils'
 
 
-export const ColumnHeaders: TableProps<Incident>['columns'] = [
+export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   {
     title: 'Severity',
     dataIndex: 'severity',
@@ -36,43 +36,42 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
     valueType: 'dateTime',
     key: 'endTime',
     render: (_, value) => {
-      return <Link to={value.id}>{formatDate(value.endTime)}</Link>
+      return <Link to={value.id}>{formatDate(value.endTime) as string}</Link>
     },
     sorter: {
-      compare: (a, b) => clientImpactSort(a.endTime, b.endTime),
+      compare: (a, b) => dateSort(a.endTime, b.endTime),
       multiple: 2
     }
   },
   {
     title: 'Duration',
-    dataIndex: 'startTime',
-    key: 'startTime',
+    dataIndex: 'duration',
+    key: 'duration',
     render: (_, value) => formatDuration(value.startTime, value.endTime),
     sorter: {
-      compare: (a, b) => clientImpactSort(
-        formatDuration(a.startTime, a.endTime),
-        formatDuration(b.startTime, b.endTime)
-      ),
-      multiple: 2
+      compare: (a, b) => defaultSort(a.duration, b.duration),
+      multiple: 3
     }
   },
   {
     title: 'Description',
-    dataIndex: 'code',
-    key: 'code',
-    render: (_, value) => <LongIncidentDescription incident={value}/>,
+    dataIndex: 'description',
+    key: 'description',
+    render: (_, value) => <ShortIncidentDescription incident={value}/>,
     sorter: {
-      compare: (a, b) => clientImpactSort(a.code, b.code)
+      compare: (a, b) => defaultSort(a.code, b.code),
+      multiple: 4
     },
     ellipsis: true
   },
   {
     title: 'Category',
-    dataIndex: 'sliceType',
-    key: 'sliceType',
+    dataIndex: 'category',
+    key: 'category',
     render: (_, value) => getCategory(value.code),
     sorter: {
-      compare: (a, b) => clientImpactSort(a.sliceType, b.sliceType)
+      compare: (a, b) => defaultSort(a.code, b.code),
+      multiple: 5
     }
   },
   {
@@ -80,7 +79,8 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
     dataIndex: 'clientCount',
     key: 'clientCount',
     sorter: {
-      compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount)
+      compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount),
+      multiple: 6
     }
   },
   {
@@ -88,24 +88,28 @@ export const ColumnHeaders: TableProps<Incident>['columns'] = [
     dataIndex: 'impactedClientCount',
     key: 'impactedClientCount',
     sorter: {
-      compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount)
+      compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount),
+      multiple: 7
     }
   },
   {
     title: 'Scope',
-    dataIndex: 'mutedBy',
-    key: 'mutedBy',
+    dataIndex: 'scope',
+    key: 'scope',
     render: (_, value) => <GetScope incident={value} />,
     sorter: {
-      compare: (a, b) => clientImpactSort(a.mutedBy, b.mutedBy)
+      compare: (a, b) => clientImpactSort(a.code, b.code),
+      multiple: 8
     }
   }, 
   {
     title: 'Type',
-    dataIndex: 'sliceValue',
-    key: 'sliceValue',
+    dataIndex: 'sliceType',
+    key: 'sliceType',
+    render: (_, value) => value.sliceType.toLocaleUpperCase(),
     sorter: {
-      compare: (a, b) => clientImpactSort(a.sliceValue, b.sliceValue)
+      compare: (a, b) => defaultSort(a.sliceType, b.sliceType),
+      multiple: 9
     }
   }
 ]
@@ -127,35 +131,36 @@ const actions: TableProps<Incident>['actions'] = [
 const IncidentTableWidget = () => {
   const filters = useAnalyticsFilter()
   const queryResults = useIncidentsListQuery(filters)
-  const [data, setData] = useState<IncidentNodeData>([])
 
-  useEffect(() => {
-    if (queryResults && queryResults.data) {
-      setData(queryResults.data)
-    }
-  }, [queryResults, queryResults.data])
+  const mutedKeysFilter = (data: IncidentNodeData) => {
+    return data.filter((row) => row.isMuted === true).map((row) => row.id)
+  }
 
 
   return (
     <Loader states={[queryResults]}>
-      <Card>
-        <AutoSizer>
-          {({ height, width }) => (
-            <Table
-              type='tall'
-              style={{ width, height }}
-              dataSource={data}
-              columns={ColumnHeaders}
-              actions={actions}
-              rowSelection={{ type: 'checkbox' }}
-              pagination={{ pageSize: 10 }}
-              rowKey='id'
-              showSorterTooltip={false}
-              columnEmptyText={noDataSymbol}
-            />
-          )}
-        </AutoSizer>
-      </Card>
+      <AutoSizer>
+        {({ height, width }) => (
+          <Table
+            type='tall'
+            style={{ width, height }}
+            dataSource={queryResults?.data}
+            columns={ColumnHeaders}
+            actions={actions}
+            rowSelection={{ 
+              type: 'checkbox', 
+              defaultSelectedRowKeys: queryResults.data 
+                ? mutedKeysFilter(queryResults.data)
+                : undefined
+            }}
+            pagination={{ pageSize: 10 }}
+            rowKey='id'
+            showSorterTooltip={false}
+            columnEmptyText={noDataSymbol}
+            scroll={{ y: 'max-content' }}
+          />
+        )}
+      </AutoSizer>
     </Loader>
   )
 }

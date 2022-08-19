@@ -4,8 +4,11 @@ import { dataApi } from '@acx-ui/analytics/services'
 import { 
   AnalyticsFilter,
   incidentCodes,
-  Incident
+  Incident,
+  noDataSymbol
 } from '@acx-ui/analytics/utils'
+
+import { durationValue } from './utils'
 
 const listQueryProps = {
   incident: `
@@ -26,7 +29,39 @@ const listQueryProps = {
   `
 }
 
-export type IncidentNodeData = Incident[]
+export type AdditionalIncidentTableFields = {
+  children?: Incident[],
+  duration: number,
+  description: string,
+  category: string,
+  scope: string,
+  type: string,
+}
+
+export type IncidentTableRows = Incident & AdditionalIncidentTableFields
+
+export const transformData = (incident: Incident): IncidentTableRows => {
+  const validRelatedIncidents = 
+    typeof incident.relatedIncidents !== 'undefined' && incident.relatedIncidents.length > 0
+  const children = validRelatedIncidents ? incident.relatedIncidents : undefined
+  const duration = durationValue(incident.startTime, incident.endTime)
+  const description = noDataSymbol
+  const category = noDataSymbol
+  const scope = noDataSymbol
+  const type = noDataSymbol
+
+  return {
+    ...incident,
+    children,
+    duration,
+    description,
+    scope,
+    category,
+    type
+  }
+}
+
+export type IncidentNodeData = IncidentTableRows[]
 
 export interface Response<IncidentNodeData> {
   network: {
@@ -73,12 +108,9 @@ export const api = dataApi.injectEndpoints({
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {
-        return response.network.hierarchyNode.incidents.map((incident) => {
-          const validRelatedIncidents = 
-            typeof incident.relatedIncidents !== 'undefined' && incident.relatedIncidents.length > 0
-          incident.children = validRelatedIncidents ? incident.relatedIncidents : undefined
-          return incident
-        })
+        const { incidents } = response.network.hierarchyNode
+        if (typeof incidents === 'undefined') return []
+        return incidents.map((incident) => transformData(incident))
       }
     })
   })

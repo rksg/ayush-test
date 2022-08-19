@@ -8,9 +8,9 @@ import {
   Incident,
   incidentInformation,
   noDataSymbol,
-  getRootCauseAndRecommendations,
   useIncidentScope,
-  useShortDescription
+  useShortDescription,
+  getRootCauseAndRecommendations
 } from '@acx-ui/analytics/utils'
 import {  Drawer }                   from '@acx-ui/components'
 import { formatter, durationFormat } from '@acx-ui/utils'
@@ -28,9 +28,10 @@ export const getIncidentBySeverity = (value?: number | null) => {
   return severity
 }
 
-export const formatDate = (datetimestamp?: string) => {
-  if (typeof datetimestamp !== 'string') return noDataSymbol
-  return formatter('dateTimeFormat')(datetimestamp as string)
+export const formatDate = (datetimestamp: string) => {
+  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp)
+  if (formattedDatetime === null) return noDataSymbol
+  return formattedDatetime
 }
 
 export const formatDuration = (startTimestamp?: string, endTimestamp?: string) => {
@@ -42,26 +43,6 @@ export const formatDuration = (startTimestamp?: string, endTimestamp?: string) =
 
   const diffInMillis = end.diff(start, 'millisecond')
   return durationFormat(diffInMillis)
-}
-
-export const clientImpactSort = (a?: unknown, b?: unknown) => {
-  let c = (a === noDataSymbol) ? -1 : parseFloat(a as string)
-  let d = (b === noDataSymbol) ? -1 : parseFloat(b as string)
-  if (isNaN(c)) c = -2
-  if (isNaN(d)) d = -2
-  if (c > d) return -1
-  if (c < d) return 1
-  return 0
-}
-
-export const severitySort = (a?: unknown, b?: unknown) => {
-  if (typeof a !== 'number' && typeof b !== 'number') return 0
-  const isDefined = typeof a !== 'undefined' && typeof b !== 'undefined'
-  const c = a as number
-  const d = b as number
-  if (isDefined && c > d) return -1
-  if (isDefined && c < d) return 1
-  return 0
 }
 
 export interface FormatIntlStringProps {
@@ -79,7 +60,7 @@ export const FormatIntlString = (props: FormatIntlStringProps) => {
   return <span>{intlMessage}</span>
 }
 
-export interface LongIncidentDescriptionProps {
+export interface IncidentTableComponentProps {
   incident: Incident
 }
 const renderNumberedListFromArray = ( list : string[] ) => {
@@ -97,8 +78,10 @@ const renderNumberedListFromArray = ( list : string[] ) => {
   )
 }
 
-export const LongIncidentDescription = (props: LongIncidentDescriptionProps) => {
+
+export const ShortIncidentDescription = (props: IncidentTableComponentProps) => {
   const { incident } = props
+  // <<<<<<< HEAD
   const { rootCauses } = getRootCauseAndRecommendations(incident.code, incident.metadata)[0]
   const desc = useShortDescription(incident)
   const [visible, setVisible] = useState(false)
@@ -127,24 +110,62 @@ export const LongIncidentDescription = (props: LongIncidentDescriptionProps) => 
       />
     </>
   )
+  // =======
+  //   const shortDesc = useShortDescription(incident)
+    
+//   return <UI.DescriptionSpan>{shortDesc}</UI.DescriptionSpan>
+// >>>>>>> b8251e0e4436eeab1fbef8115c61aff87d047f56
 }
 
-export const getCategory = (code?: string) => {
-  if (typeof code !== 'string') {
+export const getCategory = (code: string) => {
+  const incidentInfo = incidentInformation[code]
+  if (typeof incidentInfo === 'undefined') {
     return <FormatIntlString message={defineMessage({ defaultMessage: '{noDataSymbol}' })} />
   }
-
-  const category = incidentInformation[code].category
+  const { category } = incidentInfo
   return <FormatIntlString message={category} />
 }
 
-export interface GetScopeProps {
-  incident: Incident
-}
-
-export const GetScope = (props: GetScopeProps) => {
+export const GetScope = (props: IncidentTableComponentProps) => {
   const { incident } = props
   const scope = useIncidentScope(incident)  
   const message = defineMessage({ defaultMessage: '{scope}' })
   return <FormatIntlString message={message} scope={scope}/>
+}
+
+export const durationValue = (dateA: string, dateB: string) => moment(dateA).diff(moment(dateB))
+
+export const dateSort = (dateA: string, dateB: string) => 
+  Math.sign(durationValue(dateA, dateB))
+
+export const defaultSort = (a: string | number, b: string | number) => {
+  if (a < b) return -1
+  if (a > b) return 1
+  return 0
+}
+
+export const durationSort = (startA: string, endA: string, startB: string, endB: string) => {
+  const diffA = moment(endA).diff(startA)
+  const diffB = moment(endB).diff(startB)
+  return defaultSort(diffA, diffB)
+}
+
+export const clientImpactSort = (a?: unknown, b?: unknown) => {
+  let c = (a === noDataSymbol) ? -1 : parseFloat(a as string)
+  let d = (b === noDataSymbol) ? -1 : parseFloat(b as string)
+  if (isNaN(c)) c = -2
+  if (isNaN(d)) d = -2
+  if (c > d) return -1
+  if (c < d) return 1
+  return 0
+}
+
+export const severitySort = (a?: unknown, b?: unknown) => {
+  if (typeof a !== 'number' && typeof b !== 'number') return 0
+  const isDefined = typeof a !== 'undefined' && typeof b !== 'undefined'
+  const c = a as number
+  const d = b as number
+  if (isDefined && c > d) return -1
+  if (isDefined && c < d) return 1
+  return 0
 }

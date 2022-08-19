@@ -115,7 +115,7 @@ export function useImpactValues (type: string, count?: number, impactedCount?: n
           count,
           type: type === 'ap' ? type.toUpperCase() : type,
           isPlural: count > 1 ? 's' : '',
-          impact: formattedImpact
+          impact: formattedImpact as string
         }
       )
     }

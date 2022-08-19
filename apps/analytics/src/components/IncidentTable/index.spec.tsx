@@ -64,7 +64,7 @@ const incidentTests = [
     metadata: {},
     clientCount: 4,
     impactedClientCount: 2,
-    isMuted: false,
+    isMuted: true,
     mutedBy: null,
     mutedAt: null
   }
@@ -87,7 +87,7 @@ describe('IncidentTableWidget', () => {
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
 
-  it('should render table', async () => {
+  it('should render table with valid input', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
@@ -100,7 +100,41 @@ describe('IncidentTableWidget', () => {
     })
     
     await screen.findAllByText('P4')
-    expect(screen.getAllByText('P4')).toHaveLength(2)
+    expect(screen.getAllByText('P4')).toHaveLength(incidentTests.length)
+  })
+
+  it('should render empty table on undefined incidents', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: undefined } } }
+    })
+
+    render(<Provider><IncidentTableWidget/></Provider>, {
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false
+      }
+    })
+    
+    await screen.findByText('No Data')
+    expect(screen.getByText('No Data').textContent).toBe('No Data')
+  })
+
+  it('should render error on undefined data', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: undefined,
+      error: new Error('undefined data!')
+    })
+
+    render(<Provider><IncidentTableWidget/></Provider>, {
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false
+      }
+    })
+
+    await screen.findByText('Something went wrong.')
+    expect(screen.getByText('Something went wrong.').textContent).toBe('Something went wrong.')
+    
   })
 
   const columnHeaders = [
@@ -132,7 +166,7 @@ describe('IncidentTableWidget', () => {
     expect(screen.getByText(header).textContent).toBe(header)
   })
 
-  it.each(columnHeaders)('should "%s"', async (header) => {
+  it.each(columnHeaders)('should render column header sorting: "%s"', async (header) => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
@@ -149,5 +183,35 @@ describe('IncidentTableWidget', () => {
     act(() => elem.click())
     await screen.findByRole('img', { hidden: true, name: 'caret-up' })
     expect(screen.getByRole('img', { hidden: true, name: 'caret-up' })).toBeTruthy()
+
+    act(() => elem.click())
+    await screen.findByRole('img', { hidden: true, name: 'caret-down' })
+    expect(screen.getByRole('img', { hidden: true, name: 'caret-down' })).toBeTruthy()
+  })
+
+  it('should allow for muting',async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+    render(<Provider><IncidentTableWidget/></Provider>, {
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+
+    const rowElems = await screen.findAllByText('P4')
+    expect(rowElems).toHaveLength(incidentTests.length)
+
+    act(() => rowElems[0].click())
+    await screen.findByText('2 selected')
+    expect(screen.getByText('2 selected').textContent).toBe('2 selected')
+
+    const muteButton = await screen.findByText('Mute')
+    act(() => muteButton.click())
+    // update to include actual muting call 
   })
 })

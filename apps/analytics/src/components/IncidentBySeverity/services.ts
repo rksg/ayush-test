@@ -19,7 +19,6 @@ interface Response <IncidentsBySeverityData> {
     hierarchyNode: IncidentsBySeverityData
   }
 }
-
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsBySeverity: build.query<
