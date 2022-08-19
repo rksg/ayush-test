@@ -44,7 +44,7 @@ describe('VenueDetails', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should active analytic teb correctly', async () => {
+  it('should navigate to analytic tab correctly', async () => {
     const params = {
       tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
@@ -56,7 +56,7 @@ describe('VenueDetails', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should active client teb correctly', async () => {
+  it('should navigate to client tab correctly', async () => {
     const params = {
       tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
@@ -68,7 +68,7 @@ describe('VenueDetails', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should active device teb correctly', async () => {
+  it('should navigate to device tab correctly', async () => {
     const params = {
       tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
@@ -80,7 +80,7 @@ describe('VenueDetails', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should active network teb correctly', async () => {
+  it('should navigate to network tab correctly', async () => {
     const params = {
       tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
@@ -92,7 +92,7 @@ describe('VenueDetails', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should active service teb correctly', async () => {
+  it('should navigate to service tab correctly', async () => {
     const params = {
       tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
@@ -104,7 +104,7 @@ describe('VenueDetails', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should active timeline teb correctly', async () => {
+  it('should navigate to timeline tab correctly', async () => {
     const params = {
       tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
@@ -116,7 +116,7 @@ describe('VenueDetails', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should not have active tab if it does not exist', async () => {
+  it('should not navigate to non-existent tab', async () => {
     const params = {
       tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
