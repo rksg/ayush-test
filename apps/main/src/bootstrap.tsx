@@ -17,7 +17,7 @@ export async function init () {
     window.location.search.slice(1).split('&').map(set => set.split('=')))
   const lang = queryParams.lang ?? 'en-US'
   
-    root.render(
+  root.render(
     <React.StrictMode>
       <ConfigProvider lang={lang}>
         <Provider>
