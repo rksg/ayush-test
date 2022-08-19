@@ -3,64 +3,46 @@ import { useIntl } from 'react-intl'
 import { renderHook } from '@acx-ui/test-utils'
 
 import { ccdFailureTypes } from './mapping/ccdFailureTypeMap'
+import { clientEvents }    from './mapping/clientEventsMap'
 import {
   readCodesIntoMap,
-  getFailureLabels,
-  getCcdReasonCodeMap,
-  getClientEventsMap,
   clientEventDescription,
-  mapCodeToReason
-
+  mapCodeToReason,
+  MapElement
 } from './reasonCodeMap'
 
 describe('readCodesIntoMap', () => {
   it('return correct map', () => {
-    expect(renderHook(() => readCodesIntoMap(useIntl(), ccdFailureTypes)).result.current)
-      .toMatchSnapshot()
-  })
-})
-
-describe('getFailureLabels', () => {
-  it('return correct map', () => {
-    expect(renderHook(() => getFailureLabels(useIntl())).result.current).toMatchSnapshot()
-  })
-})
-
-describe('getCcdReasonCodeMap', () => {
-  it('return correct map', () => {
-    expect(renderHook(() => getCcdReasonCodeMap(useIntl())).result.current).toMatchSnapshot()
-  })
-})
-
-describe('getClientEventsMap', () => {
-  it('return correct map', () => {
-    expect(renderHook(() => getClientEventsMap(useIntl())).result.current).toMatchSnapshot()
+    expect(readCodesIntoMap('failuresText')(ccdFailureTypes as MapElement[])).toMatchSnapshot()
+    expect(readCodesIntoMap()(clientEvents as MapElement[])).toMatchSnapshot()
   })
 })
 
 describe('clientEventDescription', () => {
   it('renders text for event code', () => {
-    expect(renderHook(() =>
-      clientEventDescription(useIntl(), 'EVENT_CLIENT_DISCONNECT')).result.current)
+    expect(renderHook(()=> useIntl().$t(
+      clientEventDescription('EVENT_CLIENT_DISCONNECT'))).result.current)
       .toEqual('Client disconnected')
-    expect(renderHook(() =>
-      clientEventDescription(useIntl(), 'EVENT_CLIENT_INFO_UPDATED')).result.current)
+
+    expect(renderHook(()=> useIntl().$t(
+      clientEventDescription('EVENT_CLIENT_INFO_UPDATED'))).result.current)
       .toEqual('Client associated (802.11)')
-    expect(renderHook(() =>
-      clientEventDescription(useIntl(), 'CCD_REASON_SUCCESS')).result.current)
+
+    expect(renderHook(()=> useIntl().$t(
+      clientEventDescription('CCD_REASON_SUCCESS'))).result.current)
       .toEqual('Success')
   })
   // eslint-disable-next-line max-len
   it('renders (re)associated text if event is EVENT_CLIENT_INFO_UPDATED and state is re-associate', () => {
-    expect(renderHook(() => clientEventDescription(
-      useIntl(), 'EVENT_CLIENT_INFO_UPDATED', 're-associate')).result.current)
+    expect(renderHook(() => useIntl().$t(
+      clientEventDescription('EVENT_CLIENT_INFO_UPDATED', 're-associate'))).result.current)
       .toEqual('Client (re)associated (802.11)')
-    expect(renderHook(() => clientEventDescription(
-      useIntl(), 'EVENT_CLIENT_ROAMING', 're-associate')).result.current)
+    expect(renderHook(() => useIntl().$t(
+      clientEventDescription('EVENT_CLIENT_ROAMING', 're-associate'))).result.current)
       .toEqual('Client roamed')
   })
   it('renders event code if nothing matches', () => {
-    expect(renderHook(() => clientEventDescription(useIntl(), 'eap')).result.current).toEqual('eap')
+    expect(clientEventDescription('eap')).toEqual('eap')
   })
 })
 

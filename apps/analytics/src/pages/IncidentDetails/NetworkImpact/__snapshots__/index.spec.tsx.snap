@@ -89,7 +89,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-linejoin="round"
                       />
                       <path
-                        d="M-2 -3.5l4 0l0 -14l-4 0Z"
+                        d="M-2 -10.5l4 0l0 1l-4 0Z"
                         fill="none"
                         transform="translate(50 60)"
                       />
@@ -105,12 +105,12 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="middle"
                         transform="translate(50 60)"
-                        y="-3"
+                        y="-10"
                       >
                         WLAN
                       </text>
                       <path
-                        d="M-0.5 5l1 0l0 1l-1 0Z"
+                        d="M-0.5 -0.5l1 0l0 11l-1 0Z"
                         fill="none"
                         transform="translate(50 60)"
                       />
@@ -126,7 +126,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                         text-anchor="middle"
                         transform="translate(50 60)"
-                        y="5.5"
+                        y="10"
                       >
                         3
                       </text>
@@ -243,7 +243,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-linejoin="round"
                       />
                       <path
-                        d="M-3 -3.5l6 0l0 -14l-6 0Z"
+                        d="M-3 -10.5l6 0l0 1l-6 0Z"
                         fill="none"
                         transform="translate(50 60)"
                       />
@@ -259,12 +259,12 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="middle"
                         transform="translate(50 60)"
-                        y="-3"
+                        y="-10"
                       >
                         Reason
                       </text>
                       <path
-                        d="M-0.5 5l1 0l0 1l-1 0Z"
+                        d="M-0.5 -0.5l1 0l0 11l-1 0Z"
                         fill="none"
                         transform="translate(50 60)"
                       />
@@ -280,7 +280,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                         text-anchor="middle"
                         transform="translate(50 60)"
-                        y="5.5"
+                        y="10"
                       >
                         2
                       </text>
@@ -403,7 +403,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-linejoin="round"
                       />
                       <path
-                        d="M-10 -3.5l20 0l0 -14l-20 0Z"
+                        d="M-10 -10.5l20 0l0 1l-20 0Z"
                         fill="none"
                         transform="translate(50 60)"
                       />
@@ -420,12 +420,12 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         text-anchor="middle"
                         transform="translate(50 60)"
                         xml:space="preserve"
-                        y="-3"
+                        y="-10"
                       >
                         Client Manufacturers
                       </text>
                       <path
-                        d="M-0.5 5l1 0l0 1l-1 0Z"
+                        d="M-0.5 -0.5l1 0l0 11l-1 0Z"
                         fill="none"
                         transform="translate(50 60)"
                       />
@@ -441,7 +441,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                         text-anchor="middle"
                         transform="translate(50 60)"
-                        y="5.5"
+                        y="10"
                       >
                         2
                       </text>
@@ -564,7 +564,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-linejoin="round"
                       />
                       <path
-                        d="M-2.5 -3.5l5 0l0 -14l-5 0Z"
+                        d="M-2.5 -10.5l5 0l0 1l-5 0Z"
                         fill="none"
                         transform="translate(50 60)"
                       />
@@ -580,12 +580,12 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="middle"
                         transform="translate(50 60)"
-                        y="-3"
+                        y="-10"
                       >
                         Radio
                       </text>
                       <path
-                        d="M-0.5 5l1 0l0 1l-1 0Z"
+                        d="M-0.5 -0.5l1 0l0 11l-1 0Z"
                         fill="none"
                         transform="translate(50 60)"
                       />
@@ -601,7 +601,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                         text-anchor="middle"
                         transform="translate(50 60)"
-                        y="5.5"
+                        y="10"
                       >
                         2
                       </text>

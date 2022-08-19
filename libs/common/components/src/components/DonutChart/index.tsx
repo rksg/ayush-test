@@ -114,6 +114,8 @@ export function DonutChart ({
         label: {
           show: true,
           position: 'center',
+          overflow: 'break',
+          width: 80,
           formatter: () => {
             const value = dataFormatter ? dataFormatter(sum) : sum
             return props.title
@@ -125,11 +127,11 @@ export function DonutChart ({
               fontFamily: cssStr('--acx-neutral-brand-font'),
               fontSize: cssNumber('--acx-subtitle-6-font-size'),
               lineHeight: cssNumber('--acx-subtitle-6-line-height'),
-              fontWeight: cssNumber('--acx-subtitle-6-font-weight'),
-              padding: [0, 0, -15, 0]
+              fontWeight: cssNumber('--acx-subtitle-6-font-weight')
             },
             value: {
-              ...commonStyles
+              ...commonStyles,
+              padding: [10, 0, 0, 0]
             }
           }
         },
