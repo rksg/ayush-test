@@ -1,4 +1,8 @@
 import {
+  ServiceAdminState,
+  ServiceStatus,
+  ServiceTechnology,
+  ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
@@ -250,4 +254,16 @@ export interface CloudpathServer {
     id: string
     primary: RadiusService
   }
+}
+
+export interface Service {
+  id: string
+  name: string
+  type: ServiceType
+  status: ServiceStatus
+  adminState: ServiceAdminState
+  technology: ServiceTechnology
+  scope: number
+  health: string
+  tags: string[]
 }
