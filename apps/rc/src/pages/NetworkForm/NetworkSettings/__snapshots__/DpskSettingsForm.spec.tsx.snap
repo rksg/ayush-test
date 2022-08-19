@@ -594,7 +594,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
 exports[`NetworkForm should create open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
+    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -1526,7 +1526,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="styledComponents__Wrapper-sc-1352uh8-0 ekDfta"
+                                class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
                               >
                                 <div
                                   class="styledComponents__FallbackWrapper-sc-1352uh8-1 cnmeaO"

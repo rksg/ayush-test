@@ -136,6 +136,10 @@ describe('NetworkForm', () => {
 
     fireEvent.mouseDown(securityProtocols)
     
+    const mixOption =screen.getByText('WPA3/WPA2 mixed mode')
+    fireEvent.click(mixOption)
+
+    fireEvent.mouseDown(securityProtocols)
     const option = screen.getByText('WEP')
     
     fireEvent.click(option)
