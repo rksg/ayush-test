@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
-import styled      from 'styled-components/macro'
+
 
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -12,18 +12,8 @@ import {
 import { formatter } from '@acx-ui/utils'
 
 import { useTrafficByApplicationQuery, TrafficByApplicationData } from './services'
+import { TrafficPercent }                                         from './styledComponents'
 
-const TableBgWhite = styled(Table)`
-  .ant-table {
-    background-color: white ! important;
-  }
-  .ant-table-thead > tr > th {
-    background: var(--acx-primary-white)
-  }
-`
-const TrafficPercent = styled.span`
-  color: var(--acx-neutrals-60);
-`
 
 export function TrafficByApplicationWidget ({
   filters
@@ -69,7 +59,7 @@ export function TrafficByApplicationWidget ({
 
   const getDataSource= (appTrafficData: TrafficByApplicationData[] | undefined,
     overallTrafic:number) => {
-    if(!appTrafficData)
+    if(!appTrafficData || !appTrafficData.length)
       return []
 
     return appTrafficData.map((item,index) => {
@@ -93,14 +83,14 @@ export function TrafficByApplicationWidget ({
 
   const { data } = queryResults
 
-  const uploadTable = <TableBgWhite
+  const uploadTable = <Table
     columns={columns}
     dataSource={getDataSource(data?.topNAppByUpload, data?.uploadAppTraffic || 1)}
     type={'compact'}
     pagination={false}
   />
 
-  const downloadTable = <TableBgWhite
+  const downloadTable = <Table
     columns={columns}
     dataSource={getDataSource(data?.topNAppByDownload, data?.downloadAppTraffic || 1)}
     type={'compact'}
