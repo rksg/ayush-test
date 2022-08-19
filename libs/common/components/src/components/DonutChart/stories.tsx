@@ -40,8 +40,8 @@ storiesOf('Donut Chart', module)
         <DonutChart
           showLegend={false}
           style={{ width: '100%', height: 'auto' }}
-          title='Wi-Fi'
-          subTitle={'SubTitle comes here..............................'}
+          title='With a very long title'
+          subTitle={'With a very long subtitleg..............................'}
           unit={defineMessage({ defaultMessage: `{formattedCount} {count, plural,
             one {Client}
             other {Clients}

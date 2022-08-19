@@ -74,7 +74,7 @@ export function DonutChart ({
         overflow: 'break',
         rich: { a: { align: 'center' } }
       },
-      top: '75%'
+      top: '70%'
     }],
     tooltip: {
       show: false
