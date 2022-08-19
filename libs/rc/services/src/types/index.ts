@@ -1,4 +1,14 @@
-import { GuestNetworkTypeEnum, WlanSecurityEnum, NetworkVenue, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import {
+  ServiceAdminState,
+  ServiceStatus,
+  ServiceTechnology,
+  ServiceType,
+  ApDeviceStatusEnum,
+  GuestNetworkTypeEnum,
+  WlanSecurityEnum,
+  NetworkVenue,
+  NetworkTypeEnum
+} from '@acx-ui/rc/utils'
 
 export * from './ap'
 
@@ -44,7 +54,7 @@ export interface Venue {
   latitude: string
   longitude: string
   mesh: { enabled: boolean }
-  aggregatedApStatus: Partial<Record<ApVenueStatusEnum, number>>
+  aggregatedApStatus: Partial<Record<ApDeviceStatusEnum, number>>
   networks: {
     count: number
     names: string[]
@@ -83,9 +93,6 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
-export interface UserSettings {
-  [key: string]: string
-}
 
 export enum ApVenueStatusEnum {
   IN_SETUP_PHASE = '1_InSetupPhase',
@@ -207,7 +214,7 @@ export interface Dashboard {
       country?: string,
       city?: string,
       latitude?: number,
-      crtTime?: any,
+      crtTime?: string,
       description?: string,
       type?: string,
       lastUpdTime?: string,
@@ -246,4 +253,16 @@ export interface CloudpathServer {
     id: string
     primary: RadiusService
   }
+}
+
+export interface Service {
+  id: string
+  name: string
+  type: ServiceType
+  status: ServiceStatus
+  adminState: ServiceAdminState
+  technology: ServiceTechnology
+  scope: number
+  health: string
+  tags: string[]
 }

@@ -12,7 +12,10 @@ const basicColumns = [
     key: 'age'
   },
   {
-    title: 'Address',
+    title: <>
+      Address
+      <Table.SubTitle>Sub Title</Table.SubTitle>
+    </>,
     dataIndex: 'address',
     key: 'address'
   }

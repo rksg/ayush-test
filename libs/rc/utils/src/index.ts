@@ -5,7 +5,9 @@ export * from './constants'
 export * from './onSocketActivityChanged'
 export * from './toast/toastService'
 export * from './useTableQuery'
+
 export * from './types/network'
+export * from './types/user'
 
 export * from './pipes/networkPipes'
 export * from './pipes/apPipes'
