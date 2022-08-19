@@ -1,5 +1,6 @@
-import { pick } from 'lodash'
-import moment   from 'moment-timezone'
+import { pick }                             from 'lodash'
+import moment                               from 'moment-timezone'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
 export enum DateRange {
   today = 'Today',
@@ -50,4 +51,37 @@ export function defaultRanges (subRange?: DateRange[]) {
     return pick(defaultRange, subRange)
   }
   return defaultRange
+}
+
+export function dateRangeForLast (
+  duration: number,
+  durationType: string
+): [moment.Moment, moment.Moment] {
+  return [
+    moment()
+      .subtract(duration as moment.DurationInputArg1, durationType as moment.DurationInputArg2)
+      .seconds(0),
+    moment().seconds(0)
+  ]
+}
+
+export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
+  [DateRange.today]: defineMessage({
+    defaultMessage: 'Today'
+  }),
+  [DateRange.last1Hour]: defineMessage({
+    defaultMessage: 'Last 1 Hour'
+  }),
+  [DateRange.last24Hours]: defineMessage({
+    defaultMessage: 'Last 24 Hours'
+  }),
+  [DateRange.last7Days]: defineMessage({
+    defaultMessage: 'Last 7 Days'
+  }),
+  [DateRange.lastMonth]: defineMessage({
+    defaultMessage: 'Last Month'
+  }),
+  [DateRange.custom]: defineMessage({
+    defaultMessage: 'Custom'
+  })
 }
