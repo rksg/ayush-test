@@ -47,4 +47,13 @@ describe('SwitchesByPoEUsageWidget', () => {
     await screen.findByText('Something went wrong.')
     jest.resetAllMocks()
   })
+  it('should render "No data to display" when data is empty', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', {
+      data: { network: { hierarchyNode: { topNSwitchesByPoEUsage: [] } } }
+    })
+    render( <Provider> <SwitchesByPoEUsage filters={filters}/> </Provider>)
+    expect(await screen.findByText('No data to display')).toBeVisible()
+    jest.resetAllMocks()
+  })
 })

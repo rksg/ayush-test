@@ -12,6 +12,7 @@ import {
 import { BarChart, Card, cssNumber, Loader, cssStr } from '@acx-ui/components'
 import { formatter }                                 from '@acx-ui/utils'
 
+import * as UI                        from './ styledComponents'
 import { useSwitchesByPoEUsageQuery } from './services'
 
 const barColors = [
@@ -60,19 +61,26 @@ function SwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
       })
     })
 
+  const { data } = queryResults
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: 'Top 5 Switches by PoE Usage' })} >
         <AutoSizer>
           {({ height, width }) => (
-            <BarChart
-              barColors={barColors}
-              data={queryResults.data}
-              grid={{ top: '2%',right: '17%' }}
-              labelFormatter={switchUsageLabelFormatter}
-              labelRichStyle={getSwitchUsageRichStyle()}
-              style={{ width, height }}
-            />
+            data && data.source?.length > 0 
+              ?
+              <BarChart
+                barColors={barColors}
+                data={data}
+                grid={{ top: '2%',right: '17%' }}
+                labelFormatter={switchUsageLabelFormatter}
+                labelRichStyle={getSwitchUsageRichStyle()}
+                style={{ width, height }}
+              />
+              :
+              <UI.NoDataWrapper>
+                <UI.TextWrapper>{$t({ defaultMessage: 'No data to display' })}</UI.TextWrapper>
+              </UI.NoDataWrapper>
           )}
         </AutoSizer>
       </Card>
