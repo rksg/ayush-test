@@ -6,7 +6,7 @@ import { NetworkFilter, Option, Loader } from '@acx-ui/components'
 import { NetworkHierarchy, useNetworkFilterQuery, ApOrSwitch } from './services'
 
 const nonSelectableNode = (label: string) => (
-  <div style={{ width: '100px', height: '100px', background: 'green', left: 0, top: 0, position: 'absolute'}} onClick={e => e.stopPropagation()}>{label}</div>
+  <div style={{ width: '100%'}} onClick={e => e.stopPropagation()}>{label}</div>
 )
 const getFilterData = (data: NetworkHierarchy, $t: CallableFunction): Option [] => {
   const venues = data.children.filter(node => node.type === 'zone')
@@ -61,6 +61,7 @@ function ConnectedNetworkFilter () {
       placeholder={$t({ defaultMessage: 'Entire Organization' })}
       multiple={false}
       defaultValue={raw}
+      value={raw}
       options={queryResults.data}
       changeOnSelect
       onApply={(value) => {
