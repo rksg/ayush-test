@@ -18,6 +18,7 @@ import { CascaderRef } from 'antd/lib/cascader'
 export interface Option {
   value: string | number | object[];
   label?: React.ReactNode;
+  displayLabel?: string
   disabled?: boolean;
   children?: Option[];
   isLeaf?: boolean;
@@ -87,7 +88,7 @@ export function NetworkFilter (props: CascaderProps) {
         onApply(value)
       }}
       expandTrigger='hover'
-      showSearch
+      //showSearch
       onDropdownVisibleChange={setOpen}
       // suffixIcon={<CaretDownOutlined  onClick={() => { 
       //   console.log('open', open)

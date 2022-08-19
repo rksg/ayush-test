@@ -4,6 +4,7 @@ import { useAnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
 import { NetworkFilter, Option, Loader } from '@acx-ui/components'
 
 import { NetworkHierarchy, useNetworkFilterQuery, ApOrSwitch } from './services'
+import { DefaultOptionType } from 'antd/lib/select'
 
 const nonSelectableNode = (label: string) => (
   <div style={{ width: '100%'}} onClick={e => e.stopPropagation()}>{label}</div>
@@ -22,6 +23,7 @@ const getFilterData = (data: NetworkHierarchy, $t: CallableFunction): Option [] 
     if(node.aps?.length) {
       venue.children.push({
         label: nonSelectableNode($t({ defaultMessage:'APs' })),
+        displayLabel: $t({ defaultMessage:'APs' }),
         value: `aps${index}`,
         children: node.aps.map((ap: ApOrSwitch) => ({
           label: ap.name,
@@ -32,6 +34,7 @@ const getFilterData = (data: NetworkHierarchy, $t: CallableFunction): Option [] 
     if(switchGroups.get(node.name)?.switches.length) {
       venue.children.push({
         label: nonSelectableNode($t({ defaultMessage: 'Switches' })),
+        displayLabel: $t({ defaultMessage:'APs' }),
         value: `switches${index}`,
         children: switchGroups.get(node.name).switches.map((switchNode: ApOrSwitch) => ({
           label: switchNode.name,
@@ -45,7 +48,12 @@ const getFilterData = (data: NetworkHierarchy, $t: CallableFunction): Option [] 
     return venue
   })
 }
-
+const search = (input: string, path: DefaultOptionType[]) : boolean => {
+  const item = path.slice(-1)[0]
+  return item.displayLabel
+  ? false
+  : (item?.label as string)?.toLowerCase().includes(input.toLowerCase())
+}
 function ConnectedNetworkFilter () {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw }  = useAnalyticsFilter()
@@ -55,37 +63,26 @@ function ConnectedNetworkFilter () {
       ...rest
     })
   })
-  console.log('render', raw)
-  return <Loader states={[queryResults]}>
+  return <div style={{minWidth: '100px'}}><Loader states={[queryResults]}>
     <NetworkFilter
       placeholder={$t({ defaultMessage: 'Entire Organization' })}
       multiple={false}
       defaultValue={raw}
       value={raw}
       options={queryResults.data}
-      changeOnSelect
-      onApply={(value) => {
-        if (!value) {
-          setNetworkPath(defaultNetworkPath, [])
-          return true
-        } else {
-          const strPath = value?.slice(-1)[0] as string
-          let path = []
-          if (strPath.startsWith('aps') || strPath.startsWith('switches')) {
-            path = JSON.parse(value?.slice(0)[0] as string)
-            value = value?.slice(0, 1)
-            setNetworkPath(path, value)
-            return false
-          } else {
-            path = JSON.parse(strPath)
-            setNetworkPath(path, value)
-            return true
-          }
-        }
+      onApply={value => {
+        const path = !value
+          ? defaultNetworkPath
+          : JSON.parse(value?.slice(-1)[0] as string)
+        setNetworkPath(path, value || [])
       }}
       placement='bottomRight'
+      displayRender = {(_, selectedOptions) => selectedOptions
+        ?.map(option => option?.displayLabel || option?.label).join(' / ')
+      }
+      showSearch={{ filter: search }}
     />
-  </Loader>
+  </Loader></div>
 }
 
 export default ConnectedNetworkFilter

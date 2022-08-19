@@ -59,7 +59,7 @@ export function DateFilterProvider (props: { children: ReactNode }) {
       didMountRef.current = true
       return
     }
-    // const params = new URLSearchParams()
+    
     search.delete('period')
     search.append(
       'period',
