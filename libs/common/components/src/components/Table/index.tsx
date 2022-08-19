@@ -117,11 +117,10 @@ export function Table <RecordType extends object> (
         : [...selectedRows, record])
     }
   }
-
-  columns = columns.map(column => {
-    if (column.searchable) {
-      // TODO if render exists
-      column.render = text => text && <Highlighter
+  columns = columns.map(column => column.searchable && searchValue
+    ? {
+      ...column,
+      render: text => <Highlighter
         highlightStyle={{
           fontWeight: 'bold',
           background: 'none',
@@ -129,11 +128,11 @@ export function Table <RecordType extends object> (
         }}
         searchWords={[searchValue]}
         autoEscape
-        textToHighlight={text.toString()}
+        textToHighlight={text ? text.toString() : ''}
       />
     }
-    return column
-  })
+    : column
+  )
   const filterables = columns.filter(column => column.filterable)
   const activeFilters = filterables.filter(column => {
     const key = (column.dataIndex ?? column.key) as keyof RecordType
