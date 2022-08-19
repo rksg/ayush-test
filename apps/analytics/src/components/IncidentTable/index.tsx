@@ -104,8 +104,9 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   }, 
   {
     title: 'Type',
-    dataIndex: 'type',
-    key: 'type',
+    dataIndex: 'sliceType',
+    key: 'sliceType',
+    render: (_, value) => value.sliceType.toLocaleUpperCase(),
     sorter: {
       compare: (a, b) => defaultSort(a.sliceType, b.sliceType),
       multiple: 9
