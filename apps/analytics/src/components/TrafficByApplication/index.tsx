@@ -40,32 +40,32 @@ export function TrafficByApplicationWidget ({
     }
   )
 
-  const columns=(direction:string)=>([
+  const columns=[
     {
       title: 'Application',
-      dataIndex: 'appName',
-      key: 'appName'
+      dataIndex: 'name',
+      key: 'name'
     },
     {
       title: 'Total Traffic',
-      dataIndex: direction === 'download' ? 'download' : 'upload',
+      dataIndex: 'traffic',
       key: 'traffic',
       width: '20%'
     },
     {
       title: 'Traffic History',
-      dataIndex: direction === 'download' ? 'downloadTrafficHistory' : 'uploadTrafficHistory',
+      dataIndex: 'trafficHistory',
       key: 'trafficHistory',
       width: '5%'
     },
     {
       title: 'Clients',
-      dataIndex: 'clientMacCount',
-      key: 'clientMacCount',
+      dataIndex: 'clientCount',
+      key: 'clientCount',
       width: '15%',
       align: 'right' as const
     }
-  ])
+  ]
 
   const getDataSource= (appTrafficData: TrafficByApplicationData[] | undefined,
     overallTrafic:number) => {
@@ -73,29 +73,18 @@ export function TrafficByApplicationWidget ({
       return []
 
     return appTrafficData.map((item,index) => {
-      const uploadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.rxBytes)
-      const downloadSparkLineData = item.timeseries.map(tsDatapoints => tsDatapoints.txBytes)
+      const sparkLineData = item.timeSeries.map(tsDatapoints => tsDatapoints.traffic)
       const sparklineChartStyle = { height: 18, width: 80, display: 'inline' }
       return {
         ...item,
-        upload: <>{formatter('bytesFormat')(item.rxBytes)} &nbsp;
+        traffic: <>{formatter('bytesFormat')(item.traffic)} &nbsp;
           <TrafficPercent>
-          ({formatter('percentFormatRound')(item.rxBytes/overallTrafic)})
+          ({formatter('percentFormatRound')(item.traffic/overallTrafic)})
           </TrafficPercent>
         </>,
-        uploadTrafficHistory: <SparklineChart
+        trafficHistory: <SparklineChart
           key={index}
-          data={uploadSparkLineData}
-          isTrendLine={true}
-          style={sparklineChartStyle}/>,
-        download: <>{formatter('bytesFormat')(item.txBytes)} &nbsp;
-          <TrafficPercent>
-          ({formatter('percentFormatRound')(item.txBytes/overallTrafic)})
-          </TrafficPercent>
-        </>,
-        downloadTrafficHistory: <SparklineChart
-          key={index}
-          data={downloadSparkLineData}
+          data={sparkLineData}
           isTrendLine={true}
           style={sparklineChartStyle}/>
       }
@@ -105,22 +94,22 @@ export function TrafficByApplicationWidget ({
   const { data } = queryResults
 
   const uploadTable = <TableBgWhite
-    columns={columns('upload')}
+    columns={columns}
     dataSource={getDataSource(data?.topNAppByUpload, data?.uploadAppTraffic || 1)}
     type={'compact'}
     pagination={false}
   />
 
   const downloadTable = <TableBgWhite
-    columns={columns('download')}
+    columns={columns}
     dataSource={getDataSource(data?.topNAppByDownload, data?.downloadAppTraffic || 1)}
     type={'compact'}
     pagination={false}
   />
 
   const tabDetails:ContentSwitcherProps['tabDetails']=[
-    { label: 'Upload', children: uploadTable, value: 'upload' },
-    { label: 'Download', children: downloadTable, value: 'download' }
+    { label: $t({ defaultMessage: 'Upload' }) , children: uploadTable, value: 'upload' },
+    { label: $t({ defaultMessage: 'Download' }), children: downloadTable, value: 'download' }
   ]
 
   return (

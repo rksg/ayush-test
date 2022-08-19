@@ -12,16 +12,14 @@ export type HierarchyNodeData = {
 
 export type TrafficTimeseriesData = {
     timestamp: Date
-    txBytes: number
-    rxBytes: number
+    traffic: number
 }
 
 export type TrafficByApplicationData = {
-    appName: string
-    txBytes: number
-    rxBytes: number
-    clientMacCount: number
-    timeseries: TrafficTimeseriesData[]
+    name: string
+    traffic: number
+    clientCount: number
+    timeSeries: TrafficTimeseriesData[]
 }
 
 interface Response <T> {
@@ -42,8 +40,8 @@ export const api = dataApi.injectEndpoints({
           $start: DateTime, $end: DateTime, $n: Int!, $granularity: String!) {
           network(end: $end, start: $start) {
             hierarchyNode(path: $path) {
-              uploadAppTraffic: appTraffic(direction: "rx")
-              downloadAppTraffic: appTraffic(direction: "tx")
+              uploadAppTraffic: applicationTraffic(direction: "rx")
+              downloadAppTraffic: applicationTraffic(direction: "tx")
               topNAppByUpload:topNApplicationByTraffic(n: $n, direction: "rx") {
                 ...applicationTrafficData
               }
@@ -53,16 +51,14 @@ export const api = dataApi.injectEndpoints({
             }
           }
         }
-
-        fragment applicationTrafficData on ApplicationTraffic{
-          appName
-          rxBytes
-          txBytes
-          clientMacCount
-          timeseries(granularity: $granularity) {
+        
+        fragment applicationTrafficData on ApplicationTrafficTopN{
+          name
+          traffic
+          clientCount
+          timeSeries(granularity: $granularity) {
             timestamp
-            rxBytes
-            txBytes
+            traffic
           }
         }
         `,
