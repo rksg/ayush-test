@@ -80,7 +80,6 @@ exports[`VenueDetails should active analytic teb correctly 1`] = `
             </div>
             <div
               class="ant-space-item"
-              style="margin-right: 8px;"
             >
               <button
                 class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
@@ -89,18 +88,6 @@ exports[`VenueDetails should active analytic teb correctly 1`] = `
                 <span>
                   Configure
                 </span>
-              </button>
-            </div>
-            <div
-              class="ant-space-item"
-            >
-              <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 clMRFp"
-                type="button"
-              >
-                <svg>
-                  BulbOutlined.svg
-                </svg>
               </button>
             </div>
           </div>
@@ -423,7 +410,6 @@ exports[`VenueDetails should active client teb correctly 1`] = `
             </div>
             <div
               class="ant-space-item"
-              style="margin-right: 8px;"
             >
               <button
                 class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
@@ -432,18 +418,6 @@ exports[`VenueDetails should active client teb correctly 1`] = `
                 <span>
                   Configure
                 </span>
-              </button>
-            </div>
-            <div
-              class="ant-space-item"
-            >
-              <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 clMRFp"
-                type="button"
-              >
-                <svg>
-                  BulbOutlined.svg
-                </svg>
               </button>
             </div>
           </div>
@@ -766,7 +740,6 @@ exports[`VenueDetails should active device teb correctly 1`] = `
             </div>
             <div
               class="ant-space-item"
-              style="margin-right: 8px;"
             >
               <button
                 class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
@@ -775,18 +748,6 @@ exports[`VenueDetails should active device teb correctly 1`] = `
                 <span>
                   Configure
                 </span>
-              </button>
-            </div>
-            <div
-              class="ant-space-item"
-            >
-              <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 clMRFp"
-                type="button"
-              >
-                <svg>
-                  BulbOutlined.svg
-                </svg>
               </button>
             </div>
           </div>
@@ -1109,7 +1070,6 @@ exports[`VenueDetails should active network teb correctly 1`] = `
             </div>
             <div
               class="ant-space-item"
-              style="margin-right: 8px;"
             >
               <button
                 class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
@@ -1118,18 +1078,6 @@ exports[`VenueDetails should active network teb correctly 1`] = `
                 <span>
                   Configure
                 </span>
-              </button>
-            </div>
-            <div
-              class="ant-space-item"
-            >
-              <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 clMRFp"
-                type="button"
-              >
-                <svg>
-                  BulbOutlined.svg
-                </svg>
               </button>
             </div>
           </div>
@@ -1452,7 +1400,6 @@ exports[`VenueDetails should active service teb correctly 1`] = `
             </div>
             <div
               class="ant-space-item"
-              style="margin-right: 8px;"
             >
               <button
                 class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
@@ -1461,18 +1408,6 @@ exports[`VenueDetails should active service teb correctly 1`] = `
                 <span>
                   Configure
                 </span>
-              </button>
-            </div>
-            <div
-              class="ant-space-item"
-            >
-              <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 clMRFp"
-                type="button"
-              >
-                <svg>
-                  BulbOutlined.svg
-                </svg>
               </button>
             </div>
           </div>
@@ -1795,7 +1730,6 @@ exports[`VenueDetails should active timeline teb correctly 1`] = `
             </div>
             <div
               class="ant-space-item"
-              style="margin-right: 8px;"
             >
               <button
                 class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
@@ -1804,18 +1738,6 @@ exports[`VenueDetails should active timeline teb correctly 1`] = `
                 <span>
                   Configure
                 </span>
-              </button>
-            </div>
-            <div
-              class="ant-space-item"
-            >
-              <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 clMRFp"
-                type="button"
-              >
-                <svg>
-                  BulbOutlined.svg
-                </svg>
               </button>
             </div>
           </div>
@@ -2140,7 +2062,6 @@ exports[`VenueDetails should render correctly 1`] = `
             </div>
             <div
               class="ant-space-item"
-              style="margin-right: 8px;"
             >
               <button
                 class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
@@ -2149,18 +2070,6 @@ exports[`VenueDetails should render correctly 1`] = `
                 <span>
                   Configure
                 </span>
-              </button>
-            </div>
-            <div
-              class="ant-space-item"
-            >
-              <button
-                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 clMRFp"
-                type="button"
-              >
-                <svg>
-                  BulbOutlined.svg
-                </svg>
               </button>
             </div>
           </div>

@@ -1,5 +1,8 @@
+import { useIntl } from 'react-intl'
+
 export function VenueAnalyticsTab () {
+  const { $t } = useIntl()
   return (
-    <>AI Analytics</>
+    <>{$t({ defaultMessage: 'AI Analytics' })}</>
   )
 }
