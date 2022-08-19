@@ -1,0 +1,907 @@
+{
+  "+20FW7": {
+    "defaultMessage": "JP-Devices"
+  },
+  "+7PjfV": {
+    "defaultMessage": "JP-1 day"
+  },
+  "+8jGZ4": {
+    "defaultMessage": "JP-network filter"
+  },
+  "+U6ozc": {
+    "defaultMessage": "JP-Type"
+  },
+  "+a1n2f": {
+    "defaultMessage": "JP-AP never contacted cloud"
+  },
+  "/9+YKH": {
+    "defaultMessage": "JP-<p>Format options:</p> <p>Most secured - all printable ASCII characters can be used</p> <p>Keyboard friendly - only letters and numbers will be used</p> <p>Numbers only - only numbers will be used</p>"
+  },
+  "/uhiJw": {
+    "defaultMessage": "JP-AP disconnected from cloud"
+  },
+  "/zC7P0": {
+    "defaultMessage": "JP-DHCP failures are unusually high in {scope}"
+  },
+  "07a9rK": {
+    "defaultMessage": "JP-Time To Connect"
+  },
+  "0Hd1cr": {
+    "defaultMessage": "JP-Allow users to access the network without any authentication/security (not recommended)",
+    "description": "Description for Open Network"
+  },
+  "0QEzt5": {
+    "defaultMessage": "JP-AP Group"
+  },
+  "16lBmU": {
+    "defaultMessage": "JP-Channel Conditions"
+  },
+  "1EYCdR": {
+    "defaultMessage": "JP-Tags"
+  },
+  "25rEb3": {
+    "defaultMessage": "JP-Shared Secret"
+  },
+  "2O2sfp": {
+    "defaultMessage": "JP-Finish"
+  },
+  "2n2eHo": {
+    "defaultMessage": "JP-For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:"
+  },
+  "34xBI0": {
+    "defaultMessage": "JP-APs"
+  },
+  "3HCg1n": {
+    "defaultMessage": "JP-Configuration update failed"
+  },
+  "3KyZGF": {
+    "defaultMessage": "JP-All Radios"
+  },
+  "3LyeET": {
+    "defaultMessage": "JP-3rd Party Captive Portal (WISPr)",
+    "description": "Guest network type - 3rd Party Captive Portal (WISPr)"
+  },
+  "3Spwog": {
+    "defaultMessage": "JP-AP(s) operating in Low Power Mode: {scope}."
+  },
+  "3mdxYI": {
+    "defaultMessage": "JP-No Switch Clients"
+  },
+  "47FYwb": {
+    "defaultMessage": "JP-Cancel"
+  },
+  "4Gn5Ub": {
+    "defaultMessage": "JP-Firmware:"
+  },
+  "4M0IEe": {
+    "defaultMessage": "JP-Never contacted cloud"
+  },
+  "4RbqN8": {
+    "defaultMessage": "JP-No venues activating this network. Use the ON/OFF switches in the list to select the activating venues"
+  },
+  "4VPIXt": {
+    "defaultMessage": "JP-Alarms"
+  },
+  "4dk4rO": {
+    "defaultMessage": "JP-Accounting Service"
+  },
+  "4ldizo": {
+    "defaultMessage": "JP-{scope} is experiencing unusually high CPU usage"
+  },
+  "50Oao0": {
+    "defaultMessage": "JP-VLAN mismatch found in {scope}"
+  },
+  "5G8/Fe": {
+    "defaultMessage": "JP-Self Sign-In",
+    "description": "Guest network type - Self Sign-In"
+  },
+  "5ezgA1": {
+    "defaultMessage": "JP-MAC Address"
+  },
+  "5jeq8P": {
+    "defaultMessage": "JP-Unknown"
+  },
+  "5lQx5r": {
+    "defaultMessage": "JP-Scheduling"
+  },
+  "5mHBBz": {
+    "defaultMessage": "JP-Operational - applying configuration"
+  },
+  "6g0glr": {
+    "defaultMessage": "JP-Networking Devices"
+  },
+  "6xap9L": {
+    "defaultMessage": "JP-Good"
+  },
+  "724CrE": {
+    "defaultMessage": "JP-Select..."
+  },
+  "7Kk96z": {
+    "defaultMessage": "JP-Use Cloudpath Server:"
+  },
+  "7UOvbT": {
+    "defaultMessage": "JP-Offline"
+  },
+  "7xgyj8": {
+    "defaultMessage": "JP-Numbers Only"
+  },
+  "8B04tJ": {
+    "defaultMessage": "JP-WPA"
+  },
+  "8EGRF9": {
+    "defaultMessage": "JP-Load"
+  },
+  "8Fo71r": {
+    "defaultMessage": "JP-MSP Space"
+  },
+  "8cF6CF": {
+    "defaultMessage": "JP-Error: Can not detect passphrase expiration value"
+  },
+  "8lHXaF": {
+    "defaultMessage": "JP-DHCP failures are high in {scope} impacting connectivity for {impact} of clients."
+  },
+  "9+Ddtu": {
+    "defaultMessage": "JP-Next"
+  },
+  "9GvlpZ": {
+    "defaultMessage": "JP-Open Settings"
+  },
+  "9MxQUk": {
+    "defaultMessage": "JP-Shared Secret:"
+  },
+  "9t1iiv": {
+    "defaultMessage": "JP-Configure"
+  },
+  "9uOFF3": {
+    "defaultMessage": "JP-Overview"
+  },
+  "9wJSG8": {
+    "defaultMessage": "JP-Map is not enabled"
+  },
+  "AA5h7P": {
+    "defaultMessage": "JP-Performance"
+  },
+  "AJBpR8": {
+    "defaultMessage": "JP-Network Type"
+  },
+  "AJFEms": {
+    "defaultMessage": "JP-Sub-optimal channel conditions detected for 2.4 GHz in {scope}"
+  },
+  "AcxDgz": {
+    "defaultMessage": "JP-Activate"
+  },
+  "AetaeJ": {
+    "defaultMessage": "JP-Select venues to activate this network"
+  },
+  "AfUjYu": {
+    "defaultMessage": "JP-Config Change"
+  },
+  "Ao2xin": {
+    "defaultMessage": "JP-Most Secured"
+  },
+  "AudUdt": {
+    "defaultMessage": "JP-AP offline"
+  },
+  "AwuN57": {
+    "defaultMessage": "JP-6 months"
+  },
+  "BNHFY1": {
+    "defaultMessage": "JP-Only letters and numbers can be used"
+  },
+  "BeT3j9": {
+    "defaultMessage": "JP-WPA3"
+  },
+  "BuZFs1": {
+    "defaultMessage": "JP-High memory utilization detected in {scope}."
+  },
+  "C5Rw0o": {
+    "defaultMessage": "JP-Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server."
+  },
+  "CM0JAR": {
+    "defaultMessage": "JP-Entire Organization"
+  },
+  "CNTrZU": {
+    "defaultMessage": "JP-2 years"
+  },
+  "CPn6si": {
+    "defaultMessage": "JP-802.11 Authentication failures are unusually high in {scope}"
+  },
+  "CasKsA": {
+    "defaultMessage": "JP-Add Secondary Server"
+  },
+  "CzRokW": {
+    "defaultMessage": "JP-WEP",
+    "description": "WLAN security type - WEP"
+  },
+  "D/k1T1": {
+    "defaultMessage": "JP-Clients with low RSS are unusually high in {scope}, impacting {impact} of connected clients."
+  },
+  "Dnob31": {
+    "defaultMessage": "JP-Operational"
+  },
+  "EDi8nU": {
+    "defaultMessage": "JP-WAN"
+  },
+  "EP8xiD": {
+    "defaultMessage": "JP-AP heartbeat lost"
+  },
+  "EWw/tK": {
+    "defaultMessage": "JP-Apply"
+  },
+  "EYIw2M": {
+    "defaultMessage": "JP-Clear selection"
+  },
+  "EnTkxu": {
+    "defaultMessage": "JP-Recommendations"
+  },
+  "FACmOV": {
+    "defaultMessage": "JP-Ports:"
+  },
+  "FbnpZB": {
+    "defaultMessage": "JP-Cluster of {count} Venues"
+  },
+  "FnRTEV": {
+    "defaultMessage": "JP-Average"
+  },
+  "FoE42e": {
+    "defaultMessage": "JP-Requires Attention"
+  },
+  "GLV1Lq": {
+    "defaultMessage": "JP-Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork",
+    "description": "Description for Enterprise AAA (802.1X)"
+  },
+  "GYphdA": {
+    "defaultMessage": "JP-Open Captive Portal",
+    "description": "WLAN security type - Open Captive Portal"
+  },
+  "Gk3sbv": {
+    "defaultMessage": "JP-Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}."
+  },
+  "HX3vfn": {
+    "defaultMessage": "JP-The controller cluster is sending data with an incorrect future timestamp. To avoid false or misleading data analysis, all future timestamped data is dropped."
+  },
+  "HuqGcJ": {
+    "defaultMessage": "JP-WPA2 (Recommended)"
+  },
+  "I3JhPS": {
+    "defaultMessage": "JP-Network"
+  },
+  "I3b4hn": {
+    "defaultMessage": "JP-Version"
+  },
+  "IBNdTs": {
+    "defaultMessage": "JP-VLAN"
+  },
+  "IDKI0Y": {
+    "defaultMessage": "JP-{ipAddress}:{port}"
+  },
+  "IShDlj": {
+    "defaultMessage": "JP-WPA2 Enterprise",
+    "description": "WLAN security type - WPA2 Enterprise"
+  },
+  "IdweXY": {
+    "defaultMessage": "JP-Select Columns"
+  },
+  "Imc8gS": {
+    "defaultMessage": "JP-Incident Details"
+  },
+  "IozuIQ": {
+    "defaultMessage": "JP-Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}."
+  },
+  "IqBkBl": {
+    "defaultMessage": "JP-DHCP"
+  },
+  "JKnT12": {
+    "defaultMessage": "JP-The controller cluster is sending data with an incorrect past timestamp. To avoid false or misleading data analysis, past timestamped data is not analyzed for incidents."
+  },
+  "JfSEkt": {
+    "defaultMessage": "JP-RADIUS failures are high in {scope} impacting connectivity for {impact} of clients."
+  },
+  "JkubB5": {
+    "defaultMessage": "JP-Enterprise AAA (802.1X)"
+  },
+  "K3r6DQ": {
+    "defaultMessage": "JP-Delete"
+  },
+  "K7AkdL": {
+    "defaultMessage": "JP-Show"
+  },
+  "KtZV9p": {
+    "defaultMessage": "JP-Connection"
+  },
+  "L84G40": {
+    "defaultMessage": "JP-The controller cluster is sending data with an incorrect past timestamp"
+  },
+  "LTNKL8": {
+    "defaultMessage": "JP-1 week"
+  },
+  "Ls00yh": {
+    "defaultMessage": "JP-{scope} is experiencing unusually high CPU usage. Prolonged high usage can cause CPU tasks to be queued, and also impact sending of data to northbound systems, including, but not limited to, RUCKUS Analytics."
+  },
+  "M+rBpe": {
+    "defaultMessage": "JP-Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}"
+  },
+  "MH2Tp4": {
+    "defaultMessage": "JP-Sub-optimal channel conditions detected for 2.4 GHz in {scope}."
+  },
+  "Mu/Odk": {
+    "defaultMessage": "JP-EAP failures are unusually high in {scope}"
+  },
+  "NH/H5U": {
+    "defaultMessage": "JP-Dynamic Pre-Shared Key (DPSK)"
+  },
+  "NKPfmm": {
+    "defaultMessage": "JP-{count} selected"
+  },
+  "NV6/gE": {
+    "defaultMessage": "JP-Create New Network"
+  },
+  "Nr2pru": {
+    "defaultMessage": "JP-Network History"
+  },
+  "Nt8DSX": {
+    "defaultMessage": "JP-Authentication Service"
+  },
+  "O17xiH": {
+    "defaultMessage": "JP-date filter"
+  },
+  "OT4kCw": {
+    "defaultMessage": "JP-AP Name"
+  },
+  "Ok71Hw": {
+    "defaultMessage": "JP-Security Protocol:"
+  },
+  "P0HnjZ": {
+    "defaultMessage": "JP-Click-Through",
+    "description": "Guest network type - Click-Through"
+  },
+  "PYmHhr": {
+    "defaultMessage": "JP-Venue"
+  },
+  "Ppx673": {
+    "defaultMessage": "JP-Reports"
+  },
+  "Q8Qw5B": {
+    "defaultMessage": "JP-Description"
+  },
+  "QBomBf": {
+    "defaultMessage": "JP-EAP"
+  },
+  "QH7XOz": {
+    "defaultMessage": "JP-New Clients"
+  },
+  "Qb4SoA": {
+    "defaultMessage": "JP-IP Address:"
+  },
+  "QfVD/H": {
+    "defaultMessage": "JP-Use Cloudpath Server"
+  },
+  "RAjs+g": {
+    "defaultMessage": "JP-{isCaptiveNetwork, select, true {Captive Portal} other {Portal}} - {captiveNetworkType}"
+  },
+  "RUoi+Y": {
+    "defaultMessage": "JP-Keyboard Friendly"
+  },
+  "RrCui3": {
+    "defaultMessage": "JP-Summary"
+  },
+  "Ru1Owh": {
+    "defaultMessage": "JP-Serial Number"
+  },
+  "S33j4r": {
+    "defaultMessage": "JP-Services ({servicesCount})"
+  },
+  "SDi0Ka": {
+    "defaultMessage": "JP-WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise. <highlight> Security protocols other than WPA3 are not be supported in 6 GHz radio. </highlight>"
+  },
+  "T0/74h": {
+    "defaultMessage": "JP-RADIUS failures are unusually high in {scope}"
+  },
+  "T3UF92": {
+    "defaultMessage": "JP-Authentication Server"
+  },
+  "TE4fIS": {
+    "defaultMessage": "JP-City"
+  },
+  "TY81Tv": {
+    "defaultMessage": "JP-Passphrase Format:"
+  },
+  "U+7zaY": {
+    "defaultMessage": "JP-The controller cluster is sending data with an incorrect future timestamp"
+  },
+  "U9tjJ5": {
+    "defaultMessage": "JP-2 days"
+  },
+  "UaCh1c": {
+    "defaultMessage": "JP-Add Server"
+  },
+  "Uc+xJO": {
+    "defaultMessage": "JP-PoE power denied in {scope}"
+  },
+  "V52jNn": {
+    "defaultMessage": "JP-Enabled"
+  },
+  "VebTZq": {
+    "defaultMessage": "JP-WPA Enterprise",
+    "description": "WLAN security type - WPA Enterprise"
+  },
+  "Vl9Unn": {
+    "defaultMessage": "JP-Host Approval",
+    "description": "Guest network type - Host Approval"
+  },
+  "W/V6+Y": {
+    "defaultMessage": "JP-Collapse"
+  },
+  "WEJ7ak": {
+    "defaultMessage": "JP-No APs"
+  },
+  "XB8fV9": {
+    "defaultMessage": "JP-Last 24 Hours"
+  },
+  "XYVgGy": {
+    "defaultMessage": "JP-Alarm Time"
+  },
+  "XuyXtG": {
+    "defaultMessage": "JP-High AP-Controller connection failures in {scope}."
+  },
+  "Y2pNUx": {
+    "defaultMessage": "JP-AP operational - applying firmware"
+  },
+  "YDMrKK": {
+    "defaultMessage": "JP-Users"
+  },
+  "YLZ+2O": {
+    "defaultMessage": "JP-Switches:"
+  },
+  "Z4WqBL": {
+    "defaultMessage": "JP-Remove Secondary Server"
+  },
+  "ZOI9Fb": {
+    "defaultMessage": "JP-High AP-Controller connection failures in {scope}"
+  },
+  "ZWz5If": {
+    "defaultMessage": "JP-Network Info"
+  },
+  "ZvKSfJ": {
+    "defaultMessage": "JP-Events"
+  },
+  "aTpeqQ": {
+    "defaultMessage": "JP-High memory utilization detected in {scope}"
+  },
+  "b5YpHX": {
+    "defaultMessage": "JP-AP operational"
+  },
+  "bDtQ06": {
+    "defaultMessage": "JP-Clients:"
+  },
+  "bHHMAb": {
+    "defaultMessage": "JP-Firmware update failed"
+  },
+  "bK2o7Y": {
+    "defaultMessage": "JP-Access Point"
+  },
+  "bS/cRP": {
+    "defaultMessage": "JP-Venues"
+  },
+  "bnaSLU": {
+    "defaultMessage": "JP-Connected Clients Over Time"
+  },
+  "c8uKl6": {
+    "defaultMessage": "JP-Wi-Fi"
+  },
+  "c9uA84": {
+    "defaultMessage": "JP-RF Channels"
+  },
+  "cRmipE": {
+    "defaultMessage": "JP-Passphrase expiration"
+  },
+  "cVVoGX": {
+    "defaultMessage": "JP-Error: Can not detect passphrase format value"
+  },
+  "ciDg7D": {
+    "defaultMessage": "JP-Primary Server",
+    "description": "AAA Server Order - Primary Server"
+  },
+  "cp8inc": {
+    "defaultMessage": "JP-Open Network"
+  },
+  "cq7z5N": {
+    "defaultMessage": "JP-AAA Settings"
+  },
+  "czpjyb": {
+    "defaultMessage": "JP-Require users to enter a passphrase to connect. The passphrase is unique per device",
+    "description": "Description for Dynamic Pre-Shared Key (DPSK)"
+  },
+  "d0A0aG": {
+    "defaultMessage": "JP-Radius Authentication Service"
+  },
+  "d63gFk": {
+    "defaultMessage": "JP-AI Analytics"
+  },
+  "dA+hnZ": {
+    "defaultMessage": "JP-Infrastructure"
+  },
+  "dP02B8": {
+    "defaultMessage": "JP-Heartbeat lost"
+  },
+  "dVx3yz": {
+    "defaultMessage": "JP-Memory"
+  },
+  "dg6Mrs": {
+    "defaultMessage": "JP-Number of characters in passphrase. Valid range 8-63"
+  },
+  "dnnI3G": {
+    "defaultMessage": "JP-The network latency between the SZ nodes is unusually high"
+  },
+  "dty181": {
+    "defaultMessage": "JP-Traffic by Volume"
+  },
+  "e0kEtS": {
+    "defaultMessage": "JP-Deactivate"
+  },
+  "eOJNIA": {
+    "defaultMessage": "JP-Connected Clients"
+  },
+  "eSgRCS": {
+    "defaultMessage": "JP-{nodeType}: {nodeName}",
+    "description": "Uses to generate incident impacted scope for various incident descriptions"
+  },
+  "eWzMDx": {
+    "defaultMessage": "JP-Activated"
+  },
+  "ekXood": {
+    "defaultMessage": "JP-Unlimited"
+  },
+  "eoV49s": {
+    "defaultMessage": "JP-Poor"
+  },
+  "epNuT+": {
+    "defaultMessage": "JP-802.11 Authentication failures are high in {scope} impacting connectivity for {impact} of clients."
+  },
+  "f+sh2j": {
+    "defaultMessage": "JP-Administration"
+  },
+  "fCkfBx": {
+    "defaultMessage": "JP-APs ({apsCount})"
+  },
+  "fKJjD9": {
+    "defaultMessage": "JP-Initializing"
+  },
+  "fUSCNN": {
+    "defaultMessage": "JP-Deployment Type"
+  },
+  "fqiBvd": {
+    "defaultMessage": "JP-Coming soon..."
+  },
+  "gevCaB": {
+    "defaultMessage": "JP-Passphrase length"
+  },
+  "hSGclh": {
+    "defaultMessage": "JP-Network Name"
+  },
+  "hdGKYY": {
+    "defaultMessage": "JP-Require users to enter a passphrase (that you have defined for the network) to connect",
+    "description": "Description for Pre-Shared Key (PSK)"
+  },
+  "hlmkcL": {
+    "defaultMessage": "JP-Health"
+  },
+  "hzSNj4": {
+    "defaultMessage": "JP-Dashboard"
+  },
+  "i5bVOD": {
+    "defaultMessage": "JP-Network Name:"
+  },
+  "iCpuph": {
+    "defaultMessage": "JP-Clients"
+  },
+  "iFh/mp": {
+    "defaultMessage": "JP-Passphrase Generation Parameters"
+  },
+  "iI2oMQ": {
+    "defaultMessage": "JP-Use the DPSK Service"
+  },
+  "iXt6x5": {
+    "defaultMessage": "JP-{nodeA} > {nodeB}",
+    "description": "FormattedPath: Uses to join path nodes together in a chain"
+  },
+  "ioS2ep": {
+    "defaultMessage": "JP-Disconnected from cloud"
+  },
+  "jNR5e0": {
+    "defaultMessage": "JP-Network Details"
+  },
+  "jSqwdW": {
+    "defaultMessage": "JP-Coverage"
+  },
+  "jr8yqe": {
+    "defaultMessage": "JP-WPA",
+    "description": "WLAN security type - WPA"
+  },
+  "kSbbL9": {
+    "defaultMessage": "JP-PoE"
+  },
+  "kaKdM0": {
+    "defaultMessage": "JP-Model:"
+  },
+  "keJaJz": {
+    "defaultMessage": "JP-Letters, numbers and symbols can be used"
+  },
+  "khS4NF": {
+    "defaultMessage": "JP-TLS Encryption:"
+  },
+  "kmrE95": {
+    "defaultMessage": "JP-2 weeks"
+  },
+  "ktaLzx": {
+    "defaultMessage": "JP-AP operational - applying configuration"
+  },
+  "ktxCvs": {
+    "defaultMessage": "JP-{nodeName} ({nodeType})",
+    "description": "FormattedPath: Uses to show path node name & type"
+  },
+  "l/e8Fv": {
+    "defaultMessage": "JP-AP(s) operating in Low Power Mode: {scope}"
+  },
+  "lPKfjk": {
+    "defaultMessage": "JP-Rebooting"
+  },
+  "lfIk1B": {
+    "defaultMessage": "JP-Add..."
+  },
+  "mpbHiW": {
+    "defaultMessage": "JP-Association failures are unusually high in {scope}"
+  },
+  "mtr3R4": {
+    "defaultMessage": "JP-Incidents"
+  },
+  "n0hHJu": {
+    "defaultMessage": "JP-APs:"
+  },
+  "n1Whvj": {
+    "defaultMessage": "JP-Switch"
+  },
+  "nCMnED": {
+    "defaultMessage": "JP-Passphrase Length:"
+  },
+  "nCxCzM": {
+    "defaultMessage": "JP-Managed Guest Pass",
+    "description": "Guest network type - Managed Guest Pass"
+  },
+  "nJn+t1": {
+    "defaultMessage": "JP-Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}"
+  },
+  "nVdqEC": {
+    "defaultMessage": "JP-No Switches"
+  },
+  "naPxCD": {
+    "defaultMessage": "JP-Captive Portal",
+    "description": "Guest network type - Captive Portal"
+  },
+  "nfh3Qu": {
+    "defaultMessage": "JP-WPA2",
+    "description": "WLAN security type - WPA2"
+  },
+  "nhKqj3": {
+    "defaultMessage": "JP-Only numbers can be used"
+  },
+  "nijCnW": {
+    "defaultMessage": "JP-{isComplexName, select, true {{name} ({nodeName})} other {{nodeName}} }",
+    "description": "Uses to format path node name, when isComplexName = true the nodeName would be something like AP or Switch MAC address"
+  },
+  "nwViUa": {
+    "defaultMessage": "JP-Association failures are high in {scope} impacting connectivity for {impact} of clients."
+  },
+  "o43JQW": {
+    "defaultMessage": "JP-Operational - applying firmware"
+  },
+  "o5l+pK": {
+    "defaultMessage": "JP-Proxy Service"
+  },
+  "ojxMGa": {
+    "defaultMessage": "JP-In Setup Phase"
+  },
+  "ox304v": {
+    "defaultMessage": "JP-An error occurred"
+  },
+  "p1dNds": {
+    "defaultMessage": "JP-1 month"
+  },
+  "p5WNkO": {
+    "defaultMessage": "JP-Temporarily degraded"
+  },
+  "pJVOdI": {
+    "defaultMessage": "JP-AP service is affected due to high number of AP reboots."
+  },
+  "pS5Lez": {
+    "defaultMessage": "JP-RADIUS"
+  },
+  "pUlxda": {
+    "defaultMessage": "JP-Total Incidents"
+  },
+  "pyZg46": {
+    "defaultMessage": "JP-{type, select, aaa {AAA Settings} dpsk {DPSK Settings} other {Settings} }"
+  },
+  "q2wzm3": {
+    "defaultMessage": "JP-Time to connect is high in {scope}, impacting connectivity for {impact} of clients."
+  },
+  "q8tzQn": {
+    "defaultMessage": "JP-Clients with low RSS are unusually high in {scope}"
+  },
+  "qEplfM": {
+    "defaultMessage": "JP-AP service is affected due to high number of AP reboots"
+  },
+  "qQ6P9N": {
+    "defaultMessage": "JP-Activated in venues"
+  },
+  "qYBnMW": {
+    "defaultMessage": "JP-WPA3",
+    "description": "WLAN security type - WPA3"
+  },
+  "r9gciS": {
+    "defaultMessage": "JP-{networkType} - {authMethod}"
+  },
+  "rJPrzU": {
+    "defaultMessage": "JP-Captive Portal"
+  },
+  "rPBWRi": {
+    "defaultMessage": "JP-MAC Address:"
+  },
+  "rXq1Sc": {
+    "defaultMessage": "JP-Pre-Shared Key (PSK)"
+  },
+  "rhSI1/": {
+    "defaultMessage": "JP-Model"
+  },
+  "rsSUP3": {
+    "defaultMessage": "JP-Port"
+  },
+  "rwIPgH": {
+    "defaultMessage": "JP-1 year"
+  },
+  "rz46vg": {
+    "defaultMessage": "JP-Passphrase format"
+  },
+  "sMnDSO": {
+    "defaultMessage": "JP-Wi-Fi APs"
+  },
+  "sTAlko": {
+    "defaultMessage": "JP-WPA3/WPA2 Mixed",
+    "description": "WLAN security type - WPA3/WPA2 Mixed"
+  },
+  "sZFybj": {
+    "defaultMessage": "JP-Services"
+  },
+  "ss6kle": {
+    "defaultMessage": "JP-Reset to default"
+  },
+  "stDOc1": {
+    "defaultMessage": "JP-Mesh Role"
+  },
+  "sw6FHg": {
+    "defaultMessage": "JP-DPSK Settings"
+  },
+  "t/5Nxo": {
+    "defaultMessage": "JP-{count} Characters"
+  },
+  "t071V3": {
+    "defaultMessage": "JP-Info:"
+  },
+  "tgg9V9": {
+    "defaultMessage": "JP-802.11 Authentication"
+  },
+  "tthToS": {
+    "defaultMessage": "JP-Disabled"
+  },
+  "tvFSNq": {
+    "defaultMessage": "JP-Secondary Server",
+    "description": "AAA Server Order - Secondary Server"
+  },
+  "tvJbQP": {
+    "defaultMessage": "JP-WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019."
+  },
+  "tzMNF3": {
+    "defaultMessage": "JP-Status"
+  },
+  "uJV0wU": {
+    "defaultMessage": "JP-IP Address"
+  },
+  "uS4sop": {
+    "defaultMessage": "JP-Type:"
+  },
+  "ubGrOj": {
+    "defaultMessage": "JP-Passphrase Expiration:"
+  },
+  "ubQ1f+": {
+    "defaultMessage": "JP-Shared secret"
+  },
+  "ukFIyf": {
+    "defaultMessage": "JP-Your Attention is Required"
+  },
+  "upVeXQ": {
+    "defaultMessage": "JP-VLAN mismatch found in {scope}."
+  },
+  "utCJRG": {
+    "defaultMessage": "JP-Proxy Service:"
+  },
+  "v9+jd5": {
+    "defaultMessage": "JP-EAP failures are high in {scope} impacting connectivity for {impact} of clients."
+  },
+  "vCAhII": {
+    "defaultMessage": "JP-Severity"
+  },
+  "vONi+O": {
+    "defaultMessage": "JP-Country"
+  },
+  "vXfkMH": {
+    "defaultMessage": "JP-Add Wi-Fi Network"
+  },
+  "vhRKaX": {
+    "defaultMessage": "JP-AP rebooting"
+  },
+  "voFdJV": {
+    "defaultMessage": "JP-Association"
+  },
+  "wfZEER": {
+    "defaultMessage": "JP-VLAN Mismatch"
+  },
+  "whHFsS": {
+    "defaultMessage": "JP-Service Availability"
+  },
+  "wsSxJK": {
+    "defaultMessage": "JP-Open",
+    "description": "WLAN security type - Open"
+  },
+  "xGSuuE": {
+    "defaultMessage": "JP-Security Protocol"
+  },
+  "xKk/lt": {
+    "defaultMessage": "JP-The network latency between the SZ nodes is unusually high."
+  },
+  "xukzKg": {
+    "defaultMessage": "JP-Networks"
+  },
+  "y8zW5H": {
+    "defaultMessage": "JP-PoE power denied in {scope}."
+  },
+  "yCDkU6": {
+    "defaultMessage": "JP-Time to connect is greater than {threshold} in {scope}"
+  },
+  "yJ7+dR": {
+    "defaultMessage": "JP-Cloudpath Server"
+  },
+  "yV5oYe": {
+    "defaultMessage": "JP-Policies"
+  },
+  "ykBQn4": {
+    "defaultMessage": "JP-Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}"
+  },
+  "ymr68V": {
+    "defaultMessage": "JP-Users are authorized through a captive portal in various methods",
+    "description": "Description for Captive Portal"
+  },
+  "z5epQF": {
+    "defaultMessage": "JP-Radios"
+  },
+  "zI1owl": {
+    "defaultMessage": "JP-Venues ({venuesCount})"
+  },
+  "zLM75r": {
+    "defaultMessage": "JP-No AP Clients"
+  },
+  "zT3YgI": {
+    "defaultMessage": "JP-Impacted Clients"
+  },
+  "zWkvNO": {
+    "defaultMessage": "JP-Timeline"
+  },
+  "zbjrr1": {
+    "defaultMessage": "JP-Radius Shared secret"
+  },
+  "zg0sQG": {
+    "defaultMessage": "JP-AP initializing"
+  },
+  "zifKlV": {
+    "defaultMessage": "JP-Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}."
+  }
+}

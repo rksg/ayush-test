@@ -13,9 +13,11 @@ import '@acx-ui/theme'
 export async function init () {
   const container = document.getElementById('root')
   const root = createRoot(container!)
-  const lang = 'en-US'
-
-  root.render(
+  const queryParams = Object.fromEntries (
+    window.location.search.slice(1).split('&').map(set => set.split('=')))
+  const lang = queryParams.lang ?? 'en-US'
+  
+    root.render(
     <React.StrictMode>
       <ConfigProvider lang={lang}>
         <Provider>
