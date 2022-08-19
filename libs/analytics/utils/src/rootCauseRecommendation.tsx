@@ -57,7 +57,7 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
 const ttcFailureCodes = ['assoc', 'auth', 'dhcp', 'eap', 'radius']
 
 const extractFailureCode = (
-  checks: IncidentMetadata['rootCauseChecks']['checks']
+  checks: Exclude<IncidentMetadata['rootCauseChecks'], undefined>['checks']
 ) => {
   return checks.length === 0
     ? 'DEFAULT'
