@@ -59,11 +59,8 @@ export default function TrafficByApplicationWidget ({
     }
   ]
 
-  const getDataSource= (appTrafficData: TrafficByApplicationData[] | undefined,
+  const getDataSource= (appTrafficData: TrafficByApplicationData[],
     overallTrafic:number) => {
-    if(!appTrafficData || !appTrafficData.length)
-      return []
-
     return appTrafficData.map((item,index) => {
       const sparkLineData = item.timeSeries.map(tsDatapoints => tsDatapoints.traffic)
       const sparklineChartStyle = { height: 18, width: 80, display: 'inline' }
@@ -85,16 +82,16 @@ export default function TrafficByApplicationWidget ({
 
   const { data } = queryResults
 
-  const uploadTable = data?.topNAppByUpload && data?.topNAppByUpload.length ? <Table
+  const uploadTable = data && data.topNAppByUpload && data.topNAppByUpload.length ? <Table
     columns={columns}
-    dataSource={getDataSource(data?.topNAppByUpload, data?.uploadAppTraffic || 1)}
+    dataSource={getDataSource(data.topNAppByUpload, data.uploadAppTraffic)}
     type={'compact'}
     pagination={false}
   /> : <NoData/>
 
-  const downloadTable = data?.topNAppByDownload && data?.topNAppByDownload.length ? <Table
+  const downloadTable = data && data.topNAppByDownload && data.topNAppByDownload.length ? <Table
     columns={columns}
-    dataSource={getDataSource(data?.topNAppByDownload, data?.downloadAppTraffic || 1)}
+    dataSource={getDataSource(data.topNAppByDownload, data.downloadAppTraffic)}
     type={'compact'}
     pagination={false}
   /> : <NoData/>
