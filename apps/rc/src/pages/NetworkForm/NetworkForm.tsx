@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import React                from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -20,18 +21,18 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext    from './NetworkFormContext'
-import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }  from './NetworkSettings/DpskSettingsForm'
-import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
-import { SummaryForm }       from './NetworkSummary/SummaryForm'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave
 } from './parser'
 import { Venues } from './Venues/Venues'
-import React from 'react'
 
 const settingTitle = defineMessage({
   defaultMessage: `{type, select,
@@ -103,7 +104,6 @@ export function NetworkForm () {
         <StepsForm.StepForm
           name='moreSettings'
           title='More Settings'
-          validateTrigger='onBlur'
           onFinish={async (data) => {
             const detailsSaveData = data
             updateData(data)
@@ -111,7 +111,6 @@ export function NetworkForm () {
             return true
           }}
         >
-
           <NetworkMoreSettingsForm />
         </StepsForm.StepForm>
 

@@ -222,8 +222,9 @@ function AccessControlConfigForm () {
   }, {
     selectFromResult ({ data }) {
       return {
-        layer2SelectOptions: data?.data.map(
-          item => <Option key={item.id}>{item.name}</Option>) ?? []
+        layer2SelectOptions: []
+        // data?.data?.map(
+        //   item => <Option key={item.id}>{item.name}</Option>) ?? []
       }
     }
   })
@@ -234,8 +235,9 @@ function AccessControlConfigForm () {
   }, {
     selectFromResult ({ data }) {
       return {
-        layer3SelectOptions: data?.data.map(
-          item => <Option key={item.id}>{item.name}</Option>) ?? []
+        layer3SelectOptions: []
+        // data?.data?.map(
+        //   item => <Option key={item.id}>{item.name}</Option>) ?? []
       }
     }
   })
@@ -246,8 +248,9 @@ function AccessControlConfigForm () {
   }, {
     selectFromResult ({ data }) {
       return {
-        devicePolicySelectOptions: data?.data.map(
-          item => <Option key={item.id}>{item.name}</Option>) ?? []
+        devicePolicySelectOptions: []
+        // data?.data.map(
+        //   item => <Option key={item.id}>{item.name}</Option>) ?? []
       }
     }
   })
@@ -258,8 +261,9 @@ function AccessControlConfigForm () {
   }, {
     selectFromResult ({ data }) {
       return {
-        applicationPolicySelectOptions: data?.data.map(
-          item => <Option key={item.id}>{item.name}</Option>) ?? []
+        applicationPolicySelectOptions: []
+        // data?.data.map(
+        //   item => <Option key={item.id}>{item.name}</Option>) ?? []
       }
     }
   })
