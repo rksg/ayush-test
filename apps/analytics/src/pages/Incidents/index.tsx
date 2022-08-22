@@ -49,7 +49,7 @@ const IncidentTabContent = (props: { tabSelection: IncidentListTabs }) => {
         />
       </GridCol>
       <GridCol col={{ span: 24 }} style={{ height: '440px' }}>
-        <IncidentTableWidget />
+        <IncidentTableWidget filters={{ ...filters, code: incidentCodesBasedOnCategory }} />
       </GridCol>
     </GridRow>
   )

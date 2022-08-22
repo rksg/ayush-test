@@ -1,11 +1,11 @@
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { Incident, noDataSymbol, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Loader, Table, TableProps, showToast }       from '@acx-ui/components'
-import { Link }                                       from '@acx-ui/react-router-dom'
+import { Incident, noDataSymbol, IncidentFilter } from '@acx-ui/analytics/utils'
+import { Loader, Table, TableProps, showToast }   from '@acx-ui/components'
+import { Link }                                   from '@acx-ui/react-router-dom'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRows } from './services'
-import { 
+import {
   GetIncidentBySeverity,
   FormatDate,
   formatDuration,
@@ -112,7 +112,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
       compare: (a, b) => clientImpactSort(a.code, b.code),
       multiple: 8
     }
-  }, 
+  },
   {
     title: 'Type',
     width: '10%',
@@ -140,8 +140,7 @@ const actions: TableProps<Incident>['actions'] = [
   }
 ]
 
-const IncidentTableWidget = () => {
-  const filters = useAnalyticsFilter()
+function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const queryResults = useIncidentsListQuery(filters)
 
   const mutedKeysFilter = (data: IncidentNodeData) => {
@@ -158,9 +157,9 @@ const IncidentTableWidget = () => {
             dataSource={queryResults?.data}
             columns={ColumnHeaders}
             actions={actions}
-            rowSelection={{ 
-              type: 'checkbox', 
-              defaultSelectedRowKeys: queryResults.data 
+            rowSelection={{
+              type: 'checkbox',
+              defaultSelectedRowKeys: queryResults.data
                 ? mutedKeysFilter(queryResults.data)
                 : undefined
             }}

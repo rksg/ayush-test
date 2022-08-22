@@ -1,8 +1,10 @@
 import '@testing-library/jest-dom'
 
 import { dataApiURL }                                                    from '@acx-ui/analytics/services'
+import { IncidentFilter }                                                from '@acx-ui/analytics/utils'
 import { Provider, store }                                               from '@acx-ui/store'
 import { mockGraphqlQuery, mockAutoSizer, render, screen, cleanup, act } from '@acx-ui/test-utils'
+import { DateRange }                                                     from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -70,10 +72,17 @@ const incidentTests = [
   }
 ]
 
+const filters : IncidentFilter = {
+  startDate: '2022-01-01T00:00:00+08:00',
+  endDate: '2022-01-02T00:00:00+08:00',
+  path: [{ type: 'network', name: 'Network' }],
+  range: DateRange.last24Hours
+}
+
 describe('IncidentTableWidget', () => {
   mockAutoSizer()
 
-  beforeEach(() => 
+  beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )
 
@@ -83,7 +92,7 @@ describe('IncidentTableWidget', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: [] } } }
     })
-    render(<Provider><IncidentTableWidget/></Provider>)
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
 
@@ -92,13 +101,13 @@ describe('IncidentTableWidget', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTableWidget/></Provider>, {
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
       route: {
         path: '/t/tenantId/analytics/incidents',
         wrapRoutes: false
       }
     })
-    
+
     await screen.findAllByText('P4')
     expect(screen.getAllByText('P4')).toHaveLength(incidentTests.length)
   })
@@ -108,13 +117,13 @@ describe('IncidentTableWidget', () => {
       data: { network: { hierarchyNode: { incidents: undefined } } }
     })
 
-    render(<Provider><IncidentTableWidget/></Provider>, {
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
       route: {
         path: '/t/tenantId/analytics/incidents',
         wrapRoutes: false
       }
     })
-    
+
     await screen.findByText('No Data')
     expect(screen.getByText('No Data').textContent).toBe('No Data')
   })
@@ -135,7 +144,7 @@ describe('IncidentTableWidget', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-    render(<Provider><IncidentTableWidget/></Provider>, {
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
       route: {
         path: '/t/tenantId/analytics/incidents',
         wrapRoutes: false,
@@ -152,7 +161,7 @@ describe('IncidentTableWidget', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-    render(<Provider><IncidentTableWidget/></Provider>, {
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
       route: {
         path: '/t/tenantId/analytics/incidents',
         wrapRoutes: false,
@@ -175,7 +184,7 @@ describe('IncidentTableWidget', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-    render(<Provider><IncidentTableWidget/></Provider>, {
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
       route: {
         path: '/t/tenantId/analytics/incidents',
         wrapRoutes: false,
@@ -194,6 +203,6 @@ describe('IncidentTableWidget', () => {
 
     const muteButton = await screen.findByText('Mute')
     act(() => muteButton.click())
-    // update to include actual muting call 
+    // update to include actual muting call
   })
 })
