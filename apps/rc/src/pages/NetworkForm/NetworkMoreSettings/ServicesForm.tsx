@@ -34,7 +34,7 @@ function ClientIsolationForm () {
     <UI.FieldLabel width='125px'>
       Client Isolation:
       <Form.Item
-        name='enableClientIsolation'
+        name={['moresettings','advancedCustomization','clientIsolation']}
         style={{ marginBottom: '10px' }}
         valuePropName='checked'
         initialValue={false}
@@ -46,7 +46,7 @@ function ClientIsolationForm () {
     <>
       <Form.Item
         label='Isolate Packets:'
-        name='isolatePackets'
+        name={['moresettings','advancedCustomization','clientIsolationOptions', 'packetsType']}
       >
         <Select defaultValue={IsolatePacketsTypeEnum.UNICAST}
           style={{ width: '240px' }}>
@@ -65,7 +65,7 @@ function ClientIsolationForm () {
       <UI.FieldLabel width='230px'>
         Automatic support for VRRP/HSRP:
         <Form.Item
-          name='enableVrrpHsrpAutomaticSupport'
+          name={['moresettings','advancedCustomization','clientIsolationOptions', 'autoVrrp']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
@@ -104,7 +104,7 @@ function AntiSpoofing () {
       <UI.FieldLabel width='125px'>
         Anti-spoofing:
         <Form.Item
-          name='enableAntiSpoofing'
+          name={['moresettings','advancedCustomization','enableAntiSpoofing']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
@@ -118,7 +118,7 @@ function AntiSpoofing () {
 
             <span style={{ display: 'flex' }}>
               <UI.FormItemNoLabel
-                name='enableArpRequestRateLimit'
+                name={['moresettings','advancedCustomization','enableArpRequestRateLimit']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={false}
@@ -131,7 +131,7 @@ function AntiSpoofing () {
 
             {enableArpRequestRateLimit && <>
               <Form.Item
-                name='arpRequestRateLimit'
+                name={['moresettings','advancedCustomization','arpRequestRateLimit']}
                 style={{ marginBottom: '10px', lineHeight: '32px' }}
                 children={<Input style={{ width: '50px' }} />} />
               <UI.Label style={{ lineHeight: '34px' }}> ppm </UI.Label>
@@ -143,7 +143,7 @@ function AntiSpoofing () {
 
             <span style={{ display: 'flex' }}>
               <UI.FormItemNoLabel
-                name='enableDhcpRequestRateLimit'
+                name={['moresettings','advancedCustomization','enableDhcpRequestRateLimit']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={false}
@@ -156,7 +156,7 @@ function AntiSpoofing () {
 
             {enableDhcpRequestRateLimit && <>
               <Form.Item
-                name='dhcpRequestRateLimit'
+                name={['moresettings','advancedCustomization','dhcpRequestRateLimit']}
                 style={{ marginBottom: '10px', lineHeight: '32px' }}
                 children={<Input style={{ width: '50px' }} />} />
               <UI.Label style={{ lineHeight: '32px' }}> ppm </UI.Label>
@@ -183,7 +183,7 @@ export function ServicesForm () {
         DNS Proxy:
         <UI.FieldLabel width='30px'>
           <Form.Item
-            name='enableDnsProxy'
+            name={['moresettings','advancedCustomization','dnsProxyEnabled']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -197,7 +197,7 @@ export function ServicesForm () {
       <UI.FieldLabel width='125px'>
         Wi-Fi Calling:
         <Form.Item
-          name='enableWifiCalling'
+          name={['moresettings','advancedCustomization','wifiCallingEnabled']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
@@ -209,7 +209,7 @@ export function ServicesForm () {
       <AntiSpoofing/>
 
       <UI.FormItemNoLabel
-        name='enableDhcp'
+        name={['moresettings','advancedCustomization','forceMobileDeviceDhcp']}
         children={
           <UI.Label>
             <UI.CheckboxWrapper />
@@ -217,7 +217,7 @@ export function ServicesForm () {
           </UI.Label>}
       />
       <UI.FormItemNoLabel
-        name='enableSyslog'
+        name={['moresettings','advancedCustomization','enableSyslog']}
         children={
           <UI.Label>
             <UI.CheckboxWrapper />

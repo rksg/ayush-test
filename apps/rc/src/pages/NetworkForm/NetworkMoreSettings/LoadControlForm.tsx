@@ -54,7 +54,7 @@ export function LoadControlForm () {
       </Form.Item>
 
       <UI.FormItemNoLabel
-        name='enableBandBalancing'
+        name={['moresettings','advancedCustomization','enableBandBalancing']}
         children={
           <UI.Label>
             <UI.CheckboxWrapper />
@@ -62,7 +62,7 @@ export function LoadControlForm () {
           </UI.Label>}
       />
       <UI.FormItemNoLabel
-        name='clientLoadBalancingEnable'
+        name={['moresettings','advancedCustomization','clientLoadBalancingEnable']}
         children={
           <UI.Label>
             <UI.CheckboxWrapper />

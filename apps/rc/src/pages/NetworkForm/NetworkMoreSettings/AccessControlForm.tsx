@@ -12,10 +12,12 @@ import {
 } from 'antd'
 
 import { StepsForm }              from '@acx-ui/components'
-import { useDevicePolicyListQuery,
+import {
+  useDevicePolicyListQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
-  useApplicationPolicyListQuery } from '@acx-ui/rc/services'
+  useApplicationPolicyListQuery
+} from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
@@ -41,7 +43,7 @@ function SaveAsAcProfileButton () {
     setIsModalVisible(false)
   }
 
-  return( <>
+  return (<>
     <Button
       type='link'
       style={{ padding: 0 }}
@@ -90,9 +92,11 @@ export function AccessControlForm () {
 
   return (
     <div style={{ marginBottom: '30px' }}>
-      <span style={{ display: 'grid',
-        gridTemplateColumns: '220px 130px auto' ,
-        marginTop: '20px' }}>
+      <span style={{
+        display: 'grid',
+        gridTemplateColumns: '220px 130px auto',
+        marginTop: '20px'
+      }}>
         <StepsForm.Title
           style={{
             fontSize: 'var(--acx-subtitle-4-font-size)',
@@ -126,9 +130,6 @@ export function AccessControlForm () {
       {enabledProfile ?
         <SelectAccessProfileProfile /> :
         <AccessControlConfigForm />}
-
-
-
     </div>)
 }
 
@@ -146,9 +147,6 @@ function SelectAccessProfileProfile () {
         children={<Switch />}
       />
     </UI.FieldLabel>
-
-
-
 
     {enableAccessControlProfile && <Form.Item
       label='Access Control Policy'
@@ -222,9 +220,8 @@ function AccessControlConfigForm () {
   }, {
     selectFromResult ({ data }) {
       return {
-        layer2SelectOptions: []
-        // data?.data?.map(
-        //   item => <Option key={item.id}>{item.name}</Option>) ?? []
+        layer2SelectOptions: data?.data?.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? []
       }
     }
   })
@@ -235,9 +232,8 @@ function AccessControlConfigForm () {
   }, {
     selectFromResult ({ data }) {
       return {
-        layer3SelectOptions: []
-        // data?.data?.map(
-        //   item => <Option key={item.id}>{item.name}</Option>) ?? []
+        layer3SelectOptions: data?.data?.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? []
       }
     }
   })
@@ -248,9 +244,8 @@ function AccessControlConfigForm () {
   }, {
     selectFromResult ({ data }) {
       return {
-        devicePolicySelectOptions: []
-        // data?.data.map(
-        //   item => <Option key={item.id}>{item.name}</Option>) ?? []
+        devicePolicySelectOptions: data?.data?.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? []
       }
     }
   })
@@ -261,20 +256,18 @@ function AccessControlConfigForm () {
   }, {
     selectFromResult ({ data }) {
       return {
-        applicationPolicySelectOptions: []
-        // data?.data.map(
-        //   item => <Option key={item.id}>{item.name}</Option>) ?? []
+        applicationPolicySelectOptions: data?.data?.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? []
       }
     }
   })
-
 
   return (<>
     <UI.FieldLabel width='175px'>
       Layer 2
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
-          name='enableLayer2'
+          name={['moresettings','advancedCustomization','l2AclEnable']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
@@ -283,7 +276,7 @@ function AccessControlConfigForm () {
 
         {enableLayer2 && <>
           <Form.Item
-            name='layer2Id'
+            name={['moresettings','advancedCustomization','l2AclPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
               <Select placeholder='Select profile...'
@@ -297,10 +290,10 @@ function AccessControlConfigForm () {
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-    Layer 3
+      Layer 3
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
-          name='enableLayer3'
+          name={['moresettings','advancedCustomization','l3AclEnable']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
@@ -309,7 +302,7 @@ function AccessControlConfigForm () {
 
         {enableLayer3 && <>
           <Form.Item
-            name='layer3'
+            name={['moresettings','advancedCustomization','l3AclPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
               <Select placeholder='Select profile...'
@@ -323,7 +316,7 @@ function AccessControlConfigForm () {
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-    Device & OS
+      Device & OS
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
           name='enableDeviceOs'
@@ -335,7 +328,7 @@ function AccessControlConfigForm () {
 
         {enableDeviceOs && <>
           <Form.Item
-            name='deviceOs'
+            name={['moresettings','advancedCustomization','devicePolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
               <Select placeholder='Select profile...'
@@ -350,10 +343,10 @@ function AccessControlConfigForm () {
 
 
     <UI.FieldLabel width='175px'>
-    Applications
+      Applications
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
-          name='enableApplications'
+          name={['moresettings','advancedCustomization','applicationPolicyEnable']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
@@ -362,7 +355,7 @@ function AccessControlConfigForm () {
 
         {enableApplications && <>
           <Form.Item
-            name='applications'
+            name={['moresettings','advancedCustomization','applicationPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
               <Select placeholder='Select profile...'
@@ -397,7 +390,7 @@ function AccessControlConfigForm () {
           children={
             <UI.Label>
               <UI.CheckboxWrapper />
-            Upload Limit
+              Upload Limit
             </UI.Label>}
         />
         {

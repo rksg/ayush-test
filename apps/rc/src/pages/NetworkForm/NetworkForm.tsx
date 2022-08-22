@@ -137,7 +137,7 @@ export function NetworkForm () {
         <StepsForm.StepForm
           formRef={formRef}
           name='moreSettings'
-          title='More Settings'
+          title={$t({ defaultMessage: 'More Settings' })}
           onFinish={async (data) => {
             // const detailsSaveData = transferMoreSettingsToSave(data)
             // const detailsSaveData = data

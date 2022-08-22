@@ -114,6 +114,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
 
 export const {
+  useCloudpathListQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
   useApplicationPolicyListQuery,

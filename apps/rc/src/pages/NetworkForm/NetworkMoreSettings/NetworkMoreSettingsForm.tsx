@@ -61,7 +61,7 @@ function VlanForm () {
 
       {!enableVlanPooling && <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr' }}>
         <Form.Item
-          name='vlanId'
+          name={['moresettings', 'vlanId']}
           label='VLAN ID'
           initialValue={1}
           style={{ marginBottom: '15px' }}
@@ -70,7 +70,7 @@ function VlanForm () {
 
         <UI.FieldLabel width='auto' style={{ marginTop: '20px' }}>
           <UI.FormItemNoLabel
-            name='dynamicVlan'
+            name={['moresettings','advancedCustomization','dynamicVlan']}
             style={{ marginBottom: '15px' , marginRight: '8px' }}
             valuePropName='checked'
             initialValue={true}
@@ -87,7 +87,7 @@ function VlanForm () {
         <UI.FieldLabel width='90px'>
           Proxy ARP:
           <Form.Item
-            name='enableProxyArp'
+            name={['moresettings', 'advancedCustomization', 'enableProxyArp']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -135,7 +135,7 @@ export function NetworkMoreSettingsForm () {
 
       <Panel header='Radio' key='3' >
         <UI.FormItemNoLabel
-          name='hideSsid'
+          name={['moresettings','advancedCustomization','hideSsid']}
           children={
             <UI.Label>
               <UI.CheckboxWrapper />
@@ -157,7 +157,7 @@ export function NetworkMoreSettingsForm () {
 
 
         <UI.FormItemNoLabel
-          name='enableOfdmOnly'
+          name='enableOfdmOnly' //TODO
           style={{ marginBottom: '15px' }}
           valuePropName='checked'
           initialValue={false}
@@ -185,11 +185,11 @@ export function NetworkMoreSettingsForm () {
         }}>
 
           <Form.Item
-            name='bbsMinRate'
-            label='BBS Min Rate:'
+            name='bssMinRate' //TODO
+            label='BSS Min Rate:'
             style={{ marginBottom: '15px' }}
             children={
-              <BbsMinRateSelect />
+              <BssMinRateSelect />
             } />
 
           <Form.Item
@@ -202,7 +202,7 @@ export function NetworkMoreSettingsForm () {
         </div>
 
         <UI.FormItemNoLabel
-          name='enable80211kNeighbor'
+          name={['moresettings','advancedCustomization','enableNeighborReport']}
           style={{ marginBottom: '15px' }}
           valuePropName='checked'
           initialValue={false}
@@ -214,7 +214,7 @@ export function NetworkMoreSettingsForm () {
         />
 
         <UI.FormItemNoLabel
-          name='enable80211rFastBss'
+          name={['moresettings','advancedCustomization','enableFastRoaming']}
           style={{ marginBottom: '15px' }}
           valuePropName='checked'
           initialValue={false}
@@ -228,14 +228,14 @@ export function NetworkMoreSettingsForm () {
         {enable80211rFastBss &&
           <>
             <Form.Item
-              name='mobilityDomainId'
+              name={['moresettings','advancedCustomization','mobilityDomainId']}
               label='Mobility Domain ID'
               initialValue={1}
               style={{ marginBottom: '15px' }}
               children={<Input style={{ width: '150px' }}></Input>} />
 
             <Form.Item
-              name='clientInactivityTimeout'
+              name={['moresettings','advancedCustomization','clientInactivityTimeout']}
               label='Client Inactivity Timeout:'
               initialValue={120}
               style={{ marginBottom: '15px' }}
@@ -244,7 +244,7 @@ export function NetworkMoreSettingsForm () {
         }
 
         <Form.Item
-          name='directThreshold'
+          name={['moresettings','advancedCustomization','directedThreshold']}
           label='Directed MC/BC Threshold:'
           initialValue={5}
           style={{ marginBottom: '15px', width: '300px' }}
@@ -256,7 +256,7 @@ export function NetworkMoreSettingsForm () {
         <UI.FieldLabel width='190px'>
           Airtime Decongestion:
           <Form.Item
-            name='enableAirtimedecongestion'
+            name={['moresettings','advancedCustomization','enableAirtimedecongestion']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -269,7 +269,7 @@ export function NetworkMoreSettingsForm () {
             Join RSSI Threshold:
             <div style={{ display: 'grid', gridTemplateColumns: '50px 75px auto' }}>
               <Form.Item
-                name='enableJoinRSSIThreshold'
+                name={['moresettings','advancedCustomization','enableJoinRSSIThreshold']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={false}
@@ -278,7 +278,7 @@ export function NetworkMoreSettingsForm () {
 
               {enableJoinRSSIThreshold && <>
                 <Form.Item
-                  name='joinRSSIThreshold'
+                  name={['moresettings','advancedCustomization','joinRSSIThreshold']}
                   style={{ marginBottom: '10px', lineHeight: '32px' }}
                   initialValue={-85}
                   children={<Input style={{ width: '65px' }} />}
@@ -292,7 +292,7 @@ export function NetworkMoreSettingsForm () {
         <UI.FieldLabel width='190px'>
           Transient Client Management:
           <Form.Item
-            name='enableTransientClientManagement'
+            name={['moresettings','advancedCustomization','enableTransientClientManagement']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -307,7 +307,7 @@ export function NetworkMoreSettingsForm () {
                 Seconds
               </UI.LabelOfInput>
               <Form.Item
-                name='joinWaitTime'
+                name={['moresettings','advancedCustomization','joinWaitTime']}
                 label='Join Wait Time:'
                 style={{ marginBottom: '15px' }}
                 initialValue={30}
@@ -321,7 +321,7 @@ export function NetworkMoreSettingsForm () {
                 Seconds
               </UI.LabelOfInput>
               <Form.Item
-                name='joinExpireTime'
+                name={['moresettings','advancedCustomization','joinExpireTime']}
                 label='Join Expire Time:'
                 style={{ marginBottom: '15px' }}
                 initialValue={300}
@@ -332,7 +332,7 @@ export function NetworkMoreSettingsForm () {
 
 
             <Form.Item
-              name='joinWaitThreshold'
+              name={['moresettings','advancedCustomization','joinWaitThreshold']}
               label='Join Wait Threshold:'
               style={{ marginBottom: '15px' }}
               initialValue={10}
@@ -344,7 +344,7 @@ export function NetworkMoreSettingsForm () {
         <UI.FieldLabel width='250px'>
           Optimized Connectivity Experience (OCE):
           <Form.Item
-            name='enableOce'
+            name={['moresettings','advancedCustomization','enableOptimizedConnectivityExperience']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -359,7 +359,7 @@ export function NetworkMoreSettingsForm () {
                 ms
               </UI.LabelOfInput>
               <Form.Item
-                name='broadcastProbeResponseDelay'
+                name={['moresettings', 'advancedCustomization', 'broadcastProbeResponseDelay']}
                 label='Broadcast Probe Response Delay:'
                 style={{ marginBottom: '15px' }}
                 initialValue={15}
@@ -375,7 +375,7 @@ export function NetworkMoreSettingsForm () {
                 dBm
               </UI.LabelOfInput>
               <Form.Item
-                name='rssiBasedAssociationRejectionThreshold'
+                name={['moresettings','advancedCustomization','rssiAssociationRejectionThreshold']}
                 label='RSSI-Based Association Rejection Threshold:'
                 style={{ marginBottom: '15px' }}
                 initialValue={-75}
@@ -390,7 +390,7 @@ export function NetworkMoreSettingsForm () {
   )
 }
 
-function BbsMinRateSelect () {
+function BssMinRateSelect () {
   return (
     <Select
       defaultValue={BssMinRateEnum.VALUE_NONE}
