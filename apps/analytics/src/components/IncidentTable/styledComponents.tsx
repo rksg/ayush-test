@@ -36,9 +36,9 @@ export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => prop
     const color = incidentSeverities[props.severity].color
     return cssStr(color)
   }};
-  font-weight: bold;
+  font-weight: var(--acx-body-font-weight-bold);
 `
 
 export const DateSpan = styled.span`
-  font-weight: bold;
+  font-weight: var(--acx-body-font-weight-bold);
 `
