@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
 import { dataApi } from '@acx-ui/analytics/services'
-import { 
-  AnalyticsFilter,
+import {
+  IncidentFilter,
   incidentCodes,
   Incident,
   noDataSymbol
@@ -41,7 +41,7 @@ export type AdditionalIncidentTableFields = {
 export type IncidentTableRows = Incident & AdditionalIncidentTableFields
 
 export const transformData = (incident: Incident): IncidentTableRows => {
-  const validRelatedIncidents = 
+  const validRelatedIncidents =
     typeof incident.relatedIncidents !== 'undefined' && incident.relatedIncidents.length > 0
   const children = validRelatedIncidents ? incident.relatedIncidents : undefined
   const duration = durationValue(incident.startTime, incident.endTime)
@@ -73,21 +73,19 @@ export interface Response<IncidentNodeData> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    incidentsList: build.query<IncidentNodeData, AnalyticsFilter>({
+    incidentsList: build.query<IncidentNodeData, IncidentFilter>({
       query: (payload) => ({
         document: gql`
           query IncidentTableWidget(
             $path: [HierarchyNodeInput],
             $start: DateTime,
             $end: DateTime,
-            $severity: [Range],
             $code: [String],
             $includeMuted: Boolean
           ) {
             network(start: $start, end: $end) {
               hierarchyNode(path: $path) {
                 incidents: incidents(filter: {
-                  severity: $severity,
                   code: $code,
                   includeMuted: $includeMuted
                 }) {
@@ -104,7 +102,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          code: incidentCodes
+          code: payload.code || incidentCodes
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {
