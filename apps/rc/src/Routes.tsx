@@ -2,10 +2,11 @@ import { ConfigProvider }    from '@acx-ui/components'
 import { rootRoutes, Route } from '@acx-ui/react-router-dom'
 import { Provider }          from '@acx-ui/store'
 
-import { NetworkDetails } from './pages/NetworkDetails/NetworkDetails'
-import { NetworkForm }    from './pages/NetworkForm/NetworkForm'
-import { NetworksTable }  from './pages/NetworksTable'
-import { ServicesTable }  from './pages/services/ServicesTable'
+import { NetworkDetails }    from './pages/NetworkDetails/NetworkDetails'
+import { NetworkForm }       from './pages/NetworkForm/NetworkForm'
+import { NetworksTable }     from './pages/NetworksTable'
+import { SelectServiceForm } from './pages/services/SelectServiceForm'
+import { ServicesTable }     from './pages/services/ServicesTable'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -17,6 +18,7 @@ export default function RcRoutes () {
         element={<NetworkDetails />}
       />
       <Route path='services' element={<ServicesTable />} />
+      <Route path='services/select' element={<SelectServiceForm />} />
     </Route>
   )
   return (
