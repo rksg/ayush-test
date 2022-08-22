@@ -14,7 +14,7 @@ export const Wrapper = styled.div<WrapperProps>`
   > .ant-picker {
     width: 23em;
     padding: 6px 11px 5px;
-    background: var(--acx-neutrals-10);
+    background: var(--acx-primary-white);
     border-color: var(--acx-primary-black);
     > div:first-of-type {
       margin-left: 22px;
