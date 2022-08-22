@@ -21,6 +21,14 @@ import { CloudpathServerForm } from './CloudpathServerForm'
 const { useWatch } = Form
 
 export function OpenSettingsForm () {
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  if(data){
+    form.setFieldsValue({ 
+      cloudpathServerId: data.cloudpathServerId,
+      isCloudpathEnabled: data.cloudpathServerId !== undefined
+    })
+  }
   const selectedId = useWatch('cloudpathServerId')
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {

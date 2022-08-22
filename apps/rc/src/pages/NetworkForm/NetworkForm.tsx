@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -11,7 +12,6 @@ import {
 import { useCreateNetworkMutation, useGetNetworkQuery, useUpdateNetworkMutation } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
-  CreateNetworkFormFields,
   NetworkSaveData
 } from '@acx-ui/rc/utils'
 import {
@@ -51,28 +51,16 @@ export function NetworkForm () {
   const [createNetwork] = useCreateNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
 
-  //DetailsState
-  const [state, updateState] = useState<CreateNetworkFormFields>({
+  const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
+
+  const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
     type: NetworkTypeEnum.OPEN,
     isCloudpathEnabled: false,
     venues: []
   })
-  const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
-
-  const updateData = (newData: Partial<CreateNetworkFormFields>) => {
-    updateState({ ...state, ...newData })
-  }
-
-  const [saveState, updateSaveState] = useState<NetworkSaveData>()
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
-    if (state.isCloudpathEnabled){
-      delete saveState?.accountingRadius
-      delete saveState?.authRadius
-    } else{
-      delete saveState?.cloudpathServerId
-    }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -80,13 +68,13 @@ export function NetworkForm () {
 
   const { data } = useGetNetworkQuery({ params })
 
-
-  if(data && state.name === ''){
-    formRef?.current?.resetFields()
-    formRef?.current?.setFieldsValue({ ...data,
-      isCloudpathEnabled: typeof data.cloudpathServerId !== 'undefined'
-    })
-  }
+  useEffect(() => {
+    if(data){
+      formRef?.current?.resetFields()
+      formRef?.current?.setFieldsValue(data)
+      updateSaveData(data)
+    }
+  }, [data])
 
   const handleAddNetwork = async () => {
     try {
@@ -120,8 +108,8 @@ export function NetworkForm () {
           { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
-      <NetworkFormContext.Provider value={{ setNetworkType, editMode }}>
-        <StepsForm<CreateNetworkFormFields>
+      <NetworkFormContext.Provider value={{ setNetworkType, editMode, data }}>
+        <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
           onCancel={() => navigate(linkToNetworks)}
@@ -132,7 +120,6 @@ export function NetworkForm () {
             title={$t({ defaultMessage: 'Network Details' })}
             onFinish={async (data) => {
               const detailsSaveData = transferDetailToSave(data)
-              updateData(data)
               updateSaveData(detailsSaveData)
               return true
             }}
@@ -141,23 +128,18 @@ export function NetworkForm () {
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
-            formRef={formRef}
             name='settings'
             title={$t(settingTitle, { type: networkType })}
             onFinish={async (data) => {
-              data = {
-                ...data,
-                ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
-              }
-              const settingSaveData = tranferSettingsToSave(data)
-              updateData(data)
+              const settingData = _.merge(saveState, data)
+              const settingSaveData = tranferSettingsToSave(settingData)
               updateSaveData(settingSaveData)
               return true
             }}
           >
-            {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-            {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
-            {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
+            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
+            {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
@@ -172,7 +154,6 @@ export function NetworkForm () {
             name='venues'
             title={$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
-              updateData(data)
               updateSaveData(data)
               return true
             }}
@@ -181,7 +162,7 @@ export function NetworkForm () {
           </StepsForm.StepForm>
 
           <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
-            <SummaryForm summaryData={state} />
+            <SummaryForm summaryData={saveState} />
           </StepsForm.StepForm>
         </StepsForm>
       </NetworkFormContext.Provider>

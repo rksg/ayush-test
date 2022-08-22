@@ -4,6 +4,7 @@ import { createApi, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } fr
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  NetworkSaveData,
   onSocketActivityChanged,
   refetchByUsecase,
   RequestPayload,
@@ -11,7 +12,7 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 
-import { Network, Venue, NetworkDetailHeader, NetworkDetail, CommonResult, Dashboard } from './types'
+import { Network, Venue, NetworkDetailHeader, CommonResult, Dashboard } from './types'
 
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -92,7 +93,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
-    getNetwork: build.query<NetworkDetail | undefined, RequestPayload>({
+    getNetwork: build.query<NetworkSaveData | undefined, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
         if (!params?.networkId) return Promise.resolve({ data: undefined } as QueryReturnValue<
           undefined,
@@ -100,7 +101,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           FetchBaseQueryMeta
         >)
         const result = await fetch(createHttpRequest(CommonUrlsInfo.getNetwork, params))
-        return result as QueryReturnValue<NetworkDetail,
+        return result as QueryReturnValue<NetworkSaveData,
         FetchBaseQueryError,
         FetchBaseQueryMeta>
       },

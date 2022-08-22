@@ -6,8 +6,7 @@ import {
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
-  NetworkVenue,
-  NetworkTypeEnum
+  NetworkVenue
 } from '@acx-ui/rc/utils'
 
 export * from './ap'
@@ -35,15 +34,6 @@ export interface Network {
   }
   vlanPool?: { name: string }
   // cog ??
-}
-
-export interface NetworkDetail {
-  type: NetworkTypeEnum
-  tenantId: string
-  name: string
-  venues: NetworkVenue[]
-  id: string,
-  cloudpathServerId?: string
 }
 
 export interface Venue {

@@ -16,10 +16,16 @@ import NetworkFormContext from '../NetworkFormContext'
 
 const { Option } = Select
 
+const { useWatch } = Form
+
 export function CloudpathServerForm () {
-  const { editMode } = useContext(NetworkFormContext)
+  const { editMode, data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
-  const selectedId = Form.useWatch('cloudpathServerId')
+  const form = Form.useFormInstance()
+  if(data){
+    form.setFieldsValue(data)
+  }
+  const selectedId = useWatch('cloudpathServerId')
   const { selectOptions, selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
       return {

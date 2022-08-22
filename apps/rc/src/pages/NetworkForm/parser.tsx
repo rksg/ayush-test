@@ -121,6 +121,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {}
 
   if (data.isCloudpathEnabled) {
+    delete data?.accountingRadius
+    delete data?.authRadius
     saveData = {
       ...saveData,
       ...{
@@ -130,6 +132,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
       }
     }
   } else {
+    delete data?.cloudpathServerId
     let authRadius = {}
     if (get(data, 'authRadius.primary.ip')) {
       authRadius = {
