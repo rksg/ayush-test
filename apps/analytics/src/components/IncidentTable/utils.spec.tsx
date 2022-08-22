@@ -6,7 +6,7 @@ import { Provider }                                                   from '@acx
 import { render, screen, cleanup }                                    from '@acx-ui/test-utils'
 
 import {
-  getIncidentBySeverity,
+  GetIncidentBySeverity,
   formatDate,
   formatDuration,
   clientImpactSort,
@@ -119,23 +119,23 @@ describe('IncidentTable: utils', () => {
       ]
   
       testSeverityArr.forEach((severity) => {
-        const calculatedSeverity = getIncidentBySeverity(severity.value)
+        const calculatedSeverity = GetIncidentBySeverity(severity.value)
         expect(calculatedSeverity).toBe(severity.label)
       })
     })
 
     it('should show noDataSymbol on undefined', () => {
-      const testUndefinedSeverity = getIncidentBySeverity(undefined)
+      const testUndefinedSeverity = GetIncidentBySeverity(undefined)
       expect(testUndefinedSeverity).toBe(noDataSymbol)
     })
 
     it('should show noDataSymbol on null', () => {
-      const testNullSeverity = getIncidentBySeverity(null)
+      const testNullSeverity = GetIncidentBySeverity(null)
       expect(testNullSeverity).toBe(noDataSymbol)
     })
 
     it('should show noDataSymbol on negative', () => {
-      const testNegativeSeverity = getIncidentBySeverity(-1)
+      const testNegativeSeverity = GetIncidentBySeverity(-1)
       expect(testNegativeSeverity).toBe(noDataSymbol)
     })
   })

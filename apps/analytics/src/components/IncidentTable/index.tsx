@@ -6,7 +6,7 @@ import { Link }                                       from '@acx-ui/react-router
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRows } from './services'
 import { 
-  getIncidentBySeverity,
+  GetIncidentBySeverity,
   formatDate,
   formatDuration,
   clientImpactSort,
@@ -15,7 +15,8 @@ import {
   GetScope,
   severitySort,
   dateSort,
-  defaultSort
+  defaultSort,
+  ClientImpact
 } from './utils'
 
 
@@ -24,7 +25,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     title: 'Severity',
     dataIndex: 'severity',
     key: 'severity',
-    render: (_, value) => getIncidentBySeverity(value.severity),
+    render: (_, value) => GetIncidentBySeverity(value.severity),
     sorter: {
       compare: (a, b) => severitySort(a.severity, b.severity),
       multiple: 1
@@ -47,7 +48,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     title: 'Duration',
     dataIndex: 'duration',
     key: 'duration',
-    render: (_, value) => formatDuration(value.startTime, value.endTime),
+    render: (_, value) => formatDuration(value.duration),
     sorter: {
       compare: (a, b) => defaultSort(a.duration, b.duration),
       multiple: 3
@@ -78,6 +79,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     title: 'Client Impact',
     dataIndex: 'clientCount',
     key: 'clientCount',
+    render: (_, incident) => <ClientImpact type='clientImpact' incident={incident}/>,
     sorter: {
       compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount),
       multiple: 6
@@ -87,6 +89,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     title: 'Impacted Clients',
     dataIndex: 'impactedClientCount',
     key: 'impactedClientCount',
+    render: (_, incident) => <ClientImpact type='impactedClients' incident={incident}/>,
     sorter: {
       compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount),
       multiple: 7
