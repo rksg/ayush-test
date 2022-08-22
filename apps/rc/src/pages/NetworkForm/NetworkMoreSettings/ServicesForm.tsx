@@ -27,7 +27,7 @@ function ClientIsolationForm () {
   const [
     enableClientIsolation
   ] = [
-    useWatch<boolean>('enableClientIsolation')
+    useWatch<boolean>(['moresettings','advancedCustomization','clientIsolation'])
   ]
 
   return (<>
@@ -93,9 +93,9 @@ function AntiSpoofing () {
     enableArpRequestRateLimit,
     enableDhcpRequestRateLimit
   ] = [
-    useWatch<boolean>('enableAntiSpoofing'),
-    useWatch<boolean>('enableArpRequestRateLimit'),
-    useWatch<boolean>('enableDhcpRequestRateLimit')
+    useWatch<boolean>(['moresettings','advancedCustomization','enableAntiSpoofing']),
+    useWatch<boolean>(['moresettings','advancedCustomization','enableArpRequestRateLimit']),
+    useWatch<boolean>(['moresettings','advancedCustomization','enableDhcpRequestRateLimit'])
   ]
 
 
@@ -174,7 +174,7 @@ export function ServicesForm () {
   const [
     enableDnsProxy
   ] = [
-    useWatch<boolean>('enableDnsProxy')
+    useWatch<boolean>(['moresettings','advancedCustomization','dnsProxyEnabled'])
   ]
 
   return (

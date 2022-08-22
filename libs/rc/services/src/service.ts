@@ -13,7 +13,8 @@ import {
   L2AclPolicy,
   DevicePolicy,
   L3AclPolicy,
-  ApplicationPolicy
+  ApplicationPolicy,
+  VlanPool
 } from './types/service'
 
 
@@ -100,6 +101,18 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
+    vlanPoolList: build.query<TableResult<VlanPool>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const vlanPoolListReq = createHttpRequest(
+          CommonUrlsInfo.getVlanPools,
+          params
+        )
+        return {
+          ...vlanPoolListReq,
+          body: payload
+        }
+      }
+    }),
     deleteService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.deleteService, params)
@@ -120,5 +133,6 @@ export const {
   useApplicationPolicyListQuery,
   useDevicePolicyListQuery,
   useServiceListQuery,
-  useDeleteServiceMutation
+  useDeleteServiceMutation,
+  useVlanPoolListQuery
 } = serviceApi

@@ -6,6 +6,10 @@ interface ApiInfo {
 export const websocketServerUrl = '/api/websocket/socket.io'
 
 export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
+  getVlanPools: {
+    method: 'get',
+    url: '/api/tenant/{tenantId}/wifi/vlan-pool'
+  },
   getVMNetworksList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/network'

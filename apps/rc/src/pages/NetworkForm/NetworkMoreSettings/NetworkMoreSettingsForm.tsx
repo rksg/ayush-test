@@ -8,12 +8,17 @@ import {
   Switch
 } from 'antd'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }     from '@acx-ui/components'
+import {
+  useVlanPoolListQuery
+} from '@acx-ui/rc/services'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { AccessControlForm } from './AccessControlForm'
 import { LoadControlForm }   from './LoadControlForm'
 import { ServicesForm }      from './ServicesForm'
 import * as UI               from './styledComponents'
+
 const { Panel } = Collapse
 
 const { useWatch } = Form
@@ -42,6 +47,23 @@ enum MgmtTxRateEnum {
   VALUE_24 = 24
 }
 
+const listPayload = {
+  fields: ['name', 'id'], sortField: 'name',
+  sortOrder: 'ASC', page: 1, pageSize: 10000
+}
+
+
+const { vlanPoolSelectOptions } = useVlanPoolListQuery({
+  params: useParams(),
+  payload: listPayload
+}, {
+  selectFromResult ({ data }) {
+    return {
+      applicationPolicySelectOptions: data?.data?.map(
+        item => <Option key={item.id}>{item.name}</Option>) ?? []
+    }
+  }
+})
 
 function VlanForm () {
   const enableVlanPooling = useWatch<boolean>('enableVlanPooling')
@@ -110,11 +132,11 @@ export function NetworkMoreSettingsForm () {
     enableOce
   ] = [
     useWatch<boolean>('enableOfdmOnly'),
-    useWatch<boolean>('enable80211rFastBss'),
-    useWatch<boolean>('enableAirtimedecongestion'),
-    useWatch<boolean>('enableJoinRSSIThreshold'),
-    useWatch<boolean>('enableTransientClientManagement'),
-    useWatch<boolean>('enableOce')
+    useWatch<boolean>(['moresettings','advancedCustomization','enableFastRoaming']),
+    useWatch<boolean>(['moresettings','advancedCustomization','enableAirtimedecongestion']),
+    useWatch<boolean>(['moresettings','advancedCustomization','enableJoinRSSIThreshold']),
+    useWatch<boolean>(['moresettings','advancedCustomization','enableTransientClientManagement']),
+    useWatch<boolean>(['moresettings','advancedCustomization','enableOce'])
   ]
 
   return (

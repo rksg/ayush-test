@@ -200,10 +200,10 @@ function AccessControlConfigForm () {
     enableUploadLimit,
     enableClientRateLimit
   ] = [
-    useWatch<boolean>('enableLayer2'),
-    useWatch<boolean>('enableLayer3'),
+    useWatch<boolean>(['moresettings','advancedCustomization','l2AclEnable']),
+    useWatch<boolean>(['moresettings','advancedCustomization','l3AclEnable']),
     useWatch<boolean>('enableDeviceOs'),
-    useWatch<boolean>('enableApplications'),
+    useWatch<boolean>(['moresettings','advancedCustomization','applicationPolicyEnable']),
     useWatch<boolean>('enableDownloadLimit'),
     useWatch<boolean>('enableUploadLimit'),
     useWatch<boolean>('enableClientRateLimit')
