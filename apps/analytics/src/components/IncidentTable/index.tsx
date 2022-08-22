@@ -23,6 +23,7 @@ import {
 export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   {
     title: 'Severity',
+    width: '10%',
     dataIndex: 'severity',
     key: 'severity',
     render: (_, value) => <GetIncidentBySeverity value={value.severity}/>,
@@ -33,6 +34,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Date',
+    width: '10%',
     dataIndex: 'endTime',
     valueType: 'dateTime',
     key: 'endTime',
@@ -46,6 +48,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Duration',
+    width: '10%',
     dataIndex: 'duration',
     key: 'duration',
     render: (_, value) => formatDuration(value.duration),
@@ -56,6 +59,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Description',
+    width: '20%',
     dataIndex: 'description',
     key: 'description',
     render: (_, value) => <ShortIncidentDescription incident={value}/>,
@@ -67,6 +71,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Category',
+    width: '10%',
     dataIndex: 'category',
     key: 'category',
     render: (_, value) => GetCategory(value.code),
@@ -77,6 +82,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Client Impact',
+    width: '15%',
     dataIndex: 'clientCount',
     key: 'clientCount',
     render: (_, incident) => <ClientImpact type='clientImpact' incident={incident}/>,
@@ -87,6 +93,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Impacted Clients',
+    width: '15%',
     dataIndex: 'impactedClientCount',
     key: 'impactedClientCount',
     render: (_, incident) => <ClientImpact type='impactedClients' incident={incident}/>,
@@ -97,6 +104,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Scope',
+    width: '10%',
     dataIndex: 'scope',
     key: 'scope',
     render: (_, value) => <GetScope incident={value} />,
@@ -107,6 +115,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   }, 
   {
     title: 'Type',
+    width: '10%',
     dataIndex: 'sliceType',
     key: 'sliceType',
     render: (_, value) => value.sliceType.toLocaleUpperCase(),
@@ -155,7 +164,7 @@ const IncidentTableWidget = () => {
                 ? mutedKeysFilter(queryResults.data)
                 : undefined
             }}
-            pagination={{ pageSize: 10 }}
+            pagination={{ pageSize: 10, position: ['bottomCenter'] }}
             rowKey='id'
             showSorterTooltip={false}
             columnEmptyText={noDataSymbol}
