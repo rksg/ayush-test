@@ -7,13 +7,13 @@ import { render, screen, cleanup }                                    from '@acx
 
 import {
   GetIncidentBySeverity,
-  formatDate,
+  FormatDate,
   formatDuration,
   clientImpactSort,
   severitySort,
   FormatIntlString,
   FormatIntlStringProps,
-  getCategory,
+  GetCategory,
   IncidentTableComponentProps,
   GetScope,
   dateSort,
@@ -110,70 +110,58 @@ describe('IncidentTable: utils', () => {
   }
 
   describe('getIncidentBySeverity', () => {
-    it('should show correct values', () => {
-      const testSeverityArr = [
-        { value: 0, label: 'P4' }, 
-        { value: 0.65, label: 'P3' }, 
-        { value: 0.8, label: 'P2' },
-        { value: 1, label: 'P1' }
-      ]
-  
-      testSeverityArr.forEach((severity) => {
-        const calculatedSeverity = GetIncidentBySeverity(severity.value)
-        expect(calculatedSeverity).toBe(severity.label)
+    const testSeverityArr = [
+      { value: 0, label: 'P4' }, 
+      { value: 0.65, label: 'P3' }, 
+      { value: 0.8, label: 'P2' },
+      { value: 1, label: 'P1' }
+    ]
+    
+    it.each(testSeverityArr)(
+      'should show correct label: %s for value %n', 
+      async ({ label, value }) => {
+        render(<GetIncidentBySeverity value={value}/>)
+        await screen.findByText(label)
+        expect(screen.getByText(label).textContent).toMatch(label)
       })
+
+    it('should show noDataSymbol on undefined', async () => {
+      render(<GetIncidentBySeverity value={undefined}/>)
+      await screen.findByText(noDataSymbol)
+      expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
     })
 
-    it('should show noDataSymbol on undefined', () => {
-      const testUndefinedSeverity = GetIncidentBySeverity(undefined)
-      expect(testUndefinedSeverity).toBe(noDataSymbol)
+    it('should show noDataSymbol on null', async () => {
+      render(<GetIncidentBySeverity value={null}/>)
+      await screen.findByText(noDataSymbol)
+      expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
     })
 
-    it('should show noDataSymbol on null', () => {
-      const testNullSeverity = GetIncidentBySeverity(null)
-      expect(testNullSeverity).toBe(noDataSymbol)
-    })
-
-    it('should show noDataSymbol on negative', () => {
-      const testNegativeSeverity = GetIncidentBySeverity(-1)
-      expect(testNegativeSeverity).toBe(noDataSymbol)
+    it('should show noDataSymbol on negative', async () => {
+      render(<GetIncidentBySeverity value={-1}/>)
+      await screen.findByText(noDataSymbol)
+      expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
     })
   })
 
   describe('formatDate', () => {
-    it('should show correct date', () => {
-      const testWorkingDate = formatDate('2022-08-15T00:00:00+08:00')
-      expect(testWorkingDate).toBe('Aug 14 2022 16:00 UTC')
+    it('should show correct date', async () => {
+      render(<FormatDate datetimestamp='2022-08-15T00:00:00+08:00'/>)
+      await screen.findByText('Aug 14 2022 16:00 UTC')
+      expect(screen.getByText('Aug 14 2022 16:00 UTC').textContent).toMatch('Aug 14 2022 16:00 UTC')
     })
 
-    it('should show null for null date', () => {
-      const testNullDate = formatDate(null as unknown as string)
-      expect(testNullDate).toBe(noDataSymbol)
+    it('should show null for null date', async () => {
+      render(<FormatDate datetimestamp={null as unknown as string}/>)
+      await screen.findByText(noDataSymbol)
+      expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
     })
   })
 
   describe('formatDuration', () => {
-    const startTime = '2021-07-15T00:00:00+08:00'
-    const endTime = '2022-08-16T00:00:00+08:00'
-
     it('should calculate correct duration', () => {
-      const testDuration = formatDuration(startTime, endTime)
-      expect(testDuration).toBe('1y 1mo')
-    })
-
-    it('should show noDataSymbol for undefined startTime', () => {
-      const testEmptyDurationStart = formatDuration(startTime, undefined)
-      expect(testEmptyDurationStart).toBe(noDataSymbol)
-    })
-
-    it('should show noDataSymbol for undefined endTime', () => {
-      const testEmptyDurationEnd = formatDuration(undefined, startTime)
-      expect(testEmptyDurationEnd).toBe(noDataSymbol)
-    })
-
-    it('should show noDataSymbol for undefined time', () => {
-      const testEmptyDurationBoth = formatDuration()
-      expect(testEmptyDurationBoth).toBe(noDataSymbol)
+      const testDuration = formatDuration(3.154e10)
+      expect(testDuration).toBe('11mo 30d')
     })
   })
 
@@ -298,7 +286,7 @@ describe('IncidentTable: utils', () => {
     }
   
     const RenderGetCategory = (props: RenderGetCategoryProps) => {
-      return <Provider>{getCategory(props.code as string)}</Provider>
+      return <Provider>{GetCategory(props.code as string)}</Provider>
     }
   
     it('getCategory: valid codes', async () => {

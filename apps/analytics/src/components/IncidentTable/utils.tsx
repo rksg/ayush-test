@@ -14,20 +14,30 @@ import { formatter, durationFormat } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-export const GetIncidentBySeverity = (value?: number | null) => {
+export type GetIncidentBySeverityProps = {
+  value?: number | null
+}
+
+export const GetIncidentBySeverity = (props: GetIncidentBySeverityProps) => {
+  const { value } = props
   if (value === null || value === undefined) {
-    return noDataSymbol
+    return <span>{noDataSymbol}</span>
   }
 
   const severity = calculateSeverity(value)
-  if (typeof severity === 'undefined') return noDataSymbol
+  if (typeof severity === 'undefined') return <span>{noDataSymbol}</span>
 
   return <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
 }
 
-export const formatDate = (datetimestamp: string) => {
+export type FormatDateProps = {
+  datetimestamp: string
+}
+
+export const FormatDate = (props: FormatDateProps) => {
+  const { datetimestamp } = props
   const formattedDatetime = formatter('dateTimeFormat')(datetimestamp, 'UTC')
-  if (formattedDatetime === null) return noDataSymbol
+  if (formattedDatetime === null) return <span>{noDataSymbol}</span>
   return <UI.DateSpan>{formattedDatetime as string}</UI.DateSpan>
 }
 
@@ -62,7 +72,7 @@ export const ShortIncidentDescription = (props: IncidentTableComponentProps) => 
   return <UI.DescriptionSpan>{shortDesc}</UI.DescriptionSpan>
 }
 
-export const getCategory = (code: string) => {
+export const GetCategory = (code: string) => {
   const incidentInfo = incidentInformation[code]
   const { category } = incidentInfo
   return <FormatIntlString message={category} />

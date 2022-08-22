@@ -7,11 +7,11 @@ import { Link }                                       from '@acx-ui/react-router
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRows } from './services'
 import { 
   GetIncidentBySeverity,
-  formatDate,
+  FormatDate,
   formatDuration,
   clientImpactSort,
   ShortIncidentDescription,
-  getCategory,
+  GetCategory,
   GetScope,
   severitySort,
   dateSort,
@@ -25,7 +25,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     title: 'Severity',
     dataIndex: 'severity',
     key: 'severity',
-    render: (_, value) => GetIncidentBySeverity(value.severity),
+    render: (_, value) => <GetIncidentBySeverity value={value.severity}/>,
     sorter: {
       compare: (a, b) => severitySort(a.severity, b.severity),
       multiple: 1
@@ -37,7 +37,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     valueType: 'dateTime',
     key: 'endTime',
     render: (_, value) => {
-      return <Link to={value.id}>{formatDate(value.endTime) as string}</Link>
+      return <Link to={value.id}><FormatDate datetimestamp={value.endTime}/></Link>
     },
     sorter: {
       compare: (a, b) => dateSort(a.endTime, b.endTime),
@@ -69,7 +69,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     title: 'Category',
     dataIndex: 'category',
     key: 'category',
-    render: (_, value) => getCategory(value.code),
+    render: (_, value) => GetCategory(value.code),
     sorter: {
       compare: (a, b) => defaultSort(a.code, b.code),
       multiple: 5
