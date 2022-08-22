@@ -9,6 +9,7 @@ import {
   DpskWlanAdvancedCustomization,
   PskWlanAdvancedCustomization
 } from '@acx-ui/rc/utils'
+import { SaveEditableAction } from '@ant-design/pro-utils/lib/useEditableArray'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {}
@@ -267,4 +268,9 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
     [NetworkTypeEnum.PSK]: parsePskSettingDataToSave(data)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
+}
+
+export function transferMoreSettingsToSave (data: unknown) {
+  let saveData = data
+  return saveData
 }

@@ -134,7 +134,6 @@ export function NetworkForm () {
           {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
           {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
         </StepsForm.StepForm>
-
         <StepsForm.StepForm
           formRef={formRef}
           name='moreSettings'
@@ -143,12 +142,13 @@ export function NetworkForm () {
             // const detailsSaveData = transferMoreSettingsToSave(data)
             // const detailsSaveData = data
             updateData(data)
-            updateSaveData(detailsSaveData)
+            // updateSaveData(detailsSaveData)
             return true
           }}
         >
           <NetworkMoreSettingsForm />
         </StepsForm.StepForm>
+
 
 
         <StepsForm.StepForm

@@ -114,6 +114,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
 
 export const {
+  useL2AclPolicyListQuery,
+  useL3AclPolicyListQuery,
+  useApplicationPolicyListQuery,
+  useDevicePolicyListQuery,
   useServiceListQuery,
   useDeleteServiceMutation
 } = serviceApi
