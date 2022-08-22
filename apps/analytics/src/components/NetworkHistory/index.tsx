@@ -3,7 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, AnalyticsFilter }                 from '@acx-ui/analytics/utils'
+import { getSeriesData, IncidentFilter }                  from '@acx-ui/analytics/utils'
 import { Card, Loader, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
 
 import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
@@ -23,14 +23,20 @@ function NetworkHistoryWidget ({
 }: {
   hideTitle?: boolean;
   bordered?: boolean;
-  filters: AnalyticsFilter;
+  filters: IncidentFilter;
 }) {
   const { $t } = useIntl()
   const seriesMapping = [
     { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
-    { key: 'impactedClientCount', name: $t({ defaultMessage: 'Impacted Clients' }) },
-    { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
-  ] as Array<{ key: Key, name: string }>
+    {
+      key: 'impactedClientCount',
+      name: $t({ defaultMessage: 'Impacted Clients' })
+    },
+    {
+      key: 'connectedClientCount',
+      name: $t({ defaultMessage: 'Connected Clients' })
+    }
+  ] as Array<{ key: Key; name: string }>
   const queryResults = useNetworkHistoryQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),

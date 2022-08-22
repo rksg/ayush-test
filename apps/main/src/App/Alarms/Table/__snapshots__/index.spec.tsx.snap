@@ -3,7 +3,7 @@
 exports[`Venues Table should render table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fmIhzJ"
+    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -28,7 +28,7 @@ exports[`Venues Table should render table 1`] = `
     </div>
   </div>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 ekDfta"
+    class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
   >
     <div
       class="styledComponents__FallbackWrapper-sc-1352uh8-1 cnmeaO"

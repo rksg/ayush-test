@@ -66,6 +66,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/admin-settings/ui'
   },
+  getServicesList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/services'
+  },
+  deleteService: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/service/:serviceId'
+  },
   getVenuesList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'

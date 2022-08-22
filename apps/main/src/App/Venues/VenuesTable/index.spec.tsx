@@ -62,9 +62,8 @@ describe('Venues Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
-
     await screen.findByText('Add Venue')
     await screen.findByText('My-Venue')
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
 })
