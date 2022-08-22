@@ -11,7 +11,7 @@ export type SwitchModel = {
 interface Response <SwitchModels> {
   network: {
     hierarchyNode: {
-      topNSwitchModelsByCount: SwitchModels[]
+      topNSwitchModels: SwitchModels[]
     }
   }
 }
@@ -24,14 +24,14 @@ export const api = dataApi.injectEndpoints({
     >({
       query: (payload) => ({
         document: gql`
-          query TopSwitchModelsByCount (
+          query topSwitchModels (
             $path: [HierarchyNodeInput]
             $start: DateTime
             $end: DateTime
           ) {
             network(start: $start, end: $end) {
               hierarchyNode(path: $path) {
-                topNSwitchModelsByCount(n: 5) {
+                topNSwitchModels(n: 5) {
                   name
                   count
                 }
@@ -46,7 +46,7 @@ export const api = dataApi.injectEndpoints({
         }
       }),
       transformResponse: (response: Response<SwitchModel>) =>
-        response.network.hierarchyNode.topNSwitchModelsByCount
+        response.network.hierarchyNode.topNSwitchModels
     })
   })
 })

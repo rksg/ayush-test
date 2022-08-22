@@ -24,7 +24,7 @@ describe('TopSwitchModelsWidget', () => {
   })
 
   it('should render loader', () => {
-    mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
+    mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
       data: topSwitchModelsResponse
     })
     render(<Provider><TopSwitchModelsWidget filters={filters}/></Provider>)
@@ -32,7 +32,7 @@ describe('TopSwitchModelsWidget', () => {
   })
 
   it('should render chart', async () => {
-    mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
+    mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
       data: topSwitchModelsResponse
     })
     const { asFragment } = render( <Provider> <TopSwitchModelsWidget filters={filters}/></Provider>)
@@ -44,8 +44,8 @@ describe('TopSwitchModelsWidget', () => {
   })
 
   it('should render "No data to display" when data is empty', async () => {
-    mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
-      data: { network: { hierarchyNode: { topNSwitchModelsByCount: [] } } }
+    mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
+      data: { network: { hierarchyNode: { topNSwitchModels: [] } } }
     })
     render(<Provider><TopSwitchModelsWidget filters={filters}/></Provider>)
     expect(await screen.findByText('No data to display')).toBeVisible()

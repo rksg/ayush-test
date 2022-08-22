@@ -9,7 +9,7 @@ import { api } from './services'
 export const topSwitchModelsResponse = {
   network: {
     hierarchyNode: {
-      topNSwitchModelsByCount: [{
+      topNSwitchModels: [{
         name: 'ICX7150-C12P',
         count: 13
       }, {
@@ -48,7 +48,7 @@ describe('TopSwitchModelsByCountApi', () => {
   )
 
   it('should return correct data', async () => {
-    mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
+    mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
       data: topSwitchModelsResponse
     })
     const { status, data, error } = await store.dispatch(
@@ -56,12 +56,12 @@ describe('TopSwitchModelsByCountApi', () => {
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(
-      topSwitchModelsResponse.network.hierarchyNode.topNSwitchModelsByCount
+      topSwitchModelsResponse.network.hierarchyNode.topNSwitchModels
     )
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
+    mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(

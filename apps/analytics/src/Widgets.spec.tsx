@@ -100,8 +100,8 @@ test('should render Top 5 Switches by PoE Usage widget', async () => {
 })
 
 test('should render Top 5 Switch Models widget', async () => {
-  mockGraphqlQuery(dataApiURL, 'TopSwitchModelsByCount', {
-    data: { network: { hierarchyNode: { topNSwitchModelsByCount: switchModelsData } } }
+  mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
+    data: { network: { hierarchyNode: { topNSwitchModels: switchModelsData } } }
   })
   render(
     <Provider>
