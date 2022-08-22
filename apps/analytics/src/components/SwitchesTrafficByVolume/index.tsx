@@ -1,0 +1,57 @@
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
+
+import { getSeriesData }            from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
+import { Card }                     from '@acx-ui/components'
+import { Loader }                   from '@acx-ui/components'
+import { MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { cssStr }                   from '@acx-ui/components'
+import { formatter }                from '@acx-ui/utils'
+
+import {
+  useSwitchesTrafficByVolumeQuery,
+  SwitchesTrafficByVolumeData
+} from './services'
+
+
+type Key = keyof Omit<SwitchesTrafficByVolumeData, 'time'>
+
+const lineColors = [
+  cssStr('--acx-accents-blue-30'),
+  cssStr('--acx-accents-blue-50'),
+  cssStr('--acx-accents-orange-50')
+]
+
+function SwitchesTrafficByVolumeWidget ({ filters }: { filters : AnalyticsFilter }) {
+  const { $t } = useIntl()
+  const seriesMapping = [
+    { key: 'switchTotalTraffic', name: $t({ defaultMessage: 'Total' }) },
+    { key: 'switchTotalTraffic_tx', name: $t({ defaultMessage: 'Tx' }) },
+    { key: 'switchTotalTraffic_rx', name: $t({ defaultMessage: 'Rx' }) }
+  ] as Array<{ key: Key, name: string }>
+  const queryResults = useSwitchesTrafficByVolumeQuery(filters, {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: getSeriesData(data!, seriesMapping),
+      ...rest
+    })
+  })
+  return (
+    <Loader states={[queryResults]}>
+      <Card title={$t({ defaultMessage: 'Traffic by Volume' })} >
+        <AutoSizer>
+          {({ height, width }) => (
+            <MultiLineTimeSeriesChart
+              style={{ width, height }}
+              data={queryResults.data}
+              lineColors={lineColors}
+              dataFormatter={formatter('bytesFormat')}
+            />
+          )}
+        </AutoSizer>
+      </Card>
+    </Loader>
+  )
+}
+
+export default SwitchesTrafficByVolumeWidget

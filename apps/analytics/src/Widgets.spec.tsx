@@ -53,6 +53,20 @@ const connectedClientsOverTimeSample = {
   uniqueUsers_5: [11, 12, 13, 14, 15],
   uniqueUsers_24: [16, 17, 18, 19, 20]
 }
+
+const switchTrafficByVolumeSample = {
+  time: [
+    '2022-04-07T09:15:00.000Z',
+    '2022-04-07T09:30:00.000Z',
+    '2022-04-07T09:45:00.000Z',
+    '2022-04-07T10:00:00.000Z',
+    '2022-04-07T10:15:00.000Z'
+  ],
+  switchTotalTraffic: [1, 2, 3, 4, 5],
+  switchTotalTraffic_tx: [6, 7, 8, 9, 10],
+  switchTotalTraffic_rx: [11, 12, 13, 14, 15]
+}
+
 test('should render Traffic by Volume widget', async () => {
 
   mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
@@ -86,4 +100,15 @@ test('should render Top 5 Switches by PoE Usage widget', async () => {
   render( <Provider> <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/></Provider>)
   expect(await screen.findByText('Top 5 Switches by PoE Usage')).toBeVisible()
   
+})
+
+test('should render Switches Traffic by Volume widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
+    data: { network: { hierarchyNode: { timeSeries: switchTrafficByVolumeSample } } }
+  })
+  render( 
+    <Provider>
+      <AnalyticsWidgets name='switchTrafficByVolume' filters={filters}/>
+    </Provider>)
+  expect(await screen.findByText('Traffic by Volume')).not.toBe(null)
 })
