@@ -39,7 +39,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
-    createNetwork: build.mutation<Network, RequestPayload>({
+    addNetwork: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
         const createNetworkReq = createHttpRequest(CommonUrlsInfo.addNetworkDeep, params)
         return {
@@ -153,7 +153,7 @@ export const {
   useGetNetworkQuery,
   useNetworkDetailHeaderQuery,
   useNetworkVenueListQuery,
-  useCreateNetworkMutation,
+  useAddNetworkMutation,
   useUpdateNetworkDeepMutation,
   useDeleteNetworkMutation,
   useAddNetworkVenueMutation,

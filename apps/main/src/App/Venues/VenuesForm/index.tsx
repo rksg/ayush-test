@@ -8,8 +8,9 @@ import {
   Col,
   Typography
 } from 'antd'
-import TextArea from 'antd/lib/input/TextArea'
-import styled   from 'styled-components/macro'
+import TextArea    from 'antd/lib/input/TextArea'
+import { useIntl } from 'react-intl'
+import styled      from 'styled-components/macro'
 
 import { PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { get }                                                 from '@acx-ui/config'
@@ -24,7 +25,6 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import VenueMap from './VenueMap'
-// import ReactDOM            from 'react-dom'
 
 export const CloseIcon = styled.svg`
   width: 10px;
@@ -141,6 +141,7 @@ export const addressParser = async (place: google.maps.places.PlaceResult) => {
 }
 
 export function VenuesForm () {
+  const { $t } = useIntl()
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<VenueSaveData>>()
@@ -186,7 +187,7 @@ export function VenuesForm () {
 
   const addressValidator = async () => {
     if(Object.keys(address).length === 0){
-      return Promise.reject('Please select address from suggested list')
+      return Promise.reject($t({ defaultMessage: 'Please select address from suggested list' }))
     }
     return Promise.resolve()
   }
@@ -242,7 +243,7 @@ export function VenuesForm () {
         <StepsForm.StepForm>
           <Form.Item
             name='name'
-            label='Venue Name'
+            label={$t({ defaultMessage: 'Venue Name' })}
             rules={[{
               required: true
             },{
@@ -255,7 +256,7 @@ export function VenuesForm () {
             children={<Input />} />
           <Form.Item
             name='description'
-            label='Description'
+            label={$t({ defaultMessage: 'Description' })}
             wrapperCol={{ span: 5 }}
             children={<TextArea rows={2} maxLength={180} />} />
           {/*
@@ -267,12 +268,16 @@ export function VenuesForm () {
           <Row align='middle'>
             <Col span={2} style={{ textAlign: 'left' }}>
               <span className='ant-form-item-label'>
-                <label className='ant-form-item-required'>Address</label>
+                <label className='ant-form-item-required'>
+                  {$t({ defaultMessage: 'Address' })}
+                </label>
               </span>
             </Col>
             <Col span={9} style={{ textAlign: 'left', paddingLeft: '2rem' }}>
               <span className='ant-form-item-label'>
-                <label>Make sure to include a city and country in the address</label>
+                <label>
+                  {$t({ defaultMessage: 'Make sure to include a city and country in the address' })}
+                </label>
               </span>
             </Col>
           </Row>

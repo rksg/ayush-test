@@ -8,7 +8,7 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateNetworkMutation } from '@acx-ui/rc/services'
+import { useAddNetworkMutation } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   CreateNetworkFormFields,
@@ -47,7 +47,7 @@ export function NetworkForm () {
   const params = useParams()
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
-  const [createNetwork] = useCreateNetworkMutation()
+  const [addNetwork] = useAddNetworkMutation()
   //DetailsState
   const [state, updateState] = useState<CreateNetworkFormFields>({
     name: '',
@@ -77,7 +77,7 @@ export function NetworkForm () {
 
   const handleAddNetwork = async () => {
     try {
-      await createNetwork({ params, payload: saveState }).unwrap()
+      await addNetwork({ params, payload: saveState }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -89,7 +89,7 @@ export function NetworkForm () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Create New Network' })}
+        title={$t({ defaultMessage: 'Add Network' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
