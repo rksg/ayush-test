@@ -9,7 +9,7 @@ import {
   stringContainSpace
 } from '@acx-ui/rc/utils'
 
-export function IpPortSecretForm ({ serverType, order }: 
+export function IpPortSecretForm ({ serverType, order }:
   { serverType: AaaServerTypeEnum, order: AaaServerOrderEnum }) {
   const { $t } = useIntl()
   return (
@@ -40,7 +40,7 @@ export function IpPortSecretForm ({ serverType, order }:
       />
       <Form.Item
         name={`${serverType}.${order}.sharedSecret`}
-        label={$t({ defaultMessage: 'Shared secret' })}
+        label={$t({ defaultMessage: 'Shared Secret' })}
         rules={[{
           required: true,
           whitespace: false

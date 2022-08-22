@@ -703,9 +703,9 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                                           <label
                                             class="ant-form-item-required"
                                             for="settings_authRadius.primary.sharedSecret"
-                                            title="Shared secret"
+                                            title="Shared Secret"
                                           >
-                                            Shared secret
+                                            Shared Secret
                                           </label>
                                         </div>
                                         <div
@@ -2599,9 +2599,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                           <label
                                             class="ant-form-item-required"
                                             for="settings_authRadius.primary.sharedSecret"
-                                            title="Shared secret"
+                                            title="Shared Secret"
                                           >
-                                            Shared secret
+                                            Shared Secret
                                           </label>
                                         </div>
                                         <div

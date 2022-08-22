@@ -64,7 +64,7 @@ describe('NetworkForm', () => {
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
 
-    const secretTextbox = screen.getByLabelText('Shared secret')
+    const secretTextbox = screen.getByLabelText('Shared Secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
     await fillInAfterSettings(async () => {
@@ -85,7 +85,7 @@ describe('NetworkForm', () => {
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: 1111 } })
 
-    const secretTextbox = screen.getByLabelText('Shared secret')
+    const secretTextbox = screen.getByLabelText('Shared Secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
     fireEvent.click(screen.getByText('Add Secondary Server'))
@@ -96,7 +96,7 @@ describe('NetworkForm', () => {
     const secondaryPortTextbox = screen.getAllByLabelText('Port')[1]
     fireEvent.change(secondaryPortTextbox, { target: { value: '2222' } })
 
-    const secondarySecretTextbox = screen.getAllByLabelText('Shared secret')[1]
+    const secondarySecretTextbox = screen.getAllByLabelText('Shared Secret')[1]
     fireEvent.change(secondarySecretTextbox, { target: { value: 'secret-2' } })
 
     await fillInAfterSettings(() => {
@@ -111,7 +111,7 @@ describe('NetworkForm', () => {
 
   it('should render Network AAA diagram with AAA buttons', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    
+
     await fillInBeforeSettings('AAA network test')
 
     let toggle = screen.getAllByRole('switch', { checked: false })
@@ -120,7 +120,7 @@ describe('NetworkForm', () => {
       fireEvent.click(toggle[1]) // Proxy Service
       fireEvent.click(toggle[2]) // Accounting Service
     })
-    
+
     let diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
     let authBtn = screen.getByRole('button', { name: 'Authentication Service' })
     let accBtn = screen.getByRole('button', { name: 'Accounting Service' })
@@ -128,7 +128,7 @@ describe('NetworkForm', () => {
     expect(authBtn).toBeDisabled()
     expect(accBtn).toBeVisible()
     expect(diagram[1].src).toContain('aaa-proxy.png')
-    
+
     fireEvent.click(accBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
     authBtn = screen.getByRole('button', { name: 'Authentication Service' })

@@ -82,7 +82,7 @@ describe('NetworkForm', () => {
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
 
-    const secretTextbox = screen.getByLabelText('Shared secret')
+    const secretTextbox = screen.getByLabelText('Shared Secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
     await fillInAfterSettings(async () => {
@@ -101,9 +101,9 @@ describe('NetworkForm', () => {
     const securityProtocols = screen.getByRole('combobox')
 
     fireEvent.mouseDown(securityProtocols)
-    
+
     const option = screen.getAllByLabelText('WPA3')[0]
-    
+
     fireEvent.click(option)
 
     const passphraseTextbox = screen.getByLabelText('Passphrase')
@@ -117,7 +117,7 @@ describe('NetworkForm', () => {
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
 
-    const secretTextbox = screen.getByLabelText('Shared secret')
+    const secretTextbox = screen.getByLabelText('Shared Secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
     await fillInAfterSettings(async () => {
@@ -135,13 +135,13 @@ describe('NetworkForm', () => {
     const securityProtocols = screen.getByRole('combobox')
 
     fireEvent.mouseDown(securityProtocols)
-    
+
     const mixOption =screen.getByText('WPA3/WPA2 mixed mode')
     fireEvent.click(mixOption)
 
     fireEvent.mouseDown(securityProtocols)
     const option = screen.getByText('WEP')
-    
+
     fireEvent.click(option)
 
     fireEvent.click(screen.getByText('Generate'))
