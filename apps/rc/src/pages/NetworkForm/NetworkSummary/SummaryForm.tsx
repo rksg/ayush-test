@@ -39,7 +39,7 @@ export function SummaryForm (props: {
         rows.push(
           <li key={venue.venueId} style={{ margin: '10px 0px' }}>
             <EnvironmentOutlined />
-            {venue.name}
+            {venue?.name}
           </li>
         )
       }

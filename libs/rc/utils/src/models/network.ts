@@ -91,6 +91,7 @@ export interface NetworkSaveData {
 
 export interface NetworkVenue {
   id?: string
+  name?: string
   apGroups: string[],
   scheduler: {
     type: string
