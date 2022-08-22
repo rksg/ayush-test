@@ -147,8 +147,8 @@ describe('IncidentTable: utils', () => {
   describe('formatDate', () => {
     it('should show correct date', async () => {
       render(<FormatDate datetimestamp='2022-08-15T00:00:00+08:00'/>)
-      await screen.findByText('Aug 14 2022 16:00 UTC')
-      expect(screen.getByText('Aug 14 2022 16:00 UTC').textContent).toMatch('Aug 14 2022 16:00 UTC')
+      await screen.findByText('Aug 14 2022 16:00')
+      expect(screen.getByText('Aug 14 2022 16:00').textContent).toMatch('Aug 14 2022 16:00')
     })
 
     it('should show null for null date', async () => {

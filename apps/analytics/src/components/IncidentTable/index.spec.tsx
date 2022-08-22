@@ -140,7 +140,7 @@ describe('IncidentTableWidget', () => {
     'Type'
   ]
 
-  it.each(columnHeaders)('should render column header: "%s"', async (header) => {
+  it('should render column header', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
@@ -153,11 +153,14 @@ describe('IncidentTableWidget', () => {
         }
       }
     })
-    await screen.findByText(header)
-    expect(screen.getByText(header).textContent).toBe(header)
+    for (let i = 0; i < columnHeaders.length; i++) {
+      const header = columnHeaders[i]
+      await screen.findByText(header)
+      expect(screen.getByText(header).textContent).toMatch(header)
+    }
   })
 
-  it.each(columnHeaders)('should render column header sorting: "%s"', async (header) => {
+  it('should render column header sorting', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
@@ -170,14 +173,20 @@ describe('IncidentTableWidget', () => {
         }
       }
     })
-    const elem = await screen.findByText(header)
-    act(() => elem.click())
-    await screen.findByRole('img', { hidden: true, name: 'caret-up' })
-    expect(screen.getByRole('img', { hidden: true, name: 'caret-up' })).toBeTruthy()
 
-    act(() => elem.click())
-    await screen.findByRole('img', { hidden: true, name: 'caret-down' })
-    expect(screen.getByRole('img', { hidden: true, name: 'caret-down' })).toBeTruthy()
+    for (let i = 0; i < columnHeaders.length; i++) {
+      const header = columnHeaders[i]
+      const elem = await screen.findByText(header)
+      act(() => elem.click())
+      await screen.findByRole('img', { hidden: true, name: 'caret-up' })
+      expect(screen.getByRole('img', { hidden: true, name: 'caret-up' })).toBeTruthy()
+  
+      act(() => elem.click())
+      await screen.findByRole('img', { hidden: true, name: 'caret-down' })
+      expect(screen.getByRole('img', { hidden: true, name: 'caret-down' })).toBeTruthy()
+
+      act(() => elem.click())
+    }
   })
 
   it('should allow for muting',async () => {

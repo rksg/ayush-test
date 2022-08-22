@@ -20,10 +20,10 @@ import {
 } from './utils'
 
 
-export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
+const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   {
     title: 'Severity',
-    width: '10%',
+    width: '8%',
     dataIndex: 'severity',
     key: 'severity',
     render: (_, value) => <GetIncidentBySeverity value={value.severity}/>,
@@ -34,7 +34,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Date',
-    width: '10%',
+    width: '12%',
     dataIndex: 'endTime',
     valueType: 'dateTime',
     key: 'endTime',
@@ -106,6 +106,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     title: 'Scope',
     width: '10%',
     dataIndex: 'scope',
+    ellipsis: true,
     key: 'scope',
     render: (_, value) => <GetScope incident={value} />,
     sorter: {

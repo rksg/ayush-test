@@ -38,7 +38,8 @@ export const FormatDate = (props: FormatDateProps) => {
   const { datetimestamp } = props
   const formattedDatetime = formatter('dateTimeFormat')(datetimestamp, 'UTC')
   if (formattedDatetime === null) return <span>{noDataSymbol}</span>
-  return <UI.DateSpan>{formattedDatetime as string}</UI.DateSpan>
+  const timeStamp = (formattedDatetime as string).replace('UTC', '')
+  return <UI.DateSpan>{timeStamp}</UI.DateSpan>
 }
 
 export const formatDuration = (duration: number) => {
