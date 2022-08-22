@@ -1,10 +1,13 @@
+import { useState } from 'react'
+
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { Incident, noDataSymbol, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { Loader, Table, TableProps, showToast }       from '@acx-ui/components'
-import { Link }                                       from '@acx-ui/react-router-dom'
+import { Incident, noDataSymbol, useAnalyticsFilter, getRootCauseAndRecommendations, useShortDescription } from '@acx-ui/analytics/utils'
+import { Loader, Table, TableProps, showToast, Drawer }                                                    from '@acx-ui/components'
+import { Link }                                                                                            from '@acx-ui/react-router-dom'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRows } from './services'
+import * as UI                                                        from './styledComponents'
 import { 
   getIncidentBySeverity,
   formatDate,
@@ -15,11 +18,12 @@ import {
   GetScope,
   severitySort,
   dateSort,
-  defaultSort
+  defaultSort,
+  renderNumberedListFromArray
 } from './utils'
 
 
-export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
+const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   {
     title: 'Severity',
     dataIndex: 'severity',
@@ -52,17 +56,6 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
       compare: (a, b) => defaultSort(a.duration, b.duration),
       multiple: 3
     }
-  },
-  {
-    title: 'Description',
-    dataIndex: 'description',
-    key: 'description',
-    render: (_, value) => <ShortIncidentDescription incident={value}/>,
-    sorter: {
-      compare: (a, b) => defaultSort(a.code, b.code),
-      multiple: 4
-    },
-    ellipsis: true
   },
   {
     title: 'Category',
@@ -101,7 +94,7 @@ export const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
       compare: (a, b) => clientImpactSort(a.code, b.code),
       multiple: 8
     }
-  }, 
+  },
   {
     title: 'Type',
     dataIndex: 'sliceType',
@@ -128,14 +121,50 @@ const actions: TableProps<Incident>['actions'] = [
   }
 ]
 
+const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
+  const { rootCauses } = getRootCauseAndRecommendations(
+    props.selectedIncidentToShowDescription.code,
+    props.selectedIncidentToShowDescription.metadata
+  )[0]
+  const desc = useShortDescription(props.selectedIncidentToShowDescription)
+  return (
+    <UI.IncidentDrawerContent>
+      <UI.IncidentCause>{desc}</UI.IncidentCause>
+      <UI.IncidentRootCauses>{'Root cause:'}</UI.IncidentRootCauses>
+      {renderNumberedListFromArray(rootCauses)}
+    </UI.IncidentDrawerContent>
+  )
+}
+
+
 const IncidentTableWidget = () => {
+  const descriptionHeader = {
+    title: 'Description',
+    dataIndex: 'description',
+    key: 'description',
+    render: (_: React.ReactNode, value: Incident ) => (
+      <ShortIncidentDescription
+        onClickDesc={setDrawerProps}
+        incident={value}
+      />
+    ),
+    sorter: {
+      compare: (a: Incident, b: Incident) => defaultSort(a.code, b.code),
+      multiple: 4
+    },
+    ellipsis: true
+  }
   const filters = useAnalyticsFilter()
   const queryResults = useIncidentsListQuery(filters)
+  const [drawerProps, setDrawerProps ] = 
+  useState<{ visible : boolean, incident: Incident | null }>({ visible: false, incident: null })
 
+  const onDrawerClose = () => {
+    setDrawerProps({ incident: null, visible: false })
+  }
   const mutedKeysFilter = (data: IncidentNodeData) => {
     return data.filter((row) => row.isMuted === true).map((row) => row.id)
   }
-
 
   return (
     <Loader states={[queryResults]}>
@@ -145,11 +174,15 @@ const IncidentTableWidget = () => {
             type='tall'
             style={{ width, height }}
             dataSource={queryResults?.data}
-            columns={ColumnHeaders}
+            columns={[
+              ...ColumnHeaders.slice(0, 3),
+              descriptionHeader,
+              ...ColumnHeaders.slice(3)
+            ]}
             actions={actions}
-            rowSelection={{ 
-              type: 'checkbox', 
-              defaultSelectedRowKeys: queryResults.data 
+            rowSelection={{
+              type: 'checkbox',
+              defaultSelectedRowKeys: queryResults.data
                 ? mutedKeysFilter(queryResults.data)
                 : undefined
             }}
@@ -161,6 +194,21 @@ const IncidentTableWidget = () => {
           />
         )}
       </AutoSizer>
+      {drawerProps.incident && 
+      <Drawer
+        title={'Incident Description'}
+        visible={drawerProps.visible}
+        onClose={onDrawerClose}
+        children={
+          <IncidentDrawerContent
+            selectedIncidentToShowDescription={
+              drawerProps.incident
+            }
+          />
+        }
+        style={{ width: 450 }}
+      />
+      }
     </Loader>
   )
 }

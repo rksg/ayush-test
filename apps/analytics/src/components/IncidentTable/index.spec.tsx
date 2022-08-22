@@ -1,8 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                                                    from '@acx-ui/analytics/services'
-import { Provider, store }                                               from '@acx-ui/store'
-import { mockGraphqlQuery, mockAutoSizer, render, screen, cleanup, act } from '@acx-ui/test-utils'
+import { prettyDOM } from '@testing-library/dom'
+
+import { dataApiURL }                                                               from '@acx-ui/analytics/services'
+import { Provider, store }                                                          from '@acx-ui/store'
+import { mockGraphqlQuery, mockAutoSizer, render, screen, cleanup, act, fireEvent } from '@acx-ui/test-utils'
 
 import { api } from './services'
 
@@ -214,4 +216,49 @@ describe('IncidentTableWidget', () => {
     act(() => muteButton.click())
     // update to include actual muting call 
   })
+  it('should render drawer when click on description', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+
+    render(<Provider><IncidentTableWidget/></Provider>,{
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+    fireEvent.click(
+      await screen.findByText(
+        'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
+      )
+    ) 
+    expect(await screen.findByText('Root cause:')).toBeVisible()
+  })
+  it('should close drawer when click on drawer close button', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+  
+    render(<Provider><IncidentTableWidget/></Provider>,{
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+    fireEvent.click(
+      await screen.findByText(
+        'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
+      )
+    ) 
+    fireEvent.click(await screen.findByRole('button', { name: /close/i }))
+    expect(screen.queryByText('Root cause:')).toBeNull()
+  })
 })
+
+

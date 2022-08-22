@@ -19,7 +19,8 @@ import {
   dateSort,
   defaultSort,
   durationSort,
-  ShortIncidentDescription
+  ShortIncidentDescription,
+  renderNumberedListFromArray
 } from './utils'
 
 describe('IncidentTable: utils', () => {
@@ -421,6 +422,5 @@ describe('IncidentTable: utils', () => {
       expect(zero).toBe(0)
     })
   })
-
 })
 

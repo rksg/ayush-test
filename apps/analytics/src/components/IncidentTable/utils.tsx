@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -9,10 +7,8 @@ import {
   incidentInformation,
   noDataSymbol,
   useIncidentScope,
-  useShortDescription,
-  getRootCauseAndRecommendations
+  useShortDescription
 } from '@acx-ui/analytics/utils'
-import {  Drawer }                   from '@acx-ui/components'
 import { formatter, durationFormat } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -61,60 +57,36 @@ export const FormatIntlString = (props: FormatIntlStringProps) => {
 }
 
 export interface IncidentTableComponentProps {
-  incident: Incident
+  incident: Incident,
 }
-const renderNumberedListFromArray = ( list : string[] ) => {
-  if (!Array.isArray(list)) return ''
+export interface IncidentTableDescriptionProps {
+  incident: Incident,
+  onClickDesc : CallableFunction
+}
+export const renderNumberedListFromArray = ( list : string[] ) => {
   return list.map((body, index) => (
     (body !== '') &&
     <UI.ActionRow key={index}>
       { (index > 0) && <UI.ActionId>{index}. </UI.ActionId> }
       <div>
         { body.split('\\n').map(
-          (text : string) => <> {text}<br /></>
+          (text : string) => <div key={index}> {text}<br /></div>
         )}
       </div>
     </UI.ActionRow>)
   )
 }
 
-
-export const ShortIncidentDescription = (props: IncidentTableComponentProps) => {
-  const { incident } = props
-  // <<<<<<< HEAD
-  const { rootCauses } = getRootCauseAndRecommendations(incident.code, incident.metadata)[0]
-  const desc = useShortDescription(incident)
-  const [visible, setVisible] = useState(false)
-  const onClose = () => {
-    setVisible(false)
-  }
-  const content = (
-    <UI.IncidentDrawerContent>
-      <UI.IncidentCause>{desc}</UI.IncidentCause>
-      <UI.IncidentRootCauses>{'Root cause:'}</UI.IncidentRootCauses>
-      {renderNumberedListFromArray(rootCauses)}
-    </UI.IncidentDrawerContent>
-  )
-  const onDrawerOpen = () => {
-    setVisible(true)
-  }
+export const ShortIncidentDescription = (props: IncidentTableDescriptionProps) => {
+  const { incident, onClickDesc } = props
+  const shortDesc = useShortDescription(incident)
   return (
-    <>
-      <UI.DescriptionSpan onClick={onDrawerOpen}>{desc}</UI.DescriptionSpan>
-      <Drawer
-        title={'Incident Description'}
-        visible={visible}
-        onClose={onClose}
-        children={content}
-        style={{ width: 450 }}
-      />
-    </>
+    <UI.DescriptionSpan
+      onClick={() => onClickDesc({ incident, visible: true })}
+    >
+      {shortDesc}
+    </UI.DescriptionSpan>
   )
-  // =======
-  //   const shortDesc = useShortDescription(incident)
-    
-//   return <UI.DescriptionSpan>{shortDesc}</UI.DescriptionSpan>
-// >>>>>>> b8251e0e4436eeab1fbef8115c61aff87d047f56
 }
 
 export const getCategory = (code: string) => {
