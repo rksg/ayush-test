@@ -3,11 +3,10 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { incidentSeverities, IncidentFilter } from '@acx-ui/analytics/utils'
+import { incidentSeverities, IncidentFilter, BarChartData } from '@acx-ui/analytics/utils'
 import {
   Card,
   BarChart,
-  BarChartData,
   Loader,
   cssStr,
   TrendPill,
