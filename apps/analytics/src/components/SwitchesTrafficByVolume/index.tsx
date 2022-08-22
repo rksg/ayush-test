@@ -1,13 +1,9 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }            from '@acx-ui/analytics/utils'
-import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
-import { Card }                     from '@acx-ui/components'
-import { Loader }                   from '@acx-ui/components'
-import { MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { cssStr }                   from '@acx-ui/components'
-import { formatter }                from '@acx-ui/utils'
+import { getSeriesData, AnalyticsFilter }                 from '@acx-ui/analytics/utils'
+import { Card, Loader, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
+import { formatter }                                      from '@acx-ui/utils'
 
 import {
   useSwitchesTrafficByVolumeQuery,
