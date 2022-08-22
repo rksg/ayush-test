@@ -101,22 +101,6 @@ export function NetworkForm () {
         onCancel={() => navigate(linkToNetworks)}
         onFinish={handleAddNetwork}
       >
-        <StepsForm.StepForm
-          name='moreSettings'
-          title='More Settings'
-          onFinish={async (data) => {
-            const detailsSaveData = data
-            updateData(data)
-            updateSaveData(detailsSaveData)
-            return true
-          }}
-        >
-          <NetworkMoreSettingsForm />
-        </StepsForm.StepForm>
-
-
-
-
         <StepsForm.StepForm<CreateNetworkFormFields>
           name='details'
           title={$t({ defaultMessage: 'Network Details' })}
@@ -150,6 +134,22 @@ export function NetworkForm () {
           {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
           {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
         </StepsForm.StepForm>
+
+        <StepsForm.StepForm
+          formRef={formRef}
+          name='moreSettings'
+          title='More Settings'
+          onFinish={async (data) => {
+            // const detailsSaveData = transferMoreSettingsToSave(data)
+            // const detailsSaveData = data
+            updateData(data)
+            updateSaveData(detailsSaveData)
+            return true
+          }}
+        >
+          <NetworkMoreSettingsForm />
+        </StepsForm.StepForm>
+
 
         <StepsForm.StepForm
           name='venues'

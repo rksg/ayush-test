@@ -7,6 +7,7 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 
+import { CommonResult, Service } from './types'
 import {
   CloudpathServer,
   L2AclPolicy,
@@ -15,15 +16,28 @@ import {
   ApplicationPolicy
 } from './types/service'
 
+
+
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
+  tagTypes: ['Service'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
 
 export const serviceApi = baseServiceApi.injectEndpoints({
   endpoints: (build) => ({
+    serviceList: build.query<TableResult<Service>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const serviceListReq = createHttpRequest(CommonUrlsInfo.getServicesList, params)
+        return {
+          ...serviceListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
     cloudpathList: build.query<CloudpathServer[], RequestPayload>({
       query: ({ params }) => {
         const cloudpathListReq = createHttpRequest(
@@ -85,15 +99,21 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    deleteService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.deleteService, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     })
-
   })
 })
 
 
 export const {
-  useCloudpathListQuery,
-  useL2AclPolicyListQuery,
-  useL3AclPolicyListQuery,
-  useDevicePolicyListQuery,
-  useApplicationPolicyListQuery } = serviceApi
+  useServiceListQuery,
+  useDeleteServiceMutation
+} = serviceApi
