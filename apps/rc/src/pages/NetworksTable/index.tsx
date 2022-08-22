@@ -1,12 +1,13 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useNetworkListQuery, useDeleteNetworkMutation, Network }         from '@acx-ui/rc/services'
+import { useNetworkListQuery, useDeleteNetworkMutation }                  from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  useTableQuery
+  useTableQuery,
+  Network
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 

@@ -16,10 +16,9 @@ import {
   useDeleteNetworkVenueMutation,
   useGetAllUserSettingsQuery,
   useUpdateNetworkDeepMutation,
-  useVenueListQuery,
-  Venue
+  useVenueListQuery
 } from '@acx-ui/rc/services'
-import { UserSettings } from '@acx-ui/rc/utils'
+import { UserSettings, Venue } from '@acx-ui/rc/utils'
 import {
   Constants,
   useTableQuery,

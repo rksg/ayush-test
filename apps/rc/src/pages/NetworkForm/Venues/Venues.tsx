@@ -12,8 +12,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery, Venue }               from '@acx-ui/rc/services'
-import { useTableQuery, CreateNetworkFormFields } from '@acx-ui/rc/utils'
+import { useVenueListQuery }                             from '@acx-ui/rc/services'
+import { useTableQuery, CreateNetworkFormFields, Venue } from '@acx-ui/rc/utils'
 
 const defaultPayload = {
   searchString: '',
