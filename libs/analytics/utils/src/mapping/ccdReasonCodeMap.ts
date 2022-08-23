@@ -154,6 +154,7 @@ export const ccdReasonCodes = [
   {
     id: 30,
     code: 'CCD_REASON_MAX_VALUE',
+    // This is a placeholder code use by AP team, no description for it
     text: defineMessage({ defaultMessage: 'CCD_REASON_MAX_VALUE' })
   }
 ]
