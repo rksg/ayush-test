@@ -1,4 +1,5 @@
 import { gql } from 'graphql-request'
+import moment  from 'moment-timezone'
 
 import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
@@ -11,21 +12,28 @@ export type HierarchyNodeData = {
 }
 
 export type TrafficTimeseriesData = {
-    timestamp: Date
-    traffic: number
+    applicationTraffic: number[]
 }
 
 export type TrafficByApplicationData = {
     name: string
-    traffic: number
+    applicationTraffic: number
     clientCount: number
-    timeSeries: TrafficTimeseriesData[]
+    timeSeries: TrafficTimeseriesData
 }
 
 interface Response <T> {
   network: {
     hierarchyNode: T
   }
+}
+
+export const calcGranularity = (start: string, end: string): string => {
+  const duration = moment.duration(moment(end).diff(moment(start))).asHours()
+  if (duration >= 24 * 7) return 'PT24H' // 1 day if duration >= 7 days
+  if (duration >= 24) return 'PT1H'
+  if (duration >= 1) return 'PT15M'
+  return 'PT180S'
 }
 
 export const api = dataApi.injectEndpoints({
@@ -54,11 +62,10 @@ export const api = dataApi.injectEndpoints({
         
         fragment applicationTrafficData on ApplicationTrafficTopN{
           name
-          traffic
+          applicationTraffic
           clientCount
           timeSeries(granularity: $granularity) {
-            timestamp
-            traffic
+            applicationTraffic
           }
         }
         `,
@@ -66,7 +73,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: 'fifteen_minute',
+          granularity: calcGranularity(payload.startDate, payload.endDate),
           n: 5
         }
       }),
