@@ -1,11 +1,12 @@
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { NodeType, nodeTypes, useAnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { PageHeader, PageHeaderProps, Button, Loader, RangePicker } from '@acx-ui/components'
-import { useDateFilter, dateRangeForLast }                          from '@acx-ui/utils'
+import { NodeType, nodeTypes, useAnalyticsFilter }          from '@acx-ui/analytics/utils'
+import { PageHeader, PageHeaderProps, Loader, RangePicker } from '@acx-ui/components'
+import { useDateFilter, dateRangeForLast }                  from '@acx-ui/utils'
 
-import NetworkFilter              from '../NetworkFilter'
+import NetworkFilter from '../NetworkFilter'
+
 import { useNetworkNodeInfoQuery }         from './services'
 import { Divider, ConnectedHeaderWrapper } from './styledComponents'
 
@@ -60,7 +61,6 @@ export const useSubTitle = (subTitles: SubTitle[]) => {
 }
 
 export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
-  const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
   const { title, subTitle } = data

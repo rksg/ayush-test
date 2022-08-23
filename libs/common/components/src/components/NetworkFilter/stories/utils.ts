@@ -1,4 +1,4 @@
-import { SingleValueType }   from 'rc-cascader/lib/Cascader'
+import { SingleValueType } from 'rc-cascader/lib/Cascader'
 
 import { showToast } from '../../Toast'
 

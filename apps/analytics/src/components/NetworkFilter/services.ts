@@ -1,9 +1,9 @@
 import { gql } from 'graphql-request'
-import moment  from 'moment-timezone'
 
 import { dataApi } from '@acx-ui/analytics/services'
 import {
   AnalyticsFilter,
+  defaultNetworkPath,
   incidentCodes,
   NetworkPath,
   PathNode
@@ -28,12 +28,12 @@ interface Response <NetworkHierarchy> {
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkFilter: build.query<
-    NetworkHierarchy,
+      NetworkHierarchy,
       Omit<AnalyticsFilter, 'path'>
     >({
-      query: (payload) => ({
+      query: payload => ({
         document: gql`
-          query Network(
+          query NetworkHierarchy(
             $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $code: [String]
           ) {
             network(start: $start, end: $end, code: $code) {
@@ -67,7 +67,7 @@ export const api = dataApi.injectEndpoints({
           }
         `,
         variables: {
-          path: [{ type: 'network', name: 'Network' }],
+          path: defaultNetworkPath,
           start: payload.startDate,
           end: payload.endDate,
           code: incidentCodes

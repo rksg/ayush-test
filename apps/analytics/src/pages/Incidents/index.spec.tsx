@@ -7,6 +7,12 @@ import Incidents from '.'
 
 jest.mock('../../components/NetworkHistory', () => () => <div>Network</div>)
 jest.mock('../../components/IncidentBySeverity', () => () => <div>bar chart</div>)
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  useAnalyticsFilter: () => ({
+    filters: { path: [{ type: 'network', name: 'Network' }] }
+  })
+}))
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({

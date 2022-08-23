@@ -3,6 +3,8 @@ import React from 'react'
 import { renderHook, render } from '@testing-library/react'
 import moment                 from 'moment-timezone'
 
+import { BrowserRouter } from '@acx-ui/react-router-dom'
+
 import { useAnalyticsFilter, AnalyticsFilterProvider } from './analyticsFilter'
 
 describe('useAnalyticsFilter', () => {
@@ -10,9 +12,16 @@ describe('useAnalyticsFilter', () => {
     moment.tz.setDefault('Asia/Singapore')
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
-  it('should return correctly value', () => {
+  it('should return correct value', () => {
     const { result } = renderHook(useAnalyticsFilter)
-    expect(result.current).toEqual({
+    let isCallableFn = false
+    if (typeof result.current.setNetworkPath === 'function') {
+      result.current.setNetworkPath()
+      isCallableFn = true
+    }
+    expect(isCallableFn).toBeTruthy()
+    result.current.setNetworkPath()
+    expect(result.current.filters).toEqual({
       path: [{ name: 'Network', type: 'network' }],
       startDate: '2021-12-31T08:00:00+08:00',
       endDate: '2022-01-01T08:00:00+08:00',
@@ -24,14 +33,14 @@ describe('useAnalyticsFilter', () => {
 describe('AnalyticsFilterProvider', () => {
   it('should render correctly', () => {
     function Component () {
-      const filters = useAnalyticsFilter()
+      const { filters } = useAnalyticsFilter()
       return <div>{JSON.stringify(filters)}</div>
     }
-    const { asFragment } = render(
+    const { asFragment } = render(<BrowserRouter>
       <AnalyticsFilterProvider>
         <Component />
       </AnalyticsFilterProvider>
-    )
+    </BrowserRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
 })

@@ -1,20 +1,22 @@
-import { useIntl } from 'react-intl'
-import { omit } from 'lodash'
+import { DefaultOptionType } from 'antd/lib/select'
+import { omit, uniqBy }      from 'lodash'
+import { SingleValueType }   from 'rc-cascader/lib/Cascader'
+import { useIntl }           from 'react-intl'
+
 import { useAnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
-import { NetworkFilter, Option, Loader } from '@acx-ui/components'
+import { NetworkFilter, Option, Loader }          from '@acx-ui/components'
 
 import { NetworkHierarchy, useNetworkFilterQuery, ApOrSwitch } from './services'
-import { DefaultOptionType } from 'antd/lib/select'
+import * as UI                                                 from './styledComponents'
 
-const nonSelectableNode = (label: string) => (
-  <div style={{ width: '100%'}} onClick={e => e.stopPropagation()}>{label}</div>
-)
+
 const getFilterData = (data: NetworkHierarchy, $t: CallableFunction): Option [] => {
   const venues = data.children.filter(node => node.type === 'zone')
+  const uniqSwGrps = uniqBy(data.children, 'name').filter(node => node.type === 'switchGroup')
   const switchGroups = data.children
     .filter(node => node.type === 'switchGroup')
     .reduce((obj, node) => obj.set(node.name, node), new Map())
-  return venues.map((node, index) => {
+  return [...venues, ...uniqSwGrps].map((node, index) => {
     const venue = {
       label: node.name,
       value: JSON.stringify(node.path),
@@ -22,8 +24,11 @@ const getFilterData = (data: NetworkHierarchy, $t: CallableFunction): Option [] 
     }
     if(node.aps?.length) {
       venue.children.push({
-        label: nonSelectableNode($t({ defaultMessage:'APs' })),
-        displayLabel: $t({ defaultMessage:'APs' }),
+        label: <UI.NonSelectableItem key={index}>
+          {$t({ defaultMessage: 'APs' })}
+        </UI.NonSelectableItem>,
+        displayLabel: $t({ defaultMessage: 'APs' }),
+        ignoreSelection: true,
         value: `aps${index}`,
         children: node.aps.map((ap: ApOrSwitch) => ({
           label: ap.name,
@@ -33,8 +38,11 @@ const getFilterData = (data: NetworkHierarchy, $t: CallableFunction): Option [] 
     }
     if(switchGroups.get(node.name)?.switches.length) {
       venue.children.push({
-        label: nonSelectableNode($t({ defaultMessage: 'Switches' })),
-        displayLabel: $t({ defaultMessage:'APs' }),
+        label: <UI.NonSelectableItem key={index}>
+          {$t({ defaultMessage: 'Switches' })}
+        </UI.NonSelectableItem>,
+        displayLabel: $t({ defaultMessage: 'Switches' }),
+        ignoreSelection: true,
         value: `switches${index}`,
         children: switchGroups.get(node.name).switches.map((switchNode: ApOrSwitch) => ({
           label: switchNode.name,
@@ -50,39 +58,47 @@ const getFilterData = (data: NetworkHierarchy, $t: CallableFunction): Option [] 
 }
 const search = (input: string, path: DefaultOptionType[]) : boolean => {
   const item = path.slice(-1)[0]
-  return item.displayLabel
-  ? false
-  : (item?.label as string)?.toLowerCase().includes(input.toLowerCase())
+  return item.ignoreSelection // non-selection implies non-searchable
+    ? false
+    : (item?.label as string)?.toLowerCase().includes(input.toLowerCase())
 }
+export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) => 
+  selectedOptions
+    ?.map(option => option?.displayLabel || option?.label).join(' / ')
+export const onApply = (
+  value: SingleValueType | SingleValueType[] | undefined,
+  setNetworkPath: CallableFunction
+) => {
+  const path = !value
+    ? defaultNetworkPath
+    : JSON.parse(value?.slice(-1)[0] as string)
+  setNetworkPath(path, value || [])
+}
+
 function ConnectedNetworkFilter () {
   const { $t } = useIntl()
-  const { setNetworkPath, filters, raw }  = useAnalyticsFilter()
+  const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const queryResults = useNetworkFilterQuery(omit(filters, 'path'), {
     selectFromResult: ({ data, ...rest }) => ({
       data: data ? getFilterData(data, $t) : [],
       ...rest
     })
-  })
-  return <div style={{minWidth: '100px'}}><Loader states={[queryResults]}>
-    <NetworkFilter
-      placeholder={$t({ defaultMessage: 'Entire Organization' })}
-      multiple={false}
-      defaultValue={raw}
-      value={raw}
-      options={queryResults.data}
-      onApply={value => {
-        const path = !value
-          ? defaultNetworkPath
-          : JSON.parse(value?.slice(-1)[0] as string)
-        setNetworkPath(path, value || [])
-      }}
-      placement='bottomRight'
-      displayRender = {(_, selectedOptions) => selectedOptions
-        ?.map(option => option?.displayLabel || option?.label).join(' / ')
-      }
-      showSearch={{ filter: search }}
-    />
-  </Loader></div>
+  }) 
+  return <UI.Container>
+    <Loader states={[queryResults]}>
+      <NetworkFilter
+        placeholder={$t({ defaultMessage: 'Entire Organization' })}
+        multiple={false}
+        defaultValue={raw}
+        value={raw} 
+        options={queryResults.data}
+        onApply={value => onApply(value, setNetworkPath)}
+        placement='bottomRight'
+        displayRender={displayRender}
+        showSearch={{ filter: search }}
+      />
+    </Loader>
+  </UI.Container>
 }
 
 export default ConnectedNetworkFilter

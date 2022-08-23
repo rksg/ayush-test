@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useState, useMemo, useEffect } from 'react'
+import React, { ReactNode, useContext, useMemo, useEffect } from 'react'
 
 import { Buffer } from 'buffer'
 
@@ -20,13 +20,13 @@ export const defaultAnalyticsFilter = {
   path: defaultNetworkPath,
   raw: [],
   setNetworkPath: () => {}, // abstract, comsumer should wrap provider
-  getNetworkFilter: () => {}
+  getNetworkFilter: () => ({ path: defaultNetworkPath })
 } as const
 
 export const AnalyticsFilterContext = React.createContext<AnalyticsFilterProps>(
   defaultAnalyticsFilter
 )
-export type AnalyticsFilter = DateFilter &  { path: NetworkPath }
+export type AnalyticsFilter = DateFilter & { path: NetworkPath }
 
 export function useAnalyticsFilter () {
   const { getNetworkFilter, setNetworkPath } = useContext(AnalyticsFilterContext)
@@ -49,7 +49,7 @@ export function AnalyticsFilterProvider (props: { children: ReactNode }) {
     ? JSON.parse(
       Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
     )
-    : { path: [], raw: []}
+    : { path: [], raw: [] }
   
   const setNetworkPath = (networkFilter: NetworkPath, raw: object = []) => {
     search.delete('analyticsNetworkFilter')
@@ -61,12 +61,10 @@ export function AnalyticsFilterProvider (props: { children: ReactNode }) {
       'analyticsNetworkFilter',
       Buffer.from(JSON.stringify(filter)).toString('base64')
     )
-    console.log('setNetworkPath', filter, search)
     setSearch(search)
   }
   const { path } = getNetworkFilter()
   useEffect(() => {
-    console.log('effect', path, defaultNetworkPath)
     if (!path.length) setNetworkPath(defaultNetworkPath)
   }, [path, setNetworkPath])
   const providerValue = useMemo(

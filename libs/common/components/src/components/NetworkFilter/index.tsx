@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { CaretDownOutlined }          from '@ant-design/icons'
 import {
   Cascader as AntCascader,
   CascaderProps as AntCascaderProps
@@ -12,16 +11,16 @@ import { useIntl }           from 'react-intl'
 import { Button } from '../Button'
 
 import * as UI from './styledComponents'
-import { CascaderRef } from 'antd/lib/cascader'
 
 // taken from antd Cascader API: https://ant.design/components/cascader/#Option
 export interface Option {
-  value: string | number | object[];
-  label?: React.ReactNode;
+  value: string | number | object[]
+  label?: React.ReactNode
   displayLabel?: string
-  disabled?: boolean;
-  children?: Option[];
-  isLeaf?: boolean;
+  ignoreSelection?: boolean
+  disabled?: boolean
+  children?: Option[]
+  isLeaf?: boolean
 }
 
 export type CascaderProps = AntCascaderProps<Option> & {
@@ -35,9 +34,11 @@ export type CascaderProps = AntCascaderProps<Option> & {
 export function NetworkFilter (props: CascaderProps) {
   const { onApply, ...antProps } = props
   const { $t } = useIntl()
-  const wref = React.createRef<CascaderRef>()
   const initialValues = props.defaultValue || []
-  const [currentValues, setCurrentValues] = React.useState<SingleValueType | SingleValueType[]>(initialValues)
+  const [
+    currentValues,
+    setCurrentValues
+  ] = React.useState<SingleValueType | SingleValueType[]>(initialValues)
   const [savedValues, setSavedValues] = React.useState(initialValues)
   const [open, setOpen] = React.useState(false)
   if (props.multiple) {
@@ -74,31 +75,24 @@ export function NetworkFilter (props: CascaderProps) {
       expandTrigger='hover'
       maxTagCount='responsive'
       showSearch
-      suffixIcon={<CaretDownOutlined />}
       onDropdownVisibleChange={setOpen}
       open={currentValues !== savedValues || open}
     />
   } else {
     return <AntCascader
-      ref = {wref}
       {...antProps}
       changeOnSelect
-      onChange={(value: SingleValueType | SingleValueType[] ) => {
-        if (value?.length === 2) return
+      onChange={(
+        value: SingleValueType | SingleValueType[],
+        selectedOptions: DefaultOptionType[] | DefaultOptionType[][]
+      ) => {
+        const selectedNode = selectedOptions?.slice(-1)[0] as Option
+        if (selectedNode?.ignoreSelection) return
         onApply(value)
       }}
       expandTrigger='hover'
-      //showSearch
+      showSearch={antProps.showSearch || true}
       onDropdownVisibleChange={setOpen}
-      // suffixIcon={<CaretDownOutlined  onClick={() => { 
-      //   console.log('open', open)
-      //   if (!open) {
-      //     wref.current?.focus()
-      //   }
-      //   else wref.current?.blur()
-      //   setOpen(!open)
-      // }}
-      //   />}
     />
   }
 }
