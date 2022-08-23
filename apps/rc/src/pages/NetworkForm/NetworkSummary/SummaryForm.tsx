@@ -2,39 +2,56 @@ import { EnvironmentOutlined }            from '@ant-design/icons'
 import { Col, Divider, Form, Input, Row } from 'antd'
 import { useIntl }                        from 'react-intl'
 
-import { StepsForm, Subtitle }                                            from '@acx-ui/components'
-import { useCloudpathListQuery }                                          from '@acx-ui/rc/services'
-import { CreateNetworkFormFields, NetworkTypeEnum, transformDisplayText } from '@acx-ui/rc/utils'
-import { useParams }                                                      from '@acx-ui/react-router-dom'
+import { StepsForm, Subtitle }                                    from '@acx-ui/components'
+import { useCloudpathListQuery, useVenueListQuery, Venue }        from '@acx-ui/rc/services'
+import { NetworkSaveData, NetworkTypeEnum, transformDisplayText } from '@acx-ui/rc/utils'
+import { useParams }                                              from '@acx-ui/react-router-dom'
 
 import { networkTypes } from '../contentsMap'
 
 import { AaaSummaryForm }  from './AaaSummaryForm'
 import { DpskSummaryForm } from './DpskSummaryForm'
 
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'id'
+  ]
+}
 
 export function SummaryForm (props: {
-  summaryData: CreateNetworkFormFields
+  summaryData: NetworkSaveData
 }) {
   const { $t } = useIntl()
   const { summaryData } = props
   const selectedId = summaryData.cloudpathServerId
-  const { selected } = useCloudpathListQuery({ params: useParams() }, {
+  const params = useParams()
+  const { selected } = useCloudpathListQuery({ params }, {
     selectFromResult ({ data }) {
       return {
         selected: data?.find((item) => item.id === selectedId)
       }
     }
   })
+
+  const { data } = useVenueListQuery({ params:
+    { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' }, payload: defaultPayload })
+
+  const venueList = data?.data.reduce<Record<Venue['id'], Venue>>((map, obj) => {
+    map[obj.id] = obj
+    return map
+  }, {})
+
   const getVenues = function () {
     const venues = summaryData.venues
     const rows = []
     if (venues && venues.length > 0) {
       for (const venue of venues) {
         rows.push(
-          <li key={(venue as any).venueId} style={{ margin: '10px 0px' }}>
+          <li key={venue.venueId} style={{ margin: '10px 0px' }}>
             <EnvironmentOutlined />
-            {(venue as any).name}
+            {venueList ? venueList[venue.venueId].name : venue.venueId}
           </li>
         )
       }
@@ -59,7 +76,7 @@ export function SummaryForm (props: {
           />
           <Form.Item
             label={$t({ defaultMessage: 'Type:' })}
-            children={$t(networkTypes[summaryData.type])}
+            children={summaryData.type && $t(networkTypes[summaryData.type])}
           />
           <Form.Item
             label={$t({ defaultMessage: 'Use Cloudpath Server:' })}

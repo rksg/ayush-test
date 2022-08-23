@@ -19,10 +19,14 @@ describe('Analytics dumb header', () => {
       ]
     }
   }
-  it('should render correctly', () => {
-    const { asFragment } = render(<DumbHeader {...props}/>)
-    const fragment = asFragment()
-    expect(fragment).toMatchSnapshot()
+  it('should render correctly', async () => {
+    render(<DumbHeader {...props}/>)
+    expect(await screen.findByText('title')).toBeVisible()
+    expect(await screen.findByText('APs: 1')).toBeVisible()
+    expect(await screen.findByText('Firmware: 1 (2)')).toBeVisible()
+    expect(await screen.findByText('network filter')).toBeVisible()
+    expect(await screen.findByPlaceholderText('Start date')).toBeVisible()
+    expect(await screen.findByPlaceholderText('End date')).toBeVisible()
   })
 })
 describe('Analytics connected header', () => {

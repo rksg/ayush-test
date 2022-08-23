@@ -110,6 +110,9 @@
   "8Fo71r": {
     "defaultMessage": "MSP Space"
   },
+  "8O9cAb": {
+    "defaultMessage": "Last 24 hours"
+  },
   "8cF6CF": {
     "defaultMessage": "Error: Can not detect passphrase expiration value"
   },
@@ -202,6 +205,9 @@
   "GYphdA": {
     "defaultMessage": "Open Captive Portal",
     "description": "WLAN security type - Open Captive Portal"
+  },
+  "H44xvD": {
+    "defaultMessage": "Switch Clients"
   },
   "HuqGcJ": {
     "defaultMessage": "WPA2 (Recommended)"
@@ -398,6 +404,9 @@
   "d63gFk": {
     "defaultMessage": "AI Analytics"
   },
+  "dElQAw": {
+    "defaultMessage": "Wi-Fi Clients"
+  },
   "dP02B8": {
     "defaultMessage": "Heartbeat lost"
   },
@@ -409,6 +418,9 @@
   },
   "e0kEtS": {
     "defaultMessage": "Deactivate"
+  },
+  "e6Ph5+": {
+    "defaultMessage": "Address"
   },
   "eOJNIA": {
     "defaultMessage": "Connected Clients"
@@ -640,6 +652,9 @@
   "vhRKaX": {
     "defaultMessage": "AP rebooting"
   },
+  "w0OUOh": {
+    "defaultMessage": "Health Score"
+  },
   "wsSxJK": {
     "defaultMessage": "Open",
     "description": "WLAN security type - Open"
@@ -647,8 +662,14 @@
   "xGSuuE": {
     "defaultMessage": "Security Protocol"
   },
+  "xXDHjy": {
+    "defaultMessage": "Add Venue"
+  },
   "xukzKg": {
     "defaultMessage": "Networks"
+  },
+  "xzWp9X": {
+    "defaultMessage": "Switches"
   },
   "yJ7+dR": {
     "defaultMessage": "Cloudpath Server"

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Key } from 'react'
+import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable                   from '@ant-design/pro-table'
 import { Space, Divider, Button } from 'antd'
@@ -7,8 +7,8 @@ import { useIntl }                from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import * as UI             from './styledComponents'
-import { useColumnsState } from './useColumnsState'
+import * as UI                          from './styledComponents'
+import { settingsKey, useColumnsState } from './useColumnsState'
 
 import type { Columns, ColumnStateOption }  from './types'
 import type { SettingOptionType }           from '@ant-design/pro-table/lib/components/ToolBar'
@@ -27,24 +27,46 @@ export interface TableProps <RecordType>
     columnState?: ColumnStateOption
   }
 
-export function Table <RecordType extends object> (
+function useSelectedRowKeys <RecordType> (
+  rowSelection?: TableProps<RecordType>['rowSelection']
+): [Key[], React.Dispatch<React.SetStateAction<Key[]>>] {
+  const [selectedRowKeys, setSelectedRowKeys]
+    = useState<Key[]>(rowSelection?.defaultSelectedRowKeys ?? [])
+
+  useEffect(() => {
+    if (rowSelection?.selectedRowKeys !== undefined) {
+      setSelectedRowKeys(rowSelection?.selectedRowKeys)
+    }
+  }, [rowSelection?.selectedRowKeys])
+
+  return [selectedRowKeys, setSelectedRowKeys]
+}
+
+function Table <RecordType extends object> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>
 ) {
   const { $t } = useIntl()
 
-  const columns = useMemo(() => props.columns.map((column) => ({
-    ...column,
-    disable: Boolean(column.fixed || column.disable),
-    show: Boolean(column.fixed || column.disable || (column.show ?? true))
-  })), [props.columns])
-  const columnsState = useColumnsState({ columns, columnState })
+  const columns = useMemo(() => {
+    const settingsColumn = {
+      key: settingsKey,
+      fixed: 'right' as 'right',
+      width: 32,
+      children: []
+    }
 
-  const settingsColumn = {
-    key: 'acx-table-settings',
-    fixed: 'right' as 'right',
-    width: 32,
-    children: []
-  }
+    const cols = type === 'tall'
+      ? [...props.columns, settingsColumn] as typeof props.columns
+      : props.columns
+
+    return cols.map((column) => ({
+      ...column,
+      disable: Boolean(column.fixed || column.disable),
+      show: Boolean(column.fixed || column.disable || (column.show ?? true))
+    }))
+  }, [props.columns, type])
+
+  const columnsState = useColumnsState({ columns, columnState })
 
   const setting: SettingOptionType | false = type === 'tall' ? {
     draggable: true,
@@ -64,15 +86,13 @@ export function Table <RecordType extends object> (
 
   const rowKey = (props.rowKey ?? 'key') as keyof RecordType
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>(props.rowSelection?.selectedRowKeys
-    ?? props.rowSelection?.defaultSelectedRowKeys
-    ?? [])
+  const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
 
-  // needed to store selectedRows because `tableAlertRender`
-  // somehow doesn't pass in sync selected data between selectedRows & selectedRowKeys
-  const [selectedRows, setSelectedRows]
-    = useState<RecordType[]>(props.dataSource
-      ?.filter(item => selectedRowKeys.includes(item[rowKey] as unknown as Key)) ?? [])
+  const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
+    return props.dataSource?.filter(item => {
+      return selectedRowKeys.includes(item[rowKey] as unknown as Key)
+    }) ?? []
+  }, [props.dataSource, rowKey])
 
   const onRowClick = (record: RecordType) => {
     if (!props.rowSelection) return
@@ -83,7 +103,6 @@ export function Table <RecordType extends object> (
     if (props.rowSelection.type === 'radio') {
       if (!isSelected) {
         setSelectedRowKeys([key])
-        setSelectedRows([record])
       }
     } else {
       setSelectedRowKeys(isSelected
@@ -91,11 +110,6 @@ export function Table <RecordType extends object> (
         ? selectedRowKeys.filter(k => k !== key)
         // add into collection if not selected
         : [...selectedRowKeys, key])
-      setSelectedRows(isSelected
-        // remove if selected
-        ? selectedRows.filter(item => item[rowKey] !== record[rowKey])
-        // add into collection if not selected
-        : [...selectedRows, record])
     }
   }
 
@@ -105,7 +119,6 @@ export function Table <RecordType extends object> (
     preserveSelectedRowKeys: true,
     onChange: (keys, rows, info) => {
       setSelectedRowKeys(keys)
-      setSelectedRows(rows)
       props.rowSelection?.onChange?.(keys, rows, info)
     }
   } : undefined
@@ -127,7 +140,7 @@ export function Table <RecordType extends object> (
       {...props}
       bordered={false}
       search={false}
-      columns={type === 'tall' ? [...columns, settingsColumn] : columns}
+      columns={columns}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
       scroll={{ x: 'max-content' }}
@@ -140,7 +153,7 @@ export function Table <RecordType extends object> (
         <Space size={32}>
           <Space size={6}>
             <span>
-              {$t({ defaultMessage: '{count} selected' }, { count: selectedRows.length })}
+              {$t({ defaultMessage: '{count} selected' }, { count: selectedRowKeys.length })}
             </span>
             <UI.CloseButton
               onClick={onCleanSelected}
@@ -151,7 +164,8 @@ export function Table <RecordType extends object> (
             {props.actions?.map((option) =>
               <UI.ActionButton
                 key={option.label}
-                onClick={() => option.onClick(selectedRows, () => { onCleanSelected() })}
+                onClick={() =>
+                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
                 children={option.label}
               />
             )}
@@ -161,3 +175,7 @@ export function Table <RecordType extends object> (
     />
   </UI.Wrapper>
 }
+
+Table.SubTitle = UI.SubTitle
+
+export { Table }

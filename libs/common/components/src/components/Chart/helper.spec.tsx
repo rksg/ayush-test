@@ -8,7 +8,8 @@ import {
   dateAxisFormatter,
   timeSeriesTooltipFormatter,
   stackedBarTooltipFormatter,
-  donutChartTooltipFormatter
+  donutChartTooltipFormatter,
+  getDeviceConnectionStatusColors
 } from './helper'
 
 import type { TooltipFormatterParams } from './helper'
@@ -95,5 +96,16 @@ describe('donutChartTooltipFormatter', () => {
     expect(renderHook(()=>donutChartTooltipFormatter(
       formatter, unit, useIntl())(singleparameters)).result.current).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(1)
+  })
+})
+
+describe('getDeviceConnectionStatusColors', () => {
+  it('should return the correct color for the device status', ()=>{
+    expect(getDeviceConnectionStatusColors())
+      .toStrictEqual([
+        '#23AB36',
+        '#ACAEB0',
+        '#F9C34B',
+        '#ED1C24'])
   })
 })
