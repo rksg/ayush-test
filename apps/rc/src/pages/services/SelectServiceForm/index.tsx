@@ -16,7 +16,7 @@ export function SelectServiceForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const servicesTablePath: Path = useTenantLink('/services')
-  const tenantBasePath = useTenantLink('')
+  const tenantBasePath: Path = useTenantLink('')
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
