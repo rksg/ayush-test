@@ -1,8 +1,10 @@
 import { gql } from 'graphql-request'
-import moment  from 'moment-timezone'
+
 
 import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+
+import { getSparklineGranularity } from '../../utils'
 
 export type HierarchyNodeData = {
   uploadAppTraffic: number
@@ -26,14 +28,6 @@ interface Response <T> {
   network: {
     hierarchyNode: T
   }
-}
-
-export const calcGranularity = (start: string, end: string): string => {
-  const duration = moment.duration(moment(end).diff(moment(start))).asHours()
-  if (duration >= 24 * 7) return 'PT24H' // 1 day if duration >= 7 days
-  if (duration >= 24) return 'PT1H'
-  if (duration >= 1) return 'PT15M'
-  return 'PT180S'
 }
 
 export const api = dataApi.injectEndpoints({
@@ -73,7 +67,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: calcGranularity(payload.startDate, payload.endDate),
+          granularity: getSparklineGranularity(payload.startDate, payload.endDate),
           n: 5
         }
       }),
