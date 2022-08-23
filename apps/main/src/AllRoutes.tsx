@@ -27,8 +27,8 @@ function AllRoutes () {
       <Route path='services/*' element={<ServicesBase />}>
         <Route path='*' element={<RcRoutes />} />
       </Route>
-      <Route path='venues/*'>
-        <Route path='*' element={<VenuesTable />} />
+      <Route path='venues'>
+        <Route index element={<VenuesTable />} />
         <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
       </Route>
     </Route>
