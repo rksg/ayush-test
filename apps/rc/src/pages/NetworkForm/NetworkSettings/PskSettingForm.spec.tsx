@@ -82,7 +82,7 @@ describe('NetworkForm', () => {
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
 
-    const secretTextbox = screen.getByLabelText('Shared Secret')
+    const secretTextbox = screen.getByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
     await fillInAfterSettings(async () => {
@@ -117,7 +117,7 @@ describe('NetworkForm', () => {
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
 
-    const secretTextbox = screen.getByLabelText('Shared Secret')
+    const secretTextbox = screen.getByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
     await fillInAfterSettings(async () => {
