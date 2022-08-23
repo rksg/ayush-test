@@ -9,7 +9,7 @@ import {
   useTableQuery,
   Network
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import * as contents from '../NetworkForm/contentsMap'
 
@@ -173,6 +173,8 @@ const defaultPayload = {
 export function NetworksTable () {
   const { $t } = useIntl()
   const NetworksTable = () => {
+    const navigate = useNavigate()
+    const linkToEditNetwork = useTenantLink('/networks/')
     const tableQuery = useTableQuery({
       useQuery: useNetworkListQuery,
       defaultPayload
@@ -183,21 +185,28 @@ export function NetworksTable () {
       { isLoading: isDeleteNetworkUpdating }
     ] = useDeleteNetworkMutation()
 
-    const actions: TableProps<Network>['actions'] = [{
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Network' }),
-            entityValue: name
-          },
-          onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
-            .then(clearSelection)
-        })
-      }
-    }]
+    const actions: TableProps<Network>['actions'] = [
+      {
+        label: $t({ defaultMessage: 'Edit' }),
+        onClick: (selectedRows) => {
+          navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
+        }
+      },
+      {
+        label: $t({ defaultMessage: 'Delete' }),
+        onClick: ([{ name, id }], clearSelection) => {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'Network' }),
+              entityValue: name
+            },
+            onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
+              .then(clearSelection)
+          })
+        }
+      }]
 
     return (
       <Loader states={[
