@@ -141,7 +141,7 @@ export const addressParser = async (place: google.maps.places.PlaceResult) => {
 }
 
 export function VenuesForm () {
-  const { $t } = useIntl()
+  const intl = useIntl()
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<VenueSaveData>>()
@@ -182,12 +182,14 @@ export function VenuesForm () {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.map(n => ({ name: n.name }))
-    return checkObjectNotExists(list, value, 'Venue')
+    return checkObjectNotExists(intl, list, { name: value } , 'Venue')
   }
 
   const addressValidator = async () => {
     if(Object.keys(address).length === 0){
-      return Promise.reject($t({ defaultMessage: 'Please select address from suggested list' }))
+      return Promise.reject(
+        intl.$t({ defaultMessage: 'Please select address from suggested list' })
+      )
     }
     return Promise.resolve()
   }
@@ -243,7 +245,7 @@ export function VenuesForm () {
         <StepsForm.StepForm>
           <Form.Item
             name='name'
-            label={$t({ defaultMessage: 'Venue Name' })}
+            label={intl.$t({ defaultMessage: 'Venue Name' })}
             rules={[{
               required: true
             },{
@@ -256,7 +258,7 @@ export function VenuesForm () {
             children={<Input />} />
           <Form.Item
             name='description'
-            label={$t({ defaultMessage: 'Description' })}
+            label={intl.$t({ defaultMessage: 'Description' })}
             wrapperCol={{ span: 5 }}
             children={<TextArea rows={2} maxLength={180} />} />
           {/*
@@ -269,14 +271,16 @@ export function VenuesForm () {
             <Col span={2} style={{ textAlign: 'left' }}>
               <span className='ant-form-item-label'>
                 <label className='ant-form-item-required'>
-                  {$t({ defaultMessage: 'Address' })}
+                  {intl.$t({ defaultMessage: 'Address' })}
                 </label>
               </span>
             </Col>
             <Col span={9} style={{ textAlign: 'left', paddingLeft: '2rem' }}>
               <span className='ant-form-item-label'>
                 <label>
-                  {$t({ defaultMessage: 'Make sure to include a city and country in the address' })}
+                  {intl.$t({ 
+                    defaultMessage: 'Make sure to include a city and country in the address' 
+                  })}
                 </label>
               </span>
             </Col>

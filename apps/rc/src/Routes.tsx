@@ -16,6 +16,10 @@ export default function RcRoutes () {
         path='networks/:networkId/network-details/:activeTab'
         element={<NetworkDetails />}
       />
+      <Route
+        path='networks/:networkId/:action'
+        element={<NetworkForm />}
+      />
       <Route path='services' element={<ServicesTable />} />
     </Route>
   )
