@@ -6,11 +6,13 @@ import {
   Form,
   Input,
   Select,
-  Switch
+  Switch,
+  Tooltip
 } from 'antd'
 
 
-import * as UI from './styledComponents'
+import { DnsProxyModal } from './DnsProxyModal'
+import * as UI           from './styledComponents'
 
 
 const { useWatch } = Form
@@ -73,12 +75,16 @@ function ClientIsolationForm () {
       </UI.FieldLabel>
       <UI.FieldLabel width='230px'>
         Client Isolation Allowlist by Venue:
-        <Form.Item
-          name='enableVenueClientIsolationAllowlist'
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch />} />
+
+        <Tooltip title={'Does not support in Beta.'}>
+          <Form.Item
+
+            name='enableVenueClientIsolationAllowlist'
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch disabled={true} />} />
+        </Tooltip>
       </UI.FieldLabel>
       {/* Client Isolation Allowlist by Venue TODOTODO */}
     </>
@@ -114,9 +120,11 @@ export function ServicesForm () {
             children={<Switch />}
           />
           {enableDnsProxy &&
-            <Button type='link' style={{ textAlign: 'left' }}>Manage</Button>}
+           <DnsProxyModal/>}
+
         </UI.FieldLabel>
       </UI.FieldLabel>
+
 
       <UI.FieldLabel width='125px'>
         Wi-Fi Calling:

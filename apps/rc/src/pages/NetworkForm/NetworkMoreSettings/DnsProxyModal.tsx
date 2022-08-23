@@ -1,0 +1,82 @@
+import { useState } from 'react'
+
+import {
+  Form,
+  Radio,
+  Switch,
+  Input,
+  Space,
+  Button,
+  Modal
+} from 'antd'
+
+
+
+export function DnsProxyModal () {
+  const [visible, setVisible] = useState(false)
+  const [form] = Form.useForm()
+
+  const formContent = <Form
+    form={form}
+    layout='vertical'
+    validateTrigger='onBlur'
+    onFinish={() => setVisible(false)}
+  >
+    <Form.Item
+      label='Name'
+      name='Name'
+      rules={[{ required: true, message: 'Please input your Name!' }]}
+    >
+      <Input placeholder='Input Name' />
+    </Form.Item>
+
+    <Form.Item name='radio-group' label='Type'>
+      <Radio.Group>
+        <Space direction='vertical'>
+          <Radio value='Cloud'>Cloud</Radio>
+          <Radio value='On-premise'>On-premise</Radio>
+        </Space>
+      </Radio.Group>
+    </Form.Item>
+
+    <Form.Item
+      label='IP Address'
+      name='IP Address'
+      rules={[{ required: true, message: 'Please input your IP Address!' }]}
+    >
+      <Input placeholder='Input IP Address'/>
+    </Form.Item>
+
+    <Form.Item name='switch' label='Switch' valuePropName='checked'>
+      <Switch />
+    </Form.Item>
+  </Form>
+
+  const showModal = () => {
+    setVisible(true)
+  }
+
+  const handleOk = () => {
+    form.submit()
+  }
+
+  const handleCancel = () => {
+    setVisible(false)
+    form.resetFields()
+  }
+
+  return (
+    <>
+      <Button type='link' style={{ textAlign: 'left' }} onClick={showModal}>Manage</Button>
+      <Modal
+        title='DNS Propxy'
+        visible={visible}
+        okText='Add'
+        onCancel={handleCancel}
+        onOk={handleOk}
+      >
+        {formContent}
+      </Modal>
+    </>
+  )
+}

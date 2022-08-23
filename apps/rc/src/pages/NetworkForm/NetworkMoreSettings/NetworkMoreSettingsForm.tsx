@@ -82,8 +82,20 @@ export function NetworkMoreSettingsForm (props: {
     props.wlanData.wlanSecurity === WlanSecurityEnum.WPA2Enterprise
   const isFastBssVisible = (isNetworkWPASecured || wlanData.type === NetworkTypeEnum.AAA) &&
     wlanData.type !== NetworkTypeEnum.DPSK
+
+  // TODO: Wait for captivePortal
+  // const showSingleSessionIdAccounting = (wlanData.accountingRadius && (wlanData.type === NetworkTypeEnum.AAA)) ||
+  // (wlanData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+  //   wlanData.type.guestPortal.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+  //   this.networkService.isProviderHasAccountingService(this.network));
+
   const showDynamicWlan = wlanData.type === NetworkTypeEnum.AAA ||
     wlanData.type === NetworkTypeEnum.DPSK
+
+  // TODO: Wait for captivePortal
+  // this.showMaxDevices = networkType === NetworkTypeEnum.CAPTIVEPORTAL &&
+  // (guestPortal.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn ||
+  //   guestPortal.guestNetworkType === GuestNetworkTypeEnum.HostApproval);
 
   const { vlanPoolSelectOptions } = useVlanPoolListQuery({
     params: useParams(),
