@@ -219,7 +219,7 @@ describe('IncidentTableWidget', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
 
-    render(<Provider><IncidentTableWidget/></Provider>,{
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>,{
       route: {
         path: '/t/tenantId/analytics/incidents',
         wrapRoutes: false,
@@ -240,7 +240,7 @@ describe('IncidentTableWidget', () => {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
   
-    render(<Provider><IncidentTableWidget/></Provider>,{
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>,{
       route: {
         path: '/t/tenantId/analytics/incidents',
         wrapRoutes: false,

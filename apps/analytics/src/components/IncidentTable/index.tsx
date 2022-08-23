@@ -2,15 +2,15 @@ import { useState } from 'react'
 
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { Incident, noDataSymbol, useAnalyticsFilter, getRootCauseAndRecommendations, useShortDescription } from '@acx-ui/analytics/utils'
-import { Loader, Table, TableProps, showToast, Drawer }                                                    from '@acx-ui/components'
-import { Link }                                                                                            from '@acx-ui/react-router-dom'
+import { Incident, noDataSymbol, getRootCauseAndRecommendations, useShortDescription, IncidentFilter } from '@acx-ui/analytics/utils'
+import { Loader, Table, TableProps, showToast, Drawer }                                                from '@acx-ui/components'
+import { Link }                                                                                        from '@acx-ui/react-router-dom'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRows } from './services'
 import * as UI                                                        from './styledComponents'
 import { 
-  getIncidentBySeverity,
-  formatDate,
+  GetIncidentBySeverity,
+  FormatDate,
   formatDuration,
   clientImpactSort,
   ShortIncidentDescription,
@@ -149,7 +149,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
 }
 
 
-const IncidentTableWidget = () => {
+const IncidentTableWidget = ({ filters }: { filters: IncidentFilter }) => {
   const descriptionHeader = {
     title: 'Description',
     dataIndex: 'description',
@@ -166,7 +166,6 @@ const IncidentTableWidget = () => {
     },
     ellipsis: true
   }
-  const filters = useAnalyticsFilter()
   const queryResults = useIncidentsListQuery(filters)
   const [drawerProps, setDrawerProps ] = 
   useState<{ visible : boolean, incident: Incident | null }>({ visible: false, incident: null })
