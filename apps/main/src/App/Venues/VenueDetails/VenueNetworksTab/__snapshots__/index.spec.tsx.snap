@@ -371,8 +371,8 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                                 style="text-align: center;"
                               >
                                 <button
-                                  aria-checked="false"
-                                  class="ant-switch"
+                                  aria-checked="true"
+                                  class="ant-switch ant-switch-checked"
                                   role="switch"
                                   type="button"
                                 >
@@ -386,16 +386,24 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                              />
+                              >
+                                All APs
+                              </td>
                               <td
                                 class="ant-table-cell"
-                              />
+                              >
+                                All APs
+                              </td>
                               <td
                                 class="ant-table-cell"
-                              />
+                              >
+                                2.4 GHz / 5 GHz
+                              </td>
                               <td
                                 class="ant-table-cell"
-                              />
+                              >
+                                24/7
+                              </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
@@ -417,7 +425,7 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Enterprise AAA (802.1X)
+                                Enterprise AAA (802.1X) - WPA3
                               </td>
                               <td
                                 class="ant-table-cell"

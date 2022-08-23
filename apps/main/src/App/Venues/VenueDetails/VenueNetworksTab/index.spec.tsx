@@ -2,14 +2,17 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { networkApi }                           from '@acx-ui/rc/services'
-import { CommonUrlsInfo, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider, store }                      from '@acx-ui/store'
+import { useSplitTreatment }                                      from '@acx-ui/feature-toggle'
+import { networkApi }                                             from '@acx-ui/rc/services'
+import { CommonUrlsInfo, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                                        from '@acx-ui/store'
 import {
   act,
+  fireEvent,
   mockServer,
   render,
   screen,
+  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
@@ -20,6 +23,7 @@ const networks = {
     {
       type: 'aaa',
       wlan: {
+        wlanSecurity: WlanSecurityEnum.WPA3,
         advancedCustomization: {
           userUplinkRateLimiting: 0,
           userDownlinkRateLimiting: 0,
@@ -95,7 +99,7 @@ const networks = {
     {
       type: 'psk',
       wlan: {
-        wlanSecurity: 'WPA2Personal',
+        wlanSecurity: WlanSecurityEnum.WPA2Personal,
         advancedCustomization: {
           userUplinkRateLimiting: 0,
           userDownlinkRateLimiting: 0,
@@ -156,7 +160,11 @@ const networks = {
       },
       tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       name: 'test_1',
-      id: 'd556bb683e4248b7a911fdb40c307aa5'
+      id: 'd556bb683e4248b7a911fdb40c307aa5',
+      venues: [{
+        venueId: '3b2ffa31093f41648ed38ed122510029',
+        id: '3b2ffa31093f41648ed38ed122510029'
+      }]
     }
   ]
 }
@@ -167,6 +175,7 @@ const apGroup = {
       networkId: 'd556bb683e4248b7a911fdb40c307aa5',
       apGroups: [
         {
+          id: 'test',
           apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
           radio: 'Both',
           isDefault: true,
@@ -237,8 +246,6 @@ const list = {
   ]
 }
 
-// const queryResult = aggregatedVenueNetworksData(list, apGroup, networks)
-
 describe('VenueNetworksTab', () => {
   beforeEach(() => {
     act(() => {
@@ -276,105 +283,104 @@ describe('VenueNetworksTab', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  // it('activate Network', async () => {
-  //   mockServer.use(
-  //     rest.post(
-  //       CommonUrlsInfo.getNetworksVenuesList.url,
-  //       (req, res, ctx) => res(ctx.json(list))
-  //     ),
-  //     rest.get(
-  //       CommonUrlsInfo.getNetwork.url,
-  //       (req, res, ctx) => res(ctx.json(networks))
-  //     ),
-  //     rest.get(
-  //       CommonUrlsInfo.getAllUserSettings.url,
-  //       (req, res, ctx) => res(ctx.json(apGroup))
-  //     )
-  //   )
-  //   const params = {
-  //     tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-  //     venueId: '3b2ffa31093f41648ed38ed122510029'
-  //   }
+  it('activate Network', async () => {
+    jest.mocked(useSplitTreatment).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenueNetworkList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json(networks))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json(apGroup))
+      )
+    )
 
-  //   const { asFragment } = render(<Provider><VenueNetworksTab /></Provider>, {
-  //     route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
-  //   })
+    const params = {
+      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      venueId: '3b2ffa31093f41648ed38ed122510029'
+    }
 
-  //   await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    render(<Provider><VenueNetworksTab /></Provider>, {
+      route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
+    })
 
-  //   const newVenues = [
-  //     ...list.data[0].deepNetwork.venues,
-  //     {
-  //       ...network.venues[0],
-  //       venueId: '02e2ddbc88e1428987666d31edbc3d9a'
-  //     }
-  //   ]
-  //   mockServer.use(
-  //     rest.get(
-  //       CommonUrlsInfo.getNetwork.url,
-  //       (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
-  //     ),
-  //     rest.post(
-  //       CommonUrlsInfo.addNetworkVenue.url,
-  //       (req, res, ctx) => res(ctx.json({ requestId: '123' }))
-  //     )
-  //   )
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-  //   const toogleButton = await screen.findByRole('switch', { checked: false })
-  //   fireEvent.click(toogleButton)
+    const newApGroup = JSON.parse(JSON.stringify(apGroup))
+    newApGroup.response[1].apGroups[0].id = 'test2'
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json(newApGroup))
+      ),
+      rest.post(
+        CommonUrlsInfo.addNetworkVenue.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      )
+    )
 
-  //   await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const toogleButton = await screen.findByRole('switch', { checked: false })
+    fireEvent.click(toogleButton)
 
-  //   const rows = await screen.findAllByRole('switch')
-  //   expect(rows).toHaveLength(2)
-  //   await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
-  // })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-  // xit('deactivate Network', async () => {
-  //   mockServer.use(
-  //     rest.post(
-  //       CommonUrlsInfo.getNetworksVenuesList.url,
-  //       (req, res, ctx) => res(ctx.json(list))
-  //     ),
-  //     rest.get(
-  //       CommonUrlsInfo.getNetwork.url,
-  //       (req, res, ctx) => res(ctx.json(network))
-  //     ),
-  //     rest.get(
-  //       CommonUrlsInfo.getAllUserSettings.url,
-  //       (req, res, ctx) => res(ctx.json(user))
-  //     )
-  //   )
-  //   const params = {
-  //     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-  //     networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-  //   }
+    const rows = await screen.findAllByRole('switch')
+    expect(rows).toHaveLength(2)
+    await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
+  })
 
-  //   render(<Provider><VenueNetworksTab /></Provider>, {
-  //     route: { params, path: '/:tenantId/:networkId' }
-  //   })
+  it('deactivate Network', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenueNetworkList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json(networks))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json(apGroup))
+      )
+    )
 
-  //   await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const params = {
+      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      venueId: '3b2ffa31093f41648ed38ed122510029'
+    }
 
-  //   mockServer.use(
-  //     rest.get(
-  //       CommonUrlsInfo.getNetwork.url,
-  //       (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
-  //     ),
-  //     rest.delete(
-  //       CommonUrlsInfo.deleteNetworkVenue.url,
-  //       (req, res, ctx) => res(ctx.json({ requestId: '456' }))
-  //     )
-  //   )
+    render(<Provider><VenueNetworksTab /></Provider>, {
+      route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
+    })
 
-  //   const toogleButton = await screen.findByRole('switch', { checked: true })
-  //   fireEvent.click(toogleButton)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-  //   await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const newApGroup = JSON.parse(JSON.stringify(apGroup))
+    newApGroup.response[0].apGroups[0].id = ''
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json(newApGroup))
+      ),
+      rest.delete(
+        CommonUrlsInfo.deleteNetworkVenue.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+      )
+    )
 
-  //   const rows = await screen.findAllByRole('switch')
-  //   expect(rows).toHaveLength(2)
-  //   await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
-  // })
+    const toogleButton = await screen.findByRole('switch', { checked: true })
+    fireEvent.click(toogleButton)
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const rows = await screen.findAllByRole('switch')
+    expect(rows).toHaveLength(2)
+    await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
+  })
 })
