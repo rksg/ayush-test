@@ -1,10 +1,11 @@
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { Incident, noDataSymbol, IncidentFilter } from '@acx-ui/analytics/utils'
-import { Loader, Table, TableProps, showToast }   from '@acx-ui/components'
+import { Loader, TableProps, showToast }          from '@acx-ui/components'
 import { Link }                                   from '@acx-ui/react-router-dom'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRows } from './services'
+import * as UI                                                        from './styledComponents'
 import {
   GetIncidentBySeverity,
   FormatDate,
@@ -152,7 +153,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     <Loader states={[queryResults]}>
       <AutoSizer>
         {({ height, width }) => (
-          <Table
+          <UI.Table
             type='tall'
             style={{ width, height }}
             dataSource={queryResults?.data}
