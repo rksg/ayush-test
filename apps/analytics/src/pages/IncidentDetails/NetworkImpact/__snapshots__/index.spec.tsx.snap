@@ -13,7 +13,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 iISfNm"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 hnuCqA"
         >
           <div
             class="ant-card"
@@ -28,7 +28,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="styledComponents__HeaderContainer-sc-13w5wfx-4 gmFkBh"
+                    class="styledComponents__HeaderContainer-sc-13w5wfx-4 jbxNCa"
                   >
                     <div
                       class="styledComponents__TitleWrapper-sc-13w5wfx-5 bxvIFk"
@@ -173,7 +173,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 iISfNm"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 hnuCqA"
         >
           <div
             class="ant-card"
@@ -188,7 +188,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="styledComponents__HeaderContainer-sc-13w5wfx-4 gmFkBh"
+                    class="styledComponents__HeaderContainer-sc-13w5wfx-4 jbxNCa"
                   >
                     <div
                       class="styledComponents__TitleWrapper-sc-13w5wfx-5 bxvIFk"
@@ -327,7 +327,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 iISfNm"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 hnuCqA"
         >
           <div
             class="ant-card"
@@ -342,7 +342,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="styledComponents__HeaderContainer-sc-13w5wfx-4 gmFkBh"
+                    class="styledComponents__HeaderContainer-sc-13w5wfx-4 jbxNCa"
                   >
                     <div
                       class="styledComponents__TitleWrapper-sc-13w5wfx-5 bxvIFk"
@@ -488,7 +488,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 iISfNm"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 hnuCqA"
         >
           <div
             class="ant-card"
@@ -503,7 +503,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                   class="ant-card-head-title"
                 >
                   <div
-                    class="styledComponents__HeaderContainer-sc-13w5wfx-4 gmFkBh"
+                    class="styledComponents__HeaderContainer-sc-13w5wfx-4 jbxNCa"
                   >
                     <div
                       class="styledComponents__TitleWrapper-sc-13w5wfx-5 bxvIFk"
