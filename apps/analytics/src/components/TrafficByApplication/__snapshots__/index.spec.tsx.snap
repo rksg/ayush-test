@@ -6,7 +6,7 @@ exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 cqBRbN"
+      class="styledComponents__Wrapper-sc-13w5wfx-3 kdGRKl"
     >
       <div
         class="ant-card"
@@ -21,14 +21,9 @@ exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__HeaderContainer-sc-13w5wfx-4 jbxNCa"
+                class="styledComponents__TitleWrapper-sc-13w5wfx-4 fWcjnG"
               >
-                <div
-                  class="styledComponents__TitleWrapper-sc-13w5wfx-5 bxvIFk"
-                >
-                  Top 5 Applications by Traffic
-                </div>
-                <div />
+                Top 5 Applications by Traffic
               </div>
             </div>
             <div
