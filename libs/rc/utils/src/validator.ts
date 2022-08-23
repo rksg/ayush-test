@@ -17,7 +17,7 @@ export function networkWifiSecretRegExp ({ $t }: IntlShape, value: string) {
   // eslint-disable-next-line max-len
   const re = new RegExp('^[\\x21-\\x7E]+([\\x20-\\x7E]*[\\x21-\\x7E]+)*$')
   if (value!=='' && !re.test(value)) {
-    return Promise.reject($t(validationMessages.sharedSecret))
+    return Promise.reject($t(validationMessages.invalid))
   }
   return Promise.resolve()
 }
