@@ -5,8 +5,8 @@ import { Provider }        from '@acx-ui/store'
 import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
 import NetworkHistoryWidget           from './components/NetworkHistory'
 import SwitchesByPoEUsageWidget       from './components/SwitchesByPoEUsage'
+import SwitchesByTrafficWidget        from './components/SwitchesByTraffic'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
-
 
 const widgetsMap = {
   trafficByVolume: ({ filters }: { filters: AnalyticsFilter }) => (
@@ -20,6 +20,9 @@ const widgetsMap = {
   ),
   topSwitchesByPoeUsage: ({ filters }: { filters: AnalyticsFilter }) => (
     <SwitchesByPoEUsageWidget filters={filters}/>
+  ),
+  topSwitchesByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
+    <SwitchesByTrafficWidget filters={filters}/>
   )
 
 }
