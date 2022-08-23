@@ -30,7 +30,7 @@ function AllRoutes () {
         </Route>
         <Route path='venues' element={<VenuesTable />} />
       </Route>
-      <Route path='v/:mspId/*' element={<MspRoutes />} />
+      <Route path='v/:tenantId/*' element={<MspRoutes />} />
     </>
   )
 }

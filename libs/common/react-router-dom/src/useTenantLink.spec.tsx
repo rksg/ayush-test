@@ -47,16 +47,11 @@ describe('useTenantLink', () => {
     expect(result.current.search).toEqual('?test=updated&another=param')
   })
   it('accept tenantType = v', () => {
-    const { result } = renderHook(() => useTenantLink('/dsahboard', 'v'), {
-      wrapper: ({ children }: { children: React.ReactElement }) => (
-        <MemoryRouter initialEntries={['/v/msp-id?test=ok']}>
-          <Routes>
-            <Route path={'/v/:mspId'} element={children} />
-          </Routes>
-        </MemoryRouter>
-      )
-    })
-    expect(result.current.pathname).toEqual('/v/msp-id/dsahboard')
+    const { result } = renderHook(
+      () => useTenantLink('/dsahboard', 'v'),
+      { wrapper: getWrapper('') }
+    )
+    expect(result.current.pathname).toEqual('/v/t-id/dsahboard')
   })
 
   describe('basePath = /base/path/', () => {

@@ -6,7 +6,7 @@ import Layout from './components/Layout'
 
 export default function MspRoutes () {
   const routes = rootRoutes(
-    <Route path='v/:mspId' element={<Layout />}>
+    <Route path='v/:tenantId' element={<Layout />}>
       <Route index element={<TenantNavigate to='/dashboard' tenantType='v' />} />
       <Route path='dashboard' element={<div>MSP Page</div>} />
     </Route>
