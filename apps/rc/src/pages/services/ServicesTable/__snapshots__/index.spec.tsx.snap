@@ -909,7 +909,7 @@ exports[`Services Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                DHCP for Wi-Fi
+                                DHCP
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1953,7 +1953,7 @@ exports[`Services Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                DHCP for Wi-Fi
+                                DHCP
                               </td>
                               <td
                                 class="ant-table-cell"

@@ -24,7 +24,7 @@ const operationPathMapping: Record<ServiceOperation, string> = {
 
 const typePathMapping: Record<ServiceType, string> = {
   [ServiceType.PORTAL]: 'portal',
-  [ServiceType.DHCP_WIFI]: 'dhcpWifi',
+  [ServiceType.DHCP]: 'dhcp',
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
   [ServiceType.DPSK]: 'dpsk'

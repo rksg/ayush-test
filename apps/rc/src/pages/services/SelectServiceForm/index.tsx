@@ -55,10 +55,10 @@ export function SelectServiceForm () {
                   { $t({ defaultMessage: 'Connectivity' }) }
                 </Typography.Title>
                 <Space>
-                  <Radio key={ServiceType.DHCP_WIFI} value={ServiceType.DHCP_WIFI}>
-                    {$t(serviceTypeLabelMapping[ServiceType.DHCP_WIFI])}
+                  <Radio key={ServiceType.DHCP} value={ServiceType.DHCP}>
+                    {$t(serviceTypeLabelMapping[ServiceType.DHCP])}
                     <RadioDescription>
-                      {$t(serviceTypeDescMapping[ServiceType.DHCP_WIFI])}
+                      {$t(serviceTypeDescMapping[ServiceType.DHCP])}
                     </RadioDescription>
                   </Radio>
                   <Radio key={ServiceType.DPSK} value={ServiceType.DPSK}>
