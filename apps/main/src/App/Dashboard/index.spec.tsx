@@ -17,7 +17,7 @@ describe('Dashboard', () => {
   it('renders correctly', async () => {
     render(<Dashboard />)
 
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(6)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(8)
     expect(await screen.findAllByTestId(/^networks/)).toHaveLength(5)
   })
 
