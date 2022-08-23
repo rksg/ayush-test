@@ -60,13 +60,14 @@ export default function TrafficBySSIDWidget ({
   const getDataSource= (appTrafficData: TrafficBySSID[],
     overallTrafic:number) => {
     return appTrafficData.map((item,index) => {
-      const sparkLineData = item.timeSeries.map(tsDatapoints => tsDatapoints.traffic)
+      const sparkLineData = item.timeSeries.userTraffic
+        .map(value => value ? value : 0)
       const sparklineChartStyle = { height: 18, width: 80, display: 'inline' }
       return {
         ...item,
-        traffic: <>{formatter('bytesFormat')(item.traffic)} &nbsp;
+        traffic: <>{formatter('bytesFormat')(item.userTraffic)} &nbsp;
           <TrafficPercent>
-          ({formatter('percentFormatRound')(item.traffic/overallTrafic)})
+          ({formatter('percentFormatRound')(item.userTraffic/overallTrafic)})
           </TrafficPercent>
         </>,
         trafficHistory: <SparklineChart
@@ -82,7 +83,7 @@ export default function TrafficBySSIDWidget ({
 
   const ssidTable = data && data.topNSSIDByTraffic && data.topNSSIDByTraffic.length ? <Table
     columns={columns}
-    dataSource={getDataSource(data.topNSSIDByTraffic, data.totalClientTraffic)}
+    dataSource={getDataSource(data.topNSSIDByTraffic, data.totalUserTraffic)}
     type={'compact'}
     pagination={false}
   /> : <NoData/>

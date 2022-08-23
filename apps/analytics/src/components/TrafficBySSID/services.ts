@@ -3,21 +3,22 @@ import { gql } from 'graphql-request'
 import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
+import { calcGranularity } from '../TrafficByApplication/services'
+
 export type HierarchyNodeData = {
-  totalClientTraffic: number
+  totalUserTraffic: number
   topNSSIDByTraffic: TrafficBySSID[]
 }
 
 export type TrafficTimeseriesData = {
-    timestamp: Date
-    traffic: number
+    userTraffic: number[]
 }
 
 export type TrafficBySSID = {
     name: string
-    traffic: number
+    userTraffic: number
     clientCount: number
-    timeSeries: TrafficTimeseriesData[]
+    timeSeries: TrafficTimeseriesData
 }
 
 interface Response <T> {
@@ -38,14 +39,13 @@ export const api = dataApi.injectEndpoints({
           $start: DateTime, $end: DateTime, $n: Int!, $granularity: String!) {
           network(end: $end, start: $start) {
             hierarchyNode(path: $path) {
-              totalClientTraffic: clientTraffic
+              totalUserTraffic: userTraffic
               topNSSIDByTraffic: topNSSIDByTraffic(n: $n) {
                 name
-                traffic
+                userTraffic
                 clientCount
                 timeSeries(granularity: $granularity) {
-                    timestamp
-                    traffic
+                    userTraffic
                 }
               }
             }
@@ -56,7 +56,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: 'fifteen_minute',
+          granularity: calcGranularity(payload.startDate, payload.endDate),
           n: 5
         }
       }),
