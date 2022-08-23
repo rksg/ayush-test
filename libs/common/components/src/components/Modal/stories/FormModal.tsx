@@ -62,7 +62,7 @@ export function FormModal () {
 
   const handleCancel = () => {
     setVisible(false)
-    form.resetFields()
+
   }
 
   return (

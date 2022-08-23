@@ -14,7 +14,8 @@ import {
   DevicePolicy,
   L3AclPolicy,
   ApplicationPolicy,
-  VlanPool
+  VlanPool,
+  AccessControlProfile
 } from './types/service'
 
 
@@ -101,6 +102,17 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
+    accessControlProfileList: build.query<AccessControlProfile[], RequestPayload>({
+      query: ({ params }) => {
+        const accessControlProfileListReq = createHttpRequest(
+          CommonUrlsInfo.getAccessControlProfileList,
+          params
+        )
+        return {
+          ...accessControlProfileListReq
+        }
+      }
+    }),
     vlanPoolList: build.query<TableResult<VlanPool>, RequestPayload>({
       query: ({ params, payload }) => {
         const vlanPoolListReq = createHttpRequest(
@@ -134,5 +146,6 @@ export const {
   useDevicePolicyListQuery,
   useServiceListQuery,
   useDeleteServiceMutation,
-  useVlanPoolListQuery
+  useVlanPoolListQuery,
+  useAccessControlProfileListQuery
 } = serviceApi

@@ -35,6 +35,21 @@ export interface ApplicationPolicy {
   id: string
 }
 
+
+export interface AccessControlProfile {
+  name: string,
+  id: string,
+  rateLimiting: {
+    downlinkLimit: number,
+    enabled: boolean,
+    uplinkLimit: number
+  },
+  devicePolicy: {
+    enabled: boolean
+    id: string
+  }
+}
+
 export interface VlanPool {
   name: string,
   id: string,

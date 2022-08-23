@@ -9,21 +9,21 @@ import {
   Switch,
   Modal,
   Input
-} from 'antd'
 
-import { StepsForm }              from '@acx-ui/components'
+} from 'antd'
+import _ from 'lodash'
+
+import { StepsForm }                 from '@acx-ui/components'
 import {
   useDevicePolicyListQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
-  useApplicationPolicyListQuery
+  useApplicationPolicyListQuery,
+  useAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }            from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
-
-
-
 
 const { useWatch } = Form
 const { Option } = Select
@@ -134,6 +134,47 @@ export function AccessControlForm () {
 }
 
 function SelectAccessProfileProfile () {
+
+  const listPayload = {
+    fields: ['name', 'id'], sortField: 'name',
+    sortOrder: 'ASC', page: 1, pageSize: 10000
+  }
+
+  const { accessControlProfileSelectOptions,
+    accessControlList } = useAccessControlProfileListQuery({
+    params: useParams(),
+    payload: listPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        accessControlProfileSelectOptions: data?.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? [],
+        accessControlList: data
+      }
+    }
+  })
+
+  // const [state, updateState] = useState({
+  //   selectedProfile:
+  //   {
+  //     l2AclPolicy: { id: '' },
+  //     l3AclPolicy: { id: '' },
+  //     devicePolicy: { id: '' },
+  //     applicationPolicy: { id: '' },
+  //     rateLimiting: { uplinkLimit: '', downlinkLimit: '' }
+  //   }
+  // })
+
+  // const updateData = (newData: Partial<typeof state>) => {
+  //   updateState({ ...state, ...newData })
+  // }
+
+  // const onAccessPolicyChange = function (id: string) {
+  //   updateData({  _.isArray(accessControlList) ?
+  //     accessControlList.filter(item => item.id === id)[0] : {} })
+  // }
+
+
   const [enableAccessControlProfile] = [useWatch('enableAccessControlProfile')]
   return (<>
 
@@ -150,10 +191,13 @@ function SelectAccessProfileProfile () {
 
     {enableAccessControlProfile && <Form.Item
       label='Access Control Policy'
-      name='accessControlPolicy'
+      name={['moresettings','advancedCustomization','accessControlProfileId']}
     >
-      <Select>
-      </Select>
+      <Select placeholder='Select profile...'
+        style={{ width: '180px' }}
+        // onChange={onAccessPolicyChange}
+        children={accessControlProfileSelectOptions} />
+
     </Form.Item>}
 
     <UI.FieldLabel width='175px' style={{ fontWeight: 700 }}>
@@ -163,7 +207,7 @@ function SelectAccessProfileProfile () {
 
     <UI.FieldLabel width='175px'>
       <span>Layer 2</span>
-      <span>--</span>
+      {/* <span>{state.selectedProfile.l2AclPolicy.id}</span> */}
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>

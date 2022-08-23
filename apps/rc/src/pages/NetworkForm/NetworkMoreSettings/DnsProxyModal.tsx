@@ -1,15 +1,86 @@
 import { useState } from 'react'
 
 import {
-  Form,
-  Radio,
-  Switch,
-  Input,
-  Space,
-  Button,
-  Modal
+  Form
 } from 'antd'
 
+
+import {
+  Button,
+  Table,
+  TableProps,
+  Modal,
+  showToast
+} from '@acx-ui/components'
+
+const basicColumns = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name'
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    key: 'age'
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    key: 'address'
+  }
+]
+
+const basicData = [
+  {
+    key: '1',
+    name: 'John Doe',
+    age: 32,
+    address: 'sample address'
+  },
+  {
+    key: '2',
+    name: 'Jane Doe',
+    age: 33,
+    address: 'new address'
+  },
+  {
+    key: '3',
+    name: 'Will Smith',
+    age: 45,
+    address: 'address'
+  }
+]
+
+const actions: TableProps<(typeof basicData)[0]>['actions'] = [
+  {
+    label: 'Edit',
+    onClick: (selectedRows) => showToast({
+      type: 'info',
+      content: `Edit ${selectedRows.length} item(s)`
+    })
+  },
+  {
+    label: 'Delete',
+    onClick: (selectedRows) => showToast({
+      type: 'info',
+      content: `Edit ${selectedRows.length} item(s)`
+    })
+  }
+]
+
+export function MultiSelectTable () {
+  return (<>
+    <Button type='link' style={{ float: 'right' }} >Add</Button>
+    <Table
+      columns={basicColumns}
+      dataSource={basicData}
+      actions={actions}
+      rowSelection={{ defaultSelectedRowKeys: [] }}
+    />
+  </>
+  )
+}
 
 
 export function DnsProxyModal () {
@@ -27,28 +98,7 @@ export function DnsProxyModal () {
       name='Name'
       rules={[{ required: true, message: 'Please input your Name!' }]}
     >
-      <Input placeholder='Input Name' />
-    </Form.Item>
-
-    <Form.Item name='radio-group' label='Type'>
-      <Radio.Group>
-        <Space direction='vertical'>
-          <Radio value='Cloud'>Cloud</Radio>
-          <Radio value='On-premise'>On-premise</Radio>
-        </Space>
-      </Radio.Group>
-    </Form.Item>
-
-    <Form.Item
-      label='IP Address'
-      name='IP Address'
-      rules={[{ required: true, message: 'Please input your IP Address!' }]}
-    >
-      <Input placeholder='Input IP Address'/>
-    </Form.Item>
-
-    <Form.Item name='switch' label='Switch' valuePropName='checked'>
-      <Switch />
+      <MultiSelectTable></MultiSelectTable>
     </Form.Item>
   </Form>
 
@@ -67,9 +117,15 @@ export function DnsProxyModal () {
 
   return (
     <>
-      <Button type='link' style={{ textAlign: 'left' }} onClick={showModal}>Manage</Button>
+      <Button type='link'
+        style={{ textAlign: 'left',
+          display: 'inline',
+          marginLeft: '15px' }}
+        onClick={showModal}
+        disabled={true}>
+        Manage</Button>
       <Modal
-        title='DNS Propxy'
+        title='DNS Proxy'
         visible={visible}
         okText='Add'
         onCancel={handleCancel}

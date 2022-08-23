@@ -83,7 +83,7 @@ function ClientIsolationForm () {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch disabled={true} />} />
+            children={<Switch />} />
         </Tooltip>
       </UI.FieldLabel>
       {/* Client Isolation Allowlist by Venue TODOTODO */}
@@ -128,13 +128,22 @@ export function ServicesForm () {
 
       <UI.FieldLabel width='125px'>
         Wi-Fi Calling:
+        <UI.FieldLabel width='30px'>
         <Form.Item
-          name={['moresettings','advancedCustomization','wifiCallingEnabled']}
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch />}
-        />
+            name={['moresettings', 'advancedCustomization', 'wifiCallingEnabled']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch />}
+          />
+          <Button type='link'
+            style={{
+              textAlign: 'left'
+            }}
+            disabled={true}>
+          Select profiles </Button>
+        </UI.FieldLabel>
+
       </UI.FieldLabel>
 
       <ClientIsolationForm/>
@@ -159,8 +168,8 @@ export function ServicesForm () {
                 name={['moresettings','advancedCustomization','enableArpRequestRateLimit']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
-                initialValue={false}
-                children={<UI.CheckboxWrapper />}
+                initialValue={true}
+                children={<UI.CheckboxWrapper/>}
               />
               <UI.Label style={{ lineHeight: '32px' }}>  ARP request rate limit
               </UI.Label>
@@ -185,7 +194,7 @@ export function ServicesForm () {
                 name={['moresettings','advancedCustomization','enableDhcpRequestRateLimit']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
-                initialValue={false}
+                initialValue={true}
                 children={<UI.CheckboxWrapper />}
               />
               <UI.Label style={{ lineHeight: '34px' }}>
