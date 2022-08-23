@@ -62,13 +62,14 @@ export default function TrafficByApplicationWidget ({
   const getDataSource= (appTrafficData: TrafficByApplicationData[],
     overallTrafic:number) => {
     return appTrafficData.map((item,index) => {
-      const sparkLineData = item.timeSeries.map(tsDatapoints => tsDatapoints.traffic)
+      const sparkLineData = item.timeSeries.applicationTraffic
+        .map(value => value ? value : 0)
       const sparklineChartStyle = { height: 18, width: 80, display: 'inline' }
       return {
         ...item,
-        traffic: <>{formatter('bytesFormat')(item.traffic)} &nbsp;
+        traffic: <>{formatter('bytesFormat')(item.applicationTraffic)} &nbsp;
           <TrafficPercent>
-          ({formatter('percentFormatRound')(item.traffic/overallTrafic)})
+          ({formatter('percentFormatRound')(item.applicationTraffic/overallTrafic)})
           </TrafficPercent>
         </>,
         trafficHistory: <SparklineChart
