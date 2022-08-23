@@ -117,9 +117,17 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
     .map(({ getValue }) => getValue(incident) as DescriptionRowProps)
   return <>
     <DescriptionSection fields={computedFields}/>
-    { visible==='ap' &&
-      <ImpactedAPsDrawer visible={visible==='ap'} onClose={onClose} id={incident.id} /> }
-    { visible==='client' &&
-      <ImpactedClientsDrawer visible={visible==='client'} onClose={onClose} id={incident.id} /> }
+    { visible==='ap' && <ImpactedAPsDrawer
+      visible={visible==='ap'}
+      onClose={onClose}
+      id={incident.id}
+      impactedCount={incident.impactedApCount as number}
+    /> }
+    { visible==='client' && <ImpactedClientsDrawer
+      visible={visible==='client'}
+      onClose={onClose}
+      id={incident.id}
+      impactedCount={incident.impactedClientCount as number}
+    /> }
   </>
 }

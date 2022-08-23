@@ -32,9 +32,10 @@ describe('Drawer', () => {
   afterAll(() => jest.resetAllMocks())
   describe('ImpactedAPsDrawer', () => {
     beforeEach(() => store.dispatch(impactedApi.util.resetApiState()))
-    const props = { visible: true, onClose: jest.fn(), id: 'id' }
+    const props = { visible: true, onClose: jest.fn(), id: 'id', impactedCount: 1 }
     const sample = [
-      { name: 'name', mac: 'mac', model: 'model', version: 'version' }
+      { name: 'name', mac: 'mac', model: 'model', version: 'version' },
+      { name: 'name 2', mac: 'mac', model: 'model 2', version: 'version 2' }
     ] as ImpactedAP[]
     it('should render loader', () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
@@ -48,11 +49,11 @@ describe('Drawer', () => {
       render(<Provider><ImpactedAPsDrawer {...props}/></Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
       await screen.findByPlaceholderText('Search for...')
-      await screen.findByText(new RegExp(sample[0].name))
+      await screen.findByText(new RegExp(`TBD(.*) - (.*)${sample[0].name}(.*)${sample[1].name}`))
       await screen.findByText(sample[0].mac)
-      await screen.findByText(sample[0].model)
-      await screen.findByText(sample[0].version)
-      await screen.findByText(`${sample.length} Impacted AP`)
+      await screen.findByText(`${sample[0].model} (2)`)
+      await screen.findByText(`${sample[0].version} (2)`)
+      await screen.findByText('1 Impacted AP')
     })
     it('should render error', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
@@ -63,13 +64,23 @@ describe('Drawer', () => {
   })
   describe('ImpactedClientsDrawer', () => {
     beforeEach(() => store.dispatch(impactedApi.util.resetApiState()))
-    const props = { visible: true, onClose: jest.fn(), id: 'id' }
-    const sample = [{
-      mac: 'mac',
-      manufacturer: 'manufacturer',
-      ssid: 'ssid',
-      hostname: 'hostname',
-      username: 'username' }] as ImpactedClient[]
+    const props = { visible: true, onClose: jest.fn(), id: 'id', impactedCount: 1 }
+    const sample = [
+      {
+        mac: 'mac',
+        manufacturer: 'manufacturer',
+        ssid: 'ssid',
+        hostname: 'hostname',
+        username: 'username'
+      },
+      {
+        mac: 'mac',
+        manufacturer: 'manufacturer 2',
+        ssid: 'ssid 2',
+        hostname: 'hostname 2',
+        username: 'username 2'
+      }
+    ] as ImpactedClient[]
     it('should render loader', () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedClients', {
         data: { incident: { impactedClients: sample } } })
@@ -83,11 +94,13 @@ describe('Drawer', () => {
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
       await screen.findByPlaceholderText('Search for...')
       await screen.findByText(sample[0].mac)
-      await screen.findByText(sample[0].manufacturer)
-      await screen.findByText(sample[0].ssid)
-      await screen.findByText(new RegExp(sample[0].hostname))
-      await screen.findByText(sample[0].username)
-      await screen.findByText(`${sample.length} Impacted Client`)
+      await screen.findByText(`${sample[0].manufacturer} (2)`)
+      await screen.findByText(`${sample[0].ssid} (2)`)
+      await screen.findByText(
+        new RegExp(`TBD(.*) - (.*)${sample[0].hostname}(.*)${sample[1].hostname}`)
+      )
+      await screen.findByText(`${sample[0].username} (2)`)
+      await screen.findByText('1 Impacted Client')
       const icons = await screen.findAllByTestId('information')
       expect(icons.length).toBe(2)
     })

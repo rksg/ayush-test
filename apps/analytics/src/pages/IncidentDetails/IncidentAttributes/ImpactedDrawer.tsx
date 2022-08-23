@@ -16,6 +16,7 @@ import {
 } from './services'
 
 export interface ImpactedDrawerProps extends Pick<Incident, 'id'> {
+  impactedCount: number
   visible: boolean
   onClose: () => void
 }
@@ -99,7 +100,7 @@ export const ImpactedClientsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     width={'650px'}
     title={$t(
       { defaultMessage: '{count} Impacted {count, plural, one {Client} other {Clients}}' },
-      { count: `${queryResults.data?.length || ''}` }
+      { count: props.impactedCount }
     )}
     visible={props.visible}
     onClose={props.onClose}
@@ -140,7 +141,7 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     width={'600px'}
     title={$t(
       { defaultMessage: '{count} Impacted {count, plural, one {AP} other {APs}}' },
-      { count: `${queryResults.data?.length || ''}` }
+      { count: props.impactedCount }
     )}
     visible={props.visible}
     onClose={props.onClose}
