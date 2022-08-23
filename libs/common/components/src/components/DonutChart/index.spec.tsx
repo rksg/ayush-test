@@ -75,6 +75,7 @@ describe('Donut Chart - large', () => {
     const { asFragment } = render(<DonutChart
       data={data}
       type={'large'}
+      onClick={jest.fn()}
       dataFormatter={formatter('noFormat')}
       title='Donut Chart'
       showLegend={false}

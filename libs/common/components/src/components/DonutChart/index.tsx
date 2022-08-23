@@ -130,7 +130,7 @@ export function DonutChart ({
       subtext: props.subtitle
         ? props.subtitle
         : props.showTotal ? `${dataFormatter ? dataFormatter(sum) : sum}` : undefined,
-      left: props.showLegend && !isEmpty ? '26%' : 'center',
+      left: props.showLegend && !isEmpty ? '28%' : 'center',
       top: 'center',
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
@@ -141,7 +141,7 @@ export function DonutChart ({
     legend: {
       show: props.showLegend,
       top: 'middle',
-      left: '58%',
+      left: '60%',
       orient: 'vertical',
       icon: 'circle',
       selectedMode: false,
@@ -165,7 +165,8 @@ export function DonutChart ({
         animation: !isEmpty,
         data,
         type: 'pie',
-        center: [props.showLegend && !isEmpty ? '28%' : '50%', '50%'],
+        cursor: props.onClick ? 'pointer' : 'auto',
+        center: [props.showLegend && !isEmpty ? '30%' : '50%', '50%'],
         radius: isEmpty
           ? ['82%', '92%']
           : props.showLabel ? ['66%', '80%'] : ['78%', '92%'],

@@ -58,6 +58,7 @@ storiesOf('Donut Chart', module)
         <DonutChart
           style={{ width: '100%', height: '100%' }}
           data={object('data', data)}
+          onClick={clickHandler}
           dataFormatter={formatter('countFormat')}/>
       </Card>
     </div>)
