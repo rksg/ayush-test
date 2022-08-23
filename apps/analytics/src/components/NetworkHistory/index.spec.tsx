@@ -21,6 +21,19 @@ const sample = {
   connectedClientCount: [11, 12, 13, 14, 15]
 }
 
+const sampleNoData = {
+  time: [
+    '2022-04-07T09:15:00.000Z',
+    '2022-04-07T09:30:00.000Z',
+    '2022-04-07T09:45:00.000Z',
+    '2022-04-07T10:00:00.000Z',
+    '2022-04-07T10:15:00.000Z'
+  ],
+  newClientCount: [null],
+  impactedClientCount: [null],
+  connectedClientCount: [null]
+}
+
 describe('NetworkHistoryWidget', () => {
   mockAutoSizer()
   const filters : IncidentFilter = {
@@ -70,6 +83,15 @@ describe('NetworkHistoryWidget', () => {
     })
     render( <Provider> <NetworkHistoryWidget filters={filters}/> </Provider>)
     await screen.findByText('Something went wrong.')
+    jest.resetAllMocks()
+  })
+  it('should render "No data to display" when data is empty', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sampleNoData } } }
+    })
+    render( <Provider> <NetworkHistoryWidget filters={filters}/> </Provider>)
+    expect(await screen.findByText('No data to display')).toBeVisible()
     jest.resetAllMocks()
   })
 })

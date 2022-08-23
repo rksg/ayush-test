@@ -3,8 +3,8 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, IncidentFilter }                  from '@acx-ui/analytics/utils'
-import { Card, Loader, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
+import { getSeriesData, IncidentFilter }                          from '@acx-ui/analytics/utils'
+import { Card, Loader, MultiLineTimeSeriesChart, cssStr, NoData } from '@acx-ui/components'
 
 import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
@@ -49,11 +49,13 @@ function NetworkHistoryWidget ({
       <Card title={title} bordered={bordered}>
         <AutoSizer>
           {({ height, width }) => (
-            <MultiLineTimeSeriesChart
-              style={{ width, height }}
-              data={queryResults.data}
-              lineColors={lineColors}
-            />
+            queryResults.data.length ?
+              <MultiLineTimeSeriesChart
+                style={{ width, height }}
+                data={queryResults.data}
+                lineColors={lineColors}
+              />
+              : <NoData/>
           )}
         </AutoSizer>
       </Card>
