@@ -18,8 +18,7 @@ export function IpPortSecretForm ({ serverType, order }:
         name={`${serverType}.${order}.ip`}
         label={$t({ defaultMessage: 'IP Address' })}
         rules={[{
-          required: true,
-          whitespace: false
+          required: true
         },{
           validator: (_, value) => ipV4RegExp(value)
         }]}
@@ -42,8 +41,7 @@ export function IpPortSecretForm ({ serverType, order }:
         name={`${serverType}.${order}.sharedSecret`}
         label={$t({ defaultMessage: 'Shared Secret' })}
         rules={[{
-          required: true,
-          whitespace: false
+          required: true
         },{
           validator: (_, value) => stringContainSpace(value)
         }]}
