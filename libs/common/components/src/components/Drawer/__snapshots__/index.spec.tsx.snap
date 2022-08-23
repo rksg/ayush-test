@@ -29,7 +29,7 @@ Array [
             class="ant-drawer-title"
           >
             <div
-              class="sc-gsnTZi kHHBkc"
+              class="sc-dkzDqf bnYHGr"
             >
               Test Drawer
             </div>
@@ -77,7 +77,7 @@ Array [
             class="ant-drawer-title"
           >
             <button
-              class="sc-bczRLJ elZUnp"
+              class="sc-gsnTZi jxJcEp"
             >
               <div
                 data-testid="arrow-back"
@@ -85,7 +85,7 @@ Array [
               Back
             </button>
             <div
-              class="sc-gsnTZi kHHBkc"
+              class="sc-dkzDqf bnYHGr"
             >
               <div
                 data-testid="icon"
@@ -93,7 +93,7 @@ Array [
               Test Drawer
             </div>
             <div
-              class="sc-dkzDqf kXySPe"
+              class="sc-hKMtZM gfHSAl"
             >
               Test Drawer Subtitle
             </div>

@@ -1,13 +1,11 @@
 import React, { useMemo, useState } from 'react'
 
-import { Tooltip }                   from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { aggregateDataBy }                   from '@acx-ui/analytics/utils'
 import type { Incident }                     from '@acx-ui/analytics/utils'
 import { Drawer, Loader, Table, SearchBar  } from '@acx-ui/components'
 import type { TableColumn, ColumnType }      from '@acx-ui/components'
-import { InformationOutlined }               from '@acx-ui/icons'
 import { TenantLink }                        from '@acx-ui/react-router-dom'
 
 import {
@@ -16,7 +14,6 @@ import {
   useImpactedAPsQuery,
   useImpactedClientsQuery
 } from './services'
-import { Title } from './syledComponents'
 
 export interface ImpactedDrawerProps extends Pick<Incident, 'id'> {
   visible: boolean
@@ -80,41 +77,26 @@ export const ImpactedClientsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     n: 100
   }, { selectFromResult: (states) => ({
     ...states,
-    isLoading: false,
-    isFetching: states.isLoading || states.isFetching,
     data: states.data && aggregateDataBy<ImpactedClient>('mac')(states.data)
   }) })
 
   const columns = useMemo(() => [
-    column('mac', {
-      title: $t({ defaultMessage: 'Client MAC' }),
-      render: (_, row) =>
-        <Tooltip title={$t({ defaultMessage: 'Client Troubleshoot' })}>
-          <TenantLink to={'TBD'}>{row.mac}</TenantLink>
-        </Tooltip>
+    column('hostname', {
+      title: $t({ defaultMessage: 'Hostname' }),
+      tooltip: tooltips.hostname,
+      render: (_, row) => <TenantLink to={'TBD'}>{row.hostname}</TenantLink>
+    }),
+    column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
+    column('username', {
+      title: $t({ defaultMessage: 'Username' }),
+      tooltip: tooltips.username
     }),
     column('manufacturer', { title: $t({ defaultMessage: 'Manufacturer' }) }),
-    column('ssid', { title: $t({ defaultMessage: 'SSID' }) }),
-    column('username', {
-      title: <Title>
-        {$t({ defaultMessage: 'Username' })}
-        <Tooltip title={tooltips.username}>
-          <InformationOutlined/>
-        </Tooltip>
-      </Title>
-    }),
-    column('hostname', {
-      title: <Title>
-        {$t({ defaultMessage: 'Hostname' })}
-        <Tooltip placement='topLeft' title={tooltips.hostname}>
-          <InformationOutlined/>
-        </Tooltip>
-      </Title>
-    })
+    column('ssid', { title: $t({ defaultMessage: 'Network' }) })
   ] as TableColumn<AggregatedImpactedClient>[], [$t])
 
   return <Drawer
-    width={'620px'}
+    width={'650px'}
     title={$t(
       { defaultMessage: '{count} Impacted {count, plural, one {Client} other {Clients}}' },
       { count: `${queryResults.data?.length || ''}` }
@@ -141,26 +123,21 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     n: 100
   },{ selectFromResult: (states) => ({
     ...states,
-    isLoading: false,
-    isFetching: states.isLoading || states.isFetching,
     data: states.data && aggregateDataBy<ImpactedAP>('mac')(states.data)
   }) })
 
   const columns = useMemo(() => [
-    column('name', { title: $t({ defaultMessage: 'AP Name' }) }),
-    column('mac', {
-      title: $t({ defaultMessage: 'AP MAC' }),
-      render: (_, row) =>
-        <Tooltip title={<FormattedMessage defaultMessage='AP Details'/>}>
-          <TenantLink to={'TBD'}>{row.mac}</TenantLink>
-        </Tooltip>
+    column('name', {
+      title: $t({ defaultMessage: 'AP Name' }),
+      render: (_, row) => <TenantLink to={'TBD'}>{row.name}</TenantLink>
     }),
-    column('model', { title: $t({ defaultMessage: 'AP Model' }) }),
-    column('version', { title: $t({ defaultMessage: 'AP Version' }) })
+    column('model', { title: $t({ defaultMessage: 'Model' }) }),
+    column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
+    column('version', { title: $t({ defaultMessage: 'Version' }) })
   ] as TableColumn<AggregatedImpactedAP>[], [$t])
 
   return <Drawer
-    width={'620px'}
+    width={'600px'}
     title={$t(
       { defaultMessage: '{count} Impacted {count, plural, one {AP} other {APs}}' },
       { count: `${queryResults.data?.length || ''}` }

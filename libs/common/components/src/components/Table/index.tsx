@@ -52,6 +52,11 @@ function Table <RecordType extends object> (
 
     return cols.map((column) => ({
       ...column,
+      tooltip: null,
+      title: column.tooltip ? <UI.TitleWithTooltip>
+        {column.title as React.ReactNode}
+        <UI.InformationTooltip title={column.tooltip as string} />
+      </UI.TitleWithTooltip> : column.title,
       disable: Boolean(column.fixed || column.disable),
       show: Boolean(column.fixed || column.disable || (column.show ?? true))
     }))

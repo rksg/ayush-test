@@ -32,7 +32,7 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={<p>{useShortDescription(incident)}</p>}
+        subTitle={useShortDescription(incident)}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>

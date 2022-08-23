@@ -5,7 +5,8 @@ import { Table, TableProps } from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
   CancelCircle: () => <div data-testid='cancel-circle'/>,
-  SettingsOutlined: () => <div data-testid='settings'/>
+  InformationOutlined: () => <div data-testid='information-outlined'/>,
+  SettingsOutlined: () => <div data-testid='settings-outlined'/>
 }), { virtual: true })
 
 
@@ -13,7 +14,7 @@ describe('Table component', () => {
   it('should render correctly', () => {
     const basicColumns = [
       { title: 'Name', dataIndex: 'name', key: 'name' },
-      { title: 'Age', dataIndex: 'age', key: 'age' },
+      { title: 'Age', tooltip: 'tooltip', dataIndex: 'age', key: 'age' },
       { title: 'Address', dataIndex: 'address', key: 'address' }
     ]
     const basicData = [
