@@ -6,7 +6,7 @@ import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 export type SwitchesByTrafficData = {
   name: string
   Received: number
-  Transmited: number
+  Transmitted: number
 }
 
 interface Response <SwitchesByTrafficData> {
@@ -35,7 +35,7 @@ export const api = dataApi.injectEndpoints({
                 topNSwitchesByTraffic (n: 5) {
                   name,
                   Received: rx,
-                  Transmited: tx
+                  Transmitted: tx
                 }
               }
             }

@@ -20,8 +20,8 @@ export const barColors = [
 ]
 
 const seriesMapping: BarChartData['seriesEncode'] = [
-  { x: 'Received', y: 'name', seriesName: 'Received' },
-  { x: 'Transmited', y: 'name', seriesName: 'Transmited' }
+  { x: 'Transmitted', y: 'name', seriesName: 'Transmitted' },
+  { x: 'Received', y: 'name', seriesName: 'Received' }
 ] 
 
 function switchTrafficLabelFormatter (params: CallbackDataParams): string {

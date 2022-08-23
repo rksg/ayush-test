@@ -13,7 +13,7 @@ import { Card }              from '../Card'
 import { BarChart } from '.'
 
 export const data = (multiseries = false): BarChartData => ({
-  dimensions: ['Switch Name', 'PoE Usage', 'Utilisation_per', 'Transmited', 'Received'],
+  dimensions: ['Switch Name', 'PoE Usage', 'Utilisation_per', 'Transmitted', 'Received'],
   source: [
     ['Switch 1', 53, 7.3, 309773533136, 109773533136],
     ['Switch 2', 73, 19.3, 409773533136, 179773533136],
@@ -25,11 +25,11 @@ export const data = (multiseries = false): BarChartData => ({
     [
       {
         // Map "tx" to x-axis.
-        x: 'Transmited',
+        x: 'Transmitted',
         // Map "switch_name" to y-axis.
         y: 'Switch Name',
         // series name
-        seriesName: 'Transmited'
+        seriesName: 'Transmitted'
       },
       {
         // Map "rx" to x-axis.

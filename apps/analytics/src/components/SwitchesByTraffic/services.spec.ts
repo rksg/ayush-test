@@ -11,12 +11,12 @@ export const topSwitchesByTrafficResponse = {
       topNSwitchesByTraffic: [{
         name: 'EZE3341M01V',
         Received: 13255123032,
-        Transmited: 13253847458
+        Transmitted: 13253847458
       },
       {
         name: 'FEK3224R09N',
         Received: 13243883027,
-        Transmited: 1863837998
+        Transmitted: 1863837998
       }]
     }
   }
