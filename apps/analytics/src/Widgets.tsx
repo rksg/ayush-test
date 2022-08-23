@@ -6,6 +6,7 @@ import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTim
 import NetworkHistoryWidget           from './components/NetworkHistory'
 import SwitchesByPoEUsageWidget       from './components/SwitchesByPoEUsage'
 import TrafficByApplicationWidget     from './components/TrafficByApplication'
+import TrafficBySSID                  from './components/TrafficBySSID'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
 
 
@@ -18,6 +19,9 @@ const widgetsMap = {
   ),
   topApplicationsByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
     <TrafficByApplicationWidget filters={filters}/>
+  ),
+  topSSIDsByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TrafficBySSID filters={filters}/>
   ),
   connectedClientsOverTime: ({ filters }: { filters: AnalyticsFilter }) => (
     <ConnectedClientsOverTimeWidget filters={filters}/>

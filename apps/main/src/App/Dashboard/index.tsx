@@ -92,6 +92,12 @@ function ApWidgets () {
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <AnalyticsWidgets name='topApplicationsByTraffic' filters={filters}/>
       </GridCol>
+      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='topSSIDsByTraffic' filters={filters}/>
+      </GridCol>
+      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='topSSIDsByClient' filters={filters}/>
+      </GridCol>
     </GridRow>
   )
 }
