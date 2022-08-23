@@ -4,7 +4,10 @@ export * from './constants'
 export * from './incidents'
 export * from './incidentInformation'
 export { default as incidentSeverities } from './incidentSeverities.json'
-export * from './reasonCodeMap'
+export {
+  clientEventDescription,
+  mapCodeToReason
+} from './reasonCodeMap'
 export * from './timeseries'
 export * from './types/incidents'
 export * from './types/timeseries'
