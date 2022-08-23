@@ -30,6 +30,8 @@ export interface CreateNetworkFormFields {
 
 export interface NetworkSaveData {
   name?: string;
+  id?: string;
+  tenantId?: string;
   description?: string;
   type?: NetworkTypeEnum;
   enableAccountingService?: boolean;
@@ -52,6 +54,7 @@ export interface NetworkSaveData {
     macAddressAuthentication?: boolean;
     macAuthMacFormat?: string;
     wlanSecurity?: WlanSecurityEnum;
+    wepHexKey?: string;
     advancedCustomization?: 
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
