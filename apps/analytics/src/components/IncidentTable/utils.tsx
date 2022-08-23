@@ -6,6 +6,7 @@ import {
   Incident,
   incidentInformation,
   noDataSymbol,
+  useImpactValues,
   useIncidentScope,
   useShortDescription
 } from '@acx-ui/analytics/utils'
@@ -13,32 +14,37 @@ import { formatter, durationFormat } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-export const getIncidentBySeverity = (value?: number | null) => {
+export type GetIncidentBySeverityProps = {
+  value?: number | null
+}
+
+export const GetIncidentBySeverity = (props: GetIncidentBySeverityProps) => {
+  const { value } = props
   if (value === null || value === undefined) {
-    return noDataSymbol
+    return <span>{noDataSymbol}</span>
   }
 
   const severity = calculateSeverity(value)
-  if (!severity) return noDataSymbol
+  if (typeof severity === 'undefined') return <span>{noDataSymbol}</span>
 
-  return severity
+  return <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
 }
 
-export const formatDate = (datetimestamp: string) => {
-  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp)
-  if (formattedDatetime === null) return noDataSymbol
-  return formattedDatetime
+export type FormatDateProps = {
+  datetimestamp: string
 }
 
-export const formatDuration = (startTimestamp?: string, endTimestamp?: string) => {
-  if (typeof startTimestamp !== 'string') return noDataSymbol
-  if (typeof endTimestamp !== 'string') return noDataSymbol
+export const FormatDate = (props: FormatDateProps) => {
+  const { datetimestamp } = props
+  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp, 'UTC')
+  if (formattedDatetime === null) return <span>{noDataSymbol}</span>
+  const timeStamp = (formattedDatetime as string).replace('UTC', '')
+  return <UI.DateSpan>{timeStamp}</UI.DateSpan>
+}
 
-  const start = moment(startTimestamp)
-  const end = moment(endTimestamp)
-
-  const diffInMillis = end.diff(start, 'millisecond')
-  return durationFormat(diffInMillis)
+export const formatDuration = (duration: number) => {
+  const durationString = durationFormat(Math.abs(duration))
+  return durationString
 }
 
 export interface FormatIntlStringProps {
@@ -89,11 +95,8 @@ export const ShortIncidentDescription = (props: IncidentTableDescriptionProps) =
   )
 }
 
-export const getCategory = (code: string) => {
+export const GetCategory = (code: string) => {
   const incidentInfo = incidentInformation[code]
-  if (typeof incidentInfo === 'undefined') {
-    return <FormatIntlString message={defineMessage({ defaultMessage: '{noDataSymbol}' })} />
-  }
   const { category } = incidentInfo
   return <FormatIntlString message={category} />
 }
@@ -103,6 +106,16 @@ export const GetScope = (props: IncidentTableComponentProps) => {
   const scope = useIncidentScope(incident)  
   const message = defineMessage({ defaultMessage: '{scope}' })
   return <FormatIntlString message={message} scope={scope}/>
+}
+
+export const ClientImpact = (props: IncidentTableComponentProps & {
+  type: 'clientImpact' | 'impactedClients'
+}) => {
+  const { type, incident } = props
+  const values = useImpactValues('client', incident.clientCount, incident.impactedClientCount)
+  if (type === 'clientImpact') return <span>{values['clientImpactFormatted'] as string}</span>
+
+  return <span>{values['clientImpactCountFormatted'] as string}</span>
 }
 
 export const durationValue = (dateA: string, dateB: string) => moment(dateA).diff(moment(dateB))

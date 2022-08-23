@@ -2,9 +2,10 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 
 import { DatePicker as AntdDatePicker } from 'antd'
 import moment                           from 'moment'
+import { useIntl }                      from 'react-intl'
 
-import { ClockOutlined }                             from '@acx-ui/icons'
-import { dateTimeFormats, defaultRanges, DateRange } from '@acx-ui/utils'
+import { ClockOutlined }                                           from '@acx-ui/icons'
+import { dateTimeFormats, defaultRanges, DateRange, dateRangeMap } from '@acx-ui/utils'
 
 import { DatePickerFooter } from './DatePickerFooter'
 import * as UI              from './styledComponents'
@@ -43,6 +44,7 @@ export const RangePicker = ({
   selectionType
 }: DatePickerProps) => {
   const didMountRef = useRef(false)
+  const { $t } = useIntl()
 
   const componentRef = useRef<HTMLDivElement | null>(null)
 
@@ -81,10 +83,18 @@ export const RangePicker = ({
       document.removeEventListener('click', handleClickForDatePicker)
     }
   }, [range, onDateChange, onDateApply])
+
+  const rangesWithi18n = Object.keys(defaultRanges(rangeOptions)).reduce((acc, rangeOption) => {
+    return {
+      ...acc,
+      [$t(dateRangeMap[rangeOption as DateRange])]:
+        defaultRanges(rangeOptions)[rangeOption as DateRange]
+    }
+  }, {})
   return (
     <UI.Wrapper ref={componentRef} rangeOptions={rangeOptions} selectionType={selectionType}>
       <AntdRangePicker
-        ranges={defaultRanges(rangeOptions) as RangesType}
+        ranges={rangesWithi18n as RangesType}
         placement='bottomRight'
         disabledDate={disabledDate}
         open={isCalenderOpen}

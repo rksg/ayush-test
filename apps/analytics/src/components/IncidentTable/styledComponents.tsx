@@ -1,5 +1,11 @@
-
 import styled from 'styled-components'
+
+import {
+  IncidentSeverities,
+  incidentSeverities
+} from '@acx-ui/analytics/utils'
+import { cssStr } from '@acx-ui/components'
+
 
 export const withEllipsis = `
   white-space: nowrap;
@@ -43,4 +49,19 @@ export const IncidentCause = styled.div`
 `
 export const IncidentRootCauses = styled.div`
  text-decoration: underline;
+`
+export type SeveritySpanProps = {
+  severity: IncidentSeverities
+}
+
+export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => props)`
+  color: ${(props) => {
+    const color = incidentSeverities[props.severity].color
+    return cssStr(color)
+  }};
+  font-weight: var(--acx-body-font-weight-bold);
+`
+
+export const DateSpan = styled.span`
+  font-weight: var(--acx-body-font-weight-bold);
 `

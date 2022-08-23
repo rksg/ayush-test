@@ -7,7 +7,7 @@ import {
   useFormattedPath,
   useImpactedArea,
   useImpactValues,
-  useLongDesription,
+  useLongDescription,
   useShortDescription
 } from './incidents'
 import { getRootCauseAndRecommendations } from './rootCauseReccomendationMap'
@@ -177,8 +177,8 @@ describe('useImpactedArea', () => {
   })
 
   describe('useLongDescription', () => {
-    const renderLongDescription: typeof useLongDesription = (incident, rootCauses) => 
-      renderHook(() => useLongDesription(incident, rootCauses)).result.current
+    const renderLongDescription: typeof useLongDescription = (incident, rootCauses) => 
+      renderHook(() => useLongDescription(incident, rootCauses)).result.current
 
     const testIncident: Incident = {
       severity: 0.3813119146230035,

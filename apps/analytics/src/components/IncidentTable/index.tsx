@@ -14,21 +14,23 @@ import {
   formatDuration,
   clientImpactSort,
   ShortIncidentDescription,
-  getCategory,
+  GetCategory,
   GetScope,
   severitySort,
   dateSort,
   defaultSort,
-  renderNumberedListFromArray
+  renderNumberedListFromArray,
+  ClientImpact
 } from './utils'
 
 
 const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   {
     title: 'Severity',
+    width: '8%',
     dataIndex: 'severity',
     key: 'severity',
-    render: (_, value) => getIncidentBySeverity(value.severity),
+    render: (_, value) => <GetIncidentBySeverity value={value.severity}/>,
     sorter: {
       compare: (a, b) => severitySort(a.severity, b.severity),
       multiple: 1
@@ -36,11 +38,12 @@ const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Date',
+    width: '12%',
     dataIndex: 'endTime',
     valueType: 'dateTime',
     key: 'endTime',
     render: (_, value) => {
-      return <Link to={value.id}>{formatDate(value.endTime) as string}</Link>
+      return <Link to={value.id}><FormatDate datetimestamp={value.endTime}/></Link>
     },
     sorter: {
       compare: (a, b) => dateSort(a.endTime, b.endTime),
@@ -49,9 +52,10 @@ const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Duration',
+    width: '10%',
     dataIndex: 'duration',
     key: 'duration',
-    render: (_, value) => formatDuration(value.startTime, value.endTime),
+    render: (_, value) => formatDuration(value.duration),
     sorter: {
       compare: (a, b) => defaultSort(a.duration, b.duration),
       multiple: 3
@@ -59,9 +63,10 @@ const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Category',
+    width: '10%',
     dataIndex: 'category',
     key: 'category',
-    render: (_, value) => getCategory(value.code),
+    render: (_, value) => GetCategory(value.code),
     sorter: {
       compare: (a, b) => defaultSort(a.code, b.code),
       multiple: 5
@@ -69,8 +74,10 @@ const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Client Impact',
+    width: '15%',
     dataIndex: 'clientCount',
     key: 'clientCount',
+    render: (_, incident) => <ClientImpact type='clientImpact' incident={incident}/>,
     sorter: {
       compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount),
       multiple: 6
@@ -78,8 +85,10 @@ const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Impacted Clients',
+    width: '15%',
     dataIndex: 'impactedClientCount',
     key: 'impactedClientCount',
+    render: (_, incident) => <ClientImpact type='impactedClients' incident={incident}/>,
     sorter: {
       compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount),
       multiple: 7
@@ -87,7 +96,9 @@ const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Scope',
+    width: '10%',
     dataIndex: 'scope',
+    ellipsis: true,
     key: 'scope',
     render: (_, value) => <GetScope incident={value} />,
     sorter: {
@@ -97,6 +108,7 @@ const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   },
   {
     title: 'Type',
+    width: '10%',
     dataIndex: 'sliceType',
     key: 'sliceType',
     render: (_, value) => value.sliceType.toLocaleUpperCase(),
@@ -186,7 +198,7 @@ const IncidentTableWidget = () => {
                 ? mutedKeysFilter(queryResults.data)
                 : undefined
             }}
-            pagination={{ pageSize: 10 }}
+            pagination={{ pageSize: 10, position: ['bottomCenter'] }}
             rowKey='id'
             showSorterTooltip={false}
             columnEmptyText={noDataSymbol}

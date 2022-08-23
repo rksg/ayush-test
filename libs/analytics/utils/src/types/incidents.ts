@@ -1,5 +1,6 @@
-import { IncidentCode }   from '../constants'
-import incidentSeverities from '../incidentSeverities.json'
+import { AnalyticsFilter } from '../analyticsFilter'
+import { IncidentCode }    from '../constants'
+import incidentSeverities  from '../incidentSeverities.json'
 
 interface IncidentInformation {
   category: string
@@ -71,3 +72,5 @@ export interface IncidentAttributesProps
   extends Incident, IncidentInformation {
     visibleFields: string[]
   }
+
+export type IncidentFilter = AnalyticsFilter & { code? : IncidentCode[] }
