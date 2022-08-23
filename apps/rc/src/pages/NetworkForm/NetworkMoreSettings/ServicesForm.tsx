@@ -87,94 +87,18 @@ function ClientIsolationForm () {
   )
 }
 
-function AntiSpoofing () {
+export function ServicesForm () {
   const [
+    enableDnsProxy,
     enableAntiSpoofing,
     enableArpRequestRateLimit,
     enableDhcpRequestRateLimit
   ] = [
+    useWatch<boolean>(['moresettings','advancedCustomization','dnsProxyEnabled']),
     useWatch<boolean>(['moresettings','advancedCustomization','enableAntiSpoofing']),
     useWatch<boolean>(['moresettings','advancedCustomization','enableArpRequestRateLimit']),
     useWatch<boolean>(['moresettings','advancedCustomization','enableDhcpRequestRateLimit'])
-  ]
 
-
-  return (
-    <>
-      <UI.FieldLabel width='125px'>
-        Anti-spoofing:
-        <Form.Item
-          name={['moresettings','advancedCustomization','enableAntiSpoofing']}
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch />}
-        />
-      </UI.FieldLabel>
-      {enableAntiSpoofing &&
-
-        <>
-          <div style={{ display: 'grid', gridTemplateColumns: '160px 60px 1fr' }}>
-
-            <span style={{ display: 'flex' }}>
-              <UI.FormItemNoLabel
-                name={['moresettings','advancedCustomization','enableArpRequestRateLimit']}
-                style={{ marginBottom: '10px' }}
-                valuePropName='checked'
-                initialValue={false}
-                children={<UI.CheckboxWrapper />}
-              />
-              <UI.Label style={{ lineHeight: '32px' }}>  ARP request rate limit
-              </UI.Label>
-            </span>
-
-
-            {enableArpRequestRateLimit && <>
-              <Form.Item
-                name={['moresettings','advancedCustomization','arpRequestRateLimit']}
-                style={{ marginBottom: '10px', lineHeight: '32px' }}
-                children={<Input style={{ width: '50px' }} />} />
-              <UI.Label style={{ lineHeight: '34px' }}> ppm </UI.Label>
-            </>
-            }
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '160px 60px 1fr' }}>
-
-            <span style={{ display: 'flex' }}>
-              <UI.FormItemNoLabel
-                name={['moresettings','advancedCustomization','enableDhcpRequestRateLimit']}
-                style={{ marginBottom: '10px' }}
-                valuePropName='checked'
-                initialValue={false}
-                children={<UI.CheckboxWrapper />}
-              />
-              <UI.Label style={{ lineHeight: '34px' }}>
-                DHCP request rate limit
-              </UI.Label>
-            </span>
-
-            {enableDhcpRequestRateLimit && <>
-              <Form.Item
-                name={['moresettings','advancedCustomization','dhcpRequestRateLimit']}
-                style={{ marginBottom: '10px', lineHeight: '32px' }}
-                children={<Input style={{ width: '50px' }} />} />
-              <UI.Label style={{ lineHeight: '32px' }}> ppm </UI.Label>
-
-            </>}
-          </div>
-        </>
-      }
-    </>
-  )
-
-}
-
-export function ServicesForm () {
-  const [
-    enableDnsProxy
-  ] = [
-    useWatch<boolean>(['moresettings','advancedCustomization','dnsProxyEnabled'])
   ]
 
   return (
@@ -206,13 +130,82 @@ export function ServicesForm () {
       </UI.FieldLabel>
 
       <ClientIsolationForm/>
-      <AntiSpoofing/>
+      <>
+        <UI.FieldLabel width='125px'>
+        Anti-spoofing:
+          <Form.Item
+            name={['moresettings','advancedCustomization','enableAntiSpoofing']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch />}
+          />
+        </UI.FieldLabel>
+        {enableAntiSpoofing &&
+
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: '160px 60px 1fr' }}>
+
+            <span style={{ display: 'flex' }}>
+              <UI.FormItemNoLabel
+                name={['moresettings','advancedCustomization','enableArpRequestRateLimit']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<UI.CheckboxWrapper />}
+              />
+              <UI.Label style={{ lineHeight: '32px' }}>  ARP request rate limit
+              </UI.Label>
+            </span>
+
+
+            {enableArpRequestRateLimit && <>
+              <Form.Item
+                name={['moresettings','advancedCustomization','arpRequestRateLimit']}
+                initialValue={15}
+                style={{ marginBottom: '10px', lineHeight: '32px' }}
+                children={<Input style={{ width: '50px' }} />} />
+              <UI.Label style={{ lineHeight: '34px' }}> ppm </UI.Label>
+            </>
+            }
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '160px 60px 1fr' }}>
+
+            <span style={{ display: 'flex' }}>
+              <UI.FormItemNoLabel
+                name={['moresettings','advancedCustomization','enableDhcpRequestRateLimit']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<UI.CheckboxWrapper />}
+              />
+              <UI.Label style={{ lineHeight: '34px' }}>
+                DHCP request rate limit
+              </UI.Label>
+            </span>
+
+            {enableDhcpRequestRateLimit && <>
+              <Form.Item
+                name={['moresettings','advancedCustomization','dhcpRequestRateLimit']}
+                initialValue={15}
+                style={{ marginBottom: '10px', lineHeight: '32px' }}
+                children={<Input style={{ width: '50px' }} />} />
+              <UI.Label style={{ lineHeight: '32px' }}> ppm </UI.Label>
+
+            </>}
+          </div>
+        </>
+        }
+      </>
 
       <UI.FormItemNoLabel
         name={['moresettings','advancedCustomization','forceMobileDeviceDhcp']}
+
         children={
           <UI.Label>
-            <UI.CheckboxWrapper />
+            <UI.CheckboxWrapper
+              disabled={enableAntiSpoofing} />
             Force DHCP
           </UI.Label>}
       />

@@ -12,7 +12,8 @@ import { StepsForm }     from '@acx-ui/components'
 import {
   useVlanPoolListQuery
 } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import { CreateNetworkFormFields, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { useParams }                                                  from '@acx-ui/react-router-dom'
 
 import { AccessControlForm } from './AccessControlForm'
 import { LoadControlForm }   from './LoadControlForm'
@@ -52,92 +53,49 @@ const listPayload = {
   sortOrder: 'ASC', page: 1, pageSize: 10000
 }
 
-
-const { vlanPoolSelectOptions } = useVlanPoolListQuery({
-  params: useParams(),
-  payload: listPayload
-}, {
-  selectFromResult ({ data }) {
-    return {
-      applicationPolicySelectOptions: data?.data?.map(
-        item => <Option key={item.id}>{item.name}</Option>) ?? []
-    }
-  }
-})
-
-function VlanForm () {
-  const enableVlanPooling = useWatch<boolean>('enableVlanPooling')
-
-  return (
-    <>
-      <UI.FieldLabel width='90px'>
-        VLAN Pooling:
-        <Form.Item
-          name='enableVlanPooling'
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch />}
-        />
-      </UI.FieldLabel>
-
-      {!enableVlanPooling && <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr' }}>
-        <Form.Item
-          name={['moresettings', 'vlanId']}
-          label='VLAN ID'
-          initialValue={1}
-          style={{ marginBottom: '15px' }}
-          children={<Input style={{ width: '66px' }}></Input>}
-        />
-
-        <UI.FieldLabel width='auto' style={{ marginTop: '20px' }}>
-          <UI.FormItemNoLabel
-            name={['moresettings','advancedCustomization','dynamicVlan']}
-            style={{ marginBottom: '15px' , marginRight: '8px' }}
-            valuePropName='checked'
-            initialValue={true}
-            children={
-              <UI.CheckboxWrapper />
-            }
-          />
-          Dynamic VLAN
-        </UI.FieldLabel>
-
-      </div>}
-
-      {enableVlanPooling &&
-        <UI.FieldLabel width='90px'>
-          Proxy ARP:
-          <Form.Item
-            name={['moresettings', 'advancedCustomization', 'enableProxyArp']}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}
-          />
-        </UI.FieldLabel>
-      }
-    </>
-  )
-}
-
-
-export function NetworkMoreSettingsForm () {
+export function NetworkMoreSettingsForm (props: {
+  wlanData: CreateNetworkFormFields
+}) {
   const [
     enableOfdmOnly,
-    enable80211rFastBss,
+    enableFastRoaming,
     enableAirtimedecongestion,
     enableJoinRSSIThreshold,
     enableTransientClientManagement,
-    enableOce
+    enableOce,
+    enableVlanPooling
   ] = [
     useWatch<boolean>('enableOfdmOnly'),
     useWatch<boolean>(['moresettings','advancedCustomization','enableFastRoaming']),
     useWatch<boolean>(['moresettings','advancedCustomization','enableAirtimedecongestion']),
     useWatch<boolean>(['moresettings','advancedCustomization','enableJoinRSSIThreshold']),
     useWatch<boolean>(['moresettings','advancedCustomization','enableTransientClientManagement']),
-    useWatch<boolean>(['moresettings','advancedCustomization','enableOce'])
+    useWatch<boolean>(['moresettings','advancedCustomization',
+      'enableOptimizedConnectivityExperience']),
+    useWatch<boolean>('enableVlanPooling')
   ]
+
+  const { wlanData } = props
+
+  const isNetworkWPASecured = props.wlanData.wlanSecurity === WlanSecurityEnum.WPA2Personal ||
+    props.wlanData.wlanSecurity === WlanSecurityEnum.WPAPersonal ||
+    props.wlanData.wlanSecurity === WlanSecurityEnum.WPA2Enterprise
+  const isFastBssVisible = (isNetworkWPASecured || wlanData.type === NetworkTypeEnum.AAA) &&
+    wlanData.type !== NetworkTypeEnum.DPSK
+  const showDynamicWlan = wlanData.type === NetworkTypeEnum.AAA ||
+    wlanData.type === NetworkTypeEnum.DPSK
+
+  const { vlanPoolSelectOptions } = useVlanPoolListQuery({
+    params: useParams(),
+    payload: listPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        vlanPoolSelectOptions: data?.data?.map(
+          item => <Option key={item.id}>{item.name}</Option>) ?? []
+      }
+    }
+  })
 
   return (
     <UI.CollpasePanel
@@ -148,7 +106,71 @@ export function NetworkMoreSettingsForm () {
       style={{ width: '600px' }}>
 
       <Panel header='VLAN' key='1' >
-        <VlanForm />
+        <>
+          <UI.FieldLabel width='90px'>
+        VLAN Pooling:
+            <Form.Item
+              name='enableVlanPooling'
+              style={{ marginBottom: '10px' }}
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch />}
+            />
+          </UI.FieldLabel>
+
+          {!enableVlanPooling && <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr' }}>
+            <Form.Item
+              name={['moresettings', 'vlanId']}
+              label='VLAN ID'
+              initialValue={1}
+              style={{ marginBottom: '15px' }}
+              children={<Input style={{ width: '66px' }}></Input>}
+            />
+
+            {showDynamicWlan &&
+              <UI.FieldLabel width='auto' style={{ marginTop: '20px' }}>
+                <UI.FormItemNoLabel
+                  name={['moresettings','advancedCustomization','dynamicVlan']}
+                  style={{ marginBottom: '15px' , marginRight: '8px' }}
+                  valuePropName='checked'
+                  initialValue={true}
+                  children={
+                    <UI.CheckboxWrapper />
+                  }
+                />
+              Dynamic VLAN
+              </UI.FieldLabel>
+            }
+
+          </div>}
+          {enableVlanPooling &&
+        <div style={{ display: 'grid', gridTemplateColumns: '190px auto' }}>
+          <Form.Item
+            label='VLAN Pool:'
+            name={['moresettings', 'advancedCustomization', 'vlanPool']}
+            style={{ marginBottom: '15px' }}
+            children={
+              <Select placeholder='Select profile...'
+                style={{ width: '180px' }}
+                children={vlanPoolSelectOptions} />
+            }
+          />
+          <span style={{ marginTop: '30px' }}>Add</span>
+
+        </div>
+          }
+
+          <UI.FieldLabel width='90px'>
+        Proxy ARP:
+            <Form.Item
+              name={['moresettings', 'advancedCustomization', 'enableProxyArp']}
+              style={{ marginBottom: '10px' }}
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch />}
+            />
+          </UI.FieldLabel>
+        </>
       </Panel>
 
       <Panel header='Services' key='2' >
@@ -235,35 +257,37 @@ export function NetworkMoreSettingsForm () {
             </UI.Label>}
         />
 
-        <UI.FormItemNoLabel
-          name={['moresettings','advancedCustomization','enableFastRoaming']}
-          style={{ marginBottom: '15px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={
-            <UI.Label>
-              <UI.CheckboxWrapper />
-              Enable 802.11r Fast BSS Transition
-            </UI.Label>}
-        />
+        {isFastBssVisible &&
+          <UI.FormItemNoLabel
+            name={['moresettings', 'advancedCustomization', 'enableFastRoaming']}
+            style={{ marginBottom: '15px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={
+              <UI.Label>
+                <UI.CheckboxWrapper />
+                Enable 802.11r Fast BSS Transition
+              </UI.Label>}
+          />
+        }
 
-        {enable80211rFastBss &&
-          <>
+        {enableFastRoaming &&
             <Form.Item
               name={['moresettings','advancedCustomization','mobilityDomainId']}
               label='Mobility Domain ID'
               initialValue={1}
               style={{ marginBottom: '15px' }}
-              children={<Input style={{ width: '150px' }}></Input>} />
-
-            <Form.Item
-              name={['moresettings','advancedCustomization','clientInactivityTimeout']}
-              label='Client Inactivity Timeout:'
-              initialValue={120}
-              style={{ marginBottom: '15px' }}
-              children={<Input style={{ width: '150px' }}></Input>} />
-          </>
+              children={<Input style={{ width: '150px' }}></Input>}
+            />
         }
+
+        <Form.Item
+          name={['moresettings','advancedCustomization','clientInactivityTimeout']}
+          label='Client Inactivity Timeout:'
+          initialValue={120}
+          style={{ marginBottom: '15px' }}
+          children={<Input style={{ width: '150px' }}></Input>}
+        />
 
         <Form.Item
           name={['moresettings','advancedCustomization','directedThreshold']}

@@ -190,7 +190,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
         }
       }
     }
-  
+
     saveData = {
       ...saveData,
       ...{
@@ -205,9 +205,9 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
           port: get(data, 'accountingRadius.primary.port'),
           sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
         }
-        
+
       }
-  
+
       if (data.enableSecondaryAcctServer) {
         accountingRadius = {
           ...accountingRadius,
@@ -223,7 +223,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
           }
         }
       }
-  
+
       saveData = {
         ...saveData,
         ...{
@@ -270,7 +270,15 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }
 
-export function transferMoreSettingsToSave (data: unknown) {
-  let saveData = data
+export function transferMoreSettingsToSave (data: { moresettings: Object}) {
+  let saveData = {}
+
+  saveData = {
+    ...saveData,
+    ...{
+      wlan: data.moresettings
+    }
+  }
+
   return saveData
 }

@@ -30,7 +30,8 @@ import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
 import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
-  tranferSettingsToSave
+  tranferSettingsToSave,
+  transferMoreSettingsToSave
 } from './parser'
 import { Venues } from './Venues/Venues'
 
@@ -135,18 +136,16 @@ export function NetworkForm () {
           {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
         </StepsForm.StepForm>
         <StepsForm.StepForm
-          formRef={formRef}
           name='moreSettings'
           title={$t({ defaultMessage: 'More Settings' })}
-          onFinish={async (data) => {
-            // const detailsSaveData = transferMoreSettingsToSave(data)
-            // const detailsSaveData = data
-            updateData(data)
-            // updateSaveData(detailsSaveData)
+          onFinish={async (data: {moresettings: Object}) => {
+            const detailsSaveData = transferMoreSettingsToSave(data)
+            updateData(data.moresettings)
+            updateSaveData(detailsSaveData)
             return true
           }}
         >
-          <NetworkMoreSettingsForm />
+          <NetworkMoreSettingsForm wlanData={state}/>
         </StepsForm.StepForm>
 
 
