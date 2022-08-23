@@ -19,6 +19,7 @@ import * as contents from '../contentsMap'
 export function PskSummaryForm (props: {
   summaryData: CreateNetworkFormFields;
 }) {
+  const { $t } = useIntl()
   const { summaryData } = props
   return (
     <>
@@ -27,7 +28,9 @@ export function PskSummaryForm (props: {
        summaryData.passphrase &&
         <Form.Item
           label={summaryData.wlanSecurity === WlanSecurityEnum.WPA23Mixed ? 
-            'WPA2 Passphrase:' : 'Passphrase:'}
+            $t({ defaultMessage: 'WPA2 Passphrase:' }) :
+            $t({ defaultMessage: 'Passphrase:' })
+          }
           children={<Input.Password
             readOnly
             bordered={false}
@@ -40,7 +43,9 @@ export function PskSummaryForm (props: {
         summaryData.saePassphrase &&
         <Form.Item
           label={summaryData.wlanSecurity === WlanSecurityEnum.WPA3?
-            'SAE Passphrase:' : 'WPA3 SAE Passphrase:'}
+            $t({ defaultMessage: 'SAE Passphrase:' }) :
+            $t({ defaultMessage: 'WPA3 SAE Passphrase:' })
+          }
           children={<Input.Password
             readOnly
             bordered={false}
@@ -50,7 +55,7 @@ export function PskSummaryForm (props: {
       }
       {summaryData.wlanSecurity === WlanSecurityEnum.WEP && summaryData.wepHexKey &&
         <Form.Item
-          label='Hex Key:'
+          label={$t({ defaultMessage: 'Hex Key:' })}
           children={<Input.Password
             readOnly
             bordered={false}
@@ -59,36 +64,36 @@ export function PskSummaryForm (props: {
         />
       }
       <Form.Item
-        label='Security Protocol:'
+        label={$t({ defaultMessage: 'Security Protocol:' })}
         children={
           PskWlanSecurityEnum[summaryData.wlanSecurity as keyof typeof PskWlanSecurityEnum]
         } />
       {summaryData.managementFrameProtection &&
         <Form.Item
-          label='Management Frame Protection:'
+          label={$t({ defaultMessage: 'Management Frame Protection:' })}
           children={summaryData.managementFrameProtection} />
       }
       <Form.Item
-        label='Use MAC Auth:'
+        label={$t({ defaultMessage: 'Use MAC Auth:' })}
         children={summaryData.macAddressAuthentication? 'Enabled' : 'Disabled'} />
       {summaryData.macAddressAuthentication &&
         <React.Fragment>
           <Form.Item
-            label='MAC Address Format:'
+            label={$t({ defaultMessage: 'MAC Address Format:' })}
             children={
               macAuthMacFormatOptions[
                 summaryData.macAuthMacFormat as keyof typeof macAuthMacFormatOptions
               ]
             }/>
             
-          Authentication Service
+          {$t({ defaultMessage: 'Authentication Service' })}
           {getAaaServer(
             AaaServerTypeEnum.AUTHENTICATION,
             summaryData
           )}
 
           {summaryData.enableAccountingService && 
-            <>Accounting Service
+            <>{$t({ defaultMessage: 'Accounting Service' })}
               {getAaaServer(
                 AaaServerTypeEnum.ACCOUNTING,
                 summaryData
