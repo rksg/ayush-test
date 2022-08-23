@@ -15,6 +15,8 @@ export interface CreateNetworkFormFields {
 }
 
 export interface NetworkSaveData {
+  id?: string;
+  tenantId?: string;
   name?: string;
   description?: string;
   type?: NetworkTypeEnum;

@@ -15,7 +15,7 @@ import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useGetAllUserSettingsQuery,
-  useUpdateNetworkDeepMutation,
+  useUpdateNetworkMutation,
   useVenueListQuery,
   Venue
 } from '@acx-ui/rc/services'
@@ -69,7 +69,7 @@ export function NetworkVenuesTab () {
   })
   const [tableData, setTableData] = useState(defaultArray)
   const params = useParams()
-  const [updateNetworkDeep] = useUpdateNetworkDeepMutation()
+  const [updateNetwork] = useUpdateNetworkMutation()
   const userSetting = useGetAllUserSettingsQuery({ params: { tenantId: params.tenantId } })
   const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
     Constants.triRadioUserSettingsKey)) === 'true'
@@ -151,7 +151,7 @@ export function NetworkVenuesTab () {
   }
 
   const handleEditNetwork = (network: NetworkSaveData, clearSelection: () => void) => {
-    updateNetworkDeep({ params, payload: network }).then(clearSelection)
+    updateNetwork({ params, payload: network }).then(clearSelection)
   }
 
   const activateSelected = (networkActivatedVenues: NetworkVenue[], activatingVenues: Venue[]) => {
@@ -282,7 +282,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'aps',
       width: '80px',
       render: function (data, row) {
-        return row.activated.isActivated ? 'All APs' : ''
+        return row.activated.isActivated ? $t({ defaultMessage: 'All APs' }) : ''
       }
     },
     {
