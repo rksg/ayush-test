@@ -461,6 +461,31 @@
     }
   }
 
+  .ant-tabs {
+    &.ant-tabs-card {
+      .ant-tabs-nav {
+        padding-left: 15px;
+        &:before {
+          border-bottom: 1px solid var(--acx-accents-orange-50);
+        }
+        .ant-tabs-tab {
+          background: transparent;
+          border-color: transparent;
+          border-radius: 0;
+          &.ant-tabs-tab-active {
+            border-color: var(--acx-accents-orange-50);
+            border-bottom-color: var(--acx-primary-white);
+            .ant-tabs-tab-btn {
+              color: var(--acx-accents-orange-50);
+              font-weight: var(--acx-headline-5-font-weight-bold);
+              text-shadow: none;
+            }
+          }
+        }
+      }
+    }
+  }
+
   // Gmap Close Icon and Info windows overrides
   .gm-ui-hover-effect {
     display: none !important;
