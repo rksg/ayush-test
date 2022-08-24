@@ -47,6 +47,7 @@ function SaveAsAcProfileButton () {
     <Button
       type='link'
       style={{ padding: 0 }}
+      disabled={true}
       onClick={() => {
         showModal()
       }}
@@ -147,7 +148,7 @@ function SelectAccessProfileProfile () {
       params: useParams(),
       payload: listPayload
     }, {
-      selectFromResult({ data }) {
+      selectFromResult ({ data }) {
         return {
           accessControlProfileSelectOptions: data?.map(
             item => <Option key={item.id}>{item.name}</Option>) ?? [],

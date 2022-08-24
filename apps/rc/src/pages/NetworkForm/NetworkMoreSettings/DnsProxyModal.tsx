@@ -82,7 +82,6 @@ export function MultiSelectTable () {
   )
 }
 
-
 export function DnsProxyModal () {
   const [visible, setVisible] = useState(false)
   const [form] = Form.useForm()

@@ -98,13 +98,14 @@ export function ServicesForm () {
     enableDnsProxy,
     enableAntiSpoofing,
     enableArpRequestRateLimit,
-    enableDhcpRequestRateLimit
+    enableDhcpRequestRateLimit,
+    enableWifiCalling
   ] = [
     useWatch<boolean>(['wlan','advancedCustomization','dnsProxyEnabled']),
     useWatch<boolean>(['wlan','advancedCustomization','enableAntiSpoofing']),
     useWatch<boolean>(['wlan','advancedCustomization','enableArpRequestRateLimit']),
-    useWatch<boolean>(['wlan','advancedCustomization','enableDhcpRequestRateLimit'])
-
+    useWatch<boolean>(['wlan','advancedCustomization','enableDhcpRequestRateLimit']),
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'wifiCallingEnabled'])
   ]
 
   return (
@@ -129,19 +130,21 @@ export function ServicesForm () {
       <UI.FieldLabel width='125px'>
         Wi-Fi Calling:
         <UI.FieldLabel width='30px'>
-        <Form.Item
+          <Form.Item
             name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
             children={<Switch />}
           />
-          <Button type='link'
-            style={{
-              textAlign: 'left'
-            }}
-            disabled={true}>
-          Select profiles </Button>
+          {enableWifiCalling &&
+            <Button type='link'
+              style={{
+                textAlign: 'left'
+              }}
+              disabled={true}>
+              Select profiles </Button>
+          }
         </UI.FieldLabel>
 
       </UI.FieldLabel>

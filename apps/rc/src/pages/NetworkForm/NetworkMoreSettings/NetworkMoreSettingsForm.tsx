@@ -213,7 +213,7 @@ export function NetworkMoreSettingsForm (props: {
 
 
         <UI.FormItemNoLabel
-          name='enableOfdmOnly' //TODO
+          name='enableOfdmOnly'
           style={{ marginBottom: '15px' }}
           valuePropName='checked'
           initialValue={false}
@@ -241,7 +241,7 @@ export function NetworkMoreSettingsForm (props: {
         }}>
 
           <Form.Item
-            name='bssMinRate' //TODO
+            name='bssMinRate'
             label='BSS Min Rate:'
             style={{ marginBottom: '15px' }}
             children={
