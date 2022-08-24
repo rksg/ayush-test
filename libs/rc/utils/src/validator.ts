@@ -22,6 +22,13 @@ export function networkWifiSecretRegExp ({ $t }: IntlShape, value: string) {
   return Promise.resolve()
 }
 
+export const trailingNorLeadingSpaces = (value: string) => {
+  if (value && (value.endsWith(' ') || value.startsWith(' '))) {
+    return Promise.reject('No leading or trailing spaces allowed')
+  }
+  return Promise.resolve()
+}
+
 export function checkObjectNotExists <ItemType> (
   intl: IntlShape,
   list: ItemType[],

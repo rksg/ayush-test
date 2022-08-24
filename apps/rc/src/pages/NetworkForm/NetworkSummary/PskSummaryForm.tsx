@@ -7,7 +7,6 @@ import { useIntl }     from 'react-intl'
 import { 
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  CreateNetworkFormFields,
   NetworkSaveData,
   WlanSecurityEnum,
   PskWlanSecurityEnum,
@@ -17,78 +16,83 @@ import {
 import * as contents from '../contentsMap'
 
 export function PskSummaryForm (props: {
-  summaryData: CreateNetworkFormFields;
+  summaryData: NetworkSaveData;
 }) {
+  const { $t } = useIntl()
   const { summaryData } = props
   return (
     <>
-      {summaryData.wlanSecurity !== WlanSecurityEnum.WPA3 && 
-       summaryData.wlanSecurity !== WlanSecurityEnum.WEP &&
-       summaryData.passphrase &&
+      {summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.WPA3 && 
+       summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.WEP &&
+       summaryData.wlan?.passphrase &&
         <Form.Item
           label={summaryData.wlanSecurity === WlanSecurityEnum.WPA23Mixed ? 
-            'WPA2 Passphrase:' : 'Passphrase:'}
+            $t({ defaultMessage: 'WPA2 Passphrase:' }) :
+            $t({ defaultMessage: 'Passphrase:' })
+          }
           children={<Input.Password
             readOnly
             bordered={false}
-            value={summaryData.passphrase}
+            value={summaryData.wlan?.passphrase}
           />}
         />
       }
-      {(summaryData.wlanSecurity === WlanSecurityEnum.WPA3 ||
-        summaryData.wlanSecurity === WlanSecurityEnum.WPA23Mixed) &&
-        summaryData.saePassphrase &&
+      {(summaryData.wlan?.wlanSecurity === WlanSecurityEnum.WPA3 ||
+        summaryData.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) &&
+        summaryData.wlan?.saePassphrase &&
         <Form.Item
           label={summaryData.wlanSecurity === WlanSecurityEnum.WPA3?
-            'SAE Passphrase:' : 'WPA3 SAE Passphrase:'}
+            $t({ defaultMessage: 'SAE Passphrase:' }) :
+            $t({ defaultMessage: 'WPA3 SAE Passphrase:' })
+          }
           children={<Input.Password
             readOnly
             bordered={false}
-            value={summaryData.saePassphrase}
+            value={summaryData.wlan?.saePassphrase}
           />}
         />
       }
-      {summaryData.wlanSecurity === WlanSecurityEnum.WEP && summaryData.wepHexKey &&
+      {summaryData.wlan?.wlanSecurity === WlanSecurityEnum.WEP && summaryData.wlan?.wepHexKey &&
         <Form.Item
-          label='Hex Key:'
+          label={$t({ defaultMessage: 'Hex Key:' })}
           children={<Input.Password
             readOnly
             bordered={false}
-            value={summaryData.wepHexKey}
+            value={summaryData.wlan?.wepHexKey}
           />}
         />
       }
       <Form.Item
-        label='Security Protocol:'
+        label={$t({ defaultMessage: 'Security Protocol:' })}
         children={
-          PskWlanSecurityEnum[summaryData.wlanSecurity as keyof typeof PskWlanSecurityEnum]
+          PskWlanSecurityEnum[summaryData.wlan?.wlanSecurity as keyof typeof PskWlanSecurityEnum]
         } />
-      {summaryData.managementFrameProtection &&
+      {summaryData.wlan?.managementFrameProtection &&
         <Form.Item
-          label='Management Frame Protection:'
-          children={summaryData.managementFrameProtection} />
+          label={$t({ defaultMessage: 'Management Frame Protection:' })}
+          children={summaryData.wlan?.managementFrameProtection} />
       }
       <Form.Item
-        label='Use MAC Auth:'
-        children={summaryData.macAddressAuthentication? 'Enabled' : 'Disabled'} />
-      {summaryData.macAddressAuthentication &&
+        label={$t({ defaultMessage: 'Use MAC Auth:' })}
+        children={summaryData.wlan?.macAddressAuthentication? 'Enabled' : 'Disabled'} />
+      {summaryData.wlan?.macAddressAuthentication &&
         <React.Fragment>
           <Form.Item
-            label='MAC Address Format:'
+            label={$t({ defaultMessage: 'MAC Address Format:' })}
             children={
               macAuthMacFormatOptions[
-                summaryData.macAuthMacFormat as keyof typeof macAuthMacFormatOptions
+                summaryData.wlan?.macAuthMacFormat as keyof typeof macAuthMacFormatOptions
               ]
             }/>
             
-          Authentication Service
+          {$t({ defaultMessage: 'Authentication Service' })}
           {getAaaServer(
             AaaServerTypeEnum.AUTHENTICATION,
             summaryData
           )}
 
           {summaryData.enableAccountingService && 
-            <>Accounting Service
+            <>{$t({ defaultMessage: 'Accounting Service' })}
               {getAaaServer(
                 AaaServerTypeEnum.ACCOUNTING,
                 summaryData

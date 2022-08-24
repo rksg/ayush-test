@@ -12,8 +12,7 @@ import {
   Row,
   Select,
   Switch,
-  Tooltip,
-  InputNumber
+  Tooltip
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -28,11 +27,14 @@ import {
   networkWifiIpRegExp,
   networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'
+
 import { NetworkTypeEnum, UserSettings } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 
 import * as contents      from '../contentsMap'
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import { IpPortSecretForm } from '../../../components/IpPortSecretForm'
+import { ToggleButton }     from '../../../components/ToggleButton'
+import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
 

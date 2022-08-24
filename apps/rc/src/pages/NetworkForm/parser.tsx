@@ -171,7 +171,6 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
 
 const parsePskSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {}
-
   if (data.wlan?.macAddressAuthentication) {
     let authRadius = {
       primary: {
@@ -238,6 +237,8 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
   saveData = {
     ...saveData,
     ...{
+      type: data.type,
+      isCloudpathEnabled: typeof data.cloudpathServerId !== undefined,
       wlan: {
         ...data.wlan,
         advancedCustomization: new PskWlanAdvancedCustomization(),

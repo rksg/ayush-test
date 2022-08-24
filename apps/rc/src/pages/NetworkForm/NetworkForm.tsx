@@ -145,6 +145,7 @@ export function NetworkForm () {
             {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
             {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
             {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
+            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
           </StepsForm.StepForm>
 
           <StepsForm.StepForm

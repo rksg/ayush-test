@@ -34,7 +34,6 @@ export function SummaryForm (props: {
       }
     }
   })
-
   const { data } = useVenueListQuery({ params:
     { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' }, payload: defaultPayload })
 

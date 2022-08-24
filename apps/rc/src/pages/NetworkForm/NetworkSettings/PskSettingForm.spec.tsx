@@ -77,7 +77,7 @@ describe('NetworkForm', () => {
     fireEvent.click(screen.getByRole('switch'))
 
     const ipTextbox = screen.getByLabelText('IP Address')
-    fireEvent.change(ipTextbox, { target: { value: '111.111.111.111' } })
+    fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
 
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
@@ -87,7 +87,7 @@ describe('NetworkForm', () => {
 
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
-      expect(screen.getByText('111.111.111.111:1111')).toBeVisible()
+      expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
   }, 7000)
@@ -101,9 +101,9 @@ describe('NetworkForm', () => {
     const securityProtocols = screen.getByRole('combobox')
 
     fireEvent.mouseDown(securityProtocols)
-    
+
     const option = screen.getAllByLabelText('WPA3')[0]
-    
+
     fireEvent.click(option)
 
     const passphraseTextbox = screen.getByLabelText('Passphrase')
@@ -112,7 +112,7 @@ describe('NetworkForm', () => {
     fireEvent.click(screen.getByRole('switch'))
 
     const ipTextbox = screen.getByLabelText('IP Address')
-    fireEvent.change(ipTextbox, { target: { value: '111.111.111.111' } })
+    fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
 
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
@@ -122,7 +122,7 @@ describe('NetworkForm', () => {
 
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
-      expect(screen.getByText('111.111.111.111:1111')).toBeVisible()
+      expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
   }, 7000)
@@ -135,13 +135,13 @@ describe('NetworkForm', () => {
     const securityProtocols = screen.getByRole('combobox')
 
     fireEvent.mouseDown(securityProtocols)
-    
+
     const mixOption =screen.getByText('WPA3/WPA2 mixed mode')
     fireEvent.click(mixOption)
 
     fireEvent.mouseDown(securityProtocols)
     const option = screen.getByText('WEP')
-    
+
     fireEvent.click(option)
 
     fireEvent.click(screen.getByText('Generate'))

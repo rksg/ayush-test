@@ -19,7 +19,6 @@ import { useIntl } from 'react-intl'
 
 import {
   StepsForm,
-  StepFormProps,
   Button,
   Subtitle
 } from '@acx-ui/components'
@@ -37,7 +36,6 @@ import {
   NetworkTypeEnum,
   WlanSecurityEnum,
   WifiNetworkMessages,
-  CreateNetworkFormFields,
   hexRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -50,7 +48,7 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-export function PskSettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
+export function PskSettingsForm () {
   const { $t } = useIntl()
   const [
     isCloudpathEnabled,
@@ -81,7 +79,7 @@ export function PskSettingsForm (props: StepFormProps<CreateNetworkFormFields>) 
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <SettingsForm formRef={props.formRef}/>
+        <SettingsForm />
       </Col>
       <Col span={14}>
         <NetworkDiagram
@@ -108,9 +106,9 @@ export function PskSettingsForm (props: StepFormProps<CreateNetworkFormFields>) 
   }
 }
 
-function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
+function SettingsForm () {
   const { $t } = useIntl()
-  const { formRef } = props
+  const form = Form.useFormInstance()
   const [
     wlanSecurity,
     enableSecondaryAuthServer,
@@ -118,15 +116,15 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
     enableSecondaryAcctServer,
     macAddressAuthentication
   ] = [
-    useWatch('wlanSecurity'),
-    useWatch<boolean>('enableSecondaryAuthServer'),
-    useWatch<boolean>('enableAccountingService'),
-    useWatch<boolean>('enableSecondaryAcctServer'),
-    useWatch<boolean>('macAddressAuthentication')
+    useWatch(['wlan', 'wlanSecurity']),
+    useWatch<boolean>(['enableSecondaryAuthServer']),
+    useWatch<boolean>(['enableAccountingService']),
+    useWatch<boolean>(['enableSecondaryAcctServer']),
+    useWatch<boolean>(['wlan', 'macAddressAuthentication'])
   ]
 
   const securityDescription = () => {
-    const wlanSecurity = formRef?.current?.getFieldValue('wlanSecurity')
+    const wlanSecurity = form.getFieldValue([ 'wlan', 'wlanSecurity' ])
     return (
       <>
         {SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum]}
@@ -162,23 +160,29 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
     while (hexKey.length < 26) {
       hexKey += Math.random().toString(16).substring(2)
     }
-    formRef?.current?.setFieldsValue({ wepHexKey: hexKey.substring(0, 26) })
+    form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
   }
   const securityOnChange = (value: string) => {
     switch(value){
       case WlanSecurityEnum.WPA2Personal:
-        formRef?.current?.setFieldsValue({ 
-          managementFrameProtection: ManagementFrameProtectionEnum.Disabled
+        form.setFieldsValue({ 
+          wlan: { 
+            managementFrameProtection: ManagementFrameProtectionEnum.Disabled
+          }
         })
         break
       case WlanSecurityEnum.WPA3:
-        formRef?.current?.setFieldsValue({
-          managementFrameProtection: ManagementFrameProtectionEnum.Required
+        form.setFieldsValue({
+          wlan: { 
+            managementFrameProtection: ManagementFrameProtectionEnum.Required
+          }
         })
         break
       case WlanSecurityEnum.WPA23Mixed:
-        formRef?.current?.setFieldsValue({
-          managementFrameProtection: ManagementFrameProtectionEnum.Optional
+        form.setFieldsValue({
+          wlan: { 
+            managementFrameProtection: ManagementFrameProtectionEnum.Optional
+          }
         })
         break
     }
@@ -190,7 +194,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
       <div>
         {wlanSecurity !== WlanSecurityEnum.WEP && wlanSecurity !== WlanSecurityEnum.WPA3 &&
           <Form.Item
-            name='passphrase'
+            name={['wlan', 'passphrase']}
             label={SecurityOptionsPassphraseLabel[wlanSecurity as keyof typeof PskWlanSecurityEnum]
               ??SecurityOptionsPassphraseLabel.WPA2Personal}
             rules={[{
@@ -200,14 +204,14 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
             },{
               validator: (_, value) => trailingNorLeadingSpaces(value)
             }]}
-            extra={'8 characters minimum'}
+            extra={$t({ defaultMessage: '8 characters minimum' })}
             children={<Input.Password />}
           />
         }
         {wlanSecurity === 'WEP' &&
         <React.Fragment>
           <Form.Item
-            name='wepHexKey'
+            name={['wlan', 'wepHexKey']}
             label={SecurityOptionsPassphraseLabel[PskWlanSecurityEnum.WEP]}
             rules={[{
               required: true,
@@ -215,7 +219,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
             },{
               validator: (_, value) => hexRegExp(value)
             }]}
-            extra={'Must be 26 hex characters'}
+            extra={$t({ defaultMessage: 'Must be 26 hex characters' })}
             children={<Input.Password />}
           />
           <div style={{ position: 'absolute', top: '105px', right: '15px' }}>
@@ -226,8 +230,11 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
         {(wlanSecurity===WlanSecurityEnum.WPA23Mixed ||
           wlanSecurity===WlanSecurityEnum.WPA3) &&
           <Form.Item
-            name='saePassphrase'
-            label={wlanSecurity===WlanSecurityEnum.WPA3?'SAE Passphrase':'WPA3 SAE Passphrase'}
+            name={['wlan', 'saePassphrase']}
+            label={wlanSecurity===WlanSecurityEnum.WPA3?
+              $t({ defaultMessage: 'SAE Passphrase' }):
+              $t({ defaultMessage: 'WPA3 SAE Passphrase' })
+            }
             rules={[{
               required: true,
               whitespace: false,
@@ -235,13 +242,13 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
             },{
               validator: (_, value) => trailingNorLeadingSpaces(value)
             }]}
-            extra='8 characters minimum'
+            extra={$t({ defaultMessage: '8 characters minimum' })}
             children={<Input.Password />}
           />
         }
         <Form.Item
-          label='Security Protocol'
-          name='wlanSecurity'
+          label={$t({ defaultMessage: 'Security Protocol' })}
+          name={['wlan', 'wlanSecurity']}
           initialValue={WlanSecurityEnum.WPA2Personal}
           extra={securityDescription()}
         >
@@ -252,8 +259,8 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
         { [WlanSecurityEnum.WPA2Personal, WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed]
           .indexOf(wlanSecurity) > -1 &&
           <Form.Item
-            label='Management Frame Protection (802.11w)'
-            name='managementFrameProtection'
+            label={$t({ defaultMessage: 'Management Frame Protection (802.11w)' })}
+            name={['wlan', 'managementFrameProtection']}
             initialValue={ManagementFrameProtectionEnum.Disabled}
           >
             <Select 
@@ -270,7 +277,7 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
       <div>
         <Form.Item>
           <Form.Item>
-            <Form.Item noStyle name='macAddressAuthentication' valuePropName='checked'>
+            <Form.Item noStyle name={['wlan', 'macAddressAuthentication']} valuePropName='checked'>
               <Switch />
             </Form.Item>
             <span>{$t({ defaultMessage: 'Use MAC Auth' })}</span>
@@ -282,8 +289,8 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
         {macAddressAuthentication &&
           <React.Fragment>
             <Form.Item
-              label='MAC Address Format'
-              name='macAuthMacFormat'
+              label={$t({ defaultMessage: 'MAC Address Format' })}
+              name={['wlan', 'macAuthMacFormat']}
               initialValue={MacAuthMacFormatEnum.UpperDash}
             >
               <Select>
@@ -309,8 +316,8 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
 
           <Form.Item noStyle name='enableSecondaryAuthServer'>
             <ToggleButton
-              enableText='Remove Secondary Server'
-              disableText='Add Secondary Server'
+              enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
+              disableText={$t({ defaultMessage: 'Add Secondary Server' })}
             />
           </Form.Item>
 
@@ -336,8 +343,8 @@ function SettingsForm (props: StepFormProps<CreateNetworkFormFields>) {
 
               <Form.Item noStyle name='enableSecondaryAcctServer'>
                 <ToggleButton
-                  enableText='Remove Secondary Server'
-                  disableText='Add Secondary Server'
+                  enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
+                  disableText={$t({ defaultMessage: 'Add Secondary Server' })}
                 />
               </Form.Item>
 
