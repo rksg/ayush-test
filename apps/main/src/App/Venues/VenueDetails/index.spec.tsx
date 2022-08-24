@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { venueApi }                   from '@acx-ui/rc/services'
 import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
+import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { VenueDetails } from './VenueDetails'
@@ -20,6 +21,7 @@ const venueDetailHeaderData = {
 
 describe('VenueDetails', () => {
   beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
