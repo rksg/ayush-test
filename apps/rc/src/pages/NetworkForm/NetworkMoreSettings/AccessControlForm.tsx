@@ -179,7 +179,7 @@ function SelectAccessProfileProfile () {
 
     {enableAccessControlProfile && <Form.Item
       label='Access Control Policy'
-      name={['moresettings','advancedCustomization','accessControlProfileId']}
+      name={['wlan','advancedCustomization','accessControlProfileId']}
     >
       <Select placeholder='Select profile...'
         style={{ width: '180px' }}
@@ -232,10 +232,10 @@ function AccessControlConfigForm () {
     enableUploadLimit,
     enableClientRateLimit
   ] = [
-    useWatch<boolean>(['moresettings','advancedCustomization','l2AclEnable']),
-    useWatch<boolean>(['moresettings','advancedCustomization','l3AclEnable']),
+    useWatch<boolean>(['wlan','advancedCustomization','l2AclEnable']),
+    useWatch<boolean>(['wlan','advancedCustomization','l3AclEnable']),
     useWatch<boolean>('enableDeviceOs'),
-    useWatch<boolean>(['moresettings','advancedCustomization','applicationPolicyEnable']),
+    useWatch<boolean>(['wlan','advancedCustomization','applicationPolicyEnable']),
     useWatch<boolean>('enableDownloadLimit'),
     useWatch<boolean>('enableUploadLimit'),
     useWatch<boolean>('enableClientRateLimit')
@@ -299,7 +299,7 @@ function AccessControlConfigForm () {
       Layer 2
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
-          name={['moresettings','advancedCustomization','l2AclEnable']}
+          name={['wlan','advancedCustomization','l2AclEnable']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
@@ -308,7 +308,7 @@ function AccessControlConfigForm () {
 
         {enableLayer2 && <>
           <Form.Item
-            name={['moresettings','advancedCustomization','l2AclPolicyId']}
+            name={['wlan','advancedCustomization','l2AclPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
               <Select placeholder='Select profile...'
@@ -325,7 +325,7 @@ function AccessControlConfigForm () {
       Layer 3
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
-          name={['moresettings','advancedCustomization','l3AclEnable']}
+          name={['wlan','advancedCustomization','l3AclEnable']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
@@ -334,7 +334,7 @@ function AccessControlConfigForm () {
 
         {enableLayer3 && <>
           <Form.Item
-            name={['moresettings','advancedCustomization','l3AclPolicyId']}
+            name={['wlan','advancedCustomization','l3AclPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
               <Select placeholder='Select profile...'
@@ -360,7 +360,7 @@ function AccessControlConfigForm () {
 
         {enableDeviceOs && <>
           <Form.Item
-            name={['moresettings','advancedCustomization','devicePolicyId']}
+            name={['wlan','advancedCustomization','devicePolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
               <Select placeholder='Select profile...'
@@ -378,7 +378,7 @@ function AccessControlConfigForm () {
       Applications
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
-          name={['moresettings','advancedCustomization','applicationPolicyEnable']}
+          name={['wlan','advancedCustomization','applicationPolicyEnable']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
@@ -387,7 +387,7 @@ function AccessControlConfigForm () {
 
         {enableApplications && <>
           <Form.Item
-            name={['moresettings','advancedCustomization','applicationPolicyId']}
+            name={['wlan','advancedCustomization','applicationPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
               <Select placeholder='Select profile...'

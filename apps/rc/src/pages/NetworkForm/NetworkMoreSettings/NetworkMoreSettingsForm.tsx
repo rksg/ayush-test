@@ -66,11 +66,11 @@ export function NetworkMoreSettingsForm (props: {
     enableVlanPooling
   ] = [
     useWatch<boolean>('enableOfdmOnly'),
-    useWatch<boolean>(['moresettings','advancedCustomization','enableFastRoaming']),
-    useWatch<boolean>(['moresettings','advancedCustomization','enableAirtimedecongestion']),
-    useWatch<boolean>(['moresettings','advancedCustomization','enableJoinRSSIThreshold']),
-    useWatch<boolean>(['moresettings','advancedCustomization','enableTransientClientManagement']),
-    useWatch<boolean>(['moresettings','advancedCustomization',
+    useWatch<boolean>(['wlan','advancedCustomization','enableFastRoaming']),
+    useWatch<boolean>(['wlan','advancedCustomization','enableAirtimedecongestion']),
+    useWatch<boolean>(['wlan','advancedCustomization','enableJoinRSSIThreshold']),
+    useWatch<boolean>(['wlan','advancedCustomization','enableTransientClientManagement']),
+    useWatch<boolean>(['wlan','advancedCustomization',
       'enableOptimizedConnectivityExperience']),
     useWatch<boolean>('enableVlanPooling')
   ]
@@ -132,7 +132,7 @@ export function NetworkMoreSettingsForm (props: {
 
           {!enableVlanPooling && <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr' }}>
             <Form.Item
-              name={['moresettings', 'vlanId']}
+              name={['wlan', 'vlanId']}
               label='VLAN ID'
               initialValue={1}
               style={{ marginBottom: '15px' }}
@@ -142,7 +142,7 @@ export function NetworkMoreSettingsForm (props: {
             {showDynamicWlan &&
               <UI.FieldLabel width='auto' style={{ marginTop: '20px' }}>
                 <UI.FormItemNoLabel
-                  name={['moresettings','advancedCustomization','dynamicVlan']}
+                  name={['wlan','advancedCustomization','dynamicVlan']}
                   style={{ marginBottom: '15px' , marginRight: '8px' }}
                   valuePropName='checked'
                   initialValue={true}
@@ -159,7 +159,7 @@ export function NetworkMoreSettingsForm (props: {
         <div style={{ display: 'grid', gridTemplateColumns: '190px auto' }}>
           <Form.Item
             label='VLAN Pool:'
-            name={['moresettings', 'advancedCustomization', 'vlanPool']}
+            name={['wlan', 'advancedCustomization', 'vlanPool']}
             style={{ marginBottom: '15px' }}
             children={
               <Select placeholder='Select profile...'
@@ -175,7 +175,7 @@ export function NetworkMoreSettingsForm (props: {
           <UI.FieldLabel width='90px'>
         Proxy ARP:
             <Form.Item
-              name={['moresettings', 'advancedCustomization', 'enableProxyArp']}
+              name={['wlan', 'advancedCustomization', 'enableProxyArp']}
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
@@ -191,7 +191,7 @@ export function NetworkMoreSettingsForm (props: {
 
       <Panel header='Radio' key='3' >
         <UI.FormItemNoLabel
-          name={['moresettings','advancedCustomization','hideSsid']}
+          name={['wlan','advancedCustomization','hideSsid']}
           children={
             <UI.Label>
               <UI.CheckboxWrapper />
@@ -258,7 +258,7 @@ export function NetworkMoreSettingsForm (props: {
         </div>
 
         <UI.FormItemNoLabel
-          name={['moresettings','advancedCustomization','enableNeighborReport']}
+          name={['wlan','advancedCustomization','enableNeighborReport']}
           style={{ marginBottom: '15px' }}
           valuePropName='checked'
           initialValue={false}
@@ -271,7 +271,7 @@ export function NetworkMoreSettingsForm (props: {
 
         {isFastBssVisible &&
           <UI.FormItemNoLabel
-            name={['moresettings', 'advancedCustomization', 'enableFastRoaming']}
+            name={['wlan', 'advancedCustomization', 'enableFastRoaming']}
             style={{ marginBottom: '15px' }}
             valuePropName='checked'
             initialValue={false}
@@ -285,7 +285,7 @@ export function NetworkMoreSettingsForm (props: {
 
         {enableFastRoaming &&
             <Form.Item
-              name={['moresettings','advancedCustomization','mobilityDomainId']}
+              name={['wlan','advancedCustomization','mobilityDomainId']}
               label='Mobility Domain ID'
               initialValue={1}
               style={{ marginBottom: '15px' }}
@@ -294,7 +294,7 @@ export function NetworkMoreSettingsForm (props: {
         }
 
         <Form.Item
-          name={['moresettings','advancedCustomization','clientInactivityTimeout']}
+          name={['wlan','advancedCustomization','clientInactivityTimeout']}
           label='Client Inactivity Timeout:'
           initialValue={120}
           style={{ marginBottom: '15px' }}
@@ -302,7 +302,7 @@ export function NetworkMoreSettingsForm (props: {
         />
 
         <Form.Item
-          name={['moresettings','advancedCustomization','directedThreshold']}
+          name={['wlan','advancedCustomization','directedThreshold']}
           label='Directed MC/BC Threshold:'
           initialValue={5}
           style={{ marginBottom: '15px', width: '300px' }}
@@ -314,7 +314,7 @@ export function NetworkMoreSettingsForm (props: {
         <UI.FieldLabel width='190px'>
           Airtime Decongestion:
           <Form.Item
-            name={['moresettings','advancedCustomization','enableAirtimedecongestion']}
+            name={['wlan','advancedCustomization','enableAirtimedecongestion']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -327,7 +327,7 @@ export function NetworkMoreSettingsForm (props: {
             Join RSSI Threshold:
             <div style={{ display: 'grid', gridTemplateColumns: '50px 75px auto' }}>
               <Form.Item
-                name={['moresettings','advancedCustomization','enableJoinRSSIThreshold']}
+                name={['wlan','advancedCustomization','enableJoinRSSIThreshold']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={false}
@@ -336,7 +336,7 @@ export function NetworkMoreSettingsForm (props: {
 
               {enableJoinRSSIThreshold && <>
                 <Form.Item
-                  name={['moresettings','advancedCustomization','joinRSSIThreshold']}
+                  name={['wlan','advancedCustomization','joinRSSIThreshold']}
                   style={{ marginBottom: '10px', lineHeight: '32px' }}
                   initialValue={-85}
                   children={<Input style={{ width: '65px' }} />}
@@ -350,7 +350,7 @@ export function NetworkMoreSettingsForm (props: {
         <UI.FieldLabel width='190px'>
           Transient Client Management:
           <Form.Item
-            name={['moresettings','advancedCustomization','enableTransientClientManagement']}
+            name={['wlan','advancedCustomization','enableTransientClientManagement']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -365,7 +365,7 @@ export function NetworkMoreSettingsForm (props: {
                 Seconds
               </UI.LabelOfInput>
               <Form.Item
-                name={['moresettings','advancedCustomization','joinWaitTime']}
+                name={['wlan','advancedCustomization','joinWaitTime']}
                 label='Join Wait Time:'
                 style={{ marginBottom: '15px' }}
                 initialValue={30}
@@ -379,7 +379,7 @@ export function NetworkMoreSettingsForm (props: {
                 Seconds
               </UI.LabelOfInput>
               <Form.Item
-                name={['moresettings','advancedCustomization','joinExpireTime']}
+                name={['wlan','advancedCustomization','joinExpireTime']}
                 label='Join Expire Time:'
                 style={{ marginBottom: '15px' }}
                 initialValue={300}
@@ -390,7 +390,7 @@ export function NetworkMoreSettingsForm (props: {
 
 
             <Form.Item
-              name={['moresettings','advancedCustomization','joinWaitThreshold']}
+              name={['wlan','advancedCustomization','joinWaitThreshold']}
               label='Join Wait Threshold:'
               style={{ marginBottom: '15px' }}
               initialValue={10}
@@ -402,7 +402,7 @@ export function NetworkMoreSettingsForm (props: {
         <UI.FieldLabel width='250px'>
           Optimized Connectivity Experience (OCE):
           <Form.Item
-            name={['moresettings','advancedCustomization','enableOptimizedConnectivityExperience']}
+            name={['wlan','advancedCustomization','enableOptimizedConnectivityExperience']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -417,7 +417,7 @@ export function NetworkMoreSettingsForm (props: {
                 ms
               </UI.LabelOfInput>
               <Form.Item
-                name={['moresettings', 'advancedCustomization', 'broadcastProbeResponseDelay']}
+                name={['wlan', 'advancedCustomization', 'broadcastProbeResponseDelay']}
                 label='Broadcast Probe Response Delay:'
                 style={{ marginBottom: '15px' }}
                 initialValue={15}
@@ -433,7 +433,7 @@ export function NetworkMoreSettingsForm (props: {
                 dBm
               </UI.LabelOfInput>
               <Form.Item
-                name={['moresettings','advancedCustomization','rssiAssociationRejectionThreshold']}
+                name={['wlan','advancedCustomization','rssiAssociationRejectionThreshold']}
                 label='RSSI-Based Association Rejection Threshold:'
                 style={{ marginBottom: '15px' }}
                 initialValue={-75}

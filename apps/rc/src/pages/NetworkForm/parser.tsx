@@ -1,4 +1,5 @@
-import { get } from 'lodash'
+import { SaveEditableAction } from '@ant-design/pro-utils/lib/useEditableArray'
+import { get }                from 'lodash'
 
 import {
   NetworkTypeEnum,
@@ -9,7 +10,6 @@ import {
   DpskWlanAdvancedCustomization,
   PskWlanAdvancedCustomization
 } from '@acx-ui/rc/utils'
-import { SaveEditableAction } from '@ant-design/pro-utils/lib/useEditableArray'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {}
@@ -272,13 +272,14 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }
 
-export function transferMoreSettingsToSave (data: { moresettings: Object}) {
-  let saveData = {}
-
-  saveData = {
-    ...saveData,
-    ...{
-      wlan: data.moresettings
+export function transferMoreSettingsToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
+  let saveData = {
+    wlan: {
+      vlanId: data?.wlan?.vlanId ?? originalData?.wlan?.vlanId,
+      advancedCustomization: {
+        ...originalData?.wlan?.advancedCustomization,
+        ...data?.wlan?.advancedCustomization
+      }
     }
   }
 

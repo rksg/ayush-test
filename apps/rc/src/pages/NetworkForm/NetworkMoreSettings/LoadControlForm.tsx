@@ -54,7 +54,7 @@ export function LoadControlForm () {
       </Form.Item>
 
       <UI.FormItemNoLabel
-        name={['moresettings','advancedCustomization','enableBandBalancing']}
+        name={['wlan','advancedCustomization','enableBandBalancing']}
         children={
           <UI.Label>
             <UI.CheckboxWrapper />
@@ -62,7 +62,7 @@ export function LoadControlForm () {
           </UI.Label>}
       />
       <UI.FormItemNoLabel
-        name={['moresettings','advancedCustomization','clientLoadBalancingEnable']}
+        name={['wlan','advancedCustomization','clientLoadBalancingEnable']}
         children={
           <UI.Label>
             <UI.CheckboxWrapper />

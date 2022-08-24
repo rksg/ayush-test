@@ -4,6 +4,7 @@ import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
+  Button,
   PageHeader,
   showToast,
   StepsForm,
@@ -55,6 +56,8 @@ export function NetworkForm () {
 
   const [createNetwork] = useCreateNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
+  const [enableMoreSettings, setEnabled] = useState(false)
+
 
   const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
 
@@ -137,7 +140,11 @@ export function NetworkForm () {
             title={$t(settingTitle, { type: networkType })}
             onFinish={async (data) => {
               const settingData = _.merge(saveState, data)
-              const settingSaveData = tranferSettingsToSave(settingData)
+              let settingSaveData = tranferSettingsToSave(settingData)
+              if(!editMode) {
+                settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
+              }
+
               updateSaveData(settingSaveData)
               return true
             }}
@@ -146,18 +153,21 @@ export function NetworkForm () {
             {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
             {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
-          </StepsForm.StepForm>
 
-          <StepsForm.StepForm
-            name='moreSettings'
-            title={$t({ defaultMessage: 'More Settings' })}
-            onFinish={async (data: { moresettings: Object }) => {
-              const detailsSaveData = transferMoreSettingsToSave(data)
-              updateSaveData(detailsSaveData)
-              return true
-            }}
-          >
-            <NetworkMoreSettingsForm wlanData={saveState}/>
+            {!editMode && <>
+              <Button
+                type='link'
+                onClick={() => {
+                  setEnabled(!enableMoreSettings)
+                }}
+              >
+                {enableMoreSettings ? $t({ defaultMessage: 'Show less settings' }) :
+                  $t({ defaultMessage: 'Show more settings' })}
+              </Button>
+              {enableMoreSettings &&
+                <NetworkMoreSettingsForm wlanData={saveState} />}
+            </>
+            }
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
@@ -187,3 +197,5 @@ export function NetworkForm () {
     </>
   )
 }
+
+

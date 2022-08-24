@@ -29,14 +29,14 @@ function ClientIsolationForm () {
   const [
     enableClientIsolation
   ] = [
-    useWatch<boolean>(['moresettings','advancedCustomization','clientIsolation'])
+    useWatch<boolean>(['wlan','advancedCustomization','clientIsolation'])
   ]
 
   return (<>
     <UI.FieldLabel width='125px'>
       Client Isolation:
       <Form.Item
-        name={['moresettings','advancedCustomization','clientIsolation']}
+        name={['wlan','advancedCustomization','clientIsolation']}
         style={{ marginBottom: '10px' }}
         valuePropName='checked'
         initialValue={false}
@@ -48,7 +48,7 @@ function ClientIsolationForm () {
     <>
       <Form.Item
         label='Isolate Packets:'
-        name={['moresettings','advancedCustomization','clientIsolationOptions', 'packetsType']}
+        name={['wlan','advancedCustomization','clientIsolationOptions', 'packetsType']}
       >
         <Select defaultValue={IsolatePacketsTypeEnum.UNICAST}
           style={{ width: '240px' }}>
@@ -67,7 +67,7 @@ function ClientIsolationForm () {
       <UI.FieldLabel width='230px'>
         Automatic support for VRRP/HSRP:
         <Form.Item
-          name={['moresettings','advancedCustomization','clientIsolationOptions', 'autoVrrp']}
+          name={['wlan','advancedCustomization','clientIsolationOptions', 'autoVrrp']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
@@ -100,10 +100,10 @@ export function ServicesForm () {
     enableArpRequestRateLimit,
     enableDhcpRequestRateLimit
   ] = [
-    useWatch<boolean>(['moresettings','advancedCustomization','dnsProxyEnabled']),
-    useWatch<boolean>(['moresettings','advancedCustomization','enableAntiSpoofing']),
-    useWatch<boolean>(['moresettings','advancedCustomization','enableArpRequestRateLimit']),
-    useWatch<boolean>(['moresettings','advancedCustomization','enableDhcpRequestRateLimit'])
+    useWatch<boolean>(['wlan','advancedCustomization','dnsProxyEnabled']),
+    useWatch<boolean>(['wlan','advancedCustomization','enableAntiSpoofing']),
+    useWatch<boolean>(['wlan','advancedCustomization','enableArpRequestRateLimit']),
+    useWatch<boolean>(['wlan','advancedCustomization','enableDhcpRequestRateLimit'])
 
   ]
 
@@ -113,7 +113,7 @@ export function ServicesForm () {
         DNS Proxy:
         <UI.FieldLabel width='30px'>
           <Form.Item
-            name={['moresettings','advancedCustomization','dnsProxyEnabled']}
+            name={['wlan','advancedCustomization','dnsProxyEnabled']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -130,7 +130,7 @@ export function ServicesForm () {
         Wi-Fi Calling:
         <UI.FieldLabel width='30px'>
         <Form.Item
-            name={['moresettings', 'advancedCustomization', 'wifiCallingEnabled']}
+            name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -151,7 +151,7 @@ export function ServicesForm () {
         <UI.FieldLabel width='125px'>
         Anti-spoofing:
           <Form.Item
-            name={['moresettings','advancedCustomization','enableAntiSpoofing']}
+            name={['wlan','advancedCustomization','enableAntiSpoofing']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -165,7 +165,7 @@ export function ServicesForm () {
 
             <span style={{ display: 'flex' }}>
               <UI.FormItemNoLabel
-                name={['moresettings','advancedCustomization','enableArpRequestRateLimit']}
+                name={['wlan','advancedCustomization','enableArpRequestRateLimit']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={true}
@@ -178,7 +178,7 @@ export function ServicesForm () {
 
             {enableArpRequestRateLimit && <>
               <Form.Item
-                name={['moresettings','advancedCustomization','arpRequestRateLimit']}
+                name={['wlan','advancedCustomization','arpRequestRateLimit']}
                 initialValue={15}
                 style={{ marginBottom: '10px', lineHeight: '32px' }}
                 children={<Input style={{ width: '50px' }} />} />
@@ -191,7 +191,7 @@ export function ServicesForm () {
 
             <span style={{ display: 'flex' }}>
               <UI.FormItemNoLabel
-                name={['moresettings','advancedCustomization','enableDhcpRequestRateLimit']}
+                name={['wlan','advancedCustomization','enableDhcpRequestRateLimit']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={true}
@@ -204,7 +204,7 @@ export function ServicesForm () {
 
             {enableDhcpRequestRateLimit && <>
               <Form.Item
-                name={['moresettings','advancedCustomization','dhcpRequestRateLimit']}
+                name={['wlan','advancedCustomization','dhcpRequestRateLimit']}
                 initialValue={15}
                 style={{ marginBottom: '10px', lineHeight: '32px' }}
                 children={<Input style={{ width: '50px' }} />} />
@@ -217,7 +217,7 @@ export function ServicesForm () {
       </>
 
       <UI.FormItemNoLabel
-        name={['moresettings','advancedCustomization','forceMobileDeviceDhcp']}
+        name={['wlan','advancedCustomization','forceMobileDeviceDhcp']}
 
         children={
           <UI.Label>
@@ -227,7 +227,7 @@ export function ServicesForm () {
           </UI.Label>}
       />
       <UI.FormItemNoLabel
-        name={['moresettings','advancedCustomization','enableSyslog']}
+        name={['wlan','advancedCustomization','enableSyslog']}
         children={
           <UI.Label>
             <UI.CheckboxWrapper />
