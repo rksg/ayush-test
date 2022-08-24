@@ -35,8 +35,7 @@ import {
   trailingNorLeadingSpaces,
   NetworkTypeEnum,
   WlanSecurityEnum,
-  WifiNetworkMessages,
-  hexRegExp
+  WifiNetworkMessages
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -141,7 +140,7 @@ function SettingsForm () {
       </>
     )
   }
-  
+
   const securityOptions = Object.keys(PskWlanSecurityEnum).map((key =>
     <Option key={key}>{ PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum] }</Option>
   ))
@@ -165,22 +164,22 @@ function SettingsForm () {
   const securityOnChange = (value: string) => {
     switch(value){
       case WlanSecurityEnum.WPA2Personal:
-        form.setFieldsValue({ 
-          wlan: { 
+        form.setFieldsValue({
+          wlan: {
             managementFrameProtection: ManagementFrameProtectionEnum.Disabled
           }
         })
         break
       case WlanSecurityEnum.WPA3:
         form.setFieldsValue({
-          wlan: { 
+          wlan: {
             managementFrameProtection: ManagementFrameProtectionEnum.Required
           }
         })
         break
       case WlanSecurityEnum.WPA23Mixed:
         form.setFieldsValue({
-          wlan: { 
+          wlan: {
             managementFrameProtection: ManagementFrameProtectionEnum.Optional
           }
         })
@@ -217,7 +216,7 @@ function SettingsForm () {
               required: true,
               whitespace: false
             },{
-              validator: (_, value) => hexRegExp(value)
+              // validator: (_, value) => hexRegExp(value)
             }]}
             extra={$t({ defaultMessage: 'Must be 26 hex characters' })}
             children={<Input.Password />}
@@ -263,7 +262,7 @@ function SettingsForm () {
             name={['wlan', 'managementFrameProtection']}
             initialValue={ManagementFrameProtectionEnum.Disabled}
           >
-            <Select 
+            <Select
               disabled={
                 wlanSecurity === WlanSecurityEnum.WPA3 ||
                 wlanSecurity === WlanSecurityEnum.WPA23Mixed
@@ -321,7 +320,7 @@ function SettingsForm () {
             />
           </Form.Item>
 
-          {enableSecondaryAuthServer && 
+          {enableSecondaryAuthServer &&
             <IpPortSecretForm
               serverType={AaaServerTypeEnum.AUTHENTICATION}
               order={AaaServerOrderEnum.SECONDARY}

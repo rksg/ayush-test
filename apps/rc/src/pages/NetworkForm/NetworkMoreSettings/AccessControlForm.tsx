@@ -21,7 +21,7 @@ import {
   useApplicationPolicyListQuery,
   useAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
-import { useParams }            from '@acx-ui/react-router-dom'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -140,44 +140,32 @@ function SelectAccessProfileProfile () {
     sortOrder: 'ASC', page: 1, pageSize: 10000
   }
 
-  const { accessControlProfileSelectOptions,
-    accessControlList } = useAccessControlProfileListQuery({
-    params: useParams(),
-    payload: listPayload
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        accessControlProfileSelectOptions: data?.map(
-          item => <Option key={item.id}>{item.name}</Option>) ?? [],
-        accessControlList: data
+
+  //Access control list
+  const { accessControlProfileSelectOptions, accessControlList }
+    = useAccessControlProfileListQuery({
+      params: useParams(),
+      payload: listPayload
+    }, {
+      selectFromResult({ data }) {
+        return {
+          accessControlProfileSelectOptions: data?.map(
+            item => <Option key={item.id}>{item.name}</Option>) ?? [],
+          accessControlList: data
+        }
       }
-    }
+    })
+
+  const [state, updateState] = useState({
   })
 
-  // const [state, updateState] = useState({
-  //   selectedProfile:
-  //   {
-  //     l2AclPolicy: { id: '' },
-  //     l3AclPolicy: { id: '' },
-  //     devicePolicy: { id: '' },
-  //     applicationPolicy: { id: '' },
-  //     rateLimiting: { uplinkLimit: '', downlinkLimit: '' }
-  //   }
-  // })
-
-  // const updateData = (newData: Partial<typeof state>) => {
-  //   updateState({ ...state, ...newData })
-  // }
-
-  // const onAccessPolicyChange = function (id: string) {
-  //   updateData({  _.isArray(accessControlList) ?
-  //     accessControlList.filter(item => item.id === id)[0] : {} })
-  // }
+  const onAccessPolicyChange = function (id: string) {
+    updateState({})
+  }
 
 
   const [enableAccessControlProfile] = [useWatch('enableAccessControlProfile')]
   return (<>
-
     <UI.FieldLabel width='175px'>
       Access Control
       <Form.Item
@@ -195,7 +183,7 @@ function SelectAccessProfileProfile () {
     >
       <Select placeholder='Select profile...'
         style={{ width: '180px' }}
-        // onChange={onAccessPolicyChange}
+        onChange={onAccessPolicyChange}
         children={accessControlProfileSelectOptions} />
 
     </Form.Item>}

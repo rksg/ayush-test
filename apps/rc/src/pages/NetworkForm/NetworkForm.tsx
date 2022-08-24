@@ -9,8 +9,6 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
-
 import { useCreateNetworkMutation,
   useGetNetworkQuery,
   useUpdateNetworkMutation } from '@acx-ui/rc/services'
@@ -24,12 +22,14 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext    from './NetworkFormContext'
-import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }  from './NetworkSettings/DpskSettingsForm'
-import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
-import { SummaryForm }       from './NetworkSummary/SummaryForm'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave,

@@ -5,16 +5,16 @@ export enum AccessEnum {
 }
 
 export interface L2AclPolicy {
-  access: AccessEnum,
-  description: string,
-  macAddress: string[],
+  access?: AccessEnum,
+  description?: string,
+  macAddress?: string[],
   name: string,
   id: string
 }
 
 export interface L3AclPolicy {
-  networksCount: number,
-  rulesCount: number,
+  networksCount?: number,
+  rulesCount?: number,
   name: string,
   id: string
 }
@@ -29,8 +29,8 @@ export interface DevicePolicy {
 }
 
 export interface ApplicationPolicy {
-  networksCount: number,
-  rulesCount: number,
+  networksCount?: number,
+  rulesCount?: number,
   name: string,
   id: string
 }
@@ -39,13 +39,25 @@ export interface ApplicationPolicy {
 export interface AccessControlProfile {
   name: string,
   id: string,
-  rateLimiting: {
+  rateLimiting?: {
     downlinkLimit: number,
     enabled: boolean,
     uplinkLimit: number
   },
-  devicePolicy: {
+  devicePolicy?: {
     enabled: boolean
+    id: string
+  },
+  applicationPolicy?: {
+    enabled: boolean,
+    id: string
+  },
+  l2AclPolicy?: {
+    enabled: boolean,
+    id: string
+  },
+  l3AclPolicy?: {
+    enabled: boolean,
     id: string
   }
 }

@@ -12,8 +12,8 @@ import { StepsForm }     from '@acx-ui/components'
 import {
   useVlanPoolListQuery
 } from '@acx-ui/rc/services'
-import { CreateNetworkFormFields, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
-import { useParams }                                                  from '@acx-ui/react-router-dom'
+import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { useParams }                                          from '@acx-ui/react-router-dom'
 
 import { AccessControlForm } from './AccessControlForm'
 import { LoadControlForm }   from './LoadControlForm'
@@ -54,7 +54,7 @@ const listPayload = {
 }
 
 export function NetworkMoreSettingsForm (props: {
-  wlanData: CreateNetworkFormFields
+  wlanData: NetworkSaveData
 }) {
   const [
     enableOfdmOnly,

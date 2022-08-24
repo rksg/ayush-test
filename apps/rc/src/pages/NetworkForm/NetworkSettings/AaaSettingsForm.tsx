@@ -4,7 +4,7 @@ import {
   ExclamationCircleFilled,
   QuestionCircleOutlined
 } from '@ant-design/icons'
-import { Space } from 'antd'
+import { InputNumber, Space } from 'antd'
 import {
   Col,
   Form,
@@ -27,14 +27,11 @@ import {
   networkWifiIpRegExp,
   networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'
-
 import { NetworkTypeEnum, UserSettings } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 
 import * as contents      from '../contentsMap'
-import { IpPortSecretForm } from '../../../components/IpPortSecretForm'
-import { ToggleButton }     from '../../../components/ToggleButton'
-import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
+import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
 
