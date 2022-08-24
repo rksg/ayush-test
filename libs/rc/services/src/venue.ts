@@ -6,10 +6,10 @@ import {
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
-  TableResult
+  TableResult,
+  Venue,
+  VenueDetailHeader
 } from '@acx-ui/rc/utils'
-
-import { Venue } from './types'
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -37,10 +37,20 @@ export const venueApi = baseVenueApi.injectEndpoints({
           })
         })
       }
+    }),
+    venueDetailsHeader: build.query<VenueDetailHeader, RequestPayload>({
+      query: ({ params }) => {
+        const venueDetailReq = createHttpRequest(CommonUrlsInfo.getVenueDetailsHeader, params)
+        return {
+          ...venueDetailReq
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'DETAIL' }]
     })
   })
 })
 
 export const {
-  useVenuesListQuery
+  useVenuesListQuery,
+  useVenueDetailsHeaderQuery
 } = venueApi
