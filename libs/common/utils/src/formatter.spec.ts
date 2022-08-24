@@ -1,4 +1,7 @@
-import moment from 'moment-timezone'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
+
+import { renderHook } from '@acx-ui/test-utils'
 
 import { formatter } from './formatter'
 
@@ -198,28 +201,28 @@ describe('formatter', () => {
         )
     })
     it('should format date to "[Today,] HH:mm"', () => {
-      expect(formatter('calendarFormat')(1659687682000))
-        .toBe('Today, 13:51')
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659687682000))
+      expect(result.current).toBe('Today, 13:51')
     })
     it('should format date to "[Yesterday,] HH:mm"', () => {
-      expect(formatter('calendarFormat')(1659608482000))
-        .toBe('Yesterday, 15:51')
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659608482000))
+      expect(result.current).toBe('Yesterday, 15:51')
     })
     it('should format date to "[Tomorrow,] HH:mm"', () => {
-      expect(formatter('calendarFormat')(1659774082000))
-        .toBe('Tomorrow, 13:51')
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659774082000))
+      expect(result.current).toBe('Tomorrow, 13:51')
     })
     it('should format date to "[Last] dddd[,] HH:mm"', () => {
-      expect(formatter('calendarFormat')(1659255682000))
-        .toBe('Last Sunday, 13:51')
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659255682000))
+      expect(result.current).toBe('Last Sunday, 13:51')
     })
     it('should format date to "dddd[,] HH:mm"', () => {
-      expect(formatter('calendarFormat')(1659860482000))
-        .toBe('Sunday, 13:51')
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659860482000))
+      expect(result.current).toBe('Sunday, 13:51')
     })
     it('should format date to "MMM DD[,] HH:mm"', () => {
-      expect(formatter('calendarFormat')(1654590082000))
-        .toBe('Jun 07, 13:51')
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1654590082000))
+      expect(result.current).toBe('Jun 07 13:51')
     })
   })
   describe('durationFormat', () => {

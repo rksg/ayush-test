@@ -87,13 +87,14 @@ function dateTimeFormatter (number: unknown, format: string, tz?: string ) {
 
 function calendarFormat (number: number, intl: IntlShape) {
   const { $t } = intl
+  moment.locale(intl.locale)
   return moment(number).calendar({
-    lastDay: `[${$t({ defaultMessage: 'Yesterday' })},] HH:mm`,
-    sameDay: `[${$t({ defaultMessage: 'Today' })},] HH:mm`,
-    nextDay: `[${$t({ defaultMessage: 'Tomorrow' })},] HH:mm`,
-    lastWeek: `[${$t({ defaultMessage: 'Last' })}] dddd[,] HH:mm`,
-    nextWeek: 'dddd[,] HH:mm',
-    sameElse: 'MMM DD[,] HH:mm'
+    lastDay: $t({ defaultMessage: '[Yesterday,] HH:mm' }),
+    sameDay: $t({ defaultMessage: '[Today,] HH:mm' }),
+    nextDay: $t({ defaultMessage: '[Tomorrow,] HH:mm' }),
+    lastWeek: $t({ defaultMessage: '[Last] dddd[,] HH:mm' }),
+    nextWeek: $t({ defaultMessage: 'dddd[,] HH:mm' }),
+    sameElse: $t({ defaultMessage: 'MMM DD HH:mm' })
   })
 }
 
