@@ -6,7 +6,7 @@ import {
   ChartData,
   Dashboard,
   ApVenueStatusEnum,
-  SwitchStatusEnum } from '@acx-ui/rc/services'
+  SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import * as UI                from './styledComponents'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
