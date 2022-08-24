@@ -90,7 +90,9 @@ test('should render Connected Clients Over Time widget', async () => {
 
 test('should render Top 5 Switches by PoE Usage widget', async () => {
   mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', { data: topSwitchesByPoEUsageResponse })
-  render( <Provider> <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/></Provider>)
+  render(<BrowserRouter>
+    <Provider> <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/></Provider>
+  </BrowserRouter>)
   expect(await screen.findByText('Top 5 Switches by PoE Usage')).toBeVisible()
   
 })

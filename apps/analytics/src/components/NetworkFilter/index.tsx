@@ -6,14 +6,14 @@ import { useIntl }           from 'react-intl'
 import { useAnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
 import { NetworkFilter, Option, Loader }          from '@acx-ui/components'
 
-import { NetworkHierarchy, useNetworkFilterQuery, ApOrSwitch } from './services'
-import * as UI                                                 from './styledComponents'
+import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
+import * as UI                                      from './styledComponents'
 
 
-const getFilterData = (data: NetworkHierarchy, $t: CallableFunction): Option [] => {
-  const venues = data.children.filter(node => node.type === 'zone')
-  const uniqSwGrps = uniqBy(data.children, 'name').filter(node => node.type === 'switchGroup')
-  const switchGroups = data.children
+const getFilterData = (data: Child[], $t: CallableFunction): Option [] => {
+  const venues = data.filter(node => node.type === 'zone')
+  const uniqSwGrps = uniqBy(data, 'name').filter(node => node.type === 'switchGroup')
+  const switchGroups = data
     .filter(node => node.type === 'switchGroup')
     .reduce((obj, node) => obj.set(node.name, node), new Map())
   return [...venues, ...uniqSwGrps].map((node, index) => {

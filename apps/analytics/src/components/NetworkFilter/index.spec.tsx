@@ -45,7 +45,7 @@ describe('Network Filter', () => {
   })
   it('should render network filter', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: null } }
+      data: { network: { hierarchyNode: { children: null } } }
     })
     const { asFragment } = render(<Provider><NetworkFilter /></Provider>)
     await screen.findByText('Entire Organization')

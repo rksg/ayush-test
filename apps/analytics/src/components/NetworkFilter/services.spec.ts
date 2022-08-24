@@ -37,7 +37,7 @@ export const networkHierarchy = {
   type: 'network',
   path: defaultNetworkPath
 }
-describe('networkHistoryWidgetApi', () => {
+describe('networkFilterApi', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
@@ -69,7 +69,7 @@ describe('networkHistoryWidgetApi', () => {
       api.endpoints.networkFilter.initiate(props)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
+    expect(data).toStrictEqual(expectedResult.network.hierarchyNode.children)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {

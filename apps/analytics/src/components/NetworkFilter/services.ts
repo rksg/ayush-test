@@ -17,18 +17,17 @@ export type ApOrSwitch = {
   incidentSeverity: number
 }
 type ApsOrSwictes = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
-type Child = ApsOrSwictes & NetworkData
-export type NetworkHierarchy = NetworkData & { children: Child[] }
-interface Response <NetworkHierarchy> {
+export type Child = NetworkData & ApsOrSwictes
+interface Response {
   network: {
-    hierarchyNode: NetworkHierarchy
+    hierarchyNode: { children: Child[] }
   }
 }
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkFilter: build.query<
-      NetworkHierarchy,
+      Child[],
       Omit<AnalyticsFilter, 'path'>
     >({
       query: payload => ({
@@ -74,8 +73,8 @@ export const api = dataApi.injectEndpoints({
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_FILTER' }],
-      transformResponse: (response: Response<NetworkHierarchy>) =>
-        response.network.hierarchyNode
+      transformResponse: (response: Response) =>
+        response.network.hierarchyNode.children
     })
   })
 })
