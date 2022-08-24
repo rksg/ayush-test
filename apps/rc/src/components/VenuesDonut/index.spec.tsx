@@ -1,6 +1,5 @@
-import { Dashboard }          from '@acx-ui/rc/services'
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { CommonUrlsInfo, Dashboard } from '@acx-ui/rc/utils'
+import { Provider  }                 from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
   mockAutoSizer,
