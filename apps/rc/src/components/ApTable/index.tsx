@@ -10,9 +10,11 @@ import {
   TableProps,
   deviceStatusColors
 } from '@acx-ui/components'
-import { ApExtraParams, useApListQuery, AP } from '@acx-ui/rc/services'
+import { useApListQuery } from '@acx-ui/rc/services' 
 import {
   ApDeviceStatusEnum,
+  ApExtraParams,
+  AP,
   APMeshRole,
   APView,
   DeviceConnectionStatus,

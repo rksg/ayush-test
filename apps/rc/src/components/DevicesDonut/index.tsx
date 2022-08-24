@@ -2,15 +2,16 @@ import { find }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader }                              from '@acx-ui/components'
-import { Card }                                        from '@acx-ui/components'
-import { DonutChart }                                  from '@acx-ui/components'
-import type { DonutChartData }                         from '@acx-ui/components'
-import { SwitchStatusEnum, useDashboardOverviewQuery } from '@acx-ui/rc/services'
+import { cssStr, Loader }            from '@acx-ui/components'
+import { Card }                      from '@acx-ui/components'
+import { DonutChart }                from '@acx-ui/components'
+import type { DonutChartData }       from '@acx-ui/components'
+import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import {
   Dashboard,
-  ApVenueStatusEnum
-} from '@acx-ui/rc/services'
+  ApVenueStatusEnum,
+  SwitchStatusEnum
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { getAPStatusDisplayName, getSwitchStatusDisplayName } from '../Map/VenuesMap/helper'

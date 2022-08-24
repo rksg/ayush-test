@@ -1,10 +1,11 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useServiceListQuery, Service, useDeleteServiceMutation }         from '@acx-ui/rc/services'
+import { useServiceListQuery, useDeleteServiceMutation }                  from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
+  Service,
   ServiceTechnology,
   ServiceStatus,
   ServiceAdminState
