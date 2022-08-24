@@ -45,12 +45,15 @@ export const DateSpan = styled.span`
   font-weight: var(--acx-body-font-weight-bold);
 `
 
-export const Table = styled((props: TableProps<IncidentTableRows>) => <AcxTable {...props} />)`
-.ant {
+export const Table = styled((props: TableProps<IncidentTableRows>) => (
+  <AcxTable {...props} />
+))`
+  .ant {
     &-pagination {
       &-jump {
         &-next {
-          :hover, :focus-visible {
+          :hover,
+          :focus-visible {
             color: var(--acx-accents-blue-50);
           }
 
@@ -79,7 +82,8 @@ export const Table = styled((props: TableProps<IncidentTableRows>) => <AcxTable 
         }
 
         &:not(-active) {
-          &:hover, :focus-visible {
+          &:hover,
+          :focus-visible {
             a {
               color: var(--acx-accents-blue-50);
             }
@@ -89,9 +93,16 @@ export const Table = styled((props: TableProps<IncidentTableRows>) => <AcxTable 
           border-color: var(--acx-accents-blue-50);
           a {
             color: var(--acx-accents-blue-50);
-          }      
-        }      
+          }
+        }
       }
     }
+  }
+  .ant-pagination-prev:hover .ant-pagination-item-link,
+  .ant-pagination-next:hover .ant-pagination-item-link {
+    color: var(--acx-accents-blue-50);
+  }
+  .ant-pagination-disabled:hover .ant-pagination-item-link {
+    color: var(--acx-neutrals-40);
   }
 `
