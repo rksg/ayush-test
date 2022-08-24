@@ -2,7 +2,7 @@ import { get } from 'lodash'
 
 import {
   NetworkTypeEnum,
-  CreateNetworkFormFields,
+  NetworkSaveData,
   OpenNetwork,
   AAANetwork,
   GuestNetwork,
@@ -12,7 +12,7 @@ import {
   Radius
 } from '@acx-ui/rc/utils'
 
-const parseAaaSettingDataToSave = (data: CreateNetworkFormFields) => {
+const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = new AAANetwork()
 
   if (data.isCloudpathEnabled) {
@@ -86,7 +86,7 @@ const parseAaaSettingDataToSave = (data: CreateNetworkFormFields) => {
   return saveData
 }
 
-const parseOpenSettingDataToSave = (data: CreateNetworkFormFields) => {
+const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = new OpenNetwork()
 
   if (data.cloudpathServerId) {
@@ -96,14 +96,14 @@ const parseOpenSettingDataToSave = (data: CreateNetworkFormFields) => {
   return saveData
 }
 
-const parseCaptivePortalDataToSave = (data: CreateNetworkFormFields) => {
+const parseCaptivePortalDataToSave = (data: NetworkSaveData) => {
   let saveData = new GuestNetwork()
   saveData.type = data.type
   saveData.guestPortal = { ...data.guestPortal }
   return saveData
 }
 
-const parseDpskSettingDataToSave = (data: CreateNetworkFormFields) => {
+const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = new DpskNetwork()
 
   saveData.dpskPassphraseGeneration = {
@@ -119,11 +119,10 @@ const parseDpskSettingDataToSave = (data: CreateNetworkFormFields) => {
   return saveData
 }
 
-export function transferDetailToSave (data: CreateNetworkFormFields) {
+export function transferDetailToSave (data: NetworkSaveData) {
   return {
     name: data.name,
-    description: data.description ?? '',
-    venues: data.venues ?? null,
+    description: data.description,
     type: data.type,
     wlan: {
       ssid: data.name
@@ -131,7 +130,7 @@ export function transferDetailToSave (data: CreateNetworkFormFields) {
   }
 }
 
-export function tranferSettingsToSave (data: CreateNetworkFormFields) {
+export function tranferSettingsToSave (data: NetworkSaveData) {
   const networkSaveDataParser = {
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data),
     [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data),

@@ -3,20 +3,20 @@ import {
   Row
 } from 'antd'
 
-import { StepFormProps, StepsForm }                 from '@acx-ui/components'
-import { CreateNetworkFormFields, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { StepsForm }       from '@acx-ui/components'
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
 import { DhcpCheckbox }     from './DhcpCheckbox'
 import { RedirectUrlInput } from './RedirectUrlInput'
 
-export function OnboardingForm (props: StepFormProps<CreateNetworkFormFields>) {
+export function OnboardingForm () {
   return (
     <Row gutter={20}>
       <Col span={10}>
         <StepsForm.Title>Onboarding</StepsForm.Title>
-        <RedirectUrlInput formRef={props.formRef} />
+        <RedirectUrlInput />
         <DhcpCheckbox />
       </Col>
       <Col span={14}>

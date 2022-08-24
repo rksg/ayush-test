@@ -12,12 +12,12 @@ import {
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useWatch }            from 'antd/lib/form/Form'
 
-import { StepFormProps }                      from '@acx-ui/components'
-import { CreateNetworkFormFields, URLRegExp } from '@acx-ui/rc/utils'
+import { URLRegExp } from '@acx-ui/rc/utils'
 
 const REDIRECT_TOOLTIP = 'If unchecked, users will reach the page they originally requested'
 
-export function RedirectUrlInput (props: StepFormProps<CreateNetworkFormFields>) {
+export function RedirectUrlInput () {
+  const form = Form.useFormInstance()
   const [
     redirectCheckbox,
     redirectUrl
@@ -29,10 +29,10 @@ export function RedirectUrlInput (props: StepFormProps<CreateNetworkFormFields>)
 
   const redirectCheckboxChange = (e: CheckboxChangeEvent) => {
     if (e.target.checked) {
-      props.formRef?.current?.setFieldsValue({ redirectUrl: redirectUrlValue })
+      form.setFieldsValue({ redirectUrl: redirectUrlValue })
     } else {
       setRedirectUrlValue(redirectUrl)
-      props.formRef?.current?.setFieldsValue({ redirectUrl: '' })
+      form.setFieldsValue({ redirectUrl: '' })
     }
   }
   

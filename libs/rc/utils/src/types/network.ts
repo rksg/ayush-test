@@ -5,32 +5,34 @@ import {
   WlanSecurityEnum
 } from '../constants'
 
+import { AnyWlan }     from './any-network'
 import { GuestPortal } from './wifi/GuestPortal'
 import { Radius }      from './wifi/Radius'
-export interface CreateNetworkFormFields {
-  id?: string
-  name: string;
+
+export interface NetworkSaveData {
+  id?: string;
+  tenantId?: string;
+  name?: string;
   description?: string;
-  type: NetworkTypeEnum;
+  type?: NetworkTypeEnum;
+  enableAccountingService?: boolean;
+  enableAccountingProxy?: boolean;
+  enableAuthProxy?: boolean;
+  enableSecondaryAuthServer?: boolean;
+  enableSecondaryAcctServer?: boolean;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
   venues?: NetworkVenue[];
   redirectUrl?: string;
   guestPortal?: GuestPortal;
-  enableSecondaryAuthServer?: boolean
-  enableAuthProxy?: boolean
-  enableAccountingProxy?: boolean
-  enableAccountingService?: boolean
-  enableSecondaryAcctServer?: boolean
-  passphraseLength?: number | undefined
-  passphraseFormat?: PassphraseFormatEnum
-  expiration?: PassphraseExpirationEnum
-  authRadius?: Radius
-  accountingRadius?: Radius
-  tenantId?: string
-  // Enable DHCP (requires a bound DHCP Profile)
-  enableDhcp?: boolean
-  dpskWlanSecurity?: WlanSecurityEnum
+  wlan?: AnyWlan;
+  wlanSecurity?: WlanSecurityEnum;
+  dpskWlanSecurity?: WlanSecurityEnum;
+  authRadius?: Radius;
+  accountingRadius?: Radius;
+  passphraseLength?: number;
+  passphraseFormat?: PassphraseFormatEnum;
+  expiration?: PassphraseExpirationEnum;
 }
 
 export interface NetworkVenue {

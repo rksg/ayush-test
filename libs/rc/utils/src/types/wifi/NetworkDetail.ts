@@ -1,4 +1,4 @@
-import { NetworkVenue } from './NetworkVenue'
+import { NetworkVenue } from '../network'
 
 export class NetworkDetail {
   name?: string

@@ -330,17 +330,6 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                             class="ant-row ant-form-item"
                           >
                             <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class="ant-form-item-required"
-                                for="details_type"
-                                title="Network Type"
-                              >
-                                Network Type
-                              </label>
-                            </div>
-                            <div
                               class="ant-col ant-form-item-control"
                             >
                               <div
@@ -350,156 +339,183 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                   class="ant-form-item-control-input-content"
                                 >
                                   <div
-                                    class="ant-radio-group ant-radio-group-outline"
-                                    id="details_type"
+                                    class="ant-row ant-form-item"
                                   >
                                     <div
-                                      class="ant-space ant-space-vertical"
+                                      class="ant-col ant-form-item-label"
+                                    >
+                                      <label
+                                        class="ant-form-item-required"
+                                        for="details_type"
+                                        title="Network Type"
+                                      >
+                                        Network Type
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
                                     >
                                       <div
-                                        class="ant-space-item"
-                                        style="margin-bottom: 8px;"
+                                        class="ant-form-item-control-input"
                                       >
-                                        <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                        <div
+                                          class="ant-form-item-control-input-content"
                                         >
-                                          <span
-                                            class="ant-radio ant-radio-disabled"
+                                          <div
+                                            class="ant-radio-group ant-radio-group-outline"
+                                            id="details_type"
                                           >
-                                            <input
-                                              class="ant-radio-input"
-                                              disabled=""
-                                              type="radio"
-                                              value="psk"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Pre-Shared Key (PSK)
                                             <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                              class="ant-space ant-space-vertical"
                                             >
-                                              Require users to enter a passphrase (that you have defined for the network) to connect
+                                              <div
+                                                class="ant-space-item"
+                                                style="margin-bottom: 8px;"
+                                              >
+                                                <label
+                                                  class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                                >
+                                                  <span
+                                                    class="ant-radio ant-radio-disabled"
+                                                  >
+                                                    <input
+                                                      class="ant-radio-input"
+                                                      disabled=""
+                                                      type="radio"
+                                                      value="psk"
+                                                    />
+                                                    <span
+                                                      class="ant-radio-inner"
+                                                    />
+                                                  </span>
+                                                  <span>
+                                                    Pre-Shared Key (PSK)
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                    >
+                                                      Require users to enter a passphrase (that you have defined for the network) to connect
+                                                    </div>
+                                                  </span>
+                                                </label>
+                                              </div>
+                                              <div
+                                                class="ant-space-item"
+                                                style="margin-bottom: 8px;"
+                                              >
+                                                <label
+                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                >
+                                                  <span
+                                                    class="ant-radio"
+                                                  >
+                                                    <input
+                                                      class="ant-radio-input"
+                                                      type="radio"
+                                                      value="dpsk"
+                                                    />
+                                                    <span
+                                                      class="ant-radio-inner"
+                                                    />
+                                                  </span>
+                                                  <span>
+                                                    Dynamic Pre-Shared Key (DPSK)
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                    >
+                                                      Require users to enter a passphrase to connect. The passphrase is unique per device
+                                                    </div>
+                                                  </span>
+                                                </label>
+                                              </div>
+                                              <div
+                                                class="ant-space-item"
+                                                style="margin-bottom: 8px;"
+                                              >
+                                                <label
+                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                >
+                                                  <span
+                                                    class="ant-radio"
+                                                  >
+                                                    <input
+                                                      class="ant-radio-input"
+                                                      type="radio"
+                                                      value="aaa"
+                                                    />
+                                                    <span
+                                                      class="ant-radio-inner"
+                                                    />
+                                                  </span>
+                                                  <span>
+                                                    Enterprise AAA (802.1X)
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                    >
+                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
+                                                    </div>
+                                                  </span>
+                                                </label>
+                                              </div>
+                                              <div
+                                                class="ant-space-item"
+                                                style="margin-bottom: 8px;"
+                                              >
+                                                <label
+                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                >
+                                                  <span
+                                                    class="ant-radio"
+                                                  >
+                                                    <input
+                                                      class="ant-radio-input"
+                                                      type="radio"
+                                                      value="guest"
+                                                    />
+                                                    <span
+                                                      class="ant-radio-inner"
+                                                    />
+                                                  </span>
+                                                  <span>
+                                                    Captive Portal
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                    >
+                                                      Users are authorized through a captive portal in various methods
+                                                    </div>
+                                                  </span>
+                                                </label>
+                                              </div>
+                                              <div
+                                                class="ant-space-item"
+                                              >
+                                                <label
+                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                >
+                                                  <span
+                                                    class="ant-radio"
+                                                  >
+                                                    <input
+                                                      class="ant-radio-input"
+                                                      type="radio"
+                                                      value="open"
+                                                    />
+                                                    <span
+                                                      class="ant-radio-inner"
+                                                    />
+                                                  </span>
+                                                  <span>
+                                                    Open Network
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                    >
+                                                      Allow users to access the network without any authentication/security (not recommended)
+                                                    </div>
+                                                  </span>
+                                                </label>
+                                              </div>
                                             </div>
-                                          </span>
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-bottom: 8px;"
-                                      >
-                                        <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                        >
-                                          <span
-                                            class="ant-radio"
-                                          >
-                                            <input
-                                              class="ant-radio-input"
-                                              type="radio"
-                                              value="dpsk"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Dynamic Pre-Shared Key (DPSK)
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Require users to enter a passphrase to connect. The passphrase is unique per device
-                                            </div>
-                                          </span>
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-bottom: 8px;"
-                                      >
-                                        <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                        >
-                                          <span
-                                            class="ant-radio"
-                                          >
-                                            <input
-                                              class="ant-radio-input"
-                                              type="radio"
-                                              value="aaa"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Enterprise AAA (802.1X)
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
-                                            </div>
-                                          </span>
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-bottom: 8px;"
-                                      >
-                                        <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                        >
-                                          <span
-                                            class="ant-radio"
-                                          >
-                                            <input
-                                              class="ant-radio-input"
-                                              type="radio"
-                                              value="guest"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Captive Portal
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Users are authorized through a captive portal in various methods
-                                            </div>
-                                          </span>
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                        >
-                                          <span
-                                            class="ant-radio"
-                                          >
-                                            <input
-                                              class="ant-radio-input"
-                                              type="radio"
-                                              value="open"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Open Network
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Allow users to access the network without any authentication/security (not recommended)
-                                            </div>
-                                          </span>
-                                        </label>
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -687,12 +703,82 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                             <div
                                               class="ant-form-item-control-input-content"
                                             >
-                                              <input
-                                                class="ant-input"
-                                                id="Settings_authRadius.primary.port"
-                                                type="number"
-                                                value=""
-                                              />
+                                              <div
+                                                class="ant-input-number ant-input-number-in-form-item"
+                                              >
+                                                <div
+                                                  class="ant-input-number-handler-wrap"
+                                                >
+                                                  <span
+                                                    aria-disabled="false"
+                                                    aria-label="Increase Value"
+                                                    class="ant-input-number-handler ant-input-number-handler-up"
+                                                    role="button"
+                                                    unselectable="on"
+                                                  >
+                                                    <span
+                                                      aria-label="up"
+                                                      class="anticon anticon-up ant-input-number-handler-up-inner"
+                                                      role="img"
+                                                    >
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        data-icon="up"
+                                                        fill="currentColor"
+                                                        focusable="false"
+                                                        height="1em"
+                                                        viewBox="64 64 896 896"
+                                                        width="1em"
+                                                      >
+                                                        <path
+                                                          d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </span>
+                                                  <span
+                                                    aria-disabled="false"
+                                                    aria-label="Decrease Value"
+                                                    class="ant-input-number-handler ant-input-number-handler-down"
+                                                    role="button"
+                                                    unselectable="on"
+                                                  >
+                                                    <span
+                                                      aria-label="down"
+                                                      class="anticon anticon-down ant-input-number-handler-down-inner"
+                                                      role="img"
+                                                    >
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        data-icon="down"
+                                                        fill="currentColor"
+                                                        focusable="false"
+                                                        height="1em"
+                                                        viewBox="64 64 896 896"
+                                                        width="1em"
+                                                      >
+                                                        <path
+                                                          d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </span>
+                                                </div>
+                                                <div
+                                                  class="ant-input-number-input-wrap"
+                                                >
+                                                  <input
+                                                    aria-valuemax="65535"
+                                                    aria-valuemin="1"
+                                                    autocomplete="off"
+                                                    class="ant-input-number-input"
+                                                    id="Settings_authRadius.primary.port"
+                                                    role="spinbutton"
+                                                    step="1"
+                                                    value=""
+                                                  />
+                                                </div>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -2229,17 +2315,6 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             class="ant-row ant-form-item"
                           >
                             <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class="ant-form-item-required"
-                                for="details_type"
-                                title="Network Type"
-                              >
-                                Network Type
-                              </label>
-                            </div>
-                            <div
                               class="ant-col ant-form-item-control"
                             >
                               <div
@@ -2249,156 +2324,183 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                   class="ant-form-item-control-input-content"
                                 >
                                   <div
-                                    class="ant-radio-group ant-radio-group-outline"
-                                    id="details_type"
+                                    class="ant-row ant-form-item"
                                   >
                                     <div
-                                      class="ant-space ant-space-vertical"
+                                      class="ant-col ant-form-item-label"
+                                    >
+                                      <label
+                                        class="ant-form-item-required"
+                                        for="details_type"
+                                        title="Network Type"
+                                      >
+                                        Network Type
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="ant-col ant-form-item-control"
                                     >
                                       <div
-                                        class="ant-space-item"
-                                        style="margin-bottom: 8px;"
+                                        class="ant-form-item-control-input"
                                       >
-                                        <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                        <div
+                                          class="ant-form-item-control-input-content"
                                         >
-                                          <span
-                                            class="ant-radio ant-radio-disabled"
+                                          <div
+                                            class="ant-radio-group ant-radio-group-outline"
+                                            id="details_type"
                                           >
-                                            <input
-                                              class="ant-radio-input"
-                                              disabled=""
-                                              type="radio"
-                                              value="psk"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Pre-Shared Key (PSK)
                                             <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                              class="ant-space ant-space-vertical"
                                             >
-                                              Require users to enter a passphrase (that you have defined for the network) to connect
+                                              <div
+                                                class="ant-space-item"
+                                                style="margin-bottom: 8px;"
+                                              >
+                                                <label
+                                                  class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                                >
+                                                  <span
+                                                    class="ant-radio ant-radio-disabled"
+                                                  >
+                                                    <input
+                                                      class="ant-radio-input"
+                                                      disabled=""
+                                                      type="radio"
+                                                      value="psk"
+                                                    />
+                                                    <span
+                                                      class="ant-radio-inner"
+                                                    />
+                                                  </span>
+                                                  <span>
+                                                    Pre-Shared Key (PSK)
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                    >
+                                                      Require users to enter a passphrase (that you have defined for the network) to connect
+                                                    </div>
+                                                  </span>
+                                                </label>
+                                              </div>
+                                              <div
+                                                class="ant-space-item"
+                                                style="margin-bottom: 8px;"
+                                              >
+                                                <label
+                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                >
+                                                  <span
+                                                    class="ant-radio"
+                                                  >
+                                                    <input
+                                                      class="ant-radio-input"
+                                                      type="radio"
+                                                      value="dpsk"
+                                                    />
+                                                    <span
+                                                      class="ant-radio-inner"
+                                                    />
+                                                  </span>
+                                                  <span>
+                                                    Dynamic Pre-Shared Key (DPSK)
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                    >
+                                                      Require users to enter a passphrase to connect. The passphrase is unique per device
+                                                    </div>
+                                                  </span>
+                                                </label>
+                                              </div>
+                                              <div
+                                                class="ant-space-item"
+                                                style="margin-bottom: 8px;"
+                                              >
+                                                <label
+                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                >
+                                                  <span
+                                                    class="ant-radio"
+                                                  >
+                                                    <input
+                                                      class="ant-radio-input"
+                                                      type="radio"
+                                                      value="aaa"
+                                                    />
+                                                    <span
+                                                      class="ant-radio-inner"
+                                                    />
+                                                  </span>
+                                                  <span>
+                                                    Enterprise AAA (802.1X)
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                    >
+                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
+                                                    </div>
+                                                  </span>
+                                                </label>
+                                              </div>
+                                              <div
+                                                class="ant-space-item"
+                                                style="margin-bottom: 8px;"
+                                              >
+                                                <label
+                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                >
+                                                  <span
+                                                    class="ant-radio"
+                                                  >
+                                                    <input
+                                                      class="ant-radio-input"
+                                                      type="radio"
+                                                      value="guest"
+                                                    />
+                                                    <span
+                                                      class="ant-radio-inner"
+                                                    />
+                                                  </span>
+                                                  <span>
+                                                    Captive Portal
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                    >
+                                                      Users are authorized through a captive portal in various methods
+                                                    </div>
+                                                  </span>
+                                                </label>
+                                              </div>
+                                              <div
+                                                class="ant-space-item"
+                                              >
+                                                <label
+                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                >
+                                                  <span
+                                                    class="ant-radio"
+                                                  >
+                                                    <input
+                                                      class="ant-radio-input"
+                                                      type="radio"
+                                                      value="open"
+                                                    />
+                                                    <span
+                                                      class="ant-radio-inner"
+                                                    />
+                                                  </span>
+                                                  <span>
+                                                    Open Network
+                                                    <div
+                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                    >
+                                                      Allow users to access the network without any authentication/security (not recommended)
+                                                    </div>
+                                                  </span>
+                                                </label>
+                                              </div>
                                             </div>
-                                          </span>
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-bottom: 8px;"
-                                      >
-                                        <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                        >
-                                          <span
-                                            class="ant-radio"
-                                          >
-                                            <input
-                                              class="ant-radio-input"
-                                              type="radio"
-                                              value="dpsk"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Dynamic Pre-Shared Key (DPSK)
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Require users to enter a passphrase to connect. The passphrase is unique per device
-                                            </div>
-                                          </span>
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-bottom: 8px;"
-                                      >
-                                        <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                        >
-                                          <span
-                                            class="ant-radio"
-                                          >
-                                            <input
-                                              class="ant-radio-input"
-                                              type="radio"
-                                              value="aaa"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Enterprise AAA (802.1X)
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
-                                            </div>
-                                          </span>
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-bottom: 8px;"
-                                      >
-                                        <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                        >
-                                          <span
-                                            class="ant-radio"
-                                          >
-                                            <input
-                                              class="ant-radio-input"
-                                              type="radio"
-                                              value="guest"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Captive Portal
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Users are authorized through a captive portal in various methods
-                                            </div>
-                                          </span>
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        <label
-                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                        >
-                                          <span
-                                            class="ant-radio"
-                                          >
-                                            <input
-                                              class="ant-radio-input"
-                                              type="radio"
-                                              value="open"
-                                            />
-                                            <span
-                                              class="ant-radio-inner"
-                                            />
-                                          </span>
-                                          <span>
-                                            Open Network
-                                            <div
-                                              class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                            >
-                                              Allow users to access the network without any authentication/security (not recommended)
-                                            </div>
-                                          </span>
-                                        </label>
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -2586,12 +2688,82 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                             <div
                                               class="ant-form-item-control-input-content"
                                             >
-                                              <input
-                                                class="ant-input"
-                                                id="Settings_authRadius.primary.port"
-                                                type="number"
-                                                value=""
-                                              />
+                                              <div
+                                                class="ant-input-number ant-input-number-in-form-item"
+                                              >
+                                                <div
+                                                  class="ant-input-number-handler-wrap"
+                                                >
+                                                  <span
+                                                    aria-disabled="false"
+                                                    aria-label="Increase Value"
+                                                    class="ant-input-number-handler ant-input-number-handler-up"
+                                                    role="button"
+                                                    unselectable="on"
+                                                  >
+                                                    <span
+                                                      aria-label="up"
+                                                      class="anticon anticon-up ant-input-number-handler-up-inner"
+                                                      role="img"
+                                                    >
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        data-icon="up"
+                                                        fill="currentColor"
+                                                        focusable="false"
+                                                        height="1em"
+                                                        viewBox="64 64 896 896"
+                                                        width="1em"
+                                                      >
+                                                        <path
+                                                          d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </span>
+                                                  <span
+                                                    aria-disabled="false"
+                                                    aria-label="Decrease Value"
+                                                    class="ant-input-number-handler ant-input-number-handler-down"
+                                                    role="button"
+                                                    unselectable="on"
+                                                  >
+                                                    <span
+                                                      aria-label="down"
+                                                      class="anticon anticon-down ant-input-number-handler-down-inner"
+                                                      role="img"
+                                                    >
+                                                      <svg
+                                                        aria-hidden="true"
+                                                        data-icon="down"
+                                                        fill="currentColor"
+                                                        focusable="false"
+                                                        height="1em"
+                                                        viewBox="64 64 896 896"
+                                                        width="1em"
+                                                      >
+                                                        <path
+                                                          d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                                        />
+                                                      </svg>
+                                                    </span>
+                                                  </span>
+                                                </div>
+                                                <div
+                                                  class="ant-input-number-input-wrap"
+                                                >
+                                                  <input
+                                                    aria-valuemax="65535"
+                                                    aria-valuemin="1"
+                                                    autocomplete="off"
+                                                    class="ant-input-number-input"
+                                                    id="Settings_authRadius.primary.port"
+                                                    role="spinbutton"
+                                                    step="1"
+                                                    value=""
+                                                  />
+                                                </div>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>

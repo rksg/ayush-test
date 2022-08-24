@@ -7,13 +7,13 @@ import { useIntl }     from 'react-intl'
 import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  CreateNetworkFormFields
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
 
 export function AaaSummaryForm (props: {
-  summaryData: CreateNetworkFormFields
+  summaryData: NetworkSaveData
 }) {
   const { $t } = useIntl()
   const { summaryData } = props
@@ -37,7 +37,7 @@ export function AaaSummaryForm (props: {
 
 function AaaServerFields ({ serverType, data }: {
   serverType: AaaServerTypeEnum,
-  data: CreateNetworkFormFields
+  data: NetworkSaveData
 }) {
   const { $t } = useIntl()
   const enableSecondaryServer = serverType === AaaServerTypeEnum.AUTHENTICATION ?
@@ -68,7 +68,7 @@ function AaaServerFields ({ serverType, data }: {
 }
 
 function AaaServerData ({ order, data, serverType }: {
-  data: CreateNetworkFormFields,
+  data: NetworkSaveData,
   serverType: AaaServerTypeEnum
   order: AaaServerOrderEnum
 }) {

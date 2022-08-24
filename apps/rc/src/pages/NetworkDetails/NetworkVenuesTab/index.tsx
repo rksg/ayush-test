@@ -15,17 +15,17 @@ import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useGetAllUserSettingsQuery,
-  useUpdateNetworkDeepMutation,
-  useVenueListQuery,
-  Venue
+  useUpdateNetworkMutation,
+  useVenueListQuery
 } from '@acx-ui/rc/services'
-import { UserSettings } from '@acx-ui/rc/utils'
 import {
   Constants,
   useTableQuery,
   getUserSettingsFromDict,
-  AnyNetwork,
-  NetworkVenue
+  NetworkSaveData,
+  NetworkVenue,
+  UserSettings,
+  Venue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -69,7 +69,7 @@ export function NetworkVenuesTab () {
   })
   const [tableData, setTableData] = useState(defaultArray)
   const params = useParams()
-  const [updateNetworkDeep] = useUpdateNetworkDeepMutation()
+  const [updateNetwork] = useUpdateNetworkMutation()
   const userSetting = useGetAllUserSettingsQuery({ params: { tenantId: params.tenantId } })
   const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
     Constants.triRadioUserSettingsKey)) === 'true'
@@ -150,8 +150,8 @@ export function NetworkVenuesTab () {
     }
   }
 
-  const handleEditNetwork = (network: AnyNetwork, clearSelection: () => void) => {
-    updateNetworkDeep({ params, payload: network }).then(clearSelection)
+  const handleEditNetwork = (network: NetworkSaveData, clearSelection: () => void) => {
+    updateNetwork({ params, payload: network }).then(clearSelection)
   }
 
   const activateSelected = (networkActivatedVenues: NetworkVenue[], activatingVenues: Venue[]) => {
@@ -217,7 +217,7 @@ export function NetworkVenuesTab () {
       onClick: (rows, clearSelection) => {
         const network = networkQuery.data
         const networkVenues = activateSelected(network?.venues || [], rows)
-        handleEditNetwork({ ...network, venues: networkVenues } as AnyNetwork, clearSelection)
+        handleEditNetwork({ ...network, venues: networkVenues }, clearSelection)
       }
     },
     {
@@ -225,7 +225,7 @@ export function NetworkVenuesTab () {
       onClick: (rows, clearSelection) => {
         const network = networkQuery.data
         const networkVenues = deActivateSelected(network?.venues || [], rows)
-        handleEditNetwork({ ...network, venues: networkVenues } as AnyNetwork, clearSelection)
+        handleEditNetwork({ ...network, venues: networkVenues }, clearSelection)
       }
     }
   ]
@@ -282,7 +282,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'aps',
       width: '80px',
       render: function (data, row) {
-        return row.activated.isActivated ? 'All APs' : ''
+        return row.activated.isActivated ? $t({ defaultMessage: 'All APs' }) : ''
       }
     },
     {

@@ -5,17 +5,23 @@ import {
   ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
-  WlanSecurityEnum,
-  NetworkVenue,
-  NetworkTypeEnum
-} from '@acx-ui/rc/utils'
+  WlanSecurityEnum
+} from '../constants'
+
+import {
+  NetworkVenue
+} from './network'
 
 export * from './ap'
+export * from './venue'
+export * from './network'
+export * from './user'
 
 export interface CommonResult {
   requestId: string
   response?:{}
 }
+
 export interface Network {
   id: string
   name: string
@@ -34,14 +40,6 @@ export interface Network {
   }
   vlanPool?: { name: string }
   // cog ??
-}
-
-export interface NetworkDetail {
-  type: NetworkTypeEnum
-  tenantId: string
-  name: string
-  venues: NetworkVenue[]
-  id: string
 }
 
 export interface Venue {

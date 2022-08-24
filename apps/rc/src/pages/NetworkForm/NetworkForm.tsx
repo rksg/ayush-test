@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
@@ -9,11 +9,11 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateNetworkMutation } from '@acx-ui/rc/services'
+import { useAddNetworkMutation, useGetNetworkQuery, useUpdateNetworkMutation } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
-  CreateNetworkFormFields,
-  AnyNetwork
+  NetworkSaveData,
+  AnyWlan
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -49,55 +49,41 @@ export function NetworkForm () {
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
+  const editMode = params.action === 'edit'
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
-  const [createNetwork] = useCreateNetworkMutation()
-  //DetailsState
-  const [state, updateState] = useState<CreateNetworkFormFields>({
+  const [addNetwork] = useAddNetworkMutation()
+  const [updateNetwork] = useUpdateNetworkMutation()
+
+  const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
+
+  const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
     type: NetworkTypeEnum.AAA,
     isCloudpathEnabled: false
   })
-  const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
 
-  const updateData = (newData: Partial<CreateNetworkFormFields>) => {
-    updateState({ ...state, ...newData })
+  const updateSaveData = (saveData: NetworkSaveData) => {
+    const newSavedata = { ...saveState, ...saveData }
+    newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan } as AnyWlan
+    updateSaveState({ ...saveState, ...newSavedata })
   }
 
-  const [saveState, updateSaveState] = useState<AnyNetwork>()
-
-  const updateSaveData = (saveData: AnyNetwork) => {
-    if( state.isCloudpathEnabled ){
-      delete saveState?.accountingRadius
-      delete saveState?.authRadius
-    }else{
-      delete saveState?.cloudpathServerId
-    }
-    const wlan = _.merge(saveState?.wlan, saveData.wlan)
-    saveData.wlan = wlan
-    const newSavedata = _.merge(saveState, saveData)
-    updateSaveState(newSavedata)
-  }
-
-  const handleNetworkDetail = async (data: CreateNetworkFormFields) => {
+  const handleNetworkDetail = async (data: NetworkSaveData) => {
     const detailsSaveData = transferDetailToSave(data)
-    updateData(data)
-    updateSaveData(detailsSaveData as AnyNetwork)
+    updateSaveData(detailsSaveData as NetworkSaveData)
     return true
   }
 
-  const handleSettings = async (data: CreateNetworkFormFields) => {
-    data = {
-      ...data,
-      ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
-    }
-    const settingSaveData = tranferSettingsToSave(data)
-    updateData(data)
-    updateSaveData(settingSaveData as AnyNetwork)
+  const handleSettings = async (data: NetworkSaveData) => {
+    data.type = saveState.type
+    const settingData = tranferSettingsToSave(data)
+    const settingSaveData = _.merge(settingData, saveState, data)
+    updateSaveData(settingSaveData as NetworkSaveData)
     return true
   }
 
-  const handlePortalWebPage = async (data: CreateNetworkFormFields) => {
+  const handlePortalWebPage = async (data: NetworkSaveData) => {
     const tmpGuestPageState = { 
       guestPortal: {
         ...saveState?.guestPortal,
@@ -106,19 +92,28 @@ export function NetworkForm () {
         }
       } 
     }
-    updateSaveData({ ...saveState, ...tmpGuestPageState } as AnyNetwork)
+    updateSaveData({ ...saveState, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
 
-  const handleVenues = async (data: CreateNetworkFormFields) => {
-    updateData(data)
-    updateSaveData(data as AnyNetwork)
+  const handleVenues = async (data: NetworkSaveData) => {
+    updateSaveData(data as NetworkSaveData)
     return true
   }
+
+  const { data } = useGetNetworkQuery({ params })
+
+  useEffect(() => {
+    if(data){
+      formRef?.current?.resetFields()
+      formRef?.current?.setFieldsValue(data)
+      updateSaveData(data)
+    }
+  }, [data])
 
   const handleAddNetwork = async () => {
     try {
-      await createNetwork({ params, payload: saveState }).unwrap()
+      await addNetwork({ params, payload: saveState }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -127,74 +122,88 @@ export function NetworkForm () {
       })
     }
   }
+
+  const handleEditNetwork = async () => {
+    try {
+      await updateNetwork({ params, payload: saveState }).unwrap()
+      navigate(linkToNetworks, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: 'An error occurred'
+      })
+    }
+  }
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Create New Network' })}
+        title={editMode ?
+          $t({ defaultMessage: 'Edit Network' }) : $t({ defaultMessage: 'Create New Network' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
-      <StepsForm<AnyNetwork>
-        formRef={formRef}
-        onCancel={() => navigate(linkToNetworks)}
-        onFinish={handleAddNetwork}
-      >
-        <StepsForm.StepForm
-          name='details'
-          title={$t({ defaultMessage: 'Network Details' })}
-          onFinish={handleNetworkDetail}
+      <NetworkFormContext.Provider value={{ setNetworkType, editMode, data }}>
+        <StepsForm<NetworkSaveData>
+          formRef={formRef}
+          editMode={editMode}
+          onCancel={() => navigate(linkToNetworks)}
+          onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
-          <NetworkFormContext.Provider value={{ setNetworkType }}>
+          <StepsForm.StepForm
+            name='details'
+            title={$t({ defaultMessage: 'Network Details' })}
+            onFinish={handleNetworkDetail}
+          >
             <NetworkDetailForm />
-          </NetworkFormContext.Provider>
-        </StepsForm.StepForm>
+          </StepsForm.StepForm>
 
-        <StepsForm.StepForm
-          name='Settings'
-          title={$t(settingTitle, { type: networkType })}
-          onFinish={handleSettings}
-        >
-          {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-          {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
-          {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
-          {state.type === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm />}
-        </StepsForm.StepForm>
+          <StepsForm.StepForm
+            name='Settings'
+            title={$t(settingTitle, { type: networkType })}
+            onFinish={handleSettings}
+          >
+            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
+            {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
+            {saveState.type === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm />}
+          </StepsForm.StepForm>
 
-        { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
-        <StepsForm.StepForm
-          name='onboarding'
-          title={$t({ defaultMessage: 'Onboarding' })}
-          onFinish={async () => {
-            return true
-          }}
-        >
-          <OnboardingForm formRef={formRef} />
-        </StepsForm.StepForm>
-        }
+          { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
+            <StepsForm.StepForm
+              name='onboarding'
+              title={$t({ defaultMessage: 'Onboarding' })}
+              onFinish={async () => {
+                return true
+              }}
+            >
+              <OnboardingForm />
+            </StepsForm.StepForm>
+          }
 
-        { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
-        <StepsForm.StepForm
-          name='portalweb'
-          title={$t({ defaultMessage: 'Portal Web Page' })}
-          onFinish={handlePortalWebPage}
-        >
-          <PortalWebForm />
-        </StepsForm.StepForm>
-        }
+          { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
+            <StepsForm.StepForm
+              name='portalweb'
+              title={$t({ defaultMessage: 'Portal Web Page' })}
+              onFinish={handlePortalWebPage}
+            >
+              <PortalWebForm />
+            </StepsForm.StepForm>
+          }         
 
-        <StepsForm.StepForm
-          name='venues'
-          title={$t({ defaultMessage: 'Venues' })}
-          onFinish={handleVenues}
-        >
-          <Venues formRef={formRef} />
-        </StepsForm.StepForm>
+          <StepsForm.StepForm
+            name='venues'
+            title={$t({ defaultMessage: 'Venues' })}
+            onFinish={handleVenues}
+          >
+            <Venues />
+          </StepsForm.StepForm>
 
-        <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
-          <SummaryForm summaryData={state} />
-        </StepsForm.StepForm>
-      </StepsForm>
+          <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
+            <SummaryForm summaryData={saveState} />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </NetworkFormContext.Provider>
     </>
   )
 }

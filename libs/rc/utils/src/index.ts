@@ -7,6 +7,7 @@ export * from './toast/toastService'
 export * from './useTableQuery'
 export * from './ipUtilsService'
 
+export * from './types'
 export * from './types/user'
 export * from './types/network'
 export * from './types/any-network'

@@ -52,6 +52,8 @@ module.exports = {
   '@input-border-color': 'var(--acx-neutrals-50)',
   '@input-hover-border-color': 'var(--acx-accents-orange-50)',
 
+  '@input-number-handler-border-color': 'var(--acx-neutrals-50)',
+
   '@label-color': 'var(--acx-neutrals-60)',
 
   '@layout-body-background': 'var(--acx-primary-black)',

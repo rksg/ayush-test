@@ -1,10 +1,10 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { CreateNetworkFormFields, transformNetworkEncryption, transformDpskNetwork, DpskNetworkType } from '@acx-ui/rc/utils'
+import { NetworkSaveData, transformNetworkEncryption, transformDpskNetwork, DpskNetworkType } from '@acx-ui/rc/utils'
 
 export function DpskSummaryForm (props: {
-  summaryData: CreateNetworkFormFields;
+  summaryData: NetworkSaveData;
 }) {
   const { summaryData } = props
   const intl = useIntl()

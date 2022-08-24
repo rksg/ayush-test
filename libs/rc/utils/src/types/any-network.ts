@@ -1,3 +1,4 @@
+import { NetworkVenue }                  from './network'
 import { AAANetwork }                    from './wifi/AAANetwork'
 import { AAAWlan }                       from './wifi/AAAWlan'
 import { DpskNetwork }                   from './wifi/DpskNetwork'
@@ -48,8 +49,7 @@ export class AnyNetwork implements
   
   name: string
   description?: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  venues?: any
+  venues?: NetworkVenue
   type: string
   tenandId?: string
   wlan: AnyWlan
