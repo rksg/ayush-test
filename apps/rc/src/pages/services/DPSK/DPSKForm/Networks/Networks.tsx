@@ -12,8 +12,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useNetworkListQuery, Network }        from '@acx-ui/rc/services'
-import { useTableQuery, CreateDPSKFormFields } from '@acx-ui/rc/utils'
+import { useNetworkListQuery }                          from '@acx-ui/rc/services'
+import { useTableQuery, CreateDPSKFormFields, Network } from '@acx-ui/rc/utils'
 
 const defaultPayload = {
   searchString: '',
