@@ -81,13 +81,16 @@ export const api = dataApi.injectEndpoints({
             $start: DateTime,
             $end: DateTime,
             $code: [String],
-            $includeMuted: Boolean
+            $includeMuted: Boolean,
+            $severity: [Range]
           ) {
             network(start: $start, end: $end) {
               hierarchyNode(path: $path) {
-                incidents: incidents(filter: {
-                  code: $code,
-                  includeMuted: $includeMuted
+                incidents: incidents(
+                  filter: {
+                    severity: $severity,
+                    code: $code,
+                    includeMuted: $includeMuted,
                 }) {
                   ${listQueryProps.incident}
                   relatedIncidents {
@@ -102,7 +105,9 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          code: payload.code || incidentCodes
+          code: payload.code ?? incidentCodes,
+          includeMuted: true,
+          severity: [{ gt: 0, lte: 1 }]
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {

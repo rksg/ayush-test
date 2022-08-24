@@ -165,7 +165,11 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
                 ? mutedKeysFilter(queryResults.data)
                 : undefined
             }}
-            pagination={{ pageSize: 10, position: ['bottomCenter'] }}
+            pagination={{ 
+              defaultPageSize: 10,
+              position: ['bottomCenter'],
+              pageSizeOptions: [5, 10, 20, 25, 50, 100]
+            }}
             rowKey='id'
             showSorterTooltip={false}
             columnEmptyText={noDataSymbol}
