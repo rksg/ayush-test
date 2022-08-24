@@ -6,8 +6,7 @@ import {
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
-  NetworkVenue,
-  NetworkTypeEnum
+  NetworkVenue
 } from '@acx-ui/rc/utils'
 
 export * from './ap'
@@ -16,6 +15,7 @@ export interface CommonResult {
   requestId: string
   response?:{}
 }
+
 export interface Network {
   id: string
   name: string
@@ -36,16 +36,9 @@ export interface Network {
   // cog ??
 }
 
-export interface NetworkDetail {
-  type: NetworkTypeEnum
-  tenantId: string
-  name: string
-  venues: NetworkVenue[]
-  id: string
-}
-
 export interface Venue {
   id: string
+  venueId: string
   name: string
   description: string
   status: string

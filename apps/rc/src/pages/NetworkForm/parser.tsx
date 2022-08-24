@@ -121,6 +121,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {}
 
   if (data.isCloudpathEnabled) {
+    delete data?.accountingRadius
+    delete data?.authRadius
     saveData = {
       ...saveData,
       ...{
@@ -130,6 +132,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
       }
     }
   } else {
+    delete data?.cloudpathServerId
     let authRadius = {}
     if (get(data, 'authRadius.primary.ip')) {
       authRadius = {
@@ -231,7 +234,6 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
       }
     }
   }
-
   saveData = {
     ...saveData,
     ...{
@@ -276,8 +278,7 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
 export function transferDetailToSave (data: CreateNetworkFormFields) {
   return {
     name: data.name,
-    description: data.description ?? '',
-    venues: data.venues ?? null,
+    description: data.description,
     type: data.type,
     wlan: {
       ssid: data.name
