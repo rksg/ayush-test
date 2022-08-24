@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useMemo, useEffect } from 'react'
+import React, { ReactNode, useContext, useEffect } from 'react'
 
 import { Buffer } from 'buffer'
 
@@ -67,10 +67,7 @@ export function AnalyticsFilterProvider (props: { children: ReactNode }) {
   useEffect(() => {
     if (!path.length) setNetworkPath(defaultNetworkPath)
   }, [path, setNetworkPath])
-  const providerValue = useMemo(
-    () => ({ path, setNetworkPath, getNetworkFilter }),
-    [path, setNetworkPath, getNetworkFilter]
-  )
+  const providerValue = { path, setNetworkPath, getNetworkFilter }
   return (
     <AnalyticsFilterContext.Provider
       {...props}

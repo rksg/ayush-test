@@ -16,8 +16,8 @@ export type ApOrSwitch = {
   mac: string,
   incidentSeverity: number
 }
-type ApsOrSwictes = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
-export type Child = NetworkData & ApsOrSwictes
+type ApsOrSwitches = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
+export type Child = NetworkData & ApsOrSwitches
 interface Response {
   network: {
     hierarchyNode: { children: Child[] }
