@@ -5,7 +5,7 @@ import { IntlShape, useIntl } from 'react-intl'
 
 import { Incident }                         from '@acx-ui/analytics/utils'
 import { Card, cssStr, DonutChart, Loader } from '@acx-ui/components'
-import { formatter }                        from '@acx-ui/utils'
+import { intlFormats }                      from '@acx-ui/utils'
 
 import { donutCharts, getDominanceByThreshold } from './config'
 import { DonutChartData, useDonutChartsQuery }  from './services'
@@ -63,7 +63,7 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
               title={intl.$t(config.title)}
               subTitle={transformSummary(chartData, incident, intl)}
               unit={config.unit}
-              dataFormatter={formatter('countFormat') as () => string}
+              dataFormatter={(v) => intl.$t(intlFormats.countFormat, { value: v as number })}
               data={transformData(chartData, intl)}
             />
           </Card>
