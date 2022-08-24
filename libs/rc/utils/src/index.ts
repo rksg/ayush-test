@@ -13,6 +13,7 @@ export * from './models/DpskWlanAdvancedCustomization'
 export * from './models/PskWlanAdvancedCustomization'
 
 export * from './types/user'
+export * from './types'
 
 export * from './pipes/networkPipes'
 export * from './pipes/apPipes'

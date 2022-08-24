@@ -11,8 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery, Venue } from '@acx-ui/rc/services'
-import { useTableQuery }            from '@acx-ui/rc/utils'
+import { useVenueListQuery }    from '@acx-ui/rc/services'
+import { useTableQuery, Venue } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
