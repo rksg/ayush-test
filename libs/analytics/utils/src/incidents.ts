@@ -1,7 +1,7 @@
 import { capitalize }                                           from 'lodash'
 import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
-import { formatters } from '@acx-ui/utils'
+import { intlFormats } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
 import { incidentInformation } from './incidentInformation'
@@ -176,9 +176,9 @@ export const impactValues = <Type extends 'ap' | 'client'> (
   }
 
   const ratio = count! / total!
-  const formattedRatio = $t(formatters.percentFormat, { value: ratio })
-  const formattedTotal = $t(formatters.countFormat, { value: total })
-  const formattedCount = $t(formatters.countFormat, { value: count })
+  const formattedRatio = $t(intlFormats.percentFormat, { value: ratio })
+  const formattedTotal = $t(intlFormats.countFormat, { value: total })
+  const formattedCount = $t(intlFormats.countFormat, { value: count })
   const formattedType = $t({
     defaultMessage: `{type, select,
       ap {{value, plural, one {AP} other {APs}}}

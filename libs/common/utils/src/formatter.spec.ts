@@ -3,7 +3,7 @@ import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { renderHook } from '@acx-ui/test-utils'
 
-import { formatter, formatters } from './formatter'
+import { formatter, intlFormats } from './formatter'
 
 function testFormat (
   format: string,
@@ -260,7 +260,7 @@ describe('formatter', () => {
 })
 
 type TestSet = [number, string]
-describe('formatters', () => {
+describe('intlFormats', () => {
   const testFormat = (
     format: MessageDescriptor,
     sets: TestSet[]
@@ -271,7 +271,7 @@ describe('formatters', () => {
     })
   })
   describe('countFormat', () => {
-    testFormat(formatters.countFormat, [
+    testFormat(intlFormats.countFormat, [
       [1,'1'],
       [12,'12'],
       [123,'123'],
@@ -291,7 +291,7 @@ describe('formatters', () => {
     ])
   })
   describe('percentFormat', () => {
-    testFormat(formatters.percentFormat, [
+    testFormat(intlFormats.percentFormat, [
       [0.12, '12%'],
       [0.123, '12.3%'],
       [0.1235, '12.35%'],

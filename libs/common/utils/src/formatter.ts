@@ -143,7 +143,7 @@ const countFormat: MessageDescriptor = defineMessage({
 const percentFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::percent .##}'
 })
-export const formatters = {
+export const intlFormats = {
   countFormat,
   percentFormat
 }
