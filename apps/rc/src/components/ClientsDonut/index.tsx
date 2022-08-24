@@ -4,7 +4,8 @@ import AutoSizer              from 'react-virtualized-auto-sizer'
 
 import { cssStr, Loader, Card , DonutChart }     from '@acx-ui/components'
 import type { DonutChartData }                   from '@acx-ui/components'
-import { useDashboardOverviewQuery, Dashboard }  from '@acx-ui/rc/services'
+import { useDashboardOverviewQuery }             from '@acx-ui/rc/services'
+import { Dashboard }                             from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 export const getAPClientChartData = (

@@ -1,11 +1,11 @@
-import { dataApiURL }       from '@acx-ui/analytics/services'
-import { AnalyticsFilter }  from '@acx-ui/analytics/utils'
-import { Provider }         from '@acx-ui/store'
-import { render, screen }   from '@acx-ui/test-utils'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange }        from '@acx-ui/utils'
+import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
+import { Provider }                         from '@acx-ui/store'
+import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { DateRange }                        from '@acx-ui/utils'
 
 import { topSwitchesByPoEUsageResponse } from './components/SwitchesByPoEUsage/services.spec'
+import { trafficByApplicationFixture }   from './components/TrafficByApplication/__tests__/fixtures'
 import AnalyticsWidgets                  from './Widgets'
 
 const sample = {
@@ -34,7 +34,7 @@ const networkHistorySample = {
   impactedClientCount: [6, 7, 8, 9, 10],
   connectedClientCount: [11, 12, 13, 14, 15]
 }
-const filters = {
+const filters: AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
@@ -108,4 +108,14 @@ test('should render Top 5 Switch Models widget', async () => {
       <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
     </Provider>)
   expect(await screen.findByText('Top 5 Switch Models')).not.toBe(null)
+})
+
+test('should render Traffic By Application Widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
+    data: { network: { hierarchyNode: trafficByApplicationFixture } }
+  })
+  render( <Provider> <AnalyticsWidgets
+    name='topApplicationsByTraffic'
+    filters={filters} /></Provider>)
+  await screen.findByText('Top 5 Applications by Traffic')
 })

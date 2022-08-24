@@ -7,7 +7,7 @@ import { useDashboardOverviewQuery }         from '@acx-ui/rc/services'
 import {
   Dashboard,
   ApVenueStatusEnum
-} from '@acx-ui/rc/services'
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { getAPStatusDisplayName } from '../Map/VenuesMap/helper'

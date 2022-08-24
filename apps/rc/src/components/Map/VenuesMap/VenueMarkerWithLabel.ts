@@ -1,6 +1,6 @@
 import { MarkerWithLabel, MarkerWithLabelOptions } from '@googlemaps/markerwithlabel'
 
-import { ApVenueStatusEnum, ChartData } from '@acx-ui/rc/services'
+import { ApVenueStatusEnum, ChartData } from '@acx-ui/rc/utils'
 
 export interface VenueMarkerOptions extends google.maps.MarkerOptions {
     name?: string;
