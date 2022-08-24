@@ -5,9 +5,8 @@ import { Provider, store }                                            from '@acx
 import { fireEvent, render, screen, mockAutoSizer, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                                                  from '@acx-ui/utils'
 
-import { trafficByApplicationFixture } from '../../__tests__/fixtures'
-
-import { api } from './services'
+import { trafficByApplicationFixture } from './__tests__/fixtures'
+import { api }                         from './services'
 
 import TrafficByApplicationWidget from './index'
 
