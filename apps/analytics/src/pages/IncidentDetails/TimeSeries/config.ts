@@ -1,4 +1,5 @@
 import { gql }                              from 'graphql-request'
+import moment                               from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { Incident } from '@acx-ui/analytics/utils'
@@ -14,7 +15,11 @@ export const codeToFailureTypeMap = {
 export interface FailureChart {
   key: string,
   title: MessageDescriptor,
-  query: (incident: Incident) => string
+  query: (incident: Incident) => string,
+  yAxisProps?: {
+    max: number,
+    min: number
+  }
 }
 
 export const failureCharts: Readonly<Record<string, FailureChart>> = {
@@ -27,7 +32,11 @@ export const failureCharts: Readonly<Record<string, FailureChart>> = {
         ${codeToFailureTypeMap[incident.code]}:
           apConnectionFailureRatio(metric: "${codeToFailureTypeMap[incident.code]}")
       }
-    `
+    `,
+    yAxisProps: {
+      max: 1,
+      min: 0
+    }
   },
   relatedIncidents: {
     key: 'relatedIncidents',

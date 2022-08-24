@@ -1,4 +1,8 @@
+import { useRef, useEffect } from 'react'
+
 import ReactECharts from 'echarts-for-react'
+import moment       from 'moment-timezone'
+
 
 import type { Incident, MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
 
@@ -15,9 +19,8 @@ import {
   timeSeriesTooltipFormatter
 } from '../Chart/helper'
 
-import type { EChartsOption, ECharts }     from 'echarts'
-import type { EChartsReactProps } from 'echarts-for-react'
-import { useRef, useEffect, useCallback } from 'react'
+import type { EChartsOption, ECharts } from 'echarts'
+import type { EChartsReactProps }      from 'echarts-for-react'
 
 interface MultiLineTimeSeriesChartProps
   <TChartData extends MultiLineTimeSeriesChartData>
@@ -28,7 +31,13 @@ interface MultiLineTimeSeriesChartProps
     lineColors?: string[],
     dataFormatter?: (value: unknown) => string | null,
     marker?: Partial<Incident>[],
-    areaColor?: string
+    areaColor?: string,
+    yAxisProps?: {
+      max: number,
+      min: number
+    },
+    start?: string,
+    end?: string
   }
 
 export function MultiLineTimeSeriesChart
@@ -39,16 +48,18 @@ export function MultiLineTimeSeriesChart
   dataFormatter,
   marker,
   areaColor,
+  yAxisProps,
+  start,
+  end,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
 
-  useCallback(() => {
-    console.log('test1')
-    if (!eChartsRef || !eChartsRef.current) return 
+  useEffect(() => {
+    if (!eChartsRef || !eChartsRef.current) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
-    echartInstance.on('click', (e) => {
-      console.log(e)
+    echartInstance.on('click', 'series.line', function (params) {
+      console.log(params.data) // data.id = incident id
     })
   }, [eChartsRef])
   
@@ -80,6 +91,7 @@ export function MultiLineTimeSeriesChart
     },
     yAxis: {
       ...yAxisOptions(),
+      ...yAxisProps,
       type: 'value',
       axisLabel: {
         ...axisLabelOptions(),
@@ -88,12 +100,24 @@ export function MultiLineTimeSeriesChart
         }
       }
     },
+    dataZoom: [
+      {
+        id: 'zoom',
+        type: 'inside',
+        orient: 'horizontal',
+        minValueSpan: 60 * 60 * moment.duration(moment(end).diff(moment(start))).asSeconds(),
+        moveOnMouseMove: false,
+        moveOnMouseWheel: false
+      }
+    ],
     series: data.map(datum => ({
       name: datum[legendProp] as unknown as string,
       data: datum.data,
       type: 'line',
       smooth: true,
       symbol: 'none',
+      z: 1,
+      zlevel: 1,
       lineStyle: { width: 1 },
       markArea: {
         itemStyle: {
@@ -103,7 +127,8 @@ export function MultiLineTimeSeriesChart
         data: marker?.map(mark => {
           return [
             {
-              xAxis: mark.startTime
+              xAxis: mark.startTime,
+              id: mark.id
             },
             {
               xAxis: mark.endTime

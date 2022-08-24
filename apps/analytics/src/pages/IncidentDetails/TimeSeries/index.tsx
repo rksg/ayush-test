@@ -48,6 +48,8 @@ export const TimeSeries : React.FC<ChartDataProps> = ({ charts, incident }) => {
   const excludedIncident = ['relatedIncidents']
   const filteredCharts = charts.filter(chart => !excludedIncident.includes(chart))
   const queryResults = useChartsQuery({ charts, incident })
+  const startTime = queryResults.originalArgs?.incident.startTime
+  const endTime = queryResults.originalArgs?.incident.endTime
 
   return (
     <Loader states={[queryResults]}>
@@ -75,6 +77,9 @@ export const TimeSeries : React.FC<ChartDataProps> = ({ charts, incident }) => {
                     marker={combinedResults.marker}
                     dataFormatter={formatter('percentFormat')}
                     areaColor={'green'}
+                    yAxisProps={failureCharts[chart].yAxisProps}
+                    start={startTime}
+                    end={endTime}
                   />
                 )}
               </AutoSizer>
@@ -93,6 +98,8 @@ export const TimeSeries : React.FC<ChartDataProps> = ({ charts, incident }) => {
                   data={queryChart}
                   lineColors={lineColors}
                   dataFormatter={formatter('countFormat')}
+                  start={startTime}
+                  end={endTime}
                 />
               )}
             </AutoSizer>
