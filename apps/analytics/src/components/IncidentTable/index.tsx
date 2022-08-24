@@ -128,8 +128,6 @@ const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   }
 ]
 
-export type IncidentTableProps = TableProps<IncidentNodeData>
-
 const actions: TableProps<Incident>['actions'] = [
   {
     label: 'Mute',
