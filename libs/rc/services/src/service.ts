@@ -7,7 +7,7 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 
-import { CommonResult, Service } from './types'
+import { Service, CommonResult } from './types'
 import {
   CloudpathServer,
   L2AclPolicy,
