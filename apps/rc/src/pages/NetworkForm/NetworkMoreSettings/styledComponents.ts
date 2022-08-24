@@ -51,3 +51,18 @@ export const LabelOfInput = styled.span`
     position: relative;
     left: 80px;
 `
+
+export const RateLimitBlock = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 5px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      width: 50px;
+    }
+`
