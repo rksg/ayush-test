@@ -4,8 +4,8 @@ import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { trafficByApplicationFixture, trafficBySSIDFixture } from './__tests__/fixtures'
 import { topSwitchesByPoEUsageResponse }                     from './components/SwitchesByPoEUsage/services.spec'
+import { trafficByApplicationFixture, trafficBySSIDFixture } from './components/TrafficByApplication/__tests__/fixtures'
 import AnalyticsWidgets                                      from './Widgets'
 
 const sample = {
