@@ -239,7 +239,7 @@ describe('IncidentTable: services', () => {
         currentSlaThreshold: null
       }
     ],
-    duration: -180000,
+    duration: 180000,
     category: noDataSymbol,
     description: noDataSymbol,
     scope: noDataSymbol,

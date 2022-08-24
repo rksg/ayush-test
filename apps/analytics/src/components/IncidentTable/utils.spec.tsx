@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
 import { incidentCodes, noDataSymbol, incidentInformation, Incident } from '@acx-ui/analytics/utils'
@@ -18,11 +19,15 @@ import {
   GetScope,
   dateSort,
   defaultSort,
-  durationSort,
   ShortIncidentDescription
 } from './utils'
 
 describe('IncidentTable: utils', () => {
+
+  beforeEach(() => {
+    moment.tz.setDefault('Asia/Singapore')
+    Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+  })
 
   afterEach(() => cleanup())
 
@@ -147,8 +152,8 @@ describe('IncidentTable: utils', () => {
   describe('formatDate', () => {
     it('should show correct date', async () => {
       render(<FormatDate datetimestamp='2022-08-15T00:00:00+08:00'/>)
-      await screen.findByText('Aug 14 2022 16:00')
-      expect(screen.getByText('Aug 14 2022 16:00').textContent).toMatch('Aug 14 2022 16:00')
+      await screen.findByText('Aug 15 2022 00:00')
+      expect(screen.getByText('Aug 15 2022 00:00').textContent).toMatch('Aug 15 2022 00:00')
     })
 
     it('should show null for null date', async () => {
@@ -204,14 +209,14 @@ describe('IncidentTable: utils', () => {
     const a = 1
     const b = 2
 
-    it('should return positive on a < b', () => {
+    it('should return negative on a < b', () => {
       const reverseSmaller = severitySort(a, b)
-      expect(reverseSmaller).toBe(1)
+      expect(reverseSmaller).toBe(-1)
     })
 
-    it('should return negative a > b', () => {
+    it('should return positive a > b', () => {
       const reverseGreater = severitySort(b, a)
-      expect(reverseGreater).toBe(-1)
+      expect(reverseGreater).toBe(1)
     })
 
     it('should return 0 with noDataSymbol on a', () => {
@@ -330,12 +335,12 @@ describe('IncidentTable: utils', () => {
 
     it('should sort smaller date time', () => {
       const smaller = dateSort(startTime, endTime)
-      expect(smaller).toBe(-1)
+      expect(smaller).toBe(1)
     })
 
     it('should sort greater date time', () => {
       const greater = dateSort(endTime, startTime)
-      expect(greater).toBe(1)
+      expect(greater).toBe(-1)
     })
 
     it('should sort 0 date time', () => {
@@ -378,28 +383,6 @@ describe('IncidentTable: utils', () => {
 
     it('should sort 0 string', () => {
       const zero = defaultSort(textA, textA)
-      expect(zero).toBe(0)
-    })
-  })
-
-  describe('durationSort', () => {
-    const startTimeLong = '2021-07-15T00:00:00+08:00'
-    const endTimeLong = '2022-08-16T00:00:00+08:00'
-    const startTimeShort = '2022-08-15T00:00:00+08:00'
-    const endTimeShort = '2022-08-16T00:00:00+08:00'
-
-    it('should sort smaller duration', () => {
-      const smaller = durationSort(startTimeShort, endTimeShort, startTimeLong, endTimeLong)
-      expect(smaller).toBe(-1)
-    })
-
-    it('should sort greater duration', () => {
-      const greater = durationSort(startTimeLong, endTimeLong, startTimeShort, endTimeShort)
-      expect(greater).toBe(1)
-    })
-
-    it('should sort 0 duration', () => {
-      const zero = durationSort(startTimeLong, endTimeLong, startTimeLong, endTimeLong)
       expect(zero).toBe(0)
     })
   })

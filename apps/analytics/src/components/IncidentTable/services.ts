@@ -38,9 +38,9 @@ export type AdditionalIncidentTableFields = {
   type: string,
 }
 
-export type IncidentTableRows = Incident & AdditionalIncidentTableFields
+export type IncidentTableRow = Incident & AdditionalIncidentTableFields
 
-export const transformData = (incident: Incident): IncidentTableRows => {
+export const transformData = (incident: Incident): IncidentTableRow => {
   const validRelatedIncidents =
     typeof incident.relatedIncidents !== 'undefined' && incident.relatedIncidents.length > 0
   const children = validRelatedIncidents ? incident.relatedIncidents : undefined
@@ -61,7 +61,7 @@ export const transformData = (incident: Incident): IncidentTableRows => {
   }
 }
 
-export type IncidentNodeData = IncidentTableRows[]
+export type IncidentNodeData = IncidentTableRow[]
 
 export interface Response<IncidentNodeData> {
   network: {

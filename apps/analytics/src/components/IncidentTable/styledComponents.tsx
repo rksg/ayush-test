@@ -6,7 +6,7 @@ import {
 } from '@acx-ui/analytics/utils'
 import { cssStr, Table as AcxTable, TableProps } from '@acx-ui/components'
 
-import { IncidentTableRows } from './services'
+import { IncidentTableRow } from './services'
 
 
 export const withEllipsis = `
@@ -45,10 +45,16 @@ export const DateSpan = styled.span`
   font-weight: var(--acx-body-font-weight-bold);
 `
 
-export const Table = styled((props: TableProps<IncidentTableRows>) => (
+export const Table = styled((props: TableProps<IncidentTableRow>) => (
   <AcxTable {...props} />
 ))`
   .ant {
+    &-table-row-expand-icon, &-table-row-expand-icon-collapsed {
+      color: var(--acx-accents-blue-50);
+      border-color: var(--acx-accents-blue-50);
+    }
+
+
     &-pagination {
       &-jump {
         &-next {
@@ -92,7 +98,8 @@ export const Table = styled((props: TableProps<IncidentTableRows>) => (
         &-active {
           border-color: var(--acx-accents-blue-50);
           a {
-            color: var(--acx-accents-blue-50);
+            color: var(--acx-primary-white);
+            background-color: var(--acx-accents-blue-50);
           }
         }
       }
@@ -104,5 +111,10 @@ export const Table = styled((props: TableProps<IncidentTableRows>) => (
   }
   .ant-pagination-disabled:hover .ant-pagination-item-link {
     color: var(--acx-neutrals-40);
+  }
+  
+  .ant-pagination-jump-prev:hover .ant-pagination-item-link-icon, 
+  .ant-pagination-jump-next:hover .ant-pagination-item-link-icon  {
+    color: var(--acx-accents-blue-50);
   }
 `

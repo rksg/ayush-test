@@ -36,9 +36,9 @@ export type FormatDateProps = {
 
 export const FormatDate = (props: FormatDateProps) => {
   const { datetimestamp } = props
-  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp, 'UTC')
+  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp)
   if (formattedDatetime === null) return <span>{noDataSymbol}</span>
-  const timeStamp = (formattedDatetime as string).replace('UTC', '')
+  const timeStamp = formattedDatetime as string
   return <UI.DateSpan>{timeStamp}</UI.DateSpan>
 }
 
@@ -96,7 +96,7 @@ export const ClientImpact = (props: IncidentTableComponentProps & {
   return <span>{values['clientImpactCountFormatted'] as string}</span>
 }
 
-export const durationValue = (dateA: string, dateB: string) => moment(dateA).diff(moment(dateB))
+export const durationValue = (start: string, end: string) => moment(end).diff(moment(start))
 
 export const dateSort = (dateA: string, dateB: string) => 
   Math.sign(durationValue(dateA, dateB))
@@ -105,12 +105,6 @@ export const defaultSort = (a: string | number, b: string | number) => {
   if (a < b) return -1
   if (a > b) return 1
   return 0
-}
-
-export const durationSort = (startA: string, endA: string, startB: string, endB: string) => {
-  const diffA = moment(endA).diff(startA)
-  const diffB = moment(endB).diff(startB)
-  return defaultSort(diffA, diffB)
 }
 
 export const clientImpactSort = (a?: unknown, b?: unknown) => {
@@ -128,7 +122,7 @@ export const severitySort = (a?: unknown, b?: unknown) => {
   const isDefined = typeof a !== 'undefined' && typeof b !== 'undefined'
   const c = a as number
   const d = b as number
-  if (isDefined && c > d) return -1
-  if (isDefined && c < d) return 1
+  if (isDefined && c > d) return 1
+  if (isDefined && c < d) return -1
   return 0
 }
