@@ -1,19 +1,17 @@
 import React from 'react'
 
 import { Form, Input } from 'antd'
-import { get }         from 'lodash'
 import { useIntl }     from 'react-intl'
 
 import { 
   AaaServerTypeEnum,
-  AaaServerOrderEnum,
   NetworkSaveData,
   WlanSecurityEnum,
   PskWlanSecurityEnum,
   macAuthMacFormatOptions
 } from '@acx-ui/rc/utils'
 
-import * as contents from '../contentsMap'
+import { AaaServer } from './AaaServer'
 
 export function PskSummaryForm (props: {
   summaryData: NetworkSaveData;
@@ -74,7 +72,8 @@ export function PskSummaryForm (props: {
       }
       <Form.Item
         label={$t({ defaultMessage: 'Use MAC Auth:' })}
-        children={summaryData.wlan?.macAddressAuthentication? 'Enabled' : 'Disabled'} />
+        children={summaryData.wlan?.macAddressAuthentication?
+          $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })} />
       {summaryData.wlan?.macAddressAuthentication &&
         <React.Fragment>
           <Form.Item
@@ -86,78 +85,15 @@ export function PskSummaryForm (props: {
             }/>
             
           {$t({ defaultMessage: 'Authentication Service' })}
-          {getAaaServer(
-            AaaServerTypeEnum.AUTHENTICATION,
-            summaryData
-          )}
-
+          <AaaServer serverType={AaaServerTypeEnum.AUTHENTICATION} summaryData={summaryData} />
           {summaryData.enableAccountingService && 
             <>{$t({ defaultMessage: 'Accounting Service' })}
-              {getAaaServer(
-                AaaServerTypeEnum.ACCOUNTING,
-                summaryData
-              )}
+              <AaaServer serverType={AaaServerTypeEnum.ACCOUNTING} summaryData={summaryData} />
             </>
           }
         </React.Fragment>
       }
     </>
 
-  )
-}
-
-function getAaaServer (
-  serverType: AaaServerTypeEnum,
-  summaryData: NetworkSaveData
-) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { $t } = useIntl()
-  const primaryTitle = $t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])
-  const secondaryTitle = $t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])
-
-  const enableSecondaryServer = serverType === AaaServerTypeEnum.AUTHENTICATION ? 
-    summaryData.enableSecondaryAuthServer : 
-    summaryData.enableSecondaryAcctServer 
-
-  return (    
-    <React.Fragment>
-      {getAaaServerData(
-        primaryTitle,
-        `${get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.ip`)}`+
-        `:${get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.port`)}`,
-        get(summaryData, `${serverType}.${AaaServerOrderEnum.PRIMARY}.sharedSecret`)
-      )}
-      {
-        enableSecondaryServer && 
-        getAaaServerData(
-          secondaryTitle,
-          `${get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.ip`)}`+
-          `:${get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.port`)}`,
-          get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.sharedSecret`)
-        )
-      }
-    </React.Fragment>
-  )
-}
-
-function getAaaServerData (
-  title: string,
-  ipPort: string,
-  sharedSecret: string
-) {
-  return (    
-    <React.Fragment>
-      <Form.Item
-        label={`${title}:`}
-        children={ipPort} />
-      <Form.Item
-        label='Shared Secret:'
-        children={<Input.Password
-          readOnly
-          bordered={false}
-          value={sharedSecret}
-        />}
-      />
-    </React.Fragment>
   )
 }

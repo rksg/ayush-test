@@ -136,7 +136,7 @@ function SettingsForm () {
         ].indexOf(wlanSecurity) > -1 &&
           <Space align='start'>
             <ExclamationCircleFilled />
-            {WifiNetworkMessages.WPA2_DESCRIPTION_WARNING}
+            {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
           </Space>
         }
       </>
