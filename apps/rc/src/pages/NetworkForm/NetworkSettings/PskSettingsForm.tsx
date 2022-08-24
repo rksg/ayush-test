@@ -49,20 +49,11 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function PskSettingsForm () {
-  const { $t } = useIntl()
   const [
-    isCloudpathEnabled,
     selectedId,
-    enableAuthProxy,
-    enableAccountingService,
-    enableAccountingProxy,
     macAddressAuthentication
   ] = [
-    useWatch('isCloudpathEnabled'),
     useWatch('cloudpathServerId'),
-    useWatch('enableAuthProxy'),
-    useWatch('enableAccountingService'),
-    useWatch('enableAccountingProxy'),
     useWatch('macAddressAuthentication')
   ]
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
@@ -72,9 +63,6 @@ export function PskSettingsForm () {
       }
     }
   })
-  const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
-  const showButtons = enableAuthProxy !== !!enableAccountingProxy
-                    && enableAccountingService && !isCloudpathEnabled
 
   return (
     <Row gutter={20}>
@@ -87,39 +75,52 @@ export function PskSettingsForm () {
           cloudpathType={selected?.deploymentType}
           enableMACAuth={macAddressAuthentication}
         />
-        {showButtons && <AaaButtons />}
+        <AaaButtons />
       </Col>
     </Row>
   )
+}
 
-  function AaaButtons () {
-    return (
-      <Space align='center' style={{ display: 'flex', justifyContent: 'center' }}>
-        <Button type='link' disabled={enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(true)}>
-          {$t({ defaultMessage: 'Authentication Service' })}
-        </Button>
-        <Button type='link' disabled={!enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(false)}>
-          {$t({ defaultMessage: 'Accounting Service' })}
-        </Button>
-      </Space>
-    )
-  }
+function AaaButtons () {
+  const { $t } = useIntl()
+  const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
+  const [
+    isCloudpathEnabled,
+    enableAuthProxy,
+    enableAccountingService,
+    enableAccountingProxy
+  ] = [
+    useWatch('isCloudpathEnabled'),
+    useWatch('enableAuthProxy'),
+    useWatch('enableAccountingService'),
+    useWatch('enableAccountingProxy')
+  ]
+  const show = enableAuthProxy !== Boolean(enableAccountingProxy) &&
+    enableAccountingService &&
+    !isCloudpathEnabled
+
+  if (!show) return null
+
+  return (
+    <Space align='center' style={{ display: 'flex', justifyContent: 'center' }}>
+      <Button type='link' disabled={enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(true)}>
+        {$t({ defaultMessage: 'Authentication Service' })}
+      </Button>
+      <Button type='link' disabled={!enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(false)}>
+        {$t({ defaultMessage: 'Accounting Service' })}
+      </Button>
+    </Space>
+  )
 }
 
 function SettingsForm () {
-  const { $t } = useIntl()
+  const intl = useIntl()
   const form = Form.useFormInstance()
   const [
     wlanSecurity,
-    enableSecondaryAuthServer,
-    enableAccountingService,
-    enableSecondaryAcctServer,
     macAddressAuthentication
   ] = [
     useWatch(['wlan', 'wlanSecurity']),
-    useWatch<boolean>(['enableSecondaryAuthServer']),
-    useWatch<boolean>(['enableAccountingService']),
-    useWatch<boolean>(['enableSecondaryAcctServer']),
     useWatch<boolean>(['wlan', 'macAddressAuthentication'])
   ]
 
@@ -141,7 +142,7 @@ function SettingsForm () {
       </>
     )
   }
-  
+
   const securityOptions = Object.keys(PskWlanSecurityEnum).map((key =>
     <Option key={key}>{ PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum] }</Option>
   ))
@@ -165,22 +166,22 @@ function SettingsForm () {
   const securityOnChange = (value: string) => {
     switch(value){
       case WlanSecurityEnum.WPA2Personal:
-        form.setFieldsValue({ 
-          wlan: { 
+        form.setFieldsValue({
+          wlan: {
             managementFrameProtection: ManagementFrameProtectionEnum.Disabled
           }
         })
         break
       case WlanSecurityEnum.WPA3:
         form.setFieldsValue({
-          wlan: { 
+          wlan: {
             managementFrameProtection: ManagementFrameProtectionEnum.Required
           }
         })
         break
       case WlanSecurityEnum.WPA23Mixed:
         form.setFieldsValue({
-          wlan: { 
+          wlan: {
             managementFrameProtection: ManagementFrameProtectionEnum.Optional
           }
         })
@@ -190,7 +191,7 @@ function SettingsForm () {
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-      <StepsForm.Title>Settings</StepsForm.Title>
+      <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
       <div>
         {wlanSecurity !== WlanSecurityEnum.WEP && wlanSecurity !== WlanSecurityEnum.WPA3 &&
           <Form.Item
@@ -199,17 +200,15 @@ function SettingsForm () {
               ??SecurityOptionsPassphraseLabel.WPA2Personal}
             rules={[{
               required: true,
-              whitespace: false,
               min: 8
             },{
               validator: (_, value) => trailingNorLeadingSpaces(value)
             }]}
-            extra={$t({ defaultMessage: '8 characters minimum' })}
+            extra={intl.$t({ defaultMessage: '8 characters minimum' })}
             children={<Input.Password />}
           />
         }
-        {wlanSecurity === 'WEP' &&
-        <React.Fragment>
+        {wlanSecurity === 'WEP' && <>
           <Form.Item
             name={['wlan', 'wepHexKey']}
             label={SecurityOptionsPassphraseLabel[PskWlanSecurityEnum.WEP]}
@@ -219,35 +218,32 @@ function SettingsForm () {
             },{
               validator: (_, value) => hexRegExp(value)
             }]}
-            extra={$t({ defaultMessage: 'Must be 26 hex characters' })}
+            extra={intl.$t({ defaultMessage: 'Must be 26 hex characters' })}
             children={<Input.Password />}
           />
           <div style={{ position: 'absolute', top: '105px', right: '15px' }}>
-            <Button type='link' onClick={generateHexKey}>Generate</Button>
+            <Button type='link' onClick={generateHexKey}>
+              {intl.$t({ defaultMessage: 'Generate' })}
+            </Button>
           </div>
-        </React.Fragment>
-        }
-        {(wlanSecurity===WlanSecurityEnum.WPA23Mixed ||
-          wlanSecurity===WlanSecurityEnum.WPA3) &&
+        </>}
+        {[WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(wlanSecurity) &&
           <Form.Item
             name={['wlan', 'saePassphrase']}
-            label={wlanSecurity===WlanSecurityEnum.WPA3?
-              $t({ defaultMessage: 'SAE Passphrase' }):
-              $t({ defaultMessage: 'WPA3 SAE Passphrase' })
+            label={wlanSecurity === WlanSecurityEnum.WPA3
+              ? intl.$t({ defaultMessage: 'SAE Passphrase' })
+              : intl.$t({ defaultMessage: 'WPA3 SAE Passphrase' })
             }
-            rules={[{
-              required: true,
-              whitespace: false,
-              min: 8
-            },{
-              validator: (_, value) => trailingNorLeadingSpaces(value)
-            }]}
-            extra={$t({ defaultMessage: '8 characters minimum' })}
+            rules={[
+              { required: true, min: 8 },
+              { validator: (_, value) => trailingNorLeadingSpaces(value) }
+            ]}
+            extra={intl.$t({ defaultMessage: '8 characters minimum' })}
             children={<Input.Password />}
           />
         }
         <Form.Item
-          label={$t({ defaultMessage: 'Security Protocol' })}
+          label={intl.$t({ defaultMessage: 'Security Protocol' })}
           name={['wlan', 'wlanSecurity']}
           initialValue={WlanSecurityEnum.WPA2Personal}
           extra={securityDescription()}
@@ -256,19 +252,17 @@ function SettingsForm () {
             {securityOptions}
           </Select>
         </Form.Item>
-        { [WlanSecurityEnum.WPA2Personal, WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed]
-          .indexOf(wlanSecurity) > -1 &&
+        {[WlanSecurityEnum.WPA2Personal, WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed]
+          .includes(wlanSecurity) &&
           <Form.Item
-            label={$t({ defaultMessage: 'Management Frame Protection (802.11w)' })}
+            label={intl.$t({ defaultMessage: 'Management Frame Protection (802.11w)' })}
             name={['wlan', 'managementFrameProtection']}
             initialValue={ManagementFrameProtectionEnum.Disabled}
           >
-            <Select 
-              disabled={
-                wlanSecurity === WlanSecurityEnum.WPA3 ||
-                wlanSecurity === WlanSecurityEnum.WPA23Mixed
-              }
-            >
+            <Select disabled={[
+              WlanSecurityEnum.WPA3,
+              WlanSecurityEnum.WPA23Mixed
+            ].includes(wlanSecurity)}>
               {frameOptions}
             </Select>
           </Form.Item>
@@ -280,84 +274,91 @@ function SettingsForm () {
             <Form.Item noStyle name={['wlan', 'macAddressAuthentication']} valuePropName='checked'>
               <Switch />
             </Form.Item>
-            <span>{$t({ defaultMessage: 'Use MAC Auth' })}</span>
+            <span>{intl.$t({ defaultMessage: 'Use MAC Auth' })}</span>
             <Tooltip title={WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP} placement='bottom'>
               <QuestionCircleOutlined />
             </Tooltip>
           </Form.Item>
         </Form.Item>
-        {macAddressAuthentication &&
-          <React.Fragment>
-            <Form.Item
-              label={$t({ defaultMessage: 'MAC Address Format' })}
-              name={['wlan', 'macAuthMacFormat']}
-              initialValue={MacAuthMacFormatEnum.UpperDash}
-            >
-              <Select>
-                {macAuthOptions}
-              </Select>
-            </Form.Item>
-            <MACAuthService />
-          </React.Fragment>
-        }
+        {macAddressAuthentication && <>
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'MAC Address Format' })}
+            name={['wlan', 'macAuthMacFormat']}
+            initialValue={MacAuthMacFormatEnum.UpperDash}
+          >
+            <Select>
+              {macAuthOptions}
+            </Select>
+          </Form.Item>
+          <MACAuthService />
+        </>}
       </div>
     </Space>
   )
+}
 
-  function MACAuthService () {
-    return (
-      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-        <div>
-          <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
+
+function MACAuthService () {
+  const intl = useIntl()
+  const [
+    enableSecondaryAuthServer,
+    enableAccountingService,
+    enableSecondaryAcctServer
+  ] = [
+    useWatch<boolean>(['enableSecondaryAuthServer']),
+    useWatch<boolean>(['enableAccountingService']),
+    useWatch<boolean>(['enableSecondaryAcctServer'])
+  ]
+  return (
+    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+      <div>
+        <Subtitle level={3}>{intl.$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
+        <IpPortSecretForm
+          serverType={AaaServerTypeEnum.AUTHENTICATION}
+          order={AaaServerOrderEnum.PRIMARY}
+        />
+
+        <Form.Item noStyle name='enableSecondaryAuthServer'>
+          <ToggleButton
+            enableText={intl.$t({ defaultMessage: 'Remove Secondary Server' })}
+            disableText={intl.$t({ defaultMessage: 'Add Secondary Server' })}
+          />
+        </Form.Item>
+
+        {enableSecondaryAuthServer &&
           <IpPortSecretForm
             serverType={AaaServerTypeEnum.AUTHENTICATION}
+            order={AaaServerOrderEnum.SECONDARY}
+          />
+        }
+      </div>
+      <div>
+        <Subtitle level={3}>{intl.$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
+        <Form.Item name='enableAccountingService' valuePropName='checked'>
+          <Switch />
+        </Form.Item>
+
+        {enableAccountingService && (<>
+          <IpPortSecretForm
+            serverType={AaaServerTypeEnum.ACCOUNTING}
             order={AaaServerOrderEnum.PRIMARY}
           />
 
-          <Form.Item noStyle name='enableSecondaryAuthServer'>
+          <Form.Item noStyle name='enableSecondaryAcctServer'>
             <ToggleButton
-              enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
-              disableText={$t({ defaultMessage: 'Add Secondary Server' })}
+              enableText={intl.$t({ defaultMessage: 'Remove Secondary Server' })}
+              disableText={intl.$t({ defaultMessage: 'Add Secondary Server' })}
             />
           </Form.Item>
 
-          {enableSecondaryAuthServer && 
+          {enableSecondaryAcctServer &&
             <IpPortSecretForm
-              serverType={AaaServerTypeEnum.AUTHENTICATION}
+              serverType={AaaServerTypeEnum.ACCOUNTING}
               order={AaaServerOrderEnum.SECONDARY}
             />
           }
-        </div>
-        <div>
-          <Subtitle level={3}>{$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
-          <Form.Item name='enableAccountingService' valuePropName='checked'>
-            <Switch />
-          </Form.Item>
-
-          {enableAccountingService && (
-            <>
-              <IpPortSecretForm
-                serverType={AaaServerTypeEnum.ACCOUNTING}
-                order={AaaServerOrderEnum.PRIMARY}
-              />
-
-              <Form.Item noStyle name='enableSecondaryAcctServer'>
-                <ToggleButton
-                  enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
-                  disableText={$t({ defaultMessage: 'Add Secondary Server' })}
-                />
-              </Form.Item>
-
-              {enableSecondaryAcctServer &&
-                <IpPortSecretForm
-                  serverType={AaaServerTypeEnum.ACCOUNTING}
-                  order={AaaServerOrderEnum.SECONDARY}
-                />
-              }
-            </>
-          )}
-        </div>
-      </Space>
-    )
-  }
+        </>)}
+      </div>
+    </Space>
+  )
 }
