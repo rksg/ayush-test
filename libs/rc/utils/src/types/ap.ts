@@ -33,3 +33,7 @@ export interface ApExtraParams {
   channel60: boolean
 }
 
+export interface ApStatusDetails {
+  name: string,
+  serialNumber: string
+}

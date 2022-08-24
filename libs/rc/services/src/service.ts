@@ -4,10 +4,11 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   RequestPayload,
-  TableResult
+  TableResult,
+  CommonResult,
+  Service,
+  DPSK
 } from '@acx-ui/rc/utils'
-
-import { CommonResult, DPSK, Service } from './types'
 
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),

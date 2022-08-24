@@ -2,12 +2,13 @@ import React from 'react'
 
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
-import App             from './App'
-import AnalyticsBase   from './App/Analytics'
-import Dashboard       from './App/Dashboard'
-import NetworksBase    from './App/Networks'
-import ServicesBase    from './App/Services'
-import { VenuesTable } from './App/Venues/VenuesTable'
+import App              from './App'
+import AnalyticsBase    from './App/Analytics'
+import Dashboard        from './App/Dashboard'
+import NetworksBase     from './App/Networks'
+import ServicesBase     from './App/Services'
+import { VenueDetails } from './App/Venues/VenueDetails'
+import { VenuesTable }  from './App/Venues/VenuesTable'
 
 const RcRoutes = React.lazy(() => import('rc/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
@@ -26,7 +27,10 @@ function AllRoutes () {
       <Route path='services/*' element={<ServicesBase />}>
         <Route path='*' element={<RcRoutes />} />
       </Route>
-      <Route path='venues' element={<VenuesTable />} />
+      <Route path='venues'>
+        <Route index element={<VenuesTable />} />
+        <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
+      </Route>
     </Route>
   )
 }
