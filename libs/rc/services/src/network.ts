@@ -9,10 +9,13 @@ import {
   refetchByUsecase,
   RequestPayload,
   showActivityMessage,
-  TableResult
+  TableResult,
+  Dashboard,
+  Network,
+  Venue,
+  NetworkDetailHeader,
+  CommonResult
 } from '@acx-ui/rc/utils'
-
-import { Network, Venue, NetworkDetailHeader, CommonResult, Dashboard } from './types'
 
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),

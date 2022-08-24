@@ -1,46 +1,51 @@
-export interface VenueSaveData {
-  name?: string;
-  description?: string;
-  notes?: string;
-  address?: Address;
-  latitude?: number;
-  longitude?: number;
-  networkCount?: number;
-  apCount?: number;
-  clientCount?: number;
-  activeNetworksToolTip?: string;
-  //activatedNetworks?: Array<any>;
-  disabledActivation?: boolean;
-  allApDisabled?: boolean;
-  dataFulfilled?: boolean;
-  disabledBySSIDActivated?: boolean;
-  disableByMaxReached?: boolean;
-  mesh?: MeshOptions;
-  dhcp?: DhcpOptions;
-  id?: string;
-}
-  
-export interface Address {
-  addressLine?: string;
-  city?: string;
-  country?: string;
-  latitude?: number;
-  longitude?: number;
-  notes?: string;
-  timezone?: string;
-}
+import { ApStatusDetails } from './ap'
 
-interface MeshOptions {
-  enabled: boolean;
-}
+import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
 
-interface DhcpOptions {
-  enabled: boolean;
-  mode: DhcpModeEnum;
-}
-
-enum DhcpModeEnum {
-  DHCPMODE_EACH_AP = 'DHCPMODE_EACH_AP',
-  DHCPMODE_MULTIPLE_AP = 'DHCPMODE_MULTIPLE_AP',
-  DHCPMODE_HIERARCHICAL_AP = 'DHCPMODE_HIERARCHICAL_AP'
+export interface VenueDetailHeader {
+	activeLteNetworkCount: number,
+	activeNetworkCount: number,
+	aps: {
+		summary: {
+			[key in ApVenueStatusEnum]?: number
+    },
+		totalApCount: number,
+		detail: {
+			[key in ApVenueStatusEnum]?: ApStatusDetails[]
+    }
+	},
+	lteAps: {
+		summary: {
+      [key in ApVenueStatusEnum]?: number
+    },
+		totalApCount: number,
+		detail: {
+      [key in ApVenueStatusEnum]?: ApStatusDetails[]
+    }
+	},
+	switchClients: {
+		totalCount: number
+	},
+	switches: {
+		summary: {
+			[key in SwitchStatusEnum]?: number
+		},
+		totalCount: number
+	},
+	totalClientCount: string
+	venue: {
+		addressLine: string,
+		city: string,
+		country: string,
+		crtTime: string,
+		id: string,
+		lastUpdTime: string,
+		latitude: string,
+		longitude: string,
+		name: string,
+		tenantId: string,
+		timeZone: string,
+		type: string,
+		venueStatus: string
+	}
 }
