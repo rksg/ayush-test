@@ -6,10 +6,7 @@ import {
   Form,
   Select,
   Slider,
-  Switch,
-  Modal,
-  Input
-
+  Switch
 } from 'antd'
 
 import { StepsForm }                 from '@acx-ui/components'
@@ -50,8 +47,7 @@ export function AccessControlForm () {
             lineHeight: '32px',
             fontWeight: '600'
           }}
-        >
-          Access Control
+        > Access Control
         </StepsForm.Title>
 
         <span>
@@ -59,8 +55,6 @@ export function AccessControlForm () {
             <SaveAsAcProfileButton />
           }
         </span>
-
-
         <Button
           type='link'
           style={{ padding: 0 }}
@@ -70,7 +64,6 @@ export function AccessControlForm () {
         >
           {enabledProfile ? 'Select separate profiles' : 'Select Access Control profile'}
         </Button>
-
       </span>
 
 
@@ -81,62 +74,15 @@ export function AccessControlForm () {
 }
 
 function SaveAsAcProfileButton () {
-  const [isModalVisible, setIsModalVisible] = useState(false)
-
-  const showModal = () => {
-    setIsModalVisible(true)
-  }
-
-  const handleOk = () => {
-    setIsModalVisible(false)
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false)
-  }
-
-  return (<>
+  return (
     <Button
       type='link'
       style={{ padding: 0 }}
       disabled={true}
-      onClick={() => {
-        showModal()
-      }}
     >
       Save as AC Profile
     </Button>
-    <Modal
-      title='Create Access Control Profile'
-      visible={isModalVisible}
-      onOk={handleOk}
-      onCancel={handleCancel}
-    >
-      <UI.FieldLabel width='175px'>
-        Profile Name:
-        <Form.Item
-          name='profileName'
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Input />}
-        />
-      </UI.FieldLabel>
-
-      <UI.FieldLabel width='175px'>
-        Client Rate Limit
-        <Form.Item
-          name='description'
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Input />}
-        />
-      </UI.FieldLabel>
-
-      <AccessControlConfigForm />
-    </Modal>
-  </>)
+  )
 }
 
 function SelectAccessProfileProfile () {
@@ -241,7 +187,7 @@ function SelectAccessProfileProfile () {
     }
     return transformDisplayText(name)
   }
-  
+
   const getApplicationPolicyNameByAccessControlPorfile = function (accessControlProfile: AccessControlProfile | undefined) {
     if(!accessControlProfile) return transformDisplayText()
     let name
@@ -260,7 +206,7 @@ function SelectAccessProfileProfile () {
     }
     return limit
   }
-  
+
   const [enableAccessControlProfile] = [useWatch('enableAccessControlProfile')]
   return (<>
     <UI.FieldLabel width='175px'>
@@ -291,7 +237,7 @@ function SelectAccessProfileProfile () {
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      <span>Layer 2</span> 
+      <span>Layer 2</span>
       { getL2PolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
     </UI.FieldLabel>
 
@@ -313,7 +259,7 @@ function SelectAccessProfileProfile () {
     <UI.FieldLabel width='175px'>
       <span>Client Rate Limit</span>
       { (!state.selectedAccessControlProfile || state.selectedAccessControlProfile.rateLimiting?.enabled === false) && '--' }
-      { (state.selectedAccessControlProfile && state.selectedAccessControlProfile.rateLimiting?.enabled) && 
+      { (state.selectedAccessControlProfile && state.selectedAccessControlProfile.rateLimiting?.enabled) &&
        <div>
          <UI.RateLimitBlock>
            <label>Up:</label>
