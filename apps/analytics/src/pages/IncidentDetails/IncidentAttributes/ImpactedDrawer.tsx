@@ -96,6 +96,7 @@ export const ImpactedClientsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     column('ssid', { title: $t({ defaultMessage: 'Network' }) })
   ] as TableColumn<AggregatedImpactedClient>[], [$t])
 
+  // TODO: use search from table component
   return <Drawer
     width={'650px'}
     title={$t(
@@ -137,6 +138,7 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     column('version', { title: $t({ defaultMessage: 'Version' }) })
   ] as TableColumn<AggregatedImpactedAP>[], [$t])
 
+  // TODO: use search from table component
   return <Drawer
     width={'600px'}
     title={$t(
