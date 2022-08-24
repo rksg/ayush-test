@@ -7,7 +7,7 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 
-import { CommonResult, Service } from './types'
+import { CommonResult, DPSK, Service } from './types'
 
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -37,10 +37,22 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    createDPSK: build.mutation<DPSK, RequestPayload>({
+      query: ({ params, payload }) => {
+        const createDPSKReq = createHttpRequest(CommonUrlsInfo.addDPSK, params)
+        return {
+          ...createDPSKReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     })
   })
 })
 export const {
   useServiceListQuery,
-  useDeleteServiceMutation
+  useLazyServiceListQuery,
+  useDeleteServiceMutation,
+  useCreateDPSKMutation
 } = serviceApi

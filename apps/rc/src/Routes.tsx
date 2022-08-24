@@ -5,6 +5,7 @@ import { Provider }          from '@acx-ui/store'
 import { NetworkDetails } from './pages/NetworkDetails/NetworkDetails'
 import { NetworkForm }    from './pages/NetworkForm/NetworkForm'
 import { NetworksTable }  from './pages/NetworksTable'
+import { DPSKForm } from './pages/services/DPSK/DPSKForm/DPSKForm'
 import { ServicesTable }  from './pages/services/ServicesTable'
 
 export default function RcRoutes () {
@@ -17,6 +18,7 @@ export default function RcRoutes () {
         element={<NetworkDetails />}
       />
       <Route path='services' element={<ServicesTable />} />
+      <Route path='services/create' element={<DPSKForm />} />
     </Route>
   )
   return (

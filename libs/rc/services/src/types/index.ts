@@ -7,7 +7,9 @@ import {
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
   NetworkVenue,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  PassphraseFormatEnum,
+  PassphraseExpirationEnum
 } from '@acx-ui/rc/utils'
 
 export * from './ap'
@@ -33,9 +35,19 @@ export interface Network {
     }
   }
   vlanPool?: { name: string }
+  activated: { isActivated?: boolean, isDisabled?: boolean }
   // cog ??
 }
+export interface DPSK {
+  id: string
+  name: string
+  tags: string
+  passphraseLength: number
+  passphraseFormat: PassphraseFormatEnum
+  expiration: PassphraseExpirationEnum
+  networks: { count: number, names: string[] }
 
+}
 export interface NetworkDetail {
   type: NetworkTypeEnum
   tenantId: string
