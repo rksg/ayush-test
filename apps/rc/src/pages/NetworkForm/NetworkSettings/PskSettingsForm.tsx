@@ -198,12 +198,10 @@ function SettingsForm () {
             name={['wlan', 'passphrase']}
             label={SecurityOptionsPassphraseLabel[wlanSecurity as keyof typeof PskWlanSecurityEnum]
               ??SecurityOptionsPassphraseLabel.WPA2Personal}
-            rules={[{
-              required: true,
-              min: 8
-            },{
-              validator: (_, value) => trailingNorLeadingSpaces(value)
-            }]}
+            rules={[
+              { required: true, min: 8 },
+              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) }
+            ]}
             extra={intl.$t({ defaultMessage: '8 characters minimum' })}
             children={<Input.Password />}
           />
@@ -212,12 +210,10 @@ function SettingsForm () {
           <Form.Item
             name={['wlan', 'wepHexKey']}
             label={SecurityOptionsPassphraseLabel[PskWlanSecurityEnum.WEP]}
-            rules={[{
-              required: true,
-              whitespace: false
-            },{
-              validator: (_, value) => hexRegExp(value)
-            }]}
+            rules={[
+              { required: true },
+              { validator: (_, value) => hexRegExp(intl, value) }
+            ]}
             extra={intl.$t({ defaultMessage: 'Must be 26 hex characters' })}
             children={<Input.Password />}
           />
@@ -236,7 +232,7 @@ function SettingsForm () {
             }
             rules={[
               { required: true, min: 8 },
-              { validator: (_, value) => trailingNorLeadingSpaces(value) }
+              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) }
             ]}
             extra={intl.$t({ defaultMessage: '8 characters minimum' })}
             children={<Input.Password />}

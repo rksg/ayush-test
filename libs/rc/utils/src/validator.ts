@@ -22,9 +22,9 @@ export function networkWifiSecretRegExp ({ $t }: IntlShape, value: string) {
   return Promise.resolve()
 }
 
-export const trailingNorLeadingSpaces = (value: string) => {
+export function trailingNorLeadingSpaces ({ $t }: IntlShape, value: string) {
   if (value && (value.endsWith(' ') || value.startsWith(' '))) {
-    return Promise.reject('No leading or trailing spaces allowed')
+    return Promise.reject($t(validationMessages.leadingTrailingWhitespace))
   }
   return Promise.resolve()
 }
@@ -42,10 +42,10 @@ export function checkObjectNotExists <ItemType> (
   return Promise.resolve()
 }
 
-export const hexRegExp = (value: string) => {
+export function hexRegExp ({ $t }: IntlShape, value: string) {
   const re = new RegExp(/^[0-9a-fA-F]{26}$/)
   if (value!=='' && !re.test(value)) {
-    return Promise.reject('Invalid Hex Key')
+    return Promise.reject($t(validationMessages.invalidHex))
   }
   return Promise.resolve()
 }
