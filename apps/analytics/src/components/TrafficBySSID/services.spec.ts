@@ -5,9 +5,8 @@ import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 import { DateRange }           from '@acx-ui/utils'
 
-import { trafficBySSIDFixture } from '../../__tests__/fixtures'
-
-import { api } from './services'
+import { trafficBySSIDFixture } from './__tests__/fixtures'
+import { api }                  from './services'
 
 describe('trafficBySSIDWidget', () => {
   const store = configureStore({
