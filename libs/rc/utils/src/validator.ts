@@ -1,52 +1,36 @@
-export function ipV4RegExp (value: string) {
+import { isEqual }   from 'lodash'
+import { IntlShape } from 'react-intl'
+
+import { validationMessages } from '@acx-ui/utils'
+
+
+export function networkWifiIpRegExp ({ $t }: IntlShape, value: string) {
   // eslint-disable-next-line max-len
-  const re = new RegExp(/^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\p{N}\p{L}]+)?$/)
+  const re = new RegExp('^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$')
   if (value!=='' && !re.test(value)) {
-    return Promise.reject('Please enter a valid IP address')
+    return Promise.reject($t(validationMessages.ipAddress))
   }
   return Promise.resolve()
 }
 
-export function portRegExp (value: number, min: number = 1) {
-  if (value && value < min){
-    return Promise.reject(`This value should be higher than or equal to ${min}`)
-  } else if (value && value > 65535) {
-    return Promise.reject('This value should be lower than or equal to 65535')
+export function networkWifiSecretRegExp ({ $t }: IntlShape, value: string) {
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^[\\x21-\\x7E]+([\\x20-\\x7E]*[\\x21-\\x7E]+)*$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
   }
   return Promise.resolve()
 }
 
-export function stringContainSpace (value: string) {
-  const re = new RegExp(/[\s]/)
-  if (re.test(value)) {
-    return Promise.reject('Spaces are not allowed')
-  }
-  return Promise.resolve()
-}
-
-export const trailingNorLeadingSpaces = (value: string) => {
-  if (value && (value.endsWith(' ') || value.startsWith(' '))) {
-    return Promise.reject('No leading or trailing spaces allowed')
-  }
-  return Promise.resolve()
-}
-
-export function checkObjectNotExists (
-  list: { [key: string]: string }[],
-  value: string,
+export function checkObjectNotExists <ItemType> (
+  intl: IntlShape,
+  list: ItemType[],
+  value: ItemType,
   entityName: string,
   key = 'name'
 ) {
-  if (list.filter(l => l[key] === value).length !== 0) {
-    return Promise.reject(`${entityName} with that ${key} already exists`)
-  }
-  return Promise.resolve()
-}
-
-export const hexRegExp = (value: string) => {
-  const re = new RegExp(/^[0-9a-fA-F]{26}$/)
-  if (value!=='' && !re.test(value)) {
-    return Promise.reject('Invalid Hex Key')
+  if (list.filter(item => isEqual(item, value)).length !== 0) {
+    return Promise.reject(intl.$t(validationMessages.duplication, { entityName, key }))
   }
   return Promise.resolve()
 }
