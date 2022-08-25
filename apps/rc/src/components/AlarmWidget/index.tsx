@@ -6,13 +6,15 @@ import { Card }                      from '@acx-ui/components'
 import { DonutChart }                from '@acx-ui/components'
 import type { DonutChartData }       from '@acx-ui/components'
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
+import {  useAlarmsListQuery }       from '@acx-ui/rc/services'
 import {
+  Alarm,
+  EventTypeEnum,
   Dashboard,
   AlaramSeverity
-} from '@acx-ui/rc/services'
-import { Alarm, EventTypeEnum, useAlarmsListQuery } from '@acx-ui/rc/services'
-import { CommonUrlsInfo, useTableQuery }            from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
+} from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, useTableQuery }         from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { AlarmList } from './AlarmList'
 import * as UI       from './styledComponents'

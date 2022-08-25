@@ -1,9 +1,8 @@
 import { omit } from 'lodash'
 import { rest } from 'msw'
 
-import { Dashboard }          from '@acx-ui/rc/services'
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { Dashboard, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                 from '@acx-ui/store'
 import { render,
   mockServer,
   screen,

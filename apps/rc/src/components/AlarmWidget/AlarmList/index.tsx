@@ -1,7 +1,7 @@
 import { List, Space, Tooltip as AntTooltip } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { Alarm, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/services'
+import { Alarm, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
 import { formatter }                               from '@acx-ui/utils'
 
 import * as UI from './styledComponents'

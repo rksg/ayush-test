@@ -1,4 +1,4 @@
-import { Alarm }                     from '@acx-ui/rc/services'
+import { Alarm }                     from '@acx-ui/rc/utils'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { AlarmList } from '.'
@@ -33,7 +33,7 @@ describe('Alarm List', () => {
   it('should render list', async () => {
     const onNavigateMock = jest.fn()
 
-    const { asFragment } =render(<AlarmList
+    const { asFragment } = render(<AlarmList
       data={data}
       onNavigate={onNavigateMock}
       height={300}
