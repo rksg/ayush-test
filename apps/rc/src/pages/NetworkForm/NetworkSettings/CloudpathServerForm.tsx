@@ -65,7 +65,7 @@ export function CloudpathServerForm () {
           }
         />
         <Form.Item
-          label={$t({ defaultMessage: 'Radius Shared secret' })}
+          label={$t({ defaultMessage: 'Radius Shared Secret' })}
           children={<Input.Password
             readOnly
             bordered={false}
