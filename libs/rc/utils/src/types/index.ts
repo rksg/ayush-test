@@ -1,17 +1,27 @@
 import {
+  ServiceAdminState,
+  ServiceStatus,
+  ServiceTechnology,
+  ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
-  WlanSecurityEnum,
-  NetworkVenue,
-  NetworkTypeEnum
-} from '@acx-ui/rc/utils'
+  WlanSecurityEnum
+} from '../constants'
+
+import {
+  NetworkVenue
+} from './network'
 
 export * from './ap'
+export * from './venue'
+export * from './network'
+export * from './user'
 
 export interface CommonResult {
   requestId: string
   response?:{}
 }
+
 export interface Network {
   id: string
   name: string
@@ -32,16 +42,9 @@ export interface Network {
   // cog ??
 }
 
-export interface NetworkDetail {
-  type: NetworkTypeEnum
-  tenantId: string
-  name: string
-  venues: NetworkVenue[]
-  id: string
-}
-
 export interface Venue {
   id: string
+  venueId: string
   name: string
   description: string
   status: string
@@ -249,4 +252,16 @@ export interface CloudpathServer {
     id: string
     primary: RadiusService
   }
+}
+
+export interface Service {
+  id: string
+  name: string
+  type: ServiceType
+  status: ServiceStatus
+  adminState: ServiceAdminState
+  technology: ServiceTechnology
+  scope: number
+  health: string
+  tags: string[]
 }

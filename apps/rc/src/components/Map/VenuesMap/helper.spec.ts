@@ -3,7 +3,7 @@ import { initialize, mockInstances } from '@googlemaps/jest-mocks'
 import {
   ApVenueStatusEnum,
   Dashboard,
-  SwitchStatusEnum } from '@acx-ui/rc/services'
+  SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import {
   getClusterSVG,

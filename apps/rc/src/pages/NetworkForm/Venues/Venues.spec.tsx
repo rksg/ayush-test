@@ -52,6 +52,15 @@ const list = {
     }
   ]
 }
+
+function wrapper ({ children }: { children: React.ReactElement }) {
+  return <Provider>
+    <Form>
+      {children}
+    </Form>
+  </Provider>
+}
+
 describe('Create Network: Venues Step', () => {
   beforeEach(() => {
     act(() => {
@@ -68,11 +77,8 @@ describe('Create Network: Venues Step', () => {
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<Provider>
-      <Form>
-        <Venues />
-      </Form>
-    </Provider>, {
+    const { asFragment } = render(<Venues />, {
+      wrapper,
       route: { params, path: '/:tenantId/:networkId' }
     })
 
@@ -91,7 +97,8 @@ describe('Create Network: Venues Step', () => {
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    render(<Provider><Venues /></Provider>, {
+    render(<Venues />, {
+      wrapper,
       route: { params, path: '/:tenantId/:networkId' }
     })
 
@@ -115,7 +122,8 @@ describe('Create Network: Venues Step', () => {
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    render(<Provider><Venues /></Provider>, {
+    render(<Venues />, {
+      wrapper,
       route: { params, path: '/:tenantId/:networkId' }
     })
 
@@ -129,7 +137,7 @@ describe('Create Network: Venues Step', () => {
     const body = within(tbody)
     fireEvent.click(await body.findByText('My-Venue'))
     const activateButton = screen.getByRole('button', { name: 'Activate' })
-    fireEvent.click(activateButton) 
+    fireEvent.click(activateButton)
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -146,7 +154,8 @@ describe('Create Network: Venues Step', () => {
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    render(<Provider><Venues /></Provider>, {
+    render(<Venues />, {
+      wrapper,
       route: { params, path: '/:tenantId/:networkId' }
     })
 
