@@ -632,7 +632,7 @@
     "defaultMessage": "Passphrase Expiration:"
   },
   "ubQ1f+": {
-    "defaultMessage": "Shared secret"
+    "defaultMessage": "Shared Secret"
   },
   "ukFIyf": {
     "defaultMessage": "Your Attention is Required"
@@ -697,7 +697,7 @@
     "defaultMessage": "Timeline"
   },
   "zbjrr1": {
-    "defaultMessage": "Radius Shared secret"
+    "defaultMessage": "Radius Shared Secret"
   },
   "zg0sQG": {
     "defaultMessage": "AP initializing"

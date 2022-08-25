@@ -66,7 +66,7 @@ describe('NetworkForm', () => {
     await fillInBeforeSettings('AAA network test')
 
     const ipTextbox = screen.getByLabelText('IP Address')
-    fireEvent.change(ipTextbox, { target: { value: '111.111.111.111' } })
+    fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
 
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
@@ -76,7 +76,7 @@ describe('NetworkForm', () => {
 
     await fillInAfterSettings(async () => {
       expect(screen.getByText('AAA network test')).toBeVisible()
-      expect(screen.getByText('111.111.111.111:1111')).toBeVisible()
+      expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
   })
@@ -87,7 +87,7 @@ describe('NetworkForm', () => {
     await fillInBeforeSettings('AAA network test')
 
     const ipTextbox = screen.getByLabelText('IP Address')
-    fireEvent.change(ipTextbox, { target: { value: '111.111.111.111' } })
+    fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
 
     const portTextbox = screen.getByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: 1111 } })
@@ -98,7 +98,7 @@ describe('NetworkForm', () => {
     fireEvent.click(screen.getByText('Add Secondary Server'))
 
     const secondaryIpTextbox = screen.getAllByLabelText('IP Address')[1]
-    fireEvent.change(secondaryIpTextbox, { target: { value: '222.222.222.222' } })
+    fireEvent.change(secondaryIpTextbox, { target: { value: '192.168.2.2' } })
 
     const secondaryPortTextbox = screen.getAllByLabelText('Port')[1]
     fireEvent.change(secondaryPortTextbox, { target: { value: '2222' } })
@@ -108,10 +108,10 @@ describe('NetworkForm', () => {
 
     await fillInAfterSettings(() => {
       expect(screen.getByText('AAA network test')).toBeVisible()
-      expect(screen.getByText('111.111.111.111:1111')).toBeVisible()
+      expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
 
-      expect(screen.getByText('222.222.222.222:2222')).toBeVisible()
+      expect(screen.getByText('192.168.2.2:2222')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
     })
   })
