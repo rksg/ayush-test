@@ -12,7 +12,6 @@ export function AaaServer ( props: {
   serverType: AaaServerTypeEnum,
   summaryData: NetworkSaveData
 }) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const intl = useIntl()
   const { serverType, summaryData } = props
   const primaryTitle = intl.$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])
