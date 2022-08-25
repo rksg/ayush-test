@@ -959,7 +959,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                               class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
                             >
                               <div
-                                class="styledComponents__FallbackWrapper-sc-1352uh8-1 cnmeaO"
+                                class="styledComponents__FallbackWrapper-sc-1352uh8-1 kymHqF"
                               >
                                 <span
                                   aria-label="loader"
@@ -990,7 +990,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                 </span>
                               </div>
                               <div
-                                class="styledComponents__Wrapper-sc-1abm7iv-4 feuYoB"
+                                class="styledComponents__Wrapper-sc-1abm7iv-6 dBvJkz"
                               >
                                 <div
                                   class="ant-pro-table"
@@ -1595,14 +1595,9 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                               </div>
                                             </div>
                                             <ul
-                                              class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right"
+                                              class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
                                               unselectable="unselectable"
                                             >
-                                              <li
-                                                class="ant-pagination-total-text"
-                                              >
-                                                  1-2 of 2 items
-                                              </li>
                                               <li
                                                 aria-disabled="true"
                                                 class="ant-pagination-prev ant-pagination-disabled"
@@ -2887,7 +2882,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                               class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
                             >
                               <div
-                                class="styledComponents__FallbackWrapper-sc-1352uh8-1 cnmeaO"
+                                class="styledComponents__FallbackWrapper-sc-1352uh8-1 kymHqF"
                               >
                                 <span
                                   aria-label="loader"

@@ -87,6 +87,7 @@ export const DatePickerFooter = ({
             <React.Fragment key={config.id}>
               <UI.TimePickerWrapper
                 role='time-picker'
+                size='small'
                 showNow={false}
                 format={config.format}
                 placeholder=''

@@ -389,14 +389,9 @@ exports[`Table component should render correctly 1`] = `
                   </div>
                 </div>
                 <ul
-                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right"
+                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
                   unselectable="unselectable"
                 >
-                  <li
-                    class="ant-pagination-total-text"
-                  >
-                      1-3 of 3 items
-                  </li>
                   <li
                     aria-disabled="true"
                     class="ant-pagination-prev ant-pagination-disabled"
@@ -806,14 +801,9 @@ exports[`Table component should render multi select table and render action butt
                   </div>
                 </div>
                 <ul
-                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right"
+                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
                   unselectable="unselectable"
                 >
-                  <li
-                    class="ant-pagination-total-text"
-                  >
-                      1-3 of 3 items
-                  </li>
                   <li
                     aria-disabled="true"
                     class="ant-pagination-prev ant-pagination-disabled"
@@ -1322,14 +1312,9 @@ exports[`Table component should render multi select table and render action butt
                   </div>
                 </div>
                 <ul
-                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right"
+                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
                   unselectable="unselectable"
                 >
-                  <li
-                    class="ant-pagination-total-text"
-                  >
-                      1-3 of 3 items
-                  </li>
                   <li
                     aria-disabled="true"
                     class="ant-pagination-prev ant-pagination-disabled"
@@ -1739,14 +1724,9 @@ exports[`Table component should render multi select table and render action butt
                   </div>
                 </div>
                 <ul
-                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right"
+                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
                   unselectable="unselectable"
                 >
-                  <li
-                    class="ant-pagination-total-text"
-                  >
-                      1-3 of 3 items
-                  </li>
                   <li
                     aria-disabled="true"
                     class="ant-pagination-prev ant-pagination-disabled"

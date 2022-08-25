@@ -90,6 +90,8 @@ module.exports = {
   '@screen-xl': '1280px',
   '@screen-xxl': '1920px',
 
+  '@select-border-color': 'var(--acx-neutrals-50)',
+
   '@tabs-highlight-color': 'var(--acx-primary-black)',
   '@tabs-hover-color': 'var(--acx-accents-orange-50)',
   '@tabs-active-color': 'var(--acx-primary-black)',

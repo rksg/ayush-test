@@ -12,7 +12,10 @@ import { settingsKey, useColumnsState } from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption } from './types'
 import type { SettingOptionType }              from '@ant-design/pro-table/lib/components/ToolBar'
-import type { TableProps as AntTableProps }    from 'antd'
+import type {
+  TableProps as AntTableProps,
+  TablePaginationConfig
+} from 'antd'
 
 export type {
   ColumnType,
@@ -32,6 +35,14 @@ export interface TableProps <RecordType>
     }>
     columnState?: ColumnStateOption
   }
+
+const defaultPagination = {
+  mini: true,
+  defaultPageSize: 10,
+  pageSizeOptions: [5, 10, 20, 25, 50, 100],
+  position: ['bottomCenter'],
+  showTotal: false
+}
 
 function Table <RecordType extends object> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>
@@ -150,7 +161,9 @@ function Table <RecordType extends object> (
       columnsState={columnsState}
       scroll={{ x: 'max-content' }}
       rowSelection={rowSelection}
-      pagination={props.pagination || (type === 'tall' ? undefined : false)}
+      pagination={(type === 'tall'
+        ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+        : false)}
       columnEmptyText={false}
       onRow={onRow}
       showSorterTooltip={false}
