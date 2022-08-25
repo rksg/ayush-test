@@ -76,7 +76,7 @@ export function useFormattedNodeType (nodeType: NodeType) {
 }
 
 export function useImpactValues (type: string, count?: number, impactedCount?: number): 
-  Record<string, unknown> {
+  Record<string, string | number | null | {}> {
   const intl = useIntl()
   if (typeof count !== 'number' || typeof impactedCount != 'number') {
     return {

@@ -9,7 +9,6 @@ import { render, screen, cleanup }                                    from '@acx
 import {
   GetIncidentBySeverity,
   FormatDate,
-  formatDuration,
   clientImpactSort,
   severitySort,
   FormatIntlString,
@@ -116,37 +115,30 @@ describe('IncidentTable: utils', () => {
 
   describe('getIncidentBySeverity', () => {
     const testSeverityArr = [
-      { value: 0, label: 'P4' }, 
+      { value: 0.001, label: 'P4' }, 
       { value: 0.65, label: 'P3' }, 
       { value: 0.8, label: 'P2' },
-      { value: 1, label: 'P1' }
+      { value: 1, label: 'P1' },
+      { value: undefined, label: noDataSymbol }
     ]
     
     it.each(testSeverityArr)(
       'should show correct label: %s for value %n', 
       async ({ label, value }) => {
-        render(<GetIncidentBySeverity value={value}/>)
+        render(<Provider>
+          <GetIncidentBySeverity value={value as unknown as number} id={'test'}/>
+        </Provider>, {
+          route: {
+            path: '/t/tenantId/analytics/incidents',
+            wrapRoutes: false,
+            params: {
+              tenantId: '1'
+            }
+          }
+        })
         await screen.findByText(label)
         expect(screen.getByText(label).textContent).toMatch(label)
       })
-
-    it('should show noDataSymbol on undefined', async () => {
-      render(<GetIncidentBySeverity value={undefined}/>)
-      await screen.findByText(noDataSymbol)
-      expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
-    })
-
-    it('should show noDataSymbol on null', async () => {
-      render(<GetIncidentBySeverity value={null}/>)
-      await screen.findByText(noDataSymbol)
-      expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
-    })
-
-    it('should show noDataSymbol on negative', async () => {
-      render(<GetIncidentBySeverity value={-1}/>)
-      await screen.findByText(noDataSymbol)
-      expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
-    })
   })
 
   describe('formatDate', () => {
@@ -160,13 +152,6 @@ describe('IncidentTable: utils', () => {
       render(<FormatDate datetimestamp={null as unknown as string}/>)
       await screen.findByText(noDataSymbol)
       expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
-    })
-  })
-
-  describe('formatDuration', () => {
-    it('should calculate correct duration', () => {
-      const testDuration = formatDuration(3.154e10)
-      expect(testDuration).toBe('11mo 30d')
     })
   })
 

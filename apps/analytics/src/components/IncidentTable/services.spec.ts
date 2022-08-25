@@ -236,11 +236,19 @@ describe('IncidentTable: services', () => {
         vlanCount: 0,
         connectedPowerDeviceCount: 0,
         slaThreshold: null,
-        currentSlaThreshold: null
+        currentSlaThreshold: null,
+        duration: 180000,
+        category: noDataSymbol,
+        subCategory: noDataSymbol,
+        description: noDataSymbol,
+        scope: noDataSymbol,
+        type: noDataSymbol,
+        children: undefined
       }
     ],
     duration: 180000,
     category: noDataSymbol,
+    subCategory: noDataSymbol,
     description: noDataSymbol,
     scope: noDataSymbol,
     type: noDataSymbol

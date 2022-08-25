@@ -91,7 +91,9 @@ exports[`Services Table should delete selected row 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg>
+                          <svg
+                            title="table-settings"
+                          >
                             SettingsOutlined.svg
                           </svg>
                         </div>
@@ -1135,7 +1137,9 @@ exports[`Services Table should render table 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg>
+                          <svg
+                            title="table-settings"
+                          >
                             SettingsOutlined.svg
                           </svg>
                         </div>

@@ -42,7 +42,9 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                         <div
                           class="ant-pro-table-list-toolbar-setting-item"
                         >
-                          <svg>
+                          <svg
+                            title="table-settings"
+                          >
                             SettingsOutlined.svg
                           </svg>
                         </div>

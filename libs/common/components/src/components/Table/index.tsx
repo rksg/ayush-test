@@ -27,7 +27,9 @@ export interface TableProps <RecordType>
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
-    rowSelection?: (AntTableProps<RecordType>['rowSelection'] & {
+    rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection'] 
+      & AntTableProps<RecordType>['rowSelection']
+      & {
       alwaysShowAlert?: boolean;
   })
   }
@@ -86,7 +88,7 @@ function Table <RecordType extends object> (
         children={$t({ defaultMessage: 'Reset to default' })}
       />
     </div>,
-    children: <SettingsOutlined />
+    children: <SettingsOutlined title='table-settings'/>
   } : false
 
   const rowKey = (props.rowKey ?? 'key') as keyof RecordType

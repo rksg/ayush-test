@@ -1,5 +1,5 @@
-import moment                     from 'moment-timezone'
-import { defineMessage, useIntl } from 'react-intl'
+import moment                                        from 'moment-timezone'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { 
   calculateSeverity,
@@ -10,24 +10,24 @@ import {
   useIncidentScope,
   useShortDescription
 } from '@acx-ui/analytics/utils'
-import { formatter, durationFormat } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
 export type GetIncidentBySeverityProps = {
-  value?: number | null
+  value: number,
+  id: string
 }
 
 export const GetIncidentBySeverity = (props: GetIncidentBySeverityProps) => {
-  const { value } = props
-  if (value === null || value === undefined) {
-    return <span>{noDataSymbol}</span>
-  }
+  const { value, id } = props
 
   const severity = calculateSeverity(value)
   if (typeof severity === 'undefined') return <span>{noDataSymbol}</span>
 
-  return <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
+  return <UI.UnstyledLink to={id}>
+    <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
+  </UI.UnstyledLink>
 }
 
 export type FormatDateProps = {
@@ -42,12 +42,8 @@ export const FormatDate = (props: FormatDateProps) => {
   return <UI.DateSpan>{timeStamp}</UI.DateSpan>
 }
 
-export const formatDuration = (duration: number) => durationFormat(duration)
-
 export interface FormatIntlStringProps {
-  message: {
-    defaultMessage: string
-  }
+  message: MessageDescriptor
   scope?: string
   threshold?: string
 }

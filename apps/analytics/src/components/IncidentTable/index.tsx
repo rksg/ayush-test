@@ -1,15 +1,14 @@
 import { useIntl, defineMessage } from 'react-intl'
-import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { Incident, noDataSymbol, IncidentFilter } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table }              from '@acx-ui/components'
-import { Link }                                   from '@acx-ui/react-router-dom'
+import { Incident, noDataSymbol, IncidentFilter, nodeTypes } from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table }                         from '@acx-ui/components'
+import { Link }                                              from '@acx-ui/react-router-dom'
+import { formatter }                                         from '@acx-ui/utils'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
 import {
   GetIncidentBySeverity,
   FormatDate,
-  formatDuration,
   clientImpactSort,
   ShortIncidentDescription,
   GetCategory,
@@ -44,7 +43,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       width: 80,
       dataIndex: 'severity',
       key: 'severity',
-      render: (_, value) => <GetIncidentBySeverity value={value.severity}/>,
+      render: (_, value) => <GetIncidentBySeverity value={value.severity} id={value.id}/>,
       sorter: {
         compare: (a, b) => severitySort(a.severity, b.severity),
         multiple: 1
@@ -72,7 +71,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       width: 'auto',
       dataIndex: 'duration',
       key: 'duration',
-      render: (_, value) => formatDuration(value.duration),
+      render: (_, value) => formatter('durationFormat')(value.duration) as string,
       sorter: {
         compare: (a, b) => defaultSort(b.duration, a.duration),
         multiple: 3
@@ -154,39 +153,47 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         multiple: 8
       },
       sortDirections: ['ascend', 'descend', 'ascend']
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Type' })),
+      width: 'auto',
+      dataIndex: 'type',
+      key: 'type',
+      render: (_, value) => $t(nodeTypes(value.sliceType)).toLocaleUpperCase(),
+      sorter: {
+        compare: (a, b) => clientImpactSort(a.code, b.code),
+        multiple: 8
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      show: false
     }
   ]
 
   return (
     <Loader states={[queryResults]}>
-      <AutoSizer>
-        {({ height, width }) => (
-          <Table
-            type='tall'
-            style={{ width, height }}
-            dataSource={queryResults?.data}
-            columns={ColumnHeaders}
-            actions={actions}
-            rowSelection={{
-              type: 'checkbox',
-              defaultSelectedRowKeys: queryResults.data
-                ? mutedKeysFilter(queryResults.data)
-                : undefined
-            }}
-            pagination={{
-              defaultPageSize: 10,
-              position: ['bottomCenter'],
-              pageSizeOptions: [5, 10, 20, 25, 50, 100],
-              showTotal: undefined
-            }}
-            rowKey='id'
-            showSorterTooltip={false}
-            columnEmptyText={noDataSymbol}
-            scroll={{ y: 'max-content' }}
-            indentSize={0}
-          />
-        )}
-      </AutoSizer>
+      <Table
+        type='tall'
+        dataSource={queryResults?.data}
+        columns={ColumnHeaders}
+        actions={actions}
+        rowSelection={{
+          type: 'checkbox',
+          defaultSelectedRowKeys: queryResults.data
+            ? mutedKeysFilter(queryResults.data)
+            : undefined
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          position: ['bottomCenter'],
+          pageSizeOptions: [5, 10, 20, 25, 50, 100],
+          showTotal: undefined
+        }}
+        rowKey='id'
+        showSorterTooltip={false}
+        columnEmptyText={noDataSymbol}
+        scroll={{ y: 'max-content' }}
+        indentSize={0}
+      />
     </Loader>
   )
 }
