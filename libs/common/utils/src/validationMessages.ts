@@ -6,6 +6,10 @@ export const validationMessages = {
     defaultMessage: 'Spaces are not allowed',
     description: 'Validation - no whitespace checks'
   }),
+  leadingTrailingWhitespace: defineMessage({
+    defaultMessage: 'No leading or trailing spaces allowed',
+    description: 'Validation - no leading/trailing whitespace checks'
+  }),
   ipAddress: defineMessage({
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validation - IP address checks'
@@ -13,6 +17,10 @@ export const validationMessages = {
   invalid: defineMessage({
     defaultMessage: 'This field is invalid',
     description: 'Validation - invalid checks'
+  }),
+  invalidHex: defineMessage({
+    defaultMessage: 'Please enter a valid IP address',
+    description: 'Validation - IP address checks'
   }),
   duplication: defineMessage({
     defaultMessage: `
