@@ -13,6 +13,7 @@ export * from './ap'
 export * from './venue'
 export * from '../models/network'
 export * from './user'
+export * from './service'
 
 export interface CommonResult {
   requestId: string

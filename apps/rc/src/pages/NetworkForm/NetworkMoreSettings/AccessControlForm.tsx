@@ -9,6 +9,8 @@ import {
   Switch
 } from 'antd'
 
+
+
 import { StepsForm }                 from '@acx-ui/components'
 import {
   useDevicePolicyListQuery,
@@ -17,11 +19,13 @@ import {
   useApplicationPolicyListQuery,
   useAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
+import {
+  AccessControlProfile
+} from '@acx-ui/rc/utils'
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
-import { AccessControlProfile } from 'libs/rc/services/src/types/service'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -156,56 +160,62 @@ function SelectAccessProfileProfile () {
     })
   }
 
-  const getL2PolicyNameByAccessControlPorfile = function (accessControlProfile: AccessControlProfile | undefined) {
-    if(!accessControlProfile) return transformDisplayText()
-    let name
-    const { l2AclPolicy } = accessControlProfile
-    if (l2AclPolicy && l2AclPolicy.enabled && layer2SelectList) {
-      name = layer2SelectList.find(policy => policy.id === l2AclPolicy.id)?.name
+  const getL2PolicyNameByAccessControlPorfile =
+    function (accessControlProfile: AccessControlProfile | undefined) {
+      if (!accessControlProfile) return transformDisplayText()
+      let name
+      const { l2AclPolicy } = accessControlProfile
+      if (l2AclPolicy && l2AclPolicy.enabled && layer2SelectList) {
+        name = layer2SelectList.find(policy => policy.id === l2AclPolicy.id)?.name
+      }
+      return transformDisplayText(name)
     }
-    return transformDisplayText(name)
-  }
 
-  const getL3PolicyNameByAccessControlPorfile = function (accessControlProfile: AccessControlProfile | undefined) {
-    if(!accessControlProfile) return transformDisplayText()
-    let name
-    const { l3AclPolicy } = accessControlProfile
+  const getL3PolicyNameByAccessControlPorfile =
+    function (accessControlProfile: AccessControlProfile | undefined) {
+      if (!accessControlProfile) return transformDisplayText()
+      let name
+      const { l3AclPolicy } = accessControlProfile
 
-    if (l3AclPolicy && l3AclPolicy.enabled && layer3SelectList) {
-      name = layer3SelectList.find(policy => policy.id === l3AclPolicy.id)?.name
+      if (l3AclPolicy && l3AclPolicy.enabled && layer3SelectList) {
+        name = layer3SelectList.find(policy => policy.id === l3AclPolicy.id)?.name
+      }
+      return transformDisplayText(name)
     }
-    return transformDisplayText(name)
-  }
 
-  const getDevicePolicyNameByAccessControlPorfile = function (accessControlProfile: AccessControlProfile | undefined) {
-    if(!accessControlProfile) return transformDisplayText()
-    let name
-    const { devicePolicy } = accessControlProfile
+  const getDevicePolicyNameByAccessControlPorfile =
+    function (accessControlProfile: AccessControlProfile | undefined) {
+      if (!accessControlProfile) return transformDisplayText()
+      let name
+      const { devicePolicy } = accessControlProfile
 
-    if (devicePolicy && devicePolicy.enabled && devicePolicySelectList) {
-      name = devicePolicySelectList.find(policy => policy.id === devicePolicy.id)?.name
+      if (devicePolicy && devicePolicy.enabled && devicePolicySelectList) {
+        name = devicePolicySelectList.find(policy => policy.id === devicePolicy.id)?.name
+      }
+      return transformDisplayText(name)
     }
-    return transformDisplayText(name)
-  }
 
-  const getApplicationPolicyNameByAccessControlPorfile = function (accessControlProfile: AccessControlProfile | undefined) {
-    if(!accessControlProfile) return transformDisplayText()
-    let name
-    const { applicationPolicy } = accessControlProfile
+  const getApplicationPolicyNameByAccessControlPorfile =
+    function (accessControlProfile: AccessControlProfile | undefined) {
+      if (!accessControlProfile) return transformDisplayText()
+      let name
+      const { applicationPolicy } = accessControlProfile
 
-    if (applicationPolicy && applicationPolicy.enabled && applicationPolicySelectList) {
-      name = applicationPolicySelectList.find(policy => policy.id === applicationPolicy.id)?.name
+      if (applicationPolicy && applicationPolicy.enabled && applicationPolicySelectList) {
+        name = applicationPolicySelectList.find(policy => policy.id === applicationPolicy.id)?.name
+      }
+      return transformDisplayText(name)
     }
-    return transformDisplayText(name)
-  }
 
-  const getLinkLimitByAccessControlPorfile = function (accessControlProfile: AccessControlProfile | undefined, type: string) {
-    let limit = 'Unlimited'
-    if (accessControlProfile && accessControlProfile.rateLimiting && accessControlProfile.rateLimiting[type] !== 0) {
-      limit = accessControlProfile.rateLimiting[type] + ' Mbps'
+  const getLinkLimitByAccessControlPorfile =
+    function (accessControlProfile: AccessControlProfile | undefined, type: string) {
+      let limit = 'Unlimited'
+      if (accessControlProfile && accessControlProfile.rateLimiting
+        && accessControlProfile.rateLimiting[type] !== 0) {
+        limit = accessControlProfile.rateLimiting[type] + ' Mbps'
+      }
+      return limit
     }
-    return limit
-  }
 
   const [enableAccessControlProfile] = [useWatch('enableAccessControlProfile')]
   return (<>
@@ -258,18 +268,22 @@ function SelectAccessProfileProfile () {
 
     <UI.FieldLabel width='175px'>
       <span>Client Rate Limit</span>
-      { (!state.selectedAccessControlProfile || state.selectedAccessControlProfile.rateLimiting?.enabled === false) && '--' }
-      { (state.selectedAccessControlProfile && state.selectedAccessControlProfile.rateLimiting?.enabled) &&
-       <div>
-         <UI.RateLimitBlock>
-           <label>Up:</label>
-           <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile, 'uplinkLimit')}</div>
-         </UI.RateLimitBlock>
-         <UI.RateLimitBlock>
-           <label>Down:</label>
-           <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile, 'downlinkLimit')}</div>
-         </UI.RateLimitBlock>
-       </div>
+      {(!state.selectedAccessControlProfile ||
+        state.selectedAccessControlProfile.rateLimiting?.enabled === false) && '--'}
+      {(state.selectedAccessControlProfile &&
+        state.selectedAccessControlProfile.rateLimiting?.enabled) &&
+        <div>
+          <UI.RateLimitBlock>
+            <label>Up:</label>
+            <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
+              'uplinkLimit')}</div>
+          </UI.RateLimitBlock>
+          <UI.RateLimitBlock>
+            <label>Down:</label>
+            <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
+              'downlinkLimit')}</div>
+          </UI.RateLimitBlock>
+        </div>
       }
     </UI.FieldLabel>
   </>)

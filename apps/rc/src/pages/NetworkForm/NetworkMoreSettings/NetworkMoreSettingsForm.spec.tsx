@@ -4,9 +4,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Provider }                  from '@acx-ui/store'
-import { within }                    from '@acx-ui/test-utils'
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { within }         from '@acx-ui/test-utils'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
 
