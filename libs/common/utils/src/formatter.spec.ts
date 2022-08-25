@@ -1,4 +1,7 @@
-import moment from 'moment-timezone'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
+
+import { renderHook } from '@acx-ui/test-utils'
 
 import { formatter } from './formatter'
 
@@ -187,6 +190,39 @@ describe('formatter', () => {
       expect(formatter('txFormat')('_1DB')).toBe('-1dB')
       expect(formatter('txFormat')('_6DB')).toBe('-6dB(1/4)')
       expect(formatter('txFormat')('_MIN')).toBe('Min')
+    })
+  })
+  describe('calendarFormat', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(global.Date, 'now')
+        .mockImplementationOnce(() =>
+          new Date('2022-08-05T13:51:00.000Z').valueOf()
+        )
+    })
+    it('should format date to "[Today,] HH:mm"', () => {
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659687682000))
+      expect(result.current).toBe('Today, 13:51')
+    })
+    it('should format date to "[Yesterday,] HH:mm"', () => {
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659608482000))
+      expect(result.current).toBe('Yesterday, 15:51')
+    })
+    it('should format date to "[Tomorrow,] HH:mm"', () => {
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659774082000))
+      expect(result.current).toBe('Tomorrow, 13:51')
+    })
+    it('should format date to "[Last] dddd[,] HH:mm"', () => {
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659255682000))
+      expect(result.current).toBe('Last Sunday, 13:51')
+    })
+    it('should format date to "dddd[,] HH:mm"', () => {
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659860482000))
+      expect(result.current).toBe('Sunday, 13:51')
+    })
+    it('should format date to "MMM DD[,] HH:mm"', () => {
+      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1654590082000))
+      expect(result.current).toBe('Jun 07 13:51')
     })
   })
   describe('durationFormat', () => {
