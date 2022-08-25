@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
-import { 
+import {
   mockServer,
   render, screen,
   fireEvent,
@@ -11,7 +12,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import { NetworkForm } from './NetworkForm'
-import { 
+import {
   networksResponse,
   venuesResponse,
   successResponse
@@ -24,7 +25,7 @@ async function fillInBeforeSettings (networkName: string) {
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating, { timeout: 7000 })
 
-  fireEvent.click(screen.getByText('Next'))
+  userEvent.click(screen.getByText('Next'))
 }
 
 const networkResponse = {
@@ -116,16 +117,16 @@ describe('NetworkForm', () => {
     })
 
     expect(asFragment()).toMatchSnapshot()
-    
+
     await fillInBeforeSettings('open network edit test')
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
-    fireEvent.click(screen.getByText('Next'))
+    userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    fireEvent.click(screen.getByText('Next'))
+    userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    fireEvent.click(screen.getByText('Finish'))
+    userEvent.click(screen.getByText('Finish'))
   })
 })

@@ -237,109 +237,117 @@ exports[`NetworkForm should create open network successfully 1`] = `
                   />
                   <div
                     class="ant-row"
+                    style="margin-left: -10px; margin-right: -10px;"
                   >
                     <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5"
+                      class="ant-col ant-col-10"
+                      style="padding-left: 10px; padding-right: 10px;"
                     >
+                      <h3
+                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                      >
+                        Network Details
+                      </h3>
                       <div
-                        class="ant-row"
-                        style="margin-left: -10px; margin-right: -10px;"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col ant-col-10"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-row ant-form-item-row"
                         >
-                          <h3
-                            class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                          >
-                            Network Details
-                          </h3>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
                           >
-                            <div
-                              class="ant-col ant-form-item-label"
+                            <label
+                              class="ant-form-item-required"
+                              for="details_name"
+                              title="Network Name"
                             >
-                              <label
-                                class="ant-form-item-required"
-                                for="details_name"
-                                title="Network Name"
-                              >
-                                Network Name
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  <span
-                                    class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
-                                  >
-                                    <input
-                                      class="ant-input"
-                                      id="details_name"
-                                      type="text"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-input-suffix"
-                                    />
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
+                              Network Name
+                            </label>
                           </div>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                for="details_description"
-                                title="Description"
-                              >
-                                Description
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
+                                <span
+                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
                                 >
-                                  <textarea
+                                  <input
                                     class="ant-input"
-                                    id="details_description"
-                                    rows="4"
+                                    id="details_name"
+                                    type="text"
+                                    value=""
                                   />
-                                </div>
+                                  <span
+                                    class="ant-input-suffix"
+                                  />
+                                </span>
                               </div>
                             </div>
                           </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="details_description"
+                              title="Description"
+                            >
+                              Description
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
+                              >
+                                <textarea
+                                  class="ant-input"
+                                  id="details_description"
+                                  rows="4"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
                               >
                                 <div
-                                  class="ant-form-item-control-input-content"
+                                  class="ant-form-item"
                                 >
                                   <div
-                                    class="ant-row ant-form-item"
+                                    class="ant-row ant-form-item-row"
                                   >
                                     <div
                                       class="ant-col ant-form-item-label"
@@ -525,24 +533,24 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-14"
+                      style="padding-left: 10px; padding-right: 10px;"
+                    >
+                      <div
+                        class="ant-row ant-row-center"
+                      >
                         <div
-                          class="ant-col ant-col-14"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-col"
                         >
                           <div
-                            class="ant-row ant-row-center"
+                            class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
                           >
-                            <div
-                              class="ant-col"
-                            >
-                              <div
-                                class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
-                              >
-                                <img
-                                  src="none.png"
-                                />
-                              </div>
-                            </div>
+                            <img
+                              src="none.png"
+                            />
                           </div>
                         </div>
                       </div>
@@ -564,76 +572,72 @@ exports[`NetworkForm should create open network successfully 1`] = `
                   />
                   <div
                     class="ant-row"
+                    style="margin-left: -10px; margin-right: -10px;"
                   >
                     <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5 dOqwQw"
+                      class="ant-col ant-col-10"
+                      style="padding-left: 10px; padding-right: 10px;"
                     >
+                      <h3
+                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                      >
+                        Open Settings
+                      </h3>
                       <div
-                        class="ant-row"
-                        style="margin-left: -10px; margin-right: -10px;"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col ant-col-10"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-row ant-form-item-row"
                         >
-                          <h3
-                            class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                          >
-                            Open Settings
-                          </h3>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
+                                <button
+                                  aria-checked="false"
+                                  class="ant-switch"
+                                  id="settings_isCloudpathEnabled"
+                                  role="switch"
+                                  type="button"
                                 >
-                                  <button
-                                    aria-checked="false"
-                                    class="ant-switch"
-                                    id="settings_isCloudpathEnabled"
-                                    role="switch"
-                                    type="button"
-                                  >
-                                    <div
-                                      class="ant-switch-handle"
-                                    />
-                                    <span
-                                      class="ant-switch-inner"
-                                    />
-                                  </button>
-                                  <span>
-                                    Use Cloudpath Server
-                                  </span>
-                                </div>
+                                  <div
+                                    class="ant-switch-handle"
+                                  />
+                                  <span
+                                    class="ant-switch-inner"
+                                  />
+                                </button>
+                                <span>
+                                  Use Cloudpath Server
+                                </span>
                               </div>
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-14"
+                      style="padding-left: 10px; padding-right: 10px;"
+                    >
+                      <div
+                        class="ant-row ant-row-center"
+                      >
                         <div
-                          class="ant-col ant-col-14"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-col"
                         >
                           <div
-                            class="ant-row ant-row-center"
+                            class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
                           >
-                            <div
-                              class="ant-col"
-                            >
-                              <div
-                                class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
-                              >
-                                <img
-                                  alt="Open Network"
-                                  src="open.png"
-                                />
-                              </div>
-                            </div>
+                            <img
+                              alt="Open Network"
+                              src="open.png"
+                            />
                           </div>
                         </div>
                       </div>
@@ -683,165 +687,177 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     style="display: none;"
                     type="text"
                   />
+                  <h3
+                    class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                  >
+                    Summary
+                  </h3>
                   <div
                     class="ant-row"
+                    style="margin-left: -10px; margin-right: -10px;"
                   >
                     <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5 dOqwQw"
+                      class="ant-col"
+                      style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                     >
-                      <h3
-                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                      <h4
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                       >
-                        Summary
-                      </h3>
+                        Network Info
+                      </h4>
                       <div
-                        class="ant-row"
-                        style="margin-left: -10px; margin-right: -10px;"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col"
-                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                          class="ant-row ant-form-item-row"
                         >
-                          <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                          >
-                            Network Info
-                          </h4>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
                           >
-                            <div
-                              class="ant-col ant-form-item-label"
+                            <label
+                              class=""
+                              title="Network Name:"
                             >
-                              <label
-                                class=""
-                                title="Network Name:"
-                              >
-                                Network Name:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                />
-                              </div>
-                            </div>
+                              Network Name:
+                            </label>
                           </div>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Info:"
-                              >
-                                Info:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  --
-                                </div>
-                              </div>
+                                class="ant-form-item-control-input-content"
+                              />
                             </div>
                           </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
                           >
-                            <div
-                              class="ant-col ant-form-item-label"
+                            <label
+                              class=""
+                              title="Info:"
                             >
-                              <label
-                                class=""
-                                title="Type:"
-                              >
-                                Type:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  Open Network
-                                </div>
-                              </div>
-                            </div>
+                              Info:
+                            </label>
                           </div>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Use Cloudpath Server:"
-                              >
-                                Use Cloudpath Server:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  No
-                                </div>
+                                --
                               </div>
                             </div>
                           </div>
                         </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
                         <div
-                          class="ant-divider ant-divider-vertical"
-                          role="separator"
-                          style="height: 300px;"
-                        />
-                        <div
-                          class="ant-col"
-                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                          class="ant-row ant-form-item-row"
                         >
-                          <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                          >
-                            Activated in venues
-                          </h4>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              title="Type:"
+                            >
+                              Type:
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  --
-                                </div>
+                                Open Network
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              title="Use Cloudpath Server:"
+                            >
+                              Use Cloudpath Server:
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                No
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-divider ant-divider-vertical"
+                      role="separator"
+                      style="height: 300px;"
+                    />
+                    <div
+                      class="ant-col"
+                      style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                    >
+                      <h4
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                      >
+                        Activated in venues
+                      </h4>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                --
                               </div>
                             </div>
                           </div>
@@ -1136,109 +1152,117 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                   />
                   <div
                     class="ant-row"
+                    style="margin-left: -10px; margin-right: -10px;"
                   >
                     <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5"
+                      class="ant-col ant-col-10"
+                      style="padding-left: 10px; padding-right: 10px;"
                     >
+                      <h3
+                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                      >
+                        Network Details
+                      </h3>
                       <div
-                        class="ant-row"
-                        style="margin-left: -10px; margin-right: -10px;"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col ant-col-10"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-row ant-form-item-row"
                         >
-                          <h3
-                            class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                          >
-                            Network Details
-                          </h3>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
                           >
-                            <div
-                              class="ant-col ant-form-item-label"
+                            <label
+                              class="ant-form-item-required"
+                              for="details_name"
+                              title="Network Name"
                             >
-                              <label
-                                class="ant-form-item-required"
-                                for="details_name"
-                                title="Network Name"
-                              >
-                                Network Name
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  <span
-                                    class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
-                                  >
-                                    <input
-                                      class="ant-input"
-                                      id="details_name"
-                                      type="text"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-input-suffix"
-                                    />
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
+                              Network Name
+                            </label>
                           </div>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                for="details_description"
-                                title="Description"
-                              >
-                                Description
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
+                                <span
+                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
                                 >
-                                  <textarea
+                                  <input
                                     class="ant-input"
-                                    id="details_description"
-                                    rows="4"
+                                    id="details_name"
+                                    type="text"
+                                    value=""
                                   />
-                                </div>
+                                  <span
+                                    class="ant-input-suffix"
+                                  />
+                                </span>
                               </div>
                             </div>
                           </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="details_description"
+                              title="Description"
+                            >
+                              Description
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
+                              >
+                                <textarea
+                                  class="ant-input"
+                                  id="details_description"
+                                  rows="4"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
                               >
                                 <div
-                                  class="ant-form-item-control-input-content"
+                                  class="ant-form-item"
                                 >
                                   <div
-                                    class="ant-row ant-form-item"
+                                    class="ant-row ant-form-item-row"
                                   >
                                     <div
                                       class="ant-col ant-form-item-label"
@@ -1273,24 +1297,24 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-14"
+                      style="padding-left: 10px; padding-right: 10px;"
+                    >
+                      <div
+                        class="ant-row ant-row-center"
+                      >
                         <div
-                          class="ant-col ant-col-14"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-col"
                         >
                           <div
-                            class="ant-row ant-row-center"
+                            class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
                           >
-                            <div
-                              class="ant-col"
-                            >
-                              <div
-                                class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
-                              >
-                                <img
-                                  src="none.png"
-                                />
-                              </div>
-                            </div>
+                            <img
+                              src="none.png"
+                            />
                           </div>
                         </div>
                       </div>
@@ -1312,77 +1336,73 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                   />
                   <div
                     class="ant-row"
+                    style="margin-left: -10px; margin-right: -10px;"
                   >
                     <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5 dOqwQw"
+                      class="ant-col ant-col-10"
+                      style="padding-left: 10px; padding-right: 10px;"
                     >
+                      <h3
+                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                      >
+                        Open Settings
+                      </h3>
                       <div
-                        class="ant-row"
-                        style="margin-left: -10px; margin-right: -10px;"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col ant-col-10"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-row ant-form-item-row"
                         >
-                          <h3
-                            class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                          >
-                            Open Settings
-                          </h3>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
+                                <button
+                                  aria-checked="false"
+                                  class="ant-switch ant-switch-disabled"
+                                  disabled=""
+                                  id="settings_isCloudpathEnabled"
+                                  role="switch"
+                                  type="button"
                                 >
-                                  <button
-                                    aria-checked="false"
-                                    class="ant-switch ant-switch-disabled"
-                                    disabled=""
-                                    id="settings_isCloudpathEnabled"
-                                    role="switch"
-                                    type="button"
-                                  >
-                                    <div
-                                      class="ant-switch-handle"
-                                    />
-                                    <span
-                                      class="ant-switch-inner"
-                                    />
-                                  </button>
-                                  <span>
-                                    Use Cloudpath Server
-                                  </span>
-                                </div>
+                                  <div
+                                    class="ant-switch-handle"
+                                  />
+                                  <span
+                                    class="ant-switch-inner"
+                                  />
+                                </button>
+                                <span>
+                                  Use Cloudpath Server
+                                </span>
                               </div>
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-14"
+                      style="padding-left: 10px; padding-right: 10px;"
+                    >
+                      <div
+                        class="ant-row ant-row-center"
+                      >
                         <div
-                          class="ant-col ant-col-14"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-col"
                         >
                           <div
-                            class="ant-row ant-row-center"
+                            class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
                           >
-                            <div
-                              class="ant-col"
-                            >
-                              <div
-                                class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
-                              >
-                                <img
-                                  alt="Open Network"
-                                  src="open.png"
-                                />
-                              </div>
-                            </div>
+                            <img
+                              alt="Open Network"
+                              src="open.png"
+                            />
                           </div>
                         </div>
                       </div>
@@ -1432,165 +1452,177 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                     style="display: none;"
                     type="text"
                   />
+                  <h3
+                    class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                  >
+                    Summary
+                  </h3>
                   <div
                     class="ant-row"
+                    style="margin-left: -10px; margin-right: -10px;"
                   >
                     <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5 dOqwQw"
+                      class="ant-col"
+                      style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                     >
-                      <h3
-                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                      <h4
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                       >
-                        Summary
-                      </h3>
+                        Network Info
+                      </h4>
                       <div
-                        class="ant-row"
-                        style="margin-left: -10px; margin-right: -10px;"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col"
-                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                          class="ant-row ant-form-item-row"
                         >
-                          <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                          >
-                            Network Info
-                          </h4>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
                           >
-                            <div
-                              class="ant-col ant-form-item-label"
+                            <label
+                              class=""
+                              title="Network Name:"
                             >
-                              <label
-                                class=""
-                                title="Network Name:"
-                              >
-                                Network Name:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                />
-                              </div>
-                            </div>
+                              Network Name:
+                            </label>
                           </div>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Info:"
-                              >
-                                Info:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  --
-                                </div>
-                              </div>
+                                class="ant-form-item-control-input-content"
+                              />
                             </div>
                           </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
                           >
-                            <div
-                              class="ant-col ant-form-item-label"
+                            <label
+                              class=""
+                              title="Info:"
                             >
-                              <label
-                                class=""
-                                title="Type:"
-                              >
-                                Type:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  Open Network
-                                </div>
-                              </div>
-                            </div>
+                              Info:
+                            </label>
                           </div>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Use Cloudpath Server:"
-                              >
-                                Use Cloudpath Server:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  No
-                                </div>
+                                --
                               </div>
                             </div>
                           </div>
                         </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
                         <div
-                          class="ant-divider ant-divider-vertical"
-                          role="separator"
-                          style="height: 300px;"
-                        />
-                        <div
-                          class="ant-col"
-                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                          class="ant-row ant-form-item-row"
                         >
-                          <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                          >
-                            Activated in venues
-                          </h4>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              title="Type:"
+                            >
+                              Type:
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  --
-                                </div>
+                                Open Network
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              title="Use Cloudpath Server:"
+                            >
+                              Use Cloudpath Server:
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                No
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-divider ant-divider-vertical"
+                      role="separator"
+                      style="height: 300px;"
+                    />
+                    <div
+                      class="ant-col"
+                      style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                    >
+                      <h4
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                      >
+                        Activated in venues
+                      </h4>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                --
                               </div>
                             </div>
                           </div>
