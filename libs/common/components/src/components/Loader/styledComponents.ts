@@ -22,7 +22,7 @@ export const FallbackWrapper = styled.div<{ $isFetching?: boolean }>`
 
   ${props => props.$isFetching ? css`
     position: absolute;
-    z-index: 5;
+    z-index: 4;
     background-color: var(--acx-primary-white);
     opacity: 0.8;
     @supports (backdrop-filter: none) {
