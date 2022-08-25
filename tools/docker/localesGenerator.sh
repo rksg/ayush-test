@@ -1,21 +1,9 @@
 #!/bin/sh
 
-echo "Locale files generation started..."
-if [ -d  apps/main/src/locales/compiled ]; then
-  echo "path exists"
-  rm -rf 'apps/main/src/locales/compiled'
-  echo "folder compiled deleted"
-else
-  echo "No compiled dir"
-fi
-
-for file in $(find apps/main/src/locales/* -name '*.json')
+for file in $(find apps/main/src/locales/* -name '*.json' -not -path 'apps/main/src/locales/compiled/*')
 do
-  npx formatjs compile $file --out-file 'apps/main/temp/'$file
-  echo $file
+  npx formatjs compile $file --out-file "apps/main/src/locales/compiled/$(basename $file)"
+  echo "compiled $file"
 done
-
-mv 'apps/main/temp/apps/main/src/locales'  'apps/main/src/locales/compiled'
-rm -rf 'apps/main/temp'
 
 echo "Locale files generation completed!!"
