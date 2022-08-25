@@ -66,8 +66,12 @@ export const ShortIncidentDescription = (props: IncidentTableComponentProps) => 
   return <UI.DescriptionSpan>{shortDesc}</UI.DescriptionSpan>
 }
 
-export const GetCategory = (code: string) => {
+export const GetCategory = (code: string, subCategory?: boolean) => {
   const incidentInfo = incidentInformation[code]
+  if (subCategory) {
+    const { subCategory } = incidentInfo
+    return <FormatIntlString message={subCategory} />
+  }
   const { category } = incidentInfo
   return <FormatIntlString message={category} />
 }

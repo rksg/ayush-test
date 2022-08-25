@@ -273,10 +273,13 @@ describe('IncidentTable: utils', () => {
   describe('getCategory', () => {
     interface RenderGetCategoryProps {
       code?: string
+      subCategory?: boolean
     }
   
     const RenderGetCategory = (props: RenderGetCategoryProps) => {
-      return <Provider>{GetCategory(props.code as string)}</Provider>
+      return <Provider>
+        {GetCategory(props.code as string, props.subCategory)}
+      </Provider>
     }
   
     it('getCategory: valid codes', async () => {
@@ -285,6 +288,15 @@ describe('IncidentTable: utils', () => {
         const category = incidentInformation[code].category.defaultMessage
         await screen.findByText(category)
         expect(screen.getByText(category).textContent).toBe(category)
+      })
+    })
+
+    it('getCategory: valid codes on subCategory', async () => {
+      incidentCodes.forEach(async (code) => {
+        render(<RenderGetCategory code={code} subCategory={true}/>)
+        const subCategory = incidentInformation[code].subCategory.defaultMessage
+        await screen.findByText(subCategory)
+        expect(screen.getByText(subCategory).textContent).toBe(subCategory)
       })
     })
   })

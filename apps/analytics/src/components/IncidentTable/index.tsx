@@ -108,7 +108,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       width: 'auto',
       dataIndex: 'subCategory',
       key: 'subCategory',
-      render: (_, value) => GetCategory(value.code),
+      render: (_, value) => GetCategory(value.code, true),
       sorter: {
         compare: (a, b) => defaultSort(a.code, b.code),
         multiple: 5
