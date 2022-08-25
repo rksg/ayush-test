@@ -18,23 +18,22 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { StepsForm, Button, Subtitle }                       from '@acx-ui/components'
-import { useGetAllUserSettingsQuery, useCloudpathListQuery } from '@acx-ui/rc/services'
+import { useCloudpathListQuery } from '@acx-ui/rc/services'
 import {
-  Constants,
   WlanSecurityEnum,
-  getUserSettingsFromDict,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
   networkWifiIpRegExp,
   networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'
-import { NetworkTypeEnum, UserSettings } from '@acx-ui/rc/utils'
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 
 import * as contents      from '../contentsMap'
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
+import { useSplitTreatment } from '@acx-ui/feature-toggle'
 
 const { Option } = Select
 
@@ -116,10 +115,7 @@ function SettingsForm () {
   ]
 
   const { tenantId } = useParams()
-  const userSetting = useGetAllUserSettingsQuery({ params: { tenantId } })
-  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
-    Constants.triRadioUserSettingsKey)) === 'true'
-
+  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle') 
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
@@ -147,7 +143,7 @@ function SettingsForm () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsForm.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsForm.Title>
-        {supportTriBandRadio &&
+        {triBandRadioFeatureFlag &&
           <Form.Item
             label='Security Protocol'
             name='wlanSecurity'
