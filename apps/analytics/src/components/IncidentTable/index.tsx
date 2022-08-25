@@ -177,7 +177,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         columns={ColumnHeaders}
         actions={actions}
         rowSelection={{
-          type: 'checkbox',
+          type: 'radio',
           defaultSelectedRowKeys: queryResults.data
             ? mutedKeysFilter(queryResults.data)
             : undefined

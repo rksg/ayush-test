@@ -219,9 +219,9 @@ describe('IncidentTableWidget', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const hiddenCheckboxes = 
-      await screen.findAllByRole('checkbox', { hidden: true, checked: false })
+      await screen.findAllByRole('radio', { hidden: true, checked: false })
 
-    expect(hiddenCheckboxes).toHaveLength(2)
+    expect(hiddenCheckboxes).toHaveLength(1)
     
 
     fireEvent.click(await screen.findByRole('button', { name: /Mute/i }))
