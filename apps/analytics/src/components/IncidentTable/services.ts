@@ -34,6 +34,7 @@ export type AdditionalIncidentTableFields = {
   duration: number,
   description: string,
   category: string,
+  subCategory: string,
   scope: string,
   type: string,
 }
@@ -41,12 +42,37 @@ export type AdditionalIncidentTableFields = {
 export type IncidentTableRow = Incident & AdditionalIncidentTableFields
 
 export const transformData = (incident: Incident): IncidentTableRow => {
+  
   const validRelatedIncidents =
     typeof incident.relatedIncidents !== 'undefined' && incident.relatedIncidents.length > 0
-  const children = validRelatedIncidents ? incident.relatedIncidents : undefined
+  const rawChildren = validRelatedIncidents ? incident.relatedIncidents : undefined
+  let children = undefined
+  if (typeof rawChildren !== 'undefined') {
+    children = rawChildren.map((value) => {
+      const childDuration = durationValue(incident.startTime, incident.endTime)
+      const childDescription = noDataSymbol
+      const childCategory = noDataSymbol
+      const childSubCategory = noDataSymbol
+      const childScope = noDataSymbol
+      const childType = noDataSymbol
+
+      return {
+        ...value,
+        children: undefined,
+        duration: childDuration,
+        description: childDescription,
+        category: childCategory,
+        scope: childScope,
+        type: childType,
+        subCategory: childSubCategory
+      }
+    })
+  }
+
   const duration = durationValue(incident.startTime, incident.endTime)
   const description = noDataSymbol
   const category = noDataSymbol
+  const subCategory = noDataSymbol
   const scope = noDataSymbol
   const type = noDataSymbol
 
@@ -57,6 +83,7 @@ export const transformData = (incident: Incident): IncidentTableRow => {
     description,
     scope,
     category,
+    subCategory,
     type
   }
 }

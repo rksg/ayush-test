@@ -42,10 +42,7 @@ export const FormatDate = (props: FormatDateProps) => {
   return <UI.DateSpan>{timeStamp}</UI.DateSpan>
 }
 
-export const formatDuration = (duration: number) => {
-  const durationString = durationFormat(Math.abs(duration))
-  return durationString
-}
+export const formatDuration = (duration: number) => durationFormat(duration)
 
 export interface FormatIntlStringProps {
   message: {

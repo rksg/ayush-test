@@ -27,7 +27,7 @@ export function calculateSeverity (severity: number): IncidentSeverities | void 
   ) as Map<string, SeverityRange>
 
   for (let [p, filter] of severityMap) {
-    if (severity >= filter.gt) {
+    if (severity > filter.gt) {
       return p as IncidentSeverities
     }
   }
