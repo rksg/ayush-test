@@ -3,9 +3,9 @@ import { configureStore } from '@reduxjs/toolkit'
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
-import { donutChartsApi, RequestPayload  } from './services'
+import { networkImpactChartsApi, RequestPayload  } from './services'
 
-describe('donutChartsApi', () => {
+describe('networkImpactChartsApi', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
@@ -18,7 +18,7 @@ describe('donutChartsApi', () => {
     charts: [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
   } as RequestPayload
   afterEach(() =>
-    store.dispatch(donutChartsApi.util.resetApiState())
+    store.dispatch(networkImpactChartsApi.util.resetApiState())
   )
   it('should return correct data', async () => {
     const expectedResult = { incident: {
@@ -35,22 +35,22 @@ describe('donutChartsApi', () => {
         { key: 'manufacturer1', value: 1 }, { key: 'manufacturer2', value: 1 }
       ] }
     } }
-    mockGraphqlQuery(dataApiURL, 'DonutCharts', {
+    mockGraphqlQuery(dataApiURL, 'NetworkImpactCharts', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      donutChartsApi.endpoints.donutCharts.initiate(payload)
+      networkImpactChartsApi.endpoints.networkImpactCharts.initiate(payload)
     )
     expect(status).toBe('fulfilled')
     expect(data).toMatchSnapshot()
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'DonutCharts', {
+    mockGraphqlQuery(dataApiURL, 'NetworkImpactCharts', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      donutChartsApi.endpoints.donutCharts.initiate(payload)
+      networkImpactChartsApi.endpoints.networkImpactCharts.initiate(payload)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

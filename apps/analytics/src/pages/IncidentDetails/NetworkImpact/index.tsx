@@ -8,8 +8,8 @@ import { Incident }                         from '@acx-ui/analytics/utils'
 import { Card, cssStr, DonutChart, Loader } from '@acx-ui/components'
 import { intlFormats }                      from '@acx-ui/utils'
 
-import { donutCharts, getDominanceByThreshold } from './config'
-import { DonutChartData, useDonutChartsQuery }  from './services'
+import { networkImpactCharts, getDominanceByThreshold }        from './config'
+import { NetworkImpactChartData, useNetworkImpactChartsQuery } from './services'
 
 const colors = [
   // TODO
@@ -24,8 +24,10 @@ interface NetworkImpactProps {
   charts: string[]
 }
 
-export const transformSummary = (metric: DonutChartData, incident: Incident, intl: IntlShape) => {
-  const config = donutCharts[metric.key]
+export const transformSummary = (
+  metric: NetworkImpactChartData, incident: Incident, intl: IntlShape
+) => {
+  const config = networkImpactCharts[metric.key]
   const { count, data } = metric
   const dominance = (config.dominanceFn || getDominanceByThreshold())(data, incident)
   if (dominance) {
@@ -39,8 +41,8 @@ export const transformSummary = (metric: DonutChartData, incident: Incident, int
   }
 }
 
-export const transformData = (metric: DonutChartData, intl: IntlShape) => {
-  const config = donutCharts[metric.key]
+export const transformData = (metric: NetworkImpactChartData, intl: IntlShape) => {
+  const config = networkImpactCharts[metric.key]
   return metric.data.map((record, index) => ({
     ...record,
     name: config.transformKeyFn ? config.transformKeyFn(record.name, intl) : record.name,
@@ -51,12 +53,12 @@ export const transformData = (metric: DonutChartData, intl: IntlShape) => {
 
 export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }) => {
   const intl = useIntl()
-  const queryResults = useDonutChartsQuery({ charts, incident })
+  const queryResults = useNetworkImpactChartsQuery({ charts, incident })
   return <Loader states={[queryResults]}>
     <Card title={intl.$t({ defaultMessage: 'Network Impact' })} bordered={false}></Card>
     <Row>
       {Object.entries(queryResults.data || {}).map(([chart, chartData])=>{
-        const config = donutCharts[chartData.key]
+        const config = networkImpactCharts[chartData.key]
         return <Col key={chart} span={6} style={{ height: 200 }}>
           <Card bordered={false}>
             <AutoSizer>

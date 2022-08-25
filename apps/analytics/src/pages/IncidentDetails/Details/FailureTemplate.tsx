@@ -13,7 +13,7 @@ import { NetworkImpact } from '../NetworkImpact'
 import * as UI from './styledComponents'
 
 export const IncidentDetailsTemplate = (props: Incident) => {
-  const donutCharts = [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
+  const networkImpactCharts = [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
 
   const { $t } = useIntl()
 
@@ -39,7 +39,7 @@ export const IncidentDetailsTemplate = (props: Incident) => {
           <div>insights</div>
         </Col>
         <Col offset={4} span={20}>
-          <NetworkImpact incident={props} charts={donutCharts}/>
+          <NetworkImpact incident={props} charts={networkImpactCharts}/>
         </Col>
         <Col offset={4} span={20}>
           <div>charts</div>

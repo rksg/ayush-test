@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`donutChartsApi should return correct data 1`] = `
+exports[`networkImpactChartsApi should return correct data 1`] = `
 Object {
   "WLAN": Object {
     "count": 2,

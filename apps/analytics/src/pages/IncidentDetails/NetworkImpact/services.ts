@@ -3,23 +3,23 @@ import { gql } from 'graphql-request'
 import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
 
-import { donutCharts } from './config'
+import { networkImpactCharts } from './config'
 
 export interface RequestPayload {
   incident: Incident,
   charts: string[]
 }
-export interface DonutChartData {
+export interface NetworkImpactChartData {
   key: string
   count: number
   data: { key: string, name: string, value: number }[]
 }
 export interface Response {
-  incident: Record<string, Omit<DonutChartData, 'key'>>
+  incident: Record<string, Omit<NetworkImpactChartData, 'key'>>
 }
 
 const transformResponse = (response: Response, _: {}, payload: RequestPayload) => {
-  return Object.entries(donutCharts)
+  return Object.entries(networkImpactCharts)
     .filter(([key]) => payload.charts.includes(key))
     .map(([, value]) => value)
     .sort((a, b) => (a.order as number) - (b.order as number))
@@ -30,22 +30,22 @@ const transformResponse = (response: Response, _: {}, payload: RequestPayload) =
         data: response.incident[config.key].data.map(item => ({ ...item, name: item.key }))
       }
       return agg
-    }, {} as Record<string, DonutChartData>)
+    }, {} as Record<string, NetworkImpactChartData>)
 }
 
-export const donutChartsApi = dataApi.injectEndpoints({
+export const networkImpactChartsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    donutCharts: build.query<
-      Record<string, DonutChartData>,
+    networkImpactCharts: build.query<
+      Record<string, NetworkImpactChartData>,
       RequestPayload
     >({
       query: (payload) => {
         const queries = payload.charts.map(
           chart => gql`
-            ${donutCharts[chart].key}: topN(
+            ${networkImpactCharts[chart].key}: topN(
               n: 10,
-              by: "${donutCharts[chart].dimension}",
-              type: "${donutCharts[chart].type}"
+              by: "${networkImpactCharts[chart].dimension}",
+              type: "${networkImpactCharts[chart].type}"
             ) {
               count
               data {
@@ -55,7 +55,7 @@ export const donutChartsApi = dataApi.injectEndpoints({
             }`)
         return {
           document: gql`
-            query DonutCharts($id: String) {
+            query NetworkImpactCharts($id: String) {
               incident(id: $id) {
                 ${queries.join('\n')}
               }
@@ -67,4 +67,4 @@ export const donutChartsApi = dataApi.injectEndpoints({
     })
   })
 })
-export const { useDonutChartsQuery } = donutChartsApi
+export const { useNetworkImpactChartsQuery } = networkImpactChartsApi

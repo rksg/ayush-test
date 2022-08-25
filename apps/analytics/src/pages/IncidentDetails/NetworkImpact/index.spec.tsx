@@ -5,18 +5,18 @@ import { Incident }                                                             
 import { Provider, store }                                                         from '@acx-ui/store'
 import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen, renderHook } from '@acx-ui/test-utils'
 
-import { donutChartsApi } from './services'
+import { networkImpactChartsApi } from './services'
 
 import { transformData, transformSummary, NetworkImpact } from '.'
 
 jest.mock('./config', () => {
-  const { donutCharts, ...rest } = jest.requireActual('./config')
+  const { networkImpactCharts, ...rest } = jest.requireActual('./config')
   return {
     ...rest,
-    donutCharts: {
-      ...donutCharts,
+    networkImpactCharts: {
+      ...networkImpactCharts,
       test: {
-        ...donutCharts['WLAN'],
+        ...networkImpactCharts['WLAN'],
         transformValueFn: (val: number) => val * 2
       }
     }
@@ -109,8 +109,8 @@ describe('NetworkImpact', () => {
     charts: [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
   }
   it('should match snapshot', async () => {
-    store.dispatch(donutChartsApi.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'DonutCharts', {
+    store.dispatch(networkImpactChartsApi.util.resetApiState())
+    mockGraphqlQuery(dataApiURL, 'NetworkImpactCharts', {
       data: NetworkImpactData
     })
     const { asFragment } = render(<Provider><NetworkImpact {...props}/></Provider>)

@@ -4,16 +4,15 @@ import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
 import { mapCodeToReason, Incident } from '@acx-ui/analytics/utils'
 import { formatter }                 from '@acx-ui/utils'
 
-import { DonutChartData } from './services'
+import { NetworkImpactChartData } from './services'
 
-export interface DonutChart {
+export interface NetworkImpactChart {
   key: string
   title: MessageDescriptor
-  dimensionAlias?: string
   dimension: string
   type: string
   unit: MessageDescriptor
-  dominanceFn?: (data: DonutChartData['data'], incident: Incident) => {
+  dominanceFn?: (data: NetworkImpactChartData['data'], incident: Incident) => {
     key: string
     value: number
     percentage: number
@@ -27,32 +26,32 @@ export interface DonutChart {
   order?: number
 }
 
-export const getDataWithPercentage = (data: DonutChartData['data']) => {
+export const getDataWithPercentage = (data: NetworkImpactChartData['data']) => {
   const sum = _.sumBy(data, 'value')
   return data.map(({ key, value }) => ({ key, value, percentage: !sum ? 0 : value / sum }))
 }
 
-export const getDominance = (data: DonutChartData['data']) =>
+export const getDominance = (data: NetworkImpactChartData['data']) =>
   _.maxBy(getDataWithPercentage(data), 'percentage')
 
 const dominanceThreshold = 0.7
 
 export const getDominanceByThreshold = (threshold: number = dominanceThreshold) => (
-  data: DonutChartData['data']
+  data: NetworkImpactChartData['data']
 ) => {
   const max = getDominance(data)
   return (max && max.percentage > threshold && max.key !== 'Others') ? max : null
 }
 
 export const getWLANDominance = (
-  data: DonutChartData['data'], incident: Incident
+  data: NetworkImpactChartData['data'], incident: Incident
 ) => {
   const dominant = incident.metadata.dominant.ssid
   const percentage = getDataWithPercentage(data)
   return _.pickBy(percentage, p => p.key === dominant)[1] || null
 }
 
-export const donutCharts: Readonly<Record<string, DonutChart>> = {
+export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> = {
   WLAN: {
     key: 'WLAN',
     title: defineMessage({ defaultMessage: 'WLAN' }),
