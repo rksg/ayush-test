@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { createContext, useState } from 'react'
 
 import {
   Button,
@@ -93,19 +93,36 @@ function ClientIsolationForm () {
   )
 }
 
+export interface DnsProxy {
+  domainName: string,
+  key: string,
+  ipList: string[],
+  type?: string
+}
+
+export interface DnsProxyContextType {
+  dnsProxyList: DnsProxy[] | [],
+  setDnsProxyList: (dnsProxyList: DnsProxy[]) => void
+}
+
+export const DnsProxyContext = createContext({} as DnsProxyContextType)
+
 export function ServicesForm () {
   const [
     enableDnsProxy,
     enableAntiSpoofing,
     enableArpRequestRateLimit,
-    enableDhcpRequestRateLimit
+    enableDhcpRequestRateLimit,
+    dnsProxyRules
   ] = [
+    useWatch<boolean>(['wlan','advancedCustomization','dnsProxyEnabled']),
     useWatch<boolean>(['wlan','advancedCustomization','dnsProxyEnabled']),
     useWatch<boolean>(['wlan','advancedCustomization','enableAntiSpoofing']),
     useWatch<boolean>(['wlan','advancedCustomization','enableArpRequestRateLimit']),
-    useWatch<boolean>(['wlan','advancedCustomization','enableDhcpRequestRateLimit'])
-
+    useWatch<boolean>(['wlan','advancedCustomization','dnsProxy', 'dnsProxyRules'])
   ]
+
+  const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxy[])
 
   return (
     <>
@@ -119,8 +136,9 @@ export function ServicesForm () {
             initialValue={false}
             children={<Switch />}
           />
-          {enableDnsProxy &&
-           <DnsProxyModal/>}
+          <DnsProxyContext.Provider value={{ dnsProxyList, setDnsProxyList }}>
+            {enableDnsProxy && <DnsProxyModal />}
+          </DnsProxyContext.Provider>
 
         </UI.FieldLabel>
       </UI.FieldLabel>
@@ -129,7 +147,7 @@ export function ServicesForm () {
       <UI.FieldLabel width='125px'>
         Wi-Fi Calling:
         <UI.FieldLabel width='30px'>
-        <Form.Item
+          <Form.Item
             name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
