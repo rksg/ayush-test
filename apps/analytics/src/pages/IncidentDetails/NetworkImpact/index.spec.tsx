@@ -23,6 +23,18 @@ jest.mock('./config', () => {
   }
 })
 
+interface ChildrenProps {
+  height: number
+  width: number
+}
+interface AutoSizerProps {
+  children: (props: ChildrenProps) => JSX.Element
+}
+jest.mock('react-virtualized-auto-sizer', () =>
+  (props: AutoSizerProps) => props.children({ height: 250, width: 250 })
+)
+
+
 const NetworkImpactData = { incident: {
   WLAN: {
     key: 'WLAN',

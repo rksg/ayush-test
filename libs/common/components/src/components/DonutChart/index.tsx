@@ -6,6 +6,8 @@ import { MessageDescriptor } from 'react-intl'
 import { cssNumber, cssStr }                                       from '../../theme/helper'
 import { tooltipOptions, donutChartTooltipFormatter, EventParams } from '../Chart/helper'
 
+import { SubTitle } from './styledComponents'
+
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
 
@@ -28,13 +30,15 @@ const defaultProps: DonutChartOptionalProps = {
 DonutChart.defaultProps = { ...defaultProps }
 
 export interface DonutChartProps extends DonutChartOptionalProps,
-  Omit<EChartsReactProps, 'option' | 'opts'> {
+  Omit<EChartsReactProps, 'option' | 'opts' | 'style'> {
   data: Array<DonutChartData>
   title?: string,
-  subTitle?: string
+  subTitle?: string,
+  subTitleBlockHeight?: number
   unit?: MessageDescriptor
   dataFormatter?: (value: unknown) => string | null,
   onClick?: (params: EventParams) => void
+  style: EChartsReactProps['style'] & { width: number, height: number }
 }
 
 export const onChartClick = (onClick: DonutChartProps['onClick']) =>
@@ -67,15 +71,6 @@ export function DonutChart ({
 
   const option: EChartsOption = {
     animation: props.animation,
-    title: [{
-      subtext: props.subTitle ? `{a|${props.subTitle}}` : undefined,
-      subtextStyle: {
-        width: 200,
-        overflow: 'break',
-        rich: { a: { align: 'center' } }
-      },
-      top: '70%'
-    }],
     tooltip: {
       show: false
     },
@@ -106,9 +101,8 @@ export function DonutChart ({
         animation: !isEmpty,
         data,
         type: 'pie',
-        center: [
-          props.showLegend && !isEmpty ? '26%' : '50%', 60],
-        radius: props.subTitle ? ['58%', '68%'] : ['76%', '90%'],
+        center: [props.showLegend && !isEmpty ? '27%' : '50%', '50%'],
+        radius: ['76%', '90%'],
         cursor: isEmpty ? 'auto' : 'pointer',
         avoidLabelOverlap: true,
         label: {
@@ -160,10 +154,18 @@ export function DonutChart ({
   }
 
   return (
-    <ReactECharts
-      {...props}
-      opts={{ renderer: 'svg' }}
-      option={option}
-      onEvents={{ click: onChartClick(props.onClick) }} />
+    <>
+      <ReactECharts
+        {...{
+          ...props,
+          style: {
+            ...props.style,
+            height: props.style?.height - (props.subTitle ? props.subTitleBlockHeight || 30 : 0) }
+        }}
+        opts={{ renderer: 'svg' }}
+        option={option}
+        onEvents={{ click: onChartClick(props.onClick) }} />
+      <SubTitle width={props.style.width}>{props.subTitle}</SubTitle>
+    </>
   )
 }

@@ -6,6 +6,46 @@ exports[`NetworkImpact should match snapshot 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
+      class="styledComponents__Wrapper-sc-13w5wfx-3 bOOolQ"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="styledComponents__HeaderContainer-sc-13w5wfx-4 jbxNCa"
+              >
+                <div
+                  class="styledComponents__TitleWrapper-sc-13w5wfx-5 bxvIFk"
+                >
+                  Network Impact
+                </div>
+                <div />
+              </div>
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        />
+      </div>
+    </div>
+    <div
       class="ant-row"
     >
       <div
@@ -13,7 +53,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 hnuCqA"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 kgPVrt"
         >
           <div
             class="ant-card"
@@ -52,38 +92,38 @@ exports[`NetworkImpact should match snapshot 1`] = `
                 _echarts_instance_="ec_mock"
                 class="echarts-for-react "
                 size-sensor-id="1"
-                style="height: 95%; width: 100%; position: relative;"
+                style="height: 220px; width: 250px; position: relative;"
               >
                 <div
-                  style="position: relative; overflow: hidden; width: 100px; height: 95px;"
+                  style="position: relative; overflow: hidden; width: 250px; height: 220px;"
                 >
                   <svg
                     baseProfile="full"
-                    height="95"
+                    height="220"
                     style="position:absolute;left:0;top:0;user-select:none"
                     version="1.1"
-                    width="100"
+                    width="250"
                     xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                   >
                     <rect
                       fill="none"
                       fill-opacity="1"
-                      height="95"
+                      height="220"
                       id="0"
-                      width="100"
+                      width="250"
                       x="0"
                       y="0"
                     />
                     <g>
                       <path
-                        d="M50 27.7L50 32.45Z"
+                        d="M125 11L125 26.4Z"
                         fill="#D61119"
                         stroke="#FFFFFF"
                         stroke-linejoin="round"
                       />
                       <path
-                        d="M50 27.7L50 32.45Z"
+                        d="M125 11L125 26.4Z"
                         fill="#F9C34B"
                         stroke="#FFFFFF"
                         stroke-linejoin="round"
@@ -91,7 +131,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       <path
                         d="M-2 -10.5l4 0l0 1l-4 0Z"
                         fill="none"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                       />
                       <text
                         dominant-baseline="central"
@@ -104,7 +144,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-width="2"
                         style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="middle"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                         y="-10"
                       >
                         WLAN
@@ -112,7 +152,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       <path
                         d="M-0.5 -0.5l1 0l0 11l-1 0Z"
                         fill="none"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                       />
                       <text
                         dominant-baseline="central"
@@ -125,30 +165,10 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-width="2"
                         style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                         text-anchor="middle"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                         y="10"
                       >
                         3
-                      </text>
-                      <path
-                        d="M-5 -5l125 0l0 21l-125 0Z"
-                        fill="rgb(0,0,0)"
-                        fill-opacity="0"
-                        stroke="#ccc"
-                        stroke-width="0"
-                        transform="translate(5 71.5)"
-                      />
-                      <text
-                        dominant-baseline="central"
-                        fill="#6E7079"
-                        style="font-size:12px;font-family:sans-serif;"
-                        text-anchor="middle"
-                        transform="translate(5 71.5)"
-                        x="100"
-                        xml:space="preserve"
-                        y="10.5"
-                      >
-                        This incident impacted 2 WLANs
                       </text>
                     </g>
                   </svg>
@@ -164,6 +184,12 @@ exports[`NetworkImpact should match snapshot 1`] = `
                   type="text/html"
                 />
               </div>
+              <div
+                class="sc-bczRLJ chorwm"
+                width="250"
+              >
+                This incident impacted 2 WLANs
+              </div>
             </div>
           </div>
         </div>
@@ -173,7 +199,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 hnuCqA"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 kgPVrt"
         >
           <div
             class="ant-card"
@@ -212,32 +238,32 @@ exports[`NetworkImpact should match snapshot 1`] = `
                 _echarts_instance_="ec_mock"
                 class="echarts-for-react "
                 size-sensor-id="2"
-                style="height: 95%; width: 100%; position: relative;"
+                style="height: 220px; width: 250px; position: relative;"
               >
                 <div
-                  style="position: relative; overflow: hidden; width: 100px; height: 95px;"
+                  style="position: relative; overflow: hidden; width: 250px; height: 220px;"
                 >
                   <svg
                     baseProfile="full"
-                    height="95"
+                    height="220"
                     style="position:absolute;left:0;top:0;user-select:none"
                     version="1.1"
-                    width="100"
+                    width="250"
                     xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                   >
                     <rect
                       fill="none"
                       fill-opacity="1"
-                      height="95"
+                      height="220"
                       id="0"
-                      width="100"
+                      width="250"
                       x="0"
                       y="0"
                     />
                     <g>
                       <path
-                        d="M50 27.7L50 32.45Z"
+                        d="M125 11L125 26.4Z"
                         fill="#D61119"
                         stroke="#FFFFFF"
                         stroke-linejoin="round"
@@ -245,7 +271,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       <path
                         d="M-3 -10.5l6 0l0 1l-6 0Z"
                         fill="none"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                       />
                       <text
                         dominant-baseline="central"
@@ -258,7 +284,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-width="2"
                         style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="middle"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                         y="-10"
                       >
                         Reason
@@ -266,7 +292,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       <path
                         d="M-0.5 -0.5l1 0l0 11l-1 0Z"
                         fill="none"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                       />
                       <text
                         dominant-baseline="central"
@@ -279,30 +305,10 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-width="2"
                         style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                         text-anchor="middle"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                         y="10"
                       >
                         2
-                      </text>
-                      <path
-                        d="M-5 -5l133 0l0 21l-133 0Z"
-                        fill="rgb(0,0,0)"
-                        fill-opacity="0"
-                        stroke="#ccc"
-                        stroke-width="0"
-                        transform="translate(5 71.5)"
-                      />
-                      <text
-                        dominant-baseline="central"
-                        fill="#6E7079"
-                        style="font-size:12px;font-family:sans-serif;"
-                        text-anchor="middle"
-                        transform="translate(5 71.5)"
-                        x="100"
-                        xml:space="preserve"
-                        y="10.5"
-                      >
-                        100 % of failures caused by 'AAA Auth Failure'
                       </text>
                     </g>
                   </svg>
@@ -318,6 +324,12 @@ exports[`NetworkImpact should match snapshot 1`] = `
                   type="text/html"
                 />
               </div>
+              <div
+                class="sc-bczRLJ chorwm"
+                width="250"
+              >
+                100 % of failures caused by 'AAA Auth Failure'
+              </div>
             </div>
           </div>
         </div>
@@ -327,7 +339,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 hnuCqA"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 kgPVrt"
         >
           <div
             class="ant-card"
@@ -366,38 +378,38 @@ exports[`NetworkImpact should match snapshot 1`] = `
                 _echarts_instance_="ec_mock"
                 class="echarts-for-react "
                 size-sensor-id="3"
-                style="height: 95%; width: 100%; position: relative;"
+                style="height: 220px; width: 250px; position: relative;"
               >
                 <div
-                  style="position: relative; overflow: hidden; width: 100px; height: 95px;"
+                  style="position: relative; overflow: hidden; width: 250px; height: 220px;"
                 >
                   <svg
                     baseProfile="full"
-                    height="95"
+                    height="220"
                     style="position:absolute;left:0;top:0;user-select:none"
                     version="1.1"
-                    width="100"
+                    width="250"
                     xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                   >
                     <rect
                       fill="none"
                       fill-opacity="1"
-                      height="95"
+                      height="220"
                       id="0"
-                      width="100"
+                      width="250"
                       x="0"
                       y="0"
                     />
                     <g>
                       <path
-                        d="M50 27.7L50 32.45Z"
+                        d="M125 11L125 26.4Z"
                         fill="#D61119"
                         stroke="#FFFFFF"
                         stroke-linejoin="round"
                       />
                       <path
-                        d="M50 27.7L50 32.45Z"
+                        d="M125 11L125 26.4Z"
                         fill="#F9C34B"
                         stroke="#FFFFFF"
                         stroke-linejoin="round"
@@ -405,7 +417,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       <path
                         d="M-10 -10.5l20 0l0 1l-20 0Z"
                         fill="none"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                       />
                       <text
                         dominant-baseline="central"
@@ -418,7 +430,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-width="2"
                         style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="middle"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                         xml:space="preserve"
                         y="-10"
                       >
@@ -427,7 +439,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       <path
                         d="M-0.5 -0.5l1 0l0 11l-1 0Z"
                         fill="none"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                       />
                       <text
                         dominant-baseline="central"
@@ -440,30 +452,10 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-width="2"
                         style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                         text-anchor="middle"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                         y="10"
                       >
                         2
-                      </text>
-                      <path
-                        d="M-5 -5l132.5 0l0 21l-132.5 0Z"
-                        fill="rgb(0,0,0)"
-                        fill-opacity="0"
-                        stroke="#ccc"
-                        stroke-width="0"
-                        transform="translate(5 71.5)"
-                      />
-                      <text
-                        dominant-baseline="central"
-                        fill="#6E7079"
-                        style="font-size:12px;font-family:sans-serif;"
-                        text-anchor="middle"
-                        transform="translate(5 71.5)"
-                        x="100"
-                        xml:space="preserve"
-                        y="10.5"
-                      >
-                        This incident impacted 2 client manufacturers
                       </text>
                     </g>
                   </svg>
@@ -479,6 +471,12 @@ exports[`NetworkImpact should match snapshot 1`] = `
                   type="text/html"
                 />
               </div>
+              <div
+                class="sc-bczRLJ chorwm"
+                width="250"
+              >
+                This incident impacted 2 client manufacturers
+              </div>
             </div>
           </div>
         </div>
@@ -488,7 +486,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 hnuCqA"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 kgPVrt"
         >
           <div
             class="ant-card"
@@ -527,38 +525,38 @@ exports[`NetworkImpact should match snapshot 1`] = `
                 _echarts_instance_="ec_mock"
                 class="echarts-for-react "
                 size-sensor-id="4"
-                style="height: 95%; width: 100%; position: relative;"
+                style="height: 220px; width: 250px; position: relative;"
               >
                 <div
-                  style="position: relative; overflow: hidden; width: 100px; height: 95px;"
+                  style="position: relative; overflow: hidden; width: 250px; height: 220px;"
                 >
                   <svg
                     baseProfile="full"
-                    height="95"
+                    height="220"
                     style="position:absolute;left:0;top:0;user-select:none"
                     version="1.1"
-                    width="100"
+                    width="250"
                     xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                   >
                     <rect
                       fill="none"
                       fill-opacity="1"
-                      height="95"
+                      height="220"
                       id="0"
-                      width="100"
+                      width="250"
                       x="0"
                       y="0"
                     />
                     <g>
                       <path
-                        d="M50 27.7L50 32.45Z"
+                        d="M125 11L125 26.4Z"
                         fill="#D61119"
                         stroke="#FFFFFF"
                         stroke-linejoin="round"
                       />
                       <path
-                        d="M50 27.7L50 32.45Z"
+                        d="M125 11L125 26.4Z"
                         fill="#F9C34B"
                         stroke="#FFFFFF"
                         stroke-linejoin="round"
@@ -566,7 +564,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       <path
                         d="M-2.5 -10.5l5 0l0 1l-5 0Z"
                         fill="none"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                       />
                       <text
                         dominant-baseline="central"
@@ -579,7 +577,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-width="2"
                         style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="middle"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                         y="-10"
                       >
                         Radio
@@ -587,7 +585,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       <path
                         d="M-0.5 -0.5l1 0l0 11l-1 0Z"
                         fill="none"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                       />
                       <text
                         dominant-baseline="central"
@@ -600,30 +598,10 @@ exports[`NetworkImpact should match snapshot 1`] = `
                         stroke-width="2"
                         style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                         text-anchor="middle"
-                        transform="translate(50 60)"
+                        transform="translate(125 110)"
                         y="10"
                       >
                         2
-                      </text>
-                      <path
-                        d="M-5 -5l125 0l0 21l-125 0Z"
-                        fill="rgb(0,0,0)"
-                        fill-opacity="0"
-                        stroke="#ccc"
-                        stroke-width="0"
-                        transform="translate(5 71.5)"
-                      />
-                      <text
-                        dominant-baseline="central"
-                        fill="#6E7079"
-                        style="font-size:12px;font-family:sans-serif;"
-                        text-anchor="middle"
-                        transform="translate(5 71.5)"
-                        x="100"
-                        xml:space="preserve"
-                        y="10.5"
-                      >
-                        This incident impacted 2 bands
                       </text>
                     </g>
                   </svg>
@@ -638,6 +616,12 @@ exports[`NetworkImpact should match snapshot 1`] = `
                   tabindex="-1"
                   type="text/html"
                 />
+              </div>
+              <div
+                class="sc-bczRLJ chorwm"
+                width="250"
+              >
+                This incident impacted 2 bands
               </div>
             </div>
           </div>

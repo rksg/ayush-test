@@ -28,6 +28,7 @@ describe('onChartClick', () => {
 describe('DonutChart', () => {
   it('should render the chart properly with data', async () => {
     const { asFragment } = render(<DonutChart
+      style={{ width: 238, height: 176 }}
       data={data}
       dataFormatter={formatter('noFormat') as () => string}
       title='Donut Chart'/>)
@@ -40,7 +41,7 @@ describe('DonutChart', () => {
     expect(numbers.length).toEqual(5)
   })
   it('should render the empty chart properly without data', async () => {
-    const { asFragment } = render(<DonutChart data={[]}/>)
+    const { asFragment } = render(<DonutChart style={{ width: 238, height: 176 }} data={[]}/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('0').getAttribute('style'))
       .toEqual("font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;")
@@ -48,11 +49,14 @@ describe('DonutChart', () => {
     expect(numbers.length).toEqual(1)
   })
   it('should render the empty chart when name is empty', async () => {
-    const { asFragment } = render(<DonutChart data={emptyChartData}/>)
+    const { asFragment } = render(
+      <DonutChart style={{ width: 238, height: 176 }} data={emptyChartData}/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
   it('should not render the legend when false', async () => {
-    const { asFragment } = render(<DonutChart data={data}
+    const { asFragment } = render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
       showLegend={false}
       dataFormatter={formatter('countFormat') as () => string}/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -62,7 +66,7 @@ describe('DonutChart', () => {
     expect(numbers.length).toEqual(1)
   })
   it('should render the legend properly when formatter not available', async () => {
-    const { asFragment } = render(<DonutChart data={data}/>)
+    const { asFragment } = render(<DonutChart style={{ width: 238, height: 176 }} data={data}/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('145').getAttribute('style'))
       .toEqual("font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;")
@@ -71,6 +75,7 @@ describe('DonutChart', () => {
   })
   it('should render subTitle', async () => {
     render(<DonutChart
+      style={{ width: 238, height: 176 }}
       data={data}
       dataFormatter={formatter('noFormat') as () => string}
       title='Donut Chart'

@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Col, Row }           from 'antd'
 import { IntlShape, useIntl } from 'react-intl'
+import AutoSizer              from 'react-virtualized-auto-sizer'
 
 import { Incident }                         from '@acx-ui/analytics/utils'
 import { Card, cssStr, DonutChart, Loader } from '@acx-ui/components'
@@ -52,20 +53,25 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
   const intl = useIntl()
   const queryResults = useDonutChartsQuery({ charts, incident })
   return <Loader states={[queryResults]}>
+    <Card title={intl.$t({ defaultMessage: 'Network Impact' })} bordered={false}></Card>
     <Row>
       {Object.entries(queryResults.data || {}).map(([chart, chartData])=>{
         const config = donutCharts[chartData.key]
         return <Col key={chart} span={6} style={{ height: 200 }}>
-          <Card >
-            <DonutChart
-              showLegend={false}
-              style={{ width: '100%', height: '95%' }}
-              title={intl.$t(config.title)}
-              subTitle={transformSummary(chartData, incident, intl)}
-              unit={config.unit}
-              dataFormatter={(v) => intl.$t(intlFormats.countFormat, { value: v as number })}
-              data={transformData(chartData, intl)}
-            />
+          <Card bordered={false}>
+            <AutoSizer>
+              {({ height, width }) => (
+                <DonutChart
+                  showLegend={false}
+                  style={{ width, height }}
+                  title={intl.$t(config.title)}
+                  subTitle={transformSummary(chartData, incident, intl)}
+                  unit={config.unit}
+                  dataFormatter={(v) => intl.$t(intlFormats.countFormat, { value: v as number })}
+                  data={transformData(chartData, intl)}
+                />
+              )}
+            </AutoSizer>
           </Card>
         </Col>
       })}
