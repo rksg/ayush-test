@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`prepareAntdValidateMessages returns validation messages for antd 1`] = `
+Object {
+  "rerender": [Function],
+  "result": Object {
+    "current": Object {
+      "number": Object {
+        "max": "This value should be lower than or equal to \${max}",
+        "min": "This value should be higher than or equal to \${min}",
+      },
+      "whitespace": "Spaces are not allowed",
+    },
+  },
+  "unmount": [Function],
+}
+`;
