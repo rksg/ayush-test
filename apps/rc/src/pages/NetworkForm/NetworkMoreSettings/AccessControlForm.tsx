@@ -8,7 +8,7 @@ import {
   Slider,
   Switch
 } from 'antd'
-
+import { useIntl } from 'react-intl'
 
 
 import { StepsForm }                 from '@acx-ui/components'
@@ -36,6 +36,7 @@ const listPayload = {
 }
 
 export function AccessControlForm () {
+  const { $t } = useIntl()
   const [enabledProfile, setEnabledProfile] = useState(false)
 
   return (
@@ -51,7 +52,8 @@ export function AccessControlForm () {
             lineHeight: '32px',
             fontWeight: '600'
           }}
-        > Access Control
+        >
+          {$t({ defaultMessage: 'Access Control' })}
         </StepsForm.Title>
 
         <span>
@@ -66,7 +68,9 @@ export function AccessControlForm () {
             setEnabledProfile(!enabledProfile)
           }}
         >
-          {enabledProfile ? 'Select separate profiles' : 'Select Access Control profile'}
+          {enabledProfile ? $t({ defaultMessage: 'Select separate profiles' })
+            : $t({ defaultMessage: 'Select Access Control profile' })
+          }
         </Button>
       </span>
 
@@ -78,19 +82,20 @@ export function AccessControlForm () {
 }
 
 function SaveAsAcProfileButton () {
+  const { $t } = useIntl()
   return (
     <Button
       type='link'
       style={{ padding: 0 }}
       disabled={true}
     >
-      Save as AC Profile
+      {$t({ defaultMessage: 'Save as AC Profile' })}
     </Button>
   )
 }
 
 function SelectAccessProfileProfile () {
-
+  const { $t } = useIntl()
   const { layer2SelectList } = useL2AclPolicyListQuery({
     params: useParams(),
     payload: listPayload
@@ -242,44 +247,44 @@ function SelectAccessProfileProfile () {
     </Form.Item>}
 
     <UI.FieldLabel width='175px' style={{ fontWeight: 700 }}>
-      <span>Access Policy</span>
-      <span>Policy Details</span>
+      <span>{$t({ defaultMessage: 'Access Policy' })}</span>
+      <span>{$t({ defaultMessage: 'Policy Details' })}</span>
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      <span>Layer 2</span>
+      <span> {$t({ defaultMessage: 'Layer 2' })}</span>
       { getL2PolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      <span>Layer 3</span>
+      <span> {$t({ defaultMessage: 'Layer 3' })}</span>
       { getL3PolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      <span>Device & OS</span>
+      <span> {$t({ defaultMessage: 'Device & OS' })}</span>
       { getDevicePolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      <span>Applications</span>
+      <span> {$t({ defaultMessage: 'Applications' })}</span>
       { getApplicationPolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      <span>Client Rate Limit</span>
+      <span>{$t({ defaultMessage: 'Client Rate Limit' })}</span>
       {(!state.selectedAccessControlProfile ||
         state.selectedAccessControlProfile.rateLimiting?.enabled === false) && '--'}
       {(state.selectedAccessControlProfile &&
         state.selectedAccessControlProfile.rateLimiting?.enabled) &&
         <div>
           <UI.RateLimitBlock>
-            <label>Up:</label>
+            <label>{$t({ defaultMessage: 'Up:' })}</label>
             <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
               'uplinkLimit')}</div>
           </UI.RateLimitBlock>
           <UI.RateLimitBlock>
-            <label>Down:</label>
+            <label>{$t({ defaultMessage: 'Down:' })}</label>
             <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
               'downlinkLimit')}</div>
           </UI.RateLimitBlock>
@@ -290,6 +295,7 @@ function SelectAccessProfileProfile () {
 }
 
 function AccessControlConfigForm () {
+  const { $t } = useIntl()
   const [
     enableLayer2,
     enableLayer3,
@@ -358,7 +364,7 @@ function AccessControlConfigForm () {
 
   return (<>
     <UI.FieldLabel width='175px'>
-      Layer 2
+      {$t({ defaultMessage: 'Layer 2' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
           name={['wlan','advancedCustomization','l2AclEnable']}
@@ -378,13 +384,13 @@ function AccessControlConfigForm () {
                 children={layer2SelectOptions} />
             }
           />
-          Add
+          {$t({ defaultMessage: 'Add' })}
         </>}
       </div>
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      Layer 3
+      {$t({ defaultMessage: 'Layer 3' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
           name={['wlan','advancedCustomization','l3AclEnable']}
@@ -404,13 +410,13 @@ function AccessControlConfigForm () {
                 children={layer3SelectOptions} />
             }
           />
-          Add
+          {$t({ defaultMessage: 'Add' })}
         </>}
       </div>
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      Device & OS
+      {$t({ defaultMessage: 'Device & OS' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
           name='enableDeviceOs'
@@ -430,14 +436,14 @@ function AccessControlConfigForm () {
                 children={devicePolicySelectOptions} />
             }
           />
-          Add
+          {$t({ defaultMessage: 'Add' })}
         </>}
       </div>
     </UI.FieldLabel>
 
 
     <UI.FieldLabel width='175px'>
-      Applications
+      {$t({ defaultMessage: 'Applications' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
           name={['wlan','advancedCustomization','applicationPolicyEnable']}
@@ -457,13 +463,13 @@ function AccessControlConfigForm () {
                 children={applicationPolicySelectOptions} />
             }
           />
-          Add
+          {$t({ defaultMessage: 'Add' })}
         </>}
       </div>
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      Client Rate Limit
+      {$t({ defaultMessage: 'Client Rate Limit' })}
       <Form.Item
         name='enableClientRateLimit'
         style={{ marginBottom: '10px' }}
@@ -484,7 +490,7 @@ function AccessControlConfigForm () {
           children={
             <UI.Label>
               <UI.CheckboxWrapper />
-              Upload Limit
+              {$t({ defaultMessage: 'Upload Limit' })}
             </UI.Label>}
         />
         {
@@ -508,7 +514,7 @@ function AccessControlConfigForm () {
           children={
             <UI.Label>
               <UI.CheckboxWrapper />
-              Download Limit
+              {$t({ defaultMessage: 'Download Limit' })}
             </UI.Label>}
         />
 
@@ -519,8 +525,7 @@ function AccessControlConfigForm () {
               children={
                 <RateSlider />
               }
-            /> :
-            <Unlimited />
+            /> : <Unlimited />
         }
       </div>
     </>}
@@ -529,10 +534,11 @@ function AccessControlConfigForm () {
 }
 
 function Unlimited () {
+  const { $t } = useIntl()
   return (
     <UI.Label
       style={{ lineHeight: '50px' }}>
-      Unlimited
+      {$t({ defaultMessage: 'Unlimited' })}
     </UI.Label>
   )
 }

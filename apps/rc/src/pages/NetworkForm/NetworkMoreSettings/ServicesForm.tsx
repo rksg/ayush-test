@@ -9,6 +9,8 @@ import {
   Switch,
   Tooltip
 } from 'antd'
+import { useIntl } from 'react-intl'
+
 
 
 import { DnsProxyModal } from './DnsProxyModal'
@@ -26,6 +28,7 @@ enum IsolatePacketsTypeEnum {
 
 
 function ClientIsolationForm () {
+  const { $t } = useIntl()
   const [
     enableClientIsolation
   ] = [
@@ -34,7 +37,8 @@ function ClientIsolationForm () {
 
   return (<>
     <UI.FieldLabel width='125px'>
-      Client Isolation:
+      {$t({ defaultMessage: 'Client Isolation:' })}
+
       <Form.Item
         name={['wlan','advancedCustomization','clientIsolation']}
         style={{ marginBottom: '10px' }}
@@ -53,19 +57,19 @@ function ClientIsolationForm () {
         <Select defaultValue={IsolatePacketsTypeEnum.UNICAST}
           style={{ width: '240px' }}>
           <Option value={IsolatePacketsTypeEnum.UNICAST}>
-            Unicast
+            {$t({ defaultMessage: 'Unicast' })}
           </Option>
           <Option value={IsolatePacketsTypeEnum.MULTICAST}>
-            Multicast/broadcast
+            {$t({ defaultMessage: 'Multicast/broadcast' })}
           </Option>
           <Option value={IsolatePacketsTypeEnum.UNICAST_MULTICAST}>
-            Unicast and multicast/broadcast
+            {$t({ defaultMessage: 'Unicast and multicast/broadcast' })}
           </Option>
 
         </Select>
       </Form.Item>
       <UI.FieldLabel width='230px'>
-        Automatic support for VRRP/HSRP:
+        {$t({ defaultMessage: 'Automatic support for VRRP/HSRP:' })}
         <Form.Item
           name={['wlan','advancedCustomization','clientIsolationOptions', 'autoVrrp']}
           style={{ marginBottom: '10px' }}
@@ -74,7 +78,7 @@ function ClientIsolationForm () {
           children={<Switch />} />
       </UI.FieldLabel>
       <UI.FieldLabel width='230px'>
-        Client Isolation Allowlist by Venue:
+        {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
 
         <Tooltip title={'Does not support in Beta.'}>
           <Form.Item
@@ -108,6 +112,7 @@ export interface DnsProxyContextType {
 export const DnsProxyContext = createContext({} as DnsProxyContextType)
 
 export function ServicesForm () {
+  const { $t } = useIntl()
   const [
     enableDnsProxy,
     enableAntiSpoofing,
@@ -116,7 +121,6 @@ export function ServicesForm () {
     enableWifiCalling,
     dnsProxyRules
   ] = [
-    useWatch<boolean>(['wlan','advancedCustomization','dnsProxyEnabled']),
     useWatch<boolean>(['wlan','advancedCustomization','dnsProxyEnabled']),
     useWatch<boolean>(['wlan','advancedCustomization','enableAntiSpoofing']),
     useWatch<boolean>(['wlan','advancedCustomization','enableArpRequestRateLimit']),
@@ -130,7 +134,7 @@ export function ServicesForm () {
   return (
     <>
       <UI.FieldLabel width='125px'>
-        DNS Proxy:
+        { $t({ defaultMessage: 'DNS Proxy:' }) }
         <UI.FieldLabel width='30px'>
           <Form.Item
             name={['wlan','advancedCustomization','dnsProxyEnabled']}
@@ -148,7 +152,7 @@ export function ServicesForm () {
 
 
       <UI.FieldLabel width='125px'>
-        Wi-Fi Calling:
+        { $t({ defaultMessage: 'Wi-Fi Calling:' }) }
         <UI.FieldLabel width='30px'>
           <Form.Item
             name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
@@ -163,7 +167,8 @@ export function ServicesForm () {
                 textAlign: 'left'
               }}
               disabled={true}>
-              Select profiles </Button>
+              {$t({ defaultMessage: 'Select profiles' })}
+            </Button>
           }
         </UI.FieldLabel>
 
@@ -172,7 +177,7 @@ export function ServicesForm () {
       <ClientIsolationForm/>
       <>
         <UI.FieldLabel width='125px'>
-        Anti-spoofing:
+          {$t({ defaultMessage: 'Anti-spoofing:' })}
           <Form.Item
             name={['wlan','advancedCustomization','enableAntiSpoofing']}
             style={{ marginBottom: '10px' }}
@@ -194,7 +199,8 @@ export function ServicesForm () {
                 initialValue={true}
                 children={<UI.CheckboxWrapper/>}
               />
-              <UI.Label style={{ lineHeight: '32px' }}>  ARP request rate limit
+              <UI.Label style={{ lineHeight: '32px' }}>
+                { $t({ defaultMessage: 'ARP request rate limit' }) }
               </UI.Label>
             </span>
 
@@ -205,7 +211,9 @@ export function ServicesForm () {
                 initialValue={15}
                 style={{ marginBottom: '10px', lineHeight: '32px' }}
                 children={<Input style={{ width: '50px' }} />} />
-              <UI.Label style={{ lineHeight: '34px' }}> ppm </UI.Label>
+              <UI.Label style={{ lineHeight: '34px' }}>
+                { $t({ defaultMessage: 'ppm' }) }
+              </UI.Label>
             </>
             }
           </div>
@@ -221,7 +229,7 @@ export function ServicesForm () {
                 children={<UI.CheckboxWrapper />}
               />
               <UI.Label style={{ lineHeight: '34px' }}>
-                DHCP request rate limit
+                { $t({ defaultMessage: 'DHCP request rate limit' }) }
               </UI.Label>
             </span>
 
@@ -231,7 +239,9 @@ export function ServicesForm () {
                 initialValue={15}
                 style={{ marginBottom: '10px', lineHeight: '32px' }}
                 children={<Input style={{ width: '50px' }} />} />
-              <UI.Label style={{ lineHeight: '32px' }}> ppm </UI.Label>
+              <UI.Label style={{ lineHeight: '32px' }}>
+                { $t({ defaultMessage: 'ppm' }) }
+              </UI.Label>
 
             </>}
           </div>
@@ -246,7 +256,7 @@ export function ServicesForm () {
           <UI.Label>
             <UI.CheckboxWrapper
               disabled={enableAntiSpoofing} />
-            Force DHCP
+            { $t({ defaultMessage: 'Force DHCP' }) }
           </UI.Label>}
       />
       <UI.FormItemNoLabel
@@ -254,7 +264,7 @@ export function ServicesForm () {
         children={
           <UI.Label>
             <UI.CheckboxWrapper />
-            Enable logging client data to external syslog
+            { $t({ defaultMessage: 'Enable logging client data to external syslog' }) }
           </UI.Label>}
       />
     </>
