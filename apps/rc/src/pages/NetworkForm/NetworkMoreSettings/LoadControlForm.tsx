@@ -7,6 +7,7 @@ import {
   Slider
 } from 'antd'
 import { useWatch } from 'antd/lib/form/Form'
+import { useIntl }  from 'react-intl'
 
 import * as UI from './styledComponents'
 
@@ -21,6 +22,7 @@ enum MaxRateEnum {
 
 export function LoadControlForm () {
   const maxRate = useWatch<MaxRateEnum>('maxRate')
+  const { $t } = useIntl()
 
   return(
     <>
@@ -31,10 +33,10 @@ export function LoadControlForm () {
           defaultValue={MaxRateEnum.UNLIMITED}
           style={{ width: '240px' }}>
           <Option value={MaxRateEnum.UNLIMITED}>
-            Unlimited
+            {$t({ defaultMessage: 'Unlimited' })}
           </Option>
           <Option value={MaxRateEnum.PER_AP}>
-            Per AP
+            {$t({ defaultMessage: 'Per AP' })}
           </Option>
         </Select>
       </Form.Item>
@@ -59,7 +61,7 @@ export function LoadControlForm () {
         children={
           <UI.Label>
             <UI.CheckboxWrapper />
-              Enable load balancing between all radios
+            {$t({ defaultMessage: 'Enable load balancing between all radios' })}
           </UI.Label>}
       />
       <UI.FormItemNoLabel
@@ -67,7 +69,7 @@ export function LoadControlForm () {
         children={
           <UI.Label>
             <UI.CheckboxWrapper />
-              Enable load balancing between APs
+            {$t({ defaultMessage: 'Enable load balancing between APs' })}
           </UI.Label>}
       />
     </>
@@ -103,6 +105,7 @@ function RateSlider () {
 }
 
 function PerApForm () {
+  const { $t } = useIntl()
   const [
     uploadLimit,
     downloadLimit
@@ -122,7 +125,7 @@ function PerApForm () {
           children={
             <UI.Label>
               <UI.CheckboxWrapper />
-              Upload Limit
+              {$t({ defaultMessage: 'Upload Limit' })}
             </UI.Label>}
         />
         {
@@ -135,7 +138,7 @@ function PerApForm () {
             /> :
             <UI.Label
               style={{ lineHeight: '50px' }}>
-              Unlimited
+              {$t({ defaultMessage: 'Unlimited' })}
             </UI.Label>
         }
       </div>
@@ -149,7 +152,7 @@ function PerApForm () {
           children={
             <UI.Label>
               <UI.CheckboxWrapper />
-              Download Limit
+              {$t({ defaultMessage: 'Download Limit' })}
             </UI.Label>}
         />
         {
@@ -162,7 +165,7 @@ function PerApForm () {
             /> :
             <UI.Label
               style={{ lineHeight: '50px' }}>
-              Unlimited
+              {$t({ defaultMessage: 'Unlimited' })}
             </UI.Label>
         }
       </div>

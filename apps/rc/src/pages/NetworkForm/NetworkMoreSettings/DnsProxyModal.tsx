@@ -75,7 +75,7 @@ export function DnsProxyModal () {
   }, [])
 
   const handleUpdateDnsProxy = () => {
-    const list = dnsProxyList?.map(item => ({    
+    const list = dnsProxyList?.map(item => ({
       domainName: item.domainName,
       key: item.domainName,
       ipList: item.ipList
@@ -318,7 +318,7 @@ export function DnsProxyModalRuleModal (props: {
         )}
       /> : intl.$t({ defaultMessage: 'No IP Addresses' })
     }
- 
+
   </Form>
 
   return (<>
@@ -353,5 +353,5 @@ export function DnsProxyModalRuleModal (props: {
       {formContent}
     </Modal>
   </>
-  )  
+  )
 }

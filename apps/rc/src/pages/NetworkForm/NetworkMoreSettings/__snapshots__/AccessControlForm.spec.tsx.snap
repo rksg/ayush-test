@@ -15,7 +15,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
           class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
           style="line-height: 32px; font-weight: 600;"
         >
-           Access Control
+          Access Control
         </h3>
         <span>
           <button

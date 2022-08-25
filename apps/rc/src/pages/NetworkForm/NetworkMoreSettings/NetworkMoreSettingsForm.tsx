@@ -7,6 +7,7 @@ import {
   Select,
   Switch
 } from 'antd'
+import { useIntl } from 'react-intl'
 
 import { StepsForm }     from '@acx-ui/components'
 import {
@@ -56,6 +57,7 @@ const listPayload = {
 export function NetworkMoreSettingsForm (props: {
   wlanData: NetworkSaveData
 }) {
+  const { $t } = useIntl()
   const [
     enableOfdmOnly,
     enableFastRoaming,
@@ -120,7 +122,7 @@ export function NetworkMoreSettingsForm (props: {
       <Panel header='VLAN' key='1' >
         <>
           <UI.FieldLabel width='90px'>
-        VLAN Pooling:
+            { $t({ defaultMessage: 'VLAN Pooling:' }) }
             <Form.Item
               name='enableVlanPooling'
               style={{ marginBottom: '10px' }}
@@ -150,7 +152,7 @@ export function NetworkMoreSettingsForm (props: {
                     <UI.CheckboxWrapper />
                   }
                 />
-              Dynamic VLAN
+                { $t({ defaultMessage: 'Dynamic VLAN' }) }
               </UI.FieldLabel>
             }
 
@@ -167,13 +169,13 @@ export function NetworkMoreSettingsForm (props: {
                 children={vlanPoolSelectOptions} />
             }
           />
-          <span style={{ marginTop: '30px' }}>Add</span>
+          <span style={{ marginTop: '30px' }}>{ $t({ defaultMessage: 'Add' }) }</span>
 
         </div>
           }
 
           <UI.FieldLabel width='90px'>
-        Proxy ARP:
+            { $t({ defaultMessage: 'Proxy ARP:' }) }
             <Form.Item
               name={['wlan', 'advancedCustomization', 'enableProxyArp']}
               style={{ marginBottom: '10px' }}
@@ -195,7 +197,7 @@ export function NetworkMoreSettingsForm (props: {
           children={
             <UI.Label>
               <UI.CheckboxWrapper />
-              Hide SSID
+              { $t({ defaultMessage: 'Hide SSID' }) }
             </UI.Label>}
         />
 
@@ -205,7 +207,9 @@ export function NetworkMoreSettingsForm (props: {
             fontWeight: '600',
             margin: '20px 0'
           }}
-        >Load Control</StepsForm.Title>
+        >
+          { $t({ defaultMessage: 'Load Control' }) }
+        </StepsForm.Title>
         <LoadControlForm />
 
 
@@ -220,7 +224,7 @@ export function NetworkMoreSettingsForm (props: {
           children={
             <UI.Label>
               <UI.CheckboxWrapper />
-              Enable OFDM only (disable 802.11b)
+              { $t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' }) }
             </UI.Label>}
         />
 
@@ -230,8 +234,8 @@ export function NetworkMoreSettingsForm (props: {
             fontWeight: '600',
             margin: '20px 0'
           }}>
-          <div> Data Rate Control </div>
-          <div> 2.4 GHz & 5 GHz </div>
+          <div> { $t({ defaultMessage: 'Data Rate Control' }) } </div>
+          <div> { $t({ defaultMessage: '2.4 GHz & 5 GHz' }) } </div>
         </StepsForm.Title>
 
         <div style={{
@@ -265,7 +269,7 @@ export function NetworkMoreSettingsForm (props: {
           children={
             <UI.Label>
               <UI.CheckboxWrapper />
-              Enable 802.11k neighbor reports
+              { $t({ defaultMessage: 'Enable 802.11k neighbor reports' }) }
             </UI.Label>}
         />
 
@@ -278,7 +282,7 @@ export function NetworkMoreSettingsForm (props: {
             children={
               <UI.Label>
                 <UI.CheckboxWrapper />
-                Enable 802.11r Fast BSS Transition
+                { $t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' }) }
               </UI.Label>}
           />
         }
@@ -312,7 +316,7 @@ export function NetworkMoreSettingsForm (props: {
 
 
         <UI.FieldLabel width='190px'>
-          Airtime Decongestion:
+          { $t({ defaultMessage: 'Airtime Decongestion:' }) }
           <Form.Item
             name={['wlan','advancedCustomization','enableAirtimedecongestion']}
             style={{ marginBottom: '10px' }}
@@ -324,7 +328,7 @@ export function NetworkMoreSettingsForm (props: {
 
         {!enableAirtimedecongestion &&
           <UI.FieldLabel width='190px'>
-            Join RSSI Threshold:
+            { $t({ defaultMessage: 'Join RSSI Threshold:' }) }
             <div style={{ display: 'grid', gridTemplateColumns: '50px 75px auto' }}>
               <Form.Item
                 name={['wlan','advancedCustomization','enableJoinRSSIThreshold']}
@@ -341,14 +345,14 @@ export function NetworkMoreSettingsForm (props: {
                   initialValue={-85}
                   children={<Input style={{ width: '65px' }} />}
                 />
-                dBm
+                { $t({ defaultMessage: 'dBm' }) }
               </>}
             </div>
           </UI.FieldLabel>
         }
 
         <UI.FieldLabel width='190px'>
-          Transient Client Management:
+          { $t({ defaultMessage: 'Transient Client Management:' }) }
           <Form.Item
             name={['wlan','advancedCustomization','enableTransientClientManagement']}
             style={{ marginBottom: '10px' }}
@@ -362,7 +366,7 @@ export function NetworkMoreSettingsForm (props: {
 
             <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
               <UI.LabelOfInput>
-                Seconds
+                { $t({ defaultMessage: 'Seconds' }) }
               </UI.LabelOfInput>
               <Form.Item
                 name={['wlan','advancedCustomization','joinWaitTime']}
@@ -376,7 +380,7 @@ export function NetworkMoreSettingsForm (props: {
 
             <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
               <UI.LabelOfInput>
-                Seconds
+                { $t({ defaultMessage: 'Seconds' }) }
               </UI.LabelOfInput>
               <Form.Item
                 name={['wlan','advancedCustomization','joinExpireTime']}
@@ -400,7 +404,7 @@ export function NetworkMoreSettingsForm (props: {
 
         }
         <UI.FieldLabel width='250px'>
-          Optimized Connectivity Experience (OCE):
+          { $t({ defaultMessage: 'Optimized Connectivity Experience (OCE):' }) }
           <Form.Item
             name={['wlan','advancedCustomization','enableOptimizedConnectivityExperience']}
             style={{ marginBottom: '10px' }}
@@ -414,7 +418,7 @@ export function NetworkMoreSettingsForm (props: {
           <>
             <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
               <UI.LabelOfInput>
-                ms
+                { $t({ defaultMessage: 'ms' }) }
               </UI.LabelOfInput>
               <Form.Item
                 name={['wlan', 'advancedCustomization', 'broadcastProbeResponseDelay']}
@@ -430,7 +434,7 @@ export function NetworkMoreSettingsForm (props: {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
               <UI.LabelOfInput>
-                dBm
+                { $t({ defaultMessage: 'dBm' }) }
               </UI.LabelOfInput>
               <Form.Item
                 name={['wlan','advancedCustomization','rssiAssociationRejectionThreshold']}
@@ -449,18 +453,19 @@ export function NetworkMoreSettingsForm (props: {
 }
 
 function BssMinRateSelect () {
+  const { $t } = useIntl()
   return (
     <Select
       defaultValue={BssMinRateEnum.VALUE_NONE}
       style={{ width: '150px' }}>
       <Option value={BssMinRateEnum.VALUE_NONE}>
-        None
+        { $t({ defaultMessage: 'None' }) }
       </Option>
       <Option value={BssMinRateEnum.VALUE_12}>
-        12 Mbps
+        { $t({ defaultMessage: '12 Mbps' }) }
       </Option>
       <Option value={BssMinRateEnum.VALUE_24}>
-        24 Mbps
+        { $t({ defaultMessage: '24 Mbps' }) }
       </Option>
     </Select>
   )
@@ -469,37 +474,38 @@ function BssMinRateSelect () {
 function MgmtTxRateSelect (props: {
   disabled: boolean;
 }) {
+  const { $t } = useIntl()
   return (
     <Select
       disabled={props.disabled}
       defaultValue={MgmtTxRateEnum.VALUE_1}
       style={{ width: '150px' }}>
       <Option value={MgmtTxRateEnum.VALUE_1}>
-        1 Mbps
+        { $t({ defaultMessage: '1 Mbps' }) }
       </Option>
       <Option value={MgmtTxRateEnum.VALUE_2}>
-        2 Mbps
+        { $t({ defaultMessage: '2 Mbps' }) }
       </Option>
       <Option value={MgmtTxRateEnum.VALUE_5_5}>
-        5.5 Mbps
+        { $t({ defaultMessage: '5.5 Mbps' }) }
       </Option>
       <Option value={MgmtTxRateEnum.VALUE_6}>
-        6 Mbps
+        { $t({ defaultMessage: '6 Mbps' }) }
       </Option>
       <Option value={MgmtTxRateEnum.VALUE_9}>
-        9 Mbps
+        { $t({ defaultMessage: '9 Mbps' }) }
       </Option>
       <Option value={MgmtTxRateEnum.VALUE_11}>
-        11 Mbps
+        { $t({ defaultMessage: '11 Mbps' }) }
       </Option>
       <Option value={MgmtTxRateEnum.VALUE_12}>
-        12 Mbps
+        { $t({ defaultMessage: '12 Mbps' }) }
       </Option>
       <Option value={MgmtTxRateEnum.VALUE_18}>
-        18 Mbps
+        { $t({ defaultMessage: '18 Mbps' }) }
       </Option>
       <Option value={MgmtTxRateEnum.VALUE_24}>
-        24 Mbps
+        { $t({ defaultMessage: '24 Mbps' }) }
       </Option>
     </Select>
   )
