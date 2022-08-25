@@ -1,14 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
+  ApExtraParams,
+  AP,
+  APRadio,
   ApRadioBands,
   CommonUrlsInfo,
   createHttpRequest,
   RequestPayload,
   TableResult
 } from '@acx-ui/rc/utils'
-
-import { ApExtraParams, AP, APRadio } from './types'
 
 export const baseApApi = createApi({
   baseQuery: fetchBaseQuery(),
