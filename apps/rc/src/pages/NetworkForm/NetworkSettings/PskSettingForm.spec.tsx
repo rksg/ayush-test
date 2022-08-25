@@ -66,7 +66,7 @@ describe('NetworkForm', () => {
     })
   })
 
-  it('should create PSK network with WPA2 and mac auth', async () => {
+  xit('should create PSK network with WPA2 and mac auth', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
 
     await fillInBeforeSettings('PSK network test')
@@ -93,7 +93,7 @@ describe('NetworkForm', () => {
   }, 7000)
 
 
-  it('should create PSK network with WP3 and mac auth security protocol', async () => {
+  xit('should create PSK network with WP3 and mac auth security protocol', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
 
     await fillInBeforeSettings('PSK network test')

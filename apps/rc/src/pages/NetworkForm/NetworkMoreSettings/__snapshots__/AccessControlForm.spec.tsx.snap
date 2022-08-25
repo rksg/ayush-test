@@ -1,0 +1,246 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccessControlForm should render Access Control form successfully 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      style="margin-bottom: 30px;"
+    >
+      <span
+        style="display: grid; grid-template-columns: 220px 130px auto; margin-top: 20px;"
+      >
+        <h3
+          class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+          style="line-height: 32px; font-weight: 600;"
+        >
+           Access Control
+        </h3>
+        <span>
+          <button
+            class="ant-btn ant-btn-link"
+            disabled=""
+            style="padding: 0px;"
+            type="button"
+          >
+            <span>
+              Save as AC Profile
+            </span>
+          </button>
+        </span>
+        <button
+          class="ant-btn ant-btn-link"
+          style="padding: 0px;"
+          type="button"
+        >
+          <span>
+            Select Access Control profile
+          </span>
+        </button>
+      </span>
+      <div
+        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+        width="175px"
+      >
+        Layer 2
+        <div
+          style="display: grid; grid-template-columns: 50px 190px auto;"
+        >
+          <div
+            class="ant-row ant-form-item"
+            style="margin-bottom: 10px;"
+          >
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  <button
+                    aria-checked="false"
+                    class="ant-switch"
+                    id="wlan_advancedCustomization_l2AclEnable"
+                    role="switch"
+                    type="button"
+                  >
+                    <div
+                      class="ant-switch-handle"
+                    />
+                    <span
+                      class="ant-switch-inner"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+        width="175px"
+      >
+        Layer 3
+        <div
+          style="display: grid; grid-template-columns: 50px 190px auto;"
+        >
+          <div
+            class="ant-row ant-form-item"
+            style="margin-bottom: 10px;"
+          >
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  <button
+                    aria-checked="false"
+                    class="ant-switch"
+                    id="wlan_advancedCustomization_l3AclEnable"
+                    role="switch"
+                    type="button"
+                  >
+                    <div
+                      class="ant-switch-handle"
+                    />
+                    <span
+                      class="ant-switch-inner"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+        width="175px"
+      >
+        Device & OS
+        <div
+          style="display: grid; grid-template-columns: 50px 190px auto;"
+        >
+          <div
+            class="ant-row ant-form-item"
+            style="margin-bottom: 10px;"
+          >
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  <button
+                    aria-checked="false"
+                    class="ant-switch"
+                    id="enableDeviceOs"
+                    role="switch"
+                    type="button"
+                  >
+                    <div
+                      class="ant-switch-handle"
+                    />
+                    <span
+                      class="ant-switch-inner"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+        width="175px"
+      >
+        Applications
+        <div
+          style="display: grid; grid-template-columns: 50px 190px auto;"
+        >
+          <div
+            class="ant-row ant-form-item"
+            style="margin-bottom: 10px;"
+          >
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  <button
+                    aria-checked="false"
+                    class="ant-switch"
+                    id="wlan_advancedCustomization_applicationPolicyEnable"
+                    role="switch"
+                    type="button"
+                  >
+                    <div
+                      class="ant-switch-handle"
+                    />
+                    <span
+                      class="ant-switch-inner"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+        width="175px"
+      >
+        Client Rate Limit
+        <div
+          class="ant-row ant-form-item"
+          style="margin-bottom: 10px;"
+        >
+          <div
+            class="ant-col ant-form-item-control"
+          >
+            <div
+              class="ant-form-item-control-input"
+            >
+              <div
+                class="ant-form-item-control-input-content"
+              >
+                <button
+                  aria-checked="false"
+                  class="ant-switch"
+                  id="enableClientRateLimit"
+                  role="switch"
+                  type="button"
+                >
+                  <div
+                    class="ant-switch-handle"
+                  />
+                  <span
+                    class="ant-switch-inner"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;
