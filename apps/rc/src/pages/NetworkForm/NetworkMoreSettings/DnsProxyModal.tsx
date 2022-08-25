@@ -13,46 +13,65 @@ import {
   TableProps,
   Modal
 } from '@acx-ui/components'
-import { DeleteOutlined } from '@acx-ui/icons'
+import { DeleteOutlined }       from '@acx-ui/icons'
+import { checkObjectNotExists } from '@acx-ui/rc/utils'
 import {
   networkWifiIpRegExp
 } from '@acx-ui/rc/utils'
 
-
 import { DnsProxyContext, DnsProxy } from './ServicesForm'
 
-const defaultArray: string[] = []
+interface DnsProxyListData {
+  cloneList: DnsProxy[] | [],
+  dnsModalvisible: boolean,
+  editMode: boolean,
+  editRow: DnsProxy,
+  editModalVisible: boolean,
+  ipList: string[],
+  disabledSaveBtn: boolean,
+  disabledAddBtn: boolean  
+}
+
+const state: DnsProxyListData = {
+  cloneList: [],
+  dnsModalvisible: false,
+  editMode: false,
+  editRow: {
+    domainName: '',
+    key: '',
+    ipList: []
+  },
+  editModalVisible: false,
+  ipList: [],
+  disabledSaveBtn: true,
+  disabledAddBtn: true
+}
 
 function useColumns () {
   const { $t } = useIntl()
-  const columns: TableProps<DnsProxy>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Domain' }),
-      dataIndex: 'domainName',
-      key: 'domainName'
-    },
-    {
-      title: $t({ defaultMessage: 'IP Addresses' }),
-      dataIndex: 'ipList', 
-      key: 'ipList',
-      render: function (data:any) {
-        return data?.join('; ')
-      }
-    }
-  ]
+  const columns: TableProps<DnsProxy>['columns'] = [{
+    title: $t({ defaultMessage: 'Domain' }),
+    dataIndex: 'domainName',
+    key: 'domainName'
+  }, {
+    title: $t({ defaultMessage: 'IP Addresses' }),
+    dataIndex: 'ipList', 
+    key: 'ipList',
+    render: (data) => (data as string[])?.join('; ')
+  }]
   return columns
 }
 
 export function DnsProxyModal () {
   const { $t } = useIntl()
-  const [visible, setVisible] = useState(false)
-  const [editMode, setEditMode] = useState(false)
-  const [editRow, setEditRow] = useState([] as DnsProxy[])
-  const [cloneList, setCloneList] = useState([] as DnsProxy[])
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
+  const [modalState, setModalState] = useState(state)
 
   useEffect(() => {
-    setCloneList(dnsProxyList)
+    setModalState({
+      ...modalState,
+      cloneList: dnsProxyList
+    })
   }, [])
 
   const handleUpdateDnsProxy = () => {
@@ -60,17 +79,23 @@ export function DnsProxyModal () {
       domainName: item.domainName,
       key: item.domainName,
       ipList: item.ipList
-    }))
-    setCloneList(list)
+    })) || []
     setDnsProxyList(list)
-    setVisible(false)
+    setModalState({
+      ...modalState,
+      cloneList: list,
+      dnsModalvisible: false
+    })
   }
 
   const handleCancel = () => {
-    setDnsProxyList(cloneList)
-    setEditRow([])
-    setEditMode(false)
-    setVisible(false)
+    setDnsProxyList(modalState.cloneList)
+    setModalState({
+      ...modalState,
+      editRow: {},
+      editMode: false,
+      dnsModalvisible: false
+    })
   }
 
   return (
@@ -78,41 +103,47 @@ export function DnsProxyModal () {
       <Button
         type='link'
         style={{ textAlign: 'left', display: 'inline', marginLeft: '15px' }}
-        onClick={() => setVisible(true)}>
+        onClick={() => setModalState({
+          ...modalState,
+          dnsModalvisible: true
+        })}>
         { $t({ defaultMessage: 'Manage' }) }
       </Button>
       <Modal
         title={$t({ defaultMessage: 'DNS Proxy' })}
-        visible={visible}
+        visible={modalState.dnsModalvisible}
         centered
         okText={$t({ defaultMessage: 'Add' })}
         onCancel={handleCancel}
         onOk={handleUpdateDnsProxy}
       >
         <MultiSelectTable
-          {...{ editMode, setEditMode, editRow, setEditRow }}
+          {...{ modalState, setModalState }}
         />
       </Modal>
     </>
   )
 }
 
-export function MultiSelectTable (props: any) {
+export function MultiSelectTable (props: {
+  modalState: DnsProxyListData,
+  setModalState: (data: DnsProxyListData) => void
+}) {
   const intl = useIntl()
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
-
-  const { editMode, setEditMode, editRow, setEditRow } = props
-  const [visible, setVisible] = useState(false)
-  const [ipList, setIpList] = useState(defaultArray)
+  const { modalState, setModalState } = props
 
   const actions: TableProps<(typeof dnsProxyList)[0]>['actions'] = [
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
       onClick: (row: DnsProxy[], clearSelection) => {
-        setEditMode(true)
-        setEditRow(row[0])
-        setIpList(row[0]?.ipList)
-        setVisible(true)
+        setModalState({
+          ...modalState,
+          editMode: true,
+          editRow: row[0],
+          ipList: row[0].ipList ?? [],
+          editModalVisible: true
+        })
         clearSelection()
       }
     },
@@ -128,16 +159,7 @@ export function MultiSelectTable (props: any) {
 
   return (<>
     <DnsProxyModalRuleModal
-      {...{
-        visible,
-        setVisible,
-        ipList,
-        setIpList,
-        editMode,
-        setEditMode,
-        editRow,
-        setEditRow
-      }}
+      {...{ modalState, setModalState }}
     />
     <Table
       columns={useColumns()}
@@ -151,40 +173,33 @@ export function MultiSelectTable (props: any) {
 }
 
 export function DnsProxyModalRuleModal (props: {
-  visible: boolean,
-  ipList: string[],
-  editMode: boolean,
-  editRow: DnsProxy,
-  setVisible: (visible: boolean) => void,
-  setIpList: (ipList: string[]) => void,
-  setEditRow: (row: DnsProxy | []) => void
-  setEditMode: (isEdit: boolean) => void
+  modalState: DnsProxyListData,
+  setModalState: (data: DnsProxyListData) => void  
 }) {
   const intl = useIntl()
   const [form] = Form.useForm()
+  const { modalState, setModalState } = props
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
 
-  const { visible, ipList, setVisible, setIpList,
-    editMode, setEditMode, setEditRow, editRow } = props
-  const [disabledBtn, setDisabledBtn] = useState(false)
-  const [disabledAddBtn, setDisabledAddBtn] = useState(true)
-
   const resetProxyRuleModal = () => {
-    setVisible(false)
-    setEditRow([])
-    setIpList(defaultArray)
-    setDisabledAddBtn(true)
+    setModalState({
+      ...modalState,
+      editModalVisible: false,
+      editRow: {},
+      ipList: [],
+      disabledAddBtn: true
+    })
     form.resetFields()
   }
 
   const handleUpdateDnsProxyList = () => {
     const { name } = form.getFieldsValue()
-    const updateData = editMode ? dnsProxyList.map(r => {
-      if (r.key === editRow.key) {
+    const updateData = modalState.editMode ? dnsProxyList.map(r => {
+      if (r.key === modalState.editRow.key) {
         r = {
           domainName: name,
           key: name,
-          ipList: ipList
+          ipList: modalState.ipList
         }
       }
       return r
@@ -192,7 +207,7 @@ export function DnsProxyModalRuleModal (props: {
       ...dnsProxyList, {
         domainName: name,
         key: name,
-        ipList: ipList
+        ipList: modalState.ipList
       }
     ]
     setDnsProxyList(updateData)
@@ -200,43 +215,66 @@ export function DnsProxyModalRuleModal (props: {
   }
 
   const handleUpdateIpList = () => {
-    setIpList([
-      ...ipList,
-      form.getFieldValue('ip')
-    ])
+    setModalState({
+      ...modalState,
+      ipList: [
+        ...modalState.ipList,
+        form.getFieldValue('ip')
+      ]
+    })
+    form.setFieldsValue({ ip: '' })
   }
 
   useEffect(()=>{
-    form.setFieldsValue({ name: editRow?.domainName || '' })
-  }, [editRow])
+    form.setFieldsValue({ name: modalState.editRow?.domainName || '' })
+  }, [modalState.editRow])
 
   useEffect(()=>{
     const { name } = form.getFieldsValue()
     const hasNameErrors = form.getFieldError('name').length > 0
-    setDisabledBtn(!(name && !hasNameErrors && ipList.length > 0))
-  }, [ipList])
+    setModalState({
+      ...modalState,
+      disabledSaveBtn: !(name && !hasNameErrors && modalState.ipList.length > 0)
+    })
+  }, [modalState.ipList])
 
   const formContent = <Form
     form={form}
     layout='vertical'
     validateTrigger='onBlur'
-    onFinish={() => setVisible(false)}
+    onFinish={() => {
+      setModalState({
+        ...modalState,
+        editModalVisible: false
+      })
+    }}
     onFieldsChange={() => {
       const { name, ip } = form.getFieldsValue()
       const hasErrors = form.getFieldsError().map(item => item.errors).flat().length > 0
       const hasNameErrors = form.getFieldError('name').length > 0
-      setDisabledBtn(!(name && !hasNameErrors && ipList.length > 0))
-      setDisabledAddBtn(!(name && ip && !hasErrors))
+      const hasIpExisted = modalState.ipList.indexOf(ip) > -1
+      setModalState({
+        ...modalState,
+        disabledSaveBtn: !(name && !hasNameErrors && modalState.ipList.length > 0),
+        disabledAddBtn: !(name && ip && !hasErrors && !hasIpExisted)
+      })
     }}
   >
+
     <Form.Item
       label={intl.$t({ defaultMessage: 'Domain Name' })}
       name='name'
       rules={[
-        { required: true }
-        // TODO
+        { required: true },
+        { validator: (_, value) => {
+          const domainList = dnsProxyList.map(list => list.domainName)
+          return checkObjectNotExists(intl, domainList, value, 
+            intl.$t({ defaultMessage: 'Domain Name' }), 'domainName')
+        } }
+        // TODO: validata domain
         // { validator: (_, value) =>  }
       ]}
+      initialValue={modalState.editRow?.domainName}
       children={<Input />}
     />
     <Form.Item
@@ -252,22 +290,27 @@ export function DnsProxyModalRuleModal (props: {
       type='link'
       style={{ display: 'flex', marginLeft: 'auto' }}
       onClick={handleUpdateIpList}
-      disabled={disabledAddBtn}
+      disabled={modalState.disabledAddBtn}
     >
       {intl.$t({ defaultMessage: 'Add' })}
     </Button>
     {
-      ipList.length ? <List
+      modalState.ipList.length ? <List
         itemLayout='horizontal'
-        dataSource={ipList}
-        renderItem={(item, index: number) => (
+        dataSource={modalState.ipList}
+        renderItem={(item: string, index: number) => (
           <List.Item
             actions={[<Button
               key='delete'
               role='deleteBtn'
               ghost={true}
               icon={<DeleteOutlined />}
-              onClick={() => setIpList(ipList.filter((item, idx) => idx !== index))}
+              onClick={() => {
+                setModalState({
+                  ...modalState,
+                  ipList: modalState.ipList.filter((item, idx) => idx !== index)
+                })
+              }}
             />]}
           >
             {item}
@@ -283,23 +326,28 @@ export function DnsProxyModalRuleModal (props: {
       type='link'
       style={{ float: 'right' }}
       onClick={() => {
-        setVisible(true)
-        setEditMode(false)
+        setModalState({
+          ...modalState,
+          editModalVisible: true,
+          editMode: false
+        })
       }}
     >
       {intl.$t({ defaultMessage: 'Add Rule' })}
     </Button>
     <Modal
-      title={editMode ? intl.$t({ defaultMessage: 'Edit DNS Proxy Rule' })
+      title={modalState.editMode
+        ? intl.$t({ defaultMessage: 'Edit DNS Proxy Rule' })
         : intl.$t({ defaultMessage: 'Add DNS Proxy Rule' })}
-      visible={visible}
+      visible={modalState.editModalVisible}
       width={400}
       centered
+      getContainer={false}
       okText={intl.$t({ defaultMessage: 'Save' })}
       onCancel={resetProxyRuleModal}
       onOk={handleUpdateDnsProxyList}
       okButtonProps={{
-        disabled: disabledBtn
+        disabled: modalState.disabledSaveBtn
       }}
     >
       {formContent}

@@ -10,10 +10,8 @@ import {
   Tooltip
 } from 'antd'
 
-
 import { DnsProxyModal } from './DnsProxyModal'
 import * as UI           from './styledComponents'
-
 
 const { useWatch } = Form
 const { Option } = Select
@@ -23,7 +21,6 @@ enum IsolatePacketsTypeEnum {
   MULTICAST = 'MULTICAST',
   UNICAST_MULTICAST = 'UNICAST_MULTICAST',
 }
-
 
 function ClientIsolationForm () {
   const [
@@ -94,10 +91,9 @@ function ClientIsolationForm () {
 }
 
 export interface DnsProxy {
-  domainName: string,
-  key: string,
-  ipList: string[],
-  type?: string
+  domainName?: string,
+  key?: string,
+  ipList?: string[] | undefined
 }
 
 export interface DnsProxyContextType {
@@ -113,16 +109,17 @@ export function ServicesForm () {
     enableAntiSpoofing,
     enableArpRequestRateLimit,
     enableDhcpRequestRateLimit,
-    enableWifiCalling,
-    dnsProxyRules
+    enableWifiCalling
+    // TODO: edit
+    // dnsProxyRules
   ] = [
     useWatch<boolean>(['wlan','advancedCustomization','dnsProxyEnabled']),
     useWatch<boolean>(['wlan','advancedCustomization','dnsProxyEnabled']),
     useWatch<boolean>(['wlan','advancedCustomization','enableAntiSpoofing']),
     useWatch<boolean>(['wlan','advancedCustomization','enableArpRequestRateLimit']),
     useWatch<boolean>(['wlan','advancedCustomization','enableDhcpRequestRateLimit']),
-    useWatch<boolean>(['wlan', 'advancedCustomization', 'wifiCallingEnabled']),
-    useWatch<boolean>(['wlan','advancedCustomization','dnsProxy', 'dnsProxyRules'])
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'wifiCallingEnabled'])
+    // useWatch<boolean>(['wlan','advancedCustomization','dnsProxy', 'dnsProxyRules'])
   ]
 
   const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxy[])
