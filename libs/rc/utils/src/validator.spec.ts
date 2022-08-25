@@ -5,7 +5,7 @@ import { renderHook } from '@acx-ui/test-utils'
 import { networkWifiIpRegExp, checkObjectNotExists } from './validator'
 
 describe('validator', () => {
-  describe('networkWifiIpRegExp', () => {
+  describe('ipV4RegExp', () => {
     it('Should take care of ip address values correctly', async () => {
       const result = renderHook(() =>
         networkWifiIpRegExp(useIntl(), '111.111.111.111')).result.current
