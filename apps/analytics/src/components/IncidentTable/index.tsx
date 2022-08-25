@@ -2,11 +2,10 @@ import { useIntl, defineMessage } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { Incident, noDataSymbol, IncidentFilter } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, showToast }          from '@acx-ui/components'
+import { Loader, TableProps, Table, showToast }   from '@acx-ui/components'
 import { Link }                                   from '@acx-ui/react-router-dom'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
-import * as UI                                                       from './styledComponents'
 import {
   GetIncidentBySeverity,
   FormatDate,
@@ -152,7 +151,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     <Loader states={[queryResults]}>
       <AutoSizer>
         {({ height, width }) => (
-          <UI.Table
+          <Table
             type='tall'
             style={{ width, height }}
             dataSource={queryResults?.data}
@@ -164,7 +163,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
                 ? mutedKeysFilter(queryResults.data)
                 : undefined
             }}
-            pagination={{ 
+            pagination={{
               defaultPageSize: 10,
               position: ['bottomCenter'],
               pageSizeOptions: [5, 10, 20, 25, 50, 100],
