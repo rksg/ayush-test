@@ -15,7 +15,7 @@ export function IpPortSecretForm ({ serverType, order }:
     <>
       <Form.Item
         validateFirst
-        name={`${serverType}.${order}.ip`}
+        name={[serverType, order, 'ip']}
         label={intl.$t({ defaultMessage: 'IP Address' })}
         rules={[
           { required: true },
@@ -25,7 +25,7 @@ export function IpPortSecretForm ({ serverType, order }:
         style={{ display: 'inline-block', width: 'calc(80%)' , paddingRight: '20px' }}
       />
       <Form.Item
-        name={`${serverType}.${order}.port`}
+        name={[serverType, order, 'port']}
         label={intl.$t({ defaultMessage: 'Port' })}
         rules={[
           { required: true },
@@ -37,7 +37,7 @@ export function IpPortSecretForm ({ serverType, order }:
         children={<InputNumber min={1} max={65535} />}
       />
       <Form.Item
-        name={`${serverType}.${order}.sharedSecret`}
+        name={[serverType, order, 'sharedSecret']}
         label={intl.$t({ defaultMessage: 'Shared secret' })}
         rules={[
           { required: true },

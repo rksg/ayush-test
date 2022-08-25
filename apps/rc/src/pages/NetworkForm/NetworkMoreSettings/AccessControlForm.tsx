@@ -6,12 +6,10 @@ import {
   Form,
   Select,
   Slider,
-  Switch,
-  Modal,
-  Input
-
+  Switch
 } from 'antd'
-import _ from 'lodash'
+
+
 
 import { StepsForm }                 from '@acx-ui/components'
 import {
@@ -21,71 +19,21 @@ import {
   useApplicationPolicyListQuery,
   useAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import {
+  AccessControlProfile
+} from '@acx-ui/rc/utils'
+import { transformDisplayText } from '@acx-ui/rc/utils'
+import { useParams }            from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
 const { useWatch } = Form
 const { Option } = Select
 
-function SaveAsAcProfileButton () {
-  const [isModalVisible, setIsModalVisible] = useState(false)
-
-  const showModal = () => {
-    setIsModalVisible(true)
-  }
-
-  const handleOk = () => {
-    setIsModalVisible(false)
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false)
-  }
-
-  return (<>
-    <Button
-      type='link'
-      style={{ padding: 0 }}
-      onClick={() => {
-        showModal()
-      }}
-    >
-      Save as AC Profile
-    </Button>
-    <Modal
-      title='Create Access Control Profile'
-      visible={isModalVisible}
-      onOk={handleOk}
-      onCancel={handleCancel}
-    >
-      <UI.FieldLabel width='175px'>
-        Profile Name:
-        <Form.Item
-          name='profileName'
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Input />}
-        />
-      </UI.FieldLabel>
-
-      <UI.FieldLabel width='175px'>
-        Client Rate Limit
-        <Form.Item
-          name='description'
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Input />}
-        />
-      </UI.FieldLabel>
-
-      <AccessControlConfigForm />
-    </Modal>
-  </>)
+const listPayload = {
+  fields: ['name', 'id'], sortField: 'name',
+  sortOrder: 'ASC', page: 1, pageSize: 10000
 }
-
 
 export function AccessControlForm () {
   const [enabledProfile, setEnabledProfile] = useState(false)
@@ -103,8 +51,7 @@ export function AccessControlForm () {
             lineHeight: '32px',
             fontWeight: '600'
           }}
-        >
-          Access Control
+        > Access Control
         </StepsForm.Title>
 
         <span>
@@ -112,8 +59,6 @@ export function AccessControlForm () {
             <SaveAsAcProfileButton />
           }
         </span>
-
-
         <Button
           type='link'
           style={{ padding: 0 }}
@@ -123,7 +68,6 @@ export function AccessControlForm () {
         >
           {enabledProfile ? 'Select separate profiles' : 'Select Access Control profile'}
         </Button>
-
       </span>
 
 
@@ -133,21 +77,70 @@ export function AccessControlForm () {
     </div>)
 }
 
+function SaveAsAcProfileButton () {
+  return (
+    <Button
+      type='link'
+      style={{ padding: 0 }}
+      disabled={true}
+    >
+      Save as AC Profile
+    </Button>
+  )
+}
+
 function SelectAccessProfileProfile () {
 
-  const listPayload = {
-    fields: ['name', 'id'], sortField: 'name',
-    sortOrder: 'ASC', page: 1, pageSize: 10000
-  }
+  const { layer2SelectList } = useL2AclPolicyListQuery({
+    params: useParams(),
+    payload: listPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        layer2SelectList: data?.data
+      }
+    }
+  })
 
+  const { layer3SelectList } = useL3AclPolicyListQuery({
+    params: useParams(),
+    payload: listPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        layer3SelectList: data?.data
+      }
+    }
+  })
+
+  const { devicePolicySelectList } = useDevicePolicyListQuery({
+    params: useParams(),
+    payload: listPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        devicePolicySelectList: data?.data
+      }
+    }
+  })
+
+  const { applicationPolicySelectList } = useApplicationPolicyListQuery({
+    params: useParams(),
+    payload: listPayload
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        applicationPolicySelectList: data?.data
+      }
+    }
+  })
 
   //Access control list
   const { accessControlProfileSelectOptions, accessControlList }
     = useAccessControlProfileListQuery({
-      params: useParams(),
-      payload: listPayload
+      params: useParams()
     }, {
-      selectFromResult({ data }) {
+      selectFromResult ({ data }) {
         return {
           accessControlProfileSelectOptions: data?.map(
             item => <Option key={item.id}>{item.name}</Option>) ?? [],
@@ -157,12 +150,72 @@ function SelectAccessProfileProfile () {
     })
 
   const [state, updateState] = useState({
+    selectedAccessControlProfile: undefined as AccessControlProfile | undefined
   })
 
   const onAccessPolicyChange = function (id: string) {
-    updateState({})
+    const data = id ? accessControlList?.find(profile => profile.id === id) : undefined
+    updateState({
+      selectedAccessControlProfile: data
+    })
   }
 
+  const getL2PolicyNameByAccessControlPorfile =
+    function (accessControlProfile: AccessControlProfile | undefined) {
+      if (!accessControlProfile) return transformDisplayText()
+      let name
+      const { l2AclPolicy } = accessControlProfile
+      if (l2AclPolicy && l2AclPolicy.enabled && layer2SelectList) {
+        name = layer2SelectList.find(policy => policy.id === l2AclPolicy.id)?.name
+      }
+      return transformDisplayText(name)
+    }
+
+  const getL3PolicyNameByAccessControlPorfile =
+    function (accessControlProfile: AccessControlProfile | undefined) {
+      if (!accessControlProfile) return transformDisplayText()
+      let name
+      const { l3AclPolicy } = accessControlProfile
+
+      if (l3AclPolicy && l3AclPolicy.enabled && layer3SelectList) {
+        name = layer3SelectList.find(policy => policy.id === l3AclPolicy.id)?.name
+      }
+      return transformDisplayText(name)
+    }
+
+  const getDevicePolicyNameByAccessControlPorfile =
+    function (accessControlProfile: AccessControlProfile | undefined) {
+      if (!accessControlProfile) return transformDisplayText()
+      let name
+      const { devicePolicy } = accessControlProfile
+
+      if (devicePolicy && devicePolicy.enabled && devicePolicySelectList) {
+        name = devicePolicySelectList.find(policy => policy.id === devicePolicy.id)?.name
+      }
+      return transformDisplayText(name)
+    }
+
+  const getApplicationPolicyNameByAccessControlPorfile =
+    function (accessControlProfile: AccessControlProfile | undefined) {
+      if (!accessControlProfile) return transformDisplayText()
+      let name
+      const { applicationPolicy } = accessControlProfile
+
+      if (applicationPolicy && applicationPolicy.enabled && applicationPolicySelectList) {
+        name = applicationPolicySelectList.find(policy => policy.id === applicationPolicy.id)?.name
+      }
+      return transformDisplayText(name)
+    }
+
+  const getLinkLimitByAccessControlPorfile =
+    function (accessControlProfile: AccessControlProfile | undefined, type: string) {
+      let limit = 'Unlimited'
+      if (accessControlProfile && accessControlProfile.rateLimiting
+        && accessControlProfile.rateLimiting[type] !== 0) {
+        limit = accessControlProfile.rateLimiting[type] + ' Mbps'
+      }
+      return limit
+    }
 
   const [enableAccessControlProfile] = [useWatch('enableAccessControlProfile')]
   return (<>
@@ -195,34 +248,48 @@ function SelectAccessProfileProfile () {
 
     <UI.FieldLabel width='175px'>
       <span>Layer 2</span>
-      {/* <span>{state.selectedProfile.l2AclPolicy.id}</span> */}
+      { getL2PolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
       <span>Layer 3</span>
-      <span>--</span>
+      { getL3PolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
       <span>Device & OS</span>
-      <span>--</span>
+      { getDevicePolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
       <span>Applications</span>
-      <span>--</span>
+      { getApplicationPolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
       <span>Client Rate Limit</span>
-      <span>--</span>
+      {(!state.selectedAccessControlProfile ||
+        state.selectedAccessControlProfile.rateLimiting?.enabled === false) && '--'}
+      {(state.selectedAccessControlProfile &&
+        state.selectedAccessControlProfile.rateLimiting?.enabled) &&
+        <div>
+          <UI.RateLimitBlock>
+            <label>Up:</label>
+            <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
+              'uplinkLimit')}</div>
+          </UI.RateLimitBlock>
+          <UI.RateLimitBlock>
+            <label>Down:</label>
+            <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
+              'downlinkLimit')}</div>
+          </UI.RateLimitBlock>
+        </div>
+      }
     </UI.FieldLabel>
-
   </>)
 }
 
 function AccessControlConfigForm () {
-
   const [
     enableLayer2,
     enableLayer3,
@@ -240,11 +307,6 @@ function AccessControlConfigForm () {
     useWatch<boolean>('enableUploadLimit'),
     useWatch<boolean>('enableClientRateLimit')
   ]
-
-  const listPayload = {
-    fields: ['name', 'id'], sortField: 'name',
-    sortOrder: 'ASC', page: 1, pageSize: 10000
-  }
 
   const { layer2SelectOptions } = useL2AclPolicyListQuery({
     params: useParams(),

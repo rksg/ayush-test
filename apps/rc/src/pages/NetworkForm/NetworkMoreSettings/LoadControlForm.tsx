@@ -27,7 +27,8 @@ export function LoadControlForm () {
       <Form.Item
         label='Max Rate:'
         name='maxRate'>
-        <Select defaultValue={MaxRateEnum.UNLIMITED}
+        <Select
+          defaultValue={MaxRateEnum.UNLIMITED}
           style={{ width: '240px' }}>
           <Option value={MaxRateEnum.UNLIMITED}>
             Unlimited

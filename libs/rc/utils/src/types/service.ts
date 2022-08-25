@@ -40,6 +40,7 @@ export interface AccessControlProfile {
   name: string,
   id: string,
   rateLimiting?: {
+    [key: string]: boolean | number,
     downlinkLimit: number,
     enabled: boolean,
     uplinkLimit: number

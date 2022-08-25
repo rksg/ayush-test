@@ -1,5 +1,5 @@
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button } from 'antd'
 
@@ -9,12 +9,21 @@ export function ToggleButton (props: {
     enableText: React.ReactNode
     disableText: React.ReactNode
   }) {
-  const [enabled, setEnabled] = useState(props.value ?? false)
+  const isControlled = useRef(props.value !== undefined).current
+  const [enabled, setEnabled] = useState(false)
+
+  useEffect(() => {
+    if (!isControlled) return
+    // prevent switching from controlled > uncontrolled
+    if (props.value === undefined) return
+    setEnabled(props.value)
+  }, [isControlled, props.value])
+
   return <Button
     type='link'
     onClick={() => {
       props.onChange?.(!enabled)
-      setEnabled(!enabled)
+      if (!isControlled) setEnabled(!enabled)
     }}
   >
     {enabled ? props.enableText : props.disableText}

@@ -1,4 +1,3 @@
-export * from './types'
 export * from './eventAlarm'
 export * from './network'
 export * from './service'

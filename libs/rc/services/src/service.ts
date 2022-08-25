@@ -4,10 +4,11 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   RequestPayload,
-  TableResult
+  TableResult,
+  Service,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
-import { CommonResult, Service } from './types'
 import {
   CloudpathServer,
   L2AclPolicy,
@@ -16,7 +17,7 @@ import {
   ApplicationPolicy,
   VlanPool,
   AccessControlProfile
-} from './types/service'
+} from '@acx-ui/rc/utils'
 
 
 
@@ -114,14 +115,13 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       }
     }),
     vlanPoolList: build.query<TableResult<VlanPool>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const vlanPoolListReq = createHttpRequest(
           CommonUrlsInfo.getVlanPools,
           params
         )
         return {
-          ...vlanPoolListReq,
-          body: payload
+          ...vlanPoolListReq
         }
       }
     }),
