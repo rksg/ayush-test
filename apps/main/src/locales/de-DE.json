@@ -620,7 +620,7 @@
     "defaultMessage": "DE-Passphrase Expiration:"
   },
   "ubQ1f+": {
-    "defaultMessage": "DE-Shared secret"
+    "defaultMessage": "DE-Shared Secret"
   },
   "ukFIyf": {
     "defaultMessage": "DE-Your Attention is Required"
@@ -676,7 +676,7 @@
     "defaultMessage": "DE-Timeline"
   },
   "zbjrr1": {
-    "defaultMessage": "DE-Radius Shared secret"
+    "defaultMessage": "DE-Radius Shared Secret"
   },
   "zg0sQG": {
     "defaultMessage": "DE-AP initializing"
