@@ -11,6 +11,7 @@ import { networkTypes } from '../contentsMap'
 
 import { AaaSummaryForm }  from './AaaSummaryForm'
 import { DpskSummaryForm } from './DpskSummaryForm'
+import { PskSummaryForm }  from './PskSummaryForm'
 
 const defaultPayload = {
   searchString: '',
@@ -78,10 +79,12 @@ export function SummaryForm (props: {
             label={$t({ defaultMessage: 'Type:' })}
             children={summaryData.type && $t(networkTypes[summaryData.type])}
           />
+          {summaryData.type !== NetworkTypeEnum.PSK &&
           <Form.Item
             label={$t({ defaultMessage: 'Use Cloudpath Server:' })}
             children={summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
           />
+          }
           {summaryData.isCloudpathEnabled && selected &&
             <>
               <Form.Item
@@ -111,6 +114,9 @@ export function SummaryForm (props: {
           }
           {summaryData.type === NetworkTypeEnum.DPSK &&
             <DpskSummaryForm summaryData={summaryData} />
+          }
+          {summaryData.type === NetworkTypeEnum.PSK && 
+            <PskSummaryForm summaryData={summaryData} />
           }
         </Col>
         <Divider type='vertical' style={{ height: '300px' }}/>

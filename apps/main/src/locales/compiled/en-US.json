@@ -203,7 +203,7 @@
   "uJV0wU": "IP Address",
   "uS4sop": "Type:",
   "ubGrOj": "Passphrase Expiration:",
-  "ubQ1f+": "Shared secret",
+  "ubQ1f+": "Shared Secret",
   "ukFIyf": "Your Attention is Required",
   "utCJRG": "Proxy Service:",
   "vCAhII": "Severity",
@@ -224,6 +224,6 @@
   "zLM75r": "No AP Clients",
   "zT3YgI": "Impacted Clients",
   "zWkvNO": "Timeline",
-  "zbjrr1": "Radius Shared secret",
+  "zbjrr1": "Radius Shared Secret",
   "zg0sQG": "AP initializing"
 }

@@ -199,7 +199,7 @@
   "uJV0wU": "DE-IP Address",
   "uS4sop": "DE-Type:",
   "ubGrOj": "DE-Passphrase Expiration:",
-  "ubQ1f+": "DE-Shared secret",
+  "ubQ1f+": "DE-Shared Secret",
   "ukFIyf": "DE-Your Attention is Required",
   "utCJRG": "DE-Proxy Service:",
   "vCAhII": "DE-Severity",
@@ -217,6 +217,6 @@
   "zLM75r": "DE-No AP Clients",
   "zT3YgI": "DE-Impacted Clients",
   "zWkvNO": "DE-Timeline",
-  "zbjrr1": "DE-Radius Shared secret",
+  "zbjrr1": "DE-Radius Shared Secret",
   "zg0sQG": "DE-AP initializing"
 }
