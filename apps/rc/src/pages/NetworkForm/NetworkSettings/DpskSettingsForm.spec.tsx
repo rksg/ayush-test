@@ -6,7 +6,7 @@ import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { cloudpathResponse } from '../NetworkForm.spec'
+import { cloudpathResponse } from '../__tests__/fixtures'
 
 import { DpskSettingsForm } from './DpskSettingsForm'
 

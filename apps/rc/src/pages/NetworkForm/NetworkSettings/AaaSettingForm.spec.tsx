@@ -6,15 +6,21 @@ import { CommonUrlsInfo }                                                       
 import { Provider }                                                              from '@acx-ui/store'
 import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { NetworkForm }                                                          from '../NetworkForm'
-import { cloudpathResponse, networksResponse, venuesResponse, successResponse } from '../NetworkForm.spec'
+import {
+  venuesResponse,
+  networksResponse,
+  successResponse,
+  cloudpathResponse
+} from '../__tests__/fixtures'
+import { NetworkForm } from '../NetworkForm'
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText('Network Name')
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
 
-  await screen.findByRole('img', { name: 'check-circle' })
+  const validating = await screen.findByRole('img', { name: 'loading' })
+  await waitForElementToBeRemoved(validating, { timeout: 7000 })
 
   userEvent.click(screen.getByRole('radio', { name: /802.1X standard/ }))
   userEvent.click(screen.getByText('Next'))

@@ -11,12 +11,12 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { NetworkForm } from './NetworkForm'
 import {
-  networksResponse,
   venuesResponse,
+  networksResponse,
   successResponse
-} from './NetworkForm.spec'
+} from './__tests__/fixtures'
+import { NetworkForm } from './NetworkForm'
 
 async function fillInBeforeSettings (networkName: string) {
   const insertInput = screen.getByLabelText('Network Name')
@@ -25,7 +25,7 @@ async function fillInBeforeSettings (networkName: string) {
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating, { timeout: 7000 })
 
-  userEvent.click(screen.getByText('Next'))
+  userEvent.click(screen.getByRole('button', { name: 'Next' }))
 }
 
 const networkResponse = {
@@ -121,10 +121,10 @@ describe('NetworkForm', () => {
     await fillInBeforeSettings('open network edit test')
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
-    userEvent.click(screen.getByText('Next'))
+    userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    userEvent.click(screen.getByText('Next'))
+    userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     userEvent.click(screen.getByText('Finish'))
