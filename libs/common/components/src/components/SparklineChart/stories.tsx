@@ -33,43 +33,46 @@ const basicColumns = [
 const sparklineChartStyle = { height: 16, width: '100%', display: 'inline' }
 
 const SparkLineColumn = (
-  data: SparklineChartProps['data']
-) => <SparklineChart data={data} style={sparklineChartStyle} />
+  data: SparklineChartProps['data'],
+  isTrendLine: boolean=false
+) => <SparklineChart data={data} style={sparklineChartStyle} isTrendLine={isTrendLine}/>
 
-const basicData = [
-  {
-    key: '1',
-    appName: 'Application1',
-    client: 'xxxxx',
-    traffic: 'xxxx (28%)',
-    trafficHistory: SparkLineColumn([0, 10, 100, 400, 820, 932, 901, 934, 1290, 1330,
-      1320, 820, 932, 901, 934, 1290, 1330, 1320])
-  },
-  {
-    key: '2',
-    appName: 'Application2',
-    client: 'xxxxx',
-    traffic: 'xxxx (18%)',
-    trafficHistory: SparkLineColumn([1320, 820, 932, 901, 934, 1290, 1330, 1320,
-      0, 10, 100, 400, 820, 932, 901, 934, 1290, 1330])
-  },
-  {
-    key: '3',
-    appName: 'Application3',
-    client: 'xxxxx',
-    traffic: 'xxxx (48%)',
-    trafficHistory: SparkLineColumn([200, 1500, 1200, 1400, 1250, 1000, 1200, 1050, 900, 800,
-      980, 780, 650, 900, 500, 400, 203, 345, 450])
-  },
-  {
-    key: '4',
-    appName: 'Application4',
-    client: 'xxxxx',
-    traffic: 'xxxx (20%)',
-    trafficHistory: SparkLineColumn([220, 1000, 1200, 1400, 1290, 1330, 1320, 820, 932,
-      1320, 820, 932, 901, 934, 901, 934, 1290, 1330])
-  }
-]
+const getTableData = (isTrendLine:boolean=false) =>{
+  return [
+    {
+      key: '1',
+      appName: 'Application1',
+      client: 'xxxxx',
+      traffic: 'xxxx (28%)',
+      trafficHistory: SparkLineColumn([0, 10, 100, 400, 820, 932, 901, 934, 1290, 1330,
+        1320, 820, 932, 901, 934, 1290, 1330, 1320],isTrendLine)
+    },
+    {
+      key: '2',
+      appName: 'Application2',
+      client: 'xxxxx',
+      traffic: 'xxxx (18%)',
+      trafficHistory: SparkLineColumn([1320, 820, 932, 901, 934, 1290, 1330, 1320,
+        0, 10, 100, 400, 820, 932, 901, 934, 1290, 1311],isTrendLine)
+    },
+    {
+      key: '3',
+      appName: 'Application3',
+      client: 'xxxxx',
+      traffic: 'xxxx (48%)',
+      trafficHistory: SparkLineColumn([200, 1500, 1200, 1400, 1250, 1000, 1200, 1050, 900, 800,
+        980, 780, 650, 900, 500, 400, 203, 345, 150],isTrendLine)
+    },
+    {
+      key: '4',
+      appName: 'Application4',
+      client: 'xxxxx',
+      traffic: 'xxxx (20%)',
+      trafficHistory: SparkLineColumn([220, 1000, 1200, 1400, 1290, 1330, 1320, 820, 932,
+        1320, 820, 932, 901, 934, 901, 934, 1290, 1330],isTrendLine)
+    }
+  ]
+} 
 
 storiesOf('SparklineChart', module)
   .addDecorator(withKnobs)
@@ -81,7 +84,14 @@ storiesOf('SparklineChart', module)
     <div style={{ width: 504, padding: 10, border: '1px solid lightgray' }}>
       <Table
         columns={basicColumns}
-        dataSource={basicData}
+        dataSource={getTableData()}
+        type='compact' />
+    </div>))
+  .add('Table View with Trend line', () => (
+    <div style={{ width: 504, padding: 10, border: '1px solid lightgray' }}>
+      <Table
+        columns={basicColumns}
+        dataSource={getTableData(true)}
         type='compact' />
     </div>))
   .add('With Knobs', () => <SparklineChart
