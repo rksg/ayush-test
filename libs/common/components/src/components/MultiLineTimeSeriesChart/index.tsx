@@ -3,8 +3,7 @@ import { useRef, useEffect } from 'react'
 import ReactECharts from 'echarts-for-react'
 import moment       from 'moment-timezone'
 
-
-import type { Incident, MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { Incident, MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
 
 import { cssStr }              from '../../theme/helper'
 import {

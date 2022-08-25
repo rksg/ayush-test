@@ -17,41 +17,27 @@ interface Response <T> {
   }
 }
 
-type ChartsData = {
+export type ChartsData = {
   relatedIncidents: [Partial<Incident>],
 } & Record<string, Record<string, number[] | string[]>>
 
-const calcGranularity = (start: string, end: string): string => {
+export const calcGranularity = (start: string, end: string): string => {
   const duration = moment.duration(moment(end).diff(moment(start))).asHours()
   if (duration > 24 * 7) return 'PT1H' // 1 hour if duration > 7 days
   if (duration > 1) return 'PT30M'
   return 'PT180S'
 }
 
-function duration (
-  { start, end }: { start: moment.Moment, end: moment.Moment }
-) { return end.diff(start) }
-
 export function getIncidentTimeSeriesPeriods (incident: Incident) {
   const { startTime, endTime } = incident
-
-  const visiblePeriod = {
-    start: moment(startTime),
+  const queryPeriod = {
+    start: moment(startTime).subtract(48, 'hours'),
     end: moment(endTime)
   }
-
-  let queryPeriod = {
-    start: moment(startTime).subtract(48, 'hours'),
-    end: visiblePeriod.end.clone()
-  }
-
-  if (duration(visiblePeriod) > duration(queryPeriod)) queryPeriod = visiblePeriod
-
   return {
     queryPeriod
   }
 }
-
 
 export const Api = dataApi.injectEndpoints({
   endpoints: (build) => ({
