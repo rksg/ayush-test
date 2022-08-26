@@ -1,5 +1,5 @@
-import { Button as AntButton, Space }     from 'antd'
-import styled, { css, createGlobalStyle } from 'styled-components/macro'
+import { Button as AntButton, Space, ButtonProps as AntButtonProps } from 'antd'
+import styled, { css, createGlobalStyle }                            from 'styled-components/macro'
 
 import { CancelCircle } from '@acx-ui/icons'
 
@@ -26,6 +26,12 @@ export const ActionButton = styled.button.attrs({ type: 'button' })`
   background-color: transparent;
   color: var(--acx-accents-blue-50);
   cursor: pointer;
+`
+
+export const ClearButton: typeof AntButton = styled(AntButton)<AntButtonProps>`
+  position: absolute;
+  right: 0;
+  top: 20px;
 `
 
 export const TableSettingTitle = styled(Subtitle).attrs({ level: 5 })``

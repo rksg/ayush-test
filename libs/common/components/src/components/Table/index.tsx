@@ -217,14 +217,14 @@ export function Table <RecordType extends object> (
             )}
           </Select>
         })}
-        {(Boolean(activeFilters.length) || Boolean(searchValue)) && <Button
+        {(Boolean(activeFilters.length) || Boolean(searchValue)) && <UI.ClearButton
           onClick={() => {
             setFilterValues({} as FilterValue)
             setSearchValue('')
           }}
         >
           {$t({ defaultMessage: 'Clear Filters' })}
-        </Button>}
+        </UI.ClearButton>}
       </UI.Header>
     )}
     <UI.TableSettingsGlobalOverride />
