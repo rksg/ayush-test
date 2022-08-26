@@ -64,9 +64,12 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     dominanceFn: getWLANDominance,
     summary: {
       dominance: defineMessage({
-        defaultMessage: '{percentage} % of failures impacted {transformedKey} WLAN' }),
+        defaultMessage: '{percentage} of failures impacted {dominant} WLAN' }),
       broad: defineMessage({
-        defaultMessage: 'This incident impacted {count} WLANs' })
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {WLAN}
+          other {WLANs}
+        }` })
     },
     order: 0
   },
@@ -82,9 +85,12 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     }` }),
     summary: {
       dominance: defineMessage({
-        defaultMessage: '{percentage} % of failures impacted {transformedKey} band' }),
+        defaultMessage: '{percentage} of failures impacted {dominant} band' }),
       broad: defineMessage({
-        defaultMessage: 'This incident impacted {count} bands' })
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {band}
+          other {bands}
+        }` })
     },
     order: 5
   },
@@ -100,9 +106,12 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     }` }),
     summary: {
       dominance: defineMessage({
-        defaultMessage: "{percentage} % of failures caused by ''{transformedKey}''" }),
+        defaultMessage: "{percentage} of failures caused by ''{dominant}''" }),
       broad: defineMessage({
-        defaultMessage: '{count} reasons contributed to this incident' })
+        defaultMessage: `{count} {count, plural,
+          one {reason}
+          other {reasons}
+        } contributed to this incident` })
     },
     order: 1
   },
@@ -118,9 +127,12 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     summary: {
       dominance: defineMessage({
         defaultMessage:
-          '{percentage} % of failures impacted {transformedKey} client manufacturer' }),
+          '{percentage} of failures impacted {dominant} client manufacturer' }),
       broad: defineMessage({
-        defaultMessage: 'This incident impacted {count} client manufacturers' })
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {client manufacturer}
+          other {client manufacturers}
+        }` })
     },
     order: 2
   }

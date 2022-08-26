@@ -32,8 +32,9 @@ export const transformSummary = (
   const dominance = (config.dominanceFn || getDominanceByThreshold())(data, incident)
   if (dominance) {
     return intl.$t(config.summary.dominance, {
-      percentage: Math.round(dominance.percentage * 100),
-      transformedKey: config.transformKeyFn
+      percentage: intl
+        .$t(intlFormats.percentFormatRound, { value: dominance.percentage as number }),
+      dominant: config.transformKeyFn
         ? config.transformKeyFn(dominance.key, intl) : dominance.key
     })
   } else {

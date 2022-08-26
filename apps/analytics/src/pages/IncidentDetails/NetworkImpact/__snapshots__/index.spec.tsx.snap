@@ -89,106 +89,124 @@ exports[`NetworkImpact should match snapshot 1`] = `
               class="ant-card-body"
             >
               <div
-                _echarts_instance_="ec_mock"
-                class="echarts-for-react "
-                size-sensor-id="1"
-                style="height: 220px; width: 250px; position: relative;"
+                style="overflow: visible; height: 0px; width: 0px;"
               >
                 <div
-                  style="position: relative; overflow: hidden; width: 250px; height: 220px;"
+                  _echarts_instance_="ec_mock"
+                  class="echarts-for-react "
+                  size-sensor-id="1"
+                  style="height: 250px; width: 280px; position: relative;"
                 >
-                  <svg
-                    baseProfile="full"
-                    height="220"
-                    style="position:absolute;left:0;top:0;user-select:none"
-                    version="1.1"
-                    width="250"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                  <div
+                    style="position: relative; overflow: hidden; width: 280px; height: 250px;"
                   >
-                    <rect
-                      fill="none"
-                      fill-opacity="1"
-                      height="220"
-                      id="0"
-                      width="250"
-                      x="0"
-                      y="0"
-                    />
-                    <g>
-                      <path
-                        d="M125 11L125 26.4Z"
-                        fill="#D61119"
-                        stroke="#FFFFFF"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M125 11L125 26.4Z"
-                        fill="#F9C34B"
-                        stroke="#FFFFFF"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M-2 -10.5l4 0l0 1l-4 0Z"
+                    <svg
+                      baseProfile="full"
+                      height="250"
+                      style="position:absolute;left:0;top:0;user-select:none"
+                      version="1.1"
+                      width="280"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                    >
+                      <rect
                         fill="none"
-                        transform="translate(125 110)"
+                        fill-opacity="1"
+                        height="250"
+                        id="0"
+                        width="280"
+                        x="0"
+                        y="0"
                       />
-                      <text
-                        dominant-baseline="central"
-                        fill="#333"
-                        fill-opacity="0"
-                        paint-order="stroke"
-                        stroke="rgb(255,255,255)"
-                        stroke-miterlimit="2"
-                        stroke-opacity="0"
-                        stroke-width="2"
-                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                        text-anchor="middle"
-                        transform="translate(125 110)"
-                        y="-10"
-                      >
-                        WLAN
-                      </text>
-                      <path
-                        d="M-0.5 -0.5l1 0l0 11l-1 0Z"
-                        fill="none"
-                        transform="translate(125 110)"
-                      />
-                      <text
-                        dominant-baseline="central"
-                        fill="#333"
-                        fill-opacity="0"
-                        paint-order="stroke"
-                        stroke="rgb(255,255,255)"
-                        stroke-miterlimit="2"
-                        stroke-opacity="0"
-                        stroke-width="2"
-                        style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
-                        text-anchor="middle"
-                        transform="translate(125 110)"
-                        y="10"
-                      >
-                        3
-                      </text>
-                    </g>
-                  </svg>
+                      <g>
+                        <path
+                          d="M140 12.5L140 30Z"
+                          fill="#D61119"
+                          stroke="#FFFFFF"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M140 12.5L140 30Z"
+                          fill="#F9C34B"
+                          stroke="#FFFFFF"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M-2 -10.5l4 0l0 1l-4 0Z"
+                          fill="none"
+                          transform="translate(140 125)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333"
+                          fill-opacity="0"
+                          paint-order="stroke"
+                          stroke="rgb(255,255,255)"
+                          stroke-miterlimit="2"
+                          stroke-opacity="0"
+                          stroke-width="2"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="middle"
+                          transform="translate(140 125)"
+                          y="-10"
+                        >
+                          WLAN
+                        </text>
+                        <path
+                          d="M-0.5 -0.5l1 0l0 11l-1 0Z"
+                          fill="none"
+                          transform="translate(140 125)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333"
+                          fill-opacity="0"
+                          paint-order="stroke"
+                          stroke="rgb(255,255,255)"
+                          stroke-miterlimit="2"
+                          stroke-opacity="0"
+                          stroke-width="2"
+                          style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
+                          text-anchor="middle"
+                          transform="translate(140 125)"
+                          y="10"
+                        >
+                          3
+                        </text>
+                      </g>
+                    </svg>
+                  </div>
+                  <div
+                    class=""
+                  />
+                  <object
+                    class="size-sensor-object"
+                    data="about:blank"
+                    style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                    tabindex="-1"
+                    type="text/html"
+                  />
                 </div>
                 <div
-                  class=""
-                />
-                <object
-                  class="size-sensor-object"
-                  data="about:blank"
-                  style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                  tabindex="-1"
-                  type="text/html"
-                />
+                  class="sc-bczRLJ euRvTa"
+                  width="280"
+                >
+                  This incident impacted 2 WLANs
+                </div>
               </div>
               <div
-                class="sc-bczRLJ chorwm"
-                width="250"
+                class="resize-triggers"
               >
-                This incident impacted 2 WLANs
+                <div
+                  class="expand-trigger"
+                >
+                  <div
+                    style="width: 281px; height: 281px;"
+                  />
+                </div>
+                <div
+                  class="contract-trigger"
+                />
               </div>
             </div>
           </div>
@@ -235,100 +253,118 @@ exports[`NetworkImpact should match snapshot 1`] = `
               class="ant-card-body"
             >
               <div
-                _echarts_instance_="ec_mock"
-                class="echarts-for-react "
-                size-sensor-id="2"
-                style="height: 220px; width: 250px; position: relative;"
+                style="overflow: visible; height: 0px; width: 0px;"
               >
                 <div
-                  style="position: relative; overflow: hidden; width: 250px; height: 220px;"
+                  _echarts_instance_="ec_mock"
+                  class="echarts-for-react "
+                  size-sensor-id="2"
+                  style="height: 250px; width: 280px; position: relative;"
                 >
-                  <svg
-                    baseProfile="full"
-                    height="220"
-                    style="position:absolute;left:0;top:0;user-select:none"
-                    version="1.1"
-                    width="250"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                  <div
+                    style="position: relative; overflow: hidden; width: 280px; height: 250px;"
                   >
-                    <rect
-                      fill="none"
-                      fill-opacity="1"
-                      height="220"
-                      id="0"
-                      width="250"
-                      x="0"
-                      y="0"
-                    />
-                    <g>
-                      <path
-                        d="M125 11L125 26.4Z"
-                        fill="#D61119"
-                        stroke="#FFFFFF"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M-3 -10.5l6 0l0 1l-6 0Z"
+                    <svg
+                      baseProfile="full"
+                      height="250"
+                      style="position:absolute;left:0;top:0;user-select:none"
+                      version="1.1"
+                      width="280"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                    >
+                      <rect
                         fill="none"
-                        transform="translate(125 110)"
+                        fill-opacity="1"
+                        height="250"
+                        id="0"
+                        width="280"
+                        x="0"
+                        y="0"
                       />
-                      <text
-                        dominant-baseline="central"
-                        fill="#333"
-                        fill-opacity="0"
-                        paint-order="stroke"
-                        stroke="rgb(255,255,255)"
-                        stroke-miterlimit="2"
-                        stroke-opacity="0"
-                        stroke-width="2"
-                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                        text-anchor="middle"
-                        transform="translate(125 110)"
-                        y="-10"
-                      >
-                        Reason
-                      </text>
-                      <path
-                        d="M-0.5 -0.5l1 0l0 11l-1 0Z"
-                        fill="none"
-                        transform="translate(125 110)"
-                      />
-                      <text
-                        dominant-baseline="central"
-                        fill="#333"
-                        fill-opacity="0"
-                        paint-order="stroke"
-                        stroke="rgb(255,255,255)"
-                        stroke-miterlimit="2"
-                        stroke-opacity="0"
-                        stroke-width="2"
-                        style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
-                        text-anchor="middle"
-                        transform="translate(125 110)"
-                        y="10"
-                      >
-                        2
-                      </text>
-                    </g>
-                  </svg>
+                      <g>
+                        <path
+                          d="M140 12.5L140 30Z"
+                          fill="#D61119"
+                          stroke="#FFFFFF"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M-3 -10.5l6 0l0 1l-6 0Z"
+                          fill="none"
+                          transform="translate(140 125)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333"
+                          fill-opacity="0"
+                          paint-order="stroke"
+                          stroke="rgb(255,255,255)"
+                          stroke-miterlimit="2"
+                          stroke-opacity="0"
+                          stroke-width="2"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="middle"
+                          transform="translate(140 125)"
+                          y="-10"
+                        >
+                          Reason
+                        </text>
+                        <path
+                          d="M-0.5 -0.5l1 0l0 11l-1 0Z"
+                          fill="none"
+                          transform="translate(140 125)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333"
+                          fill-opacity="0"
+                          paint-order="stroke"
+                          stroke="rgb(255,255,255)"
+                          stroke-miterlimit="2"
+                          stroke-opacity="0"
+                          stroke-width="2"
+                          style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
+                          text-anchor="middle"
+                          transform="translate(140 125)"
+                          y="10"
+                        >
+                          2
+                        </text>
+                      </g>
+                    </svg>
+                  </div>
+                  <div
+                    class=""
+                  />
+                  <object
+                    class="size-sensor-object"
+                    data="about:blank"
+                    style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                    tabindex="-1"
+                    type="text/html"
+                  />
                 </div>
                 <div
-                  class=""
-                />
-                <object
-                  class="size-sensor-object"
-                  data="about:blank"
-                  style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                  tabindex="-1"
-                  type="text/html"
-                />
+                  class="sc-bczRLJ euRvTa"
+                  width="280"
+                >
+                  100% of failures caused by 'AAA Auth Failure'
+                </div>
               </div>
               <div
-                class="sc-bczRLJ chorwm"
-                width="250"
+                class="resize-triggers"
               >
-                100 % of failures caused by 'AAA Auth Failure'
+                <div
+                  class="expand-trigger"
+                >
+                  <div
+                    style="width: 281px; height: 281px;"
+                  />
+                </div>
+                <div
+                  class="contract-trigger"
+                />
               </div>
             </div>
           </div>
@@ -375,107 +411,125 @@ exports[`NetworkImpact should match snapshot 1`] = `
               class="ant-card-body"
             >
               <div
-                _echarts_instance_="ec_mock"
-                class="echarts-for-react "
-                size-sensor-id="3"
-                style="height: 220px; width: 250px; position: relative;"
+                style="overflow: visible; height: 0px; width: 0px;"
               >
                 <div
-                  style="position: relative; overflow: hidden; width: 250px; height: 220px;"
+                  _echarts_instance_="ec_mock"
+                  class="echarts-for-react "
+                  size-sensor-id="3"
+                  style="height: 250px; width: 280px; position: relative;"
                 >
-                  <svg
-                    baseProfile="full"
-                    height="220"
-                    style="position:absolute;left:0;top:0;user-select:none"
-                    version="1.1"
-                    width="250"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                  <div
+                    style="position: relative; overflow: hidden; width: 280px; height: 250px;"
                   >
-                    <rect
-                      fill="none"
-                      fill-opacity="1"
-                      height="220"
-                      id="0"
-                      width="250"
-                      x="0"
-                      y="0"
-                    />
-                    <g>
-                      <path
-                        d="M125 11L125 26.4Z"
-                        fill="#D61119"
-                        stroke="#FFFFFF"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M125 11L125 26.4Z"
-                        fill="#F9C34B"
-                        stroke="#FFFFFF"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M-10 -10.5l20 0l0 1l-20 0Z"
+                    <svg
+                      baseProfile="full"
+                      height="250"
+                      style="position:absolute;left:0;top:0;user-select:none"
+                      version="1.1"
+                      width="280"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                    >
+                      <rect
                         fill="none"
-                        transform="translate(125 110)"
+                        fill-opacity="1"
+                        height="250"
+                        id="0"
+                        width="280"
+                        x="0"
+                        y="0"
                       />
-                      <text
-                        dominant-baseline="central"
-                        fill="#333"
-                        fill-opacity="0"
-                        paint-order="stroke"
-                        stroke="rgb(255,255,255)"
-                        stroke-miterlimit="2"
-                        stroke-opacity="0"
-                        stroke-width="2"
-                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                        text-anchor="middle"
-                        transform="translate(125 110)"
-                        xml:space="preserve"
-                        y="-10"
-                      >
-                        Client Manufacturers
-                      </text>
-                      <path
-                        d="M-0.5 -0.5l1 0l0 11l-1 0Z"
-                        fill="none"
-                        transform="translate(125 110)"
-                      />
-                      <text
-                        dominant-baseline="central"
-                        fill="#333"
-                        fill-opacity="0"
-                        paint-order="stroke"
-                        stroke="rgb(255,255,255)"
-                        stroke-miterlimit="2"
-                        stroke-opacity="0"
-                        stroke-width="2"
-                        style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
-                        text-anchor="middle"
-                        transform="translate(125 110)"
-                        y="10"
-                      >
-                        2
-                      </text>
-                    </g>
-                  </svg>
+                      <g>
+                        <path
+                          d="M140 12.5L140 30Z"
+                          fill="#D61119"
+                          stroke="#FFFFFF"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M140 12.5L140 30Z"
+                          fill="#F9C34B"
+                          stroke="#FFFFFF"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M-10 -10.5l20 0l0 1l-20 0Z"
+                          fill="none"
+                          transform="translate(140 125)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333"
+                          fill-opacity="0"
+                          paint-order="stroke"
+                          stroke="rgb(255,255,255)"
+                          stroke-miterlimit="2"
+                          stroke-opacity="0"
+                          stroke-width="2"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="middle"
+                          transform="translate(140 125)"
+                          xml:space="preserve"
+                          y="-10"
+                        >
+                          Client Manufacturers
+                        </text>
+                        <path
+                          d="M-0.5 -0.5l1 0l0 11l-1 0Z"
+                          fill="none"
+                          transform="translate(140 125)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333"
+                          fill-opacity="0"
+                          paint-order="stroke"
+                          stroke="rgb(255,255,255)"
+                          stroke-miterlimit="2"
+                          stroke-opacity="0"
+                          stroke-width="2"
+                          style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
+                          text-anchor="middle"
+                          transform="translate(140 125)"
+                          y="10"
+                        >
+                          2
+                        </text>
+                      </g>
+                    </svg>
+                  </div>
+                  <div
+                    class=""
+                  />
+                  <object
+                    class="size-sensor-object"
+                    data="about:blank"
+                    style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                    tabindex="-1"
+                    type="text/html"
+                  />
                 </div>
                 <div
-                  class=""
-                />
-                <object
-                  class="size-sensor-object"
-                  data="about:blank"
-                  style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                  tabindex="-1"
-                  type="text/html"
-                />
+                  class="sc-bczRLJ euRvTa"
+                  width="280"
+                >
+                  This incident impacted 2 client manufacturers
+                </div>
               </div>
               <div
-                class="sc-bczRLJ chorwm"
-                width="250"
+                class="resize-triggers"
               >
-                This incident impacted 2 client manufacturers
+                <div
+                  class="expand-trigger"
+                >
+                  <div
+                    style="width: 281px; height: 281px;"
+                  />
+                </div>
+                <div
+                  class="contract-trigger"
+                />
               </div>
             </div>
           </div>
@@ -522,106 +576,124 @@ exports[`NetworkImpact should match snapshot 1`] = `
               class="ant-card-body"
             >
               <div
-                _echarts_instance_="ec_mock"
-                class="echarts-for-react "
-                size-sensor-id="4"
-                style="height: 220px; width: 250px; position: relative;"
+                style="overflow: visible; height: 0px; width: 0px;"
               >
                 <div
-                  style="position: relative; overflow: hidden; width: 250px; height: 220px;"
+                  _echarts_instance_="ec_mock"
+                  class="echarts-for-react "
+                  size-sensor-id="4"
+                  style="height: 250px; width: 280px; position: relative;"
                 >
-                  <svg
-                    baseProfile="full"
-                    height="220"
-                    style="position:absolute;left:0;top:0;user-select:none"
-                    version="1.1"
-                    width="250"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                  <div
+                    style="position: relative; overflow: hidden; width: 280px; height: 250px;"
                   >
-                    <rect
-                      fill="none"
-                      fill-opacity="1"
-                      height="220"
-                      id="0"
-                      width="250"
-                      x="0"
-                      y="0"
-                    />
-                    <g>
-                      <path
-                        d="M125 11L125 26.4Z"
-                        fill="#D61119"
-                        stroke="#FFFFFF"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M125 11L125 26.4Z"
-                        fill="#F9C34B"
-                        stroke="#FFFFFF"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M-2.5 -10.5l5 0l0 1l-5 0Z"
+                    <svg
+                      baseProfile="full"
+                      height="250"
+                      style="position:absolute;left:0;top:0;user-select:none"
+                      version="1.1"
+                      width="280"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                    >
+                      <rect
                         fill="none"
-                        transform="translate(125 110)"
+                        fill-opacity="1"
+                        height="250"
+                        id="0"
+                        width="280"
+                        x="0"
+                        y="0"
                       />
-                      <text
-                        dominant-baseline="central"
-                        fill="#333"
-                        fill-opacity="0"
-                        paint-order="stroke"
-                        stroke="rgb(255,255,255)"
-                        stroke-miterlimit="2"
-                        stroke-opacity="0"
-                        stroke-width="2"
-                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                        text-anchor="middle"
-                        transform="translate(125 110)"
-                        y="-10"
-                      >
-                        Radio
-                      </text>
-                      <path
-                        d="M-0.5 -0.5l1 0l0 11l-1 0Z"
-                        fill="none"
-                        transform="translate(125 110)"
-                      />
-                      <text
-                        dominant-baseline="central"
-                        fill="#333"
-                        fill-opacity="0"
-                        paint-order="stroke"
-                        stroke="rgb(255,255,255)"
-                        stroke-miterlimit="2"
-                        stroke-opacity="0"
-                        stroke-width="2"
-                        style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
-                        text-anchor="middle"
-                        transform="translate(125 110)"
-                        y="10"
-                      >
-                        2
-                      </text>
-                    </g>
-                  </svg>
+                      <g>
+                        <path
+                          d="M140 12.5L140 30Z"
+                          fill="#D61119"
+                          stroke="#FFFFFF"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M140 12.5L140 30Z"
+                          fill="#F9C34B"
+                          stroke="#FFFFFF"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M-2.5 -10.5l5 0l0 1l-5 0Z"
+                          fill="none"
+                          transform="translate(140 125)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333"
+                          fill-opacity="0"
+                          paint-order="stroke"
+                          stroke="rgb(255,255,255)"
+                          stroke-miterlimit="2"
+                          stroke-opacity="0"
+                          stroke-width="2"
+                          style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                          text-anchor="middle"
+                          transform="translate(140 125)"
+                          y="-10"
+                        >
+                          Radio
+                        </text>
+                        <path
+                          d="M-0.5 -0.5l1 0l0 11l-1 0Z"
+                          fill="none"
+                          transform="translate(140 125)"
+                        />
+                        <text
+                          dominant-baseline="central"
+                          fill="#333"
+                          fill-opacity="0"
+                          paint-order="stroke"
+                          stroke="rgb(255,255,255)"
+                          stroke-miterlimit="2"
+                          stroke-opacity="0"
+                          stroke-width="2"
+                          style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
+                          text-anchor="middle"
+                          transform="translate(140 125)"
+                          y="10"
+                        >
+                          2
+                        </text>
+                      </g>
+                    </svg>
+                  </div>
+                  <div
+                    class=""
+                  />
+                  <object
+                    class="size-sensor-object"
+                    data="about:blank"
+                    style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                    tabindex="-1"
+                    type="text/html"
+                  />
                 </div>
                 <div
-                  class=""
-                />
-                <object
-                  class="size-sensor-object"
-                  data="about:blank"
-                  style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                  tabindex="-1"
-                  type="text/html"
-                />
+                  class="sc-bczRLJ euRvTa"
+                  width="280"
+                >
+                  This incident impacted 2 bands
+                </div>
               </div>
               <div
-                class="sc-bczRLJ chorwm"
-                width="250"
+                class="resize-triggers"
               >
-                This incident impacted 2 bands
+                <div
+                  class="expand-trigger"
+                >
+                  <div
+                    style="width: 281px; height: 281px;"
+                  />
+                </div>
+                <div
+                  class="contract-trigger"
+                />
               </div>
             </div>
           </div>

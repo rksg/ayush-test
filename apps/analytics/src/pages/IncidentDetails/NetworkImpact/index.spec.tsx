@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { dataApiURL }                                                              from '@acx-ui/analytics/services'
-import { Incident }                                                                from '@acx-ui/analytics/utils'
-import { Provider, store }                                                         from '@acx-ui/store'
-import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen, renderHook } from '@acx-ui/test-utils'
+import { dataApiURL }                                                                             from '@acx-ui/analytics/services'
+import { Incident }                                                                               from '@acx-ui/analytics/utils'
+import { Provider, store }                                                                        from '@acx-ui/store'
+import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen, renderHook, mockAutoSizer } from '@acx-ui/test-utils'
 
 import { networkImpactChartsApi } from './services'
 
@@ -22,18 +22,6 @@ jest.mock('./config', () => {
     }
   }
 })
-
-interface ChildrenProps {
-  height: number
-  width: number
-}
-interface AutoSizerProps {
-  children: (props: ChildrenProps) => JSX.Element
-}
-jest.mock('react-virtualized-auto-sizer', () =>
-  (props: AutoSizerProps) => props.children({ height: 250, width: 250 })
-)
-
 
 const NetworkImpactData = { incident: {
   WLAN: {
@@ -85,25 +73,26 @@ describe('transformSummary', () => {
     const { result } = renderHook(() => {
       return transformSummary(NetworkImpactData.incident.reason, incident, useIntl())
     })
-    expect(result.current).toEqual("100 % of failures caused by 'AAA Auth Failure'")
+    expect(result.current).toEqual("100% of failures caused by 'AAA Auth Failure'")
   })
   it('should return correct result when having transformKeyFn', () => {
     const incident = { id: 'id', metadata: { dominant: { } } } as Incident
     const { result } = renderHook(() => {
       return transformSummary(NetworkImpactData.incident.reason, incident, useIntl())
     })
-    expect(result.current).toEqual("100 % of failures caused by 'AAA Auth Failure'")
+    expect(result.current).toEqual("100% of failures caused by 'AAA Auth Failure'")
   })
   it('should return correct result when no transformKeyFn', () => {
     const incident = { id: 'id', metadata: { dominant: { ssid: 'ssid2' } } } as Incident
     const { result } = renderHook(() => {
       return transformSummary(NetworkImpactData.incident.WLAN, incident, useIntl())
     })
-    expect(result.current).toEqual('33 % of failures impacted ssid2 WLAN')
+    expect(result.current).toEqual('33% of failures impacted ssid2 WLAN')
   })
 })
 
 describe('NetworkImpact', () => {
+  mockAutoSizer()
   const props ={
     incident: { id: 'id', metadata: { dominant: { } } } as Incident,
     charts: [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
