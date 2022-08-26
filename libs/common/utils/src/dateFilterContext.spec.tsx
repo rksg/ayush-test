@@ -14,8 +14,8 @@ describe('useDateFilter', () => {
   it('should return correctly value', () => {
     const { result } = renderHook(useDateFilter)
     expect(result.current).toMatchObject({
-      startDate: '2021-12-31T00:00:00Z',
-      endDate: '2022-01-01T00:00:00Z',
+      startDate: '2021-12-31T00:00:00+00:00',
+      endDate: '2022-01-01T00:00:00+00:00',
       range: 'Last 24 Hours'
     })
   })
@@ -124,8 +124,8 @@ describe('getDateRangeFilter', () => {
 
   it('should return correct dateFilter for the given range', () => {
     expect(getDateRangeFilter(DateRange.last1Hour)).toStrictEqual({
-      startDate: '2021-12-31T23:00:00Z',
-      endDate: '2022-01-01T00:00:00Z',
+      startDate: '2021-12-31T23:00:00+00:00',
+      endDate: '2022-01-01T00:00:00+00:00',
       range: 'Last 1 Hour'
     })
   })

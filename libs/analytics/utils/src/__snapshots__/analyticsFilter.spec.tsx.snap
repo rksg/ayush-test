@@ -3,7 +3,7 @@
 exports[`AnalyticsFilterProvider should render correctly 1`] = `
 <DocumentFragment>
   <div>
-    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00Z","endDate":"2022-01-01T00:00:00Z","range":"Last 24 Hours"}
+    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours"}
   </div>
 </DocumentFragment>
 `;

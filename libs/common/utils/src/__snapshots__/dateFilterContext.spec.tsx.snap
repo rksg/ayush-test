@@ -3,7 +3,7 @@
 exports[`DateFilterProvider should render correctly 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00Z","endDate":"2022-01-01T00:00:00Z","range":"Last 24 Hours"}
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours"}
   </div>
 </DocumentFragment>
 `;
@@ -11,7 +11,7 @@ exports[`DateFilterProvider should render correctly 1`] = `
 exports[`DateFilterProvider should render correctly with default date from url 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00Z","endDate":"2022-01-01T00:00:00Z","range":"Last 24 Hours"}
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours"}
   </div>
 </DocumentFragment>
 `;
@@ -19,7 +19,7 @@ exports[`DateFilterProvider should render correctly with default date from url 1
 exports[`DateFilterProvider should set url on rerender 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-01T00:00:00Z","endDate":"2022-01-01T00:00:00Z","range":"Last Month"}
+    {"startDate":"2021-12-01T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last Month"}
   </div>
 </DocumentFragment>
 `;
