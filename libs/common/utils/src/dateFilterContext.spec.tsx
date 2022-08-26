@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 
 import { renderHook, render } from '@testing-library/react'
-import moment                 from 'moment-timezone'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
@@ -10,14 +9,13 @@ import { defaultRanges, DateRange, getDateRangeFilter } from './dateUtil'
 
 describe('useDateFilter', () => {
   beforeEach(() => {
-    moment.tz.setDefault('Asia/Singapore')
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
   it('should return correctly value', () => {
     const { result } = renderHook(useDateFilter)
     expect(result.current).toMatchObject({
-      startDate: '2021-12-31T08:00:00+08:00',
-      endDate: '2022-01-01T08:00:00+08:00',
+      startDate: '2021-12-31T00:00:00Z',
+      endDate: '2022-01-01T00:00:00Z',
       range: 'Last 24 Hours'
     })
   })
@@ -87,7 +85,6 @@ describe('DateFilterProvider', () => {
 
 describe('defaultRanges', () => {
   beforeEach(() => {
-    moment.tz.setDefault('Asia/Singapore')
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
 
@@ -103,7 +100,7 @@ describe('defaultRanges', () => {
       'Last 24 Hours': ['2021-12-31T00:00:00.000Z', '2022-01-01T00:00:00.000Z'],
       'Last 7 Days': ['2021-12-25T00:00:00.000Z', '2022-01-01T00:00:00.000Z'],
       'Last Month': ['2021-12-01T00:00:00.000Z', '2022-01-01T00:00:00.000Z'],
-      'Today': ['2021-12-31T16:00:00.000Z', '2022-01-01T00:00:00.000Z']
+      'Today': ['2022-01-01T00:00:00.000Z', '2022-01-01T00:00:00.000Z']
     })
   })
 
@@ -115,21 +112,20 @@ describe('defaultRanges', () => {
         return agg
       }, {} as Record<string, string[]>)
     ).toStrictEqual({
-      Today: ['2021-12-31T16:00:00.000Z', '2022-01-01T00:00:00.000Z']
+      Today: ['2022-01-01T00:00:00.000Z', '2022-01-01T00:00:00.000Z']
     })
   })
 })
 
 describe('getDateRangeFilter', () => {
   beforeEach(() => {
-    moment.tz.setDefault('Asia/Singapore')
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
 
   it('should return correct dateFilter for the given range', () => {
     expect(getDateRangeFilter(DateRange.last1Hour)).toStrictEqual({
-      startDate: '2022-01-01T07:00:00+08:00',
-      endDate: '2022-01-01T08:00:00+08:00',
+      startDate: '2021-12-31T23:00:00Z',
+      endDate: '2022-01-01T00:00:00Z',
       range: 'Last 1 Hour'
     })
   })
@@ -137,12 +133,12 @@ describe('getDateRangeFilter', () => {
     expect(
       getDateRangeFilter(
         DateRange.custom,
-        '2022-01-01T07:00:00+08:00',
-        '2022-01-01T08:00:00+08:00'
+        '2021-12-31T23:00:00Z',
+        '2022-01-01T00:00:00Z'
       )
     ).toStrictEqual({
-      startDate: '2022-01-01T07:00:00+08:00',
-      endDate: '2022-01-01T08:00:00+08:00',
+      startDate: '2021-12-31T23:00:00Z',
+      endDate: '2022-01-01T00:00:00Z',
       range: 'Custom'
     })
   })
