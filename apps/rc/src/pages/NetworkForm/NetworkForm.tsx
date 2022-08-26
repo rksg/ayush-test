@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
-import { get, isEqual }           from 'lodash'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -12,15 +12,18 @@ import {
 } from '@acx-ui/components'
 import {
   useCreateNetworkMutation,
-  useLazyValidateRadiusQuery,
+  useGetNetworkQuery,
+  useUpdateNetworkMutation,
+  useLazyValidateRadiusQuery
+} from '@acx-ui/rc/services'
+
+import {
+  CreateNetworkFormFields,
+  NetworkTypeEnum,
+  NetworkSaveData,
+  RadiusErrorsType,
   RadiusValidate,
   RadiusValidateErrors
-} from '@acx-ui/rc/services'
-import {
-  NetworkTypeEnum,
-  CreateNetworkFormFields,
-  NetworkSaveData,
-  RadiusErrorsType
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -37,6 +40,7 @@ import NetworkFormContext    from './NetworkFormContext'
 import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
 import { DpskSettingsForm }  from './NetworkSettings/DpskSettingsForm'
 import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }   from './NetworkSettings/PskSettingsForm'
 import { SummaryForm }       from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
@@ -58,35 +62,36 @@ export function NetworkForm () {
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
+  const editMode = params.action === 'edit'
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [createNetwork] = useCreateNetworkMutation()
-  //DetailsState
-  const [state, updateState] = useState<CreateNetworkFormFields>({
+  const [updateNetwork] = useUpdateNetworkMutation()
+
+  const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
+
+  const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
-    type: NetworkTypeEnum.AAA,
+    type: NetworkTypeEnum.OPEN,
     isCloudpathEnabled: false,
     venues: []
   })
-  const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
-
-  const updateData = (newData: Partial<CreateNetworkFormFields>) => {
-    updateState({ ...state, ...newData })
-  }
-
-  const [saveState, updateSaveState] = useState<NetworkSaveData>()
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
-    if( state.isCloudpathEnabled ){
-      delete saveState?.accountingRadius
-      delete saveState?.authRadius
-    }else{
-      delete saveState?.cloudpathServerId
-    }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
   }
+
+  const { data } = useGetNetworkQuery({ params })
+
+  useEffect(() => {
+    if(data){
+      formRef?.current?.resetFields()
+      formRef?.current?.setFieldsValue(data)
+      updateSaveData(data)
+    }
+  }, [data])
 
   const handleAddNetwork = async () => {
     try {
@@ -104,8 +109,8 @@ export function NetworkForm () {
 
   const checkIpsValues = async (newData: Partial<CreateNetworkFormFields>) => {
     const payload = {
-      ...tranferSettingsToSave(newData),
       // networkId: 
+      ...newData,
       networkType: newData?.type?.toUpperCase()
     }
 
@@ -128,7 +133,7 @@ export function NetworkForm () {
         error: RadiusValidateErrors,
         index: number
       ) => {
-        const key = error.object.split('.')[1]
+        const key = error.object?.split('.')[1]
         const msgArray = error.message.split('Authentication Profile')
         msgArray.forEach((item, index) => {
           if (item?.includes('multiple conflict')) {
@@ -167,8 +172,8 @@ export function NetworkForm () {
             errorMessage,
             newData,
             error?.data?.errors,
-            get(results, 'authRadius') as number,
-            get(results, 'accountingRadius') as number
+            _.get(results, 'authRadius') as number,
+            _.get(results, 'accountingRadius') as number
           )
         } else {
           showActionModal({
@@ -297,7 +302,6 @@ export function NetworkForm () {
         ...updatedata
       })
 
-      updateData(updatedata)
       updateSaveData(saveData)
       callback && callback()
 
@@ -306,82 +310,97 @@ export function NetworkForm () {
       // }
       
     } else if (action === 'override') {
-      updateData(data)
       updateSaveData(tranferSettingsToSave(data))
     }
   }
 
+  const handleEditNetwork = async () => {
+    try {
+      await updateNetwork({ params, payload: saveState }).unwrap()
+      navigate(linkToNetworks, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: 'An error occurred'
+      })
+    }
+  }
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Create New Network' })}
+        title={editMode ?
+          $t({ defaultMessage: 'Edit Network' }) : $t({ defaultMessage: 'Create New Network' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
-      <StepsForm<CreateNetworkFormFields>
-        formRef={formRef}
-        onCancel={() => navigate(linkToNetworks)}
-        onFinish={handleAddNetwork}
-      >
-        <StepsForm.StepForm<CreateNetworkFormFields>
-          name='details'
-          title={$t({ defaultMessage: 'Network Details' })}
-          onFinish={async (data) => {
-            const detailsSaveData = transferDetailToSave(data)
-            updateData(data)
-            updateSaveData(detailsSaveData)
-            return true
-          }}
+      <NetworkFormContext.Provider value={{ setNetworkType, editMode, data }}>
+        <StepsForm<NetworkSaveData>
+          formRef={formRef}
+          editMode={editMode}
+          onCancel={() => navigate(linkToNetworks)}
+          onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
-          <NetworkFormContext.Provider value={{ setNetworkType }}>
-            <NetworkDetailForm />
-          </NetworkFormContext.Provider>
-        </StepsForm.StepForm>
-
-        <StepsForm.StepForm
-          name='settings'
-          title={$t(settingTitle, { type: networkType })}
-          onFinish={async (data) => {
-            data = {
-              ...data,
-              ...{ type: state.type, isCloudpathEnabled: data.isCloudpathEnabled }
-            }
-            const settingSaveData = tranferSettingsToSave(data) as Partial<NetworkSaveData>
-            const radiusChanged = !isEqual(saveState?.authRadius, settingSaveData?.authRadius)
-                        || !isEqual(saveState?.accountingRadius, settingSaveData?.accountingRadius)
-            const radiusChecked = !data.cloudpathServerId && radiusChanged
-              ? await checkIpsValues(data) : true
-
-            if (radiusChecked) {
-              updateData(data)
-              updateSaveData(settingSaveData)
+          <StepsForm.StepForm
+            name='details'
+            title={$t({ defaultMessage: 'Network Details' })}
+            onFinish={async (data) => {
+              const detailsSaveData = transferDetailToSave(data)
+              updateSaveData(detailsSaveData)
               return true
-            }
-            return false
-          }}
-        >
-          {state.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-          {state.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
-          {state.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
-        </StepsForm.StepForm>
+            }}
+          >
+            <NetworkDetailForm />
+          </StepsForm.StepForm>
 
-        <StepsForm.StepForm
-          name='venues'
-          title={$t({ defaultMessage: 'Venues' })}
-          onFinish={async (data) => {
-            updateData(data)
-            updateSaveData(data)
-            return true
-          }}
-        >
-          <Venues formRef={formRef} />
-        </StepsForm.StepForm>
+          <StepsForm.StepForm
+            name='settings'
+            title={$t(settingTitle, { type: networkType })}
+            onFinish={async (data) => {
+              const radiusChanged = !_.isEqual(data?.authRadius, saveState?.authRadius)
+                          || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
+              const radiusChecked = !data.cloudpathServerId && radiusChanged
+                ? await checkIpsValues(data) : true
 
-        <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
-          <SummaryForm summaryData={state} />
-        </StepsForm.StepForm>
-      </StepsForm>
+              if (radiusChecked) {
+                const settingData = _.merge(saveState, data)
+                const settingSaveData = tranferSettingsToSave(settingData)
+                updateSaveData(settingSaveData)
+                return true
+              }
+              return false
+            }}
+          >
+            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
+            {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
+            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
+          </StepsForm.StepForm>
+
+          <StepsForm.StepForm
+            initialValues={data}
+            params={data}
+            request={(params) => {
+              return Promise.resolve({
+                data: params,
+                success: true
+              })
+            }}
+            name='venues'
+            title={$t({ defaultMessage: 'Venues' })}
+            onFinish={async (data) => {
+              updateSaveData(data)
+              return true
+            }}
+          >
+            <Venues />
+          </StepsForm.StepForm>
+
+          <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
+            <SummaryForm summaryData={saveState} />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </NetworkFormContext.Provider>
     </>
   )
 }

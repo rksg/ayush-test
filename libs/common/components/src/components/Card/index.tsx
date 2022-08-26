@@ -1,62 +1,39 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { Card as AntCard, Space } from 'antd'
 
-import { SelectionControl } from '../SelectionControl'
-
 import * as UI from './styledComponents'
 
-import type { SelectionControlOptionProps } from '../SelectionControl'
-import type {
-  CardProps as AntCardProps,
-  RadioChangeEvent as AntRadioChangeEvent
-} from 'antd'
-
+import type { CardProps as AntCardProps } from 'antd'
 
 export interface CardProps extends Pick<AntCardProps, 'children'> {
+  bordered?: boolean
   title?: string
   subTitle?: string
-  tabs?: Array<SelectionControlOptionProps & { component: React.ReactNode }>
-  defaultTab?: string
-  onTabChange?: (e: AntRadioChangeEvent) => void
   onExpandClick?: () => void
   onMoreClick?: () => void
 }
 
-export const Card = function Card ({ title, subTitle, tabs, ...props }: CardProps) {
-  const [selectedTab, setSelectedTab] = useState(props.defaultTab)
+export const Card = function Card ({
+  bordered = true,
+  title,
+  subTitle,
+  ...props
+}: CardProps) {
   const wrapperProps = {
-    hasTitle: Boolean(title),
-    hasSubTitle: Boolean(subTitle),
-    hasTabs: Boolean(tabs)
+    hasBorder: bordered,
+    hasTitle: Boolean(title)
   }
   return (
     <UI.Wrapper {...wrapperProps}>
       <AntCard
         bordered={false}
-        title={
-          <UI.HeaderContainer {...wrapperProps}>
-            <UI.TitleWrapper children={title} />
-            {tabs ? (
-              <UI.SelectionControlWrapper
-                children={
-                  <SelectionControl
-                    size={'small'}
-                    options={tabs}
-                    defaultValue={props.defaultTab}
-                    onChange={(e) => {
-                      setSelectedTab(e.target.value)
-                      props.onTabChange && props.onTabChange(e)
-                    }}
-                  />
-                }
-              />
-            ) : <div />}
-            {subTitle ? (
-              <UI.SubTitleWrapper children={subTitle} />
-            ) : null}
-          </UI.HeaderContainer>
-        }
+        title={<>
+          <UI.TitleWrapper children={title} />
+          {subTitle ? (
+            <UI.SubTitleWrapper children={subTitle} />
+          ) : null}
+        </>}
         extra={
           <Space>
             { props.onExpandClick ? <UI.Button
@@ -74,9 +51,7 @@ export const Card = function Card ({ title, subTitle, tabs, ...props }: CardProp
           </Space>
         }
       >
-        {tabs
-          ? tabs.find(({ value }) => value === selectedTab)?.component
-          : props.children}
+        {props.children}
       </AntCard>
     </UI.Wrapper>
   )

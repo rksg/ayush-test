@@ -118,6 +118,12 @@ export const aaaServerTypes: Record<AaaServerOrderEnum, MessageDescriptor> = {
   })
 }
 
+export const NetworkTypeTitle: Partial<Record<NetworkTypeEnum, MessageDescriptor>> = {
+  [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Settings' }),
+  [NetworkTypeEnum.AAA]: defineMessage({ defaultMessage: 'AAA Settings' }),
+  [NetworkTypeEnum.OPEN]: defineMessage({ defaultMessage: 'Settings' }),
+  [NetworkTypeEnum.DPSK]: defineMessage({ defaultMessage: 'DPSK Settings' })
+}
 export const states = {
   enabled: defineMessage({ defaultMessage: 'Enabled' }),
   disabled: defineMessage({ defaultMessage: 'Disabled' })

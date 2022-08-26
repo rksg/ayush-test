@@ -102,6 +102,26 @@ export enum CloudpathDeploymentTypeEnum {
   Cloud = 'Cloud',
 }
 
+export enum ServiceType {
+  PORTAL = 'PORTAL',
+  DHCP_WIFI = 'DHCP_WIFI',
+  WIFI_CALLING = 'WIFI_CALLING',
+  MDNS_PROXY = 'MDNS_PROXY',
+  DPSK = 'DPSK'
+}
+export enum ServiceTechnology {
+  WIFI = 'WIFI',
+  SWITCH = 'SWITCH'
+}
+export enum ServiceStatus {
+  UP = 'UP',
+  DOWN = 'DOWN'
+}
+export enum ServiceAdminState {
+  ENABLED = 'ENABLED',
+  DISABLED = 'DISABLED'
+}
+
 export enum RadiusErrorsType {
   AUTH_AND_ACC = 'AUTH_AND_ACC',
   AUTH = 'AUTH',

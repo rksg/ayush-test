@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import {
   Col,
@@ -14,12 +14,21 @@ import { NetworkTypeEnum }       from '@acx-ui/rc/utils'
 import { useParams }             from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext from '../NetworkFormContext'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
 
 const { useWatch } = Form
 
 export function OpenSettingsForm () {
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  if(data){
+    form.setFieldsValue({ 
+      cloudpathServerId: data.cloudpathServerId,
+      isCloudpathEnabled: data.cloudpathServerId !== undefined
+    })
+  }
   const selectedId = useWatch('cloudpathServerId')
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -46,6 +55,7 @@ export function OpenSettingsForm () {
 
 function SettingsForm () {
   const isCloudpathEnabled = useWatch<boolean>('isCloudpathEnabled')
+  const { editMode } = useContext(NetworkFormContext)
   const { $t } = useIntl()
 
   return (
@@ -54,7 +64,7 @@ function SettingsForm () {
 
       <Form.Item>
         <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
-          <Switch />
+          <Switch disabled={editMode} />
         </Form.Item>
         <span>{$t({ defaultMessage: 'Use Cloudpath Server' })}</span>
       </Form.Item>

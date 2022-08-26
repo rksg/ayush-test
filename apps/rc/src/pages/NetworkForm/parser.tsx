@@ -4,123 +4,18 @@ import {
   NetworkTypeEnum,
   CreateNetworkFormFields,
   NetworkSaveData,
-  IClientIsolationOptions,
-  IWlanRadioCustomization,
-  IOpenWlanAdvancedCustomization,
-  RfBandUsageEnum,
-  BssMinimumPhyRateEnum,
-  BssMinimumPhyRateEnum6G,
-  PhyTypeConstraintEnum,
-  ManagementFrameMinimumPhyRateEnum,
-  ManagementFrameMinimumPhyRateEnum6G,
-  DnsProxy,
-  IDpskWlanAdvancedCustomization
+  OpenWlanAdvancedCustomization,
+  AAAWlanAdvancedCustomization,
+  DpskWlanAdvancedCustomization,
+  PskWlanAdvancedCustomization
 } from '@acx-ui/rc/utils'
-
-const clientIsolationOptions: IClientIsolationOptions = {
-  autoVrrp: false
-}
-
-const dnsProxy: DnsProxy = {
-  dnsProxyRules: []
-}
-
-const radioCustomization: IWlanRadioCustomization = {
-  rfBandUsage: RfBandUsageEnum.BOTH,
-  bssMinimumPhyRate: BssMinimumPhyRateEnum._default,
-  bssMinimumPhyRate6G: BssMinimumPhyRateEnum6G._6,
-  phyTypeConstraint: PhyTypeConstraintEnum.OFDM,
-  managementFrameMinimumPhyRate: ManagementFrameMinimumPhyRateEnum._6,
-  managementFrameMinimumPhyRate6G: ManagementFrameMinimumPhyRateEnum6G._6
-}
-
-const OpenWlanAdvancedCustomization: IOpenWlanAdvancedCustomization = {
-  clientIsolation: true,
-  maxClientsOnWlanPerRadio: 100,
-  enableBandBalancing: true,
-  clientIsolationOptions: clientIsolationOptions,
-  hideSsid: false,
-  forceMobileDeviceDhcp: false,
-  clientLoadBalancingEnable: true,
-  directedThreshold: 5,
-  enableNeighborReport: true,
-  radioCustomization: radioCustomization,
-  enableSyslog: false,
-  clientInactivityTimeout: 120,
-  accessControlEnable: false,
-  respectiveAccessControl: true,
-  vlanPool: null,
-  applicationPolicyEnable: false,
-  l2AclEnable: false,
-  l3AclEnable: false,
-  wifiCallingEnabled: false,
-  wifiCallingIds: [], //@Size(    max: 5 )
-  proxyARP: false,
-  enableAirtimeDecongestion: false,
-  enableJoinRSSIThreshold: false,
-  joinRSSIThreshold: -85,
-  enableTransientClientManagement: false,
-  joinWaitTime: 30,
-  joinExpireTime: 300,
-  joinWaitThreshold: 10,
-  enableOptimizedConnectivityExperience: false,
-  broadcastProbeResponseDelay: 15,
-  rssiAssociationRejectionThreshold: -75,
-  enableAntiSpoofing: false,
-  enableArpRequestRateLimit: true,
-  arpRequestRateLimit: 15,
-  enableDhcpRequestRateLimit: true,
-  dhcpRequestRateLimit: 15,
-  dnsProxyEnabled: false
-}
-
-const DpskWlanAdvancedCustomization: IDpskWlanAdvancedCustomization = {
-  maxClientsOnWlanPerRadio: 100,
-  enableBandBalancing: true,
-  clientIsolation: false,
-  clientIsolationOptions: clientIsolationOptions,
-  hideSsid: false,
-  forceMobileDeviceDhcp: false,
-  clientLoadBalancingEnable: true,
-  enableAaaVlanOverride: true,
-  directedThreshold: 5,
-  enableNeighborReport: true,
-  radioCustomization: radioCustomization,
-  enableSyslog: false,
-  clientInactivityTimeout: 120,
-  accessControlEnable: false,
-  respectiveAccessControl: true,
-  vlanPool: null,
-  applicationPolicyEnable: false,
-  l2AclEnable: false,
-  l3AclEnable: false,
-  wifiCallingEnabled: false,
-  wifiCallingIds: [],
-  proxyARP: false,
-  enableAirtimeDecongestion: false,
-  enableJoinRSSIThreshold: false,
-  joinRSSIThreshold: -85,
-  enableTransientClientManagement: false,
-  joinWaitTime: 30,
-  joinExpireTime: 300,
-  joinWaitThreshold: 10,
-  enableOptimizedConnectivityExperience: false,
-  broadcastProbeResponseDelay: 15,
-  rssiAssociationRejectionThreshold: -75,
-  enableAntiSpoofing: false,
-  enableArpRequestRateLimit: true,
-  arpRequestRateLimit: 15,
-  enableDhcpRequestRateLimit: true,
-  dhcpRequestRateLimit: 15,
-  dnsProxyEnabled: false,
-  dnsProxy: dnsProxy,
-  tunnelWlanEnable: false
-}
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {}
 
   if (data.isCloudpathEnabled) {
+    delete data?.accountingRadius
+    delete data?.authRadius
     saveData = {
       ...saveData,
       ...{
@@ -130,6 +25,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
       }
     }
   } else {
+    delete data?.cloudpathServerId
     let authRadius = {}
     if (get(data, 'authRadius.primary.ip')) {
       authRadius = {
@@ -207,7 +103,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
     ...{
       wlan: {
         wlanSecurity: data.wlanSecurity,
-        advancedCustomization: OpenWlanAdvancedCustomization,
+        advancedCustomization: new AAAWlanAdvancedCustomization(),
         bypassCNA: false,
         bypassCPUsingMacAddressAuthentication: false,
         enable: true,
@@ -231,12 +127,11 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
       }
     }
   }
-
   saveData = {
     ...saveData,
     ...{
       wlan: {
-        advancedCustomization: OpenWlanAdvancedCustomization,
+        advancedCustomization: new OpenWlanAdvancedCustomization(),
         enable: true,
         vlanId: 1
       }
@@ -254,7 +149,7 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
       wlanSecurity: data.dpskWlanSecurity,
       enable: true,
       vlanId: 1,
-      advancedCustomization: DpskWlanAdvancedCustomization
+      advancedCustomization: new DpskWlanAdvancedCustomization()
     },
     dpskPassphraseGeneration: {
       length: data.passphraseLength,
@@ -273,11 +168,92 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
   return saveData
 }
 
+const parsePskSettingDataToSave = (data: NetworkSaveData) => {
+  let saveData = {}
+  if (data.wlan?.macAddressAuthentication) {
+    let authRadius = {
+      primary: {
+        ip: get(data, 'authRadius.primary.ip'),
+        port: get(data, 'authRadius.primary.port'),
+        sharedSecret: get(data, 'authRadius.primary.sharedSecret')
+      }
+    }
+    if (data.enableSecondaryAuthServer) {
+      authRadius = {
+        ...authRadius,
+        ...{
+          secondary: {
+            ip: get(data, 'authRadius.secondary.ip'),
+            port: get(data, 'authRadius.secondary.port'),
+            sharedSecret: get(data, 'authRadius.secondary.sharedSecret')
+          }
+        }
+      }
+    }
+  
+    saveData = {
+      ...saveData,
+      ...{
+        authRadius
+      }
+    }
+
+    if (data.enableAccountingService) {
+      let accountingRadius = {
+        primary: {
+          ip: get(data, 'accountingRadius.primary.ip'),
+          port: get(data, 'accountingRadius.primary.port'),
+          sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
+        }
+        
+      }
+  
+      if (data.enableSecondaryAcctServer) {
+        accountingRadius = {
+          ...accountingRadius,
+          ...{
+            secondary: {
+              ip: get(data, 'accountingRadius.secondary.ip'),
+              port: get(data, 'accountingRadius.secondary.port'),
+              sharedSecret: get(
+                data,
+                'accountingRadius.secondary.sharedSecret'
+              )
+            }
+          }
+        }
+      }
+  
+      saveData = {
+        ...saveData,
+        ...{
+          accountingRadius
+        }
+      }
+    }
+  }
+
+  saveData = {
+    ...saveData,
+    ...{
+      type: data.type,
+      isCloudpathEnabled: typeof data.cloudpathServerId !== undefined,
+      wlan: {
+        ...data.wlan,
+        advancedCustomization: new PskWlanAdvancedCustomization(),
+        enable: true,
+        vlanId: 1
+      }
+    }
+  }
+
+  return saveData
+}
+
 export function transferDetailToSave (data: CreateNetworkFormFields) {
   return {
     name: data.name,
-    description: data.description ?? '',
-    venues: data.venues ?? null,
+    description: data.description,
     type: data.type,
     wlan: {
       ssid: data.name
@@ -289,7 +265,8 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
   const networkSaveDataParser = {
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data),
     [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data),
-    [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data)
+    [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data),
+    [NetworkTypeEnum.PSK]: parsePskSettingDataToSave(data)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }
