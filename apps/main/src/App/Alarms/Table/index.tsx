@@ -46,8 +46,7 @@ const defaultPayload = {
     'apName',
     'switchName',
     'sourceType'
-  ],
-  sortField: 'startTime'
+  ]
 }
 
 const defaultArray: Alarm[] = []
@@ -57,7 +56,11 @@ export function AlarmsTable () {
   const AlarmsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useAlarmsListQuery,
-      defaultPayload
+      defaultPayload,
+      sorter: {
+        sortField: 'startTime',
+        sortOrder: 'DESC'
+      }
     })
     const [tableData, setTableData] = useState(defaultArray)
     useEffect(()=>{
