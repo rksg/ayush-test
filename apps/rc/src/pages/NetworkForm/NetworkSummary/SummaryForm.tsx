@@ -48,10 +48,11 @@ export function SummaryForm (props: {
     const rows = []
     if (venues && venues.length > 0) {
       for (const venue of venues) {
+        const venueId = venue.venueId || ''
         rows.push(
-          <li key={venue.venueId} style={{ margin: '10px 0px' }}>
+          <li key={venueId} style={{ margin: '10px 0px' }}>
             <EnvironmentOutlined />
-            {venueList ? venueList[venue.venueId].name : venue.venueId}
+            {venueList && venueList[venueId] ? venueList[venueId].name : venueId}
           </li>
         )
       }

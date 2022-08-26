@@ -7,6 +7,7 @@ import {
 
 import { AAAWlanAdvancedCustomization }  from './AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from './DpskWlanAdvancedCustomization'
+import { NetworkVenue }                  from './NetworkVenue'
 import { OpenWlanAdvancedCustomization } from './OpenWlanAdvancedCustomization'
 import { PskWlanAdvancedCustomization }  from './PskWlanAdvancedCustomization'
 
@@ -16,7 +17,7 @@ export interface CreateNetworkFormFields {
   type: NetworkTypeEnum;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
-  venues: NetworkVenue[];
+  venues: NetworkVenueLight[];
   enableAccountingService?: boolean;
   enableAuthProxy?: boolean;
   wlanSecurity?: WlanSecurityEnum;
@@ -92,7 +93,7 @@ export interface NetworkSaveData {
   expiration?: PassphraseExpirationEnum;
 }
 
-export interface NetworkVenue {
+export interface NetworkVenueLight {
   id?: string
   name?: string
   apGroups: string[],

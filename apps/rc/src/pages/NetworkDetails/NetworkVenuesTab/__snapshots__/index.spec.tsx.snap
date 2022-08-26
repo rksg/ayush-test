@@ -62,7 +62,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                   class="ant-spin-container"
                 >
                   <div
-                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                    class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                   >
                     <div
                       class="ant-table-container"
@@ -78,6 +78,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                             <col
                               class="ant-table-selection-col"
                             />
+                            <col />
                             <col />
                             <col />
                             <col />
@@ -106,13 +107,14 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                   class="ant-table-selection"
                                 >
                                   <label
-                                    class="ant-checkbox-wrapper"
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled"
                                   >
                                     <span
-                                      class="ant-checkbox"
+                                      class="ant-checkbox ant-checkbox-disabled"
                                     >
                                       <input
                                         class="ant-checkbox-input"
+                                        disabled=""
                                         type="checkbox"
                                         value=""
                                       />
@@ -324,6 +326,11 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                               <th
                                 class="ant-table-cell"
                               >
+                                VLAN
+                              </th>
+                              <th
+                                class="ant-table-cell"
+                              >
                                 APs
                               </th>
                               <th
@@ -449,178 +456,75 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                    
                                 </div>
                               </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
                             </tr>
                             <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="d7b1a9a350634115a92ee7b0f11c7e75"
+                              class="ant-table-placeholder"
                             >
                               <td
-                                class="ant-table-cell ant-table-selection-column"
-                              >
-                                <label
-                                  class="ant-checkbox-wrapper"
-                                >
-                                  <span
-                                    class="ant-checkbox"
-                                  >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                </label>
-                              </td>
-                              <td
                                 class="ant-table-cell"
+                                colspan="12"
                               >
-                                network-venue-1
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Melbourne, Victoria
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                Australia
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              >
-                                1
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              >
-                                1
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              >
-                                <button
-                                  aria-checked="true"
-                                  class="ant-switch ant-switch-checked"
-                                  role="switch"
-                                  type="button"
+                                <div
+                                  class="ant-table-expanded-row-fixed"
+                                  style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
                                 >
                                   <div
-                                    class="ant-switch-handle"
-                                  />
-                                  <span
-                                    class="ant-switch-inner"
-                                  />
-                                </button>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                All APs
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                2.4 GHz / 5 GHz
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                24/7
-                              </td>
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
-                            </tr>
-                            <tr
-                              class="ant-table-row ant-table-row-level-0"
-                              data-row-key="02e2ddbc88e1428987666d31edbc3d9a"
-                            >
-                              <td
-                                class="ant-table-cell ant-table-selection-column"
-                              >
-                                <label
-                                  class="ant-checkbox-wrapper"
-                                >
-                                  <span
-                                    class="ant-checkbox"
+                                    class="ant-empty ant-empty-normal"
                                   >
-                                    <input
-                                      class="ant-checkbox-input"
-                                      type="checkbox"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-checkbox-inner"
-                                    />
-                                  </span>
-                                </label>
+                                    <div
+                                      class="ant-empty-image"
+                                    >
+                                      <svg
+                                        class="ant-empty-img-simple"
+                                        height="41"
+                                        viewBox="0 0 64 41"
+                                        width="64"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                      >
+                                        <g
+                                          fill="none"
+                                          fill-rule="evenodd"
+                                          transform="translate(0 1)"
+                                        >
+                                          <ellipse
+                                            class="ant-empty-img-simple-ellipse"
+                                            cx="32"
+                                            cy="33"
+                                            rx="32"
+                                            ry="7"
+                                          />
+                                          <g
+                                            class="ant-empty-img-simple-g"
+                                            fill-rule="nonzero"
+                                          >
+                                            <path
+                                              d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                            />
+                                            <path
+                                              class="ant-empty-img-simple-path"
+                                              d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                            />
+                                          </g>
+                                        </g>
+                                      </svg>
+                                    </div>
+                                    <div
+                                      class="ant-empty-description"
+                                    >
+                                      No Data
+                                    </div>
+                                  </div>
+                                </div>
                               </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                My-Venue
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                New York
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                United States
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              >
-                                0
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              >
-                                0
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                                style="text-align: center;"
-                              >
-                                <button
-                                  aria-checked="false"
-                                  class="ant-switch"
-                                  role="switch"
-                                  type="button"
-                                >
-                                  <div
-                                    class="ant-switch-handle"
-                                  />
-                                  <span
-                                    class="ant-switch-inner"
-                                  />
-                                </button>
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              />
-                              <td
-                                class="ant-table-cell"
-                              />
-                              <td
-                                class="ant-table-cell"
-                              />
-                              <td
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                style="position: sticky; right: 0px;"
-                              />
                             </tr>
                           </tbody>
                         </table>

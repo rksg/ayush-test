@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import { Switch }                 from 'antd'
-import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { ClockCircleOutlined }     from '@ant-design/icons'
+import { Switch, Button, Tooltip } from 'antd'
+import _                           from 'lodash'
+import { defineMessage, useIntl }  from 'react-intl'
 
 import {
   Alert,
@@ -23,9 +24,17 @@ import {
   useTableQuery,
   getUserSettingsFromDict,
   NetworkSaveData,
-  NetworkVenue,
   UserSettings,
-  Venue
+  RadioEnum,
+  NetworkVenue,
+  Venue,
+  VLAN_PREFIX,
+  ISlotIndex,
+  getSchedulingTooltip,
+  fetchVenueTimeZone,
+  getCurrentTimeSlotIndex,
+  RadioTypeEnum,
+  NetworkVenueScheduler
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -83,13 +92,26 @@ export function NetworkVenuesTab () {
     { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkVenueMutation()
 
+  const [venueSlotIndexMap, setVenueSlotIndexMap] = useState<Record<string,ISlotIndex>>({})
+
   useEffect(()=>{
+    const updateVenueCurrentSlotIndexMap = async (venueId: string, venueLatitude: string, venueLongitude: string) => {
+      const timeZone = await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
+      const slotIndex = getCurrentTimeSlotIndex(timeZone)
+      setVenueSlotIndexMap(prevSlotIndexMap => ({ ...prevSlotIndexMap, ...{ [venueId]: slotIndex } }))
+    }
+
     if (tableQuery.data && networkQuery.data) {
       const data: React.SetStateAction<Venue[]> = []
       tableQuery.data.data.forEach(item => {
         const activatedVenue = networkQuery.data?.venues?.find(
-          (i: { venueId: string }) => i.venueId === item.id
+          i => i.venueId === item.id
         )
+
+        if (activatedVenue?.scheduler?.type === 'CUSTOM') {
+          updateVenueCurrentSlotIndexMap(item.id, item.latitude, item.longitude)
+        }
+
         data.push({
           ...item,
           // work around of read-only records from RTKQ
@@ -100,16 +122,13 @@ export function NetworkVenuesTab () {
     }
   }, [tableQuery.data, networkQuery.data])
 
-  const generateDefaultNetworkVenue = (venueId: string) => {
+  const generateDefaultNetworkVenue = (venueId: string): NetworkVenue => {
     const network = networkQuery.data
     return {
       apGroups: [],
-      scheduler: {
-        type: 'ALWAYS_ON'
-      },
       isAllApGroups: true,
-      allApGroupsRadio: 'Both',
-      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      allApGroupsRadio: RadioEnum.Both,
+      allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
       venueId: venueId,
       networkId: (network && network?.id) ? network.id : ''
     }
@@ -126,7 +145,7 @@ export function NetworkVenuesTab () {
     const defaultVenueData = generateDefaultNetworkVenue(row.id)
     const isWPA3security = row.wlan && row.wlan.wlanSecurity === 'WPA3'
     if (supportTriBandRadio && isWPA3security) {
-      defaultVenueData.allApGroupsRadioTypes.push('6-GHz')
+      defaultVenueData.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
 
     let deactivateNetworkVenueId
@@ -162,11 +181,10 @@ export function NetworkVenuesTab () {
 
       const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
       if (!alreadyActivatedVenue && !venue.disabledActivation && !venue.allApDisabled) {
-        venue.activated = venue.activated || { isActivated: false }
         if (!venue.activated.isDisabled) {
           venue.activated.isActivated = true
           venue.deepVenue = defaultVenueData
-          networkVenues.push(venue.deepVenue)
+          networkVenues.push(defaultVenueData)
         }
       }
 
@@ -200,13 +218,10 @@ export function NetworkVenuesTab () {
 
     // Handle toogle button
     activatingVenues.forEach(venue => {
-      venue.activated = venue.activated || { isActivated: false }
       venue.activated.isActivated = false
     })
 
-    if (networkVenues) {
-      _.remove(networkVenues, networkVenue => selectedVenuesId.includes(networkVenue['venueId']))
-    }
+    _.remove(networkVenues, networkVenue => selectedVenuesId.includes(networkVenue.venueId || ''))
 
     return networkVenues
   }
@@ -278,11 +293,18 @@ export function NetworkVenuesTab () {
       }
     },
     {
+      title: $t({ defaultMessage: 'VLAN' }),
+      dataIndex: 'vlan',
+      render: function (data, row) {
+        return transformVLAN(row)
+      }
+    },
+    {
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       width: '80px',
       render: function (data, row) {
-        return row.activated.isActivated ? $t({ defaultMessage: 'All APs' }) : ''
+        return transformAps(row)
       }
     },
     {
@@ -290,17 +312,182 @@ export function NetworkVenuesTab () {
       dataIndex: 'radios',
       width: '140px',
       render: function (data, row) {
-        return row.activated.isActivated ? '2.4 GHz / 5 GHz' : ''
+        return transformRadios(row)
       }
     },
     {
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {
-        return row.activated.isActivated ? '24/7' : ''
+        return transformScheduling(row)
       }
     }
   ]
+
+  const getCurrentVenue = (row: Venue) => {
+    if (!row.activated.isActivated) {
+      return null
+    }
+
+    const network = networkQuery.data
+    const venueId = row.id
+    let currentVenue = row.deepVenue
+
+    if (!currentVenue) {
+      currentVenue = network?.venues?.find(venue => venue.venueId === venueId)
+    }
+
+    return currentVenue
+  }
+
+  const transformVLAN = (row: Venue) => {
+    let currentVenue = getCurrentVenue(row)
+    let result = ''
+
+    let valuePrefix = ''
+    let vlanString
+    let valueSuffix = ''
+
+    if (currentVenue) {
+      if (!currentVenue.isAllApGroups && Array.isArray(currentVenue.apGroups) && currentVenue.apGroups.length > 1) {
+        vlanString = $t({ defaultMessage: 'Per AP Group' })
+      }
+      else if (!currentVenue.isAllApGroups && currentVenue?.apGroups?.length === 1) { 
+        valueSuffix = $t({ defaultMessage: '(Custom)' })
+        const firstApGroup = currentVenue.apGroups[0]
+
+        if (firstApGroup?.vlanPoolId) {
+          valuePrefix = VLAN_PREFIX.POOL
+          vlanString = firstApGroup.vlanPoolName
+        } else if (firstApGroup?.vlanId) {
+          valuePrefix = VLAN_PREFIX.VLAN
+          vlanString = firstApGroup?.vlanId?.toString()
+        }
+
+        if (!vlanString) {
+          valuePrefix = VLAN_PREFIX.VLAN
+          vlanString = '1' // default fallback to avoid unavailable vlan1 of default ap group
+        }
+      }
+      else {
+        valueSuffix = $t({ defaultMessage: '(Default)' })
+        const network = networkQuery.data
+        const wlan = network?.wlan
+
+        if (wlan?.advancedCustomization?.vlanPool) {
+          vlanString = wlan.advancedCustomization.vlanPool.name
+          valuePrefix = VLAN_PREFIX.POOL
+        } else if (wlan?.vlanId) {
+          vlanString = wlan?.vlanId
+          valuePrefix = VLAN_PREFIX.VLAN
+        }
+      }
+      result = `${valuePrefix}${vlanString} ${valueSuffix}`
+      return <Button type='link'>{result}</Button>
+    }
+    return result
+  }
+
+  const transformAps = (row: Venue) => {
+    let currentVenue = getCurrentVenue(row)
+    let result = ''
+
+    if (currentVenue) {
+      if (currentVenue.isAllApGroups) {
+        result = $t({ defaultMessage: 'All APs' })
+      } else if (Array.isArray(currentVenue.apGroups)) {
+        const firstApGroup = currentVenue.apGroups[0]
+        if (currentVenue.apGroups.length > 1) {
+          result = `${currentVenue.apGroups.length} ${$t({ defaultMessage: 'AP Groups' })}`
+        } else if(firstApGroup?.isDefault) {
+          result = $t({ defaultMessage: 'Unassigned APs' })
+        } else if(firstApGroup?.apGroupName) {
+          result = firstApGroup.apGroupName
+        }
+      }
+      return <Button type='link'>{result}</Button>
+    }
+    return result
+  }
+
+  const transformRadios = (row: Venue) => {
+    let currentVenue = getCurrentVenue(row)
+    let result = ''
+    if (currentVenue) {
+      if (currentVenue.isAllApGroups) {
+        if (currentVenue.allApGroupsRadioTypes && currentVenue.allApGroupsRadioTypes.length > 0) {
+          if (currentVenue.allApGroupsRadioTypes.length === 3) {
+            result = $t({ defaultMessage: 'All' })
+          } else {
+            result = currentVenue.allApGroupsRadioTypes.join(', ').replace(/\-/g, ' ')
+          }
+        } else {
+          if (currentVenue.allApGroupsRadio !== 'Both') {
+            result = currentVenue.allApGroupsRadio.replace(/\-/g, ' ')
+          } else {
+            result = $t({ defaultMessage: '2.4 GHz / 5 GHz' })
+          }
+        }
+      } else if (currentVenue.isAllApGroups !== undefined && Array.isArray(currentVenue.apGroups)) {
+        if (currentVenue.apGroups.length === 1) {
+          const firstApGroup = currentVenue.apGroups[0]
+          if (firstApGroup.radioTypes && firstApGroup.radioTypes.length > 0) {
+            if (firstApGroup.radioTypes.length === 3) {
+              result = $t({ defaultMessage: 'All' })
+            } else {
+              result = firstApGroup.radioTypes.join(', ').replace(/\-/g, ' ')
+            }
+          } else {
+            result = firstApGroup.radio !== 'Both' ? firstApGroup.radio.replace(/\-/g, ' ') : $t({ defaultMessage: '2.4 GHz / 5 GHz' })
+          }
+        } else if (currentVenue.apGroups.length > 1) {
+          result = $t({ defaultMessage: 'Per AP Group' })
+        }
+      }
+      return <Button type='link'>{result}</Button>
+    }
+    return result
+  }
+
+  const transformScheduling = (row: Venue) => {
+    let currentVenue = getCurrentVenue(row)
+    let result = ''
+    const scheduler = currentVenue?.scheduler
+    const venueId = row.id
+    const currentTimeIdx = venueSlotIndexMap[venueId]
+
+    if (currentVenue) {
+      if (scheduler) {
+        switch (scheduler.type) {
+          case 'ALWAYS_ON':
+            result = $t({ defaultMessage: '24/7' })
+            break
+          case 'CUSTOM':
+            if (currentTimeIdx) {
+              const day = currentTimeIdx.day.toLowerCase()
+              const time = currentTimeIdx.timeIndex
+              const status = scheduler[day as keyof NetworkVenueScheduler][time]
+              result = (status === '1') ? $t({ defaultMessage: 'ON now' }) : $t({ defaultMessage: 'OFF now' })
+            } else {
+              result = $t({ defaultMessage: 'custom' })
+            }
+            break
+        }
+      } else {
+        result = $t({ defaultMessage: '24/7' })
+      }
+      return (
+        <Tooltip title={getSchedulingTooltip(scheduler, currentTimeIdx)}>
+          <Button type='link' onClick={(e) => handleClickScheduling(row, e)}>{result} <ClockCircleOutlined /></Button>
+        </Tooltip>
+      )
+    }
+    return result
+  }
+
+  const handleClickScheduling = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.preventDefault()
+  }
 
   return (
     <Loader states={[
