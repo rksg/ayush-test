@@ -739,9 +739,9 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Info:"
+                                title="Description:"
                               >
-                                Info:
+                                Description:
                               </label>
                             </div>
                             <div
@@ -1631,9 +1631,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Info:"
+                                title="Description:"
                               >
-                                Info:
+                                Description:
                               </label>
                             </div>
                             <div
