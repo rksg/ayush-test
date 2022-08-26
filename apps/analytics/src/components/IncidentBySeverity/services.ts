@@ -2,7 +2,7 @@ import { gql } from 'graphql-request'
 
 import { dataApi } from '@acx-ui/analytics/services'
 import {
-  AnalyticsFilter,
+  IncidentFilter,
   incidentSeverities,
   incidentCodes
 } from '@acx-ui/analytics/utils'
@@ -13,7 +13,6 @@ export type IncidentsBySeverityData = {
   P3: number
   P4: number
 }
-
 interface Response <IncidentsBySeverityData> {
   network: {
     hierarchyNode: IncidentsBySeverityData
@@ -23,7 +22,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsBySeverity: build.query<
       IncidentsBySeverityData,
-      AnalyticsFilter
+      IncidentFilter
     >({
       query: (payload) => ({
         document: gql`
@@ -43,7 +42,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          code: incidentCodes
+          code: payload.code ?? incidentCodes
         }
       }),
       transformResponse: (response: Response<IncidentsBySeverityData>) =>

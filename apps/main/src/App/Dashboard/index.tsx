@@ -18,11 +18,10 @@ import {
   DownloadOutlined,
   BulbOutlined
 } from '@acx-ui/icons'
-import { useDateFilter } from '@acx-ui/utils'
+import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
 const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
-const defaultEnabledDates = [moment().subtract(3, 'months').seconds(0), moment().seconds(0)]
 export default function Dashboard () {
   const { $t } = useIntl()
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -64,7 +63,7 @@ function DashboardPageHeader () {
         <RangePicker
           key='range-picker'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          enableDates={defaultEnabledDates as [moment.Moment, moment.Moment]}
+          enableDates={dateRangeForLast(3,'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
