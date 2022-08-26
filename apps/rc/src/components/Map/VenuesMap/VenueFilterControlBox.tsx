@@ -5,7 +5,7 @@ import Icon                      from '@ant-design/icons'
 import { Tooltip as AntTooltip } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { ApVenueStatusEnum } from '@acx-ui/rc/services'
+import { ApVenueStatusEnum } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 

@@ -5,17 +5,20 @@ import {
   ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
-  WlanSecurityEnum,
-  NetworkVenue,
-  NetworkTypeEnum
-} from '@acx-ui/rc/utils'
+  WlanSecurityEnum
+} from '../constants'
+import { NetworkVenue } from '../models/network'
 
 export * from './ap'
+export * from './venue'
+export * from '../models/network'
+export * from './user'
 
 export interface CommonResult {
   requestId: string
   response?:{}
 }
+
 export interface Network {
   id: string
   name: string
@@ -36,16 +39,9 @@ export interface Network {
   // cog ??
 }
 
-export interface NetworkDetail {
-  type: NetworkTypeEnum
-  tenantId: string
-  name: string
-  venues: NetworkVenue[]
-  id: string
-}
-
 export interface Venue {
   id: string
+  venueId: string
   name: string
   description: string
   status: string
@@ -75,24 +71,53 @@ export interface Venue {
 }
 
 export interface AlarmBase {
-  startTime: string
+  startTime: number
   severity: string
   message: string
   id: string
   serialNumber: string
   entityType: string
   entityId: string
-  sourceType: string
+  sourceType: string,
+  switchMacAddress: string
 }
 
 export interface AlarmMeta {
   id: AlarmBase['id']
   venueName: string
   apName: string
-  switchName: string
+  switchName: string,
+  isSwitchExists: boolean
 }
 
 export type Alarm = AlarmBase & AlarmMeta
+
+export enum EventSeverityEnum {
+  CRITICAL = 'Critical',
+  MAJOR = 'Major',
+  MINOR = 'Minor',
+  WARNING = 'Warning',
+  INFORMATIONAL = 'Info'
+}
+
+export enum EventTypeEnum {
+  AP = 'AP',
+  CLIENT = 'CLIENT',
+  SWITCH = 'SWITCH',
+  NETWORK = 'NETWORK',
+  NOTIFICATION = 'Notification',
+  DP = 'DP'
+}
+
+export enum AlaramSeverity {
+  CRITICAL = 'critical',
+  MAJOR = 'major',
+  MINOR = 'minor',
+  WARNING = 'warning',
+  INDETERMINATE = 'indeterminate',
+  INFORMATIONAL = 'info',
+  CLEAR = 'clear'
+}
 
 export enum ApVenueStatusEnum {
   IN_SETUP_PHASE = '1_InSetupPhase',
@@ -176,7 +201,9 @@ export interface Dashboard {
       totalCount: number;
     }
     alarms?: {
-      summary?: { clear: number }
+      summary: {
+        [prop: string]: number;
+      },
       totalCount: number
     },
   };
