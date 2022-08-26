@@ -41,7 +41,6 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useEvaluateFeature: jest.fn()
 }), { virtual: true })
 
-
 jest.mock('moment-timezone', () => {
   const moment = jest.requireActual('moment-timezone')
   moment.tz.setDefault('UTC')
