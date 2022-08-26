@@ -186,28 +186,3 @@ export const useShortDescription = (incident: Incident) => {
   
   return $t(shortDescription, { scope })
 }
-
-export const useLongDescription = (incident: Incident, rootCauses: string[]) => {
-  const { $t } = useIntl()
-  const shortDesc = useShortDescription(incident)
-  const scope = useIncidentScope(incident)
-  const { metadata, clientCount, impactedClientCount } = incident
-  const { clientImpact, clientImpactFormatted } = 
-    useImpactValues('client', clientCount, impactedClientCount)
-  const { dominant } = metadata 
-  
-  if (clientImpact === null) {
-    return shortDesc
-  } else {
-    const incidentInfo = incidentInformation[incident.code]
-    const wlanInfo = (dominant && dominant.ssid) 
-      ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
-      : ''
-
-    return [
-      $t(incidentInfo.longDescription, { scope, impact: clientImpactFormatted as string }),
-      wlanInfo,
-      $t(defineMessage({ defaultMessage: 'Root cause: {rootCauses}' }), { rootCauses })
-    ].filter(Boolean).join('\n\n')
-  }
-}

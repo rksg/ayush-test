@@ -7,10 +7,8 @@ import {
   useFormattedPath,
   useImpactedArea,
   useImpactValues,
-  useLongDescription,
   useShortDescription
 } from './incidents'
-import { getRootCauseAndRecommendations } from './rootCauseReccomendationMap'
 
 import type { Incident, NodeType, PathNode } from './types/incidents'
 
@@ -173,106 +171,6 @@ describe('useImpactedArea', () => {
         radiusImpactCountFormatted: '1',
         radiusImpactDescription: '1 of 1 radius (100%)'
       })
-    })
-  })
-
-  describe('useLongDescription', () => {
-    const renderLongDescription: typeof useLongDescription = (incident, rootCauses) => 
-      renderHook(() => useLongDescription(incident, rootCauses)).result.current
-
-    const testIncident: Incident = {
-      severity: 0.3813119146230035,
-      startTime: '2022-07-21T01:15:00.000Z',
-      endTime: '2022-07-21T01:18:00.000Z',
-      code: 'auth-failure',
-      sliceType: 'zone',
-      sliceValue: 'Venue-3-US',
-      id: '268a443a-e079-4633-9491-536543066e7d',
-      path: [
-        {
-          type: 'zone',
-          name: 'Venue-3-US'
-        }
-      ],
-      metadata: {
-        dominant: {
-          ssid: 'qa-eric-acx-R760-psk'
-        },
-        rootCauseChecks: {
-          checks: [
-            {
-              CCD_REASON_NOT_AUTHED: true
-            }
-          ],
-          params: {}
-        }
-      },
-      clientCount: 2,
-      impactedClientCount: 2,
-      isMuted: false,
-      mutedBy: null,
-      mutedAt: null,
-      apCount: 0,
-      impactedApCount: 0,
-      switchCount: 0,
-      vlanCount: 0,
-      connectedPowerDeviceCount: 0,
-      slaThreshold: null,
-      currentSlaThreshold: null
-    }
-
-    const rootCauseAndRecomendation = 
-      getRootCauseAndRecommendations(testIncident.code, testIncident.metadata)
-    const { rootCauses } = rootCauseAndRecomendation[0]
-    
-    it('renders object on correct inputs', () => {
-      expect(renderLongDescription(testIncident, rootCauses)).toBe(
-        // eslint-disable-next-line max-len
-        '802.11 Authentication failures are high in Venue: Venue-3-US impacting connectivity for 100% of clients.\n\nMost impacted WLAN: qa-eric-acx-R760-psk\n\nRoot cause: ,Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.'
-      )
-    })
-
-    it('renders object on wrong inputs undefinedMetadata', () => {
-      const undefinedMetadata = 
-        { ...testIncident, metadata: {} } as unknown as Incident
-      expect(renderLongDescription(undefinedMetadata, rootCauses)).toBe(
-        // eslint-disable-next-line max-len
-        '802.11 Authentication failures are high in Venue: Venue-3-US impacting connectivity for 100% of clients.\n\nRoot cause: ,Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.'
-      )
-    })
-
-    it('renders object on wrong inputs undefined dominant', () => {
-      const undefinedDominant = 
-      { ...testIncident, metadata: { dominant: {} } } as Incident
-      expect(renderLongDescription(undefinedDominant, rootCauses)).toBe(
-        // eslint-disable-next-line max-len
-        '802.11 Authentication failures are high in Venue: Venue-3-US impacting connectivity for 100% of clients.\n\nRoot cause: ,Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.'
-      )
-    })
-
-    it('renders object on wrong inputs undefined clientImpact', () => {
-      const undefinedClientImpact = { 
-        ...testIncident,
-        impactedClientCount: null
-      } as unknown as Incident
-      expect(renderLongDescription(undefinedClientImpact, rootCauses)).toBe(
-        '802.11 Authentication failures are unusually high in Venue: Venue-3-US'
-      )
-    })
-
-    it('renders object on wrong inputs undefined SSID', () => {
-      const undefinedSSID = { 
-        ...testIncident,
-        metadata: {
-          dominant: {
-            ssid: undefined
-          }
-        }
-      } as unknown as Incident
-      expect(renderLongDescription(undefinedSSID, rootCauses)).toBe(
-        // eslint-disable-next-line max-len
-        '802.11 Authentication failures are high in Venue: Venue-3-US impacting connectivity for 100% of clients.\n\nRoot cause: ,Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.'
-      )
     })
   })
 })
