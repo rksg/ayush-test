@@ -54,6 +54,7 @@ export function Networks (props: StepFormProps<CreateDPSKFormFields>) {
     }
     const selected = selectedRows.map((row) => ({
       ...defaultSetup,
+      venues: row.venues,
       networkId: row.id,
       name: row.name
     }))

@@ -1,16 +1,22 @@
 
-import { Form, Input, Col, Row, Select, InputNumber } from 'antd'
-import { useIntl }                       from 'react-intl'
-
-import { StepsForm }                                      from '@acx-ui/components'
-import { useLazyServiceListQuery }                        from '@acx-ui/rc/services'
-import { checkObjectNotExists }                           from '@acx-ui/rc/utils'
-import { PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
-import { useParams }                                      from '@acx-ui/react-router-dom'
 import { useState } from 'react'
+
+import {
+  QuestionCircleOutlined
+} from '@ant-design/icons'
+import { Form, Input, Col, Row, Select, InputNumber, Tooltip } from 'antd'
+import { FormattedMessage, useIntl }                           from 'react-intl'
+
+import { StepsForm, Subtitle }                                                                                         from '@acx-ui/components'
+import { useLazyServiceListQuery }                                                                                     from '@acx-ui/rc/services'
+import { PassphraseFormatEnum, PassphraseExpirationEnum, transformDpskNetwork, DpskNetworkType, checkObjectNotExists } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                   from '@acx-ui/react-router-dom'
+
+import { FieldExtraTooltip } from '../styledComponents'
 
 export function DPSKDetailForm () {
   const { $t } = useIntl()
+  const intl = useIntl()
   const [state, updateState] = useState({
     passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
     passphraseLength: 18,
@@ -33,6 +39,13 @@ export function DPSKDetailForm () {
     // return checkObjectNotExists(list, value, 'Service')
     return Promise.resolve()
   }
+  const passphraseFormatDescription = {
+    [PassphraseFormatEnum.MOST_SECURED]:
+      $t({ defaultMessage: 'Letters, numbers and symbols can be used' }),
+    [PassphraseFormatEnum.KEYBOARD_FRIENDLY]:
+      $t({ defaultMessage: 'Only letters and numbers can be used' }),
+    [PassphraseFormatEnum.NUMBERS_ONLY]: $t({ defaultMessage: 'Only numbers can be used' })
+  }
   const updateData = (newData: Partial<typeof state>) => {
     updateState({ ...state, ...newData })
   }
@@ -43,6 +56,13 @@ export function DPSKDetailForm () {
   const onExpirationChange = function (expiration: PassphraseExpirationEnum) {
     updateData({ expiration })
   }
+  const passphraseOptions = Object.keys(PassphraseFormatEnum).map((key =>
+    <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.FORMAT, key)}</Option>
+  ))
+
+  const expirationOptions = Object.keys(PassphraseExpirationEnum).map((key =>
+    <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.EXPIRATION, key)}</Option>
+  ))
   return (
     <Row gutter={20}>
       <Col span={10}>
@@ -65,36 +85,57 @@ export function DPSKDetailForm () {
           label={$t({ defaultMessage: 'Tags' })}
           children={<Input />}
         />
-        <Form.Item
-          name='type'
-          label={$t({ defaultMessage: 'Passphrase Generation Parameters' })}
-        >
-        </Form.Item>
-        <Form.Item
-          name='passphraseFormat'
-          label={$t({ defaultMessage: 'Passphrase format' })}
-          rules={[{ required: true }]}
-          initialValue={state.passphraseFormat}
-        >
-          <Select onChange={onFormatChange}>
-            <Option value={PassphraseFormatEnum.MOST_SECURED}>
-              { $t({ defaultMessage: 'Most secured' }) }
-            </Option>
-            <Option value={PassphraseFormatEnum.KEYBOARD_FRIENDLY}>
-              { $t({ defaultMessage: 'Keyboard friendly' }) }
-            </Option>
-            <Option value={PassphraseFormatEnum.NUMBERS_ONLY}>
-              { $t({ defaultMessage: 'Numbers only' }) }
-            </Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          name='passphraseLength'
-          rules={[{ required: true }]}
-          label={$t({ defaultMessage: 'Passphrase length' })}
-          initialValue={state.passphraseLength}
-          children={<InputNumber min={8} max={63} style={{ width: '100%' }}/>}
-        />
+        <Subtitle level={3}>{ $t({ defaultMessage: 'Passphrase Generation Parameters' }) }
+        </Subtitle>
+        <Row align='middle' gutter={8}>
+          <Col span={23}>
+            <Form.Item
+              name='passphraseFormat'
+              label={$t({ defaultMessage: 'Passphrase format' })}
+              rules={[{ required: true }]}
+              initialValue={state.passphraseFormat}
+              extra={passphraseFormatDescription[state.passphraseFormat]}
+            >
+              <Select onChange={onFormatChange}>
+                {passphraseOptions}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={1}>
+            <FieldExtraTooltip>
+              <Tooltip
+                placement='bottom'
+                title={<FormattedMessage
+                  defaultMessage={`<p>Format options:</p>
+                    <p>Most secured - all printable ASCII characters can be used</p>
+                    <p>Keyboard friendly - only letters and numbers will be used</p>
+                    <p>Numbers only - only numbers will be used</p>
+                  `}
+                  values={{ p: (chunks) => <p>{chunks}</p> }}
+                />}
+                children={<QuestionCircleOutlined />}
+              />
+            </FieldExtraTooltip>
+          </Col>
+        </Row>
+        <Row align='middle' gutter={8}>
+          <Col span={23}>
+            <Form.Item
+              name='passphraseLength'
+              rules={[{ required: true }]}
+              label={$t({ defaultMessage: 'Passphrase length' })}
+              initialValue={state.passphraseLength}
+              children={<InputNumber min={8} max={63} style={{ width: '100%' }}/>}
+            />
+          </Col>
+          <Col span={1}>
+            <Tooltip
+              title={$t({ defaultMessage: 'Number of characters in passphrase. Valid range 8-63' })}
+              placement='bottom'
+              children={<QuestionCircleOutlined />}
+            />
+          </Col>
+        </Row>
         <Form.Item
           name='expiration'
           label={$t({ defaultMessage: 'Passphrase expiration' })}
@@ -102,33 +143,7 @@ export function DPSKDetailForm () {
           initialValue={state.expiration}
         >
           <Select onChange={onExpirationChange}>
-            <Option value={PassphraseExpirationEnum.UNLIMITED}>
-              { $t({ defaultMessage: 'Unlimited' }) }
-            </Option>
-            <Option value={PassphraseExpirationEnum.ONE_DAY}>
-              { $t({ defaultMessage: '1 day' }) }
-            </Option>
-            <Option value={PassphraseExpirationEnum.TWO_DAYS}>
-              { $t({ defaultMessage: '2 days' }) }
-            </Option>
-            <Option value={PassphraseExpirationEnum.ONE_WEEK}>
-              { $t({ defaultMessage: '1 week' }) }
-            </Option>
-            <Option value={PassphraseExpirationEnum.TWO_WEEKS}>
-              { $t({ defaultMessage: '2 weeks' }) }
-            </Option>
-            <Option value={PassphraseExpirationEnum.ONE_MONTH}>
-              { $t({ defaultMessage: '1 month' }) }
-            </Option>
-            <Option value={PassphraseExpirationEnum.SIX_MONTHS}>
-              { $t({ defaultMessage: '6 months' }) }
-            </Option>
-            <Option value={PassphraseExpirationEnum.ONE_YEAR}>
-              { $t({ defaultMessage: '1 year' }) }
-            </Option>
-            <Option value={PassphraseExpirationEnum.TWO_YEARS}>
-              { $t({ defaultMessage: '2 years' }) }
-            </Option>
+            {expirationOptions}
           </Select>
         </Form.Item>
       </Col>

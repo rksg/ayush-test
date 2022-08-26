@@ -1,15 +1,16 @@
-import { EnvironmentOutlined }     from '@ant-design/icons'
+
 import { Col, Divider, Form, Row } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { StepsForm, Subtitle }                        from '@acx-ui/components'
-import { CreateDPSKFormFields, transformDisplayText } from '@acx-ui/rc/utils'
+import { StepsForm, Subtitle }                                                       from '@acx-ui/components'
+import { DpskNetworkType, DPSKSaveData, transformDisplayText, transformDpskNetwork } from '@acx-ui/rc/utils'
 
 
 export function SummaryForm (props: {
-  summaryData: CreateDPSKFormFields
+  summaryData: DPSKSaveData
 }) {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const $t = intl.$t
   const { summaryData } = props
   const getNetworks = function () {
     const networks = summaryData.network
@@ -44,11 +45,23 @@ export function SummaryForm (props: {
           <Form.Item label={$t({ defaultMessage: 'Security Protocol:' })}
             children={'WPA2'} />
           <Form.Item label={$t({ defaultMessage: 'Passphrase Format:' })}
-            children={summaryData.passphraseFormat} />
+            children={transformDpskNetwork(
+              intl,
+              DpskNetworkType.FORMAT,
+              summaryData.passphraseFormat
+            )} />
           <Form.Item label={$t({ defaultMessage: 'Passphrase Length:' })}
-            children={summaryData.passphraseLength} />
+            children={transformDpskNetwork(
+              intl,
+              DpskNetworkType.LENGTH,
+              summaryData.passphraseLength
+            )} />
           <Form.Item label={$t({ defaultMessage: 'Passphrase Expiration:' })}
-            children={summaryData.expiration} />
+            children={transformDpskNetwork(
+              intl,
+              DpskNetworkType.EXPIRATION,
+              summaryData.expiration
+            )} />
         </Col>
         <Divider type='vertical' style={{ height: '300px' }}/>
         <Col flex={1}>

@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -12,8 +13,8 @@ import { useCreateDPSKMutation } from '@acx-ui/rc/services'
 import {
   CreateDPSKFormFields,
   DPSKSaveData,
-  PassphraseFormatEnum,
-  PassphraseExpirationEnum
+  PassphraseExpirationEnum,
+  PassphraseFormatEnum
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -29,6 +30,7 @@ import {
 } from './parser'
 
 
+
 export function DPSKForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -36,8 +38,9 @@ export function DPSKForm () {
   const params = useParams()
 
   const [createDPSK] = useCreateDPSKMutation()
-  //DetailsState
-  const [state, updateState] = useState<CreateDPSKFormFields>({
+  const formRef = useRef<StepsFormInstance<CreateDPSKFormFields>>()
+
+  const [saveState, updateSaveState] = useState<DPSKSaveData>({
     name: '',
     tags: '',
     network: [],
@@ -45,13 +48,6 @@ export function DPSKForm () {
     passphraseLength: 18,
     expiration: PassphraseExpirationEnum.UNLIMITED
   })
-  const formRef = useRef<StepsFormInstance<CreateDPSKFormFields>>()
-
-  const updateData = (newData: Partial<CreateDPSKFormFields>) => {
-    updateState({ ...state, ...newData })
-  }
-
-  const [saveState, updateSaveState] = useState<DPSKSaveData>()
 
   const updateSaveData = (saveData: Partial<DPSKSaveData>) => {
     const newSavedata = { ...saveState, ...saveData }
@@ -87,7 +83,6 @@ export function DPSKForm () {
           title={$t({ defaultMessage: 'Settings' })}
           onFinish={async (data) => {
             const detailsSaveData = transferDetailToSave(data)
-            updateData(data)
             updateSaveData(detailsSaveData)
             return true
           }}
@@ -102,8 +97,7 @@ export function DPSKForm () {
             data = {
               ...data
             }
-            const settingSaveData = transferDetailToSave(data)
-            updateData(data)
+            const settingSaveData = transferDetailToSave(_.merge(saveState, data))
             updateSaveData(settingSaveData)
             return true
           }}
@@ -112,7 +106,7 @@ export function DPSKForm () {
         </StepsForm.StepForm>
 
         <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
-          <SummaryForm summaryData={state} />
+          <SummaryForm summaryData={saveState} />
         </StepsForm.StepForm>
       </StepsForm>
     </>
