@@ -54,7 +54,17 @@ const getNetworkId = () => {
 
 export function Venues () {
   const form = Form.useFormInstance()
-  const { editMode } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  if(data){
+    if(cloneMode){
+      const venuesData = data?.venues?.map(item => {
+        return { ...item, networkId: null, id: null }
+      })
+      form.setFieldsValue({ venues: venuesData })
+    }else{
+      form.setFieldsValue({ venues: data.venues })
+    }
+  }
   const venues = Form.useWatch('venues')
 
   const { $t } = useIntl()
@@ -141,11 +151,14 @@ export function Venues () {
   ]
 
   useEffect(()=>{
-    if(editMode){
+    if(editMode || cloneMode){
       if(tableQuery.data && activateVenues.length === 0){
         const selected: Venue[] = []
         const tableData = tableQuery.data.data.map((item: Venue) =>
         {
+          if(cloneMode){
+            delete item.networkId
+          }
           const isActivated = venues &&
             venues.filter((venue: Venue) => venue.venueId === item.id).length > 0
           if(isActivated){

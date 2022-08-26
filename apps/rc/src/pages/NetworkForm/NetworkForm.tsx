@@ -47,6 +47,7 @@ export function NetworkForm () {
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
   const editMode = params.action === 'edit'
+  const cloneMode = params.action === 'clone'
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [createNetwork] = useCreateNetworkMutation()
@@ -73,13 +74,23 @@ export function NetworkForm () {
     if(data){
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
+      if(cloneMode){
+        formRef?.current?.setFieldsValue({
+          name: formRef?.current?.getFieldValue('name') + ' - copy'
+        })
+      }
       updateSaveData(data)
     }
   }, [data])
 
   const handleAddNetwork = async () => {
     try {
-      await createNetwork({ params, payload: saveState }).unwrap()
+      if(cloneMode){
+        delete saveState.id
+        await createNetwork({ params: { tenantId: params.tenantId }, payload: saveState }).unwrap()
+      }else{
+        await createNetwork({ params, payload: saveState }).unwrap()
+      }
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -109,7 +120,7 @@ export function NetworkForm () {
           { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
-      <NetworkFormContext.Provider value={{ setNetworkType, editMode, data }}>
+      <NetworkFormContext.Provider value={{ setNetworkType, editMode, cloneMode, data }}>
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
@@ -145,14 +156,6 @@ export function NetworkForm () {
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
-            initialValues={data}
-            params={data}
-            request={(params) => {
-              return Promise.resolve({
-                data: params,
-                success: true
-              })
-            }}
             name='venues'
             title={$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
