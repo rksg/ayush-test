@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 
 import { Form } from 'antd'
 
-import { Provider }                          from '@acx-ui/store'
-import { render, screen, fireEvent, within } from '@acx-ui/test-utils'
+import { Provider }                               from '@acx-ui/store'
+import { act, render, screen, fireEvent, within } from '@acx-ui/test-utils'
 
 import { DnsProxyModal }   from './DnsProxyModal'
 import { DnsProxyContext } from './ServicesForm'
@@ -60,6 +60,7 @@ describe('DnsProxyModal', () => {
     fireEvent.click(addBtn)
     fireEvent.change(nameInput, { target: { value: 'bbb.com' } })
     fireEvent.change(ipInput, { target: { value: '1.1.1.1' } })
+    await act(async () => { fireEvent.blur(ipInput) })
     fireEvent.click(addBtn)
     fireEvent.click(screen.getByRole('deleteBtn'))
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
@@ -67,11 +68,11 @@ describe('DnsProxyModal', () => {
 
   it('should edie/delete rule in DnsProxyRuleModal', async () => {
     dnsProxyList = [{
-      domainName: 'aaa.com', ipList: ['1.1.1.1']
+      domainName: 'aaa.com', ipList: ['1.1.1.1'], key: 'aaa.com'
     }, {
-      domainName: 'bbb.com', ipList: ['1.1.1.1', '1.1.1.2']
+      domainName: 'bbb.com', ipList: ['1.1.1.1', '1.1.1.2'], key: 'bbb.com'
     }, {
-      domainName: 'ccc.com', ipList: ['1.1.1.1']
+      domainName: 'ccc.com', ipList: ['1.1.1.1'], key: 'ccc.com'
     }]
     render(
       <Provider>
@@ -93,11 +94,12 @@ describe('DnsProxyModal', () => {
 
     const row2 = await screen.findByRole('row', { name: /aaa.com/i })
     fireEvent.click(within(row2).getByRole('checkbox'))
-    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))    
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
 
+    const nameInput = screen.getByLabelText('Domain Name')
     expect(await screen.findByText('Edit DNS Proxy Rule')).toBeVisible()
-    fireEvent.change(screen.getByLabelText('Domain Name'), { target: { value: 'bbb.com' } })
-    fireEvent.change(screen.getByLabelText('Domain Name'), { target: { value: 'test.edit.com' } })
+    fireEvent.change(nameInput, { target: { value: 'test.edit.com' } })
+    await act(async () => { fireEvent.blur(nameInput) })
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
     fireEvent.click(screen.getByRole('button', { name: 'Add' }))
   })

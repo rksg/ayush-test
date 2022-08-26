@@ -11,6 +11,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { DnsProxyRule, DnsProxyContextType } from '@acx-ui/rc/utils'
 
 import { DnsProxyModal } from './DnsProxyModal'
 import * as UI           from './styledComponents'
@@ -94,17 +95,6 @@ function ClientIsolationForm () {
   )
 }
 
-export interface DnsProxy {
-  domainName?: string,
-  key?: string,
-  ipList?: string[] | undefined
-}
-
-export interface DnsProxyContextType {
-  dnsProxyList: DnsProxy[] | [],
-  setDnsProxyList: (dnsProxyList: DnsProxy[]) => void
-}
-
 export const DnsProxyContext = createContext({} as DnsProxyContextType)
 
 export function ServicesForm () {
@@ -126,7 +116,7 @@ export function ServicesForm () {
     // useWatch<boolean>(['wlan','advancedCustomization','dnsProxy', 'dnsProxyRules'])
   ]
 
-  const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxy[])
+  const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxyRule[])
 
   return (
     <>
