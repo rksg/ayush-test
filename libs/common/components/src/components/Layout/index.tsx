@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl'
 import { Logo } from '@acx-ui/icons'
 import {
   TenantNavLink,
+  TenantType,
   useLocation
 } from '@acx-ui/react-router-dom'
 
@@ -22,6 +23,7 @@ interface MenuItem {
 interface MenuItem {
   path: string;
   name: string;
+  tenantType?: TenantType;
   disableIcon?: React.FC;
   enableIcon?: React.FC;
   routes?: Array<MenuItem>
@@ -46,7 +48,7 @@ export function Layout ({
   const location = useLocation()
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
     const path = item.routes ? item.routes[0].path : item.path
-    return <TenantNavLink to={path}>
+    return <TenantNavLink to={path} tenantType={item.tenantType}>
       {({ isActive }) => {
         const Icon = isActive ? item.enableIcon : item.disableIcon
         return <>
