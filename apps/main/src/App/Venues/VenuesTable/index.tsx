@@ -12,10 +12,9 @@ import {
   deviceStatusColors,
   getDeviceConnectionStatusColors
 } from '@acx-ui/components'
-
-import { useVenuesListQuery }         from '@acx-ui/rc/services'
+import { useVenuesListQuery }                       from '@acx-ui/rc/services'
 import { useTableQuery, ApDeviceStatusEnum, Venue } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate }           from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate }                  from '@acx-ui/react-router-dom'
 
 function useColumns () {
   const { $t } = useIntl()

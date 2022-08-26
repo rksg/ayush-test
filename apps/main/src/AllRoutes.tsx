@@ -8,8 +8,8 @@ import Dashboard        from './App/Dashboard'
 import NetworksBase     from './App/Networks'
 import ServicesBase     from './App/Services'
 import { VenueDetails } from './App/Venues/VenueDetails'
+import { VenueEdit }    from './App/Venues/VenueEdit'
 import { VenuesTable }  from './App/Venues/VenuesTable'
-import { VenueEdit }   from './App/Venues/VenueEdit'
 
 const RcRoutes = React.lazy(() => import('rc/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
