@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 
 import { DatePicker as AntdDatePicker } from 'antd'
-import moment                           from 'moment-timezone'
 import { useIntl }                      from 'react-intl'
 
 import { ClockOutlined }                                           from '@acx-ui/icons'
@@ -13,8 +12,8 @@ import * as UI              from './styledComponents'
 import type { Moment } from 'moment-timezone'
 
 export type DateRangeType = {
-  startDate: moment.Moment | null,
-  endDate: moment.Moment | null
+  startDate: Moment | null,
+  endDate: Moment | null
 }
 type RangeValueType = [Moment | null, Moment | null] | null
 type RangeBoundType = [Moment, Moment] | null
