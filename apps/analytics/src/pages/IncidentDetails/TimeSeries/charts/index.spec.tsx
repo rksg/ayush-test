@@ -1,10 +1,13 @@
-import { render } from '@testing-library/react'
-
-import { Incident } from '@acx-ui/analytics/utils'
+import { Incident }                      from '@acx-ui/analytics/utils'
+import { store }                         from '@acx-ui/store'
+import { mockAutoSizer, render, screen } from '@acx-ui/test-utils'
 
 import { ChartsData } from '../services'
+import { Api }        from '../services'
 
-import { IncidentChart } from './IncidentChart'
+import { AttemptAndFailureChart } from './AttemptAndFailureChart'
+import { ClientCountChart }       from './ClientCountChart'
+import { IncidentChart }          from './IncidentChart'
 
 const expectedResult = {
   incidentChart: {
@@ -100,9 +103,32 @@ const sampleIncident = {
   sliceValue: 'RuckusAP'
 } as Incident
 
+beforeEach(() => store.dispatch(Api.util.resetApiState()))
+
 describe('IncidentChart',()=>{
+  mockAutoSizer()
   it('should match snapshot', () => {
-    const { asFragment } = render(<IncidentChart incident={sampleIncident} data={expectedResult}/>)
+    const { asFragment } = render(
+      <IncidentChart incident={sampleIncident} data={expectedResult}/>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+})
+describe('AttemptAndFailureChart',()=>{
+  mockAutoSizer()
+  it('should match snapshot', () => {
+    const { asFragment } = render(
+      <AttemptAndFailureChart incident={sampleIncident} data={expectedResult}/>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+})
+describe('ClientCountChart',()=>{
+  mockAutoSizer()
+  it('should match snapshot', () => {
+    const { asFragment } = render(
+      <ClientCountChart incident={sampleIncident} data={expectedResult}/>
+    )
     expect(asFragment()).toMatchSnapshot()
   })
 })

@@ -10,11 +10,9 @@ export const TimeSeries : React.FC<ChartDataProps> = ({ charts, incident }) => {
 
   return (
     <Loader states={[queryResults]}>
-      {filteredCharts.map(chart => {
-        if(queryResults.data) {
-          const Chart = failureCharts[chart].chart!
-          return Chart(incident, queryResults.data)
-        }
+      {filteredCharts.map((chart, index) => {
+        const Chart = failureCharts[chart].chart!
+        return <Chart incident={incident} data={queryResults.data!} key={index}/>
       })}
     </Loader>
   )

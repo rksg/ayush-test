@@ -1,0 +1,1386 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AttemptAndFailureChart should match snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-3 pYJpv"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="styledComponents__HeaderContainer-sc-13w5wfx-4 gmFkBh"
+            >
+              <div
+                class="styledComponents__TitleWrapper-sc-13w5wfx-5 bxvIFk"
+              >
+                FAILURES
+              </div>
+              <div />
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <div
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            _echarts_instance_="ec_1661486678502"
+            class="echarts-for-react "
+            size-sensor-id="2"
+            style="height: 280px; width: 280px; position: relative;"
+          >
+            <div
+              style="position: relative; overflow: hidden; width: 280px; height: 280px;"
+            >
+              <svg
+                baseProfile="full"
+                height="280"
+                style="position:absolute;left:0;top:0;user-select:none"
+                version="1.1"
+                width="280"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+              >
+                <rect
+                  fill="none"
+                  fill-opacity="1"
+                  height="280"
+                  id="0"
+                  width="280"
+                  x="0"
+                  y="0"
+                />
+                <g>
+                  <path
+                    d="M9 256.5L280 256.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M9 213.5L280 213.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M9 170.5L280 170.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M9 127.5L280 127.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M9 85.5L280 85.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M9 42.5L280 42.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M9 256.5L280 256.5"
+                    fill="none"
+                    stroke="none"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M27.5 256L27.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M63.5 256L63.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M99.5 256L99.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M135.5 256L135.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M171.5 256L171.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M207.5 256L207.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M244.5 256L244.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    fill="none"
+                    transform="translate(1 256)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(1 256)"
+                  >
+                    0
+                  </text>
+                  <path
+                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    fill="none"
+                    transform="translate(1 213.2)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(1 213.2)"
+                  >
+                    1
+                  </text>
+                  <path
+                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    fill="none"
+                    transform="translate(1 170.4)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(1 170.4)"
+                  >
+                    1
+                  </text>
+                  <path
+                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    fill="none"
+                    transform="translate(1 127.6)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(1 127.6)"
+                  >
+                    2
+                  </text>
+                  <path
+                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    fill="none"
+                    transform="translate(1 84.8)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(1 84.8)"
+                  >
+                    2
+                  </text>
+                  <path
+                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    fill="none"
+                    transform="translate(1 42)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(1 42)"
+                  >
+                    3
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(27.0667 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(27.0667 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:16
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(63.2 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(63.2 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:18
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(99.3333 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(99.3333 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:20
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(135.4667 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(135.4667 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:22
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(171.6 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(171.6 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:24
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(207.7333 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(207.7333 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:26
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(243.8667 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(243.8667 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:28
+                  </text>
+                  <path
+                    d="M-5 -5l138 0l0 26l-138 0Z"
+                    fill="rgb(0,0,0)"
+                    fill-opacity="0"
+                    stroke="#ccc"
+                    stroke-width="0"
+                    transform="translate(132 5)"
+                  />
+                  <path
+                    d="M0 0l14 0l0 14l-14 0Z"
+                    fill="#5496EA"
+                    transform="translate(132 6)"
+                  />
+                  <path
+                    d="M20 -1l14 0l0 16l-14 0Z"
+                    fill="none"
+                    transform="translate(132 6)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#333333"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="start"
+                    transform="translate(132 6)"
+                    x="20"
+                    xml:space="preserve"
+                    y="7"
+                  >
+                    Total Failures
+                  </text>
+                  <path
+                    d="M0 0l14 0l0 14l-14 0Z"
+                    fill="#ADCFFA"
+                    transform="translate(181 6)"
+                  />
+                  <path
+                    d="M20 -1l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(181 6)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#333333"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="start"
+                    transform="translate(181 6)"
+                    x="20"
+                    xml:space="preserve"
+                    y="7"
+                  >
+                    EAP Failures
+                  </text>
+                  <path
+                    d="M0 0l14 0l0 14l-14 0Z"
+                    fill="#EC7100"
+                    transform="translate(228 6)"
+                  />
+                  <path
+                    d="M20 -1l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(228 6)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#333333"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="start"
+                    transform="translate(228 6)"
+                    x="20"
+                    xml:space="preserve"
+                    y="7"
+                  >
+                    EAP Attempts
+                  </text>
+                  <g
+                    clip-path="url(#zr1-c0)"
+                  >
+                    <path
+                      d="M9 170.4C9 170.4 280 84.8 280 84.8"
+                      fill="none"
+                      stroke="#5496EA"
+                      stroke-linejoin="bevel"
+                    />
+                  </g>
+                  <g
+                    clip-path="url(#zr1-c1)"
+                  >
+                    <path
+                      d="M9 170.4C9 170.4 280 84.8 280 84.8"
+                      fill="none"
+                      stroke="#ADCFFA"
+                      stroke-linejoin="bevel"
+                    />
+                  </g>
+                  <g
+                    clip-path="url(#zr1-c2)"
+                  >
+                    <path
+                      d="M9 170.4C9 170.4 280 84.8 280 84.8"
+                      fill="none"
+                      stroke="#EC7100"
+                      stroke-linejoin="bevel"
+                    />
+                  </g>
+                </g>
+                <defs>
+                  <clippath
+                    id="zr1-c0"
+                  >
+                    <path
+                      d="M8 41.5l0 0l0 215l0 0Z"
+                      fill="#000"
+                    />
+                  </clippath>
+                  <clippath
+                    id="zr1-c1"
+                  >
+                    <path
+                      d="M8 41.5l0 0l0 215l0 0Z"
+                      fill="#000"
+                    />
+                  </clippath>
+                  <clippath
+                    id="zr1-c2"
+                  >
+                    <path
+                      d="M8 41.5l0 0l0 215l0 0Z"
+                      fill="#000"
+                    />
+                  </clippath>
+                </defs>
+              </svg>
+            </div>
+            <div
+              class=""
+            />
+            <object
+              class="size-sensor-object"
+              data="about:blank"
+              style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+              tabindex="-1"
+              type="text/html"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ClientCountChart should match snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-3 pYJpv"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="styledComponents__HeaderContainer-sc-13w5wfx-4 gmFkBh"
+            >
+              <div
+                class="styledComponents__TitleWrapper-sc-13w5wfx-5 bxvIFk"
+              >
+                CLIENTS
+              </div>
+              <div />
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <div
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            _echarts_instance_="ec_1661486678503"
+            class="echarts-for-react "
+            size-sensor-id="3"
+            style="height: 280px; width: 280px; position: relative;"
+          >
+            <div
+              style="position: relative; overflow: hidden; width: 280px; height: 280px;"
+            >
+              <svg
+                baseProfile="full"
+                height="280"
+                style="position:absolute;left:0;top:0;user-select:none"
+                version="1.1"
+                width="280"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+              >
+                <rect
+                  fill="none"
+                  fill-opacity="1"
+                  height="280"
+                  id="0"
+                  width="280"
+                  x="0"
+                  y="0"
+                />
+                <g>
+                  <path
+                    d="M10 256.5L280 256.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M10 220.5L280 220.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M10 184.5L280 184.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M10 149.5L280 149.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M10 113.5L280 113.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M10 77.5L280 77.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M10 42.5L280 42.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M10 256.5L280 256.5"
+                    fill="none"
+                    stroke="none"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M10.5 256L10.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M32.5 256L32.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M55.5 256L55.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M77.5 256L77.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M100.5 256L100.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M122.5 256L122.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M145.5 256L145.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M167.5 256L167.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M190.5 256L190.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M212.5 256L212.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M235.5 256L235.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M257.5 256L257.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M280.5 256L280.5 261"
+                    fill="none"
+                    stroke="none"
+                  />
+                  <path
+                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    fill="none"
+                    transform="translate(2 256)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(2 256)"
+                  >
+                    0
+                  </text>
+                  <path
+                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    fill="none"
+                    transform="translate(2 220.3333)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(2 220.3333)"
+                  >
+                    3
+                  </text>
+                  <path
+                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    fill="none"
+                    transform="translate(2 184.6667)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(2 184.6667)"
+                  >
+                    6
+                  </text>
+                  <path
+                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    fill="none"
+                    transform="translate(2 149)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(2 149)"
+                  >
+                    9
+                  </text>
+                  <path
+                    d="M-2 -8l2 0l0 16l-2 0Z"
+                    fill="none"
+                    transform="translate(2 113.3333)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(2 113.3333)"
+                  >
+                    12
+                  </text>
+                  <path
+                    d="M-2 -8l2 0l0 16l-2 0Z"
+                    fill="none"
+                    transform="translate(2 77.6667)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(2 77.6667)"
+                  >
+                    15
+                  </text>
+                  <path
+                    d="M-2 -8l2 0l0 16l-2 0Z"
+                    fill="none"
+                    transform="translate(2 42)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(2 42)"
+                  >
+                    18
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(10 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(10 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:15
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(32.5 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(32.5 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:20
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(55 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(55 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:25
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(77.5 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(77.5 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:30
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(100 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(100 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:35
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(122.5 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(122.5 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:40
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(145 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(145 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:45
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(167.5 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(167.5 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:50
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(190 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(190 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 17:55
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(235 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(235 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 18:05
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(257.5 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(257.5 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 18:10
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(280 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(280 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 18:15
+                  </text>
+                  <path
+                    d="M-6 0l12 0l0 16l-12 0Z"
+                    fill="none"
+                    transform="translate(212.5 264)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font: normal 400 10px 'Open Sans', sans-serif"
+                    text-anchor="middle"
+                    transform="translate(212.5 264)"
+                    xml:space="preserve"
+                    y="8"
+                  >
+                    Apr 07 18:00
+                  </text>
+                  <path
+                    d="M-5 -5l144 0l0 26l-144 0Z"
+                    fill="rgb(0,0,0)"
+                    fill-opacity="0"
+                    stroke="#ccc"
+                    stroke-width="0"
+                    transform="translate(126 5)"
+                  />
+                  <path
+                    d="M0 0l14 0l0 14l-14 0Z"
+                    fill="#5496EA"
+                    transform="translate(126 6)"
+                  />
+                  <path
+                    d="M20 -1l11 0l0 16l-11 0Z"
+                    fill="none"
+                    transform="translate(126 6)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#333333"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="start"
+                    transform="translate(126 6)"
+                    x="20"
+                    xml:space="preserve"
+                    y="7"
+                  >
+                    New Clients
+                  </text>
+                  <path
+                    d="M0 0l14 0l0 14l-14 0Z"
+                    fill="#ADCFFA"
+                    transform="translate(172 6)"
+                  />
+                  <path
+                    d="M20 -1l16 0l0 16l-16 0Z"
+                    fill="none"
+                    transform="translate(172 6)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#333333"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="start"
+                    transform="translate(172 6)"
+                    x="20"
+                    xml:space="preserve"
+                    y="7"
+                  >
+                    Impacted Clients
+                  </text>
+                  <path
+                    d="M0 0l14 0l0 14l-14 0Z"
+                    fill="#EC7100"
+                    transform="translate(223 6)"
+                  />
+                  <path
+                    d="M20 -1l17 0l0 16l-17 0Z"
+                    fill="none"
+                    transform="translate(223 6)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#333333"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="start"
+                    transform="translate(223 6)"
+                    x="20"
+                    xml:space="preserve"
+                    y="7"
+                  >
+                    Connected Clients
+                  </text>
+                  <g
+                    clip-path="url(#zr2-c0)"
+                  >
+                    <path
+                      d="M10 244.1111C10 244.1111 43.75 238.1667 77.5 232.2222C111.25 226.2778 111.25 226.2778 145 220.3333C178.75 214.3889 178.75 214.3889 212.5 208.4444C246.25 202.5 280 196.5556 280 196.5556"
+                      fill="none"
+                      stroke="#5496EA"
+                      stroke-linejoin="bevel"
+                    />
+                  </g>
+                  <g
+                    clip-path="url(#zr2-c1)"
+                  >
+                    <path
+                      d="M10 184.6667C10 184.6667 43.75 178.7222 77.5 172.7778C111.25 166.8333 111.25 166.8333 145 160.8889C178.75 154.9444 178.75 154.9444 212.5 149C246.25 143.0556 280 137.1111 280 137.1111"
+                      fill="none"
+                      stroke="#ADCFFA"
+                      stroke-linejoin="bevel"
+                    />
+                  </g>
+                  <g
+                    clip-path="url(#zr2-c2)"
+                  >
+                    <path
+                      d="M10 125.2222C10 125.2222 43.75 119.2778 77.5 113.3333C111.25 107.3889 111.25 107.3889 145 101.4444C178.75 95.5 178.75 95.5 212.5 89.5556C246.25 83.6111 280 77.6667 280 77.6667"
+                      fill="none"
+                      stroke="#EC7100"
+                      stroke-linejoin="bevel"
+                    />
+                  </g>
+                </g>
+                <defs>
+                  <clippath
+                    id="zr2-c0"
+                  >
+                    <path
+                      d="M9 41.5l0 0l0 215l0 0Z"
+                      fill="#000"
+                    />
+                  </clippath>
+                  <clippath
+                    id="zr2-c1"
+                  >
+                    <path
+                      d="M9 41.5l0 0l0 215l0 0Z"
+                      fill="#000"
+                    />
+                  </clippath>
+                  <clippath
+                    id="zr2-c2"
+                  >
+                    <path
+                      d="M9 41.5l0 0l0 215l0 0Z"
+                      fill="#000"
+                    />
+                  </clippath>
+                </defs>
+              </svg>
+            </div>
+            <div
+              class=""
+            />
+            <object
+              class="size-sensor-object"
+              data="about:blank"
+              style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+              tabindex="-1"
+              type="text/html"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`IncidentChart should match snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-3 pYJpv"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="styledComponents__HeaderContainer-sc-13w5wfx-4 gmFkBh"
+            >
+              <div
+                class="styledComponents__TitleWrapper-sc-13w5wfx-5 bxvIFk"
+              >
+                EAP FAILURES
+              </div>
+              <div />
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <div
+          style="overflow: visible; height: 0px; width: 0px;"
+        >
+          <div
+            _echarts_instance_="ec_1661486678501"
+            class="echarts-for-react "
+            size-sensor-id="1"
+            style="height: 280px; width: 280px; position: relative;"
+          >
+            <div
+              style="position: relative; overflow: hidden; width: 280px; height: 280px;"
+            >
+              <svg
+                baseProfile="full"
+                height="280"
+                style="position:absolute;left:0;top:0;user-select:none"
+                version="1.1"
+                width="280"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+              >
+                <rect
+                  fill="none"
+                  fill-opacity="1"
+                  height="280"
+                  id="0"
+                  width="280"
+                  x="0"
+                  y="0"
+                />
+                <g>
+                  <path
+                    d="M12 280.5L280 280.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M12 232.5L280 232.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M12 185.5L280 185.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M12 137.5L280 137.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M12 89.5L280 89.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M12 42.5L280 42.5"
+                    fill="none"
+                    stroke="#E0E6F1"
+                  />
+                  <path
+                    d="M12 280.5L280 280.5"
+                    fill="none"
+                    stroke="none"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M-2 -8l2 0l0 16l-2 0Z"
+                    fill="none"
+                    transform="translate(4 280)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(4 280)"
+                  >
+                    0%
+                  </text>
+                  <path
+                    d="M-3 -8l3 0l0 16l-3 0Z"
+                    fill="none"
+                    transform="translate(4 232.4)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(4 232.4)"
+                  >
+                    20%
+                  </text>
+                  <path
+                    d="M-3 -8l3 0l0 16l-3 0Z"
+                    fill="none"
+                    transform="translate(4 184.8)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(4 184.8)"
+                  >
+                    40%
+                  </text>
+                  <path
+                    d="M-3 -8l3 0l0 16l-3 0Z"
+                    fill="none"
+                    transform="translate(4 137.2)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(4 137.2)"
+                  >
+                    60%
+                  </text>
+                  <path
+                    d="M-3 -8l3 0l0 16l-3 0Z"
+                    fill="none"
+                    transform="translate(4 89.6)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(4 89.6)"
+                  >
+                    80%
+                  </text>
+                  <path
+                    d="M-4 -8l4 0l0 16l-4 0Z"
+                    fill="none"
+                    transform="translate(4 42)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(4 42)"
+                  >
+                    100%
+                  </text>
+                  <path
+                    d="M-5 -5l10 0l0 10l-10 0Z"
+                    fill="rgb(0,0,0)"
+                    fill-opacity="0"
+                    stroke="#ccc"
+                    stroke-width="0"
+                    transform="translate(260 5)"
+                  />
+                </g>
+              </svg>
+            </div>
+            <div
+              class=""
+            />
+            <object
+              class="size-sensor-object"
+              data="about:blank"
+              style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+              tabindex="-1"
+              type="text/html"
+            />
+          </div>
+        </div>
+        <div
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

@@ -128,9 +128,6 @@ describe('Timeseries component', () => {
     
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    console.log(screen.logTestingPlaygroundURL())
-
-    const fragment = asFragment()
-    expect(fragment).toMatchSnapshot()
+    expect(asFragment()).toMatchSnapshot()
   })
 })

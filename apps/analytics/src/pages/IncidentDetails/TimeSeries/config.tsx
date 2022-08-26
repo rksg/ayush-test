@@ -18,7 +18,7 @@ export const codeToFailureTypeMap = {
 export interface FailureChart {
   key: string,
   query: (incident: Incident) => string,
-  chart?: (incident: Incident, data: ChartsData) => any
+  chart?: ({ incident, data }: { incident: Incident, data: ChartsData }) => JSX.Element
 }
 
 export const failureCharts: Readonly<Record<string, FailureChart>> = {
@@ -31,7 +31,7 @@ export const failureCharts: Readonly<Record<string, FailureChart>> = {
           apConnectionFailureRatio(metric: "${codeToFailureTypeMap[incident.code]}")
       }
     `,
-    chart: (incident, data) => <IncidentChart incident={incident} data={data}/>
+    chart: IncidentChart
   },
   relatedIncidents: {
     key: 'relatedIncidents',
@@ -55,7 +55,7 @@ export const failureCharts: Readonly<Record<string, FailureChart>> = {
         connectedClientCount
       }
     `,
-    chart: (incident, data) => <ClientCountChart incident={incident} data={data} />
+    chart: ClientCountChart
   },
   attemptAndFailureCharts: {
     key: 'attemptAndFailure',
@@ -67,6 +67,6 @@ export const failureCharts: Readonly<Record<string, FailureChart>> = {
         attemptCount(metric: "${codeToFailureTypeMap[incident.code]}")
       }
     `,
-    chart: (incident, data) => <AttemptAndFailureChart incident={incident} data={data}/>
+    chart: AttemptAndFailureChart
   }
 }

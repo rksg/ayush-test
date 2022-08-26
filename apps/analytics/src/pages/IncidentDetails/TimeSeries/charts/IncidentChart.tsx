@@ -1,11 +1,9 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Incident }                 from '@acx-ui/analytics/utils'
-import { getSeriesData }            from '@acx-ui/analytics/utils'
-import { Card }                     from '@acx-ui/components'
-import { MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { formatter }                from '@acx-ui/utils'
+import { Incident, getSeriesData }        from '@acx-ui/analytics/utils'
+import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { formatter }                      from '@acx-ui/utils'
 
 import { codeToFailureTypeMap } from '../config'
 import { ChartsData }           from '../services'
