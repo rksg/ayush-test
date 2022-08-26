@@ -1,15 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NetworkServicesTab should render More settings form successfully 1`] = `
-<DocumentFragment>
-  <form
-    class="ant-form ant-form-horizontal"
-  >
-    Services
-  </form>
-</DocumentFragment>
-`;
-
 exports[`NetworkServicesTab should render network services tab successfully 1`] = `
 <DocumentFragment>
   <form

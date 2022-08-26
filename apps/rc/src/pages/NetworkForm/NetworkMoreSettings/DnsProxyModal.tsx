@@ -79,7 +79,7 @@ export function DnsProxyModal () {
       domainName: item.domainName,
       key: item.domainName,
       ipList: item.ipList
-    })) || []
+    }))
     setDnsProxyList(list)
     setModalState({
       ...modalState,
@@ -158,6 +158,19 @@ export function MultiSelectTable (props: {
   ]
 
   return (<>
+    <Button
+      type='link'
+      style={{ float: 'right' }}
+      onClick={() => {
+        setModalState({
+          ...modalState,
+          editModalVisible: true,
+          editMode: false
+        })
+      }}
+    >
+      {intl.$t({ defaultMessage: 'Add Rule' })}
+    </Button>
     <DnsProxyModalRuleModal
       {...{ modalState, setModalState }}
     />
@@ -194,7 +207,7 @@ export function DnsProxyModalRuleModal (props: {
 
   const handleUpdateDnsProxyList = () => {
     const { name } = form.getFieldsValue()
-    const updateData = modalState.editMode ? dnsProxyList.map(r => {
+    const updateData = modalState.editMode ? dnsProxyList?.map(r => {
       if (r.key === modalState.editRow.key) {
         r = {
           domainName: name,
@@ -242,12 +255,6 @@ export function DnsProxyModalRuleModal (props: {
     form={form}
     layout='vertical'
     validateTrigger='onBlur'
-    onFinish={() => {
-      setModalState({
-        ...modalState,
-        editModalVisible: false
-      })
-    }}
     onFieldsChange={() => {
       const { name, ip } = form.getFieldsValue()
       const hasErrors = form.getFieldsError().map(item => item.errors).flat().length > 0
@@ -321,37 +328,21 @@ export function DnsProxyModalRuleModal (props: {
 
   </Form>
 
-  return (<>
-    <Button
-      type='link'
-      style={{ float: 'right' }}
-      onClick={() => {
-        setModalState({
-          ...modalState,
-          editModalVisible: true,
-          editMode: false
-        })
-      }}
-    >
-      {intl.$t({ defaultMessage: 'Add Rule' })}
-    </Button>
-    <Modal
-      title={modalState.editMode
-        ? intl.$t({ defaultMessage: 'Edit DNS Proxy Rule' })
-        : intl.$t({ defaultMessage: 'Add DNS Proxy Rule' })}
-      visible={modalState.editModalVisible}
-      width={400}
-      centered
-      getContainer={false}
-      okText={intl.$t({ defaultMessage: 'Save' })}
-      onCancel={resetProxyRuleModal}
-      onOk={handleUpdateDnsProxyList}
-      okButtonProps={{
-        disabled: modalState.disabledSaveBtn
-      }}
-    >
-      {formContent}
-    </Modal>
-  </>
-  )
+  return (<Modal
+    title={modalState.editMode
+      ? intl.$t({ defaultMessage: 'Edit DNS Proxy Rule' })
+      : intl.$t({ defaultMessage: 'Add DNS Proxy Rule' })}
+    visible={modalState.editModalVisible}
+    width={400}
+    centered
+    getContainer={false}
+    okText={intl.$t({ defaultMessage: 'Save' })}
+    onCancel={resetProxyRuleModal}
+    onOk={handleUpdateDnsProxyList}
+    okButtonProps={{
+      disabled: modalState.disabledSaveBtn
+    }}
+  >
+    {formContent}
+  </Modal>)
 }
