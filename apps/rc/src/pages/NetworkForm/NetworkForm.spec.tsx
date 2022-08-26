@@ -69,15 +69,8 @@ export const cloudpathResponse = [{
 }]
 
 describe('NetworkForm', () => {
-  it('should create open network successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
-      route: { params }
-    })
-
-    expect(asFragment()).toMatchSnapshot()
-
+  beforeEach(() => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -90,6 +83,16 @@ describe('NetworkForm', () => {
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse)))
     )
+  })
+  
+  it('should create open network successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+
+    expect(asFragment()).toMatchSnapshot()
 
     const insertInput = screen.getByLabelText('Network Name')
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
@@ -101,6 +104,39 @@ describe('NetworkForm', () => {
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
+    fireEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Venues' })
+    fireEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Summary' })
+
+    fireEvent.click(screen.getByText('Finish'))
+  })
+  it('should create open network with cloud path option successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+
+    const insertInput = screen.getByLabelText('Network Name')
+    fireEvent.change(insertInput, { target: { value: 'open network test' } })
+    fireEvent.blur(insertInput)
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
+    fireEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
+    fireEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
+    
+    const useCloudpathOption = screen.getByRole('switch')
+    fireEvent.click(useCloudpathOption)
+    
+    const cloudpathServer = screen.getByRole('combobox')
+    fireEvent.mouseDown(cloudpathServer)
+    const option = screen.getByText('cloud_01')
+    fireEvent.click(option)
+
     fireEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })

@@ -7,7 +7,7 @@ import { Card }                                  from '@acx-ui/components'
 import { DonutChart }                            from '@acx-ui/components'
 import type { DonutChartData }                   from '@acx-ui/components'
 import { useDashboardOverviewQuery }             from '@acx-ui/rc/services'
-import { Dashboard }                             from '@acx-ui/rc/services'
+import { Dashboard }                             from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 export const getAPClientChartData = (

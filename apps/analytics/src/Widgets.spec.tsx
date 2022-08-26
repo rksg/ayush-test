@@ -1,12 +1,12 @@
-import { dataApiURL }       from '@acx-ui/analytics/services'
-import { AnalyticsFilter }  from '@acx-ui/analytics/utils'
-import { BrowserRouter }    from '@acx-ui/react-router-dom'
-import { Provider }         from '@acx-ui/store'
-import { render, screen }   from '@acx-ui/test-utils'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange }        from '@acx-ui/utils'
+import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
+import { BrowserRouter }                    from '@acx-ui/react-router-dom'
+import { Provider }                         from '@acx-ui/store'
+import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { DateRange }                        from '@acx-ui/utils'
 
 import { topSwitchesByPoEUsageResponse } from './components/SwitchesByPoEUsage/services.spec'
+import { trafficByApplicationFixture }   from './components/TrafficByApplication/__tests__/fixtures'
 import AnalyticsWidgets                  from './Widgets'
 
 const sample = {
@@ -94,5 +94,15 @@ test('should render Top 5 Switches by PoE Usage widget', async () => {
     <Provider> <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/></Provider>
   </BrowserRouter>)
   expect(await screen.findByText('Top 5 Switches by PoE Usage')).toBeVisible()
-  
+
+})
+
+test('should render Traffic By Application Widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
+    data: { network: { hierarchyNode: trafficByApplicationFixture } }
+  })
+  render( <Provider> <AnalyticsWidgets
+    name='topApplicationsByTraffic'
+    filters={filters} /></Provider>)
+  await screen.findByText('Top 5 Applications by Traffic')
 })
