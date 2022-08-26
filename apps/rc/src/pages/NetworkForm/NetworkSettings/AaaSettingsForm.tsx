@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import {
   ExclamationCircleFilled,
@@ -17,8 +17,9 @@ import {
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Button, Subtitle }                       from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import { StepsForm, Button, Subtitle } from '@acx-ui/components'
+import { useSplitTreatment }           from '@acx-ui/feature-toggle'
+import { useCloudpathListQuery }       from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
   AaaServerTypeEnum,
@@ -27,19 +28,45 @@ import {
   networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'
 import { NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
+import { useParams }       from '@acx-ui/react-router-dom'
 
 import * as contents      from '../contentsMap'
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext from '../NetworkFormContext'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
 export function AaaSettingsForm () {
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  if(data){
+    form.setFieldsValue({ 
+      'cloudpathServerId': data.cloudpathServerId,
+      'isCloudpathEnabled': data.cloudpathServerId !== undefined,
+      'wlanSecurity': data.wlan?.wlanSecurity,
+      'enableAuthProxy': data.enableAuthProxy,
+      'enableAccountingProxy': data.enableAccountingProxy,
+      'enableAccountingService': data.accountingRadius !== undefined,
+      'authRadius.primary.ip': data.authRadius?.primary?.ip,
+      'authRadius.primary.port': data.authRadius?.primary?.port,
+      'authRadius.primary.sharedSecret': data.authRadius?.primary?.sharedSecret,
+      'enableSecondaryAuthServer': data.authRadius?.secondary !== undefined,
+      'authRadius.secondary.ip': data.authRadius?.secondary?.ip,
+      'authRadius.secondary.port': data.authRadius?.secondary?.port,
+      'authRadius.secondary.sharedSecret': data.authRadius?.secondary?.sharedSecret,
+      'accountingRadius.primary.ip': data.accountingRadius?.primary?.ip,
+      'accountingRadius.primary.port': data.accountingRadius?.primary?.port,
+      'accountingRadius.primary.sharedSecret': data.accountingRadius?.primary?.sharedSecret,
+      'enableSecondaryAcctServer': data.accountingRadius?.secondary !== undefined,
+      'accountingRadius.secondary.ip': data.accountingRadius?.secondary?.ip,
+      'accountingRadius.secondary.port': data.accountingRadius?.secondary?.port,
+      'accountingRadius.secondary.sharedSecret': data.accountingRadius?.secondary?.sharedSecret
+    })
+  }
   const [
     isCloudpathEnabled,
     selectedId,
@@ -114,7 +141,6 @@ function SettingsForm () {
     useWatch('enableSecondaryAcctServer')
   ]
 
-  const { tenantId } = useParams()
   const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle') 
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */

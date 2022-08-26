@@ -33,6 +33,7 @@ export interface NetworkSaveData {
     vlanId?: number;
     enable?: boolean;
     advancedCustomization?: IOpenWlanAdvancedCustomization;
+    wlanSecurity?: WlanSecurityEnum;
   };
   wlanSecurity?: WlanSecurityEnum;
   dpskWlanSecurity?: WlanSecurityEnum;

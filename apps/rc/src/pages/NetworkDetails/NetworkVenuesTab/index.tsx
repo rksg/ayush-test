@@ -11,6 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
@@ -26,7 +27,6 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from '../services'
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
 
 const defaultPayload = {
   searchString: '',
