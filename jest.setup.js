@@ -41,12 +41,6 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useEvaluateFeature: jest.fn()
 }), { virtual: true })
 
-jest.mock('moment-timezone', () => {
-  const moment = jest.requireActual('moment-timezone')
-  moment.tz.setDefault('UTC')
-  return moment
-})
-
 // For Error: Not implemented: HTMLCanvasElement.prototype.getContext (without installing the canvas npm package)
 HTMLCanvasElement.prototype.getContext = () => null
 
