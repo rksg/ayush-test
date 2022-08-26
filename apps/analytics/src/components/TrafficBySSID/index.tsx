@@ -21,38 +21,28 @@ export default function TrafficBySSIDWidget ({
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const queryResults = useTrafficBySSIDQuery(filters,
-    {
-      selectFromResult: ({ data, ...rest }) => ({
-        data,
-        ...rest
-      })
-    }
-  )
+  const queryResults = useTrafficBySSIDQuery(filters)
 
   const columns=[
     {
-      title: 'Application',
+      title: $t({ defaultMessage: 'Application' }),
       dataIndex: 'name',
       key: 'name'
     },
     {
-      title: 'Total Traffic',
+      title: $t({ defaultMessage: 'Total Traffic' }),
       dataIndex: 'traffic',
-      key: 'traffic',
-      width: '20%'
+      key: 'traffic'
     },
     {
-      title: 'Traffic History',
+      title: $t({ defaultMessage: 'Traffic History' }),
       dataIndex: 'trafficHistory',
-      key: 'trafficHistory',
-      width: '5%'
+      key: 'trafficHistory'
     },
     {
-      title: 'Clients',
+      title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clientCount',
       key: 'clientCount',
-      width: '15%',
       align: 'right' as const
     }
   ]
@@ -91,7 +81,8 @@ export default function TrafficBySSIDWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 SSIDs by Traffic' })}>
+      <Card title={$t({ defaultMessage: 'Top 5 SSIDs by Traffic' })}
+        subTitle={$t({ defaultMessage: 'Insight Text coming from analytics' })}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>

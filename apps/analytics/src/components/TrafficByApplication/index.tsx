@@ -23,35 +23,28 @@ export default function TrafficByApplicationWidget ({
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const queryResults = useTrafficByApplicationQuery(filters,
-    {
-      selectFromResult: ({ data, ...rest }) => ({
-        data,
-        ...rest
-      })
-    }
-  )
+  const queryResults = useTrafficByApplicationQuery(filters)
 
   const columns=[
     {
-      title: 'Application',
+      title: $t({ defaultMessage: 'Application' }),
       dataIndex: 'name',
       key: 'name'
     },
     {
-      title: 'Total Traffic',
+      title: $t({ defaultMessage: 'Total Traffic' }),
       dataIndex: 'traffic',
       key: 'traffic',
       width: '20%'
     },
     {
-      title: 'Traffic History',
+      title: $t({ defaultMessage: 'Traffic History' }),
       dataIndex: 'trafficHistory',
       key: 'trafficHistory',
       width: '5%'
     },
     {
-      title: 'Clients',
+      title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clientCount',
       key: 'clientCount',
       width: '15%',
@@ -104,7 +97,8 @@ export default function TrafficByApplicationWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 Applications by Traffic' })}>
+      <Card title={$t({ defaultMessage: 'Top 5 Applications by Traffic' })}  
+        subTitle={$t({ defaultMessage: 'Insight Text coming from analytics' })}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
