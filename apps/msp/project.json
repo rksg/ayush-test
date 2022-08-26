@@ -1,0 +1,93 @@
+{
+  "sourceRoot": "apps/msp/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/msp",
+        "index": "apps/msp/src/index.html",
+        "baseHref": "/api/ui-beta/msp/",
+        "main": "apps/msp/src/main.ts",
+        "polyfills": "apps/msp/src/polyfills.ts",
+        "tsConfig": "apps/msp/tsconfig.app.json",
+        "assets": ["apps/msp/src/assets"],
+        "styles": [],
+        "scripts": [],
+        "webpackConfig": "apps/msp/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "webpackConfig": "apps/msp/webpack.config.prod.js"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/react:module-federation-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "baseHref": "/",
+        "buildTarget": "msp:build",
+        "hmr": true,
+        "port": 3003
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "msp:build:development"
+        },
+        "production": {
+          "buildTarget": "msp:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/msp/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/msp"],
+      "options": {
+        "jestConfig": "apps/msp/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "serve-static": {
+      "executor": "@nrwl/web:file-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "msp:build",
+        "port": 3001
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "msp:build:development"
+        },
+        "production": {
+          "buildTarget": "msp:build:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}
