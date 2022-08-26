@@ -42,7 +42,6 @@ export const Wrapper = styled.div`
       }
     }
     &-footer {
-      margin-top: 6px;
       .ant-tabs {
         border-bottom: 1px solid var(--acx-neutrals-30);
         .ant-tabs-tab {

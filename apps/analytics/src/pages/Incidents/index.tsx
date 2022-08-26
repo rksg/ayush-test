@@ -1,31 +1,85 @@
-import React from 'react'
+import { Tabs }                                      from 'antd'
+import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
-import { useIntl } from 'react-intl'
-
-import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol }   from '@acx-ui/components'
+import { useAnalyticsFilter }                           from '@acx-ui/analytics/utils'
+import { categoryNames, categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
+import { GridRow, GridCol }                             from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink }        from '@acx-ui/react-router-dom'
 
 import Header                   from '../../components/Header'
 import IncidentBySeverityWidget from '../../components/IncidentBySeverity'
 import NetworkHistoryWidget     from '../../components/NetworkHistory'
 
-function Incidents () {
-  const { $t } = useIntl()
-  const filters = useAnalyticsFilter()
+const incidentTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
+type IncidentListTabs = 'overview' | 'connection' | 'performance' | 'infrastructure'
 
-  return <>
-    <Header title={$t({ defaultMessage: 'Incidents' })} />
+const tabsMap : Record<IncidentListTabs, MessageDescriptor> = {
+  connection: defineMessage({
+    defaultMessage: 'Connection'
+  }),
+  overview: defineMessage({
+    defaultMessage: 'Overview'
+  }),
+  performance: defineMessage({
+    defaultMessage: 'Performance'
+  }),
+  infrastructure: defineMessage({
+    defaultMessage: 'Infrastructure'
+  })
+}
+
+const IncidentTabContent = (props: { tabSelection: IncidentListTabs }) => {
+  const { tabSelection } = props
+  const filters = useAnalyticsFilter()
+  const incidentCodesBasedOnCategory: IncidentCode[] | undefined = categoryCodeMap[
+    tabSelection as Exclude<IncidentListTabs, 'overview'>
+  ]?.codes as IncidentCode[]
+
+  return (
     <GridRow>
       <GridCol col={{ span: 4 }} style={{ height: '210px' }}>
-        <IncidentBySeverityWidget />
+        <IncidentBySeverityWidget filters={{ ...filters, code: incidentCodesBasedOnCategory }} />
       </GridCol>
       <GridCol col={{ span: 20 }} style={{ height: '210px' }}>
-        <NetworkHistoryWidget hideTitle bordered={false} filters={filters} />
+        <NetworkHistoryWidget
+          hideTitle
+          filters={{ ...filters, code: incidentCodesBasedOnCategory }}
+          bordered={false}
+        />
       </GridCol>
-      <GridCol col={{ span: 24 }}>
-        table
-      </GridCol>
+      <GridCol col={{ span: 24 }}>table</GridCol>
     </GridRow>
-  </>
+  )
+}
+
+function Incidents () {
+  const { $t } = useIntl()
+  const { activeTab = incidentTabs[0].value } = useParams()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/analytics/incidents/tab/')
+
+  const onTabChange = (tab: string) =>
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+  return (
+    <>
+      <Header
+        title={$t({ defaultMessage: 'Incidents' })}
+        footer={
+          <Tabs activeKey={activeTab} onChange={onTabChange}>
+            {incidentTabs.map((tabInfo) => (
+              <Tabs.TabPane
+                tab={$t(tabsMap[tabInfo.value as IncidentListTabs])}
+                key={tabInfo.value}
+              />
+            ))}
+          </Tabs>
+        }
+      />
+      <IncidentTabContent tabSelection={activeTab as IncidentListTabs} />
+    </>
+  )
 }
 export default Incidents

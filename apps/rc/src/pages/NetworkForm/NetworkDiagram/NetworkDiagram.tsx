@@ -1,9 +1,9 @@
 import { Row, Col } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { CloudpathServer } from '@acx-ui/rc/services'
 import {
   CloudpathDeploymentTypeEnum,
+  CloudpathServer,
   GuestNetworkTypeEnum,
   NetworkTypeEnum
 } from '@acx-ui/rc/utils'
