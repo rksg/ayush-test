@@ -101,8 +101,8 @@ test('should render Traffic By Application Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
     data: { network: { hierarchyNode: trafficByApplicationFixture } }
   })
-  render( <Provider> <AnalyticsWidgets
+  render(<BrowserRouter><Provider> <AnalyticsWidgets
     name='topApplicationsByTraffic'
-    filters={filters} /></Provider>)
+    filters={filters} /></Provider></BrowserRouter>)
   await screen.findByText('Top 5 Applications by Traffic')
 })
