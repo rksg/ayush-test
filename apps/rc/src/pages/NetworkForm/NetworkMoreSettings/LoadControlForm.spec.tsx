@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
 import { Provider }       from '@acx-ui/store'
-import { fireEvent }      from '@acx-ui/test-utils'
+import { fireEvent, within }      from '@acx-ui/test-utils'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { LoadControlForm } from './LoadControlForm'
@@ -42,5 +42,17 @@ describe('LoadControlForm', () => {
     fireEvent.click(perAp)
     expect(screen.getByText(/upload limit/i)).toBeVisible()
     expect(screen.getByText(/download limit/i)).toBeVisible()
+
+    const uploadLimit = screen.getByText(/upload limit/i)
+    await userEvent.click(within(uploadLimit).getByRole('checkbox'))
+    expect(screen.getByText(/200 mbps/i)).toBeVisible()
+    await userEvent.click(within(uploadLimit).getByRole('checkbox'))
+
+    const downloadLimit = screen.getByText(/download limit/i)
+    await userEvent.click(within(downloadLimit).getByRole('checkbox'))
+    expect(screen.getByText(/200 mbps/i)).toBeVisible()
+    await userEvent.click(within(downloadLimit).getByRole('checkbox'))
   })
+
+
 })

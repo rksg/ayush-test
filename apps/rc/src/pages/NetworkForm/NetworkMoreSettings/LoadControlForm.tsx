@@ -131,7 +131,7 @@ function PerApForm () {
         {
           uploadLimit ?
             <UI.FormItemNoLabel
-              name='uploadLimitRate'
+              name={['wlan','advancedCustomization','totalUplinkRateLimiting']}
               children={
                 <RateSlider />
               }
@@ -158,7 +158,7 @@ function PerApForm () {
         {
           downloadLimit ?
             <UI.FormItemNoLabel
-              name='downloadLimitRate'
+              name={['wlan','advancedCustomization','totalDownlinkRateLimiting']}
               children={
                 <RateSlider />
               }

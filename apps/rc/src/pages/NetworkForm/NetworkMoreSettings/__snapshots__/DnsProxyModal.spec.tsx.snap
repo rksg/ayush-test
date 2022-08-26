@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dns Proxy Modal should render Dns Proxy Modal successfully 1`] = `
+exports[`DnsProxyModal should render Dns Proxy Modal successfully 1`] = `
 <DocumentFragment>
   <form
     class="ant-form ant-form-horizontal"
