@@ -3,6 +3,10 @@ import { render, screen }    from '@acx-ui/test-utils'
 
 import WifiWidgets from './Widgets'
 
+jest.mock('./components/AlarmWidget', () => ({
+  __esModule: true,
+  default: () => <div>Alarms Widget</div>
+}))
 jest.mock('./components/VenuesDonut', () => ({
   __esModule: true,
   default: () => <div>Venues Widget</div>
@@ -23,7 +27,7 @@ jest.mock('./components/Map', () => ({
 describe('Wi-Fi Widgets', () => {
   it('should render Alarm widget', async () => {
     render(<WifiWidgets name={'alarms'}></WifiWidgets>)
-    expect(screen.getByText('Alarms')).toBeTruthy()
+    expect(screen.getByText('Alarms Widget')).toBeTruthy()
   })
   it('should render Venues widget', async () => {
     render(<WifiWidgets name={'venues'}></WifiWidgets>)

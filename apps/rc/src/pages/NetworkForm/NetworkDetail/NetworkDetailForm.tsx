@@ -20,9 +20,9 @@ import type { RadioChangeEvent } from 'antd'
 const { useWatch } = Form
 
 export function NetworkDetailForm () {
-  const { $t } = useIntl()
+  const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
-  const { setNetworkType: setSettingStepTitle } = useContext(NetworkFormContext)
+  const { setNetworkType: setSettingStepTitle, editMode } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
     setSettingStepTitle(e.target.value as NetworkTypeEnum)
   }
@@ -38,13 +38,15 @@ export function NetworkDetailForm () {
 
   const nameValidator = async (value: string) => {
     const payload = { ...networkListPayload, searchString: value }
-    const list = (await getNetworkList({ params, payload }, true)
-      .unwrap()).data.map(n => ({ name: n.name }))
-    return checkObjectNotExists(list, value, 'Network')
+    const list = (await getNetworkList({ params, payload }, true).unwrap()).data
+      .filter(n => n.id !== params.networkId)
+      .map(n => n.name)
+
+    return checkObjectNotExists(intl, list, value, intl.$t({ defaultMessage: 'Network' }))
   }
 
   const types = [
-    { type: NetworkTypeEnum.PSK, disabled: true },
+    { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: false },
     { type: NetworkTypeEnum.AAA, disabled: false },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: true },
@@ -54,10 +56,10 @@ export function NetworkDetailForm () {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
+        <StepsForm.Title>{intl.$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
         <Form.Item
           name='name'
-          label={$t({ defaultMessage: 'Network Name' })}
+          label={intl.$t({ defaultMessage: 'Network Name' })}
           rules={[
             { required: true },
             { min: 2 },
@@ -70,26 +72,38 @@ export function NetworkDetailForm () {
         />
         <Form.Item
           name='description'
-          label={$t({ defaultMessage: 'Description' })}
+          label={intl.$t({ defaultMessage: 'Description' })}
           children={<TextArea rows={4} maxLength={64} />}
         />
-        <Form.Item
-          name='type'
-          label={$t({ defaultMessage: 'Network Type' })}
-          rules={[{ required: true }]}
-        >
-          <Radio.Group onChange={onChange}>
-            <Space direction='vertical'>
-              {types.map(({ type, disabled }) => (
-                <Radio key={type} value={type} disabled={disabled}>
-                  {$t(networkTypes[type])}
-                  <RadioDescription>
-                    {$t(networkTypesDescription[type])}
-                  </RadioDescription>
-                </Radio>
-              ))}
-            </Space>
-          </Radio.Group>
+        <Form.Item>
+          {!editMode &&
+            <Form.Item
+              name='type'
+              label={intl.$t({ defaultMessage: 'Network Type' })}
+              rules={[{ required: true }]}
+            >
+              <Radio.Group onChange={onChange}>
+                <Space direction='vertical'>
+                  {types.map(({ type, disabled }) => (
+                    <Radio key={type} value={type} disabled={disabled}>
+                      {intl.$t(networkTypes[type])}
+                      <RadioDescription>
+                        {intl.$t(networkTypesDescription[type])}
+                      </RadioDescription>
+                    </Radio>
+                  ))}
+                </Space>
+              </Radio.Group>
+            </Form.Item>
+          }
+          {editMode &&
+            <Form.Item name='type' label='Network Type'>
+              <>
+                <h4 className='ant-typography'>{type && intl.$t(networkTypes[type])}</h4>
+                <label>{type && intl.$t(networkTypesDescription[type])}</label>
+              </>
+            </Form.Item>
+          }
         </Form.Item>
       </Col>
 

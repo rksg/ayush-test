@@ -3,11 +3,10 @@ import { initialize, mockInstances } from '@googlemaps/jest-mocks'
 import {
   ApVenueStatusEnum,
   Dashboard,
-  SwitchStatusEnum } from '@acx-ui/rc/services'
+  SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import {
   getClusterSVG,
-  getDeviceConnectionStatusColors,
   getIcon, getMarkerColor,
   getMarkerSVG,
   massageVenuesData,
@@ -449,15 +448,6 @@ describe('Venues Map Helper', () => {
 
   it('should return marker svg string with the given fill color', ()=>{
     expect(getMarkerSVG('#ACAEB1')).toEqual(expect.stringContaining('fill="#ACAEB1"'))
-  })
-
-  it('should return the correct color for the device status', ()=>{
-    expect(getDeviceConnectionStatusColors())
-      .toStrictEqual([
-        '#23AB36',
-        '#ACAEB0',
-        '#F9C34B',
-        '#ED1C24'])
   })
 
   describe('getIcon', () => {

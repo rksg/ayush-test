@@ -7,11 +7,14 @@ import { useIntl } from 'react-intl'
 import {
   Loader,
   Table,
-  TableProps
+  TableProps,
+  deviceStatusColors
 } from '@acx-ui/components'
-import { ApExtraParams, useApListQuery, AP } from '@acx-ui/rc/services'
+import { useApListQuery } from '@acx-ui/rc/services' 
 import {
   ApDeviceStatusEnum,
+  ApExtraParams,
+  AP,
   APMeshRole,
   APView,
   DeviceConnectionStatus,
@@ -35,17 +38,8 @@ const defaultPayload = {
   ]
 }
 
-const handleStatusColor = (color: DeviceConnectionStatus) => {
-  switch (color) {
-    case DeviceConnectionStatus.INITIAL:
-      return 'var(--acx-neutrals-50)'
-    case DeviceConnectionStatus.ALERTING:
-      return 'var(--acx-semantics-yellow-40)'
-    case DeviceConnectionStatus.DISCONNECTED:
-      return 'var(--acx-semantics-red-60)'
-    case DeviceConnectionStatus.CONNECTED:
-      return 'var(--acx-semantics-green-50)'
-  }
+const handleStatusColor = (status: DeviceConnectionStatus) => {
+  return `var(${deviceStatusColors[status]})`
 }
 
 const channelTitleMap: Record<keyof ApExtraParams, string> = {

@@ -3,8 +3,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-import { Alarm, useAlarmsListQuery }             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, useTableQuery }         from '@acx-ui/rc/utils'
+import { useAlarmsListQuery }                    from '@acx-ui/rc/services'
+import { Alarm, CommonUrlsInfo, useTableQuery }  from '@acx-ui/rc/utils'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -46,8 +46,7 @@ const defaultPayload = {
     'apName',
     'switchName',
     'sourceType'
-  ],
-  sortField: 'startTime'
+  ]
 }
 
 const defaultArray: Alarm[] = []
@@ -57,7 +56,11 @@ export function AlarmsTable () {
   const AlarmsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useAlarmsListQuery,
-      defaultPayload
+      defaultPayload,
+      sorter: {
+        sortField: 'startTime',
+        sortOrder: 'DESC'
+      }
     })
     const [tableData, setTableData] = useState(defaultArray)
     useEffect(()=>{

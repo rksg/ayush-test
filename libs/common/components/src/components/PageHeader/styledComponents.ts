@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
   position: sticky;
   top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
   z-index: 4;
-  background-color: var(--acx-neutrals-10);
+  background-color: var(--acx-primary-white);
 
   .ant-page-header {
     padding: 0;
@@ -42,7 +42,6 @@ export const Wrapper = styled.div`
       }
     }
     &-footer {
-      margin-top: 6px;
       .ant-tabs {
         border-bottom: 1px solid var(--acx-neutrals-30);
         .ant-tabs-tab {
