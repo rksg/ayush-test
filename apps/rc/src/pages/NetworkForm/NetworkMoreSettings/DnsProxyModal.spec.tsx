@@ -67,11 +67,11 @@ describe('DnsProxyModal', () => {
 
   it('should edie/delete rule in DnsProxyRuleModal', async () => {
     dnsProxyList = [{
-      domainName: 'aaa.com', ipList: ['1.1.1.1']
+      domainName: 'aaa.com', ipList: ['1.1.1.1'], key: 'aaa.com'
     }, {
-      domainName: 'bbb.com', ipList: ['1.1.1.1', '1.1.1.2']
+      domainName: 'bbb.com', ipList: ['1.1.1.1', '1.1.1.2'], key: 'bbb.com'
     }, {
-      domainName: 'ccc.com', ipList: ['1.1.1.1']
+      domainName: 'ccc.com', ipList: ['1.1.1.1'], key: 'ccc.com'
     }]
     render(
       <Provider>
@@ -93,7 +93,7 @@ describe('DnsProxyModal', () => {
 
     const row2 = await screen.findByRole('row', { name: /aaa.com/i })
     fireEvent.click(within(row2).getByRole('checkbox'))
-    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))    
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
 
     expect(await screen.findByText('Edit DNS Proxy Rule')).toBeVisible()
     fireEvent.change(screen.getByLabelText('Domain Name'), { target: { value: 'bbb.com' } })

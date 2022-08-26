@@ -263,3 +263,14 @@ export interface Service {
   health: string
   tags: string[]
 }
+
+export interface DnsProxyRule {
+  domainName?: string,
+  key?: string,
+  ipList?: string[] | undefined
+}
+
+export interface DnsProxyContextType {
+  dnsProxyList: DnsProxyRule[] | [],
+  setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
+}
