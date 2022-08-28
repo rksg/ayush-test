@@ -55,7 +55,7 @@
     "defaultMessage": "Finish"
   },
   "2n2eHo": {
-    "defaultMessage": "{count,plural,one{For the following venue, the network could not be activated on all Venues:} other{For the following venues, the network could not be activated on all Venues:}}"
+    "defaultMessage": "For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:"
   },
   "34xBI0": {
     "defaultMessage": "APs"
@@ -135,7 +135,7 @@
     "defaultMessage": "Select..."
   },
   "76jC1v": {
-    "defaultMessage": "This value should be higher than or equal to $'{min}'",
+    "defaultMessage": "This value should be higher than or equal to $'{min'}",
     "description": "Validation - min checks"
   },
   "7Kk96z": {
@@ -278,7 +278,7 @@
     "defaultMessage": "Recommendations"
   },
   "F3C5Zx": {
-    "defaultMessage": "{key,select,name{{entityName} with that name already exists} other{{entityName} with that value already exists}}",
+    "defaultMessage": "{entityName} with that {key, select, name {name} other {value} } already exists",
     "description": "Validation - duplication checks"
   },
   "FACmOV": {
@@ -464,7 +464,7 @@
     "defaultMessage": "{title}:"
   },
   "RAjs+g": {
-    "defaultMessage": "{isCaptiveNetwork,select,true{Captive Portal - {captiveNetworkType}} other{Portal - {captiveNetworkType}}}"
+    "defaultMessage": "{isCaptiveNetwork, select, true {Captive Portal} other {Portal}} - {captiveNetworkType}"
   },
   "RUoi+Y": {
     "defaultMessage": "Keyboard Friendly"
@@ -577,7 +577,7 @@
     "defaultMessage": "Network Info"
   },
   "ZtxCeY": {
-    "defaultMessage": "This value should be lower than or equal to $'{max}'",
+    "defaultMessage": "This value should be lower than or equal to $'{max'}",
     "description": "Validation - max checks"
   },
   "ZvKSfJ": {
@@ -837,7 +837,7 @@
     "defaultMessage": "Only numbers can be used"
   },
   "nijCnW": {
-    "defaultMessage": "{isComplexName,select,true{{name} ({nodeName})} other{{nodeName}}}",
+    "defaultMessage": "{isComplexName, select, true {{name} ({nodeName})} other {{nodeName}} }",
     "description": "Uses to format path node name, when isComplexName = true the nodeName would be something like AP or Switch MAC address"
   },
   "nso3Mj": {
@@ -880,7 +880,7 @@
     "defaultMessage": "Total Incidents"
   },
   "pyZg46": {
-    "defaultMessage": "{type,select,aaa{AAA Settings} dpsk{DPSK Settings} other{Settings}}"
+    "defaultMessage": "{type, select, aaa {AAA Settings} dpsk {DPSK Settings} other {Settings} }"
   },
   "q15Qnb": {
     "defaultMessage": "Clients ({clientsCount})"
