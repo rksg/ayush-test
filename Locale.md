@@ -23,5 +23,5 @@ npx formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/*{.d.ts,.sp
 
 ### Translation Management System (TMS) Integration
 ```sh
-npm run extract -- '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/*{.d.ts,.spec.ts,.spec.tsx}' --out-file apps/main/src/locales/en-US.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format simple
+npx formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/*{.d.ts,.spec.ts,.spec.tsx}' --out-file apps/main/src/locales/en-US.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '$t' --format simple
 ```
