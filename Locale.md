@@ -1,5 +1,11 @@
 This doc is for I18n management for local development
 
+Run command below when there are new/updated contents added to the code base
+
+```bash
+./tools/docker/locales/generate.sh
+```
+
 ### Extraction
 ```sh
 npx formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/*{.d.ts,.spec.ts,.spec.tsx}' --out-file apps/main/src/locales/en-US.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '$t'
