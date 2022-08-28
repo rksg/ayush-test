@@ -9,10 +9,17 @@ import { useIntl }              from 'react-intl'
 
 import { ConfigProvider, cssStr } from '@acx-ui/components'
 
-import { getClusterSVG, getIcon, getMarkerColor, getVenueInfoMarkerIcon, getVenueSeverityByStatus } from './helper'
-import { VenueClusterTooltip, CloseIcon }                                                           from './styledComponents'
-import { VenueMarkerTooltip }                                                                       from './VenueMarkerTooltip'
-import VenueMarkerWithLabel                                                                         from './VenueMarkerWithLabel'
+import {
+  getClusterSVG,
+  getIcon, getMarkerColor,
+  getVenueInfoMarkerIcon,
+  getVenueSeverityByStatus
+} from './helper'
+import {
+  VenueClusterTooltip,
+  CloseIcon } from './styledComponents'
+import { VenueMarkerTooltip } from './VenueMarkerTooltip'
+import VenueMarkerWithLabel   from './VenueMarkerWithLabel'
 
 let currentInfoWindow: google.maps.InfoWindow
 

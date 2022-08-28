@@ -56,7 +56,7 @@ const GMap: React.FC<MapProps> = ({
   }, [ref])
 
   React.useEffect(() => {
-    if(map){
+    if(map) {
       if (enableVenueFilter && onFilterChange
         && map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
         const legendControlBoxDiv = document.createElement('div')
@@ -68,10 +68,6 @@ const GMap: React.FC<MapProps> = ({
         )
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(legendControlBoxDiv)
       }
-
-      ['click', 'idle', 'zoom_changed'].forEach((eventName) =>
-        google.maps.event.clearListeners(map, eventName)
-      )
       if (onClick) {
         google.maps.event.addListener(map, 'click', onClick)
       }

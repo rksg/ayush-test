@@ -20,19 +20,16 @@ function getCols ({ $t }: ReturnType<typeof useIntl>) {
     {
       title: $t({ defaultMessage: 'Networking Devices' }),
       dataIndex: 'networkDevices',
-      key: 'networkDevices',
-      width: 162
+      key: 'networkDevices'
     },
     {
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
-      key: 'clients',
-      width: 162
+      key: 'clients'
     }
   ]
   return columns
 }
-
 
 interface VenueMarkerTooltipProps {
   onNavigate?: (params: NavigateProps) => void;

@@ -1,3 +1,5 @@
+import React, { useMemo } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Loader }                    from '@acx-ui/components'
@@ -5,7 +7,7 @@ import { useSplitTreatment }         from '@acx-ui/feature-toggle'
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import { useParams }                 from '@acx-ui/react-router-dom'
 
-import { VenuesMap }         from './VenuesMap'
+import VenuesMap             from './VenuesMap'
 import { massageVenuesData } from './VenuesMap/helper'
 
 export function Map () {
@@ -20,16 +22,16 @@ export function Map () {
 function ActualMap () {
   const queryResults = useDashboardOverviewQuery({
     params: useParams()
-  },
-  {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: massageVenuesData(data),
-      ...rest
-    })
   })
+
+  const data = useMemo(() => massageVenuesData(queryResults.data), [queryResults])
   return (
     <Loader states={[queryResults]}>
-      <VenuesMap cluster={true} data={queryResults.data} enableVenueFilter={true} />
+      <VenuesMap cluster={true} data={data} enableVenueFilter={true} />
     </Loader>
   )
 }
+
+// export default React.memo(Map)
+export default Map
+

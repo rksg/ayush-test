@@ -5,8 +5,11 @@ import { useIntl }                   from 'react-intl'
 import { ApVenueStatusEnum } from '@acx-ui/rc/utils'
 import { renderHook }        from '@acx-ui/test-utils'
 
-import VenueClusterRenderer, { generateClusterInfoContent, renderItemForList, VenueClusterTooltipData } from './VenueClusterRenderer'
-import VenueMarkerWithLabel                                                                             from './VenueMarkerWithLabel'
+import VenueClusterRenderer,
+{ generateClusterInfoContent,
+  renderItemForList,
+  VenueClusterTooltipData } from './VenueClusterRenderer'
+import VenueMarkerWithLabel from './VenueMarkerWithLabel'
 
 const series=[
   {
