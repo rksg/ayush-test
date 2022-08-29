@@ -8,6 +8,7 @@ const basicColumns = [
   },
   {
     title: 'Age',
+    tooltip: 'This is a tooltip',
     dataIndex: 'age',
     key: 'age'
   },
