@@ -48,32 +48,36 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
           style="display: grid; grid-template-columns: 50px 190px auto;"
         >
           <div
-            class="ant-row ant-form-item"
+            class="ant-form-item"
             style="margin-bottom: 10px;"
           >
             <div
-              class="ant-col ant-form-item-control"
+              class="ant-row ant-form-item-row"
             >
               <div
-                class="ant-form-item-control-input"
+                class="ant-col ant-form-item-control"
               >
                 <div
-                  class="ant-form-item-control-input-content"
+                  class="ant-form-item-control-input"
                 >
-                  <button
-                    aria-checked="false"
-                    class="ant-switch"
-                    id="wlan_advancedCustomization_l2AclEnable"
-                    role="switch"
-                    type="button"
+                  <div
+                    class="ant-form-item-control-input-content"
                   >
-                    <div
-                      class="ant-switch-handle"
-                    />
-                    <span
-                      class="ant-switch-inner"
-                    />
-                  </button>
+                    <button
+                      aria-checked="false"
+                      class="ant-switch"
+                      id="wlan_advancedCustomization_l2AclEnable"
+                      role="switch"
+                      type="button"
+                    >
+                      <div
+                        class="ant-switch-handle"
+                      />
+                      <span
+                        class="ant-switch-inner"
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -89,32 +93,36 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
           style="display: grid; grid-template-columns: 50px 190px auto;"
         >
           <div
-            class="ant-row ant-form-item"
+            class="ant-form-item"
             style="margin-bottom: 10px;"
           >
             <div
-              class="ant-col ant-form-item-control"
+              class="ant-row ant-form-item-row"
             >
               <div
-                class="ant-form-item-control-input"
+                class="ant-col ant-form-item-control"
               >
                 <div
-                  class="ant-form-item-control-input-content"
+                  class="ant-form-item-control-input"
                 >
-                  <button
-                    aria-checked="false"
-                    class="ant-switch"
-                    id="wlan_advancedCustomization_l3AclEnable"
-                    role="switch"
-                    type="button"
+                  <div
+                    class="ant-form-item-control-input-content"
                   >
-                    <div
-                      class="ant-switch-handle"
-                    />
-                    <span
-                      class="ant-switch-inner"
-                    />
-                  </button>
+                    <button
+                      aria-checked="false"
+                      class="ant-switch"
+                      id="wlan_advancedCustomization_l3AclEnable"
+                      role="switch"
+                      type="button"
+                    >
+                      <div
+                        class="ant-switch-handle"
+                      />
+                      <span
+                        class="ant-switch-inner"
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -130,32 +138,36 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
           style="display: grid; grid-template-columns: 50px 190px auto;"
         >
           <div
-            class="ant-row ant-form-item"
+            class="ant-form-item"
             style="margin-bottom: 10px;"
           >
             <div
-              class="ant-col ant-form-item-control"
+              class="ant-row ant-form-item-row"
             >
               <div
-                class="ant-form-item-control-input"
+                class="ant-col ant-form-item-control"
               >
                 <div
-                  class="ant-form-item-control-input-content"
+                  class="ant-form-item-control-input"
                 >
-                  <button
-                    aria-checked="false"
-                    class="ant-switch"
-                    id="enableDeviceOs"
-                    role="switch"
-                    type="button"
+                  <div
+                    class="ant-form-item-control-input-content"
                   >
-                    <div
-                      class="ant-switch-handle"
-                    />
-                    <span
-                      class="ant-switch-inner"
-                    />
-                  </button>
+                    <button
+                      aria-checked="false"
+                      class="ant-switch"
+                      id="enableDeviceOs"
+                      role="switch"
+                      type="button"
+                    >
+                      <div
+                        class="ant-switch-handle"
+                      />
+                      <span
+                        class="ant-switch-inner"
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -171,8 +183,53 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
           style="display: grid; grid-template-columns: 50px 190px auto;"
         >
           <div
-            class="ant-row ant-form-item"
+            class="ant-form-item"
             style="margin-bottom: 10px;"
+          >
+            <div
+              class="ant-row ant-form-item-row"
+            >
+              <div
+                class="ant-col ant-form-item-control"
+              >
+                <div
+                  class="ant-form-item-control-input"
+                >
+                  <div
+                    class="ant-form-item-control-input-content"
+                  >
+                    <button
+                      aria-checked="false"
+                      class="ant-switch"
+                      id="wlan_advancedCustomization_applicationPolicyEnable"
+                      role="switch"
+                      type="button"
+                    >
+                      <div
+                        class="ant-switch-handle"
+                      />
+                      <span
+                        class="ant-switch-inner"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+        width="175px"
+      >
+        Client Rate Limit
+        <div
+          class="ant-form-item"
+          style="margin-bottom: 10px;"
+        >
+          <div
+            class="ant-row ant-form-item-row"
           >
             <div
               class="ant-col ant-form-item-control"
@@ -186,7 +243,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
                   <button
                     aria-checked="false"
                     class="ant-switch"
-                    id="wlan_advancedCustomization_applicationPolicyEnable"
+                    id="enableClientRateLimit"
                     role="switch"
                     type="button"
                   >
@@ -198,43 +255,6 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
                     />
                   </button>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
-        width="175px"
-      >
-        Client Rate Limit
-        <div
-          class="ant-row ant-form-item"
-          style="margin-bottom: 10px;"
-        >
-          <div
-            class="ant-col ant-form-item-control"
-          >
-            <div
-              class="ant-form-item-control-input"
-            >
-              <div
-                class="ant-form-item-control-input-content"
-              >
-                <button
-                  aria-checked="false"
-                  class="ant-switch"
-                  id="enableClientRateLimit"
-                  role="switch"
-                  type="button"
-                >
-                  <div
-                    class="ant-switch-handle"
-                  />
-                  <span
-                    class="ant-switch-inner"
-                  />
-                </button>
               </div>
             </div>
           </div>

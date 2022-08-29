@@ -6,27 +6,31 @@ exports[`DpskSummaryForm should render cloudpath enabled successfully 1`] = `
     class="ant-form ant-form-horizontal"
   >
     <div
-      class="ant-row ant-form-item"
+      class="ant-form-item"
     >
       <div
-        class="ant-col ant-form-item-label"
-      >
-        <label
-          class=""
-          title="Security Protocol:"
-        >
-          Security Protocol
-        </label>
-      </div>
-      <div
-        class="ant-col ant-form-item-control"
+        class="ant-row ant-form-item-row"
       >
         <div
-          class="ant-form-item-control-input"
+          class="ant-col ant-form-item-label"
+        >
+          <label
+            class=""
+            title="Security Protocol:"
+          >
+            Security Protocol
+          </label>
+        </div>
+        <div
+          class="ant-col ant-form-item-control"
         >
           <div
-            class="ant-form-item-control-input-content"
-          />
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            />
+          </div>
         </div>
       </div>
     </div>
