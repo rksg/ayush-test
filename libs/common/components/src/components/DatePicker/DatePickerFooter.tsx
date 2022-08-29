@@ -11,7 +11,7 @@ import * as UI from './styledComponents'
 
 import { DateRangeType } from '.'
 
-import type { Moment } from 'moment'
+import type { Moment } from 'moment-timezone'
 
 interface DatePickerFooterProps {
   showTimePicker?: boolean;

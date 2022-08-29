@@ -116,7 +116,7 @@ start the [MLISA dev environment](https://github.com/rksg/rsa-mlisa-helm/tree/de
 before executing the command.
 
 ```sh
-npx nx run main:serve --devRemotes=rc,analytics
+npx nx run main:serve --devRemotes=rc,analytics,msp
 ```
 
 If you are not working on a particular app, you can choose to remove it from `--devRemotes`.
@@ -126,18 +126,23 @@ while `rc` will be built statically.
 ### Run tests
 
 ```sh
-npx nx affected:test --coverage
+npx nx affected:test --coverage --verbose
 ```
 
 Remove `--coverage` if updating the coverage folder is not needed.
 
-```
+Use command below if you intent to run test for selected packages
+
+```sh
+npx nx run-many --target=test --projects=rc,rc-utils --coverage --runInBand --verbose
 ```
 
 ### Run lint
 
+The `--fix` will help resolve error for simple lint rules.
+
 ```sh
-npx nx affected:lint
+npx nx affected:lint --fix
 ```
 
 ### Run Storybook
