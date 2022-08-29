@@ -15,14 +15,15 @@ jest.mock('react-resizable', () => ({
       data-testid='react-resizable'
       onMouseDown={()=>{
         props.onResize(null, { size: { width: 99 } })
-      }}/></td>
+      // eslint-disable-next-line testing-library/no-node-access
+      }}/>{props.children}</td>
   })
 }))
 
 describe('Table component', () => {
   const basicColumns = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Age', dataIndex: 'age', key: 'age' },
+    { title: 'Age', dataIndex: 'age', key: 'age', tooltip: 'tooltip' },
     { title: 'Address', dataIndex: 'address', key: 'address' }
   ]
   const basicData = [

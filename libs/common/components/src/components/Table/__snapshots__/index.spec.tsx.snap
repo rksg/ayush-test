@@ -50,16 +50,38 @@ exports[`Table component renders compact table 1`] = `
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Name
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Address
+                            </th>
                           </tr>
                         </thead>
                         <tbody
@@ -261,21 +283,47 @@ exports[`Table component should render correctly 1`] = `
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Name
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Address
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </thead>
                         <tbody
@@ -581,26 +629,76 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell ant-table-selection-column"
+                            >
+                              <div
+                                class="ant-table-selection"
+                              >
+                                <label
+                                  class="ant-checkbox-wrapper"
+                                >
+                                  <span
+                                    class="ant-checkbox"
+                                  >
+                                    <input
+                                      class="ant-checkbox-input"
+                                      type="checkbox"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-checkbox-inner"
+                                    />
+                                  </span>
+                                </label>
+                              </div>
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Name
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Address
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </thead>
                         <tbody
@@ -1073,26 +1171,77 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell ant-table-selection-column"
+                            >
+                              <div
+                                class="ant-table-selection"
+                              >
+                                <label
+                                  class="ant-checkbox-wrapper"
+                                >
+                                  <span
+                                    class="ant-checkbox ant-checkbox-indeterminate"
+                                  >
+                                    <input
+                                      aria-checked="mixed"
+                                      class="ant-checkbox-input"
+                                      type="checkbox"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-checkbox-inner"
+                                    />
+                                  </span>
+                                </label>
+                              </div>
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Name
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Address
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </thead>
                         <tbody
@@ -1467,26 +1616,76 @@ exports[`Table component should render multi select table and render action butt
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell ant-table-selection-column"
+                            >
+                              <div
+                                class="ant-table-selection"
+                              >
+                                <label
+                                  class="ant-checkbox-wrapper"
+                                >
+                                  <span
+                                    class="ant-checkbox"
+                                  >
+                                    <input
+                                      class="ant-checkbox-input"
+                                      type="checkbox"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-checkbox-inner"
+                                    />
+                                  </span>
+                                </label>
+                              </div>
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Name
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Address
+                            </th>
                             <td>
                               <div
                                 data-testid="react-resizable"
                               />
                             </td>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              style="position: sticky; right: 0px;"
+                            />
                           </tr>
                         </thead>
                         <tbody

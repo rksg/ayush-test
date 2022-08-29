@@ -168,7 +168,7 @@ function Table <RecordType extends object> (
       columns={columns.map(col=>({
         ...col,
         width: (col.key === settingsKey)? col.width : colWidth[col.key],
-        onHeaderCell: (column: Columns<RecordType, 'text'>) => ({
+        onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
           width: colWidth[column.key],
           onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
         })
