@@ -1479,8 +1479,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   <div
                     class="ant-form-item-extra"
                   >
-                    Per radio client count at which an AP will stop
-  converting group addressed data traffic to unicast
+                    Per radio client count at which an AP will stop converting group addressed data traffic to unicast
                   </div>
                 </div>
               </div>
