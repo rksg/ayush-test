@@ -1,11 +1,10 @@
 import { ReactNode } from 'react'
 
-
 import Icon                     from '@ant-design/icons'
 import { Cluster,Renderer }     from '@googlemaps/markerclusterer'
 import { List, Space, Popover } from 'antd'
 import { createRoot }           from 'react-dom/client'
-import { useIntl }              from 'react-intl'
+import { IntlShape }            from 'react-intl'
 
 import { ConfigProvider, cssStr } from '@acx-ui/components'
 
@@ -20,6 +19,8 @@ import {
   CloseIcon } from './styledComponents'
 import { VenueMarkerTooltip } from './VenueMarkerTooltip'
 import VenueMarkerWithLabel   from './VenueMarkerWithLabel'
+
+import { NavigateProps } from '.'
 
 let currentInfoWindow: google.maps.InfoWindow
 
@@ -47,7 +48,7 @@ export const renderItemForList = (item:VenueClusterTooltipData) => (
 )
 
 export const generateClusterInfoContent = (markers: google.maps.Marker[],
-  clusterInfoWindow: google.maps.InfoWindow ) => {
+  clusterInfoWindow: google.maps.InfoWindow, onNavigate?: (params: NavigateProps) => void) => {
   let data: VenueClusterTooltipData[] = []
 
   const sortedMarkers = Array.from(markers).sort((a,b) => {
@@ -65,6 +66,7 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
       popoverContent: <VenueMarkerTooltip
         venueMarker={(marker as VenueMarkerWithLabel).venueMarker}
         needPadding={false}
+        onNavigate={onNavigate}
       />
     }
   })
@@ -98,12 +100,19 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
 }
 
 export default class VenueClusterRenderer implements Renderer {
-  private map:google.maps.Map
-  private intl: ReturnType<typeof useIntl>
-  constructor (map:google.maps.Map, intl: ReturnType<typeof useIntl>) {
+  private map: google.maps.Map
+  private intl: IntlShape
+  private onNavigate?: (params: NavigateProps) => void
+
+  constructor (
+    map: google.maps.Map,
+    intl: IntlShape,
+    onNavigate?: (params: NavigateProps) => void) {
     this.map = map
     this.intl = intl
+    this.onNavigate = onNavigate
   }
+
   public render (
     { count, position, markers }: Cluster
   ): google.maps.Marker {
@@ -138,7 +147,7 @@ export default class VenueClusterRenderer implements Renderer {
 
     google.maps.event.addListener(clusterMarker, 'click', () => {
       const content = generateClusterInfoContent(markers || [new google.maps.Marker({})],
-        clusterInfoWindow)
+        clusterInfoWindow, this.onNavigate)
 
       const infoDiv = document.createElement('div')
       createRoot(infoDiv).render(<ConfigProvider lang='en-US' children={content} />)
