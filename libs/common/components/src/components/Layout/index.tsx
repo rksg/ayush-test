@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl'
 import { Logo }   from '@acx-ui/icons'
 import {
   NavLink,
+  TenantType,
   useLocation,
   useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -23,6 +24,7 @@ interface MenuItem {
 interface MenuItem {
   path: string;
   name: string;
+  tenantType?: TenantType;
   disableIcon?: React.FC;
   enableIcon?: React.FC;
   routes?: Array<MenuItem>

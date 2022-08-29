@@ -1,3 +1,4 @@
+process.env.TZ = 'UTC'
 const nxPreset = require('@nrwl/jest/preset')
 
 module.exports = {
@@ -11,6 +12,7 @@ module.exports = {
   coverageReporters: [ 'lcov', 'text-summary' ],
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{js,jsx,ts,tsx}',
+    '!<rootDir>/src/**/__tests__/**',
     '!<rootDir>/src/**/stories.tsx',
     '!<rootDir>/src/**/stories/**',
     '!<rootDir>/src/components/StepsFormProAnt/*',

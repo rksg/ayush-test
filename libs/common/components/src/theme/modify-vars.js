@@ -52,6 +52,8 @@ module.exports = {
   '@input-border-color': 'var(--acx-neutrals-50)',
   '@input-hover-border-color': 'var(--acx-accents-orange-50)',
 
+  '@input-number-handler-border-color': 'var(--acx-neutrals-50)',
+
   '@label-color': 'var(--acx-neutrals-60)',
 
   '@layout-body-background': 'var(--acx-primary-black)',
@@ -89,6 +91,8 @@ module.exports = {
 
   '@screen-xl': '1280px',
   '@screen-xxl': '1920px',
+
+  '@select-border-color': 'var(--acx-neutrals-50)',
 
   '@tabs-highlight-color': 'var(--acx-primary-black)',
   '@tabs-hover-color': 'var(--acx-accents-orange-50)',

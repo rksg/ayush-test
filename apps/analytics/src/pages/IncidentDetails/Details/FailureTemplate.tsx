@@ -1,12 +1,11 @@
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import {
   calculateSeverity,
   Incident,
   useShortDescription
 } from '@acx-ui/analytics/utils'
-import { PageHeader, SeverityPill } from '@acx-ui/components'
+import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
 import { IncidentAttributes } from '../IncidentAttributes'
 import { Insights }           from '../Insights'
@@ -34,30 +33,26 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={<p>{useShortDescription(incident)}</p>}
+        subTitle={useShortDescription(incident)}
       />
-      <Row gutter={[20, 20]}>
-        <Col span={4}>
+      <GridRow>
+        <GridCol col={{ span: 4 }}>
           <UI.FixedAutoSizer>
             {({ width }) => (<div style={{ width }}>
               <IncidentAttributes incident={incident} visibleFields={attributeList} />
             </div>)}
           </UI.FixedAutoSizer>
-        </Col>
-        <Col span={20}>
-          <Row gutter={[20, 20]}>
-            <Col span={24}>
-              <Insights incident={incident} />
-            </Col>
-            <Col span={24}>
-              <div>network impact</div>
-            </Col>
-            <Col span={24}>
-              <div>time series section</div>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+        </GridCol>
+        <GridCol col={{ span: 20 }}>
+          <Insights incident={incident} />
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }}>
+          <div>network impact</div>
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }}>
+          <div>time series section</div>
+        </GridCol>
+      </GridRow>
     </>
   )
 }

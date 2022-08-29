@@ -68,134 +68,131 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
             </span>
             <span
               class="ant-page-header-heading-sub-title"
+              title="EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
             >
-              <p>
-                EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
-              </p>
+              EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
             </span>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="ant-row"
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
       style="margin: -10px -10px -10px -10px;"
     >
       <div
-        class="ant-col ant-col-4"
+        class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
-          style="overflow: visible; height: 0px; width: 0px;"
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <div
-            style="width: -20px;"
-          >
-            <div
-              data-testid="incidentAttributes"
-            />
-          </div>
-        </div>
-        <div
-          class="resize-triggers"
-        >
-          <div
-            class="expand-trigger"
-          >
-            <div
-              style="width: 1px; height: 1px;"
-            />
-          </div>
-          <div
-            class="contract-trigger"
+            class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+            style="overflow: visible; height: 0px; width: 0px;"
           />
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1px; height: 1px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
+          </div>
         </div>
       </div>
       <div
-        class="ant-col ant-col-20"
+        class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="ant-row"
-          style="margin: -10px -10px -10px -10px;"
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <div
-            class="ant-col ant-col-24"
-            style="padding: 10px 10px 10px 10px;"
+          <section
+            class="styledComponents__InsightComponent-sc-117mefi-0 kTrGaQ"
           >
-            <section
-              class="styledComponents__InsightComponent-sc-117mefi-0 kTrGaQ"
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-start"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-start"
+                class="ant-space-item"
+                style="margin-right: 10px;"
               >
-                <div
-                  class="ant-space-item"
-                  style="margin-right: 10px;"
-                >
-                  <svg>
-                    BulbOutlined.svg
-                  </svg>
-                </div>
-                <div
-                  class="ant-space-item"
-                >
-                  <h2
-                    class="ant-typography"
-                  >
-                    Insights
-                  </h2>
-                </div>
+                <svg>
+                  BulbOutlined.svg
+                </svg>
               </div>
               <div
-                class="ant-row"
-                style="margin-left: -12.5px; margin-right: -12.5px;"
+                class="ant-space-item"
               >
-                <div
-                  class="ant-col ant-col-12"
-                  style="padding-left: 12.5px; padding-right: 12.5px;"
+                <h2
+                  class="ant-typography"
                 >
-                  <h4
-                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                  >
-                    Root Cause Analysis
-                  </h4>
-                  <p>
-                    The connection was not completed because the client has left, or is leaving, the network.
-                  </p>
-                </div>
-                <div
-                  class="ant-col ant-col-12"
-                  style="padding-left: 12.5px; padding-right: 12.5px;"
-                >
-                  <h4
-                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                  >
-                    Recommended Action
-                  </h4>
-                  <p>
-                    This problem should be a transient issue in a network if many clients leave at the same time; but, it is usually associated with disconnect events, and should not impact connection attempts. If it does, this may be a data issue that can be reported to RUCKUS Support if it persists in your network.
-                  </p>
-                </div>
+                  Insights
+                </h2>
               </div>
-            </section>
-          </div>
-          <div
-            class="ant-col ant-col-24"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div>
-              network impact
             </div>
-          </div>
-          <div
-            class="ant-col ant-col-24"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div>
-              time series section
+            <div
+              class="ant-row"
+              style="margin-left: -12.5px; margin-right: -12.5px;"
+            >
+              <div
+                class="ant-col ant-col-12"
+                style="padding-left: 12.5px; padding-right: 12.5px;"
+              >
+                <h4
+                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                >
+                  Root Cause Analysis
+                </h4>
+                <p>
+                  The connection was not completed because the client has left, or is leaving, the network.
+                </p>
+              </div>
+              <div
+                class="ant-col ant-col-12"
+                style="padding-left: 12.5px; padding-right: 12.5px;"
+              >
+                <h4
+                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                >
+                  Recommended Action
+                </h4>
+                <p>
+                  This problem should be a transient issue in a network if many clients leave at the same time; but, it is usually associated with disconnect events, and should not impact connection attempts. If it does, this may be a data issue that can be reported to RUCKUS Support if it persists in your network.
+                </p>
+              </div>
             </div>
+          </section>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <div>
+            network impact
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <div>
+            time series section
           </div>
         </div>
       </div>

@@ -12,9 +12,9 @@ import {
   deviceStatusColors,
   getDeviceConnectionStatusColors
 } from '@acx-ui/components'
-import { useVenuesListQuery, Venue }         from '@acx-ui/rc/services'
-import { useTableQuery, ApDeviceStatusEnum } from '@acx-ui/rc/utils'
-import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { useVenuesListQuery }                       from '@acx-ui/rc/services'
+import { useTableQuery, ApDeviceStatusEnum, Venue } from '@acx-ui/rc/utils'
+import { TenantLink }                               from '@acx-ui/react-router-dom'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -45,10 +45,10 @@ function useColumns () {
       key: 'incidents',
       title: () => {
         return (
-          <Space direction='vertical' size={0}>
+          <>
             { $t({ defaultMessage: 'Incidents' }) }
             <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-          </Space>
+          </>
         )
       },
       align: 'center'
@@ -57,10 +57,10 @@ function useColumns () {
       key: 'health',
       title: () => {
         return (
-          <Space direction='vertical' size={0}>
+          <>
             { $t({ defaultMessage: 'Health Score' }) }
             <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-          </Space>
+          </>
         )
       },
       align: 'center'

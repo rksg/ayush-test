@@ -15,7 +15,7 @@ export const Descriptions = styled(AntDescriptions)<DescriptionsProps>`
     padding-bottom: 0;
   }
   .ant-descriptions-item-label {
-    color: var(--acx-neutrals-50);
+    color: var(--acx-neutrals-60);
     font-size: var(--acx-body-4-font-size);
     line-height: var(--acx-body-4-line-height);
   }
