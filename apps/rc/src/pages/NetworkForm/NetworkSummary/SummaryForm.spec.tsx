@@ -43,7 +43,7 @@ describe('SummaryForm', () => {
   })
   it('should render cloudpath disabled successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
+    mockSummary.isCloudpathEnabled = false
     const { asFragment } = render(
       <Provider>
         <Form>
