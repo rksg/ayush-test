@@ -1,8 +1,8 @@
-import moment         from 'moment-timezone'
-import { 
-  defineMessage, 
+import moment from 'moment-timezone'
+import {
   FormattedMessage, 
-  MessageDescriptor
+  MessageDescriptor,
+  useIntl
 } from 'react-intl'
 
 import { 
@@ -10,8 +10,9 @@ import {
   Incident,
   incidentInformation,
   noDataSymbol,
+  useFormattedNodeType,
+  useImpactedArea,
   useImpactValues,
-  useIncidentScope,
   useShortDescription
 } from '@acx-ui/analytics/utils'
 import { formatter } from '@acx-ui/utils'
@@ -79,10 +80,16 @@ export const GetCategory = (code: string, subCategory?: boolean) => {
 }
 
 export const GetScope = (props: IncidentTableComponentProps) => {
+  const { $t } = useIntl()
   const { incident } = props
-  const scope = useIncidentScope(incident)  
-  const message = defineMessage({ defaultMessage: '{scope}' })
-  return <FormatIntlString message={message} scope={scope}/>
+  const scope = $t({
+    defaultMessage: '{nodeType}: {nodeName}',
+    description: 'Uses to generate incident impacted scope for various incident descriptions'
+  }, {
+    nodeType: useFormattedNodeType(incident.sliceType),
+    nodeName: useImpactedArea(incident.path, incident.sliceValue)
+  })
+  return <span>{scope}</span>
 }
 
 export const ClientImpact = (props: IncidentTableComponentProps & {
@@ -90,7 +97,7 @@ export const ClientImpact = (props: IncidentTableComponentProps & {
 }) => {
   const { type, incident } = props
   const values = useImpactValues('client', incident)
-  if (type === 'clientImpact') return <span>{values['clientImpactFormatted'] as string}</span>
+  if (type === 'clientImpact') return <span>{values['clientImpactRatioFormatted'] as string}</span>
 
   return <span>{values['clientImpactCountFormatted'] as string}</span>
 }
