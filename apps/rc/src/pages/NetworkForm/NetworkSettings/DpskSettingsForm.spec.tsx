@@ -1,10 +1,11 @@
 import '@testing-library/jest-dom'
-import { Form } from 'antd'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { cloudpathResponse } from '../__tests__/fixtures'
 
@@ -34,7 +35,7 @@ describe('DpskSettingsForm', () => {
       route: { params }
     })
 
-    fireEvent.click(screen.getByText('Use Cloudpath Server'))
+    await userEvent.click(screen.getByText('Use Cloudpath Server'))
     expect(screen.getByText('Add Server')).toBeVisible()
   })
 })

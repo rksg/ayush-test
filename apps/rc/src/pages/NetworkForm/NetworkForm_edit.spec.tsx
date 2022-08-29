@@ -25,7 +25,7 @@ async function fillInBeforeSettings (networkName: string) {
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating, { timeout: 7000 })
 
-  userEvent.click(screen.getByRole('button', { name: 'Next' }))
+  await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 }
 
 const networkResponse = {
@@ -121,12 +121,12 @@ describe('NetworkForm', () => {
     await fillInBeforeSettings('open network edit test')
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
-    userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Finish'))
   })
 })

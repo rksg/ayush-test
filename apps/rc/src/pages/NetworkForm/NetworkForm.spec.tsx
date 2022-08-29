@@ -54,18 +54,19 @@ describe('NetworkForm', () => {
     await waitForElementToBeRemoved(validating, { timeout: 7000 })
 
     userEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
-    userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
-    userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
-    userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Finish'))
   })
+
   it('should create open network with cloud path option successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
@@ -77,26 +78,26 @@ describe('NetworkForm', () => {
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
 
-    userEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
-    userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
 
     const useCloudpathOption = screen.getByRole('switch')
-    fireEvent.click(useCloudpathOption)
+    await userEvent.click(useCloudpathOption)
 
     const cloudpathServer = screen.getByRole('combobox')
     fireEvent.mouseDown(cloudpathServer)
     const option = screen.getByText('cloud_01')
-    userEvent.click(option)
+    await userEvent.click(option)
 
-    userEvent.click(screen.getByText('Next'))
+    await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    userEvent.click(screen.getByText('Next'))
+    await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
-    userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByText('Finish'))
   })
 })

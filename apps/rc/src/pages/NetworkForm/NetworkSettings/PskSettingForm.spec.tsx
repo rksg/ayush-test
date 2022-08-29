@@ -20,22 +20,22 @@ async function fillInBeforeSettings (networkName: string) {
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating)
 
-  userEvent.click(screen.getByRole('radio', { name: /that you have defined for the network/ }))
-  userEvent.click(screen.getByRole('button', { name: 'Next' }))
+  await userEvent.click(screen.getByRole('radio', { name: /that you have defined for the network/ }))
+  await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
   await screen.findByRole('heading', { level: 3, name: 'Settings' })
 }
 
 async function fillInAfterSettings (checkSummary: Function) {
-  userEvent.click(screen.getByRole('button', { name: 'Next' }))
+  await userEvent.click(screen.getByRole('button', { name: 'Next' }))
   await screen.findByRole('heading', { level: 3, name: 'Venues' })
 
-  userEvent.click(screen.getByRole('button', { name: 'Next' }))
+  await userEvent.click(screen.getByRole('button', { name: 'Next' }))
   await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
   checkSummary()
   const finish = screen.getByText('Finish')
-  userEvent.click(finish)
+  await userEvent.click(finish)
   await waitForElementToBeRemoved(finish)
 }
 
@@ -79,7 +79,7 @@ describe('NetworkForm', () => {
     const passphraseTextbox = screen.getByLabelText('Passphrase')
     fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
 
-    fireEvent.click(screen.getByRole('switch'))
+    await userEvent.click(screen.getByRole('switch'))
 
     const ipTextbox = screen.getByLabelText('IP Address')
     fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
@@ -109,12 +109,12 @@ describe('NetworkForm', () => {
 
     const option = screen.getAllByLabelText('WPA3')[0]
 
-    fireEvent.click(option)
+    await userEvent.click(option)
 
     const passphraseTextbox = screen.getByLabelText('Passphrase')
     fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
 
-    fireEvent.click(screen.getByRole('switch'))
+    await userEvent.click(screen.getByRole('switch'))
 
     const ipTextbox = screen.getByLabelText('IP Address')
     fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
@@ -142,14 +142,14 @@ describe('NetworkForm', () => {
     fireEvent.mouseDown(securityProtocols)
 
     const mixOption =screen.getByText('WPA3/WPA2 mixed mode')
-    fireEvent.click(mixOption)
+    await userEvent.click(mixOption)
 
     fireEvent.mouseDown(securityProtocols)
     const option = screen.getByText('WEP')
 
-    fireEvent.click(option)
+    await userEvent.click(option)
 
-    fireEvent.click(screen.getByText('Generate'))
+    await userEvent.click(screen.getByText('Generate'))
 
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()

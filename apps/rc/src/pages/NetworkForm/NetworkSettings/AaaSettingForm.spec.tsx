@@ -22,22 +22,22 @@ async function fillInBeforeSettings (networkName: string) {
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating, { timeout: 7000 })
 
-  userEvent.click(screen.getByRole('radio', { name: /802.1X standard/ }))
-  userEvent.click(screen.getByText('Next'))
+  await userEvent.click(screen.getByRole('radio', { name: /802.1X standard/ }))
+  await userEvent.click(screen.getByText('Next'))
 
   await screen.findByRole('heading', { level: 3, name: 'AAA Settings' })
 }
 
 async function fillInAfterSettings (checkSummary: Function) {
-  userEvent.click(screen.getByText('Next'))
+  await userEvent.click(screen.getByText('Next'))
   await screen.findByRole('heading', { level: 3, name: 'Venues' })
 
-  userEvent.click(screen.getByText('Next'))
+  await userEvent.click(screen.getByText('Next'))
   await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
   checkSummary()
   const finish = screen.getByText('Finish')
-  userEvent.click(finish)
+  await userEvent.click(finish)
   await waitForElementToBeRemoved(finish)
 }
 
@@ -95,7 +95,7 @@ describe('NetworkForm', () => {
     const secretTextbox = screen.getByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
-    fireEvent.click(screen.getByText('Add Secondary Server'))
+    await userEvent.click(screen.getByText('Add Secondary Server'))
 
     const secondaryIpTextbox = screen.getAllByLabelText('IP Address')[1]
     fireEvent.change(secondaryIpTextbox, { target: { value: '192.168.2.2' } })
@@ -124,8 +124,8 @@ describe('NetworkForm', () => {
     let toggle = screen.getAllByRole('switch', { checked: false })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      fireEvent.click(toggle[1]) // Proxy Service
-      fireEvent.click(toggle[2]) // Accounting Service
+      await userEvent.click(toggle[1]) // Proxy Service
+      await userEvent.click(toggle[2]) // Accounting Service
     })
 
     let diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
@@ -136,13 +136,13 @@ describe('NetworkForm', () => {
     expect(accBtn).toBeVisible()
     expect(diagram[1].src).toContain('aaa-proxy.png')
 
-    fireEvent.click(accBtn)
+    await userEvent.click(accBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
     authBtn = screen.getByRole('button', { name: 'Authentication Service' })
     expect(diagram[1].src).toContain('aaa.png')
     expect(accBtn).not.toBeDisabled()
 
-    fireEvent.click(authBtn)
+    await userEvent.click(authBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
     expect(diagram[1].src).toContain('aaa-proxy.png')
   })
