@@ -26,11 +26,6 @@ const { Panel } = Collapse
 const { useWatch } = Form
 const { Option } = Select
 
-enum MessageEnum {
-  DIRECTED_MCBC_THRESHOLD = `Per radio client count at which an AP will stop
-  converting group addressed data traffic to unicast`
-}
-
 enum BssMinRateEnum {
   VALUE_NONE = 'default',
   VALUE_12 = 12,
@@ -310,7 +305,8 @@ export function NetworkMoreSettingsForm (props: {
           label={$t({ defaultMessage: 'Directed MC/BC Threshold:' })}
           initialValue={5}
           style={{ marginBottom: '15px', width: '300px' }}
-          extra={MessageEnum.DIRECTED_MCBC_THRESHOLD}
+          extra={$t({ defaultMessage: `Per radio client count at which an AP will stop
+          converting group addressed data traffic to unicast` })}
           children={<Input style={{ width: '150px' }}></Input>}
         />
 
