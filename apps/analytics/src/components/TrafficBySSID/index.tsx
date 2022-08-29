@@ -27,7 +27,9 @@ export default function TrafficBySSIDWidget ({
     {
       title: $t({ defaultMessage: 'SSID Name' }),
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      render: (name:unknown) => {
+        return <a href='/#TBD'>{name as string}</a>}
     },
     {
       title: $t({ defaultMessage: 'Total Traffic' }),
