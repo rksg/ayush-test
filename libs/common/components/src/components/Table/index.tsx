@@ -158,7 +158,6 @@ export function Table <RecordType extends object> (
       })
     }
     // TODO nested rows
-    // TODO move clear filter to the right
     return true
   })
 

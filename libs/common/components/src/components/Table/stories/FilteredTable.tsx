@@ -6,7 +6,8 @@ type RecordType = {
   name: string
   age: number
   description: string
-  address: string
+  address: string,
+  children?: RecordType[]
 }
 
 const columns: TableProps<RecordType>['columns'] = [
@@ -44,7 +45,16 @@ const data: TableProps<RecordType>['dataSource'] = [
     name: 'John Doe',
     age: 32,
     description: 'John Doe living at sample address',
-    address: 'sample address'
+    address: 'sample address',
+    children: [
+      {
+        key: '1.1',
+        name: 'Fred Mayers',
+        age: 27,
+        description: 'Fred Mayers is a good guy',
+        address: 'Fred lives alone'
+      }
+    ]
   },
   {
     key: '2',
@@ -58,7 +68,23 @@ const data: TableProps<RecordType>['dataSource'] = [
     name: 'Jordan Doe',
     age: 33,
     description: '',
-    address: 'another address'
+    address: 'another address',
+    children: [
+      {
+        key: '3.1',
+        name: 'Dawn Soh',
+        age: 22,
+        description: 'Dawn just graduated college',
+        address: 'none, had moved out of the dorm'
+      },
+      {
+        key: '3.2',
+        name: 'Edna Wee',
+        age: 22,
+        description: 'Edna loves to run',
+        address: 'living abroad in America'
+      }
+    ]
   }
 ]
 
