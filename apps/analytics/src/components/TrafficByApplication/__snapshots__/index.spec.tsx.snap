@@ -25,6 +25,11 @@ exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
               >
                 Top 5 Applications by Traffic
               </div>
+              <div
+                class="styledComponents__SubTitleWrapper-sc-13w5wfx-6 lpmFrk"
+              >
+                Insight Text coming from analytics
+              </div>
             </div>
             <div
               class="ant-card-extra"
@@ -42,10 +47,10 @@ exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              style="display: block; height: 280px; width: 280px;"
+              style="display: block; height: 280px; width: 280px; margin-top: -10px;"
             >
               <div
-                style="text-align: center; padding: 10px 0px;"
+                style="text-align: center; padding: 5px 0px 10px 0px;"
               >
                 <div
                   class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
@@ -133,7 +138,7 @@ exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
 
 exports[`TrafficByApplicationWidget should render table with sparkline svg: contentSwitcher 1`] = `
 <div
-  style="text-align: center; padding: 10px 0px;"
+  style="text-align: center; padding: 5px 0px 10px 0px;"
 >
   <div
     class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
@@ -667,7 +672,7 @@ exports[`TrafficByApplicationWidget should render table with sparkline svg: tabl
     <th
       class="ant-table-cell"
     >
-      Total Traffic
+      Traffic
     </th>
     <th
       class="ant-table-cell"

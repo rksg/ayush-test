@@ -32,7 +32,7 @@ export default function TrafficByApplicationWidget ({
       key: 'name'
     },
     {
-      title: $t({ defaultMessage: 'Total Traffic' }),
+      title: $t({ defaultMessage: 'Traffic' }),
       dataIndex: 'traffic',
       key: 'traffic',
       width: '20%'
@@ -101,7 +101,7 @@ export default function TrafficByApplicationWidget ({
         subTitle={$t({ defaultMessage: 'Insight Text coming from analytics' })}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ display: 'block', height, width }}>
+            <div style={{ display: 'block', height, width, marginTop: '-10px' }}>
               <ContentSwitcher tabDetails={tabDetails} size='small' align='center' />
             </div>
           )}
