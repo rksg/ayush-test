@@ -53,7 +53,7 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json([]))),
       rest.post(CommonUrlsInfo.validateRadius.url,
         (_, res, ctx) => res(ctx.json(successResponse)))
-      )
+    )
   })
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
