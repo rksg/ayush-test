@@ -1,46 +1,57 @@
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import {
   calculateSeverity,
   Incident,
   useShortDescription
 } from '@acx-ui/analytics/utils'
-import { PageHeader, SeverityPill } from '@acx-ui/components'
+import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
+
+import { IncidentAttributes } from '../IncidentAttributes'
 
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (props: Incident) => {
+export const IncidentDetailsTemplate = (incident: Incident) => {
   const { $t } = useIntl()
+  const attributeList = [
+    'clientImpactCount',
+    'incidentCategory',
+    'incidentSubCategory',
+    'type',
+    'scope',
+    'duration',
+    'eventStartTime',
+    'eventEndTime'
+  ]
 
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Incident Details' })}
-        titleExtra={<SeverityPill severity={calculateSeverity(props.severity)!} />}
+        titleExtra={<SeverityPill severity={calculateSeverity(incident.severity)!} />}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={<p>{useShortDescription(props)}</p>}
+        subTitle={useShortDescription(incident)}
       />
-      <Row gutter={[20, 20]}>
-        <Col span={4}>
+      <GridRow>
+        <GridCol col={{ span: 4 }}>
           <UI.FixedAutoSizer>
-            {({ width }) => (
-              <div style={{ width }}>incident attributes</div>
-            )}
+            {({ width }) => (<div style={{ width }}>
+              <IncidentAttributes incident={incident} visibleFields={attributeList} />
+            </div>)}
           </UI.FixedAutoSizer>
-        </Col>
-        <Col span={20}>
-          <div>insights</div>
-        </Col>
-        <Col offset={4} span={20}>
+        </GridCol>
+        <GridCol col={{ span: 20 }}>
+          <div>Insights</div>
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }}>
           <div>network impact</div>
-        </Col>
-        <Col offset={4} span={20}>
-          <div>charts</div>
-        </Col>
-      </Row>
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }}>
+          <div>time series section</div>
+        </GridCol>
+      </GridRow>
     </>
   )
 }

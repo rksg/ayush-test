@@ -25,6 +25,7 @@ import NetworkFormContext    from './NetworkFormContext'
 import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
 import { DpskSettingsForm }  from './NetworkSettings/DpskSettingsForm'
 import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }   from './NetworkSettings/PskSettingsForm'
 import { SummaryForm }       from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
@@ -140,6 +141,7 @@ export function NetworkForm () {
             {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
             {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
             {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
+            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
           </StepsForm.StepForm>
 
           <StepsForm.StepForm

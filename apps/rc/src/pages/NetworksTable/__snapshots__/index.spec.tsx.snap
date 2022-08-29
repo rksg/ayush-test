@@ -55,7 +55,7 @@ exports[`Networks Table should delete selected row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-4 fZKdtr"
+      class="styledComponents__Wrapper-sc-1abm7iv-6 Hvpxd"
     >
       <div
         class="ant-pro-table"
@@ -1790,14 +1790,9 @@ exports[`Networks Table should delete selected row 1`] = `
                     </div>
                   </div>
                   <ul
-                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right"
+                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
                     unselectable="unselectable"
                   >
-                    <li
-                      class="ant-pagination-total-text"
-                    >
-                        1-10 of 10 items
-                    </li>
                     <li
                       aria-disabled="true"
                       class="ant-pagination-prev ant-pagination-disabled"
@@ -1940,7 +1935,7 @@ exports[`Networks Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-4 fZKdtr"
+      class="styledComponents__Wrapper-sc-1abm7iv-6 Hvpxd"
     >
       <div
         class="ant-pro-table"
@@ -3637,14 +3632,9 @@ exports[`Networks Table should render table 1`] = `
                     </div>
                   </div>
                   <ul
-                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right"
+                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
                     unselectable="unselectable"
                   >
-                    <li
-                      class="ant-pagination-total-text"
-                    >
-                        1-10 of 10 items
-                    </li>
                     <li
                       aria-disabled="true"
                       class="ant-pagination-prev ant-pagination-disabled"

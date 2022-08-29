@@ -5,7 +5,8 @@ import { Table, TableProps } from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
   CancelCircle: () => <div data-testid='cancel-circle'/>,
-  SettingsOutlined: () => <div data-testid='settings'/>
+  InformationOutlined: () => <div data-testid='information-outlined'/>,
+  SettingsOutlined: () => <div data-testid='settings-outlined'/>
 }), { virtual: true })
 
 jest.mock('react-resizable', () => ({
