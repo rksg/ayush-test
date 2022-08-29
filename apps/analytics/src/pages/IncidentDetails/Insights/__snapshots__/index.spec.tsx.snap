@@ -2,79 +2,126 @@
 
 exports[`Insights Component should render correctly 1`] = `
 <DocumentFragment>
-  <section
-    class="styledComponents__InsightComponent-sc-117mefi-0 kTrGaQ"
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-3 gHqQDa"
+    type="solid-bg"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-start"
+      class="ant-card"
     >
       <div
-        class="ant-space-item"
-        style="margin-right: 10px;"
+        class="ant-card-head"
       >
-        <svg>
-          BulbOutlined.svg
-        </svg>
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+            />
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
       </div>
       <div
-        class="ant-space-item"
+        class="ant-card-body"
       >
-        <h2
-          class="ant-typography"
+        <section
+          class="styledComponents__Wrapper-sc-117mefi-3 gnybBH"
         >
-          Insights
-        </h2>
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-start"
+          >
+            <div
+              class="ant-space-item"
+              style="margin-right: 6px;"
+            >
+              <svg
+                class="styledComponents__BulbOutlinedIcon-sc-117mefi-0 glgoAW"
+              >
+                BulbOutlined.svg
+              </svg>
+            </div>
+            <div
+              class="ant-space-item"
+            >
+              <h2
+                class="ant-typography styledComponents__Title-sc-117mefi-1"
+              >
+                Insights
+              </h2>
+            </div>
+          </div>
+          <div
+            class="ant-row Grid__GridRow-sc-5irhjd-2"
+            style="margin: -10px -10px -10px -10px;"
+          >
+            <div
+              class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 klEBQV looZqI"
+                >
+                  Root Cause Analysis
+                </div>
+                <p>
+                  Clients are failing at the authentication stage of an 802.11r (Fast Transition) roam. The client is including PMKID information from its roam-from AP, but the roam-to AP does not have the key.
+                </p>
+                 
+                <p>
+                  This scenario is most commonly caused in the following scenarios:
+                </p>
+                 
+                <ol>
+                   
+                  <li>
+                    The roam-from and roam-to APs cannot share keys with one another, which happens if they are not RF neighbors or if they do not have IP connectivity for AP-to-AP communication.
+                  </li>
+                   
+                  <li>
+                    The roam-from and roam-to APs are not RF neighbors. Clients may assume that all APs sharing an SSID will have the key, but the key may only be shared with RF neighbors.
+                  </li>
+                   
+                </ol>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 klEBQV looZqI"
+                >
+                  Recommended Action
+                </div>
+                <p>
+                  In most cases, clients will immediately fall back to a "slow roam" if 802.11r (FT) roams fail.
+                </p>
+                 
+                <p>
+                  To enable 802.11r roaming, make sure that APs are able to communicate with their RF neighbors via the IP (wired) infrastructure.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
-    <div
-      class="ant-row"
-      style="margin-left: -12.5px; margin-right: -12.5px;"
-    >
-      <div
-        class="ant-col ant-col-12"
-        style="padding-left: 12.5px; padding-right: 12.5px;"
-      >
-        <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-        >
-          Root Cause Analysis
-        </h4>
-        <p>
-          Clients are failing at the authentication stage of an 802.11r (Fast Transition) roam. The client is including PMKID information from its roam-from AP, but the roam-to AP does not have the key. 
-          <br />
-          <br />
-           This scenario is most commonly caused in the following scenarios:
-        </p>
-         
-        <ol>
-           
-          <li>
-            The roam-from and roam-to APs cannot share keys with one another, which happens if they are not RF neighbors or if they do not have IP connectivity for AP-to-AP communication.
-          </li>
-           
-          <li>
-            The roam-from and roam-to APs are not RF neighbors. Clients may assume that all APs sharing an SSID will have the key, but the key may only be shared with RF neighbors.
-          </li>
-           
-        </ol>
-      </div>
-      <div
-        class="ant-col ant-col-12"
-        style="padding-left: 12.5px; padding-right: 12.5px;"
-      >
-        <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-        >
-          Recommended Action
-        </h4>
-        <p>
-          In most cases, clients will immediately fall back to a "slow roam" if 802.11r (FT) roams fail. 
-          <br />
-          <br />
-           To enable 802.11r roaming, make sure that APs are able to communicate with their RF neighbors via the IP (wired) infrastructure.
-        </p>
-      </div>
-    </div>
-  </section>
+  </div>
 </DocumentFragment>
 `;

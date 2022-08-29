@@ -1,15 +1,29 @@
-import styled from 'styled-components/macro'
+import { Typography } from 'antd'
+import styled         from 'styled-components/macro'
 
-export const InsightComponent = styled.section`
-  background-color: var(--acx-neutrals-10);
-  border-radius: 8px;
-  padding: 25px;
+import { Card }         from '@acx-ui/components'
+import { BulbOutlined } from '@acx-ui/icons'
 
-  p, ol { margin-block: 15px 0; }
-  ol { padding-inline: 15px; }
-  li { margin-block-start: 8px; }
+export const BulbOutlinedIcon = styled(BulbOutlined)`
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
 `
 
-export const InsightHeader = styled.header`
-  display: flex;
+export const Title = styled(Typography.Title).attrs({ level: 2 })``
+
+export const Subtitle = styled(Card.Title)`
+  margin-block-end: 1em;
+`
+
+export const Wrapper = styled.section`
+  width: 100%;
+  ol {
+    padding: 0;
+    margin-bottom: 0;
+  }
+  li {
+    list-style-position: inside;
+    margin-block-end: 1em;
+  }
 `

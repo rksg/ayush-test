@@ -119,7 +119,11 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_AUTH_MDID_MISMATCH: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.</p>' }),
-      recommendations: defineMessage({ defaultMessage: '<p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue). {br} This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>' })
+      recommendations: defineMessage({
+        defaultMessage: `
+        <p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue).</p>
+        <p>This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>`
+      })
     },
     CCD_REASON_ASSOC_DOS_ATTACK: {
       rootCauses: defineMessage({ defaultMessage: '<p>Impacted clients are failing association because of a DoS prevention feature that temporarily blocks their connections after they have excessive authentication failures in a short period of time.</p>' }),
@@ -137,7 +141,8 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: `
-        <p>This behavior may be a desirable consequence of the admin's configuration-to prevent any one AP from serving too many clients. If so, no action is needed. {br} If this issue is having an undesirable client impact, there are a few possible recommendations:</p>
+        <p>This behavior may be a desirable consequence of the admin's configuration-to prevent any one AP from serving too many clients. If so, no action is needed.</p>
+        <p>If this issue is having an undesirable client impact, there are a few possible recommendations:</p>
         <ol>
           <li>If the max configured limit is too low, change the SSID or AP radio settings to increase the max number of allowed clients.</li>
           <li>If there is a very high amount of client transience and the SSID's client inactivity timeout is set too high, the AP may be honoring clients that are no longer connected. Reduce the inactivity timeout on the SSID.</li>
@@ -203,13 +208,18 @@ export const rootCauseRecommendationMap = {
     CCD_REASON_AUTH_FT_ROAM_FAILURE: {
       rootCauses: defineMessage({
         defaultMessage: `
-        <p>Clients are failing at the authentication stage of an 802.11r (Fast Transition) roam. The client is including PMKID information from its roam-from AP, but the roam-to AP does not have the key. {br}{br} This scenario is most commonly caused in the following scenarios:</p>
+        <p>Clients are failing at the authentication stage of an 802.11r (Fast Transition) roam. The client is including PMKID information from its roam-from AP, but the roam-to AP does not have the key.</p>
+        <p>This scenario is most commonly caused in the following scenarios:</p>
         <ol>
           <li>The roam-from and roam-to APs cannot share keys with one another, which happens if they are not RF neighbors or if they do not have IP connectivity for AP-to-AP communication.</li>
           <li>The roam-from and roam-to APs are not RF neighbors. Clients may assume that all APs sharing an SSID will have the key, but the key may only be shared with RF neighbors.</li>
         </ol>`
       }),
-      recommendations: defineMessage({ defaultMessage: '<p>In most cases, clients will immediately fall back to a "slow roam" if 802.11r (FT) roams fail. {br}{br} To enable 802.11r roaming, make sure that APs are able to communicate with their RF neighbors via the IP (wired) infrastructure.</p>' })
+      recommendations: defineMessage({
+        defaultMessage: `
+        <p>In most cases, clients will immediately fall back to a "slow roam" if 802.11r (FT) roams fail.</p>
+        <p>To enable 802.11r roaming, make sure that APs are able to communicate with their RF neighbors via the IP (wired) infrastructure.</p>`
+      })
     },
     CCD_REASON_NOT_AUTHED: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.</p>' }),
@@ -259,7 +269,11 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_AUTH_MDID_MISMATCH: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.</p>' }),
-      recommendations: defineMessage({ defaultMessage: '<p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue). {br} This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>' })
+      recommendations: defineMessage({
+        defaultMessage: `
+        <p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue).</p>
+        <p>This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>`
+      })
     },
     CCD_REASON_ASSOC_DOS_ATTACK: {
       rootCauses: defineMessage({ defaultMessage: '<p>Impacted clients are failing association because of a DoS prevention feature that temporarily blocks their connections after they have excessive authentication failures in a short period of time.</p>' }),
@@ -277,7 +291,8 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: `
-        <p>This behavior may be a desirable consequence of the admin's configuration-to prevent any one AP from serving too many clients. If so, no action is needed. {br} If this issue is having an undesirable client impact, there are a few possible recommendations:</p>
+        <p>This behavior may be a desirable consequence of the admin's configuration-to prevent any one AP from serving too many clients. If so, no action is needed.</p>
+        <p>If this issue is having an undesirable client impact, there are a few possible recommendations:</p>
         <ol>
           <li>If the max configured limit is too low, change the SSID or AP radio settings to increase the max number of allowed clients.</li>
           <li>If there is a very high amount of client transience and the SSID's client inactivity timeout is set too high, the AP may be honoring clients that are no longer connected. Reduce the inactivity timeout on the SSID.</li>
@@ -356,7 +371,8 @@ export const rootCauseRecommendationMap = {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing authentication because of key data errors in msg2 of the 4-way handshake (sent from client to AP). This may be caused by cipher/key incompatibilities or invalid key data.</p>' }),
       recommendations: defineMessage({
         defaultMessage: `
-        <p>Invalid key data is an uncommon issue in the 4-way handshake. If this is happening, packet captures may be required to investigate the nature of invalid keys. {br} If the problem persists, check common situations that may have introduced this interoperability behavior:</p>
+        <p>Invalid key data is an uncommon issue in the 4-way handshake. If this is happening, packet captures may be required to investigate the nature of invalid keys.</p>
+        <p>If the problem persists, check common situations that may have introduced this interoperability behavior:</p>
         <ol>
           <li>Are the impacted clients using problematic drivers or firmware?</li>
           <li>Was the firmware recently updated on impacted clients so as to introduce interoperability issues?</li>
@@ -368,7 +384,8 @@ export const rootCauseRecommendationMap = {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing authentication because the WPA Information Element in msg2 of the 4-way handshake (sent from client to AP) does not match the WPA Information Element sent in the Association Request.</p>' }),
       recommendations: defineMessage({
         defaultMessage: `
-        <p>This WPA Information Element mismatch issue is an uncommon issue in the 4-way handshake. If this is happening, packet captures may be required to investigate the nature of Information Element mismatches. {br} If the problem persists, check common situations that may have introduced this interoperability behavior:</p>
+        <p>This WPA Information Element mismatch issue is an uncommon issue in the 4-way handshake. If this is happening, packet captures may be required to investigate the nature of Information Element mismatches.</p>
+        <p>If the problem persists, check common situations that may have introduced this interoperability behavior:</p>
         <ol>
           <li>Are the impacted clients using problematic drivers or firmware?</li>
           <li>Was the firmware recently updated on impacted clients so as to introduce interoperability issues?</li>
@@ -528,7 +545,11 @@ export const rootCauseRecommendationMap = {
           <li>The RADIUS server is unreachable on the network (e.g. network path or routing issues).</li>
         </ol>`
       }),
-      recommendations: defineMessage({ defaultMessage: '<p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between the Controller/AP and the RADIUS server. {br} If all services are up and functional, double-check the RADIUS configuration on the Controller/AP.</p>' })
+      recommendations: defineMessage({
+        defaultMessage: `
+        <p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between the Controller/AP and the RADIUS server.</p>
+        <p>If all services are up and functional, double-check the RADIUS configuration on the Controller/AP.</p>`
+      })
     },
     CCD_REASON_AAA_AUTH_FAIL: {
       rootCauses: defineMessage({
@@ -542,7 +563,8 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: `
-        <p>To resolve this issue, you may need to check RADIUS log details for authentication reject messages. {br} Recent changes in the authentication infrastructure may cause a sudden spike of EAP failures like this:</p>
+        <p>To resolve this issue, you may need to check RADIUS log details for authentication reject messages.</p>
+        <p>Recent changes in the authentication infrastructure may cause a sudden spike of EAP failures like this:</p>
         <ol>
           <li>RADIUS server certificate changes or expiration.</li>
           <li>Mass user password changes or credential expiry.</li>
@@ -696,7 +718,8 @@ export const ccd80211RootCauseRecommendations = {
       </ol>`
     }),
     recommendations: defineMessage({ defaultMessage: `
-      <p>To resolve this issue, you may need to check RADIUS log details for authentication reject messages. {br} Recent changes in the authentication infrastructure may cause a sudden spike of EAP failures like this:</p>
+      <p>To resolve this issue, you may need to check RADIUS log details for authentication reject messages.</p>
+      <p>Recent changes in the authentication infrastructure may cause a sudden spike of EAP failures like this:</p>
       <ol>
         <li>RADIUS server certificate changes or expiration.</li>
         <li>Mass user password changes or credential expiry.</li>
