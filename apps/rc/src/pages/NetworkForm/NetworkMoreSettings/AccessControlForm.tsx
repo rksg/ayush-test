@@ -252,43 +252,45 @@ function SelectAccessProfileProfile () {
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      <span> {$t({ defaultMessage: 'Layer 2' })}</span>
-      { getL2PolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
+      {$t({ defaultMessage: 'Layer 2' })}
+      <span>{getL2PolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }</span>
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      <span> {$t({ defaultMessage: 'Layer 3' })}</span>
-      { getL3PolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
+      {$t({ defaultMessage: 'Layer 3' })}
+      <span>{getL3PolicyNameByAccessControlPorfile(state.selectedAccessControlProfile)}</span>
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      <span> {$t({ defaultMessage: 'Device & OS' })}</span>
-      { getDevicePolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
+      {$t({ defaultMessage: 'Device & OS' })}
+      <span>{getDevicePolicyNameByAccessControlPorfile(state.selectedAccessControlProfile)}</span>
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
-      <span> {$t({ defaultMessage: 'Applications' })}</span>
-      { getApplicationPolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }
+      {$t({ defaultMessage: 'Applications' })}
+      <span>{getApplicationPolicyNameByAccessControlPorfile
+      (state.selectedAccessControlProfile)}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
-      <span>{$t({ defaultMessage: 'Client Rate Limit' })}</span>
-      {(!state.selectedAccessControlProfile ||
-        state.selectedAccessControlProfile.rateLimiting?.enabled === false) && '--'}
+    <UI.FieldLabel width='175px'
+    >
+      {$t({ defaultMessage: 'Client Rate Limit' })}
+      <span>{(!state.selectedAccessControlProfile ||
+        state.selectedAccessControlProfile.rateLimiting?.enabled === false) && '--'}</span>
       {(state.selectedAccessControlProfile &&
-        state.selectedAccessControlProfile.rateLimiting?.enabled) &&
-        <div>
-          <UI.RateLimitBlock>
-            <label>{$t({ defaultMessage: 'Up:' })}</label>
-            <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
-              'uplinkLimit')}</div>
-          </UI.RateLimitBlock>
-          <UI.RateLimitBlock>
-            <label>{$t({ defaultMessage: 'Down:' })}</label>
-            <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
-              'downlinkLimit')}</div>
-          </UI.RateLimitBlock>
-        </div>
+          state.selectedAccessControlProfile.rateLimiting?.enabled) &&
+          <div>
+            <UI.RateLimitBlock>
+              <label>{$t({ defaultMessage: 'Up:' })}</label>
+              <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
+                'uplinkLimit')}</div>
+            </UI.RateLimitBlock>
+            <UI.RateLimitBlock>
+              <label>{$t({ defaultMessage: 'Down:' })}</label>
+              <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
+                'downlinkLimit')}</div>
+            </UI.RateLimitBlock>
+          </div>
       }
     </UI.FieldLabel>
   </>)

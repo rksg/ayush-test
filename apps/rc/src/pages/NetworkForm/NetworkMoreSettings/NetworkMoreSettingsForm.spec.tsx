@@ -4,9 +4,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Provider }       from '@acx-ui/store'
-import { within }         from '@acx-ui/test-utils'
-import { render, screen } from '@acx-ui/test-utils'
+import { Provider }          from '@acx-ui/store'
+import { fireEvent, within } from '@acx-ui/test-utils'
+import { render, screen }    from '@acx-ui/test-utils'
 
 import { NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
 
@@ -141,5 +141,30 @@ describe('NetworkMoreSettingsForm', () => {
 
   })
 
+
+  it('aaa type wlan', async () => {
+    const mockDpskWlanData = {
+      name: 'test',
+      type: 'aaa',
+      isCloudpathEnabled: false,
+      venues: []
+    }
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    render(
+      <Provider>
+        <Form>
+          <NetworkMoreSettingsForm wlanData={mockDpskWlanData} />
+        </Form>
+      </Provider>,
+      { route: { params } })
+
+
+    const select = screen.getByText(/enable 802\.11r fast bss transition/i)
+    const checkbox = within(select).getByRole('checkbox')
+    fireEvent.click(checkbox)
+    expect(screen.getByText(/mobility domain id/i)).toBeVisible()
+
+
+  })
 })
 
