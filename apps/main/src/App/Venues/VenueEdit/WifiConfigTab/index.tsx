@@ -8,19 +8,19 @@ export function WifiConfigTab () {
   return (
     <Tabs defaultActiveKey='radio' type='card'>
       <TabPane tab={$t({ defaultMessage: 'Radio' })} key='radio'>
-        Radio
+        {$t({ defaultMessage: 'Radio' })}
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'Networking' })} key='networking'>
-        Networking
+        {$t({ defaultMessage: 'Networking' })}
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'Security' })} key='security'>
-        Security
+        {$t({ defaultMessage: 'Security' })}
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'External Servers' })} key='servers'>
-        External Servers
+        {$t({ defaultMessage: 'External Servers' })}
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'Advanced Settings' })} key='settings'>
-        Advanced Settings
+        {$t({ defaultMessage: 'Advanced Settings' })}
       </TabPane>
     </Tabs>
   )

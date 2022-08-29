@@ -1,5 +1,8 @@
+import { useIntl } from 'react-intl'
+
 export function VenueDetailsTab () {
+  const { $t } = useIntl()
   return (
-    <>Venue Details</>
+    <>{$t({ defaultMessage: 'Venue Details' })}</>
   )
 }

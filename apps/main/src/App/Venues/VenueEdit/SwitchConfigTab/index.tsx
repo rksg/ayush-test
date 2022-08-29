@@ -8,16 +8,16 @@ export function SwitchConfigTab () {
   return (
     <Tabs defaultActiveKey='general' type='card'>
       <TabPane tab={$t({ defaultMessage: 'General' })} key='general'>
-				General
+        {$t({ defaultMessage: 'General' })}
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'AAA' })} key='aaa'>
-				AAA
+        {$t({ defaultMessage: 'AAA' })}
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'Configuration History' })} key='history'>
-				Configuration History
+        {$t({ defaultMessage: 'Configuration History' })}
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'Routed Interfaces' })} key='interfaces'>
-				Routed Interfaces
+        {$t({ defaultMessage: 'Routed Interfaces' })}
       </TabPane>
     </Tabs>
   )
