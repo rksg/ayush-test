@@ -35,7 +35,7 @@ describe('Select Service Form', () => {
       }
     )
 
-    expect(asFragment).toMatchSnapshot()
+    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should navigate to the correct service page', async () => {
