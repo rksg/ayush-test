@@ -15,7 +15,7 @@ import { useClientBySSIDQuery, ClientBySSID } from './services'
 import { TrafficPercent }                     from './styledComponents'
 
 
-export default function TrafficBySSIDWidget ({
+export default function ClientBySSIDWidget ({
   filters
 }: {
   filters: AnalyticsFilter;
@@ -32,28 +32,27 @@ export default function TrafficBySSIDWidget ({
 
   const columns=[
     {
-      title: 'Application',
+      title: $t({ defaultMessage: 'SSID Name' }),
       dataIndex: 'name',
-      key: 'name'
+      key: 'name',
+      render: (name:unknown) => {
+        return <a href='/#TBD'>{name as string}</a>}
     },
     {
-      title: 'Clients',
+      title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clientCount',
       key: 'clientCount',
-      width: '15%',
       align: 'right' as const
     },
     {
-      title: 'Total Traffic',
+      title: $t({ defaultMessage: 'Total Traffic' }),
       dataIndex: 'traffic',
-      key: 'traffic',
-      width: '20%'
+      key: 'traffic'
     },
     {
-      title: 'Traffic History',
+      title: $t({ defaultMessage: 'Traffic History' }),
       dataIndex: 'trafficHistory',
-      key: 'trafficHistory',
-      width: '5%'
+      key: 'trafficHistory'
     }
   ]
 
@@ -62,7 +61,7 @@ export default function TrafficBySSIDWidget ({
     return userTrafficData.map((item,index) => {
       const sparkLineData = item.timeSeries.userTraffic
         .map(value => value ? value : 0)
-      const sparklineChartStyle = { height: 18, width: 80, display: 'inline' }
+      const sparklineChartStyle = { height: 22, width: 80, display: 'inline' }
       return {
         ...item,
         traffic: <>{formatter('bytesFormat')(item.userTraffic)} &nbsp;
@@ -91,10 +90,11 @@ export default function TrafficBySSIDWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 SSIDs by Clients' })}>
+      <Card title={$t({ defaultMessage: 'Top 5 SSIDs by Clients' })}
+        subTitle={$t({ defaultMessage: 'Insight Text coming from analytics' })}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ display: 'block', height, width }}>
+            <div style={{ display: 'block', height, width, paddingTop: '10px' }}>
               {ssidTable}
             </div>
           )}

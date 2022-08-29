@@ -5,10 +5,10 @@ import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 import { DateRange }           from '@acx-ui/utils'
 
-import { trafficBySSIDFixture } from './__tests__/fixtures'
-import { api }                  from './services'
+import { clinetBySSIDFixture } from './__tests__/fixtures'
+import { api }                 from './services'
 
-describe('trafficBySSIDWidget', () => {
+describe('clientsBySSIDWidget', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
@@ -29,14 +29,14 @@ describe('trafficBySSIDWidget', () => {
   it('should return correct data', async () => {
     const expectedResult = {
       network: {
-        hierarchyNode: trafficBySSIDFixture
+        hierarchyNode: clinetBySSIDFixture
       }
     }
-    mockGraphqlQuery(dataApiURL, 'TrafficBySSIDWidget', {
+    mockGraphqlQuery(dataApiURL, 'ClientBySSIDWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficBySSID.initiate(props)
+      api.endpoints.ClientBySSID.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
@@ -47,26 +47,26 @@ describe('trafficBySSIDWidget', () => {
       network: {
         hierarchyNode: {
           totalUserTraffic: null,
-          topNSSIDByTraffic: []
+          topNSSIDByClient: []
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'TrafficBySSIDWidget', {
+    mockGraphqlQuery(dataApiURL, 'ClientBySSIDWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficBySSID.initiate(props)
+      api.endpoints.ClientBySSID.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficBySSIDWidget', {
+    mockGraphqlQuery(dataApiURL, 'ClientBySSIDWidget', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficBySSID.initiate(props)
+      api.endpoints.ClientBySSID.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
