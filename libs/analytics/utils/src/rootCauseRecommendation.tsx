@@ -527,8 +527,8 @@ export const rootCauseRecommendationMap = {
         defaultMessage: `
         <p>In many cases with RADIUS failure, each client device or RADIUS server behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end RADIUS setup and network performance:</p>
         <ol>
-          <li>Check the RADIUS server and controller settings to identify matching configurations (IP address, port, and shared secret).</li>
-          <li>Check for RADIUS reachability by the controller/APAP (network reliability issues, like congestion, drops, flapping links, etc).</li>
+          <li>Check the RADIUS server and RUCKUS Cloud settings to identify matching configurations (IP address, port, and shared secret).</li>
+          <li>Check for RADIUS reachability by RUCKUS Cloud/APAP (network reliability issues, like congestion, drops, flapping links, etc).</li>
           <li>Check for recent changes in the RADIUS infrastructure that may be leading to issues.</li>
           <li>Check RADIUS performance metrics to ensure it has sufficient capacity and is not overloaded.</li>
           <li>Check the wireless link for high congestion, retries/errors, or other unreliability issues.</li>
@@ -538,7 +538,7 @@ export const rootCauseRecommendationMap = {
     CCD_REASON_AAA_SERVER_UNAVAILABLE: {
       rootCauses: defineMessage({
         defaultMessage: `
-        <p>The RADIUS server is offline or unreachable from the Controller/AP (message from Controller/AP to RADIUS is failing), which is often caused by:</p>
+        <p>The RADIUS server is offline or unreachable from RUCKUS Cloud/AP (message from RUCKUS Cloud/AP to RADIUS is failing), which is often caused by:</p>
         <ol>
           <li>AP/SZ misconfiguration (Bad IP, bad port).</li>
           <li>The RADIUS server is offline.</li>
@@ -547,8 +547,8 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: `
-        <p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between the Controller/AP and the RADIUS server.</p>
-        <p>If all services are up and functional, double-check the RADIUS configuration on the Controller/AP.</p>`
+        <p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between RUCKUS Cloud/AP and the RADIUS server.</p>
+        <p>If all services are up and functional, double-check the RADIUS configuration on RUCKUS Cloud/AP.</p>`
       })
     },
     CCD_REASON_AAA_AUTH_FAIL: {
@@ -578,7 +578,7 @@ export const rootCauseRecommendationMap = {
         <p>The RADIUS authentication exchange is failing because of a timeout waiting for a response from the RADIUS server. This is typically caused by the following reasons:</p>
         <ol>
           <li>The RADIUS server is offline.</li>
-          <li>The RADIUS server is unreachable by the controller/APAP (network reliability issues, like congestion, drops, flapping links, etc).</li>
+          <li>The RADIUS server is unreachable by RUCKUS Cloud/APAP (network reliability issues, like congestion, drops, flapping links, etc).</li>
           <li>The RADIUS server is overloaded and unable to reply.</li>
           <li>The wireless link is experiencing high congestion, retries/errors, or other unreliability issues.</li>
         </ol>`
@@ -587,7 +587,7 @@ export const rootCauseRecommendationMap = {
         defaultMessage: `
         <p>RADIUS timeouts are most likely to be resolved by investigating the RADIUS server health directly, typically by focusing on load or service availability metrics and logs:</p>
         <ol>
-          <li>Is the RADIUS server reliable and reachable (by ping from the AP or controller)?</li>
+          <li>Is the RADIUS server reliable and reachable (by ping from the AP or RUCKUS Cloud)?</li>
           <li>Is the RADIUS server experiencing high load?</li>
           <li>Is the RADIUS hardware infrastructure (CPU, Memory, IO) over-loaded or otherwise suffering a service outage?</li>
           <li>Do the RADIUS logs indicate unusual failures messages or reasons?</li>
