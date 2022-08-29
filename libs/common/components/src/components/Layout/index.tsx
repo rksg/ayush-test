@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl'
 
 import { Logo }   from '@acx-ui/icons'
 import {
-  TenantNavLink,
+  NavLink,
   TenantType,
   useLocation,
   useTenantLink
@@ -60,7 +60,7 @@ export function Layout ({
 
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
     const path = item.routes ? item.routes[0].path : item.path
-    return <TenantNavLink to={path} tenantType={item.tenantType}>
+    return <NavLink to={path}>
       {({ isActive }) => {
         const Icon = isActive ? item.enableIcon : item.disableIcon
         return <>
@@ -68,7 +68,7 @@ export function Layout ({
           {dom}
         </>
       }}
-    </TenantNavLink>
+    </NavLink>
   }
 
   return <UI.Wrapper>
