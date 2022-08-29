@@ -1,5 +1,54 @@
 This doc is for I18n management for local development
 
+## Wrap contents with ways below to have them available in the locale JSON files
+
+1. Use `$t`
+    ```ts
+    import { useIntl } from 'react-intl'
+
+    function MyComponent () {
+      const { $t } = useIntl()
+
+      return <p>${$t({ defaultMessage: 'Content' })}</p>
+    }
+    ```
+2. Use `FormattedMessage`
+    ```ts
+    import { FormattedMessage } from 'react-intl'
+
+    function MyComponent () {
+      return <FormattedMessage
+        defaultMessage'<highlight>Content</highlight>'
+        values={{
+          highlight: (content) => <b>{content}</b>
+        }}
+      />
+    }
+    ```
+3. Use `defineMessage`
+    ```ts
+    import {
+      defineMessage,
+      useIntl,
+      FormattedMessage
+    } from 'react-intl'
+
+    const messages = {
+      msg1: defineMessage({ defaultMessage: 'Message 1' }),
+      msg2: defineMessage({ defaultMessage: 'Message 2' })
+    }
+
+    function MyComponent () {
+      const { $t } = useIntl()
+      return <div>
+        {$t(messages.msg1)}
+        <FormattedMessage {...messages.msg2}  />
+      </div>
+    }
+    ```
+
+## Update i18n messages for all locales
+
 Run command below when there are new/updated contents added to the code base
 
 ```bash
