@@ -255,132 +255,116 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         Network Details
                       </h3>
                       <div
-                        class="ant-form-item"
+                        class="ant-row ant-form-item"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-label"
                         >
-                          <div
-                            class="ant-col ant-form-item-label"
+                          <label
+                            class="ant-form-item-required"
+                            for="details_name"
+                            title="Network Name"
                           >
-                            <label
-                              class="ant-form-item-required"
-                              for="details_name"
-                              title="Network Name"
-                            >
-                              Network Name
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                <span
-                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
-                                >
-                                  <input
-                                    class="ant-input"
-                                    id="details_name"
-                                    type="text"
-                                    value=""
-                                  />
-                                  <span
-                                    class="ant-input-suffix"
-                                  />
-                                </span>
-                              </div>
-                            </div>
-                          </div>
+                            Network Name
+                          </label>
                         </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-control"
                         >
                           <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              for="details_description"
-                              title="Description"
-                            >
-                              Description
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-form-item-control-input"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-form-item-control-input-content"
                             >
-                              <div
-                                class="ant-form-item-control-input-content"
+                              <span
+                                class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
                               >
-                                <textarea
+                                <input
                                   class="ant-input"
-                                  id="details_description"
-                                  rows="4"
+                                  id="details_name"
+                                  type="text"
+                                  value=""
                                 />
-                              </div>
+                                <span
+                                  class="ant-input-suffix"
+                                />
+                              </span>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-form-item"
+                        class="ant-row ant-form-item"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            for="details_description"
+                            title="Description"
+                          >
+                            Description
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
                         >
                           <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-form-item-control-input"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-form-item-control-input-content"
+                            >
+                              <textarea
+                                class="ant-input"
+                                id="details_description"
+                                rows="4"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row ant-form-item"
+                      >
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="ant-form-item-control-input-content"
+                                class="ant-row ant-form-item"
                               >
                                 <div
-                                  class="ant-form-item"
+                                  class="ant-col ant-form-item-label"
+                                >
+                                  <label
+                                    class=""
+                                    for="details_type"
+                                    title="Network Type"
+                                  >
+                                    Network Type
+                                  </label>
+                                </div>
+                                <div
+                                  class="ant-col ant-form-item-control"
                                 >
                                   <div
-                                    class="ant-row ant-form-item-row"
+                                    class="ant-form-item-control-input"
                                   >
                                     <div
-                                      class="ant-col ant-form-item-label"
+                                      class="ant-form-item-control-input-content"
                                     >
-                                      <label
-                                        class=""
-                                        for="details_type"
-                                        title="Network Type"
-                                      >
-                                        Network Type
-                                      </label>
-                                    </div>
-                                    <div
-                                      class="ant-col ant-form-item-control"
-                                    >
-                                      <div
-                                        class="ant-form-item-control-input"
-                                      >
-                                        <div
-                                          class="ant-form-item-control-input-content"
-                                        >
-                                          <h4
-                                            class="ant-typography"
-                                          />
-                                          <label />
-                                        </div>
-                                      </div>
+                                      <h4
+                                        class="ant-typography"
+                                      />
+                                      <label />
                                     </div>
                                   </div>
                                 </div>
@@ -439,39 +423,35 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         Open Settings
                       </h3>
                       <div
-                        class="ant-form-item"
+                        class="ant-row ant-form-item"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-control"
                         >
                           <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-form-item-control-input"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-form-item-control-input-content"
                             >
-                              <div
-                                class="ant-form-item-control-input-content"
+                              <button
+                                aria-checked="false"
+                                class="ant-switch ant-switch-disabled"
+                                disabled=""
+                                id="settings_isCloudpathEnabled"
+                                role="switch"
+                                type="button"
                               >
-                                <button
-                                  aria-checked="false"
-                                  class="ant-switch ant-switch-disabled"
-                                  disabled=""
-                                  id="settings_isCloudpathEnabled"
-                                  role="switch"
-                                  type="button"
-                                >
-                                  <div
-                                    class="ant-switch-handle"
-                                  />
-                                  <span
-                                    class="ant-switch-inner"
-                                  />
-                                </button>
-                                <span>
-                                  Use Cloudpath Server
-                                </span>
-                              </div>
+                                <div
+                                  class="ant-switch-handle"
+                                />
+                                <span
+                                  class="ant-switch-inner"
+                                />
+                              </button>
+                              <span>
+                                Use Cloudpath Server
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -562,123 +542,107 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         Network Info
                       </h4>
                       <div
-                        class="ant-form-item"
+                        class="ant-row ant-form-item"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            title="Network Name:"
+                          >
+                            Network Name:
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
                         >
                           <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              title="Network Name:"
-                            >
-                              Network Name:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-form-item-control-input"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-form-item-control-input-content"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row ant-form-item"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            title="Info:"
+                          >
+                            Info:
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
                             >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              />
+                              --
                             </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-form-item"
+                        class="ant-row ant-form-item"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            title="Type:"
+                          >
+                            Type:
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
                         >
                           <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              title="Info:"
-                            >
-                              Info:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-form-item-control-input"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-form-item-control-input-content"
                             >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                --
-                              </div>
+                              Open Network
                             </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-form-item"
+                        class="ant-row ant-form-item"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-label"
                         >
-                          <div
-                            class="ant-col ant-form-item-label"
+                          <label
+                            class=""
+                            title="Use Cloudpath Server:"
                           >
-                            <label
-                              class=""
-                              title="Type:"
-                            >
-                              Type:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                Open Network
-                              </div>
-                            </div>
-                          </div>
+                            Use Cloudpath Server:
+                          </label>
                         </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-control"
                         >
                           <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              title="Use Cloudpath Server:"
-                            >
-                              Use Cloudpath Server:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-form-item-control-input"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-form-item-control-input-content"
                             >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                No
-                              </div>
+                              No
                             </div>
                           </div>
                         </div>
@@ -699,22 +663,18 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         Activated in venues
                       </h4>
                       <div
-                        class="ant-form-item"
+                        class="ant-row ant-form-item"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-control"
                         >
                           <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-form-item-control-input"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-form-item-control-input-content"
                             >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                --
-                              </div>
+                              --
                             </div>
                           </div>
                         </div>
