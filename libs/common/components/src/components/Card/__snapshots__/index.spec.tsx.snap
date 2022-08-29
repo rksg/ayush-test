@@ -3,7 +3,7 @@
 exports[`Card component should render card with no border 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-3 jQtLJR"
+    class="styledComponents__Wrapper-sc-13w5wfx-3 eDKCVi"
   >
     <div
       class="ant-card"
