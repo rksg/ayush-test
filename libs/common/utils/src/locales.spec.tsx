@@ -26,6 +26,11 @@ const messages = {
     lang: 'Sprache',
     nested: { lang: 'Sprache' },
     stepsForm: { cancel: 'Absagen' }
+  },
+  'ja-JP': {
+    lang: '言語',
+    nested: { lang: '言語' },
+    stepsForm: { cancel: 'キャンセル' }
   }
 }
 
@@ -57,7 +62,18 @@ describe('loadLocale', () => {
       cancel: expect.any(String),
       next: expect.any(String)
     }))
+
+    const ja = await loadLocale('ja-JP')
+    expect(ja).toEqual(expect.objectContaining({
+      ..._.omit(messages['ja-JP'], 'stepsForm'),
+      'nested.lang': '言語'
+    }))
+    expect(ja!.stepsForm).toEqual(expect.objectContaining({
+      cancel: expect.any(String),
+      next: expect.any(String)
+    }))
   })
+
 
   it('loads from cache when available', async () => {
     mockServer.close()

@@ -24,9 +24,8 @@ describe('Drawer', () => {
       onClose={onClose}
       children={content}
       mask={false}
-      data-testid={'basic-drawer'}
     />)
-    expect(screen.getByTestId('basic-drawer')).toMatchSnapshot()
+    expect(screen.getAllByRole('dialog')).toMatchSnapshot()
   })
 
   it('should match snapshot for custom drawer', () => {
@@ -39,9 +38,8 @@ describe('Drawer', () => {
       onClose={onClose}
       children={content}
       mask={false}
-      data-testid={'custom-drawer'}
     />)
-    expect(screen.getByTestId('custom-drawer')).toMatchSnapshot()
+    expect(screen.getAllByRole('dialog')).toMatchSnapshot()
   })
 
   it('should render test drawer correctly', async () => {
