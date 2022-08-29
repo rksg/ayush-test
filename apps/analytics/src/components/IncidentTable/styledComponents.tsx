@@ -44,8 +44,11 @@ export const IncidentDrawerContent = styled.div`
   row-gap: 20px;
 `
 export const IncidentCause = styled.div`
-  font-weight: 600;
+  font-weight: var(--acx-subtitle-1-font-weight);
   margin-top: 20px;
+`
+export const IncidentImpactedClient = styled.div`
+  font-weight: var(--acx-subtitle-1-font-weight);
 `
 export const IncidentRootCauses = styled.div`
  text-decoration: underline;

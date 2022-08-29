@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { defineMessage, useIntl } from 'react-intl'
+import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { Incident, noDataSymbol, getRootCauseAndRecommendations, useShortDescription, IncidentFilter } from '@acx-ui/analytics/utils'
 import { Loader, Table, TableProps, showToast, Drawer }                                                from '@acx-ui/components'
@@ -8,7 +9,7 @@ import { Link }                                                                 
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRows } from './services'
 import * as UI                                                        from './styledComponents'
-import { 
+import {
   GetIncidentBySeverity,
   FormatDate,
   formatDuration,
@@ -23,14 +24,13 @@ import {
   ClientImpact
 } from './utils'
 
-
 const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
   {
     title: 'Severity',
     width: '8%',
     dataIndex: 'severity',
     key: 'severity',
-    render: (_, value) => <GetIncidentBySeverity value={value.severity}/>,
+    render: (_, value) => <GetIncidentBySeverity value={value.severity} />,
     sorter: {
       compare: (a, b) => severitySort(a.severity, b.severity),
       multiple: 1
@@ -43,7 +43,11 @@ const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     valueType: 'dateTime',
     key: 'endTime',
     render: (_, value) => {
-      return <Link to={value.id}><FormatDate datetimestamp={value.endTime}/></Link>
+      return (
+        <Link to={value.id}>
+          <FormatDate datetimestamp={value.endTime} />
+        </Link>
+      )
     },
     sorter: {
       compare: (a, b) => dateSort(a.endTime, b.endTime),
@@ -77,7 +81,7 @@ const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     width: '15%',
     dataIndex: 'clientCount',
     key: 'clientCount',
-    render: (_, incident) => <ClientImpact type='clientImpact' incident={incident}/>,
+    render: (_, incident) => <ClientImpact type='clientImpact' incident={incident} />,
     sorter: {
       compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount),
       multiple: 6
@@ -88,7 +92,7 @@ const ColumnHeaders: TableProps<IncidentTableRows>['columns'] = [
     width: '15%',
     dataIndex: 'impactedClientCount',
     key: 'impactedClientCount',
-    render: (_, incident) => <ClientImpact type='impactedClients' incident={incident}/>,
+    render: (_, incident) => <ClientImpact type='impactedClients' incident={incident} />,
     sorter: {
       compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount),
       multiple: 7
@@ -134,14 +138,19 @@ const actions: TableProps<Incident>['actions'] = [
 ]
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
-  const { rootCauses } = getRootCauseAndRecommendations(
-    props.selectedIncidentToShowDescription.code,
-    props.selectedIncidentToShowDescription.metadata
-  )[0]
+
+  const { $t } = useIntl()
+  const { code, metadata } = props.selectedIncidentToShowDescription 
+  const { rootCauses } = getRootCauseAndRecommendations(code, metadata)[0]
+  const { dominant } = metadata 
+  const wlanInfo = (dominant && dominant.ssid) 
+    ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
+    : ''
   const desc = useShortDescription(props.selectedIncidentToShowDescription)
   return (
     <UI.IncidentDrawerContent>
       <UI.IncidentCause>{desc}</UI.IncidentCause>
+      <UI.IncidentImpactedClient>{wlanInfo}</UI.IncidentImpactedClient>
       <UI.IncidentRootCauses>{'Root cause:'}</UI.IncidentRootCauses>
       {renderNumberedListFromArray(rootCauses)}
     </UI.IncidentDrawerContent>
