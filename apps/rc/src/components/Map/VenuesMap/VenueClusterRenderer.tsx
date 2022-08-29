@@ -51,19 +51,19 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
   let data: VenueClusterTooltipData[] = []
 
   const sortedMarkers = Array.from(markers).sort((a,b) => {
-    const { venueData: dataA } = a as VenueMarkerWithLabel
-    const { venueData: dataB } = b as VenueMarkerWithLabel
+    const { venueMarker: dataA } = a as VenueMarkerWithLabel
+    const { venueMarker: dataB } = b as VenueMarkerWithLabel
     return getVenueSeverityByStatus(dataA.status as string)
       - getVenueSeverityByStatus(dataB.status as string)
   })
 
   data = sortedMarkers.map((marker)=>{
-    const { venueData } = marker as VenueMarkerWithLabel
+    const { venueMarker } = marker as VenueMarkerWithLabel
     return {
-      icon: <Icon component={getVenueInfoMarkerIcon(venueData.status as string)}/>,
-      title: venueData.name as string,
+      icon: <Icon component={getVenueInfoMarkerIcon(venueMarker.status as string)}/>,
+      title: venueMarker.name as string,
       popoverContent: <VenueMarkerTooltip
-        venue={(marker as VenueMarkerWithLabel).venueData}
+        venueMarker={(marker as VenueMarkerWithLabel).venueMarker}
         needPadding={false}
       />
     }
@@ -108,7 +108,7 @@ export default class VenueClusterRenderer implements Renderer {
     { count, position, markers }: Cluster
   ): google.maps.Marker {
     const statuses = markers?.map((marker: google.maps.Marker) =>
-      (marker as VenueMarkerWithLabel)?.venueData?.status)
+      (marker as VenueMarkerWithLabel)?.venueMarker?.status)
     const clusterColor = getMarkerColor(statuses)
     const scaledSize = new google.maps.Size(42, 42, 'px')
     const clusterInfoWindow = new google.maps.InfoWindow({

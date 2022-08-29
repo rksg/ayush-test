@@ -32,6 +32,4 @@ function ActualMap () {
   )
 }
 
-// export default React.memo(Map)
 export default Map
-

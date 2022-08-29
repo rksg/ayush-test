@@ -37,9 +37,10 @@ interface VenueMarkerTooltipProps {
 }
 
 export function VenueMarkerTooltip (
-  props: { venue: VenueMarkerOptions } & VenueMarkerTooltipProps) {
+  props: { venueMarker: VenueMarkerOptions } & VenueMarkerTooltipProps) {
   const { $t } = useIntl()
   const {
+    name,
     venueId,
     apStat,
     switchStat,
@@ -47,7 +48,7 @@ export function VenueMarkerTooltip (
     switchesCount,
     clientsCount,
     switchClientsCount
-  } = props.venue
+  } = props.venueMarker
 
   const { onNavigate, needPadding = true } = props
   const deviceConnectionStatusColors = getDeviceConnectionStatusColors()
@@ -116,7 +117,7 @@ export function VenueMarkerTooltip (
     <UI.Wrapper needPadding={needPadding}>
       <UI.InfoWindowHeader>
         <UI.Title onClick={() => onNavigate && onNavigate({ venueId, path: 'overview' })}>
-          {props.venue.name}
+          {name}
         </UI.Title>
       </UI.InfoWindowHeader>
       <Table
