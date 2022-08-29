@@ -45,10 +45,8 @@ export function AaaSettingsForm () {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   if(data){
-    form.setFieldsValue({ 
-      cloudpathServerId: data.cloudpathServerId,
+    form.setFieldsValue({
       isCloudpathEnabled: data.cloudpathServerId !== undefined,
-      wlanSecurity: data.wlan?.wlanSecurity,
       enableAuthProxy: data.enableAuthProxy,
       enableAccountingProxy: data.enableAccountingProxy,
       enableAccountingService: data.accountingRadius !== undefined,
@@ -115,6 +113,7 @@ export function AaaSettingsForm () {
 }
 
 function SettingsForm () {
+  const { editMode, data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [
     isCloudpathEnabled,
@@ -162,7 +161,7 @@ function SettingsForm () {
           <Form.Item
             label='Security Protocol'
             name='wlanSecurity'
-            initialValue={WlanSecurityEnum.WPA2Enterprise}
+            initialValue={editMode ? data?.wlan?.wlanSecurity : WlanSecurityEnum.WPA2Enterprise}
             extra={
               wlanSecurity === WlanSecurityEnum.WPA2Enterprise
                 ? wpa2Description
