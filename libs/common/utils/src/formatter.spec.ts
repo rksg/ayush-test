@@ -202,27 +202,27 @@ describe('formatter', () => {
     })
     it('should format date to "[Today,] HH:mm"', () => {
       const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659687682000))
-      expect(result.current).toBe('Today, 13:51')
+      expect(result.current).toBe('Today, 08:21')
     })
     it('should format date to "[Yesterday,] HH:mm"', () => {
       const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659608482000))
-      expect(result.current).toBe('Yesterday, 15:51')
+      expect(result.current).toBe('Yesterday, 10:21')
     })
     it('should format date to "[Tomorrow,] HH:mm"', () => {
       const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659774082000))
-      expect(result.current).toBe('Tomorrow, 13:51')
+      expect(result.current).toBe('Tomorrow, 08:21')
     })
     it('should format date to "[Last] dddd[,] HH:mm"', () => {
       const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659255682000))
-      expect(result.current).toBe('Last Sunday, 13:51')
+      expect(result.current).toBe('Last Sunday, 08:21')
     })
     it('should format date to "dddd[,] HH:mm"', () => {
       const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659860482000))
-      expect(result.current).toBe('Sunday, 13:51')
+      expect(result.current).toBe('Sunday, 08:21')
     })
     it('should format date to "MMM DD[,] HH:mm"', () => {
       const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1654590082000))
-      expect(result.current).toBe('Jun 07 13:51')
+      expect(result.current).toBe('Jun 07 08:21')
     })
   })
   describe('durationFormat', () => {

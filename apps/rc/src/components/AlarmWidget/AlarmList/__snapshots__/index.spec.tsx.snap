@@ -55,7 +55,7 @@ exports[`Alarm List should render list 1`] = `
                 <span
                   class="styledComponents__TimeStamp-sc-vxay0u-7 cpTyeF"
                 >
-                  Jul 13 09:50
+                  Jul 13 04:20
                 </span>
               </div>
             </li>
@@ -96,7 +96,7 @@ exports[`Alarm List should render list 1`] = `
                 <span
                   class="styledComponents__TimeStamp-sc-vxay0u-7 cpTyeF"
                 >
-                  Jul 13 09:50
+                  Jul 13 04:20
                 </span>
               </div>
             </li>
