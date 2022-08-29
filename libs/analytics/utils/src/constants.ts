@@ -1,4 +1,4 @@
-
+export const noDataSymbol = '-' as const
 // commented codes acc to prod rc config
 export const incidentCodes = [
   'ttc',

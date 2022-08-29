@@ -45,10 +45,10 @@ function useColumns () {
       key: 'incidents',
       title: () => {
         return (
-          <Space direction='vertical' size={0}>
+          <>
             { $t({ defaultMessage: 'Incidents' }) }
             <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-          </Space>
+          </>
         )
       },
       align: 'center'
@@ -57,10 +57,10 @@ function useColumns () {
       key: 'health',
       title: () => {
         return (
-          <Space direction='vertical' size={0}>
+          <>
             { $t({ defaultMessage: 'Health Score' }) }
             <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-          </Space>
+          </>
         )
       },
       align: 'center'
