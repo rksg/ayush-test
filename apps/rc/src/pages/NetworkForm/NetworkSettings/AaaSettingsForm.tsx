@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import {
   ExclamationCircleFilled,
@@ -44,16 +44,18 @@ const { useWatch } = Form
 export function AaaSettingsForm () {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  if(data){
-    form.setFieldsValue({
-      isCloudpathEnabled: data.cloudpathServerId !== undefined,
-      enableAuthProxy: data.enableAuthProxy,
-      enableAccountingProxy: data.enableAccountingProxy,
-      enableAccountingService: data.accountingRadius !== undefined,
-      enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
-      enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined
-    })
-  }
+  useEffect(()=>{
+    if(data){
+      form.setFieldsValue({
+        isCloudpathEnabled: data.cloudpathServerId !== undefined,
+        enableAuthProxy: data.enableAuthProxy,
+        enableAccountingProxy: data.enableAccountingProxy,
+        enableAccountingService: data.accountingRadius !== undefined,
+        enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
+        enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined
+      })
+    }
+  }, [data])
   const [
     isCloudpathEnabled,
     selectedId,

@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 
 
 import {
@@ -34,14 +34,16 @@ const { useWatch } = Form
 export function DpskSettingsForm () {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  if(data){
-    form.setFieldsValue({
-      isCloudpathEnabled: data.cloudpathServerId !== undefined,
-      passphraseFormat: data?.dpskPassphraseGeneration?.format,
-      passphraseLength: data?.dpskPassphraseGeneration?.length,
-      expiration: data?.dpskPassphraseGeneration?.expiration
-    })
-  }
+  useEffect(()=>{
+    if(data){
+      form.setFieldsValue({
+        isCloudpathEnabled: data.cloudpathServerId !== undefined,
+        passphraseFormat: data?.dpskPassphraseGeneration?.format,
+        passphraseLength: data?.dpskPassphraseGeneration?.length,
+        expiration: data?.dpskPassphraseGeneration?.expiration
+      })
+    }
+  }, [data])
   const selectedId = useWatch('cloudpathServerId')
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {

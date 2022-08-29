@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, Input, InputNumber } from 'antd'
 import { useIntl }                  from 'react-intl'
@@ -17,34 +17,38 @@ export function IpPortSecretForm ({ serverType, order }:
   const { data } = useContext(NetworkFormContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
-  if(data){
-    form.setFieldsValue({
-      authRadius: {
-        primary: {
-          ip: data.authRadius?.primary?.ip,
-          port: data.authRadius?.primary?.port,
-          sharedSecret: data.authRadius?.primary?.sharedSecret
+  
+  useEffect(()=>{
+    if(data){
+      form.setFieldsValue({
+        authRadius: {
+          primary: {
+            ip: data.authRadius?.primary?.ip,
+            port: data.authRadius?.primary?.port,
+            sharedSecret: data.authRadius?.primary?.sharedSecret
+          },
+          secondary: {
+            ip: data.authRadius?.secondary?.ip,
+            port: data.authRadius?.secondary?.port,
+            sharedSecret: data.authRadius?.secondary?.sharedSecret
+          }
         },
-        secondary: {
-          ip: data.authRadius?.secondary?.ip,
-          port: data.authRadius?.secondary?.port,
-          sharedSecret: data.authRadius?.secondary?.sharedSecret
+        accountingRadius: {
+          primary: {
+            ip: data.accountingRadius?.primary?.ip,
+            port: data.accountingRadius?.primary?.port,
+            sharedSecret: data.accountingRadius?.primary?.sharedSecret
+          },
+          secondary: {
+            ip: data.accountingRadius?.secondary?.ip,
+            port: data.accountingRadius?.secondary?.port,
+            sharedSecret: data.accountingRadius?.secondary?.sharedSecret
+          }
         }
-      },
-      accountingRadius: {
-        primary: {
-          ip: data.accountingRadius?.primary?.ip,
-          port: data.accountingRadius?.primary?.port,
-          sharedSecret: data.accountingRadius?.primary?.sharedSecret
-        },
-        secondary: {
-          ip: data.accountingRadius?.secondary?.ip,
-          port: data.accountingRadius?.secondary?.port,
-          sharedSecret: data.accountingRadius?.secondary?.sharedSecret
-        }
-      }
-    })
-  }
+      })
+    }
+  }, [data])
+
   return (
     <>
       <Form.Item
