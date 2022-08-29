@@ -30,11 +30,12 @@ import {
   Venue,
   VLAN_PREFIX,
   ISlotIndex,
-  getSchedulingTooltip,
+  getSchedulingCustomTooltip,
   fetchVenueTimeZone,
   getCurrentTimeSlotIndex,
   RadioTypeEnum,
-  NetworkVenueScheduler
+  NetworkVenueScheduler,
+  SchedulerTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -108,7 +109,7 @@ export function NetworkVenuesTab () {
           i => i.venueId === item.id
         )
 
-        if (activatedVenue?.scheduler?.type === 'CUSTOM') {
+        if (activatedVenue?.scheduler?.type === SchedulerTypeEnum.CUSTOM) {
           updateVenueCurrentSlotIndexMap(item.id, item.latitude, item.longitude)
         }
 
@@ -457,27 +458,40 @@ export function NetworkVenuesTab () {
     const currentTimeIdx = venueSlotIndexMap[venueId]
 
     if (currentVenue) {
+      let tooltip = ''
       if (scheduler) {
+        let message = '', dayName = '', timeString = ''
         switch (scheduler.type) {
-          case 'ALWAYS_ON':
+          case SchedulerTypeEnum.ALWAYS_ON:
             result = $t({ defaultMessage: '24/7' })
+            message = $t({ defaultMessage: 'Network is ON 24/7' })
             break
-          case 'CUSTOM':
+          case SchedulerTypeEnum.CUSTOM:
+            result = $t({ defaultMessage: 'custom' })
             if (currentTimeIdx) {
               const day = currentTimeIdx.day.toLowerCase()
               const time = currentTimeIdx.timeIndex
-              const status = scheduler[day as keyof NetworkVenueScheduler][time]
-              result = (status === '1') ? $t({ defaultMessage: 'ON now' }) : $t({ defaultMessage: 'OFF now' })
-            } else {
-              result = $t({ defaultMessage: 'custom' })
+              const dayData = scheduler[day as keyof NetworkVenueScheduler]
+              if (dayData?.charAt(time) === '1') {
+                result = $t({ defaultMessage: 'ON now' })
+                message = $t({ defaultMessage: 'Scheduled to be on until ' })
+              } else {
+                result = $t({ defaultMessage: 'OFF now' })
+                message = $t({ defaultMessage: 'Currently off. Scheduled to turn on at ' })
+              }
+              [dayName, timeString] = getSchedulingCustomTooltip(scheduler, currentTimeIdx)
             }
             break
+          default:
+            break
         }
+        tooltip = `${message} ${dayName} ${timeString}`
       } else {
         result = $t({ defaultMessage: '24/7' })
+        tooltip = $t({ defaultMessage: 'Network is ON 24/7' })
       }
       return (
-        <Tooltip title={getSchedulingTooltip(scheduler, currentTimeIdx)}>
+        <Tooltip title={tooltip}>
           <Button type='link' onClick={(e) => handleClickScheduling(row, e)}>{result} <ClockCircleOutlined /></Button>
         </Tooltip>
       )

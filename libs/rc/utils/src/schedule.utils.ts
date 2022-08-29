@@ -1,9 +1,7 @@
 /* eslint-disable max-len */
 import { get } from '@acx-ui/config'
 
-import {
-  NetworkVenueScheduler
-} from './models/NetworkVenueScheduler'
+import { NetworkVenueScheduler } from './models/NetworkVenueScheduler'
 
 interface ITimeZone {
   dstOffset: number
@@ -98,7 +96,7 @@ const findIndexByStatus = (
   let day = dayList[dayIndex]
   let dayData = scheduleData[day.toLowerCase() as keyof NetworkVenueScheduler]
   for (timeIndex = startTimeIndex; timeIndex < 96; timeIndex++) {
-    if (dayData[timeIndex] === targetStatus) {
+    if (dayData?.charAt(timeIndex) === targetStatus) {
       return { dayIndex, timeIndex }
     }
   }
@@ -108,7 +106,7 @@ const findIndexByStatus = (
     day = dayList[dayIndex]
     dayData = scheduleData[day.toLowerCase() as keyof NetworkVenueScheduler]
     for (timeIndex = 0; timeIndex < 96; timeIndex++) {
-      if (dayData[timeIndex] === targetStatus) {
+      if (dayData?.charAt(timeIndex) === targetStatus) {
         return { dayIndex, timeIndex }
       }
     }
@@ -117,22 +115,17 @@ const findIndexByStatus = (
   return { dayIndex: -1, timeIndex: -1 }
 }
 
-export const getSchedulingTooltip = (
-  scheduleData?: NetworkVenueScheduler, currentTimeSlotIndex?: ISlotIndex
-) => {
-  if (!currentTimeSlotIndex || !scheduleData || scheduleData.type !== 'CUSTOM') {
-    return 'Network is ON 24/7'
-  }
-  let message = ''
+export const getSchedulingCustomTooltip = (scheduleData: NetworkVenueScheduler, currentTimeSlotIndex: ISlotIndex) => {
   const daysNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const currentDay = currentTimeSlotIndex.day
   const currentDayIndex = dayList.indexOf(currentDay)
 
   const currentTimeIndex = currentTimeSlotIndex.timeIndex
-  const currentStatus = scheduleData[currentDay.toLowerCase() as keyof NetworkVenueScheduler][currentTimeIndex]
+  const dayData = scheduleData[currentDay.toLowerCase() as keyof NetworkVenueScheduler]
+  const currentStatus = dayData && dayData.charAt(currentTimeIndex)
   const nextTargetStatus = (currentStatus === '1') ? '0' : '1'
 
-  let findIndex = findIndexByStatus(scheduleData,nextTargetStatus,currentDayIndex,currentTimeIndex)
+  let findIndex = findIndexByStatus(scheduleData, nextTargetStatus, currentDayIndex, currentTimeIndex)
 
   if (findIndex.timeIndex < 0) { // find in next week
     findIndex = findIndexByStatus(scheduleData, nextTargetStatus, 0, 0)
@@ -141,10 +134,6 @@ export const getSchedulingTooltip = (
   const findDayIndex = findIndex.dayIndex
   const dayName = (currentDayIndex === findDayIndex) ? '' : daysNames[findDayIndex] + ' '
   const timeString = convertTimeFromScheduleIndex(findIndex.timeIndex)
-  if (currentStatus === '1') {
-    message = 'Scheduled to be on until ' + dayName + timeString
-  }
-  message = 'Currently off. Scheduled to turn on at ' + dayName + timeString
 
-  return message
+  return [ dayName, timeString ]
 }

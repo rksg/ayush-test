@@ -1,21 +1,21 @@
-import { SchedulerTypeEnum } from '../contents'
+import { SchedulerTypeEnum } from './SchedulerTypeEnum'
 
 export class NetworkVenueScheduler {
   type: SchedulerTypeEnum
 
-  sun: string = ''
+  sun?: string
 
-  mon: string = ''
+  mon?: string
 
-  tue: string = ''
+  tue?: string
 
-  wed: string = ''
+  wed?: string
 
-  thu: string = ''
+  thu?: string
 
-  fri: string = ''
+  fri?: string
 
-  sat: string = ''
+  sat?: string
 
   constructor () {
     this.type = SchedulerTypeEnum.ALWAYS_ON
