@@ -21,14 +21,7 @@ export default function ClientBySSIDWidget ({
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const queryResults = useClientBySSIDQuery(filters,
-    {
-      selectFromResult: ({ data, ...rest }) => ({
-        data,
-        ...rest
-      })
-    }
-  )
+  const queryResults = useClientBySSIDQuery(filters)
 
   const columns=[
     {
