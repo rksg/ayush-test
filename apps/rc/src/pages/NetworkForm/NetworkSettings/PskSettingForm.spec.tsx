@@ -20,7 +20,7 @@ async function fillInBeforeSettings (networkName: string) {
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating)
 
-  await userEvent.click(screen.getByRole('radio', { name: /that you have defined for the network/ }))
+  await userEvent.click(screen.getByRole('radio', { name: /defined for the network/ }))
   await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
   await screen.findByRole('heading', { level: 3, name: 'Settings' })
