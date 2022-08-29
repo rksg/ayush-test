@@ -1,8 +1,6 @@
 import React from 'react'
 
-import { CaretDownOutlined }          from '@ant-design/icons'
 import {
-  Cascader as AntCascader,
   CascaderProps as AntCascaderProps
 } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
@@ -66,7 +64,7 @@ export function NetworkFilter (props: CascaderProps) {
         </Button>
       </UI.ButtonDiv>
     </>
-    return <AntCascader
+    return <UI.Cascader
       {...antProps}
       value={currentValues}
       multiple
@@ -75,7 +73,6 @@ export function NetworkFilter (props: CascaderProps) {
       expandTrigger='hover'
       maxTagCount='responsive'
       showSearch
-      suffixIcon={<CaretDownOutlined />}
       onDropdownVisibleChange={setOpen}
       open={currentValues !== savedValues || open}
     />
@@ -86,13 +83,12 @@ export function NetworkFilter (props: CascaderProps) {
     ) => {
       onApply(selectedValues && selectedValues.map(option => option.value))
     }
-    return <AntCascader
+    return <UI.Cascader
       {...antProps}
       changeOnSelect
       onChange={onChangeSingle}
       expandTrigger='hover'
       showSearch
-      suffixIcon={<CaretDownOutlined />}
     />
   }
 }
