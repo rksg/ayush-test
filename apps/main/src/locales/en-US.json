@@ -20,12 +20,21 @@
   "/uhiJw": {
     "defaultMessage": "AP disconnected from cloud"
   },
+  "/zC7P0": {
+    "defaultMessage": "DHCP failures are unusually high in {scope}"
+  },
+  "07a9rK": {
+    "defaultMessage": "Time To Connect"
+  },
   "0Hd1cr": {
     "defaultMessage": "Allow users to access the network without any authentication/security (not recommended)",
     "description": "Description for Open Network"
   },
   "0QEzt5": {
     "defaultMessage": "AP Group"
+  },
+  "16lBmU": {
+    "defaultMessage": "Channel Conditions"
   },
   "1EYCdR": {
     "defaultMessage": "Tags"
@@ -52,11 +61,17 @@
     "defaultMessage": "3rd Party Captive Portal (WISPr)",
     "description": "Guest network type - 3rd Party Captive Portal (WISPr)"
   },
+  "3Spwog": {
+    "defaultMessage": "AP(s) operating in Low Power Mode: {scope}."
+  },
   "3mdxYI": {
     "defaultMessage": "No Switch Clients"
   },
   "47FYwb": {
     "defaultMessage": "Cancel"
+  },
+  "4Gn5Ub": {
+    "defaultMessage": "Firmware:"
   },
   "4M0IEe": {
     "defaultMessage": "Never contacted cloud"
@@ -69,6 +84,12 @@
   },
   "4dk4rO": {
     "defaultMessage": "Accounting Service"
+  },
+  "4ldizo": {
+    "defaultMessage": "{scope} is experiencing unusually high CPU usage"
+  },
+  "50Oao0": {
+    "defaultMessage": "VLAN mismatch found in {scope}"
   },
   "5G8/Fe": {
     "defaultMessage": "Self Sign-In",
@@ -86,6 +107,9 @@
   "5mHBBz": {
     "defaultMessage": "Operational - applying configuration"
   },
+  "6+FdTf": {
+    "defaultMessage": "[Tomorrow,] HH:mm"
+  },
   "6g0glr": {
     "defaultMessage": "Networking Devices"
   },
@@ -94,6 +118,10 @@
   },
   "724CrE": {
     "defaultMessage": "Select..."
+  },
+  "76jC1v": {
+    "defaultMessage": "This value should be higher than or equal to $'{min}'",
+    "description": "Validation - min checks"
   },
   "7Kk96z": {
     "defaultMessage": "Use Cloudpath Server:"
@@ -107,11 +135,23 @@
   "8B04tJ": {
     "defaultMessage": "WPA"
   },
+  "8Bwvdr": {
+    "defaultMessage": "mDNS Proxy"
+  },
+  "8EGRF9": {
+    "defaultMessage": "Load"
+  },
   "8Fo71r": {
     "defaultMessage": "MSP Space"
   },
+  "8O9cAb": {
+    "defaultMessage": "Last 24 hours"
+  },
   "8cF6CF": {
     "defaultMessage": "Error: Can not detect passphrase expiration value"
+  },
+  "8lHXaF": {
+    "defaultMessage": "DHCP failures are high in {scope} impacting connectivity for {impact} of clients."
   },
   "9+Ddtu": {
     "defaultMessage": "Next"
@@ -122,6 +162,9 @@
   "9MxQUk": {
     "defaultMessage": "Shared Secret:"
   },
+  "9bpZCJ": {
+    "defaultMessage": "DHCP for Wi-Fi"
+  },
   "9t1iiv": {
     "defaultMessage": "Configure"
   },
@@ -131,8 +174,14 @@
   "9wJSG8": {
     "defaultMessage": "Map is not enabled"
   },
+  "AA5h7P": {
+    "defaultMessage": "Performance"
+  },
   "AJBpR8": {
     "defaultMessage": "Network Type"
+  },
+  "AJFEms": {
+    "defaultMessage": "Sub-optimal channel conditions detected for 2.4 GHz in {scope}"
   },
   "AcxDgz": {
     "defaultMessage": "Activate"
@@ -158,6 +207,9 @@
   "BeT3j9": {
     "defaultMessage": "WPA3"
   },
+  "BuZFs1": {
+    "defaultMessage": "High memory utilization detected in {scope}."
+  },
   "C5Rw0o": {
     "defaultMessage": "Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server."
   },
@@ -167,6 +219,9 @@
   "CNTrZU": {
     "defaultMessage": "2 years"
   },
+  "CPn6si": {
+    "defaultMessage": "802.11 Authentication failures are unusually high in {scope}"
+  },
   "CasKsA": {
     "defaultMessage": "Add Secondary Server"
   },
@@ -174,17 +229,36 @@
     "defaultMessage": "WEP",
     "description": "WLAN security type - WEP"
   },
+  "D/k1T1": {
+    "defaultMessage": "Clients with low RSS are unusually high in {scope}, impacting {impact} of connected clients."
+  },
   "Dnob31": {
     "defaultMessage": "Operational"
   },
+  "EDi8nU": {
+    "defaultMessage": "WAN"
+  },
+  "EKxuZ2": {
+    "defaultMessage": "Add Service"
+  },
   "EP8xiD": {
     "defaultMessage": "AP heartbeat lost"
+  },
+  "EWw/tK": {
+    "defaultMessage": "Apply"
   },
   "EYIw2M": {
     "defaultMessage": "Clear selection"
   },
   "EnTkxu": {
     "defaultMessage": "Recommendations"
+  },
+  "F3C5Zx": {
+    "defaultMessage": "{key,select,name{{entityName} with that name already exists} other{{entityName} with that value already exists}}",
+    "description": "Validation - duplication checks"
+  },
+  "FACmOV": {
+    "defaultMessage": "Ports:"
   },
   "FbnpZB": {
     "defaultMessage": "Cluster of {count} Venues"
@@ -203,8 +277,20 @@
     "defaultMessage": "Open Captive Portal",
     "description": "WLAN security type - Open Captive Portal"
   },
+  "Gk3sbv": {
+    "defaultMessage": "Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}."
+  },
+  "H44xvD": {
+    "defaultMessage": "Switch Clients"
+  },
+  "HX3vfn": {
+    "defaultMessage": "The controller cluster is sending data with an incorrect future timestamp. To avoid false or misleading data analysis, all future timestamped data is dropped."
+  },
   "HuqGcJ": {
     "defaultMessage": "WPA2 (Recommended)"
+  },
+  "I1ZCPK": {
+    "defaultMessage": "Technology"
   },
   "I3JhPS": {
     "defaultMessage": "Network"
@@ -218,12 +304,33 @@
   "IDKI0Y": {
     "defaultMessage": "{ipAddress}:{port}"
   },
+  "IQrRCX": {
+    "defaultMessage": "No data to display"
+  },
   "IShDlj": {
     "defaultMessage": "WPA2 Enterprise",
     "description": "WLAN security type - WPA2 Enterprise"
   },
   "IdweXY": {
     "defaultMessage": "Select Columns"
+  },
+  "Imc8gS": {
+    "defaultMessage": "Incident Details"
+  },
+  "IozuIQ": {
+    "defaultMessage": "Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}."
+  },
+  "IqBkBl": {
+    "defaultMessage": "DHCP"
+  },
+  "J4gOpG": {
+    "defaultMessage": "Service Name"
+  },
+  "JKnT12": {
+    "defaultMessage": "The controller cluster is sending data with an incorrect past timestamp. To avoid false or misleading data analysis, past timestamped data is not analyzed for incidents."
+  },
+  "JfSEkt": {
+    "defaultMessage": "RADIUS failures are high in {scope} impacting connectivity for {impact} of clients."
   },
   "JkubB5": {
     "defaultMessage": "Enterprise AAA (802.1X)"
@@ -234,8 +341,36 @@
   "K7AkdL": {
     "defaultMessage": "Show"
   },
+  "KtZV9p": {
+    "defaultMessage": "Connection"
+  },
+  "KzFdpQ": {
+    "defaultMessage": "This field is invalid",
+    "description": "Validation - invalid checks"
+  },
+  "L84G40": {
+    "defaultMessage": "The controller cluster is sending data with an incorrect past timestamp"
+  },
+  "LHLIvm": {
+    "defaultMessage": "Wi-Fi Calling"
+  },
   "LTNKL8": {
     "defaultMessage": "1 week"
+  },
+  "Ls00yh": {
+    "defaultMessage": "{scope} is experiencing unusually high CPU usage. Prolonged high usage can cause CPU tasks to be queued, and also impact sending of data to northbound systems, including, but not limited to, RUCKUS Analytics."
+  },
+  "M+rBpe": {
+    "defaultMessage": "Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}"
+  },
+  "MH2Tp4": {
+    "defaultMessage": "Sub-optimal channel conditions detected for 2.4 GHz in {scope}."
+  },
+  "MHWaDv": {
+    "defaultMessage": "[Last] dddd[,] HH:mm"
+  },
+  "Mu/Odk": {
+    "defaultMessage": "EAP failures are unusually high in {scope}"
   },
   "NH/H5U": {
     "defaultMessage": "Dynamic Pre-Shared Key (DPSK)"
@@ -252,9 +387,6 @@
   "Nt8DSX": {
     "defaultMessage": "Authentication Service"
   },
-  "O17xiH": {
-    "defaultMessage": "date filter"
-  },
   "OT4kCw": {
     "defaultMessage": "AP Name"
   },
@@ -268,14 +400,26 @@
   "PYmHhr": {
     "defaultMessage": "Venue"
   },
+  "Pg+LLi": {
+    "defaultMessage": "Up"
+  },
   "Ppx673": {
     "defaultMessage": "Reports"
   },
   "Q8Qw5B": {
     "defaultMessage": "Description"
   },
+  "QBomBf": {
+    "defaultMessage": "EAP"
+  },
   "QH7XOz": {
     "defaultMessage": "New Clients"
+  },
+  "QQQKE7": {
+    "defaultMessage": "No active alarms"
+  },
+  "Qb4SoA": {
+    "defaultMessage": "IP Address:"
   },
   "QfVD/H": {
     "defaultMessage": "Use Cloudpath Server"
@@ -298,6 +442,16 @@
   "SDi0Ka": {
     "defaultMessage": "WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise. <highlight> Security protocols other than WPA3 are not be supported in 6 GHz radio. </highlight>"
   },
+  "Se22H1": {
+    "defaultMessage": "Please enter a valid IP address",
+    "description": "Validation - IP address checks"
+  },
+  "Sjo1P4": {
+    "defaultMessage": "Custom"
+  },
+  "T0/74h": {
+    "defaultMessage": "RADIUS failures are unusually high in {scope}"
+  },
   "T3UF92": {
     "defaultMessage": "Authentication Server"
   },
@@ -307,14 +461,23 @@
   "TY81Tv": {
     "defaultMessage": "Passphrase Format:"
   },
+  "U+7zaY": {
+    "defaultMessage": "The controller cluster is sending data with an incorrect future timestamp"
+  },
   "U9tjJ5": {
     "defaultMessage": "2 days"
   },
   "UaCh1c": {
     "defaultMessage": "Add Server"
   },
+  "Uc+xJO": {
+    "defaultMessage": "PoE power denied in {scope}"
+  },
   "V52jNn": {
     "defaultMessage": "Enabled"
+  },
+  "VDgGIa": {
+    "defaultMessage": "Admin State"
   },
   "VebTZq": {
     "defaultMessage": "WPA Enterprise",
@@ -330,11 +493,21 @@
   "WEJ7ak": {
     "defaultMessage": "No APs"
   },
+  "WH4SDF": {
+    "defaultMessage": "Service Type"
+  },
   "XB8fV9": {
     "defaultMessage": "Last 24 Hours"
   },
   "XYVgGy": {
     "defaultMessage": "Alarm Time"
+  },
+  "XquVRg": {
+    "defaultMessage": "Spaces are not allowed",
+    "description": "Validation - no whitespace checks"
+  },
+  "XuyXtG": {
+    "defaultMessage": "High AP-Controller connection failures in {scope}."
   },
   "Y2pNUx": {
     "defaultMessage": "AP operational - applying firmware"
@@ -342,23 +515,42 @@
   "YDMrKK": {
     "defaultMessage": "Users"
   },
+  "YLZ+2O": {
+    "defaultMessage": "Switches:"
+  },
+  "YwXyyX": {
+    "defaultMessage": "DPSK"
+  },
   "Z4WqBL": {
     "defaultMessage": "Remove Secondary Server"
+  },
+  "ZOI9Fb": {
+    "defaultMessage": "High AP-Controller connection failures in {scope}"
   },
   "ZWz5If": {
     "defaultMessage": "Network Info"
   },
+  "ZtxCeY": {
+    "defaultMessage": "This value should be lower than or equal to $'{max}'",
+    "description": "Validation - max checks"
+  },
   "ZvKSfJ": {
     "defaultMessage": "Events"
   },
-  "b3loSF": {
-    "defaultMessage": "Occupancy"
+  "aTpeqQ": {
+    "defaultMessage": "High memory utilization detected in {scope}"
   },
   "b5YpHX": {
     "defaultMessage": "AP operational"
   },
+  "bDtQ06": {
+    "defaultMessage": "Clients:"
+  },
   "bHHMAb": {
     "defaultMessage": "Firmware update failed"
+  },
+  "bK2o7Y": {
+    "defaultMessage": "Access Point"
   },
   "bS/cRP": {
     "defaultMessage": "Venues"
@@ -377,6 +569,9 @@
   },
   "cVVoGX": {
     "defaultMessage": "Error: Can not detect passphrase format value"
+  },
+  "cfMkrE": {
+    "defaultMessage": "Last Month"
   },
   "ciDg7D": {
     "defaultMessage": "Primary Server",
@@ -398,11 +593,23 @@
   "d63gFk": {
     "defaultMessage": "AI Analytics"
   },
+  "dA+hnZ": {
+    "defaultMessage": "Infrastructure"
+  },
+  "dElQAw": {
+    "defaultMessage": "Wi-Fi Clients"
+  },
   "dP02B8": {
     "defaultMessage": "Heartbeat lost"
   },
+  "dVx3yz": {
+    "defaultMessage": "Memory"
+  },
   "dg6Mrs": {
     "defaultMessage": "Number of characters in passphrase. Valid range 8-63"
+  },
+  "dnnI3G": {
+    "defaultMessage": "The network latency between the SZ nodes is unusually high"
   },
   "dty181": {
     "defaultMessage": "Traffic by Volume"
@@ -410,8 +617,15 @@
   "e0kEtS": {
     "defaultMessage": "Deactivate"
   },
+  "e6Ph5+": {
+    "defaultMessage": "Address"
+  },
   "eOJNIA": {
     "defaultMessage": "Connected Clients"
+  },
+  "eSgRCS": {
+    "defaultMessage": "{nodeType}: {nodeName}",
+    "description": "Uses to generate incident impacted scope for various incident descriptions"
   },
   "eWzMDx": {
     "defaultMessage": "Activated"
@@ -421,6 +635,9 @@
   },
   "eoV49s": {
     "defaultMessage": "Poor"
+  },
+  "epNuT+": {
+    "defaultMessage": "802.11 Authentication failures are high in {scope} impacting connectivity for {impact} of clients."
   },
   "f+sh2j": {
     "defaultMessage": "Administration"
@@ -439,6 +656,12 @@
   },
   "gevCaB": {
     "defaultMessage": "Passphrase length"
+  },
+  "gmXCZq": {
+    "defaultMessage": "Top 5 Switches by PoE Usage"
+  },
+  "h8X9hC": {
+    "defaultMessage": "All APs"
   },
   "hSGclh": {
     "defaultMessage": "Network Name"
@@ -465,15 +688,37 @@
   "iI2oMQ": {
     "defaultMessage": "Use the DPSK Service"
   },
+  "iXt6x5": {
+    "defaultMessage": "{nodeA} > {nodeB}",
+    "description": "FormattedPath: Uses to join path nodes together in a chain"
+  },
   "ioS2ep": {
     "defaultMessage": "Disconnected from cloud"
   },
   "jNR5e0": {
     "defaultMessage": "Network Details"
   },
+  "jSqwdW": {
+    "defaultMessage": "Coverage"
+  },
+  "jgaeq0": {
+    "defaultMessage": "[Today,] HH:mm"
+  },
+  "jnzQzj": {
+    "defaultMessage": "Last 7 Days"
+  },
   "jr8yqe": {
     "defaultMessage": "WPA",
     "description": "WLAN security type - WPA"
+  },
+  "k1Qd05": {
+    "defaultMessage": "dddd[,] HH:mm"
+  },
+  "kSbbL9": {
+    "defaultMessage": "PoE"
+  },
+  "kaKdM0": {
+    "defaultMessage": "Model:"
   },
   "keJaJz": {
     "defaultMessage": "Letters, numbers and symbols can be used"
@@ -487,17 +732,33 @@
   "ktaLzx": {
     "defaultMessage": "AP operational - applying configuration"
   },
+  "ktxCvs": {
+    "defaultMessage": "{nodeName} ({nodeType})",
+    "description": "FormattedPath: Uses to show path node name & type"
+  },
+  "l/e8Fv": {
+    "defaultMessage": "AP(s) operating in Low Power Mode: {scope}"
+  },
   "lPKfjk": {
     "defaultMessage": "Rebooting"
   },
   "lfIk1B": {
     "defaultMessage": "Add..."
   },
+  "mpbHiW": {
+    "defaultMessage": "Association failures are unusually high in {scope}"
+  },
   "mtr3R4": {
     "defaultMessage": "Incidents"
   },
+  "n0hHJu": {
+    "defaultMessage": "APs:"
+  },
   "n1Whvj": {
     "defaultMessage": "Switch"
+  },
+  "n7yYXG": {
+    "defaultMessage": "Service"
   },
   "nCMnED": {
     "defaultMessage": "Passphrase Length:"
@@ -505,6 +766,9 @@
   "nCxCzM": {
     "defaultMessage": "Managed Guest Pass",
     "description": "Guest network type - Managed Guest Pass"
+  },
+  "nJn+t1": {
+    "defaultMessage": "Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}"
   },
   "nVdqEC": {
     "defaultMessage": "No Switches"
@@ -519,6 +783,16 @@
   },
   "nhKqj3": {
     "defaultMessage": "Only numbers can be used"
+  },
+  "nijCnW": {
+    "defaultMessage": "{isComplexName,select,true{{name} ({nodeName})} other{{nodeName}}}",
+    "description": "Uses to format path node name, when isComplexName = true the nodeName would be something like AP or Switch MAC address"
+  },
+  "nso3Mj": {
+    "defaultMessage": "Scope"
+  },
+  "nwViUa": {
+    "defaultMessage": "Association failures are high in {scope} impacting connectivity for {impact} of clients."
   },
   "o43JQW": {
     "defaultMessage": "Operational - applying firmware"
@@ -538,11 +812,26 @@
   "p5WNkO": {
     "defaultMessage": "Temporarily degraded"
   },
+  "pJVOdI": {
+    "defaultMessage": "AP service is affected due to high number of AP reboots."
+  },
+  "pS5Lez": {
+    "defaultMessage": "RADIUS"
+  },
   "pUlxda": {
     "defaultMessage": "Total Incidents"
   },
   "pyZg46": {
     "defaultMessage": "{type,select,aaa{AAA Settings} dpsk{DPSK Settings} other{Settings}}"
+  },
+  "q2wzm3": {
+    "defaultMessage": "Time to connect is high in {scope}, impacting connectivity for {impact} of clients."
+  },
+  "q8tzQn": {
+    "defaultMessage": "Clients with low RSS are unusually high in {scope}"
+  },
+  "qEplfM": {
+    "defaultMessage": "AP service is affected due to high number of AP reboots"
   },
   "qQ6P9N": {
     "defaultMessage": "Activated in venues"
@@ -556,6 +845,12 @@
   },
   "rJPrzU": {
     "defaultMessage": "Captive Portal"
+  },
+  "rPBWRi": {
+    "defaultMessage": "MAC Address:"
+  },
+  "rQgpPD": {
+    "defaultMessage": "[Yesterday,] HH:mm"
   },
   "rXq1Sc": {
     "defaultMessage": "Pre-Shared Key (PSK)"
@@ -597,6 +892,15 @@
   "t071V3": {
     "defaultMessage": "Info:"
   },
+  "tB5At5": {
+    "defaultMessage": "MMM DD HH:mm"
+  },
+  "tOwHZm": {
+    "defaultMessage": "Last 1 Hour"
+  },
+  "tgg9V9": {
+    "defaultMessage": "802.11 Authentication"
+  },
   "tthToS": {
     "defaultMessage": "Disabled"
   },
@@ -610,8 +914,14 @@
   "tzMNF3": {
     "defaultMessage": "Status"
   },
+  "u0lL8w": {
+    "defaultMessage": "Services is not enabled"
+  },
   "uJV0wU": {
     "defaultMessage": "IP Address"
+  },
+  "uKatq7": {
+    "defaultMessage": "Edit Network"
   },
   "uS4sop": {
     "defaultMessage": "Type:"
@@ -620,13 +930,19 @@
     "defaultMessage": "Passphrase Expiration:"
   },
   "ubQ1f+": {
-    "defaultMessage": "Shared secret"
+    "defaultMessage": "Shared Secret"
   },
   "ukFIyf": {
     "defaultMessage": "Your Attention is Required"
   },
+  "upVeXQ": {
+    "defaultMessage": "VLAN mismatch found in {scope}."
+  },
   "utCJRG": {
     "defaultMessage": "Proxy Service:"
+  },
+  "v9+jd5": {
+    "defaultMessage": "EAP failures are high in {scope} impacting connectivity for {impact} of clients."
   },
   "vCAhII": {
     "defaultMessage": "Severity"
@@ -640,6 +956,21 @@
   "vhRKaX": {
     "defaultMessage": "AP rebooting"
   },
+  "voFdJV": {
+    "defaultMessage": "Association"
+  },
+  "w0OUOh": {
+    "defaultMessage": "Health Score"
+  },
+  "wEQDC6": {
+    "defaultMessage": "Edit"
+  },
+  "wfZEER": {
+    "defaultMessage": "VLAN Mismatch"
+  },
+  "whHFsS": {
+    "defaultMessage": "Service Availability"
+  },
   "wsSxJK": {
     "defaultMessage": "Open",
     "description": "WLAN security type - Open"
@@ -647,14 +978,38 @@
   "xGSuuE": {
     "defaultMessage": "Security Protocol"
   },
+  "xKk/lt": {
+    "defaultMessage": "The network latency between the SZ nodes is unusually high."
+  },
+  "xXDHjy": {
+    "defaultMessage": "Add Venue"
+  },
+  "xhBLiY": {
+    "defaultMessage": "Down"
+  },
   "xukzKg": {
     "defaultMessage": "Networks"
+  },
+  "xzWp9X": {
+    "defaultMessage": "Switches"
+  },
+  "y8zW5H": {
+    "defaultMessage": "PoE power denied in {scope}."
+  },
+  "yCDkU6": {
+    "defaultMessage": "Time to connect is greater than {threshold} in {scope}"
+  },
+  "yFgHXj": {
+    "defaultMessage": "Portal"
   },
   "yJ7+dR": {
     "defaultMessage": "Cloudpath Server"
   },
   "yV5oYe": {
     "defaultMessage": "Policies"
+  },
+  "ykBQn4": {
+    "defaultMessage": "Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}"
   },
   "ymr68V": {
     "defaultMessage": "Users are authorized through a captive portal in various methods",
@@ -672,13 +1027,19 @@
   "zT3YgI": {
     "defaultMessage": "Impacted Clients"
   },
+  "zWgbGg": {
+    "defaultMessage": "Today"
+  },
   "zWkvNO": {
     "defaultMessage": "Timeline"
   },
   "zbjrr1": {
-    "defaultMessage": "Radius Shared secret"
+    "defaultMessage": "Radius Shared Secret"
   },
   "zg0sQG": {
     "defaultMessage": "AP initializing"
+  },
+  "zifKlV": {
+    "defaultMessage": "Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}."
   }
 }

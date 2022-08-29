@@ -1,43 +1,116 @@
-import moment                     from 'moment-timezone'
-import { defineMessage, useIntl } from 'react-intl'
+import moment from 'moment-timezone'
+import {
+  FormattedMessage, 
+  MessageDescriptor,
+  useIntl
+} from 'react-intl'
 
 import { 
   calculateSeverity,
   Incident,
   incidentInformation,
   noDataSymbol,
-  useIncidentScope,
-  useLongDesription
+  useFormattedNodeType,
+  useImpactedArea,
+  useImpactValues,
+  useShortDescription
 } from '@acx-ui/analytics/utils'
+import { formatter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-export const getIncidentBySeverity = (value?: number | null) => {
-  if (value === null || value === undefined) {
-    return '-'
-  }
+export type GetIncidentBySeverityProps = {
+  value: number,
+  id: string
+}
+
+export const GetIncidentBySeverity = (props: GetIncidentBySeverityProps) => {
+  const { value, id } = props
 
   const severity = calculateSeverity(value)
-  if (!severity) return '-'
+  if (typeof severity === 'undefined') return <span>{noDataSymbol}</span>
 
-  return severity
+  return <UI.UnstyledLink to={id}>
+    <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
+  </UI.UnstyledLink>
 }
 
-export const formatDate = (datetimestamp?: string) => {
-  if (typeof datetimestamp !== 'string') return '-'
-
-  return moment(datetimestamp).format('MMM DD yyyy HH:mm')
+export type FormatDateProps = {
+  datetimestamp: string
 }
 
-export const formatDuration = (startTimestamp?: string, endTimestamp?: string) => {
-  if (typeof startTimestamp !== 'string') return '-'
-  if (typeof endTimestamp !== 'string') return '-' 
+export const FormatDate = (props: FormatDateProps) => {
+  const { datetimestamp } = props
+  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp)
+  if (formattedDatetime === null) return <span>{noDataSymbol}</span>
+  const timeStamp = formattedDatetime as string
+  return <UI.DateSpan>{timeStamp}</UI.DateSpan>
+}
 
-  const start = moment(startTimestamp)
-  const end = moment(endTimestamp)
-  const hours = end.diff(start, 'hours')
-  const minutes = end.diff(start, 'minutes')
-  return `${hours}h ${minutes % 60}min`
+export interface FormatIntlStringProps {
+  message: MessageDescriptor
+  scope?: string
+  threshold?: string
+}
+
+export const FormatIntlString = (props: FormatIntlStringProps) => {
+  const { message, scope, threshold } = props
+  return <FormattedMessage {...message} values={{ scope, threshold, noDataSymbol }} />
+}
+
+export interface IncidentTableComponentProps {
+  incident: Incident
+}
+
+export const ShortIncidentDescription = (props: IncidentTableComponentProps) => {
+  const { incident } = props
+  const shortDesc = useShortDescription(incident)
+    
+  return <UI.DescriptionSpan>{shortDesc}</UI.DescriptionSpan>
+}
+
+export const GetCategory = (code: string, subCategory?: boolean) => {
+  const incidentInfo = incidentInformation[code]
+  if (subCategory) {
+    const { subCategory } = incidentInfo
+    return <FormatIntlString message={subCategory} />
+  }
+  const { category } = incidentInfo
+  return <FormatIntlString message={category} />
+}
+
+export const GetScope = (props: IncidentTableComponentProps) => {
+  const { $t } = useIntl()
+  const { incident } = props
+  const scope = $t({
+    defaultMessage: '{nodeType}: {nodeName}',
+    description: 'Uses to generate incident impacted scope for various incident descriptions'
+  }, {
+    nodeType: useFormattedNodeType(incident.sliceType),
+    nodeName: useImpactedArea(incident.path, incident.sliceValue)
+  })
+  return <span>{scope}</span>
+}
+
+export const ClientImpact = (props: IncidentTableComponentProps & {
+  type: 'clientImpact' | 'impactedClients'
+}) => {
+  const { type, incident } = props
+  const values = useImpactValues('client', incident)
+  if (type === 'clientImpact') return <span>{values['clientImpactRatioFormatted'] as string}</span>
+
+  return <span>{values['clientImpactCountFormatted'] as string}</span>
+}
+
+export const durationValue = (start: string, end: string) => moment(end).diff(moment(start))
+
+export const dateSort = (dateA: string, dateB: string) => 
+  Math.sign(durationValue(dateA, dateB))
+
+export const defaultSort = (a: string | number, b: string | number) => {
+  if (a < b) return -1
+  if (a > b) return 1
+  return 0
 }
 
 export const clientImpactSort = (a?: unknown, b?: unknown) => {
@@ -50,63 +123,12 @@ export const clientImpactSort = (a?: unknown, b?: unknown) => {
   return 0
 }
 
-interface FormatIntlStringProps {
-  message: {
-    defaultMessage: string
-  }
-  scope?: string
-  threshold?: string
-}
-
-export const FormatIntlString = (props: FormatIntlStringProps) => {
-  const { $t } = useIntl()
-  const { message, scope, threshold } = props
-  const intlMessage = $t(message, { scope, threshold })
-  return <span>{intlMessage}</span>
-}
-
-
-export const getShortIncidentDescription = (code?: string) => {
-  if (typeof code !== 'string') {
-    return <FormatIntlString message={defineMessage({ defaultMessage: '{noDataSymbol}' })} />
-  }
-
-  const shortDesc = incidentInformation[code].shortDescription
-  return <FormatIntlString message={shortDesc} />
-}
-
-export const LongIncidentDescription = (incident: Incident) => {
-  const longDesc = useLongDesription(incident, 'cause')
-  
-  if (typeof incident.code !== 'string') {
-    return <FormatIntlString message={defineMessage({ defaultMessage: '{noDataSymbol}' })} />
-  }
-  
-  return <UI.DescriptionSpan>{longDesc}</UI.DescriptionSpan>
-}
-
-export const getCategory = (code?: string) => {
-  if (typeof code !== 'string') {
-    return <FormatIntlString message={defineMessage({ defaultMessage: '{noDataSymbol}' })} />
-  }
-
-  const category = incidentInformation[code].category
-  return <FormatIntlString message={category} />
-}
-
-export interface GetScopeProps {
-  incident: Incident
-}
-
-export const GetScope = (props: GetScopeProps) => {
-  const { incident } = props
-  const scope = useIncidentScope(incident)  
-  const message = defineMessage({ defaultMessage: '{scope}' })
-  return <FormatIntlString message={message} scope={scope}/>
-}
-
-export const truncateString = (text?: string) => {
-  if (typeof text !== 'string') return '-'
-  if (text.length < 25) return text
-  return text.slice(0, 25) + '...'
+export const severitySort = (a?: unknown, b?: unknown) => {
+  if (typeof a !== 'number' && typeof b !== 'number') return 0
+  const isDefined = typeof a !== 'undefined' && typeof b !== 'undefined'
+  const c = a as number
+  const d = b as number
+  if (isDefined && c > d) return 1
+  if (isDefined && c < d) return -1
+  return 0
 }

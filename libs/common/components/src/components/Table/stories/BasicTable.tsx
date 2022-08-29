@@ -8,11 +8,15 @@ const basicColumns = [
   },
   {
     title: 'Age',
+    tooltip: 'This is a tooltip',
     dataIndex: 'age',
     key: 'age'
   },
   {
-    title: 'Address',
+    title: <>
+      Address
+      <Table.SubTitle>Sub Title</Table.SubTitle>
+    </>,
     dataIndex: 'address',
     key: 'address'
   }

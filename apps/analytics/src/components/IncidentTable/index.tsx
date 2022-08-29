@@ -1,159 +1,199 @@
-import { useEffect, useState } from 'react'
+import { useIntl, defineMessage } from 'react-intl'
 
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { Incident, noDataSymbol, IncidentFilter, nodeTypes } from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table }                         from '@acx-ui/components'
+import { Link }                                              from '@acx-ui/react-router-dom'
+import { formatter }                                         from '@acx-ui/utils'
 
-import { Incident, useAnalyticsFilter }               from '@acx-ui/analytics/utils'
-import { Card, Loader, Table, TableProps, showToast } from '@acx-ui/components'
-import { Link }                                       from '@acx-ui/react-router-dom'
-
-import { useIncidentsListQuery, IncidentNodeData } from './services'
-import { 
-  getIncidentBySeverity,
-  formatDate,
-  formatDuration,
+import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
+import {
+  GetIncidentBySeverity,
+  FormatDate,
   clientImpactSort,
-  LongIncidentDescription,
-  getCategory,
-  GetScope
+  ShortIncidentDescription,
+  GetCategory,
+  GetScope,
+  severitySort,
+  dateSort,
+  defaultSort,
+  ClientImpact
 } from './utils'
 
 
-const ColumnHeaders: TableProps<Incident>['columns'] = [
-  {
-    title: 'Severity',
-    dataIndex: 'severity',
-    key: 'severity',
-    render: (_, value) => getIncidentBySeverity(value.severity),
-    sorter: {
-      compare: (a, b) => clientImpactSort(a.severity, b.severity),
-      multiple: 1
-    }
-  },
-  {
-    title: 'Date',
-    dataIndex: 'startTime',
-    valueType: 'dateTime',
-    key: 'startTime',
-    render: (_, value) => {
-      return <Link to={`/analytics/incident/${value.id}`}>{formatDate(value.startTime)}</Link>
-    },
-    sorter: {
-      compare: (a, b) => clientImpactSort(a.startTime, b.startTime),
-      multiple: 2
-    }
-  },
-  {
-    title: 'Duration',
-    dataIndex: 'endTime',
-    key: 'endTime',
-    render: (_, value) => formatDuration(value.startTime, value.endTime),
-    sorter: {
-      compare: (a, b) => clientImpactSort(
-        formatDuration(a.startTime, a.endTime),
-        formatDuration(b.startTime, b.endTime)
-      ),
-      multiple: 2
-    }
-  },
-  {
-    title: 'Description',
-    dataIndex: 'code',
-    key: 'code',
-    render: (_, value) => LongIncidentDescription(value),
-    sorter: {
-      compare: (a, b) => clientImpactSort(a.code, b.code)
-    }
-  },
-  {
-    title: 'Category',
-    dataIndex: 'sliceType',
-    key: 'sliceType',
-    render: (_, value) => getCategory(value.code),
-    sorter: {
-      compare: (a, b) => clientImpactSort(a.sliceType, b.sliceType)
-    }
-  },
-  {
-    title: 'Client Impact',
-    dataIndex: 'clientCount',
-    key: 'clientCount',
-    sorter: {
-      compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount)
-    }
-  },
-  {
-    title: 'Impacted Clients',
-    dataIndex: 'impactedClientCount',
-    key: 'impactedClientCount',
-    sorter: {
-      compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount)
-    }
-  },
-  {
-    title: 'Scope',
-    dataIndex: 'mutedBy',
-    key: 'mutedBy',
-    render: (_, value) => <GetScope incident={value} />,
-    sorter: {
-      compare: (a, b) => clientImpactSort(a.mutedBy, b.mutedBy)
-    }
-  }, 
-  {
-    title: 'Type',
-    dataIndex: 'sliceValue',
-    key: 'sliceValue',
-    sorter: {
-      compare: (a, b) => clientImpactSort(a.sliceValue, b.sliceValue)
-    }
-  }
-]
-
-export type IncidentTableProps = TableProps<IncidentNodeData>
-
-const actions: TableProps<Incident>['actions'] = [
-  {
-    label: 'Mute',
-    onClick: (selectedRows) => {
-      showToast({
-        type: 'info',
-        content: `Mute ${selectedRows[0].id}`
-      })
-    }
-  }
-]
-
-const IncidentTableWidget = () => {
-  const filters = useAnalyticsFilter()
+function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
+  const { $t } = useIntl()
   const queryResults = useIncidentsListQuery(filters)
-  const [data, setData] = useState<IncidentNodeData>([])
 
-  useEffect(() => {
-    if (queryResults && queryResults.data) {
-      setData(queryResults.data)
+  const mutedKeysFilter = (data: IncidentNodeData) => {
+    return data.filter((row) => row.isMuted === true).map((row) => row.id)
+  }
+
+  const actions: TableProps<Incident>['actions'] = [
+    {
+      label: $t(defineMessage({ defaultMessage: 'Mute' })),
+      onClick: () => {
+        // TODO: to be updated for muting
+      }
     }
-  }, [queryResults, queryResults.data])
+  ]
 
+  const ColumnHeaders: TableProps<IncidentTableRow>['columns'] = [
+    {
+      title: $t(defineMessage({ defaultMessage: 'Severity' })),
+      width: 80,
+      dataIndex: 'severity',
+      key: 'severity',
+      render: (_, value) => <GetIncidentBySeverity value={value.severity} id={value.id}/>,
+      sorter: {
+        compare: (a, b) => severitySort(a.severity, b.severity),
+        multiple: 1
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      defaultSortOrder: 'descend',
+      fixed: 'left'
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Date' })),
+      width: 'auto',
+      dataIndex: 'endTime',
+      valueType: 'dateTime',
+      key: 'endTime',
+      render: (_, value) => <Link to={value.id}><FormatDate datetimestamp={value.endTime}/></Link>,
+      sorter: {
+        compare: (a, b) => dateSort(a.endTime, b.endTime),
+        multiple: 2
+      },
+      fixed: 'left',
+      sortDirections: ['ascend', 'descend', 'ascend']
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Duration' })),
+      width: 'auto',
+      dataIndex: 'duration',
+      key: 'duration',
+      render: (_, value) => formatter('durationFormat')(value.duration) as string,
+      sorter: {
+        compare: (a, b) => defaultSort(b.duration, a.duration),
+        multiple: 3
+      },
+      sortDirections: ['ascend', 'descend', 'ascend']
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Description' })),
+      width: 'auto',
+      dataIndex: 'description',
+      key: 'description',
+      render: (_, value) => <ShortIncidentDescription incident={value}/>,
+      sorter: {
+        compare: (a, b) => defaultSort(a.code, b.code),
+        multiple: 4
+      },
+      ellipsis: true,
+      sortDirections: ['ascend', 'descend', 'ascend']
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Category' })),
+      width: 'auto',
+      dataIndex: 'category',
+      key: 'category',
+      render: (_, value) => GetCategory(value.code),
+      sorter: {
+        compare: (a, b) => defaultSort(a.code, b.code),
+        multiple: 5
+      },
+      sortDirections: ['ascend', 'descend', 'ascend']
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
+      width: 'auto',
+      dataIndex: 'subCategory',
+      key: 'subCategory',
+      render: (_, value) => GetCategory(value.code, true),
+      sorter: {
+        compare: (a, b) => defaultSort(a.code, b.code),
+        multiple: 5
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      show: false
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
+      width: 'auto',
+      dataIndex: 'clientCount',
+      key: 'clientCount',
+      render: (_, incident) => <ClientImpact type='clientImpact' incident={incident}/>,
+      sorter: {
+        compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount),
+        multiple: 6
+      },
+      sortDirections: ['ascend', 'descend', 'ascend']
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
+      width: 'auto',
+      dataIndex: 'impactedClientCount',
+      key: 'impactedClientCount',
+      render: (_, incident) => <ClientImpact type='impactedClients' incident={incident}/>,
+      sorter: {
+        compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount),
+        multiple: 7
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      align: 'center'
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Scope' })),
+      width: 'auto',
+      dataIndex: 'scope',
+      ellipsis: true,
+      key: 'scope',
+      render: (_, value) => <GetScope incident={value} />,
+      sorter: {
+        compare: (a, b) => clientImpactSort(a.code, b.code),
+        multiple: 8
+      },
+      sortDirections: ['ascend', 'descend', 'ascend']
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Type' })),
+      width: 'auto',
+      dataIndex: 'type',
+      key: 'type',
+      render: (_, value) => $t(nodeTypes(value.sliceType)).toLocaleUpperCase(),
+      sorter: {
+        compare: (a, b) => clientImpactSort(a.code, b.code),
+        multiple: 8
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      show: false
+    }
+  ]
 
   return (
     <Loader states={[queryResults]}>
-      <Card>
-        <AutoSizer>
-          {({ height, width }) => (
-            <Table
-              type='tall'
-              style={{ width, height }}
-              dataSource={data}
-              columns={ColumnHeaders}
-              actions={actions}
-              rowSelection={{ type: 'checkbox' }}
-              pagination={{ pageSize: 10 }}
-              rowKey='id'
-              showSorterTooltip={false}
-              scroll={{ y: 0, x: 0 }}
-            />
-          )}
-        </AutoSizer>
-      </Card>
+      <Table
+        type='tall'
+        dataSource={queryResults?.data}
+        columns={ColumnHeaders}
+        actions={actions}
+        rowSelection={{
+          type: 'radio',
+          defaultSelectedRowKeys: queryResults.data
+            ? mutedKeysFilter(queryResults.data)
+            : undefined
+        }}
+        pagination={{
+          defaultPageSize: 10,
+          position: ['bottomCenter'],
+          pageSizeOptions: [5, 10, 20, 25, 50, 100],
+          showTotal: undefined
+        }}
+        rowKey='id'
+        showSorterTooltip={false}
+        columnEmptyText={noDataSymbol}
+        scroll={{ y: 'max-content' }}
+        indentSize={0}
+      />
     </Loader>
   )
 }

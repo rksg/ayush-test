@@ -4,12 +4,13 @@ import { withKnobs, object }  from '@storybook/addon-knobs'
 import { storiesOf }          from '@storybook/react'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 
-import { formatter } from '@acx-ui/utils'
+import type { BarChartData } from '@acx-ui/analytics/utils'
+import { formatter }         from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import { Card }              from '../Card'
 
-import { BarChart, BarChartData } from '.'
+import { BarChart } from '.'
 
 export const data = (multiseries = false): BarChartData => ({
   dimensions: ['Switch Name', 'PoE Usage', 'Utilisation_per', 'Transmited', 'Received'],
@@ -98,7 +99,7 @@ const getSwitchTrafficRichStyle = () => ({
   }
 })
 
-const wrapInsideCard = (title: string, children: ReactNode) => (
+export const wrapInsideCard = (title: string, children: ReactNode) => (
   <div style={{ width: 496, height: 280 }}>
     <Card title={title}>
       {children}

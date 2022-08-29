@@ -6,17 +6,10 @@ import {
   ChartData,
   Dashboard,
   ApVenueStatusEnum,
-  SwitchStatusEnum } from '@acx-ui/rc/services'
+  SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import * as UI                from './styledComponents'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
-
-export const getDeviceConnectionStatusColors = () => [
-  cssStr('--acx-semantics-green-50'), // Operational
-  cssStr('--acx-neutrals-50'), // Setup Phase
-  cssStr('--acx-semantics-yellow-40'), // Transient Issue
-  cssStr('--acx-semantics-red-50') // Requires Attention
-]
 
 export const getAPStatusDisplayName = (label: ApVenueStatusEnum, severity: boolean = true) => {
   switch (label) {

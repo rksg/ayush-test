@@ -1,9 +1,30 @@
-import { Button as AntButton, Space, ButtonProps as AntButtonProps } from 'antd'
+import { 
+  Button as AntButton, 
+  Space, 
+  ButtonProps as AntButtonProps,
+  Tooltip as AntTooltip
+} from 'antd'
 import styled, { css, createGlobalStyle }                            from 'styled-components/macro'
 
-import { CancelCircle } from '@acx-ui/icons'
+import { InformationOutlined, CancelCircle } from '@acx-ui/icons'
 
 import { Subtitle } from '../Subtitle'
+
+export const InformationTooltip = styled(AntTooltip).attrs({ children: <InformationOutlined /> })``
+
+export const TitleWithTooltip = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+`
+
+export const SubTitle = styled.span`
+  display: block;
+  color: var(--acx-neutrals-70);
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+`
 
 export const CloseButton = styled(AntButton).attrs({ icon: <CancelCircle /> })`
   border: none;
@@ -69,6 +90,8 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
       .ant-tree:last-of-type {
         display: none;
       }
+      // prevent subtitle to appear in column setting
+      ${SubTitle} { display: none; }
     }
 
     &-title {

@@ -40,15 +40,15 @@ type ProColumnTypeSubset <RecordType, ValueType> = Omit<
   'fixed' | 'hideInTable' | 'hideInform' | 'hideInSetting' | 'hideInSearch'
 >
 
-type ColumnGroupType<RecordType, ValueType>
+export type ColumnGroupType<RecordType, ValueType>
   = ColumnType<RecordType, ValueType>
-  & { children: Columns<RecordType>[] }
+  & { children: TableColumn<RecordType>[] }
 
-type ColumnType <RecordType = unknown, ValueType = 'text'>
+export type ColumnType <RecordType = unknown, ValueType = 'text'>
   = ProColumnTypeSubset<RecordType, ValueType>
   & AdditionalColumnType
 
-export type Columns<RecordType = unknown, ValueType = 'text'>
+export type TableColumn<RecordType = unknown, ValueType = 'text'>
   = ColumnGroupType<RecordType, ValueType>
   | ColumnType<RecordType, ValueType>
 

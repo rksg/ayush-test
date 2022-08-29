@@ -1,14 +1,12 @@
-import { Space as AntSpace, SpaceProps } from 'antd'
-import styled                            from 'styled-components'
+import styled from 'styled-components'
 
-export const Space = styled((props: SpaceProps) =>
-  <AntSpace {...props}/>
-)`
-  margin-bottom: 16px;
-`
 
-export const Div = styled.div``
-
+import {
+  IncidentSeverities,
+  incidentSeverities
+} from '@acx-ui/analytics/utils'
+import { cssStr } from '@acx-ui/components'
+import { Link }   from '@acx-ui/react-router-dom'
 
 export const withEllipsis = `
   white-space: nowrap;
@@ -28,4 +26,25 @@ export const withDottedUnderline = `
 export const DescriptionSpan = styled.div`
   ${withEllipsis}
   ${withDottedUnderline}
+`
+
+export type SeveritySpanProps = {
+  severity: IncidentSeverities
+}
+
+export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => props)`
+  color: ${(props) => {
+    const color = incidentSeverities[props.severity].color
+    return cssStr(color)
+  }};
+  font-weight: var(--acx-body-font-weight-bold);
+`
+
+export const DateSpan = styled.span`
+  font-weight: var(--acx-body-font-weight-bold);
+`
+
+export const UnstyledLink = styled(Link)`
+  color: inherit;
+  text-decoration: inherit;
 `
