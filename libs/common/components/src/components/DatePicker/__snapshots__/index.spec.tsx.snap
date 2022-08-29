@@ -16,7 +16,7 @@ exports[`CalenderRangePicker should render default CalenderRangePicker 1`] = `
           placeholder="Start date"
           readonly=""
           size="13"
-          value="Dec 30 2021"
+          value="Dec 31 2021"
         />
       </div>
       <div
@@ -55,7 +55,7 @@ exports[`CalenderRangePicker should render default CalenderRangePicker 1`] = `
           placeholder="End date"
           readonly=""
           size="13"
-          value="Dec 31 2021"
+          value="Jan 01 2022"
         />
       </div>
       <div
