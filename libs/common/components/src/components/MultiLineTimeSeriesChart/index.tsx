@@ -57,7 +57,7 @@ export function MultiLineTimeSeriesChart
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
-    echartInstance.on('click', 'series.line', function (params) {
+    echartInstance.on('click', 'series.line', function () {
       // params.data.id = incident id
     })
   }, [eChartsRef])
