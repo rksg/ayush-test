@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
   Collapse,
@@ -9,7 +9,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }     from '@acx-ui/components'
+import { StepsForm, Button } from '@acx-ui/components'
 import {
   useVlanPoolListQuery
 } from '@acx-ui/rc/services'
@@ -50,6 +50,28 @@ const listPayload = {
 }
 
 export function NetworkMoreSettingsForm (props: {
+  wlanData: NetworkSaveData
+}) {
+  const { $t } = useIntl()
+  const [enableMoreSettings, setEnabled] = useState(false)
+  return <div>
+    <Button
+      type='link'
+      onClick={() => {
+        setEnabled(!enableMoreSettings)
+      }}
+    >
+      {enableMoreSettings ?
+        $t({ defaultMessage: 'Show less settings' }) :
+        $t({ defaultMessage: 'Show more settings' })}
+    </Button>
+    {enableMoreSettings &&
+        <NetworkMoreSettingsForm2 wlanData={props.wlanData} />}
+  </div>
+}
+
+
+export function NetworkMoreSettingsForm2 (props: {
   wlanData: NetworkSaveData
 }) {
   const { $t } = useIntl()
@@ -112,7 +134,7 @@ export function NetworkMoreSettingsForm (props: {
       expandIconPosition='end'
       ghost={true}
       bordered={false}
-      style={{ width: '600px' }}>
+      style={{ width: '100%', maxWidth: '600px' }}>
 
       <Panel header='VLAN' key='1' >
         <>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 
 import {
   ExclamationCircleFilled,
@@ -28,21 +28,26 @@ import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
   NetworkTypeEnum,
-  UserSettings
+  UserSettings,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { IpPortSecretForm } from '../../../components/IpPortSecretForm'
 import { ToggleButton }     from '../../../components/ToggleButton'
 import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext   from '../NetworkFormContext'
 
-import { CloudpathServerForm } from './CloudpathServerForm'
+import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { CloudpathServerForm }     from './CloudpathServerForm'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
-export function AaaSettingsForm () {
+export function AaaSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
   const [
     isCloudpathEnabled,
     selectedId,
@@ -63,6 +68,7 @@ export function AaaSettingsForm () {
       }
     }
   })
+  const { data } = useContext(NetworkFormContext)
   const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
   const showButtons = enableAuthProxy !== !!enableAccountingProxy
                     && enableAccountingService && !isCloudpathEnabled
@@ -71,6 +77,7 @@ export function AaaSettingsForm () {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14}>
         <NetworkDiagram

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 
 
 import {
@@ -15,22 +15,33 @@ import {
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Subtitle }                     from '@acx-ui/components'
-import { useCloudpathListQuery }                   from '@acx-ui/rc/services'
-import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkType,
-  transformDpskNetwork, PassphraseExpirationEnum }      from '@acx-ui/rc/utils'
+import { StepsForm, Subtitle }   from '@acx-ui/components'
+import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import {
+  WlanSecurityEnum,
+  NetworkTypeEnum,
+  PassphraseFormatEnum,
+  DpskNetworkType,
+  transformDpskNetwork,
+  PassphraseExpirationEnum,
+  NetworkSaveData }      from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram }    from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext    from '../NetworkFormContext'
 import { FieldExtraTooltip } from '../styledComponents'
 
-import { CloudpathServerForm } from './CloudpathServerForm'
+import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { CloudpathServerForm }     from './CloudpathServerForm'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
-export function DpskSettingsForm () {
+export function DpskSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
+  const { data } = useContext(NetworkFormContext)
   const selectedId = useWatch('cloudpathServerId')
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -44,6 +55,7 @@ export function DpskSettingsForm () {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14}>
         <NetworkDiagram
@@ -212,3 +224,4 @@ function PassphraseGeneration () {
     </>
   )
 }
+

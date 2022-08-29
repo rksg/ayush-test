@@ -4,7 +4,6 @@ import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
-  Button,
   PageHeader,
   showToast,
   StepsForm,
@@ -23,14 +22,13 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext          from './NetworkFormContext'
-import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
-import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }             from './NetworkSummary/SummaryForm'
+import { NetworkDetailForm }   from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext      from './NetworkFormContext'
+import { AaaSettingsForm }     from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }    from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }    from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }     from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }         from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave,
@@ -56,7 +54,6 @@ export function NetworkForm () {
 
   const [createNetwork] = useCreateNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
-  const [enableMoreSettings, setEnabled] = useState(false)
 
 
   const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
@@ -149,25 +146,11 @@ export function NetworkForm () {
               return true
             }}
           >
-            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
-            {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
-            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
+            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm saveState={saveState}/>}
 
-            {!editMode && <>
-              <Button
-                type='link'
-                onClick={() => {
-                  setEnabled(!enableMoreSettings)
-                }}
-              >
-                {enableMoreSettings ? $t({ defaultMessage: 'Show less settings' }) :
-                  $t({ defaultMessage: 'Show more settings' })}
-              </Button>
-              {enableMoreSettings &&
-                <NetworkMoreSettingsForm wlanData={saveState} />}
-            </>
-            }
           </StepsForm.StepForm>
 
           <StepsForm.StepForm

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 
 import {
@@ -36,19 +36,25 @@ import {
   NetworkTypeEnum,
   WlanSecurityEnum,
   WifiNetworkMessages,
-  hexRegExp
+  hexRegExp,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { IpPortSecretForm } from '../../../components/IpPortSecretForm'
 import { ToggleButton }     from '../../../components/ToggleButton'
 import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext   from '../NetworkFormContext'
+
+import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
-export function PskSettingsForm () {
+export function PskSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
   const [
     selectedId,
     macAddressAuthentication
@@ -56,6 +62,7 @@ export function PskSettingsForm () {
     useWatch('cloudpathServerId'),
     useWatch('macAddressAuthentication')
   ]
+  const { data } = useContext(NetworkFormContext)
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
       return {
@@ -68,6 +75,7 @@ export function PskSettingsForm () {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14}>
         <NetworkDiagram

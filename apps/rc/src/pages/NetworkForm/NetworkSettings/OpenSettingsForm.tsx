@@ -8,23 +8,26 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }             from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
-import { NetworkTypeEnum }       from '@acx-ui/rc/utils'
-import { useParams }             from '@acx-ui/react-router-dom'
+import { StepsForm }                        from '@acx-ui/components'
+import { useCloudpathListQuery }            from '@acx-ui/rc/services'
+import { NetworkTypeEnum, NetworkSaveData } from '@acx-ui/rc/utils'
+import { useParams }                        from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
 
-import { CloudpathServerForm } from './CloudpathServerForm'
+import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { CloudpathServerForm }     from './CloudpathServerForm'
 
 const { useWatch } = Form
 
-export function OpenSettingsForm () {
+export function OpenSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   if(data){
-    form.setFieldsValue({ 
+    form.setFieldsValue({
       cloudpathServerId: data.cloudpathServerId,
       isCloudpathEnabled: data.cloudpathServerId !== undefined
     })
@@ -42,6 +45,7 @@ export function OpenSettingsForm () {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14}>
         <NetworkDiagram
@@ -57,7 +61,6 @@ function SettingsForm () {
   const isCloudpathEnabled = useWatch<boolean>('isCloudpathEnabled')
   const { editMode } = useContext(NetworkFormContext)
   const { $t } = useIntl()
-
   return (
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsForm.Title>
@@ -71,7 +74,6 @@ function SettingsForm () {
 
       {isCloudpathEnabled && <CloudpathServerForm />}
 
-      { /*TODO: <div><Button type='link'>Show more settings</Button></div> */ }
     </>
   )
 }
