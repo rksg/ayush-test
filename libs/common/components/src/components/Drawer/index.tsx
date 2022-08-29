@@ -1,4 +1,4 @@
-import { Drawer as AntdDrawer, DrawerProps as AntdDrawerProps } from 'antd'
+import { DrawerProps as AntDrawerProps } from 'antd'
 
 import { CloseSymbol, ArrowBack } from '@acx-ui/icons'
 
@@ -12,7 +12,7 @@ interface DrawerHeaderProps {
 }
 
 export interface DrawerProps extends
-  Omit<AntdDrawerProps, 'title'|'placement'|'extra'|'footerStyle'>,
+  Omit<AntDrawerProps, 'title'|'placement'|'extra'|'footerStyle'>,
   DrawerHeaderProps {}
 
 const Header = (props: DrawerHeaderProps) => {
@@ -33,7 +33,7 @@ export const Drawer = (props: DrawerProps) => {
   const { title, icon, subTitle, onBackClick, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
   return (
-    <AntdDrawer
+    <UI.Drawer
       {...rest}
       title={<Header {...headerProps}/>}
       placement='right'
