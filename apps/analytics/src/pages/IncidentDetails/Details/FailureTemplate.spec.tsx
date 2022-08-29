@@ -1,8 +1,6 @@
-import { rest } from 'msw'
-
-import { fakeIncident1 }                             from '@acx-ui/analytics/utils'
-import { Provider }                                  from '@acx-ui/store'
-import { mockAutoSizer, render, screen, mockServer } from '@acx-ui/test-utils'
+import { fakeIncident1 }                 from '@acx-ui/analytics/utils'
+import { Provider }                      from '@acx-ui/store'
+import { mockAutoSizer, render, screen } from '@acx-ui/test-utils'
 
 import { IncidentDetailsTemplate } from './FailureTemplate'
 
@@ -17,15 +15,6 @@ describe('IncidentDetailsTemplate', () => {
   mockAutoSizer()
 
   it('should render correctly', () => {
-    mockServer.use(
-      rest.get(
-        '/t/tenantId/analytics/incidents/:incidentId',
-        (req, res, ctx) => {
-          return res(ctx.json(fakeIncident1))
-        }
-      )
-    )
-
     const params = {
       incidentId: fakeIncident1.id
     }
