@@ -131,9 +131,9 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          network impact
-        </div>
+        <div
+          data-testid="networkImpact"
+        />
       </div>
     </div>
     <div

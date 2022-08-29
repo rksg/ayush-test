@@ -9,10 +9,13 @@ import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
 import { IncidentAttributes } from '../IncidentAttributes'
 import { TimeSeries }         from '../TimeSeries'
+import { NetworkImpact }      from '../NetworkImpact'
 
 import * as UI from './styledComponents'
 
 export const IncidentDetailsTemplate = (incident: Incident) => {
+  const networkImpactCharts = [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
+
   const { $t } = useIntl()
   const timeSeriesCharts = [
     'incidentCharts',
@@ -53,7 +56,7 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
           <div>Insights</div>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>network impact</div>
+          <NetworkImpact incident={incident} charts={networkImpactCharts}/>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
           <TimeSeries incident={incident} charts={timeSeriesCharts}/>
