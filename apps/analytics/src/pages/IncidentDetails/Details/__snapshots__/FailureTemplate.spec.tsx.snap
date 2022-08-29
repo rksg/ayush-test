@@ -65,70 +65,87 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
           </span>
           <span
             class="ant-page-header-heading-sub-title"
+            title="EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
           >
-            <p>
-              EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
-            </p>
+            EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
           </span>
         </div>
       </div>
     </div>
   </div>
   <div
-    class="ant-row"
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
     style="margin: -10px -10px -10px -10px;"
   >
     <div
-      class="ant-col ant-col-4"
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
-        style="overflow: visible; height: 0px; width: 0px;"
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          style="width: -20px;"
-        >
-          incident attributes
-        </div>
-      </div>
-      <div
-        class="resize-triggers"
-      >
-        <div
-          class="expand-trigger"
+          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+          style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            style="width: 1px; height: 1px;"
-          />
+            style="width: 280px;"
+          >
+            <div
+              data-testid="incidentAttributes"
+            />
+          </div>
         </div>
         <div
-          class="contract-trigger"
-        />
+          class="resize-triggers"
+        >
+          <div
+            class="expand-trigger"
+          >
+            <div
+              style="width: 281px; height: 281px;"
+            />
+          </div>
+          <div
+            class="contract-trigger"
+          />
+        </div>
       </div>
     </div>
     <div
-      class="ant-col ant-col-20"
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
-      <div>
-        insights
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Insights
+        </div>
       </div>
     </div>
     <div
-      class="ant-col ant-col-20 ant-col-offset-4"
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
-      <div>
-        network impact
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          network impact
+        </div>
       </div>
     </div>
     <div
-      class="ant-col ant-col-20 ant-col-offset-4"
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
-      <div>
-        charts
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          time series section
+        </div>
       </div>
     </div>
   </div>

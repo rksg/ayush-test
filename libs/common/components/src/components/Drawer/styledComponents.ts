@@ -1,4 +1,12 @@
-import styled from 'styled-components'
+import { Drawer as AntDrawer } from 'antd'
+import styled                  from 'styled-components'
+
+export const Drawer = styled(AntDrawer)`
+  .ant-drawer-body {
+    display: flex;
+    flex-direction: column;
+  }
+`
 
 export const BackButton = styled.button`
   border: none;
@@ -10,6 +18,9 @@ export const BackButton = styled.button`
   line-height: var(--acx-headline-5-line-height);
   padding: 0;
   padding-bottom: 8px;
+  &:hover {
+    cursor: pointer;
+  }
 `
 
 export const Title = styled.div`
