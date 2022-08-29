@@ -1,9 +1,9 @@
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment                         from 'moment-timezone'
+import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { renderHook } from '@acx-ui/test-utils'
 
-import { formatter } from './formatter'
+import { formatter, intlFormats } from './formatter'
 
 function testFormat (
   format: string,
@@ -289,5 +289,47 @@ describe('formatter', () => {
         .toBe(moment(1456885800000).tz('America/Los_Angeles')
           .format('MMM DD YYYY HH:mm:ss Z').replace('+00:00', 'UTC'))
     })
+  })
+})
+
+type TestSet = [number, string]
+describe('intlFormats', () => {
+  const testFormat = (
+    format: MessageDescriptor,
+    sets: TestSet[]
+  ) => sets.forEach(([value, expected]) => {
+    it(`convert ${value} to ${expected}`, () => {
+      const result = renderHook(() => useIntl().$t(format, { value })).result.current
+      expect(result).toEqual(expected)
+    })
+  })
+  describe('countFormat', () => {
+    testFormat(intlFormats.countFormat, [
+      [1,'1'],
+      [12,'12'],
+      [123,'123'],
+      [1234,'1.23K'],
+      [12345,'12.3K'],
+      [12344,'12.3K'],
+      [123456,'123K'],
+      [1234567,'1.23M'],
+      [12345678,'12.3M'],
+      [123000000000,'123B'],
+      [123000000000000,'123T'],
+      [123000000000000000,'123,000T'],
+      [123.456789,'123'],
+      [1.00,'1'],
+      [1500,'1.5K'],
+      [2000,'2K']
+    ])
+  })
+  describe('percentFormat', () => {
+    testFormat(intlFormats.percentFormat, [
+      [0.12, '12%'],
+      [0.123, '12.3%'],
+      [0.1235, '12.35%'],
+      [0.12359, '12.36%'],
+      [0.12999, '13%']
+    ])
   })
 })

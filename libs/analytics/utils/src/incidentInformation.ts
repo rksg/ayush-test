@@ -1,7 +1,17 @@
 /* eslint-disable max-len */
-import { defineMessage } from 'react-intl'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
-export const incidentInformation = {
+import { IncidentCode } from './constants'
+
+export interface IncidentInformation {
+  category: MessageDescriptor
+  subCategory: MessageDescriptor
+  shortDescription: MessageDescriptor
+  longDescription: MessageDescriptor
+  incidentType: 'common' | 'network' | 'switch'
+}
+
+export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
   'ttc': {
     category: defineMessage({ defaultMessage: 'Connection' }),
     subCategory: defineMessage({ defaultMessage: 'Time To Connect' }),
@@ -156,39 +166,39 @@ export const incidentInformation = {
     }),
     incidentType: 'network'
   },
-  'p-channeldist-suboptimal-plan-24g': {
-    category: defineMessage({ defaultMessage: 'Performance' }),
-    subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
-    shortDescription: defineMessage({
-      defaultMessage: 'Sub-optimal channel conditions detected for 2.4 GHz in {scope}'
-    }),
-    longDescription: defineMessage({
-      defaultMessage: 'Sub-optimal channel conditions detected for 2.4 GHz in {scope}.'
-    }),
-    incidentType: 'network'
-  },
-  'p-channeldist-suboptimal-plan-50g-outdoor': {
-    category: defineMessage({ defaultMessage: 'Performance' }),
-    subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
-    shortDescription: defineMessage({
-      defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}'
-    }),
-    longDescription: defineMessage({
-      defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}.'
-    }),
-    incidentType: 'network'
-  },
-  'p-channeldist-suboptimal-plan-50g-indoor': {
-    category: defineMessage({ defaultMessage: 'Performance' }),
-    subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
-    shortDescription: defineMessage({
-      defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}'
-    }),
-    longDescription: defineMessage({
-      defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}.'
-    }),
-    incidentType: 'network'
-  },
+  // 'p-channeldist-suboptimal-plan-24g': {
+  //   category: defineMessage({ defaultMessage: 'Performance' }),
+  //   subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
+  //   shortDescription: defineMessage({
+  //     defaultMessage: 'Sub-optimal channel conditions detected for 2.4 GHz in {scope}'
+  //   }),
+  //   longDescription: defineMessage({
+  //     defaultMessage: 'Sub-optimal channel conditions detected for 2.4 GHz in {scope}.'
+  //   }),
+  //   incidentType: 'network'
+  // },
+  // 'p-channeldist-suboptimal-plan-50g-outdoor': {
+  //   category: defineMessage({ defaultMessage: 'Performance' }),
+  //   subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
+  //   shortDescription: defineMessage({
+  //     defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}'
+  //   }),
+  //   longDescription: defineMessage({
+  //     defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}.'
+  //   }),
+  //   incidentType: 'network'
+  // },
+  // 'p-channeldist-suboptimal-plan-50g-indoor': {
+  //   category: defineMessage({ defaultMessage: 'Performance' }),
+  //   subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
+  //   shortDescription: defineMessage({
+  //     defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}'
+  //   }),
+  //   longDescription: defineMessage({
+  //     defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}.'
+  //   }),
+  //   incidentType: 'network'
+  // },
   'i-switch-vlan-mismatch': {
     category: defineMessage({ defaultMessage: 'Infrastructure' }),
     subCategory: defineMessage({ defaultMessage: 'VLAN Mismatch' }),
