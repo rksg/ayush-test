@@ -2,15 +2,16 @@ import { EnvironmentOutlined }            from '@ant-design/icons'
 import { Col, Divider, Form, Input, Row } from 'antd'
 import { useIntl }                        from 'react-intl'
 
-import { StepsForm, Subtitle }                                    from '@acx-ui/components'
-import { useCloudpathListQuery, useVenueListQuery, Venue }        from '@acx-ui/rc/services'
-import { NetworkSaveData, NetworkTypeEnum, transformDisplayText } from '@acx-ui/rc/utils'
-import { useParams }                                              from '@acx-ui/react-router-dom'
+import { StepsForm, Subtitle }                                           from '@acx-ui/components'
+import { useCloudpathListQuery, useVenueListQuery }                      from '@acx-ui/rc/services'
+import { NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue } from '@acx-ui/rc/utils'
+import { useParams }                                                     from '@acx-ui/react-router-dom'
 
 import { networkTypes } from '../contentsMap'
 
 import { AaaSummaryForm }  from './AaaSummaryForm'
 import { DpskSummaryForm } from './DpskSummaryForm'
+import { PskSummaryForm }  from './PskSummaryForm'
 
 const defaultPayload = {
   searchString: '',
@@ -34,7 +35,6 @@ export function SummaryForm (props: {
       }
     }
   })
-
   const { data } = useVenueListQuery({ params:
     { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' }, payload: defaultPayload })
 
@@ -78,10 +78,12 @@ export function SummaryForm (props: {
             label={$t({ defaultMessage: 'Type:' })}
             children={summaryData.type && $t(networkTypes[summaryData.type])}
           />
+          {summaryData.type !== NetworkTypeEnum.PSK &&
           <Form.Item
             label={$t({ defaultMessage: 'Use Cloudpath Server:' })}
             children={summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
           />
+          }
           {summaryData.isCloudpathEnabled && selected &&
             <>
               <Form.Item
@@ -111,6 +113,9 @@ export function SummaryForm (props: {
           }
           {summaryData.type === NetworkTypeEnum.DPSK &&
             <DpskSummaryForm summaryData={summaryData} />
+          }
+          {summaryData.type === NetworkTypeEnum.PSK && 
+            <PskSummaryForm summaryData={summaryData} />
           }
         </Col>
         <Divider type='vertical' style={{ height: '300px' }}/>

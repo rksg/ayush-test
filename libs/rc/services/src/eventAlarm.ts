@@ -2,14 +2,15 @@ import { FetchBaseQueryError }       from '@reduxjs/toolkit/query'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
+  Alarm,
+  AlarmBase,
+  AlarmMeta,
   ApiInfo,
   createHttpRequest,
   CommonUrlsInfo,
   TableResult,
   RequestPayload
 } from '@acx-ui/rc/utils'
-
-import { Alarm, AlarmBase, AlarmMeta } from './types'
 
 export const baseEventAlarmApi = createApi({
   baseQuery: fetchBaseQuery(),

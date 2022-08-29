@@ -1,5 +1,3 @@
-
-import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { renderHook } from '@acx-ui/test-utils'
@@ -16,26 +14,18 @@ import type { TooltipFormatterParams } from './helper'
 
 describe('dateAxisFormatter', () => {
   it('formats date time correctly', () => {
-    moment.tz.setDefault('Asia/Tokyo')
-    expect(dateAxisFormatter((new Date('2020-01-01T00:00+09:00')).valueOf()))
+    expect(dateAxisFormatter((new Date('2020-01-01T00:00+00:00')).valueOf()))
       .toEqual('2020')
-    expect(dateAxisFormatter((new Date('2020-02-01T00:00+09:00')).valueOf()))
+    expect(dateAxisFormatter((new Date('2020-02-01T00:00+00:00')).valueOf()))
       .toEqual('Feb')
-    expect(dateAxisFormatter((new Date('2020-02-03T00:00+09:00')).valueOf()))
+    expect(dateAxisFormatter((new Date('2020-02-03T00:00+00:00')).valueOf()))
       .toEqual('Feb 03')
-    expect(dateAxisFormatter((new Date('2020-02-03T07:00+09:00')).valueOf()))
+    expect(dateAxisFormatter((new Date('2020-02-03T07:00+00:00')).valueOf()))
       .toEqual('Feb 03 07:00')
   })
 })
 
 describe('timeSeriesTooltipFormatter', () => {
-  const timezone = 'UTC'
-  beforeEach(() => {
-    moment.tz.setDefault(timezone)
-  })
-  afterEach(() => {
-    moment.tz.setDefault(moment.tz.guess())
-  })
   const singleparameters = {
     data: [1605628800000, 518], color: 'color1', seriesName: 'seriesName1'
   } as TooltipFormatterParams

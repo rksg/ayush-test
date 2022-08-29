@@ -16,16 +16,16 @@ import {
   useDeleteNetworkVenueMutation,
   useGetAllUserSettingsQuery,
   useUpdateNetworkMutation,
-  useVenueListQuery,
-  Venue
+  useVenueListQuery
 } from '@acx-ui/rc/services'
-import { UserSettings } from '@acx-ui/rc/utils'
 import {
   Constants,
   useTableQuery,
   getUserSettingsFromDict,
   NetworkSaveData,
-  NetworkVenue
+  NetworkVenue,
+  UserSettings,
+  Venue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -270,7 +270,7 @@ export function NetworkVenuesTab () {
       render: function (data, row) {
         return <Switch
           checked={Boolean(data)}
-          onClick={(checked, event) => {
+          onClick={(checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
             activateNetwork(checked, row)
             event.stopPropagation()
           }}

@@ -11,3 +11,5 @@ export {
 export * from './timeseries'
 export * from './types/incidents'
 export * from './types/timeseries'
+export * from './aggregateDataBy'
+export * from './fakeIncident'

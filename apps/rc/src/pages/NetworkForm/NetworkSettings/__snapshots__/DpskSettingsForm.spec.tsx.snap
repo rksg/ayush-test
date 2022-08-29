@@ -28,158 +28,166 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                 DPSK Settings
               </h3>
               <div
-                class="ant-row ant-form-item"
+                class="ant-form-item"
               >
                 <div
-                  class="ant-col ant-form-item-label"
-                >
-                  <label
-                    class=""
-                    for="dpskWlanSecurity"
-                    title="Security Protocol"
-                  >
-                    Security Protocol
-                  </label>
-                </div>
-                <div
-                  class="ant-col ant-form-item-control"
+                  class="ant-row ant-form-item-row"
                 >
                   <div
-                    class="ant-form-item-control-input"
+                    class="ant-col ant-form-item-label"
+                  >
+                    <label
+                      class=""
+                      for="dpskWlanSecurity"
+                      title="Security Protocol"
+                    >
+                      Security Protocol
+                    </label>
+                  </div>
+                  <div
+                    class="ant-col ant-form-item-control"
                   >
                     <div
-                      class="ant-form-item-control-input-content"
+                      class="ant-form-item-control-input"
                     >
                       <div
-                        class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                        class="ant-form-item-control-input-content"
                       >
                         <div
-                          class="ant-select-selector"
+                          class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
                         >
-                          <span
-                            class="ant-select-selection-search"
+                          <div
+                            class="ant-select-selector"
                           >
-                            <input
-                              aria-activedescendant="dpskWlanSecurity_list_0"
-                              aria-autocomplete="list"
-                              aria-controls="dpskWlanSecurity_list"
-                              aria-haspopup="listbox"
-                              aria-owns="dpskWlanSecurity_list"
-                              autocomplete="off"
-                              class="ant-select-selection-search-input"
-                              id="dpskWlanSecurity"
-                              readonly=""
-                              role="combobox"
-                              style="opacity: 0;"
-                              type="search"
-                              unselectable="on"
-                              value=""
-                            />
-                          </span>
+                            <span
+                              class="ant-select-selection-search"
+                            >
+                              <input
+                                aria-activedescendant="dpskWlanSecurity_list_0"
+                                aria-autocomplete="list"
+                                aria-controls="dpskWlanSecurity_list"
+                                aria-haspopup="listbox"
+                                aria-owns="dpskWlanSecurity_list"
+                                autocomplete="off"
+                                class="ant-select-selection-search-input"
+                                id="dpskWlanSecurity"
+                                readonly=""
+                                role="combobox"
+                                style="opacity: 0;"
+                                type="search"
+                                unselectable="on"
+                                value=""
+                              />
+                            </span>
+                            <span
+                              class="ant-select-selection-item"
+                              title="WPA2 (Recommended)"
+                            >
+                              WPA2 (Recommended)
+                            </span>
+                          </div>
                           <span
-                            class="ant-select-selection-item"
-                            title="WPA2 (Recommended)"
+                            aria-hidden="true"
+                            class="ant-select-arrow"
+                            style="user-select: none;"
+                            unselectable="on"
                           >
-                            WPA2 (Recommended)
+                            <span
+                              aria-label="down"
+                              class="anticon anticon-down ant-select-suffix"
+                              role="img"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                data-icon="down"
+                                fill="currentColor"
+                                focusable="false"
+                                height="1em"
+                                viewBox="64 64 896 896"
+                                width="1em"
+                              >
+                                <path
+                                  d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                />
+                              </svg>
+                            </span>
                           </span>
                         </div>
-                        <span
-                          aria-hidden="true"
-                          class="ant-select-arrow"
-                          style="user-select: none;"
-                          unselectable="on"
-                        >
-                          <span
-                            aria-label="down"
-                            class="anticon anticon-down ant-select-suffix"
-                            role="img"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              data-icon="down"
-                              fill="currentColor"
-                              focusable="false"
-                              height="1em"
-                              viewBox="64 64 896 896"
-                              width="1em"
-                            >
-                              <path
-                                d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                              />
-                            </svg>
-                          </span>
-                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div
-                class="ant-row ant-form-item"
+                class="ant-form-item"
               >
                 <div
-                  class="ant-col ant-form-item-control"
+                  class="ant-row ant-form-item-row"
                 >
                   <div
-                    class="ant-form-item-control-input"
+                    class="ant-col ant-form-item-control"
                   >
                     <div
-                      class="ant-form-item-control-input-content"
+                      class="ant-form-item-control-input"
                     >
                       <div
-                        class="ant-radio-group ant-radio-group-outline"
-                        id="isCloudpathEnabled"
+                        class="ant-form-item-control-input-content"
                       >
                         <div
-                          class="ant-space ant-space-vertical"
+                          class="ant-radio-group ant-radio-group-outline"
+                          id="isCloudpathEnabled"
                         >
                           <div
-                            class="ant-space-item"
-                            style="margin-bottom: 8px;"
+                            class="ant-space ant-space-vertical"
                           >
-                            <label
-                              class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
+                            <div
+                              class="ant-space-item"
+                              style="margin-bottom: 8px;"
                             >
-                              <span
-                                class="ant-radio ant-radio-checked"
+                              <label
+                                class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
                               >
-                                <input
-                                  checked=""
-                                  class="ant-radio-input"
-                                  type="radio"
-                                  value="false"
-                                />
                                 <span
-                                  class="ant-radio-inner"
-                                />
-                              </span>
-                              <span>
-                                Use the DPSK Service
-                              </span>
-                            </label>
-                          </div>
-                          <div
-                            class="ant-space-item"
-                          >
-                            <label
-                              class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  class="ant-radio ant-radio-checked"
+                                >
+                                  <input
+                                    checked=""
+                                    class="ant-radio-input"
+                                    type="radio"
+                                    value="false"
+                                  />
+                                  <span
+                                    class="ant-radio-inner"
+                                  />
+                                </span>
+                                <span>
+                                  Use the DPSK Service
+                                </span>
+                              </label>
+                            </div>
+                            <div
+                              class="ant-space-item"
                             >
-                              <span
-                                class="ant-radio"
+                              <label
+                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                               >
-                                <input
-                                  class="ant-radio-input"
-                                  type="radio"
-                                  value="true"
-                                />
                                 <span
-                                  class="ant-radio-inner"
-                                />
-                              </span>
-                              <span>
-                                Use Cloudpath Server
-                              </span>
-                            </label>
+                                  class="ant-radio"
+                                >
+                                  <input
+                                    class="ant-radio-input"
+                                    type="radio"
+                                    value="true"
+                                  />
+                                  <span
+                                    class="ant-radio-inner"
+                                  />
+                                </span>
+                                <span>
+                                  Use Cloudpath Server
+                                </span>
+                              </label>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -207,94 +215,98 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                   style="padding-left: 4px; padding-right: 4px;"
                 >
                   <div
-                    class="ant-row ant-form-item"
+                    class="ant-form-item"
                   >
                     <div
-                      class="ant-col ant-form-item-label"
-                    >
-                      <label
-                        class="ant-form-item-required"
-                        for="passphraseFormat"
-                        title="Passphrase format"
-                      >
-                        Passphrase format
-                      </label>
-                    </div>
-                    <div
-                      class="ant-col ant-form-item-control"
+                      class="ant-row ant-form-item-row"
                     >
                       <div
-                        class="ant-form-item-control-input"
+                        class="ant-col ant-form-item-label"
                       >
-                        <div
-                          class="ant-form-item-control-input-content"
+                        <label
+                          class="ant-form-item-required"
+                          for="passphraseFormat"
+                          title="Passphrase format"
                         >
-                          <div
-                            class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
-                          >
-                            <div
-                              class="ant-select-selector"
-                            >
-                              <span
-                                class="ant-select-selection-search"
-                              >
-                                <input
-                                  aria-activedescendant="passphraseFormat_list_0"
-                                  aria-autocomplete="list"
-                                  aria-controls="passphraseFormat_list"
-                                  aria-haspopup="listbox"
-                                  aria-owns="passphraseFormat_list"
-                                  autocomplete="off"
-                                  class="ant-select-selection-search-input"
-                                  id="passphraseFormat"
-                                  readonly=""
-                                  role="combobox"
-                                  style="opacity: 0;"
-                                  type="search"
-                                  unselectable="on"
-                                  value=""
-                                />
-                              </span>
-                              <span
-                                class="ant-select-selection-item"
-                                title="Most Secured"
-                              >
-                                Most Secured
-                              </span>
-                            </div>
-                            <span
-                              aria-hidden="true"
-                              class="ant-select-arrow"
-                              style="user-select: none;"
-                              unselectable="on"
-                            >
-                              <span
-                                aria-label="down"
-                                class="anticon anticon-down ant-select-suffix"
-                                role="img"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  data-icon="down"
-                                  fill="currentColor"
-                                  focusable="false"
-                                  height="1em"
-                                  viewBox="64 64 896 896"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                  />
-                                </svg>
-                              </span>
-                            </span>
-                          </div>
-                        </div>
+                          Passphrase format
+                        </label>
                       </div>
                       <div
-                        class="ant-form-item-extra"
+                        class="ant-col ant-form-item-control"
                       >
-                        Letters, numbers and symbols can be used
+                        <div
+                          class="ant-form-item-control-input"
+                        >
+                          <div
+                            class="ant-form-item-control-input-content"
+                          >
+                            <div
+                              class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                            >
+                              <div
+                                class="ant-select-selector"
+                              >
+                                <span
+                                  class="ant-select-selection-search"
+                                >
+                                  <input
+                                    aria-activedescendant="passphraseFormat_list_0"
+                                    aria-autocomplete="list"
+                                    aria-controls="passphraseFormat_list"
+                                    aria-haspopup="listbox"
+                                    aria-owns="passphraseFormat_list"
+                                    autocomplete="off"
+                                    class="ant-select-selection-search-input"
+                                    id="passphraseFormat"
+                                    readonly=""
+                                    role="combobox"
+                                    style="opacity: 0;"
+                                    type="search"
+                                    unselectable="on"
+                                    value=""
+                                  />
+                                </span>
+                                <span
+                                  class="ant-select-selection-item"
+                                  title="Most Secured"
+                                >
+                                  Most Secured
+                                </span>
+                              </div>
+                              <span
+                                aria-hidden="true"
+                                class="ant-select-arrow"
+                                style="user-select: none;"
+                                unselectable="on"
+                              >
+                                <span
+                                  aria-label="down"
+                                  class="anticon anticon-down ant-select-suffix"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="down"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item-extra"
+                        >
+                          Letters, numbers and symbols can be used
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -340,104 +352,108 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                   style="padding-left: 4px; padding-right: 4px;"
                 >
                   <div
-                    class="ant-row ant-form-item"
+                    class="ant-form-item"
                   >
                     <div
-                      class="ant-col ant-form-item-label"
-                    >
-                      <label
-                        class="ant-form-item-required"
-                        for="passphraseLength"
-                        title="Passphrase length"
-                      >
-                        Passphrase length
-                      </label>
-                    </div>
-                    <div
-                      class="ant-col ant-form-item-control"
+                      class="ant-row ant-form-item-row"
                     >
                       <div
-                        class="ant-form-item-control-input"
+                        class="ant-col ant-form-item-label"
+                      >
+                        <label
+                          class="ant-form-item-required"
+                          for="passphraseLength"
+                          title="Passphrase length"
+                        >
+                          Passphrase length
+                        </label>
+                      </div>
+                      <div
+                        class="ant-col ant-form-item-control"
                       >
                         <div
-                          class="ant-form-item-control-input-content"
+                          class="ant-form-item-control-input"
                         >
                           <div
-                            class="ant-input-number ant-input-number-in-form-item"
-                            style="width: 100%;"
+                            class="ant-form-item-control-input-content"
                           >
                             <div
-                              class="ant-input-number-handler-wrap"
+                              class="ant-input-number ant-input-number-in-form-item"
+                              style="width: 100%;"
                             >
-                              <span
-                                aria-disabled="false"
-                                aria-label="Increase Value"
-                                class="ant-input-number-handler ant-input-number-handler-up"
-                                role="button"
-                                unselectable="on"
+                              <div
+                                class="ant-input-number-handler-wrap"
                               >
                                 <span
-                                  aria-label="up"
-                                  class="anticon anticon-up ant-input-number-handler-up-inner"
-                                  role="img"
+                                  aria-disabled="false"
+                                  aria-label="Increase Value"
+                                  class="ant-input-number-handler ant-input-number-handler-up"
+                                  role="button"
+                                  unselectable="on"
                                 >
-                                  <svg
-                                    aria-hidden="true"
-                                    data-icon="up"
-                                    fill="currentColor"
-                                    focusable="false"
-                                    height="1em"
-                                    viewBox="64 64 896 896"
-                                    width="1em"
+                                  <span
+                                    aria-label="up"
+                                    class="anticon anticon-up ant-input-number-handler-up-inner"
+                                    role="img"
                                   >
-                                    <path
-                                      d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
-                                    />
-                                  </svg>
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="up"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                      />
+                                    </svg>
+                                  </span>
                                 </span>
-                              </span>
-                              <span
-                                aria-disabled="false"
-                                aria-label="Decrease Value"
-                                class="ant-input-number-handler ant-input-number-handler-down"
-                                role="button"
-                                unselectable="on"
-                              >
                                 <span
-                                  aria-label="down"
-                                  class="anticon anticon-down ant-input-number-handler-down-inner"
-                                  role="img"
+                                  aria-disabled="false"
+                                  aria-label="Decrease Value"
+                                  class="ant-input-number-handler ant-input-number-handler-down"
+                                  role="button"
+                                  unselectable="on"
                                 >
-                                  <svg
-                                    aria-hidden="true"
-                                    data-icon="down"
-                                    fill="currentColor"
-                                    focusable="false"
-                                    height="1em"
-                                    viewBox="64 64 896 896"
-                                    width="1em"
+                                  <span
+                                    aria-label="down"
+                                    class="anticon anticon-down ant-input-number-handler-down-inner"
+                                    role="img"
                                   >
-                                    <path
-                                      d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                    />
-                                  </svg>
+                                    <svg
+                                      aria-hidden="true"
+                                      data-icon="down"
+                                      fill="currentColor"
+                                      focusable="false"
+                                      height="1em"
+                                      viewBox="64 64 896 896"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                      />
+                                    </svg>
+                                  </span>
                                 </span>
-                              </span>
-                            </div>
-                            <div
-                              class="ant-input-number-input-wrap"
-                            >
-                              <input
-                                aria-valuemax="63"
-                                aria-valuemin="8"
-                                aria-valuenow="18"
-                                autocomplete="off"
-                                class="ant-input-number-input"
-                                id="passphraseLength"
-                                role="spinbutton"
-                                step="1"
-                                value="18"
-                              />
+                              </div>
+                              <div
+                                class="ant-input-number-input-wrap"
+                              >
+                                <input
+                                  aria-valuemax="63"
+                                  aria-valuemin="8"
+                                  aria-valuenow="18"
+                                  autocomplete="off"
+                                  class="ant-input-number-input"
+                                  id="passphraseLength"
+                                  role="spinbutton"
+                                  step="1"
+                                  value="18"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -474,88 +490,92 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                 </div>
               </div>
               <div
-                class="ant-row ant-form-item"
+                class="ant-form-item"
               >
                 <div
-                  class="ant-col ant-form-item-label"
-                >
-                  <label
-                    class="ant-form-item-required"
-                    for="expiration"
-                    title="Passphrase expiration"
-                  >
-                    Passphrase expiration
-                  </label>
-                </div>
-                <div
-                  class="ant-col ant-form-item-control"
+                  class="ant-row ant-form-item-row"
                 >
                   <div
-                    class="ant-form-item-control-input"
+                    class="ant-col ant-form-item-label"
+                  >
+                    <label
+                      class="ant-form-item-required"
+                      for="expiration"
+                      title="Passphrase expiration"
+                    >
+                      Passphrase expiration
+                    </label>
+                  </div>
+                  <div
+                    class="ant-col ant-form-item-control"
                   >
                     <div
-                      class="ant-form-item-control-input-content"
+                      class="ant-form-item-control-input"
                     >
                       <div
-                        class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
-                        style="width: 100%;"
+                        class="ant-form-item-control-input-content"
                       >
                         <div
-                          class="ant-select-selector"
+                          class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                          style="width: 100%;"
                         >
-                          <span
-                            class="ant-select-selection-search"
+                          <div
+                            class="ant-select-selector"
                           >
-                            <input
-                              aria-activedescendant="expiration_list_0"
-                              aria-autocomplete="list"
-                              aria-controls="expiration_list"
-                              aria-haspopup="listbox"
-                              aria-owns="expiration_list"
-                              autocomplete="off"
-                              class="ant-select-selection-search-input"
-                              id="expiration"
-                              readonly=""
-                              role="combobox"
-                              style="opacity: 0;"
-                              type="search"
-                              unselectable="on"
-                              value=""
-                            />
-                          </span>
+                            <span
+                              class="ant-select-selection-search"
+                            >
+                              <input
+                                aria-activedescendant="expiration_list_0"
+                                aria-autocomplete="list"
+                                aria-controls="expiration_list"
+                                aria-haspopup="listbox"
+                                aria-owns="expiration_list"
+                                autocomplete="off"
+                                class="ant-select-selection-search-input"
+                                id="expiration"
+                                readonly=""
+                                role="combobox"
+                                style="opacity: 0;"
+                                type="search"
+                                unselectable="on"
+                                value=""
+                              />
+                            </span>
+                            <span
+                              class="ant-select-selection-item"
+                              title="Unlimited"
+                            >
+                              Unlimited
+                            </span>
+                          </div>
                           <span
-                            class="ant-select-selection-item"
-                            title="Unlimited"
+                            aria-hidden="true"
+                            class="ant-select-arrow"
+                            style="user-select: none;"
+                            unselectable="on"
                           >
-                            Unlimited
+                            <span
+                              aria-label="down"
+                              class="anticon anticon-down ant-select-suffix"
+                              role="img"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                data-icon="down"
+                                fill="currentColor"
+                                focusable="false"
+                                height="1em"
+                                viewBox="64 64 896 896"
+                                width="1em"
+                              >
+                                <path
+                                  d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                />
+                              </svg>
+                            </span>
                           </span>
                         </div>
-                        <span
-                          aria-hidden="true"
-                          class="ant-select-arrow"
-                          style="user-select: none;"
-                          unselectable="on"
-                        >
-                          <span
-                            aria-label="down"
-                            class="anticon anticon-down ant-select-suffix"
-                            role="img"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              data-icon="down"
-                              fill="currentColor"
-                              focusable="false"
-                              height="1em"
-                              viewBox="64 64 896 896"
-                              width="1em"
-                            >
-                              <path
-                                d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                              />
-                            </svg>
-                          </span>
-                        </span>
                       </div>
                     </div>
                   </div>
@@ -588,898 +608,5 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
       </div>
     </div>
   </form>
-</DocumentFragment>
-`;
-
-exports[`NetworkForm should create open network successfully 1`] = `
-<DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
-  >
-    <div
-      class="ant-page-header has-breadcrumb ant-page-header-ghost"
-    >
-      <nav
-        class="ant-breadcrumb"
-      >
-        <ol>
-          <li>
-            <span
-              class="ant-breadcrumb-link"
-            >
-              <a
-                href="/t/tenant-id/networks"
-              >
-                Networks
-              </a>
-            </span>
-            <span
-              class="ant-breadcrumb-separator"
-            >
-              /
-            </span>
-          </li>
-          <li>
-            <span
-              class="ant-breadcrumb-link"
-            >
-               
-            </span>
-            <span
-              class="ant-breadcrumb-separator"
-            >
-              /
-            </span>
-          </li>
-        </ol>
-      </nav>
-      <div
-        class="ant-page-header-heading"
-      >
-        <div
-          class="ant-page-header-heading-left"
-        >
-          <span
-            class="ant-page-header-heading-title"
-          >
-            <h1
-              class="ant-typography"
-            >
-              Create New Network
-            </h1>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 jzCCYL"
-  >
-    <div
-      class="ant-pro-steps-form"
-    >
-      <div
-        class="styledComponents__Container-sc-1ibvcih-4 fAuOsZ"
-      >
-        <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
-        >
-          <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
-          >
-            <div
-              class="styledComponents__StepsContainer-sc-1ibvcih-2 gGLpjE"
-            >
-              <div
-                class="ant-steps ant-steps-vertical ant-steps-dot"
-              >
-                <div
-                  class="ant-steps-item ant-steps-item-process ant-steps-item-active"
-                >
-                  <div
-                    class="ant-steps-item-container"
-                  >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
-                    >
-                      <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
-                    <div
-                      class="ant-steps-item-content"
-                    >
-                      <div
-                        class="ant-steps-item-title"
-                      >
-                        Network Details
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-steps-item ant-steps-item-wait"
-                >
-                  <div
-                    class="ant-steps-item-container"
-                  >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
-                    >
-                      <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
-                    <div
-                      class="ant-steps-item-content"
-                    >
-                      <div
-                        class="ant-steps-item-title"
-                      >
-                        Settings
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-steps-item ant-steps-item-wait"
-                >
-                  <div
-                    class="ant-steps-item-container"
-                  >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
-                    >
-                      <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
-                    <div
-                      class="ant-steps-item-content"
-                    >
-                      <div
-                        class="ant-steps-item-title"
-                      >
-                        Venues
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-steps-item ant-steps-item-wait"
-                >
-                  <div
-                    class="ant-steps-item-container"
-                  >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
-                    >
-                      <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
-                    <div
-                      class="ant-steps-item-content"
-                    >
-                      <div
-                        class="ant-steps-item-title"
-                      >
-                        Summary
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
-        >
-          <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
-          >
-            <div
-              class="ant-pro-steps-form-container"
-            >
-              <div
-                class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
-              >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="details"
-                >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5"
-                    >
-                      <div
-                        class="ant-row"
-                        style="margin-left: -10px; margin-right: -10px;"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                          style="padding-left: 10px; padding-right: 10px;"
-                        >
-                          <h3
-                            class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                          >
-                            Network Details
-                          </h3>
-                          <div
-                            class="ant-row ant-form-item"
-                          >
-                            <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class="ant-form-item-required"
-                                for="details_name"
-                                title="Network Name"
-                              >
-                                Network Name
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  <span
-                                    class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
-                                  >
-                                    <input
-                                      class="ant-input"
-                                      id="details_name"
-                                      type="text"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-input-suffix"
-                                    />
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            class="ant-row ant-form-item"
-                          >
-                            <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                for="details_description"
-                                title="Description"
-                              >
-                                Description
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  <textarea
-                                    class="ant-input"
-                                    id="details_description"
-                                    rows="4"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            class="ant-row ant-form-item"
-                          >
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  <div
-                                    class="ant-row ant-form-item"
-                                  >
-                                    <div
-                                      class="ant-col ant-form-item-label"
-                                    >
-                                      <label
-                                        class="ant-form-item-required"
-                                        for="details_type"
-                                        title="Network Type"
-                                      >
-                                        Network Type
-                                      </label>
-                                    </div>
-                                    <div
-                                      class="ant-col ant-form-item-control"
-                                    >
-                                      <div
-                                        class="ant-form-item-control-input"
-                                      >
-                                        <div
-                                          class="ant-form-item-control-input-content"
-                                        >
-                                          <div
-                                            class="ant-radio-group ant-radio-group-outline"
-                                            id="details_type"
-                                          >
-                                            <div
-                                              class="ant-space ant-space-vertical"
-                                            >
-                                              <div
-                                                class="ant-space-item"
-                                                style="margin-bottom: 8px;"
-                                              >
-                                                <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
-                                                >
-                                                  <span
-                                                    class="ant-radio ant-radio-disabled"
-                                                  >
-                                                    <input
-                                                      class="ant-radio-input"
-                                                      disabled=""
-                                                      type="radio"
-                                                      value="psk"
-                                                    />
-                                                    <span
-                                                      class="ant-radio-inner"
-                                                    />
-                                                  </span>
-                                                  <span>
-                                                    Pre-Shared Key (PSK)
-                                                    <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                                    >
-                                                      Require users to enter a passphrase (that you have defined for the network) to connect
-                                                    </div>
-                                                  </span>
-                                                </label>
-                                              </div>
-                                              <div
-                                                class="ant-space-item"
-                                                style="margin-bottom: 8px;"
-                                              >
-                                                <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                                >
-                                                  <span
-                                                    class="ant-radio"
-                                                  >
-                                                    <input
-                                                      class="ant-radio-input"
-                                                      type="radio"
-                                                      value="dpsk"
-                                                    />
-                                                    <span
-                                                      class="ant-radio-inner"
-                                                    />
-                                                  </span>
-                                                  <span>
-                                                    Dynamic Pre-Shared Key (DPSK)
-                                                    <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                                    >
-                                                      Require users to enter a passphrase to connect. The passphrase is unique per device
-                                                    </div>
-                                                  </span>
-                                                </label>
-                                              </div>
-                                              <div
-                                                class="ant-space-item"
-                                                style="margin-bottom: 8px;"
-                                              >
-                                                <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                                >
-                                                  <span
-                                                    class="ant-radio"
-                                                  >
-                                                    <input
-                                                      class="ant-radio-input"
-                                                      type="radio"
-                                                      value="aaa"
-                                                    />
-                                                    <span
-                                                      class="ant-radio-inner"
-                                                    />
-                                                  </span>
-                                                  <span>
-                                                    Enterprise AAA (802.1X)
-                                                    <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                                    >
-                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
-                                                    </div>
-                                                  </span>
-                                                </label>
-                                              </div>
-                                              <div
-                                                class="ant-space-item"
-                                                style="margin-bottom: 8px;"
-                                              >
-                                                <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
-                                                >
-                                                  <span
-                                                    class="ant-radio ant-radio-disabled"
-                                                  >
-                                                    <input
-                                                      class="ant-radio-input"
-                                                      disabled=""
-                                                      type="radio"
-                                                      value="guest"
-                                                    />
-                                                    <span
-                                                      class="ant-radio-inner"
-                                                    />
-                                                  </span>
-                                                  <span>
-                                                    Captive Portal
-                                                    <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                                    >
-                                                      Users are authorized through a captive portal in various methods
-                                                    </div>
-                                                  </span>
-                                                </label>
-                                              </div>
-                                              <div
-                                                class="ant-space-item"
-                                              >
-                                                <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                                >
-                                                  <span
-                                                    class="ant-radio"
-                                                  >
-                                                    <input
-                                                      class="ant-radio-input"
-                                                      type="radio"
-                                                      value="open"
-                                                    />
-                                                    <span
-                                                      class="ant-radio-inner"
-                                                    />
-                                                  </span>
-                                                  <span>
-                                                    Open Network
-                                                    <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                                    >
-                                                      Allow users to access the network without any authentication/security (not recommended)
-                                                    </div>
-                                                  </span>
-                                                </label>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-14"
-                          style="padding-left: 10px; padding-right: 10px;"
-                        >
-                          <div
-                            class="ant-row ant-row-center"
-                          >
-                            <div
-                              class="ant-col"
-                            >
-                              <div
-                                class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
-                              >
-                                <img
-                                  src="none.png"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-              <div
-                class="ant-pro-steps-form-step"
-              >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="settings"
-                >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5 dOqwQw"
-                    >
-                      <div
-                        class="ant-row"
-                        style="margin-left: -10px; margin-right: -10px;"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                          style="padding-left: 10px; padding-right: 10px;"
-                        >
-                          <h3
-                            class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                          >
-                            Open Settings
-                          </h3>
-                          <div
-                            class="ant-row ant-form-item"
-                          >
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  <button
-                                    aria-checked="false"
-                                    class="ant-switch"
-                                    id="settings_isCloudpathEnabled"
-                                    role="switch"
-                                    type="button"
-                                  >
-                                    <div
-                                      class="ant-switch-handle"
-                                    />
-                                    <span
-                                      class="ant-switch-inner"
-                                    />
-                                  </button>
-                                  <span>
-                                    Use Cloudpath Server
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-14"
-                          style="padding-left: 10px; padding-right: 10px;"
-                        >
-                          <div
-                            class="ant-row ant-row-center"
-                          >
-                            <div
-                              class="ant-col"
-                            >
-                              <div
-                                class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
-                              >
-                                <img
-                                  alt="Open Network"
-                                  src="open.png"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-              <div
-                class="ant-pro-steps-form-step"
-              >
-                <div
-                  style="padding-top: 50px; padding-bottom: 50px; text-align: center;"
-                >
-                  <div
-                    aria-busy="true"
-                    aria-live="polite"
-                    class="ant-spin ant-spin-spinning"
-                  >
-                    <span
-                      class="ant-spin-dot ant-spin-dot-spin"
-                    >
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-pro-steps-form-step"
-              >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="summary"
-                >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5 dOqwQw"
-                    >
-                      <h3
-                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                      >
-                        Summary
-                      </h3>
-                      <div
-                        class="ant-row"
-                        style="margin-left: -10px; margin-right: -10px;"
-                      >
-                        <div
-                          class="ant-col"
-                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
-                        >
-                          <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                          >
-                            Network Info
-                          </h4>
-                          <div
-                            class="ant-row ant-form-item"
-                          >
-                            <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Network Name:"
-                              >
-                                Network Name:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            class="ant-row ant-form-item"
-                          >
-                            <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Info:"
-                              >
-                                Info:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  --
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            class="ant-row ant-form-item"
-                          >
-                            <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Type:"
-                              >
-                                Type:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  Open Network
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            class="ant-row ant-form-item"
-                          >
-                            <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Use Cloudpath Server:"
-                              >
-                                Use Cloudpath Server:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  No
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          class="ant-divider ant-divider-vertical"
-                          role="separator"
-                          style="height: 300px;"
-                        />
-                        <div
-                          class="ant-col"
-                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
-                        >
-                          <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                          >
-                            Activated in venues
-                          </h4>
-                          <div
-                            class="ant-row ant-form-item"
-                          >
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  --
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-3 jmOuwe"
-      >
-        <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
-        >
-          <div
-            class="ant-space-item"
-            style="margin-right: 12px;"
-          >
-            <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 geFEjT"
-              type="button"
-            >
-              <span>
-                Next
-              </span>
-            </button>
-          </div>
-          <div
-            class="ant-space-item"
-          >
-            <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
-              type="button"
-            >
-              <span>
-                Cancel
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 </DocumentFragment>
 `;

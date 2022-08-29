@@ -2,11 +2,22 @@ import { render } from '@acx-ui/test-utils'
 
 import { SparklineChart } from '.'
 
-describe('SparklineChart', () => {
-  it('should render correctly', async () => {
-    const { asFragment } = render(
-      <SparklineChart data={[0, 1, 2, 3]} />)
+describe('SparklineChart',() => {
+  test('should render component',()=>{
+    const { asFragment } =render(<SparklineChart data={[1,2,3,4,5]}/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
-    expect(asFragment().querySelector('svg')).toBeDefined()
+    const svg = asFragment().querySelector('svg')
+    expect(svg).toMatchSnapshot()
+  })
+  test('should render component with trendLine having red',()=>{
+    const { asFragment } =render(<SparklineChart data={[1,2,3,4,5,0]} isTrendLine={true}/>)
+    const svg = asFragment().querySelector('svg')
+    expect(svg).toMatchSnapshot()
+  })
+
+  test('should render component with trendLine having green',()=>{
+    const { asFragment } =render(<SparklineChart data={[1,2,3,4,5,6]} isTrendLine={true}/>)
+    const svg = asFragment().querySelector('svg')
+    expect(svg).toMatchSnapshot()
   })
 })
