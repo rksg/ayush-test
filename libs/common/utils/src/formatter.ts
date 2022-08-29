@@ -1,6 +1,10 @@
-import moment        from 'moment-timezone'
-import numeral       from 'numeral'
-import { IntlShape } from 'react-intl'
+import moment  from 'moment-timezone'
+import numeral from 'numeral'
+import {
+  defineMessage,
+  MessageDescriptor,
+  IntlShape
+} from 'react-intl'
 
 const count = ['', ' k', ' m', ' b', ' t'] // from numeral, we could add more
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
@@ -149,4 +153,16 @@ export function formatter (
       return formats[name as keyof typeof formats](value, intl)
     }
   }
+}
+
+
+const countFormat: MessageDescriptor = defineMessage({
+  defaultMessage: '{value, number, ::K .##/@##r}'
+})
+const percentFormat: MessageDescriptor = defineMessage({
+  defaultMessage: '{value, number, ::percent .##}'
+})
+export const intlFormats = {
+  countFormat,
+  percentFormat
 }

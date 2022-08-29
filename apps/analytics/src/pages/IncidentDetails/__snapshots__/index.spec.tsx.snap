@@ -68,69 +68,75 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
             </span>
             <span
               class="ant-page-header-heading-sub-title"
+              title="EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
             >
-              <p>
-                EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
-              </p>
+              EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
             </span>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="ant-row"
+      class="ant-row Grid__GridRow-sc-5irhjd-2"
       style="margin: -10px -10px -10px -10px;"
     >
       <div
-        class="ant-col ant-col-4"
+        class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
-          style="overflow: visible; height: 0px; width: 0px;"
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <div
-            style="width: -20px;"
-          >
-            incident attributes
-          </div>
-        </div>
-        <div
-          class="resize-triggers"
-        >
+            class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
+            style="overflow: visible; height: 0px; width: 0px;"
+          />
           <div
-            class="expand-trigger"
+            class="resize-triggers"
           >
             <div
-              style="width: 1px; height: 1px;"
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1px; height: 1px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
             />
           </div>
-          <div
-            class="contract-trigger"
-          />
         </div>
       </div>
       <div
-        class="ant-col ant-col-20"
-        style="padding: 10px 10px 10px 10px;"
-      >
-        <div>
-          insights
-        </div>
-      </div>
-      <div
-        class="ant-col ant-col-20 ant-col-offset-4"
-        style="padding: 10px 10px 10px 10px;"
-      >
-        <div>
-          network impact
-        </div>
-      </div>
-      <div
-        class="ant-col ant-col-20 ant-col-offset-4"
+        class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <div>
+            Insights
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <div>
+            network impact
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+<<<<<<< HEAD
           class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
         >
           <div
@@ -142,6 +148,12 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
             <p>
               {"name":"FetchError","message":"request to http://localhost/api/a4rc/api/rsa-data-api/graphql/analytics failed, reason: connect ECONNREFUSED 127.0.0.1:80","stack":"FetchError: request to http://localhost/api/a4rc/api/rsa-data-api/graphql/analytics failed, reason: connect ECONNREFUSED 127.0.0.1:80\\n    at NodeClientRequest.&lt;anonymous&gt; (/Users/lohwilson/Projects/acx-ui/node_modules/node-fetch/lib/index.js:1491:11)\\n    at NodeClientRequest.emit (node:events:532:35)\\n    at NodeClientRequest.Object.&lt;anonymous&gt;.NodeClientRequest.emit (/Users/lohwilson/Projects/acx-ui/node_modules/@mswjs/interceptors/src/interceptors/ClientRequest/NodeClientRequest.ts:284:22)\\n    at Socket.socketErrorListener (node:_http_client:442:9)\\n    at Socket.emit (node:events:520:28)\\n    at emitErrorNT (node:internal/streams/destroy:164:8)\\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\\n    at processTicksAndRejections (node:internal/process/task_queues:83:21)","code":"ECONNREFUSED"}
             </p>
+=======
+          class="Grid__Container-sc-5irhjd-1 zzbxI"
+        >
+          <div>
+            time series section
+>>>>>>> master
           </div>
         </div>
       </div>
