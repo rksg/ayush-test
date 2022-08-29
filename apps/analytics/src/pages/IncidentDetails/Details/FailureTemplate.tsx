@@ -8,8 +8,7 @@ import {
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
 import { IncidentAttributes } from '../IncidentAttributes'
-
-import { TimeSeries } from '../TimeSeries'
+import { TimeSeries }         from '../TimeSeries'
 
 import * as UI from './styledComponents'
 

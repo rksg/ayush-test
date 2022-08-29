@@ -20,7 +20,7 @@ import type {
  * Uses to transform incident record loaded from API and
  * adds incident infomation into it
  */
- export function transformIncidentQueryResult (
+export function transformIncidentQueryResult (
   incident: Omit<Incident, keyof IncidentInformation>
 ): Incident {
   const info = incidentInformation[incident.code]

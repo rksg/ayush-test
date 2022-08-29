@@ -3,7 +3,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Incident, getSeriesData }                from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
-import { formatter }                              from '@acx-ui/utils'
+import { intlFormats }                            from '@acx-ui/utils'
 
 import { codeToFailureTypeMap } from '../config'
 import { ChartsData }           from '../services'
@@ -47,7 +47,8 @@ export const AttemptAndFailureChart = (
         <MultiLineTimeSeriesChart
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={formatter('countFormat')}
+          dataFormatter={(value: unknown) => 
+            $t(intlFormats.countFormat, { value: value as number })}
           start={incident.startTime}
           end={incident.endTime}
           lineColors={lineColors}

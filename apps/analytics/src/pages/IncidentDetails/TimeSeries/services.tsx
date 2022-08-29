@@ -11,9 +11,9 @@ export interface ChartDataProps {
   incident: Incident
 }
 
-interface Response <T> {
+interface Response <ChartsData> {
   network: {
-    hierarchyNode: T
+    hierarchyNode: ChartsData
   }
 }
 

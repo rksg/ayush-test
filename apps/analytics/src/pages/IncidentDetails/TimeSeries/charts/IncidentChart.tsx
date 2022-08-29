@@ -3,7 +3,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Incident, getSeriesData }        from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { formatter }                      from '@acx-ui/utils'
+import { intlFormats }                    from '@acx-ui/utils'
 
 import { codeToFailureTypeMap } from '../config'
 import { ChartsData }           from '../services'
@@ -31,7 +31,8 @@ export const IncidentChart = ({ incident, data }: { incident: Incident, data: Ch
           style={{ height, width }}
           data={chartResults}
           marker={relatedIncidents}
-          dataFormatter={formatter('percentFormat')}
+          dataFormatter={(value: unknown) => 
+            $t(intlFormats.percentFormat, { value: value as number })}
           areaColor={'green'}
           yAxisProps={{ max: 1, min: 0 }}
           start={incident.startTime}
