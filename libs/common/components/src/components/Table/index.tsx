@@ -71,7 +71,7 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
-function Table <RecordType extends object> (
+function Table <RecordType extends object & { children?: RecordType[] }> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>
 ) {
   const { $t } = useIntl()
@@ -125,12 +125,6 @@ function Table <RecordType extends object> (
 
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
 
-  // needed to store selectedRows because `tableAlertRender`
-  // somehow doesn't pass in sync selected data between selectedRows & selectedRowKeys
-  const [selectedRows, setSelectedRows]
-    = useState<RecordType[]>(dataSource
-      ?.filter(item => selectedRowKeys.includes(item[rowKey] as unknown as Key)) ?? [])
-
   const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
     return props.dataSource?.filter(item => {
       return selectedRowKeys.includes(item[rowKey] as unknown as Key)
@@ -178,26 +172,55 @@ function Table <RecordType extends object> (
     return filteredValue && filteredValue.length
   })
   const searchables = columns.filter(column => column.searchable)
-  const filteredData = dataSource && dataSource.filter(row => {
-    for (const column of activeFilters) {
-      const key = (column.dataIndex ?? column.key) as keyof RecordType
-      const filteredValue = filterValues[key as keyof FilterValue]
-      if (!filteredValue.includes(row[key] as unknown as string)) {
-        return false
-      }
-    }
-    if (searchValue) {
-      return searchables.some(column => {
+  const childrenData: RecordType[] = (dataSource) 
+    ? dataSource.filter(row => {
+      const children = (row as unknown as RecordType).children ?? []
+      for (const column of activeFilters) {
         const key = (column.dataIndex ?? column.key) as keyof RecordType
-        return (row[key] as unknown as string)
-          .toString()
-          .toLowerCase()
-          .includes(searchValue.toLowerCase())
-      })
-    }
-    // TODO nested rows
-    return true
-  })
+        const filteredValue = filterValues[key as keyof FilterValue]
+        for (const child of children) {
+          const check = child && filteredValue.includes(child[key] as unknown as string)
+          if (check) return false
+        }
+      }
+      if (searchValue) {
+        return searchables.some(column => {
+          const key = (column.dataIndex ?? column.key) as keyof RecordType
+          return children.map(child => 
+            (child[key] as unknown as string)
+              .toString()
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
+          )
+        })
+      }
+      return true
+    })
+    : []
+
+  let filteredData: RecordType[] = (dataSource) 
+    ? dataSource.filter(row => {
+      for (const column of activeFilters) {
+        const key = (column.dataIndex ?? column.key) as keyof RecordType
+        const filteredValue = filterValues[key as keyof FilterValue]
+        if (!filteredValue.includes(row[key] as unknown as string)) {
+          return false
+        }
+      }
+      if (searchValue) {
+        return searchables.some(column => {
+          const key = (column.dataIndex ?? column.key) as keyof RecordType
+          return (row[key] as unknown as string)
+            .toString()
+            .toLowerCase()
+            .includes(searchValue.toLowerCase())
+        })
+      }
+      return true
+    })
+    : []
+
+  filteredData = Array.from(new Set([...filteredData, ...childrenData]))
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasHeader = !hasRowSelected && (Boolean(filterables.length) || Boolean(searchables.length))
