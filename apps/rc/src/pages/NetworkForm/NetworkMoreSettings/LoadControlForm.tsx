@@ -11,8 +11,6 @@ import { useIntl }  from 'react-intl'
 
 import * as UI from './styledComponents'
 
-
-// const { useWatch } = Form
 const { Option } = Select
 
 enum MaxRateEnum {
@@ -27,7 +25,7 @@ export function LoadControlForm () {
   return(
     <>
       <Form.Item
-        label='Max Rate:'
+        label={$t({ defaultMessage: 'Max Rate:' })}
         name='maxRate'>
         <Select
           defaultValue={MaxRateEnum.UNLIMITED}
@@ -44,7 +42,7 @@ export function LoadControlForm () {
       {maxRate === MaxRateEnum.PER_AP && <PerApForm />}
 
       <Form.Item
-        label='Activated in Venues:'
+        label={$t({ defaultMessage: 'Activated in Venues:' })}
         name='activatedInVenues'
       >
         <Slider

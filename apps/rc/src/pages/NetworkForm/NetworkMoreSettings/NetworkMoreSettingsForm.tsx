@@ -135,7 +135,7 @@ export function NetworkMoreSettingsForm (props: {
           {!enableVlanPooling && <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr' }}>
             <Form.Item
               name={['wlan', 'vlanId']}
-              label='VLAN ID'
+              label={$t({ defaultMessage: 'VLAN ID' })}
               initialValue={1}
               style={{ marginBottom: '15px' }}
               children={<Input style={{ width: '66px' }}></Input>}
@@ -160,11 +160,11 @@ export function NetworkMoreSettingsForm (props: {
           {enableVlanPooling &&
         <div style={{ display: 'grid', gridTemplateColumns: '190px auto' }}>
           <Form.Item
-            label='VLAN Pool:'
+            label={$t({ defaultMessage: 'VLAN Pool:' })}
             name={['wlan', 'advancedCustomization', 'vlanPool']}
             style={{ marginBottom: '15px' }}
             children={
-              <Select placeholder='Select profile...'
+              <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
                 children={vlanPoolSelectOptions} />
             }
@@ -246,7 +246,7 @@ export function NetworkMoreSettingsForm (props: {
 
           <Form.Item
             name='bssMinRate'
-            label='BSS Min Rate:'
+            label={$t({ defaultMessage: 'BSS Min Rate:' })}
             style={{ marginBottom: '15px' }}
             children={
               <BssMinRateSelect />
@@ -254,7 +254,7 @@ export function NetworkMoreSettingsForm (props: {
 
           <Form.Item
             name='mgmtTxRate'
-            label='Mgmt Tx Rate:'
+            label={$t({ defaultMessage: 'Mgmt Tx Rate:' })}
             style={{ marginBottom: '15px' }}
             children={
               <MgmtTxRateSelect disabled={enableOfdmOnly} />
@@ -290,7 +290,7 @@ export function NetworkMoreSettingsForm (props: {
         {enableFastRoaming &&
             <Form.Item
               name={['wlan','advancedCustomization','mobilityDomainId']}
-              label='Mobility Domain ID'
+              label={$t({ defaultMessage: 'Mobility Domain ID' })}
               initialValue={1}
               style={{ marginBottom: '15px' }}
               children={<Input style={{ width: '150px' }}></Input>}
@@ -299,7 +299,7 @@ export function NetworkMoreSettingsForm (props: {
 
         <Form.Item
           name={['wlan','advancedCustomization','clientInactivityTimeout']}
-          label='Client Inactivity Timeout:'
+          label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
           initialValue={120}
           style={{ marginBottom: '15px' }}
           children={<Input style={{ width: '150px' }}></Input>}
@@ -307,7 +307,7 @@ export function NetworkMoreSettingsForm (props: {
 
         <Form.Item
           name={['wlan','advancedCustomization','directedThreshold']}
-          label='Directed MC/BC Threshold:'
+          label={$t({ defaultMessage: 'Directed MC/BC Threshold:' })}
           initialValue={5}
           style={{ marginBottom: '15px', width: '300px' }}
           extra={MessageEnum.DIRECTED_MCBC_THRESHOLD}
@@ -370,7 +370,7 @@ export function NetworkMoreSettingsForm (props: {
               </UI.LabelOfInput>
               <Form.Item
                 name={['wlan','advancedCustomization','joinWaitTime']}
-                label='Join Wait Time:'
+                label={$t({ defaultMessage: 'Join Wait Time:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={30}
                 children={<Input style={{ width: '65px' }}></Input>}
@@ -384,7 +384,7 @@ export function NetworkMoreSettingsForm (props: {
               </UI.LabelOfInput>
               <Form.Item
                 name={['wlan','advancedCustomization','joinExpireTime']}
-                label='Join Expire Time:'
+                label={$t({ defaultMessage: 'Join Expire Time:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={300}
                 children={<Input style={{ width: '65px' }}></Input>}
@@ -395,7 +395,7 @@ export function NetworkMoreSettingsForm (props: {
 
             <Form.Item
               name={['wlan','advancedCustomization','joinWaitThreshold']}
-              label='Join Wait Threshold:'
+              label={$t({ defaultMessage: 'Join Wait Threshold:' })}
               style={{ marginBottom: '15px' }}
               initialValue={10}
               children={<Input style={{ width: '65px' }}></Input>}
@@ -422,7 +422,7 @@ export function NetworkMoreSettingsForm (props: {
               </UI.LabelOfInput>
               <Form.Item
                 name={['wlan', 'advancedCustomization', 'broadcastProbeResponseDelay']}
-                label='Broadcast Probe Response Delay:'
+                label={$t({ defaultMessage: 'Broadcast Probe Response Delay:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={15}
                 valuePropName='value'
@@ -438,7 +438,7 @@ export function NetworkMoreSettingsForm (props: {
               </UI.LabelOfInput>
               <Form.Item
                 name={['wlan','advancedCustomization','rssiAssociationRejectionThreshold']}
-                label='RSSI-Based Association Rejection Threshold:'
+                label={$t({ defaultMessage: 'RSSI-Based Association Rejection Threshold:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={-75}
                 valuePropName='value'

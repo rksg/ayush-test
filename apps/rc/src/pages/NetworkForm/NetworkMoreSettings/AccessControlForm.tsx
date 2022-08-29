@@ -236,10 +236,10 @@ function SelectAccessProfileProfile () {
     </UI.FieldLabel>
 
     {enableAccessControlProfile && <Form.Item
-      label='Access Control Policy'
+      label={$t({ defaultMessage: 'Access Control Policy' })}
       name={['wlan','advancedCustomization','accessControlProfileId']}
     >
-      <Select placeholder='Select profile...'
+      <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
         style={{ width: '180px' }}
         onChange={onAccessPolicyChange}
         children={accessControlProfileSelectOptions} />
@@ -381,7 +381,7 @@ function AccessControlConfigForm () {
             name={['wlan','advancedCustomization','l2AclPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
-              <Select placeholder='Select profile...'
+              <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
                 children={layer2SelectOptions} />
             }
@@ -407,7 +407,7 @@ function AccessControlConfigForm () {
             name={['wlan','advancedCustomization','l3AclPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
-              <Select placeholder='Select profile...'
+              <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
                 children={layer3SelectOptions} />
             }
@@ -433,7 +433,7 @@ function AccessControlConfigForm () {
             name={['wlan','advancedCustomization','devicePolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
-              <Select placeholder='Select profile...'
+              <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
                 children={devicePolicySelectOptions} />
             }
@@ -460,7 +460,7 @@ function AccessControlConfigForm () {
             name={['wlan','advancedCustomization','applicationPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             children={
-              <Select placeholder='Select profile...'
+              <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
                 children={applicationPolicySelectOptions} />
             }

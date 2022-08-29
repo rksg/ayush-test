@@ -49,7 +49,7 @@ function ClientIsolationForm () {
     {enableClientIsolation &&
     <>
       <Form.Item
-        label='Isolate Packets:'
+        label={$t({ defaultMessage: 'Isolate Packets:' })}
         name={['wlan','advancedCustomization','clientIsolationOptions', 'packetsType']}
       >
         <Select defaultValue={IsolatePacketsTypeEnum.UNICAST}
