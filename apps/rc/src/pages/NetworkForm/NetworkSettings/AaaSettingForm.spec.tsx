@@ -236,7 +236,8 @@ describe('Server Configuration Conflict', () => {
     const secretTextbox = screen.getByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
-    await fireEvent.click(screen.getByText('Next'))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
   }
@@ -260,7 +261,7 @@ describe('Server Configuration Conflict', () => {
     fireEvent.change(secretTextbox[0], { target: { value: 'secret-1' } })
     fireEvent.change(secretTextbox[1], { target: { value: 'secret-2' } })
 
-    await fireEvent.click(screen.getByText('Next'))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
   }
@@ -312,9 +313,9 @@ describe('Server Configuration Conflict', () => {
     await screen.findByText('Server Configuration Conflict')
     await screen.findByText($t(radiusErrorMessage['AUTH']))
     
-    fireEvent.click(screen.getByText('Use existing server configuration'))
+    await userEvent.click(screen.getByText('Use existing server configuration'))
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    fireEvent.click(screen.getByText('Next'))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     expect(screen.getByText('1.1.1.1:10')).toBeVisible()
     expect(screen.getAllByDisplayValue('99999')).toHaveLength(2)
@@ -336,9 +337,9 @@ describe('Server Configuration Conflict', () => {
     await screen.findByText('Server Configuration Conflict')
     await screen.findByText($t(radiusErrorMessage['ACCOUNTING']))
 
-    fireEvent.click(screen.getByText('Use existing server configuration'))
+    await userEvent.click(screen.getByText('Use existing server configuration'))
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    fireEvent.click(screen.getByText('Next'))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     expect(screen.getByText('1.1.1.1:20')).toBeVisible()
     expect(screen.getAllByDisplayValue('88888')).toHaveLength(2)
