@@ -90,6 +90,11 @@ export interface NetworkSaveData {
   passphraseLength?: number;
   passphraseFormat?: PassphraseFormatEnum;
   expiration?: PassphraseExpirationEnum;
+  dpskPassphraseGeneration?: {
+    length?: number;
+    format?: PassphraseFormatEnum;
+    expiration?: PassphraseExpirationEnum;
+  }
 }
 
 export interface NetworkVenue {
