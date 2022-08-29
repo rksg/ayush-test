@@ -1,8 +1,13 @@
+import { capitalize, omit } from 'lodash'
+import { useIntl }          from 'react-intl'
+
 import { renderHook } from '@acx-ui/test-utils'
 
-import { noDataSymbol } from './constants'
+import { fakeIncident, fakeIncident1 } from './fakeIncident'
 import {
   calculateSeverity,
+  impactValues,
+  transformIncidentQueryResult,
   useFormattedNodeType,
   useFormattedPath,
   useImpactedArea,
@@ -19,16 +24,42 @@ describe('calculateSeverity', () => {
   })
 })
 
+describe('transformIncidentQueryResult', () => {
+  it('adds incident information into the result', () => {
+    const incident = fakeIncident({
+      id: '1',
+      code: 'dhcp-failure',
+      startTime: '2022-08-12T00:00:00.000Z',
+      endTime: '2022-08-12T01:00:00.000Z',
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'Venue 1' }
+      ]
+    })
+    const result = omit(incident, [
+      'incidentType',
+      'shortDescription',
+      'longDescription',
+      'category',
+      'subCategory'
+    ])
+    expect(transformIncidentQueryResult(result)).toEqual(incident)
+  })
+})
+
 describe('useShortDescription', () => {
-  const incident = {
+  const incident = fakeIncident({
+    id: '1',
     code: 'eap-failure',
-    sliceType: 'zoneName',
-    sliceValue: 'Venue 1',
+    startTime: '2022-08-12T00:00:00.000Z',
+    endTime: '2022-08-12T01:00:00.000Z',
     path: [
       { type: 'network', name: 'Network' },
       { type: 'zone', name: 'Venue 1' }
-    ]
-  } as Incident
+    ],
+    sliceType: 'zoneName',
+    sliceValue: 'Venue 1'
+  })
   const renderShortDescription: typeof useShortDescription = (incident) =>
     renderHook(() => useShortDescription(incident)).result.current
 
@@ -63,7 +94,7 @@ describe('useFormattedPath', () => {
       { type: 'zone', name: 'V' },
       { type: 'apGroup', name: 'AG' }
     ], 'Name'))
-    expect(result.current).toEqual('V (Venue) > AG (AP Group)')
+    expect(result.current).toEqual('V (Venue)\n> AG (AP Group)')
   })
   it('returns path which contains AP with correct format', () => {
     const { result } = renderHook(() => useFormattedPath([
@@ -72,7 +103,7 @@ describe('useFormattedPath', () => {
       { type: 'apGroup', name: 'AG' },
       { type: 'ap', name: 'IP' }
     ], 'Name'))
-    expect(result.current).toEqual('V (Venue) > AG (AP Group) > Name (IP) (Access Point)')
+    expect(result.current).toEqual('V (Venue)\n> AG (AP Group)\n> Name (IP) (Access Point)')
   })
 })
 
@@ -103,74 +134,61 @@ describe('useImpactedArea', () => {
 
 
   describe('useImpactValues', () => {
-    const renderImpactValues: typeof useImpactValues = (type, count, impactArea) => 
-      renderHook(() => useImpactValues(type, count, impactArea)).result.current
+
+    const renderImpactValues: typeof useImpactValues = 
+    (type: 'ap' | 'client', incident: Incident) => 
+      renderHook(() => useImpactValues(type, incident)).result.current
 
     it('returns object for invalid count & impactArea', () => {
-      const type = 'test'
-      expect(renderImpactValues(type, undefined, undefined)).toMatchObject({
-        testImpact: null,
-        testImpactFormatted: '',
-        testImpactCountFormatted: '',
-        testImpactDescription: 'Calculating...'
-      })
-
-      expect(renderImpactValues(type, 1, undefined)).toMatchObject({
-        testImpact: null,
-        testImpactFormatted: '',
-        testImpactCountFormatted: '',
-        testImpactDescription: 'Calculating...'
+      expect(renderImpactValues('client', fakeIncident1)).toMatchObject({
+        clientImpactDescription: '5 of 27 clients (18.52%)'
       })
     })
 
-    
-    it('return object for count & impactArea of -1 / 0', () => {
-      const type = 'test'
-      expect(renderImpactValues(type, -1, -1)).toMatchObject({
-        testImpact: noDataSymbol,
-        testImpactFormatted: noDataSymbol,
-        testImpactCountFormatted: noDataSymbol,
-        testImpactDescription: noDataSymbol
-      })
+  })
+})
 
-      expect(renderImpactValues(type, 1, -1)).toMatchObject({
-        testImpact: noDataSymbol,
-        testImpactFormatted: noDataSymbol,
-        testImpactCountFormatted: noDataSymbol,
-        testImpactDescription: noDataSymbol
-      })
+describe('impactValues', () => {
+  const incident = (type: 'ap' | 'client', count: number | null, impactedCount: number | null) => ({
+    [`${type}Count`]: count,
+    [`impacted${capitalize(type)}Count`]: impactedCount
+  }) as unknown as Incident
 
-      expect(renderImpactValues(type, 0, 1)).toMatchObject({
-        testImpact: noDataSymbol,
-        testImpactFormatted: noDataSymbol,
-        testImpactCountFormatted: noDataSymbol,
-        testImpactDescription: noDataSymbol
-      })
-    })
+  const renderImpactValues = (
+    type: 'ap' | 'client',
+    count: number | null,
+    impactedCount: number | null
+  ) => renderHook(() => impactValues(
+    useIntl(),
+    type,
+    incident(type, count, impactedCount)
+  )).result.current
 
-    it('returns object from correct values', () => {
-      const type = 'ap'
-      expect(renderImpactValues(type, 1, 1)).toMatchObject({
-        apImpact: 1,
-        apImpactFormatted: '100%',
-        apImpactCountFormatted: '1',
-        apImpactDescription: '1 of 1 AP (100%)'
-      })
+  it('handles when incident has no client impact', () => {
+    expect(renderImpactValues('client', -1, -1)).toMatchSnapshot()
+  })
 
-      expect(renderImpactValues(type, 2, 1)).toMatchObject({
-        apImpact: 0.5,
-        apImpactFormatted: '50%',
-        apImpactCountFormatted: '1',
-        apImpactDescription: '1 of 2 APs (50%)'
-      })
+  it('handles when incident is calculating', () => {
+    expect(renderImpactValues('client', null, null)).toMatchSnapshot()
+  })
 
-      const nonApType = 'radius'
-      expect(renderImpactValues(nonApType, 1, 1)).toMatchObject({
-        radiusImpact: 1,
-        radiusImpactFormatted: '100%',
-        radiusImpactCountFormatted: '1',
-        radiusImpactDescription: '1 of 1 radius (100%)'
-      })
-    })
+  it('handles clientCount = 0', () => {
+    expect(renderImpactValues('client', 0, 0)).toMatchSnapshot()
+  })
+
+  it('handles when incident has no client impact but has clinet count', () => {
+    expect(renderImpactValues('client', 128, 0)).toMatchSnapshot()
+  })
+
+  it('handles when incident has client impact', () => {
+    expect(renderImpactValues('client', 128, 55)).toMatchSnapshot()
+  })
+
+  it('formats impacted client count', () => {
+    expect(renderImpactValues('client', 1500, 1300)).toMatchSnapshot()
+  })
+
+  it('formats impacted ap count', () => {
+    expect(renderImpactValues('ap', 1, 1)).toMatchSnapshot()
   })
 })

@@ -1,11 +1,13 @@
-import { gql } from 'graphql-request'
+import { gql }               from 'graphql-request'
+import { MessageDescriptor } from 'react-intl'
 
-import { dataApi } from '@acx-ui/analytics/services'
+import { dataApi }               from '@acx-ui/analytics/services'
 import {
   IncidentFilter,
   incidentCodes,
   Incident,
-  noDataSymbol
+  noDataSymbol,
+  transformIncidentQueryResult
 } from '@acx-ui/analytics/utils'
 
 import { durationValue } from './utils'
@@ -32,9 +34,12 @@ const listQueryProps = {
 export type AdditionalIncidentTableFields = {
   children?: Incident[],
   duration: number,
-  description: string,
-  category: string,
-  subCategory: string,
+  description: string | MessageDescriptor,
+  category: string | MessageDescriptor,
+  subCategory: string | MessageDescriptor,
+  shortDescription: string | MessageDescriptor,
+  longDescription: string | MessageDescriptor,
+  incidentType: string | MessageDescriptor,
   scope: string,
   type: string,
 }
@@ -48,42 +53,35 @@ export const transformData = (incident: Incident): IncidentTableRow => {
   const rawChildren = validRelatedIncidents ? incident.relatedIncidents : undefined
   let children = undefined
   if (typeof rawChildren !== 'undefined') {
-    children = rawChildren.map((value) => {
-      const childDuration = durationValue(incident.startTime, incident.endTime)
+    children = rawChildren.map((child) => {
+      const childDuration = durationValue(child.startTime, child.endTime)
       const childDescription = noDataSymbol
-      const childCategory = noDataSymbol
-      const childSubCategory = noDataSymbol
       const childScope = noDataSymbol
       const childType = noDataSymbol
+      const childIncident = transformIncidentQueryResult(child)
 
       return {
-        ...value,
+        ...childIncident,
         children: undefined,
         duration: childDuration,
         description: childDescription,
-        category: childCategory,
         scope: childScope,
-        type: childType,
-        subCategory: childSubCategory
+        type: childType
       }
     })
   }
-
+  const incidentInfo = transformIncidentQueryResult(incident)
   const duration = durationValue(incident.startTime, incident.endTime)
   const description = noDataSymbol
-  const category = noDataSymbol
-  const subCategory = noDataSymbol
   const scope = noDataSymbol
   const type = noDataSymbol
 
   return {
-    ...incident,
+    ...incidentInfo,
     children,
     duration,
     description,
     scope,
-    category,
-    subCategory,
     type
   }
 }

@@ -2,9 +2,16 @@ import '@testing-library/jest-dom'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { incidentCodes, noDataSymbol, incidentInformation, Incident } from '@acx-ui/analytics/utils'
-import { Provider }                                                   from '@acx-ui/store'
-import { render, screen, cleanup }                                    from '@acx-ui/test-utils'
+import { 
+  incidentCodes,
+  noDataSymbol,
+  incidentInformation,
+  fakeIncident,
+  NodeType,
+  PathNode
+} from '@acx-ui/analytics/utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import {
   GetIncidentBySeverity,
@@ -28,14 +35,12 @@ describe('IncidentTable: utils', () => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
 
-  afterEach(() => cleanup())
-
-  const testIncident: Incident = {
+  const incidentValues = {
     severity: 0.3813119146230035,
     startTime: '2022-07-21T01:15:00.000Z',
     endTime: '2022-07-21T01:18:00.000Z',
     code: 'auth-failure',
-    sliceType: 'zone',
+    sliceType: 'zone' as NodeType,
     sliceValue: 'Venue-3-US',
     id: '268a443a-e079-4633-9491-536543066e7d',
     path: [
@@ -43,7 +48,7 @@ describe('IncidentTable: utils', () => {
         type: 'zone',
         name: 'Venue-3-US'
       }
-    ],
+    ] as PathNode[],
     metadata: {
       dominant: {
         ssid: 'qa-eric-acx-R760-psk'
@@ -68,50 +73,10 @@ describe('IncidentTable: utils', () => {
     vlanCount: 0,
     connectedPowerDeviceCount: 0,
     slaThreshold: null,
-    currentSlaThreshold: null,
-    relatedIncidents: [
-      {
-        severity: 0.3813119146230035,
-        startTime: '2022-07-21T01:15:00.000Z',
-        endTime: '2022-07-21T01:18:00.000Z',
-        code: 'auth-failure',
-        sliceType: 'zone',
-        sliceValue: 'Venue-3-US',
-        id: '268a443a-e079-4633-9491-536543066e7d',
-        path: [
-          {
-            type: 'zone',
-            name: 'Venue-3-US'
-          }
-        ],
-        metadata: {
-          dominant: {
-            ssid: 'qa-eric-acx-R760-psk'
-          },
-          rootCauseChecks: {
-            checks: [
-              {
-                CCD_REASON_NOT_AUTHED: true
-              }
-            ],
-            params: {}
-          }
-        },
-        clientCount: 2,
-        impactedClientCount: 2,
-        isMuted: false,
-        mutedBy: null,
-        mutedAt: null,
-        apCount: 0,
-        impactedApCount: 0,
-        switchCount: 0,
-        vlanCount: 0,
-        connectedPowerDeviceCount: 0,
-        slaThreshold: null,
-        currentSlaThreshold: null
-      }
-    ]
+    currentSlaThreshold: null
   }
+  
+  const sampleIncident = fakeIncident(incidentValues)
 
   describe('getIncidentBySeverity', () => {
     const testSeverityArr = [
@@ -285,7 +250,7 @@ describe('IncidentTable: utils', () => {
     it('getCategory: valid codes', async () => {
       incidentCodes.forEach(async (code) => {
         render(<RenderGetCategory code={code}/>)
-        const category = incidentInformation[code].category.defaultMessage
+        const category = incidentInformation[code].category.defaultMessage as string
         await screen.findByText(category)
         expect(screen.getByText(category).textContent).toBe(category)
       })
@@ -294,7 +259,7 @@ describe('IncidentTable: utils', () => {
     it('getCategory: valid codes on subCategory', async () => {
       incidentCodes.forEach(async (code) => {
         render(<RenderGetCategory code={code} subCategory={true}/>)
-        const subCategory = incidentInformation[code].subCategory.defaultMessage
+        const subCategory = incidentInformation[code].subCategory.defaultMessage as string
         await screen.findByText(subCategory)
         expect(screen.getByText(subCategory).textContent).toBe(subCategory)
       })
@@ -307,9 +272,9 @@ describe('IncidentTable: utils', () => {
     }
   
     it('ShortIncidentDescription: it renders on valid incident', async () => {
-      render(<RenderShortDescription incident={testIncident}/>)
+      render(<RenderShortDescription incident={sampleIncident}/>)
       // eslint-disable-next-line max-len
-      const expectedShortDesc = '802.11 Authentication failures are unusually high in Venue: Venue-3-US'
+      const expectedShortDesc = '802.11 Authentication failures are unusually high in 802.11 Authentication failures are unusually high in Venue: Venue-3-US'
       await screen.findByText(expectedShortDesc)
       expect(screen.getByText(expectedShortDesc).textContent).toBe(expectedShortDesc)
     })
@@ -321,7 +286,8 @@ describe('IncidentTable: utils', () => {
     }
   
     it('should render GetScope on correct incident', async () => {
-      const { asFragment } = render(<RenderGetScope incident={testIncident}/>)
+      const { asFragment } = 
+        render(<RenderGetScope incident={sampleIncident}/>)
       expect(asFragment()).toMatchSnapshot()
     })
   })

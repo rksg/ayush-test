@@ -27,6 +27,9 @@ jest.mock('./App/Venues/VenuesTable', () => ({
     return <div data-testid='venues' />
   }
 }), { virtual: true })
+jest.mock('msp/Routes', () => () => {
+  return <div data-testid='msp' />
+}, { virtual: true })
 
 describe('AllRoutes', () => {
   beforeEach(() => {
@@ -96,5 +99,14 @@ describe('AllRoutes', () => {
       }
     })
     await screen.findByTestId('venues')
+  })
+
+  test('should navigate to msp pages', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/v/tenantId/dashboard'
+      }
+    })
+    expect(await screen.findByTestId('msp')).toBeVisible()
   })
 })

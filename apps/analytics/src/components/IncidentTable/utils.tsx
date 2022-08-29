@@ -1,5 +1,9 @@
-import moment                                        from 'moment-timezone'
-import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import moment         from 'moment-timezone'
+import { 
+  defineMessage, 
+  FormattedMessage, 
+  MessageDescriptor
+} from 'react-intl'
 
 import { 
   calculateSeverity,
@@ -49,10 +53,8 @@ export interface FormatIntlStringProps {
 }
 
 export const FormatIntlString = (props: FormatIntlStringProps) => {
-  const { $t } = useIntl()
   const { message, scope, threshold } = props
-  const intlMessage = $t(message, { scope, threshold, noDataSymbol })
-  return <span>{intlMessage}</span>
+  return <FormattedMessage {...message} values={{ scope, threshold, noDataSymbol }} />
 }
 
 export interface IncidentTableComponentProps {
@@ -87,7 +89,7 @@ export const ClientImpact = (props: IncidentTableComponentProps & {
   type: 'clientImpact' | 'impactedClients'
 }) => {
   const { type, incident } = props
-  const values = useImpactValues('client', incident.clientCount, incident.impactedClientCount)
+  const values = useImpactValues('client', incident)
   if (type === 'clientImpact') return <span>{values['clientImpactFormatted'] as string}</span>
 
   return <span>{values['clientImpactCountFormatted'] as string}</span>

@@ -10,10 +10,19 @@ import { SettingsOutlined } from '@acx-ui/icons'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
-import type { Columns, ColumnStateOption }  from './types'
-import type { ParamsType }                  from '@ant-design/pro-provider'
-import type { SettingOptionType }           from '@ant-design/pro-table/lib/components/ToolBar'
-import type { TableProps as AntTableProps } from 'antd'
+import type { TableColumn, ColumnStateOption } from './types'
+import type { ParamsType }                     from '@ant-design/pro-provider'
+import type { SettingOptionType }              from '@ant-design/pro-table/lib/components/ToolBar'
+import type {
+  TableProps as AntTableProps,
+  TablePaginationConfig
+} from 'antd'
+
+export type {
+  ColumnType,
+  ColumnGroupType,
+  TableColumn
+} from './types'
 
 export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>, 
@@ -21,7 +30,7 @@ export interface TableProps <RecordType>
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip'
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
-    columns: Columns<RecordType, 'text'>[]
+    columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
@@ -33,6 +42,14 @@ export interface TableProps <RecordType>
       alwaysShowAlert?: boolean;
   })
   }
+
+const defaultPagination = {
+  mini: true,
+  defaultPageSize: 10,
+  pageSizeOptions: [5, 10, 20, 25, 50, 100],
+  position: ['bottomCenter'],
+  showTotal: false
+}
 
 function useSelectedRowKeys <RecordType> (
   rowSelection?: TableProps<RecordType>['rowSelection']
@@ -68,6 +85,11 @@ function Table <RecordType extends object> (
 
     return cols.map((column) => ({
       ...column,
+      tooltip: null,
+      title: column.tooltip ? <UI.TitleWithTooltip>
+        {column.title as React.ReactNode}
+        <UI.InformationTooltip title={column.tooltip as string} />
+      </UI.TitleWithTooltip> : column.title,
       disable: Boolean(column.fixed || column.disable),
       show: Boolean(column.fixed || column.disable || (column.show ?? true))
     }))
@@ -152,9 +174,12 @@ function Table <RecordType extends object> (
       columnsState={columnsState}
       scroll={props.scroll ? props.scroll : { x: 'max-content' }}
       rowSelection={rowSelection}
-      pagination={props.pagination || (type === 'tall' ? undefined : false)}
+      pagination={(type === 'tall'
+        ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+        : false)}
       columnEmptyText={false}
       onRow={onRow}
+      showSorterTooltip={false}
       tableAlertOptionRender={false}
       tableAlertRender={({ onCleanSelected }) => (
         <Space size={32}>

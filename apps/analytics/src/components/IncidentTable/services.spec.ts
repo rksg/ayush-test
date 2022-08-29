@@ -1,10 +1,17 @@
 import '@testing-library/jest-dom'
 import { configureStore } from '@reduxjs/toolkit'
 
-import { dataApi, dataApiURL }       from '@acx-ui/analytics/services'
-import { NetworkPath, noDataSymbol } from '@acx-ui/analytics/utils'
-import { mockGraphqlQuery }          from '@acx-ui/test-utils'
-import { DateRange }                 from '@acx-ui/utils'
+import { dataApi, dataApiURL }    from '@acx-ui/analytics/services'
+import { 
+  fakeIncident, 
+  NetworkPath, 
+  noDataSymbol, 
+  NodeType, 
+  PathNode, 
+  transformIncidentQueryResult 
+} from '@acx-ui/analytics/utils'
+import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import { DateRange }        from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -114,14 +121,13 @@ describe('IncidentTable: services', () => {
       }
     }
   }
-  
 
-  const transformedResult = [{
+  const incidentValues = {
     severity: 0.3813119146230035,
     startTime: '2022-07-21T01:15:00.000Z',
     endTime: '2022-07-21T01:18:00.000Z',
     code: 'auth-failure',
-    sliceType: 'zone',
+    sliceType: 'zone' as NodeType,
     sliceValue: 'Venue-3-US',
     id: '268a443a-e079-4633-9491-536543066e7d',
     path: [
@@ -129,7 +135,7 @@ describe('IncidentTable: services', () => {
         type: 'zone',
         name: 'Venue-3-US'
       }
-    ],
+    ] as PathNode[],
     metadata: {
       dominant: {
         ssid: 'qa-eric-acx-R760-psk'
@@ -154,105 +160,26 @@ describe('IncidentTable: services', () => {
     vlanCount: 0,
     connectedPowerDeviceCount: 0,
     slaThreshold: null,
-    currentSlaThreshold: null,
-    relatedIncidents: [
-      {
-        severity: 0.3813119146230035,
-        startTime: '2022-07-21T01:15:00.000Z',
-        endTime: '2022-07-21T01:18:00.000Z',
-        code: 'auth-failure',
-        sliceType: 'zone',
-        sliceValue: 'Venue-3-US',
-        id: '268a443a-e079-4633-9491-536543066e7d',
-        path: [
-          {
-            type: 'zone',
-            name: 'Venue-3-US'
-          }
-        ],
-        metadata: {
-          dominant: {
-            ssid: 'qa-eric-acx-R760-psk'
-          },
-          rootCauseChecks: {
-            checks: [
-              {
-                CCD_REASON_NOT_AUTHED: true
-              }
-            ],
-            params: {}
-          }
-        },
-        clientCount: 2,
-        impactedClientCount: 2,
-        isMuted: false,
-        mutedBy: null,
-        mutedAt: null,
-        apCount: 0,
-        impactedApCount: 0,
-        switchCount: 0,
-        vlanCount: 0,
-        connectedPowerDeviceCount: 0,
-        slaThreshold: null,
-        currentSlaThreshold: null
-      }
-    ],
-    children: [
-      {
-        severity: 0.3813119146230035,
-        startTime: '2022-07-21T01:15:00.000Z',
-        endTime: '2022-07-21T01:18:00.000Z',
-        code: 'auth-failure',
-        sliceType: 'zone',
-        sliceValue: 'Venue-3-US',
-        id: '268a443a-e079-4633-9491-536543066e7d',
-        path: [
-          {
-            type: 'zone',
-            name: 'Venue-3-US'
-          }
-        ],
-        metadata: {
-          dominant: {
-            ssid: 'qa-eric-acx-R760-psk'
-          },
-          rootCauseChecks: {
-            checks: [
-              {
-                CCD_REASON_NOT_AUTHED: true
-              }
-            ],
-            params: {}
-          }
-        },
-        clientCount: 2,
-        impactedClientCount: 2,
-        isMuted: false,
-        mutedBy: null,
-        mutedAt: null,
-        apCount: 0,
-        impactedApCount: 0,
-        switchCount: 0,
-        vlanCount: 0,
-        connectedPowerDeviceCount: 0,
-        slaThreshold: null,
-        currentSlaThreshold: null,
-        duration: 180000,
-        category: noDataSymbol,
-        subCategory: noDataSymbol,
-        description: noDataSymbol,
-        scope: noDataSymbol,
-        type: noDataSymbol,
-        children: undefined
-      }
-    ],
-    duration: 180000,
-    category: noDataSymbol,
-    subCategory: noDataSymbol,
+    currentSlaThreshold: null
+  }
+  
+  const sampleIncident = fakeIncident(incidentValues)
+
+  const sampleIncidentWithTableFields = {
+    ...transformIncidentQueryResult(sampleIncident),
     description: noDataSymbol,
     scope: noDataSymbol,
-    type: noDataSymbol
-  }]
+    type: noDataSymbol,
+    duration: 180000
+  }
+
+  const transformedResult = [
+    {
+      ...sampleIncidentWithTableFields,
+      relatedIncidents: [incidentValues],
+      children: [{ ...sampleIncidentWithTableFields, children: undefined }]
+    }
+  ]
 
   afterEach(() =>
     store.dispatch(api.util.resetApiState())

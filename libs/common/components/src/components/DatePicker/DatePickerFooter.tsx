@@ -11,7 +11,7 @@ import * as UI from './styledComponents'
 
 import { DateRangeType } from '.'
 
-import type { Moment } from 'moment'
+import type { Moment } from 'moment-timezone'
 
 interface DatePickerFooterProps {
   showTimePicker?: boolean;
@@ -87,6 +87,7 @@ export const DatePickerFooter = ({
             <React.Fragment key={config.id}>
               <UI.TimePickerWrapper
                 role='time-picker'
+                size='small'
                 showNow={false}
                 format={config.format}
                 placeholder=''
