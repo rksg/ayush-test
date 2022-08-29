@@ -105,7 +105,6 @@ export function ServicesForm () {
     enableArpRequestRateLimit,
     enableDhcpRequestRateLimit,
     enableWifiCalling
-    // TODO: edit
     // dnsProxyRules
   ] = [
     useWatch<boolean>(['wlan','advancedCustomization','dnsProxyEnabled']),
@@ -113,10 +112,11 @@ export function ServicesForm () {
     useWatch<boolean>(['wlan','advancedCustomization','enableArpRequestRateLimit']),
     useWatch<boolean>(['wlan','advancedCustomization','enableDhcpRequestRateLimit']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'wifiCallingEnabled'])
-    // useWatch<boolean>(['wlan','advancedCustomization','dnsProxy', 'dnsProxyRules'])
+    // useWatch<DnsProxyRule[]>(['wlan','advancedCustomization','dnsProxy', 'dnsProxyRules'])
   ]
 
   const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxyRule[])
+
 
   return (
     <>
@@ -130,9 +130,16 @@ export function ServicesForm () {
             initialValue={false}
             children={<Switch />}
           />
-          <DnsProxyContext.Provider value={{ dnsProxyList, setDnsProxyList }}>
-            {enableDnsProxy && <DnsProxyModal />}
-          </DnsProxyContext.Provider>
+          <Form.Item
+            name={['wlan', 'advancedCustomization', 'dnsProxy', 'dnsProxyRules']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+          >
+            <DnsProxyContext.Provider value={{ dnsProxyList, setDnsProxyList }}>
+              {enableDnsProxy && <DnsProxyModal />}
+            </DnsProxyContext.Provider>
+          </Form.Item>
 
         </UI.FieldLabel>
       </UI.FieldLabel>

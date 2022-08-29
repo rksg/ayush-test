@@ -255,6 +255,22 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     </div>
                   </div>
                 </div>
+                <div
+                  class="ant-row ant-form-item"
+                  style="margin-bottom: 10px;"
+                >
+                  <div
+                    class="ant-col ant-form-item-control"
+                  >
+                    <div
+                      class="ant-form-item-control-input"
+                    >
+                      <div
+                        class="ant-form-item-control-input-content"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div
