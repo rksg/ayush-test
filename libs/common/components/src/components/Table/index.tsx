@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Key } from 'react'
+import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable                   from '@ant-design/pro-table'
 import { Space, Divider, Button } from 'antd'
@@ -10,22 +10,54 @@ import { SettingsOutlined } from '@acx-ui/icons'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
-import type { Columns, ColumnStateOption }  from './types'
-import type { SettingOptionType }           from '@ant-design/pro-table/lib/components/ToolBar'
-import type { TableProps as AntTableProps } from 'antd'
+import type { TableColumn, ColumnStateOption } from './types'
+import type { SettingOptionType }              from '@ant-design/pro-table/lib/components/ToolBar'
+import type {
+  TableProps as AntTableProps,
+  TablePaginationConfig
+} from 'antd'
+
+export type {
+  ColumnType,
+  ColumnGroupType,
+  TableColumn
+} from './types'
 
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' | 'title'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip'
     rowKey?: Exclude<AntTableProps<RecordType>['rowKey'], Function>
-    columns: Columns<RecordType, 'text'>[]
+    columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
   }
+
+const defaultPagination = {
+  mini: true,
+  defaultPageSize: 10,
+  pageSizeOptions: [5, 10, 20, 25, 50, 100],
+  position: ['bottomCenter'],
+  showTotal: false
+}
+
+function useSelectedRowKeys <RecordType> (
+  rowSelection?: TableProps<RecordType>['rowSelection']
+): [Key[], React.Dispatch<React.SetStateAction<Key[]>>] {
+  const [selectedRowKeys, setSelectedRowKeys]
+    = useState<Key[]>(rowSelection?.defaultSelectedRowKeys ?? [])
+
+  useEffect(() => {
+    if (rowSelection?.selectedRowKeys !== undefined) {
+      setSelectedRowKeys(rowSelection?.selectedRowKeys)
+    }
+  }, [rowSelection?.selectedRowKeys])
+
+  return [selectedRowKeys, setSelectedRowKeys]
+}
 
 function Table <RecordType extends object> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>
@@ -46,6 +78,11 @@ function Table <RecordType extends object> (
 
     return cols.map((column) => ({
       ...column,
+      tooltip: null,
+      title: column.tooltip ? <UI.TitleWithTooltip>
+        {column.title as React.ReactNode}
+        <UI.InformationTooltip title={column.tooltip as string} />
+      </UI.TitleWithTooltip> : column.title,
       disable: Boolean(column.fixed || column.disable),
       show: Boolean(column.fixed || column.disable || (column.show ?? true))
     }))
@@ -71,15 +108,13 @@ function Table <RecordType extends object> (
 
   const rowKey = (props.rowKey ?? 'key') as keyof RecordType
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>(props.rowSelection?.selectedRowKeys
-    ?? props.rowSelection?.defaultSelectedRowKeys
-    ?? [])
+  const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
 
-  // needed to store selectedRows because `tableAlertRender`
-  // somehow doesn't pass in sync selected data between selectedRows & selectedRowKeys
-  const [selectedRows, setSelectedRows]
-    = useState<RecordType[]>(props.dataSource
-      ?.filter(item => selectedRowKeys.includes(item[rowKey] as unknown as Key)) ?? [])
+  const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
+    return props.dataSource?.filter(item => {
+      return selectedRowKeys.includes(item[rowKey] as unknown as Key)
+    }) ?? []
+  }, [props.dataSource, rowKey])
 
   const onRowClick = (record: RecordType) => {
     if (!props.rowSelection) return
@@ -90,7 +125,6 @@ function Table <RecordType extends object> (
     if (props.rowSelection.type === 'radio') {
       if (!isSelected) {
         setSelectedRowKeys([key])
-        setSelectedRows([record])
       }
     } else {
       setSelectedRowKeys(isSelected
@@ -98,11 +132,6 @@ function Table <RecordType extends object> (
         ? selectedRowKeys.filter(k => k !== key)
         // add into collection if not selected
         : [...selectedRowKeys, key])
-      setSelectedRows(isSelected
-        // remove if selected
-        ? selectedRows.filter(item => item[rowKey] !== record[rowKey])
-        // add into collection if not selected
-        : [...selectedRows, record])
     }
   }
 
@@ -112,7 +141,6 @@ function Table <RecordType extends object> (
     preserveSelectedRowKeys: true,
     onChange: (keys, rows, info) => {
       setSelectedRowKeys(keys)
-      setSelectedRows(rows)
       props.rowSelection?.onChange?.(keys, rows, info)
     }
   } : undefined
@@ -139,15 +167,18 @@ function Table <RecordType extends object> (
       columnsState={columnsState}
       scroll={{ x: 'max-content' }}
       rowSelection={rowSelection}
-      pagination={props.pagination || (type === 'tall' ? undefined : false)}
+      pagination={(type === 'tall'
+        ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+        : false)}
       columnEmptyText={false}
       onRow={onRow}
+      showSorterTooltip={false}
       tableAlertOptionRender={false}
       tableAlertRender={({ onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
             <span>
-              {$t({ defaultMessage: '{count} selected' }, { count: selectedRows.length })}
+              {$t({ defaultMessage: '{count} selected' }, { count: selectedRowKeys.length })}
             </span>
             <UI.CloseButton
               onClick={onCleanSelected}
@@ -158,7 +189,8 @@ function Table <RecordType extends object> (
             {props.actions?.map((option) =>
               <UI.ActionButton
                 key={option.label}
-                onClick={() => option.onClick(selectedRows, () => { onCleanSelected() })}
+                onClick={() =>
+                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
                 children={option.label}
               />
             )}

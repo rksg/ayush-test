@@ -1,9 +1,17 @@
-import { Button as AntButton }            from 'antd'
-import styled, { css, createGlobalStyle } from 'styled-components/macro'
+import { Button as AntButton, Tooltip as AntTooltip } from 'antd'
+import styled, { css, createGlobalStyle }             from 'styled-components/macro'
 
-import { CancelCircle } from '@acx-ui/icons'
+import { InformationOutlined, CancelCircle } from '@acx-ui/icons'
 
 import { Subtitle } from '../Subtitle'
+
+export const InformationTooltip = styled(AntTooltip).attrs({ children: <InformationOutlined /> })``
+
+export const TitleWithTooltip = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+`
 
 export const SubTitle = styled.span`
   display: block;
