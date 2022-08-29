@@ -85,5 +85,5 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   validateRadius: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
-  },
+  }
 }
