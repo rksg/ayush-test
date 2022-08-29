@@ -5,11 +5,12 @@ import ProLayout   from '@ant-design/pro-layout'
 import { isEmpty } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Logo } from '@acx-ui/icons'
+import { Logo }   from '@acx-ui/icons'
 import {
-  TenantNavLink,
+  NavLink,
   TenantType,
-  useLocation
+  useLocation,
+  useTenantLink
 } from '@acx-ui/react-router-dom'
 
 
@@ -46,9 +47,20 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
+
+  const bashPathname = useTenantLink('/').pathname
+  const newRoutes = routes.map((item => ({
+    ...item,
+    path: `${bashPathname}${item.path}`,
+    routes: item.routes?.map(sub=>({
+      ...sub,
+      path: `${bashPathname}${sub.path}`
+    }))
+  })))
+
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
     const path = item.routes ? item.routes[0].path : item.path
-    return <TenantNavLink to={path} tenantType={item.tenantType}>
+    return <NavLink to={path}>
       {({ isActive }) => {
         const Icon = isActive ? item.enableIcon : item.disableIcon
         return <>
@@ -56,14 +68,14 @@ export function Layout ({
           {dom}
         </>
       }}
-    </TenantNavLink>
+    </NavLink>
   }
 
   return <UI.Wrapper>
     <ProLayout
       breakpoint='xl'
       disableMobile={true}
-      route={{ routes }}
+      route={{ routes: newRoutes }}
       fixedHeader={true}
       fixSiderbar={true}
       location={location}

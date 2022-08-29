@@ -1,3 +1,4 @@
+process.env.TZ = 'UTC'
 const nxPreset = require('@nrwl/jest/preset')
 
 module.exports = {
