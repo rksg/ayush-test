@@ -251,6 +251,14 @@ export const Wrapper = styled.div<StyledTable>`
 
         &.react-resizable:not(.ant-table-selection-column) {
           -webkit-user-select: none;
+          &:hover {
+            background: var(--acx-accents-orange-10);
+            border-width: 1px;
+            border-top-width: 0px;
+            border-style: solid;
+            border-color: var(--acx-accents-orange-30);
+            border-bottom-color: var(--acx-neutrals-40);
+          }
           .react-resizable-handle {
             position: absolute;
             right: 0;
