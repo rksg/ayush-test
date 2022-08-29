@@ -16,7 +16,6 @@ import {
   useUpdateNetworkMutation,
   useLazyValidateRadiusQuery
 } from '@acx-ui/rc/services'
-
 import {
   CreateNetworkFormFields,
   NetworkTypeEnum,
@@ -44,8 +43,7 @@ import { PskSettingsForm }   from './NetworkSettings/PskSettingsForm'
 import { SummaryForm }       from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
-  tranferSettingsToSave,
-  flattenObject
+  tranferSettingsToSave
 } from './parser'
 import { Venues } from './Venues/Venues'
 
@@ -67,6 +65,7 @@ export function NetworkForm () {
 
   const [createNetwork] = useCreateNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
+  const [getValidateRadius] = useLazyValidateRadiusQuery()
 
   const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
 
@@ -105,13 +104,23 @@ export function NetworkForm () {
     }
   }
 
-  const [getValidateRadius] = useLazyValidateRadiusQuery()
+  const handleEditNetwork = async () => {
+    try {
+      await updateNetwork({ params, payload: saveState }).unwrap()
+      navigate(linkToNetworks, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: 'An error occurred'
+      })
+    }
+  }
 
   const checkIpsValues = async (newData: Partial<CreateNetworkFormFields>) => {
     const payload = {
-      // networkId: 
-      ...newData,
-      networkType: newData?.type?.toUpperCase()
+      networkId: saveState?.id,
+      networkType: newData?.type?.toUpperCase(),
+      ...newData
     }
 
     const res = await getValidateRadius({ params, payload }, true)
@@ -157,7 +166,6 @@ export function NetworkForm () {
           title: $t({ defaultMessage: 'Server Configuration Conflict' }),
           content: conflictMessage
         })
-
       } else {
         const radiusErrors = radiusType.filter(x => Object.keys(results).includes(x))
           .map(x => x.split('Radius')[0].toUpperCase())
@@ -245,29 +253,15 @@ export function NetworkForm () {
     callback?: Function
   ) => {
     if (action === 'existing') {
+      let resetFields = [] as string[]
       const authErrors = authIndex > -1 && errors[authIndex].value
       const accountErrors = accountIndex > -1 && errors[accountIndex].value
       const updateField = ['primary', 'secondary',
         'tlsEnabled', 'cnSanIdentity', 'ocspUrl', 'trustedCAChain']
 
-      const deleteRadiusSecondary = () => {
-        let resetFields = [] as string[]
-        const authSecondaryFields = [
-          'authRadius.secondary.ip',
-          'authRadius.secondary.port',
-          'authRadius.secondary.sharedSecret',
-          'enableSecondaryAuthServer'
-        ]
-        const acctSecondaryFields = [
-          'accountingRadius.secondary.ip',
-          'accountingRadius.secondary.port',
-          'accountingRadius.secondary.sharedSecret',
-          'enableSecondaryAcctServer'
-        ]
-
-        if (authErrors) resetFields.push(...authSecondaryFields)
-        if (accountErrors) resetFields.push(...acctSecondaryFields)
-
+      if (authErrors) resetFields.push('enableSecondaryAuthServer')
+      if (accountErrors) resetFields.push('enableSecondaryAcctServer')
+      if (resetFields.length) {
         resetFields.forEach(x => delete data[x as keyof CreateNetworkFormFields])
         formRef?.current?.resetFields(resetFields)
       }
@@ -282,16 +276,11 @@ export function NetworkForm () {
         return value ? { ...result, [key]: value } : result
       }, {})
 
-      deleteRadiusSecondary()
-      
-      const updatedata = {
-        ...data,
-        ...authRadius && flattenObject({ authRadius }),
-        ...accountingRadius && flattenObject({ accountingRadius })
-      }
-
       const saveData = {
-        ...tranferSettingsToSave(data),
+        ...tranferSettingsToSave({
+          ...saveState,
+          ...data
+        }),
         ...authRadius && { authRadius },
         ...accountingRadius && { accountingRadius }
       } as Partial<CreateNetworkFormFields>
@@ -299,32 +288,19 @@ export function NetworkForm () {
       // update form value
       formRef?.current?.setFieldsValue({
         ...formRef?.current?.getFieldsValue(),
-        ...updatedata
+        ...saveData
       })
 
       updateSaveData(saveData)
       callback && callback()
 
-      // TODO
-      // if (this.editMode)
-      // }
-      
     } else if (action === 'override') {
-      updateSaveData(tranferSettingsToSave(data))
+      const settingData = _.merge(saveState, data)
+      const settingSaveData = tranferSettingsToSave(settingData)
+      updateSaveData(settingSaveData)
     }
   }
 
-  const handleEditNetwork = async () => {
-    try {
-      await updateNetwork({ params, payload: saveState }).unwrap()
-      navigate(linkToNetworks, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: 'An error occurred'
-      })
-    }
-  }
   return (
     <>
       <PageHeader

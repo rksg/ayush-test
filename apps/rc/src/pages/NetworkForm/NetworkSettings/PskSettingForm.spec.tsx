@@ -21,8 +21,12 @@ async function fillInBeforeSettings (networkName: string) {
   await screen.findByRole('heading', { level: 3, name: 'Settings' })
 }
 
-async function fillInAfterSettings (checkSummary: Function) {
+async function fillInAfterSettings (checkSummary: Function, waitForIpValidation?: boolean) {
   fireEvent.click(screen.getByText('Next'))
+  if (waitForIpValidation) {
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+  }
   await screen.findByRole('heading', { level: 3, name: 'Venues' })
 
   fireEvent.click(screen.getByText('Next'))
@@ -46,8 +50,10 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json([])))
-    )
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => res(ctx.json(successResponse)))
+      )
   })
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -89,7 +95,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
-    })
+    }, true)
   }, 7000)
 
 
