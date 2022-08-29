@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 
 
 import {
@@ -22,6 +22,7 @@ import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkTyp
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram }    from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext    from '../NetworkFormContext'
 import { FieldExtraTooltip } from '../styledComponents'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
@@ -31,6 +32,16 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function DpskSettingsForm () {
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  if(data){
+    form.setFieldsValue({
+      isCloudpathEnabled: data.cloudpathServerId !== undefined,
+      passphraseFormat: data?.dpskPassphraseGeneration?.format,
+      passphraseLength: data?.dpskPassphraseGeneration?.length,
+      expiration: data?.dpskPassphraseGeneration?.expiration
+    })
+  }
   const selectedId = useWatch('cloudpathServerId')
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -56,6 +67,7 @@ export function DpskSettingsForm () {
 }
 
 function SettingsForm () {
+  const { editMode, data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [
     isCloudpathEnabled
@@ -70,7 +82,7 @@ function SettingsForm () {
         <Form.Item
           label={$t({ defaultMessage: 'Security Protocol' })}
           name='dpskWlanSecurity'
-          initialValue={WlanSecurityEnum.WPA2Personal}
+          initialValue={editMode? data?.wlan?.wlanSecurity : WlanSecurityEnum.WPA2Personal}
         >
           <Select>
             <Option value={WlanSecurityEnum.WPA2Personal}>
@@ -86,10 +98,10 @@ function SettingsForm () {
         >
           <Radio.Group>
             <Space direction='vertical'>
-              <Radio value={false}>
+              <Radio value={false} disabled={editMode}>
                 { $t({ defaultMessage: 'Use the DPSK Service' }) }
               </Radio>
-              <Radio value={true}>
+              <Radio value={true} disabled={editMode}>
                 { $t({ defaultMessage: 'Use Cloudpath Server' }) }
               </Radio>
             </Space>

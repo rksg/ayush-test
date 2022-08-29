@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import {
   ExclamationCircleFilled,
@@ -20,21 +20,20 @@ import {
   Button,
   Subtitle
 } from '@acx-ui/components'
-import { useGetAllUserSettingsQuery, useCloudpathListQuery } from '@acx-ui/rc/services'
+import { useSplitTreatment }     from '@acx-ui/feature-toggle'
+import { useCloudpathListQuery } from '@acx-ui/rc/services'
 import {
-  Constants,
   WlanSecurityEnum,
-  getUserSettingsFromDict,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  NetworkTypeEnum,
-  UserSettings
+  NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { IpPortSecretForm } from '../../../components/IpPortSecretForm'
 import { ToggleButton }     from '../../../components/ToggleButton'
 import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext   from '../NetworkFormContext'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
 
@@ -43,6 +42,20 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function AaaSettingsForm () {
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  if(data){
+    form.setFieldsValue({ 
+      cloudpathServerId: data.cloudpathServerId,
+      isCloudpathEnabled: data.cloudpathServerId !== undefined,
+      wlanSecurity: data.wlan?.wlanSecurity,
+      enableAuthProxy: data.enableAuthProxy,
+      enableAccountingProxy: data.enableAccountingProxy,
+      enableAccountingService: data.accountingRadius !== undefined,
+      enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
+      enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined
+    })
+  }
   const [
     isCloudpathEnabled,
     selectedId,
@@ -117,11 +130,7 @@ function SettingsForm () {
     useWatch('enableSecondaryAcctServer')
   ]
 
-  const { tenantId } = useParams()
-  const userSetting = useGetAllUserSettingsQuery({ params: { tenantId } })
-  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
-    Constants.triRadioUserSettingsKey)) === 'true'
-
+  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle') 
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
@@ -149,7 +158,7 @@ function SettingsForm () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsForm.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsForm.Title>
-        {supportTriBandRadio &&
+        {triBandRadioFeatureFlag &&
           <Form.Item
             label='Security Protocol'
             name='wlanSecurity'

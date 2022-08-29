@@ -1487,9 +1487,9 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Info:"
+                                title="Description:"
                               >
-                                Info:
+                                Description:
                               </label>
                             </div>
                             <div
@@ -2430,9 +2430,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                             >
                               <label
                                 class=""
-                                title="Info:"
+                                title="Description:"
                               >
-                                Info:
+                                Description:
                               </label>
                             </div>
                             <div
