@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 
 import React from 'react'
 
-import { dataApiURL }                                from '@acx-ui/analytics/services'
-import { Provider, store }                           from '@acx-ui/store'
-import { render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { mockGraphqlQuery }                          from '@acx-ui/test-utils'
+import { dataApiURL }                                         from '@acx-ui/analytics/services'
+import { Provider, store }                                    from '@acx-ui/store'
+import { render, screen, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
+import { mockGraphqlQuery }                                   from '@acx-ui/test-utils'
 
 import {
   ImpactedAPsDrawer,
@@ -29,7 +29,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 describe('Drawer', () => {
   beforeAll(() => jest.spyOn(console, 'error').mockImplementation(() => {}))
-  afterAll(() => jest.resetAllMocks())
+  afterAll(() => {
+    cleanup()
+    jest.resetAllMocks()
+  })
+  
   describe('ImpactedAPsDrawer', () => {
     beforeEach(() => store.dispatch(impactedApi.util.resetApiState()))
     const props = { visible: true, onClose: jest.fn(), id: 'id', impactedCount: 1 }
