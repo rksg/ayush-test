@@ -75,7 +75,7 @@ module.exports = {
   '@modal-header-title-font-size': 'var(--acx-headline-2-font-size)',
   '@modal-header-padding': '20px 24px',
   '@modal-header-border-width': '0',
-  '@modal-header-title-line-height': 'var(--acx-headline-2-line-height)',
+  '@modal-header-title-line-height': '28px', // var(--acx-headline-2-line-height)
   '@modal-heading-color': 'var(--acx-primary-black)',
   '@modal-content-bg': 'var(--acx-primary-white)',
   '@modal-body-padding': '12px 24px',
@@ -91,6 +91,8 @@ module.exports = {
 
   '@screen-xl': '1280px',
   '@screen-xxl': '1920px',
+
+  '@select-border-color': 'var(--acx-neutrals-50)',
 
   '@tabs-highlight-color': 'var(--acx-primary-black)',
   '@tabs-hover-color': 'var(--acx-accents-orange-50)',

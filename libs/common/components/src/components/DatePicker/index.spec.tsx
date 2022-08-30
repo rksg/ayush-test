@@ -170,7 +170,7 @@ describe('CalenderRangePicker', () => {
     await user.click(calenderSelect)
     const dateSelect = await screen.findAllByTitle(moment('01/01/2022').format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
-    expect(screen.getByRole('display-date-range')).toHaveTextContent('Dec 31 2021 - Feb 28 2022')
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('Jan 01 2022 - Mar 01 2022')
     expect(onDateChange).toBeCalledTimes(1)
   })
   it('should select time when click on time selection', async () => {
@@ -292,7 +292,7 @@ describe('CalenderRangePicker', () => {
     await user.click(calenderSelect)
     const dateSelect = await screen.findAllByTitle(moment('01/01/2022').format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
-    expect(screen.getByRole('display-date-range')).toHaveTextContent('Dec 31 2021 -')
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('Jan 01 2022 -')
   })
   it('should display only end date when start date is not selected', async () => {
     const onDateChange = jest.fn()
@@ -314,7 +314,7 @@ describe('CalenderRangePicker', () => {
     await user.click(calenderSelect)
     const dateSelect = await screen.findAllByTitle(moment('01/01/2022').format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
-    expect(screen.getByRole('display-date-range')).toHaveTextContent('- Dec 31 2021')
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('- Jan 01 2022')
   })
   it('should disable future time selection when startdate and end date are same', async () => {
     const onDateChange = jest.fn()

@@ -14,7 +14,7 @@ export const Wrapper = styled.div<WrapperProps>`
   > .ant-picker {
     width: 23em;
     padding: 6px 11px 5px;
-    background: var(--acx-neutrals-10);
+    background: var(--acx-primary-white);
     border-color: var(--acx-primary-black);
     > div:first-of-type {
       margin-left: 22px;
@@ -171,14 +171,8 @@ export const Wrapper = styled.div<WrapperProps>`
 export const TimePickerRow = styled.div`
   height: 48px;
   text-align: center;
-
   .ant-picker {
-    background: transparent;
     border-color: var(--acx-neutrals-50);
-
-    .ant-picker-input input {
-      font-size: var(--acx-body-4-font-size);
-    }
   }
 `
 export const TimePickerColon = styled.span`
@@ -190,8 +184,6 @@ export const TimePickerHyphen = styled.span`
   margin-right: 17px;
 `
 export const TimePickerWrapper = styled(TimePicker)`
-  height: 24px;
-  padding: 4px;
   width: 50px !important;
 
   .ant-picker-dropdown {
