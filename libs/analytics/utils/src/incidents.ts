@@ -149,7 +149,7 @@ export const useIncidentScope = (incident: Incident) => {
     nodeType: useFormattedNodeType(incident.sliceType),
     nodeName: useImpactedArea(incident.path, incident.sliceValue)
   })
-  return $t(incident.shortDescription, { scope })
+  return scope
 }
 
 export const useShortDescription = (incident: Incident) => {

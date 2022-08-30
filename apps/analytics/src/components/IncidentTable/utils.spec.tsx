@@ -276,7 +276,7 @@ describe('IncidentTable: utils', () => {
     it('ShortIncidentDescription: it renders on valid incident', async () => {
       render(<RenderShortDescription incident={sampleIncident}/>)
       // eslint-disable-next-line max-len
-      const expectedShortDesc = '802.11 Authentication failures are unusually high in 802.11 Authentication failures are unusually high in Venue: Venue-3-US'
+      const expectedShortDesc = '802.11 Authentication failures are unusually high in Venue: Venue-3-US'
       await screen.findByText(expectedShortDesc)
       expect(screen.getByText(expectedShortDesc).textContent).toBe(expectedShortDesc)
     })

@@ -68,9 +68,9 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
             </span>
             <span
               class="ant-page-header-heading-sub-title"
-              title="EAP failures are unusually high in EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
+              title="EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
             >
-              EAP failures are unusually high in EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+              EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
             </span>
           </div>
         </div>
