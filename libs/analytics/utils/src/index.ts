@@ -6,7 +6,8 @@ export * from './incidentInformation'
 export { default as incidentSeverities } from './incidentSeverities.json'
 export {
   clientEventDescription,
-  mapCodeToReason
+  mapCodeToReason,
+  mapCodeToAttempt
 } from './reasonCodeMap'
 export * from './timeseries'
 export * from './types/incidents'

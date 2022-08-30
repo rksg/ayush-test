@@ -24,6 +24,12 @@ const failureTitles = {
   ...readCodesIntoMap('failuresText')(ccdFailureTypes as MapElement[]),
   ttc: defineMessage({ defaultMessage: 'Time To Connect' })
 }
+
+const attemptTitles = {
+  ...readCodesIntoMap('attemptsText')(ccdFailureTypes as MapElement[]),
+  ttc: defineMessage({ defaultMessage: 'Time To Connect Attempts' })
+}
+
 const ccdReasonCodeMap = readCodesIntoMap()(
   (ccdReasonCodes as MapElement[]).concat(
   ccd80211ReasonCodes.filter(({ code }) => !code.startsWith('SG_DHCP')) as MapElement[]))
@@ -46,5 +52,10 @@ export function clientEventDescription (
 
 export function mapCodeToReason (code: string, intl: IntlShape) {
   const reason = failureTitles[code as keyof typeof failureTitles] || clientEventDescription(code)
+  return (typeof reason === 'string') ? reason : intl.$t(reason)
+}
+
+export function mapCodeToAttempt (code: string, intl: IntlShape) {
+  const reason = attemptTitles[code as keyof typeof attemptTitles] || clientEventDescription(code)
   return (typeof reason === 'string') ? reason : intl.$t(reason)
 }

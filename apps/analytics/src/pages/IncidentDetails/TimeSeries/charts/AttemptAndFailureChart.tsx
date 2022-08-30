@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Incident, getSeriesData }                from '@acx-ui/analytics/utils'
-import { Card, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
-import { intlFormats }                            from '@acx-ui/utils'
+import { Incident, getSeriesData, mapCodeToReason, mapCodeToAttempt } from '@acx-ui/analytics/utils'
+import { Card, MultiLineTimeSeriesChart, cssStr }                     from '@acx-ui/components'
+import { intlFormats }                                                from '@acx-ui/utils'
 
 import { codeToFailureTypeMap } from '../config'
 import { ChartsData }           from '../services'
@@ -18,7 +18,8 @@ export const AttemptAndFailureChart = (
   { incident, data }: { incident: Incident, data: ChartsData }) => {
   const { attemptAndFailureCharts } = data
   const { $t } = useIntl()
-  const incidentTitle = codeToFailureTypeMap[incident.code].toUpperCase()
+  const title = mapCodeToReason(codeToFailureTypeMap[incident.code] ,useIntl())
+  const attempt = mapCodeToAttempt(codeToFailureTypeMap[incident.code] ,useIntl())
 
   const seriesMapping = [
     {
@@ -27,11 +28,11 @@ export const AttemptAndFailureChart = (
     },
     { 
       key: 'failureCount',
-      name: $t({ defaultMessage: '{title} Failures' }, { title: incidentTitle })
+      name: title
     },
     { 
       key: 'attemptCount',
-      name: $t({ defaultMessage: '{title} Attempts' }, { title: incidentTitle })
+      name: attempt
     }
   ]
 
