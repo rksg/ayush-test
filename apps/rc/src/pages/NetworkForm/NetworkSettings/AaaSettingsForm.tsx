@@ -13,6 +13,7 @@ import {
   Switch,
   Tooltip
 } from 'antd'
+import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
@@ -52,7 +53,9 @@ export function AaaSettingsForm () {
         enableAccountingProxy: data.enableAccountingProxy,
         enableAccountingService: data.accountingRadius !== undefined,
         enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
-        enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined
+        enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
+        authRadius: _.get(data, 'authRadius'),
+        accountingRadius: _.get(data, 'accountingRadius')
       })
     }
   }, [data])
