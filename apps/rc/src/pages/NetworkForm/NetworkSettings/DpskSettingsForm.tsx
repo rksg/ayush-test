@@ -40,7 +40,8 @@ export function DpskSettingsForm () {
         isCloudpathEnabled: data.cloudpathServerId !== undefined,
         passphraseFormat: data?.dpskPassphraseGeneration?.format,
         passphraseLength: data?.dpskPassphraseGeneration?.length,
-        expiration: data?.dpskPassphraseGeneration?.expiration
+        expiration: data?.dpskPassphraseGeneration?.expiration,
+        dpskWlanSecurity: data?.wlan?.wlanSecurity
       })
     }
   }, [data])
@@ -84,7 +85,7 @@ function SettingsForm () {
         <Form.Item
           label={$t({ defaultMessage: 'Security Protocol' })}
           name='dpskWlanSecurity'
-          initialValue={editMode? data?.wlan?.wlanSecurity : WlanSecurityEnum.WPA2Personal}
+          initialValue={WlanSecurityEnum.WPA2Personal}
         >
           <Select>
             <Option value={WlanSecurityEnum.WPA2Personal}>

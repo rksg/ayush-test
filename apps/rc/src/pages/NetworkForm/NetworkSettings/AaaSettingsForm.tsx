@@ -55,7 +55,8 @@ export function AaaSettingsForm () {
         enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
         enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
         authRadius: _.get(data, 'authRadius'),
-        accountingRadius: _.get(data, 'accountingRadius')
+        accountingRadius: _.get(data, 'accountingRadius'),
+        wlanSecurity: data?.wlan?.wlanSecurity
       })
     }
   }, [data])
@@ -118,7 +119,6 @@ export function AaaSettingsForm () {
 }
 
 function SettingsForm () {
-  const { editMode, data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [
     isCloudpathEnabled,
@@ -166,7 +166,7 @@ function SettingsForm () {
           <Form.Item
             label='Security Protocol'
             name='wlanSecurity'
-            initialValue={editMode ? data?.wlan?.wlanSecurity : WlanSecurityEnum.WPA2Enterprise}
+            initialValue={WlanSecurityEnum.WPA2Enterprise}
             extra={
               wlanSecurity === WlanSecurityEnum.WPA2Enterprise
                 ? wpa2Description

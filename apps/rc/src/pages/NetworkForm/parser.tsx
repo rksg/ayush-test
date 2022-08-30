@@ -11,7 +11,9 @@ import {
 } from '@acx-ui/rc/utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = {
+    enableAccountingService: data.enableAccountingService
+  }
 
   if (data.isCloudpathEnabled) {
     delete data?.accountingRadius
@@ -169,7 +171,9 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
 }
 
 const parsePskSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = {
+    enableAccountingService: data.enableAccountingService
+  }
   if (data.wlan?.macAddressAuthentication) {
     let authRadius = {
       primary: {
