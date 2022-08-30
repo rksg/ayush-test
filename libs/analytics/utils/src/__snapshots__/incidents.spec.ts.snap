@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`impactValues formats impacted ap count 1`] = `
+Object {
+  "apImpactCountFormatted": "1",
+  "apImpactDescription": "1 of 1 AP (100%)",
+  "apImpactRatio": 1,
+  "apImpactRatioFormatted": "100%",
+}
+`;
+
+exports[`impactValues formats impacted client count 1`] = `
+Object {
+  "clientImpactCountFormatted": "1.3K",
+  "clientImpactDescription": "1.3K of 1.5K clients (86.67%)",
+  "clientImpactRatio": 0.8666666666666667,
+  "clientImpactRatioFormatted": "86.67%",
+}
+`;
+
+exports[`impactValues handles clientCount = 0 1`] = `
+Object {
+  "clientImpactCountFormatted": "-",
+  "clientImpactDescription": "-",
+  "clientImpactRatio": "-",
+  "clientImpactRatioFormatted": "-",
+}
+`;
+
+exports[`impactValues handles when incident has client impact 1`] = `
+Object {
+  "clientImpactCountFormatted": "55",
+  "clientImpactDescription": "55 of 128 clients (42.97%)",
+  "clientImpactRatio": 0.4296875,
+  "clientImpactRatioFormatted": "42.97%",
+}
+`;
+
+exports[`impactValues handles when incident has no client impact 1`] = `
+Object {
+  "clientImpactCountFormatted": "-",
+  "clientImpactDescription": "-",
+  "clientImpactRatio": "-",
+  "clientImpactRatioFormatted": "-",
+}
+`;
+
+exports[`impactValues handles when incident has no client impact but has clinet count 1`] = `
+Object {
+  "clientImpactCountFormatted": "-",
+  "clientImpactDescription": "-",
+  "clientImpactRatio": "-",
+  "clientImpactRatioFormatted": "-",
+}
+`;
+
+exports[`impactValues handles when incident is calculating 1`] = `
+Object {
+  "clientImpactCountFormatted": "",
+  "clientImpactDescription": "Calculating...",
+  "clientImpactRatio": null,
+  "clientImpactRatioFormatted": "",
+}
+`;

@@ -8,6 +8,12 @@
   "+8jGZ4": {
     "defaultMessage": "network filter"
   },
+  "+COaOp": {
+    "defaultMessage": "Networks ({networksCount})"
+  },
+  "+MOZEQ": {
+    "defaultMessage": "SAE Passphrase"
+  },
   "+U6ozc": {
     "defaultMessage": "Type"
   },
@@ -33,6 +39,9 @@
   "0QEzt5": {
     "defaultMessage": "AP Group"
   },
+  "0xwsto": {
+    "defaultMessage": "Use MAC Auth"
+  },
   "16lBmU": {
     "defaultMessage": "Channel Conditions"
   },
@@ -46,7 +55,7 @@
     "defaultMessage": "Finish"
   },
   "2n2eHo": {
-    "defaultMessage": "{count,plural,one{For the following venue, the network could not be activated on all Venues:} other{For the following venues, the network could not be activated on all Venues:}}"
+    "defaultMessage": "For the following {count, plural, one {venue} other {venues}}, the network could not be activated on all Venues:"
   },
   "34xBI0": {
     "defaultMessage": "APs"
@@ -107,8 +116,14 @@
   "5mHBBz": {
     "defaultMessage": "Operational - applying configuration"
   },
+  "5q3qC0": {
+    "defaultMessage": "Download"
+  },
   "6+FdTf": {
     "defaultMessage": "[Tomorrow,] HH:mm"
+  },
+  "6UiBZi": {
+    "defaultMessage": "WPA3 SAE Passphrase"
   },
   "6g0glr": {
     "defaultMessage": "Networking Devices"
@@ -120,7 +135,7 @@
     "defaultMessage": "Select..."
   },
   "76jC1v": {
-    "defaultMessage": "This value should be higher than or equal to $'{min}'",
+    "defaultMessage": "This value should be higher than or equal to $'{min'}",
     "description": "Validation - min checks"
   },
   "7Kk96z": {
@@ -144,8 +159,14 @@
   "8Fo71r": {
     "defaultMessage": "MSP Space"
   },
+  "8J+OUY": {
+    "defaultMessage": "8 characters minimum"
+  },
   "8O9cAb": {
     "defaultMessage": "Last 24 hours"
+  },
+  "8TEDlL": {
+    "defaultMessage": "Use MAC Auth:"
   },
   "8cF6CF": {
     "defaultMessage": "Error: Can not detect passphrase expiration value"
@@ -232,6 +253,9 @@
   "D/k1T1": {
     "defaultMessage": "Clients with low RSS are unusually high in {scope}, impacting {impact} of connected clients."
   },
+  "D3idYv": {
+    "defaultMessage": "Settings"
+  },
   "Dnob31": {
     "defaultMessage": "Operational"
   },
@@ -254,7 +278,7 @@
     "defaultMessage": "Recommendations"
   },
   "F3C5Zx": {
-    "defaultMessage": "{key,select,name{{entityName} with that name already exists} other{{entityName} with that value already exists}}",
+    "defaultMessage": "{entityName} with that {key, select, name {name} other {value} } already exists",
     "description": "Validation - duplication checks"
   },
   "FACmOV": {
@@ -282,6 +306,9 @@
   },
   "H44xvD": {
     "defaultMessage": "Switch Clients"
+  },
+  "HUu4+K": {
+    "defaultMessage": "MAC Address Format:"
   },
   "HX3vfn": {
     "defaultMessage": "The controller cluster is sending data with an incorrect future timestamp. To avoid false or misleading data analysis, all future timestamped data is dropped."
@@ -351,6 +378,9 @@
   "L84G40": {
     "defaultMessage": "The controller cluster is sending data with an incorrect past timestamp"
   },
+  "LEyNkY": {
+    "defaultMessage": "SAE Passphrase:"
+  },
   "LHLIvm": {
     "defaultMessage": "Wi-Fi Calling"
   },
@@ -378,6 +408,9 @@
   "NKPfmm": {
     "defaultMessage": "{count} selected"
   },
+  "NUBQfj": {
+    "defaultMessage": "Management Frame Protection:"
+  },
   "NV6/gE": {
     "defaultMessage": "Create New Network"
   },
@@ -399,6 +432,9 @@
   },
   "PYmHhr": {
     "defaultMessage": "Venue"
+  },
+  "Pc+tM3": {
+    "defaultMessage": "Generate"
   },
   "Pg+LLi": {
     "defaultMessage": "Up"
@@ -424,8 +460,11 @@
   "QfVD/H": {
     "defaultMessage": "Use Cloudpath Server"
   },
+  "R66tOc": {
+    "defaultMessage": "{title}:"
+  },
   "RAjs+g": {
-    "defaultMessage": "{isCaptiveNetwork,select,true{Captive Portal - {captiveNetworkType}} other{Portal - {captiveNetworkType}}}"
+    "defaultMessage": "{isCaptiveNetwork, select, true {Captive Portal} other {Portal}} - {captiveNetworkType}"
   },
   "RUoi+Y": {
     "defaultMessage": "Keyboard Friendly"
@@ -460,6 +499,10 @@
   },
   "TY81Tv": {
     "defaultMessage": "Passphrase Format:"
+  },
+  "TzOlQm": {
+    "defaultMessage": "No leading or trailing spaces allowed",
+    "description": "Validation - no leading/trailing whitespace checks"
   },
   "U+7zaY": {
     "defaultMessage": "The controller cluster is sending data with an incorrect future timestamp"
@@ -499,6 +542,9 @@
   "XB8fV9": {
     "defaultMessage": "Last 24 Hours"
   },
+  "XIcSUF": {
+    "defaultMessage": "WPA2 Passphrase:"
+  },
   "XYVgGy": {
     "defaultMessage": "Alarm Time"
   },
@@ -531,7 +577,7 @@
     "defaultMessage": "Network Info"
   },
   "ZtxCeY": {
-    "defaultMessage": "This value should be lower than or equal to $'{max}'",
+    "defaultMessage": "This value should be lower than or equal to $'{max'}",
     "description": "Validation - max checks"
   },
   "ZvKSfJ": {
@@ -739,6 +785,9 @@
   "l/e8Fv": {
     "defaultMessage": "AP(s) operating in Low Power Mode: {scope}"
   },
+  "l513ME": {
+    "defaultMessage": "Radius Shared Secret"
+  },
   "lPKfjk": {
     "defaultMessage": "Rebooting"
   },
@@ -747,6 +796,9 @@
   },
   "mpbHiW": {
     "defaultMessage": "Association failures are unusually high in {scope}"
+  },
+  "mqq9sX": {
+    "defaultMessage": "MAC Address Format"
   },
   "mtr3R4": {
     "defaultMessage": "Incidents"
@@ -785,7 +837,7 @@
     "defaultMessage": "Only numbers can be used"
   },
   "nijCnW": {
-    "defaultMessage": "{isComplexName,select,true{{name} ({nodeName})} other{{nodeName}}}",
+    "defaultMessage": "{isComplexName, select, true {{name} ({nodeName})} other {{nodeName}} }",
     "description": "Uses to format path node name, when isComplexName = true the nodeName would be something like AP or Switch MAC address"
   },
   "nso3Mj": {
@@ -800,6 +852,9 @@
   "o5l+pK": {
     "defaultMessage": "Proxy Service"
   },
+  "oNA+iT": {
+    "defaultMessage": "Passphrase:"
+  },
   "ojxMGa": {
     "defaultMessage": "In Setup Phase"
   },
@@ -808,6 +863,9 @@
   },
   "p1dNds": {
     "defaultMessage": "1 month"
+  },
+  "p4N05H": {
+    "defaultMessage": "Upload"
   },
   "p5WNkO": {
     "defaultMessage": "Temporarily degraded"
@@ -822,7 +880,10 @@
     "defaultMessage": "Total Incidents"
   },
   "pyZg46": {
-    "defaultMessage": "{type,select,aaa{AAA Settings} dpsk{DPSK Settings} other{Settings}}"
+    "defaultMessage": "{type, select, aaa {AAA Settings} dpsk {DPSK Settings} other {Settings} }"
+  },
+  "q15Qnb": {
+    "defaultMessage": "Clients ({clientsCount})"
   },
   "q2wzm3": {
     "defaultMessage": "Time to connect is high in {scope}, impacting connectivity for {impact} of clients."
@@ -861,6 +922,9 @@
   "rsSUP3": {
     "defaultMessage": "Port"
   },
+  "rsToNV": {
+    "defaultMessage": "Top 5 Applications by Traffic"
+  },
   "rwIPgH": {
     "defaultMessage": "1 year"
   },
@@ -876,6 +940,9 @@
   },
   "sZFybj": {
     "defaultMessage": "Services"
+  },
+  "slvgtQ": {
+    "defaultMessage": "Devices ({devicesCount})"
   },
   "ss6kle": {
     "defaultMessage": "Reset to default"
@@ -930,7 +997,10 @@
     "defaultMessage": "Passphrase Expiration:"
   },
   "ubQ1f+": {
-    "defaultMessage": "Shared Secret"
+    "defaultMessage": "Shared secret"
+  },
+  "ueL7OS": {
+    "defaultMessage": "WPA3 SAE Passphrase:"
   },
   "ukFIyf": {
     "defaultMessage": "Your Attention is Required"
@@ -956,6 +1026,9 @@
   "vhRKaX": {
     "defaultMessage": "AP rebooting"
   },
+  "vknTf8": {
+    "defaultMessage": "Must be 26 hex characters"
+  },
   "voFdJV": {
     "defaultMessage": "Association"
   },
@@ -978,8 +1051,14 @@
   "xGSuuE": {
     "defaultMessage": "Security Protocol"
   },
+  "xKYak9": {
+    "defaultMessage": "Hex Key:"
+  },
   "xKk/lt": {
     "defaultMessage": "The network latency between the SZ nodes is unusually high."
+  },
+  "xLx5Gv": {
+    "defaultMessage": "Management Frame Protection (802.11w)"
   },
   "xXDHjy": {
     "defaultMessage": "Add Venue"
@@ -1032,9 +1111,6 @@
   },
   "zWkvNO": {
     "defaultMessage": "Timeline"
-  },
-  "zbjrr1": {
-    "defaultMessage": "Radius Shared Secret"
   },
   "zg0sQG": {
     "defaultMessage": "AP initializing"
