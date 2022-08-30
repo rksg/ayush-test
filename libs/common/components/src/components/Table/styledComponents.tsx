@@ -4,7 +4,7 @@ import {
   ButtonProps as AntButtonProps,
   Tooltip as AntTooltip
 } from 'antd'
-import styled, { css, createGlobalStyle }                            from 'styled-components/macro'
+import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { InformationOutlined, CancelCircle } from '@acx-ui/icons'
 
