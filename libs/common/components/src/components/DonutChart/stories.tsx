@@ -1,9 +1,9 @@
-import { withKnobs,object } from '@storybook/addon-knobs'
-import { storiesOf }        from '@storybook/react'
-import { defineMessage }    from 'react-intl'
-import AutoSizer            from 'react-virtualized-auto-sizer'
+import { withKnobs,object }       from '@storybook/addon-knobs'
+import { storiesOf }              from '@storybook/react'
+import { defineMessage, useIntl } from 'react-intl'
+import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { formatter } from '@acx-ui/utils'
+import { intlFormats } from '@acx-ui/utils'
 
 import { cssStr }      from '../../theme/helper'
 import { Card }        from '../Card'
@@ -25,22 +25,25 @@ const clickHandler = (params: EventParams) => {
 
 storiesOf('Donut Chart', module)
   .addDecorator(withKnobs)
-  .add('Chart View', () =>
-    <div style={{ width: 238, height: 176 }}>
+  .add('Chart View', () => {
+    const { $t } = useIntl()
+    return <div style={{ width: 238, height: 176 }}>
       <Card title='Venues'>
         <AutoSizer>
           {({ height, width }) => (
             <DonutChart
               style={{ width, height }}
               title='Wi-Fi'
-              dataFormatter={formatter('countFormat') as (value: unknown) => string | null}
+              dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
               data={data}/>
           )}
         </AutoSizer>
       </Card>
-    </div>)
-  .add('With subTitle', () =>
-    <div style={{ width: 238, height: 206 }}>
+    </div>
+  })
+  .add('With subTitle', () => {
+    const { $t } = useIntl()
+    return <div style={{ width: 238, height: 206 }}>
       <Card title='Venues'>
         <AutoSizer>
           {({ height, width }) => (
@@ -53,12 +56,13 @@ storiesOf('Donut Chart', module)
                 one {Client}
                 other {Clients}
               }` })}
-              dataFormatter={formatter('countFormat') as (value: unknown) => string | null}
+              dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
               data={data}/>
           )}
         </AutoSizer>
       </Card>
-    </div>)
+    </div>
+  })
   .add('No Data', () =>
     <div style={{ width: 238, height: 176 }}>
       <Card title='Venues'>
@@ -73,16 +77,18 @@ storiesOf('Donut Chart', module)
         </AutoSizer>
       </Card>
     </div>)
-  .add('With Knobs', () =>
-    <div style={{ width: 238, height: 176 }}>
+  .add('With Knobs', () => {
+    const { $t } = useIntl()
+    return <div style={{ width: 238, height: 176 }}>
       <Card title='Venues'>
         <AutoSizer>
           {({ height, width }) => (
             <DonutChart
               style={{ width, height }}
               data={object('data', data)}
-              dataFormatter={formatter('countFormat') as (value: unknown) => string | null}/>
+              dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}/>
           )}
         </AutoSizer>
       </Card>
-    </div>)
+    </div>
+  })
