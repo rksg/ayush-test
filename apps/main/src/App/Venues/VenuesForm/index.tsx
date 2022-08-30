@@ -224,7 +224,7 @@ export function VenuesForm () {
     } catch {
       showToast({
         type: 'error',
-        content: 'An error occurred'
+        content: intl.$t({ defaultMessage: 'An error occurred' })
       })
     }
   }
@@ -232,7 +232,7 @@ export function VenuesForm () {
   return (
     <>
       <PageHeader
-        title='Add New Venue'
+        title={intl.$t({ defaultMessage: 'Add New Venue' })}
         breadcrumb={[
           { text: 'Venues', link: '/venues' }
         ]}
