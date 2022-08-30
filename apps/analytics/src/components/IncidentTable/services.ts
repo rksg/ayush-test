@@ -47,29 +47,25 @@ export type AdditionalIncidentTableFields = {
 export type IncidentTableRow = Incident & AdditionalIncidentTableFields
 
 export const transformData = (incident: Incident): IncidentTableRow => {
-  
-  const validRelatedIncidents =
-    typeof incident.relatedIncidents !== 'undefined' && incident.relatedIncidents.length > 0
-  const rawChildren = validRelatedIncidents ? incident.relatedIncidents : undefined
-  let children = undefined
-  if (typeof rawChildren !== 'undefined') {
-    children = rawChildren.map((child) => {
-      const childDuration = durationValue(child.startTime, child.endTime)
-      const childDescription = noDataSymbol
-      const childScope = noDataSymbol
-      const childType = noDataSymbol
-      const childIncident = transformIncidentQueryResult(child)
+  const { relatedIncidents } = incident
+  const children = relatedIncidents 
+  && relatedIncidents.map((child) => {
+    const childDuration = durationValue(child.startTime, child.endTime)
+    const childDescription = noDataSymbol
+    const childScope = noDataSymbol
+    const childType = noDataSymbol
+    const childIncident = transformIncidentQueryResult(child)
 
-      return {
-        ...childIncident,
-        children: undefined,
-        duration: childDuration,
-        description: childDescription,
-        scope: childScope,
-        type: childType
-      }
-    })
-  }
+    return {
+      ...childIncident,
+      children: undefined,
+      duration: childDuration,
+      description: childDescription,
+      scope: childScope,
+      type: childType
+    }
+  })
+
   const incidentInfo = transformIncidentQueryResult(incident)
   const duration = durationValue(incident.startTime, incident.endTime)
   const description = noDataSymbol
@@ -78,7 +74,7 @@ export const transformData = (incident: Incident): IncidentTableRow => {
 
   return {
     ...incidentInfo,
-    children,
+    children: (children && children?.length > 0) ? children : undefined,
     duration,
     description,
     scope,

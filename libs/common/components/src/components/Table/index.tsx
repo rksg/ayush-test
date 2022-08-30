@@ -110,7 +110,7 @@ function Table <RecordType extends object> (
         children={$t({ defaultMessage: 'Reset to default' })}
       />
     </div>,
-    children: <SettingsOutlined title='table-settings'/>
+    children: <SettingsOutlined/>
   } : false
 
   const rowKey = (props.rowKey ?? 'key') as keyof RecordType

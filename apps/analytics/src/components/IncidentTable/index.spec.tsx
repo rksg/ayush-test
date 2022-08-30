@@ -9,7 +9,6 @@ import {
   act, 
   fireEvent, 
   waitForElementToBeRemoved,
-  queryAllByAttribute,
   cleanup
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
@@ -250,25 +249,14 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    // reference: https://stackoverflow.com/a/53003981
-    const getAllByClass = queryAllByAttribute.bind(null, 'class')
-
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))
 
     for (let i = 0; i < hiddenColumnHeaders.length; i++) {
       const header = hiddenColumnHeaders[i]
 
-      const settingsButton = await screen.findByTitle('table-settings')
+      const settingsButton = await screen.findByText('SettingsOutlined.svg')
       expect(settingsButton).toBeTruthy()
       fireEvent.click(settingsButton)
-
-      const hiddenPopoverTrees = await screen.findAllByRole('tree')
-      expect(hiddenPopoverTrees).toHaveLength(3)
-
-      const clickablePopover = hiddenPopoverTrees[1]
-      const titleSelector = 'ant-pro-table-column-setting-list-item-title'
-      const clickableColumns = getAllByClass(clickablePopover, titleSelector)
-      expect(clickableColumns).toHaveLength(8)
 
       const settingsElem = await screen.findByText(header)
       expect(settingsElem).toBeTruthy()
