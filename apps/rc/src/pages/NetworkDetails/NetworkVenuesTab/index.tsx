@@ -420,11 +420,11 @@ export function NetworkVenuesTab () {
           if (currentVenue.allApGroupsRadioTypes.length === 3) {
             result = $t({ defaultMessage: 'All' })
           } else {
-            result = currentVenue.allApGroupsRadioTypes.join(', ').replace(/\-/g, ' ')
+            result = currentVenue.allApGroupsRadioTypes.join(', ').replace(/-/g, ' ')
           }
         } else {
           if (currentVenue.allApGroupsRadio !== 'Both') {
-            result = currentVenue.allApGroupsRadio.replace(/\-/g, ' ')
+            result = currentVenue.allApGroupsRadio.replace(/-/g, ' ')
           } else {
             result = $t({ defaultMessage: '2.4 GHz / 5 GHz' })
           }
@@ -436,10 +436,10 @@ export function NetworkVenuesTab () {
             if (firstApGroup.radioTypes.length === 3) {
               result = $t({ defaultMessage: 'All' })
             } else {
-              result = firstApGroup.radioTypes.join(', ').replace(/\-/g, ' ')
+              result = firstApGroup.radioTypes.join(', ').replace(/-/g, ' ')
             }
           } else {
-            result = firstApGroup.radio !== 'Both' ? firstApGroup.radio.replace(/\-/g, ' ') : $t({ defaultMessage: '2.4 GHz / 5 GHz' })
+            result = firstApGroup.radio !== 'Both' ? firstApGroup.radio.replace(/-/g, ' ') : $t({ defaultMessage: '2.4 GHz / 5 GHz' })
           }
         } else if (currentVenue.apGroups.length > 1) {
           result = $t({ defaultMessage: 'Per AP Group' })

@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import moment from 'moment'
+
 import { get } from '@acx-ui/config'
 
 import { NetworkVenueScheduler } from './models/NetworkVenueScheduler'
@@ -27,7 +29,7 @@ const getCurrentDateWithOffset = (timeOffset: number) => {
   }
 }
 
-const dayList = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const dayList = moment.localeData('en').weekdaysShort() // ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 export const getCurrentTimeSlotIndex = (timeZone?: ITimeZone): ISlotIndex => {
   const timeOffset = timeZone ? timeZone.rawOffset + timeZone.dstOffset : 0
@@ -116,7 +118,7 @@ const findIndexByStatus = (
 }
 
 export const getSchedulingCustomTooltip = (scheduleData: NetworkVenueScheduler, currentTimeSlotIndex: ISlotIndex) => {
-  const daysNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  const daysNames = moment.weekdays() // ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const currentDay = currentTimeSlotIndex.day
   const currentDayIndex = dayList.indexOf(currentDay)
 

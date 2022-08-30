@@ -3,14 +3,12 @@ import { rest } from 'msw'
 
 import * as config from '@acx-ui/config'
 import {
-  act,
   waitFor,
   mockServer
 } from '@acx-ui/test-utils'
 
 import { SchedulerTypeEnum } from './models/SchedulerTypeEnum'
 import {
-  ISlotIndex,
   getSchedulingCustomTooltip,
   fetchVenueTimeZone,
   getCurrentTimeSlotIndex
