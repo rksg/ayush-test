@@ -172,55 +172,33 @@ function Table <RecordType extends object & { children?: RecordType[] }> (
     return filteredValue && filteredValue.length
   })
   const searchables = columns.filter(column => column.searchable)
-  const childrenData: RecordType[] = (dataSource) 
-    ? dataSource.filter(row => {
-      const children = (row as unknown as RecordType).children ?? []
-      for (const column of activeFilters) {
-        const key = (column.dataIndex ?? column.key) as keyof RecordType
-        const filteredValue = filterValues[key as keyof FilterValue]
-        for (const child of children) {
-          const check = child && filteredValue.includes(child[key] as unknown as string)
-          if (check) return false
-        }
-      }
-      if (searchValue) {
-        return searchables.some(column => {
-          const key = (column.dataIndex ?? column.key) as keyof RecordType
-          return children.map(child => 
-            (child[key] as unknown as string)
-              .toString()
-              .toLowerCase()
-              .includes(searchValue.toLowerCase())
-          )
-        })
-      }
-      return true
-    })
-    : []
 
-  let filteredData: RecordType[] = (dataSource) 
-    ? dataSource.filter(row => {
-      for (const column of activeFilters) {
-        const key = (column.dataIndex ?? column.key) as keyof RecordType
-        const filteredValue = filterValues[key as keyof FilterValue]
-        if (!filteredValue.includes(row[key] as unknown as string)) {
-          return false
-        }
-      }
-      if (searchValue) {
-        return searchables.some(column => {
-          const key = (column.dataIndex ?? column.key) as keyof RecordType
-          return (row[key] as unknown as string)
-            .toString()
-            .toLowerCase()
-            .includes(searchValue.toLowerCase())
-        })
-      }
-      return true
-    })
-    : []
+  const explodedData = (dataSource) && dataSource
+    .filter(row => row.children)
+    .flatMap(child => child)
 
-  filteredData = Array.from(new Set([...filteredData, ...childrenData]))
+  const spreadHelper = (val: RecordType[] | undefined) => (val) ? val : []
+  
+  let filteredData = (dataSource) 
+  && Array.from(new Set([...spreadHelper(explodedData), ...dataSource])).filter(row => {
+    for (const column of activeFilters) {
+      const key = (column.dataIndex ?? column.key) as keyof RecordType
+      const filteredValue = filterValues[key as keyof FilterValue]
+      if (!filteredValue.includes(row[key] as unknown as string)) {
+        return false
+      }
+    }
+    if (searchValue) {
+      return searchables.some(column => {
+        const key = (column.dataIndex ?? column.key) as keyof RecordType
+        return (row[key] as unknown as string)
+          .toString()
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+      })
+    }
+    return true
+  })
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasHeader = !hasRowSelected && (Boolean(filterables.length) || Boolean(searchables.length))
