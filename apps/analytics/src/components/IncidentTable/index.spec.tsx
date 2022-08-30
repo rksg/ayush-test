@@ -4,13 +4,13 @@ import { dataApiURL }      from '@acx-ui/analytics/services'
 import { IncidentFilter }  from '@acx-ui/analytics/utils'
 import { Provider, store } from '@acx-ui/store'
 import { 
-  mockGraphqlQuery, 
-  mockAutoSizer, 
+  mockGraphqlQuery,
   render, screen,
   act, 
   fireEvent, 
   waitForElementToBeRemoved,
-  queryAllByAttribute
+  queryAllByAttribute,
+  cleanup
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
@@ -88,11 +88,12 @@ const filters : IncidentFilter = {
 }
 
 describe('IncidentTableWidget', () => {
-  mockAutoSizer()
 
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )
+
+  afterEach(() => cleanup())
 
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {

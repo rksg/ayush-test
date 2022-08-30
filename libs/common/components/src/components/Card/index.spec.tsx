@@ -27,7 +27,11 @@ describe('Card component', () => {
     expect(onMoreClick).toBeCalledTimes(1)
   })
   it('should render card with no border', () => {
-    const { asFragment } = render(<Card bordered={false}>test</Card>)
+    const { asFragment } = render(<Card type='no-border'>test</Card>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render card with grey background', () => {
+    const { asFragment } = render(<Card type='solid-bg'>test</Card>)
     expect(asFragment()).toMatchSnapshot()
   })
 })
