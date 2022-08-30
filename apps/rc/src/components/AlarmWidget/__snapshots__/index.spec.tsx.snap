@@ -42,28 +42,240 @@ exports[`Alarm widget should render "No active alarms" when no alarms exist 1`] 
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="styledComponents__NoDataWrapper-sc-nsxigl-0 bdmYWy"
+              _echarts_instance_="ec_1661831514940"
+              class="echarts-for-react "
+              size-sensor-id="1"
+              style="height: 93.33333333333333px; width: 280px; position: relative;"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-nsxigl-2 fysri"
+                style="position: relative; overflow: hidden; width: 280px; height: 93px;"
               >
-                <div
-                  class="ant-space-item"
+                <svg
+                  baseProfile="full"
+                  height="93"
+                  style="position:absolute;left:0;top:0;user-select:none"
+                  version="1.1"
+                  width="280"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
                 >
-                  <svg
-                    class="styledComponents__GreenTickIcon-sc-nsxigl-1 brkrJs"
-                  >
-                    CheckMarkCircleSolid.svg
-                  </svg>
-                </div>
+                  <rect
+                    fill="none"
+                    fill-opacity="1"
+                    height="93"
+                    id="0"
+                    width="280"
+                    x="0"
+                    y="0"
+                  />
+                  <g>
+                    <path
+                      d="M75.6 4.65L75.6 11.16Z"
+                      fill="#ED1C24"
+                      stroke="#FFFFFF"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M75.6 4.65L75.6 11.16Z"
+                      fill="#FF9D49"
+                      stroke="#FFFFFF"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M-0.5 -5.5l1 0l0 11l-1 0Z"
+                      fill="none"
+                      transform="translate(75.6 46.5)"
+                    />
+                    <text
+                      dominant-baseline="central"
+                      fill="#333"
+                      fill-opacity="0"
+                      paint-order="stroke"
+                      stroke="rgb(255,255,255)"
+                      stroke-miterlimit="2"
+                      stroke-opacity="0"
+                      stroke-width="2"
+                      style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
+                      text-anchor="middle"
+                      transform="translate(75.6 46.5)"
+                      y="5"
+                    >
+                      2
+                    </text>
+                    <path
+                      d="M-5 -5l24 0l0 54l-24 0Z"
+                      fill="rgb(0,0,0)"
+                      fill-opacity="0"
+                      stroke="#ccc"
+                      stroke-width="0"
+                      transform="translate(159 15)"
+                    />
+                    <path
+                      d="M8 4A4 4 0 1 1 8 3.9996"
+                      fill="#ED1C24"
+                      stroke="#FFFFFF"
+                      stroke-linecap="butt"
+                      stroke-linejoin="round"
+                      stroke-miterlimit="10"
+                      stroke-width="0"
+                      transform="translate(159 21)"
+                    />
+                    <path
+                      d="M13 -6l1 0l0 20l-1 0Z"
+                      fill="none"
+                      transform="translate(159 21)"
+                    />
+                    <text
+                      dominant-baseline="central"
+                      fill="#333"
+                      style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
+                      text-anchor="start"
+                      transform="translate(159 21)"
+                      x="13"
+                      y="4"
+                    >
+                      1
+                    </text>
+                    <path
+                      d="M8 4A4 4 0 1 1 8 3.9996"
+                      fill="#FF9D49"
+                      stroke="#FFFFFF"
+                      stroke-linecap="butt"
+                      stroke-linejoin="round"
+                      stroke-miterlimit="10"
+                      stroke-width="0"
+                      transform="translate(159 45)"
+                    />
+                    <path
+                      d="M13 -6l1 0l0 20l-1 0Z"
+                      fill="none"
+                      transform="translate(159 45)"
+                    />
+                    <text
+                      dominant-baseline="central"
+                      fill="#333"
+                      style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
+                      text-anchor="start"
+                      transform="translate(159 45)"
+                      x="13"
+                      y="4"
+                    >
+                      1
+                    </text>
+                  </g>
+                </svg>
               </div>
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-nsxigl-2 fysri"
+                class=""
+              />
+              <object
+                class="size-sensor-object"
+                data="about:blank"
+                style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                tabindex="-1"
+                type="text/html"
+              />
+            </div>
+            <div
+              class="sc-bczRLJ euRvTa"
+              width="280"
+            />
+            <div
+              class="styledComponents__AlarmListWrapper-sc-vxay0u-0 jrWHHP"
+              style="height: 186.66666666666669px; width: 270px;"
+            >
+              <div
+                class="ant-list ant-list-split"
               >
                 <div
-                  class="ant-space-item"
+                  class="ant-spin-nested-loading"
                 >
-                  No active alarms
+                  <div
+                    class="ant-spin-container"
+                  >
+                    <ul
+                      class="ant-list-items"
+                    >
+                      <li
+                        class="ant-list-item"
+                      >
+                        <div
+                          class="ant-space ant-space-horizontal ant-space-align-center"
+                          style="width: 270px;"
+                        >
+                          <div
+                            class="ant-space-item"
+                            style="margin-right: 8px;"
+                          >
+                            <span
+                              class="styledComponents__CriticalAlarmIcon-sc-vxay0u-1 ePBsgG"
+                            />
+                          </div>
+                          <div
+                            class="ant-space-item"
+                          >
+                            <div
+                              class="styledComponents__MesssageWrapper-sc-vxay0u-3 iIJMUP"
+                              style="width: 260px;"
+                            >
+                              undefined update failed.
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="styledComponents__SubTextContainer-sc-vxay0u-4 dBEvgH"
+                        >
+                          <span
+                            class="styledComponents__NoLink-sc-vxay0u-6 jQVfWX"
+                          />
+                          <span
+                            class="styledComponents__TimeStamp-sc-vxay0u-7 cpTyeF"
+                          >
+                            Aug 08 08:41
+                          </span>
+                        </div>
+                      </li>
+                      <li
+                        class="ant-list-item"
+                      >
+                        <div
+                          class="ant-space ant-space-horizontal ant-space-align-center"
+                          style="width: 270px;"
+                        >
+                          <div
+                            class="ant-space-item"
+                            style="margin-right: 8px;"
+                          >
+                            <span
+                              class="styledComponents__MajorAlarmIcon-sc-vxay0u-2 ljWdAc"
+                            />
+                          </div>
+                          <div
+                            class="ant-space-item"
+                          >
+                            <div
+                              class="styledComponents__MesssageWrapper-sc-vxay0u-3 iIJMUP"
+                              style="width: 260px;"
+                            >
+                              undefined disconnected.
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="styledComponents__SubTextContainer-sc-vxay0u-4 dBEvgH"
+                        >
+                          <a
+                            class="styledComponents__Link-sc-vxay0u-5 btzyuQ"
+                          />
+                          <span
+                            class="styledComponents__TimeStamp-sc-vxay0u-7 cpTyeF"
+                          >
+                            Jul 13 04:20
+                          </span>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>

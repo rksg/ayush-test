@@ -23,7 +23,7 @@ exports[`Timeseries component should match snapshot 1`] = `
               <div
                 class="styledComponents__TitleWrapper-sc-13w5wfx-4 fWcjnG"
               >
-                EAP FAILURES
+                EAP Failures
               </div>
             </div>
             <div

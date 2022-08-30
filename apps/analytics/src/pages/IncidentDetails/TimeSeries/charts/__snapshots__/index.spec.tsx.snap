@@ -39,7 +39,7 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            _echarts_instance_="ec_1661770251590"
+            _echarts_instance_="ec_1661831289686"
             class="echarts-for-react "
             size-sensor-id="2"
             style="height: 280px; width: 280px; position: relative;"
@@ -67,68 +67,68 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                 />
                 <g>
                   <path
-                    d="M9 256.5L280 256.5"
+                    d="M11 256.5L280 256.5"
                     fill="none"
                     stroke="#E0E6F1"
                   />
                   <path
-                    d="M9 213.5L280 213.5"
+                    d="M11 213.5L280 213.5"
                     fill="none"
                     stroke="#E0E6F1"
                   />
                   <path
-                    d="M9 170.5L280 170.5"
+                    d="M11 170.5L280 170.5"
                     fill="none"
                     stroke="#E0E6F1"
                   />
                   <path
-                    d="M9 127.5L280 127.5"
+                    d="M11 127.5L280 127.5"
                     fill="none"
                     stroke="#E0E6F1"
                   />
                   <path
-                    d="M9 85.5L280 85.5"
+                    d="M11 85.5L280 85.5"
                     fill="none"
                     stroke="#E0E6F1"
                   />
                   <path
-                    d="M9 42.5L280 42.5"
+                    d="M11 42.5L280 42.5"
                     fill="none"
                     stroke="#E0E6F1"
                   />
                   <path
-                    d="M9 256.5L280 256.5"
+                    d="M11 256.5L280 256.5"
                     fill="none"
                     stroke="none"
                     stroke-linecap="round"
                   />
                   <path
-                    d="M27.5 256L27.5 261"
+                    d="M29.5 256L29.5 261"
                     fill="none"
                     stroke="none"
                   />
                   <path
-                    d="M63.5 256L63.5 261"
+                    d="M65.5 256L65.5 261"
                     fill="none"
                     stroke="none"
                   />
                   <path
-                    d="M99.5 256L99.5 261"
+                    d="M100.5 256L100.5 261"
                     fill="none"
                     stroke="none"
                   />
                   <path
-                    d="M135.5 256L135.5 261"
+                    d="M136.5 256L136.5 261"
                     fill="none"
                     stroke="none"
                   />
                   <path
-                    d="M171.5 256L171.5 261"
+                    d="M172.5 256L172.5 261"
                     fill="none"
                     stroke="none"
                   />
                   <path
-                    d="M207.5 256L207.5 261"
+                    d="M208.5 256L208.5 261"
                     fill="none"
                     stroke="none"
                   />
@@ -140,98 +140,98 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                   <path
                     d="M-1 -8l1 0l0 16l-1 0Z"
                     fill="none"
-                    transform="translate(1 256)"
+                    transform="translate(3 256)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                     text-anchor="end"
-                    transform="translate(1 256)"
+                    transform="translate(3 256)"
                   >
                     0
                   </text>
                   <path
-                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    d="M-3 -8l3 0l0 16l-3 0Z"
                     fill="none"
-                    transform="translate(1 213.2)"
+                    transform="translate(3 213.2)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                     text-anchor="end"
-                    transform="translate(1 213.2)"
+                    transform="translate(3 213.2)"
+                  >
+                    0.5
+                  </text>
+                  <path
+                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    fill="none"
+                    transform="translate(3 170.4)"
+                  />
+                  <text
+                    dominant-baseline="central"
+                    fill="#ACAEB0"
+                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                    text-anchor="end"
+                    transform="translate(3 170.4)"
                   >
                     1
                   </text>
                   <path
-                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    d="M-3 -8l3 0l0 16l-3 0Z"
                     fill="none"
-                    transform="translate(1 170.4)"
+                    transform="translate(3 127.6)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                     text-anchor="end"
-                    transform="translate(1 170.4)"
+                    transform="translate(3 127.6)"
                   >
-                    1
+                    1.5
                   </text>
                   <path
                     d="M-1 -8l1 0l0 16l-1 0Z"
                     fill="none"
-                    transform="translate(1 127.6)"
+                    transform="translate(3 84.8)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                     text-anchor="end"
-                    transform="translate(1 127.6)"
+                    transform="translate(3 84.8)"
                   >
                     2
                   </text>
                   <path
-                    d="M-1 -8l1 0l0 16l-1 0Z"
+                    d="M-3 -8l3 0l0 16l-3 0Z"
                     fill="none"
-                    transform="translate(1 84.8)"
+                    transform="translate(3 42)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                     text-anchor="end"
-                    transform="translate(1 84.8)"
+                    transform="translate(3 42)"
                   >
-                    2
-                  </text>
-                  <path
-                    d="M-1 -8l1 0l0 16l-1 0Z"
-                    fill="none"
-                    transform="translate(1 42)"
-                  />
-                  <text
-                    dominant-baseline="central"
-                    fill="#ACAEB0"
-                    style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                    text-anchor="end"
-                    transform="translate(1 42)"
-                  >
-                    3
+                    2.5
                   </text>
                   <path
                     d="M-6 0l12 0l0 16l-12 0Z"
                     fill="none"
-                    transform="translate(27.0667 264)"
+                    transform="translate(28.9333 264)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font: normal 400 10px 'Open Sans', sans-serif"
                     text-anchor="middle"
-                    transform="translate(27.0667 264)"
+                    transform="translate(28.9333 264)"
                     xml:space="preserve"
                     y="8"
                   >
@@ -240,14 +240,14 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                   <path
                     d="M-6 0l12 0l0 16l-12 0Z"
                     fill="none"
-                    transform="translate(63.2 264)"
+                    transform="translate(64.8 264)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font: normal 400 10px 'Open Sans', sans-serif"
                     text-anchor="middle"
-                    transform="translate(63.2 264)"
+                    transform="translate(64.8 264)"
                     xml:space="preserve"
                     y="8"
                   >
@@ -256,14 +256,14 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                   <path
                     d="M-6 0l12 0l0 16l-12 0Z"
                     fill="none"
-                    transform="translate(99.3333 264)"
+                    transform="translate(100.6667 264)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font: normal 400 10px 'Open Sans', sans-serif"
                     text-anchor="middle"
-                    transform="translate(99.3333 264)"
+                    transform="translate(100.6667 264)"
                     xml:space="preserve"
                     y="8"
                   >
@@ -272,14 +272,14 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                   <path
                     d="M-6 0l12 0l0 16l-12 0Z"
                     fill="none"
-                    transform="translate(135.4667 264)"
+                    transform="translate(136.5333 264)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font: normal 400 10px 'Open Sans', sans-serif"
                     text-anchor="middle"
-                    transform="translate(135.4667 264)"
+                    transform="translate(136.5333 264)"
                     xml:space="preserve"
                     y="8"
                   >
@@ -288,14 +288,14 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                   <path
                     d="M-6 0l12 0l0 16l-12 0Z"
                     fill="none"
-                    transform="translate(171.6 264)"
+                    transform="translate(172.4 264)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font: normal 400 10px 'Open Sans', sans-serif"
                     text-anchor="middle"
-                    transform="translate(171.6 264)"
+                    transform="translate(172.4 264)"
                     xml:space="preserve"
                     y="8"
                   >
@@ -304,14 +304,14 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                   <path
                     d="M-6 0l12 0l0 16l-12 0Z"
                     fill="none"
-                    transform="translate(207.7333 264)"
+                    transform="translate(208.2667 264)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font: normal 400 10px 'Open Sans', sans-serif"
                     text-anchor="middle"
-                    transform="translate(207.7333 264)"
+                    transform="translate(208.2667 264)"
                     xml:space="preserve"
                     y="8"
                   >
@@ -320,14 +320,14 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                   <path
                     d="M-6 0l12 0l0 16l-12 0Z"
                     fill="none"
-                    transform="translate(243.8667 264)"
+                    transform="translate(244.1333 264)"
                   />
                   <text
                     dominant-baseline="central"
                     fill="#ACAEB0"
                     style="font: normal 400 10px 'Open Sans', sans-serif"
                     text-anchor="middle"
-                    transform="translate(243.8667 264)"
+                    transform="translate(244.1333 264)"
                     xml:space="preserve"
                     y="8"
                   >
@@ -411,7 +411,7 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                     clip-path="url(#zr1-c0)"
                   >
                     <path
-                      d="M9 170.4C9 170.4 280 84.8 280 84.8"
+                      d="M11 170.4C11 170.4 280 84.8 280 84.8"
                       fill="none"
                       stroke="#5496EA"
                       stroke-linejoin="bevel"
@@ -421,7 +421,7 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                     clip-path="url(#zr1-c1)"
                   >
                     <path
-                      d="M9 170.4C9 170.4 280 84.8 280 84.8"
+                      d="M11 170.4C11 170.4 280 84.8 280 84.8"
                       fill="none"
                       stroke="#ADCFFA"
                       stroke-linejoin="bevel"
@@ -431,7 +431,7 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                     clip-path="url(#zr1-c2)"
                   >
                     <path
-                      d="M9 170.4C9 170.4 280 84.8 280 84.8"
+                      d="M11 170.4C11 170.4 280 84.8 280 84.8"
                       fill="none"
                       stroke="#EC7100"
                       stroke-linejoin="bevel"
@@ -443,7 +443,7 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                     id="zr1-c0"
                   >
                     <path
-                      d="M8 41.5l0 0l0 215l0 0Z"
+                      d="M10 41.5l0 0l0 215l0 0Z"
                       fill="#000"
                     />
                   </clippath>
@@ -451,7 +451,7 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                     id="zr1-c1"
                   >
                     <path
-                      d="M8 41.5l0 0l0 215l0 0Z"
+                      d="M10 41.5l0 0l0 215l0 0Z"
                       fill="#000"
                     />
                   </clippath>
@@ -459,7 +459,7 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
                     id="zr1-c2"
                   >
                     <path
-                      d="M8 41.5l0 0l0 215l0 0Z"
+                      d="M10 41.5l0 0l0 215l0 0Z"
                       fill="#000"
                     />
                   </clippath>
@@ -537,7 +537,7 @@ exports[`ClientCountChart should match snapshot 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            _echarts_instance_="ec_1661770251591"
+            _echarts_instance_="ec_1661831289687"
             class="echarts-for-react "
             size-sensor-id="3"
             style="height: 280px; width: 280px; position: relative;"
@@ -1161,7 +1161,7 @@ exports[`IncidentChart should match snapshot 1`] = `
             <div
               class="styledComponents__TitleWrapper-sc-13w5wfx-4 fWcjnG"
             >
-              EAP FAILURES
+              EAP Failures
             </div>
           </div>
           <div
@@ -1180,7 +1180,7 @@ exports[`IncidentChart should match snapshot 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            _echarts_instance_="ec_1661770251589"
+            _echarts_instance_="ec_1661831289685"
             class="echarts-for-react "
             size-sensor-id="1"
             style="height: 280px; width: 280px; position: relative;"
