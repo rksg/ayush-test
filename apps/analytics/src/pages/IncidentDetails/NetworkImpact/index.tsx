@@ -56,12 +56,12 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
   const intl = useIntl()
   const queryResults = useNetworkImpactChartsQuery({ charts, incident })
   return <Loader states={[queryResults]}>
-    <Card title={intl.$t({ defaultMessage: 'Network Impact' })} bordered={false}></Card>
+    <Card title={intl.$t({ defaultMessage: 'Network Impact' })} type='no-border'></Card>
     <Row>
       {Object.entries(queryResults.data || {}).map(([chart, chartData])=>{
         const config = networkImpactCharts[chartData.key]
         return <Col key={chart} span={6} style={{ height: 200 }}>
-          <Card bordered={false}>
+          <Card type='no-border'>
             <AutoSizer>
               {({ height, width }) => (
                 <DonutChart

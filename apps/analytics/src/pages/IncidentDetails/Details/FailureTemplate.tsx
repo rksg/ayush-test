@@ -8,6 +8,7 @@ import {
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
 import { IncidentAttributes } from '../IncidentAttributes'
+import { Insights }           from '../Insights'
 import { NetworkImpact }      from '../NetworkImpact'
 
 import * as UI from './styledComponents'
@@ -46,7 +47,7 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
           </UI.FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 20 }}>
-          <div>Insights</div>
+          <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
           <NetworkImpact incident={incident} charts={networkImpactCharts}/>

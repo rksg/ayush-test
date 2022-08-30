@@ -46,7 +46,7 @@ export const getDominanceByThreshold = (threshold: number = dominanceThreshold) 
 export const getWLANDominance = (
   data: NetworkImpactChartData['data'], incident: Incident
 ) => {
-  const dominant = incident.metadata.dominant.ssid
+  const dominant = incident.metadata.dominant?.ssid
   const percentage = getDataWithPercentage(data)
   return _.pickBy(percentage, p => p.key === dominant)[1] || null
 }
