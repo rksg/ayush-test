@@ -101,8 +101,7 @@ describe('Drawer', () => {
       )
       await screen.findByText(`${sample[0].username} (2)`)
       await screen.findByText('1 Impacted Client')
-      await screen.findAllByTestId('information')
-      const icons = screen.getAllByTestId('information')
+      const icons = await screen.findAllByTestId('information')
       expect(icons.length).toBe(2)
     })
     it('should render error', async () => {
