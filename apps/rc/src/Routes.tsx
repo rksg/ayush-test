@@ -5,6 +5,7 @@ import { Provider }          from '@acx-ui/store'
 import { NetworkDetails } from './pages/NetworkDetails/NetworkDetails'
 import { NetworkForm }    from './pages/NetworkForm/NetworkForm'
 import { NetworksTable }  from './pages/NetworksTable'
+import { DHCPForm }       from './pages/services/DHCP/DHCPForm'
 import { ServicesTable }  from './pages/services/ServicesTable'
 
 export default function RcRoutes () {
@@ -21,6 +22,8 @@ export default function RcRoutes () {
         element={<NetworkForm />}
       />
       <Route path='services' element={<ServicesTable />} />
+      <Route path='services/dhcp/create/:type' element={<DHCPForm />} />
+
     </Route>
   )
   return (

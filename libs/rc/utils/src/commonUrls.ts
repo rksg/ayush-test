@@ -81,5 +81,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+  },
+  getService: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/service/:serviceId'
+  },
+  saveDHCPService: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
   }
 }

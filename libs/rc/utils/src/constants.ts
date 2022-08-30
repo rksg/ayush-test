@@ -121,3 +121,8 @@ export enum ServiceAdminState {
   ENABLED = 'ENABLED',
   DISABLED = 'DISABLED'
 }
+export enum DHCPConfigTypeEnum {
+  SIMPLE = 'SIMPLE',
+  MULTIPLE = 'MULTIPLE',
+  Hierarchical = 'HIERARCHICAL'
+}

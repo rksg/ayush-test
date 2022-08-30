@@ -1,4 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import {
+  createApi,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
@@ -6,7 +11,8 @@ import {
   RequestPayload,
   TableResult,
   CommonResult,
-  Service
+  Service,
+  DHCPSaveData
 } from '@acx-ui/rc/utils'
 
 export const baseServiceApi = createApi({
@@ -37,10 +43,38 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getDHCP: build.query<DHCPSaveData | undefined, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
+        if (!params?.serviceId) return Promise.resolve({ data: undefined } as QueryReturnValue<
+          undefined,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+        const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
+        return result as QueryReturnValue<DHCPSaveData,
+        FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    saveDHCP: build.mutation<Service, RequestPayload>({
+      query: ({ params, payload }) => {
+
+        const createDHCPReq = createHttpRequest(CommonUrlsInfo.saveDHCPService, params)
+        return {
+          ...createDHCPReq,
+          body: payload
+        }
+
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     })
   })
 })
 export const {
   useServiceListQuery,
-  useDeleteServiceMutation
+  useDeleteServiceMutation,
+  useGetDHCPQuery,
+  useSaveDHCPMutation
 } = serviceApi
