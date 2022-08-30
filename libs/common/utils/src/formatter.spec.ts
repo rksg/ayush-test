@@ -18,34 +18,6 @@ describe('formatter', () => {
   it('Should take care of null values correctly', () => {
     expect(formatter('decibelFormat')(null)).toBe(null)
   })
-  it('percentFormat', () => testFormat('percentFormat', {
-    0.12: '12%',
-    0.123: '12.3%',
-    0.1235: '12.35%',
-    0.12359: '12.36%',
-    0.12999: '13%'
-  }))
-  it('percentFormatWithoutScalingBy100', () => testFormat('percentFormatWithoutScalingBy100', {
-    0.12: '0.12%',
-    0.123: '0.12%',
-    0.1235: '0.12%',
-    0.12359: '0.12%',
-    0.12999: '0.13%'
-  }))
-  it('percentFormatNoSign', () => testFormat('percentFormatNoSign', {
-    0.12: '12',
-    0.123: '12.3',
-    0.1235: '12.35',
-    0.12359: '12.36',
-    0.12999: '13'
-  }))
-  it('percentFormatRound', () => testFormat('percentFormatRound', {
-    0.12: '12%',
-    0.124: '12%',
-    0.126: '13%',
-    0.1244: '12%',
-    0.1266: '13%'
-  }))
   it('decibelFormat', () => testFormat('decibelFormat', {
     '7.131': '7 dB',
     '20': '20 dB',

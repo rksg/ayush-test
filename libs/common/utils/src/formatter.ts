@@ -104,10 +104,6 @@ function calendarFormat (number: number, intl: IntlShape) {
 const formats = {
   durationFormat,
   calendarFormat: (number: number, intl: IntlShape) => calendarFormat(number, intl),
-  percentFormat: (number: number) => numeral(number).format('0.[00]%'),
-  percentFormatWithoutScalingBy100: (number: number) => numeral(number / 100).format('0.[00]%'),
-  percentFormatNoSign: (number: number) => formats['percentFormat'](number).replace('%', ''),
-  percentFormatRound: (number: number) => numeral(number).format('0%'),
   decibelFormat: (number: number) => Math.round(number) + ' dB',
   decibelMilliWattsFormat: (number: number) => Math.round(number) + ' dBm',
   milliWattsFormat: (number:number) => numberFormat(1000, watts, number),
