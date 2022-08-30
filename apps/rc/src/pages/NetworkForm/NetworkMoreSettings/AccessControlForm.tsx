@@ -225,7 +225,7 @@ function SelectAccessProfileProfile () {
   const [enableAccessControlProfile] = [useWatch('enableAccessControlProfile')]
   return (<>
     <UI.FieldLabel width='175px'>
-      Access Control
+      {$t({ defaultMessage: 'Access Control' })}
       <Form.Item
         name='enableAccessControlProfile'
         style={{ marginBottom: '10px' }}
