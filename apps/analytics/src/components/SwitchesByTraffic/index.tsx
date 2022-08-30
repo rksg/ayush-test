@@ -1,16 +1,19 @@
 import React from 'react'
 
-import { CallbackDataParams } from 'echarts/types/dist/shared'
-import { useIntl }            from 'react-intl'
-import AutoSizer              from 'react-virtualized-auto-sizer'
+import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import { CallbackDataParams }                      from 'echarts/types/dist/shared'
+import { renderToString }                          from 'react-dom/server'
+import { useIntl }                                 from 'react-intl'
+import AutoSizer                                   from 'react-virtualized-auto-sizer'
+
 
 import { 
   getBarChartSeriesData, 
   AnalyticsFilter, 
   BarChartData 
 }                             from '@acx-ui/analytics/utils'
-import { BarChart, Card, cssNumber, Loader, cssStr, NoData } from '@acx-ui/components'
-import { formatter }                                         from '@acx-ui/utils'
+import { BarChart, Card, cssNumber, Loader, cssStr, NoData, TooltipWrapper } from '@acx-ui/components'
+import { formatter }                                                         from '@acx-ui/utils'
 
 import { useSwitchesByTrafficQuery } from './services'
 
@@ -39,12 +42,25 @@ const getSwitchTrafficRichStyle = () => ({
   }
 })
 
+export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+  const name = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[0] : ''
+  const mac = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[1] : ''
+  return renderToString(
+    <TooltipWrapper>
+      <div> 
+        {name as string}
+        <b> ({mac as string})</b> 
+      </div>
+    </TooltipWrapper>
+  )
+}
+
 function SwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
   const queryResults = useSwitchesByTrafficQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
-        data: getBarChartSeriesData(data!,seriesMapping),
+        data: getBarChartSeriesData(data!,seriesMapping, 'name'),
         ...rest
       })
     })
@@ -64,6 +80,7 @@ function SwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
                 grid={{ right: '7%' }}
                 labelFormatter={switchTrafficLabelFormatter}
                 labelRichStyle={getSwitchTrafficRichStyle()}
+                tooltipFormatter={tooltipFormatter}
                 style={{ width, height }}
               />:
               <NoData/>

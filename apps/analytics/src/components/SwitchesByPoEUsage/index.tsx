@@ -75,10 +75,10 @@ function SwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
               <BarChart
                 barColors={barColors}
                 data={data}
-                grid={{ top: '2%',right: '17%' }}
+                grid={{ top: '10%',right: '17%' }}
                 labelFormatter={switchUsageLabelFormatter}
                 labelRichStyle={getSwitchUsageRichStyle()}
-                style={{ width, height }}
+                style={{ width, height: height * 0.9 }}
               />
               :
               <NoData/>

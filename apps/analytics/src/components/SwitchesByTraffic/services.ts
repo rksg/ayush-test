@@ -34,6 +34,7 @@ export const api = dataApi.injectEndpoints({
               hierarchyNode(path: $path) {
                 topNSwitchesByTraffic (n: 5) {
                   name,
+                  mac,
                   Received: rx,
                   Transmitted: tx
                 }

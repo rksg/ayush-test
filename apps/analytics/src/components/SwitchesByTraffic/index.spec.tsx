@@ -1,3 +1,5 @@
+import { TooltipComponentFormatterCallbackParams } from 'echarts'
+
 import { dataApiURL }                      from '@acx-ui/analytics/services'
 import { Provider, store }                 from '@acx-ui/store'
 import { render, screen }                  from '@acx-ui/test-utils'
@@ -7,7 +9,7 @@ import { DateRange }                       from '@acx-ui/utils'
 import { api }                          from './services'
 import { topSwitchesByTrafficResponse } from './services.spec'
 
-import SwitchesByTraffic from '.'
+import SwitchesByTraffic, { tooltipFormatter } from '.'
 
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -55,5 +57,16 @@ describe('SwitchesByTrafficWidget', () => {
     render( <Provider> <SwitchesByTraffic filters={filters}/> </Provider>)
     expect(await screen.findByText('No data to display')).toBeVisible()
     jest.resetAllMocks()
+  })
+
+  it('should return correct Html string for the tooltip', async () => {
+    const singleparameters = [{
+      data: [
+        'Switch 1',
+        53,
+        7.3
+      ]
+    }] as TooltipComponentFormatterCallbackParams
+    expect(tooltipFormatter(singleparameters)).toMatchSnapshot()
   })
 })
