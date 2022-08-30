@@ -19,13 +19,12 @@ export interface ISlotIndex {
 }
 
 const getCurrentDateWithOffset = (timeOffset: number) => {
-  // const today = moment.utc().utcOffset(timeOffset / 60);
-  const today = new Date(Date.now()+timeOffset*1000)
+  const today = moment.utc().utcOffset(timeOffset / 60)
 
   return {
-    day: today.getDay(),
-    hour: today.getHours(),
-    min: today.getMinutes()
+    day: today.weekday(),
+    hour: today.hours(),
+    min: today.minutes()
   }
 }
 
