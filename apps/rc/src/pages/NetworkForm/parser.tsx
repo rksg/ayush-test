@@ -119,16 +119,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
 }
 
 const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = { ...data }
 
-  if (data.cloudpathServerId) {
-    saveData = {
-      ...saveData,
-      ...{
-        cloudpathServerId: data.cloudpathServerId
-      }
-    }
-  }
   saveData = {
     ...saveData,
     ...{
@@ -144,7 +136,7 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
 }
 
 const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = { ...data }
 
   saveData = {
     wlan: {
@@ -152,11 +144,6 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
       enable: true,
       vlanId: 1,
       advancedCustomization: new DpskWlanAdvancedCustomization()
-    },
-    dpskPassphraseGeneration: {
-      length: data.passphraseLength,
-      format: data.passphraseFormat,
-      expiration: data.expiration
     }
   }
 
