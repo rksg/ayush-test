@@ -48,7 +48,7 @@ storiesOf('Donut Chart', module)
               showLegend={false}
               style={{ width, height }}
               title='With a very long title'
-              subTitle={'With a very long subtitleg..............................'}
+              subTitle={'With a very long subtitle..............................'}
               unit={defineMessage({ defaultMessage: `{formattedCount} {count, plural,
                 one {Client}
                 other {Clients}

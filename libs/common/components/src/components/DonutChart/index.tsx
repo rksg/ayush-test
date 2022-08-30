@@ -76,7 +76,7 @@ export function DonutChart ({
     },
     legend: {
       show: props.showLegend,
-      top: 10,
+      top: 'middle',
       left: '55%',
       orient: 'vertical',
       icon: 'circle',
@@ -125,7 +125,7 @@ export function DonutChart ({
             },
             value: {
               ...commonStyles,
-              padding: [10, 0, 0, 0]
+              padding: props.title ? [10, 0, 0, 0] : 0
             }
           }
         },
