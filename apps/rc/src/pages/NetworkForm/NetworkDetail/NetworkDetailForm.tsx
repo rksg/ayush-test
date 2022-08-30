@@ -46,7 +46,7 @@ export function NetworkDetailForm () {
   }
 
   const types = [
-    { type: NetworkTypeEnum.PSK, disabled: true },
+    { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: false },
     { type: NetworkTypeEnum.AAA, disabled: false },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: false },

@@ -9,7 +9,8 @@ import {
   DpskNetwork,
   PassphraseFormatEnum,
   PassphraseExpirationEnum,
-  Radius
+  Radius,
+  PskWlanAdvancedCustomization
 } from '@acx-ui/rc/utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
@@ -119,6 +120,88 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
   return saveData
 }
 
+const parsePskSettingDataToSave = (data: NetworkSaveData) => {
+  let saveData = {}
+  if (data.wlan?.macAddressAuthentication) {
+    let authRadius = {
+      primary: {
+        ip: get(data, 'authRadius.primary.ip'),
+        port: get(data, 'authRadius.primary.port'),
+        sharedSecret: get(data, 'authRadius.primary.sharedSecret')
+      }
+    }
+    if (data.enableSecondaryAuthServer) {
+      authRadius = {
+        ...authRadius,
+        ...{
+          secondary: {
+            ip: get(data, 'authRadius.secondary.ip'),
+            port: get(data, 'authRadius.secondary.port'),
+            sharedSecret: get(data, 'authRadius.secondary.sharedSecret')
+          }
+        }
+      }
+    }
+  
+    saveData = {
+      ...saveData,
+      ...{
+        authRadius
+      }
+    }
+
+    if (data.enableAccountingService) {
+      let accountingRadius = {
+        primary: {
+          ip: get(data, 'accountingRadius.primary.ip'),
+          port: get(data, 'accountingRadius.primary.port'),
+          sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
+        }
+        
+      }
+  
+      if (data.enableSecondaryAcctServer) {
+        accountingRadius = {
+          ...accountingRadius,
+          ...{
+            secondary: {
+              ip: get(data, 'accountingRadius.secondary.ip'),
+              port: get(data, 'accountingRadius.secondary.port'),
+              sharedSecret: get(
+                data,
+                'accountingRadius.secondary.sharedSecret'
+              )
+            }
+          }
+        }
+      }
+  
+      saveData = {
+        ...saveData,
+        ...{
+          accountingRadius
+        }
+      }
+    }
+  }
+
+  saveData = {
+    ...saveData,
+    ...{
+      type: data.type,
+      isCloudpathEnabled: typeof data.cloudpathServerId !== undefined,
+      wlan: {
+        ...data.wlan,
+        advancedCustomization: new PskWlanAdvancedCustomization(),
+        enable: true,
+        vlanId: 1
+      }
+    }
+  }
+
+  return saveData
+}
+
 export function transferDetailToSave (data: NetworkSaveData) {
   return {
     name: data.name,
@@ -135,7 +218,8 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
     [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data),
     [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data),
     [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data),
-    [NetworkTypeEnum.CAPTIVEPORTAL]: parseCaptivePortalDataToSave(data) 
+    [NetworkTypeEnum.CAPTIVEPORTAL]: parseCaptivePortalDataToSave(data),
+    [NetworkTypeEnum.PSK]: parsePskSettingDataToSave(data)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }

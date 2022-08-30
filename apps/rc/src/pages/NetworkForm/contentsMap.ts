@@ -111,13 +111,6 @@ export const aaaServerTypes: Record<AaaServerOrderEnum, MessageDescriptor> = {
   })
 }
 
-export const NetworkTypeTitle: Partial<Record<NetworkTypeEnum, string>> = {
-  [NetworkTypeEnum.AAA]: 'AAA Settings',
-  [NetworkTypeEnum.OPEN]: 'Settings',
-  [NetworkTypeEnum.DPSK]: 'DPSK Settings',
-  [NetworkTypeEnum.CAPTIVEPORTAL]: 'Portal Type'
-}
-
 export const GuestNetworkTypeLabel: Record<GuestNetworkTypeEnum, string> = {
   [GuestNetworkTypeEnum.ClickThrough]: 'Click-Through',
   [GuestNetworkTypeEnum.SelfSignIn]: 'Self Sign In',
@@ -136,6 +129,12 @@ export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> =
   [GuestNetworkTypeEnum.WISPr]: 'Users connect through a 3rd party captive portal, authenticated by a AAA server'
 }
 
+export const NetworkTypeTitle: Partial<Record<NetworkTypeEnum, MessageDescriptor>> = {
+  [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Settings' }),
+  [NetworkTypeEnum.AAA]: defineMessage({ defaultMessage: 'AAA Settings' }),
+  [NetworkTypeEnum.OPEN]: defineMessage({ defaultMessage: 'Settings' }),
+  [NetworkTypeEnum.DPSK]: defineMessage({ defaultMessage: 'DPSK Settings' })
+}
 export const states = {
   enabled: defineMessage({ defaultMessage: 'Enabled' }),
   disabled: defineMessage({ defaultMessage: 'Disabled' })

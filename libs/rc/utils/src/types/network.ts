@@ -4,11 +4,11 @@ import {
   PassphraseFormatEnum,
   WlanSecurityEnum
 } from '../constants'
-
+  
 import { AnyWlan }     from './any-network'
 import { GuestPortal } from './wifi/GuestPortal'
 import { Radius }      from './wifi/Radius'
-
+  
 export interface NetworkSaveData {
   id?: string;
   tenantId?: string;
@@ -34,7 +34,7 @@ export interface NetworkSaveData {
   passphraseFormat?: PassphraseFormatEnum;
   expiration?: PassphraseExpirationEnum;
 }
-
+  
 export interface NetworkVenue {
   id?: string
   name?: string
