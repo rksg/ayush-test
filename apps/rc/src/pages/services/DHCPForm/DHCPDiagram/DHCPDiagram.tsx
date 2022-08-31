@@ -25,7 +25,7 @@ function getDiagram (props: DHCPConfigTypeEnum | undefined) {
     case DHCPConfigTypeEnum.MULTIPLE:
       diagram = MultipleDiagram
       break
-    case DHCPConfigTypeEnum.Hierarchical:
+    case DHCPConfigTypeEnum.HIERARCHICAL:
       diagram = HierarchicalDiagram
       break
     default:
