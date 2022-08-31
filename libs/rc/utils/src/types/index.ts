@@ -7,6 +7,7 @@ import {
   GuestNetworkTypeEnum,
   WlanSecurityEnum
 } from '../constants'
+import { TrustedCAChain } from '../models/TrustedCAChain'
 
 import { NetworkVenue } from './network'
 
@@ -309,9 +310,9 @@ export interface RadiusValidateErrors {
     id: string,
     primary?: RadiusService,
     secondary?: RadiusService,
-    // tlsEnabled: any,
-    // cnSanIdentity: any,
-    // ocspUrl: any,
-    // trustedCAChain: any
+    tlsEnabled?: boolean,
+    cnSanIdentity?: string,
+    ocspUrl?: string,
+    trustedCAChain?: TrustedCAChain
   }
 }

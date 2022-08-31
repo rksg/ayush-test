@@ -346,7 +346,10 @@ function showConfigConflictModal (
       form?.submit()
 
     } else if (action === 'override') {
-      const settingData = _.merge(saveState, data)
+      const settingData = { 
+        ...{ type: saveState.type },
+        ...data
+      }
       const settingSaveData = tranferSettingsToSave(settingData)
       updateSaveData(settingSaveData)
     }    
