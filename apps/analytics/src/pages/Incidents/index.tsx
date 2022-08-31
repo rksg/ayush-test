@@ -44,7 +44,7 @@ const IncidentTabContent = (props: { tabSelection: IncidentListTabs }) => {
         <NetworkHistoryWidget
           hideTitle
           filters={{ ...filters, code: incidentCodesBasedOnCategory }}
-          bordered={false}
+          type='no-border'
         />
       </GridCol>
       <GridCol col={{ span: 24 }}>table</GridCol>
