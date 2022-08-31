@@ -65,19 +65,6 @@ export interface IncidentTableDescriptionProps {
   incident: Incident,
   onClickDesc : CallableFunction
 }
-export const renderNumberedListFromArray = ( list : string[] ) => {
-  return list.map((body, index) => (
-    (body !== '') &&
-    <UI.ActionRow key={index}>
-      { (index > 0) && <UI.ActionId>{index}. </UI.ActionId> }
-      <div>
-        { body.split('\\n').map(
-          (text : string) => <div key={index}> {text}<br /></div>
-        )}
-      </div>
-    </UI.ActionRow>)
-  )
-}
 
 export const ShortIncidentDescription = (props: IncidentTableDescriptionProps) => {
   const { incident, onClickDesc } = props
