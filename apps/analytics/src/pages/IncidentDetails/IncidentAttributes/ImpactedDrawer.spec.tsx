@@ -15,12 +15,6 @@ import {
 }                 from './ImpactedDrawer'
 import { impactedApi, ImpactedAP, ImpactedClient } from './services'
 
-
-jest.mock('@acx-ui/icons', ()=> ({
-  ...(jest.requireActual('@acx-ui/icons')),
-  InformationOutlined: () => <div data-testid='information'/>
-}), { virtual: true })
-
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...(jest.requireActual('@acx-ui/react-router-dom')),
   TenantLink: ({ to, children }: { to: string, children: React.ReactNode }) =>
@@ -101,8 +95,8 @@ describe('Drawer', () => {
       )
       await screen.findByText(`${sample[0].username} (2)`)
       await screen.findByText('1 Impacted Client')
-      await screen.findAllByTestId('information')
-      const icons = screen.getAllByTestId('information')
+      await screen.findByText('Hostname')
+      const icons = await screen.findAllByText('InformationOutlined.svg')
       expect(icons.length).toBe(2)
     })
     it('should render error', async () => {

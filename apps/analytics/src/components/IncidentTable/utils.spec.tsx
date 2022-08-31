@@ -10,8 +10,8 @@ import {
   NodeType,
   PathNode
 } from '@acx-ui/analytics/utils'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Provider }                from '@acx-ui/store'
+import { render, screen, cleanup } from '@acx-ui/test-utils'
 
 import {
   GetIncidentBySeverity,
@@ -34,6 +34,8 @@ describe('IncidentTable: utils', () => {
     moment.tz.setDefault('Asia/Singapore')
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
+
+  afterEach(() => cleanup())
 
   const incidentValues = {
     severity: 0.3813119146230035,
@@ -274,7 +276,7 @@ describe('IncidentTable: utils', () => {
     it('ShortIncidentDescription: it renders on valid incident', async () => {
       render(<RenderShortDescription incident={sampleIncident}/>)
       // eslint-disable-next-line max-len
-      const expectedShortDesc = '802.11 Authentication failures are unusually high in 802.11 Authentication failures are unusually high in Venue: Venue-3-US'
+      const expectedShortDesc = '802.11 Authentication failures are unusually high in Venue: Venue-3-US'
       await screen.findByText(expectedShortDesc)
       expect(screen.getByText(expectedShortDesc).textContent).toBe(expectedShortDesc)
     })

@@ -2,7 +2,7 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import { Incident, noDataSymbol, IncidentFilter, nodeTypes } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table }                         from '@acx-ui/components'
-import { Link }                                              from '@acx-ui/react-router-dom'
+import { useTenantLink, Link }                               from '@acx-ui/react-router-dom'
 import { formatter }                                         from '@acx-ui/utils'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
@@ -23,7 +23,7 @@ import {
 function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
   const queryResults = useIncidentsListQuery(filters)
-
+  const basePath = useTenantLink('/analytics/incidents/')
   const mutedKeysFilter = (data: IncidentNodeData) => {
     return data.filter((row) => row.isMuted === true).map((row) => row.id)
   }
@@ -48,7 +48,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => severitySort(a.severity, b.severity),
         multiple: 1
       },
-      sortDirections: ['ascend', 'descend', 'ascend'],
       defaultSortOrder: 'descend',
       fixed: 'left'
     },
@@ -58,13 +57,16 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'endTime',
       valueType: 'dateTime',
       key: 'endTime',
-      render: (_, value) => <Link to={value.id}><FormatDate datetimestamp={value.endTime}/></Link>,
+      render: (_, value) => {
+        return <Link to={`${basePath.pathname}/${value.id}`}>
+          <FormatDate datetimestamp={value.endTime} />
+        </Link>
+      },
       sorter: {
         compare: (a, b) => dateSort(a.endTime, b.endTime),
         multiple: 2
       },
-      fixed: 'left',
-      sortDirections: ['ascend', 'descend', 'ascend']
+      fixed: 'left'
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Duration' })),
@@ -75,8 +77,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => defaultSort(b.duration, a.duration),
         multiple: 3
-      },
-      sortDirections: ['ascend', 'descend', 'ascend']
+      }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
@@ -88,8 +89,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => defaultSort(a.code, b.code),
         multiple: 4
       },
-      ellipsis: true,
-      sortDirections: ['ascend', 'descend', 'ascend']
+      ellipsis: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Category' })),
@@ -100,8 +100,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => defaultSort(a.code, b.code),
         multiple: 5
-      },
-      sortDirections: ['ascend', 'descend', 'ascend']
+      }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
@@ -113,7 +112,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => defaultSort(a.code, b.code),
         multiple: 5
       },
-      sortDirections: ['ascend', 'descend', 'ascend'],
       show: false
     },
     {
@@ -125,8 +123,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount),
         multiple: 6
-      },
-      sortDirections: ['ascend', 'descend', 'ascend']
+      }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
@@ -138,7 +135,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount),
         multiple: 7
       },
-      sortDirections: ['ascend', 'descend', 'ascend'],
       align: 'center'
     },
     {
@@ -151,20 +147,18 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => clientImpactSort(a.code, b.code),
         multiple: 8
-      },
-      sortDirections: ['ascend', 'descend', 'ascend']
+      }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Type' })),
       width: 'auto',
       dataIndex: 'type',
       key: 'type',
-      render: (_, value) => $t(nodeTypes(value.sliceType)).toLocaleUpperCase(),
+      render: (_, value) => $t(nodeTypes(value.sliceType)),
       sorter: {
         compare: (a, b) => clientImpactSort(a.code, b.code),
         multiple: 8
       },
-      sortDirections: ['ascend', 'descend', 'ascend'],
       show: false
     }
   ]
@@ -192,7 +186,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
         scroll={{ y: 'max-content' }}
-        indentSize={0}
+        indentSize={6}
       />
     </Loader>
   )

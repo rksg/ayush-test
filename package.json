@@ -12,7 +12,7 @@
     "test": "nx test",
     "extract": "formatjs extract",
     "compile": "formatjs compile",
-    "extract-compile": "formatjs extract 'apps/*/src/**/*.ts*' --ignore='**/*.d.ts' --out-file apps/main/src/locales/en-US.json --flatten --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '$t' && formatjs compile 'apps/main/src/locales/en-US.json' --out-file apps/main/src/locales/compiled/en-US.json"
+    "extract-compile": "formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/*{.d.ts,.spec.ts,.spec.tsx}' --out-file apps/main/src/locales/en-US.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '$t' && formatjs compile 'apps/main/src/locales/en-US.json' --out-file apps/main/src/locales/compiled/en-US.json"
   },
   "private": true,
   "dependencies": {

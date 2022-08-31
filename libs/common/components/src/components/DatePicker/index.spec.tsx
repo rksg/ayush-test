@@ -14,12 +14,6 @@ jest.mock('@acx-ui/icons', () => ({
 }))
 
 describe('CalenderRangePicker', () => {
-
-  beforeEach(() => {
-    moment.tz.setDefault('Asia/Singapore')
-    Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
-  })
-
   it('should render default CalenderRangePicker', () => {
     const { asFragment } = render(
       <IntlProvider locale='en'>

@@ -1,16 +1,16 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }      from '@acx-ui/analytics/services'
-import { IncidentFilter }  from '@acx-ui/analytics/utils'
-import { Provider, store } from '@acx-ui/store'
-import { 
-  mockGraphqlQuery, 
-  mockAutoSizer, 
+import { dataApiURL }              from '@acx-ui/analytics/services'
+import { IncidentFilter }          from '@acx-ui/analytics/utils'
+import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
+import { Provider, store }         from '@acx-ui/store'
+import {
+  mockGraphqlQuery,
   render, screen,
-  act, 
-  fireEvent, 
+  act,
+  fireEvent,
   waitForElementToBeRemoved,
-  queryAllByAttribute
+  cleanup
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
@@ -86,19 +86,19 @@ const filters : IncidentFilter = {
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours
 }
-
 describe('IncidentTableWidget', () => {
-  mockAutoSizer()
 
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )
 
+  afterEach(() => cleanup())
+
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: [] } } }
     })
-    render(<Provider><IncidentTableWidget filters={filters}/></Provider>)
+    render(<Router><Provider><IncidentTableWidget filters={filters}/></Provider></Router>)
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 
@@ -114,7 +114,7 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))   
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     await screen.findAllByText('P4')
     expect(screen.getAllByText('P4')).toHaveLength(incidentTests.length)
@@ -132,7 +132,7 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))   
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     await screen.findByText('No Data')
     expect(screen.getByText('No Data').textContent).toBe('No Data')
@@ -164,7 +164,7 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))   
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))
 
     for (let i = 0; i < columnHeaders.length; i++) {
       const header = columnHeaders[i]
@@ -187,18 +187,33 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))   
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-    for (let i = 0; i < columnHeaders.length; i++) {
+    const priorityHeader = columnHeaders[0]
+    const elem = await screen.findByText(priorityHeader)
+    const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
+    expect(caretDown).toHaveLength(1)
+
+    fireEvent.click(elem)
+    fireEvent.click(elem)
+    const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
+    expect(caretUp).toHaveLength(1)
+
+    fireEvent.click(elem)
+
+    for (let i = 1; i < columnHeaders.length; i++) {
       const header = columnHeaders[i]
       const elem = await screen.findByText(header)
-      act(() => elem.click())
-      expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-up' }))
-        .toHaveLength(1)
-  
-      act(() => elem.click())
-      expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-down' }))
-        .toHaveLength(i + 1)
+
+      fireEvent.click(elem)
+      const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
+      expect(caretUp).toHaveLength(1)
+
+      fireEvent.click(elem)
+      const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
+      expect(caretDown).toHaveLength(2)
+
+      fireEvent.click(elem)
     }
   })
 
@@ -218,11 +233,10 @@ describe('IncidentTableWidget', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-    const hiddenCheckboxes = 
+    const hiddenCheckboxes =
       await screen.findAllByRole('radio', { hidden: true, checked: false })
 
     expect(hiddenCheckboxes).toHaveLength(1)
-    
 
     fireEvent.click(await screen.findByRole('button', { name: /Mute/i }))
     expect(screen.getByRole('alert')).toBeInTheDocument()
@@ -249,25 +263,14 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    // reference: https://stackoverflow.com/a/53003981
-    const getAllByClass = queryAllByAttribute.bind(null, 'class')
-
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))
 
     for (let i = 0; i < hiddenColumnHeaders.length; i++) {
       const header = hiddenColumnHeaders[i]
 
-      const settingsButton = await screen.findByTitle('table-settings')
+      const settingsButton = await screen.findByText('SettingsOutlined.svg')
       expect(settingsButton).toBeTruthy()
       fireEvent.click(settingsButton)
-
-      const hiddenPopoverTrees = await screen.findAllByRole('tree')
-      expect(hiddenPopoverTrees).toHaveLength(3)
-
-      const clickablePopover = hiddenPopoverTrees[1]
-      const titleSelector = 'ant-pro-table-column-setting-list-item-title'
-      const clickableColumns = getAllByClass(clickablePopover, titleSelector)
-      expect(clickableColumns).toHaveLength(8)
 
       const settingsElem = await screen.findByText(header)
       expect(settingsElem).toBeTruthy()
@@ -280,10 +283,12 @@ describe('IncidentTableWidget', () => {
       act(() => titleElem.click())
       expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-up' }))
         .toHaveLength(1)
-  
+
       act(() => titleElem.click())
       expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-down' }))
-        .toHaveLength(i + 2)
+        .toHaveLength(2)
+
+      act(() => titleElem.click())
     }
 
   })
