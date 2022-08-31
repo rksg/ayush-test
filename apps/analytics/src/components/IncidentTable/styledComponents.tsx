@@ -8,6 +8,11 @@ import {
 import { cssStr } from '@acx-ui/components'
 import { Link }   from '@acx-ui/react-router-dom'
 
+
+export type IncidentImpactedClientProps = {
+  showImpactedClient: boolean
+}
+
 export const withEllipsis = `
   white-space: nowrap;
   overflow: hidden;
@@ -48,8 +53,9 @@ export const IncidentCause = styled.div`
   font-weight: var(--acx-subtitle-1-font-weight);
   margin-top: 20px;
 `
-export const IncidentImpactedClient = styled.div`
+export const IncidentImpactedClient = styled.div<IncidentImpactedClientProps>`
   font-weight: var(--acx-subtitle-1-font-weight);
+  display : ${(props) => props.showImpactedClient ? 'block' : 'none' }
 `
 export const IncidentRootCauses = styled.div`
  text-decoration: underline;
@@ -73,4 +79,13 @@ export const DateSpan = styled.span`
 export const UnstyledLink = styled(Link)`
   color: inherit;
   text-decoration: inherit;
+`
+export const DrawerPara = styled.p`
+  margin-bottom: 0;
+`
+export const DrawerList = styled.li`
+  margin-bottom: 5px;
+`
+export const DrawerOrderList = styled.ol`
+  padding-inline-start: 30px;
 `

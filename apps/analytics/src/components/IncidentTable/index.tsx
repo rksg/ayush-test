@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { useIntl, defineMessage } from 'react-intl'
+import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import { Incident, noDataSymbol, getRootCauseAndRecommendations, useShortDescription, IncidentFilter, nodeTypes } from '@acx-ui/analytics/utils'
 import { Loader, Table, TableProps, Drawer }                                                                      from '@acx-ui/components'
@@ -20,7 +20,6 @@ import {
   severitySort,
   dateSort,
   defaultSort,
-  renderNumberedListFromArray,
   ClientImpact
 } from './utils'
 
@@ -28,7 +27,12 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
 
   const { $t } = useIntl()
   const { metadata } = props.selectedIncidentToShowDescription 
-  const { rootCauses } = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)[0]
+  const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
+  const values = {
+    p: (text: string) => <UI.DrawerPara>{text}</UI.DrawerPara>,
+    ol: (text: string) => <UI.DrawerOrderList>{text}</UI.DrawerOrderList>,
+    li: (text: string) => <UI.DrawerList>{text}</UI.DrawerList>
+  }
   const { dominant } = metadata 
   const wlanInfo = (dominant && dominant.ssid) 
     ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
@@ -37,9 +41,11 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
   return (
     <UI.IncidentDrawerContent>
       <UI.IncidentCause>{desc}</UI.IncidentCause>
-      <UI.IncidentImpactedClient>{wlanInfo}</UI.IncidentImpactedClient>
+      <UI.IncidentImpactedClient showImpactedClient={!!(dominant && dominant.ssid)}>
+        {wlanInfo}
+      </UI.IncidentImpactedClient>
       <UI.IncidentRootCauses>{'Root cause:'}</UI.IncidentRootCauses>
-      {/* {renderNumberedListFromArray(rootCauses)} */}
+      <FormattedMessage {...rootCauses} values={values} />
     </UI.IncidentDrawerContent>
   )
 }
@@ -222,7 +228,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
-        scroll={{ y: 'max-content' }}
         indentSize={0}
       />
       {drawerProps.incident && 
@@ -237,7 +242,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
             }
           />
         }
-        style={{ width: 450 }}
+        width={400} 
       />
       }
     </Loader>
