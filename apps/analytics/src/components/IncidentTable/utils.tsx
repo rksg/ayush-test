@@ -15,7 +15,8 @@ import {
   useImpactValues,
   useShortDescription
 } from '@acx-ui/analytics/utils'
-import { formatter } from '@acx-ui/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
+import { formatter }     from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -26,11 +27,12 @@ export type GetIncidentBySeverityProps = {
 
 export const GetIncidentBySeverity = (props: GetIncidentBySeverityProps) => {
   const { value, id } = props
+  const basePath = useTenantLink('/analytics/incidents/')
 
   const severity = calculateSeverity(value)
   if (typeof severity === 'undefined') return <span>{noDataSymbol}</span>
 
-  return <UI.UnstyledLink to={id}>
+  return <UI.UnstyledLink to={`${basePath.pathname}/${id}`}>
     <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
   </UI.UnstyledLink>
 }

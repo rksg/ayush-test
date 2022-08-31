@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }      from '@acx-ui/analytics/services'
-import { IncidentFilter }  from '@acx-ui/analytics/utils'
-import { Provider, store } from '@acx-ui/store'
+import { dataApiURL }              from '@acx-ui/analytics/services'
+import { IncidentFilter }          from '@acx-ui/analytics/utils'
+import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
+import { Provider, store }         from '@acx-ui/store'
 import { 
   mockGraphqlQuery,
   render, screen,
@@ -85,7 +86,6 @@ const filters : IncidentFilter = {
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours
 }
-
 describe('IncidentTableWidget', () => {
 
   beforeEach(() =>
@@ -98,7 +98,7 @@ describe('IncidentTableWidget', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: [] } } }
     })
-    render(<Provider><IncidentTableWidget filters={filters}/></Provider>)
+    render(<Router><Provider><IncidentTableWidget filters={filters}/></Provider></Router>)
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 

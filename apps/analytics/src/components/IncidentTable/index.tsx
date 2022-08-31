@@ -3,6 +3,7 @@ import { useIntl, defineMessage } from 'react-intl'
 import { Incident, noDataSymbol, IncidentFilter, nodeTypes } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table }                         from '@acx-ui/components'
 import { Link }                                              from '@acx-ui/react-router-dom'
+import { useTenantLink }                                     from '@acx-ui/react-router-dom'
 import { formatter }                                         from '@acx-ui/utils'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
@@ -23,7 +24,7 @@ import {
 function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
   const queryResults = useIncidentsListQuery(filters)
-
+  const basePath = useTenantLink('/analytics/incidents/')
   const mutedKeysFilter = (data: IncidentNodeData) => {
     return data.filter((row) => row.isMuted === true).map((row) => row.id)
   }
@@ -58,7 +59,11 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'endTime',
       valueType: 'dateTime',
       key: 'endTime',
-      render: (_, value) => <Link to={value.id}><FormatDate datetimestamp={value.endTime}/></Link>,
+      render: (_, value) => {
+        return <Link to={`${basePath.pathname}/${value.id}`}>
+          <FormatDate datetimestamp={value.endTime} />
+        </Link>
+      }, 
       sorter: {
         compare: (a, b) => dateSort(a.endTime, b.endTime),
         multiple: 2
@@ -159,7 +164,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       width: 'auto',
       dataIndex: 'type',
       key: 'type',
-      render: (_, value) => $t(nodeTypes(value.sliceType)).toLocaleUpperCase(),
+      render: (_, value) => $t(nodeTypes(value.sliceType)),
       sorter: {
         compare: (a, b) => clientImpactSort(a.code, b.code),
         multiple: 8
