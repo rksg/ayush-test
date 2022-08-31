@@ -1,3 +1,4 @@
+import { DHCPPool } from '../..';
 import {
   DHCPConfigTypeEnum
 } from '../../constants'
@@ -6,7 +7,7 @@ export interface CreateDHCPFormFields {
   name: string;
   tags: string[];
   dhcpConfig: DHCPConfigTypeEnum;
-  dhcpPools?: DHCPConfigTypeEnum[];
+  dhcpPools?: DHCPPool[];
   venues: DHCPVenue[];
 }
 

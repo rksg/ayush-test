@@ -1,7 +1,7 @@
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import { useIntl }                             from 'react-intl'
 
-import { StepsForm }                                from '@acx-ui/components'
+import { Button, StepsForm }                                from '@acx-ui/components'
 import { useLazyNetworkListQuery }                  from '@acx-ui/rc/services'
 import { DHCPConfigTypeEnum, checkObjectNotExists } from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
@@ -9,7 +9,7 @@ import { useParams }                                from '@acx-ui/react-router-d
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
 import { RadioDescription }         from './styledComponents'
-
+import { PoolDetail } from './DHCPPool/PoolDetail'
 
 
 const { useWatch } = Form
@@ -91,6 +91,7 @@ export function SettingForm () {
           </Form.Item>}
 
         </Form.Item>
+        <PoolDetail></PoolDetail>
       </Col>
       {params?.type === 'wifi' &&
       <Col span={14}>

@@ -8,7 +8,7 @@ import {
   StepsFormInstance,
   showToast } from '@acx-ui/components'
 import { useGetDHCPQuery, useSaveDHCPMutation }  from '@acx-ui/rc/services'
-import { DHCPSaveData, DHCPConfigTypeEnum }      from '@acx-ui/rc/utils'
+import { DHCPSaveData, DHCPConfigTypeEnum, DHCPPool }      from '@acx-ui/rc/utils'
 import { useParams, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 
 import DHCPFormContext from './DHCPFormContext'
@@ -45,8 +45,8 @@ export function DHCPForm () {
     name: '',
     tags: [],
     dhcpConfig: DHCPConfigTypeEnum.SIMPLE,
-    venues: []
-    // dhcpPools: DHCPConfigTypeEnum[];
+    venues: [],
+    dhcpPools: []
   })
 
   const updateSaveData = (saveData: Partial<DHCPSaveData>) => {
