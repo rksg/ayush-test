@@ -12,7 +12,7 @@ jest.mock('./pages/IncidentDetails', () => () => {
 })
 
 test('should redirect analytics to analytics/incidents', async () => {
-  render(<AnalyticsRoutes />, {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/analytics',
       wrapRoutes: false
@@ -21,7 +21,7 @@ test('should redirect analytics to analytics/incidents', async () => {
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
 test('should navigate to analytics/incidents', async () => {
-  render(<AnalyticsRoutes />, {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/analytics/incidents',
       wrapRoutes: false
@@ -30,7 +30,7 @@ test('should navigate to analytics/incidents', async () => {
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
 test('should navigate to analytics/recommendations', () => {
-  render(<AnalyticsRoutes />, {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/analytics/recommendations',
       wrapRoutes: false
@@ -48,7 +48,7 @@ test('should navigate to analytics/health', () => {
   expect(screen.getByText('Health')).toBeVisible()
 })
 test('should navigate to analytics/configChange', () => {
-  render(<AnalyticsRoutes />, {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/analytics/configChange',
       wrapRoutes: false

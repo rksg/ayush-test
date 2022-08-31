@@ -65,13 +65,13 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('AAA network test')
 
-    const ipTextbox = screen.getByLabelText('IP Address')
+    const ipTextbox = await screen.findByLabelText('IP Address')
     fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
 
-    const portTextbox = screen.getByLabelText('Port')
+    const portTextbox = await screen.findByLabelText('Port')
     fireEvent.change(portTextbox, { target: { value: '1111' } })
 
-    const secretTextbox = screen.getByLabelText('Shared secret')
+    const secretTextbox = await screen.findByLabelText('Shared secret')
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
     await fillInAfterSettings(async () => {
