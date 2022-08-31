@@ -10,7 +10,6 @@ import {
   Incident,
   incidentInformation,
   noDataSymbol,
-  useFormattedNodeType,
   useImpactedArea,
   useImpactValues,
   useShortDescription
@@ -85,10 +84,9 @@ export const GetScope = (props: IncidentTableComponentProps) => {
   const { $t } = useIntl()
   const { incident } = props
   const scope = $t({
-    defaultMessage: '{nodeType}: {nodeName}',
+    defaultMessage: '{nodeName}',
     description: 'Uses to generate incident impacted scope for various incident descriptions'
   }, {
-    nodeType: useFormattedNodeType(incident.sliceType),
     nodeName: useImpactedArea(incident.path, incident.sliceValue)
   })
   return <span>{scope}</span>
