@@ -37,7 +37,7 @@ export function IpPortSecretForm ({ serverType, order }:
           { required: true },
           { type: 'number', min: 1 },
           { type: 'number', max: 65535 },
-          ( formInstance: FormInstance<NetworkSaveData> ) => ({
+          ( formInstance ) => ({
             validator: () => checkIpAndPortUnique(serverType, order, 'port', formInstance, intl)
           })
         ]}
@@ -68,16 +68,17 @@ function checkIpAndPortUnique (
   const currentFieldSet = [serverType, order]
   const { ip, port } = getFieldValue(currentFieldSet)
   const relatedFields = getFieldsError().map(item => item.name)
-    .filter(name => name.includes('authRadius') || name.includes('accountingRadius'))
-    .filter(name => !name.includes('sharedSecret'))
+    .filter(name => (name.includes('authRadius') || name.includes('accountingRadius'))
+                && !name.includes('sharedSecret'))
 
-  const ipList = relatedFields.filter(filed => !currentFieldSet.every(f=> filed.includes(f)))
+  const ipList = relatedFields
+    .filter(filed => filed.includes('ip') && !currentFieldSet.every(f=> filed.includes(f)))
     .map(filed => {
-      const val = getFieldValue(filed.slice(0, 2))
-      return val?.ip && val?.port ? `${val.ip}_${val.port}` : null
+      const { ip, port } = getFieldValue(filed.slice(0, 2))
+      return ip && port ? `${ip}_${port}` : null
     }).filter(item => item)
 
-  const reValitateErrorFields = () => {
+  const revalitateErrorFields = () => {
     const fields = getFieldsError(relatedFields)
       .filter(item => item.errors.length)
       .map(item => item.name)
@@ -89,18 +90,20 @@ function checkIpAndPortUnique (
   const hasDuplicate = ipList.filter(item => isEqual(item, `${ip}_${port}`)).length > 0
   if (hasDuplicate) {
     // trigger display error for Ip/port
+    const isIpField = field === 'ip'
     const errorMsg = intl.$t({ defaultMessage: 'IP address and Port combinations must be unique' })
-    const relatedField = field === 'port' ? 'ip' : 'port'
-    const relatedFieldMsg = field === 'port' ? errorMsg : ''
+    const relatedField = isIpField ? 'port' : 'ip'
+    const relatedFieldMsg = isIpField ? '' : errorMsg
     setFields([{
       name: [serverType, order, relatedField],
       errors: [relatedFieldMsg]
     }])
 
-    return field === 'ip' ? Promise.reject(new Error(errorMsg))
+    return isIpField
+      ? Promise.reject(new Error(errorMsg))
       : Promise.reject(new Error(''))
   }
 
-  reValitateErrorFields()
+  revalitateErrorFields()
   return Promise.resolve()
 }
