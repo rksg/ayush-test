@@ -1,5 +1,3 @@
-import { useContext } from 'react'
-
 import { Form, Input, InputNumber } from 'antd'
 import { useIntl }                  from 'react-intl'
 
@@ -10,41 +8,9 @@ import {
   networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'
 
-import NetworkFormContext from '../../pages/NetworkForm/NetworkFormContext'
-
 export function IpPortSecretForm ({ serverType, order }:
   { serverType: AaaServerTypeEnum, order: AaaServerOrderEnum }) {
-  const { data } = useContext(NetworkFormContext)
   const intl = useIntl()
-  const form = Form.useFormInstance()
-  if(data){
-    form.setFieldsValue({
-      authRadius: {
-        primary: {
-          ip: data.authRadius?.primary?.ip,
-          port: data.authRadius?.primary?.port,
-          sharedSecret: data.authRadius?.primary?.sharedSecret
-        },
-        secondary: {
-          ip: data.authRadius?.secondary?.ip,
-          port: data.authRadius?.secondary?.port,
-          sharedSecret: data.authRadius?.secondary?.sharedSecret
-        }
-      },
-      accountingRadius: {
-        primary: {
-          ip: data.accountingRadius?.primary?.ip,
-          port: data.accountingRadius?.primary?.port,
-          sharedSecret: data.accountingRadius?.primary?.sharedSecret
-        },
-        secondary: {
-          ip: data.accountingRadius?.secondary?.ip,
-          port: data.accountingRadius?.secondary?.port,
-          sharedSecret: data.accountingRadius?.secondary?.sharedSecret
-        }
-      }
-    })
-  }
   return (
     <>
       <Form.Item

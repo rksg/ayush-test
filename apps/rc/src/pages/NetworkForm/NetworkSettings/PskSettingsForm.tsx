@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import {
   QuestionCircleOutlined,
@@ -51,24 +51,28 @@ const { useWatch } = Form
 export function PskSettingsForm () {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  if(data){
-    form.setFieldsValue({ 
-      wlan: {
-        passphrase: data.wlan?.passphrase,
-        wepHexKey: data.wlan?.wepHexKey,
-        saePassphrase: data.wlan?.saePassphrase,
-        wlanSecurity: data.wlan?.wlanSecurity,
-        managementFrameProtection: data.wlan?.managementFrameProtection,
-        macAddressAuthentication: data.wlan?.macAddressAuthentication,
-        macAuthMacFormat: data.wlan?.macAuthMacFormat
-      },
-      enableAuthProxy: data.enableAuthProxy,
-      enableAccountingProxy: data.enableAccountingProxy,
-      enableAccountingService: data.accountingRadius !== undefined,
-      enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
-      enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined
-    })
-  }
+  useEffect(()=>{
+    if(data){
+      form.setFieldsValue({
+        wlan: {
+          passphrase: data.wlan?.passphrase,
+          wepHexKey: data.wlan?.wepHexKey,
+          saePassphrase: data.wlan?.saePassphrase,
+          wlanSecurity: data.wlan?.wlanSecurity,
+          managementFrameProtection: data.wlan?.managementFrameProtection,
+          macAddressAuthentication: data.wlan?.macAddressAuthentication,
+          macAuthMacFormat: data.wlan?.macAuthMacFormat
+        },
+        enableAuthProxy: data.enableAuthProxy,
+        enableAccountingProxy: data.enableAccountingProxy,
+        enableAccountingService: data.accountingRadius !== undefined,
+        enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
+        enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
+        authRadius: data.authRadius,
+        accountingRadius: data.accountingRadius
+      })
+    }
+  }, [data])
   const [
     selectedId,
     macAddressAuthentication

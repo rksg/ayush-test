@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 
 
 import {
@@ -15,10 +15,10 @@ import {
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Subtitle }                     from '@acx-ui/components'
-import { useCloudpathListQuery }                   from '@acx-ui/rc/services'
+import { StepsForm, Subtitle }                                      from '@acx-ui/components'
+import { useCloudpathListQuery }                                    from '@acx-ui/rc/services'
 import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkType,
-  transformDpskNetwork, PassphraseExpirationEnum }      from '@acx-ui/rc/utils'
+  transformDpskNetwork, PassphraseExpirationEnum, NetworkSaveData }      from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram }    from '../NetworkDiagram/NetworkDiagram'
@@ -34,14 +34,15 @@ const { useWatch } = Form
 export function DpskSettingsForm () {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  if(data){
-    form.setFieldsValue({
-      isCloudpathEnabled: data.cloudpathServerId !== undefined,
-      passphraseFormat: data?.dpskPassphraseGeneration?.format,
-      passphraseLength: data?.dpskPassphraseGeneration?.length,
-      expiration: data?.dpskPassphraseGeneration?.expiration
-    })
-  }
+  useEffect(()=>{
+    if(data){
+      form.setFieldsValue({
+        isCloudpathEnabled: data.cloudpathServerId !== undefined,
+        dpskPassphraseGeneration: data?.dpskPassphraseGeneration,
+        dpskWlanSecurity: data?.wlan?.wlanSecurity
+      })
+    }
+  }, [data])
   const selectedId = useWatch('cloudpathServerId')
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -110,7 +111,8 @@ function SettingsForm () {
         </Form.Item>
       </div>
       <div>
-        {isCloudpathEnabled ? <CloudpathServerForm /> : <PassphraseGeneration />}
+        {isCloudpathEnabled ? <><CloudpathServerForm /><PassphraseGeneration /></> :
+          <PassphraseGeneration />}
         { /*TODO: <div><Button type='link'>Show more settings</Button></div> */ }
       </div>
     </Space>
@@ -118,12 +120,19 @@ function SettingsForm () {
 }
 
 function PassphraseGeneration () {
+  const [
+    isCloudpathEnabled
+  ] = [
+    useWatch('isCloudpathEnabled')
+  ]
   const intl = useIntl()
   const $t = intl.$t
-  const [state, updateState] = useState({
-    passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
-    passphraseLength: 18,
-    expiration: PassphraseExpirationEnum.UNLIMITED
+  const [state, updateState] = useState<NetworkSaveData>({
+    dpskPassphraseGeneration: {
+      format: PassphraseFormatEnum.MOST_SECURED,
+      length: 18,
+      expiration: PassphraseExpirationEnum.UNLIMITED
+    }
   })
 
   const updateData = (newData: Partial<typeof state>) => {
@@ -138,12 +147,12 @@ function PassphraseGeneration () {
     <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.EXPIRATION, key)}</Option>
   ))
 
-  const onFormatChange = function (passphraseFormat: PassphraseFormatEnum) {
-    updateData({ passphraseFormat })
+  const onFormatChange = function (format: PassphraseFormatEnum) {
+    updateData({ dpskPassphraseGeneration: { format } })
   }
 
   const onExpirationChange = function (expiration: PassphraseExpirationEnum) {
-    updateData({ expiration })
+    updateData({ dpskPassphraseGeneration: { expiration } })
   }
 
   const passphraseFormatDescription = {
@@ -155,16 +164,19 @@ function PassphraseGeneration () {
   }
 
   return (
-    <>
+    <div style={{ display: isCloudpathEnabled ? 'none' : 'block' }}>
       <Subtitle level={3}>{ $t({ defaultMessage: 'Passphrase Generation Parameters' }) }</Subtitle>
       <Row align='middle' gutter={8}>
         <Col span={23}>
           <Form.Item
-            name='passphraseFormat'
+            name={['dpskPassphraseGeneration', 'format']}
             label={$t({ defaultMessage: 'Passphrase format' })}
             rules={[{ required: true }]}
-            initialValue={state.passphraseFormat}
-            extra={passphraseFormatDescription[state.passphraseFormat]}
+            initialValue={state.dpskPassphraseGeneration?.format}
+            extra={passphraseFormatDescription[
+              state.dpskPassphraseGeneration?.format?
+                state?.dpskPassphraseGeneration?.format:
+                PassphraseFormatEnum.MOST_SECURED]}
           >
             <Select
               onChange={onFormatChange}
@@ -194,10 +206,10 @@ function PassphraseGeneration () {
       <Row align='middle' gutter={8}>
         <Col span={23}>
           <Form.Item
-            name='passphraseLength'
+            name={['dpskPassphraseGeneration', 'length']}
             label={$t({ defaultMessage: 'Passphrase length' })}
             rules={[{ required: true }]}
-            initialValue={state.passphraseLength}
+            initialValue={state.dpskPassphraseGeneration?.length}
             children={<InputNumber min={8} max={63} style={{ width: '100%' }}/>}
           />
         </Col>
@@ -211,10 +223,10 @@ function PassphraseGeneration () {
       </Row>
 
       <Form.Item
-        name='expiration'
+        name={['dpskPassphraseGeneration', 'expiration']}
         label={$t({ defaultMessage: 'Passphrase expiration' })}
         rules={[{ required: true }]}
-        initialValue={state.expiration}
+        initialValue={state.dpskPassphraseGeneration?.expiration}
       >
         <Select
           style={{ width: '100%' }}
@@ -223,6 +235,6 @@ function PassphraseGeneration () {
           {expirationOptions}
         </Select>
       </Form.Item>
-    </>
+    </div>
   )
 }

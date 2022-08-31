@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import {
   ExclamationCircleFilled,
@@ -44,16 +44,21 @@ const { useWatch } = Form
 export function AaaSettingsForm () {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  if(data){
-    form.setFieldsValue({ 
-      isCloudpathEnabled: data.cloudpathServerId !== undefined,
-      enableAuthProxy: data.enableAuthProxy,
-      enableAccountingProxy: data.enableAccountingProxy,
-      enableAccountingService: data.accountingRadius !== undefined,
-      enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
-      enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined
-    })
-  }
+  useEffect(()=>{
+    if(data){
+      form.setFieldsValue({
+        isCloudpathEnabled: data.cloudpathServerId !== undefined,
+        enableAuthProxy: data.enableAuthProxy,
+        enableAccountingProxy: data.enableAccountingProxy,
+        enableAccountingService: data.accountingRadius !== undefined,
+        enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
+        enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
+        authRadius: data.authRadius,
+        accountingRadius: data.accountingRadius,
+        wlanSecurity: data?.wlan?.wlanSecurity
+      })
+    }
+  }, [data])
   const [
     isCloudpathEnabled,
     selectedId,
@@ -129,7 +134,7 @@ function SettingsForm () {
     useWatch('enableSecondaryAcctServer')
   ]
 
-  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle') 
+  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
@@ -216,7 +221,7 @@ function SettingsForm () {
             />
           </Form.Item>
 
-          {enableSecondaryAuthServer && 
+          {enableSecondaryAuthServer &&
             <IpPortSecretForm
               serverType={AaaServerTypeEnum.AUTHENTICATION}
               order={AaaServerOrderEnum.SECONDARY}
