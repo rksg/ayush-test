@@ -2,8 +2,7 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import { Incident, noDataSymbol, IncidentFilter, nodeTypes } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table }                         from '@acx-ui/components'
-import { TenantLink }                                        from '@acx-ui/react-router-dom'
-import { useTenantLink }                                     from '@acx-ui/react-router-dom'
+import { useTenantLink, Link }                               from '@acx-ui/react-router-dom'
 import { formatter }                                         from '@acx-ui/utils'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
@@ -59,9 +58,9 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       valueType: 'dateTime',
       key: 'endTime',
       render: (_, value) => {
-        return <TenantLink to={`${basePath.pathname}/${value.id}`}>
+        return <Link to={`${basePath.pathname}/${value.id}`}>
           <FormatDate datetimestamp={value.endTime} />
-        </TenantLink>
+        </Link>
       },
       sorter: {
         compare: (a, b) => dateSort(a.endTime, b.endTime),
