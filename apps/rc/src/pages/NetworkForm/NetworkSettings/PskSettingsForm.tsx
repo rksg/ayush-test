@@ -14,7 +14,6 @@ import {
   Tooltip,
   Input
 } from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -54,7 +53,7 @@ export function PskSettingsForm () {
   const form = Form.useFormInstance()
   useEffect(()=>{
     if(data){
-      form.setFieldsValue({ 
+      form.setFieldsValue({
         wlan: {
           passphrase: data.wlan?.passphrase,
           wepHexKey: data.wlan?.wepHexKey,
@@ -69,8 +68,8 @@ export function PskSettingsForm () {
         enableAccountingService: data.accountingRadius !== undefined,
         enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
         enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
-        authRadius: _.get(data, 'authRadius'),
-        accountingRadius: _.get(data, 'accountingRadius')
+        authRadius: data.authRadius,
+        accountingRadius: data.accountingRadius
       })
     }
   }, [data])

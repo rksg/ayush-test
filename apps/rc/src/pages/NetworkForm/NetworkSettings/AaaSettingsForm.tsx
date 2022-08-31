@@ -13,7 +13,6 @@ import {
   Switch,
   Tooltip
 } from 'antd'
-import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
@@ -54,8 +53,8 @@ export function AaaSettingsForm () {
         enableAccountingService: data.accountingRadius !== undefined,
         enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
         enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
-        authRadius: _.get(data, 'authRadius'),
-        accountingRadius: _.get(data, 'accountingRadius'),
+        authRadius: data.authRadius,
+        accountingRadius: data.accountingRadius,
         wlanSecurity: data?.wlan?.wlanSecurity
       })
     }
@@ -134,7 +133,7 @@ function SettingsForm () {
     useWatch('enableSecondaryAcctServer')
   ]
 
-  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle') 
+  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
@@ -220,7 +219,7 @@ function SettingsForm () {
             />
           </Form.Item>
 
-          {enableSecondaryAuthServer && 
+          {enableSecondaryAuthServer &&
             <IpPortSecretForm
               serverType={AaaServerTypeEnum.AUTHENTICATION}
               order={AaaServerOrderEnum.SECONDARY}
