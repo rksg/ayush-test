@@ -50,8 +50,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         multiple: 1
       },
       defaultSortOrder: 'descend',
-      fixed: 'left',
-      sortDirections: ['ascend', 'descend', 'ascend']
+      fixed: 'left'
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Date' })),
@@ -63,7 +62,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         return <Link to={`${basePath.pathname}/${value.id}`}>
           <FormatDate datetimestamp={value.endTime} />
         </Link>
-      }, 
+      },
       sorter: {
         compare: (a, b) => dateSort(a.endTime, b.endTime),
         multiple: 2
