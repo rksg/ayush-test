@@ -4,11 +4,11 @@ import { dataApiURL }              from '@acx-ui/analytics/services'
 import { IncidentFilter }          from '@acx-ui/analytics/utils'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { Provider, store }         from '@acx-ui/store'
-import { 
+import {
   mockGraphqlQuery,
   render, screen,
-  act, 
-  fireEvent, 
+  act,
+  fireEvent,
   waitForElementToBeRemoved,
   cleanup
 } from '@acx-ui/test-utils'
@@ -114,7 +114,7 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))   
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     await screen.findAllByText('P4')
     expect(screen.getAllByText('P4')).toHaveLength(incidentTests.length)
@@ -132,7 +132,7 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))   
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     await screen.findByText('No Data')
     expect(screen.getByText('No Data').textContent).toBe('No Data')
@@ -164,7 +164,7 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))   
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))
 
     for (let i = 0; i < columnHeaders.length; i++) {
       const header = columnHeaders[i]
@@ -195,6 +195,7 @@ describe('IncidentTableWidget', () => {
     expect(caretDown).toHaveLength(1)
 
     fireEvent.click(elem)
+    fireEvent.click(elem)
     const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
     expect(caretUp).toHaveLength(1)
 
@@ -207,7 +208,7 @@ describe('IncidentTableWidget', () => {
       fireEvent.click(elem)
       const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
       expect(caretUp).toHaveLength(1)
-  
+
       fireEvent.click(elem)
       const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
       expect(caretDown).toHaveLength(2)
@@ -232,11 +233,11 @@ describe('IncidentTableWidget', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-    const hiddenCheckboxes = 
+    const hiddenCheckboxes =
       await screen.findAllByRole('radio', { hidden: true, checked: false })
 
     expect(hiddenCheckboxes).toHaveLength(1)
-    
+
     fireEvent.click(await screen.findByRole('button', { name: /Mute/i }))
     expect(screen.getByRole('alert')).toBeInTheDocument()
     // add test case for muting
@@ -282,11 +283,11 @@ describe('IncidentTableWidget', () => {
       act(() => titleElem.click())
       expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-up' }))
         .toHaveLength(1)
-  
+
       act(() => titleElem.click())
       expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-down' }))
         .toHaveLength(2)
-      
+
       act(() => titleElem.click())
     }
 
