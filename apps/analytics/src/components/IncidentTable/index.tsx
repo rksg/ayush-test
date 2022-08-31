@@ -187,7 +187,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
         scroll={{ y: 'max-content' }}
-        indentSize={0}
+        indentSize={6}
       />
     </Loader>
   )
