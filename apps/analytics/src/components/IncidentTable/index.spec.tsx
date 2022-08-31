@@ -187,18 +187,32 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))   
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-    for (let i = 0; i < columnHeaders.length; i++) {
+    const priorityHeader = columnHeaders[0]
+    const elem = await screen.findByText(priorityHeader)
+    const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
+    expect(caretDown).toHaveLength(1)
+
+    fireEvent.click(elem)
+    const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
+    expect(caretUp).toHaveLength(1)
+
+    fireEvent.click(elem)
+
+    for (let i = 1; i < columnHeaders.length; i++) {
       const header = columnHeaders[i]
       const elem = await screen.findByText(header)
-      act(() => elem.click())
-      expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-up' }))
-        .toHaveLength(1)
+
+      fireEvent.click(elem)
+      const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
+      expect(caretUp).toHaveLength(1)
   
-      act(() => elem.click())
-      expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-down' }))
-        .toHaveLength(i + 1)
+      fireEvent.click(elem)
+      const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
+      expect(caretDown).toHaveLength(2)
+
+      fireEvent.click(elem)
     }
   })
 
@@ -223,7 +237,6 @@ describe('IncidentTableWidget', () => {
 
     expect(hiddenCheckboxes).toHaveLength(1)
     
-
     fireEvent.click(await screen.findByRole('button', { name: /Mute/i }))
     expect(screen.getByRole('alert')).toBeInTheDocument()
     // add test case for muting
@@ -272,7 +285,9 @@ describe('IncidentTableWidget', () => {
   
       act(() => titleElem.click())
       expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-down' }))
-        .toHaveLength(i + 2)
+        .toHaveLength(2)
+      
+      act(() => titleElem.click())
     }
 
   })
