@@ -44,6 +44,7 @@ export function calculateSeverity (severity: number): IncidentSeverities | void 
       return p as IncidentSeverities
     }
   }
+
 }
 
 type NormalizedNodeType = 'network'
@@ -86,6 +87,14 @@ export function useFormattedNodeType (nodeType: NodeType) {
   const { $t } = useIntl()
   return $t(nodeTypes(nodeType))
 }
+
+export const useImpactValues = 
+  <Type extends 'ap' | 'client'> (type: Type, incident: Incident): 
+  Record<string, string | number | null | {}> => {
+    const intl = useIntl()
+    const values = impactValues(intl, type, incident)
+    return values
+  }
 
 function formattedNodeName (
   intl: IntlShape,
@@ -130,7 +139,7 @@ export function useImpactedArea (path: PathNode[], sliceValue: string) {
     : sliceValue
 }
 
-export const useShortDescription = (incident: Incident) => {
+export const useIncidentScope = (incident: Incident) => {
   const { $t } = useIntl()
   const scope = $t({
     defaultMessage: '{nodeType}: {nodeName}',
@@ -139,6 +148,12 @@ export const useShortDescription = (incident: Incident) => {
     nodeType: useFormattedNodeType(incident.sliceType),
     nodeName: useImpactedArea(incident.path, incident.sliceValue)
   })
+  return scope
+}
+
+export const useShortDescription = (incident: Incident) => {
+  const { $t } = useIntl()
+  const scope = useIncidentScope(incident)
   return $t(incident.shortDescription, { scope })
 }
 
