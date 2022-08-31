@@ -49,9 +49,9 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => severitySort(a.severity, b.severity),
         multiple: 1
       },
-      sortDirections: ['ascend', 'descend', 'ascend'],
       defaultSortOrder: 'descend',
-      fixed: 'left'
+      fixed: 'left',
+      sortDirections: ['ascend', 'descend', 'ascend']
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Date' })),
@@ -68,8 +68,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => dateSort(a.endTime, b.endTime),
         multiple: 2
       },
-      fixed: 'left',
-      sortDirections: ['ascend', 'descend', 'ascend']
+      fixed: 'left'
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Duration' })),
@@ -80,8 +79,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => defaultSort(b.duration, a.duration),
         multiple: 3
-      },
-      sortDirections: ['ascend', 'descend', 'ascend']
+      }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
@@ -93,8 +91,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => defaultSort(a.code, b.code),
         multiple: 4
       },
-      ellipsis: true,
-      sortDirections: ['ascend', 'descend', 'ascend']
+      ellipsis: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Category' })),
@@ -105,8 +102,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => defaultSort(a.code, b.code),
         multiple: 5
-      },
-      sortDirections: ['ascend', 'descend', 'ascend']
+      }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
@@ -118,7 +114,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => defaultSort(a.code, b.code),
         multiple: 5
       },
-      sortDirections: ['ascend', 'descend', 'ascend'],
       show: false
     },
     {
@@ -130,8 +125,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount),
         multiple: 6
-      },
-      sortDirections: ['ascend', 'descend', 'ascend']
+      }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
@@ -143,7 +137,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount),
         multiple: 7
       },
-      sortDirections: ['ascend', 'descend', 'ascend'],
       align: 'center'
     },
     {
@@ -156,8 +149,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => clientImpactSort(a.code, b.code),
         multiple: 8
-      },
-      sortDirections: ['ascend', 'descend', 'ascend']
+      }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Type' })),
@@ -169,7 +161,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => clientImpactSort(a.code, b.code),
         multiple: 8
       },
-      sortDirections: ['ascend', 'descend', 'ascend'],
       show: false
     }
   ]
