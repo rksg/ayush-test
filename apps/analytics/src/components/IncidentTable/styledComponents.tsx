@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 
+
 import {
   IncidentSeverities,
   incidentSeverities
 } from '@acx-ui/analytics/utils'
 import { cssStr } from '@acx-ui/components'
-
+import { Link }   from '@acx-ui/react-router-dom'
 
 export const withEllipsis = `
   white-space: nowrap;
@@ -67,4 +68,9 @@ export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => prop
 
 export const DateSpan = styled.span`
   font-weight: var(--acx-body-font-weight-bold);
+`
+
+export const UnstyledLink = styled(Link)`
+  color: inherit;
+  text-decoration: inherit;
 `

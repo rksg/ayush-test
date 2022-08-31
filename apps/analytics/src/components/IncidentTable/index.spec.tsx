@@ -1,10 +1,18 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                                                               from '@acx-ui/analytics/services'
-import { IncidentFilter }                                                           from '@acx-ui/analytics/utils'
-import { Provider, store }                                                          from '@acx-ui/store'
-import { mockGraphqlQuery, mockAutoSizer, render, screen, cleanup, act, fireEvent } from '@acx-ui/test-utils'
-import { DateRange }                                                                from '@acx-ui/utils'
+import { dataApiURL }              from '@acx-ui/analytics/services'
+import { IncidentFilter }          from '@acx-ui/analytics/utils'
+import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
+import { Provider, store }         from '@acx-ui/store'
+import { 
+  mockGraphqlQuery,
+  render, screen,
+  act, 
+  fireEvent, 
+  waitForElementToBeRemoved,
+  cleanup
+} from '@acx-ui/test-utils'
+import { DateRange } from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -78,9 +86,7 @@ const filters : IncidentFilter = {
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours
 }
-
 describe('IncidentTableWidget', () => {
-  mockAutoSizer()
 
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
@@ -92,8 +98,8 @@ describe('IncidentTableWidget', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: [] } } }
     })
-    render(<Provider><IncidentTableWidget filters={filters}/></Provider>)
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    render(<Router><Provider><IncidentTableWidget filters={filters}/></Provider></Router>)
+    expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 
   it('should render table with valid input', async () => {
@@ -107,6 +113,8 @@ describe('IncidentTableWidget', () => {
         wrapRoutes: false
       }
     })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))   
 
     await screen.findAllByText('P4')
     expect(screen.getAllByText('P4')).toHaveLength(incidentTests.length)
@@ -124,6 +132,8 @@ describe('IncidentTableWidget', () => {
       }
     })
 
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))   
+
     await screen.findByText('No Data')
     expect(screen.getByText('No Data').textContent).toBe('No Data')
   })
@@ -136,14 +146,14 @@ describe('IncidentTableWidget', () => {
     'Category',
     'Client Impact',
     'Impacted Clients',
-    'Scope',
-    'Type'
+    'Scope'
   ]
 
   it('should render column header', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
+
     render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
       route: {
         path: '/t/tenantId/analytics/incidents',
@@ -153,6 +163,9 @@ describe('IncidentTableWidget', () => {
         }
       }
     })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))   
+
     for (let i = 0; i < columnHeaders.length; i++) {
       const header = columnHeaders[i]
       await screen.findByText(header)
@@ -174,22 +187,36 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    for (let i = 0; i < columnHeaders.length; i++) {
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+
+    const priorityHeader = columnHeaders[0]
+    const elem = await screen.findByText(priorityHeader)
+    const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
+    expect(caretDown).toHaveLength(1)
+
+    fireEvent.click(elem)
+    const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
+    expect(caretUp).toHaveLength(1)
+
+    fireEvent.click(elem)
+
+    for (let i = 1; i < columnHeaders.length; i++) {
       const header = columnHeaders[i]
       const elem = await screen.findByText(header)
-      act(() => elem.click())
-      await screen.findByRole('img', { hidden: true, name: 'caret-up' })
-      expect(screen.getByRole('img', { hidden: true, name: 'caret-up' })).toBeTruthy()
-  
-      act(() => elem.click())
-      await screen.findByRole('img', { hidden: true, name: 'caret-down' })
-      expect(screen.getByRole('img', { hidden: true, name: 'caret-down' })).toBeTruthy()
 
-      act(() => elem.click())
+      fireEvent.click(elem)
+      const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
+      expect(caretUp).toHaveLength(1)
+  
+      fireEvent.click(elem)
+      const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
+      expect(caretDown).toHaveLength(2)
+
+      fireEvent.click(elem)
     }
   })
 
-  it('should allow for muting',async () => {
+  it('should allow for muting', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
@@ -203,16 +230,66 @@ describe('IncidentTableWidget', () => {
       }
     })
 
-    const rowElems = await screen.findAllByText('P4')
-    expect(rowElems).toHaveLength(incidentTests.length)
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-    act(() => rowElems[0].click())
-    await screen.findByText('2 selected')
-    expect(screen.getByText('2 selected').textContent).toBe('2 selected')
+    const hiddenCheckboxes = 
+      await screen.findAllByRole('radio', { hidden: true, checked: false })
 
-    const muteButton = await screen.findByText('Mute')
-    act(() => muteButton.click())
-    // update to include actual muting call
+    expect(hiddenCheckboxes).toHaveLength(1)
+    
+    fireEvent.click(await screen.findByRole('button', { name: /Mute/i }))
+    expect(screen.getByRole('alert')).toBeInTheDocument()
+    // add test case for muting
+  })
+
+  const hiddenColumnHeaders = [
+    'Type',
+    'Sub-Category'
+  ]
+
+  it('should expand hidden columns', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))
+
+    for (let i = 0; i < hiddenColumnHeaders.length; i++) {
+      const header = hiddenColumnHeaders[i]
+
+      const settingsButton = await screen.findByText('SettingsOutlined.svg')
+      expect(settingsButton).toBeTruthy()
+      fireEvent.click(settingsButton)
+
+      const settingsElem = await screen.findByText(header)
+      expect(settingsElem).toBeTruthy()
+      fireEvent.click(settingsElem)
+
+      const elems = await screen.findAllByText(header)
+      expect(elems).toHaveLength(2)
+      const titleElem = elems[0]
+
+      act(() => titleElem.click())
+      expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-up' }))
+        .toHaveLength(1)
+  
+      act(() => titleElem.click())
+      expect(await screen.findAllByRole('img', { hidden: false, name: 'caret-down' }))
+        .toHaveLength(2)
+      
+      act(() => titleElem.click())
+    }
+
   })
   it('should render drawer when click on description', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
@@ -257,6 +334,7 @@ describe('IncidentTableWidget', () => {
     fireEvent.click(await screen.findByRole('button', { name: /close/i }))
     expect(screen.queryByText('Root cause:')).toBeNull()
   })
+
 })
 
 

@@ -1,5 +1,10 @@
 import moment  from 'moment-timezone'
 import numeral from 'numeral'
+import {
+  defineMessage,
+  MessageDescriptor,
+  IntlShape
+} from 'react-intl'
 
 const count = ['', ' k', ' m', ' b', ' t'] // from numeral, we could add more
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
@@ -43,7 +48,7 @@ const shorten = (value: number) => {
   return parseFloat(value.toPrecision(3)).toString()
 }
 
-export function durationFormat (milliseconds: number) {
+function durationFormat (milliseconds: number) {
   const results = []
   let significance = 0
   for (let scale in durations) {
@@ -84,8 +89,22 @@ function dateTimeFormatter (number: unknown, format: string, tz?: string ) {
     : moment(number as moment.MomentInput).format(format)
 }
 
+function calendarFormat (number: number, intl: IntlShape) {
+  const { $t } = intl
+  moment.locale(intl.locale)
+  return moment(number).calendar({
+    lastDay: $t({ defaultMessage: '[Yesterday,] HH:mm' }),
+    sameDay: $t({ defaultMessage: '[Today,] HH:mm' }),
+    nextDay: $t({ defaultMessage: '[Tomorrow,] HH:mm' }),
+    lastWeek: $t({ defaultMessage: '[Last] dddd[,] HH:mm' }),
+    nextWeek: $t({ defaultMessage: 'dddd[,] HH:mm' }),
+    sameElse: $t({ defaultMessage: 'MMM DD HH:mm' })
+  })
+}
+
 const formats = {
   durationFormat,
+  calendarFormat: (number: number, intl: IntlShape) => calendarFormat(number, intl),
   percentFormat: (number: number) => numeral(number).format('0.[00]%'),
   percentFormatWithoutScalingBy100: (number: number) => numeral(number / 100).format('0.[00]%'),
   percentFormatNoSign: (number: number) => formats['percentFormat'](number).replace('%', ''),
@@ -104,7 +123,7 @@ const formats = {
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
   txFormat: (value: keyof typeof txpowerMapping) =>
     (txpowerMapping[value] ? txpowerMapping[value] : value)
-} as Record<string, (value: unknown) => string>
+} as Record<string, (value: unknown, intl?: IntlShape)=> string>
 
 export const dateTimeFormats = {
   yearFormat: 'YYYY',
@@ -120,7 +139,8 @@ export const dateTimeFormats = {
 }
 
 export function formatter (
-  name: keyof typeof formats | keyof typeof dateTimeFormats = 'countFormat'
+  name: keyof typeof formats | keyof typeof dateTimeFormats = 'countFormat',
+  intl?: IntlShape
 ) {
   return function formatter (value: unknown, tz?: string) {
     if (value === null || value === '-') {
@@ -130,7 +150,19 @@ export function formatter (
     if (dateTimeFormats[name as keyof typeof dateTimeFormats]) {
       return dateTimeFormatter(value, dateTimeFormats[name as keyof typeof dateTimeFormats], tz)
     } else {
-      return formats[name as keyof typeof formats](value)
+      return formats[name as keyof typeof formats](value, intl)
     }
   }
+}
+
+
+const countFormat: MessageDescriptor = defineMessage({
+  defaultMessage: '{value, number, ::K .##/@##r}'
+})
+const percentFormat: MessageDescriptor = defineMessage({
+  defaultMessage: '{value, number, ::percent .##}'
+})
+export const intlFormats = {
+  countFormat,
+  percentFormat
 }

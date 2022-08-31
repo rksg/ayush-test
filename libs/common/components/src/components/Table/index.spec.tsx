@@ -5,7 +5,8 @@ import { Table, TableProps } from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
   CancelCircle: () => <div data-testid='cancel-circle'/>,
-  SettingsOutlined: () => <div data-testid='settings'/>
+  InformationOutlined: () => <div data-testid='information-outlined'/>,
+  SettingsOutlined: () => <div data-testid='settings-outlined'/>
 }), { virtual: true })
 
 
@@ -13,7 +14,7 @@ describe('Table component', () => {
   it('should render correctly', () => {
     const basicColumns = [
       { title: 'Name', dataIndex: 'name', key: 'name' },
-      { title: 'Age', dataIndex: 'age', key: 'age' },
+      { title: 'Age', tooltip: 'tooltip', dataIndex: 'age', key: 'age' },
       { title: 'Address', dataIndex: 'address', key: 'address' }
     ]
     const basicData = [
@@ -198,6 +199,63 @@ describe('Table component', () => {
     expect(after.filter(el => !el.checked)).toHaveLength(3)
   })
 
+  it('updates selected rows when selectedRowKeys changed', async () => {
+    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
+    const data = [
+      { key: '1', name: 'John Doe' },
+      { key: '2', name: 'Jane Doe' },
+      { key: '3', name: 'Will Smith' }
+    ]
+
+    const actions: TableProps<{ key: string, name: string }>['actions'] = [
+      { label: 'Delete', onClick: (selected, clear) => clear() }
+    ]
+
+    const { rerender } = render(<Table
+      columns={columns}
+      dataSource={data}
+      actions={actions}
+      rowSelection={{ selectedRowKeys: ['1', '2'] }}
+    />)
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    const before = (await body.findAllByRole('checkbox')) as HTMLInputElement[]
+    expect(before.filter(el => el.checked)).toHaveLength(2)
+    expect(before.filter(el => !el.checked)).toHaveLength(1)
+
+    rerender(<Table
+      columns={columns}
+      dataSource={data}
+      actions={actions}
+      rowSelection={{ selectedRowKeys: ['1'] }}
+    />)
+
+    const after = (await body.findAllByRole('checkbox')) as HTMLInputElement[]
+    expect(after.filter(el => el.checked)).toHaveLength(1)
+    expect(after.filter(el => !el.checked)).toHaveLength(2)
+  })
+
+  it('row click for table without rowSelection does nothing', async () => {
+    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
+    const data = [
+      { key: '1', name: 'John Doe' },
+      { key: '2', name: 'Jane Doe' },
+      { key: '3', name: 'Will Smith' }
+    ]
+
+    render(<Table
+      columns={columns}
+      dataSource={data}
+    />)
+
+    fireEvent.click(await screen.findByText('Jane Doe'))
+  })
+
   it('single select row click', async () => {
     const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
     const data = [
@@ -218,6 +276,8 @@ describe('Table component', () => {
     expect(tbody).toBeVisible()
 
     const body = within(tbody)
+    fireEvent.click(await body.findByText('Jane Doe'))
+    // to ensure it doesn't get unselected
     fireEvent.click(await body.findByText('Jane Doe'))
     const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
     expect(selectedRow.filter(el => el.checked)).toHaveLength(1)

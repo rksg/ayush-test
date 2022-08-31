@@ -1,33 +1,40 @@
-import moment                     from 'moment-timezone'
-import { defineMessage, useIntl } from 'react-intl'
+import moment from 'moment-timezone'
+import {
+  FormattedMessage, 
+  MessageDescriptor,
+  useIntl
+} from 'react-intl'
 
 import { 
   calculateSeverity,
   Incident,
   incidentInformation,
   noDataSymbol,
+  useFormattedNodeType,
+  useImpactedArea,
   useImpactValues,
-  useIncidentScope,
   useShortDescription
 } from '@acx-ui/analytics/utils'
-import { formatter, durationFormat } from '@acx-ui/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
+import { formatter }     from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
 export type GetIncidentBySeverityProps = {
-  value?: number | null
+  value: number,
+  id: string
 }
 
 export const GetIncidentBySeverity = (props: GetIncidentBySeverityProps) => {
-  const { value } = props
-  if (value === null || value === undefined) {
-    return <span>{noDataSymbol}</span>
-  }
+  const { value, id } = props
+  const basePath = useTenantLink('/analytics/incidents/')
 
   const severity = calculateSeverity(value)
   if (typeof severity === 'undefined') return <span>{noDataSymbol}</span>
 
-  return <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
+  return <UI.UnstyledLink to={`${basePath.pathname}/${id}`}>
+    <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
+  </UI.UnstyledLink>
 }
 
 export type FormatDateProps = {
@@ -36,30 +43,21 @@ export type FormatDateProps = {
 
 export const FormatDate = (props: FormatDateProps) => {
   const { datetimestamp } = props
-  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp, 'UTC')
+  const formattedDatetime = formatter('dateTimeFormat')(datetimestamp)
   if (formattedDatetime === null) return <span>{noDataSymbol}</span>
-  const timeStamp = (formattedDatetime as string).replace('UTC', '')
+  const timeStamp = formattedDatetime as string
   return <UI.DateSpan>{timeStamp}</UI.DateSpan>
 }
 
-export const formatDuration = (duration: number) => {
-  const durationString = durationFormat(Math.abs(duration))
-  return durationString
-}
-
 export interface FormatIntlStringProps {
-  message: {
-    defaultMessage: string
-  }
+  message: MessageDescriptor
   scope?: string
   threshold?: string
 }
 
 export const FormatIntlString = (props: FormatIntlStringProps) => {
-  const { $t } = useIntl()
   const { message, scope, threshold } = props
-  const intlMessage = $t(message, { scope, threshold, noDataSymbol })
-  return <span>{intlMessage}</span>
+  return <FormattedMessage {...message} values={{ scope, threshold, noDataSymbol }} />
 }
 
 export interface IncidentTableComponentProps {
@@ -95,30 +93,40 @@ export const ShortIncidentDescription = (props: IncidentTableDescriptionProps) =
   )
 }
 
-export const GetCategory = (code: string) => {
+export const GetCategory = (code: string, subCategory?: boolean) => {
   const incidentInfo = incidentInformation[code]
+  if (subCategory) {
+    const { subCategory } = incidentInfo
+    return <FormatIntlString message={subCategory} />
+  }
   const { category } = incidentInfo
   return <FormatIntlString message={category} />
 }
 
 export const GetScope = (props: IncidentTableComponentProps) => {
+  const { $t } = useIntl()
   const { incident } = props
-  const scope = useIncidentScope(incident)  
-  const message = defineMessage({ defaultMessage: '{scope}' })
-  return <FormatIntlString message={message} scope={scope}/>
+  const scope = $t({
+    defaultMessage: '{nodeType}: {nodeName}',
+    description: 'Uses to generate incident impacted scope for various incident descriptions'
+  }, {
+    nodeType: useFormattedNodeType(incident.sliceType),
+    nodeName: useImpactedArea(incident.path, incident.sliceValue)
+  })
+  return <span>{scope}</span>
 }
 
 export const ClientImpact = (props: IncidentTableComponentProps & {
   type: 'clientImpact' | 'impactedClients'
 }) => {
   const { type, incident } = props
-  const values = useImpactValues('client', incident.clientCount, incident.impactedClientCount)
-  if (type === 'clientImpact') return <span>{values['clientImpactFormatted'] as string}</span>
+  const values = useImpactValues('client', incident)
+  if (type === 'clientImpact') return <span>{values['clientImpactRatioFormatted'] as string}</span>
 
   return <span>{values['clientImpactCountFormatted'] as string}</span>
 }
 
-export const durationValue = (dateA: string, dateB: string) => moment(dateA).diff(moment(dateB))
+export const durationValue = (start: string, end: string) => moment(end).diff(moment(start))
 
 export const dateSort = (dateA: string, dateB: string) => 
   Math.sign(durationValue(dateA, dateB))
@@ -127,12 +135,6 @@ export const defaultSort = (a: string | number, b: string | number) => {
   if (a < b) return -1
   if (a > b) return 1
   return 0
-}
-
-export const durationSort = (startA: string, endA: string, startB: string, endB: string) => {
-  const diffA = moment(endA).diff(startA)
-  const diffB = moment(endB).diff(startB)
-  return defaultSort(diffA, diffB)
 }
 
 export const clientImpactSort = (a?: unknown, b?: unknown) => {
@@ -150,7 +152,7 @@ export const severitySort = (a?: unknown, b?: unknown) => {
   const isDefined = typeof a !== 'undefined' && typeof b !== 'undefined'
   const c = a as number
   const d = b as number
-  if (isDefined && c > d) return -1
-  if (isDefined && c < d) return 1
+  if (isDefined && c > d) return 1
+  if (isDefined && c < d) return -1
   return 0
 }

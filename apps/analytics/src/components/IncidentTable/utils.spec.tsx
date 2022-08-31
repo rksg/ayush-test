@@ -1,14 +1,21 @@
 import '@testing-library/jest-dom'
+import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { incidentCodes, noDataSymbol, incidentInformation, Incident } from '@acx-ui/analytics/utils'
-import { Provider }                                                   from '@acx-ui/store'
-import { render, screen, cleanup }                                    from '@acx-ui/test-utils'
+import { 
+  incidentCodes,
+  noDataSymbol,
+  incidentInformation,
+  fakeIncident,
+  NodeType,
+  PathNode
+} from '@acx-ui/analytics/utils'
+import { Provider }                from '@acx-ui/store'
+import { render, screen, cleanup } from '@acx-ui/test-utils'
 
 import {
   GetIncidentBySeverity,
   FormatDate,
-  formatDuration,
   clientImpactSort,
   severitySort,
   FormatIntlString,
@@ -18,20 +25,24 @@ import {
   GetScope,
   dateSort,
   defaultSort,
-  durationSort,
   ShortIncidentDescription
 } from './utils'
 
 describe('IncidentTable: utils', () => {
 
+  beforeEach(() => {
+    moment.tz.setDefault('Asia/Singapore')
+    Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+  })
+
   afterEach(() => cleanup())
 
-  const testIncident: Incident = {
+  const incidentValues = {
     severity: 0.3813119146230035,
     startTime: '2022-07-21T01:15:00.000Z',
     endTime: '2022-07-21T01:18:00.000Z',
     code: 'auth-failure',
-    sliceType: 'zone',
+    sliceType: 'zone' as NodeType,
     sliceValue: 'Venue-3-US',
     id: '268a443a-e079-4633-9491-536543066e7d',
     path: [
@@ -39,7 +50,7 @@ describe('IncidentTable: utils', () => {
         type: 'zone',
         name: 'Venue-3-US'
       }
-    ],
+    ] as PathNode[],
     metadata: {
       dominant: {
         ssid: 'qa-eric-acx-R760-psk'
@@ -64,104 +75,50 @@ describe('IncidentTable: utils', () => {
     vlanCount: 0,
     connectedPowerDeviceCount: 0,
     slaThreshold: null,
-    currentSlaThreshold: null,
-    relatedIncidents: [
-      {
-        severity: 0.3813119146230035,
-        startTime: '2022-07-21T01:15:00.000Z',
-        endTime: '2022-07-21T01:18:00.000Z',
-        code: 'auth-failure',
-        sliceType: 'zone',
-        sliceValue: 'Venue-3-US',
-        id: '268a443a-e079-4633-9491-536543066e7d',
-        path: [
-          {
-            type: 'zone',
-            name: 'Venue-3-US'
-          }
-        ],
-        metadata: {
-          dominant: {
-            ssid: 'qa-eric-acx-R760-psk'
-          },
-          rootCauseChecks: {
-            checks: [
-              {
-                CCD_REASON_NOT_AUTHED: true
-              }
-            ],
-            params: {}
-          }
-        },
-        clientCount: 2,
-        impactedClientCount: 2,
-        isMuted: false,
-        mutedBy: null,
-        mutedAt: null,
-        apCount: 0,
-        impactedApCount: 0,
-        switchCount: 0,
-        vlanCount: 0,
-        connectedPowerDeviceCount: 0,
-        slaThreshold: null,
-        currentSlaThreshold: null
-      }
-    ]
+    currentSlaThreshold: null
   }
+  
+  const sampleIncident = fakeIncident(incidentValues)
 
   describe('getIncidentBySeverity', () => {
     const testSeverityArr = [
-      { value: 0, label: 'P4' }, 
+      { value: 0.001, label: 'P4' }, 
       { value: 0.65, label: 'P3' }, 
       { value: 0.8, label: 'P2' },
-      { value: 1, label: 'P1' }
+      { value: 1, label: 'P1' },
+      { value: undefined, label: noDataSymbol }
     ]
     
     it.each(testSeverityArr)(
       'should show correct label: %s for value %n', 
       async ({ label, value }) => {
-        render(<GetIncidentBySeverity value={value}/>)
+        render(<Provider>
+          <GetIncidentBySeverity value={value as unknown as number} id={'test'}/>
+        </Provider>, {
+          route: {
+            path: '/t/tenantId/analytics/incidents',
+            wrapRoutes: false,
+            params: {
+              tenantId: '1'
+            }
+          }
+        })
         await screen.findByText(label)
         expect(screen.getByText(label).textContent).toMatch(label)
       })
-
-    it('should show noDataSymbol on undefined', async () => {
-      render(<GetIncidentBySeverity value={undefined}/>)
-      await screen.findByText(noDataSymbol)
-      expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
-    })
-
-    it('should show noDataSymbol on null', async () => {
-      render(<GetIncidentBySeverity value={null}/>)
-      await screen.findByText(noDataSymbol)
-      expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
-    })
-
-    it('should show noDataSymbol on negative', async () => {
-      render(<GetIncidentBySeverity value={-1}/>)
-      await screen.findByText(noDataSymbol)
-      expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
-    })
   })
 
   describe('formatDate', () => {
     it('should show correct date', async () => {
       render(<FormatDate datetimestamp='2022-08-15T00:00:00+08:00'/>)
-      await screen.findByText('Aug 14 2022 16:00')
-      expect(screen.getByText('Aug 14 2022 16:00').textContent).toMatch('Aug 14 2022 16:00')
+      await screen.findByText('Aug 15 2022 00:00')
+      expect(screen.getByText('Aug 15 2022 00:00').textContent).toMatch('Aug 15 2022 00:00')
     })
 
     it('should show null for null date', async () => {
       render(<FormatDate datetimestamp={null as unknown as string}/>)
       await screen.findByText(noDataSymbol)
       expect(screen.getByText(noDataSymbol).textContent).toMatch(noDataSymbol)
-    })
-  })
-
-  describe('formatDuration', () => {
-    it('should calculate correct duration', () => {
-      const testDuration = formatDuration(3.154e10)
-      expect(testDuration).toBe('11mo 30d')
     })
   })
 
@@ -204,14 +161,14 @@ describe('IncidentTable: utils', () => {
     const a = 1
     const b = 2
 
-    it('should return positive on a < b', () => {
+    it('should return negative on a < b', () => {
       const reverseSmaller = severitySort(a, b)
-      expect(reverseSmaller).toBe(1)
+      expect(reverseSmaller).toBe(-1)
     })
 
-    it('should return negative a > b', () => {
+    it('should return positive a > b', () => {
       const reverseGreater = severitySort(b, a)
-      expect(reverseGreater).toBe(-1)
+      expect(reverseGreater).toBe(1)
     })
 
     it('should return 0 with noDataSymbol on a', () => {
@@ -283,18 +240,30 @@ describe('IncidentTable: utils', () => {
   describe('getCategory', () => {
     interface RenderGetCategoryProps {
       code?: string
+      subCategory?: boolean
     }
   
     const RenderGetCategory = (props: RenderGetCategoryProps) => {
-      return <Provider>{GetCategory(props.code as string)}</Provider>
+      return <Provider>
+        {GetCategory(props.code as string, props.subCategory)}
+      </Provider>
     }
   
     it('getCategory: valid codes', async () => {
       incidentCodes.forEach(async (code) => {
         render(<RenderGetCategory code={code}/>)
-        const category = incidentInformation[code].category.defaultMessage
+        const category = incidentInformation[code].category.defaultMessage as string
         await screen.findByText(category)
         expect(screen.getByText(category).textContent).toBe(category)
+      })
+    })
+
+    it('getCategory: valid codes on subCategory', async () => {
+      incidentCodes.forEach(async (code) => {
+        render(<RenderGetCategory code={code} subCategory={true}/>)
+        const subCategory = incidentInformation[code].subCategory.defaultMessage as string
+        await screen.findByText(subCategory)
+        expect(screen.getByText(subCategory).textContent).toBe(subCategory)
       })
     })
   })
@@ -305,7 +274,7 @@ describe('IncidentTable: utils', () => {
     }
   
     it('ShortIncidentDescription: it renders on valid incident', async () => {
-      render(<RenderShortDescription incident={testIncident}/>)
+      render(<RenderShortDescription incident={sampleIncident}/>)
       // eslint-disable-next-line max-len
       const expectedShortDesc = '802.11 Authentication failures are unusually high in Venue: Venue-3-US'
       await screen.findByText(expectedShortDesc)
@@ -319,7 +288,8 @@ describe('IncidentTable: utils', () => {
     }
   
     it('should render GetScope on correct incident', async () => {
-      const { asFragment } = render(<RenderGetScope incident={testIncident}/>)
+      const { asFragment } = 
+        render(<RenderGetScope incident={sampleIncident}/>)
       expect(asFragment()).toMatchSnapshot()
     })
   })
@@ -330,12 +300,12 @@ describe('IncidentTable: utils', () => {
 
     it('should sort smaller date time', () => {
       const smaller = dateSort(startTime, endTime)
-      expect(smaller).toBe(-1)
+      expect(smaller).toBe(1)
     })
 
     it('should sort greater date time', () => {
       const greater = dateSort(endTime, startTime)
-      expect(greater).toBe(1)
+      expect(greater).toBe(-1)
     })
 
     it('should sort 0 date time', () => {
@@ -382,26 +352,5 @@ describe('IncidentTable: utils', () => {
     })
   })
 
-  describe('durationSort', () => {
-    const startTimeLong = '2021-07-15T00:00:00+08:00'
-    const endTimeLong = '2022-08-16T00:00:00+08:00'
-    const startTimeShort = '2022-08-15T00:00:00+08:00'
-    const endTimeShort = '2022-08-16T00:00:00+08:00'
-
-    it('should sort smaller duration', () => {
-      const smaller = durationSort(startTimeShort, endTimeShort, startTimeLong, endTimeLong)
-      expect(smaller).toBe(-1)
-    })
-
-    it('should sort greater duration', () => {
-      const greater = durationSort(startTimeLong, endTimeLong, startTimeShort, endTimeShort)
-      expect(greater).toBe(1)
-    })
-
-    it('should sort 0 duration', () => {
-      const zero = durationSort(startTimeLong, endTimeLong, startTimeLong, endTimeLong)
-      expect(zero).toBe(0)
-    })
-  })
 })
 

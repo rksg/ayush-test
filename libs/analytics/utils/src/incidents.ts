@@ -1,11 +1,13 @@
+import { capitalize }                                           from 'lodash'
 import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
-import { formatter } from '@acx-ui/utils'
+import { intlFormats } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
 
+import type { IncidentInformation } from './incidentInformation'
 import type {
   IncidentSeverities,
   SeverityRange,
@@ -13,6 +15,17 @@ import type {
   NodeType,
   Incident
 } from './types/incidents'
+
+/**
+ * Uses to transform incident record loaded from API and
+ * adds incident infomation into it
+ */
+export function transformIncidentQueryResult (
+  incident: Omit<Incident, keyof IncidentInformation>
+): Incident {
+  const info = incidentInformation[incident.code]
+  return { ...incident, ...info }
+}
 
 export function calculateSeverity (severity: number): IncidentSeverities | void {
   const severityMap = new Map(
@@ -27,7 +40,7 @@ export function calculateSeverity (severity: number): IncidentSeverities | void 
   ) as Map<string, SeverityRange>
 
   for (let [p, filter] of severityMap) {
-    if (severity >= filter.gt) {
+    if (severity > filter.gt) {
       return p as IncidentSeverities
     }
   }
@@ -75,52 +88,13 @@ export function useFormattedNodeType (nodeType: NodeType) {
   return $t(nodeTypes(nodeType))
 }
 
-export function useImpactValues (type: string, count?: number, impactedCount?: number): 
-  Record<string, unknown> {
-  const intl = useIntl()
-  if (typeof count !== 'number' || typeof impactedCount != 'number') {
-    return {
-      [`${type}Impact`]: null,
-      [`${type}ImpactFormatted`]: '',
-      [`${type}ImpactCountFormatted`]: '',
-      [`${type}ImpactDescription`]: intl.$t(defineMessage({ defaultMessage: 'Calculating...' }))
-    }
-  } else if (count === -1 || impactedCount === -1 || 
-    count === 0 || impactedCount === 0
-  ) {
-    return {
-      [`${type}Impact`]: intl.formatMessage({ defaultMessage: '{noDataSymbol}' }, { noDataSymbol }),
-      [`${type}ImpactFormatted`]: intl.formatMessage(
-        { defaultMessage: '{noDataSymbol}' }, { noDataSymbol }
-      ),
-      [`${type}ImpactCountFormatted`]: intl.formatMessage(
-        { defaultMessage: '{noDataSymbol}' }, { noDataSymbol }
-      ),
-      [`${type}ImpactDescription`]: intl.formatMessage(
-        { defaultMessage: '{noDataSymbol}' }, { noDataSymbol }
-      )
-    }
-  } else {
-    const impact = impactedCount / count
-    const formattedImpact = formatter('percentFormat')(impact)
-
-    return {
-      [`${type}Impact`]: impact,
-      [`${type}ImpactFormatted`]: formattedImpact,
-      [`${type}ImpactCountFormatted`]: formatter('countFormat')(impactedCount),
-      [`${type}ImpactDescription`]: intl.$t(
-        defineMessage({ defaultMessage: '{impactedCount} of {count} {type}{isPlural} ({impact})' }),
-        {
-          impactedCount,
-          count,
-          type: type === 'ap' ? type.toUpperCase() : type,
-          isPlural: count > 1 ? 's' : '',
-          impact: formattedImpact as string
-        }
-      )
-    }
+export const useImpactValues = 
+  <Type extends 'ap' | 'client'> (type: Type, incident: Incident): 
+  Record<string, string | number | null | {}> => {
+    const intl = useIntl()
+    const values = impactValues(intl, type, incident)
+    return values
   }
-}
 
 function formattedNodeName (
   intl: IntlShape,
@@ -152,9 +126,9 @@ export function useFormattedPath (path: PathNode[], sliceValue: string) {
       description: 'FormattedPath: Uses to show path node name & type'
     }, node))
     .reduce((nodeA, nodeB) => intl.$t({
-      defaultMessage: '{nodeA} > {nodeB}',
+      defaultMessage: '{nodeA}{newline}> {nodeB}',
       description: 'FormattedPath: Uses to join path nodes together in a chain'
-    }, { nodeA, nodeB }))
+    }, { nodeA, nodeB, newline: '\n' }))
 }
 
 export function useImpactedArea (path: PathNode[], sliceValue: string) {
@@ -168,46 +142,74 @@ export function useImpactedArea (path: PathNode[], sliceValue: string) {
 
 export const useIncidentScope = (incident: Incident) => {
   const { $t } = useIntl()
-
-  return $t({
+  const scope = $t({
     defaultMessage: '{nodeType}: {nodeName}',
     description: 'Uses to generate incident impacted scope for various incident descriptions'
   }, {
     nodeType: useFormattedNodeType(incident.sliceType),
     nodeName: useImpactedArea(incident.path, incident.sliceValue)
   })
+  return scope
 }
 
 export const useShortDescription = (incident: Incident) => {
   const { $t } = useIntl()
   const scope = useIncidentScope(incident)
-
-  const { shortDescription } = incidentInformation[incident.code]
-  
-  return $t(shortDescription, { scope })
+  return $t(incident.shortDescription, { scope })
 }
 
-export const useLongDescription = (incident: Incident, rootCauses: string[]) => {
-  const { $t } = useIntl()
-  const shortDesc = useShortDescription(incident)
-  const scope = useIncidentScope(incident)
-  const { metadata, clientCount, impactedClientCount } = incident
-  const { clientImpact, clientImpactFormatted } = 
-    useImpactValues('client', clientCount, impactedClientCount)
-  const { dominant } = metadata 
-  
-  if (clientImpact === null) {
-    return shortDesc
-  } else {
-    const incidentInfo = incidentInformation[incident.code]
-    const wlanInfo = (dominant && dominant.ssid) 
-      ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
-      : ''
-
-    return [
-      $t(incidentInfo.longDescription, { scope, impact: clientImpactFormatted as string }),
-      wlanInfo,
-      $t(defineMessage({ defaultMessage: 'Root cause: {rootCauses}' }), { rootCauses })
-    ].filter(Boolean).join('\n\n')
+export const impactValues = <Type extends 'ap' | 'client'> (
+  { $t }: IntlShape,
+  type: Type,
+  incident: Incident
+): (
+  Record<`${Type}ImpactRatio`, '-' | number | null> &
+  Record<
+    `${Type}ImpactRatioFormatted` | `${Type}ImpactCountFormatted` | `${Type}ImpactDescription`,
+    string
+  >
+) => {
+  const total = incident[`${type}Count` as const]
+  const count = incident[
+    `impacted${capitalize(type)}Count` as `impacted${Capitalize<typeof type>}Count`
+  ]
+  if (total === null || count === null) {
+    return {
+      [`${type}ImpactRatio`]: null,
+      [`${type}ImpactRatioFormatted`]: '',
+      [`${type}ImpactCountFormatted`]: '',
+      [`${type}ImpactDescription`]: $t({ defaultMessage: 'Calculating...' })
+    } as ReturnType<typeof impactValues>
   }
+
+  if ([total, count].some(value => [0, -1].includes(value!))) {
+    return {
+      [`${type}ImpactRatio`]: noDataSymbol,
+      [`${type}ImpactRatioFormatted`]: noDataSymbol,
+      [`${type}ImpactCountFormatted`]: noDataSymbol,
+      [`${type}ImpactDescription`]: noDataSymbol
+    } as ReturnType<typeof impactValues>
+  }
+
+  const ratio = count! / total!
+  const formattedRatio = $t(intlFormats.percentFormat, { value: ratio })
+  const formattedTotal = $t(intlFormats.countFormat, { value: total })
+  const formattedCount = $t(intlFormats.countFormat, { value: count })
+  const formattedType = $t({
+    defaultMessage: `{type, select,
+      ap {{value, plural, one {AP} other {APs}}}
+      client {{value, plural, one {client} other {clients}}}
+      other {Unknown}
+    }`
+  }, { type, value: total })
+
+  return {
+    [`${type}ImpactRatio`]: ratio,
+    [`${type}ImpactRatioFormatted`]: formattedRatio,
+    [`${type}ImpactCountFormatted`]: formattedCount,
+    [`${type}ImpactDescription`]: $t({
+      defaultMessage: '{formattedCount} of {formattedTotal} {formattedType} ({formattedRatio})',
+      description: 'E.g. 1 of 10 clients (10%)'
+    }, { formattedCount, formattedTotal, formattedType, formattedRatio })
+  } as ReturnType<typeof impactValues>
 }
