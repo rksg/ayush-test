@@ -11,7 +11,9 @@ import {
 } from '@acx-ui/rc/utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = {
+    enableAccountingService: data.enableAccountingService
+  }
 
   if (data.isCloudpathEnabled) {
     delete data?.accountingRadius
@@ -56,6 +58,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
       ...saveData,
       ...{
         enableAuthProxy: data.enableAuthProxy,
+        enableSecondaryAuthServer: data.enableSecondaryAuthServer,
         authRadius
       }
     }
@@ -93,6 +96,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
         ...saveData,
         ...{
           enableAccountingProxy: data.enableAccountingProxy,
+          enableSecondaryAcctServer: data.enableSecondaryAcctServer,
           accountingRadius
         }
       }
@@ -117,16 +121,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
 }
 
 const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = { ...data }
 
-  if (data.cloudpathServerId) {
-    saveData = {
-      ...saveData,
-      ...{
-        cloudpathServerId: data.cloudpathServerId
-      }
-    }
-  }
   saveData = {
     ...saveData,
     ...{
@@ -142,7 +138,7 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
 }
 
 const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = { ...data }
 
   saveData = {
     wlan: {
@@ -150,11 +146,6 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
       enable: true,
       vlanId: 1,
       advancedCustomization: new DpskWlanAdvancedCustomization()
-    },
-    dpskPassphraseGeneration: {
-      length: data.passphraseLength,
-      format: data.passphraseFormat,
-      expiration: data.expiration
     }
   }
 
@@ -169,7 +160,9 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
 }
 
 const parsePskSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = {
+    enableAccountingService: data.enableAccountingService
+  }
   if (data.wlan?.macAddressAuthentication) {
     let authRadius = {
       primary: {

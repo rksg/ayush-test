@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
 
 
 import {
@@ -22,6 +22,7 @@ import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkTyp
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram }    from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext    from '../NetworkFormContext'
 import { FieldExtraTooltip } from '../styledComponents'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
@@ -31,6 +32,19 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function DpskSettingsForm () {
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  useEffect(()=>{
+    if(data){
+      form.setFieldsValue({
+        isCloudpathEnabled: data.cloudpathServerId !== undefined,
+        passphraseFormat: data?.dpskPassphraseGeneration?.format,
+        passphraseLength: data?.dpskPassphraseGeneration?.length,
+        expiration: data?.dpskPassphraseGeneration?.expiration,
+        dpskWlanSecurity: data?.wlan?.wlanSecurity
+      })
+    }
+  }, [data])
   const selectedId = useWatch('cloudpathServerId')
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -56,6 +70,7 @@ export function DpskSettingsForm () {
 }
 
 function SettingsForm () {
+  const { editMode } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [
     isCloudpathEnabled
@@ -86,10 +101,10 @@ function SettingsForm () {
         >
           <Radio.Group>
             <Space direction='vertical'>
-              <Radio value={false}>
+              <Radio value={false} disabled={editMode}>
                 { $t({ defaultMessage: 'Use the DPSK Service' }) }
               </Radio>
-              <Radio value={true}>
+              <Radio value={true} disabled={editMode}>
                 { $t({ defaultMessage: 'Use Cloudpath Server' }) }
               </Radio>
             </Space>
