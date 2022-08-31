@@ -186,6 +186,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
     saveData = {
       ...saveData,
       ...{
+        enableSecondaryAuthServer: data.enableSecondaryAuthServer,
         authRadius
       }
     }
@@ -219,6 +220,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
       saveData = {
         ...saveData,
         ...{
+          enableSecondaryAcctServer: data.enableSecondaryAcctServer,
           accountingRadius
         }
       }
