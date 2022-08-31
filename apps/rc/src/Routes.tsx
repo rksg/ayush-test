@@ -5,7 +5,7 @@ import { Provider }          from '@acx-ui/store'
 import { NetworkDetails } from './pages/NetworkDetails/NetworkDetails'
 import { NetworkForm }    from './pages/NetworkForm/NetworkForm'
 import { NetworksTable }  from './pages/NetworksTable'
-import { DHCPForm }       from './pages/services/DHCP/DHCPForm'
+import { DHCPForm }       from './pages/services/DHCPForm/DHCPForm'
 import { ServicesTable }  from './pages/services/ServicesTable'
 
 export default function RcRoutes () {

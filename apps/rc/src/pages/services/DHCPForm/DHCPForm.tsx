@@ -74,6 +74,18 @@ export function DHCPForm () {
     }
   }
 
+  const handleEditDHCP = async () => {
+    try {
+      // await updateDHCP({ params, payload: saveState }).unwrap()
+      // navigate(linkToServices, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: 'An error occurred'
+      })
+    }
+  }
+
   return (
     <>
       <PageHeader
@@ -92,7 +104,7 @@ export function DHCPForm () {
           formRef={formRef}
           editMode={editMode}
           onCancel={() => navigate(linkToServices)}
-          onFinish={editMode ? handleAddDHCP : handleAddDHCP}
+          onFinish={editMode ? handleEditDHCP : handleAddDHCP}
         >
           <StepsForm.StepForm
             name='settings'
