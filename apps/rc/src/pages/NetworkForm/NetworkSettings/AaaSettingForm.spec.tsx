@@ -101,7 +101,7 @@ describe('NetworkForm', () => {
     fireEvent.change(secondaryIpTextbox, { target: { value: '192.168.2.2' } })
 
     const secondaryPortTextbox = screen.getAllByLabelText('Port')[1]
-    fireEvent.change(secondaryPortTextbox, { target: { value: '2222' } })
+    fireEvent.change(secondaryPortTextbox, { target: { value: 2222 } })
 
     const secondarySecretTextbox = screen.getAllByLabelText('Shared secret')[1]
     fireEvent.change(secondarySecretTextbox, { target: { value: 'secret-2' } })

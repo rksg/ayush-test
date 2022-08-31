@@ -58,6 +58,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
       ...saveData,
       ...{
         enableAuthProxy: data.enableAuthProxy,
+        enableSecondaryAuthServer: data.enableSecondaryAuthServer,
         authRadius
       }
     }
@@ -95,6 +96,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
         ...saveData,
         ...{
           enableAccountingProxy: data.enableAccountingProxy,
+          enableSecondaryAcctServer: data.enableSecondaryAcctServer,
           accountingRadius
         }
       }
