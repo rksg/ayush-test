@@ -10,8 +10,9 @@ import {
   NoData,
   SparklineChart,
   ContentSwitcher,
-  ContentSwitcherProps } from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+  ContentSwitcherProps
+} from '@acx-ui/components'
+import { formatter, intlFormats } from '@acx-ui/utils'
 
 import { useTrafficByApplicationQuery, TrafficByApplicationData } from './services'
 import { TrafficPercent }                                         from './styledComponents'
@@ -69,7 +70,7 @@ export default function TrafficByApplicationWidget ({
         ...item,
         traffic: <>{formatter('bytesFormat')(item.applicationTraffic)} &nbsp;
           <TrafficPercent>
-          ({formatter('percentFormatRound')(item.applicationTraffic/overallTrafic)})
+            ({$t(intlFormats.percentFormatRound, { value: item.applicationTraffic/overallTrafic })})
           </TrafficPercent>
         </>,
         trafficHistory: <SparklineChart
