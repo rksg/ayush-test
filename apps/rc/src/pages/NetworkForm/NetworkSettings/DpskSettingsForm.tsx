@@ -110,7 +110,8 @@ function SettingsForm () {
         </Form.Item>
       </div>
       <div>
-        {isCloudpathEnabled ? <CloudpathServerForm /> : <PassphraseGeneration />}
+        {isCloudpathEnabled ? <><CloudpathServerForm /><PassphraseGeneration /></> :
+          <PassphraseGeneration />}
         { /*TODO: <div><Button type='link'>Show more settings</Button></div> */ }
       </div>
     </Space>
@@ -118,6 +119,11 @@ function SettingsForm () {
 }
 
 function PassphraseGeneration () {
+  const [
+    isCloudpathEnabled
+  ] = [
+    useWatch('isCloudpathEnabled')
+  ]
   const intl = useIntl()
   const $t = intl.$t
   const [state, updateState] = useState<NetworkSaveData>({
@@ -157,7 +163,7 @@ function PassphraseGeneration () {
   }
 
   return (
-    <>
+    <div style={{ display: isCloudpathEnabled ? 'none' : 'block' }}>
       <Subtitle level={3}>{ $t({ defaultMessage: 'Passphrase Generation Parameters' }) }</Subtitle>
       <Row align='middle' gutter={8}>
         <Col span={23}>
@@ -228,6 +234,6 @@ function PassphraseGeneration () {
           {expirationOptions}
         </Select>
       </Form.Item>
-    </>
+    </div>
   )
 }
