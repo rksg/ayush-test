@@ -43,7 +43,7 @@ export function SettingForm () {
   const types = [
     { type: DHCPConfigTypeEnum.SIMPLE },
     { type: DHCPConfigTypeEnum.MULTIPLE },
-    { type: DHCPConfigTypeEnum.Hierarchical }
+    { type: DHCPConfigTypeEnum.HIERARCHICAL }
   ]
 
   return (

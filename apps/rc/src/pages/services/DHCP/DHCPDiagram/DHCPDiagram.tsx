@@ -6,10 +6,10 @@ import {
 
 
 //FIXME: replace these picture when UX ready
-import DpskDiagram    from '../../../../assets/images/network-wizard-diagrams/dpsk.png'
-import DefaultDiagram from '../../../../assets/images/network-wizard-diagrams/open-cloudpath-on-prem-deployment.png'
-import OpenDiagram    from '../../../../assets/images/network-wizard-diagrams/open.png'
-import { Diagram }    from '../styledComponents'
+import SimpleDiagram       from '../../../../assets/images/network-wizard-diagrams/dpsk.png'
+import HierarchicalDiagram from '../../../../assets/images/network-wizard-diagrams/open-cloudpath-on-prem-deployment.png'
+import MultipleDiagram     from '../../../../assets/images/network-wizard-diagrams/open.png'
+import { Diagram }         from '../styledComponents'
 
 
 interface DHCPDiagramProps {
@@ -20,16 +20,16 @@ function getDiagram (props: DHCPConfigTypeEnum | undefined) {
   let diagram = null
   switch (props) {
     case DHCPConfigTypeEnum.SIMPLE:
-      diagram = OpenDiagram
+      diagram = SimpleDiagram
       break
     case DHCPConfigTypeEnum.MULTIPLE:
-      diagram = DpskDiagram
+      diagram = MultipleDiagram
       break
     case DHCPConfigTypeEnum.Hierarchical:
-      diagram = OpenDiagram
+      diagram = HierarchicalDiagram
       break
     default:
-      diagram = DefaultDiagram
+      diagram = SimpleDiagram
   }
 
   return diagram

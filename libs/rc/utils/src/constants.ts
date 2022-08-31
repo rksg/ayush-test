@@ -124,5 +124,5 @@ export enum ServiceAdminState {
 export enum DHCPConfigTypeEnum {
   SIMPLE = 'SIMPLE',
   MULTIPLE = 'MULTIPLE',
-  Hierarchical = 'HIERARCHICAL'
+  HIERARCHICAL = 'HIERARCHICAL'
 }
