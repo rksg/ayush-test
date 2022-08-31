@@ -70,7 +70,7 @@ export function DpskSettingsForm () {
 }
 
 function SettingsForm () {
-  const { editMode, data } = useContext(NetworkFormContext)
+  const { editMode } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [
     isCloudpathEnabled
