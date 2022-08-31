@@ -3,7 +3,7 @@
 exports[`IncidentTable: utils GetScope should render GetScope on correct incident 1`] = `
 <DocumentFragment>
   <span>
-    Venue: Venue-3-US
+    Venue-3-US
   </span>
 </DocumentFragment>
 `;

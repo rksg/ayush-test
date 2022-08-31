@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
-import { Incident, noDataSymbol, getRootCauseAndRecommendations, useShortDescription, IncidentFilter, nodeTypes } from '@acx-ui/analytics/utils'
-import { Loader, Table, TableProps, Drawer }                                                                      from '@acx-ui/components'
-import { Link }                                                                                                   from '@acx-ui/react-router-dom'
+import { Incident, noDataSymbol, IncidentFilter, nodeTypes, getRootCauseAndRecommendations, useShortDescription } from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, Drawer }                                                                      from '@acx-ui/components'
+import { TenantLink }                                                                                             from '@acx-ui/react-router-dom'
 import { useTenantLink }                                                                                          from '@acx-ui/react-router-dom'
 import { formatter }                                                                                              from '@acx-ui/utils'
 
@@ -86,8 +86,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         multiple: 1
       },
       defaultSortOrder: 'descend',
-      fixed: 'left',
-      sortDirections: ['ascend', 'descend', 'ascend']
+      fixed: 'left'
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Date' })),
@@ -96,10 +95,10 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       valueType: 'dateTime',
       key: 'endTime',
       render: (_, value) => {
-        return <Link to={`${basePath.pathname}/${value.id}`}>
+        return <TenantLink to={`${basePath.pathname}/${value.id}`}>
           <FormatDate datetimestamp={value.endTime} />
-        </Link>
-      }, 
+        </TenantLink>
+      },
       sorter: {
         compare: (a, b) => dateSort(a.endTime, b.endTime),
         multiple: 2
@@ -228,7 +227,8 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
-        indentSize={0}
+        scroll={{ y: 'max-content' }}
+        indentSize={6}
       />
       {drawerProps.incident && 
       <Drawer

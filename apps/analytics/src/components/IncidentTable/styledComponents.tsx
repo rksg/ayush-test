@@ -72,10 +72,6 @@ export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => prop
   font-weight: var(--acx-body-font-weight-bold);
 `
 
-export const DateSpan = styled.span`
-  font-weight: var(--acx-body-font-weight-bold);
-`
-
 export const UnstyledLink = styled(Link)`
   color: inherit;
   text-decoration: inherit;

@@ -133,8 +133,7 @@ export function useFormattedPath (path: PathNode[], sliceValue: string) {
 
 export function useImpactedArea (path: PathNode[], sliceValue: string) {
   const intl = useIntl()
-  const lastNode = 
-    (path && path.length > 0 && path[path.length - 1]) ? path[path.length - 1] : false
+  const lastNode = path[path.length - 1]
   return lastNode
     ? formattedNodeName(intl, lastNode, sliceValue)
     : sliceValue

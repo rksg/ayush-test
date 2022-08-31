@@ -1,8 +1,7 @@
-import moment from 'moment-timezone'
+import moment         from 'moment-timezone'
 import {
   FormattedMessage, 
-  MessageDescriptor,
-  useIntl
+  MessageDescriptor
 } from 'react-intl'
 
 import { 
@@ -10,7 +9,6 @@ import {
   Incident,
   incidentInformation,
   noDataSymbol,
-  useFormattedNodeType,
   useImpactedArea,
   useImpactValues,
   useShortDescription
@@ -46,7 +44,7 @@ export const FormatDate = (props: FormatDateProps) => {
   const formattedDatetime = formatter('dateTimeFormat')(datetimestamp)
   if (formattedDatetime === null) return <span>{noDataSymbol}</span>
   const timeStamp = formattedDatetime as string
-  return <UI.DateSpan>{timeStamp}</UI.DateSpan>
+  return <span>{timeStamp}</span>
 }
 
 export interface FormatIntlStringProps {
@@ -104,15 +102,8 @@ export const GetCategory = (code: string, subCategory?: boolean) => {
 }
 
 export const GetScope = (props: IncidentTableComponentProps) => {
-  const { $t } = useIntl()
   const { incident } = props
-  const scope = $t({
-    defaultMessage: '{nodeType}: {nodeName}',
-    description: 'Uses to generate incident impacted scope for various incident descriptions'
-  }, {
-    nodeType: useFormattedNodeType(incident.sliceType),
-    nodeName: useImpactedArea(incident.path, incident.sliceValue)
-  })
+  const scope = useImpactedArea(incident.path, incident.sliceValue)
   return <span>{scope}</span>
 }
 
