@@ -5,17 +5,17 @@
  */
 
 export class X509Certificate {
-  certData: string;
+  certData: string
 
-  isRootCert?: boolean;
+  isRootCert?: boolean
 
-  fileName: string;
+  fileName: string
 
-  constructor() {
-    this.certData = '';
+  constructor () {
+    this.certData = ''
 
-    this.isRootCert = false;
+    this.isRootCert = false
 
-    this.fileName = '';
+    this.fileName = ''
   }
 }
