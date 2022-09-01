@@ -73,10 +73,8 @@ export function NetworkForm () {
     if(data){
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
-      if(cloneMode){
-        formRef?.current?.setFieldsValue({
-          name: formRef?.current?.getFieldValue('name') + ' - copy'
-        })
+      if (cloneMode) {
+        formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
       }
       updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
     }
