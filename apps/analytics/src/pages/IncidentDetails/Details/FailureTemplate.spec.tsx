@@ -4,6 +4,9 @@ import { mockAutoSizer, render, screen } from '@acx-ui/test-utils'
 
 import { IncidentDetailsTemplate } from './FailureTemplate'
 
+jest.mock('../NetworkImpact', () => ({
+  NetworkImpact: () => <div data-testid='networkImpact' />
+}))
 jest.mock('../IncidentDetails/IncidentAttributes', () => ({
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
 }))

@@ -8,6 +8,7 @@ import { useNavigate, useParams, useTenantLink }        from '@acx-ui/react-rout
 
 import Header                   from '../../components/Header'
 import IncidentBySeverityWidget from '../../components/IncidentBySeverity'
+import IncidentTableWidget      from '../../components/IncidentTable'
 import NetworkHistoryWidget     from '../../components/NetworkHistory'
 
 const incidentTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
@@ -44,10 +45,12 @@ const IncidentTabContent = (props: { tabSelection: IncidentListTabs }) => {
         <NetworkHistoryWidget
           hideTitle
           filters={{ ...filters, code: incidentCodesBasedOnCategory }}
-          bordered={false}
+          type='no-border'
         />
       </GridCol>
-      <GridCol col={{ span: 24 }}>table</GridCol>
+      <GridCol col={{ span: 24 }}>
+        <IncidentTableWidget filters={{ ...filters, code: incidentCodesBasedOnCategory }} />
+      </GridCol>
     </GridRow>
   )
 }

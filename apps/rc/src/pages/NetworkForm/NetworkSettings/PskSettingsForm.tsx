@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-
+import React, { useContext, useEffect, useState } from 'react'
 
 import {
   QuestionCircleOutlined,
@@ -43,12 +42,37 @@ import { useParams } from '@acx-ui/react-router-dom'
 import { IpPortSecretForm } from '../../../components/IpPortSecretForm'
 import { ToggleButton }     from '../../../components/ToggleButton'
 import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext   from '../NetworkFormContext'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
 export function PskSettingsForm () {
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  useEffect(()=>{
+    if(data){
+      form.setFieldsValue({
+        wlan: {
+          passphrase: data.wlan?.passphrase,
+          wepHexKey: data.wlan?.wepHexKey,
+          saePassphrase: data.wlan?.saePassphrase,
+          wlanSecurity: data.wlan?.wlanSecurity,
+          managementFrameProtection: data.wlan?.managementFrameProtection,
+          macAddressAuthentication: data.wlan?.macAddressAuthentication,
+          macAuthMacFormat: data.wlan?.macAuthMacFormat
+        },
+        enableAuthProxy: data.enableAuthProxy,
+        enableAccountingProxy: data.enableAccountingProxy,
+        enableAccountingService: data.accountingRadius !== undefined,
+        enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
+        enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
+        authRadius: data.authRadius,
+        accountingRadius: data.accountingRadius
+      })
+    }
+  }, [data])
   const [
     selectedId,
     macAddressAuthentication
@@ -114,6 +138,7 @@ function AaaButtons () {
 }
 
 function SettingsForm () {
+  const { editMode } = useContext(NetworkFormContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
   const [
@@ -268,7 +293,7 @@ function SettingsForm () {
         <Form.Item>
           <Form.Item>
             <Form.Item noStyle name={['wlan', 'macAddressAuthentication']} valuePropName='checked'>
-              <Switch />
+              <Switch disabled={editMode} />
             </Form.Item>
             <span>{intl.$t({ defaultMessage: 'Use MAC Auth' })}</span>
             <Tooltip title={WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP} placement='bottom'>

@@ -23,7 +23,7 @@ export function DpskSummaryForm (props: {
               children={transformDpskNetwork(
                 intl,
                 DpskNetworkType.FORMAT,
-                summaryData.passphraseFormat
+                summaryData.dpskPassphraseGeneration?.format
               )}
             />
             <Form.Item
@@ -31,7 +31,7 @@ export function DpskSummaryForm (props: {
               children={transformDpskNetwork(
                 intl,
                 DpskNetworkType.LENGTH,
-                summaryData.passphraseLength
+                summaryData.dpskPassphraseGeneration?.length
               )}
             />
             <Form.Item
@@ -39,7 +39,7 @@ export function DpskSummaryForm (props: {
               children={transformDpskNetwork(
                 intl,
                 DpskNetworkType.EXPIRATION,
-                summaryData.expiration
+                summaryData.dpskPassphraseGeneration?.expiration
               )}
             />
           </>

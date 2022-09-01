@@ -3,7 +3,7 @@ import { useIntl }          from 'react-intl'
 
 import { renderHook } from '@acx-ui/test-utils'
 
-import { fakeIncident } from './fakeIncident'
+import { fakeIncident, fakeIncident1 } from './fakeIncident'
 import {
   calculateSeverity,
   impactValues,
@@ -11,6 +11,7 @@ import {
   useFormattedNodeType,
   useFormattedPath,
   useImpactedArea,
+  useImpactValues,
   useShortDescription
 } from './incidents'
 
@@ -129,6 +130,21 @@ describe('useImpactedArea', () => {
     const emptyPath = [] as PathNode[]
     const sliceValue = 'AP'
     expect(renderImpactedArea(emptyPath, sliceValue)).toEqual(sliceValue)
+  })
+
+
+  describe('useImpactValues', () => {
+
+    const renderImpactValues: typeof useImpactValues = 
+    (type: 'ap' | 'client', incident: Incident) => 
+      renderHook(() => useImpactValues(type, incident)).result.current
+
+    it('returns object for invalid count & impactArea', () => {
+      expect(renderImpactValues('client', fakeIncident1)).toMatchObject({
+        clientImpactDescription: '5 of 27 clients (18.52%)'
+      })
+    })
+
   })
 })
 
