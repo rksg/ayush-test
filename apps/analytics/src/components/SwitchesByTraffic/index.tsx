@@ -71,7 +71,7 @@ function SwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
       <Card title={$t({ defaultMessage: 'Top 5 Switches by Traffic' })} >
         <AutoSizer>
           {({ height, width }) => (
-            data && data.source?.length > 0 
+            data && data.source?.length
               ?
               <BarChart
                 barColors={barColors}
