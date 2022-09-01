@@ -62,6 +62,12 @@ export function NetworkForm () {
   })
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
+    if(saveData.isCloudpathEnabled){
+      delete saveState.authRadius
+      delete saveState.accountingRadius
+    }else{
+      delete saveState.cloudpathServerId
+    }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })

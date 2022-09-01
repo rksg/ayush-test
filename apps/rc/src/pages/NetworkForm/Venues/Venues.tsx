@@ -156,9 +156,7 @@ export function Venues () {
         const selected: Venue[] = []
         const tableData = tableQuery.data.data.map((item: Venue) =>
         {
-          if(cloneMode){
-            delete item.networkId
-          }
+          item = cloneMode ? _.omit(item, 'networkId') : item
           const isActivated = venues &&
             venues.filter((venue: Venue) => venue.venueId === item.id).length > 0
           if(isActivated){

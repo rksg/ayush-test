@@ -12,7 +12,8 @@ import {
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {
-    enableAccountingService: data.enableAccountingService
+    enableAccountingService: data.enableAccountingService,
+    isCloudpathEnabled: data.isCloudpathEnabled
   }
 
   if (data.isCloudpathEnabled) {

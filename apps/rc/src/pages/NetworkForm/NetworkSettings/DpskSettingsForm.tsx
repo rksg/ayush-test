@@ -68,7 +68,7 @@ export function DpskSettingsForm () {
 }
 
 function SettingsForm () {
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [
     isCloudpathEnabled
@@ -83,8 +83,7 @@ function SettingsForm () {
         <Form.Item
           label={$t({ defaultMessage: 'Security Protocol' })}
           name='dpskWlanSecurity'
-          initialValue={(editMode || cloneMode) ?
-            data?.wlan?.wlanSecurity : WlanSecurityEnum.WPA2Personal}
+          initialValue={WlanSecurityEnum.WPA2Personal}
         >
           <Select>
             <Option value={WlanSecurityEnum.WPA2Personal}>
