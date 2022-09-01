@@ -51,8 +51,8 @@ export function DHCPForm () {
     name: '',
     tags: [],
     dhcpConfig: DHCPConfigTypeEnum.SIMPLE,
-    venues: []
-    // dhcpPools: DHCPConfigTypeEnum[];
+    venues: [],
+    dhcpPools: []
   })
 
   const updateSaveData = (saveData: Partial<DHCPSaveData>) => {
