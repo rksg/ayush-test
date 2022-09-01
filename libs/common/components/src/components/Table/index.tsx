@@ -172,15 +172,8 @@ function Table <RecordType extends object & { children?: RecordType[] }> (
     return filteredValue && filteredValue.length
   })
   const searchables = columns.filter(column => column.searchable)
-
-  const explodedData = (dataSource) && dataSource
-    .filter(row => row.children)
-    .flatMap(child => child)
-
-  const spreadHelper = (val: RecordType[] | undefined) => (val) ? val : []
   
-  let filteredData = (dataSource) 
-  && Array.from(new Set([...spreadHelper(explodedData), ...dataSource])).filter(row => {
+  let filteredData = (dataSource) && dataSource.filter(row => {
     for (const column of activeFilters) {
       const key = (column.dataIndex ?? column.key) as keyof RecordType
       const filteredValue = filterValues[key as keyof FilterValue]
@@ -191,10 +184,24 @@ function Table <RecordType extends object & { children?: RecordType[] }> (
     if (searchValue) {
       return searchables.some(column => {
         const key = (column.dataIndex ?? column.key) as keyof RecordType
+        const { children } = row
+
+        if (children && children.length > 0) {
+          for (let i = 0; i < children.length; i++) {
+            const childMatch = (children[i][key] as unknown as string)
+              .toString()
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
+            
+            if (childMatch) return true
+          }
+        }
+
         return (row[key] as unknown as string)
           .toString()
           .toLowerCase()
           .includes(searchValue.toLowerCase())
+        
       })
     }
     return true
