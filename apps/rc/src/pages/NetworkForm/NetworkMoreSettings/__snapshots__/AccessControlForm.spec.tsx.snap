@@ -9,14 +9,13 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
       style="margin-bottom: 30px;"
     >
       <span
-        style="display: grid; grid-template-columns: 220px 130px auto; margin-top: 20px;"
+        style="display: grid; grid-template-columns: 220px 130px auto; align-items: baseline; margin: 20px 0px;"
       >
-        <h3
-          class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-          style="line-height: 32px; font-weight: 600;"
+        <h4
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1vnv53e-6 fPbHyn bixyod"
         >
           Access Control
-        </h3>
+        </h4>
         <span>
           <button
             class="ant-btn ant-btn-link"
