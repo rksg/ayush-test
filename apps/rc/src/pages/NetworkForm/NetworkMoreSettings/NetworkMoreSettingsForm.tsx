@@ -5,6 +5,7 @@ import {
   Collapse,
   Form,
   Input,
+  InputNumber,
   Select,
   Switch
 } from 'antd'
@@ -133,7 +134,7 @@ export function NetworkMoreSettingsForm (props: {
               label={$t({ defaultMessage: 'VLAN ID' })}
               initialValue={1}
               style={{ marginBottom: '15px' }}
-              children={<Input style={{ width: '66px' }}></Input>}
+              children={<InputNumber style={{ width: '80px' }} />}
             />
 
             {showDynamicWlan &&
@@ -279,7 +280,7 @@ export function NetworkMoreSettingsForm (props: {
           label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
           initialValue={120}
           style={{ marginBottom: '15px' }}
-          children={<Input style={{ width: '150px' }}></Input>}
+          children={<InputNumber style={{ width: '150px' }} />}
         />
 
         <Form.Item
@@ -289,7 +290,7 @@ export function NetworkMoreSettingsForm (props: {
           style={{ marginBottom: '15px', width: '300px' }}
           extra={$t({ defaultMessage: `Per radio client count at which an AP will stop
           converting group addressed data traffic to unicast` })}
-          children={<Input style={{ width: '150px' }}></Input>}
+          children={<InputNumber style={{ width: '150px' }} />}
         />
 
 
