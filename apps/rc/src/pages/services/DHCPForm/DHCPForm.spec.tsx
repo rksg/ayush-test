@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
@@ -57,23 +58,21 @@ describe('DHCPForm', () => {
     )
 
     const insertInput = screen.getByLabelText('Service Name')
-    fireEvent.change(insertInput, { target: { value: 'create DHCP test' } })
+    fireEvent.change(insertInput, { target: { value: 'DHCPTest' } })
     fireEvent.blur(insertInput)
 
 
     const tagTextbox = screen.getByLabelText('Tags')
     fireEvent.change(tagTextbox, { target: { value: 'test_tags' } })
     fireEvent.blur(tagTextbox)
-
     fireEvent.click(screen.getByRole('radio', { name: /Simple DHCP/ }))
     fireEvent.click(screen.getByText('Next'))
 
-    // await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    // fireEvent.click(screen.getByText('Next'))
+    await screen.findByRole('heading', { level: 3, name: 'Venues' })
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-    // await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    // fireEvent.click(screen.getByText('Finish'))
-
+    await screen.findByRole('heading', { level: 3, name: 'Summary' })
+    fireEvent.click(screen.getByText('Finish'))
 
   })
 })

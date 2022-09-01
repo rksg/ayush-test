@@ -247,7 +247,7 @@ export function Venues () {
   return (
     <>
       <StepsForm.Title>{ $t({ defaultMessage: 'Venues' }) }</StepsForm.Title>
-      <p>{ $t({ defaultMessage: 'Select venues to activate this network' }) }</p>
+      <p>{ $t({ defaultMessage: 'Select venues to activate this DHCP service' }) }</p>
       <Form.Item name='venues'>
         <Loader states={[tableQuery]}>
           <Table

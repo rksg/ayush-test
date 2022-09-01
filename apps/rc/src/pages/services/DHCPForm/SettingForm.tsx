@@ -21,24 +21,24 @@ export function SettingForm () {
 
   // const { editMode } = useContext(DHCPFormContext)
 
-  const networkListPayload = {
-    searchString: '',
-    fields: ['name', 'id'],
-    searchTargetFields: ['name'],
-    filters: {},
-    pageSize: 10000
-  }
+  // const dhcpListPayload = {
+  //   searchString: '',
+  //   fields: ['name', 'id'],
+  //   searchTargetFields: ['name'],
+  //   filters: {},
+  //   pageSize: 10000
+  // }
   const [getNetworkList] = useLazyNetworkListQuery()
   const params = useParams()
 
-  const nameValidator = async (value: string) => {
-    const payload = { ...networkListPayload, searchString: value }
+  // const nameValidator = async (value: string) => {
+  //   const payload = { ...networkListPayload, searchString: value }
 
-    const list = (await getNetworkList({ params, payload }, true).unwrap()).data
-      .filter(n => n.id !== params.networkId)
-      .map(n => n.name)
-    return checkObjectNotExists(intl, list, value, intl.$t({ defaultMessage: 'Network' }))
-  }
+  //   const list = (await getDHCPList({ params, payload }, true).unwrap()).data
+  //     .filter(n => n.id !== params.serviceId)
+  //     .map(n => n.name)
+  //   return checkObjectNotExists(intl, list, value, intl.$t({ defaultMessage: 'Service' }))
+  // }
 
   const types = [
     { type: DHCPConfigTypeEnum.SIMPLE },
@@ -56,8 +56,8 @@ export function SettingForm () {
           rules={[
             { required: true },
             { min: 2 },
-            { max: 32 },
-            { validator: (_, value) => nameValidator(value) }
+            { max: 32 }
+            // { validator: (_, value) => nameValidator(value) }
           ]}
           validateFirst
           hasFeedback
@@ -73,6 +73,7 @@ export function SettingForm () {
           {params?.type === 'wifi' &&
           <Form.Item
             name='dhcpConfig'
+            initialValue={DHCPConfigTypeEnum.SIMPLE}
             label={intl.$t({ defaultMessage: 'DHCP Configuration' })}
             rules={[{ required: true }]}
           >

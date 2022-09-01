@@ -206,110 +206,118 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                   />
                   <div
                     class="ant-row"
+                    style="margin-left: -10px; margin-right: -10px;"
                   >
                     <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5"
+                      class="ant-col ant-col-10"
+                      style="padding-left: 10px; padding-right: 10px;"
                     >
+                      <h3
+                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                      >
+                        Settings
+                      </h3>
                       <div
-                        class="ant-row"
-                        style="margin-left: -10px; margin-right: -10px;"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col ant-col-10"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-row ant-form-item-row"
                         >
-                          <h3
-                            class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                          >
-                            Settings
-                          </h3>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
                           >
-                            <div
-                              class="ant-col ant-form-item-label"
+                            <label
+                              class="ant-form-item-required"
+                              for="settings_name"
+                              title="Service Name"
                             >
-                              <label
-                                class="ant-form-item-required"
-                                for="settings_name"
-                                title="Service Name"
-                              >
-                                Service Name
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  <span
-                                    class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
-                                  >
-                                    <input
-                                      class="ant-input"
-                                      id="settings_name"
-                                      type="text"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-input-suffix"
-                                    />
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
+                              Service Name
+                            </label>
                           </div>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                for="settings_tags"
-                                title="Tags"
-                              >
-                                Tags
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
+                                <span
+                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
                                 >
                                   <input
                                     class="ant-input"
-                                    id="settings_tags"
+                                    id="settings_name"
                                     type="text"
                                     value=""
                                   />
-                                </div>
+                                  <span
+                                    class="ant-input-suffix"
+                                  />
+                                </span>
                               </div>
                             </div>
                           </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="settings_tags"
+                              title="Tags"
+                            >
+                              Tags
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
+                              >
+                                <input
+                                  class="ant-input"
+                                  id="settings_tags"
+                                  type="text"
+                                  value=""
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
                               >
                                 <div
-                                  class="ant-form-item-control-input-content"
+                                  class="ant-form-item"
                                 >
                                   <div
-                                    class="ant-row ant-form-item"
+                                    class="ant-row ant-form-item-row"
                                   >
                                     <div
                                       class="ant-col ant-form-item-label"
@@ -343,12 +351,13 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                 style="margin-bottom: 8px;"
                                               >
                                                 <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                  class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
                                                 >
                                                   <span
-                                                    class="ant-radio"
+                                                    class="ant-radio ant-radio-checked"
                                                   >
                                                     <input
+                                                      checked=""
                                                       class="ant-radio-input"
                                                       type="radio"
                                                       value="SIMPLE"
@@ -360,7 +369,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                   <span>
                                                     Simple DHCP
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-1lsjq0w-2 BdNmN"
+                                                      class="styledComponents__RadioDescription-sc-1sbc60f-2 iAKa-dA"
                                                     >
                                                       Each AP in this venue is running it’s own DHCP server instance. Typically configured when APs are at different sites and roaming is not required
                                                     </div>
@@ -389,7 +398,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                   <span>
                                                     Multiple AP DHCP
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-1lsjq0w-2 BdNmN"
+                                                      class="styledComponents__RadioDescription-sc-1sbc60f-2 iAKa-dA"
                                                     >
                                                       Designated APs in this venue are running the DHCP Server instance. Typically configured when multiple APs are at the same site and roaming across APs is needed
                                                     </div>
@@ -417,7 +426,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                                   <span>
                                                     Hierarchical AP DHCP
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-1lsjq0w-2 BdNmN"
+                                                      class="styledComponents__RadioDescription-sc-1sbc60f-2 iAKa-dA"
                                                     >
                                                       Designated APs in this venue are running the DHCP Server instance. The DHCP server APs connected to the WAN, the rest of APs get their Private IP address from a local IP Pool with VLAN ID 1 from the DHCP Server AP
                                                     </div>
@@ -435,25 +444,65 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                             </div>
                           </div>
                         </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
                         <div
-                          class="ant-col ant-col-14"
-                          style="padding-left: 10px; padding-right: 10px;"
+                          class="ant-row ant-form-item-row"
                         >
                           <div
-                            class="ant-row ant-row-center"
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              for="settings_tags"
+                              title="Set DHCP Pools"
+                            >
+                              Set DHCP Pools
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="styledComponents__Diagram-sc-1lsjq0w-0 dVjLXd"
+                                class="ant-form-item-control-input-content"
                               >
-                                <img
-                                  alt=""
-                                  src="open-cloudpath-on-prem-deployment.png"
-                                />
+                                <button
+                                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                                  id="settings_tags"
+                                  type="button"
+                                >
+                                  <span>
+                                    Add DHCP Pool
+                                  </span>
+                                </button>
                               </div>
                             </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-14"
+                      style="padding-left: 10px; padding-right: 10px;"
+                    >
+                      <div
+                        class="ant-row ant-row-center"
+                      >
+                        <div
+                          class="ant-col"
+                        >
+                          <div
+                            class="styledComponents__Diagram-sc-1sbc60f-0 deIZGM"
+                          >
+                            <img
+                              alt=""
+                              src="dpsk.png"
+                            />
                           </div>
                         </div>
                       </div>
@@ -464,83 +513,32 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
               <div
                 class="ant-pro-steps-form-step"
               >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="venues"
+                <div
+                  style="padding-top: 50px; padding-bottom: 50px; text-align: center;"
                 >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
                   <div
-                    class="ant-row"
+                    aria-busy="true"
+                    aria-live="polite"
+                    class="ant-spin ant-spin-spinning"
                   >
-                    <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5 dOqwQw"
+                    <span
+                      class="ant-spin-dot ant-spin-dot-spin"
                     >
-                      <h3
-                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                      >
-                        Venues
-                      </h3>
-                      <p>
-                        Select venues to activate this network
-                      </p>
-                      <div
-                        class="ant-row ant-form-item"
-                      >
-                        <div
-                          class="ant-col ant-form-item-control"
-                        >
-                          <div
-                            class="ant-form-item-control-input"
-                          >
-                            <div
-                              class="ant-form-item-control-input-content"
-                            >
-                              <div
-                                class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
-                              >
-                                <div
-                                  class="styledComponents__FallbackWrapper-sc-1352uh8-1 cnmeaO"
-                                >
-                                  <span
-                                    aria-label="loader"
-                                    role="img"
-                                  >
-                                    <div
-                                      aria-busy="true"
-                                      aria-live="polite"
-                                      class="ant-spin ant-spin-lg ant-spin-spinning"
-                                    >
-                                      <span
-                                        class="ant-spin-dot ant-spin-dot-spin"
-                                      >
-                                        <i
-                                          class="ant-spin-dot-item"
-                                        />
-                                        <i
-                                          class="ant-spin-dot-item"
-                                        />
-                                        <i
-                                          class="ant-spin-dot-item"
-                                        />
-                                        <i
-                                          class="ant-spin-dot-item"
-                                        />
-                                      </span>
-                                    </div>
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                    </span>
                   </div>
-                </form>
+                </div>
               </div>
               <div
                 class="ant-pro-steps-form-step"
@@ -554,136 +552,144 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                     style="display: none;"
                     type="text"
                   />
+                  <h3
+                    class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                  >
+                    Summary
+                  </h3>
                   <div
                     class="ant-row"
+                    style="margin-left: -10px; margin-right: -10px;"
                   >
                     <div
-                      class="ant-col ant-col-24 styledComponents__FormContainer-sc-1ibvcih-5 dOqwQw"
+                      class="ant-col"
+                      style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
                     >
-                      <h3
-                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                      <h4
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                       >
-                        Summary
-                      </h3>
+                        DHCP Settings
+                      </h4>
                       <div
-                        class="ant-row"
-                        style="margin-left: -10px; margin-right: -10px;"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col"
-                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                          class="ant-row ant-form-item-row"
                         >
-                          <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                          >
-                            DHCP Settings
-                          </h4>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
                           >
-                            <div
-                              class="ant-col ant-form-item-label"
+                            <label
+                              class=""
+                              title="Service Name:"
                             >
-                              <label
-                                class=""
-                                title="Service Name:"
-                              >
-                                Service Name:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                />
-                              </div>
-                            </div>
+                              Service Name:
+                            </label>
                           </div>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="Tags:"
-                              >
-                                Tags:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                />
-                              </div>
+                                class="ant-form-item-control-input-content"
+                              />
                             </div>
                           </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              title="Tags:"
+                            >
+                              Tags:
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-label"
-                            >
-                              <label
-                                class=""
-                                title="DHCP Configuratio:"
-                              >
-                                DHCP Configuratio:
-                              </label>
-                            </div>
-                            <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
+                              title="DHCP Configuratio:"
+                            >
+                              DHCP Configuratio:
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  Simple DHCP
-                                </div>
+                                Simple DHCP
                               </div>
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-divider ant-divider-vertical"
+                      role="separator"
+                      style="height: 300px;"
+                    />
+                    <div
+                      class="ant-col"
+                      style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                    >
+                      <h4
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                      >
+                        Activated in venues
+                      </h4>
+                      <div
+                        class="ant-form-item"
+                      >
                         <div
-                          class="ant-divider ant-divider-vertical"
-                          role="separator"
-                          style="height: 300px;"
-                        />
-                        <div
-                          class="ant-col"
-                          style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                          class="ant-row ant-form-item-row"
                         >
-                          <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                          >
-                            Activated in venues
-                          </h4>
                           <div
-                            class="ant-row ant-form-item"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-col ant-form-item-control"
+                              class="ant-form-item-control-input"
                             >
                               <div
-                                class="ant-form-item-control-input"
+                                class="ant-form-item-control-input-content"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  --
-                                </div>
+                                --
                               </div>
                             </div>
                           </div>

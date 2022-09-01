@@ -13,6 +13,15 @@ describe('DHCPDiagram', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  describe('DHCPDiagram - SIMPLE', () => {
+    const type = DHCPConfigTypeEnum.SIMPLE
+    it('should render SIMPLE diagram successfully', async () => {
+      const { asFragment } = render(<DHCPDiagram type={type} />)
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('dpsk.png')
+      expect(asFragment()).toMatchSnapshot()
+    })
+  })
   describe('DHCPDiagram - MULTIPLE', () => {
     const type = DHCPConfigTypeEnum.MULTIPLE
     it('should render MULTIPLE diagram successfully', async () => {
