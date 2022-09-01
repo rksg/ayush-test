@@ -266,13 +266,18 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
 }
 
 export function transferMoreSettingsToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
-  let saveData = {
+  const advancedCustomization = {
+    ...originalData?.wlan?.advancedCustomization,
+    ...data?.wlan?.advancedCustomization
+  } as OpenWlanAdvancedCustomization | 
+       AAAWlanAdvancedCustomization | 
+       DpskWlanAdvancedCustomization | 
+       PskWlanAdvancedCustomization
+
+  let saveData:NetworkSaveData = {
     wlan: {
       vlanId: data?.wlan?.vlanId ?? originalData?.wlan?.vlanId,
-      advancedCustomization: {
-        ...originalData?.wlan?.advancedCustomization,
-        ...data?.wlan?.advancedCustomization
-      }
+      advancedCustomization
     }
   }
 
