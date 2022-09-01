@@ -239,7 +239,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       />
       {drawerProps.incident && 
       <Drawer
-        title={'Incident Description'}
+        title={$t(defineMessage({ defaultMessage: 'Incident Description' }))}
         visible={drawerProps.visible}
         onClose={onDrawerClose}
         children={
