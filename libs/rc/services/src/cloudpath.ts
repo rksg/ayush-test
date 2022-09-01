@@ -2,11 +2,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
+  CloudpathServer,
   createHttpRequest,
   RequestPayload
 } from '@acx-ui/rc/utils'
-
-import { CloudpathServer } from './types'
 
 export const baseCloudpathApi = createApi({
   baseQuery: fetchBaseQuery(),

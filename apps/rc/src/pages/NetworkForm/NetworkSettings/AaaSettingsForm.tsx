@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import {
   ExclamationCircleFilled,
@@ -8,7 +8,6 @@ import { Space } from 'antd'
 import {
   Col,
   Form,
-  Input,
   Row,
   Select,
   Switch,
@@ -16,24 +15,25 @@ import {
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Button, Subtitle }                       from '@acx-ui/components'
-import { useGetAllUserSettingsQuery, useCloudpathListQuery } from '@acx-ui/rc/services'
 import {
-  Constants,
+  StepsForm,
+  Button,
+  Subtitle
+} from '@acx-ui/components'
+import { useSplitTreatment }     from '@acx-ui/feature-toggle'
+import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import {
   WlanSecurityEnum,
-  getUserSettingsFromDict,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  networkWifiIpRegExp,
-  networkWifiPortRegExp,
-  stringContainSpace
+  NetworkTypeEnum
 } from '@acx-ui/rc/utils'
-import { NetworkTypeEnum, UserSettings } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
+import { useParams } from '@acx-ui/react-router-dom'
 
-
-import * as contents      from '../contentsMap'
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import { IpPortSecretForm } from '../../../components/IpPortSecretForm'
+import { ToggleButton }     from '../../../components/ToggleButton'
+import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext   from '../NetworkFormContext'
 
 import { CloudpathServerForm } from './CloudpathServerForm'
 
@@ -42,6 +42,23 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function AaaSettingsForm () {
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  useEffect(()=>{
+    if(data){
+      form.setFieldsValue({
+        isCloudpathEnabled: data.cloudpathServerId !== undefined,
+        enableAuthProxy: data.enableAuthProxy,
+        enableAccountingProxy: data.enableAccountingProxy,
+        enableAccountingService: data.accountingRadius !== undefined,
+        enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
+        enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
+        authRadius: data.authRadius,
+        accountingRadius: data.accountingRadius,
+        wlanSecurity: data?.wlan?.wlanSecurity
+      })
+    }
+  }, [data])
   const [
     isCloudpathEnabled,
     selectedId,
@@ -116,11 +133,7 @@ function SettingsForm () {
     useWatch('enableSecondaryAcctServer')
   ]
 
-  const { tenantId } = useParams()
-  const userSetting = useGetAllUserSettingsQuery({ params: { tenantId } })
-  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
-    Constants.triRadioUserSettingsKey)) === 'true'
-
+  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
@@ -148,7 +161,7 @@ function SettingsForm () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsForm.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsForm.Title>
-        {supportTriBandRadio &&
+        {triBandRadioFeatureFlag &&
           <Form.Item
             label='Security Protocol'
             name='wlanSecurity'
@@ -194,22 +207,24 @@ function SettingsForm () {
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
-          <AaaServerFields
+          <IpPortSecretForm
             serverType={AaaServerTypeEnum.AUTHENTICATION}
             order={AaaServerOrderEnum.PRIMARY}
           />
 
           <Form.Item noStyle name='enableSecondaryAuthServer'>
-            <ToggleButtonInput
+            <ToggleButton
               enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
               disableText={$t({ defaultMessage: 'Add Secondary Server' })}
             />
           </Form.Item>
 
-          {enableSecondaryAuthServer && <AaaServerFields
-            serverType={AaaServerTypeEnum.AUTHENTICATION}
-            order={AaaServerOrderEnum.SECONDARY}
-          />}
+          {enableSecondaryAuthServer &&
+            <IpPortSecretForm
+              serverType={AaaServerTypeEnum.AUTHENTICATION}
+              order={AaaServerOrderEnum.SECONDARY}
+            />
+          }
 
           <Form.Item>
             <Form.Item
@@ -231,22 +246,24 @@ function SettingsForm () {
 
           {enableAccountingService && (
             <>
-              <AaaServerFields
+              <IpPortSecretForm
                 serverType={AaaServerTypeEnum.ACCOUNTING}
                 order={AaaServerOrderEnum.PRIMARY}
               />
 
               <Form.Item noStyle name='enableSecondaryAcctServer'>
-                <ToggleButtonInput
+                <ToggleButton
                   enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
                   disableText={$t({ defaultMessage: 'Add Secondary Server' })}
                 />
               </Form.Item>
 
-              {enableSecondaryAcctServer && <AaaServerFields
-                serverType={AaaServerTypeEnum.ACCOUNTING}
-                order={AaaServerOrderEnum.SECONDARY}
-              />}
+              {enableSecondaryAcctServer &&
+                <IpPortSecretForm
+                  serverType={AaaServerTypeEnum.ACCOUNTING}
+                  order={AaaServerOrderEnum.SECONDARY}
+                />
+              }
 
               <Form.Item>
                 <Form.Item
@@ -265,67 +282,4 @@ function SettingsForm () {
       </Space>
     )
   }
-}
-
-function AaaServerFields ({ serverType, order }: {
-  serverType: AaaServerTypeEnum,
-  order: AaaServerOrderEnum
-}) {
-  const { $t } = useIntl()
-  const title = $t(contents.aaaServerTypes[order])
-  return (
-    <>
-      <Subtitle level={4} children={title} />
-      <Form.Item
-        name={`${serverType}.${order}.ip`}
-        label={$t({ defaultMessage: 'IP Address' })}
-        rules={[{
-          required: true,
-          whitespace: false
-        },{
-          validator: (_, value) => networkWifiIpRegExp(value)
-        }]}
-        children={<Input />}
-      />
-      <Form.Item
-        name={`${serverType}.${order}.port`}
-        label={$t({ defaultMessage: 'Port' })}
-        rules={[{
-          required: true
-        },{
-          validator: (_, value) => networkWifiPortRegExp(value)
-        }]}
-        children={<Input type='number'/>}
-      />
-      <Form.Item
-        name={`${serverType}.${order}.sharedSecret`}
-        label={$t({ defaultMessage: 'Shared secret' })}
-        rules={[{
-          required: true,
-          whitespace: false
-        },{
-          validator: (_, value) => stringContainSpace(value)
-        }]}
-        children={<Input.Password />}
-      />
-    </>
-  )
-}
-
-function ToggleButtonInput (props: {
-  value?: boolean
-  onChange?: (value: boolean) => void
-  enableText: React.ReactNode
-  disableText: React.ReactNode
-}) {
-  const [enabled, setEnabled] = useState(props.value ?? false)
-  return <Button
-    type='link'
-    onClick={() => {
-      props.onChange?.(!enabled)
-      setEnabled(!enabled)
-    }}
-  >
-    {enabled ? props.enableText : props.disableText}
-  </Button>
 }

@@ -11,21 +11,18 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
-  useGetAllUserSettingsQuery,
-  useUpdateNetworkDeepMutation,
-  useVenueListQuery,
-  Venue
+  useUpdateNetworkMutation,
+  useVenueListQuery
 } from '@acx-ui/rc/services'
-import { UserSettings } from '@acx-ui/rc/utils'
 import {
-  Constants,
   useTableQuery,
-  getUserSettingsFromDict,
   NetworkSaveData,
-  NetworkVenue
+  NetworkVenue,
+  Venue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -69,10 +66,8 @@ export function NetworkVenuesTab () {
   })
   const [tableData, setTableData] = useState(defaultArray)
   const params = useParams()
-  const [updateNetworkDeep] = useUpdateNetworkDeepMutation()
-  const userSetting = useGetAllUserSettingsQuery({ params: { tenantId: params.tenantId } })
-  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
-    Constants.triRadioUserSettingsKey)) === 'true'
+  const [updateNetwork] = useUpdateNetworkMutation()
+  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
@@ -125,7 +120,7 @@ export function NetworkVenuesTab () {
     const network = networkQuery.data
     const defaultVenueData = generateDefaultNetworkVenue(row.id)
     const isWPA3security = row.wlan && row.wlan.wlanSecurity === 'WPA3'
-    if (supportTriBandRadio && isWPA3security) {
+    if (triBandRadioFeatureFlag && isWPA3security) {
       defaultVenueData.allApGroupsRadioTypes.push('6-GHz')
     }
 
@@ -151,7 +146,7 @@ export function NetworkVenuesTab () {
   }
 
   const handleEditNetwork = (network: NetworkSaveData, clearSelection: () => void) => {
-    updateNetworkDeep({ params, payload: network }).then(clearSelection)
+    updateNetwork({ params, payload: network }).then(clearSelection)
   }
 
   const activateSelected = (networkActivatedVenues: NetworkVenue[], activatingVenues: Venue[]) => {
@@ -270,7 +265,7 @@ export function NetworkVenuesTab () {
       render: function (data, row) {
         return <Switch
           checked={Boolean(data)}
-          onClick={(checked, event) => {
+          onClick={(checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
             activateNetwork(checked, row)
             event.stopPropagation()
           }}
@@ -282,7 +277,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'aps',
       width: '80px',
       render: function (data, row) {
-        return row.activated.isActivated ? 'All APs' : ''
+        return row.activated.isActivated ? $t({ defaultMessage: 'All APs' }) : ''
       }
     },
     {

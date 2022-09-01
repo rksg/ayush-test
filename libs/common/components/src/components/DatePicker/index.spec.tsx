@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
-import moment             from 'moment'
+import moment             from 'moment-timezone'
+import { IntlProvider }   from 'react-intl'
 
 import { DateRange } from '@acx-ui/utils'
 
@@ -15,30 +16,35 @@ jest.mock('@acx-ui/icons', () => ({
 describe('CalenderRangePicker', () => {
   it('should render default CalenderRangePicker', () => {
     const { asFragment } = render(
-      <RangePicker
-        selectionType={DateRange.custom}
-        onDateApply={() => {}}
-        selectedRange={{
-          startDate: moment('01/01/2022').subtract(1, 'days').seconds(0),
-          endDate: moment('01/01/2022').seconds(0)
-        }}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.custom}
+          onDateApply={() => {}}
+          selectedRange={{
+            startDate: moment('01/01/2022').subtract(1, 'days').seconds(0),
+            endDate: moment('01/01/2022').seconds(0)
+          }}
+        />
+      </IntlProvider>
     )
     expect(asFragment()).toMatchSnapshot()
   })
   it('should open CalenderRangePicker when click on date select', async () => {
     const { container } = render(
-      <RangePicker
-        selectionType={DateRange.last24Hours}
-        selectedRange={{
-          startDate: moment().subtract(1, 'days').seconds(0),
-          endDate: moment().seconds(0)
-        }}
-        onDateApply={() => {}}
-        rangeOptions={[DateRange.today, DateRange.last7Days]}
-        showTimePicker
-        enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.last24Hours}
+          selectedRange={{
+            startDate: moment().subtract(1, 'days').seconds(0),
+            endDate: moment().seconds(0)
+          }}
+          onDateApply={() => {}}
+          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          showTimePicker
+          enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
+        />
+      </IntlProvider>
+
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -48,17 +54,20 @@ describe('CalenderRangePicker', () => {
   })
   it('should close CalenderRangePicker when click on apply', async () => {
     const { container } = render(
-      <RangePicker
-        selectionType={DateRange.last7Days}
-        onDateApply={() => {}}
-        rangeOptions={[DateRange.today, DateRange.last7Days]}
-        showTimePicker
-        selectedRange={{
-          startDate: moment().subtract(7, 'days').seconds(0),
-          endDate: moment().seconds(0)
-        }}
-        enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.last7Days}
+          onDateApply={() => {}}
+          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          showTimePicker
+          selectedRange={{
+            startDate: moment().subtract(7, 'days').seconds(0),
+            endDate: moment().seconds(0)
+          }}
+          enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
+        />
+      </IntlProvider>
+
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -70,17 +79,19 @@ describe('CalenderRangePicker', () => {
   })
   it('should close CalenderRangePicker when click outside', async () => {
     const { container } = render(
-      <RangePicker
-        onDateApply={() => {}}
-        selectionType={DateRange.last7Days}
-        rangeOptions={[DateRange.today, DateRange.last7Days]}
-        showTimePicker
-        selectedRange={{
-          startDate: moment().subtract(7, 'days').seconds(0),
-          endDate: moment().seconds(0)
-        }}
-        enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          onDateApply={() => {}}
+          selectionType={DateRange.last7Days}
+          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          showTimePicker
+          selectedRange={{
+            startDate: moment().subtract(7, 'days').seconds(0),
+            endDate: moment().seconds(0)
+          }}
+          enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
+        />
+      </IntlProvider>
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -93,15 +104,17 @@ describe('CalenderRangePicker', () => {
   })
   it('should close CalenderRangePicker when click on cancel', async () => {
     const { container } = render(
-      <RangePicker
-        onDateApply={() => {}}
-        selectionType={DateRange.last7Days}
-        rangeOptions={[DateRange.today, DateRange.last7Days]}
-        selectedRange={{
-          startDate: moment().subtract(7, 'days').seconds(0),
-          endDate: moment().seconds(0)
-        }}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          onDateApply={() => {}}
+          selectionType={DateRange.last7Days}
+          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          selectedRange={{
+            startDate: moment().subtract(7, 'days').seconds(0),
+            endDate: moment().seconds(0)
+          }}
+        />
+      </IntlProvider>
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -118,15 +131,17 @@ describe('CalenderRangePicker', () => {
       }
     })
     const { container } = render(
-      <RangePicker
-        onDateApply={() => {}}
-        selectionType={DateRange.last7Days}
-        rangeOptions={[DateRange.today, DateRange.last7Days]}
-        selectedRange={{
-          startDate: moment().subtract(7, 'days').seconds(0),
-          endDate: moment().seconds(0)
-        }}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          onDateApply={() => {}}
+          selectionType={DateRange.last7Days}
+          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          selectedRange={{
+            startDate: moment().subtract(7, 'days').seconds(0),
+            endDate: moment().seconds(0)
+          }}
+        />
+      </IntlProvider>
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -138,15 +153,17 @@ describe('CalenderRangePicker', () => {
   it('should select date when click on date selection', async () => {
     const onDateChange = jest.fn()
     render(
-      <RangePicker
-        selectionType={DateRange.custom}
-        selectedRange={{
-          startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
-          endDate: moment('03/01/2022').seconds(0)
-        }}
-        onDateChange={onDateChange}
-        onDateApply={() => {}}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.custom}
+          selectedRange={{
+            startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
+            endDate: moment('03/01/2022').seconds(0)
+          }}
+          onDateChange={onDateChange}
+          onDateApply={() => {}}
+        />
+      </IntlProvider>
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -159,17 +176,19 @@ describe('CalenderRangePicker', () => {
   it('should select time when click on time selection', async () => {
     const onDateChange = jest.fn()
     render(
-      <RangePicker
-        selectionType={DateRange.last7Days}
-        showTimePicker
-        rangeOptions={[DateRange.today, DateRange.last7Days]}
-        onDateChange={onDateChange}
-        onDateApply={() => {}}
-        selectedRange={{
-          startDate: moment().subtract(7, 'days').seconds(0),
-          endDate: moment().seconds(0)
-        }}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.last7Days}
+          showTimePicker
+          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          onDateChange={onDateChange}
+          onDateApply={() => {}}
+          selectedRange={{
+            startDate: moment().subtract(7, 'days').seconds(0),
+            endDate: moment().seconds(0)
+          }}
+        />
+      </IntlProvider>
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -184,17 +203,20 @@ describe('CalenderRangePicker', () => {
   it('should select end time when click on end time selection', async () => {
     const onDateChange = jest.fn()
     render(
-      <RangePicker
-        showTimePicker
-        selectionType={DateRange.last7Days}
-        rangeOptions={[DateRange.today, DateRange.last7Days]}
-        onDateChange={onDateChange}
-        onDateApply={() => {}}
-        selectedRange={{
-          startDate: moment().subtract(7, 'days').seconds(0),
-          endDate: moment().seconds(0)
-        }}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          showTimePicker
+          selectionType={DateRange.last7Days}
+          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          onDateChange={onDateChange}
+          onDateApply={() => {}}
+          selectedRange={{
+            startDate: moment().subtract(7, 'days').seconds(0),
+            endDate: moment().seconds(0)
+          }}
+        />
+      </IntlProvider>
+
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -209,17 +231,19 @@ describe('CalenderRangePicker', () => {
   it('should reset endTime to startTime when select startTime greater than endTime', async () => {
     const onDateChange = jest.fn()
     render(
-      <RangePicker
-        showTimePicker
-        rangeOptions={[DateRange.today, DateRange.last7Days]}
-        onDateChange={onDateChange}
-        selectionType={DateRange.custom}
-        onDateApply={() => {}}
-        selectedRange={{
-          startDate: moment('03/01/2022').seconds(0),
-          endDate: moment('03/01/2022').seconds(0)
-        }}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          showTimePicker
+          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          onDateChange={onDateChange}
+          selectionType={DateRange.custom}
+          onDateApply={() => {}}
+          selectedRange={{
+            startDate: moment('03/01/2022').seconds(0),
+            endDate: moment('03/01/2022').seconds(0)
+          }}
+        />
+      </IntlProvider>
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -234,12 +258,14 @@ describe('CalenderRangePicker', () => {
   it('should display selection for null values', async () => {
     const onDateChange = jest.fn()
     render(
-      <RangePicker
-        selectionType={DateRange.custom}
-        selectedRange={{ startDate: null, endDate: null }}
-        onDateChange={onDateChange}
-        onDateApply={() => {}}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.custom}
+          selectedRange={{ startDate: null, endDate: null }}
+          onDateChange={onDateChange}
+          onDateApply={() => {}}
+        />
+      </IntlProvider>
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -249,15 +275,17 @@ describe('CalenderRangePicker', () => {
   it('should display only start date when end date is not selected', async () => {
     const onDateChange = jest.fn()
     render(
-      <RangePicker
-        selectionType={DateRange.custom}
-        selectedRange={{
-          startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
-          endDate: null
-        }}
-        onDateChange={onDateChange}
-        onDateApply={() => {}}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.custom}
+          selectedRange={{
+            startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
+            endDate: null
+          }}
+          onDateChange={onDateChange}
+          onDateApply={() => {}}
+        />
+      </IntlProvider>
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
@@ -269,15 +297,17 @@ describe('CalenderRangePicker', () => {
   it('should display only end date when start date is not selected', async () => {
     const onDateChange = jest.fn()
     render(
-      <RangePicker
-        selectionType={DateRange.custom}
-        selectedRange={{
-          startDate: null,
-          endDate: moment('01/01/2022').subtract(7, 'days').seconds(0)
-        }}
-        onDateChange={onDateChange}
-        onDateApply={() => {}}
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.custom}
+          selectedRange={{
+            startDate: null,
+            endDate: moment('01/01/2022').subtract(7, 'days').seconds(0)
+          }}
+          onDateChange={onDateChange}
+          onDateApply={() => {}}
+        />
+      </IntlProvider>
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('End date')
@@ -289,16 +319,18 @@ describe('CalenderRangePicker', () => {
   it('should disable future time selection when startdate and end date are same', async () => {
     const onDateChange = jest.fn()
     render(
-      <RangePicker
-        selectionType={DateRange.custom}
-        selectedRange={{
-          startDate: moment('03/01/2022').hours(12),
-          endDate: moment('03/01/2022').hours(12)
-        }}
-        onDateChange={onDateChange}
-        onDateApply={() => {}}
-        showTimePicker
-      />
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.custom}
+          selectedRange={{
+            startDate: moment('03/01/2022').hours(12),
+            endDate: moment('03/01/2022').hours(12)
+          }}
+          onDateChange={onDateChange}
+          onDateApply={() => {}}
+          showTimePicker
+        />
+      </IntlProvider>
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')

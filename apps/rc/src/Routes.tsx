@@ -5,7 +5,7 @@ import { Provider }          from '@acx-ui/store'
 import { NetworkDetails } from './pages/NetworkDetails/NetworkDetails'
 import { NetworkForm }    from './pages/NetworkForm/NetworkForm'
 import { NetworksTable }  from './pages/NetworksTable'
-import { ServicesTable }  from './pages/services/ServicesTable'
+import { ServicesTable }  from './pages/Services/ServicesTable'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -15,6 +15,10 @@ export default function RcRoutes () {
       <Route
         path='networks/:networkId/network-details/:activeTab'
         element={<NetworkDetails />}
+      />
+      <Route
+        path='networks/:networkId/:action'
+        element={<NetworkForm />}
       />
       <Route path='services' element={<ServicesTable />} />
     </Route>

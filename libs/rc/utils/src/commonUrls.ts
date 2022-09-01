@@ -81,5 +81,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenue: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId'
+  },
+  getVenueDetailsHeader: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
   }
 }
