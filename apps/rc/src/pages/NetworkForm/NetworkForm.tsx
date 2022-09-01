@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -136,7 +137,7 @@ export function NetworkForm () {
             name='settings'
             title={$t(settingTitle, { type: networkType })}
             onFinish={async (data) => {
-              const settingData = { 
+              const settingData = {
                 ...{ type: saveState.type },
                 ...data
               }

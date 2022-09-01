@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useState, useContext } from 'react'
-=======
 import React, { useContext, useEffect, useState } from 'react'
->>>>>>> e6f866197ab5f75929e1ef97d78a84f075112a67
 
 import {
   ExclamationCircleFilled,
@@ -30,13 +26,8 @@ import {
   WlanSecurityEnum,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-<<<<<<< HEAD
   NetworkTypeEnum,
-  UserSettings,
   NetworkSaveData
-=======
-  NetworkTypeEnum
->>>>>>> e6f866197ab5f75929e1ef97d78a84f075112a67
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -52,12 +43,9 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-<<<<<<< HEAD
 export function AaaSettingsForm (props: {
   saveState: NetworkSaveData
 }) {
-=======
-export function AaaSettingsForm () {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -75,7 +63,6 @@ export function AaaSettingsForm () {
       })
     }
   }, [data])
->>>>>>> e6f866197ab5f75929e1ef97d78a84f075112a67
   const [
     isCloudpathEnabled,
     selectedId,
@@ -96,7 +83,6 @@ export function AaaSettingsForm () {
       }
     }
   })
-  const { data } = useContext(NetworkFormContext)
   const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
   const showButtons = enableAuthProxy !== !!enableAccountingProxy
                     && enableAccountingService && !isCloudpathEnabled

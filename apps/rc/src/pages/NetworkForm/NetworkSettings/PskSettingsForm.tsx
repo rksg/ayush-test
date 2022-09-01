@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 
 
 import {
@@ -41,16 +41,19 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { IpPortSecretForm } from '../../../components/IpPortSecretForm'
-import { ToggleButton }     from '../../../components/ToggleButton'
-import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext   from '../NetworkFormContext'
+import { IpPortSecretForm }        from '../../../components/IpPortSecretForm'
+import { ToggleButton }            from '../../../components/ToggleButton'
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext          from '../NetworkFormContext'
+import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
-export function PskSettingsForm () {
+export function PskSettingsForm(props: {
+  saveState: NetworkSaveData
+}) {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -82,7 +85,6 @@ export function PskSettingsForm () {
     useWatch('cloudpathServerId'),
     useWatch('macAddressAuthentication')
   ]
-  const { data } = useContext(NetworkFormContext)
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
       return {

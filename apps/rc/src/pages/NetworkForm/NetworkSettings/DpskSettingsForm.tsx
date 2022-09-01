@@ -32,7 +32,9 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-export function DpskSettingsForm () {
+export function DpskSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
