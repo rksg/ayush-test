@@ -3,7 +3,7 @@
 exports[`Table component dynamically scales based on scroll prop 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 fbRkQw"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 bqzTvn"
   >
     <div
       class="ant-pro-table"
@@ -76,21 +76,41 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
                           class="ant-table-thead"
                         >
                           <tr>
+                            <td>
+                              <div
+                                data-testid="react-resizable"
+                              />
+                            </td>
                             <th
                               class="ant-table-cell"
                             >
                               Name
                             </th>
+                            <td>
+                              <div
+                                data-testid="react-resizable"
+                              />
+                            </td>
                             <th
                               class="ant-table-cell"
                             >
                               Age
                             </th>
+                            <td>
+                              <div
+                                data-testid="react-resizable"
+                              />
+                            </td>
                             <th
                               class="ant-table-cell"
                             >
                               Address
                             </th>
+                            <td>
+                              <div
+                                data-testid="react-resizable"
+                              />
+                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                               style="position: sticky; right: 0px;"

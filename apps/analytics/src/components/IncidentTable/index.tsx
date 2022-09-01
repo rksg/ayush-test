@@ -53,7 +53,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Date' })),
-      width: 'auto',
       dataIndex: 'endTime',
       valueType: 'dateTime',
       key: 'endTime',
@@ -70,7 +69,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Duration' })),
-      width: 'auto',
       dataIndex: 'duration',
       key: 'duration',
       render: (_, value) => formatter('durationFormat')(value.duration) as string,
@@ -81,7 +79,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
-      width: 'auto',
       dataIndex: 'description',
       key: 'description',
       render: (_, value) => <ShortIncidentDescription incident={value}/>,
@@ -93,7 +90,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Category' })),
-      width: 'auto',
       dataIndex: 'category',
       key: 'category',
       render: (_, value) => GetCategory(value.code),
@@ -104,7 +100,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
-      width: 'auto',
       dataIndex: 'subCategory',
       key: 'subCategory',
       render: (_, value) => GetCategory(value.code, true),
@@ -116,7 +111,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
-      width: 'auto',
       dataIndex: 'clientCount',
       key: 'clientCount',
       render: (_, incident) => <ClientImpact type='clientImpact' incident={incident}/>,
@@ -127,7 +121,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
-      width: 'auto',
       dataIndex: 'impactedClientCount',
       key: 'impactedClientCount',
       render: (_, incident) => <ClientImpact type='impactedClients' incident={incident}/>,
@@ -139,7 +132,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Scope' })),
-      width: 'auto',
       dataIndex: 'scope',
       ellipsis: true,
       key: 'scope',
@@ -151,7 +143,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Type' })),
-      width: 'auto',
       dataIndex: 'type',
       key: 'type',
       render: (_, value) => $t(nodeTypes(value.sliceType)),
