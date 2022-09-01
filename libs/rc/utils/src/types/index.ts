@@ -11,7 +11,7 @@ import { NetworkVenue } from '../models/NetworkVenue'
 
 export * from './ap'
 export * from './venue'
-export * from '../models/network'
+export * from './network'
 export * from './user'
 
 export interface CommonResult {

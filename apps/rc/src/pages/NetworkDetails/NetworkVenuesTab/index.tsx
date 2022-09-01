@@ -12,19 +12,16 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
-  useGetAllUserSettingsQuery,
   useUpdateNetworkMutation,
   useVenueListQuery
 } from '@acx-ui/rc/services'
 import {
-  Constants,
   useTableQuery,
-  getUserSettingsFromDict,
   NetworkSaveData,
-  UserSettings,
   RadioEnum,
   NetworkVenue,
   Venue,
@@ -80,9 +77,7 @@ export function NetworkVenuesTab () {
   const [tableData, setTableData] = useState(defaultArray)
   const params = useParams()
   const [updateNetwork] = useUpdateNetworkMutation()
-  const userSetting = useGetAllUserSettingsQuery({ params: { tenantId: params.tenantId } })
-  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
-    Constants.triRadioUserSettingsKey)) === 'true'
+  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
@@ -131,7 +126,7 @@ export function NetworkVenuesTab () {
       allApGroupsRadio: RadioEnum.Both,
       allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
       venueId: venueId,
-      networkId: (network && network?.id) ? network.id : ''
+      networkId: network?.id
     }
   }
 
@@ -145,15 +140,15 @@ export function NetworkVenuesTab () {
     const network = networkQuery.data
     const defaultVenueData = generateDefaultNetworkVenue(row.id)
     const isWPA3security = row.wlan && row.wlan.wlanSecurity === 'WPA3'
-    if (supportTriBandRadio && isWPA3security) {
+    if (triBandRadioFeatureFlag && isWPA3security) {
       defaultVenueData.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
 
-    let deactivateNetworkVenueId
+    let deactivateNetworkVenueId = ''
     if (!checked && network?.venues) {
       network?.venues.forEach((venue: NetworkVenue) => {
         if (venue.venueId === row.id || venue.id === row.id) {
-          deactivateNetworkVenueId = venue.id || ''
+          deactivateNetworkVenueId = row.id
         }
       })
     }

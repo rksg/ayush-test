@@ -4,12 +4,11 @@ import {
   PassphraseFormatEnum,
   WlanSecurityEnum
 } from '../constants'
-
-import { AAAWlanAdvancedCustomization }  from './AAAWlanAdvancedCustomization'
-import { DpskWlanAdvancedCustomization } from './DpskWlanAdvancedCustomization'
-import { NetworkVenue }                  from './NetworkVenue'
-import { OpenWlanAdvancedCustomization } from './OpenWlanAdvancedCustomization'
-import { PskWlanAdvancedCustomization }  from './PskWlanAdvancedCustomization'
+import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
+import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
+import { NetworkVenue }                  from '../models/NetworkVenue'
+import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
+import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 
 export interface CreateNetworkFormFields {
   name: string;
@@ -91,6 +90,11 @@ export interface NetworkSaveData {
   passphraseLength?: number;
   passphraseFormat?: PassphraseFormatEnum;
   expiration?: PassphraseExpirationEnum;
+  dpskPassphraseGeneration?: {
+    length?: number;
+    format?: PassphraseFormatEnum;
+    expiration?: PassphraseExpirationEnum;
+  }
 }
 
 export interface NetworkVenueLight {
