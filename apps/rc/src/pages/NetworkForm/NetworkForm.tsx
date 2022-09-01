@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 
+import _ from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -79,10 +80,8 @@ export function NetworkForm () {
     if(data){
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
-      if(cloneMode){
-        formRef?.current?.setFieldsValue({
-          name: formRef?.current?.getFieldValue('name') + ' - copy'
-        })
+      if (cloneMode) {
+        formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
       }
       updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
     }
@@ -90,12 +89,8 @@ export function NetworkForm () {
 
   const handleAddNetwork = async () => {
     try {
-      if(cloneMode){
-        delete saveState.id
-        await createNetwork({ params: { tenantId: params.tenantId }, payload: saveState }).unwrap()
-      }else{
-        await createNetwork({ params, payload: saveState }).unwrap()
-      }
+      const payload = _.omit(saveState, 'id') // omit id to handle clone
+      await createNetwork({ params: { tenantId: params.tenantId }, payload: payload }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -148,7 +143,7 @@ export function NetworkForm () {
             name='settings'
             title={$t(settingTitle, { type: networkType })}
             onFinish={async (data) => {
-              const settingData = { 
+              const settingData = {
                 ...{ type: saveState.type },
                 ...data
               }
