@@ -15,7 +15,7 @@ import {
   useVenueNetworkListQuery
 } from '@acx-ui/rc/services'
 import { useTableQuery, NetworkType, NetworkTypeEnum, RadioTypeEnum, WlanSecurityEnum, generateDefaultNetworkVenue, Network } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                     from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }                                                                                              from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
   searchString: '',

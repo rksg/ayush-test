@@ -6,7 +6,7 @@ exports[`VenueNetworksTab should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-3 kYgtfq"
+      class="styledComponents__Wrapper-sc-1abm7iv-6 fbRkQw"
     >
       <div
         class="ant-pro-table"
@@ -471,14 +471,9 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                     </div>
                   </div>
                   <ul
-                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-right"
+                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
                     unselectable="unselectable"
                   >
-                    <li
-                      class="ant-pagination-total-text"
-                    >
-                        1-2 of 2 items
-                    </li>
                     <li
                       aria-disabled="true"
                       class="ant-pagination-prev ant-pagination-disabled"

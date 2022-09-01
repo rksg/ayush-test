@@ -8,10 +8,10 @@ import {
   WlanSecurityEnum,
   NetworkTypeEnum
 } from '../constants'
-import { AAAWlanAdvancedCustomization } from '../models/AAAWlanAdvancedCustomization'
+import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
 import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
-import { PskWlanAdvancedCustomization } from '../models/PskWlanAdvancedCustomization'
+import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 
 import { NetworkVenue } from './network'
 

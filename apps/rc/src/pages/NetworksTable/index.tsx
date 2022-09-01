@@ -5,7 +5,6 @@ import { useNetworkListQuery, useDeleteNetworkMutation }                  from '
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
-  GuestNetworkTypeEnum,
   useTableQuery,
   Network,
   NetworkType
