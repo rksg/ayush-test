@@ -10,7 +10,6 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }     from '@acx-ui/components'
 import {
   useVlanPoolListQuery
 } from '@acx-ui/rc/services'
@@ -195,15 +194,7 @@ export function NetworkMoreSettingsForm (props: {
             </UI.Label>}
         />
 
-        <StepsForm.Title
-          style={{
-            fontSize: 'var(--acx-subtitle-4-font-size)',
-            fontWeight: '600',
-            margin: '20px 0'
-          }}
-        >
-          { $t({ defaultMessage: 'Load Control' }) }
-        </StepsForm.Title>
+        <UI.Subtitle>{$t({ defaultMessage: 'Load Control' })}</UI.Subtitle>
         <LoadControlForm />
 
 
@@ -221,15 +212,9 @@ export function NetworkMoreSettingsForm (props: {
             </UI.Label>}
         />
 
-        <StepsForm.Title
-          style={{
-            fontSize: 'var(--acx-subtitle-4-font-size)',
-            fontWeight: '600',
-            margin: '20px 0'
-          }}>
-          <div> { $t({ defaultMessage: 'Data Rate Control' }) } </div>
-          <div> { $t({ defaultMessage: '2.4 GHz & 5 GHz' }) } </div>
-        </StepsForm.Title>
+        <UI.Subtitle>
+          {$t({ defaultMessage: 'Data Rate Control (2.4 GHz & 5 GHz)' })}
+        </UI.Subtitle>
 
         <div style={{
           display: 'grid',
