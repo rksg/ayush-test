@@ -177,6 +177,9 @@ describe('NetworkVenuesTab', () => {
         venueId: '02e2ddbc88e1428987666d31edbc3d9a',
         allApGroupsRadioTypes: ['2.4-GHz', '5-GHz', '6-GHz'],
         isAllApGroups: false,
+        scheduler: {
+          type: 'ALWAYS_ON'
+        },
         apGroups: [{
           radio: 'Both',
           radioTypes: ['2.4-GHz'],
@@ -212,6 +215,7 @@ describe('NetworkVenuesTab', () => {
     const row2 = await screen.findByRole('row', { name: /My-Venue/i })
     expect(row2).toHaveTextContent('VLAN Pool: pool1 (Custom)')
     expect(row2).toHaveTextContent('Unassigned APs')
+    expect(row2).toHaveTextContent('24/7')
     expect(row2).not.toHaveTextContent('All')
   })
 
@@ -533,7 +537,7 @@ describe('NetworkVenuesTab', () => {
     jest.useRealTimers()
   })
 
-  it('has specific AP groups and pool', async () => {
+  it('has specific AP groups', async () => {
 
     const newVenues = [
       {
@@ -546,7 +550,10 @@ describe('NetworkVenuesTab', () => {
           apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
           id: '6cb1e831973a4d60924ac59f1bda073c',
           apGroupName: 'APG1'
-        }]
+        }],
+        scheduler: {
+          type: 'ALWAYS_OFF'
+        }
       }
     ]
 
