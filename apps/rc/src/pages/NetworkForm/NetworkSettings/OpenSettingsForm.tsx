@@ -25,7 +25,6 @@ export function OpenSettingsForm () {
   const form = Form.useFormInstance()
   if(data){
     form.setFieldsValue({
-      cloudpathServerId: data.cloudpathServerId,
       isCloudpathEnabled: data.cloudpathServerId !== undefined
     })
   }

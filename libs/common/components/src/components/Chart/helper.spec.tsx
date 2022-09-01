@@ -1,3 +1,7 @@
+import { defineMessage, useIntl } from 'react-intl'
+
+import { renderHook } from '@acx-ui/test-utils'
+
 import {
   dateAxisFormatter,
   timeSeriesTooltipFormatter,
@@ -72,6 +76,16 @@ describe('donutChartTooltipFormatter', () => {
   })
   it('should handle when no formatter', async () => {
     expect(donutChartTooltipFormatter()(singleparameters)).toMatchSnapshot()
+  })
+  it('should handle unit', async () => {
+    const unit = defineMessage({ defaultMessage: `{formattedCount} {count, plural,
+      one {unit}
+      other {units}
+    }` })
+    const formatter = jest.fn(value => `formatted-${value}`)
+    expect(renderHook(()=>donutChartTooltipFormatter(
+      formatter, unit, useIntl())(singleparameters)).result.current).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(1)
   })
 })
 

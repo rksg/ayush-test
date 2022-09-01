@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 
-import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -80,7 +79,7 @@ export function NetworkForm () {
     if(data){
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
-      updateSaveData(data)
+      updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
     }
   }, [data])
 
@@ -139,12 +138,14 @@ export function NetworkForm () {
             name='settings'
             title={$t(settingTitle, { type: networkType })}
             onFinish={async (data) => {
-              const settingData = _.merge(saveState, data)
+              const settingData = { 
+                ...{ type: saveState.type },
+                ...data
+              }
               let settingSaveData = tranferSettingsToSave(settingData)
               if(!editMode) {
                 settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
               }
-
               updateSaveData(settingSaveData)
               return true
             }}
