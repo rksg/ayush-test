@@ -2,10 +2,17 @@ import { useState } from 'react'
 
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
-import { Incident, noDataSymbol, IncidentFilter, nodeTypes, getRootCauseAndRecommendations, useShortDescription } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, Drawer }                                                                      from '@acx-ui/components'
-import { useTenantLink, Link }                                                                                    from '@acx-ui/react-router-dom'
-import { formatter }                                                                                              from '@acx-ui/utils'
+import {
+  Incident,
+  noDataSymbol,
+  IncidentFilter,
+  nodeTypes,
+  getRootCauseAndRecommendations,
+  useShortDescription
+} from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
+import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
+import { formatter }                         from '@acx-ui/utils'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
 import * as UI                                                       from './styledComponents'
@@ -43,12 +50,13 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
       <UI.IncidentImpactedClient showImpactedClient={!!(dominant && dominant.ssid)}>
         {wlanInfo}
       </UI.IncidentImpactedClient>
-      <UI.IncidentRootCauses>{'Root cause:'}</UI.IncidentRootCauses>
+      <UI.IncidentRootCauses>
+        {$t(defineMessage({ defaultMessage: 'Root cause' }))}{':'}
+      </UI.IncidentRootCauses>
       <FormattedMessage {...rootCauses} values={values} />
     </UI.IncidentDrawerContent>
   )
 }
-
 
 function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()

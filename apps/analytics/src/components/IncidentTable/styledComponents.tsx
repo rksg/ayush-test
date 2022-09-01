@@ -51,7 +51,7 @@ export const IncidentDrawerContent = styled.div`
 `
 export const IncidentCause = styled.div`
   font-weight: var(--acx-subtitle-1-font-weight);
-  margin-top: 20px;
+  margin-top: 10px;
 `
 export const IncidentImpactedClient = styled.div<IncidentImpactedClientProps>`
   font-weight: var(--acx-subtitle-1-font-weight);

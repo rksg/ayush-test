@@ -48,7 +48,6 @@ const incidentTests = [
     mutedBy: null,
     mutedAt: null
   },
-
   {
     severity: 0.15997624339040492,
     startTime: '2022-07-21T08:12:00.000Z',
@@ -103,6 +102,14 @@ const incidentTests = [
     metadata: {
       dominant: {
         ssid: 'test'
+      },
+      rootCauseChecks: {
+        checks: [
+          {
+            CCD_REASON_AAA_AUTH_FAIL: true
+          }
+        ],
+        params: {}
       }
     },
     clientCount: 3,
