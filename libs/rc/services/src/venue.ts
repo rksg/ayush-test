@@ -6,10 +6,10 @@ import {
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
-  TableResult
+  TableResult,
+  Venue,
+  VenueDetailHeader
 } from '@acx-ui/rc/utils'
-
-import { Venue, VenueDetailHeader } from './types'
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),

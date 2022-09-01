@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { storiesOf } from '@storybook/react'
-import moment        from 'moment'
+import moment        from 'moment-timezone'
 
 import { DateRange } from '@acx-ui/utils'
 

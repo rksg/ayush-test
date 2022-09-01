@@ -1,17 +1,23 @@
-import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { QueryReturnValue }                                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { createApi, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
   createHttpRequest,
   NetworkVenue,
+  NetworkSaveData,
   onSocketActivityChanged,
   refetchByUsecase,
   RequestPayload,
   showActivityMessage,
-  TableResult
+  TableResult,
+  Dashboard,
+  Network,
+  Venue,
+  NetworkDetailHeader,
+  CommonResult,
+  NetworkDetail
 } from '@acx-ui/rc/utils'
-
-import { Network, Venue, NetworkDetailHeader, NetworkDetail, CommonResult, Dashboard } from './types'
 
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -41,7 +47,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddNetworkDeep', 'DeleteNetwork'], () => {
+          if (msg.status !== 'SUCCESS') return
+          if (!['DeleteNetwork', 'AddNetworkDeep', 'UpdateNetworkDeep'].includes(msg.useCase))
+            return
+
+          showActivityMessage(msg, ['AddNetworkDeep', 'DeleteNetwork', 'UpdateNetworkDeep'], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
           })
         })
@@ -57,7 +67,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
     }),
-    updateNetworkDeep: build.mutation<Network, RequestPayload>({
+    updateNetwork: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateNetworkDeep, params)
         return {
@@ -95,12 +105,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
-    getNetwork: build.query<NetworkDetail, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getNetwork, params)
-        return{
-          ...req
-        }
+    getNetwork: build.query<NetworkSaveData | undefined, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
+        if (!params?.networkId) return Promise.resolve({ data: undefined } as QueryReturnValue<
+          undefined,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+        const result = await fetch(createHttpRequest(CommonUrlsInfo.getNetwork, params))
+        return result as QueryReturnValue<NetworkSaveData,
+        FetchBaseQueryError,
+        FetchBaseQueryMeta>
       },
       providesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
@@ -114,7 +129,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, 
+          showActivityMessage(msg,
             ['AddNetworkVenue', 'DeleteNetworkVenue', 'UpdateNetworkDeep'], () => {
               api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
             })
@@ -257,7 +272,7 @@ export const {
   useGetNetworkQuery,
   useNetworkDetailHeaderQuery,
   useCreateNetworkMutation,
-  useUpdateNetworkDeepMutation,
+  useUpdateNetworkMutation,
   useDeleteNetworkMutation,
   useVenueListQuery,
   useAddNetworkVenueMutation,

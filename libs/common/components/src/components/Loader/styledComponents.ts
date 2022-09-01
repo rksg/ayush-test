@@ -7,7 +7,7 @@ export const Wrapper = styled.div<{ $isLoading?: boolean }>`
   flex-direction: column;
 
   ${props => props.$isLoading ? css`
-    background-color: var(--acx-neutrals-20);
+    background-color: var(--acx-neutrals-10);
   ` : ''}
 `
 
@@ -22,7 +22,7 @@ export const FallbackWrapper = styled.div<{ $isFetching?: boolean }>`
 
   ${props => props.$isFetching ? css`
     position: absolute;
-    z-index: 2;
+    z-index: 4;
     background-color: var(--acx-primary-white);
     opacity: 0.8;
     @supports (backdrop-filter: none) {

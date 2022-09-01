@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Steps, Space, Row } from 'antd'
-import _                     from 'lodash'
-import toArray               from 'rc-util/lib/Children/toArray'
-import { useIntl }           from 'react-intl'
+import { Steps, Space } from 'antd'
+import _                from 'lodash'
+import toArray          from 'rc-util/lib/Children/toArray'
+import { useIntl }      from 'react-intl'
 
 import { Button }                       from '../Button'
 import { StepsForm as ProAntStepsForm } from '../StepsFormProAnt'
@@ -21,6 +21,7 @@ export type { ProFormInstance as StepsFormInstance }
 
 const { useImperativeHandle, useRef, useState } = React
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StepsFormProps <FormValue = any> =
   Omit<ProAntStepsFormProps<FormValue>, 'stepsProps' | 'submitter'> &
   {
@@ -42,13 +43,7 @@ export type StepFormProps <FormValue> = Omit<
   // omitted and replace with ReactNode as we don't support using RenderProps for now
   'children'> & { children?: React.ReactNode }
 
-type InternalStepFormProps <FormValue> = StepFormProps<FormValue> & {
-  /**
-   * State of current step
-   */
-  state: 'finish' | 'active' | 'wait'
-}
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function StepsForm <FormValue = any> (
   props: React.PropsWithChildren<StepsFormProps<FormValue>>
 ) {
@@ -145,25 +140,18 @@ export function StepsForm <FormValue = any> (
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function StepForm <FormValue = any> (
   props: Omit<StepFormProps<FormValue>, 'requireMark' | 'validateTrigger'>
 ) {
   const keys = ['state']
-  const internalProps = _.pick(props, keys) as InternalStepFormProps<FormValue>
   const formProps = _.omit(props, keys)
 
   return <ProAntStepsForm.StepForm<FormValue>
     {...formProps}
     requiredMark={true}
     validateTrigger={'onBlur'}
-  >
-    <Row>
-      <UI.FormContainer
-        $state={internalProps.state}
-        span={24}
-        children={props.children}
-      />
-    </Row>
+  >{props.children}
   </ProAntStepsForm.StepForm>
 }
 

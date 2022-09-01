@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { venueApi }                                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils'
 import { generatePath }                                   from '@acx-ui/react-router-dom'
-import { Provider }                                       from '@acx-ui/store'
+import { Provider, store }                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 
 import VenueTabs from './VenueTabs'
@@ -26,6 +27,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('VenueTabs', () => {
   beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(url, (_, res, ctx) => res(ctx.json(venueDetailHeaderData)))
     )

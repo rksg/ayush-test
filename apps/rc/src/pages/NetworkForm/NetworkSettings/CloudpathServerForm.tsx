@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import {
   Form,
@@ -12,11 +12,17 @@ import { Button, Subtitle }      from '@acx-ui/components'
 import { useCloudpathListQuery } from '@acx-ui/rc/services'
 import { useParams }             from '@acx-ui/react-router-dom'
 
+import NetworkFormContext from '../NetworkFormContext'
+
 const { Option } = Select
 
+const { useWatch } = Form
+
 export function CloudpathServerForm () {
+  const { data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
-  const selectedId = Form.useWatch('cloudpathServerId')
+
+  const selectedId = useWatch('cloudpathServerId')
   const { selectOptions, selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
       return {
@@ -31,8 +37,10 @@ export function CloudpathServerForm () {
       <Form.Item
         name='cloudpathServerId'
         label={$t({ defaultMessage: 'Cloudpath Server' })}
+        initialValue={data?.cloudpathServerId}
         rules={[{ required: true }]}>
-        <Select placeholder={$t({ defaultMessage: 'Select...' })} children={selectOptions} />
+        <Select placeholder={$t({ defaultMessage: 'Select...' })}
+          children={selectOptions} />
       </Form.Item>
 
       <Button type='link'>{ $t({ defaultMessage: 'Add Server' }) }</Button>
@@ -54,7 +62,7 @@ export function CloudpathServerForm () {
           }
         />
         <Form.Item
-          label={$t({ defaultMessage: 'Radius Shared secret' })}
+          label={$t({ defaultMessage: 'Radius Shared Secret' })}
           children={<Input.Password
             readOnly
             bordered={false}

@@ -1,14 +1,16 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useNetworkListQuery, useDeleteNetworkMutation, Network }         from '@acx-ui/rc/services'
+import { useNetworkListQuery, useDeleteNetworkMutation }                  from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
+  GuestNetworkTypeEnum,
   useTableQuery,
+  Network,
   NetworkType
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
@@ -127,6 +129,8 @@ const defaultPayload = {
 export function NetworksTable () {
   const { $t } = useIntl()
   const NetworksTable = () => {
+    const navigate = useNavigate()
+    const linkToEditNetwork = useTenantLink('/networks/')
     const tableQuery = useTableQuery({
       useQuery: useNetworkListQuery,
       defaultPayload
@@ -137,21 +141,28 @@ export function NetworksTable () {
       { isLoading: isDeleteNetworkUpdating }
     ] = useDeleteNetworkMutation()
 
-    const actions: TableProps<Network>['actions'] = [{
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Network' }),
-            entityValue: name
-          },
-          onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
-            .then(clearSelection)
-        })
-      }
-    }]
+    const actions: TableProps<Network>['actions'] = [
+      {
+        label: $t({ defaultMessage: 'Edit' }),
+        onClick: (selectedRows) => {
+          navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
+        }
+      },
+      {
+        label: $t({ defaultMessage: 'Delete' }),
+        onClick: ([{ name, id }], clearSelection) => {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'Network' }),
+              entityValue: name
+            },
+            onOk: () => deleteNetwork({ params: { tenantId, networkId: id } })
+              .then(clearSelection)
+          })
+        }
+      }]
 
     return (
       <Loader states={[

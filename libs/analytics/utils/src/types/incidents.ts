@@ -1,13 +1,8 @@
-import { IncidentCode }   from '../constants'
-import incidentSeverities from '../incidentSeverities.json'
+import { AnalyticsFilter } from '../analyticsFilter'
+import incidentSeverities  from '../incidentSeverities.json'
 
-interface IncidentInformation {
-  category: string
-  subCategory: string
-  shortDescription: string
-  longDescription: string
-  incidentType: string
-}
+import type { IncidentCode }        from '../constants'
+import type { IncidentInformation } from '../incidentInformation'
 
 export type NodeType = 'network'
   | 'apGroupName'
@@ -35,38 +30,41 @@ export interface SeverityRange {
 }
 
 export interface IncidentMetadata {
-  dominant: { ssid?: string }
-  rootCauseChecks: {
+  dominant?: { ssid?: string }
+  rootCauseChecks?: {
     checks: Record<string,boolean>[]
     params: Record<string,string>
   }
 }
 
-export interface Incident {
+export interface Incident extends IncidentInformation {
   id: string
+  code: IncidentCode
+  path: PathNode[]
   sliceType: NodeType
   sliceValue: string
-  code: IncidentCode
   startTime: string
   endTime: string
   severity: number
-  clientCount: number
-  impactedClientCount: number
-  metadata: IncidentMetadata
-  path: PathNode[]
-  apCount: number
-  impactedApCount: number
+  clientCount: number | null
+  impactedClientCount: number | null
+  apCount: number | null
+  impactedApCount: number | null
   switchCount: number
   vlanCount: number
   connectedPowerDeviceCount: number
+  metadata: IncidentMetadata
   isMuted: boolean
   mutedBy: string|null
   mutedAt: Date|null
   slaThreshold: number|null
   currentSlaThreshold: number|null
+  relatedIncidents?: Incident[]
 }
 
 export interface IncidentAttributesProps
   extends Incident, IncidentInformation {
     visibleFields: string[]
   }
+
+export type IncidentFilter = AnalyticsFilter & { code? : IncidentCode[] }

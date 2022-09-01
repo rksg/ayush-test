@@ -10,12 +10,11 @@ import {
 } from '@acx-ui/components'
 import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
-  Network,
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useVenueNetworkListQuery
 } from '@acx-ui/rc/services'
-import { useTableQuery, NetworkType, NetworkTypeEnum, RadioTypeEnum, WlanSecurityEnum, generateDefaultNetworkVenue } from '@acx-ui/rc/utils'
+import { useTableQuery, NetworkType, NetworkTypeEnum, RadioTypeEnum, WlanSecurityEnum, generateDefaultNetworkVenue, Network } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                     from '@acx-ui/react-router-dom'
 
 const defaultPayload = {

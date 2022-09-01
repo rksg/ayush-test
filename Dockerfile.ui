@@ -1,4 +1,4 @@
-FROM node:14.19.1-alpine as build-base
+FROM node:16.15.0-alpine as build-base
 
 WORKDIR /app
 
@@ -39,6 +39,9 @@ RUN npx nx run-many --target=test --all --coverage --runInBand --verbose
 ###############################################################
 
 FROM acx-ui as build
+COPY tools/docker/locales ./tools/docker/locales
+RUN chmod +x tools/docker/locales/generate.sh
+RUN tools/docker/locales/generate.sh
 RUN npx nx run-many --target=build --all
 
 ###############################################################

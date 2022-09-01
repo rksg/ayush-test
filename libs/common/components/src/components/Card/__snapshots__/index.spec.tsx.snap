@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Card component should render card with grey background 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-3 gHqQDa"
+    type="solid-bg"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+            />
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        test
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Card component should render card with no border 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-3 dGuEbi"
+    type="no-border"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+            />
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        test
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

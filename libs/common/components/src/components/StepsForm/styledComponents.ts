@@ -1,6 +1,6 @@
 
-import { Col, Typography } from 'antd'
-import styled, { css }     from 'styled-components/macro'
+import { Typography }  from 'antd'
+import styled, { css } from 'styled-components/macro'
 
 const stepCompletedStyle = css`
   .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
@@ -40,13 +40,11 @@ export const Wrapper = styled.section<{ editMode?: boolean }>`
     var(--acx-steps-form-container-margin)
   ;
 
+  --acx-steps-form-actions-vertical-space: 12px;
+
   .ant-pro-steps-form {
     position: relative;
     max-width: var(--acx-steps-form-max-width);
-    // props enable the ActionsContainer to be sticky when use scroll
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: start;
   }
   .ant-pro-steps-form-step {
     position: initial;
@@ -163,42 +161,32 @@ export const StepsContainer = styled.div`
   height: 100%;
   width: 100%;
   max-width: var(--acx-steps-form-steps-container-max-width);
-  background-color: var(--acx-neutrals-10);
+  background-color: var(--acx-primary-white);
   z-index: 1;
 `
 
 export const ActionsContainer = styled.div`
-  --acx-steps-form-steps-action-container-min-width: calc(
-    100vw -
-    var(--acx-sider-width) -
-    var(--acx-content-horizontal-space) -
-    var(--acx-steps-form-container-margin)
-  );
-  .ant-pro-basicLayout.sider-collapsed & {
-    --acx-steps-form-steps-action-container-min-width: calc(
-      100vw -
-    var(--acx-sider-collapsed-width) -
-      var(--acx-content-horizontal-space) -
-      var(--acx-steps-form-container-margin)
-    );
-  }
   position: fixed;
   bottom: 0;
-  padding-top: var(--acx-content-vertical-space);
-  padding-bottom: var(--acx-content-vertical-space);
+  padding-top: var(--acx-steps-form-actions-vertical-space);
+  padding-bottom: var(--acx-steps-form-actions-vertical-space);
   padding-left: calc(
     var(--acx-steps-form-steps-container-max-width) +
     var(--acx-steps-form-container-margin)
   );
-  width: var(--acx-steps-form-steps-action-container-min-width);
-  max-width: min(
-    var(--acx-steps-form-steps-action-container-min-width),
-    var(--acx-steps-form-max-width)
-  );
+  width: 100vw;
   display: flex;
   justify-content: flex-start;
-  background-color: var(--acx-neutrals-10);
-  z-index: 3; // to have it appear above other content
+  z-index: 3;
+  &::before {
+    content: '';
+    position: fixed;
+    margin-top: calc(var(--acx-steps-form-actions-vertical-space) * -1);
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--acx-neutrals-10);
+  }
 `
 
 export const Container = styled.div`
@@ -210,7 +198,7 @@ export const Container = styled.div`
       var(--acx-steps-form-container-margin)
     );
     margin-bottom: calc(
-      var(--acx-steps-form-container-margin) +
+      var(--acx-steps-form-actions-vertical-space) * 2 +
       32px // button height
     );
     margin-right: 0;
@@ -220,14 +208,3 @@ export const Container = styled.div`
   }
 `
 
-export const FormContainer = styled(Col)<{ $state: 'active' | 'finish' | 'wait' }>`
-  ${props => props.$state === 'wait' ? css`
-    > * { display: none; }
-    > .ant-typography:first-child { display: block; }
-    > .ant-row:not(.ant-form-item) {
-      display: block;
-      .ant-col > * { display: none; }
-      .ant-col:first-child > .ant-typography { display: block; }
-    }
-  ` : ''}
-`

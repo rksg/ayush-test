@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useSplitTreatment }                                  from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }                                     from '@acx-ui/rc/utils'
 import { Provider }                                           from '@acx-ui/store'
 import { render, screen, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
@@ -12,13 +13,23 @@ jest.mock('./App/Dashboard', () => () => {
 })
 jest.mock('analytics/Routes', () => () => {
   return <div data-testid='analytics' />
-},{ virtual: true })
+}, { virtual: true })
 jest.mock('rc/Routes', () => () => {
-  return <div data-testid='networks' />
+  return (
+    <>
+      <div data-testid='networks' />
+      <div data-testid='services' />
+    </>
+  )
 },{ virtual: true })
-jest.mock('./App/Venues/Routes', () => () => {
-  return <div data-testid='venues' />
-},{ virtual: true })
+jest.mock('./App/Venues/VenuesTable', () => ({
+  VenuesTable: () => {
+    return <div data-testid='venues' />
+  }
+}), { virtual: true })
+jest.mock('msp/Routes', () => () => {
+  return <div data-testid='msp' />
+}, { virtual: true })
 
 describe('AllRoutes', () => {
   beforeEach(() => {
@@ -54,13 +65,48 @@ describe('AllRoutes', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByTestId('networks')
   })
-  test('should navigate to venues/*', async () => {
+
+  test('should navigate to services/* if the feature flag is on', async () => {
+    jest.mocked(useSplitTreatment).mockReturnValue(true)
+
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/venues/some-page',
+        path: '/t/tenantId/services/some-page',
         wrapRoutes: false
       }
     })
+
+    await screen.findByTestId('services')
+  })
+
+  test('should not navigate to services/* if the feature flag is off', async () => {
+    jest.mocked(useSplitTreatment).mockReturnValue(false)
+
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/services/some-page',
+        wrapRoutes: false
+      }
+    })
+
+    await screen.findByText('Services is not enabled')
+  })
+
+  test('should navigate to venues/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/venues'
+      }
+    })
     await screen.findByTestId('venues')
+  })
+
+  test('should navigate to msp pages', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/v/tenantId/dashboard'
+      }
+    })
+    expect(await screen.findByTestId('msp')).toBeVisible()
   })
 })

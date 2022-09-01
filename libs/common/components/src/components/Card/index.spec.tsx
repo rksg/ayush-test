@@ -15,26 +15,6 @@ describe('Card component', () => {
     render(<Card title='title' subTitle='sub title' />)
     expect(screen.getByText('sub title')).toBeVisible()
   })
-  it('should render card with tabs', () => {
-    const tabs = [
-      {
-        value: 'tab1',
-        label: 'tab - 1',
-        component: <div>content1</div>
-      },
-      {
-        value: 'tab2',
-        label: 'tab - 2',
-        component: <div>content2</div>
-      }
-    ]
-    const onTabChange = jest.fn()
-    render(<Card tabs={tabs} defaultTab={'tab1'} onTabChange={onTabChange}/>)
-    expect(screen.getByText('content1')).toBeVisible()
-    act(() => screen.getByText('tab - 2').click())
-    expect(onTabChange).toBeCalledTimes(1)
-    expect(screen.getByText('content2')).toBeVisible()
-  })
   it('should render card with buttons', () => {
     const onExpandClick = jest.fn()
     const onMoreClick = jest.fn()
@@ -45,5 +25,13 @@ describe('Card component', () => {
     act(() => screen.getByTitle('More').click())
     expect(onExpandClick).toBeCalledTimes(1)
     expect(onMoreClick).toBeCalledTimes(1)
+  })
+  it('should render card with no border', () => {
+    const { asFragment } = render(<Card type='no-border'>test</Card>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render card with grey background', () => {
+    const { asFragment } = render(<Card type='solid-bg'>test</Card>)
+    expect(asFragment()).toMatchSnapshot()
   })
 })
