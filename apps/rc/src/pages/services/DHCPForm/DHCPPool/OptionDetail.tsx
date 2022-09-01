@@ -1,10 +1,10 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
-import { Col, Form, Input, Row, Switch } from 'antd'
-import _ from 'lodash'
-import { useIntl } from 'react-intl'
-import { Modal } from '@acx-ui/components'
+import { Col, Form, Input, Row } from 'antd'
+import _                         from 'lodash'
+import { useIntl }               from 'react-intl'
 
+import { Modal, StepsFormInstance } from '@acx-ui/components'
 import {
   Button,
   Loader,
@@ -12,19 +12,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery } from '@acx-ui/rc/services'
-import { useTableQuery, DHCPOption } from '@acx-ui/rc/utils'
+import { DHCPOption } from '@acx-ui/rc/utils'
 
-
-const defaultPayload = {
-  searchString: '',
-  fields: [
-    'name',
-    'id',
-    'format',
-    'value'
-  ]
-}
 
 const defaultArray: DHCPOption[] = []
 
@@ -38,22 +27,23 @@ const getNetworkId = () => {
   return 'UNKNOWN-NETWORK-ID'
 }
 
-export function OptionDetail() {
+export function OptionDetail () {
   const form = Form.useFormInstance()
-  const options = Form.useWatch('options')
-
   const { $t } = useIntl()
 
-
+  const formRef = useRef<StepsFormInstance<DHCPOption>>()
 
   const [tableData, setTableData] = useState(defaultArray)
 
   const handleSaveData = () => {
-
-    form.setFieldsValue({ dhcpOptions: [] })
+    const dhcpOption = formRef.current?.getFieldsValue()
+    form.getFieldsValue()['dhcpOptions'].push({ ...dhcpOption })
+    setTableData([].concat(form.getFieldsValue()['dhcpOptions']))
+    onClose()
   }
   const [visible, setVisible] = useState(false)
   const onClose = () => {
+    formRef?.current?.resetFields()
     setVisible(false)
   }
   const onOpen = () => {
@@ -67,7 +57,7 @@ export function OptionDetail() {
       {$t({ defaultMessage: 'Save' })}
     </Button>
   ]
-  const getContent=<StepsForm.StepForm>
+  const getContent=visible?<StepsForm.StepForm formRef={formRef}>
     <Row gutter={20}>
       <Col span={12}>
         <Form.Item
@@ -83,11 +73,14 @@ export function OptionDetail() {
         <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Option Name' })}
+          rules={[
+            { required: true }
+          ]}
           children={<Input />}
         />
         <Form.Item
           name='format'
-          label={$t({ defaultMessage: 'IP Address' })}
+          label={$t({ defaultMessage: 'Option Format' })}
           rules={[
             { required: true }
           ]}
@@ -95,7 +88,7 @@ export function OptionDetail() {
         />
         <Form.Item
           name='value'
-          label={$t({ defaultMessage: 'Subnet Mask' })}
+          label={$t({ defaultMessage: 'Option value' })}
           rules={[
             { required: true },
             { validator: (_, value) => { return value ? Promise.resolve() : Promise.reject() } }
@@ -104,14 +97,14 @@ export function OptionDetail() {
         />
       </Col>
     </Row>
-  </StepsForm.StepForm>
+  </StepsForm.StepForm>:null
   useEffect(() => {
-    setTableData(form.getFieldsValue()['dhcpOptions'] || [
-      { id: 1, name: 'RLP Server', format: 'Hex', value: 'AA:BB:CC:DD:EE:FF' },
-      { id: 2, name: 'NTP Servers', format: 'IP', value: '999.999.999.999/99' },
-      { id: 3, name: 'DHCP Message', format: 'ASCII', value: 'Abdelfafdd' }
-    ])
-  }, [form])
+    if(form.getFieldsValue()['dhcpOptions'])
+    {
+      setTableData(form.getFieldsValue()['dhcpOptions'])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form, form.getFieldsValue()['dhcpOptions']])
 
   const columns: TableProps<DHCPOption>['columns'] = [
     {
@@ -164,7 +157,7 @@ export function OptionDetail() {
         title={$t({ defaultMessage: 'DHCP option' })}
         visible={visible}
         onCancel={onClose}
-        width={800}
+        width={400}
         footer={footer}
       >
         {getContent}

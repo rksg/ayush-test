@@ -7,7 +7,7 @@ export interface CreateDHCPFormFields {
   name: string;
   tags: string[];
   dhcpConfig: DHCPConfigTypeEnum;
-  dhcpPools?: DHCPPool[];
+  dhcpPools: DHCPPool[];
   venues: DHCPVenue[];
 }
 

@@ -36,7 +36,13 @@ export function DHCPForm () {
   // const [dhcpConfigType, setDHCPConfigType] = useState<DHCPConfigTypeEnum | undefined>()
 
   //API Call
-  const { data } = useGetDHCPQuery({ params })
+  const [data, updateData] = useState<DHCPSaveData>({
+    name: '',
+    tags: [],
+    dhcpConfig: DHCPConfigTypeEnum.SIMPLE,
+    venues: [],
+    dhcpPools: []
+  })
   const [
     saveDHCP
   ] = useSaveDHCPMutation()
@@ -99,7 +105,7 @@ export function DHCPForm () {
         ]}
       />
 
-      <DHCPFormContext.Provider value={{ editMode, data }}>
+      <DHCPFormContext.Provider value={{ editMode, data, updateData }}>
         <StepsForm<DHCPSaveData>
           formRef={formRef}
           editMode={editMode}

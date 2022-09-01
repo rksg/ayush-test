@@ -1,5 +1,5 @@
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
 
 import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
 import { useIntl }     from 'react-intl'
@@ -10,12 +10,13 @@ import TextArea from 'antd/lib/input/TextArea'
 import PoolDetailContext from './PoolDetailContext'
 import { Drawer } from '@acx-ui/components'
 import { OptionDetail } from './OptionDetail'
+import DHCPFormContext from '../DHCPFormContext'
 
 export function PoolDetail() {
   const { $t } = useIntl()
   const { Option } = Select
   const formRef = useRef<StepsFormInstance<DHCPPool>>()
-  const [state] = useState()
+  const form = Form.useFormInstance()
   const [saveState, updateSaveState] = useState<DHCPPool>({
     name: '',
     allowWired: false,
@@ -27,13 +28,9 @@ export function PoolDetail() {
     leaseTime: 24,
     vlan: 300
   })
-  const transferProps = (props: Partial<typeof state>) => {
-
-  }
-  const data = { ...saveState }
-  const checkprops = () =>{
-    const aa = formRef
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const dataPool = { ...saveState }
+  const { updateData, data } = useContext(DHCPFormContext)
   const nameValidator = async (value: string) => {
     // const payload = { ...serviceListPayload, searchString: value }
     // const list = (await getServiceList({ params, payload }, true)
@@ -41,18 +38,30 @@ export function PoolDetail() {
     // return checkObjectNotExists(list, value, 'Service')
     return Promise.resolve()
   }
-  const updateSaveData = (saveData: Partial<DHCPPool>) => {
-    updateSaveState({ ...saveState, ...saveData })
+  const updateSaveData = () => {
+    const dhcpPool = formRef.current?.getFieldsValue() || dataPool
+    data?.dhcpPools?.push({ ...dhcpPool })
+
+    updateData(Object.assign({}, { ...data,...form.getFieldsValue() }))
+    onClose()
   }
 
   const [visible, setVisible] = useState(false)
   const onClose = () => {
+    formRef?.current?.resetFields()
     setVisible(false)
   }
   const onOpen = () => {
     setVisible(true)
   }
-  const getContent =
+  useEffect(() => {
+    if (dataPool) {
+      formRef?.current?.resetFields()
+      formRef?.current?.setFieldsValue(dataPool)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataPool])
+  const getContent = visible?
     <StepsForm.StepForm formRef={formRef}>
       <Row gutter={20}>
         <Col span={12}>
@@ -152,11 +161,11 @@ export function PoolDetail() {
         <Button key='Cancel' type='primary' onClick={onClose}>
           {$t({ defaultMessage: 'Cancel' })}
         </Button>
-        <Button key='add' type='primary' onClick={() => checkprops()}>
+        <Button key='add' type='primary' onClick={updateSaveData}>
           {$t({ defaultMessage: 'Add' })}
         </Button>
       </Row>
-    </StepsForm.StepForm>
+    </StepsForm.StepForm>:null
 
   return (
     <
