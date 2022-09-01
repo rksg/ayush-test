@@ -3,7 +3,7 @@
 exports[`Table component dynamically scales based on scroll prop 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 bqzTvn"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 bAhUwj"
   >
     <div
       class="ant-pro-table"
@@ -331,7 +331,7 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
 exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 ezkWtT"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 jxBzxC"
   >
     <div
       class="ant-pro-table"
@@ -511,7 +511,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 bqzTvn"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 bAhUwj"
   >
     <div
       class="ant-pro-table"
@@ -854,7 +854,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 fFDsow"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 lmaGJs"
   >
     <div
       class="ant-pro-table"
@@ -1298,7 +1298,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 fFDsow"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 lmaGJs"
   >
     <div
       class="ant-pro-table"
@@ -1841,7 +1841,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 fFDsow"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 lmaGJs"
   >
     <div
       class="ant-pro-table"

@@ -120,17 +120,19 @@ const tallStyle = css<StyledTable>`
     .ant-table {
       &-thead > tr:last-child > th,
       &-thead > tr:first-child > th[rowspan] {
-        border-width: 0px 1px;
+        border-width: 1px;
+        border-top-width: 0px;
         border-style: solid;
         border-color: transparent;
         border-bottom-color: var(--acx-neutrals-30);
 
-        &:not(.ant-table-cell-fix-right):hover {
+        &:not(.ant-table-cell-fix-right):not(.ant-table-selection-column):hover {
           background: var(--acx-accents-orange-10);
           border-color: var(--acx-accents-orange-30);
           border-bottom-color: var(--acx-neutrals-30);
         }
 
+        &.ant-table-selection-column .react-resizable-handle,
         &.ant-table-cell-fix-right .react-resizable-handle {
           display: none;
         }
@@ -138,6 +140,16 @@ const tallStyle = css<StyledTable>`
 
       &-thead > tr > th {
         &.react-resizable:not(.ant-table-selection-column){
+          -webkit-user-select: none;
+          .react-resizable-handle {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            width: 20px;
+            height: 100%;
+            cursor: col-resize;
+          }
           &[colspan] .react-resizable-handle {
             display: none;
           }
@@ -283,20 +295,6 @@ export const Wrapper = styled.div<StyledTable>`
         padding: 0px var(--acx-table-cell-horizontal-space);
         &:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
           width: 0px;
-        }
-
-        &.react-resizable:not(.ant-table-selection-column) {
-          -webkit-user-select: none;
-          }
-          .react-resizable-handle {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            z-index: 1;
-            width: 20px;
-            height: 100%;
-            cursor: col-resize;
-          }
         }
 
         &.ant-table-column-has-sorters {
