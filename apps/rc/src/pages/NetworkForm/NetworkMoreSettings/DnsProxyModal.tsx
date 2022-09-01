@@ -31,7 +31,7 @@ interface DnsProxyListData {
   editModalVisible: boolean,
   ipList: string[],
   disabledSaveBtn: boolean,
-  disabledAddBtn: boolean  
+  disabledAddBtn: boolean
 }
 
 const state: DnsProxyListData = {
@@ -56,7 +56,7 @@ function useColumns () {
     key: 'domainName'
   }, {
     title: $t({ defaultMessage: 'IP Addresses' }),
-    dataIndex: 'ipList', 
+    dataIndex: 'ipList',
     key: 'ipList',
     render: (data) => (data as string[])?.join('; ')
   }]
@@ -102,7 +102,7 @@ export function DnsProxyModal () {
     <>
       <Button
         type='link'
-        style={{ textAlign: 'left', display: 'inline', marginLeft: '15px' }}
+        style={{ marginInlineStart: '15px' }}
         onClick={() => setModalState({
           ...modalState,
           dnsModalvisible: true
@@ -275,13 +275,13 @@ export function DnsProxyModalRuleModal (props: {
           const editRowKey = modalState?.editRow?.key
           const domainList = dnsProxyList.filter(list => list.key !== editRowKey)
             .map(list => list.domainName)
-          return checkObjectNotExists(intl, domainList, value, 
+          return checkObjectNotExists(intl, domainList, value,
             intl.$t({ defaultMessage: 'Domain Name' }), 'domainName')
         } },
         { validator: (_, value) => domainNameRegExp(intl, value) },
         { validator: (_, value) => {
           const excludedDomain = ['my.ruckus', 'scg.ruckuswireless.com']
-          return checkItemNotIncluded(intl, excludedDomain, value.toLowerCase(), 
+          return checkItemNotIncluded(intl, excludedDomain, value.toLowerCase(),
             intl.$t({ defaultMessage: 'Domain Name' }),
             excludedDomain.map(item => `"${item}"`).join(' or '))
         } }

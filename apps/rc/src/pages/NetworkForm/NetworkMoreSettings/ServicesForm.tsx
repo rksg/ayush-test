@@ -157,16 +157,14 @@ export function ServicesForm () {
             children={<Switch />}
           />
           {enableWifiCalling &&
-            <Button type='link'
-              style={{
-                textAlign: 'left'
-              }}
-              disabled={true}>
-              {$t({ defaultMessage: 'Select profiles' })}
-            </Button>
+            <div>
+              <Button type='link'
+                disabled={true}>
+                {$t({ defaultMessage: 'Select profiles' })}
+              </Button>
+            </div>
           }
         </UI.FieldLabel>
-
       </UI.FieldLabel>
 
       <ClientIsolationForm/>
