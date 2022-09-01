@@ -3,8 +3,11 @@ import { find }              from 'lodash'
 import { useIntl }           from 'react-intl'
 import { MessageDescriptor } from 'react-intl'
 
-import { cssNumber, cssStr }                                       from '../../theme/helper'
-import { tooltipOptions, donutChartTooltipFormatter, EventParams } from '../Chart/helper'
+import { cssNumber, cssStr } from '../../theme/helper'
+import {
+  tooltipOptions,
+  donutChartTooltipFormatter,
+  EventParams } from '../Chart/helper'
 
 import { SubTitle } from './styledComponents'
 
@@ -44,7 +47,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   subTitle?: string,
   subTitleBlockHeight?: number
   unit?: MessageDescriptor
-  subtitle?: string,
+  value?: string,
   dataFormatter?: (value: unknown) => string | null,
   onClick?: (params: EventParams) => void
   style: EChartsReactProps['style'] & { width: number, height: number }
@@ -93,7 +96,7 @@ export function DonutChart ({
         lineHeight: cssNumber('--acx-subtitle-6-line-height'),
         fontWeight: cssNumber('--acx-subtitle-6-font-weight')
       },
-      subtitle: {
+      value: {
         ...commonStyles
       }
     },
@@ -104,7 +107,7 @@ export function DonutChart ({
         lineHeight: cssNumber('--acx-body-2-line-height'),
         fontWeight: cssNumber('--acx-body-font-weight')
       },
-      subtitle: {
+      value: {
         ...commonFontStyle,
         fontSize: cssNumber('--acx-subtitle-1-font-size'),
         lineHeight: cssNumber('--acx-subtitle-1-line-height'),
@@ -127,8 +130,8 @@ export function DonutChart ({
     title: {
       show: true,
       text: props.title,
-      subtext: props.subtitle
-        ? props.subtitle
+      subtext: props.value
+        ? props.value
         : props.showTotal ? `${dataFormatter ? dataFormatter(sum) : sum}` : undefined,
       left: props.showLegend && !isEmpty ? '28%' : 'center',
       top: 'center',
@@ -136,7 +139,7 @@ export function DonutChart ({
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
       itemGap: 4,
       textStyle: styles[props.type].title,
-      subtextStyle: styles[props.type].subtitle
+      subtextStyle: styles[props.type].value
     },
     legend: {
       show: props.showLegend,
@@ -214,7 +217,11 @@ export function DonutChart ({
         opts={{ renderer: 'svg' }}
         option={option}
         onEvents={{ click: onChartClick(props.onClick) }} />
-      <SubTitle width={props.style.width}>{props.subTitle}</SubTitle>
+      {
+        props.subTitle
+          ? <SubTitle width={props.style.width}>{props.subTitle}</SubTitle>
+          : null
+      }
     </>
   )
 }

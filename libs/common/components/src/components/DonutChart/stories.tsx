@@ -118,7 +118,6 @@ storiesOf('Donut Chart', module)
               dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
               data={topSwitchModels}/>
           )}
-
         </AutoSizer>
       </Card>
     </div>})

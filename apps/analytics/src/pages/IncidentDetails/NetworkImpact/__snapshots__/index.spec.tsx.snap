@@ -112,56 +112,52 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       />
                       <g>
                         <path
-                          d="M140 12.5L140 30Z"
+                          d="M140 10L140 27.5Z"
                           fill="#D61119"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
                         />
                         <path
-                          d="M140 12.5L140 30Z"
+                          d="M140 10L140 27.5Z"
                           fill="#F9C34B"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
                         />
                         <path
-                          d="M-2 -10.5l4 0l0 1l-4 0Z"
+                          d="M-7 -5l14 0l0 44l-14 0Z"
+                          fill="rgb(0,0,0)"
+                          fill-opacity="0"
+                          stroke="#ccc"
+                          stroke-width="0"
+                          transform="translate(140 108)"
+                        />
+                        <path
+                          d="M-2 0l4 0l0 10l-4 0Z"
                           fill="none"
-                          transform="translate(140 125)"
+                          transform="translate(140 108)"
                         />
                         <text
                           dominant-baseline="central"
-                          fill="#333"
-                          fill-opacity="0"
-                          paint-order="stroke"
-                          stroke="rgb(255,255,255)"
-                          stroke-miterlimit="2"
-                          stroke-opacity="0"
-                          stroke-width="2"
+                          fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="middle"
-                          transform="translate(140 125)"
-                          y="-10"
+                          transform="translate(140 108)"
+                          y="5"
                         >
                           WLAN
                         </text>
                         <path
-                          d="M-0.5 -0.5l1 0l0 11l-1 0Z"
+                          d="M-0.5 14l1 0l0 20l-1 0Z"
                           fill="none"
-                          transform="translate(140 125)"
+                          transform="translate(140 108)"
                         />
                         <text
                           dominant-baseline="central"
-                          fill="#333"
-                          fill-opacity="0"
-                          paint-order="stroke"
-                          stroke="rgb(255,255,255)"
-                          stroke-miterlimit="2"
-                          stroke-opacity="0"
-                          stroke-width="2"
+                          fill="#333333"
                           style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                           text-anchor="middle"
-                          transform="translate(140 125)"
-                          y="10"
+                          transform="translate(140 108)"
+                          y="24"
                         >
                           3
                         </text>
@@ -272,50 +268,46 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       />
                       <g>
                         <path
-                          d="M140 12.5L140 30Z"
+                          d="M140 10L140 27.5Z"
                           fill="#D61119"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
                         />
                         <path
-                          d="M-3 -10.5l6 0l0 1l-6 0Z"
+                          d="M-8 -5l16 0l0 44l-16 0Z"
+                          fill="rgb(0,0,0)"
+                          fill-opacity="0"
+                          stroke="#ccc"
+                          stroke-width="0"
+                          transform="translate(140 108)"
+                        />
+                        <path
+                          d="M-3 0l6 0l0 10l-6 0Z"
                           fill="none"
-                          transform="translate(140 125)"
+                          transform="translate(140 108)"
                         />
                         <text
                           dominant-baseline="central"
-                          fill="#333"
-                          fill-opacity="0"
-                          paint-order="stroke"
-                          stroke="rgb(255,255,255)"
-                          stroke-miterlimit="2"
-                          stroke-opacity="0"
-                          stroke-width="2"
+                          fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="middle"
-                          transform="translate(140 125)"
-                          y="-10"
+                          transform="translate(140 108)"
+                          y="5"
                         >
                           Reason
                         </text>
                         <path
-                          d="M-0.5 -0.5l1 0l0 11l-1 0Z"
+                          d="M-0.5 14l1 0l0 20l-1 0Z"
                           fill="none"
-                          transform="translate(140 125)"
+                          transform="translate(140 108)"
                         />
                         <text
                           dominant-baseline="central"
-                          fill="#333"
-                          fill-opacity="0"
-                          paint-order="stroke"
-                          stroke="rgb(255,255,255)"
-                          stroke-miterlimit="2"
-                          stroke-opacity="0"
-                          stroke-width="2"
+                          fill="#333333"
                           style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                           text-anchor="middle"
-                          transform="translate(140 125)"
-                          y="10"
+                          transform="translate(140 108)"
+                          y="24"
                         >
                           2
                         </text>
@@ -426,57 +418,53 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       />
                       <g>
                         <path
-                          d="M140 12.5L140 30Z"
+                          d="M140 10L140 27.5Z"
                           fill="#D61119"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
                         />
                         <path
-                          d="M140 12.5L140 30Z"
+                          d="M140 10L140 27.5Z"
                           fill="#F9C34B"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
                         />
                         <path
-                          d="M-10 -10.5l20 0l0 1l-20 0Z"
+                          d="M-15 -5l30 0l0 44l-30 0Z"
+                          fill="rgb(0,0,0)"
+                          fill-opacity="0"
+                          stroke="#ccc"
+                          stroke-width="0"
+                          transform="translate(140 108)"
+                        />
+                        <path
+                          d="M-10 0l20 0l0 10l-20 0Z"
                           fill="none"
-                          transform="translate(140 125)"
+                          transform="translate(140 108)"
                         />
                         <text
                           dominant-baseline="central"
-                          fill="#333"
-                          fill-opacity="0"
-                          paint-order="stroke"
-                          stroke="rgb(255,255,255)"
-                          stroke-miterlimit="2"
-                          stroke-opacity="0"
-                          stroke-width="2"
+                          fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="middle"
-                          transform="translate(140 125)"
+                          transform="translate(140 108)"
                           xml:space="preserve"
-                          y="-10"
+                          y="5"
                         >
                           Client Manufacturers
                         </text>
                         <path
-                          d="M-0.5 -0.5l1 0l0 11l-1 0Z"
+                          d="M-0.5 14l1 0l0 20l-1 0Z"
                           fill="none"
-                          transform="translate(140 125)"
+                          transform="translate(140 108)"
                         />
                         <text
                           dominant-baseline="central"
-                          fill="#333"
-                          fill-opacity="0"
-                          paint-order="stroke"
-                          stroke="rgb(255,255,255)"
-                          stroke-miterlimit="2"
-                          stroke-opacity="0"
-                          stroke-width="2"
+                          fill="#333333"
                           style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                           text-anchor="middle"
-                          transform="translate(140 125)"
-                          y="10"
+                          transform="translate(140 108)"
+                          y="24"
                         >
                           2
                         </text>
@@ -587,56 +575,52 @@ exports[`NetworkImpact should match snapshot 1`] = `
                       />
                       <g>
                         <path
-                          d="M140 12.5L140 30Z"
+                          d="M140 10L140 27.5Z"
                           fill="#D61119"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
                         />
                         <path
-                          d="M140 12.5L140 30Z"
+                          d="M140 10L140 27.5Z"
                           fill="#F9C34B"
                           stroke="#FFFFFF"
                           stroke-linejoin="round"
                         />
                         <path
-                          d="M-2.5 -10.5l5 0l0 1l-5 0Z"
+                          d="M-7.5 -5l15 0l0 44l-15 0Z"
+                          fill="rgb(0,0,0)"
+                          fill-opacity="0"
+                          stroke="#ccc"
+                          stroke-width="0"
+                          transform="translate(140 108)"
+                        />
+                        <path
+                          d="M-2.5 0l5 0l0 10l-5 0Z"
                           fill="none"
-                          transform="translate(140 125)"
+                          transform="translate(140 108)"
                         />
                         <text
                           dominant-baseline="central"
-                          fill="#333"
-                          fill-opacity="0"
-                          paint-order="stroke"
-                          stroke="rgb(255,255,255)"
-                          stroke-miterlimit="2"
-                          stroke-opacity="0"
-                          stroke-width="2"
+                          fill="#333333"
                           style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                           text-anchor="middle"
-                          transform="translate(140 125)"
-                          y="-10"
+                          transform="translate(140 108)"
+                          y="5"
                         >
                           Radio
                         </text>
                         <path
-                          d="M-0.5 -0.5l1 0l0 11l-1 0Z"
+                          d="M-0.5 14l1 0l0 20l-1 0Z"
                           fill="none"
-                          transform="translate(140 125)"
+                          transform="translate(140 108)"
                         />
                         <text
                           dominant-baseline="central"
-                          fill="#333"
-                          fill-opacity="0"
-                          paint-order="stroke"
-                          stroke="rgb(255,255,255)"
-                          stroke-miterlimit="2"
-                          stroke-opacity="0"
-                          stroke-width="2"
+                          fill="#333333"
                           style="font-size:16px;font-family:'Montserrat', sans-serif;font-weight:600;"
                           text-anchor="middle"
-                          transform="translate(140 125)"
-                          y="10"
+                          transform="translate(140 108)"
+                          y="24"
                         >
                           2
                         </text>

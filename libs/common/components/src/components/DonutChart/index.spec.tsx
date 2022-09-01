@@ -121,13 +121,13 @@ describe('Donut Chart - large', () => {
     expect(screen.getByText('Donut Chart').getAttribute('style'))
       .toEqual("font-size:16px;font-family:'Open Sans', sans-serif;font-weight:400;")
   })
-  it('should render the chart with title and subtitle passed as prop, with Labels', async () => {
+  it('should render the chart with title and value passed as prop, with Labels', async () => {
     const { asFragment } = render(<DonutChart
       style={{ width: 238, height: 176 }}
       data={data}
       type={'large'}
       title='Some Title'
-      subtitle='Some Subtitle'
+      value='100'
       showLabel={true}
       showLegend={false}
       showTooltipPercentage={true}
@@ -135,7 +135,7 @@ describe('Donut Chart - large', () => {
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('Some Title').getAttribute('style'))
       .toEqual("font-size:16px;font-family:'Open Sans', sans-serif;font-weight:400;")
-    expect(screen.getByText('Some Subtitle').getAttribute('style'))
+    expect(screen.getByText('100').getAttribute('style'))
       .toEqual("font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;")
   })
 })

@@ -83,7 +83,7 @@ describe('donutChartTooltipFormatter', () => {
       other {units}
     }` })
     const formatter = jest.fn(value => `formatted-${value}`)
-    expect(renderHook(()=>donutChartTooltipFormatter(
+    expect(renderHook(()=>donutChartTooltipFormatter(false,
       formatter, unit, useIntl())(singleparameters)).result.current).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(1)
   })
