@@ -94,48 +94,85 @@ function SaveAsAcProfileButton () {
   )
 }
 
+function getAccessControlProfile <
+  Key extends keyof Omit<AccessControlProfile, 'name' | 'id' | 'rateLimiting'>,
+  Policies extends Array<{ id: string, name: string }>
+> (
+  policies: Policies | undefined,
+  accessControlProfile: AccessControlProfile | undefined,
+  policyKey: Key
+) {
+  if (!accessControlProfile) return transformDisplayText()
+  let name
+  const policy = accessControlProfile[policyKey]
+  if (policy && policy.enabled && policies) {
+    name = policies.find(item => item.id === policy.id)?.name
+  }
+  return transformDisplayText(name)
+}
+
 function SelectAccessProfileProfile () {
   const { $t } = useIntl()
-  const { layer2SelectList } = useL2AclPolicyListQuery({
+  const [state, updateState] = useState({
+    selectedAccessControlProfile: undefined as AccessControlProfile | undefined
+  })
+
+  const { selectedLayer2 } = useL2AclPolicyListQuery({
     params: useParams(),
     payload: listPayload
   }, {
     selectFromResult ({ data }) {
       return {
-        layer2SelectList: data?.data
+        selectedLayer2: getAccessControlProfile(
+          data?.data,
+          state.selectedAccessControlProfile,
+          'l2AclPolicy'
+        )
       }
     }
   })
 
-  const { layer3SelectList } = useL3AclPolicyListQuery({
+  const { selectedLayer3 } = useL3AclPolicyListQuery({
     params: useParams(),
     payload: listPayload
   }, {
     selectFromResult ({ data }) {
       return {
-        layer3SelectList: data?.data
+        selectedLayer3: getAccessControlProfile(
+          data?.data,
+          state.selectedAccessControlProfile,
+          'l3AclPolicy'
+        )
       }
     }
   })
 
-  const { devicePolicySelectList } = useDevicePolicyListQuery({
+  const { selectedDevicePolicy } = useDevicePolicyListQuery({
     params: useParams(),
     payload: listPayload
   }, {
     selectFromResult ({ data }) {
       return {
-        devicePolicySelectList: data?.data
+        selectedDevicePolicy: getAccessControlProfile(
+          data?.data,
+          state.selectedAccessControlProfile,
+          'devicePolicy'
+        )
       }
     }
   })
 
-  const { applicationPolicySelectList } = useApplicationPolicyListQuery({
+  const { selectedApplicationPolicy } = useApplicationPolicyListQuery({
     params: useParams(),
     payload: listPayload
   }, {
     selectFromResult ({ data }) {
       return {
-        applicationPolicySelectList: data?.data
+        selectedApplicationPolicy: getAccessControlProfile(
+          data?.data,
+          state.selectedAccessControlProfile,
+          'applicationPolicy'
+        )
       }
     }
   })
@@ -154,63 +191,12 @@ function SelectAccessProfileProfile () {
       }
     })
 
-  const [state, updateState] = useState({
-    selectedAccessControlProfile: undefined as AccessControlProfile | undefined
-  })
-
   const onAccessPolicyChange = function (id: string) {
     const data = id ? accessControlList?.find(profile => profile.id === id) : undefined
     updateState({
       selectedAccessControlProfile: data
     })
   }
-
-  const getL2PolicyNameByAccessControlPorfile =
-    function (accessControlProfile: AccessControlProfile | undefined) {
-      if (!accessControlProfile) return transformDisplayText()
-      let name
-      const { l2AclPolicy } = accessControlProfile
-      if (l2AclPolicy && l2AclPolicy.enabled && layer2SelectList) {
-        name = layer2SelectList.find(policy => policy.id === l2AclPolicy.id)?.name
-      }
-      return transformDisplayText(name)
-    }
-
-  const getL3PolicyNameByAccessControlPorfile =
-    function (accessControlProfile: AccessControlProfile | undefined) {
-      if (!accessControlProfile) return transformDisplayText()
-      let name
-      const { l3AclPolicy } = accessControlProfile
-
-      if (l3AclPolicy && l3AclPolicy.enabled && layer3SelectList) {
-        name = layer3SelectList.find(policy => policy.id === l3AclPolicy.id)?.name
-      }
-      return transformDisplayText(name)
-    }
-
-  const getDevicePolicyNameByAccessControlPorfile =
-    function (accessControlProfile: AccessControlProfile | undefined) {
-      if (!accessControlProfile) return transformDisplayText()
-      let name
-      const { devicePolicy } = accessControlProfile
-
-      if (devicePolicy && devicePolicy.enabled && devicePolicySelectList) {
-        name = devicePolicySelectList.find(policy => policy.id === devicePolicy.id)?.name
-      }
-      return transformDisplayText(name)
-    }
-
-  const getApplicationPolicyNameByAccessControlPorfile =
-    function (accessControlProfile: AccessControlProfile | undefined) {
-      if (!accessControlProfile) return transformDisplayText()
-      let name
-      const { applicationPolicy } = accessControlProfile
-
-      if (applicationPolicy && applicationPolicy.enabled && applicationPolicySelectList) {
-        name = applicationPolicySelectList.find(policy => policy.id === applicationPolicy.id)?.name
-      }
-      return transformDisplayText(name)
-    }
 
   const getLinkLimitByAccessControlPorfile =
     function (accessControlProfile: AccessControlProfile | undefined, type: string) {
@@ -225,7 +211,7 @@ function SelectAccessProfileProfile () {
   const [enableAccessControlProfile] = [useWatch('enableAccessControlProfile')]
   return (<>
     <UI.FieldLabel width='175px'>
-      Access Control
+      {$t({ defaultMessage: 'Access Control' })}
       <Form.Item
         name='enableAccessControlProfile'
         style={{ marginBottom: '10px' }}
@@ -253,23 +239,22 @@ function SelectAccessProfileProfile () {
 
     <UI.FieldLabel width='175px'>
       {$t({ defaultMessage: 'Layer 2' })}
-      <span>{getL2PolicyNameByAccessControlPorfile(state.selectedAccessControlProfile) }</span>
+      <span>{selectedLayer2}</span>
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
       {$t({ defaultMessage: 'Layer 3' })}
-      <span>{getL3PolicyNameByAccessControlPorfile(state.selectedAccessControlProfile)}</span>
+      <span>{selectedLayer3}</span>
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
       {$t({ defaultMessage: 'Device & OS' })}
-      <span>{getDevicePolicyNameByAccessControlPorfile(state.selectedAccessControlProfile)}</span>
+      <span>{selectedDevicePolicy}</span>
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'>
       {$t({ defaultMessage: 'Applications' })}
-      <span>{getApplicationPolicyNameByAccessControlPorfile
-      (state.selectedAccessControlProfile)}</span>
+      <span>{selectedApplicationPolicy}</span>
     </UI.FieldLabel>
 
     <UI.FieldLabel width='175px'
@@ -548,26 +533,14 @@ function Unlimited () {
 function RateSlider () {
   return (
     <Slider
+      tooltipVisible={false}
       style={{ width: '245px' }}
       defaultValue={20}
       min={1}
       max={200}
       marks={{
-        0: {
-          style: {
-            fontSize: '10px',
-            color: '#ACAEB0'
-          },
-          label: '1 Mbps'
-        },
-        200: {
-          style: {
-            width: '50px',
-            fontSize: '10px',
-            color: '#ACAEB0'
-          },
-          label: '200 Mbps'
-        }
+        0: { label: '1 Mbps' },
+        200: { label: '200 Mbps' }
       }}
     />
   )

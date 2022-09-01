@@ -46,6 +46,7 @@ export function LoadControlForm () {
         name='activatedInVenues'
       >
         <Slider
+          tooltipVisible={false}
           style={{ width: '240px' }}
           defaultValue={100}
           min={1}
@@ -77,26 +78,14 @@ export function LoadControlForm () {
 function RateSlider () {
   return (
     <Slider
+      tooltipVisible={false}
       style={{ width: '245px' }}
       defaultValue={20}
       min={1}
       max={200}
       marks={{
-        0: {
-          style: {
-            fontSize: '10px',
-            color: '#ACAEB0'
-          },
-          label: '1 Mbps'
-        },
-        200: {
-          style: {
-            width: '50px',
-            fontSize: '10px',
-            color: '#ACAEB0'
-          },
-          label: '200 Mbps'
-        }
+        0: { label: '1 Mbps' },
+        200: { label: '200 Mbps' }
       }}
     />
   )

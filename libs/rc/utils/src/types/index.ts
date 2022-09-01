@@ -7,11 +7,12 @@ import {
   GuestNetworkTypeEnum,
   WlanSecurityEnum
 } from '../constants'
-import { NetworkVenue } from '../models/network'
+
+import { NetworkVenue } from './network'
 
 export * from './ap'
 export * from './venue'
-export * from '../models/network'
+export * from './network'
 export * from './user'
 export * from './service'
 

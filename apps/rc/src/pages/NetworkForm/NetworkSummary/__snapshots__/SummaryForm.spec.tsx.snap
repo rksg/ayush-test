@@ -65,9 +65,9 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
             >
               <label
                 class=""
-                title="Info:"
+                title="Description:"
               >
-                Info
+                Description
               </label>
             </div>
             <div
@@ -399,9 +399,9 @@ exports[`SummaryForm should render cloudpath enabled successfully 1`] = `
             >
               <label
                 class=""
-                title="Info:"
+                title="Description:"
               >
-                Info
+                Description
               </label>
             </div>
             <div

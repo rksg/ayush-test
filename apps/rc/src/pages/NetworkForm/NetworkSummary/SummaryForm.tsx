@@ -71,7 +71,7 @@ export function SummaryForm (props: {
           </Subtitle>
           <Form.Item label={$t({ defaultMessage: 'Network Name:' })} children={summaryData.name} />
           <Form.Item
-            label={$t({ defaultMessage: 'Info:' })}
+            label={$t({ defaultMessage: 'Description:' })}
             children={transformDisplayText(summaryData.description)}
           />
           <Form.Item
