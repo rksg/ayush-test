@@ -3,7 +3,7 @@
 exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 kcPDPY"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 ezkWtT"
   >
     <div
       class="ant-pro-table"
@@ -45,21 +45,11 @@ exports[`Table component renders compact table 1`] = `
                           class="ant-table-thead"
                         >
                           <tr>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
                             >
                               Name
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
                             >
@@ -72,11 +62,6 @@ exports[`Table component renders compact table 1`] = `
                                 />
                               </span>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
                             >
@@ -198,7 +183,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 kEAiQO"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 bqzTvn"
   >
     <div
       class="ant-pro-table"
@@ -541,7 +526,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 Hvpxd"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 fFDsow"
   >
     <div
       class="ant-pro-table"
@@ -985,7 +970,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 Hvpxd"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 fFDsow"
   >
     <div
       class="ant-pro-table"
@@ -1528,7 +1513,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 Hvpxd"
+    class="styledComponents__Wrapper-sc-1abm7iv-6 fFDsow"
   >
     <div
       class="ant-pro-table"

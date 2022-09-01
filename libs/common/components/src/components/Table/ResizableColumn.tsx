@@ -23,7 +23,7 @@ export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
   return <Resizable
     width={width}
     height={0}
-    handle={<div className='react-resizable-handle' />}
+    handle={<div className='react-resizable-handle' onClick={e => { e.stopPropagation() }} />}
     onResize={(_: React.SyntheticEvent<Element>, callbackData: ResizeCallbackData)=>{
       onResize(callbackData.size.width)
       setWidth(callbackData.size.width)

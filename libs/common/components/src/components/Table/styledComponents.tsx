@@ -117,6 +117,34 @@ const tallStyle = css<StyledTable>`
       }
     `}
 
+    .ant-table {
+      &-thead > tr:last-child > th,
+      &-thead > tr:first-child > th[rowspan] {
+        border-width: 0px 1px;
+        border-style: solid;
+        border-color: transparent;
+        border-bottom-color: var(--acx-neutrals-30);
+
+        &:not(.ant-table-cell-fix-right):hover {
+          background: var(--acx-accents-orange-10);
+          border-color: var(--acx-accents-orange-30);
+          border-bottom-color: var(--acx-neutrals-30);
+        }
+
+        &.ant-table-cell-fix-right .react-resizable-handle {
+          display: none;
+        }
+      }
+
+      &-thead > tr > th {
+        &.react-resizable:not(.ant-table-selection-column){
+          &[colspan] .react-resizable-handle {
+            display: none;
+          }
+        }
+      }
+    }
+
     &-list-toolbar {
       &-container { padding: 0; }
       &-right {
@@ -259,13 +287,6 @@ export const Wrapper = styled.div<StyledTable>`
 
         &.react-resizable:not(.ant-table-selection-column) {
           -webkit-user-select: none;
-          &:hover {
-            background: var(--acx-accents-orange-10);
-            border-width: 1px;
-            border-top-width: 0px;
-            border-style: solid;
-            border-color: var(--acx-accents-orange-30);
-            border-bottom-color: var(--acx-neutrals-40);
           }
           .react-resizable-handle {
             position: absolute;

@@ -11,8 +11,8 @@ import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
-import type { TableColumn, ColumnStateOption } from './types'
-import type { SettingOptionType }              from '@ant-design/pro-table/lib/components/ToolBar'
+import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType } from './types'
+import type { SettingOptionType }                                           from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
   TablePaginationConfig
@@ -23,6 +23,12 @@ export type {
   ColumnGroupType,
   TableColumn
 } from './types'
+
+function isGroupColumn <RecordType, ValueType = 'text'> (
+  column: TableColumn<RecordType, ValueType>
+): column is ColumnGroupType<RecordType, ValueType> {
+  return column.hasOwnProperty('children')
+}
 
 export interface TableProps <RecordType>
   extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' | 'title'> {
@@ -87,7 +93,8 @@ function Table <RecordType extends object> (
         <UI.InformationTooltip title={column.tooltip as string} />
       </UI.TitleWithTooltip> : column.title,
       disable: Boolean(column.fixed || column.disable),
-      show: Boolean(column.fixed || column.disable || (column.show ?? true))
+      show: Boolean(column.fixed || column.disable || (column.show ?? true)),
+      children: isGroupColumn(column) ? column.children : undefined
     }))
   }, [props.columns, type])
 
@@ -159,21 +166,28 @@ function Table <RecordType extends object> (
     }
   }
 
+  const getResizeProps = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
+    ...col,
+    width: (col.key === settingsKey)
+      ? col.width
+      : colWidth[col.key as keyof typeof colWidth] || col.width,
+    onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
+      width: colWidth[column.key],
+      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
+    })
+  })
+
   return <UI.Wrapper $type={type} $hasRowSelection={Boolean(props.rowSelection)}>
     <UI.TableSettingsGlobalOverride />
     <ProTable<RecordType>
       {...props}
       bordered={false}
       search={false}
-      columns={columns.map(col=>({
-        ...col,
-        width: (col.key === settingsKey)? col.width : colWidth[col.key],
-        onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
-          width: colWidth[column.key],
-          onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
-        })
-      })) as typeof columns}
-      components={{ header: { cell: ResizableColumn } }}
+      columns={(type === 'tall' ? columns.map(col=>({
+        ...getResizeProps(col),
+        children: col.children?.map(getResizeProps)
+      })): columns) as typeof columns}
+      components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
       scroll={{ x: 'max-content' }}
