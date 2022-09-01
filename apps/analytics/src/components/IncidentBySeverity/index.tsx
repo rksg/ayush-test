@@ -71,7 +71,7 @@ function IncidentBySeverityWidget ({ filters }: { filters: IncidentFilter }) {
     )
   }
   return <Loader states={[prevResult, currentResult]}>
-    <Card title={$t({ defaultMessage: 'Total Incidents' })} bordered={false}>
+    <Card title={$t({ defaultMessage: 'Total Incidents' })} type='no-border'>
       <UI.Container>
         <UI.Title>
           <UI.IncidentCount>{pill.total}</UI.IncidentCount>

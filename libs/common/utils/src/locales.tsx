@@ -48,9 +48,21 @@ async function loadDe (): Promise<Messages> {
   return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
 }
 
+async function loadJp (): Promise<Messages> {
+  const [base, proBase, translation] = await Promise.all([
+    import('antd/lib/locale/ja_JP').then(result => result.default),
+    import('@ant-design/pro-provider/lib/locale/ja_JP').then(result => result.default),
+    fetch(localePath('ja-JP')).then(res => res.json()) as Promise<NestedMessages>
+  ])
+
+  const combine = merge({}, base, proBase, translation)
+  return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
+}
+
 const localeLoaders = {
   'en-US': loadEnUS,
-  'de-DE': loadDe
+  'de-DE': loadDe,
+  'ja-JP': loadJp
 }
 
 type Key = keyof typeof localeLoaders
@@ -87,7 +99,7 @@ function LocaleProviderWrap (props: LocaleProviderProps): ReactElement {
 }
 
 function LocaleProvider (props: LocaleProviderProps) {
-  const [lang, setLang] = useState(props.lang ?? 'en-US')
+  const [lang, setLang] = useState(props.lang ?? 'en-US') // fallback language by default en-US
   const [messages, setMessages] = useState<Messages>()
 
   useEffect(() => {

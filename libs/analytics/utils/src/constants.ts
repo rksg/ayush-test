@@ -1,4 +1,4 @@
-
+export const noDataSymbol = '-' as const
 // commented codes acc to prod rc config
 export const incidentCodes = [
   'ttc',
@@ -23,7 +23,7 @@ export const incidentCodes = [
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low'
-] as const
+]
 
 export type IncidentCode = typeof incidentCodes[number]
 
@@ -66,3 +66,4 @@ export const categoryCodeMap = {
     ]
   }
 }
+

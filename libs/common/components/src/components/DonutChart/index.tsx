@@ -1,8 +1,12 @@
-import ReactECharts from 'echarts-for-react'
-import { find }     from 'lodash'
+import ReactECharts          from 'echarts-for-react'
+import { find }              from 'lodash'
+import { useIntl }           from 'react-intl'
+import { MessageDescriptor } from 'react-intl'
 
 import { cssNumber, cssStr }                                       from '../../theme/helper'
 import { tooltipOptions, donutChartTooltipFormatter, EventParams } from '../Chart/helper'
+
+import { SubTitle } from './styledComponents'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
@@ -34,13 +38,20 @@ const defaultProps: DonutChartOptionalProps = {
 DonutChart.defaultProps = { ...defaultProps }
 
 export interface DonutChartProps extends DonutChartOptionalProps,
-  Omit<EChartsReactProps, 'option' | 'opts'> {
+  Omit<EChartsReactProps, 'option' | 'opts' | 'style'> {
   data: Array<DonutChartData>
   title?: string,
+  subTitle?: string,
+  subTitleBlockHeight?: number
+  unit?: MessageDescriptor
   subtitle?: string,
   dataFormatter?: (value: unknown) => string | null,
   onClick?: (params: EventParams) => void
+  style: EChartsReactProps['style'] & { width: number, height: number }
 }
+
+export const onChartClick = (onClick: DonutChartProps['onClick']) =>
+  (params: EventParams) => onClick && onClick(params)
 
 export function DonutChart ({
   data,
@@ -108,17 +119,6 @@ export function DonutChart ({
     }
   }
 
-  const onChartClick = (params: EventParams) => {
-    const { onClick } = props
-    if (onClick) {
-      onClick(params)
-    }
-  }
-
-  const eventHandlers = {
-    click: onChartClick
-  }
-
   const option: EChartsOption = {
     animation: props.animation,
     tooltip: {
@@ -178,7 +178,12 @@ export function DonutChart ({
         tooltip: {
           ...tooltipOptions(),
           show: !isEmpty,
-          formatter: donutChartTooltipFormatter(props.showTooltipPercentage, dataFormatter)
+          formatter: donutChartTooltipFormatter(
+            props.showTooltipPercentage,
+            dataFormatter,
+            props.unit,
+            useIntl()
+          )
         },
         emphasis: {
           disabled: isEmpty,
@@ -198,10 +203,18 @@ export function DonutChart ({
   }
 
   return (
-    <ReactECharts
-      {...props}
-      opts={{ renderer: 'svg' }}
-      option={option}
-      onEvents={eventHandlers} />
+    <>
+      <ReactECharts
+        {...{
+          ...props,
+          style: {
+            ...props.style,
+            height: props.style?.height - (props.subTitle ? props.subTitleBlockHeight || 30 : 0) }
+        }}
+        opts={{ renderer: 'svg' }}
+        option={option}
+        onEvents={{ click: onChartClick(props.onClick) }} />
+      <SubTitle width={props.style.width}>{props.subTitle}</SubTitle>
+    </>
   )
 }

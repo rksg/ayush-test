@@ -1,5 +1,5 @@
 import { CallbackDataParams } from 'echarts/types/dist/shared'
-import { useIntl }            from 'react-intl'
+import { useIntl, IntlShape } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
 import {
@@ -13,8 +13,9 @@ import {
   Card,
   cssNumber,
   Loader,
-  cssStr }                   from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+  cssStr
+} from '@acx-ui/components'
+import { formatter, intlFormats } from '@acx-ui/utils'
 
 import { useSwitchesByPoEUsageQuery } from './services'
 
@@ -30,11 +31,14 @@ const seriesMapping: BarChartData['seriesEncode'] = [
   { x: 'usage', y: 'name' }
 ]
 
-export function switchUsageLabelFormatter (params: CallbackDataParams): string {
-  const usage = Array.isArray(params.data) && params.data[1]
-  const utilisation_per = Array.isArray(params.data) && params.data[2]
-  return '{poe_usage|' + formatter('milliWattsFormat')(usage) + '} {utilisation_pct|(' +
-    formatter('percentFormat')(utilisation_per) + ')}'
+export function switchUsageLabelFormatter (intl: IntlShape) {
+  return (params: CallbackDataParams): string => {
+    const { $t } = intl
+    const usage = Array.isArray(params.data) && params.data[1]
+    const utilisation_per = Array.isArray(params.data) && params.data[2]
+    return '{poe_usage|' + formatter('milliWattsFormat')(usage) + '} {utilisation_pct|(' +
+      $t(intlFormats.percentFormat, { value: utilisation_per }) + ')}'
+  }
 }
 
 const getSwitchUsageRichStyle = () => ({
@@ -55,7 +59,7 @@ const getSwitchUsageRichStyle = () => ({
 })
 
 function SwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
-  const { $t } = useIntl()
+  const intl = useIntl()
   const queryResults = useSwitchesByPoEUsageQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
@@ -67,7 +71,7 @@ function SwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { data } = queryResults
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 Switches by PoE Usage' })} >
+      <Card title={intl.$t({ defaultMessage: 'Top 5 Switches by PoE Usage' })} >
         <AutoSizer>
           {({ height, width }) => (
             data && data.source?.length > 0
@@ -76,7 +80,7 @@ function SwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
                 barColors={barColors}
                 data={data}
                 grid={{ top: '2%',right: '17%' }}
-                labelFormatter={switchUsageLabelFormatter}
+                labelFormatter={switchUsageLabelFormatter(intl)}
                 labelRichStyle={getSwitchUsageRichStyle()}
                 style={{ width, height }}
               />

@@ -1,8 +1,23 @@
 import {
+  Cascader as AntCascader,
   Divider as AntDivider,
   Space as AntSpace
 } from 'antd'
 import styled from 'styled-components/macro'
+
+export const Cascader = styled(AntCascader)`
+  .ant-select-selector {
+    border-color: var(--acx-primary-black) !important;
+  }
+  .ant-select-selection-placeholder {
+    color: var(--acx-primary-black);
+  }
+  .ant-select-focused {
+    .ant-select-selection-placeholder {
+      color: var(--acx-neutrals-50);
+    }
+  }
+`
 
 export const Space = styled(AntSpace)`
   padding: 8;
