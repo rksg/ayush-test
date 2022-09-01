@@ -249,8 +249,7 @@ export function VenuesForm () {
             rules={[{
               required: true
             },{
-              validator: (_, value) => nameValidator(value),
-              validateTrigger: 'onChange'
+              validator: (_, value) => nameValidator(value)
             }]}
             wrapperCol={{ span: 5 }}
             validateFirst

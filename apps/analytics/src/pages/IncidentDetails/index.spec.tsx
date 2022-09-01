@@ -16,6 +16,10 @@ jest.mock('../IncidentDetails/IncidentAttributes', () => ({
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
 }))
 
+jest.mock('./NetworkImpact', () => ({
+  NetworkImpact: () => <div data-testid='networkImpact' />
+}))
+
 describe('incident details', () => {
   beforeEach(() => store.dispatch(api.util.resetApiState()))
 

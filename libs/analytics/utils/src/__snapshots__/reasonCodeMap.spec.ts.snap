@@ -1,0 +1,128 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`readCodesIntoMap return correct map 1`] = `
+Object {
+  "assoc": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Association Failures",
+      },
+    ],
+    "id": "b9AG+Q",
+  },
+  "auth": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Authentication Failures",
+      },
+    ],
+    "id": "fm/xyQ",
+  },
+  "dhcp": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "DHCP Failures",
+      },
+    ],
+    "id": "/76ZBW",
+  },
+  "eap": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "EAP Failures",
+      },
+    ],
+    "id": "iEqpOs",
+  },
+  "eapol": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "EAPOL Failures",
+      },
+    ],
+    "id": "t7yH3z",
+  },
+  "radius": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "RADIUS Failures",
+      },
+    ],
+    "id": "efBg3C",
+  },
+  "userAuth": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "L3 Authentication Failures",
+      },
+    ],
+    "id": "RgxG85",
+  },
+}
+`;
+
+exports[`readCodesIntoMap return correct map 2`] = `
+Object {
+  "EVENT_CLIENT_DISCONNECT": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Client disconnected",
+      },
+    ],
+    "id": "ia0RRf",
+  },
+  "EVENT_CLIENT_INFO_UPDATED": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Client associated (802.11)",
+      },
+    ],
+    "id": "JAspuT",
+  },
+  "EVENT_CLIENT_JOIN": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Client join",
+      },
+    ],
+    "id": "WNtrPx",
+  },
+  "EVENT_CLIENT_ROAMING": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "Client roamed",
+      },
+    ],
+    "id": "E65tJO",
+  },
+  "SG_DHCP_CCD_REASON_DEAUTH_LEAVING": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "STA Deauth (Leaving) (DHCP Timeout)",
+      },
+    ],
+    "id": "OLRG6o",
+  },
+  "SG_DHCP_CCD_REASON_DISASSOC_STA_HAS_LEFT": Object {
+    "defaultMessage": Array [
+      Object {
+        "type": 0,
+        "value": "STA Disassoc (DHCP Timeout)",
+      },
+    ],
+    "id": "TKYlMB",
+  },
+}
+`;

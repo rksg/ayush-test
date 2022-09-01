@@ -11,20 +11,17 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
-  useGetAllUserSettingsQuery,
   useNetworkVenueListQuery,
   useUpdateNetworkMutation
 } from '@acx-ui/rc/services'
 import {
-  Constants,
   useTableQuery,
-  getUserSettingsFromDict,
   NetworkSaveData,
   NetworkVenue,
-  UserSettings,
   Venue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -70,9 +67,7 @@ export function NetworkVenuesTab () {
   const [tableData, setTableData] = useState(defaultArray)
   const params = useParams()
   const [updateNetwork] = useUpdateNetworkMutation()
-  const userSetting = useGetAllUserSettingsQuery({ params: { tenantId: params.tenantId } })
-  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
-    Constants.triRadioUserSettingsKey)) === 'true'
+  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
@@ -125,7 +120,7 @@ export function NetworkVenuesTab () {
     const network = networkQuery.data
     const defaultVenueData = generateDefaultNetworkVenue(row.id)
     const isWPA3security = row.wlan && row.wlan.wlanSecurity === 'WPA3'
-    if (supportTriBandRadio && isWPA3security) {
+    if (triBandRadioFeatureFlag && isWPA3security) {
       defaultVenueData.allApGroupsRadioTypes.push('6-GHz')
     }
 
