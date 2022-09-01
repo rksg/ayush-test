@@ -4,6 +4,7 @@ import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
+import { topSwitchesByErrorsResponse }   from './components/SwitchesByErrors/services.spec'
 import { topSwitchesByPoEUsageResponse } from './components/SwitchesByPoEUsage/services.spec'
 import { trafficByApplicationFixture }   from './components/TrafficByApplication/__tests__/fixtures'
 import AnalyticsWidgets                  from './Widgets'
@@ -86,6 +87,13 @@ test('should render Top 5 Switches by PoE Usage widget', async () => {
   mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', { data: topSwitchesByPoEUsageResponse })
   render( <Provider> <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/></Provider>)
   expect(await screen.findByText('Top 5 Switches by PoE Usage')).toBeVisible()
+  
+})
+
+test('should render Top 5 Switches by Error widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'SwitchesByErrorsWidget', { data: topSwitchesByErrorsResponse })
+  render( <Provider> <AnalyticsWidgets name='topSwitchesByErrors' filters={filters}/></Provider>)
+  expect(await screen.findByText('Top 5 Switches by Error')).toBeVisible()
   
 })
 
