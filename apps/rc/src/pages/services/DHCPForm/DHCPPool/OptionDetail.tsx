@@ -13,6 +13,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { DHCPOption } from '@acx-ui/rc/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 
 const defaultArray: DHCPOption[] = []
@@ -34,12 +35,23 @@ export function OptionDetail () {
   const formRef = useRef<StepsFormInstance<DHCPOption>>()
 
   const [tableData, setTableData] = useState(defaultArray)
-
+  const idValidator = async (value: string) => {
+    if(_.find(tableData, (item)=>{return item.id === value})){
+      const entityName = $t({ defaultMessage: 'Option ID' })
+      const key = 'id'
+      return Promise.reject($t(validationMessages.duplication, { entityName, key }))
+    }
+    return Promise.resolve()
+  }
   const handleSaveData = () => {
+    if(_.find(formRef.current?.getFieldsError(), (item)=>{return item.errors.length>0})){
+      return false
+    }
     const dhcpOption = formRef.current?.getFieldsValue()
     form.getFieldsValue()['dhcpOptions'].push({ ...dhcpOption })
     setTableData([].concat(form.getFieldsValue()['dhcpOptions']))
     onClose()
+    return true
   }
   const [visible, setVisible] = useState(false)
   const onClose = () => {
@@ -53,7 +65,13 @@ export function OptionDetail () {
     <Button key='back' onClick={onClose}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>,
-    <Button key='forward' onClick={handleSaveData}>
+    <Button key='forward'
+      onClick={
+        ()=>{
+          formRef.current?.validateFields()
+          setTimeout(()=>handleSaveData(), 1000)
+        }
+      }>
       {$t({ defaultMessage: 'Save' })}
     </Button>
   ]
@@ -64,7 +82,8 @@ export function OptionDetail () {
           name='id'
           label={$t({ defaultMessage: 'Option ID' })}
           rules={[
-            { required: true }
+            { required: true },
+            { validator: (_, value) => idValidator(value) }
           ]}
           validateFirst
           hasFeedback

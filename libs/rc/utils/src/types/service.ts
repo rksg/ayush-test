@@ -1,4 +1,5 @@
 export interface DHCPPool {
+  id?: string;
   name: string;
   description?: string;
   allowWired: boolean;

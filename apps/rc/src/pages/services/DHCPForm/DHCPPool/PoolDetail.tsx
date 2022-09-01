@@ -2,18 +2,22 @@
 import { useState, useRef, useEffect, useContext } from 'react'
 
 import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
-import { useIntl }     from 'react-intl'
+import TextArea                                                      from 'antd/lib/input/TextArea'
+import _                                                             from 'lodash'
+import { useIntl }                                                   from 'react-intl'
 
-import { Button, StepsForm, StepsFormInstance, Subtitle } from '@acx-ui/components'
-import { DHCPPool }            from '@acx-ui/rc/utils'
-import TextArea from 'antd/lib/input/TextArea'
-import PoolDetailContext from './PoolDetailContext'
-import { Drawer } from '@acx-ui/components'
-import { OptionDetail } from './OptionDetail'
+import { Button, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Drawer }                               from '@acx-ui/components'
+import { DHCPPool, networkWifiIpRegExp }        from '@acx-ui/rc/utils'
+
 import DHCPFormContext from '../DHCPFormContext'
+
+import { OptionDetail } from './OptionDetail'
+import { validationMessages } from '@acx-ui/utils'
 
 export function PoolDetail() {
   const { $t } = useIntl()
+  const intl = useIntl()
   const { Option } = Select
   const formRef = useRef<StepsFormInstance<DHCPPool>>()
   const form = Form.useFormInstance()
@@ -32,22 +36,28 @@ export function PoolDetail() {
   const dataPool = { ...saveState }
   const { updateData, data } = useContext(DHCPFormContext)
   const nameValidator = async (value: string) => {
-    // const payload = { ...serviceListPayload, searchString: value }
-    // const list = (await getServiceList({ params, payload }, true)
-    //   .unwrap()).data.map(n => ({ name: n.name }))
-    // return checkObjectNotExists(list, value, 'Service')
+    if(_.find(data.dhcpPools, (item)=>{return item.name === value})){
+      const entityName = intl.$t({ defaultMessage: 'Pool Name' })
+      const key = 'name'
+      return Promise.reject(intl.$t(validationMessages.duplication, { entityName, key }))
+    }
     return Promise.resolve()
   }
   const updateSaveData = () => {
+    if(_.find(formRef.current?.getFieldsError(), (item)=>{return item.errors.length>0})){
+      return false
+    }
     const dhcpPool = formRef.current?.getFieldsValue() || dataPool
     data?.dhcpPools?.push({ ...dhcpPool })
 
     updateData(Object.assign({}, { ...data,...form.getFieldsValue() }))
     onClose()
+    return true
   }
 
   const [visible, setVisible] = useState(false)
   const onClose = () => {
+    updateData(Object.assign({}, { ...data,...form.getFieldsValue() }))
     formRef?.current?.resetFields()
     setVisible(false)
   }
@@ -94,7 +104,7 @@ export function PoolDetail() {
             label={$t({ defaultMessage: 'IP Address' })}
             rules={[
               { required: true },
-              { validator: (_, value) => { return value ? Promise.resolve() : Promise.reject() } }
+              { validator: (_, value) => networkWifiIpRegExp(intl, value) }
             ]}
             children={<Input />}
           />
@@ -103,26 +113,35 @@ export function PoolDetail() {
             label={$t({ defaultMessage: 'Subnet Mask' })}
             rules={[
               { required: true },
-              { validator: (_, value) => { return value ? Promise.resolve() : Promise.reject() } }
+              { validator: (_, value) => networkWifiIpRegExp(intl, value) }
             ]}
             children={<Input />}
           />
           <Form.Item
             label={$t({ defaultMessage: 'Excluded Range' })}
           >
-            <Space><Form.Item name='excludedRangeStart'><Input /></Form.Item>-
-              <Form.Item
-                name='excludedRangeEnd'
-              >
-                <Input />
-              </Form.Item>
+            <Space><Form.Item name='excludedRangeStart'
+              rules={[
+                { required: false },
+                { validator: (_, value) => networkWifiIpRegExp(intl, value) }
+              ]}
+              children={<Input/>}
+            />-
+            <Form.Item
+              name='excludedRangeEnd'
+              rules={[
+                { required: false },
+                { validator: (_, value) => networkWifiIpRegExp(intl, value) }
+              ]}
+              children={<Input />}
+            />
             </Space>
           </Form.Item>
           <Form.Item
             name='primaryDNS'
             label={$t({ defaultMessage: 'Primary DNS IP' })}
             rules={[
-              { validator: (_, value) => { return (value) ? Promise.resolve() : Promise.reject() } }
+              { validator: (_, value) => networkWifiIpRegExp(intl, value) }
             ]}
             children={<Input />}
           />
@@ -130,7 +149,7 @@ export function PoolDetail() {
             name='secondaryDNS'
             label={$t({ defaultMessage: 'Secondary DNS IP' })}
             rules={[
-              { validator: (_, value) => { return (value) ? Promise.resolve() : Promise.reject() } }
+              { validator: (_, value) => networkWifiIpRegExp(intl, value) }
             ]}
             children={<Input />}
           />
@@ -161,7 +180,13 @@ export function PoolDetail() {
         <Button key='Cancel' type='primary' onClick={onClose}>
           {$t({ defaultMessage: 'Cancel' })}
         </Button>
-        <Button key='add' type='primary' onClick={updateSaveData}>
+        <Button key='add'
+          type='primary'
+          onClick={()=>{
+            formRef.current?.validateFields()
+            setTimeout(()=>updateSaveData(), 1000)
+          }
+          }>
           {$t({ defaultMessage: 'Add' })}
         </Button>
       </Row>
