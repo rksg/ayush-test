@@ -22,13 +22,14 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkDetailForm }   from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext      from './NetworkFormContext'
-import { AaaSettingsForm }     from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }    from './NetworkSettings/DpskSettingsForm'
-import { OpenSettingsForm }    from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }     from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }         from './NetworkSummary/SummaryForm'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave,
@@ -152,7 +153,24 @@ export function NetworkForm () {
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm saveState={saveState}/>}
 
           </StepsForm.StepForm>
+          {editMode &&
+            <StepsForm.StepForm
+              name='moreSettings'
+              title={$t({ defaultMessage: 'More Settings' })}
+              onFinish={async (data) => {
+                const settingData = _.merge(saveState, data)
+                let settingSaveData = tranferSettingsToSave(settingData)
+                if (!editMode) {
+                  settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
+                }
 
+                updateSaveData(settingSaveData)
+                return true
+              }}>
+
+              <NetworkMoreSettingsForm wlanData={saveState} />
+
+            </StepsForm.StepForm>}
           <StepsForm.StepForm
             initialValues={data}
             params={data}

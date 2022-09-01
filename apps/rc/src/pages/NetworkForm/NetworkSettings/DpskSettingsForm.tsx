@@ -57,7 +57,7 @@ export function DpskSettingsForm (props: {
         <SettingsForm />
         {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
-      <Col span={14}>
+      <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram
           type={NetworkTypeEnum.DPSK}
           cloudpathType={selected?.deploymentType}

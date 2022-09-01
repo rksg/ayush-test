@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import {
   Collapse,
@@ -9,6 +9,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import NetworkFormContext          from '../NetworkFormContext'
 import { StepsForm, Button } from '@acx-ui/components'
 import {
   useVlanPoolListQuery
@@ -49,25 +50,30 @@ const listPayload = {
   sortOrder: 'ASC', page: 1, pageSize: 10000
 }
 
-export function NetworkMoreSettingsForm (props: {
+export function NetworkMoreSettingsForm(props: {
   wlanData: NetworkSaveData
 }) {
+  const { editMode } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [enableMoreSettings, setEnabled] = useState(false)
-  return <div>
-    <Button
-      type='link'
-      onClick={() => {
-        setEnabled(!enableMoreSettings)
-      }}
-    >
-      {enableMoreSettings ?
-        $t({ defaultMessage: 'Show less settings' }) :
-        $t({ defaultMessage: 'Show more settings' })}
-    </Button>
-    {enableMoreSettings &&
+  if (editMode) {
+    return <NetworkMoreSettingsForm2 wlanData={props.wlanData} />
+  } else {
+    return <div>
+      <Button
+        type='link'
+        onClick={() => {
+          setEnabled(!enableMoreSettings)
+        }}
+      >
+        {enableMoreSettings ?
+          $t({ defaultMessage: 'Show less settings' }) :
+          $t({ defaultMessage: 'Show more settings' })}
+      </Button>
+      {enableMoreSettings &&
         <NetworkMoreSettingsForm2 wlanData={props.wlanData} />}
-  </div>
+    </div>
+  }
 }
 
 
