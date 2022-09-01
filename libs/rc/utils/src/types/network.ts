@@ -16,7 +16,7 @@ export interface CreateNetworkFormFields {
   type: NetworkTypeEnum;
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
-  venues: NetworkVenueLight[];
+  venues: NetworkVenue[];
   enableAccountingService?: boolean;
   enableAuthProxy?: boolean;
   wlanSecurity?: WlanSecurityEnum;
@@ -95,18 +95,4 @@ export interface NetworkSaveData {
     format?: PassphraseFormatEnum;
     expiration?: PassphraseExpirationEnum;
   }
-}
-
-export interface NetworkVenueLight {
-  id?: string
-  name?: string
-  apGroups: string[],
-  scheduler: {
-    type: string
-  },
-  isAllApGroups: boolean,
-  allApGroupsRadio: string,
-  allApGroupsRadioTypes: string[],
-  venueId: string,
-  networkId: string
 }
