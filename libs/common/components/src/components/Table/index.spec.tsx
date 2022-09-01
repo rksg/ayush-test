@@ -236,6 +236,41 @@ describe('Table component', () => {
     expect(selectedRows.filter(el => el.checked)).toHaveLength(2)
   })
 
+  it('dynamically scales based on scroll prop', () => {
+    const basicColumns = [
+      { title: 'Name', key: 'name' },
+      { title: 'Age', key: 'age' },
+      { title: 'Address', key: 'address' }
+    ]
+    const basicData = [
+      {
+        key: '1',
+        name: 'John Doe',
+        age: 32,
+        address: 'sample address'
+      },
+      {
+        key: '2',
+        name: 'Jane Doe',
+        age: 33,
+        address: 'new address'
+      },
+      {
+        key: '3',
+        name: 'Will Smith',
+        age: 45,
+        address: 'address'
+      }
+    ]
+    const scroll = { y: 'max-content' }
+    const { asFragment } = render(<Table
+      columns={basicColumns}
+      dataSource={basicData}
+      scroll={scroll}
+    />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should allow column resizing', async () => {
     const { asFragment } = render(<Table
       columns={basicColumns}

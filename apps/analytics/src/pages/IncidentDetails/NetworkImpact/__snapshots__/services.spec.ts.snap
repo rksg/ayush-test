@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`networkImpactChartsApi should return correct data 1`] = `
+Object {
+  "WLAN": Object {
+    "count": 2,
+    "data": Array [
+      Object {
+        "key": "ssid1",
+        "name": "ssid1",
+        "value": 2,
+      },
+      Object {
+        "key": "ssid2",
+        "name": "ssid2",
+        "value": 1,
+      },
+    ],
+    "key": "WLAN",
+  },
+  "clientManufacturer": Object {
+    "count": 2,
+    "data": Array [
+      Object {
+        "key": "manufacturer1",
+        "name": "manufacturer1",
+        "value": 1,
+      },
+      Object {
+        "key": "manufacturer2",
+        "name": "manufacturer2",
+        "value": 1,
+      },
+    ],
+    "key": "clientManufacturer",
+  },
+  "radio": Object {
+    "count": 2,
+    "data": Array [
+      Object {
+        "key": "2.4",
+        "name": "2.4",
+        "value": 1,
+      },
+      Object {
+        "key": "5",
+        "name": "5",
+        "value": 1,
+      },
+    ],
+    "key": "radio",
+  },
+  "reason": Object {
+    "count": 2,
+    "data": Array [
+      Object {
+        "key": "CCD_REASON_AAA_AUTH_FAIL",
+        "name": "CCD_REASON_AAA_AUTH_FAIL",
+        "value": 2,
+      },
+    ],
+    "key": "reason",
+  },
+}
+`;
