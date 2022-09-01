@@ -275,7 +275,9 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
        PskWlanAdvancedCustomization
 
   let saveData:NetworkSaveData = {
+    ...originalData,
     wlan: {
+      ...originalData?.wlan,
       vlanId: data?.wlan?.vlanId ?? originalData?.wlan?.vlanId,
       advancedCustomization
     }
