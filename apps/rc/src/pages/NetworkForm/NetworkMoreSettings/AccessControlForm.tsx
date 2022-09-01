@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 
 import {
   Button,
+  Checkbox,
   Form,
   Select,
   Slider,
@@ -476,8 +477,8 @@ function AccessControlConfigForm () {
           style={{ lineHeight: '50px' }}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              {$t({ defaultMessage: 'Upload Limit' })}
+              <Checkbox data-testid='enableUploadLimit'
+                children={$t({ defaultMessage: 'Upload Limit' })} />
             </UI.Label>}
         />
         {
@@ -500,8 +501,8 @@ function AccessControlConfigForm () {
           style={{ lineHeight: '50px' }}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              {$t({ defaultMessage: 'Download Limit' })}
+              <Checkbox data-testid='enableDownloadLimit'
+                children={$t({ defaultMessage: 'Download Limit' })} />
             </UI.Label>}
         />
 

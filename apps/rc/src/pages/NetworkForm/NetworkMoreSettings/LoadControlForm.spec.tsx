@@ -4,9 +4,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Provider }          from '@acx-ui/store'
-import { fireEvent, within } from '@acx-ui/test-utils'
-import { render, screen }    from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { fireEvent }      from '@acx-ui/test-utils'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { LoadControlForm } from './LoadControlForm'
 
@@ -43,15 +43,15 @@ describe('LoadControlForm', () => {
     expect(screen.getByText(/upload limit/i)).toBeVisible()
     expect(screen.getByText(/download limit/i)).toBeVisible()
 
-    const uploadLimit = screen.getByText(/upload limit/i)
-    await userEvent.click(within(uploadLimit).getByRole('checkbox'))
+    const uploadLimitCheckbox = screen.getByTestId('uploadLimit')
+    await userEvent.click(uploadLimitCheckbox)
     expect(screen.getByText(/200 mbps/i)).toBeVisible()
-    await userEvent.click(within(uploadLimit).getByRole('checkbox'))
+    await userEvent.click(uploadLimitCheckbox)
 
-    const downloadLimit = screen.getByText(/download limit/i)
-    await userEvent.click(within(downloadLimit).getByRole('checkbox'))
+    const downloadLimitCheckbox = screen.getByTestId('downloadLimit')
+    await userEvent.click(downloadLimitCheckbox)
     expect(screen.getByText(/200 mbps/i)).toBeVisible()
-    await userEvent.click(within(downloadLimit).getByRole('checkbox'))
+    await userEvent.click(downloadLimitCheckbox)
   })
 
 

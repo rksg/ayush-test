@@ -1,7 +1,7 @@
-
 import React from 'react'
 
 import {
+  Checkbox,
   Form,
   Select,
   Slider
@@ -59,16 +59,15 @@ export function LoadControlForm () {
         name={['wlan','advancedCustomization','enableBandBalancing']}
         children={
           <UI.Label>
-            <UI.CheckboxWrapper />
-            {$t({ defaultMessage: 'Enable load balancing between all radios' })}
+            <Checkbox 
+              children={$t({ defaultMessage: 'Enable load balancing between all radios' })} />
           </UI.Label>}
       />
       <UI.FormItemNoLabel
         name={['wlan','advancedCustomization','clientLoadBalancingEnable']}
         children={
           <UI.Label>
-            <UI.CheckboxWrapper />
-            {$t({ defaultMessage: 'Enable load balancing between APs' })}
+            <Checkbox children={$t({ defaultMessage: 'Enable load balancing between APs' })} />
           </UI.Label>}
       />
     </>
@@ -111,8 +110,8 @@ function PerApForm () {
           style={{ lineHeight: '50px' }}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              {$t({ defaultMessage: 'Upload Limit' })}
+              <Checkbox data-testid='uploadLimit'
+                children={$t({ defaultMessage: 'Upload Limit' })} />
             </UI.Label>}
         />
         {
@@ -138,8 +137,8 @@ function PerApForm () {
           style={{ lineHeight: '50px' }}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              {$t({ defaultMessage: 'Download Limit' })}
+              <Checkbox data-testid='downloadLimit'
+                children={$t({ defaultMessage: 'Download Limit' })} />
             </UI.Label>}
         />
         {

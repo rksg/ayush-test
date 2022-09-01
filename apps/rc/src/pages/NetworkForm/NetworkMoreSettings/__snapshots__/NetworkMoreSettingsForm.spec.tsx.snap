@@ -6,7 +6,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
     class="ant-form ant-form-horizontal"
   >
     <div
-      class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollpasePanel-sc-1vnv53e-4 bMzqGQ"
+      class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollpasePanel-sc-1vnv53e-3 eQdnmT"
       style="width: 600px;"
     >
       <div
@@ -422,7 +422,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -437,11 +437,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_forceMobileDeviceDhcp"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -455,8 +455,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Force DHCP
+                          </span>
                         </label>
-                        Force DHCP
                       </span>
                     </div>
                   </div>
@@ -464,7 +466,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -479,11 +481,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_enableSyslog"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -497,8 +499,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Enable logging client data to external syslog
+                          </span>
                         </label>
-                        Enable logging client data to external syslog
                       </span>
                     </div>
                   </div>
@@ -554,7 +558,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             class="ant-collapse-content-box"
           >
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -569,11 +573,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_hideSsid"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -587,8 +591,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Hide SSID
+                          </span>
                         </label>
-                        Hide SSID
                       </span>
                     </div>
                   </div>
@@ -775,7 +781,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -790,11 +796,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_enableBandBalancing"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -808,8 +814,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Enable load balancing between all radios
+                          </span>
                         </label>
-                        Enable load balancing between all radios
                       </span>
                     </div>
                   </div>
@@ -817,7 +825,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -832,11 +840,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_clientLoadBalancingEnable"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -850,8 +858,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Enable load balancing between APs
+                          </span>
                         </label>
-                        Enable load balancing between APs
                       </span>
                     </div>
                   </div>
@@ -1115,7 +1125,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
               style="margin-bottom: 15px;"
             >
               <div
@@ -1131,11 +1141,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="enableOfdmOnly"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -1149,8 +1159,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Enable OFDM only (disable 802.11b)
+                          </span>
                         </label>
-                        Enable OFDM only (disable 802.11b)
                       </span>
                     </div>
                   </div>
@@ -1359,7 +1371,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
               style="margin-bottom: 15px;"
             >
               <div
@@ -1375,11 +1387,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_enableNeighborReport"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -1393,8 +1405,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Enable 802.11k neighbor reports
+                          </span>
                         </label>
-                        Enable 802.11k neighbor reports
                       </span>
                     </div>
                   </div>

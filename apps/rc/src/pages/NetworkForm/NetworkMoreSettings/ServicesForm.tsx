@@ -3,6 +3,7 @@ import React, { createContext, useState } from 'react'
 
 import {
   Button,
+  Checkbox,
   Form,
   Input,
   Select,
@@ -191,11 +192,8 @@ export function ServicesForm () {
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={true}
-                children={<UI.CheckboxWrapper/>}
+                children={<Checkbox children={$t({ defaultMessage: 'ARP request rate limit' })} />}
               />
-              <UI.Label style={{ lineHeight: '32px' }}>
-                { $t({ defaultMessage: 'ARP request rate limit' }) }
-              </UI.Label>
             </span>
 
 
@@ -220,11 +218,8 @@ export function ServicesForm () {
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={true}
-                children={<UI.CheckboxWrapper />}
+                children={<Checkbox children={$t({ defaultMessage: 'DHCP request rate limit' })} />}
               />
-              <UI.Label style={{ lineHeight: '34px' }}>
-                { $t({ defaultMessage: 'DHCP request rate limit' }) }
-              </UI.Label>
             </span>
 
             {enableDhcpRequestRateLimit && <>
@@ -248,17 +243,16 @@ export function ServicesForm () {
 
         children={
           <UI.Label>
-            <UI.CheckboxWrapper
-              disabled={enableAntiSpoofing} />
-            { $t({ defaultMessage: 'Force DHCP' }) }
+            <Checkbox disabled={enableAntiSpoofing} 
+              children={$t({ defaultMessage: 'Force DHCP' })} />
           </UI.Label>}
       />
       <UI.FormItemNoLabel
         name={['wlan','advancedCustomization','enableSyslog']}
         children={
           <UI.Label>
-            <UI.CheckboxWrapper />
-            { $t({ defaultMessage: 'Enable logging client data to external syslog' }) }
+            <Checkbox children={
+              $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
           </UI.Label>}
       />
     </>

@@ -179,7 +179,7 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
       </div>
     </div>
     <div
-      class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+      class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
     >
       <div
         class="ant-row ant-form-item-row"
@@ -194,11 +194,11 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
               class="ant-form-item-control-input-content"
             >
               <span
-                class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                 id="wlan_advancedCustomization_enableBandBalancing"
               >
                 <label
-                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                 >
                   <span
                     class="ant-checkbox"
@@ -212,8 +212,10 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
                       class="ant-checkbox-inner"
                     />
                   </span>
+                  <span>
+                    Enable load balancing between all radios
+                  </span>
                 </label>
-                Enable load balancing between all radios
               </span>
             </div>
           </div>
@@ -221,7 +223,7 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
       </div>
     </div>
     <div
-      class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+      class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
     >
       <div
         class="ant-row ant-form-item-row"
@@ -236,11 +238,11 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
               class="ant-form-item-control-input-content"
             >
               <span
-                class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                 id="wlan_advancedCustomization_clientLoadBalancingEnable"
               >
                 <label
-                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                 >
                   <span
                     class="ant-checkbox"
@@ -254,8 +256,10 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
                       class="ant-checkbox-inner"
                     />
                   </span>
+                  <span>
+                    Enable load balancing between APs
+                  </span>
                 </label>
-                Enable load balancing between APs
               </span>
             </div>
           </div>

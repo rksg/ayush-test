@@ -1,6 +1,7 @@
 import React from 'react'
 
 import {
+  Checkbox,
   Collapse,
   Form,
   Input,
@@ -144,10 +145,9 @@ export function NetworkMoreSettingsForm (props: {
                   valuePropName='checked'
                   initialValue={true}
                   children={
-                    <UI.CheckboxWrapper />
+                    <Checkbox children={$t({ defaultMessage: 'Dynamic VLAN' })} />
                   }
                 />
-                { $t({ defaultMessage: 'Dynamic VLAN' }) }
               </UI.FieldLabel>
             }
 
@@ -191,8 +191,7 @@ export function NetworkMoreSettingsForm (props: {
           name={['wlan','advancedCustomization','hideSsid']}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              { $t({ defaultMessage: 'Hide SSID' }) }
+              <Checkbox children={$t({ defaultMessage: 'Hide SSID' })} />
             </UI.Label>}
         />
 
@@ -218,8 +217,7 @@ export function NetworkMoreSettingsForm (props: {
           initialValue={false}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              { $t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' }) }
+              <Checkbox children={$t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' })} />
             </UI.Label>}
         />
 
@@ -263,8 +261,7 @@ export function NetworkMoreSettingsForm (props: {
           initialValue={false}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              { $t({ defaultMessage: 'Enable 802.11k neighbor reports' }) }
+              <Checkbox children={$t({ defaultMessage: 'Enable 802.11k neighbor reports' })} />
             </UI.Label>}
         />
 
@@ -276,8 +273,8 @@ export function NetworkMoreSettingsForm (props: {
             initialValue={false}
             children={
               <UI.Label>
-                <UI.CheckboxWrapper />
-                { $t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' }) }
+                <Checkbox data-testid='enableFastRoaming'
+                  children={$t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' })} />
               </UI.Label>}
           />
         }
