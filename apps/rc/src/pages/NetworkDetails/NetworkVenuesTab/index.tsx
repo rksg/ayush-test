@@ -11,7 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
+import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
@@ -68,7 +68,7 @@ export function NetworkVenuesTab () {
   const [tableData, setTableData] = useState(defaultArray)
   const params = useParams()
   const [updateNetwork] = useUpdateNetworkMutation()
-  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
+  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,

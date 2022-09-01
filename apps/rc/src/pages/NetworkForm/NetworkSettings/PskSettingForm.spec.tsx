@@ -95,7 +95,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  }, 7000)
+  })
 
 
   it('should create PSK network with WP3 and mac auth security protocol', async () => {
