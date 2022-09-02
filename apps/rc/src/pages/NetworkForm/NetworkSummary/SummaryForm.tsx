@@ -114,7 +114,7 @@ export function SummaryForm (props: {
           {summaryData.type === NetworkTypeEnum.DPSK &&
             <DpskSummaryForm summaryData={summaryData} />
           }
-          {summaryData.type === NetworkTypeEnum.PSK && 
+          {summaryData.type === NetworkTypeEnum.PSK &&
             <PskSummaryForm summaryData={summaryData} />
           }
         </Col>
