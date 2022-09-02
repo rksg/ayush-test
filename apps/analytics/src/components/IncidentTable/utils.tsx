@@ -1,10 +1,10 @@
 import moment         from 'moment-timezone'
 import {
-  FormattedMessage, 
+  FormattedMessage,
   MessageDescriptor
 } from 'react-intl'
 
-import { 
+import {
   calculateSeverity,
   Incident,
   incidentInformation,
@@ -71,7 +71,7 @@ export const ShortIncidentDescription = (props: IncidentTableDescriptionProps) =
   const shortDesc = useShortDescription(incident)
   return (
     <UI.DescriptionSpan
-      onClick={() => onClickDesc({ incident, visible: true })}
+      onClick={() => onClickDesc(incident)}
     >
       {shortDesc}
     </UI.DescriptionSpan>
@@ -106,7 +106,7 @@ export const ClientImpact = (props: IncidentTableComponentProps & {
 
 export const durationValue = (start: string, end: string) => moment(end).diff(moment(start))
 
-export const dateSort = (dateA: string, dateB: string) => 
+export const dateSort = (dateA: string, dateB: string) =>
   Math.sign(durationValue(dateA, dateB))
 
 export const defaultSort = (a: string | number, b: string | number) => {

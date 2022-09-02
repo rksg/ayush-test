@@ -34,16 +34,6 @@ export const DescriptionSpan = styled.div`
   ${withDottedUnderline}
 `
 
-export const ActionRow = styled.div`
-  display: flex;
-  flex-direction: row;
-`
-
-export const ActionId = styled.div`
-  margin-right: 10px;
-  max-width: 12px;
-  margin-left: 10px;
-`
 export const IncidentDrawerContent = styled.div`
   display: flex;
   flex-direction: column;

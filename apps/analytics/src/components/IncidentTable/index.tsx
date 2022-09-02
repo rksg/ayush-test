@@ -32,15 +32,15 @@ import {
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
 
   const { $t } = useIntl()
-  const { metadata } = props.selectedIncidentToShowDescription 
+  const { metadata } = props.selectedIncidentToShowDescription
   const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
   const values = {
     p: (text: string) => <UI.DrawerPara>{text}</UI.DrawerPara>,
     ol: (text: string) => <UI.DrawerOrderList>{text}</UI.DrawerOrderList>,
     li: (text: string) => <UI.DrawerList>{text}</UI.DrawerList>
   }
-  const { dominant } = metadata 
-  const wlanInfo = (dominant && dominant.ssid) 
+  const { dominant } = metadata
+  const wlanInfo = (dominant && dominant.ssid)
     ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
     : ''
   const desc = useShortDescription(props.selectedIncidentToShowDescription)
@@ -62,12 +62,8 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
   const queryResults = useIncidentsListQuery(filters)
   const basePath = useTenantLink('/analytics/incidents/')
-  const [drawerProps, setDrawerProps ] = 
-  useState<{ visible : boolean, incident: Incident | null }>({ visible: false, incident: null })
-
-  const onDrawerClose = () => {
-    setDrawerProps({ incident: null, visible: false })
-  }
+  const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
+  const onDrawerClose = () => setDrawerSelection(null)
   const mutedKeysFilter = (data: IncidentNodeData) => {
     return data.filter((row) => row.isMuted === true).map((row) => row.id)
   }
@@ -130,7 +126,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       key: 'description',
       render: (_, value: Incident ) => (
         <ShortIncidentDescription
-          onClickDesc={setDrawerProps}
+          onClickDesc={setDrawerSelection}
           incident={value}
         />
       ),
@@ -237,19 +233,13 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         scroll={{ y: 'max-content' }}
         indentSize={6}
       />
-      {drawerProps.incident && 
+      {drawerSelection &&
       <Drawer
+        visible
         title={$t(defineMessage({ defaultMessage: 'Incident Description' }))}
-        visible={drawerProps.visible}
         onClose={onDrawerClose}
-        children={
-          <IncidentDrawerContent
-            selectedIncidentToShowDescription={
-              drawerProps.incident
-            }
-          />
-        }
-        width={400} 
+        children={<IncidentDrawerContent selectedIncidentToShowDescription={drawerSelection} />}
+        width={400}
       />
       }
     </Loader>
