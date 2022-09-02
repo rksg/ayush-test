@@ -7,12 +7,14 @@ import {
   GuestNetworkTypeEnum,
   WlanSecurityEnum
 } from '../constants'
-import { NetworkVenue } from '../models/network'
+
+import { NetworkVenue } from './network'
 
 export * from './ap'
 export * from './venue'
-export * from '../models/network'
+export * from './network'
 export * from './user'
+export * from './service'
 
 export interface CommonResult {
   requestId: string
@@ -292,4 +294,15 @@ export interface Service {
   scope: number
   health: string
   tags: string[]
+}
+
+export interface DnsProxyRule {
+  domainName?: string,
+  key?: string,
+  ipList?: string[] | undefined
+}
+
+export interface DnsProxyContextType {
+  dnsProxyList: DnsProxyRule[] | [],
+  setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
 }

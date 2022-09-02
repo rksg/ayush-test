@@ -11,7 +11,9 @@ import {
 } from '@acx-ui/rc/utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = {
+    enableAccountingService: data.enableAccountingService
+  }
 
   if (data.isCloudpathEnabled) {
     delete data?.accountingRadius
@@ -56,6 +58,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
       ...saveData,
       ...{
         enableAuthProxy: data.enableAuthProxy,
+        enableSecondaryAuthServer: data.enableSecondaryAuthServer,
         authRadius
       }
     }
@@ -93,6 +96,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
         ...saveData,
         ...{
           enableAccountingProxy: data.enableAccountingProxy,
+          enableSecondaryAcctServer: data.enableSecondaryAcctServer,
           accountingRadius
         }
       }
@@ -117,16 +121,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
 }
 
 const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = { ...data }
 
-  if (data.cloudpathServerId) {
-    saveData = {
-      ...saveData,
-      ...{
-        cloudpathServerId: data.cloudpathServerId
-      }
-    }
-  }
   saveData = {
     ...saveData,
     ...{
@@ -142,19 +138,14 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
 }
 
 const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
-
-  saveData = {
-    wlan: {
-      wlanSecurity: data.dpskWlanSecurity,
-      enable: true,
-      vlanId: 1,
-      advancedCustomization: new DpskWlanAdvancedCustomization()
-    },
-    dpskPassphraseGeneration: {
-      length: data.passphraseLength,
-      format: data.passphraseFormat,
-      expiration: data.expiration
+  let saveData = { ...data,
+    ...{
+      wlan: {
+        wlanSecurity: data.dpskWlanSecurity,
+        enable: true,
+        vlanId: 1,
+        advancedCustomization: new DpskWlanAdvancedCustomization()
+      }
     }
   }
 
@@ -164,12 +155,13 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
       cloudpathServerId: data.cloudpathServerId
     }
   }
-
   return saveData
 }
 
 const parsePskSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = {
+    enableAccountingService: data.enableAccountingService
+  }
   if (data.wlan?.macAddressAuthentication) {
     let authRadius = {
       primary: {
@@ -190,10 +182,11 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
         }
       }
     }
-  
+
     saveData = {
       ...saveData,
       ...{
+        enableSecondaryAuthServer: data.enableSecondaryAuthServer,
         authRadius
       }
     }
@@ -205,9 +198,9 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
           port: get(data, 'accountingRadius.primary.port'),
           sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
         }
-        
+
       }
-  
+
       if (data.enableSecondaryAcctServer) {
         accountingRadius = {
           ...accountingRadius,
@@ -223,10 +216,11 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
           }
         }
       }
-  
+
       saveData = {
         ...saveData,
         ...{
+          enableSecondaryAcctServer: data.enableSecondaryAcctServer,
           accountingRadius
         }
       }
@@ -269,4 +263,25 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
     [NetworkTypeEnum.PSK]: parsePskSettingDataToSave(data)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
+}
+
+export function transferMoreSettingsToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
+  const advancedCustomization = {
+    ...originalData?.wlan?.advancedCustomization,
+    ...data?.wlan?.advancedCustomization
+  } as OpenWlanAdvancedCustomization | 
+       AAAWlanAdvancedCustomization | 
+       DpskWlanAdvancedCustomization | 
+       PskWlanAdvancedCustomization
+
+  let saveData:NetworkSaveData = {
+    ...originalData,
+    wlan: {
+      ...originalData?.wlan,
+      vlanId: data?.wlan?.vlanId ?? originalData?.wlan?.vlanId,
+      advancedCustomization
+    }
+  }
+
+  return saveData
 }

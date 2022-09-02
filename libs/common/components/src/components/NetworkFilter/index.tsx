@@ -1,7 +1,6 @@
 import React from 'react'
 
 import {
-  Cascader as AntCascader,
   CascaderProps as AntCascaderProps
 } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
@@ -66,7 +65,7 @@ export function NetworkFilter (props: CascaderProps) {
         </Button>
       </UI.ButtonDiv>
     </>
-    return <AntCascader
+    return <UI.Cascader
       {...antProps}
       value={currentValues}
       multiple
@@ -79,7 +78,13 @@ export function NetworkFilter (props: CascaderProps) {
       open={currentValues !== savedValues || open}
     />
   } else {
-    return <AntCascader
+    const onChangeSingle = (
+      triggeredValue: SingleValueType,
+      selectedValues: DefaultOptionType[]
+    ) => {
+      onApply(selectedValues && selectedValues.map(option => option.value))
+    }
+    return <UI.Cascader
       {...antProps}
       changeOnSelect
       onChange={(
@@ -91,8 +96,7 @@ export function NetworkFilter (props: CascaderProps) {
         onApply(value)
       }}
       expandTrigger='hover'
-      showSearch={antProps.showSearch || true}
-      onDropdownVisibleChange={setOpen}
+      showSearch
     />
   }
 }

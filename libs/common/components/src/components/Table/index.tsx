@@ -1,31 +1,55 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
-import ProTable                   from '@ant-design/pro-table'
-import { Space, Divider, Button } from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
+import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
+import { Space, Divider, Button }                      from 'antd'
+import _                                               from 'lodash'
+import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
-import type { Columns, ColumnStateOption }  from './types'
-import type { SettingOptionType }           from '@ant-design/pro-table/lib/components/ToolBar'
-import type { TableProps as AntTableProps } from 'antd'
+import type { TableColumn, ColumnStateOption } from './types'
+import type { ParamsType }                     from '@ant-design/pro-provider'
+import type { SettingOptionType }              from '@ant-design/pro-table/lib/components/ToolBar'
+import type {
+  TableProps as AntTableProps,
+  TablePaginationConfig
+} from 'antd'
+
+export type {
+  ColumnType,
+  ColumnGroupType,
+  TableColumn
+} from './types'
 
 export interface TableProps <RecordType>
-  extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' | 'title'> {
+  extends Omit<ProAntTableProps<RecordType, ParamsType>, 
+  'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip'
-    rowKey?: Exclude<AntTableProps<RecordType>['rowKey'], Function>
-    columns: Columns<RecordType, 'text'>[]
+    rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
+    columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
+    rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection'] 
+      & AntTableProps<RecordType>['rowSelection']
+      & {
+      alwaysShowAlert?: boolean;
+  })
   }
+
+const defaultPagination = {
+  mini: true,
+  defaultPageSize: 10,
+  pageSizeOptions: [5, 10, 20, 25, 50, 100],
+  position: ['bottomCenter'],
+  showTotal: false
+}
 
 function useSelectedRowKeys <RecordType> (
   rowSelection?: TableProps<RecordType>['rowSelection']
@@ -61,6 +85,11 @@ function Table <RecordType extends object> (
 
     return cols.map((column) => ({
       ...column,
+      tooltip: null,
+      title: column.tooltip ? <UI.TitleWithTooltip>
+        {column.title as React.ReactNode}
+        <UI.InformationTooltip title={column.tooltip as string} />
+      </UI.TitleWithTooltip> : column.title,
       disable: Boolean(column.fixed || column.disable),
       show: Boolean(column.fixed || column.disable || (column.show ?? true))
     }))
@@ -81,7 +110,7 @@ function Table <RecordType extends object> (
         children={$t({ defaultMessage: 'Reset to default' })}
       />
     </div>,
-    children: <SettingsOutlined />
+    children: <SettingsOutlined/>
   } : false
 
   const rowKey = (props.rowKey ?? 'key') as keyof RecordType
@@ -143,11 +172,14 @@ function Table <RecordType extends object> (
       columns={columns}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
-      scroll={{ x: 'max-content' }}
+      scroll={props.scroll ? props.scroll : { x: 'max-content' }}
       rowSelection={rowSelection}
-      pagination={props.pagination || (type === 'tall' ? undefined : false)}
+      pagination={(type === 'tall'
+        ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+        : false)}
       columnEmptyText={false}
       onRow={onRow}
+      showSorterTooltip={false}
       tableAlertOptionRender={false}
       tableAlertRender={({ onCleanSelected }) => (
         <Space size={32}>
