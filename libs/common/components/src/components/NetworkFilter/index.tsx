@@ -82,7 +82,7 @@ export function NetworkFilter (props: CascaderProps) {
       triggeredValue: SingleValueType,
       selectedValues: DefaultOptionType[]
     ) => {
-      onApply(selectedValues && selectedValues.map(option => option.value))
+      onApply(selectedValues && selectedValues.map(option => option.value) as SingleValueType | SingleValueType[] | undefined)
     }
     return <UI.Cascader
       {...antProps}
