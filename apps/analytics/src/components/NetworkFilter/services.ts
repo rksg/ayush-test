@@ -11,10 +11,9 @@ import {
 
 type NetworkData = PathNode & { path: NetworkPath }
 export type ApOrSwitch = {
-  path: NetworkPath,
-  name: string,
-  mac: string,
-  incidentSeverity: number
+  path: NetworkPath
+  name: string
+  mac: string
 }
 type ApsOrSwitches = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
 export type Child = NetworkData & ApsOrSwitches
@@ -53,12 +52,10 @@ export const api = dataApi.injectEndpoints({
                   aps {
                     name
                     mac
-                    incidentSeverity
                   }
                   switches {
                     name
                     mac
-                    incidentSeverity
                   }
                 }
               }
