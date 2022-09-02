@@ -1,9 +1,9 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
-import ProTable                   from '@ant-design/pro-table'
-import { Space, Divider, Button } from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
+import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
+import { Space, Divider, Button }                      from 'antd'
+import _                                               from 'lodash'
+import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
@@ -11,6 +11,7 @@ import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption } from './types'
+import type { ParamsType }                     from '@ant-design/pro-provider'
 import type { SettingOptionType }              from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
@@ -24,16 +25,22 @@ export type {
 } from './types'
 
 export interface TableProps <RecordType>
-  extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' | 'title'> {
+  extends Omit<ProAntTableProps<RecordType, ParamsType>, 
+  'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip'
-    rowKey?: Exclude<AntTableProps<RecordType>['rowKey'], Function>
+    rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
+    rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection'] 
+      & AntTableProps<RecordType>['rowSelection']
+      & {
+      alwaysShowAlert?: boolean;
+  })
   }
 
 const defaultPagination = {
@@ -103,7 +110,7 @@ function Table <RecordType extends object> (
         children={$t({ defaultMessage: 'Reset to default' })}
       />
     </div>,
-    children: <SettingsOutlined />
+    children: <SettingsOutlined/>
   } : false
 
   const rowKey = (props.rowKey ?? 'key') as keyof RecordType
@@ -165,7 +172,7 @@ function Table <RecordType extends object> (
       columns={columns}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
-      scroll={{ x: 'max-content' }}
+      scroll={props.scroll ? props.scroll : { x: 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig

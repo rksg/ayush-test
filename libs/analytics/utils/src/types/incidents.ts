@@ -59,6 +59,7 @@ export interface Incident extends IncidentInformation {
   mutedAt: Date|null
   slaThreshold: number|null
   currentSlaThreshold: number|null
+  relatedIncidents?: Incident[]
 }
 
 export interface IncidentAttributesProps

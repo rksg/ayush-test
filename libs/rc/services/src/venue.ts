@@ -38,6 +38,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    getVenue: build.query<Venue, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'DETAIL' }]
+    }),
     venueDetailsHeader: build.query<VenueDetailHeader, RequestPayload>({
       query: ({ params }) => {
         const venueDetailReq = createHttpRequest(CommonUrlsInfo.getVenueDetailsHeader, params)
@@ -52,5 +61,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
 export const {
   useVenuesListQuery,
+  useGetVenueQuery,
   useVenueDetailsHeaderQuery
 } = venueApi

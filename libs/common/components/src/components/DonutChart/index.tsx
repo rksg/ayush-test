@@ -1,8 +1,12 @@
-import ReactECharts from 'echarts-for-react'
-import { find }     from 'lodash'
+import ReactECharts          from 'echarts-for-react'
+import { find }              from 'lodash'
+import { useIntl }           from 'react-intl'
+import { MessageDescriptor } from 'react-intl'
 
 import { cssNumber, cssStr }                                       from '../../theme/helper'
 import { tooltipOptions, donutChartTooltipFormatter, EventParams } from '../Chart/helper'
+
+import { SubTitle } from './styledComponents'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
@@ -26,12 +30,19 @@ const defaultProps: DonutChartOptionalProps = {
 DonutChart.defaultProps = { ...defaultProps }
 
 export interface DonutChartProps extends DonutChartOptionalProps,
-  Omit<EChartsReactProps, 'option' | 'opts'> {
+  Omit<EChartsReactProps, 'option' | 'opts' | 'style'> {
   data: Array<DonutChartData>
   title?: string,
+  subTitle?: string,
+  subTitleBlockHeight?: number
+  unit?: MessageDescriptor
   dataFormatter?: (value: unknown) => string | null,
   onClick?: (params: EventParams) => void
+  style: EChartsReactProps['style'] & { width: number, height: number }
 }
+
+export const onChartClick = (onClick: DonutChartProps['onClick']) =>
+  (params: EventParams) => onClick && onClick(params)
 
 export function DonutChart ({
   data,
@@ -56,17 +67,6 @@ export function DonutChart ({
     fontSize: cssNumber('--acx-headline-3-font-size'),
     lineHeight: cssNumber('--acx-headline-3-line-height'),
     fontWeight: cssNumber('--acx-headline-3-font-weight')
-  }
-
-  const onChartClick = (params: EventParams) => {
-    const { onClick } = props
-    if (onClick) {
-      onClick(params)
-    }
-  }
-
-  const eventHandlers = {
-    click: onChartClick
   }
 
   const option: EChartsOption = {
@@ -101,13 +101,15 @@ export function DonutChart ({
         animation: !isEmpty,
         data,
         type: 'pie',
-        center: [props.showLegend && !isEmpty ? '26%' : '50%', '50%'],
+        center: [props.showLegend && !isEmpty ? '27%' : '50%', '50%'],
         radius: ['76%', '90%'],
         cursor: isEmpty ? 'auto' : 'pointer',
         avoidLabelOverlap: true,
         label: {
           show: true,
           position: 'center',
+          overflow: 'break',
+          width: 80,
           formatter: () => {
             const value = dataFormatter ? dataFormatter(sum) : sum
             return props.title
@@ -119,18 +121,22 @@ export function DonutChart ({
               fontFamily: cssStr('--acx-neutral-brand-font'),
               fontSize: cssNumber('--acx-subtitle-6-font-size'),
               lineHeight: cssNumber('--acx-subtitle-6-line-height'),
-              fontWeight: cssNumber('--acx-subtitle-6-font-weight'),
-              padding: [0, 0, -15, 0]
+              fontWeight: cssNumber('--acx-subtitle-6-font-weight')
             },
             value: {
-              ...commonStyles
+              ...commonStyles,
+              padding: props.title ? [10, 0, 0, 0] : 0
             }
           }
         },
         tooltip: {
           ...tooltipOptions(),
           show: !isEmpty,
-          formatter: donutChartTooltipFormatter(dataFormatter)
+          formatter: donutChartTooltipFormatter(
+            dataFormatter,
+            props.unit,
+            useIntl()
+          )
         },
         emphasis: {
           disabled: isEmpty,
@@ -148,10 +154,18 @@ export function DonutChart ({
   }
 
   return (
-    <ReactECharts
-      {...props}
-      opts={{ renderer: 'svg' }}
-      option={option}
-      onEvents={eventHandlers} />
+    <>
+      <ReactECharts
+        {...{
+          ...props,
+          style: {
+            ...props.style,
+            height: props.style?.height - (props.subTitle ? props.subTitleBlockHeight || 30 : 0) }
+        }}
+        opts={{ renderer: 'svg' }}
+        option={option}
+        onEvents={{ click: onChartClick(props.onClick) }} />
+      <SubTitle width={props.style.width}>{props.subTitle}</SubTitle>
+    </>
   )
 }
