@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 
-import _ from 'lodash'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
