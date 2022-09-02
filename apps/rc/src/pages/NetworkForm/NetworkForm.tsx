@@ -192,10 +192,11 @@ export function NetworkForm () {
           >
             <Venues />
           </StepsForm.StepForm>
-
-          <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
-            <SummaryForm summaryData={saveState} />
-          </StepsForm.StepForm>
+          {!editMode &&
+            <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
+              <SummaryForm summaryData={saveState} />
+            </StepsForm.StepForm>
+          }
         </StepsForm>
       </NetworkFormContext.Provider>
     </>
