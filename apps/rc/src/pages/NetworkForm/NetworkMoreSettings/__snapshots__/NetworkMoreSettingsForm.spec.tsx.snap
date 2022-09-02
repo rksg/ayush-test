@@ -6,7 +6,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
     class="ant-form ant-form-horizontal"
   >
     <div
-      class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollpasePanel-sc-1vnv53e-4 bMzqGQ"
+      class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollpasePanel-sc-1vnv53e-3 eQdnmT"
       style="width: 600px;"
     >
       <div
@@ -125,13 +125,82 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       <div
                         class="ant-form-item-control-input-content"
                       >
-                        <input
-                          class="ant-input"
-                          id="wlan_vlanId"
-                          style="width: 66px;"
-                          type="text"
-                          value="1"
-                        />
+                        <div
+                          class="ant-input-number ant-input-number-in-form-item"
+                          style="width: 80px;"
+                        >
+                          <div
+                            class="ant-input-number-handler-wrap"
+                          >
+                            <span
+                              aria-disabled="false"
+                              aria-label="Increase Value"
+                              class="ant-input-number-handler ant-input-number-handler-up"
+                              role="button"
+                              unselectable="on"
+                            >
+                              <span
+                                aria-label="up"
+                                class="anticon anticon-up ant-input-number-handler-up-inner"
+                                role="img"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  data-icon="up"
+                                  fill="currentColor"
+                                  focusable="false"
+                                  height="1em"
+                                  viewBox="64 64 896 896"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                  />
+                                </svg>
+                              </span>
+                            </span>
+                            <span
+                              aria-disabled="false"
+                              aria-label="Decrease Value"
+                              class="ant-input-number-handler ant-input-number-handler-down"
+                              role="button"
+                              unselectable="on"
+                            >
+                              <span
+                                aria-label="down"
+                                class="anticon anticon-down ant-input-number-handler-down-inner"
+                                role="img"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  data-icon="down"
+                                  fill="currentColor"
+                                  focusable="false"
+                                  height="1em"
+                                  viewBox="64 64 896 896"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                  />
+                                </svg>
+                              </span>
+                            </span>
+                          </div>
+                          <div
+                            class="ant-input-number-input-wrap"
+                          >
+                            <input
+                              aria-valuenow="1"
+                              autocomplete="off"
+                              class="ant-input-number-input"
+                              id="wlan_vlanId"
+                              role="spinbutton"
+                              step="1"
+                              value="1"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -422,7 +491,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -437,11 +506,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_forceMobileDeviceDhcp"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -455,8 +524,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Force DHCP
+                          </span>
                         </label>
-                        Force DHCP
                       </span>
                     </div>
                   </div>
@@ -464,7 +535,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -479,11 +550,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_enableSyslog"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -497,8 +568,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Enable logging client data to external syslog
+                          </span>
                         </label>
-                        Enable logging client data to external syslog
                       </span>
                     </div>
                   </div>
@@ -554,7 +627,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             class="ant-collapse-content-box"
           >
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -569,11 +642,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_hideSsid"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -587,20 +660,21 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Hide SSID
+                          </span>
                         </label>
-                        Hide SSID
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <h3
-              class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-              style="font-weight: 600; margin: 20px 0px;"
+            <h4
+              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1vnv53e-6 fPbHyn bixyod"
             >
               Load Control
-            </h3>
+            </h4>
             <div
               class="ant-form-item"
             >
@@ -775,7 +849,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -790,11 +864,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_enableBandBalancing"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -808,8 +882,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Enable load balancing between all radios
+                          </span>
                         </label>
-                        Enable load balancing between all radios
                       </span>
                     </div>
                   </div>
@@ -817,7 +893,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -832,11 +908,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_clientLoadBalancingEnable"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -850,8 +926,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Enable load balancing between APs
+                          </span>
                         </label>
-                        Enable load balancing between APs
                       </span>
                     </div>
                   </div>
@@ -862,14 +940,13 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               style="margin-bottom: 30px;"
             >
               <span
-                style="display: grid; grid-template-columns: 220px 130px auto; margin-top: 20px;"
+                style="display: grid; grid-template-columns: 220px 130px auto; align-items: baseline; margin: 20px 0px;"
               >
-                <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                  style="line-height: 32px; font-weight: 600;"
+                <h4
+                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1vnv53e-6 fPbHyn bixyod"
                 >
                   Access Control
-                </h3>
+                </h4>
                 <span>
                   <button
                     class="ant-btn ant-btn-link"
@@ -1115,7 +1192,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
               style="margin-bottom: 15px;"
             >
               <div
@@ -1131,11 +1208,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="enableOfdmOnly"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -1149,25 +1226,21 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Enable OFDM only (disable 802.11b)
+                          </span>
                         </label>
-                        Enable OFDM only (disable 802.11b)
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <h3
-              class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-              style="font-weight: 600; margin: 20px 0px;"
+            <h4
+              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1vnv53e-6 fPbHyn bixyod"
             >
-              <div>
-                 Data Rate Control 
-              </div>
-              <div>
-                 2.4 GHz & 5 GHz 
-              </div>
-            </h3>
+              Data Rate Control (2.4 GHz & 5 GHz)
+            </h4>
             <div
               style="display: grid; grid-template-columns: auto 1fr; column-gap: 20px;"
             >
@@ -1359,7 +1432,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-2 nVQbk"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
               style="margin-bottom: 15px;"
             >
               <div
@@ -1375,11 +1448,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-3 jATEOz"
+                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
                         id="wlan_advancedCustomization_enableNeighborReport"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item styledComponents__CheckboxWrapper-sc-1vnv53e-1 ftmZoo"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
                         >
                           <span
                             class="ant-checkbox"
@@ -1393,8 +1466,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               class="ant-checkbox-inner"
                             />
                           </span>
+                          <span>
+                            Enable 802.11k neighbor reports
+                          </span>
                         </label>
-                        Enable 802.11k neighbor reports
                       </span>
                     </div>
                   </div>
@@ -1428,13 +1503,82 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     <div
                       class="ant-form-item-control-input-content"
                     >
-                      <input
-                        class="ant-input"
-                        id="wlan_advancedCustomization_clientInactivityTimeout"
+                      <div
+                        class="ant-input-number ant-input-number-in-form-item"
                         style="width: 150px;"
-                        type="text"
-                        value="120"
-                      />
+                      >
+                        <div
+                          class="ant-input-number-handler-wrap"
+                        >
+                          <span
+                            aria-disabled="false"
+                            aria-label="Increase Value"
+                            class="ant-input-number-handler ant-input-number-handler-up"
+                            role="button"
+                            unselectable="on"
+                          >
+                            <span
+                              aria-label="up"
+                              class="anticon anticon-up ant-input-number-handler-up-inner"
+                              role="img"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                data-icon="up"
+                                fill="currentColor"
+                                focusable="false"
+                                height="1em"
+                                viewBox="64 64 896 896"
+                                width="1em"
+                              >
+                                <path
+                                  d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                />
+                              </svg>
+                            </span>
+                          </span>
+                          <span
+                            aria-disabled="false"
+                            aria-label="Decrease Value"
+                            class="ant-input-number-handler ant-input-number-handler-down"
+                            role="button"
+                            unselectable="on"
+                          >
+                            <span
+                              aria-label="down"
+                              class="anticon anticon-down ant-input-number-handler-down-inner"
+                              role="img"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                data-icon="down"
+                                fill="currentColor"
+                                focusable="false"
+                                height="1em"
+                                viewBox="64 64 896 896"
+                                width="1em"
+                              >
+                                <path
+                                  d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                />
+                              </svg>
+                            </span>
+                          </span>
+                        </div>
+                        <div
+                          class="ant-input-number-input-wrap"
+                        >
+                          <input
+                            aria-valuenow="120"
+                            autocomplete="off"
+                            class="ant-input-number-input"
+                            id="wlan_advancedCustomization_clientInactivityTimeout"
+                            role="spinbutton"
+                            step="1"
+                            value="120"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1467,13 +1611,82 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     <div
                       class="ant-form-item-control-input-content"
                     >
-                      <input
-                        class="ant-input"
-                        id="wlan_advancedCustomization_directedThreshold"
+                      <div
+                        class="ant-input-number ant-input-number-in-form-item"
                         style="width: 150px;"
-                        type="text"
-                        value="5"
-                      />
+                      >
+                        <div
+                          class="ant-input-number-handler-wrap"
+                        >
+                          <span
+                            aria-disabled="false"
+                            aria-label="Increase Value"
+                            class="ant-input-number-handler ant-input-number-handler-up"
+                            role="button"
+                            unselectable="on"
+                          >
+                            <span
+                              aria-label="up"
+                              class="anticon anticon-up ant-input-number-handler-up-inner"
+                              role="img"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                data-icon="up"
+                                fill="currentColor"
+                                focusable="false"
+                                height="1em"
+                                viewBox="64 64 896 896"
+                                width="1em"
+                              >
+                                <path
+                                  d="M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z"
+                                />
+                              </svg>
+                            </span>
+                          </span>
+                          <span
+                            aria-disabled="false"
+                            aria-label="Decrease Value"
+                            class="ant-input-number-handler ant-input-number-handler-down"
+                            role="button"
+                            unselectable="on"
+                          >
+                            <span
+                              aria-label="down"
+                              class="anticon anticon-down ant-input-number-handler-down-inner"
+                              role="img"
+                            >
+                              <svg
+                                aria-hidden="true"
+                                data-icon="down"
+                                fill="currentColor"
+                                focusable="false"
+                                height="1em"
+                                viewBox="64 64 896 896"
+                                width="1em"
+                              >
+                                <path
+                                  d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                />
+                              </svg>
+                            </span>
+                          </span>
+                        </div>
+                        <div
+                          class="ant-input-number-input-wrap"
+                        >
+                          <input
+                            aria-valuenow="5"
+                            autocomplete="off"
+                            class="ant-input-number-input"
+                            id="wlan_advancedCustomization_directedThreshold"
+                            role="spinbutton"
+                            step="1"
+                            value="5"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div

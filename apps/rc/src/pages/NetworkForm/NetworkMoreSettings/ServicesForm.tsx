@@ -3,8 +3,9 @@ import React, { createContext, useState } from 'react'
 
 import {
   Button,
+  Checkbox,
   Form,
-  Input,
+  InputNumber,
   Select,
   Switch,
   Tooltip
@@ -156,16 +157,14 @@ export function ServicesForm () {
             children={<Switch />}
           />
           {enableWifiCalling &&
-            <Button type='link'
-              style={{
-                textAlign: 'left'
-              }}
-              disabled={true}>
-              {$t({ defaultMessage: 'Select profiles' })}
-            </Button>
+            <div>
+              <Button type='link'
+                disabled={true}>
+                {$t({ defaultMessage: 'Select profiles' })}
+              </Button>
+            </div>
           }
         </UI.FieldLabel>
-
       </UI.FieldLabel>
 
       <ClientIsolationForm/>
@@ -183,60 +182,42 @@ export function ServicesForm () {
         {enableAntiSpoofing &&
 
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: '160px 60px 1fr' }}>
-
-            <span style={{ display: 'flex' }}>
-              <UI.FormItemNoLabel
-                name={['wlan','advancedCustomization','enableArpRequestRateLimit']}
-                style={{ marginBottom: '10px' }}
-                valuePropName='checked'
-                initialValue={true}
-                children={<UI.CheckboxWrapper/>}
-              />
-              <UI.Label style={{ lineHeight: '32px' }}>
-                { $t({ defaultMessage: 'ARP request rate limit' }) }
-              </UI.Label>
-            </span>
-
+          <div style={{ display: 'grid', gridTemplateColumns: '170px 60px 1fr', gap: 10 }}>
+            <UI.FormItemNoLabel
+              name={['wlan','advancedCustomization','enableArpRequestRateLimit']}
+              valuePropName='checked'
+              initialValue={true}
+              children={<Checkbox children={$t({ defaultMessage: 'ARP request rate limit' })} />}
+            />
 
             {enableArpRequestRateLimit && <>
               <Form.Item
                 name={['wlan','advancedCustomization','arpRequestRateLimit']}
                 initialValue={15}
-                style={{ marginBottom: '10px', lineHeight: '32px' }}
-                children={<Input style={{ width: '50px' }} />} />
-              <UI.Label style={{ lineHeight: '34px' }}>
+                children={<InputNumber style={{ width: '100%' }} />} />
+              <UI.Label>
                 { $t({ defaultMessage: 'ppm' }) }
               </UI.Label>
             </>
             }
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '160px 60px 1fr' }}>
-
-            <span style={{ display: 'flex' }}>
-              <UI.FormItemNoLabel
-                name={['wlan','advancedCustomization','enableDhcpRequestRateLimit']}
-                style={{ marginBottom: '10px' }}
-                valuePropName='checked'
-                initialValue={true}
-                children={<UI.CheckboxWrapper />}
-              />
-              <UI.Label style={{ lineHeight: '34px' }}>
-                { $t({ defaultMessage: 'DHCP request rate limit' }) }
-              </UI.Label>
-            </span>
+          <div style={{ display: 'grid', gridTemplateColumns: '170px 60px 1fr', gap: 10 }}>
+            <UI.FormItemNoLabel
+              name={['wlan','advancedCustomization','enableDhcpRequestRateLimit']}
+              valuePropName='checked'
+              initialValue={true}
+              children={<Checkbox children={$t({ defaultMessage: 'DHCP request rate limit' })} />}
+            />
 
             {enableDhcpRequestRateLimit && <>
               <Form.Item
                 name={['wlan','advancedCustomization','dhcpRequestRateLimit']}
                 initialValue={15}
-                style={{ marginBottom: '10px', lineHeight: '32px' }}
-                children={<Input style={{ width: '50px' }} />} />
-              <UI.Label style={{ lineHeight: '32px' }}>
+                children={<InputNumber style={{ width: '100%' }} />} />
+              <UI.Label>
                 { $t({ defaultMessage: 'ppm' }) }
               </UI.Label>
-
             </>}
           </div>
         </>
@@ -248,17 +229,16 @@ export function ServicesForm () {
 
         children={
           <UI.Label>
-            <UI.CheckboxWrapper
-              disabled={enableAntiSpoofing} />
-            { $t({ defaultMessage: 'Force DHCP' }) }
+            <Checkbox disabled={enableAntiSpoofing}
+              children={$t({ defaultMessage: 'Force DHCP' })} />
           </UI.Label>}
       />
       <UI.FormItemNoLabel
         name={['wlan','advancedCustomization','enableSyslog']}
         children={
           <UI.Label>
-            <UI.CheckboxWrapper />
-            { $t({ defaultMessage: 'Enable logging client data to external syslog' }) }
+            <Checkbox children={
+              $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
           </UI.Label>}
       />
     </>

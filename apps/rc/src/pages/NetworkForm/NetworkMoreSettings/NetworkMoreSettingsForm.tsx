@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react'
 
 import {
+  Checkbox,
   Collapse,
   Form,
   Input,
+  InputNumber,
   Select,
   Switch
 } from 'antd'
@@ -16,6 +18,8 @@ import {
 } from '@acx-ui/rc/services'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
+
+import NetworkFormContext from '../NetworkFormContext'
 
 import { AccessControlForm } from './AccessControlForm'
 import { LoadControlForm }   from './LoadControlForm'
@@ -51,6 +55,33 @@ const listPayload = {
 }
 
 export function NetworkMoreSettingsForm(props: {
+  wlanData: NetworkSaveData
+}) {
+  const { editMode } = useContext(NetworkFormContext)
+  const { $t } = useIntl()
+  const [enableMoreSettings, setEnabled] = useState(false)
+  if (editMode) {
+    return <NetworkMoreSettingsForm2 wlanData={props.wlanData} />
+  } else {
+    return <div>
+      <Button
+        type='link'
+        onClick={() => {
+          setEnabled(!enableMoreSettings)
+        }}
+      >
+        {enableMoreSettings ?
+          $t({ defaultMessage: 'Show less settings' }) :
+          $t({ defaultMessage: 'Show more settings' })}
+      </Button>
+      {enableMoreSettings &&
+        <NetworkMoreSettingsForm2 wlanData={props.wlanData} />}
+    </div>
+  }
+}
+
+
+export function NetworkMoreSettingsForm2 (props: {
   wlanData: NetworkSaveData
 }) {
   const { editMode } = useContext(NetworkFormContext)
@@ -161,7 +192,7 @@ export function NetworkMoreSettingsForm2 (props: {
               label={$t({ defaultMessage: 'VLAN ID' })}
               initialValue={1}
               style={{ marginBottom: '15px' }}
-              children={<Input style={{ width: '66px' }}></Input>}
+              children={<InputNumber style={{ width: '80px' }} />}
             />
 
             {showDynamicWlan &&
@@ -172,10 +203,9 @@ export function NetworkMoreSettingsForm2 (props: {
                   valuePropName='checked'
                   initialValue={true}
                   children={
-                    <UI.CheckboxWrapper />
+                    <Checkbox children={$t({ defaultMessage: 'Dynamic VLAN' })} />
                   }
                 />
-                { $t({ defaultMessage: 'Dynamic VLAN' }) }
               </UI.FieldLabel>
             }
 
@@ -219,20 +249,11 @@ export function NetworkMoreSettingsForm2 (props: {
           name={['wlan','advancedCustomization','hideSsid']}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              { $t({ defaultMessage: 'Hide SSID' }) }
+              <Checkbox children={$t({ defaultMessage: 'Hide SSID' })} />
             </UI.Label>}
         />
 
-        <StepsForm.Title
-          style={{
-            fontSize: 'var(--acx-subtitle-4-font-size)',
-            fontWeight: '600',
-            margin: '20px 0'
-          }}
-        >
-          { $t({ defaultMessage: 'Load Control' }) }
-        </StepsForm.Title>
+        <UI.Subtitle>{$t({ defaultMessage: 'Load Control' })}</UI.Subtitle>
         <LoadControlForm />
 
 
@@ -246,20 +267,13 @@ export function NetworkMoreSettingsForm2 (props: {
           initialValue={false}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              { $t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' }) }
+              <Checkbox children={$t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' })} />
             </UI.Label>}
         />
 
-        <StepsForm.Title
-          style={{
-            fontSize: 'var(--acx-subtitle-4-font-size)',
-            fontWeight: '600',
-            margin: '20px 0'
-          }}>
-          <div> { $t({ defaultMessage: 'Data Rate Control' }) } </div>
-          <div> { $t({ defaultMessage: '2.4 GHz & 5 GHz' }) } </div>
-        </StepsForm.Title>
+        <UI.Subtitle>
+          {$t({ defaultMessage: 'Data Rate Control (2.4 GHz & 5 GHz)' })}
+        </UI.Subtitle>
 
         <div style={{
           display: 'grid',
@@ -291,8 +305,7 @@ export function NetworkMoreSettingsForm2 (props: {
           initialValue={false}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              { $t({ defaultMessage: 'Enable 802.11k neighbor reports' }) }
+              <Checkbox children={$t({ defaultMessage: 'Enable 802.11k neighbor reports' })} />
             </UI.Label>}
         />
 
@@ -304,8 +317,8 @@ export function NetworkMoreSettingsForm2 (props: {
             initialValue={false}
             children={
               <UI.Label>
-                <UI.CheckboxWrapper />
-                { $t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' }) }
+                <Checkbox data-testid='enableFastRoaming'
+                  children={$t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' })} />
               </UI.Label>}
           />
         }
@@ -325,7 +338,7 @@ export function NetworkMoreSettingsForm2 (props: {
           label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
           initialValue={120}
           style={{ marginBottom: '15px' }}
-          children={<Input style={{ width: '150px' }}></Input>}
+          children={<InputNumber style={{ width: '150px' }} />}
         />
 
         <Form.Item
@@ -335,7 +348,7 @@ export function NetworkMoreSettingsForm2 (props: {
           style={{ marginBottom: '15px', width: '300px' }}
           extra={$t({ defaultMessage: `Per radio client count at which an AP will stop
           converting group addressed data traffic to unicast` })}
-          children={<Input style={{ width: '150px' }}></Input>}
+          children={<InputNumber style={{ width: '150px' }} />}
         />
 
 

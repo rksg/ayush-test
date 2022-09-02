@@ -7,7 +7,7 @@ exports[`DnsProxyModal should render Dns Proxy Modal successfully 1`] = `
   >
     <button
       class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-      style="text-align: left; display: inline; margin-left: 15px;"
+      style="margin-inline-start: 15px;"
       type="button"
     >
       <span>

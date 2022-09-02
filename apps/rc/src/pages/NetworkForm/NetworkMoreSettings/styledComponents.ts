@@ -1,14 +1,13 @@
-import { Checkbox, Form, Collapse } from 'antd'
-import styled                       from 'styled-components/macro'
+import { Form, Collapse } from 'antd'
+import styled             from 'styled-components/macro'
+
+import { Subtitle } from '@acx-ui/components'
 
 export const FieldLabel = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
   line-height: 32px;
   grid-template-columns: ${props => props.width} 1fr;
-`
-export const CheckboxWrapper = styled(Checkbox)`
-  margin-right: 5px;
 `
 
 export const FormItemNoLabel = styled(Form.Item)`
@@ -66,3 +65,9 @@ export const RateLimitBlock = styled.div`
       width: 50px;
     }
 `
+
+const CustomSubtitle = styled(Subtitle).attrs({ level: 4 })`
+  margin-block-end: 12px;
+`
+
+export { CustomSubtitle as Subtitle }

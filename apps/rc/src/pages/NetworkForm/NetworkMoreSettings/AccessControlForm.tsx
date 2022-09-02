@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 
 import {
   Button,
+  Checkbox,
   Form,
   Select,
   Slider,
@@ -10,8 +11,6 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-
-import { StepsForm }                 from '@acx-ui/components'
 import {
   useDevicePolicyListQuery,
   useL2AclPolicyListQuery,
@@ -44,22 +43,15 @@ export function AccessControlForm () {
       <span style={{
         display: 'grid',
         gridTemplateColumns: '220px 130px auto',
-        marginTop: '20px'
+        alignItems: 'baseline',
+        margin: '20px 0'
       }}>
-        <StepsForm.Title
-          style={{
-            fontSize: 'var(--acx-subtitle-4-font-size)',
-            lineHeight: '32px',
-            fontWeight: '600'
-          }}
-        >
+        <UI.Subtitle level={4}>
           {$t({ defaultMessage: 'Access Control' })}
-        </StepsForm.Title>
+        </UI.Subtitle>
 
         <span>
-          {!enabledProfile &&
-            <SaveAsAcProfileButton />
-          }
+          {!enabledProfile && <SaveAsAcProfileButton />}
         </span>
         <Button
           type='link'
@@ -476,8 +468,8 @@ function AccessControlConfigForm () {
           style={{ lineHeight: '50px' }}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              {$t({ defaultMessage: 'Upload Limit' })}
+              <Checkbox data-testid='enableUploadLimit'
+                children={$t({ defaultMessage: 'Upload Limit' })} />
             </UI.Label>}
         />
         {
@@ -500,8 +492,8 @@ function AccessControlConfigForm () {
           style={{ lineHeight: '50px' }}
           children={
             <UI.Label>
-              <UI.CheckboxWrapper />
-              {$t({ defaultMessage: 'Download Limit' })}
+              <Checkbox data-testid='enableDownloadLimit'
+                children={$t({ defaultMessage: 'Download Limit' })} />
             </UI.Label>}
         />
 

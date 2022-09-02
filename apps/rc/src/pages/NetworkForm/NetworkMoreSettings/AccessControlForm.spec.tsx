@@ -70,15 +70,15 @@ describe('AccessControlForm', () => {
     expect(screen.getByText(/upload limit/i)).toBeVisible()
     expect(screen.getByText(/download limit/i)).toBeVisible()
 
-    const uploadLimit = screen.getByText(/upload limit/i)
-    await userEvent.click(within(uploadLimit).getByRole('checkbox'))
+    const uploadLimitCheckbox = screen.getByTestId('enableUploadLimit')
+    await userEvent.click(uploadLimitCheckbox)
     expect(screen.getByText(/200 mbps/i)).toBeVisible()
-    await userEvent.click(within(uploadLimit).getByRole('checkbox'))
+    await userEvent.click(uploadLimitCheckbox)
 
-    const downloadLimit = screen.getByText(/download limit/i)
-    await userEvent.click(within(downloadLimit).getByRole('checkbox'))
+    const downloadLimitCheckbox = screen.getByTestId('enableDownloadLimit')
+    await userEvent.click(downloadLimitCheckbox)
     expect(screen.getByText(/200 mbps/i)).toBeVisible()
-    await userEvent.click(within(downloadLimit).getByRole('checkbox'))
+    await userEvent.click(downloadLimitCheckbox)
 
   })
 

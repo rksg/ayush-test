@@ -129,15 +129,15 @@ describe('NetworkMoreSettingsForm', () => {
     expect(screen.getByText(/upload limit/i)).toBeVisible()
     expect(screen.getByText(/download limit/i)).toBeVisible()
 
-    const uploadLimit = screen.getByText(/upload limit/i)
-    await userEvent.click(within(uploadLimit).getByRole('checkbox'))
+    const uploadLimitCheckbox = screen.getByTestId('enableUploadLimit')
+    await userEvent.click(uploadLimitCheckbox)
     expect(screen.getByText(/200 mbps/i)).toBeVisible()
-    await userEvent.click(within(uploadLimit).getByRole('checkbox'))
+    await userEvent.click(uploadLimitCheckbox)
 
-    const downloadLimit = screen.getByText(/download limit/i)
-    await userEvent.click(within(downloadLimit).getByRole('checkbox'))
+    const downloadLimitCheckbox = screen.getByTestId('enableDownloadLimit')
+    await userEvent.click(downloadLimitCheckbox)
     expect(screen.getByText(/200 mbps/i)).toBeVisible()
-    await userEvent.click(within(downloadLimit).getByRole('checkbox'))
+    await userEvent.click(downloadLimitCheckbox)
 
   })
 
@@ -159,9 +159,8 @@ describe('NetworkMoreSettingsForm', () => {
       { route: { params } })
 
 
-    const select = screen.getByText(/enable 802\.11r fast bss transition/i)
-    const checkbox = within(select).getByRole('checkbox')
-    fireEvent.click(checkbox)
+    const enableFastRoamingCheckbox = screen.getByTestId('enableFastRoaming')
+    fireEvent.click(enableFastRoamingCheckbox)
     expect(screen.getByText(/mobility domain id/i)).toBeVisible()
 
 
