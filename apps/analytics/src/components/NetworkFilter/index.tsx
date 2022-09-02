@@ -1,5 +1,5 @@
 import { DefaultOptionType } from 'antd/lib/select'
-import { omit, uniqBy }      from 'lodash'
+import { omit }              from 'lodash'
 import { SingleValueType }   from 'rc-cascader/lib/Cascader'
 import { useIntl }           from 'react-intl'
 
@@ -11,50 +11,46 @@ import * as UI                                      from './styledComponents'
 
 
 const getFilterData = (data: Child[], $t: CallableFunction): Option [] => {
-  const venues = data.filter(node => node.type === 'zone')
-  const uniqSwGrps = uniqBy(data, 'name').filter(node => node.type === 'switchGroup')
-  const switchGroups = data
-    .filter(node => node.type === 'switchGroup')
-    .reduce((obj, node) => obj.set(node.name, node), new Map())
-  return [...venues, ...uniqSwGrps].map((node, index) => {
-    const venue = {
-      label: node.name,
-      value: JSON.stringify(node.path),
-      children: [] as Option[]
+  const venues: { [key: string]: Option; } = {}
+  for (const { name, path, aps, switches } of data) {
+    if (!venues[name]) {
+      venues[name] = {
+        label: name,
+        value: JSON.stringify(path),
+        children: [] as Option[]
+      }
     }
-    if(node.aps?.length) {
+    const venue = venues[name]
+    if(aps?.length && venue.children) {
       venue.children.push({
-        label: <UI.NonSelectableItem key={index}>
+        label: <UI.NonSelectableItem key={name}>
           {$t({ defaultMessage: 'APs' })}
         </UI.NonSelectableItem>,
         displayLabel: $t({ defaultMessage: 'APs' }),
         ignoreSelection: true,
-        value: `aps${index}`,
-        children: node.aps.map((ap: ApOrSwitch) => ({
+        value: `aps${name}`,
+        children: aps.map((ap: ApOrSwitch) => ({
           label: ap.name,
-          value: JSON.stringify([...node.path, { type: 'AP', name: ap.mac }])
+          value: JSON.stringify([...path, { type: 'AP', name: ap.mac }])
         }))
       })
     }
-    if(switchGroups.get(node.name)?.switches.length) {
+    if(switches?.length && venue.children) {
       venue.children.push({
-        label: <UI.NonSelectableItem key={index}>
+        label: <UI.NonSelectableItem key={name}>
           {$t({ defaultMessage: 'Switches' })}
         </UI.NonSelectableItem>,
         displayLabel: $t({ defaultMessage: 'Switches' }),
         ignoreSelection: true,
-        value: `switches${index}`,
-        children: switchGroups.get(node.name).switches.map((switchNode: ApOrSwitch) => ({
+        value: `switches${name}`,
+        children: switches.map((switchNode: ApOrSwitch) => ({
           label: switchNode.name,
-          value: JSON.stringify([
-            ...switchGroups.get(node.name).path,
-            { type: 'switch', name: switchNode.mac }
-          ])
+          value: JSON.stringify([...path, { type: 'switch', name: switchNode.mac }])
         }))
       })
     }
-    return venue
-  })
+  }
+  return Object.values(venues)
 }
 const search = (input: string, path: DefaultOptionType[]) : boolean => {
   const item = path.slice(-1)[0]
@@ -62,7 +58,7 @@ const search = (input: string, path: DefaultOptionType[]) : boolean => {
     ? false
     : (item?.label as string)?.toLowerCase().includes(input.toLowerCase())
 }
-export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) => 
+export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) =>
   selectedOptions
     ?.map(option => option?.displayLabel || option?.label).join(' / ')
 export const onApply = (
@@ -83,14 +79,14 @@ function ConnectedNetworkFilter () {
       data: data ? getFilterData(data, $t) : [],
       ...rest
     })
-  }) 
+  })
   return <UI.Container>
     <Loader states={[queryResults]}>
       <NetworkFilter
         placeholder={$t({ defaultMessage: 'Entire Organization' })}
         multiple={false}
         defaultValue={raw}
-        value={raw} 
+        value={raw}
         options={queryResults.data}
         onApply={value => onApply(value, setNetworkPath)}
         placement='bottomRight'
