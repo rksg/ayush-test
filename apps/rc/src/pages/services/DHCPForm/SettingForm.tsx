@@ -85,7 +85,7 @@ export function SettingForm () {
 
         <PoolList poolData={saveState.dhcpPools}
           updatePoolData={(poolsData: DHCPPool[]) => {
-            updateSaveState(_.assign(saveState, { dhcpPools: poolsData }))
+            updateSaveState({ ...saveState, ...{ dhcpPools: poolsData } })
           }}
           showPoolForm={(selectedData: DHCPPool): void => {
 
