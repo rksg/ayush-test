@@ -1,8 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { ServiceType }                    from '@acx-ui/rc/utils'
-import { Path }                           from '@acx-ui/react-router-dom'
-import { act, fireEvent, render, screen } from '@acx-ui/test-utils'
+import userEvent from '@testing-library/user-event'
+
+import { ServiceType }    from '@acx-ui/rc/utils'
+import { Path }           from '@acx-ui/react-router-dom'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { getServiceRoutePath, ServiceOperation } from '../serviceRouteUtils'
 
@@ -48,11 +50,8 @@ describe('Select Service Form', () => {
     const wifiCallingRadio = screen.getByRole('radio', { name: /Wi-Fi Calling/ })
     const submitButton = screen.getByRole('button', { name: 'Next' })
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(wifiCallingRadio)
-      fireEvent.click(submitButton)
-    })
+    await userEvent.click(wifiCallingRadio)
+    await userEvent.click(submitButton)
 
     const serviceCreatePath = getServiceRoutePath({
       type: ServiceType.WIFI_CALLING,
