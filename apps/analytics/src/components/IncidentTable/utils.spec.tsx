@@ -270,7 +270,7 @@ describe('IncidentTable: utils', () => {
 
   describe('ShortIncidentDescription', () => {  
     const RenderShortDescription = (props: IncidentTableComponentProps) => {
-      return <Provider><ShortIncidentDescription {...props}/></Provider>
+      return <Provider><ShortIncidentDescription onClickDesc={jest.fn()} {...props}/></Provider>
     }
   
     it('ShortIncidentDescription: it renders on valid incident', async () => {
