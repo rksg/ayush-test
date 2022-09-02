@@ -467,21 +467,27 @@ describe('Table component', () => {
 
       expect(tbody).toBeVisible()
       const body = within(tbody)
-      const before = (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
+      const before = 
+        (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
       expect(before).toHaveLength(3)
 
-      const nameSearch = screen.getAllByText('Name')
-      expect(nameSearch).toHaveLength(2)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters).toHaveLength(2)
 
-      const nameFilter = nameSearch[0]
-      fireEvent.click(nameFilter)
+      const nameFilter = filters[0]
+      fireEvent.keyDown(nameFilter, { key: 'John Doe', code: 'John Doe' })
 
-      const validSearchTerm = 'John Doe'
-      const input = await screen.findByPlaceholderText('Search Name, Description, Address')
-      fireEvent.change(input, { target: { value: validSearchTerm } })
+      const testId = 'option-John Doe'
+      const johnDoeOptions = await screen.findAllByTestId(testId)
 
-      const after = (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
+      expect(johnDoeOptions).toHaveLength(1)
+      fireEvent.click(johnDoeOptions[0])
+      
+      const after = 
+        (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
       expect(after).toHaveLength(1)
+      expect(await screen.findByRole('img', { name: 'check', hidden: true }))
+        .toBeInTheDocument()
     })
   })
 })

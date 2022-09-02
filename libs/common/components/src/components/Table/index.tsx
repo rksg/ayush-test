@@ -202,7 +202,11 @@ function Table <RecordType extends Record<string, any>> (
                 .includes(searchValue.toLowerCase())
             })
 
-          if (row.children && row.children.length > 0) return true
+          if (row.children && row.children.length > 0) {
+            return true
+          }
+
+          row.children = undefined
 
           return (row[key] as unknown as string)
             .toString()
@@ -254,17 +258,31 @@ function Table <RecordType extends Record<string, any>> (
         {filterables.map((column, i) => {
           const key = column.dataIndex as keyof RecordType
           return <Select
+            data-testid='options-selector'
             key={i}
             maxTagCount='responsive'
             mode='multiple'
             value={filterValues[key as keyof FilterValue]}
-            onChange={value => setFilterValues({ ...filterValues, [key]: value })}
+            onChange={value => {
+              const uncheckedFilters = { ...filterValues, [key]: value }
+              const checkFilter = {} as FilterValue
+              for (const property in uncheckedFilters) {
+                if (uncheckedFilters[property as keyof FilterValue] 
+                  && uncheckedFilters[property as keyof FilterValue].length > 0) {
+                  checkFilter[property as keyof FilterValue] = 
+                      uncheckedFilters[property as keyof FilterValue]
+                }
+              }
+              setFilterValues(checkFilter)
+            }}
             placeholder={column.title as string}
             showArrow
             style={{ width: 200 }}
           >
             {_.uniq(dataSource?.map(datum => datum[key] as unknown as string)).map(value =>
-              <Select.Option value={value} key={value}>{value}</Select.Option>
+              <Select.Option value={value} key={value} data-testid={`option-${value}`} >
+                {value}
+              </Select.Option>
             )}
           </Select>
         })}

@@ -489,6 +489,7 @@ exports[`Table component search & filter should match search & filter snapshot 1
       >
         <div
           class="ant-select ant-select-multiple ant-select-show-arrow ant-select-show-search"
+          data-testid="options-selector"
           style="width: 200px;"
         >
           <div
@@ -569,6 +570,7 @@ exports[`Table component search & filter should match search & filter snapshot 1
       >
         <div
           class="ant-select ant-select-multiple ant-select-show-arrow ant-select-show-search"
+          data-testid="options-selector"
           style="width: 200px;"
         >
           <div
