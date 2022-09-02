@@ -61,7 +61,23 @@ const data: TableProps<RecordType>['dataSource'] = [
     name: 'Jane Doe',
     age: 33,
     description: 'Jane Doe living at new address',
-    address: 'new address'
+    address: 'new address',
+    children: [
+      {
+        key: '2.1',
+        name: 'Edna Tan',
+        description: 'just started work',
+        age: 17,
+        address: 'living in canada'
+      },
+      {
+        key: '2.2',
+        name: 'Will Smith',
+        description: 'accomplished actor',
+        age: 17,
+        address: 'born and raised in us'
+      }
+    ]
   },
   {
     key: '3',
@@ -85,6 +101,13 @@ const data: TableProps<RecordType>['dataSource'] = [
         address: 'living abroad in America'
       }
     ]
+  },
+  {
+    key: '4',
+    name: 'Sam Smith',
+    age: 43,
+    description: 'a great singer',
+    address: 'mountain style'
   }
 ]
 

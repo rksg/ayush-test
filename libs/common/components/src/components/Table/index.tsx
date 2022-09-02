@@ -71,7 +71,9 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
-function Table <RecordType extends object & { children?: RecordType[] }> (
+// following the same typing from antd
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function Table <RecordType extends Record<string, any>> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>
 ) {
   const { $t } = useIntl()
@@ -165,47 +167,52 @@ function Table <RecordType extends object & { children?: RecordType[] }> (
     }
     : column
   )
+
   const filterables = columns.filter(column => column.filterable)
-  const activeFilters = filterables.filter(column => {
-    const key = (column.dataIndex ?? column.key) as keyof RecordType
-    const filteredValue = filterValues[key as keyof FilterValue]
-    return filteredValue && filteredValue.length
-  })
   const searchables = columns.filter(column => column.searchable)
-  
-  let filteredData = (dataSource) && dataSource.filter(row => {
-    for (const column of activeFilters) {
-      const key = (column.dataIndex ?? column.key) as keyof RecordType
-      const filteredValue = filterValues[key as keyof FilterValue]
-      if (!filteredValue.includes(row[key] as unknown as string)) {
-        return false
-      }
-    }
-    if (searchValue) {
-      return searchables.some(column => {
-        const key = (column.dataIndex ?? column.key) as keyof RecordType
-        const { children } = row
+  const activeFilters = filterables.filter(column => {
+    const key = column.dataIndex as keyof RecordType
+    const filteredValue = filterValues[key as keyof FilterValue]
 
-        if (children && children.length > 0) {
-          for (let i = 0; i < children.length; i++) {
-            const childMatch = (children[i][key] as unknown as string)
-              .toString()
-              .toLowerCase()
-              .includes(searchValue.toLowerCase())
-            
-            if (childMatch) return true
-          }
-        }
-
-        return (row[key] as unknown as string)
-          .toString()
-          .toLowerCase()
-          .includes(searchValue.toLowerCase())
-        
-      })
-    }
-    return true
+    return filteredValue
   })
+  const deepDataCopy = _.cloneDeep(dataSource) as unknown as Array<RecordType & {
+    children?: RecordType[]
+  }>
+  const filteredData = (deepDataCopy) && deepDataCopy.filter(
+    (row) => {
+      for (const column of activeFilters) {
+        const key = column.dataIndex as keyof RecordType
+        const filteredValue = filterValues[key as keyof FilterValue]
+        if (!filteredValue.includes(row[key] as unknown as string)) {
+          return false
+        }
+      }
+
+      if (searchValue) {
+        return searchables.some(column => {
+          const key = column.dataIndex as keyof RecordType
+          const { children } = row
+
+          row.children = children && children.filter(
+            (child) => {
+              return (child[key] as unknown as string)
+                .toString()
+                .toLowerCase()
+                .includes(searchValue.toLowerCase())
+            })
+
+          if (row.children && row.children.length > 0) return true
+
+          return (row[key] as unknown as string)
+            .toString()
+            .toLowerCase()
+            .includes(searchValue.toLowerCase())
+        
+        })
+      }
+      return true
+    })
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasHeader = !hasRowSelected && (Boolean(filterables.length) || Boolean(searchables.length))
@@ -245,7 +252,7 @@ function Table <RecordType extends object & { children?: RecordType[] }> (
           value={searchValue}
         />}
         {filterables.map((column, i) => {
-          const key = (column.dataIndex ?? column.key) as keyof RecordType
+          const key = column.dataIndex as keyof RecordType
           return <Select
             key={i}
             maxTagCount='responsive'

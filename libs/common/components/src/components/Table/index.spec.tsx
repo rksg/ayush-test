@@ -344,4 +344,144 @@ describe('Table component', () => {
     />)
     expect(asFragment()).toMatchSnapshot()
   })
+
+  describe('search & filter', () => {
+    const filteredColumns = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        filterable: true,
+        searchable: true
+      },
+      {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age',
+        filterable: true
+      },
+      {
+        title: 'Description',
+        dataIndex: 'description',
+        key: 'description',
+        searchable: true
+      },
+      {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+        searchable: true
+      }
+    ]
+  
+    const filteredData = [
+      {
+        key: '1',
+        name: 'John Doe',
+        age: 32,
+        description: 'John Doe living at sample address',
+        address: 'sample address',
+        children: [
+          {
+            key: '1.1',
+            name: 'Fred Mayers',
+            age: 27,
+            description: 'Fred Mayers is a good guy',
+            address: 'Fred lives alone'
+          }
+        ]
+      },
+      {
+        key: '2',
+        name: 'Jane Doe',
+        age: 33,
+        description: 'Jane Doe living at new address',
+        address: 'new address'
+      },
+      {
+        key: '3',
+        name: 'Jordan Doe',
+        age: 33,
+        description: '',
+        address: 'another address',
+        children: [
+          {
+            key: '3.1',
+            name: 'Dawn Soh',
+            age: 22,
+            description: 'Dawn just graduated college',
+            address: 'none, had moved out of the dorm'
+          },
+          {
+            key: '3.2',
+            name: 'Edna Wee',
+            age: 22,
+            description: 'Edna loves to run',
+            address: 'living abroad in America'
+          }
+        ]
+      }
+    ]
+  
+    it('should match search & filter snapshot', () => {
+      const { asFragment } = render(<Table 
+        columns={filteredColumns}
+        dataSource={filteredData}
+        rowSelection={{ selectedRowKeys: [] }}
+      />)
+      expect(asFragment()).toMatchSnapshot()
+    })
+  
+    it('search input with terms', async () => {
+      render(<Table 
+        columns={filteredColumns}
+        dataSource={filteredData}
+        rowSelection={{ selectedRowKeys: [] }}
+      />)
+      const validSearchTerm = 'John Doe'
+      const input = await screen.findByPlaceholderText('Search Name, Description, Address')
+      fireEvent.change(input, { target: { value: validSearchTerm } })
+      
+      expect(await screen.findAllByText(validSearchTerm)).toHaveLength(2)
+  
+      const childSearchTerm = 'edna'
+      fireEvent.change(input, { target: { value: childSearchTerm } })
+      expect(await screen.findAllByText('Jordan Doe')).toHaveLength(1)
+
+      const buttons = await screen.findAllByRole('button')
+      expect(buttons).toHaveLength(4)
+      fireEvent.click(buttons[0])
+
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(4)
+    })
+  
+    it('filtering inputs & searching', async () => {
+      render(<Table 
+        columns={filteredColumns}
+        dataSource={filteredData}
+        rowSelection={{ selectedRowKeys: [] }}
+      />)
+
+      const tbody = (await screen.findAllByRole('rowgroup'))
+        .find(element => element.classList.contains('ant-table-tbody'))!
+
+      expect(tbody).toBeVisible()
+      const body = within(tbody)
+      const before = (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
+      expect(before).toHaveLength(3)
+
+      const nameSearch = screen.getAllByText('Name')
+      expect(nameSearch).toHaveLength(2)
+
+      const nameFilter = nameSearch[0]
+      fireEvent.click(nameFilter)
+
+      const validSearchTerm = 'John Doe'
+      const input = await screen.findByPlaceholderText('Search Name, Description, Address')
+      fireEvent.change(input, { target: { value: validSearchTerm } })
+
+      const after = (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
+      expect(after).toHaveLength(1)
+    })
+  })
 })
