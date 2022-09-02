@@ -1,5 +1,5 @@
-import { isEqual }   from 'lodash'
-import { IntlShape } from 'react-intl'
+import { isEqual, includes } from 'lodash'
+import { IntlShape }         from 'react-intl'
 
 import { validationMessages } from '@acx-ui/utils'
 
@@ -22,6 +22,15 @@ export function networkWifiSecretRegExp ({ $t }: IntlShape, value: string) {
   return Promise.resolve()
 }
 
+export function domainNameRegExp ({ $t }: IntlShape, value: string) {
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function trailingNorLeadingSpaces ({ $t }: IntlShape, value: string) {
   if (value && (value.endsWith(' ') || value.startsWith(' '))) {
     return Promise.reject($t(validationMessages.leadingTrailingWhitespace))
@@ -38,6 +47,19 @@ export function checkObjectNotExists <ItemType> (
 ) {
   if (list.filter(item => isEqual(item, value)).length !== 0) {
     return Promise.reject(intl.$t(validationMessages.duplication, { entityName, key }))
+  }
+  return Promise.resolve()
+}
+
+export function checkItemNotIncluded (
+  intl: IntlShape,
+  list: string[],
+  value: string,
+  entityName: string,
+  exclusionItems: string
+) {
+  if (list.filter(item => includes(value, item)).length !== 0) {
+    return Promise.reject(intl.$t(validationMessages.exclusion, { entityName, exclusionItems }))
   }
   return Promise.resolve()
 }
