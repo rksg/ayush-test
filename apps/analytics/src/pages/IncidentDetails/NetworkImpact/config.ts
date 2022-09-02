@@ -11,7 +11,7 @@ export interface NetworkImpactChart {
   title: MessageDescriptor
   dimension: string
   type: string
-  unit: MessageDescriptor
+  highlight: MessageDescriptor
   dominanceFn?: (data: NetworkImpactChartData['data'], incident: Incident) => {
     key: string
     value: number
@@ -57,10 +57,10 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     title: defineMessage({ defaultMessage: 'WLAN' }),
     dimension: 'ssids',
     type: 'client',
-    unit: defineMessage({ defaultMessage: `{formattedCount} {count, plural,
+    highlight: defineMessage({ defaultMessage: `{name}<br></br><b>{formattedValue} {value, plural,
       one {Client}
       other {Clients}
-    }` }),
+    }</b>` }),
     dominanceFn: getWLANDominance,
     summary: {
       dominance: defineMessage({
@@ -79,10 +79,10 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     dimension: 'radios',
     type: 'client',
     transformKeyFn: (val: string) => formatter('radioFormat')(val) as string,
-    unit: defineMessage({ defaultMessage: `{formattedCount} {count, plural,
+    highlight: defineMessage({ defaultMessage: `{name}<br></br><b>{formattedValue} {value, plural,
       one {Client}
       other {Clients}
-    }` }),
+    }</b>` }),
     summary: {
       dominance: defineMessage({
         defaultMessage: '{percentage} of failures impacted {dominant} band' }),
@@ -100,10 +100,10 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     dimension: 'reasonCodes',
     type: 'client',
     transformKeyFn: mapCodeToReason,
-    unit: defineMessage({ defaultMessage: `{formattedCount} {count, plural,
+    highlight: defineMessage({ defaultMessage: `{name}<br></br><b>{formattedValue} {value, plural,
       one {Client}
       other {Clients}
-    }` }),
+    }</b>` }),
     summary: {
       dominance: defineMessage({
         defaultMessage: "{percentage} of failures caused by ''{dominant}''" }),
@@ -120,10 +120,10 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     title: defineMessage({ defaultMessage: 'Client Manufacturers' }),
     dimension: 'manufacturer',
     type: 'client',
-    unit: defineMessage({ defaultMessage: `{formattedCount} {count, plural,
+    highlight: defineMessage({ defaultMessage: `{name}<br></br><b>{formattedValue} {value, plural,
       one {Client}
       other {Clients}
-    }` }),
+    }</b>` }),
     summary: {
       dominance: defineMessage({
         defaultMessage:

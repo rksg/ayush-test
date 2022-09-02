@@ -1,5 +1,5 @@
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { defineMessage, useIntl } from 'react-intl'
+import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter }                          from '@acx-ui/analytics/utils'
 import type { DonutChartData }                      from '@acx-ui/components'
@@ -55,7 +55,9 @@ function TopSwitchModelsWidget ({ filters }: { filters: AnalyticsFilter }) {
                 showLabel={true}
                 showTotal={false}
                 showLegend={false}
-                showTooltipPercentage={true}
+                tooltipFormat={defineMessage({
+                  defaultMessage: '{name}<br></br><b>{formattedValue}</b> ({formattedPercent})'
+                })}
                 type={'large'}
               />
               : <NoData />

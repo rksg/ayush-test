@@ -61,10 +61,12 @@ storiesOf('Donut Chart', module)
               style={{ width, height }}
               title='With a very long title'
               subTitle={'With a very long subtitle..............................'}
-              unit={defineMessage({ defaultMessage: `{formattedCount} {count, plural,
-                one {Client}
-                other {Clients}
-              }` })}
+              tooltipFormat={defineMessage({
+                defaultMessage: `{name}: <b>{formattedValue} {value, plural,
+                  one {Client}
+                  other {Clients}
+                }</b> ({formattedPercent})`
+              })}
               dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
               data={data}/>
           )}

@@ -25,7 +25,6 @@ interface DonutChartOptionalProps {
   animation: boolean,
   showLabel: boolean,
   showTotal: boolean,
-  showTooltipPercentage: boolean,
   type: 'small' | 'large'
 }
 
@@ -34,7 +33,6 @@ const defaultProps: DonutChartOptionalProps = {
   animation: true,
   showLabel: false,
   showTotal: true,
-  showTooltipPercentage: false,
   type: 'small'
 }
 
@@ -46,9 +44,9 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   title?: string,
   subTitle?: string,
   subTitleBlockHeight?: number
-  unit?: MessageDescriptor
-  value?: string,
-  dataFormatter?: (value: unknown) => string | null,
+  tooltipFormat?: MessageDescriptor
+  value?: string
+  dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
   style: EChartsReactProps['style'] & { width: number, height: number }
 }
@@ -58,9 +56,10 @@ export const onChartClick = (onClick: DonutChartProps['onClick']) =>
 
 export function DonutChart ({
   data,
-  dataFormatter,
+  dataFormatter: _dataFormatter,
   ...props
 }: DonutChartProps) {
+  const dataFormatter = _dataFormatter ?? ((value: unknown) => String(value))
 
   const sum = data.reduce((acc, cur) => acc + cur.value, 0)
   const colors = data.map(series => series.color)
@@ -132,7 +131,7 @@ export function DonutChart ({
       text: props.title,
       subtext: props.value
         ? props.value
-        : props.showTotal ? `${dataFormatter ? dataFormatter(sum) : sum}` : undefined,
+        : props.showTotal ? `${dataFormatter(sum)}` : undefined,
       left: props.showLegend && !isEmpty ? '28%' : 'center',
       top: 'center',
       textVerticalAlign: 'top',
@@ -159,7 +158,7 @@ export function DonutChart ({
       },
       formatter: name => {
         const value = find(data, (pie) => pie.name === name)?.value
-        return `${dataFormatter ? dataFormatter(value) : value}`
+        return `${dataFormatter(value)}`
       }
     },
     color: colors,
@@ -182,10 +181,10 @@ export function DonutChart ({
           ...tooltipOptions(),
           show: !isEmpty,
           formatter: donutChartTooltipFormatter(
-            props.showTooltipPercentage,
+            useIntl(),
             dataFormatter,
-            props.unit,
-            useIntl()
+            sum,
+            props.tooltipFormat
           )
         },
         emphasis: {
