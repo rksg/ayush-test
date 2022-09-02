@@ -16,25 +16,17 @@ import DHCPFormContext from '../DHCPFormContext'
 import { OptionDetail } from './OptionDetail'
 
 
-export function PoolDetail() {
+export function PoolDetail (props:{
+  visible: boolean,
+  setVisible: (visible: boolean) => void,
+  selectedData: DHCPPool,
+}) {
   const { $t } = useIntl()
   const intl = useIntl()
   const { Option } = Select
   const formRef = useRef<StepsFormInstance<DHCPPool>>()
   const form = Form.useFormInstance()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const dataPool = {
-    name: '',
-    allowWired: false,
-    ip: '',
-    mask: '',
-    primaryDNS: '',
-    secondaryDNS: '',
-    dhcpOptions: [],
-    leaseTime: 24,
-    vlan: 300
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   const { updateSaveState, saveState } = useContext(DHCPFormContext)
   const nameValidator = async (value: string) => {
     if(_.find(saveState.dhcpPools, (item)=>{return item.name === value})){
@@ -48,7 +40,7 @@ export function PoolDetail() {
     if(_.find(formRef.current?.getFieldsError(), (item)=>{return item.errors.length>0})){
       return false
     }
-    const dhcpPool = formRef.current?.getFieldsValue() || dataPool
+    const dhcpPool = formRef.current?.getFieldsValue() || selectedData
     saveState?.dhcpPools?.push({ ...dhcpPool })
 
     updateSaveState(Object.assign({}, { ...saveState,...form.getFieldsValue() }))
@@ -56,22 +48,19 @@ export function PoolDetail() {
     return true
   }
 
-  const [visible, setVisible] = useState(false)
+  const { visible, setVisible, selectedData } = props
   const onClose = () => {
     updateSaveState(Object.assign({}, { ...saveState,...form.getFieldsValue() }))
     formRef?.current?.resetFields()
     setVisible(false)
   }
-  const onOpen = () => {
-    setVisible(true)
-  }
   useEffect(() => {
-    if (dataPool) {
+    if (selectedData) {
       formRef?.current?.resetFields()
-      formRef?.current?.setFieldsValue(dataPool)
+      formRef?.current?.setFieldsValue(selectedData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataPool])
+  }, [selectedData])
   const getContent = visible?
     <StepsForm.StepForm formRef={formRef}>
       <Row gutter={20}>
@@ -194,23 +183,15 @@ export function PoolDetail() {
     </StepsForm.StepForm>:null
 
   return (
-    <
-    >
-      <Form.Item
-        name='tags'
-        label={$t({ defaultMessage: 'Set DHCP Pools' })}
-        children={<Button
-          onClick={onOpen}>{$t({ defaultMessage: 'Add DHCP Pool' })}</Button>}
-      />
-      <Drawer
-        title={$t({ defaultMessage: 'Add DHCP Pool' })}
-        visible={visible}
-        onClose={onClose}
-        children={getContent}
-        width={900}
-      />
 
-    </>
+    <Drawer
+      title={$t({ defaultMessage: 'Add DHCP Pool' })}
+      visible={visible}
+      onClose={onClose}
+      children={getContent}
+      width={900}
+    />
+
   )
 
 }

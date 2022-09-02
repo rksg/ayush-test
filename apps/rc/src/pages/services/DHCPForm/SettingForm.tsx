@@ -24,9 +24,19 @@ export function SettingForm () {
   const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
 
   const { saveState, updateSaveState } = useContext(DHCPFormContext)
-
+  const [visible, setVisible] = useState(false)
   const params = useParams()
-
+  const [selectedData, setSelectedData] = useState<DHCPPool>({
+    name: '',
+    allowWired: false,
+    ip: '',
+    mask: '',
+    primaryDNS: '',
+    secondaryDNS: '',
+    dhcpOptions: [],
+    leaseTime: 24,
+    vlan: 300
+  })
   const types = [
     { type: DHCPConfigTypeEnum.SIMPLE },
     { type: DHCPConfigTypeEnum.MULTIPLE },
@@ -80,14 +90,18 @@ export function SettingForm () {
           </Form.Item>}
 
         </Form.Item>
-
-        <PoolDetail />
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Set DHCP Pools' })}
+        />
+        <PoolDetail visible={visible} setVisible={setVisible} selectedData={selectedData}/>
 
         <PoolList poolData={saveState.dhcpPools}
           updatePoolData={(poolsData: DHCPPool[]) => {
-            updateSaveState({ ...saveState, ...{ dhcpPools: poolsData } })
+            updateSaveState(_.assign({}, saveState, { dhcpPools: poolsData }))
           }}
-          showPoolForm={(selectedData: DHCPPool): void => {
+          showPoolForm={(selectedPool: DHCPPool): void => {
+            setVisible(true)
+            setSelectedData(selectedPool)
 
           }} />
       </Col>

@@ -117,13 +117,7 @@ export function OptionDetail () {
       </Col>
     </Row>
   </StepsForm.StepForm>:null
-  useEffect(() => {
-    if(form.getFieldsValue()['dhcpOptions'])
-    {
-      setTableData(form.getFieldsValue()['dhcpOptions'])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, form.getFieldsValue()['dhcpOptions']])
+
 
   const columns: TableProps<DHCPOption>['columns'] = [
     {

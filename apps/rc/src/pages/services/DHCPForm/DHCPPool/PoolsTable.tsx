@@ -4,12 +4,23 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import {
   Alert,
+  Button,
   Table,
   TableProps
 } from '@acx-ui/components'
 import { DHCPPool } from '@acx-ui/rc/utils'
 
-
+const dataPool = {
+  name: '',
+  allowWired: false,
+  ip: '',
+  mask: '',
+  primaryDNS: '',
+  secondaryDNS: '',
+  dhcpOptions: [],
+  leaseTime: 24,
+  vlan: 300
+}
 export function PoolList (props:{
   poolData: DHCPPool[],
   updatePoolData: (data:DHCPPool[]) => void,
@@ -22,7 +33,17 @@ export function PoolList (props:{
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
   })
-
+  const style= {
+    top: '36px',
+    backgroundColor: 'transparent',
+    right: '-650px',
+    zIndex: '1',
+    color: '#5496ea',
+    fontWeight: 600,
+    border: 0,
+    cursor: 'pointer',
+    fontSize: '12px'
+  }
   const actions: TableProps<DHCPPool>['actions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
@@ -36,21 +57,22 @@ export function PoolList (props:{
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows: DHCPPool | DHCPPool[]) => {
+      onClick: (rows: DHCPPool | DHCPPool[], clearSelection) => {
 
         if (Array.isArray(rows)) {
           rows.forEach(item => {
-            const index = poolData.findIndex(i => i.id === item.id)
+            const index = poolData.findIndex(i => i.name === item.name)
             if (index !== -1) {
               poolData.splice(index, 1)
             }
           })
         } else {
-          const index = poolData.findIndex(i => i.id === rows.id)
+          const index = poolData.findIndex(i => i.name === rows.name)
           if (index !== -1) {
             poolData.splice(index, 1)
           }
         }
+        clearSelection()
         updatePoolData(poolData)
       }
     }
@@ -97,8 +119,14 @@ export function PoolList (props:{
         errorVisible &&
       <Alert message={$t(errorMessage)} type='error' showIcon closable />
       }
+      <div>
+        <Button style={style}
+          onClick={()=>
+            showPoolForm(dataPool)
+          }>{$t({ defaultMessage: 'Add DHCP Pool' })}</Button>
+      </div>
       <Table
-        rowKey='id'
+        rowKey='name'
         style={{ width: '800px' }}
         columns={columns}
         dataSource={[...poolData]}
