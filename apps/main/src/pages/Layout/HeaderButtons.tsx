@@ -1,4 +1,4 @@
-import { AlarmsHeaderButton } from '../Alarms/HeaderButton'
+import { AlarmsHeaderButton } from '../../components/Alarms/HeaderButton'
 
 import {
   Button,

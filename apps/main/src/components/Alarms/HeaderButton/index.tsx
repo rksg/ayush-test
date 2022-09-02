@@ -5,8 +5,8 @@ import { Popover } from 'antd'
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import { useParams }                 from '@acx-ui/react-router-dom'
 
+import { Button, NotificationIcon } from '../../../pages/Layout/styledComponents'
 import { AlarmsTable }              from '../../Alarms/Table'
-import { Button, NotificationIcon } from '../../Layout/styledComponents'
 
 import {
   NotificationCounter
