@@ -19,9 +19,11 @@ const mockSummary = {
     }
   ],
   wlanSecurity: WlanSecurityEnum.WPA2Enterprise,
-  passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
-  passphraseLength: 18,
-  expiration: PassphraseExpirationEnum.UNLIMITED
+  dpskPassphraseGeneration: { 
+    format: PassphraseFormatEnum.MOST_SECURED,
+    length: 18,
+    expiration: PassphraseExpirationEnum.UNLIMITED
+  }
 }
 
 describe('SummaryForm', () => {
@@ -43,7 +45,7 @@ describe('SummaryForm', () => {
   })
   it('should render cloudpath disabled successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
+    mockSummary.isCloudpathEnabled = false
     const { asFragment } = render(
       <Provider>
         <Form>
