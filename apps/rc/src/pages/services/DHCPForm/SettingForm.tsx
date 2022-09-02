@@ -17,7 +17,6 @@ import { RadioDescription }         from './styledComponents'
 
 
 const { useWatch } = Form
-const defaultArray: DHCPPool[] = []
 export function SettingForm () {
   const intl = useIntl()
 
@@ -25,74 +24,15 @@ export function SettingForm () {
   const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
 
   const { saveState, updateSaveState } = useContext(DHCPFormContext)
-  // const dhcpListPayload = {
-  //   searchString: '',
-  //   fields: ['name', 'id'],
-  //   searchTargetFields: ['name'],
-  //   filters: {},
-  //   pageSize: 10000
-  // }
-  // const [getNetworkList] = useLazyNetworkListQuery()
+
   const params = useParams()
-  const [tableData, setTableData] = useState(defaultArray)
-  const [visible, setVisible] = useState(false)
-  const [formDate, setFormData] = useState(false)
-
-  // const nameValidator = async (value: string) => {
-  //   const payload = { ...networkListPayload, searchString: value }
-
-  //   const list = (await getDHCPList({ params, payload }, true).unwrap()).data
-  //     .filter(n => n.id !== params.serviceId)
-  //     .map(n => n.name)
-  //   return checkObjectNotExists(intl, list, value, intl.$t({ defaultMessage: 'Service' }))
-  // }
 
   const types = [
     { type: DHCPConfigTypeEnum.SIMPLE },
     { type: DHCPConfigTypeEnum.MULTIPLE },
     { type: DHCPConfigTypeEnum.HIERARCHICAL }
   ]
-  const columns: TableProps<DHCPPool>['columns'] = [
-    {
-      title: intl.$t({ defaultMessage: 'Pool Name' }),
-      dataIndex: 'name',
-      width: 10,
-      sorter: true
-    },
-    {
-      title: intl.$t({ defaultMessage: 'IP Address' }),
-      dataIndex: 'ip',
-      width: 10,
-      sorter: true
-    },
-    {
-      title: intl.$t({ defaultMessage: 'Subnet Mask' }),
-      dataIndex: 'mask',
-      width: 10,
-      sorter: true
-    },
-    {
-      title: intl.$t({ defaultMessage: 'Lease Time' }),
-      width: 50,
-      dataIndex: 'leaseTime'
-    },
-    {
-      title: intl.$t({ defaultMessage: 'Vlan' }),
-      width: 50,
-      dataIndex: 'vlan'
-    },
-    {
-      title: intl.$t({ defaultMessage: 'Number of hosts' }),
-      width: 50,
-      dataIndex: 'leaseTime'
-    }
-  ]
-  useEffect(() => {
-    if(saveState?.dhcpPools)
-    {
-      setTableData(saveState?.dhcpPools)
-    }
-  }, [saveState])
+
   return (
     <Row gutter={20}>
       <Col span={10}>
@@ -143,23 +83,11 @@ export function SettingForm () {
 
         <PoolDetail />
 
-
-        {/* <Table
-          rowKey='id'
-          style={{ width: '800px' }}
-          columns={columns}
-          dataSource={[...tableData]}
-          type={'tall'}
-          // actions={actions}
-          rowSelection={{ defaultSelectedRowKeys: [] }}
-        /> */}
-        <PoolList poolData={[...tableData]}
+        <PoolList poolData={saveState.dhcpPools}
           updatePoolData={(poolsData: DHCPPool[]) => {
             updateSaveState(_.assign(saveState, { dhcpPools: poolsData }))
           }}
-          showPoolForm={(saveState: DHCPPool): void => {
-            setVisible(true)
-            // setFormData(data)
+          showPoolForm={(selectedData: DHCPPool): void => {
 
           }} />
       </Col>
