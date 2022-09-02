@@ -1,4 +1,5 @@
-import { ServiceType } from '@acx-ui/rc/utils'
+import { ServiceType }  from '@acx-ui/rc/utils'
+import { generatePath } from '@acx-ui/react-router-dom'
 
 export enum ServiceOperation {
   CREATE,
@@ -35,5 +36,5 @@ export function getServiceRoutePath ({ type, oper }: ServiceRoutePathProps): str
 }
 
 export function getServiceDetailsLink ({ type, oper, serviceId }: ServiceDetailsLinkProps): string {
-  return getServiceRoutePath({ type, oper }).replace(/:serviceId/, serviceId)
+  return generatePath(getServiceRoutePath({ type, oper }), { serviceId })
 }
