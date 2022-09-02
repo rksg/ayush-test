@@ -26,10 +26,11 @@ export function PoolDetail (props:{
   const { Option } = Select
   const formRef = useRef<StepsFormInstance<DHCPPool>>()
   const form = Form.useFormInstance()
-
+  const [ addOn, setAddOn ] = useState(false)
   const { updateSaveState, saveState } = useContext(DHCPFormContext)
   const nameValidator = async (value: string) => {
-    if(_.find(saveState.dhcpPools, (item)=>{return item.name === value})){
+    const { id } = { ...formRef.current?.getFieldsValue(), ...selectedData }
+    if(_.find(saveState.dhcpPools, (item)=>{return item.name === value && id !== item.id})){
       const entityName = intl.$t({ defaultMessage: 'Pool Name' })
       const key = 'name'
       return Promise.reject(intl.$t(validationMessages.duplication, { entityName, key }))
@@ -40,17 +41,39 @@ export function PoolDetail (props:{
     if(_.find(formRef.current?.getFieldsError(), (item)=>{return item.errors.length>0})){
       return false
     }
-    const dhcpPool = formRef.current?.getFieldsValue() || selectedData
-    saveState?.dhcpPools?.push({ ...dhcpPool })
+    const dhcpPool = { ...selectedData, ...formRef.current?.getFieldsValue() }
+    if(saveState.dhcpPools.length === 0){
+      dhcpPool.id = 1
+    }else if(dhcpPool.id === 0 && saveState.dhcpPools.length>0){
+      dhcpPool.id = saveState.dhcpPools[0].id+1
+    }
+    const findIndex = _.findIndex(saveState.dhcpPools, (item)=>{return dhcpPool.id === item.id})
+    if(findIndex > -1){
+      saveState.dhcpPools[findIndex] = dhcpPool
+    }
+    else saveState?.dhcpPools?.push({ ...dhcpPool })
 
-    updateSaveState(Object.assign({}, { ...saveState,...form.getFieldsValue() }))
+    updateSaveState({ ...saveState,...form.getFieldsValue() })
+    if(addOn){
+      formRef?.current?.setFieldsValue({ id: 0 })
+      return
+    }
     onClose()
     return true
   }
-
+  const style= {
+    top: '10px',
+    right: '-600px',
+    zIndex: '1',
+    backgroundColor: '#5496ea',
+    fontWeight: 600,
+    border: 0,
+    cursor: 'pointer',
+    fontSize: '14px'
+  }
   const { visible, setVisible, selectedData } = props
   const onClose = () => {
-    updateSaveState(Object.assign({}, { ...saveState,...form.getFieldsValue() }))
+    updateSaveState({ ...saveState,...form.getFieldsValue() })
     formRef?.current?.resetFields()
     setVisible(false)
   }
@@ -77,6 +100,9 @@ export function PoolDetail (props:{
             validateFirst
             hasFeedback
             children={<Input />}
+          />
+          <Form.Item
+            name='id'
           />
           <Form.Item
             name='description'
@@ -166,18 +192,27 @@ export function PoolDetail (props:{
             children={<InputNumber min={1} max={300} style={{ width: '100%' }} />}
           />
         </Col>
-        <OptionDetail></OptionDetail>
-        <Button key='Cancel' type='primary' onClick={onClose}>
+        <OptionDetail optionData={selectedData.dhcpOptions}></OptionDetail>
+        <label><Input type={'checkbox'}
+          checked={addOn}
+          onClick={()=>{setAddOn(!addOn)}}
+          style={{ width: '20px' }}/>{$t({ defaultMessage: 'Add other pool' })}</label>
+        <Button key='Cancel'
+          type='primary'
+          onClick={onClose}
+          style={{ ...style, backgroundColor: 'transparent', color: '#5496ea' }}>
           {$t({ defaultMessage: 'Cancel' })}
         </Button>
         <Button key='add'
+          style={style}
           type='primary'
-          onClick={()=>{
-            formRef.current?.validateFields()
-            setTimeout(()=>updateSaveData(), 1000)
+          onClick={async ()=> {
+            await formRef.current?.validateFields()
+            updateSaveData()
           }
           }>
-          {$t({ defaultMessage: 'Add' })}
+          {selectedData.id === 0 && $t({ defaultMessage: 'Add' })}
+          {selectedData.id !== 0 && $t({ defaultMessage: 'Update' })}
         </Button>
       </Row>
     </StepsForm.StepForm>:null

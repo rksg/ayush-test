@@ -11,6 +11,7 @@ import {
 import { DHCPPool } from '@acx-ui/rc/utils'
 
 const dataPool = {
+  id: 0,
   name: '',
   allowWired: false,
   ip: '',
@@ -29,7 +30,7 @@ export function PoolList (props:{
 
   const { $t } = useIntl()
   const { poolData, updatePoolData, showPoolForm } = props
-  const [ errorVisible, updateVisible ] = useState<Boolean>(false)
+  const [ errorVisible, showError ] = useState<Boolean>(false)
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
   })
@@ -48,10 +49,10 @@ export function PoolList (props:{
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (rows: DHCPPool | DHCPPool[]) => {
-        if (Array.isArray(rows)) {
-          updateVisible(true)
+        if (Array.isArray(rows) && rows.length===1) {
+          showPoolForm(rows[0])
         }else{
-          showPoolForm(rows)
+          showError(true)
         }
       }
     },
@@ -61,13 +62,13 @@ export function PoolList (props:{
 
         if (Array.isArray(rows)) {
           rows.forEach(item => {
-            const index = poolData.findIndex(i => i.name === item.name)
+            const index = poolData.findIndex(i => i.id === item.id)
             if (index !== -1) {
               poolData.splice(index, 1)
             }
           })
         } else {
-          const index = poolData.findIndex(i => i.name === rows.name)
+          const index = poolData.findIndex(i => i.id === rows.id)
           if (index !== -1) {
             poolData.splice(index, 1)
           }
@@ -126,7 +127,7 @@ export function PoolList (props:{
           }>{$t({ defaultMessage: 'Add DHCP Pool' })}</Button>
       </div>
       <Table
-        rowKey='name'
+        rowKey='id'
         style={{ width: '800px' }}
         columns={columns}
         dataSource={[...poolData]}

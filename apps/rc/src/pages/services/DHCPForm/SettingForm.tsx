@@ -27,6 +27,7 @@ export function SettingForm () {
   const [visible, setVisible] = useState(false)
   const params = useParams()
   const [selectedData, setSelectedData] = useState<DHCPPool>({
+    id: 0,
     name: '',
     allowWired: false,
     ip: '',
@@ -97,11 +98,11 @@ export function SettingForm () {
 
         <PoolList poolData={saveState.dhcpPools}
           updatePoolData={(poolsData: DHCPPool[]) => {
-            updateSaveState(_.assign({}, saveState, { dhcpPools: poolsData }))
+            updateSaveState({ ...saveState, ...{ dhcpPools: poolsData } })
           }}
           showPoolForm={(selectedPool: DHCPPool): void => {
             setVisible(true)
-            setSelectedData(selectedPool)
+            setSelectedData({ ...selectedPool })
 
           }} />
       </Col>

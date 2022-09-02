@@ -28,13 +28,26 @@ const getNetworkId = () => {
   return 'UNKNOWN-NETWORK-ID'
 }
 
-export function OptionDetail () {
+export function OptionDetail (props:{
+  optionData: DHCPOption[]
+}) {
+  const style= {
+    top: '20px',
+    backgroundColor: 'transparent',
+    right: '-500px',
+    zIndex: '1',
+    color: '#5496ea',
+    fontWeight: 600,
+    border: 0,
+    cursor: 'pointer',
+    fontSize: '14px'
+  }
   const form = Form.useFormInstance()
   const { $t } = useIntl()
-
+  const { optionData } = props
   const formRef = useRef<StepsFormInstance<DHCPOption>>()
 
-  const [tableData, setTableData] = useState(defaultArray)
+  const [tableData, setTableData] = useState(optionData)
   const idValidator = async (value: string) => {
     if(_.find(tableData, (item)=>{return item.id === value})){
       const entityName = $t({ defaultMessage: 'Option ID' })
@@ -49,7 +62,7 @@ export function OptionDetail () {
     }
     const dhcpOption = formRef.current?.getFieldsValue()
     form.getFieldsValue()['dhcpOptions'].push({ ...dhcpOption })
-    setTableData([].concat(form.getFieldsValue()['dhcpOptions']))
+    setTableData(form.getFieldsValue()['dhcpOptions'])
     onClose()
     return true
   }
@@ -149,10 +162,10 @@ export function OptionDetail () {
 
 
     <Form.Item name='dhcpOptions'>
-      <p>{$t({ defaultMessage: 'Add DHCP options' })}
+      <p>{$t({ defaultMessage: 'Add DHCP options:' })}
         <Button key='addOpt'
+          style={style}
           type='primary'
-          style={{ right: '-100px' }}
           onClick={onOpen}>
           {$t({ defaultMessage: 'Add option' })}
         </Button></p>
