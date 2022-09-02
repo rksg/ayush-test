@@ -31,6 +31,10 @@ export const validationMessages = {
     `,
     description: 'Validation - duplication checks'
   }),
+  exclusion: defineMessage({
+    defaultMessage: 'The {entityName} can not include {exclusionItems}',
+    description: 'Validation - exclusion checks'
+  }),
   min: defineMessage({
     defaultMessage: "This value should be higher than or equal to $'{min'}",
     description: 'Validation - min checks'

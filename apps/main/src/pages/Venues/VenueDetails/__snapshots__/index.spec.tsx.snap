@@ -67,7 +67,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <svg>
@@ -82,7 +82,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <span>
@@ -397,7 +397,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <svg>
@@ -412,7 +412,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <span>
@@ -727,7 +727,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <svg>
@@ -742,7 +742,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <span>
@@ -1057,7 +1057,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <svg>
@@ -1072,7 +1072,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <span>
@@ -1387,7 +1387,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <svg>
@@ -1402,7 +1402,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <span>
@@ -1717,7 +1717,7 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <svg>
@@ -1732,7 +1732,7 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <span>
@@ -2049,7 +2049,7 @@ exports[`VenueDetails should render correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <svg>
@@ -2064,7 +2064,7 @@ exports[`VenueDetails should render correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 clMRFp"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                 type="button"
               >
                 <span>

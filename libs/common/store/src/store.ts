@@ -5,7 +5,6 @@ import { dataApi }         from '@acx-ui/analytics/services'
 import {
   baseNetworkApi as networkApi,
   baseVenueApi as venueApi,
-  baseCloudpathApi as cloudpathApi,
   baseEventAlarmApi as eventAlarmApi,
   baseServiceApi as serviceApi,
   apApi,
@@ -16,7 +15,6 @@ export const store = configureStore({
   reducer: {
     [networkApi.reducerPath]: networkApi.reducer,
     [venueApi.reducerPath]: venueApi.reducer,
-    [cloudpathApi.reducerPath]: cloudpathApi.reducer,
     [eventAlarmApi.reducerPath]: eventAlarmApi.reducer,
     [dataApi.reducerPath]: dataApi.reducer,
     [apApi.reducerPath]: apApi.reducer,
@@ -29,7 +27,6 @@ export const store = configureStore({
     getDefaultMiddleware().concat([
       networkApi.middleware,
       venueApi.middleware,
-      cloudpathApi.middleware,
       eventAlarmApi.middleware,
       dataApi.middleware,
       apApi.middleware,
