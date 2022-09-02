@@ -1,17 +1,18 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
+import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { Loader, StepsForm, Table, TableProps }               from '@acx-ui/components'
-import { useLazyNetworkListQuery }                            from '@acx-ui/rc/services'
-import { DHCPConfigTypeEnum, checkObjectNotExists, DHCPPool } from '@acx-ui/rc/utils'
-import { useParams }                                          from '@acx-ui/react-router-dom'
+import { StepsForm, TableProps }        from '@acx-ui/components'
+import { DHCPConfigTypeEnum, DHCPPool } from '@acx-ui/rc/utils'
+import { useParams }                    from '@acx-ui/react-router-dom'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
 import DHCPFormContext              from './DHCPFormContext'
 import { PoolDetail }               from './DHCPPool/PoolDetail'
+import { PoolList }                 from './DHCPPool/PoolsTable'
 import { RadioDescription }         from './styledComponents'
 
 
@@ -23,8 +24,7 @@ export function SettingForm () {
 
   const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
 
-  const { data } = useContext(DHCPFormContext)
-
+  const { data, updateSaveState } = useContext(DHCPFormContext)
   // const dhcpListPayload = {
   //   searchString: '',
   //   fields: ['name', 'id'],
@@ -32,9 +32,11 @@ export function SettingForm () {
   //   filters: {},
   //   pageSize: 10000
   // }
-  const [getNetworkList] = useLazyNetworkListQuery()
+  // const [getNetworkList] = useLazyNetworkListQuery()
   const params = useParams()
   const [tableData, setTableData] = useState(defaultArray)
+  const [visible, setVisible] = useState(false)
+  const [formDate, setFormData] = useState(false)
 
   // const nameValidator = async (value: string) => {
   //   const payload = { ...networkListPayload, searchString: value }
@@ -120,7 +122,8 @@ export function SettingForm () {
             name='dhcpConfig'
             initialValue={DHCPConfigTypeEnum.SIMPLE}
             label={intl.$t({ defaultMessage: 'DHCP Configuration' })}
-            rules={[{ required: true }]}
+            rules={[{ required: true,
+              message: intl.$t({ defaultMessage: 'Please select DHCP Configuration' }) }]}
           >
             <Radio.Group>
               <Space direction='vertical'>
@@ -137,17 +140,28 @@ export function SettingForm () {
           </Form.Item>}
 
         </Form.Item>
-        <PoolDetail></PoolDetail>
-        <Loader>
-          <Table
-            rowKey='id'
-            style={{ width: '800px' }}
-            columns={columns}
-            dataSource={[...tableData]}
-            type={'tall'}
 
-          />
-        </Loader>
+        {visible && <PoolDetail />}
+
+
+        {/* <Table
+          rowKey='id'
+          style={{ width: '800px' }}
+          columns={columns}
+          dataSource={[...tableData]}
+          type={'tall'}
+          // actions={actions}
+          rowSelection={{ defaultSelectedRowKeys: [] }}
+        /> */}
+        <PoolList poolData={[...tableData]}
+          updatePoolData={(poolsData: DHCPPool[]) => {
+            updateSaveState(_.assign(data, { dhcpPools: poolsData }))
+          }}
+          showPoolForm={(data: DHCPPool): void => {
+            setVisible(true)
+            // setFormData(data)
+
+          }} />
       </Col>
       {params?.type === 'wifi' &&
       <Col span={14}>

@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DHCPDiagram DHCPDiagram - HIERARCHICAL should render HIERARCHICAL diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-1sbc60f-0 deIZGM"
+      >
+        <img
+          alt=""
+          src="open-cloudpath-on-prem-deployment.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`DHCPDiagram DHCPDiagram - MULTIPLE should render MULTIPLE diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-1sbc60f-0 deIZGM"
+      >
+        <img
+          alt=""
+          src="open.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`DHCPDiagram should render default diagram successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="styledComponents__Diagram-sc-1sbc60f-0 deIZGM"
+      >
+        <img
+          alt=""
+          src="dpsk.png"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

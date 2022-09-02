@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, websocketServerUrl } from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { mockServer, render, screen }         from '@acx-ui/test-utils'
 
 import { DHCPForm } from './DHCPForm'
+
 
 export const venuesResponse = {
   fields: [
@@ -40,6 +41,21 @@ export const successResponse = { requestId: 'request-id' }
 describe('DHCPForm', () => {
   it('should create DHCP successfully', async () => {
 
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+        res(ctx.json({ COMMON: '{}' }))
+      ),
+      rest.post(CommonUrlsInfo.getNetworksVenuesList.url, (_, res, ctx) =>
+        res(ctx.json(venuesResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.saveDHCPService.url.replace('?quickAck=true', ''),
+        (_, res, ctx) => res(ctx.json(successResponse))
+      ),
+      rest.all(websocketServerUrl, (_, res) => res.networkError('')))
+
+
+
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }
 
     const { asFragment } = render(<Provider><DHCPForm /></Provider>, {
@@ -48,31 +64,18 @@ describe('DHCPForm', () => {
 
     expect(asFragment()).toMatchSnapshot()
 
-    mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
-        (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venuesResponse))),
-      rest.post(CommonUrlsInfo.saveDHCPService.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => res(ctx.json(successResponse)))
-    )
 
-    const insertInput = screen.getByLabelText('Service Name')
-    fireEvent.change(insertInput, { target: { value: 'DHCPTest' } })
-    fireEvent.blur(insertInput)
+    await userEvent.type(screen.getByRole('textbox', { name: 'Service Name' }),'create DHCP test')
 
-
-    const tagTextbox = screen.getByLabelText('Tags')
-    fireEvent.change(tagTextbox, { target: { value: 'test_tags' } })
-    fireEvent.blur(tagTextbox)
-    fireEvent.click(screen.getByRole('radio', { name: /Simple DHCP/ }))
-    fireEvent.click(screen.getByText('Next'))
+    await userEvent.click(screen.getByRole('radio',{ name: /Simple DHCP/ } ) )
+    await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
+    await userEvent.click(screen.getByText('Next'))
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    fireEvent.click(screen.getByText('Finish'))
+
+    await userEvent.click(screen.getByText('Finish'))
+
 
   })
 })
