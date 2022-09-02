@@ -8,7 +8,7 @@ import { mockRestApiQuery }                                   from '@acx-ui/test
 
 import AllRoutes from './AllRoutes'
 
-jest.mock('./App/Dashboard', () => () => {
+jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
 jest.mock('analytics/Routes', () => () => {
@@ -22,7 +22,7 @@ jest.mock('rc/Routes', () => () => {
     </>
   )
 },{ virtual: true })
-jest.mock('./App/Venues/VenuesTable', () => ({
+jest.mock('./pages/Venues/VenuesTable', () => ({
   VenuesTable: () => {
     return <div data-testid='venues' />
   }
