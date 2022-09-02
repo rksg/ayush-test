@@ -37,7 +37,7 @@ export function MdnsProxyForm (props: MdnsProxyFormProps) {
           <StepsForm.StepForm
             name='settings'
             title={$t({ defaultMessage: 'Settings' })}
-            onFinish={async (data) => {
+            onFinish={async () => {
               return true
             }}
           >
@@ -46,7 +46,7 @@ export function MdnsProxyForm (props: MdnsProxyFormProps) {
           <StepsForm.StepForm
             name='scope'
             title={$t({ defaultMessage: 'Scope' })}
-            onFinish={async (data) => {
+            onFinish={async () => {
               return true
             }}
           >
@@ -55,7 +55,7 @@ export function MdnsProxyForm (props: MdnsProxyFormProps) {
           <StepsForm.StepForm
             name='summary'
             title={$t({ defaultMessage: 'Summary' })}
-            onFinish={async (data) => {
+            onFinish={async () => {
               return true
             }}
           >
