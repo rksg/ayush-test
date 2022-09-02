@@ -24,7 +24,7 @@ export function SettingForm () {
 
   const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
 
-  const { data, updateSaveState } = useContext(DHCPFormContext)
+  const { saveState, updateSaveState } = useContext(DHCPFormContext)
   // const dhcpListPayload = {
   //   searchString: '',
   //   fields: ['name', 'id'],
@@ -88,11 +88,11 @@ export function SettingForm () {
     }
   ]
   useEffect(() => {
-    if(data?.dhcpPools)
+    if(saveState?.dhcpPools)
     {
-      setTableData(data?.dhcpPools)
+      setTableData(saveState?.dhcpPools)
     }
-  }, [data])
+  }, [saveState])
   return (
     <Row gutter={20}>
       <Col span={10}>
@@ -141,7 +141,7 @@ export function SettingForm () {
 
         </Form.Item>
 
-        {visible && <PoolDetail />}
+        <PoolDetail />
 
 
         {/* <Table
@@ -155,9 +155,9 @@ export function SettingForm () {
         /> */}
         <PoolList poolData={[...tableData]}
           updatePoolData={(poolsData: DHCPPool[]) => {
-            updateSaveState(_.assign(data, { dhcpPools: poolsData }))
+            updateSaveState(_.assign(saveState, { dhcpPools: poolsData }))
           }}
-          showPoolForm={(data: DHCPPool): void => {
+          showPoolForm={(saveState: DHCPPool): void => {
             setVisible(true)
             // setFormData(data)
 

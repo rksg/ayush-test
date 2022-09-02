@@ -12,7 +12,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { DHCPOption } from '@acx-ui/rc/utils'
+import { DHCPOption }         from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
 

@@ -9,11 +9,12 @@ import { useIntl }                                                   from 'react
 import { Button, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { Drawer }                               from '@acx-ui/components'
 import { DHCPPool, networkWifiIpRegExp }        from '@acx-ui/rc/utils'
+import { validationMessages }                   from '@acx-ui/utils'
 
 import DHCPFormContext from '../DHCPFormContext'
 
 import { OptionDetail } from './OptionDetail'
-import { validationMessages } from '@acx-ui/utils'
+
 
 export function PoolDetail() {
   const { $t } = useIntl()
@@ -21,7 +22,8 @@ export function PoolDetail() {
   const { Option } = Select
   const formRef = useRef<StepsFormInstance<DHCPPool>>()
   const form = Form.useFormInstance()
-  const [saveState, updateSaveState] = useState<DHCPPool>({
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const dataPool = {
     name: '',
     allowWired: false,
     ip: '',
@@ -31,12 +33,11 @@ export function PoolDetail() {
     dhcpOptions: [],
     leaseTime: 24,
     vlan: 300
-  })
+  }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const dataPool = { ...saveState }
-  const { updateData, data } = useContext(DHCPFormContext)
+  const { updateSaveState, saveState } = useContext(DHCPFormContext)
   const nameValidator = async (value: string) => {
-    if(_.find(data.dhcpPools, (item)=>{return item.name === value})){
+    if(_.find(saveState.dhcpPools, (item)=>{return item.name === value})){
       const entityName = intl.$t({ defaultMessage: 'Pool Name' })
       const key = 'name'
       return Promise.reject(intl.$t(validationMessages.duplication, { entityName, key }))
@@ -48,16 +49,16 @@ export function PoolDetail() {
       return false
     }
     const dhcpPool = formRef.current?.getFieldsValue() || dataPool
-    data?.dhcpPools?.push({ ...dhcpPool })
+    saveState?.dhcpPools?.push({ ...dhcpPool })
 
-    updateData(Object.assign({}, { ...data,...form.getFieldsValue() }))
+    updateSaveState(Object.assign({}, { ...saveState,...form.getFieldsValue() }))
     onClose()
     return true
   }
 
   const [visible, setVisible] = useState(false)
   const onClose = () => {
-    updateData(Object.assign({}, { ...data,...form.getFieldsValue() }))
+    updateSaveState(Object.assign({}, { ...saveState,...form.getFieldsValue() }))
     formRef?.current?.resetFields()
     setVisible(false)
   }
