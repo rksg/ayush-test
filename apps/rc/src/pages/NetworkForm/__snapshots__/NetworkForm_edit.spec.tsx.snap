@@ -785,7 +785,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 geFEjT"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
               type="button"
             >
               <span>
@@ -797,7 +797,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
               type="button"
             >
               <span>

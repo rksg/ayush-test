@@ -113,7 +113,6 @@ function SettingsForm () {
       <div>
         {isCloudpathEnabled ? <><CloudpathServerForm /><PassphraseGeneration /></> :
           <PassphraseGeneration />}
-        { /*TODO: <div><Button type='link'>Show more settings</Button></div> */ }
       </div>
     </Space>
   )

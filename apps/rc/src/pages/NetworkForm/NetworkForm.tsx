@@ -3,12 +3,15 @@ import { useState, useRef, useEffect } from 'react'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
+  Button,
   PageHeader,
   showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateNetworkMutation, useGetNetworkQuery, useUpdateNetworkMutation } from '@acx-ui/rc/services'
+import { useCreateNetworkMutation,
+  useGetNetworkQuery,
+  useUpdateNetworkMutation } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   NetworkSaveData
@@ -19,16 +22,18 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext    from './NetworkFormContext'
-import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }  from './NetworkSettings/DpskSettingsForm'
-import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }   from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }       from './NetworkSummary/SummaryForm'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
-  tranferSettingsToSave
+  tranferSettingsToSave,
+  transferMoreSettingsToSave
 } from './parser'
 import { Venues } from './Venues/Venues'
 
@@ -51,6 +56,8 @@ export function NetworkForm () {
 
   const [createNetwork] = useCreateNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
+  const [enableMoreSettings, setEnabled] = useState(false)
+
 
   const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
 
@@ -146,7 +153,10 @@ export function NetworkForm () {
                 ...{ type: saveState.type },
                 ...data
               }
-              const settingSaveData = tranferSettingsToSave(settingData)
+              let settingSaveData = tranferSettingsToSave(settingData)
+              if(!editMode) {
+                settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
+              }
               updateSaveData(settingSaveData)
               return true
             }}
@@ -155,6 +165,21 @@ export function NetworkForm () {
             {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
             {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
+
+            {!editMode && <>
+              <Button
+                type='link'
+                onClick={() => {
+                  setEnabled(!enableMoreSettings)
+                }}
+              >
+                {enableMoreSettings ? $t({ defaultMessage: 'Show less settings' }) :
+                  $t({ defaultMessage: 'Show more settings' })}
+              </Button>
+              {enableMoreSettings &&
+                <NetworkMoreSettingsForm wlanData={saveState} />}
+            </>
+            }
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
@@ -176,3 +201,5 @@ export function NetworkForm () {
     </>
   )
 }
+
+
