@@ -51,16 +51,22 @@ export const getWLANDominance = (
   return _.pickBy(percentage, p => p.key === dominant)[1] || null
 }
 
+const highlights = {
+  clients: defineMessage({
+    defaultMessage: `{name}<br></br><b>{formattedValue} {value, plural,
+      one {Client}
+      other {Clients}
+    }</b>`
+  })
+}
+
 export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> = {
   WLAN: {
     key: 'WLAN',
     title: defineMessage({ defaultMessage: 'WLAN' }),
     dimension: 'ssids',
     type: 'client',
-    highlight: defineMessage({ defaultMessage: `{name}<br></br><b>{formattedValue} {value, plural,
-      one {Client}
-      other {Clients}
-    }</b>` }),
+    highlight: highlights.clients,
     dominanceFn: getWLANDominance,
     summary: {
       dominance: defineMessage({
@@ -79,10 +85,7 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     dimension: 'radios',
     type: 'client',
     transformKeyFn: (val: string) => formatter('radioFormat')(val) as string,
-    highlight: defineMessage({ defaultMessage: `{name}<br></br><b>{formattedValue} {value, plural,
-      one {Client}
-      other {Clients}
-    }</b>` }),
+    highlight: highlights.clients,
     summary: {
       dominance: defineMessage({
         defaultMessage: '{percentage} of failures impacted {dominant} band' }),
@@ -100,10 +103,7 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     dimension: 'reasonCodes',
     type: 'client',
     transformKeyFn: mapCodeToReason,
-    highlight: defineMessage({ defaultMessage: `{name}<br></br><b>{formattedValue} {value, plural,
-      one {Client}
-      other {Clients}
-    }</b>` }),
+    highlight: highlights.clients,
     summary: {
       dominance: defineMessage({
         defaultMessage: "{percentage} of failures caused by ''{dominant}''" }),
@@ -120,10 +120,7 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     title: defineMessage({ defaultMessage: 'Client Manufacturers' }),
     dimension: 'manufacturer',
     type: 'client',
-    highlight: defineMessage({ defaultMessage: `{name}<br></br><b>{formattedValue} {value, plural,
-      one {Client}
-      other {Clients}
-    }</b>` }),
+    highlight: highlights.clients,
     summary: {
       dominance: defineMessage({
         defaultMessage:
