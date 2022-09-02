@@ -5,7 +5,7 @@
  * - Override here if there isn't a wrapper for antd components, otherwise use styled-components
  */
 
-:root {
+ :root {
   // ACX medium form elements uses --acx-body-3-font-size and antd default form elements uses
   // @font-size-base so we can't override it, but bulk of ACX body text is --acx-body-4-font-size
   body {
@@ -267,6 +267,74 @@
     background-color: var(--acx-primary-white);
   }
 
+  .ant-slider {
+    --slider-active-color: var(--acx-accents-blue-50);
+    --slider-inactive-color: var(--acx-neutrals-30);
+    --slider-height: 2px;
+    --slider-handle-size: 16px;
+
+    height: 10px;
+
+    .ant-slider-rail,
+    .ant-slider-track {
+      height: var(--slider-height);
+      border-radius: 0;
+    }
+
+    .ant-slider-rail,
+    &:hover .ant-slider-rail {
+      background-color: var(--slider-inactive-color);
+    }
+
+    .ant-slider-track,
+    &:hover .ant-slider-track {
+      background-color: var(--slider-active-color);
+    }
+
+    .ant-slider-dot { display: none; }
+    .ant-slider-mark { top: 9px; }
+    .ant-slider-mark-text {
+      color: var(--acx-neutrals-60);
+      font-size: var(--acx-body-5-font-size);
+      line-height: var(--acx-body-5-line-height);
+      font-weight: var(--acx-body-font-weight);
+      white-space: nowrap;
+    }
+
+    .ant-slider-handle {
+      &, &:focus {
+        box-shadow: none;
+        border: none;
+      }
+      box-sizing: border-box;
+      width: unset;
+      min-width: var(--slider-handle-size);
+      height: var(--slider-handle-size);
+      border-radius: var(--slider-handle-size);
+      padding: 2px 5px;
+
+      // vertically centering
+      top: 0;
+      bottom: 0;
+      margin-block: auto;
+
+      background-color: var(--slider-active-color);
+
+      // centering text content
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:before {
+        content: attr(aria-valuenow);
+        font-size: var(--acx-subtitle-6-font-size);
+        line-height: var(--acx-subtitle-6-line-height);
+        font-weight: var(--acx-subtitle-6-font-weight-bold);
+        color: var(--acx-primary-white);
+      }
+    }
+  }
+
   .ant-select {
     .ant-select-arrow {
       margin-right: -3px;
@@ -337,7 +405,7 @@
   }
 
   .ant-switch {
-    background-color: transparent;
+    background: transparent;
     border: 1px solid var(--acx-neutrals-60);
     &-checked {
       border-color: var(--acx-accents-blue-50);
