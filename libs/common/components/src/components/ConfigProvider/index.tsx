@@ -6,7 +6,7 @@ import {
   default as AntProConfigProvider,
   ConfigProviderProps as AntConfigProviderProps
 } from 'antd/lib/config-provider'
-import { useIntl, createIntlCache, createIntl, RawIntlProvider, IntlShape, IntlCache, IntlConfig } from 'react-intl'
+import { useIntl, createIntlCache, createIntl, RawIntlProvider, IntlShape, IntlConfig } from 'react-intl'
 
 import { LocaleProvider, LocaleContext, LocaleProviderProps, prepareAntdValidateMessages } from '@acx-ui/utils'
 
