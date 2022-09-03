@@ -56,7 +56,8 @@ function TopSwitchModelsWidget ({ filters }: { filters: AnalyticsFilter }) {
                 showTotal={false}
                 showLegend={false}
                 tooltipFormat={defineMessage({
-                  defaultMessage: '{name}<br></br><b>{formattedValue}</b> ({formattedPercent})'
+                  defaultMessage: `{name}<br></br>
+                    <space><b>{formattedValue}</b> ({formattedPercent})</space>`
                 })}
                 type={'large'}
               />

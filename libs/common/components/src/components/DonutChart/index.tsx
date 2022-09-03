@@ -1,3 +1,4 @@
+import { Space }             from 'antd'
 import ReactECharts          from 'echarts-for-react'
 import { find }              from 'lodash'
 import { useIntl }           from 'react-intl'
@@ -171,7 +172,7 @@ export function DonutChart ({
         center: [props.showLegend && !isEmpty ? '30%' : '50%', '50%'],
         radius: isEmpty
           ? ['82%', '92%']
-          : props.showLabel ? ['66%', '80%'] : ['78%', '92%'],
+          : props.showLabel ? ['62%', '78%'] : ['78%', '92%'],
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
@@ -193,8 +194,8 @@ export function DonutChart ({
         },
         labelLine: {
           show: props.showLabel,
-          length: isSmall ? 10 : 20,
-          length2: isSmall ? 5 : 15
+          length: isSmall ? 10 : 15,
+          length2: isSmall ? 5 : 10
         },
         itemStyle: {
           borderWidth: props.type === 'large' ? 2 : 1,
@@ -205,7 +206,7 @@ export function DonutChart ({
   }
 
   return (
-    <>
+    <Space direction='vertical' size={0}>
       <ReactECharts
         {...{
           ...props,
@@ -216,11 +217,7 @@ export function DonutChart ({
         opts={{ renderer: 'svg' }}
         option={option}
         onEvents={{ click: onChartClick(props.onClick) }} />
-      {
-        props.subTitle
-          ? <SubTitle width={props.style.width}>{props.subTitle}</SubTitle>
-          : null
-      }
-    </>
+      { props.subTitle && <SubTitle width={props.style.width}>{props.subTitle}</SubTitle> }
+    </Space>
   )
 }

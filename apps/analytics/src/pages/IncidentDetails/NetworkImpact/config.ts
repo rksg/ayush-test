@@ -53,10 +53,11 @@ export const getWLANDominance = (
 
 const highlights = {
   clients: defineMessage({
-    defaultMessage: `{name}<br></br><b>{formattedValue} {value, plural,
+    defaultMessage: `{name}<br></br>
+    <space><b>{formattedValue} {value, plural,
       one {Client}
       other {Clients}
-    }</b>`
+    }</b></space>`
   })
 }
 
