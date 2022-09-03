@@ -6,7 +6,7 @@ import {
   default as AntProConfigProvider,
   ConfigProviderProps as AntConfigProviderProps
 } from 'antd/lib/config-provider'
-import { IntlProvider, useIntl } from 'react-intl'
+import { useIntl, createIntlCache, createIntl, RawIntlProvider, IntlShape, IntlCache, IntlConfig } from 'react-intl'
 
 import { LocaleProvider, LocaleContext, LocaleProviderProps, prepareAntdValidateMessages } from '@acx-ui/utils'
 
@@ -23,7 +23,7 @@ export const onError: OnErrorFn = (error) => {
   console.error(error)
 }
 
-function AntConfigProviders (props: ConfigProviderProps) {
+function AntConfigProviders (props: ConfigProviderProps) {   
   const context = React.useContext(LocaleContext)
   const validateMessages = prepareAntdValidateMessages(useIntl())
 
@@ -34,16 +34,54 @@ function AntConfigProviders (props: ConfigProviderProps) {
   )
 }
 
+export const globalIntlCache = createIntlCache()
+
+export class IntlSingleton {
+  private static instance: IntlSingleton
+  private intl?: IntlShape
+
+  private constructor () {}
+
+  public static getInstance (): IntlSingleton {
+    if (!IntlSingleton.instance) {
+      IntlSingleton.instance = new IntlSingleton()
+    }
+    return IntlSingleton.instance
+  }
+
+  public setUpIntl (config: IntlConfig) {
+    this.intl = createIntl(config, globalIntlCache)
+  }
+
+  public getIntl () {
+    return this.intl
+  }
+
+  public getIntlCache () {
+    return globalIntlCache
+  }
+}
+
+
 export function ConfigProvider (props: ConfigProviderProps) {
   return (
     <LocaleProvider lang={props.lang}>
       <LocaleContext.Consumer>
-        {context => <Loader states={[{ isLoading: !Boolean(context.messages) }]}>
-          <IntlProvider locale={context.lang} messages={context.messages} onError={onError}>
-            <AntConfigProviders {...props} />
-          </IntlProvider>
-        </Loader>}
+        {context => {
+          // singleton pattern, called withing changing react context
+          const intlInstance = IntlSingleton.getInstance()
+          intlInstance.setUpIntl({
+            locale: context.lang,
+            messages: context.messages,
+            onError
+          })
+          return (<Loader states={[{ isLoading: !Boolean(context.messages) }]}>
+            <RawIntlProvider value={intlInstance.getIntl()!} >
+              <AntConfigProviders {...props} />
+            </RawIntlProvider>
+          </Loader>)}}
       </LocaleContext.Consumer>
     </LocaleProvider>
   )
 }
+
