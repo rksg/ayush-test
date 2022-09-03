@@ -67,6 +67,7 @@ This doc is for I18n management for local development
         {messages.msg2}
       </div>
     }
+  ```messages.msg2
 
 ## Update i18n messages for all locales
 
