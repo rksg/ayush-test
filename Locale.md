@@ -47,6 +47,27 @@ This doc is for I18n management for local development
     }
     ```
 
+4. Use `IntlSingleton` for usage outside of React
+    ```ts
+    import {
+      IntlSingleton
+    } from '@acx-ui/components'
+
+    const intlInstance = IntlSingleton.getInstance()
+    const intl = IntleSingleton.getIntl()!
+
+    const messages = {
+      msg1: intl.formatMessage({ defaultMessage: 'Message 1' }),
+      msg2: intl.formatMessage({ defaultMessage: 'Message 1' })
+    }
+
+    function MyComponent () {
+      return <div>
+        {messages.msg1}
+        {messages.msg2}
+      </div>
+    }
+
 ## Update i18n messages for all locales
 
 Run command below when there are new/updated contents added to the code base
