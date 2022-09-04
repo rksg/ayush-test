@@ -51,6 +51,7 @@ export function NetworkForm () {
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
   const editMode = params.action === 'edit'
+  const cloneMode = params.action === 'clone'
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [createNetwork] = useCreateNetworkMutation()
@@ -67,6 +68,12 @@ export function NetworkForm () {
   })
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
+    if(saveData.isCloudpathEnabled){
+      delete saveState.authRadius
+      delete saveState.accountingRadius
+    }else{
+      delete saveState.cloudpathServerId
+    }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -78,13 +85,17 @@ export function NetworkForm () {
     if(data){
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
+      if (cloneMode) {
+        formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
+      }
       updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
     }
   }, [data])
 
   const handleAddNetwork = async () => {
     try {
-      await createNetwork({ params, payload: saveState }).unwrap()
+      const payload = _.omit(saveState, 'id') // omit id to handle clone
+      await createNetwork({ params: { tenantId: params.tenantId }, payload: payload }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -114,7 +125,7 @@ export function NetworkForm () {
           { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
-      <NetworkFormContext.Provider value={{ setNetworkType, editMode, data }}>
+      <NetworkFormContext.Provider value={{ setNetworkType, editMode, cloneMode, data }}>
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
@@ -174,14 +185,6 @@ export function NetworkForm () {
 
             </StepsForm.StepForm>}
           <StepsForm.StepForm
-            initialValues={data}
-            params={data}
-            request={(params) => {
-              return Promise.resolve({
-                data: params,
-                success: true
-              })
-            }}
             name='venues'
             title={$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
@@ -191,10 +194,11 @@ export function NetworkForm () {
           >
             <Venues />
           </StepsForm.StepForm>
-
-          <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
-            <SummaryForm summaryData={saveState} />
-          </StepsForm.StepForm>
+          {!editMode &&
+            <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
+              <SummaryForm summaryData={saveState} />
+            </StepsForm.StepForm>
+          }
         </StepsForm>
       </NetworkFormContext.Provider>
     </>

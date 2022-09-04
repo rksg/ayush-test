@@ -3,14 +3,21 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader }         from '@acx-ui/components'
 import { ClockOutlined }              from '@acx-ui/icons'
 import { useVenueDetailsHeaderQuery } from '@acx-ui/rc/services'
-import { useParams }                  from '@acx-ui/react-router-dom'
+import {
+  useNavigate,
+  useTenantLink,
+  useParams
+}                  from '@acx-ui/react-router-dom'
 
 import VenueTabs from './VenueTabs'
 
 function VenuePageHeader () {
   const { $t } = useIntl()
-  const params = useParams()
-  const { data } = useVenueDetailsHeaderQuery({ params })
+  const { tenantId, venueId } = useParams()
+  const { data } = useVenueDetailsHeaderQuery({ params: { tenantId, venueId } })
+
+  const navigate = useNavigate()
+  const basePath = useTenantLink(`/venues/${venueId}`)
 
   return (
     <PageHeader
@@ -22,7 +29,16 @@ function VenuePageHeader () {
         <Button key='date-filter' icon={<ClockOutlined />}>
           {$t({ defaultMessage: 'Last 24 Hours' })}
         </Button>,
-        <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+        <Button
+          key='configure'
+          type='primary'
+          onClick={() => 
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/edit/details`
+            })
+          }          
+        >{$t({ defaultMessage: 'Configure' })}</Button> 
       ]}
       footer={<VenueTabs />}
     />
