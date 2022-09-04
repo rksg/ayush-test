@@ -171,11 +171,7 @@ export function NetworkForm () {
               name='moreSettings'
               title={$t({ defaultMessage: 'More Settings' })}
               onFinish={async (data) => {
-                const settingData = _.merge(saveState, data)
-                let settingSaveData = tranferSettingsToSave(settingData)
-                if (!editMode) {
-                  settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
-                }
+                  const settingSaveData = transferMoreSettingsToSave(data, saveState)
 
                 updateSaveData(settingSaveData)
                 return true

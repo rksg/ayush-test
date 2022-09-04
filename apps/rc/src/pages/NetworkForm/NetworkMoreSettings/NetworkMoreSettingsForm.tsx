@@ -12,14 +12,13 @@ import {
 import { useIntl } from 'react-intl'
 
 import NetworkFormContext          from '../NetworkFormContext'
-import { StepsForm, Button } from '@acx-ui/components'
+import { Button } from '@acx-ui/components'
 import {
   useVlanPoolListQuery
 } from '@acx-ui/rc/services'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
 
-import NetworkFormContext from '../NetworkFormContext'
 
 import { AccessControlForm } from './AccessControlForm'
 import { LoadControlForm }   from './LoadControlForm'
@@ -57,11 +56,16 @@ const listPayload = {
 export function NetworkMoreSettingsForm(props: {
   wlanData: NetworkSaveData
 }) {
+  const { data } = useContext(NetworkFormContext)
   const { editMode } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
   const { $t } = useIntl()
   const [enableMoreSettings, setEnabled] = useState(false)
   if (editMode) {
-    return <NetworkMoreSettingsForm2 wlanData={props.wlanData} />
+    form.setFieldsValue({
+      wlan: data?.wlan
+    })
+    return <MoreSettingsForm wlanData={props.wlanData} />
   } else {
     return <div>
       <Button
@@ -75,40 +79,13 @@ export function NetworkMoreSettingsForm(props: {
           $t({ defaultMessage: 'Show more settings' })}
       </Button>
       {enableMoreSettings &&
-        <NetworkMoreSettingsForm2 wlanData={props.wlanData} />}
+        <MoreSettingsForm wlanData={props.wlanData} />}
     </div>
   }
 }
 
 
-export function NetworkMoreSettingsForm2 (props: {
-  wlanData: NetworkSaveData
-}) {
-  const { editMode } = useContext(NetworkFormContext)
-  const { $t } = useIntl()
-  const [enableMoreSettings, setEnabled] = useState(false)
-  if (editMode) {
-    return <NetworkMoreSettingsForm2 wlanData={props.wlanData} />
-  } else {
-    return <div>
-      <Button
-        type='link'
-        onClick={() => {
-          setEnabled(!enableMoreSettings)
-        }}
-      >
-        {enableMoreSettings ?
-          $t({ defaultMessage: 'Show less settings' }) :
-          $t({ defaultMessage: 'Show more settings' })}
-      </Button>
-      {enableMoreSettings &&
-        <NetworkMoreSettingsForm2 wlanData={props.wlanData} />}
-    </div>
-  }
-}
-
-
-export function NetworkMoreSettingsForm2 (props: {
+export function MoreSettingsForm (props: {
   wlanData: NetworkSaveData
 }) {
   const { $t } = useIntl()
