@@ -45,3 +45,4 @@ export { ReactComponent as SettingsOutlined } from './icons/SettingsOutlined.svg
 export { ReactComponent as SpeedIndicatorOutlined } from './icons/SpeedIndicatorOutlined.svg'
 export { ReactComponent as SpeedIndicatorSolid } from './icons/SpeedIndicatorSolid.svg'
 export { ReactComponent as SuccessSolid } from './icons/SuccessSolid.svg'
+export { ReactComponent as AppIcon } from './icons/Applications.svg'

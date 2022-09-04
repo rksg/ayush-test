@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  FloorPlanDto,
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
@@ -46,11 +47,20 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Venue', id: 'DETAIL' }]
+    }),
+    floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
+      query: ({ params }) => {
+        const floorPlansReq = createHttpRequest(CommonUrlsInfo.getVenueFloorplans, params)
+        return {
+          ...floorPlansReq
+        }
+      }
     })
   })
 })
 
 export const {
   useVenuesListQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useFloorPlanListQuery
 } = venueApi

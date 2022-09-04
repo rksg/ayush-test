@@ -19,6 +19,11 @@ const venueDetailHeaderData = {
   }
 }
 
+jest.mock(
+  'rc/Widgets',
+  () => ({ name }: { name: string }) => <div data-testid={`networks-${name}`} title={name} />,
+  { virtual: true })
+
 describe('VenueDetails', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
