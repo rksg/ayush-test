@@ -2,8 +2,8 @@ import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { api }   from './services'
-import { input } from './services.spec'
+import { header1, header2 } from './__tests__/fixtures'
+import { api }              from './services'
 
 import Header, { Header as DumbHeader } from './index'
 
@@ -34,14 +34,14 @@ describe('Analytics connected header', () => {
 
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
-      data: input[1].queryResult
+      data: header2.queryResult
     })
     render(<Provider> <Header title={''}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render header', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
-      data: input[0].queryResult
+      data: header1.queryResult
     })
     render(<Provider><Header title={'Title'}/></Provider>)
     await screen.findByText('Title')
