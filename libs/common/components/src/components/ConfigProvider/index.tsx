@@ -6,9 +6,9 @@ import {
   default as AntProConfigProvider,
   ConfigProviderProps as AntConfigProviderProps
 } from 'antd/lib/config-provider'
-import { useIntl, createIntlCache, createIntl, RawIntlProvider, IntlShape, IntlConfig } from 'react-intl'
+import { useIntl, RawIntlProvider } from 'react-intl'
 
-import { LocaleProvider, LocaleContext, LocaleProviderProps, prepareAntdValidateMessages } from '@acx-ui/utils'
+import { LocaleProvider, LocaleContext, LocaleProviderProps, prepareAntdValidateMessages, IntlSingleton } from '@acx-ui/utils'
 
 import { Loader } from '../Loader'
 
@@ -33,35 +33,6 @@ function AntConfigProviders (props: ConfigProviderProps) {
     </AntConfigProvider>
   )
 }
-
-export const globalIntlCache = createIntlCache()
-
-export class IntlSingleton {
-  private static instance: IntlSingleton
-  private intl?: IntlShape
-
-  private constructor () {}
-
-  public static getInstance (): IntlSingleton {
-    if (!IntlSingleton.instance) {
-      IntlSingleton.instance = new IntlSingleton()
-    }
-    return IntlSingleton.instance
-  }
-
-  public setUpIntl (config: IntlConfig) {
-    this.intl = createIntl(config, globalIntlCache)
-  }
-
-  public getIntl () {
-    return this.intl
-  }
-
-  public getIntlCache () {
-    return globalIntlCache
-  }
-}
-
 
 export function ConfigProvider (props: ConfigProviderProps) {
   return (

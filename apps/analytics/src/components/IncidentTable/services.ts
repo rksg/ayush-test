@@ -1,14 +1,18 @@
 import { gql }               from 'graphql-request'
 import { MessageDescriptor } from 'react-intl'
 
-import { dataApi }               from '@acx-ui/analytics/services'
+import { dataApi }    from '@acx-ui/analytics/services'
 import {
   IncidentFilter,
   incidentCodes,
   Incident,
   noDataSymbol,
-  transformIncidentQueryResult
+  transformIncidentQueryResult,
+  shortDescription,
+  incidentScope,
+  formattedNodeType
 } from '@acx-ui/analytics/utils'
+import { IntlSingleton } from '@acx-ui/utils'
 
 import { durationValue } from './utils'
 
@@ -41,25 +45,33 @@ export type AdditionalIncidentTableFields = {
   longDescription: string | MessageDescriptor,
   incidentType: string | MessageDescriptor,
   scope: string,
-  type: string,
+  type: string
 }
 
 export type IncidentTableRow = Incident & AdditionalIncidentTableFields
 
 export const transformData = (incident: Incident): IncidentTableRow => {
   const { relatedIncidents } = incident
-  const children = relatedIncidents 
+  const intlInstance = IntlSingleton.getInstance()
+  const intl = intlInstance.getIntl()
+  
+  const children = relatedIncidents
   && relatedIncidents.map((child) => {
     const childDuration = durationValue(child.startTime, child.endTime)
-    const childDescription = noDataSymbol
-    const childScope = noDataSymbol
-    const childType = noDataSymbol
     const childIncident = transformIncidentQueryResult(child)
 
-    return {
+    const partialChildIncident = {
       ...childIncident,
       children: undefined,
-      duration: childDuration,
+      duration: childDuration
+    }
+
+    const childDescription = shortDescription(partialChildIncident, intl)
+    const childScope = incidentScope(partialChildIncident, intl)
+    const childType = formattedNodeType(child.sliceType, intl)
+
+    return {
+      ...partialChildIncident,
       description: childDescription,
       scope: childScope,
       type: childType
@@ -68,9 +80,16 @@ export const transformData = (incident: Incident): IncidentTableRow => {
 
   const incidentInfo = transformIncidentQueryResult(incident)
   const duration = durationValue(incident.startTime, incident.endTime)
-  const description = noDataSymbol
-  const scope = noDataSymbol
-  const type = noDataSymbol
+
+  const partialIncident = {
+    ...incidentInfo,
+    children: (children && children?.length > 0) ? children : undefined,
+    duration
+  }
+
+  const description = shortDescription(partialIncident, intl)
+  const scope = incidentScope(partialIncident, intl)
+  const type = formattedNodeType(incident.sliceType, intl) ?? noDataSymbol
 
   return {
     ...incidentInfo,

@@ -1,7 +1,8 @@
 import { createContext, ReactElement, useContext, useEffect, useState } from 'react'
 
-import { Locale } from 'antd/lib/locale-provider'
-import { merge }  from 'lodash'
+import { Locale }                                             from 'antd/lib/locale-provider'
+import { merge }                                              from 'lodash'
+import { createIntlCache, IntlShape, IntlConfig, createIntl } from 'react-intl'
 
 type Message = string | NestedMessages
 type NestedMessages = { [key: string]: Message }
@@ -108,4 +109,34 @@ function LocaleProvider (props: LocaleProviderProps) {
 
   const context = { lang, setLang, messages }
   return <LocaleContext.Provider value={context} children={props.children} />
+}
+
+
+export const globalIntlCache = createIntlCache()
+
+export class IntlSingleton {
+  private static instance?: IntlSingleton
+  private intl?: IntlShape
+
+  private constructor () {}
+
+  public static getInstance (): IntlSingleton {
+    if (!IntlSingleton.instance) {
+      IntlSingleton.instance = new IntlSingleton()
+    }
+
+    return IntlSingleton.instance
+  }
+
+  public setUpIntl (config: IntlConfig) {
+    this.intl = createIntl(config, globalIntlCache)
+  }
+
+  public getIntl () {
+    return this.intl!
+  }
+
+  public getIntlCache () {
+    return globalIntlCache
+  }
 }

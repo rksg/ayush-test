@@ -30,7 +30,6 @@ import {
 } from './utils'
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
-
   const { $t } = useIntl()
   const { metadata } = props.selectedIncidentToShowDescription
   const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)

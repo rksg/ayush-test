@@ -8,7 +8,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { Loader, LoaderProps } from '../Loader'
 
-import { ConfigProvider, onError, IntlSingleton, globalIntlCache } from '.'
+import { ConfigProvider, onError } from '.'
 
 type Props = { children: React.ReactNode }
 
@@ -107,12 +107,5 @@ describe('ConfigProvider', () => {
       expect(jest.mocked(console.error)).not.toHaveBeenCalledWith(err)
     })
     /* eslint-enable no-console */
-  })
-
-  describe('IntlSingleton', () => {
-    it('checking cache', () => {
-      const intlInstance = IntlSingleton.getInstance()
-      expect(intlInstance.getIntlCache()).toMatchObject(globalIntlCache)
-    })
   })
 })

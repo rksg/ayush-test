@@ -5,15 +5,14 @@ import { dataApi, dataApiURL }    from '@acx-ui/analytics/services'
 import { 
   fakeIncident, 
   NetworkPath, 
-  noDataSymbol, 
   NodeType, 
   PathNode, 
   transformIncidentQueryResult 
 } from '@acx-ui/analytics/utils'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange }        from '@acx-ui/utils'
+import { mockGraphqlQuery }         from '@acx-ui/test-utils'
+import { DateRange, IntlSingleton } from '@acx-ui/utils'
 
-import { api } from './services'
+import { api, transformData } from './services'
 
 describe('IncidentTable: services', () => {
   const store = configureStore({
@@ -167,9 +166,9 @@ describe('IncidentTable: services', () => {
 
   const sampleIncidentWithTableFields = {
     ...transformIncidentQueryResult(sampleIncident),
-    description: noDataSymbol,
-    scope: noDataSymbol,
-    type: noDataSymbol,
+    description: '802.11 Authentication failures are unusually high in Venue: Venue-3-US',
+    scope: 'Venue: Venue-3-US',
+    type: 'Venue',
     duration: 180000
   }
 
@@ -181,9 +180,13 @@ describe('IncidentTable: services', () => {
     }
   ]
 
-  afterEach(() =>
+  beforeEach(() => {
+    IntlSingleton.getInstance().setUpIntl({
+      locale: 'en-US',
+      messages: {}
+    })
     store.dispatch(api.util.resetApiState())
-  )
+  })
 
   it('should return empty data', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
@@ -229,5 +232,11 @@ describe('IncidentTable: services', () => {
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
     expect(error).not.toBe(undefined)
+  })
+
+  describe('transformData', () => {
+    it('test data transformation', () => {
+      expect(transformData(sampleIncident)).toMatchObject(sampleIncidentWithTableFields)
+    })
   })
 })
