@@ -1,117 +1,121 @@
-import { DefaultOptionType } from 'antd/lib/select'
-import { omit }              from 'lodash'
-import { SingleValueType }   from 'rc-cascader/lib/Cascader'
-import { useIntl }           from 'react-intl'
+import { DefaultOptionType }         from 'antd/lib/select'
+import { omit, groupBy, pick, find } from 'lodash'
+import { SingleValueType }           from 'rc-cascader/lib/Cascader'
+import { useIntl }                   from 'react-intl'
 
-import { useAnalyticsFilter, defaultNetworkPath, calculateSeverity } from '@acx-ui/analytics/utils'
-import { NetworkFilter, Option, Loader }                             from '@acx-ui/components'
+import { useAnalyticsFilter, defaultNetworkPath, Incident } from '@acx-ui/analytics/utils'
+import { NetworkFilter, Option, Loader }                    from '@acx-ui/components'
 
+import { useIncidentsListQuery } from '../IncidentTable/services'
+
+import { LabelWithSeverityCicle }                   from './LabelWithSeverityCircles'
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
 
-const getFilterData = (data: Child[], $t: CallableFunction): Option [] => {
-  const venues: { [key: string]: Option; } = {}
+export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
+  venueName: string;
+  severity: { [key: string]: number };
+}
+export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
+
+const getSeverityFromIncidents = (incidentsList: Incident[]): VenuesWithSeverityNodes =>
+  groupBy(
+    incidentsList.map((incident: Incident) => ({
+      ...pick(incident, ['sliceType', 'path']),
+      severity: {
+        [find(incident.path, { type: incident.sliceType })?.name ?? '']: incident.severity
+      },
+      venueName: find(incident.path, { type: 'zone' })?.name ?? ''
+    })),
+    'venueName'
+  )
+const getFilterData = (
+  data: Child[],
+  $t: CallableFunction,
+  nodesWithSeverities: VenuesWithSeverityNodes
+): Option[] => {
+  const venues: { [key: string]: Option } = {}
   for (const { name, path, aps, switches } of data) {
     if (!venues[name]) {
-      const severityCircles = getSeverityCircles([...(aps || []), ...(switches || [])])
       venues[name] = {
-        label: 
-        <UI.LabelContainer>
-          <UI.Label>{name}</UI.Label>
-          <UI.SeverityContainer>
-            { severityCircles.map((severityCircle)=>
-              <UI.SeveritySpan severity={severityCircle} />)
-            }
-          </UI.SeverityContainer>
-        </UI.LabelContainer>,
+        label: (
+          <LabelWithSeverityCicle
+            nodes={[...(aps || []), ...(switches || [])]}
+            nodesWithSeverities={nodesWithSeverities[name]}
+            name={name}
+            nodeType='venue'
+          />
+        ),
         value: JSON.stringify(path),
+        displayLabel: name,
         children: [] as Option[]
       }
     }
     const venue = venues[name]
-    if(aps?.length && venue.children) {
-      const severityCircles = getSeverityCircles(aps)
-
+    if (aps?.length && venue.children) {
       venue.children.push({
         label: (
           <UI.NonSelectableItem key={name}>
-            <UI.LabelContainer>
-              <UI.Label>{$t({ defaultMessage: 'APs' })}</UI.Label>
-              <UI.SeverityContainer>
-                { severityCircles.map((severityCircle)=>
-                  <UI.SeveritySpan severity={severityCircle} />)
-                }
-              </UI.SeverityContainer>
-            </UI.LabelContainer>
+            <LabelWithSeverityCicle
+              nodes={aps}
+              nodesWithSeverities={nodesWithSeverities[name]}
+              name={$t({ defaultMessage: 'APs' })}
+            />
           </UI.NonSelectableItem>
-        ), // function call
+        ),
         displayLabel: $t({ defaultMessage: 'APs' }),
         ignoreSelection: true,
         value: `aps${name}`,
-        children: aps.map((ap: ApOrSwitch) => ({
-          label: (
-            <UI.LabelContainer>
-              <UI.Label>{ap.name}</UI.Label>
-              <UI.SeverityContainer>
-                <UI.SeveritySpan severity={calculateSeverity(ap.incidentSeverity) as string} />
-              </UI.SeverityContainer>
-            </UI.LabelContainer>
-          ), //easy straight forward
-          value: JSON.stringify([...path, { type: 'AP', name: ap.mac }])
-        }))
+        children: aps.map((ap: ApOrSwitch) => {
+          return {
+            label: (
+              <LabelWithSeverityCicle
+                nodes={[ap]}
+                nodesWithSeverities={nodesWithSeverities[name]}
+                name={ap.name}
+              />
+            ),
+            displayLabel: ap.name,
+            value: JSON.stringify([...path, { type: 'AP', name: ap.mac }])
+          }
+        })
       })
     }
-    if(switches?.length && venue.children) {
-      const severityCircles = getSeverityCircles(switches)
-
+    if (switches?.length && venue.children) {
       venue.children.push({
         label: (
           <UI.NonSelectableItem key={name}>
-            <UI.LabelContainer>
-              <UI.Label>{$t({ defaultMessage: 'Switches' })}</UI.Label>
-              <UI.SeverityContainer>
-                { severityCircles.map((severityCircle)=>
-                  <UI.SeveritySpan severity={severityCircle} />)
-                }
-              </UI.SeverityContainer>
-            </UI.LabelContainer>
+            <LabelWithSeverityCicle
+              nodes={switches}
+              nodesWithSeverities={nodesWithSeverities[name]}
+              name={$t({ defaultMessage: 'Switches' })}
+            />
           </UI.NonSelectableItem>
-        ), // function call
+        ),
         displayLabel: $t({ defaultMessage: 'Switches' }),
         ignoreSelection: true,
         value: `switches${name}`,
-        children: switches.map((switchNode: ApOrSwitch) => ({
-          label: (
-            <UI.LabelContainer>
-              <UI.Label>{switchNode.name}</UI.Label>
-              <UI.SeverityContainer>
-                <UI.SeveritySpan
-                  severity={calculateSeverity(switchNode.incidentSeverity) as string}
-                />
-              </UI.SeverityContainer>
-            </UI.LabelContainer>
-          ), //easy straight forward
-          value: JSON.stringify([...path, { type: 'switch', name: switchNode.mac }])
-        }))
+        children: switches.map((switchNode: ApOrSwitch) => {
+          return {
+            label: (
+              <LabelWithSeverityCicle
+                nodes={[switchNode]}
+                nodesWithSeverities={nodesWithSeverities[name]}
+                name={switchNode.name}
+              />
+            ),
+            displayLabel: switchNode.name,
+            value: JSON.stringify([...path, { type: 'switch', name: switchNode.mac }])
+          }
+        })
       })
     }
   }
   return Object.values(venues)
-}
-
-const getSeverityCircles = (
-  data: ApOrSwitch[]
-) => {
-  const severityArray = data.reduce(
-    (acc: string[], val: ApOrSwitch) => {
-      const severity = calculateSeverity(val.incidentSeverity)
-      if(severity && !acc.includes(severity))
-        acc.push(severity)
-      return acc
-    },
-    []
-  )
-  return severityArray
+    .sort((a:Option, b: Option) => a.displayLabel && b.displayLabel
+      ? a.displayLabel.toString().localeCompare(b.displayLabel.toString())
+      : 0
+    )
 }
 
 const search = (input: string, path: DefaultOptionType[]) : boolean => {
@@ -136,9 +140,21 @@ export const onApply = (
 function ConnectedNetworkFilter () {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
+  const incidentsList = useIncidentsListQuery(filters, {
+    selectFromResult: ({ data }) => ({
+      data: data ? getSeverityFromIncidents(data) : []    
+    })
+  })
+
   const queryResults = useNetworkFilterQuery(omit(filters, 'path'), {
     selectFromResult: ({ data, ...rest }) => ({
-      data: data ? getFilterData(data, $t) : [],
+      data: data
+        ? getFilterData(
+          data,
+          $t,
+          incidentsList.data as VenuesWithSeverityNodes
+        )
+        : [],
       ...rest
     })
   })
@@ -160,100 +176,3 @@ function ConnectedNetworkFilter () {
 }
 
 export default ConnectedNetworkFilter
-
-
-// const getFilterData = (data: Child[], $t: CallableFunction): Option [] => {
-//   const venues = data.filter(node => node.type === 'zone')
-//   const uniqSwGrps = uniqBy(data, 'name').filter(node => node.type === 'switchGroup')
-//   const switchGroups = data
-//     .filter((node) => node.type === 'switchGroup')
-//     .reduce((obj, node) => obj.set(node.name, node), new Map())
-//   return [...venues, ...uniqSwGrps].map((node, index) => {
-//     const severityCircles = getSeverityCircles([...(node.aps || []), ...(node.switches || [])])
-//     const venue = {
-//       label: (
-//         <UI.LabelContainer>
-//           <UI.Label>{node.name}</UI.Label>
-//           <UI.SeverityContainer>
-//             { severityCircles.map((severityCircle)=>
-//               <UI.SeveritySpan severity={severityCircle} />)
-//             }
-//           </UI.SeverityContainer>
-//         </UI.LabelContainer>
-//       ), // function call
-//       value: JSON.stringify(node.path),
-//       children: [] as Option[],
-//       displayLabel: node.name
-//     }
-//     if (node.aps?.length) {
-//       const severityCircles = getSeverityCircles(node.aps)
-//       venue.children.push({
-//         label: (
-//           <UI.NonSelectableItem key={index}>
-//             <UI.LabelContainer>
-//               <UI.Label>{$t({ defaultMessage: 'APs' })}</UI.Label>
-//               <UI.SeverityContainer>
-//                 { severityCircles.map((severityCircle)=>
-//                   <UI.SeveritySpan severity={severityCircle} />)
-//                 }
-//               </UI.SeverityContainer>
-//             </UI.LabelContainer>
-//           </UI.NonSelectableItem>
-//         ), // function call
-//         displayLabel: $t({ defaultMessage: 'APs' }),
-//         ignoreSelection: true,
-//         value: `aps${index}`,
-//         children: node.aps.map((ap: ApOrSwitch) => ({
-//           label: (
-//             <UI.LabelContainer>
-//               <UI.Label>{ap.name}</UI.Label>
-//               <UI.SeverityContainer>
-//                 <UI.SeveritySpan severity={calculateSeverity(ap.incidentSeverity) as string} />
-//               </UI.SeverityContainer>
-//             </UI.LabelContainer>
-//           ), //easy straight forward
-//           displayLabel: ap.name,
-//           value: JSON.stringify([...node.path, { type: 'AP', name: ap.mac }])
-//         }))
-//       })
-//     }
-//     if (switchGroups.get(node.name)?.switches.length) {
-//       const severityCircles = getSeverityCircles(switchGroups.get(node.name).switches)
-//       venue.children.push({
-//         label: (
-//           <UI.NonSelectableItem key={index}>
-//             <UI.LabelContainer>
-//               <UI.Label>{$t({ defaultMessage: 'Switches' })}</UI.Label>
-//               <UI.SeverityContainer>
-//                 { severityCircles.map((severityCircle)=>
-//                   <UI.SeveritySpan severity={severityCircle} />)
-//                 }
-//               </UI.SeverityContainer>
-//             </UI.LabelContainer>
-//           </UI.NonSelectableItem>
-//         ), // function call
-//         displayLabel: $t({ defaultMessage: 'Switches' }),
-//         ignoreSelection: true,
-//         value: `switches${index}`,
-//         children: switchGroups.get(node.name).switches.map((switchNode: ApOrSwitch) => ({
-//           label: (
-//             <UI.LabelContainer>
-//               <UI.Label>{switchNode.name}</UI.Label>
-//               <UI.SeverityContainer>
-//                 <UI.SeveritySpan
-//                   severity={calculateSeverity(switchNode.incidentSeverity) as string}
-//                 />
-//               </UI.SeverityContainer>
-//             </UI.LabelContainer>
-//           ), //easy straight forward
-//           displayLabel: switchNode.name,
-//           value: JSON.stringify([
-//             ...switchGroups.get(node.name).path,
-//             { type: 'switch', name: switchNode.mac }
-//           ])
-//         }))
-//       })
-//     }
-//   }
-//   return Object.values(venues)
-// }
