@@ -39,6 +39,59 @@ const columns: TableProps<RecordType>['columns'] = [
   }
 ]
 
+const columnsFilterOnly: TableProps<RecordType>['columns'] = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    filterable: true
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    key: 'age',
+    filterable: true
+  },
+  {
+    title: 'Description',
+    dataIndex: 'description',
+    key: 'description',
+    render: text => <u>{text}</u>
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    key: 'address'
+  }
+]
+
+const columnsSearchOnly: TableProps<RecordType>['columns'] = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    searchable: true
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    key: 'age'
+  },
+  {
+    title: 'Description',
+    dataIndex: 'description',
+    key: 'description',
+    render: text => <u>{text}</u>,
+    searchable: true
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    key: 'address',
+    searchable: true
+  }
+]
+
 const data: TableProps<RecordType>['dataSource'] = [
   {
     key: '1',
@@ -140,6 +193,16 @@ export function FilteredTable () {
     without selection:
     <Table<RecordType>
       columns={columns}
+      dataSource={data}
+    />
+    with filter only:
+    <Table<RecordType>
+      columns={columnsFilterOnly}
+      dataSource={data}
+    />
+    with search only:
+    <Table<RecordType>
+      columns={columnsSearchOnly}
       dataSource={data}
     />
   </>
