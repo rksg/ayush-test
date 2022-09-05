@@ -7,7 +7,7 @@ echo "Locale files generation started..."
 
 echo "Extract messages from source code"
 npx formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' \
-  --ignore='**/*{.d.ts,.spec.ts,.spec.tsx}' \
+  --ignore='**/{*.d.ts,*.spec.ts,*.spec.tsx,stories.tsx}' \
   --out-file apps/main/src/locales/en-US.json \
   --id-interpolation-pattern '[sha512:contenthash:base64:6]' \
   --additional-function-names '$t'

@@ -113,7 +113,7 @@ function SwitchWidgets () {
         <AnalyticsWidgets name='topSwitchesByErrors'filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByModels' filters={filters}/>
+        <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
       </GridCol>
     </GridRow>
   )
