@@ -71,3 +71,12 @@ export function hexRegExp ({ $t }: IntlShape, value: string) {
   }
   return Promise.resolve()
 }
+
+export function subnetMaskIpRegExp ({ $t }: IntlShape, value: string) {
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^((128|192|224|240|248|252|254)\.0\.0\.0)|(255\.(((0|128|192|224|240|248|252|254)\.0\.0)|(255\.(((0|128|192|224|240|248|252|254)\.0)|255\.(0|128|192|224|240|248|252|254)))))$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.subnetMask))
+  }
+  return Promise.resolve()
+}

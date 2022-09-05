@@ -19,6 +19,8 @@ const dataPool = {
   primaryDNS: '',
   secondaryDNS: '',
   dhcpOptions: [],
+  excludedRangeStart: '',
+  excludedRangeEnd: '',
   leaseTime: 24,
   vlan: 300
 }
@@ -101,7 +103,10 @@ export function PoolList (props:{
     {
       title: $t({ defaultMessage: 'Lease Time' }),
       width: 50,
-      dataIndex: 'leaseTime'
+      dataIndex: 'leaseTime',
+      render: (data, row) =>{
+        return data + ' Hours'
+      }
     },
     {
       title: $t({ defaultMessage: 'Vlan' }),

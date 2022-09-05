@@ -8,7 +8,7 @@ import { useIntl }                                                   from 'react
 
 import { Button, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { Drawer }                               from '@acx-ui/components'
-import { DHCPPool, networkWifiIpRegExp }        from '@acx-ui/rc/utils'
+import { DHCPPool, networkWifiIpRegExp, subnetMaskIpRegExp }        from '@acx-ui/rc/utils'
 import { validationMessages }                   from '@acx-ui/utils'
 
 import DHCPFormContext from '../DHCPFormContext'
@@ -32,6 +32,8 @@ export function PoolDetail () {
     mask: '',
     primaryDNS: '',
     secondaryDNS: '',
+    excludedRangeStart: '',
+    excludedRangeEnd: '',
     dhcpOptions: [],
     leaseTime: 24,
     vlan: 300
@@ -142,11 +144,12 @@ export function PoolDetail () {
             label={$t({ defaultMessage: 'Subnet Mask' })}
             rules={[
               { required: true },
-              { validator: (_, value) => networkWifiIpRegExp(intl, value) }
+              { validator: (_, value) => subnetMaskIpRegExp(intl, value) }
             ]}
             children={<Input />}
           />
           <Form.Item
+            required={false}
             label={$t({ defaultMessage: 'Excluded Range' })}
           >
             <Space><Form.Item name='excludedRangeStart'
@@ -193,7 +196,8 @@ export function PoolDetail () {
               >
                 <InputNumber min={1} max={1440} style={{ width: '100%' }} />
               </Form.Item>
-              <Select defaultValue={'Hours'}>
+              <Select defaultValue={'Hours'} style={{ marginTop: 6 }}>
+                <Option value={'Days'}>{$t({ defaultMessage: 'Days' })}</Option>
                 <Option value={'Hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
                 <Option value={'Minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
               </Select>
@@ -247,6 +251,7 @@ export function PoolDetail () {
         title={$t({ defaultMessage: 'Add DHCP Pool' })}
         visible={visible}
         onClose={onClose}
+        mask={true}
         children={getContent}
         width={900}
       />
