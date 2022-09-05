@@ -8,7 +8,6 @@ import type { CardTypes } from '.'
 type WrapperProps = {
   type: CardTypes
   hasTitle: boolean
-  hasSubTitle: boolean
   hasHeight: boolean
 }
 

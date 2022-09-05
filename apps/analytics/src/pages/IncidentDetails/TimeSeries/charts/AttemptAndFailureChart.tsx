@@ -18,8 +18,8 @@ export const AttemptAndFailureChart = (
   { incident, data }: { incident: Incident, data: ChartsData }) => {
   const { attemptAndFailureCharts } = data
   const { $t } = useIntl()
-  const title = mapCodeToReason(codeToFailureTypeMap[incident.code] ,useIntl())
-  const attempt = mapCodeToAttempt(codeToFailureTypeMap[incident.code] ,useIntl())
+  const title = mapCodeToReason(codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap], useIntl())
+  const attempt = mapCodeToAttempt(codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap], useIntl())
 
   const seriesMapping = [
     {
