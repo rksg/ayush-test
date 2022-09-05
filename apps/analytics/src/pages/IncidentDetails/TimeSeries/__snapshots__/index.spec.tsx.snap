@@ -6,7 +6,8 @@ exports[`Timeseries component should match snapshot 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 ciYYOd"
+      class="styledComponents__Wrapper-sc-13w5wfx-3 felrVk"
+      type="default"
     >
       <div
         class="ant-card"
@@ -21,7 +22,7 @@ exports[`Timeseries component should match snapshot 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__TitleWrapper-sc-13w5wfx-4 fWcjnG"
+                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
               >
                 EAP Failures
               </div>
@@ -59,7 +60,8 @@ exports[`Timeseries component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 ciYYOd"
+      class="styledComponents__Wrapper-sc-13w5wfx-3 felrVk"
+      type="default"
     >
       <div
         class="ant-card"
@@ -74,7 +76,7 @@ exports[`Timeseries component should match snapshot 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__TitleWrapper-sc-13w5wfx-4 fWcjnG"
+                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
               >
                 CLIENTS
               </div>
@@ -112,7 +114,8 @@ exports[`Timeseries component should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 ciYYOd"
+      class="styledComponents__Wrapper-sc-13w5wfx-3 felrVk"
+      type="default"
     >
       <div
         class="ant-card"
@@ -127,7 +130,7 @@ exports[`Timeseries component should match snapshot 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__TitleWrapper-sc-13w5wfx-4 fWcjnG"
+                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
               >
                 FAILURES
               </div>

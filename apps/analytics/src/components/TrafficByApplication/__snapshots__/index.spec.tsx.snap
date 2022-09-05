@@ -6,7 +6,7 @@ exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
+      class="styledComponents__Wrapper-sc-13w5wfx-3 jQFlAv"
       type="default"
     >
       <div

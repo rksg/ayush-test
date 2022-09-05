@@ -3,7 +3,8 @@
 exports[`AttemptAndFailureChart should match snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-3 ciYYOd"
+    class="styledComponents__Wrapper-sc-13w5wfx-3 felrVk"
+    type="default"
   >
     <div
       class="ant-card"
@@ -18,7 +19,7 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
             class="ant-card-head-title"
           >
             <div
-              class="styledComponents__TitleWrapper-sc-13w5wfx-4 fWcjnG"
+              class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
             >
               FAILURES
             </div>
@@ -39,7 +40,7 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            _echarts_instance_="ec_1661831289686"
+            _echarts_instance_="ec_1662352497417"
             class="echarts-for-react "
             size-sensor-id="2"
             style="height: 280px; width: 280px; position: relative;"
@@ -501,7 +502,8 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
 exports[`ClientCountChart should match snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-3 ciYYOd"
+    class="styledComponents__Wrapper-sc-13w5wfx-3 felrVk"
+    type="default"
   >
     <div
       class="ant-card"
@@ -516,7 +518,7 @@ exports[`ClientCountChart should match snapshot 1`] = `
             class="ant-card-head-title"
           >
             <div
-              class="styledComponents__TitleWrapper-sc-13w5wfx-4 fWcjnG"
+              class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
             >
               CLIENTS
             </div>
@@ -537,7 +539,7 @@ exports[`ClientCountChart should match snapshot 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            _echarts_instance_="ec_1661831289687"
+            _echarts_instance_="ec_1662352497418"
             class="echarts-for-react "
             size-sensor-id="3"
             style="height: 280px; width: 280px; position: relative;"
@@ -1144,7 +1146,8 @@ exports[`ClientCountChart should match snapshot 1`] = `
 exports[`IncidentChart should match snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-3 ciYYOd"
+    class="styledComponents__Wrapper-sc-13w5wfx-3 felrVk"
+    type="default"
   >
     <div
       class="ant-card"
@@ -1159,7 +1162,7 @@ exports[`IncidentChart should match snapshot 1`] = `
             class="ant-card-head-title"
           >
             <div
-              class="styledComponents__TitleWrapper-sc-13w5wfx-4 fWcjnG"
+              class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
             >
               EAP Failures
             </div>
@@ -1180,7 +1183,7 @@ exports[`IncidentChart should match snapshot 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            _echarts_instance_="ec_1661831289685"
+            _echarts_instance_="ec_1662352497416"
             class="echarts-for-react "
             size-sensor-id="1"
             style="height: 280px; width: 280px; position: relative;"
