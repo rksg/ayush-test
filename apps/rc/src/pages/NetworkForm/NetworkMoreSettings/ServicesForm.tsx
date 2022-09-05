@@ -108,28 +108,31 @@ export function ServicesForm () {
     enableArpRequestRateLimit,
     enableDhcpRequestRateLimit,
     enableWifiCalling
-    // dnsProxyRules
   ] = [
     useWatch<boolean>(['wlan','advancedCustomization','dnsProxyEnabled']),
     useWatch<boolean>(['wlan','advancedCustomization','enableAntiSpoofing']),
     useWatch<boolean>(['wlan','advancedCustomization','enableArpRequestRateLimit']),
     useWatch<boolean>(['wlan','advancedCustomization','enableDhcpRequestRateLimit']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'wifiCallingEnabled'])
-    // useWatch<DnsProxyRule[]>(['wlan','advancedCustomization','dnsProxy', 'dnsProxyRules'])
   ]
 
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+
   useEffect(() => {
     if (data) {
-      form.setFieldsValue({
-        // isCloudpathEnabled: data.cloudpathServerId !== undefined,
-      })
+      if (data.wlan?.advancedCustomization?.dnsProxy?.dnsProxyRules) {
+        setDnsProxyList(
+          data.wlan.advancedCustomization.dnsProxy.dnsProxyRules
+        )
+        form.setFieldsValue({
+          dnsProxyRules: data.wlan.advancedCustomization.dnsProxy.dnsProxyRules
+        })
+      }
     }
   }, [data])
 
   const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxyRule[])
-
 
   return (
     <>
@@ -144,7 +147,7 @@ export function ServicesForm () {
             children={<Switch />}
           />
           <Form.Item
-            name='test'//{['wlan', 'advancedCustomization', 'dnsProxy', 'dnsProxyRules']}
+            name='dnsProxyRules'
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}

@@ -171,7 +171,7 @@ export function NetworkForm () {
               name='moreSettings'
               title={$t({ defaultMessage: 'More Settings' })}
               onFinish={async (data) => {
-                  const settingSaveData = transferMoreSettingsToSave(data, saveState)
+                const settingSaveData = transferMoreSettingsToSave(data, saveState)
 
                 updateSaveData(settingSaveData)
                 return true

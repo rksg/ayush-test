@@ -267,13 +267,15 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
 }
 
 export function transferMoreSettingsToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
-  const advancedCustomization = {
+  let advancedCustomization = {
     ...originalData?.wlan?.advancedCustomization,
     ...data?.wlan?.advancedCustomization
-  } as OpenWlanAdvancedCustomization | 
-       AAAWlanAdvancedCustomization | 
-       DpskWlanAdvancedCustomization | 
+  } as OpenWlanAdvancedCustomization |
+       AAAWlanAdvancedCustomization |
+       DpskWlanAdvancedCustomization |
        PskWlanAdvancedCustomization
+
+  advancedCustomization.dnsProxy = { dnsProxyRules: get(data, 'dnsProxyRules') }
 
   let saveData:NetworkSaveData = {
     ...originalData,
