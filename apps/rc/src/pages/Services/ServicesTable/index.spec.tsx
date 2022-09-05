@@ -43,7 +43,7 @@ const mockTableResult = {
   {
     id: 'bb080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'Service 3',
-    type: 'DHCP_WIFI',
+    type: 'DHCP',
     category: 'CONNECTIVITY',
     status: 'DOWN',
     adminState: 'DISABLED',
