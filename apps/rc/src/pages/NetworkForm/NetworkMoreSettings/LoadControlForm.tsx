@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import {
   Checkbox,
@@ -7,7 +7,10 @@ import {
   Slider
 } from 'antd'
 import { useWatch } from 'antd/lib/form/Form'
+import _, { get }   from 'lodash'
 import { useIntl }  from 'react-intl'
+
+import NetworkFormContext from '../NetworkFormContext'
 
 import * as UI from './styledComponents'
 
@@ -21,6 +24,25 @@ enum MaxRateEnum {
 export function LoadControlForm () {
   const maxRate = useWatch<MaxRateEnum>('maxRate')
   const { $t } = useIntl()
+
+
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+
+  useEffect(() => {
+    if (data) {
+      if (data.wlan?.advancedCustomization) {
+        form.setFieldsValue({
+          maxRate: get(data, 'wlan.advancedCustomization.totalUplinkRateLimiting') > 0 ||
+            get(data, 'wlan.advancedCustomization.totalDownlinkRateLimiting') > 0 ?
+            MaxRateEnum.PER_AP : MaxRateEnum.UNLIMITED,
+          totalUplinkLimited: get(data, 'wlan.advancedCustomization.totalUplinkRateLimiting') !== 0,
+          totalDownlinkLimited: get(data,
+            'wlan.advancedCustomization.totalDownlinkRateLimitingValue') !== 0
+        })
+      }
+    }
+  }, [data])
 
   return(
     <>
@@ -42,8 +64,8 @@ export function LoadControlForm () {
       {maxRate === MaxRateEnum.PER_AP && <PerApForm />}
 
       <Form.Item
-        label={$t({ defaultMessage: 'Activated in Venues:' })}
-        name='activatedInVenues'
+        label={$t({ defaultMessage: 'Max clients per radio:' })}
+        name={['wlan', 'advancedCustomization', 'maxClientsOnWlanPerRadio']}
       >
         <Slider
           tooltipVisible={false}
@@ -57,6 +79,8 @@ export function LoadControlForm () {
 
       <UI.FormItemNoLabel
         name={['wlan', 'advancedCustomization', 'enableBandBalancing']}
+        valuePropName='checked'
+        initialValue={false}
         children={
           <Checkbox
             children={$t({ defaultMessage: 'Enable load balancing between all radios' })} />
@@ -64,6 +88,8 @@ export function LoadControlForm () {
       />
       <UI.FormItemNoLabel
         name={['wlan', 'advancedCustomization', 'clientLoadBalancingEnable']}
+        valuePropName='checked'
+        initialValue={false}
         children={
           <Checkbox children={$t({ defaultMessage: 'Enable load balancing between APs' })} />
         }
@@ -72,37 +98,21 @@ export function LoadControlForm () {
   )
 }
 
-function RateSlider () {
-  return (
-    <Slider
-      tooltipVisible={false}
-      style={{ width: '245px' }}
-      defaultValue={20}
-      min={1}
-      max={200}
-      marks={{
-        0: { label: '1 Mbps' },
-        200: { label: '200 Mbps' }
-      }}
-    />
-  )
-}
-
 function PerApForm () {
   const { $t } = useIntl()
   const [
-    uploadLimit,
-    downloadLimit
+    totalUplinkLimited,
+    totalDownlinkLimited
   ] = [
-    useWatch<boolean>('uploadLimit'),
-    useWatch<boolean>('downloadLimit')
+    useWatch<boolean>('totalUplinkLimited'),
+    useWatch<boolean>('totalDownlinkLimited')
   ]
 
   return (
     <>
       <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
         <UI.FormItemNoLabel
-          name='uploadLimit'
+          name='totalUplinkLimited'
           valuePropName='checked'
           initialValue={false}
           style={{ lineHeight: '50px' }}
@@ -112,11 +122,21 @@ function PerApForm () {
           }
         />
         {
-          uploadLimit ?
+          totalUplinkLimited ?
             <UI.FormItemNoLabel
               name={['wlan','advancedCustomization','totalUplinkRateLimiting']}
               children={
-                <RateSlider />
+                <Slider
+                  tooltipVisible={false}
+                  style={{ width: '245px' }}
+                  defaultValue={20}
+                  min={1}
+                  max={200}
+                  marks={{
+                    0: { label: '1 Mbps' },
+                    200: { label: '200 Mbps' }
+                  }}
+                />
               }
             /> :
             <UI.Label
@@ -128,7 +148,7 @@ function PerApForm () {
 
       <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
         <UI.FormItemNoLabel
-          name='downloadLimit'
+          name='totalDownlinkLimited'
           valuePropName='checked'
           initialValue={false}
           style={{ lineHeight: '50px' }}
@@ -138,11 +158,21 @@ function PerApForm () {
           }
         />
         {
-          downloadLimit ?
+          totalDownlinkLimited ?
             <UI.FormItemNoLabel
               name={['wlan','advancedCustomization','totalDownlinkRateLimiting']}
               children={
-                <RateSlider />
+                <Slider
+                  tooltipVisible={false}
+                  style={{ width: '245px' }}
+                  defaultValue={20}
+                  min={1}
+                  max={200}
+                  marks={{
+                    0: { label: '1 Mbps' },
+                    200: { label: '200 Mbps' }
+                  }}
+                />
               }
             /> :
             <UI.Label

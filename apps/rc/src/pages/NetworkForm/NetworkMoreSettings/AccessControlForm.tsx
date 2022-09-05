@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import {
   Button,
@@ -9,6 +9,7 @@ import {
   Slider,
   Switch
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -24,6 +25,8 @@ import {
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 
+import NetworkFormContext from '../NetworkFormContext'
+
 import * as UI from './styledComponents'
 
 const { useWatch } = Form
@@ -37,6 +40,23 @@ const listPayload = {
 export function AccessControlForm () {
   const { $t } = useIntl()
   const [enabledProfile, setEnabledProfile] = useState(false)
+
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+
+  useEffect(() => {
+    if (data) {
+      if (data.wlan?.advancedCustomization) {
+        form.setFieldsValue({
+          enableDeviceOs: !_.isEmpty(data.wlan.advancedCustomization.devicePolicyId),
+          enableDownloadLimit: data.wlan.advancedCustomization.userDownlinkRateLimiting !== 0,
+          enableUploadLimit: data.wlan.advancedCustomization.userUplinkRateLimiting !== 0,
+          enableClientRateLimit: data.wlan.advancedCustomization.userDownlinkRateLimiting !== 0 ||
+            data.wlan.advancedCustomization.userUplinkRateLimiting !== 0
+        })
+      }
+    }
+  }, [data])
 
   return (
     <div style={{ marginBottom: '30px' }}>

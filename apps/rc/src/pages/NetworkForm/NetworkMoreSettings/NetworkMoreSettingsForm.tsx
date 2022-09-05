@@ -9,6 +9,7 @@ import {
   Select,
   Switch
 } from 'antd'
+import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button }        from '@acx-ui/components'
@@ -66,7 +67,9 @@ export function NetworkMoreSettingsForm (props: {
         enableUploadLimit: data.wlan?.advancedCustomization?.userUplinkRateLimiting &&
           data.wlan?.advancedCustomization?.userUplinkRateLimiting > 0,
         enableDownloadLimit: data.wlan?.advancedCustomization?.userDownlinkRateLimiting &&
-          data.wlan?.advancedCustomization?.userDownlinkRateLimiting > 0
+          data.wlan?.advancedCustomization?.userDownlinkRateLimiting > 0,
+        enableOfdmOnly: get(data,
+          'wlan.advancedCustomization.radioCustomization.phyTypeConstraint') === 'OFDM'
       })
     }
   }, [data])

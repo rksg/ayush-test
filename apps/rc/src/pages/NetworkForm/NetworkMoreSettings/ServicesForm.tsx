@@ -78,20 +78,17 @@ function ClientIsolationForm () {
           initialValue={false}
           children={<Switch />} />
       </UI.FieldLabel>
-      <UI.FieldLabel width='230px'>
-        {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
-
-        <Tooltip title={'Does not support in Beta.'}>
+      <Tooltip title={'Does not support in Beta.'}>
+        <UI.FieldLabel width='230px'>
+          {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
           <Form.Item
-
             name='enableVenueClientIsolationAllowlist'
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch />} />
-        </Tooltip>
-      </UI.FieldLabel>
-      {/* Client Isolation Allowlist by Venue TODOTODO */}
+            children={<Switch disabled={true} />} />
+        </UI.FieldLabel>
+      </Tooltip>
     </>
     }
   </>
@@ -161,26 +158,28 @@ export function ServicesForm () {
       </UI.FieldLabel>
 
 
-      <UI.FieldLabel width='125px'>
-        { $t({ defaultMessage: 'Wi-Fi Calling:' }) }
-        <UI.FieldLabel width='30px'>
-          <Form.Item
-            name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}
-          />
-          {enableWifiCalling &&
-            <div>
-              <Button type='link'
-                disabled={true}>
-                {$t({ defaultMessage: 'Select profiles' })}
-              </Button>
-            </div>
-          }
+      <Tooltip title={'Does not support in Beta.'}>
+        <UI.FieldLabel width='125px'>
+          {$t({ defaultMessage: 'Wi-Fi Calling:' })}
+          <UI.FieldLabel width='30px'>
+            <Form.Item
+              name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
+              style={{ marginBottom: '10px' }}
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch disabled={true}/>}
+            />
+            {enableWifiCalling &&
+              <div>
+                <Button type='link'
+                  disabled={true}>
+                  {$t({ defaultMessage: 'Select profiles' })}
+                </Button>
+              </div>
+            }
+          </UI.FieldLabel>
         </UI.FieldLabel>
-      </UI.FieldLabel>
+      </Tooltip>
 
       <ClientIsolationForm/>
       <>
