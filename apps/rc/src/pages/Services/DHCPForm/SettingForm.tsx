@@ -1,18 +1,14 @@
-import { useContext, useEffect, useState } from 'react'
 
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
-import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { StepsForm, TableProps }        from '@acx-ui/components'
-import { DHCPConfigTypeEnum, DHCPPool } from '@acx-ui/rc/utils'
-import { useParams }                    from '@acx-ui/react-router-dom'
+import { StepsForm }          from '@acx-ui/components'
+import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
+import { useParams }          from '@acx-ui/react-router-dom'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
-import DHCPFormContext              from './DHCPFormContext'
 import { PoolDetail }               from './DHCPPool/PoolDetail'
-import { PoolList }                 from './DHCPPool/PoolsTable'
 import { RadioDescription }         from './styledComponents'
 
 
@@ -23,21 +19,7 @@ export function SettingForm () {
 
   const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
 
-  const { saveState, updateSaveState } = useContext(DHCPFormContext)
-  const [visible, setVisible] = useState(false)
   const params = useParams()
-  const [selectedData, setSelectedData] = useState<DHCPPool>({
-    id: 0,
-    name: '',
-    allowWired: false,
-    ip: '',
-    mask: '',
-    primaryDNS: '',
-    secondaryDNS: '',
-    dhcpOptions: [],
-    leaseTime: 24,
-    vlan: 300
-  })
   const types = [
     { type: DHCPConfigTypeEnum.SIMPLE },
     { type: DHCPConfigTypeEnum.MULTIPLE },
@@ -94,17 +76,7 @@ export function SettingForm () {
         <Form.Item
           label={intl.$t({ defaultMessage: 'Set DHCP Pools' })}
         />
-        <PoolDetail visible={visible} setVisible={setVisible} selectedData={selectedData}/>
-
-        <PoolList poolData={saveState.dhcpPools}
-          updatePoolData={(poolsData: DHCPPool[]) => {
-            updateSaveState({ ...saveState, ...{ dhcpPools: poolsData } })
-          }}
-          showPoolForm={(selectedPool: DHCPPool): void => {
-            setVisible(true)
-            setSelectedData({ ...selectedPool })
-
-          }} />
+        <PoolDetail/>
       </Col>
       {params?.type === 'wifi' &&
       <Col span={14}>

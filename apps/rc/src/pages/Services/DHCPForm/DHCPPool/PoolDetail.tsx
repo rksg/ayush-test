@@ -14,19 +14,28 @@ import { validationMessages }                   from '@acx-ui/utils'
 import DHCPFormContext from '../DHCPFormContext'
 
 import { OptionDetail } from './OptionDetail'
+import { PoolList }     from './PoolsTable'
 
 
-export function PoolDetail (props:{
-  visible: boolean,
-  setVisible: (visible: boolean) => void,
-  selectedData: DHCPPool,
-}) {
+export function PoolDetail () {
   const { $t } = useIntl()
   const intl = useIntl()
   const { Option } = Select
   const formRef = useRef<StepsFormInstance<DHCPPool>>()
   const form = Form.useFormInstance()
   const [ addOn, setAddOn ] = useState(false)
+  const [selectedData, setSelectedData] = useState<DHCPPool>({
+    id: 0,
+    name: '',
+    allowWired: false,
+    ip: '',
+    mask: '',
+    primaryDNS: '',
+    secondaryDNS: '',
+    dhcpOptions: [],
+    leaseTime: 24,
+    vlan: 300
+  })
   const { updateSaveState, saveState } = useContext(DHCPFormContext)
   const nameValidator = async (value: string) => {
     const { id } = { ...formRef.current?.getFieldsValue(), ...selectedData }
@@ -71,11 +80,14 @@ export function PoolDetail (props:{
     cursor: 'pointer',
     fontSize: '14px'
   }
-  const { visible, setVisible, selectedData } = props
+  const [visible, setVisible] = useState(false)
   const onClose = () => {
     updateSaveState({ ...saveState,...form.getFieldsValue() })
     formRef?.current?.resetFields()
     setVisible(false)
+  }
+  const onOpen = () => {
+    setVisible(true)
   }
   useEffect(() => {
     if (selectedData) {
@@ -220,15 +232,25 @@ export function PoolDetail (props:{
     </StepsForm.StepForm>:null
 
   return (
+    <>
+      <PoolList poolData={saveState.dhcpPools}
+        updatePoolData={(poolsData: DHCPPool[]) => {
+          updateSaveState({ ...saveState, ...{ dhcpPools: poolsData } })
+        }}
+        showPoolForm={(selectedPool: DHCPPool): void => {
+          onOpen()
+          formRef?.current?.setFieldsValue(selectedPool)
+          setSelectedData({ ...selectedPool })
 
-    <Drawer
-      title={$t({ defaultMessage: 'Add DHCP Pool' })}
-      visible={visible}
-      onClose={onClose}
-      children={getContent}
-      width={900}
-    />
-
+        }} />
+      <Drawer
+        title={$t({ defaultMessage: 'Add DHCP Pool' })}
+        visible={visible}
+        onClose={onClose}
+        children={getContent}
+        width={900}
+      />
+    </>
 
   )
 
