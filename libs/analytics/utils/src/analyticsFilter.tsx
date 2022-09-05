@@ -39,18 +39,18 @@ export function useAnalyticsFilter () {
       ...getDateRangeFilter(range, startDate, endDate)
     } as const,
     setNetworkPath,
-    raw    
+    raw
   }
 }
 
 export function AnalyticsFilterProvider (props: { children: ReactNode }) {
-  const [search, setSearch] = useSearchParams(window.location.search)
+  const [search, setSearch] = useSearchParams()
   const getNetworkFilter = () => search.has('analyticsNetworkFilter')
     ? JSON.parse(
       Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
     )
     : { path: [], raw: [] }
-  
+
   const setNetworkPath = (networkFilter: NetworkPath, raw: object = []) => {
     search.delete('analyticsNetworkFilter')
     const filter = {
