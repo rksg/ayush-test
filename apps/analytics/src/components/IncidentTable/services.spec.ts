@@ -167,9 +167,13 @@ describe('IncidentTable: services', () => {
   const sampleIncidentWithTableFields = {
     ...transformIncidentQueryResult(sampleIncident),
     description: '802.11 Authentication failures are unusually high in Venue: Venue-3-US',
-    scope: 'Venue: Venue-3-US',
+    scope: 'Venue-3-US (Venue)',
     type: 'Venue',
-    duration: 180000
+    duration: 180000,
+    category: 'Connection',
+    subCategory: '802.11 Authentication',
+    clientImpact: '100%',
+    impactedClients: '2'
   }
 
   const transformedResult = [

@@ -23,7 +23,7 @@ export const onError: OnErrorFn = (error) => {
   console.error(error)
 }
 
-function AntConfigProviders (props: ConfigProviderProps) {   
+function AntConfigProviders (props: ConfigProviderProps) {
   const context = React.useContext(LocaleContext)
   const validateMessages = prepareAntdValidateMessages(useIntl())
 

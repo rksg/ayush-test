@@ -1,16 +1,16 @@
 import { gql }               from 'graphql-request'
 import { MessageDescriptor } from 'react-intl'
 
-import { dataApi }    from '@acx-ui/analytics/services'
+import { dataApi } from '@acx-ui/analytics/services'
 import {
   IncidentFilter,
   incidentCodes,
   Incident,
-  noDataSymbol,
   transformIncidentQueryResult,
   shortDescription,
-  incidentScope,
-  formattedNodeType
+  formattedNodeType,
+  formattedPath,
+  impactValues
 } from '@acx-ui/analytics/utils'
 import { IntlSingleton } from '@acx-ui/utils'
 
@@ -36,19 +36,24 @@ const listQueryProps = {
 }
 
 export type AdditionalIncidentTableFields = {
-  children?: Incident[],
   duration: number,
-  description: string | MessageDescriptor,
+  description: string,
   category: string | MessageDescriptor,
   subCategory: string | MessageDescriptor,
   shortDescription: string | MessageDescriptor,
   longDescription: string | MessageDescriptor,
   incidentType: string | MessageDescriptor,
   scope: string,
-  type: string
+  type: string,
+  clientImpact: string | number,
+  impactedClients: string | number
 }
 
-export type IncidentTableRow = Incident & AdditionalIncidentTableFields
+export type IncidentTableRow = Incident
+& AdditionalIncidentTableFields 
+& {
+  children?: IncidentTableRow[]
+}
 
 export const transformData = (incident: Incident): IncidentTableRow => {
   const { relatedIncidents } = incident
@@ -61,43 +66,51 @@ export const transformData = (incident: Incident): IncidentTableRow => {
     const childIncident = transformIncidentQueryResult(child)
 
     const partialChildIncident = {
-      ...childIncident,
-      children: undefined,
-      duration: childDuration
+      ...childIncident
     }
 
+    const impactValueObj = impactValues(intl, 'client', partialChildIncident)
+    const childClientImpact = impactValueObj['clientImpactRatioFormatted']
+    const childClientCount = impactValueObj['clientImpactCountFormatted']
     const childDescription = shortDescription(partialChildIncident, intl)
-    const childScope = incidentScope(partialChildIncident, intl)
+    const childScope = formattedPath(child.path, child.sliceValue, intl)
     const childType = formattedNodeType(child.sliceType, intl)
 
     return {
       ...partialChildIncident,
+      category: intl.$t(partialChildIncident.category),
+      subCategory: intl.$t(partialChildIncident.subCategory),
+      children: undefined,
+      duration: childDuration,
       description: childDescription,
       scope: childScope,
-      type: childType
+      type: childType,
+      clientImpact: childClientImpact,
+      impactedClients: childClientCount
     }
   })
 
   const incidentInfo = transformIncidentQueryResult(incident)
   const duration = durationValue(incident.startTime, incident.endTime)
 
-  const partialIncident = {
-    ...incidentInfo,
-    children: (children && children?.length > 0) ? children : undefined,
-    duration
-  }
-
-  const description = shortDescription(partialIncident, intl)
-  const scope = incidentScope(partialIncident, intl)
-  const type = formattedNodeType(incident.sliceType, intl) ?? noDataSymbol
+  const impactValueObj = impactValues(intl, 'client', incidentInfo)
+  const clientImpact = impactValueObj['clientImpactRatioFormatted']
+  const impactedClients = impactValueObj['clientImpactCountFormatted']
+  const description = shortDescription(incidentInfo, intl)
+  const scope = formattedPath(incident.path, incident.sliceValue, intl)
+  const type = formattedNodeType(incident.sliceType, intl) 
 
   return {
     ...incidentInfo,
+    category: intl.$t(incidentInfo.category),
+    subCategory: intl.$t(incidentInfo.subCategory),
     children: (children && children?.length > 0) ? children : undefined,
     duration,
     description,
     scope,
-    type
+    type,
+    clientImpact,
+    impactedClients
   }
 }
 
