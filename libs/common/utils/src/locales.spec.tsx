@@ -13,9 +13,7 @@ import {
 import {
   loadLocale,
   LocaleProvider,
-  LocaleContext,
-  globalIntlCache,
-  IntlSingleton
+  LocaleContext
 } from './locales'
 
 const messages = {
@@ -162,37 +160,5 @@ describe('LocaleProvider', () => {
 
     const target = await waitFor(() => screen.findByText('Sprache'))
     expect(target).toBeVisible()
-  })
-
-  describe('IntlSingleton', () => {
-
-    const intlInstance = IntlSingleton.getInstance()
-    
-    beforeEach(() => {
-      IntlSingleton.getInstance()
-      intlInstance.setUpIntl({
-        locale: 'en-US',
-        messages: {}
-      })
-    })
-
-    it('checking global intl cache', () => {
-      expect(intlInstance.getIntlCache()).toMatchObject(globalIntlCache)
-    })
-
-    it('checking intl object with set-up', () => {
-      intlInstance.setUpIntl({
-        locale: 'en-SG',
-        messages: {}
-      })
-      expect(intlInstance.getIntl().locale).toMatch('en-SG')
-      expect(intlInstance.getIntl().messages).toMatchObject({})
-    }) 
-
-    it('checking intl object without set-up', () => {
-      IntlSingleton['instance'] = undefined
-      expect(intlInstance.getIntl().locale).toMatch('en-US')
-      expect(intlInstance.getIntl().messages).toMatchObject({})
-    }) 
   })
 })

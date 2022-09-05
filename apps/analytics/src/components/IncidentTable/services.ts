@@ -12,7 +12,7 @@ import {
   formattedPath,
   impactValues
 } from '@acx-ui/analytics/utils'
-import { IntlSingleton } from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import { durationValue } from './utils'
 
@@ -57,8 +57,7 @@ export type IncidentTableRow = Incident
 
 export const transformData = (incident: Incident): IncidentTableRow => {
   const { relatedIncidents } = incident
-  const intlInstance = IntlSingleton.getInstance()
-  const intl = intlInstance.getIntl()
+  const intl = getIntl()
   
   const children = relatedIncidents
   && relatedIncidents.map((child) => {

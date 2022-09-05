@@ -8,7 +8,7 @@ import {
 } from 'antd/lib/config-provider'
 import { useIntl, RawIntlProvider } from 'react-intl'
 
-import { LocaleProvider, LocaleContext, LocaleProviderProps, prepareAntdValidateMessages, IntlSingleton } from '@acx-ui/utils'
+import { LocaleProvider, LocaleContext, LocaleProviderProps, prepareAntdValidateMessages, setUpIntl, getIntl } from '@acx-ui/utils'
 
 import { Loader } from '../Loader'
 
@@ -39,15 +39,16 @@ export function ConfigProvider (props: ConfigProviderProps) {
     <LocaleProvider lang={props.lang}>
       <LocaleContext.Consumer>
         {context => {
-          // singleton pattern, called withing changing react context
-          const intlInstance = IntlSingleton.getInstance()
-          intlInstance.setUpIntl({
+          // update global intl with react context
+          setUpIntl({
             locale: context.lang,
             messages: context.messages,
             onError
           })
+          const intl = getIntl()
+          
           return (<Loader states={[{ isLoading: !Boolean(context.messages) }]}>
-            <RawIntlProvider value={intlInstance.getIntl()!} >
+            <RawIntlProvider value={intl} >
               <AntConfigProviders {...props} />
             </RawIntlProvider>
           </Loader>)}}

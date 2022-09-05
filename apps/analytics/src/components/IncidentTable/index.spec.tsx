@@ -12,7 +12,7 @@ import {
   waitForElementToBeRemoved,
   cleanup
 } from '@acx-ui/test-utils'
-import { DateRange, IntlSingleton } from '@acx-ui/utils'
+import { DateRange, setUpIntl } from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -129,7 +129,7 @@ const filters : IncidentFilter = {
 describe('IncidentTableWidget', () => {
 
   beforeEach(() => {
-    IntlSingleton.getInstance().setUpIntl({
+    setUpIntl({
       locale: 'en-US',
       messages: {}
     })

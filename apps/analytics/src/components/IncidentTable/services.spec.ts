@@ -9,8 +9,8 @@ import {
   PathNode, 
   transformIncidentQueryResult 
 } from '@acx-ui/analytics/utils'
-import { mockGraphqlQuery }         from '@acx-ui/test-utils'
-import { DateRange, IntlSingleton } from '@acx-ui/utils'
+import { mockGraphqlQuery }     from '@acx-ui/test-utils'
+import { DateRange, setUpIntl } from '@acx-ui/utils'
 
 import { api, transformData } from './services'
 
@@ -185,7 +185,7 @@ describe('IncidentTable: services', () => {
   ]
 
   beforeEach(() => {
-    IntlSingleton.getInstance().setUpIntl({
+    setUpIntl({
       locale: 'en-US',
       messages: {}
     })
