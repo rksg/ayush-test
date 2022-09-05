@@ -1,6 +1,6 @@
-import { AnalyticsFilter, AnalyticsFilterProvider } from '@acx-ui/analytics/utils'
-import { Card }                                     from '@acx-ui/components'
-import { Provider }                                 from '@acx-ui/store'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { Card }            from '@acx-ui/components'
+import { Provider }        from '@acx-ui/store'
 
 import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
 import NetworkHistoryWidget           from './components/NetworkHistory'
@@ -36,11 +36,7 @@ function AnalyticsWidgets ({
   filters: AnalyticsFilter;
 }) {
   const Widget = widgetsMap[name]
-  return <Provider>
-    <AnalyticsFilterProvider>
-      {Widget ? <Widget filters={filters} /> : <Card>{name}</Card>}
-    </AnalyticsFilterProvider>
-  </Provider>
+  return <Provider>{Widget ? <Widget filters={filters} /> : <Card>{name}</Card>}</Provider>
 }
 
 export default AnalyticsWidgets
