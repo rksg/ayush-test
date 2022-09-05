@@ -152,7 +152,7 @@ export function ServicesTable () {
       <PageHeader
         title={$t({ defaultMessage: 'Services' })}
         extra={[
-          <TenantLink to='/services/create' key='add'>
+          <TenantLink to='/services/select' key='add'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>
         ]}
