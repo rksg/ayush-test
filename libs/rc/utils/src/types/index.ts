@@ -307,3 +307,40 @@ export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
 }
+export interface ApModel {
+  allowDfsCountry: string[],
+  canSupportCellular: boolean,
+  canSupportLacp: boolean,
+  canSupportPoeMode: boolean,
+  canSupportPoeOut: boolean,
+  capabilityScore: number,
+  has160MHzChannelBandwidth: boolean,
+  isOutdoor: boolean,
+  lanPortPictureDownloadUrl: string,
+  // lanPorts: [{id: "1", defaultType: "ACCESS", untagId: 1, vlanMembers: "1", trunkPortOnly: false,…},…]
+  ledOn: boolean,
+  lldpAdInterval: number,
+  lldpEnable: boolean,
+  lldpHoldTime: number,
+  lldpMgmtEnable: boolean,
+  model: string,
+  pictureDownloadUrl: string,
+  requireOneEnabledTrunkPort: boolean,
+  simCardPrimaryEnabled: boolean,
+  simCardPrimaryRoaming: boolean,
+  simCardSecondaryEnabled: boolean,
+  simCardSecondaryRoaming: boolean,
+  supportChannel144: boolean,
+  supportDual5gMode: boolean,
+  supportTriRadio: boolean
+}
+export interface VenueCapabilities {
+  apModels: ApModel[]
+  version: string
+}
+
+export interface VenueLed {
+  ledEnabled: boolean
+  model: string,
+  key?: string
+}

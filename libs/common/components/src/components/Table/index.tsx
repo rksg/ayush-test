@@ -170,7 +170,7 @@ function Table <RecordType extends object> (
       bordered={false}
       search={false}
       columns={columns}
-      options={{ setting, reload: false, density: false }}
+      options={props.options ?? { setting, reload: false, density: false }}
       columnsState={columnsState}
       scroll={props.scroll ? props.scroll : { x: 'max-content' }}
       rowSelection={rowSelection}

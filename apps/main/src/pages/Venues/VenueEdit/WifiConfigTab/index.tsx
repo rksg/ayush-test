@@ -1,6 +1,8 @@
 import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { AdvancedSettingForm } from './AdvancedSettingForm'
+
 const { TabPane } = Tabs
 
 export function WifiConfigTab () {
@@ -20,7 +22,7 @@ export function WifiConfigTab () {
         {$t({ defaultMessage: 'External Servers' })}
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'Advanced Settings' })} key='settings'>
-        {$t({ defaultMessage: 'Advanced Settings' })}
+        <AdvancedSettingForm />
       </TabPane>
     </Tabs>
   )

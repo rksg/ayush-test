@@ -1,7 +1,11 @@
+// import { useContext } from 'react'
+
 import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+// import { VenueEditContext } from './index'
 
 function VenueEditTabs () {
   const { $t } = useIntl()
@@ -13,6 +17,7 @@ function VenueEditTabs () {
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
+  // const { isDirty, setIsDirty } = useContext(VenueEditContext)
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
