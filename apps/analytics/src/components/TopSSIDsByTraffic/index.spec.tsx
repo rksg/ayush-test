@@ -5,10 +5,10 @@ import { Provider, store }                                 from '@acx-ui/store'
 import { render, screen, mockAutoSizer, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                                       from '@acx-ui/utils'
 
-import { trafficBySSIDFixture } from './__tests__/fixtures'
-import { api }                  from './services'
+import { topSSIDsByTrafficFixture } from './__tests__/fixtures'
+import { api }                      from './services'
 
-import TrafficBySSIDWidget from './index'
+import TopSSIDsByTrafficWidget from './index'
 
 type ColumnElements = Array<HTMLElement|SVGSVGElement>
 
@@ -31,7 +31,7 @@ const extractRows = (doc:DocumentFragment)=>{
   return rows
 }
 
-describe('TrafficBySSIDWidget', () => {
+describe('TopSSIDsByTrafficWidget', () => {
   mockAutoSizer()
   const filters:AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
@@ -45,32 +45,32 @@ describe('TrafficBySSIDWidget', () => {
   )
 
   it('should render loader', () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficBySSIDWidget', {
-      data: { network: { hierarchyNode: trafficBySSIDFixture } }
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
+      data: { network: { hierarchyNode: topSSIDsByTrafficFixture } }
     })
-    render( <Provider> <TrafficBySSIDWidget filters={filters}/></Provider>)
+    render( <Provider> <TopSSIDsByTrafficWidget filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
 
   it('should render for empty data', async () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficBySSIDWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
       data: { network: { hierarchyNode: {
         totalUserTraffic: null,
         topNSSIDByTraffic: []
       } } }
     })
     const { asFragment } = render( <Provider>
-      <TrafficBySSIDWidget filters={filters}/>
+      <TopSSIDsByTrafficWidget filters={filters}/>
     </Provider>)
     await screen.findByText('No data to display')
     expect(asFragment()).toMatchSnapshot('NoData')
   })
 
   it('should render table with sparkline svg', async () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficBySSIDWidget', {
-      data: { network: { hierarchyNode: trafficBySSIDFixture } }
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
+      data: { network: { hierarchyNode: topSSIDsByTrafficFixture } }
     })
-    const { asFragment } = render( <Provider> <TrafficBySSIDWidget
+    const { asFragment } = render( <Provider> <TopSSIDsByTrafficWidget
       filters={filters}/></Provider>)
     await screen.findByText('Top 5 SSIDs by Traffic')
     const tableHeaders = asFragment().querySelector('div > table > thead')

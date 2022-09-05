@@ -1,4 +1,4 @@
-export const trafficBySSIDFixture = {
+export const topSSIDsByTrafficFixture = {
   totalUserTraffic: 2116241343,
   topNSSIDByTraffic: [
     {

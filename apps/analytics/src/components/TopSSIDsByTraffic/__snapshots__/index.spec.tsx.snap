@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TrafficBySSIDWidget should render for empty data: NoData 1`] = `
+exports[`TopSSIDsByTrafficWidget should render for empty data: NoData 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
@@ -85,7 +85,7 @@ exports[`TrafficBySSIDWidget should render for empty data: NoData 1`] = `
 </DocumentFragment>
 `;
 
-exports[`TrafficBySSIDWidget should render table with sparkline svg: tableHeaders 1`] = `
+exports[`TopSSIDsByTrafficWidget should render table with sparkline svg: tableHeaders 1`] = `
 <thead
   class="ant-table-thead"
 >
@@ -115,7 +115,7 @@ exports[`TrafficBySSIDWidget should render table with sparkline svg: tableHeader
 </thead>
 `;
 
-exports[`TrafficBySSIDWidget should render table with sparkline svg: tableRows 1`] = `
+exports[`TopSSIDsByTrafficWidget should render table with sparkline svg: tableRows 1`] = `
 Array [
   Array [
     <td
@@ -161,7 +161,7 @@ Array [
     >
       1.32 GB  
       <span
-        class="styledComponents__TrafficPercent-sc-1uz9z96-0 eWrkHo"
+        class="styledComponents__TrafficPercent-sc-sufe7b-0 jIVeuW"
       >
         (67%)
       </span>
@@ -252,7 +252,7 @@ Array [
     >
       664 MB  
       <span
-        class="styledComponents__TrafficPercent-sc-1uz9z96-0 eWrkHo"
+        class="styledComponents__TrafficPercent-sc-sufe7b-0 jIVeuW"
       >
         (33%)
       </span>

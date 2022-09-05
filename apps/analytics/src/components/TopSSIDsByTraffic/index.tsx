@@ -11,17 +11,17 @@ import {
   SparklineChart } from '@acx-ui/components'
 import { formatter } from '@acx-ui/utils'
 
-import { useTrafficBySSIDQuery, TrafficBySSID } from './services'
-import { TrafficPercent }                       from './styledComponents'
+import { useTopSSIDsByTrafficQuery, TopSSIDsByTraffic } from './services'
+import { TrafficPercent }                               from './styledComponents'
 
 
-export default function TrafficBySSIDWidget ({
+export default function TopSSIDsByTrafficWidget ({
   filters
 }: {
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const queryResults = useTrafficBySSIDQuery(filters)
+  const queryResults = useTopSSIDsByTrafficQuery(filters)
 
   const columns=[
     {
@@ -49,7 +49,7 @@ export default function TrafficBySSIDWidget ({
     }
   ]
 
-  const getDataSource= (appTrafficData: TrafficBySSID[],
+  const getDataSource= (appTrafficData: TopSSIDsByTraffic[],
     overallTrafic:number) => {
     return appTrafficData.map((item,index) => {
       const sparkLineData = item.timeSeries.userTraffic

@@ -5,8 +5,8 @@ import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
 import { topSwitchesByPoEUsageResponse } from './components/SwitchesByPoEUsage/services.spec'
+import { topSSIDsByTrafficFixture }      from './components/TopSSIDsByTraffic/__tests__/fixtures'
 import { trafficByApplicationFixture }   from './components/TrafficByApplication/__tests__/fixtures'
-import { trafficBySSIDFixture }          from './components/TrafficBySSID/__tests__/fixtures'
 import AnalyticsWidgets                  from './Widgets'
 
 const sample = {
@@ -101,8 +101,8 @@ test('should render Traffic By Application Widget', async () => {
 })
 
 test('should render Traffic By SSID Widget', async () => {
-  mockGraphqlQuery(dataApiURL, 'TrafficBySSIDWidget', {
-    data: { network: { hierarchyNode: trafficBySSIDFixture } }
+  mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
+    data: { network: { hierarchyNode: topSSIDsByTrafficFixture } }
   })
   render( <Provider> <AnalyticsWidgets
     name='topSSIDsByTraffic'

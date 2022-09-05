@@ -5,8 +5,8 @@ import { Provider }        from '@acx-ui/store'
 import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
 import NetworkHistoryWidget           from './components/NetworkHistory'
 import SwitchesByPoEUsageWidget       from './components/SwitchesByPoEUsage'
+import TopSSIDsByTraffic              from './components/TopSSIDsByTraffic'
 import TrafficByApplicationWidget     from './components/TrafficByApplication'
-import TrafficBySSID                  from './components/TrafficBySSID'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
 
 
@@ -21,7 +21,7 @@ const widgetsMap = {
     <TrafficByApplicationWidget filters={filters}/>
   ),
   topSSIDsByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
-    <TrafficBySSID filters={filters}/>
+    <TopSSIDsByTraffic filters={filters}/>
   ),
   connectedClientsOverTime: ({ filters }: { filters: AnalyticsFilter }) => (
     <ConnectedClientsOverTimeWidget filters={filters}/>

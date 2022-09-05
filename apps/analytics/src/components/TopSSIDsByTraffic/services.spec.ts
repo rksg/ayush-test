@@ -5,8 +5,8 @@ import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 import { DateRange }           from '@acx-ui/utils'
 
-import { trafficBySSIDFixture } from './__tests__/fixtures'
-import { api }                  from './services'
+import { topSSIDsByTrafficFixture } from './__tests__/fixtures'
+import { api }                      from './services'
 
 describe('trafficBySSIDWidget', () => {
   const store = configureStore({
@@ -29,14 +29,14 @@ describe('trafficBySSIDWidget', () => {
   it('should return correct data', async () => {
     const expectedResult = {
       network: {
-        hierarchyNode: trafficBySSIDFixture
+        hierarchyNode: topSSIDsByTrafficFixture
       }
     }
-    mockGraphqlQuery(dataApiURL, 'TrafficBySSIDWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficBySSID.initiate(props)
+      api.endpoints.topSSIDsByTraffic.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
@@ -51,22 +51,22 @@ describe('trafficBySSIDWidget', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'TrafficBySSIDWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficBySSID.initiate(props)
+      api.endpoints.topSSIDsByTraffic.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficBySSIDWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficBySSID.initiate(props)
+      api.endpoints.topSSIDsByTraffic.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
