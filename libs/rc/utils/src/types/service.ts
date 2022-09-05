@@ -15,7 +15,7 @@ export interface DHCPPool {
 }
 
 export interface DHCPOption{
-  id: string;
+  id: number;
   name: string;
   format: string;
   value: string;

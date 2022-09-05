@@ -43,9 +43,9 @@ export function PoolDetail (props:{
     }
     const dhcpPool = { ...selectedData, ...formRef.current?.getFieldsValue() }
     if(saveState.dhcpPools.length === 0){
-      dhcpPool.id = 1
+      dhcpPool.id = new Date().getTime()
     }else if(dhcpPool.id === 0 && saveState.dhcpPools.length>0){
-      dhcpPool.id = saveState.dhcpPools[0].id+1
+      dhcpPool.id = new Date().getTime()
     }
     const findIndex = _.findIndex(saveState.dhcpPools, (item)=>{return dhcpPool.id === item.id})
     if(findIndex > -1){
@@ -193,10 +193,10 @@ export function PoolDetail (props:{
           />
         </Col>
         <OptionDetail optionData={selectedData.dhcpOptions}></OptionDetail>
-        <label><Input type={'checkbox'}
+        {selectedData.id === 0 &&<label><Input type={'checkbox'}
           checked={addOn}
           onClick={()=>{setAddOn(!addOn)}}
-          style={{ width: '20px' }}/>{$t({ defaultMessage: 'Add other pool' })}</label>
+          style={{ width: '20px' }}/>{$t({ defaultMessage: 'Add other pool' })}</label>}
         <Button key='Cancel'
           type='primary'
           onClick={onClose}

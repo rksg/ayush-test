@@ -48,7 +48,7 @@ export function OptionDetail (props:{
   const formRef = useRef<StepsFormInstance<DHCPOption>>()
 
   const [tableData, setTableData] = useState(optionData)
-  const idValidator = async (value: string) => {
+  const idValidator = async (value: number) => {
     if(_.find(tableData, (item)=>{return item.id === value})){
       const entityName = $t({ defaultMessage: 'Option ID' })
       const key = 'id'
