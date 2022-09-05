@@ -103,6 +103,7 @@ export function PoolDetail (props:{
           />
           <Form.Item
             name='id'
+            style={{ height: 0 }}
           />
           <Form.Item
             name='description'
@@ -191,12 +192,13 @@ export function PoolDetail (props:{
             label={$t({ defaultMessage: 'VLAN' })}
             children={<InputNumber min={1} max={300} style={{ width: '100%' }} />}
           />
+          <Form.Item name='dhcpOptions' style={{ height: 0 }}></Form.Item>
         </Col>
         <OptionDetail optionData={selectedData.dhcpOptions}></OptionDetail>
         {selectedData.id === 0 &&<label><Input type={'checkbox'}
           checked={addOn}
           onClick={()=>{setAddOn(!addOn)}}
-          style={{ width: '20px' }}/>{$t({ defaultMessage: 'Add other pool' })}</label>}
+          style={{ width: '20px', top: '3px' }}/>{$t({ defaultMessage: 'Add other pool' })}</label>}
         <Button key='Cancel'
           type='primary'
           onClick={onClose}
@@ -226,6 +228,7 @@ export function PoolDetail (props:{
       children={getContent}
       width={900}
     />
+
 
   )
 
