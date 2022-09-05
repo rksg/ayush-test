@@ -9,8 +9,9 @@ import {
   Select,
   Switch
 } from 'antd'
-import { get }     from 'lodash'
-import { useIntl } from 'react-intl'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { get }                 from 'lodash'
+import { useIntl }             from 'react-intl'
 
 import { Button }        from '@acx-ui/components'
 import {
@@ -34,20 +35,23 @@ const { Option } = Select
 
 enum BssMinRateEnum {
   VALUE_NONE = 'default',
-  VALUE_12 = 12,
-  VALUE_24 = 24
+  VALUE_1 = '1',
+  VALUE_2 = '2',
+  VALUE_5_5 = '5.5',
+  VALUE_12 = '12',
+  VALUE_24 = '24'
 }
 
 enum MgmtTxRateEnum {
-  VALUE_1 = 1,
-  VALUE_2 = 2,
-  VALUE_5_5 = 5.5,
-  VALUE_6 = 6,
-  VALUE_9 = 9,
-  VALUE_11 = 11,
-  VALUE_12 = 12,
-  VALUE_18 = 18,
-  VALUE_24 = 24
+  VALUE_1 = '1',
+  VALUE_2 = '2',
+  VALUE_5_5 = '5.5',
+  VALUE_6 = '6',
+  VALUE_9 = '9',
+  VALUE_11 = '11',
+  VALUE_12 = '12',
+  VALUE_18 = '18',
+  VALUE_24 = '24'
 }
 
 const listPayload = {
@@ -100,6 +104,7 @@ export function MoreSettingsForm (props: {
   wlanData: NetworkSaveData
 }) {
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
   const [
     enableOfdmOnly,
     enableFastRoaming,
@@ -107,16 +112,19 @@ export function MoreSettingsForm (props: {
     enableJoinRSSIThreshold,
     enableTransientClientManagement,
     enableOce,
-    enableVlanPooling
+    enableVlanPooling,
+    bssMinimumPhyRate //BSS Min Rate
   ] = [
     useWatch<boolean>('enableOfdmOnly'),
-    useWatch<boolean>(['wlan','advancedCustomization','enableFastRoaming']),
-    useWatch<boolean>(['wlan','advancedCustomization','enableAirtimeDecongestion']),
-    useWatch<boolean>(['wlan','advancedCustomization','enableJoinRSSIThreshold']),
-    useWatch<boolean>(['wlan','advancedCustomization','enableTransientClientManagement']),
-    useWatch<boolean>(['wlan','advancedCustomization',
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'enableFastRoaming']),
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'enableAirtimeDecongestion']),
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'enableJoinRSSIThreshold']),
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'enableTransientClientManagement']),
+    useWatch<boolean>(['wlan', 'advancedCustomization',
       'enableOptimizedConnectivityExperience']),
-    useWatch<boolean>('enableVlanPooling')
+    useWatch<boolean>('enableVlanPooling'),
+    useWatch<string>(['wlan', 'advancedCustomization', 'radioCustomization',
+      'bssMinimumPhyRate'])
   ]
 
   const { wlanData } = props
@@ -153,6 +161,29 @@ export function MoreSettingsForm (props: {
     }
   })
 
+  const onBbsMinRateChange = function (value: BssMinRateEnum) {
+    if (value === BssMinRateEnum.VALUE_NONE) {
+      form.setFieldsValue({
+        managementFrameMinimumPhyRate: BssMinRateEnum.VALUE_2
+      })
+    } else {
+      form.setFieldsValue({
+        managementFrameMinimumPhyRate: value
+      })
+    }
+  }
+
+  const onOfdmChange = function (e: CheckboxChangeEvent) {
+    if (e.target.checked) {
+      if (!(bssMinimumPhyRate === BssMinRateEnum.VALUE_NONE ||
+        bssMinimumPhyRate === BssMinRateEnum.VALUE_12 ||
+        bssMinimumPhyRate === BssMinRateEnum.VALUE_24)) {
+        form.setFieldsValue({
+          bssMinimumPhyRate: BssMinRateEnum.VALUE_NONE
+        })
+      }
+    }
+  }
   return (
     <UI.CollpasePanel
       defaultActiveKey={['1', '2', '3']}
@@ -255,7 +286,9 @@ export function MoreSettingsForm (props: {
           valuePropName='checked'
           initialValue={false}
           children={
-            <Checkbox children={$t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' })} />
+            <Checkbox
+              onChange={onOfdmChange}
+              children={$t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' })} />
           }
         />
 
@@ -270,19 +303,78 @@ export function MoreSettingsForm (props: {
         }}>
 
           <Form.Item
-            name='bssMinRate'
+            name={['wlan', 'advancedCustomization', 'radioCustomization',
+              'bssMinimumPhyRate']}
             label={$t({ defaultMessage: 'BSS Min Rate:' })}
             style={{ marginBottom: '15px' }}
             children={
-              <BssMinRateSelect />
+              <Select
+                onChange={onBbsMinRateChange}
+                defaultValue={BssMinRateEnum.VALUE_NONE}
+                style={{ width: '150px' }}>
+                <Option value={BssMinRateEnum.VALUE_NONE}>
+                  {$t({ defaultMessage: 'None' })}
+                </Option>
+                {!enableOfdmOnly &&
+                  <>
+                    <Option value={BssMinRateEnum.VALUE_1}>
+                      {$t({ defaultMessage: '1 Mbps' })}
+                    </Option>
+                    <Option value={BssMinRateEnum.VALUE_2}>
+                      {$t({ defaultMessage: '2 Mbps' })}
+                    </Option>
+                    <Option value={BssMinRateEnum.VALUE_5_5}>
+                      {$t({ defaultMessage: '5.5 Mbps' })}
+                    </Option>
+                  </>
+                }
+                <Option value={BssMinRateEnum.VALUE_12}>
+                  {$t({ defaultMessage: '12 Mbps' })}
+                </Option>
+                <Option value={BssMinRateEnum.VALUE_24}>
+                  {$t({ defaultMessage: '24 Mbps' })}
+                </Option>
+              </Select>
             } />
 
           <Form.Item
-            name='mgmtTxRate'
+            name='managementFrameMinimumPhyRate'
             label={$t({ defaultMessage: 'Mgmt Tx Rate:' })}
             style={{ marginBottom: '15px' }}
             children={
-              <MgmtTxRateSelect disabled={enableOfdmOnly} />
+              <Select
+                disabled={enableOfdmOnly ||
+                  (bssMinimumPhyRate !== BssMinRateEnum.VALUE_NONE)}
+                defaultValue={MgmtTxRateEnum.VALUE_1}
+                style={{ width: '150px' }}>
+                <Option value={MgmtTxRateEnum.VALUE_1}>
+                  {$t({ defaultMessage: '1 Mbps' })}
+                </Option>
+                <Option value={MgmtTxRateEnum.VALUE_2}>
+                  {$t({ defaultMessage: '2 Mbps' })}
+                </Option>
+                <Option value={MgmtTxRateEnum.VALUE_5_5}>
+                  {$t({ defaultMessage: '5.5 Mbps' })}
+                </Option>
+                <Option value={MgmtTxRateEnum.VALUE_6}>
+                  {$t({ defaultMessage: '6 Mbps' })}
+                </Option>
+                <Option value={MgmtTxRateEnum.VALUE_9}>
+                  {$t({ defaultMessage: '9 Mbps' })}
+                </Option>
+                <Option value={MgmtTxRateEnum.VALUE_11}>
+                  {$t({ defaultMessage: '11 Mbps' })}
+                </Option>
+                <Option value={MgmtTxRateEnum.VALUE_12}>
+                  {$t({ defaultMessage: '12 Mbps' })}
+                </Option>
+                <Option value={MgmtTxRateEnum.VALUE_18}>
+                  {$t({ defaultMessage: '18 Mbps' })}
+                </Option>
+                <Option value={MgmtTxRateEnum.VALUE_24}>
+                  {$t({ defaultMessage: '24 Mbps' })}
+                </Option>
+              </Select>
             } />
         </div>
 
@@ -475,61 +567,3 @@ export function MoreSettingsForm (props: {
   )
 }
 
-function BssMinRateSelect () {
-  const { $t } = useIntl()
-  return (
-    <Select
-      defaultValue={BssMinRateEnum.VALUE_NONE}
-      style={{ width: '150px' }}>
-      <Option value={BssMinRateEnum.VALUE_NONE}>
-        { $t({ defaultMessage: 'None' }) }
-      </Option>
-      <Option value={BssMinRateEnum.VALUE_12}>
-        { $t({ defaultMessage: '12 Mbps' }) }
-      </Option>
-      <Option value={BssMinRateEnum.VALUE_24}>
-        { $t({ defaultMessage: '24 Mbps' }) }
-      </Option>
-    </Select>
-  )
-}
-
-function MgmtTxRateSelect (props: {
-  disabled: boolean;
-}) {
-  const { $t } = useIntl()
-  return (
-    <Select
-      disabled={props.disabled}
-      defaultValue={MgmtTxRateEnum.VALUE_1}
-      style={{ width: '150px' }}>
-      <Option value={MgmtTxRateEnum.VALUE_1}>
-        { $t({ defaultMessage: '1 Mbps' }) }
-      </Option>
-      <Option value={MgmtTxRateEnum.VALUE_2}>
-        { $t({ defaultMessage: '2 Mbps' }) }
-      </Option>
-      <Option value={MgmtTxRateEnum.VALUE_5_5}>
-        { $t({ defaultMessage: '5.5 Mbps' }) }
-      </Option>
-      <Option value={MgmtTxRateEnum.VALUE_6}>
-        { $t({ defaultMessage: '6 Mbps' }) }
-      </Option>
-      <Option value={MgmtTxRateEnum.VALUE_9}>
-        { $t({ defaultMessage: '9 Mbps' }) }
-      </Option>
-      <Option value={MgmtTxRateEnum.VALUE_11}>
-        { $t({ defaultMessage: '11 Mbps' }) }
-      </Option>
-      <Option value={MgmtTxRateEnum.VALUE_12}>
-        { $t({ defaultMessage: '12 Mbps' }) }
-      </Option>
-      <Option value={MgmtTxRateEnum.VALUE_18}>
-        { $t({ defaultMessage: '18 Mbps' }) }
-      </Option>
-      <Option value={MgmtTxRateEnum.VALUE_24}>
-        { $t({ defaultMessage: '24 Mbps' }) }
-      </Option>
-    </Select>
-  )
-}
