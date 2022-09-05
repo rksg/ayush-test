@@ -152,13 +152,8 @@ export function ServicesTable () {
       <PageHeader
         title={$t({ defaultMessage: 'Services' })}
         extra={[
-<<<<<<< HEAD:apps/rc/src/pages/services/ServicesTable/index.tsx
-          <TenantLink to='/services/dhcp/create/wifi' key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
-=======
           <TenantLink to='/services/select' key='add'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
->>>>>>> master:apps/rc/src/pages/Services/ServicesTable/index.tsx
           </TenantLink>
         ]}
       />
