@@ -1,4 +1,6 @@
-import moment from 'moment-timezone'
+import { defineMessage, useIntl } from 'react-intl'
+
+import { renderHook } from '@acx-ui/test-utils'
 
 import {
   dateAxisFormatter,
@@ -12,26 +14,18 @@ import type { TooltipFormatterParams } from './helper'
 
 describe('dateAxisFormatter', () => {
   it('formats date time correctly', () => {
-    moment.tz.setDefault('Asia/Tokyo')
-    expect(dateAxisFormatter((new Date('2020-01-01T00:00+09:00')).valueOf()))
+    expect(dateAxisFormatter((new Date('2020-01-01T00:00+00:00')).valueOf()))
       .toEqual('2020')
-    expect(dateAxisFormatter((new Date('2020-02-01T00:00+09:00')).valueOf()))
+    expect(dateAxisFormatter((new Date('2020-02-01T00:00+00:00')).valueOf()))
       .toEqual('Feb')
-    expect(dateAxisFormatter((new Date('2020-02-03T00:00+09:00')).valueOf()))
+    expect(dateAxisFormatter((new Date('2020-02-03T00:00+00:00')).valueOf()))
       .toEqual('Feb 03')
-    expect(dateAxisFormatter((new Date('2020-02-03T07:00+09:00')).valueOf()))
+    expect(dateAxisFormatter((new Date('2020-02-03T07:00+00:00')).valueOf()))
       .toEqual('Feb 03 07:00')
   })
 })
 
 describe('timeSeriesTooltipFormatter', () => {
-  const timezone = 'UTC'
-  beforeEach(() => {
-    moment.tz.setDefault(timezone)
-  })
-  afterEach(() => {
-    moment.tz.setDefault(moment.tz.guess())
-  })
   const singleparameters = {
     data: [1605628800000, 518], color: 'color1', seriesName: 'seriesName1'
   } as TooltipFormatterParams
@@ -73,15 +67,35 @@ describe('stackedBarTooltipFormatter', () => {
 
 describe('donutChartTooltipFormatter', () => {
   const singleparameters = {
-    color: 'color1', value: 10
+    name: 'name', color: 'color1', value: 10
   } as TooltipFormatterParams
   it('should return correct Html string for single value', async () => {
     const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(donutChartTooltipFormatter(formatter)(singleparameters)).toMatchSnapshot()
-    expect(formatter).toBeCalledTimes(1)
+    expect(renderHook(() => donutChartTooltipFormatter(
+      useIntl(),
+      formatter,
+      100
+    )(singleparameters)).result.current).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(2)
   })
-  it('should handle when no formatter', async () => {
-    expect(donutChartTooltipFormatter()(singleparameters)).toMatchSnapshot()
+  it('should handle custom format', async () => {
+    const format = defineMessage({
+      defaultMessage: `{name}
+        <br></br>
+        <b>{formattedValue} {value, plural, one {unit} other {units} }</b>
+        ({formattedPercent})
+        <span>{formattedTotal}</span>
+        <div>{percent} {total}</div>
+      `
+    })
+    const formatter = jest.fn(value => `formatted-${value}`)
+    expect(renderHook(() => donutChartTooltipFormatter(
+      useIntl(),
+      formatter,
+      100,
+      format
+    )({ ...singleparameters, percent: 10 })).result.current).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(2)
   })
 })
 

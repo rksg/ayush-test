@@ -8,7 +8,7 @@ import { mockRestApiQuery }                                   from '@acx-ui/test
 
 import AllRoutes from './AllRoutes'
 
-jest.mock('./App/Dashboard', () => () => {
+jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
 jest.mock('analytics/Routes', () => () => {
@@ -22,11 +22,14 @@ jest.mock('rc/Routes', () => () => {
     </>
   )
 },{ virtual: true })
-jest.mock('./App/Venues/VenuesTable', () => ({
+jest.mock('./pages/Venues/VenuesTable', () => ({
   VenuesTable: () => {
     return <div data-testid='venues' />
   }
 }), { virtual: true })
+jest.mock('msp/Routes', () => () => {
+  return <div data-testid='msp' />
+}, { virtual: true })
 
 describe('AllRoutes', () => {
   beforeEach(() => {
@@ -96,5 +99,14 @@ describe('AllRoutes', () => {
       }
     })
     await screen.findByTestId('venues')
+  })
+
+  test('should navigate to msp pages', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/v/tenantId/dashboard'
+      }
+    })
+    expect(await screen.findByTestId('msp')).toBeVisible()
   })
 })
