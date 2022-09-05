@@ -9,7 +9,7 @@ import {
   Slider,
   Switch
 } from 'antd'
-import _           from 'lodash'
+import _, { get }  from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -52,8 +52,12 @@ export function AccessControlForm () {
           enableDownloadLimit: data.wlan.advancedCustomization.userDownlinkRateLimiting !== 0,
           enableUploadLimit: data.wlan.advancedCustomization.userUplinkRateLimiting !== 0,
           enableClientRateLimit: data.wlan.advancedCustomization.userDownlinkRateLimiting !== 0 ||
-            data.wlan.advancedCustomization.userUplinkRateLimiting !== 0
+            data.wlan.advancedCustomization.userUplinkRateLimiting !== 0,
+          accessControlProfileEnable: !_.isEmpty(get(data,
+            'wlan.advancedCustomization.accessControlProfileId'))
         })
+        setEnabledProfile(!_.isEmpty(
+          get(data, 'wlan.advancedCustomization.accessControlProfileId')))
       }
     }
   }, [data])
@@ -125,6 +129,16 @@ function getAccessControlProfile <
 
 function SelectAccessProfileProfile () {
   const { $t } = useIntl()
+  const { data } = useContext(NetworkFormContext)
+
+  useEffect(() => {
+    if (data) {
+      if (!_.isEmpty(get(data, 'wlan.advancedCustomization.accessControlProfileId'))) {
+        onAccessPolicyChange(get(data, 'wlan.advancedCustomization.accessControlProfileId'))
+      }
+    }
+  }, [data])
+
   const [state, updateState] = useState({
     selectedAccessControlProfile: undefined as AccessControlProfile | undefined
   })
@@ -220,12 +234,13 @@ function SelectAccessProfileProfile () {
       return limit
     }
 
-  const [enableAccessControlProfile] = [useWatch('enableAccessControlProfile')]
+  const [enableAccessControlProfile] = [
+    useWatch('accessControlProfileEnable')]
   return (<>
     <UI.FieldLabel width='175px'>
       {$t({ defaultMessage: 'Access Control' })}
       <Form.Item
-        name='enableAccessControlProfile'
+        name='accessControlProfileEnable'
         style={{ marginBottom: '10px' }}
         valuePropName='checked'
         initialValue={false}

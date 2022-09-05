@@ -275,7 +275,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
        DpskWlanAdvancedCustomization |
        PskWlanAdvancedCustomization
 
-  advancedCustomization.dnsProxy = { dnsProxyRules: get(data, 'dnsProxyRules') }
+  if (get(data, 'wlan.advancedCustomization.dnsProxyEnabled')) {
+    advancedCustomization.dnsProxy = { dnsProxyRules: get(data, 'dnsProxyRules') }
+  }
+
 
   let saveData:NetworkSaveData = {
     ...originalData,

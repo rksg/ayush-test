@@ -11,6 +11,7 @@ import {
   ServiceAdminState
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
 import { serviceTypeLabelMapping, serviceStatusLabelMapping, serviceAdminStateLabelMapping, serviceTechnologyabelMapping } from '../contentsMap'
 
 

@@ -7,7 +7,7 @@ import {
   Slider
 } from 'antd'
 import { useWatch } from 'antd/lib/form/Form'
-import _, { get }   from 'lodash'
+import { get }      from 'lodash'
 import { useIntl }  from 'react-intl'
 
 import NetworkFormContext from '../NetworkFormContext'

@@ -240,6 +240,7 @@ export function ServicesForm () {
 
       <UI.FormItemNoLabel
         name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
+        valuePropName='checked'
         children={
           <Checkbox disabled={enableAntiSpoofing}
             children={$t({ defaultMessage: 'Force DHCP' })} />}
