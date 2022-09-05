@@ -12,7 +12,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         style="display: grid; grid-template-columns: 220px 130px auto; align-items: baseline; margin: 20px 0px;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1vnv53e-6 fPbHyn bixyod"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
         >
           Access Control
         </h4>
@@ -39,7 +39,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         </button>
       </span>
       <div
-        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+        class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
         width="175px"
       >
         Layer 2
@@ -84,7 +84,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         </div>
       </div>
       <div
-        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+        class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
         width="175px"
       >
         Layer 3
@@ -129,7 +129,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         </div>
       </div>
       <div
-        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+        class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
         width="175px"
       >
         Device & OS
@@ -174,7 +174,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         </div>
       </div>
       <div
-        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+        class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
         width="175px"
       >
         Applications
@@ -219,7 +219,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
         </div>
       </div>
       <div
-        class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+        class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
         width="175px"
       >
         Client Rate Limit

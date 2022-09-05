@@ -39,8 +39,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { IpPortSecretForm } from '../../../components/IpPortSecretForm'
-import { ToggleButton }     from '../../../components/ToggleButton'
+import { IpPortSecretForm } from '../../../../components/IpPortSecretForm'
+import { ToggleButton }     from '../../../../components/ToggleButton'
 import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext   from '../NetworkFormContext'
 

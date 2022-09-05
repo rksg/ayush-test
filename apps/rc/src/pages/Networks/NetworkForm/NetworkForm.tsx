@@ -107,9 +107,9 @@ export function NetworkForm () {
     }
   }
 
-  const handleEditNetwork = async () => {
+  const handleEditNetwork = async (data: NetworkSaveData) => {
     try {
-      await updateNetwork({ params, payload: saveState }).unwrap()
+      await updateNetwork({ params, payload: { ...saveState, venues: data.venues } }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({

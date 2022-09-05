@@ -6,7 +6,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
     class="ant-form ant-form-horizontal"
   >
     <div
-      class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollpasePanel-sc-1vnv53e-3 eQdnmT"
+      class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollpasePanel-sc-lhsic1-3 wFNOT"
       style="width: 600px;"
     >
       <div
@@ -55,7 +55,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             class="ant-collapse-content-box"
           >
             <div
-              class="styledComponents__FieldLabel-sc-1vnv53e-0 iVYgKM"
+              class="styledComponents__FieldLabel-sc-lhsic1-0 INHbI"
               width="90px"
             >
               VLAN Pooling:
@@ -208,7 +208,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="styledComponents__FieldLabel-sc-1vnv53e-0 iVYgKM"
+              class="styledComponents__FieldLabel-sc-lhsic1-0 INHbI"
               width="90px"
             >
               Proxy ARP:
@@ -297,12 +297,12 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             class="ant-collapse-content-box"
           >
             <div
-              class="styledComponents__FieldLabel-sc-1vnv53e-0 dosfSj"
+              class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
               width="125px"
             >
               DNS Proxy:
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 jpUEyC"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 bbwIyS"
                 width="30px"
               >
                 <div
@@ -363,12 +363,12 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="styledComponents__FieldLabel-sc-1vnv53e-0 dosfSj"
+              class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
               width="125px"
             >
               Wi-Fi Calling:
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 jpUEyC"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 bbwIyS"
                 width="30px"
               >
                 <div
@@ -409,7 +409,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="styledComponents__FieldLabel-sc-1vnv53e-0 dosfSj"
+              class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
               width="125px"
             >
               Client Isolation:
@@ -450,7 +450,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="styledComponents__FieldLabel-sc-1vnv53e-0 dosfSj"
+              class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
               width="125px"
             >
               Anti-spoofing:
@@ -491,7 +491,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -506,7 +506,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
+                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
                         id="wlan_advancedCustomization_forceMobileDeviceDhcp"
                       >
                         <label
@@ -535,7 +535,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -550,7 +550,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
+                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
                         id="wlan_advancedCustomization_enableSyslog"
                       >
                         <label
@@ -627,7 +627,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             class="ant-collapse-content-box"
           >
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -642,7 +642,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
+                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
                         id="wlan_advancedCustomization_hideSsid"
                       >
                         <label
@@ -671,7 +671,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <h4
-              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1vnv53e-6 fPbHyn bixyod"
+              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
             >
               Load Control
             </h4>
@@ -849,7 +849,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -864,7 +864,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
+                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
                         id="wlan_advancedCustomization_enableBandBalancing"
                       >
                         <label
@@ -893,7 +893,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
             >
               <div
                 class="ant-row ant-form-item-row"
@@ -908,7 +908,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
+                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
                         id="wlan_advancedCustomization_clientLoadBalancingEnable"
                       >
                         <label
@@ -943,7 +943,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 style="display: grid; grid-template-columns: 220px 130px auto; align-items: baseline; margin: 20px 0px;"
               >
                 <h4
-                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1vnv53e-6 fPbHyn bixyod"
+                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
                 >
                   Access Control
                 </h4>
@@ -970,7 +970,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </button>
               </span>
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
                 width="175px"
               >
                 Layer 2
@@ -1015,7 +1015,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
                 width="175px"
               >
                 Layer 3
@@ -1060,7 +1060,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
                 width="175px"
               >
                 Device & OS
@@ -1105,7 +1105,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
                 width="175px"
               >
                 Applications
@@ -1150,7 +1150,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
                 width="175px"
               >
                 Client Rate Limit
@@ -1192,7 +1192,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
               style="margin-bottom: 15px;"
             >
               <div
@@ -1208,7 +1208,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
+                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
                         id="enableOfdmOnly"
                       >
                         <label
@@ -1237,7 +1237,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <h4
-              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1vnv53e-6 fPbHyn bixyod"
+              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
             >
               Data Rate Control (2.4 GHz & 5 GHz)
             </h4>
@@ -1432,7 +1432,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
               style="margin-bottom: 15px;"
             >
               <div
@@ -1448,7 +1448,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input-content"
                     >
                       <span
-                        class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
+                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
                         id="wlan_advancedCustomization_enableNeighborReport"
                       >
                         <label
@@ -1698,7 +1698,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="styledComponents__FieldLabel-sc-1vnv53e-0 eGESUp"
+              class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
               width="190px"
             >
               Airtime Decongestion:
@@ -1739,7 +1739,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="styledComponents__FieldLabel-sc-1vnv53e-0 eGESUp"
+              class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
               width="190px"
             >
               Join RSSI Threshold:
@@ -1784,7 +1784,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="styledComponents__FieldLabel-sc-1vnv53e-0 eGESUp"
+              class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
               width="190px"
             >
               Transient Client Management:
@@ -1825,7 +1825,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </div>
             </div>
             <div
-              class="styledComponents__FieldLabel-sc-1vnv53e-0 eYyOKy"
+              class="styledComponents__FieldLabel-sc-lhsic1-0 dKJWxS"
               width="250px"
             >
               Optimized Connectivity Experience (OCE):

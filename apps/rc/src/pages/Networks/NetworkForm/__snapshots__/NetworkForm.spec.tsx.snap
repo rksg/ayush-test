@@ -398,7 +398,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   <span>
                                                     Pre-Shared Key (PSK)
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
                                                     >
                                                       Require users to enter a passphrase (that you have defined for the network) to connect
                                                     </div>
@@ -427,7 +427,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   <span>
                                                     Dynamic Pre-Shared Key (DPSK)
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
                                                     >
                                                       Require users to enter a passphrase to connect. The passphrase is unique per device
                                                     </div>
@@ -456,7 +456,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   <span>
                                                     Enterprise AAA (802.1X)
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
                                                     >
                                                       Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
                                                     </div>
@@ -486,7 +486,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   <span>
                                                     Captive Portal
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
                                                     >
                                                       Users are authorized through a captive portal in various methods
                                                     </div>
@@ -514,7 +514,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   <span>
                                                     Open Network
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
                                                     >
                                                       Allow users to access the network without any authentication/security (not recommended)
                                                     </div>
@@ -545,7 +545,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                           class="ant-col"
                         >
                           <div
-                            class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
+                            class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                           >
                             <img
                               src="none.png"
@@ -631,7 +631,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                           class="ant-col"
                         >
                           <div
-                            class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
+                            class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                           >
                             <img
                               alt="Open Network"

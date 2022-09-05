@@ -179,7 +179,7 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
       </div>
     </div>
     <div
-      class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+      class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
     >
       <div
         class="ant-row ant-form-item-row"
@@ -194,7 +194,7 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
               class="ant-form-item-control-input-content"
             >
               <span
-                class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
+                class="styledComponents__Label-sc-lhsic1-2 hyMegq"
                 id="wlan_advancedCustomization_enableBandBalancing"
               >
                 <label
@@ -223,7 +223,7 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
       </div>
     </div>
     <div
-      class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+      class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
     >
       <div
         class="ant-row ant-form-item-row"
@@ -238,7 +238,7 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
               class="ant-form-item-control-input-content"
             >
               <span
-                class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
+                class="styledComponents__Label-sc-lhsic1-2 hyMegq"
                 id="wlan_advancedCustomization_clientLoadBalancingEnable"
               >
                 <label
