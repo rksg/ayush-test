@@ -1,5 +1,5 @@
 
-import React, { createContext, useState } from 'react'
+import React, { createContext, useState, useEffect, useContext } from 'react'
 
 import {
   Button,
@@ -13,6 +13,8 @@ import {
 import { useIntl } from 'react-intl'
 
 import { DnsProxyRule, DnsProxyContextType } from '@acx-ui/rc/utils'
+
+import NetworkFormContext from '../NetworkFormContext'
 
 import { DnsProxyModal } from './DnsProxyModal'
 import * as UI           from './styledComponents'
@@ -116,6 +118,16 @@ export function ServicesForm () {
     // useWatch<DnsProxyRule[]>(['wlan','advancedCustomization','dnsProxy', 'dnsProxyRules'])
   ]
 
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  useEffect(() => {
+    if (data) {
+      form.setFieldsValue({
+        // isCloudpathEnabled: data.cloudpathServerId !== undefined,
+      })
+    }
+  }, [data])
+
   const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxyRule[])
 
 
@@ -132,7 +144,7 @@ export function ServicesForm () {
             children={<Switch />}
           />
           <Form.Item
-            name={['wlan', 'advancedCustomization', 'dnsProxy', 'dnsProxyRules']}
+            name='test'//{['wlan', 'advancedCustomization', 'dnsProxy', 'dnsProxyRules']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -225,21 +237,18 @@ export function ServicesForm () {
       </>
 
       <UI.FormItemNoLabel
-        name={['wlan','advancedCustomization','forceMobileDeviceDhcp']}
-
+        name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
         children={
-          <UI.Label>
-            <Checkbox disabled={enableAntiSpoofing}
-              children={$t({ defaultMessage: 'Force DHCP' })} />
-          </UI.Label>}
+          <Checkbox disabled={enableAntiSpoofing}
+            children={$t({ defaultMessage: 'Force DHCP' })} />}
       />
       <UI.FormItemNoLabel
         name={['wlan','advancedCustomization','enableSyslog']}
+        valuePropName='checked'
         children={
-          <UI.Label>
-            <Checkbox children={
-              $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
-          </UI.Label>}
+          <Checkbox children={
+            $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
+        }
       />
     </>
   )

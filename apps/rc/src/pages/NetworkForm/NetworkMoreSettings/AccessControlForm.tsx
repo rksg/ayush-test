@@ -467,15 +467,13 @@ function AccessControlConfigForm () {
           initialValue={false}
           style={{ lineHeight: '50px' }}
           children={
-            <UI.Label>
-              <Checkbox data-testid='enableUploadLimit'
-                children={$t({ defaultMessage: 'Upload Limit' })} />
-            </UI.Label>}
+            <Checkbox data-testid='enableUploadLimit'
+              children={$t({ defaultMessage: 'Upload Limit' })} />}
         />
         {
           enableUploadLimit ?
             <UI.FormItemNoLabel
-              name='uploadLimit'
+              name={['wlan','advancedCustomization','userUplinkRateLimiting']}
               children={
                 <RateSlider />
               }
@@ -491,16 +489,14 @@ function AccessControlConfigForm () {
           initialValue={false}
           style={{ lineHeight: '50px' }}
           children={
-            <UI.Label>
-              <Checkbox data-testid='enableDownloadLimit'
-                children={$t({ defaultMessage: 'Download Limit' })} />
-            </UI.Label>}
+            <Checkbox data-testid='enableDownloadLimit'
+              children={$t({ defaultMessage: 'Download Limit' })} />}
         />
 
         {
           enableDownloadLimit ?
             <UI.FormItemNoLabel
-              name='downloadLimit'
+              name={['wlan','advancedCustomization','userDownlinkRateLimiting']}
               children={
                 <RateSlider />
               }

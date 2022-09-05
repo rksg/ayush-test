@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 
 import {
   Checkbox,
@@ -11,14 +11,15 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import NetworkFormContext          from '../NetworkFormContext'
-import { Button } from '@acx-ui/components'
+import { Button }        from '@acx-ui/components'
 import {
   useVlanPoolListQuery
 } from '@acx-ui/rc/services'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
 
+
+import NetworkFormContext from '../NetworkFormContext'
 
 import { AccessControlForm } from './AccessControlForm'
 import { LoadControlForm }   from './LoadControlForm'
@@ -53,18 +54,25 @@ const listPayload = {
   sortOrder: 'ASC', page: 1, pageSize: 10000
 }
 
-export function NetworkMoreSettingsForm(props: {
+export function NetworkMoreSettingsForm (props: {
   wlanData: NetworkSaveData
 }) {
   const { data } = useContext(NetworkFormContext)
-  const { editMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+  useEffect(() => {
+    if (data) {
+      form.setFieldsValue({
+        wlan: data.wlan,
+        enableUploadLimit: data.wlan?.advancedCustomization?.userUplinkRateLimiting &&
+          data.wlan?.advancedCustomization?.userUplinkRateLimiting > 0,
+        enableDownloadLimit: data.wlan?.advancedCustomization?.userDownlinkRateLimiting &&
+          data.wlan?.advancedCustomization?.userDownlinkRateLimiting > 0
+      })
+    }
+  }, [data])
   const { $t } = useIntl()
   const [enableMoreSettings, setEnabled] = useState(false)
-  if (editMode) {
-    form.setFieldsValue({
-      wlan: data?.wlan
-    })
+  if (data) {
     return <MoreSettingsForm wlanData={props.wlanData} />
   } else {
     return <div>
@@ -92,7 +100,7 @@ export function MoreSettingsForm (props: {
   const [
     enableOfdmOnly,
     enableFastRoaming,
-    enableAirtimedecongestion,
+    enableAirtimeDecongestion,
     enableJoinRSSIThreshold,
     enableTransientClientManagement,
     enableOce,
@@ -100,7 +108,7 @@ export function MoreSettingsForm (props: {
   ] = [
     useWatch<boolean>('enableOfdmOnly'),
     useWatch<boolean>(['wlan','advancedCustomization','enableFastRoaming']),
-    useWatch<boolean>(['wlan','advancedCustomization','enableAirtimedecongestion']),
+    useWatch<boolean>(['wlan','advancedCustomization','enableAirtimeDecongestion']),
     useWatch<boolean>(['wlan','advancedCustomization','enableJoinRSSIThreshold']),
     useWatch<boolean>(['wlan','advancedCustomization','enableTransientClientManagement']),
     useWatch<boolean>(['wlan','advancedCustomization',
@@ -207,7 +215,7 @@ export function MoreSettingsForm (props: {
           <UI.FieldLabel width='90px'>
             { $t({ defaultMessage: 'Proxy ARP:' }) }
             <Form.Item
-              name={['wlan', 'advancedCustomization', 'enableProxyArp']}
+              name={['wlan', 'advancedCustomization', 'proxyARP']}
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
@@ -224,10 +232,11 @@ export function MoreSettingsForm (props: {
       <Panel header='Radio' key='3' >
         <UI.FormItemNoLabel
           name={['wlan','advancedCustomization','hideSsid']}
+          initialValue={false}
+          valuePropName='checked'
           children={
-            <UI.Label>
-              <Checkbox children={$t({ defaultMessage: 'Hide SSID' })} />
-            </UI.Label>}
+            <Checkbox children={$t({ defaultMessage: 'Hide SSID' })} />
+          }
         />
 
         <UI.Subtitle>{$t({ defaultMessage: 'Load Control' })}</UI.Subtitle>
@@ -243,9 +252,8 @@ export function MoreSettingsForm (props: {
           valuePropName='checked'
           initialValue={false}
           children={
-            <UI.Label>
-              <Checkbox children={$t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' })} />
-            </UI.Label>}
+            <Checkbox children={$t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' })} />
+          }
         />
 
         <UI.Subtitle>
@@ -281,9 +289,8 @@ export function MoreSettingsForm (props: {
           valuePropName='checked'
           initialValue={false}
           children={
-            <UI.Label>
-              <Checkbox children={$t({ defaultMessage: 'Enable 802.11k neighbor reports' })} />
-            </UI.Label>}
+            <Checkbox children={$t({ defaultMessage: 'Enable 802.11k neighbor reports' })} />
+          }
         />
 
         {isFastBssVisible &&
@@ -293,10 +300,9 @@ export function MoreSettingsForm (props: {
             valuePropName='checked'
             initialValue={false}
             children={
-              <UI.Label>
-                <Checkbox data-testid='enableFastRoaming'
-                  children={$t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' })} />
-              </UI.Label>}
+              <Checkbox data-testid='enableFastRoaming'
+                children={$t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' })} />
+            }
           />
         }
 
@@ -332,7 +338,7 @@ export function MoreSettingsForm (props: {
         <UI.FieldLabel width='190px'>
           { $t({ defaultMessage: 'Airtime Decongestion:' }) }
           <Form.Item
-            name={['wlan','advancedCustomization','enableAirtimedecongestion']}
+            name={['wlan','advancedCustomization','enableAirtimeDecongestion']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -340,7 +346,7 @@ export function MoreSettingsForm (props: {
           />
         </UI.FieldLabel>
 
-        {!enableAirtimedecongestion &&
+        {!enableAirtimeDecongestion &&
           <UI.FieldLabel width='190px'>
             { $t({ defaultMessage: 'Join RSSI Threshold:' }) }
             <div style={{ display: 'grid', gridTemplateColumns: '50px 75px auto' }}>

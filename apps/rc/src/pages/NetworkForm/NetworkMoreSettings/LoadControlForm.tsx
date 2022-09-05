@@ -56,19 +56,17 @@ export function LoadControlForm () {
       </Form.Item>
 
       <UI.FormItemNoLabel
-        name={['wlan','advancedCustomization','enableBandBalancing']}
+        name={['wlan', 'advancedCustomization', 'enableBandBalancing']}
         children={
-          <UI.Label>
-            <Checkbox 
-              children={$t({ defaultMessage: 'Enable load balancing between all radios' })} />
-          </UI.Label>}
+          <Checkbox
+            children={$t({ defaultMessage: 'Enable load balancing between all radios' })} />
+        }
       />
       <UI.FormItemNoLabel
-        name={['wlan','advancedCustomization','clientLoadBalancingEnable']}
+        name={['wlan', 'advancedCustomization', 'clientLoadBalancingEnable']}
         children={
-          <UI.Label>
-            <Checkbox children={$t({ defaultMessage: 'Enable load balancing between APs' })} />
-          </UI.Label>}
+          <Checkbox children={$t({ defaultMessage: 'Enable load balancing between APs' })} />
+        }
       />
     </>
   )
@@ -109,10 +107,9 @@ function PerApForm () {
           initialValue={false}
           style={{ lineHeight: '50px' }}
           children={
-            <UI.Label>
-              <Checkbox data-testid='uploadLimit'
-                children={$t({ defaultMessage: 'Upload Limit' })} />
-            </UI.Label>}
+            <Checkbox data-testid='uploadLimit'
+              children={$t({ defaultMessage: 'Upload Limit' })} />
+          }
         />
         {
           uploadLimit ?
@@ -136,10 +133,9 @@ function PerApForm () {
           initialValue={false}
           style={{ lineHeight: '50px' }}
           children={
-            <UI.Label>
-              <Checkbox data-testid='downloadLimit'
-                children={$t({ defaultMessage: 'Download Limit' })} />
-            </UI.Label>}
+            <Checkbox data-testid='downloadLimit'
+              children={$t({ defaultMessage: 'Download Limit' })} />
+          }
         />
         {
           downloadLimit ?
