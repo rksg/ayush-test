@@ -35,8 +35,8 @@ export const api = dataApi.injectEndpoints({
                 topNSwitchesByTraffic (n: 5) {
                   name,
                   mac,
-                  Received: rx,
-                  Transmitted: tx
+                  Received: totalTraffic(direction: "rx"),
+                  Transmitted: totalTraffic(direction: "tx")
                 }
               }
             }
