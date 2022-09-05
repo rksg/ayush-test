@@ -12,26 +12,26 @@ export const networkHierarchy = {
     type: 'zone',
     name: 'venue',
     path: [...defaultNetworkPath, { type: 'zone', name: 'venue' }],
-    aps: [{ name: 'ap', mac: 'ap-mac', incidentSeverity: 0.5 }],
+    aps: [{ name: 'ap', mac: 'ap-mac' }],
     switches: []
   }, {
     type: 'switchGroup',
     name: 'venue',
     path: [...defaultNetworkPath, { type: 'switchGroup', name: 'venue' }],
     aps: [],
-    switches: [{ name: 'switch', mac: 'switch-mac', incidentSeverity: 0.5 }]
+    switches: [{ name: 'switch', mac: 'switch-mac' }]
   }, {
     type: 'zone',
     name: 'venue1',
     path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
-    aps: [{ name: 'ap2', mac: 'ap-mac2', incidentSeverity: 0.5 }],
+    aps: [{ name: 'ap2', mac: 'ap-mac2' }],
     switches: []
   }, {
     type: 'switchGroup',
     name: 'swg',
     path: [...defaultNetworkPath, { type: 'switchGroup', name: 'swg' }],
     aps: [],
-    switches: [{ name: 'switch2', mac: 'switch-mac2', incidentSeverity: 0.5 }]
+    switches: [{ name: 'switch2', mac: 'switch-mac2' }]
   }],
   name: 'Network',
   type: 'network',
