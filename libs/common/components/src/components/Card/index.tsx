@@ -6,8 +6,10 @@ import * as UI from './styledComponents'
 
 import type { CardProps as AntCardProps } from 'antd'
 
+export type CardTypes = 'default' | 'no-border' | 'solid-bg'
+
 export interface CardProps extends Pick<AntCardProps, 'children'> {
-  bordered?: boolean
+  type?: CardTypes
   title?: string
   subTitle?: string
   onExpandClick?: () => void
@@ -15,16 +17,15 @@ export interface CardProps extends Pick<AntCardProps, 'children'> {
   setHeight?: boolean
 }
 
-export const Card = function Card ({
-  bordered = true,
+function Card ({
+  type = 'default',
   title,
   subTitle,
   setHeight,
   ...props
 }: CardProps) {
   const wrapperProps = {
-    hasSubTitle: Boolean(subTitle),
-    hasBorder: bordered,
+    type,
     hasTitle: Boolean(title),
     hasHeight: Boolean(setHeight)
   }
@@ -33,9 +34,9 @@ export const Card = function Card ({
       <AntCard
         bordered={false}
         title={<>
-          <UI.TitleWrapper children={title} />
+          <UI.Title children={title} />
           {subTitle ? (
-            <UI.SubTitleWrapper children={subTitle} />
+            <UI.SubTitle children={subTitle} />
           ) : null}
         </>}
         extra={
@@ -60,3 +61,7 @@ export const Card = function Card ({
     </UI.Wrapper>
   )
 }
+
+Card.Title = UI.Title
+
+export { Card }

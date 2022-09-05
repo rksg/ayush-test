@@ -49,4 +49,7 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
   &.ant-btn-link {
     padding: 0;
   }
+  &.ant-btn-background-ghost {
+    border: 0;
+  }
 `
