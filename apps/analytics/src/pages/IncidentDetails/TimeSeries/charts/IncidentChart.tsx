@@ -11,7 +11,10 @@ import { ChartsData }           from '../services'
 export const IncidentChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
   const { incidentCharts, relatedIncidents } = data
   const { $t } = useIntl()
-  const title = mapCodeToReason(codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap] ,useIntl())
+  const title = mapCodeToReason(
+    codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap],
+    useIntl()
+  )
 
   const seriesMapping = [{
     key: codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap],
