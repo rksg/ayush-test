@@ -113,6 +113,7 @@ export interface DHCPPool {
 }
 
 export interface DHCPOption{
+  optId: string;
   id: number;
   name: string;
   format: string;
