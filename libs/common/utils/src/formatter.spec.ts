@@ -16,103 +16,7 @@ function testFormat (
 }
 describe('formatter', () => {
   it('Should take care of null values correctly', () => {
-    expect(formatter()(null)).toBe(null)
-  })
-  it('Should default to countFormat', () => {
-    expect(formatter()(123.456789)).toBe('123')
-  })
-  it('percentFormat', () => testFormat('percentFormat', {
-    0.12: '12%',
-    0.123: '12.3%',
-    0.1235: '12.35%',
-    0.12359: '12.36%',
-    0.12999: '13%'
-  }))
-  it('percentFormatWithoutScalingBy100', () => testFormat('percentFormatWithoutScalingBy100', {
-    0.12: '0.12%',
-    0.123: '0.12%',
-    0.1235: '0.12%',
-    0.12359: '0.12%',
-    0.12999: '0.13%'
-  }))
-  it('percentFormatNoSign', () => testFormat('percentFormatNoSign', {
-    0.12: '12',
-    0.123: '12.3',
-    0.1235: '12.35',
-    0.12359: '12.36',
-    0.12999: '13'
-  }))
-  it('percentFormatRound', () => testFormat('percentFormatRound', {
-    0.12: '12%',
-    0.124: '12%',
-    0.126: '13%',
-    0.1244: '12%',
-    0.1266: '13%'
-  }))
-  it('countFormat', () => {
-    testFormat('countFormat', {
-      '-0': '0',
-      '0': '0',
-      '0.456': '0',
-      '1.50': '2',
-      '-1.50': '-1'
-    })
-    const positive = {
-      '1': '1',
-      '12': '12',
-      '123': '123',
-      '1234': '1.23 k',
-      '12345': '12.3 k',
-      '12344': '12.3 k',
-      '123456': '123 k',
-      '1234567': '1.23 m',
-      '12345678': '12.3 m',
-      '123000000000': '123 b',
-      '123000000000000': '123 t',
-      '123000000000000000': '123000 t',
-      '123.456789': '123',
-      '1.00': '1',
-      '1500': '1.5 k',
-      '2000': '2 k'
-    }
-    const negative = Object.entries(positive).reduce((agg, [key, value])=>{
-      agg[-key] = '-' + value
-      return agg
-    },{} as Record<string|number, string>)
-    testFormat('countFormat', positive)
-    testFormat('countFormat', negative)
-  })
-  it('countWithCommas', () => {
-    testFormat('countWithCommas', {
-      '-0': '0',
-      '0': '0',
-      '0.456': '0',
-      '1.50': '2',
-      '-1.50': '-1'
-    })
-    const positive = {
-      '1': '1',
-      '12': '12',
-      '123': '123',
-      '1234': '1,234',
-      '12345': '12,345',
-      '12344': '12,344',
-      '123456': '123,456',
-      '1234567': '1,234,567',
-      '12345678': '12,345,678',
-      '123000000000': '123,000,000,000',
-      '123000000000000': '123,000,000,000,000',
-      '123.456789': '123',
-      '1.00': '1',
-      '1500': '1,500',
-      '2000': '2,000'
-    }
-    const negative = Object.entries(positive).reduce((agg, [key, value])=>{
-      agg[-key] = '-' + value
-      return agg
-    },{} as Record<string|number, string>)
-    testFormat('countWithCommas', positive)
-    testFormat('countWithCommas', negative)
+    expect(formatter('decibelFormat')(null)).toBe(null)
   })
   it('decibelFormat', () => testFormat('decibelFormat', {
     '7.131': '7 dB',
@@ -139,6 +43,9 @@ describe('formatter', () => {
     123000000000000: '112 TB',
     123000000000000000: '109 PB',
     123000000000000000000: '107 EB',
+    123000000000000000000000: '104 ZB',
+    123000000000000000000000000: '102 YB',
+    123000000000000000000000000000: '102000 YB',
     1025: '1 KB',
     1024: '1 KB',
     1023: '1020 B'
@@ -173,9 +80,6 @@ describe('formatter', () => {
   it('enabledFormat', () => {
     expect(formatter('enabledFormat')(true)).toEqual('Enabled')
     expect(formatter('enabledFormat')(false)).toEqual('Disabled')
-  })
-  it('noFormat', () => {
-    expect(formatter('noFormat')(1)).toBe(1)
   })
   it('ratioFormat', () => {
     expect(formatter('ratioFormat')([1, 2])).toBe('1 / 2')

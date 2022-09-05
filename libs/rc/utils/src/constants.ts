@@ -104,7 +104,7 @@ export enum CloudpathDeploymentTypeEnum {
 
 export enum ServiceType {
   PORTAL = 'PORTAL',
-  DHCP_WIFI = 'DHCP_WIFI',
+  DHCP = 'DHCP',
   WIFI_CALLING = 'WIFI_CALLING',
   MDNS_PROXY = 'MDNS_PROXY',
   DPSK = 'DPSK'
