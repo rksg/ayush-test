@@ -18,6 +18,14 @@ export const data = [
   { value: 30000, name: 'In Setup Phase', color: cssStr('--acx-semantics-green-50') }
 ]
 
+export const topSwitchModels = [
+  { value: 13, name: 'ICX7150-C12P', color: cssStr('--acx-accents-blue-30') },
+  { value: 8, name: 'ICX7150-C121P', color: cssStr('--acx-accents-blue-60') },
+  { value: 7, name: 'ICX7150-C57P', color: cssStr('--acx-accents-orange-25') },
+  { value: 4, name: 'ICX7150-C8', color: cssStr('--acx-accents-orange-50') },
+  { value: 2, name: 'ICX7150-C0', color: cssStr('--acx-semantics-yellow-40') }
+]
+
 const clickHandler = (params: EventParams) => {
   // eslint-disable-next-line
   console.log('Chart clicked:', params)
@@ -34,6 +42,7 @@ storiesOf('Donut Chart', module)
             <DonutChart
               style={{ width, height }}
               title='Wi-Fi'
+              showLegend={true}
               dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
               data={data}/>
           )}
@@ -52,10 +61,12 @@ storiesOf('Donut Chart', module)
               style={{ width, height }}
               title='With a very long title'
               subTitle={'With a very long subtitle..............................'}
-              unit={defineMessage({ defaultMessage: `{formattedCount} {count, plural,
-                one {Client}
-                other {Clients}
-              }` })}
+              tooltipFormat={defineMessage({
+                defaultMessage: `{name}: <b>{formattedValue} {value, plural,
+                  one {Client}
+                  other {Clients}
+                }</b> ({formattedPercent})`
+              })}
               dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
               data={data}/>
           )}
@@ -92,3 +103,23 @@ storiesOf('Donut Chart', module)
       </Card>
     </div>
   })
+  .add('Large Donut with Labels', () => {
+    const { $t } = useIntl()
+    return <div style={{ width: 496, height: 278 }}>
+      <Card title='Top 5 Switch Models'>
+        <AutoSizer>
+          {({ height, width }) => (
+            <DonutChart
+              style={{ width, height }}
+              title='Models'
+              showLabel={true}
+              showTotal={false}
+              showLegend={false}
+              showTooltipPercentage={true}
+              type={'large'}
+              dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
+              data={topSwitchModels}/>
+          )}
+        </AutoSizer>
+      </Card>
+    </div>})

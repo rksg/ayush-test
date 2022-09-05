@@ -616,6 +616,36 @@
     }
   }
 
+  .ant-tabs {
+    &.ant-tabs-card {
+      .ant-tabs-nav {
+        padding-left: 15px;
+        &:before {
+          border-bottom: 1px solid var(--acx-accents-orange-50);
+        }
+        .ant-tabs-tab {
+          background: transparent;
+          border-color: transparent;
+          border-radius: 0;
+          .ant-tabs-tab-btn {
+            font-size: var(--acx-body-3-font-size);
+            font-weight: var(--acx-body-font-weight);
+          }
+          &.ant-tabs-tab-active {
+            border-color: var(--acx-accents-orange-50);
+            border-bottom-color: var(--acx-primary-white);
+            .ant-tabs-tab-btn {
+              font-size: var(--acx-subtitle-4-font-size);
+              font-weight: var(--acx-subtitle-4-font-weight);
+              color: var(--acx-accents-orange-50);
+              text-shadow: none;
+            }
+          }
+        }
+      }
+    }
+  }
+
   // Gmap Close Icon and Info windows overrides
   .gm-ui-hover-effect {
     display: none !important;
