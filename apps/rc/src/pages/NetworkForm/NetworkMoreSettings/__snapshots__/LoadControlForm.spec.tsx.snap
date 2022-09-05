@@ -108,10 +108,10 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
         >
           <label
             class=""
-            for="activatedInVenues"
-            title="Activated in Venues:"
+            for="wlan_advancedCustomization_maxClientsOnWlanPerRadio"
+            title="Max clients per radio:"
           >
-            Activated in Venues
+            Max clients per radio
           </label>
         </div>
         <div
@@ -193,30 +193,26 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
             <div
               class="ant-form-item-control-input-content"
             >
-              <span
-                class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
-                id="wlan_advancedCustomization_enableBandBalancing"
+              <label
+                class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
               >
-                <label
-                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                <span
+                  class="ant-checkbox"
                 >
+                  <input
+                    class="ant-checkbox-input"
+                    id="wlan_advancedCustomization_enableBandBalancing"
+                    type="checkbox"
+                    value=""
+                  />
                   <span
-                    class="ant-checkbox"
-                  >
-                    <input
-                      class="ant-checkbox-input"
-                      type="checkbox"
-                      value=""
-                    />
-                    <span
-                      class="ant-checkbox-inner"
-                    />
-                  </span>
-                  <span>
-                    Enable load balancing between all radios
-                  </span>
-                </label>
-              </span>
+                    class="ant-checkbox-inner"
+                  />
+                </span>
+                <span>
+                  Enable load balancing between all radios
+                </span>
+              </label>
             </div>
           </div>
         </div>
@@ -237,30 +233,26 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
             <div
               class="ant-form-item-control-input-content"
             >
-              <span
-                class="styledComponents__Label-sc-1vnv53e-2 hGZbVC"
-                id="wlan_advancedCustomization_clientLoadBalancingEnable"
+              <label
+                class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
               >
-                <label
-                  class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                <span
+                  class="ant-checkbox"
                 >
+                  <input
+                    class="ant-checkbox-input"
+                    id="wlan_advancedCustomization_clientLoadBalancingEnable"
+                    type="checkbox"
+                    value=""
+                  />
                   <span
-                    class="ant-checkbox"
-                  >
-                    <input
-                      class="ant-checkbox-input"
-                      type="checkbox"
-                      value=""
-                    />
-                    <span
-                      class="ant-checkbox-inner"
-                    />
-                  </span>
-                  <span>
-                    Enable load balancing between APs
-                  </span>
-                </label>
-              </span>
+                    class="ant-checkbox-inner"
+                  />
+                </span>
+                <span>
+                  Enable load balancing between APs
+                </span>
+              </label>
             </div>
           </div>
         </div>
