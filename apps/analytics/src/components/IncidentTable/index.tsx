@@ -1,11 +1,21 @@
-import { useIntl, defineMessage } from 'react-intl'
+import { useState } from 'react'
 
-import { Incident, noDataSymbol, IncidentFilter, nodeTypes } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table }                         from '@acx-ui/components'
-import { useTenantLink, Link }                               from '@acx-ui/react-router-dom'
-import { formatter }                                         from '@acx-ui/utils'
+import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
+
+import {
+  Incident,
+  noDataSymbol,
+  IncidentFilter,
+  nodeTypes,
+  getRootCauseAndRecommendations,
+  useShortDescription
+} from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
+import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
+import { formatter }                         from '@acx-ui/utils'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
+import * as UI                                                       from './styledComponents'
 import {
   GetIncidentBySeverity,
   FormatDate,
@@ -19,11 +29,41 @@ import {
   ClientImpact
 } from './utils'
 
+const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
+
+  const { $t } = useIntl()
+  const { metadata } = props.selectedIncidentToShowDescription
+  const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
+  const values = {
+    p: (text: string) => <UI.DrawerPara>{text}</UI.DrawerPara>,
+    ol: (text: string) => <UI.DrawerOrderList>{text}</UI.DrawerOrderList>,
+    li: (text: string) => <UI.DrawerList>{text}</UI.DrawerList>
+  }
+  const { dominant } = metadata
+  const wlanInfo = (dominant && dominant.ssid)
+    ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
+    : ''
+  const desc = useShortDescription(props.selectedIncidentToShowDescription)
+  return (
+    <UI.IncidentDrawerContent>
+      <UI.IncidentCause>{desc}</UI.IncidentCause>
+      <UI.IncidentImpactedClient showImpactedClient={!!(dominant && dominant.ssid)}>
+        {wlanInfo}
+      </UI.IncidentImpactedClient>
+      <UI.IncidentRootCauses>
+        {$t(defineMessage({ defaultMessage: 'Root cause' }))}{':'}
+      </UI.IncidentRootCauses>
+      <FormattedMessage {...rootCauses} values={values} />
+    </UI.IncidentDrawerContent>
+  )
+}
 
 function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
   const queryResults = useIncidentsListQuery(filters)
   const basePath = useTenantLink('/analytics/incidents/')
+  const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
+  const onDrawerClose = () => setDrawerSelection(null)
   const mutedKeysFilter = (data: IncidentNodeData) => {
     return data.filter((row) => row.isMuted === true).map((row) => row.id)
   }
@@ -81,9 +121,14 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
       dataIndex: 'description',
       key: 'description',
-      render: (_, value) => <ShortIncidentDescription incident={value}/>,
+      render: (_, value: Incident ) => (
+        <ShortIncidentDescription
+          onClickDesc={setDrawerSelection}
+          incident={value}
+        />
+      ),
       sorter: {
-        compare: (a, b) => defaultSort(a.code, b.code),
+        compare: (a: Incident, b: Incident) => defaultSort(a.code, b.code),
         multiple: 4
       },
       ellipsis: true
@@ -179,6 +224,15 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         scroll={{ y: 'max-content' }}
         indentSize={6}
       />
+      {drawerSelection &&
+      <Drawer
+        visible
+        title={$t(defineMessage({ defaultMessage: 'Incident Description' }))}
+        onClose={onDrawerClose}
+        children={<IncidentDrawerContent selectedIncidentToShowDescription={drawerSelection} />}
+        width={400}
+      />
+      }
     </Loader>
   )
 }

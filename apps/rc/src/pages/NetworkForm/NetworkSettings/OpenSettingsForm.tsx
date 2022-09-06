@@ -69,8 +69,6 @@ function SettingsForm () {
       </Form.Item>
 
       {isCloudpathEnabled && <CloudpathServerForm />}
-
-      { /*TODO: <div><Button type='link'>Show more settings</Button></div> */ }
     </>
   )
 }

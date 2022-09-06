@@ -5,12 +5,18 @@ import {
   RegisteredSeriesOption,
   TooltipComponentOption
 } from 'echarts'
-import moment                           from 'moment-timezone'
-import { renderToString }               from 'react-dom/server'
-import { MessageDescriptor, IntlShape } from 'react-intl'
+import moment             from 'moment-timezone'
+import { renderToString } from 'react-dom/server'
+import {
+  MessageDescriptor,
+  IntlShape,
+  RawIntlProvider,
+  FormattedMessage,
+  defineMessage
+} from 'react-intl'
 
-import { TimeStamp } from '@acx-ui/types'
-import { formatter } from '@acx-ui/utils'
+import { TimeStamp }              from '@acx-ui/types'
+import { formatter, intlFormats } from '@acx-ui/utils'
 
 import { cssStr, cssNumber } from '../../theme/helper'
 
@@ -168,32 +174,42 @@ export const stackedBarTooltipFormatter = (
 }
 
 export const donutChartTooltipFormatter = (
-  dataFormatter?: ((value: unknown) => string | null),
-  unit?: MessageDescriptor,
-  intl?: IntlShape
+  intl: IntlShape,
+  dataFormatter: ((value: unknown) => string | null),
+  total: number,
+  format?: MessageDescriptor
 ) => (
   parameters: TooltipFormatterParams
 ) => {
-  const formatted = (dataFormatter
-    ? dataFormatter(parameters.value) : parameters.value) as string
-  const formattedMsg = (unit && intl)
-    ? intl.$t(unit as MessageDescriptor, {
-      count: parameters.value as number,
-      formattedCount: formatted as string
-    })
-    : formatted
+  const { name, value } = parameters
+  let percent = (parameters.percent ?? 0)
+  if (percent) percent = percent / 100
+  const formattedValue = dataFormatter(parameters.value)
+  const formattedTotal = dataFormatter(total)
+  const formattedPercent = intl.$t(intlFormats.percentFormat, { value: percent })
+  const tooltipFormat = format ?? defineMessage({
+    defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
+    description: 'DonutChart: default tooltip format for donut chart'
+  })
+
+  const text = <FormattedMessage {...tooltipFormat}
+    values={{
+      name, value, percent, total,
+      formattedPercent, formattedValue, formattedTotal,
+      br: () => <br />,
+      div: content => <div>{content}</div>,
+      span: content => <span>{content}</span>,
+      b: content => <b>{content}</b>,
+      space: content => <span style={{ marginLeft: 10 }}>{content}</span>
+    }}
+  />
+
   return renderToString(
-    <UI.TooltipWrapper>
-      <UI.Badge
-        color={parameters.color?.toString()}
-        text={<>
-          {`${parameters.name}`}<br/>
-          <b>
-            <span>{formattedMsg}</span>
-          </b>
-        </>}
-      />
-    </UI.TooltipWrapper>
+    <RawIntlProvider value={intl}>
+      <UI.TooltipWrapper>
+        <UI.Badge color={parameters.color?.toString()} text={text} />
+      </UI.TooltipWrapper>
+    </RawIntlProvider>
   )
 }
 
