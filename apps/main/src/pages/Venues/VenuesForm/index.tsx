@@ -185,9 +185,7 @@ export function VenuesForm () {
     return Promise.resolve()
   }
 
-  const addressOnChange: ChangeEventHandler<HTMLInputElement> =
-  async (event: { target: HTMLInputElement }) => {
-
+  const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     updateAddress({})
     const autocomplete = new google.maps.places.Autocomplete(event.target)
     autocomplete.addListener('place_changed', async () => {
@@ -265,7 +263,7 @@ export function VenuesForm () {
                 </label>
               </span>
             </Col>
-            <Col span={9} style={{ textAlign: 'left', paddingLeft: '2rem' }}>
+            <Col span={9} style={{ textAlign: 'right' }}>
               <span className='ant-form-item-label'>
                 <label>
                   {intl.$t({
@@ -275,64 +273,65 @@ export function VenuesForm () {
               </span>
             </Col>
           </Row>
-          <div
-            style={{
-              width: '470px',
-              height: '260px',
-              position: 'relative',
-              marginBottom: '30px'
-            }}>
-            <AddressContainer
+          <Row>
+            <Col span={11}
               style={{
-                position: 'absolute',
-                zIndex: 10,
-                width: '450px',
-                margin: '12px'
+                aspectRatio: '470 / 260',
+                position: 'relative',
+                marginBottom: 30
               }}>
-              <Form.Item
-                name={['address', 'addressLine']}
-                rules={[{
-                  required: isMapEnabled ? true : false
-                },{
-                  validator: () => addressValidator(),
-                  validateTrigger: 'onChange'
-                }]}
-              >
-                <Input
-                  allowClear={{ clearIcon: <CloseIcon /> }}
-                  prefix={<SearchOutlined />}
-                  onChange={addressOnChange}
-                  data-testid='address-input'
-                  defaultValue={!isMapEnabled ? '350 W Java Dr, Sunnyvale, CA 94089, USA' : ''}
-                  disabled={!isMapEnabled}
-                  value={address.addressLine}
-                />
-              </Form.Item>
-            </AddressContainer>
-            {isMapEnabled ?
-              <Wrapper
-                apiKey={get('GOOGLE_MAPS_KEY')}
-                libraries={['places']}
-                render={render}
-              >
-                <VenueMap
-                  mapTypeControl={false}
-                  streetViewControl={false}
-                  fullscreenControl={false}
-                  zoom={zoom}
-                  center={center}
+              <AddressContainer
+                style={{
+                  position: 'absolute',
+                  zIndex: 10,
+                  width: 'calc(100% - 24px)',
+                  margin: 12
+                }}>
+                <Form.Item
+                  name={['address', 'addressLine']}
+                  rules={[{
+                    required: isMapEnabled ? true : false
+                  },{
+                    validator: () => addressValidator(),
+                    validateTrigger: 'onChange'
+                  }]}
                 >
-                  <Marker key={0} position={markers} />
-                </VenueMap>
-              </Wrapper>
-              :
-              <Typography.Title level={2}
-                style={{ textAlign: 'center', paddingTop: '3em' }}
-              >
-              Map is not enabled
-              </Typography.Title>
-            }
-          </div>
+                  <Input
+                    allowClear={{ clearIcon: <CloseIcon /> }}
+                    prefix={<SearchOutlined />}
+                    onChange={addressOnChange}
+                    data-testid='address-input'
+                    defaultValue={!isMapEnabled ? '350 W Java Dr, Sunnyvale, CA 94089, USA' : ''}
+                    disabled={!isMapEnabled}
+                    value={address.addressLine}
+                  />
+                </Form.Item>
+              </AddressContainer>
+              {isMapEnabled ?
+                <Wrapper
+                  apiKey={get('GOOGLE_MAPS_KEY')}
+                  libraries={['places']}
+                  render={render}
+                >
+                  <VenueMap
+                    mapTypeControl={false}
+                    streetViewControl={false}
+                    fullscreenControl={false}
+                    zoom={zoom}
+                    center={center}
+                  >
+                    <Marker key={0} position={markers} />
+                  </VenueMap>
+                </Wrapper>
+                :
+                <Typography.Title level={2}
+                  style={{ textAlign: 'center', paddingTop: '3em' }}
+                >
+                Map is not enabled
+                </Typography.Title>
+              }
+            </Col>
+          </Row>
         </StepsForm.StepForm>
       </StepsForm>
     </>
