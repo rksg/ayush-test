@@ -2,7 +2,7 @@ import userEvent             from '@testing-library/user-event'
 import { DefaultOptionType } from 'antd/lib/select'
 
 import { dataApiURL }                                   from '@acx-ui/analytics/services'
-import { defaultNetworkPath, calculateSeverity  }       from '@acx-ui/analytics/utils'
+import { defaultNetworkPath }                           from '@acx-ui/analytics/utils'
 import { Provider, store }                              from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent  } from '@acx-ui/test-utils'
 import { DateRange }                                    from '@acx-ui/utils'
@@ -82,33 +82,38 @@ const mockIncidents = [
     mutedAt: null
   }
 ]
-
 const mockSetNetworkPath = jest.fn()
+const filters = {
+  startDate: '2022-01-01T00:00:00+08:00',
+  endDate: '2022-01-02T00:00:00+08:00',
+  path: [{ type: 'network', name: 'Network' }],
+  range: DateRange.last24Hours
+}
+const mockUseAnalyticsFilter = {
+  filters,
+  setNetworkPath: mockSetNetworkPath,
+  raw: []
+}
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  defaultNetworkPath: [{ type: 'network', name: 'Network' }],
+  useAnalyticsFilter: () => mockUseAnalyticsFilter
+}))
 describe('Network Filter', () => {
   
   beforeEach(() => {
-    const filters = {
-      startDate: '2022-01-01T00:00:00+08:00',
-      endDate: '2022-01-02T00:00:00+08:00',
-      path: [{ type: 'network', name: 'Network' }],
-      range: DateRange.last24Hours
-    }
-    const mockUseAnalyticsFilter = {
-      filters,
-      setNetworkPath: mockSetNetworkPath,
-      raw: []
-    }
-    jest.mock('@acx-ui/analytics/utils', () => ({
-      defaultNetworkPath: [{ type: 'network', name: 'Network' }],
-      useAnalyticsFilter: () => mockUseAnalyticsFilter
-    }))
+
     store.dispatch(api.util.resetApiState())
+    store.dispatch(incidentApi.util.resetApiState())
     jest.clearAllMocks()
   })
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
     render(<Provider><NetworkFilter /></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
@@ -116,6 +121,9 @@ describe('Network Filter', () => {
   it('should render network filter', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: { children: null } } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
     const { asFragment } = render(<Provider><NetworkFilter /></Provider>)
     await screen.findByText('Entire Organization')
@@ -127,6 +135,9 @@ describe('Network Filter', () => {
   it('should select network node', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
     render(<Provider><NetworkFilter /></Provider>)
     await screen.findByText('Entire Organization')
@@ -150,6 +161,9 @@ describe('Network Filter', () => {
   it('should search node', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
     render(<Provider><NetworkFilter /></Provider>)
     await screen.findByText('Entire Organization')
@@ -192,24 +206,23 @@ describe('Network Filter with incident severity', () => {
 
     jest.clearAllMocks()
   })
-  it('should render loader', async () => {
+  it('should render network filter with severity', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    render(<Provider><NetworkFilter /></Provider>,{
-      route: {
-        path: '/t/tenantId/analytics/incidents',
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    const { asFragment } = render(<Provider><NetworkFilter /></Provider>)
+    await screen.findByText('Entire Organization')
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.click(screen.getByRole('combobox'))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment().querySelector('svg')).toBeDefined()
   })
-  it('should render network filter with severity', async () => {
+  it('should not show any severity circle when hierarchyNode is empty', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: networkHierarchy } }
+      data: { network: { hierarchyNode: [] } }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
