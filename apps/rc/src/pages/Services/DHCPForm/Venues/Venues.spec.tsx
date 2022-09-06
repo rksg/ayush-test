@@ -61,7 +61,7 @@ function wrapper ({ children }: { children: React.ReactElement }) {
   </Provider>
 }
 
-describe('Create Network: Venues Step', () => {
+describe('Create DHCP: Venues Step', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())

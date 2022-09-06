@@ -6,15 +6,15 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Button, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { Drawer }                               from '@acx-ui/components'
-import { DHCPPool, networkWifiIpRegExp, subnetMaskIpRegExp }        from '@acx-ui/rc/utils'
-import { validationMessages }                   from '@acx-ui/utils'
+import { Button, StepsForm, StepsFormInstance }              from '@acx-ui/components'
+import { Drawer }                                            from '@acx-ui/components'
+import { DHCPPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { validationMessages }                                from '@acx-ui/utils'
 
 import DHCPFormContext from '../DHCPFormContext'
 
 import { OptionDetail } from './OptionDetail'
-import { PoolList }     from './PoolsTable'
+import { PoolList }     from './PoolTable'
 
 
 export function PoolDetail () {

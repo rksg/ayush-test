@@ -9,7 +9,7 @@ exports[`DHCPDiagram DHCPDiagram - HIERARCHICAL should render HIERARCHICAL diagr
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1sbc60f-0 deIZGM"
+        class="styledComponents__Diagram-sc-187er8i-0 hdEhRb"
       >
         <img
           alt=""
@@ -30,7 +30,7 @@ exports[`DHCPDiagram DHCPDiagram - MULTIPLE should render MULTIPLE diagram succe
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1sbc60f-0 deIZGM"
+        class="styledComponents__Diagram-sc-187er8i-0 hdEhRb"
       >
         <img
           alt=""
@@ -72,7 +72,7 @@ exports[`DHCPDiagram should render default diagram successfully 1`] = `
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-1sbc60f-0 deIZGM"
+        class="styledComponents__Diagram-sc-187er8i-0 hdEhRb"
       >
         <img
           alt=""

@@ -1,13 +1,14 @@
+import { useContext } from 'react'
 
-import { Form, Input, Col, Radio, Row, Space } from 'antd'
-import { useIntl }                             from 'react-intl'
+import { Form, Input, Col, Radio, Row, Space, RadioChangeEvent } from 'antd'
+import { useIntl }                                               from 'react-intl'
 
-import { StepsForm }          from '@acx-ui/components'
-import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
+import { StepsForm }                             from '@acx-ui/components'
+import { DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
+import DHCPFormContext              from './DHCPFormContext'
 import { PoolDetail }               from './DHCPPool/PoolDetail'
 import { RadioDescription }         from './styledComponents'
 
@@ -18,14 +19,22 @@ export function SettingForm () {
 
 
   const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
+  const createType = useWatch<ServiceTechnology>('createType')
+  const { saveState, updateSaveState } = useContext(DHCPFormContext)
 
-  const params = useParams()
+
   const types = [
     { type: DHCPConfigTypeEnum.SIMPLE },
     { type: DHCPConfigTypeEnum.MULTIPLE },
     { type: DHCPConfigTypeEnum.HIERARCHICAL }
   ]
 
+  const createTypeChange = (e: RadioChangeEvent) => {
+    updateSaveState({
+      ...saveState,
+      createType: e.target.value as ServiceTechnology
+    })
+  }
   return (
     <Row gutter={20}>
       <Col span={10}>
@@ -48,9 +57,19 @@ export function SettingForm () {
           label={intl.$t({ defaultMessage: 'Tags' })}
           children={<Input />}
         />
-        <Form.Item>
 
-          {params?.type === 'wifi' &&
+        <Form.Item
+          name='createType'
+          initialValue={ServiceTechnology.WIFI}
+          label={intl.$t({ defaultMessage: 'Type' })}>
+          <Radio.Group onChange={createTypeChange} value={createType}>
+            <Radio value={ServiceTechnology.WIFI}>{intl.$t({ defaultMessage: 'Wi-Fi' })}</Radio>
+            <Radio value={ServiceTechnology.SWITCH}>{intl.$t({ defaultMessage: 'Switch' })}</Radio>
+          </Radio.Group>
+        </Form.Item>
+
+        <Form.Item>
+          {createType === ServiceTechnology.WIFI &&
           <Form.Item
             name='dhcpConfig'
             initialValue={DHCPConfigTypeEnum.SIMPLE}
@@ -78,7 +97,7 @@ export function SettingForm () {
         />
         <PoolDetail/>
       </Col>
-      {params?.type === 'wifi' &&
+      {createType === ServiceTechnology.WIFI &&
       <Col span={14}>
         <DHCPDiagram type={type}/>
       </Col>
