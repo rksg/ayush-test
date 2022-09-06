@@ -192,7 +192,7 @@ function Table <RecordType extends Record<string, any>> (
         if (childValues && childValues.length > 0) {
           return true
         }
-
+        row.children = undefined
         if (!filterHelper(row, key)) {
           return false
         }
