@@ -111,29 +111,26 @@ const getFilterData = (
       })
     }
   }
-  return Object.values(venues)
-    .sort((a:Option, b: Option) => a.displayLabel && b.displayLabel
+  return Object.values(venues).sort((a: Option, b: Option) =>
+    a.displayLabel && b.displayLabel
       ? a.displayLabel.toString().localeCompare(b.displayLabel.toString())
       : 0
-    )
+  )
 }
 
-const search = (input: string, path: DefaultOptionType[]) : boolean => {
+const search = (input: string, path: DefaultOptionType[]): boolean => {
   const item = path.slice(-1)[0]
   return item.ignoreSelection // non-selection implies non-searchable
     ? false
     : (item?.displayLabel as string)?.toLowerCase().includes(input.toLowerCase())
 }
 export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) =>
-  selectedOptions
-    ?.map(option => option?.displayLabel || option?.label).join(' / ')
+  selectedOptions?.map((option) => option?.displayLabel || option?.label).join(' / ')
 export const onApply = (
   value: SingleValueType | SingleValueType[] | undefined,
   setNetworkPath: CallableFunction
 ) => {
-  const path = !value
-    ? defaultNetworkPath
-    : JSON.parse(value?.slice(-1)[0] as string)
+  const path = !value ? defaultNetworkPath : JSON.parse(value?.slice(-1)[0] as string)
   setNetworkPath(path, value || [])
 }
 
@@ -142,37 +139,33 @@ function ConnectedNetworkFilter () {
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const incidentsList = useIncidentsListQuery(filters, {
     selectFromResult: ({ data }) => ({
-      data: data ? getSeverityFromIncidents(data) : []    
+      data: data ? getSeverityFromIncidents(data) : []
     })
   })
 
   const queryResults = useNetworkFilterQuery(omit(filters, 'path'), {
     selectFromResult: ({ data, ...rest }) => ({
-      data: data
-        ? getFilterData(
-          data,
-          $t,
-          incidentsList.data as VenuesWithSeverityNodes
-        )
-        : [],
+      data: data ? getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes) : [],
       ...rest
     })
   })
-  return <UI.Container>
-    <Loader states={[queryResults]}>
-      <NetworkFilter
-        placeholder={$t({ defaultMessage: 'Entire Organization' })}
-        multiple={false}
-        defaultValue={raw}
-        value={raw}
-        options={queryResults.data}
-        onApply={value => onApply(value, setNetworkPath)}
-        placement='bottomRight'
-        displayRender={displayRender}
-        showSearch={{ filter: search }}
-      />
-    </Loader>
-  </UI.Container>
+  return (
+    <UI.Container>
+      <Loader states={[queryResults]}>
+        <NetworkFilter
+          placeholder={$t({ defaultMessage: 'Entire Organization' })}
+          multiple={false}
+          defaultValue={raw}
+          value={raw}
+          options={queryResults.data}
+          onApply={(value) => onApply(value, setNetworkPath)}
+          placement='bottomRight'
+          displayRender={displayRender}
+          showSearch={{ filter: search }}
+        />
+      </Loader>
+    </UI.Container>
+  )
 }
 
 export default ConnectedNetworkFilter

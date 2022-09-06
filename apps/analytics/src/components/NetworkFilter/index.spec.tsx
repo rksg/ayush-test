@@ -227,7 +227,6 @@ describe('Network Filter', () => {
   })
 })
 describe('Network Filter with incident severity', () => {
-  
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
     store.dispatch(incidentApi.util.resetApiState())
@@ -241,7 +240,11 @@ describe('Network Filter with incident severity', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    const { asFragment } = render(<Provider><NetworkFilter /></Provider>)
+    const { asFragment } = render(
+      <Provider>
+        <NetworkFilter />
+      </Provider>
+    )
     await screen.findByText('Entire Organization')
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.click(screen.getByRole('combobox'))
@@ -255,7 +258,11 @@ describe('Network Filter with incident severity', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: mockIncidents } } }
     })
-    const { asFragment } = render(<Provider><NetworkFilter /></Provider>)
+    const { asFragment } = render(
+      <Provider>
+        <NetworkFilter />
+      </Provider>
+    )
     await screen.findByText('Entire Organization')
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.click(screen.getByRole('combobox'))
@@ -264,18 +271,27 @@ describe('Network Filter with incident severity', () => {
   })
   it('should show only venue severities', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: {
-        type: 'zone',
-        name: 'venue1',
-        path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
-        aps: [],
-        switches: [] },
-      ...networkHierarchy } }
+      data: {
+        network: {
+          hierarchyNode: {
+            type: 'zone',
+            name: 'venue1',
+            path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
+            aps: [],
+            switches: []
+          },
+          ...networkHierarchy
+        }
+      }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: [mockIncidents[2]] } } }
     })
-    const { asFragment } = render(<Provider><NetworkFilter /></Provider>)
+    const { asFragment } = render(
+      <Provider>
+        <NetworkFilter />
+      </Provider>
+    )
     await screen.findByText('Entire Organization')
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.click(screen.getByRole('combobox'))
@@ -284,18 +300,27 @@ describe('Network Filter with incident severity', () => {
   })
   it('should show severity only once on each node', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
-      data: { network: { hierarchyNode: {
-        type: 'zone',
-        name: 'venue1',
-        path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
-        aps: [],
-        switches: [] },
-      ...networkHierarchy } }
+      data: {
+        network: {
+          hierarchyNode: {
+            type: 'zone',
+            name: 'venue1',
+            path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
+            aps: [],
+            switches: []
+          },
+          ...networkHierarchy
+        }
+      }
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: [mockIncidents[2]] } } }
     })
-    const { asFragment } = render(<Provider><NetworkFilter /></Provider>)
+    const { asFragment } = render(
+      <Provider>
+        <NetworkFilter />
+      </Provider>
+    )
     await screen.findByText('Entire Organization')
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.click(screen.getByRole('combobox'))
