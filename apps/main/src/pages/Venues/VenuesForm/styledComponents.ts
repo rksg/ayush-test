@@ -1,5 +1,4 @@
-import { Input } from 'antd'
-import styled    from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import {
   Close
@@ -12,7 +11,7 @@ path {
   stroke: var(--acx-primary-black);
 }
 `
-export const AddressInput = styled(Input)`
+export const AddressContainer = styled.div`
   .ant-input-suffix {
     right: 0;
   }

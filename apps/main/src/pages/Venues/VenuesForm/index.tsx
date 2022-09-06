@@ -23,8 +23,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CloseIcon, AddressInput } from './styledComponents'
-import VenueMap                    from './VenueMap'
+import { CloseIcon, AddressContainer } from './styledComponents'
+import VenueMap                        from './VenueMap'
 
 export const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
   const [marker, setMarker] = React.useState<google.maps.Marker>()
@@ -104,9 +104,9 @@ export const addressParser = async (place: google.maps.places.PlaceResult) => {
   const timezoneResult = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
   const timezone = await timezoneResult.json()
   address.timezone = timezone.timeZoneId
-  
+
   address.addressLine = place.formatted_address
-  
+
 
   const latlng = new google.maps.LatLng({
     lat: Number(lat),
@@ -169,7 +169,6 @@ export function VenuesForm () {
     pageSize: 10000
   }
   const [venuesList] = useLazyVenuesListQuery()
-
   const nameValidator = async (value: string) => {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
@@ -193,7 +192,7 @@ export function VenuesForm () {
     const autocomplete = new google.maps.places.Autocomplete(event.target)
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
-      
+
       formRef.current?.setFieldsValue({
         address: { addressLine: place.formatted_address }
       })
@@ -269,26 +268,26 @@ export function VenuesForm () {
             <Col span={9} style={{ textAlign: 'left', paddingLeft: '2rem' }}>
               <span className='ant-form-item-label'>
                 <label>
-                  {intl.$t({ 
-                    defaultMessage: 'Make sure to include a city and country in the address' 
+                  {intl.$t({
+                    defaultMessage: 'Make sure to include a city and country in the address'
                   })}
                 </label>
               </span>
             </Col>
           </Row>
-          <div 
+          <div
             style={{
               width: '470px',
               height: '260px',
               position: 'relative',
-              marginBottom: '30px' 
+              marginBottom: '30px'
             }}>
-            <div className='addressContainer' 
-              style={{ 
+            <AddressContainer
+              style={{
                 position: 'absolute',
                 zIndex: 10,
                 width: '450px',
-                margin: '12px' 
+                margin: '12px'
               }}>
               <Form.Item
                 name={['address', 'addressLine']}
@@ -299,7 +298,7 @@ export function VenuesForm () {
                   validateTrigger: 'onChange'
                 }]}
               >
-                <AddressInput
+                <Input
                   allowClear={{ clearIcon: <CloseIcon /> }}
                   prefix={<SearchOutlined />}
                   onChange={addressOnChange}
@@ -309,14 +308,14 @@ export function VenuesForm () {
                   value={address.addressLine}
                 />
               </Form.Item>
-            </div>
-            {isMapEnabled ? 
+            </AddressContainer>
+            {isMapEnabled ?
               <Wrapper
                 apiKey={get('GOOGLE_MAPS_KEY')}
                 libraries={['places']}
                 render={render}
               >
-                <VenueMap 
+                <VenueMap
                   mapTypeControl={false}
                   streetViewControl={false}
                   fullscreenControl={false}
