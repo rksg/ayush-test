@@ -4,9 +4,9 @@ import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { topSSIDsByClientFixture }            from './components/TopSSIDsByClient/__tests__/fixtures'
 import { topSwitchesByPoEUsageResponse }  from './components/SwitchesByPoEUsage/services.spec'
 import { topApplicationByTrafficFixture } from './components/TopApplicationsByTraffic/__tests__/fixtures'
+import { topSSIDsByClientFixture }        from './components/TopSSIDsByClient/__tests__/fixtures'
 import { topSSIDsByTrafficFixture }       from './components/TopSSIDsByTraffic/__tests__/fixtures'
 import AnalyticsWidgets                   from './Widgets'
 
