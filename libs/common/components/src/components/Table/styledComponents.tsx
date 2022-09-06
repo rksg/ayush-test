@@ -120,39 +120,51 @@ const tallStyle = css<StyledTable>`
     .ant-table {
       &-thead > tr:last-child > th,
       &-thead > tr:first-child > th[rowspan] {
-        border-width: 1px;
-        border-top-width: 0px;
-        border-style: solid;
-        border-color: transparent;
-        border-bottom-color: var(--acx-neutrals-30);
-
-        &:not(.ant-table-cell-fix-right):not(.ant-table-selection-column):hover {
-          background: var(--acx-accents-orange-10);
-          border-color: var(--acx-accents-orange-30);
-          border-bottom-color: var(--acx-neutrals-30);
-        }
-
-        &.ant-table-selection-column .react-resizable-handle,
-        &.ant-table-cell-fix-right .react-resizable-handle {
-          display: none;
-        }
-      }
-
-      &-thead > tr > th {
-        &.react-resizable:not(.ant-table-selection-column){
-          -webkit-user-select: none;
+        &:not(.ant-table-selection-column):not(.ant-table-cell-fix-right) {
+          &:hover {
+            background: var(--acx-accents-orange-10);
+            border-color: var(--acx-accents-orange-30);
+          }
           .react-resizable-handle {
+            display: block;
             position: absolute;
-            right: 0;
+            right: -10px;
             bottom: 0;
             z-index: 1;
             width: 20px;
             height: 100%;
             cursor: col-resize;
           }
-          &[colspan] .react-resizable-handle {
+        }
+      }
+
+      &-thead > tr:last-child > th,
+      &-thead > tr:first-child > th[rowspan],
+      &-thead > tr > th,
+      &-tbody > tr > td {
+        border-width: 0 1px 1px;
+        border-style: solid;
+        border-color: transparent;
+      }
+      &-thead > tr > th {
+        -webkit-user-select: none;
+        .react-resizable-handle {
             display: none;
-          }
+        }
+      }
+
+      &-thead > tr:last-child,
+      &-tbody > tr {
+        position: relative;
+        &::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 1px;
+          left: 0;
+          bottom: 0;
+          background-color: var(--acx-neutrals-30);
+          z-index: 2;
         }
       }
     }
