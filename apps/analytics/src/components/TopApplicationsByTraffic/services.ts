@@ -9,15 +9,15 @@ import { getSparklineGranularity } from '../../utils'
 export type HierarchyNodeData = {
   uploadAppTraffic: number
   downloadAppTraffic: number
-  topNAppByUpload: TrafficByApplicationData[]
-  topNAppByDownload: TrafficByApplicationData[]
+  topNAppByUpload: TopApplicationByTrafficData[]
+  topNAppByDownload: TopApplicationByTrafficData[]
 }
 
 export type TrafficTimeseriesData = {
     applicationTraffic: number[]
 }
 
-export type TrafficByApplicationData = {
+export type TopApplicationByTrafficData = {
     name: string
     applicationTraffic: number
     clientCount: number
@@ -32,13 +32,13 @@ interface Response <T> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    trafficByApplication: build.query<
+    topApplicationsByTraffic: build.query<
       HierarchyNodeData,
       AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`
-        query TrafficByApplicationWidget($path: [HierarchyNodeInput],
+        query TopApplicationsByTrafficWidget($path: [HierarchyNodeInput],
           $start: DateTime, $end: DateTime, $n: Int!, $granularity: String!) {
           network(end: $end, start: $start) {
             hierarchyNode(path: $path) {
@@ -77,4 +77,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useTrafficByApplicationQuery } = api
+export const { useTopApplicationsByTrafficQuery } = api

@@ -14,17 +14,17 @@ import {
   ContentSwitcherProps } from '@acx-ui/components'
 import { formatter } from '@acx-ui/utils'
 
-import { useTrafficByApplicationQuery, TrafficByApplicationData } from './services'
-import { TrafficPercent }                                         from './styledComponents'
+import { useTopApplicationsByTrafficQuery, TopApplicationByTrafficData } from './services'
+import { TrafficPercent }                                                from './styledComponents'
 
 
-export default function TrafficByApplicationWidget ({
+export default function TopApplicationsByTrafficWidget ({
   filters
 }: {
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const queryResults = useTrafficByApplicationQuery(filters)
+  const queryResults = useTopApplicationsByTrafficQuery(filters)
 
   const columns=[
     {
@@ -53,7 +53,7 @@ export default function TrafficByApplicationWidget ({
     }
   ]
 
-  const getDataSource= (appTrafficData: TrafficByApplicationData[],
+  const getDataSource= (appTrafficData: TopApplicationByTrafficData[],
     overallTrafic:number) => {
     return appTrafficData.map((item,index) => {
       const sparkLineData = item.timeSeries.applicationTraffic

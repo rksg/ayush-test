@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
+exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
@@ -136,7 +136,7 @@ exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
 </DocumentFragment>
 `;
 
-exports[`TrafficByApplicationWidget should render table with sparkline svg: contentSwitcher 1`] = `
+exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: contentSwitcher 1`] = `
 <div
   style="text-align: center; padding: 5px 0px 10px 0px;"
 >
@@ -190,7 +190,7 @@ exports[`TrafficByApplicationWidget should render table with sparkline svg: cont
 </div>
 `;
 
-exports[`TrafficByApplicationWidget should render table with sparkline svg: downloadRows 1`] = `
+exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: downloadRows 1`] = `
 Array [
   Array [
     <td
@@ -243,7 +243,7 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
           >
             (98%)
           </span>
@@ -343,7 +343,7 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
           >
             (1%)
           </span>
@@ -443,7 +443,7 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
           >
             (0%)
           </span>
@@ -543,7 +543,7 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
           >
             (0%)
           </span>
@@ -643,7 +643,7 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
           >
             (0%)
           </span>
@@ -724,7 +724,7 @@ Array [
 ]
 `;
 
-exports[`TrafficByApplicationWidget should render table with sparkline svg: tableHeaders 1`] = `
+exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: tableHeaders 1`] = `
 <thead
   class="ant-table-thead"
 >
@@ -754,7 +754,7 @@ exports[`TrafficByApplicationWidget should render table with sparkline svg: tabl
 </thead>
 `;
 
-exports[`TrafficByApplicationWidget should render table with sparkline svg: uploadRows 1`] = `
+exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: uploadRows 1`] = `
 Array [
   Array [
     <td
@@ -807,7 +807,7 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
           >
             (100%)
           </span>
@@ -907,7 +907,7 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
           >
             (0%)
           </span>
@@ -1007,7 +1007,7 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
           >
             (0%)
           </span>
@@ -1107,7 +1107,7 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
           >
             (0%)
           </span>
@@ -1207,7 +1207,7 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
           >
             (0%)
           </span>

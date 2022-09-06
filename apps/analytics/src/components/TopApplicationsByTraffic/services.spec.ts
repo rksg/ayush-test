@@ -5,8 +5,8 @@ import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 import { DateRange }           from '@acx-ui/utils'
 
-import { trafficByApplicationFixture } from './__tests__/fixtures'
-import { api }                         from './services'
+import { topApplicationByTrafficFixture } from './__tests__/fixtures'
+import { api }                            from './services'
 
 describe('trafficByApplicationWidget', () => {
   const store = configureStore({
@@ -29,14 +29,14 @@ describe('trafficByApplicationWidget', () => {
   it('should return correct data', async () => {
     const expectedResult = {
       network: {
-        hierarchyNode: trafficByApplicationFixture
+        hierarchyNode: topApplicationByTrafficFixture
       }
     }
-    mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficByApplication.initiate(props)
+      api.endpoints.topApplicationsByTraffic.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
@@ -53,22 +53,22 @@ describe('trafficByApplicationWidget', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficByApplication.initiate(props)
+      api.endpoints.topApplicationsByTraffic.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficByApplication.initiate(props)
+      api.endpoints.topApplicationsByTraffic.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

@@ -4,10 +4,10 @@ import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { topSwitchesByPoEUsageResponse } from './components/SwitchesByPoEUsage/services.spec'
-import { topSSIDsByTrafficFixture }      from './components/TopSSIDsByTraffic/__tests__/fixtures'
-import { trafficByApplicationFixture }   from './components/TrafficByApplication/__tests__/fixtures'
-import AnalyticsWidgets                  from './Widgets'
+import { topSwitchesByPoEUsageResponse }  from './components/SwitchesByPoEUsage/services.spec'
+import { topApplicationByTrafficFixture } from './components/TopApplicationsByTraffic/__tests__/fixtures'
+import { topSSIDsByTrafficFixture }       from './components/TopSSIDsByTraffic/__tests__/fixtures'
+import AnalyticsWidgets                   from './Widgets'
 
 const sample = {
   time: [
@@ -91,8 +91,8 @@ test('should render Top 5 Switches by PoE Usage widget', async () => {
 })
 
 test('should render Traffic By Application Widget', async () => {
-  mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
-    data: { network: { hierarchyNode: trafficByApplicationFixture } }
+  mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
+    data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
   })
   render( <Provider> <AnalyticsWidgets
     name='topApplicationsByTraffic'
