@@ -7,6 +7,12 @@ import { fireEvent, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import Incidents from '.'
 
 jest.mock('../../components/NetworkHistory', () => () => <div>Network</div>)
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  useAnalyticsFilter: () => ({
+    filters: { path: [{ type: 'network', name: 'Network' }] }
+  })
+}))
 jest.mock('../../components/IncidentBySeverity', () => () => <div>IncidentBySeverity</div>)
 jest.mock('../../components/IncidentTable', () => () => <div>IncidentTable</div>)
 const mockedUsedNavigate = jest.fn()
