@@ -8,7 +8,7 @@ import { DateRange }           from '@acx-ui/utils'
 import { topSSIDsByClientFixture } from './__tests__/fixtures'
 import { api }                     from './services'
 
-describe('clientsBySSIDWidget', () => {
+describe('TopSSIDsByClientWidget', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
