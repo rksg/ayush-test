@@ -230,12 +230,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      12.5 GB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (98%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          12.5 GB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+          >
+            (98%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -317,12 +330,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      153 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (1%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          153 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+          >
+            (1%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -404,12 +430,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      23 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          23 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -491,12 +530,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      17.6 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          17.6 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -578,12 +630,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      13.3 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          13.3 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -729,12 +794,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      5.38 GB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (100%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          5.38 GB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+          >
+            (100%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -816,12 +894,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      2.61 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          2.61 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -903,12 +994,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      1.79 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          1.79 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -990,12 +1094,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      1.63 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          1.63 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -1077,12 +1194,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      942 KB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          942 KB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"

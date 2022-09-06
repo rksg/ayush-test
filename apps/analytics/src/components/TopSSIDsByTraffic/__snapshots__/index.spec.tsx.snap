@@ -159,12 +159,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      1.32 GB  
-      <span
-        class="styledComponents__TrafficPercent-sc-sufe7b-0 jIVeuW"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (67%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          1.32 GB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-sufe7b-0 jIVeuW"
+          >
+            (67%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -250,12 +263,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      664 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-sufe7b-0 jIVeuW"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
       >
-        (33%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 8px;"
+        >
+          664 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-sufe7b-0 jIVeuW"
+          >
+            (33%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"

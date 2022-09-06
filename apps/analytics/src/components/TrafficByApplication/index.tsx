@@ -1,3 +1,4 @@
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
@@ -60,11 +61,11 @@ export default function TrafficByApplicationWidget ({
       const sparklineChartStyle = { height: 18, width: 80, display: 'inline' }
       return {
         ...item,
-        traffic: <>{formatter('bytesFormat')(item.applicationTraffic)} &nbsp;
+        traffic: <Space>{formatter('bytesFormat')(item.applicationTraffic)}
           <TrafficPercent>
           ({formatter('percentFormatRound')(item.applicationTraffic/overallTrafic)})
           </TrafficPercent>
-        </>,
+        </Space>,
         trafficHistory: <SparklineChart
           key={index}
           data={sparkLineData}

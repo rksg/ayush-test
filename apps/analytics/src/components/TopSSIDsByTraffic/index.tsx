@@ -1,6 +1,6 @@
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
-
 
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -57,11 +57,11 @@ export default function TopSSIDsByTrafficWidget ({
       const sparklineChartStyle = { height: 22, width: 80, display: 'inline' }
       return {
         ...item,
-        traffic: <>{formatter('bytesFormat')(item.userTraffic)} &nbsp;
+        traffic: <Space>{formatter('bytesFormat')(item.userTraffic)}
           <TrafficPercent>
           ({formatter('percentFormatRound')(item.userTraffic/overallTrafic)})
           </TrafficPercent>
-        </>,
+        </Space>,
         trafficHistory: <SparklineChart
           key={index}
           data={sparkLineData}
