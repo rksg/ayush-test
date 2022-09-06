@@ -237,7 +237,7 @@ export function PoolDetail () {
 
   return (
     <>
-      <PoolList poolData={saveState.dhcpPools}
+      <PoolList poolData={saveState?.dhcpPools || []}
         updatePoolData={(poolsData: DHCPPool[]) => {
           updateSaveState({ ...saveState, ...{ dhcpPools: poolsData } })
         }}
