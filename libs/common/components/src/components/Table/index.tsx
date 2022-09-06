@@ -184,7 +184,16 @@ function Table <RecordType extends Record<string, any>> (
       for (const column of activeFilters) {
         const key = column.dataIndex as keyof RecordType
         const filteredValue = filterValues[key as keyof FilterValue]
-        if (!filteredValue.includes(row[key] as unknown as string)) {
+        const filterHelper = (val: typeof row, filterKey: keyof typeof row) =>
+          filteredValue.includes(val[filterKey] as unknown as string)
+
+        const childValues = row.children && row.children.filter((child) => filterHelper(child, key))
+        
+        if (childValues && childValues.length > 0) {
+          return true
+        }
+
+        if (!filterHelper(row, key)) {
           return false
         }
       }
@@ -193,26 +202,21 @@ function Table <RecordType extends Record<string, any>> (
         return searchables.some(column => {
           const key = column.dataIndex as keyof RecordType
           const { children } = row
+          const matchHelper = (val: typeof row, key: keyof typeof row, searchValue: string) => 
+            (val[key] as unknown as string)
+              .toString()
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
 
-          row.children = children && children.filter(
-            (child) => {
-              return (child[key] as unknown as string)
-                .toString()
-                .toLowerCase()
-                .includes(searchValue.toLowerCase())
-            })
+          row.children = children 
+            && children.filter((child) => matchHelper(child, key, searchValue))
 
           if (row.children && row.children.length > 0) {
             return true
           }
-
+          // parent rows with no matching children, search parent
           row.children = undefined
-
-          return (row[key] as unknown as string)
-            .toString()
-            .toLowerCase()
-            .includes(searchValue.toLowerCase())
-        
+          return matchHelper(row, key, searchValue)
         })
       }
       return true
@@ -279,11 +283,26 @@ function Table <RecordType extends Record<string, any>> (
             showArrow
             style={{ width: 200 }}
           >
-            {_.uniq(dataSource?.map(datum => datum[key] as unknown as string)).map(value =>
-              <Select.Option value={value} key={value} data-testid={`option-${value}`} >
-                {value}
-              </Select.Option>
-            )}
+            {_.uniq(dataSource?.map((datum: RecordType) => {
+              const children = datum['children'] as RecordType[] | undefined
+              const validChildren = children 
+                && children.map((child) => child[key] as unknown as string)
+
+              if (!validChildren) return [datum[key] as unknown as string]
+
+              const raw = [
+                ...validChildren,
+                datum[key] as unknown as string
+              ]
+
+              return raw.filter(Boolean)
+            })
+              .flat())
+              .map(value =>
+                <Select.Option value={value} key={value} data-testid={`option-${value}`} >
+                  {value}
+                </Select.Option>
+              )}
           </Select>
         })}
         {(Boolean(activeFilters.length) || Boolean(searchValue)) && <UI.ClearButton
