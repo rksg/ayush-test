@@ -7,7 +7,7 @@ import {
   StepsForm,
   StepsFormInstance,
   showToast } from '@acx-ui/components'
-import { useGetDHCPQuery, useSaveDHCPMutation }                from '@acx-ui/rc/services'
+import { useGetDHCPQuery }                                     from '@acx-ui/rc/services'
 import { DHCPSaveData, DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
 import { useParams, useTenantLink, useNavigate }               from '@acx-ui/react-router-dom'
 

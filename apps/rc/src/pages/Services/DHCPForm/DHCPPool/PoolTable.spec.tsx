@@ -1,18 +1,20 @@
 import '@testing-library/jest-dom'
-import { Form } from 'antd'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { networkApi }      from '@acx-ui/rc/services'
 import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   act,
-  fireEvent,
   mockServer,
   render,
   screen,
+  fireEvent,
   within
 } from '@acx-ui/test-utils'
+
 
 import { PoolList } from './PoolTable'
 
@@ -22,7 +24,7 @@ const list = {
   data: [
     {
       id: 1,
-      name: '11',
+      name: 'test1',
       allowWired: false,
       ip: '1.1.1.1',
       mask: '255.0.0.0',
@@ -36,7 +38,7 @@ const list = {
     },
     {
       id: 2,
-      name: '12',
+      name: 'test2',
       allowWired: false,
       ip: '1.1.1.1',
       mask: '255.0.0.0',
@@ -67,36 +69,21 @@ describe('Create DHCP: Pool table', () => {
   })
 
   it('should render correctly', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      )
-    )
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     const { asFragment } = render(<PoolList poolData={list.data}/>, {
-      wrapper,
-      route: { params, path: '/:tenantId/:networkId' }
+      wrapper
     })
 
-    await screen.findByText('11')
+    await screen.findByText('test1')
     expect(asFragment()).toMatchSnapshot()
   })
 
 
   it('Table action bar edit pool', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      )
-    )
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
 
     render(<PoolList poolData={list.data}/>, {
-      wrapper,
-      route: { params, path: '/:tenantId/:networkId' }
+      wrapper
     })
 
     const tbody = (await screen.findAllByRole('rowgroup'))
@@ -104,10 +91,11 @@ describe('Create DHCP: Pool table', () => {
 
     expect(tbody).toBeVisible()
 
-    const body = within(tbody)
-    fireEvent.click(await body.findByText('12'))
-    const editButton = screen.getByRole('button', { name: 'Edit' })
-    fireEvent.click(editButton)
+    userEvent.click(screen.getByText('test1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
+
+    userEvent.click(screen.getByText('test2'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
 
   })
 

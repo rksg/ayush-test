@@ -64,16 +64,17 @@ describe('DHCPForm', () => {
 
     expect(asFragment()).toMatchSnapshot()
 
-
+    //step 1 setting form
     await userEvent.type(screen.getByRole('textbox', { name: 'Service Name' }),'create DHCP test')
-
     await userEvent.click(screen.getByRole('radio',{ name: /Simple DHCP/ } ) )
     await userEvent.click(screen.getByText('Next'))
 
+    //scope
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
     await userEvent.click(screen.getByText('Next'))
-    await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
+    //summary
+    await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(screen.getByText('Finish'))
 
 

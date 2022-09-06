@@ -69,7 +69,6 @@ export function SummaryForm (props: {
             label={$t({ defaultMessage: 'DHCP Configuration:' })}
             children={summaryData.dhcpConfig && $t(dhcpTypes[summaryData.dhcpConfig])}
           />
-          <PoolList selectable={false} poolData={summaryData.dhcpPools}/>
 
         </Col>
         <Divider type='vertical' style={{ height: '300px' }}/>
@@ -80,6 +79,7 @@ export function SummaryForm (props: {
           <Form.Item children={getVenues()} />
         </Col>
       </Row>
+      <PoolList readonly={true} poolData={summaryData.dhcpPools}/>
     </>
   )
 }

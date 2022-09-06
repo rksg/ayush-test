@@ -28,11 +28,11 @@ export function PoolList (props:{
   poolData: DHCPPool[],
   updatePoolData?: (data:DHCPPool[]) => void,
   showPoolForm?: (data:DHCPPool) => void,
-  selectable?: Boolean
+  readonly?: Boolean
 }) {
 
   const { $t } = useIntl()
-  const { poolData, updatePoolData, showPoolForm, selectable=true } = props
+  const { poolData, updatePoolData, showPoolForm, readonly=false } = props
   const [ errorVisible, showError ] = useState<Boolean>(false)
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
@@ -70,11 +70,6 @@ export function PoolList (props:{
               poolData.splice(index, 1)
             }
           })
-        } else {
-          const index = poolData.findIndex(i => i.id === rows.id)
-          if (index !== -1) {
-            poolData.splice(index, 1)
-          }
         }
         clearSelection()
         updatePoolData?.(poolData)
@@ -126,12 +121,13 @@ export function PoolList (props:{
         errorVisible &&
       <Alert message={$t(errorMessage)} type='error' showIcon closable />
       }
-      <div>
+      { !readonly && <div>
         <Button style={style}
           onClick={()=>
             showPoolForm?.(dataPool)
           }>{$t({ defaultMessage: 'Add DHCP Pool' })}</Button>
-      </div>
+      </div> }
+
       <Table
         rowKey='id'
         style={{ width: '800px' }}
@@ -139,7 +135,7 @@ export function PoolList (props:{
         dataSource={[...poolData]}
         type={'tall'}
         actions={actions}
-        rowSelection={selectable ? { defaultSelectedRowKeys: [] } : undefined}
+        rowSelection={readonly ? undefined : { defaultSelectedRowKeys: [] }}
       />
     </>
   )

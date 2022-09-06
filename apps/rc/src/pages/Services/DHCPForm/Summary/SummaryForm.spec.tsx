@@ -3,8 +3,8 @@ import '@testing-library/jest-dom'
 import { Form } from 'antd'
 
 import { ServiceTechnology, DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
-import { render } from '@acx-ui/test-utils'
+import { Provider }                              from '@acx-ui/store'
+import { render }                                from '@acx-ui/test-utils'
 
 import { SummaryForm } from './SummaryForm'
 
