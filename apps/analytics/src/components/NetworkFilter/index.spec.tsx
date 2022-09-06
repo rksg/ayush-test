@@ -24,7 +24,7 @@ const mockIncidents = [
     sliceType: 'ap',
     sliceValue: 'r710_!216',
     id: 'c5917024-fd4f-4e11-b65d-610f0251242b',
-    path: [...defaultNetworkPath, { type: 'zone', name: 'venue' }, { name: 'ap', mac: 'ap-mac' }],
+    path: [...defaultNetworkPath, { type: 'zone', name: 'venue' }, { type: 'ap', name: 'ap-mac' }],
     metadata: {},
     clientCount: 3,
     impactedClientCount: 2,
@@ -42,8 +42,8 @@ const mockIncidents = [
     id: '24e8e00b-2564-4ce9-8933-c153273dfe2d',
     path: [
       ...defaultNetworkPath,
-      { type: 'zone', name: 'venue1' },
-      { name: 'ap2', mac: 'ap-mac2' }
+      { type: 'zone', name: 'venue' },
+      { type: 'ap', name: 'ap-mac2' }
     ],
 
     metadata: {},
@@ -58,10 +58,38 @@ const mockIncidents = [
     startTime: '2022-08-03T05:45:00.000Z',
     endTime: '2022-08-03T05:54:00.000Z',
     code: 'radius-failure',
-    sliceType: 'ap',
+    sliceType: 'zone',
     sliceValue: 'r710_!21690',
     id: 'c5917024-fd4f-4e11-b65d-610f0251242b123',
     path: [...defaultNetworkPath, { type: 'zone', name: 'venue' }],
+    metadata: {
+      dominant: {
+        ssid: 'test'
+      },
+      rootCauseChecks: {
+        checks: [
+          {
+            CCD_REASON_AAA_AUTH_FAIL: true
+          }
+        ],
+        params: {}
+      }
+    },
+    clientCount: 3,
+    impactedClientCount: 2,
+    isMuted: false,
+    mutedBy: null,
+    mutedAt: null
+  },
+  {
+    severity: 0.1,
+    startTime: '2022-08-03T05:45:00.000Z',
+    endTime: '2022-08-03T05:54:00.000Z',
+    code: 'radius-failure',
+    sliceType: 'ap',
+    sliceValue: 'r710_!21690',
+    id: 'c5917024-fd4f-4e11-b65d-610f0251242b12sd3',
+    path: [...defaultNetworkPath],
     metadata: {
       dominant: {
         ssid: 'test'
@@ -232,6 +260,46 @@ describe('Network Filter with incident severity', () => {
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.click(screen.getByRole('combobox'))
     // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector('svg')).toBeDefined()
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should show only venue severities', async () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: {
+        type: 'zone',
+        name: 'venue1',
+        path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
+        aps: [],
+        switches: [] },
+      ...networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: [mockIncidents[2]] } } }
+    })
+    const { asFragment } = render(<Provider><NetworkFilter /></Provider>)
+    await screen.findByText('Entire Organization')
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.click(screen.getByRole('combobox'))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should show severity only once on each node', async () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: {
+        type: 'zone',
+        name: 'venue1',
+        path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
+        aps: [],
+        switches: [] },
+      ...networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: [mockIncidents[2]] } } }
+    })
+    const { asFragment } = render(<Provider><NetworkFilter /></Provider>)
+    await screen.findByText('Entire Organization')
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.click(screen.getByRole('combobox'))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(asFragment()).toMatchSnapshot()
   })
 })

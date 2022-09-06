@@ -47,7 +47,7 @@ export const LabelWithSeverityCicle = (props: LabelProps) => {
       <UI.Label>{name}</UI.Label>
       <UI.SeverityContainer>
         {severityCircles?.map((severityCircle, index) => (
-          <UI.SeveritySpan severity={severityCircle} key={index}/>
+          <UI.SeveritySpan role='severityCirlce' severity={severityCircle} key={index}/>
         ))}
       </UI.SeverityContainer>
     </UI.LabelContainer>

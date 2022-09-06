@@ -9,6 +9,12 @@ export type SeveritySpanProps = {
   severity: string
 }
 
+const severityZIndexMap : { [key : string] : number } = {
+  P1: 1000,
+  P2: 900,
+  P3: 800,
+  P4: 700
+}
 export const NonSelectableItem = styled.div.attrs(
   { onClick: e => e.stopPropagation() }
 )`
@@ -30,11 +36,10 @@ export const LabelContainer = styled.div`
   flex-direction: row;
   column-gap: 15px;
   align-items: center;
-
+  justify-content: space-between;
 `
 export const Label = styled.div`
-  width : 100px;
-  max-width: 120px;
+  max-width: 200px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -46,8 +51,11 @@ export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => prop
       incidentSeverities[props.severity as IncidentSeverities]?.color ?? ''
     return cssStr(color)
   }};
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
-  margin-left: -2px;
+  margin-left: -3px;
+  border-width: 5px;
+  border-color: var(--acx-primary-white);
+  z-index: ${(props) => severityZIndexMap[props.severity]}
 `
