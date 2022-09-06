@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
@@ -10,7 +9,6 @@ import {
   NoData } from '@acx-ui/components'
 
 import { useSwitchesByErrorsQuery, SwitchesByErrorsData } from './services'
-
 
 export default function SwitchesByErrorsWidget ({
   filters
