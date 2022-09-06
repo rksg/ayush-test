@@ -8,7 +8,7 @@ import { DateRange }           from '@acx-ui/utils'
 import { topApplicationByTrafficFixture } from './__tests__/fixtures'
 import { api }                            from './services'
 
-describe('trafficByApplicationWidget', () => {
+describe('TopApplicationByTrafficWidget', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
