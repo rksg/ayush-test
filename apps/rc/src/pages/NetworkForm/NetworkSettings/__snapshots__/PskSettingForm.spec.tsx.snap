@@ -642,37 +642,92 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                       </div>
                     </div>
                   </div>
+                  <button
+                    class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                    type="button"
+                  >
+                    <span>
+                      Show more settings
+                    </span>
+                  </button>
                 </form>
               </div>
               <div
                 class="ant-pro-steps-form-step"
               >
-                <div
-                  style="padding-top: 50px; padding-bottom: 50px; text-align: center;"
+                <form
+                  autocomplete="off"
+                  class="ant-form ant-form-vertical"
+                  id="venues"
                 >
-                  <div
-                    aria-busy="true"
-                    aria-live="polite"
-                    class="ant-spin ant-spin-spinning"
+                  <input
+                    style="display: none;"
+                    type="text"
+                  />
+                  <h3
+                    class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
                   >
-                    <span
-                      class="ant-spin-dot ant-spin-dot-spin"
+                    Venues
+                  </h3>
+                  <p>
+                    Select venues to activate this network
+                  </p>
+                  <div
+                    class="ant-form-item"
+                  >
+                    <div
+                      class="ant-row ant-form-item-row"
                     >
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                    </span>
+                      <div
+                        class="ant-col ant-form-item-control"
+                      >
+                        <div
+                          class="ant-form-item-control-input"
+                        >
+                          <div
+                            class="ant-form-item-control-input-content"
+                          >
+                            <div
+                              class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                            >
+                              <div
+                                class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                              >
+                                <span
+                                  aria-label="loader"
+                                  role="img"
+                                >
+                                  <div
+                                    aria-busy="true"
+                                    aria-live="polite"
+                                    class="ant-spin ant-spin-lg ant-spin-spinning"
+                                  >
+                                    <span
+                                      class="ant-spin-dot ant-spin-dot-spin"
+                                    >
+                                      <i
+                                        class="ant-spin-dot-item"
+                                      />
+                                      <i
+                                        class="ant-spin-dot-item"
+                                      />
+                                      <i
+                                        class="ant-spin-dot-item"
+                                      />
+                                      <i
+                                        class="ant-spin-dot-item"
+                                      />
+                                    </span>
+                                  </div>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </form>
               </div>
               <div
                 class="ant-pro-steps-form-step"
@@ -881,7 +936,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 geFEjT"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
               type="button"
             >
               <span>
@@ -893,7 +948,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
               type="button"
             >
               <span>

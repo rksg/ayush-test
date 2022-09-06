@@ -12,7 +12,8 @@ import {
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
   let saveData = {
-    enableAccountingService: data.enableAccountingService
+    enableAccountingService: data.enableAccountingService,
+    isCloudpathEnabled: data.isCloudpathEnabled
   }
 
   if (data.isCloudpathEnabled) {
@@ -182,7 +183,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
         }
       }
     }
-  
+
     saveData = {
       ...saveData,
       ...{
@@ -198,9 +199,9 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
           port: get(data, 'accountingRadius.primary.port'),
           sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
         }
-        
+
       }
-  
+
       if (data.enableSecondaryAcctServer) {
         accountingRadius = {
           ...accountingRadius,
@@ -216,7 +217,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
           }
         }
       }
-  
+
       saveData = {
         ...saveData,
         ...{
@@ -263,4 +264,25 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
     [NetworkTypeEnum.PSK]: parsePskSettingDataToSave(data)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
+}
+
+export function transferMoreSettingsToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
+  const advancedCustomization = {
+    ...originalData?.wlan?.advancedCustomization,
+    ...data?.wlan?.advancedCustomization
+  } as OpenWlanAdvancedCustomization | 
+       AAAWlanAdvancedCustomization | 
+       DpskWlanAdvancedCustomization | 
+       PskWlanAdvancedCustomization
+
+  let saveData:NetworkSaveData = {
+    ...originalData,
+    wlan: {
+      ...originalData?.wlan,
+      vlanId: data?.wlan?.vlanId ?? originalData?.wlan?.vlanId,
+      advancedCustomization
+    }
+  }
+
+  return saveData
 }

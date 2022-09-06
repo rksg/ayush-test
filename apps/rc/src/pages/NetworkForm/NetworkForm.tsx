@@ -1,14 +1,20 @@
 import { useState, useRef, useEffect } from 'react'
 
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
+  Button,
   PageHeader,
   showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useAddNetworkMutation, useGetNetworkQuery, useUpdateNetworkMutation  } from '@acx-ui/rc/services'
+import { 
+  useAddNetworkMutation,
+  useGetNetworkQuery,
+  useUpdateNetworkMutation
+} from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   NetworkSaveData
@@ -19,16 +25,18 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { NetworkDetailForm } from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext    from './NetworkFormContext'
-import { AaaSettingsForm }   from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }  from './NetworkSettings/DpskSettingsForm'
-import { OpenSettingsForm }  from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }   from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }       from './NetworkSummary/SummaryForm'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
-  tranferSettingsToSave
+  tranferSettingsToSave,
+  transferMoreSettingsToSave
 } from './parser'
 import { Venues } from './Venues/Venues'
 
@@ -46,10 +54,13 @@ export function NetworkForm () {
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
   const editMode = params.action === 'edit'
+  const cloneMode = params.action === 'clone'
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
+  const [enableMoreSettings, setEnabled] = useState(false)
+
 
   const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
 
@@ -61,6 +72,12 @@ export function NetworkForm () {
   })
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
+    if(saveData.isCloudpathEnabled){
+      delete saveState.authRadius
+      delete saveState.accountingRadius
+    }else{
+      delete saveState.cloudpathServerId
+    }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -72,13 +89,17 @@ export function NetworkForm () {
     if(data){
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
+      if (cloneMode) {
+        formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
+      }
       updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
     }
   }, [data])
 
   const handleAddNetwork = async () => {
     try {
-      await addNetwork({ params, payload: saveState }).unwrap()
+      const payload = _.omit(saveState, 'id') // omit id to handle clone
+      await addNetwork({ params: { tenantId: params.tenantId }, payload: payload }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -108,7 +129,7 @@ export function NetworkForm () {
           { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
-      <NetworkFormContext.Provider value={{ setNetworkType, editMode, data }}>
+      <NetworkFormContext.Provider value={{ setNetworkType, editMode, cloneMode, data }}>
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
@@ -131,11 +152,14 @@ export function NetworkForm () {
             name='settings'
             title={$t(settingTitle, { type: networkType })}
             onFinish={async (data) => {
-              const settingData = { 
+              const settingData = {
                 ...{ type: saveState.type },
                 ...data
               }
-              const settingSaveData = tranferSettingsToSave(settingData)
+              let settingSaveData = tranferSettingsToSave(settingData)
+              if(!editMode) {
+                settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
+              }
               updateSaveData(settingSaveData)
               return true
             }}
@@ -144,17 +168,24 @@ export function NetworkForm () {
             {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
             {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
+
+            {!editMode && <>
+              <Button
+                type='link'
+                onClick={() => {
+                  setEnabled(!enableMoreSettings)
+                }}
+              >
+                {enableMoreSettings ? $t({ defaultMessage: 'Show less settings' }) :
+                  $t({ defaultMessage: 'Show more settings' })}
+              </Button>
+              {enableMoreSettings &&
+                <NetworkMoreSettingsForm wlanData={saveState} />}
+            </>
+            }
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
-            initialValues={data}
-            params={data}
-            request={(params) => {
-              return Promise.resolve({
-                data: params,
-                success: true
-              })
-            }}
             name='venues'
             title={$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
@@ -164,12 +195,15 @@ export function NetworkForm () {
           >
             <Venues />
           </StepsForm.StepForm>
-
-          <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
-            <SummaryForm summaryData={saveState} />
-          </StepsForm.StepForm>
+          {!editMode &&
+            <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
+              <SummaryForm summaryData={saveState} />
+            </StepsForm.StepForm>
+          }
         </StepsForm>
       </NetworkFormContext.Provider>
     </>
   )
 }
+
+
