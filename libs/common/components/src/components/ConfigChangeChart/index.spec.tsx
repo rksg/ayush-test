@@ -3,7 +3,6 @@ import { RefObject } from 'react'
 
 import { render, renderHook } from '@testing-library/react'
 import ReactECharts           from 'echarts-for-react'
-import moment                 from 'moment-timezone'
 
 import {
   hexToRGB,
@@ -173,13 +172,6 @@ describe('ConfigChangeChart',() => {
     })
   })
   describe('tooltipFormatter',() => {
-    const timezone = 'UTC'
-    beforeEach(() => {
-      moment.tz.setDefault(timezone)
-    })
-    afterEach(() => {
-      moment.tz.setDefault(moment.tz.guess())
-    })
     const singleparameters = { data: [1605628800000] } as TooltipFormatterParams
     const multiParameters = [ singleparameters ] as TooltipFormatterParams[]
     it('should return correct Html string for single value', async () => {

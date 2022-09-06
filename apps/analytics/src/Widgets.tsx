@@ -6,8 +6,9 @@ import ClientBySSID                   from './components/ClientBySSID'
 import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
 import NetworkHistoryWidget           from './components/NetworkHistory'
 import SwitchesByPoEUsageWidget       from './components/SwitchesByPoEUsage'
-import TrafficByApplicationWidget     from './components/TrafficByApplication'
-import TrafficBySSID                  from './components/TrafficBySSID'
+import TopSwitchModelsWidget          from './components/SwitchModels'
+import TopApplicationsByTrafficWidget from './components/TopApplicationsByTraffic'
+import TopSSIDsByTrafficWidget        from './components/TopSSIDsByTraffic'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
 
 
@@ -19,10 +20,10 @@ const widgetsMap = {
     <NetworkHistoryWidget filters={filters} />
   ),
   topApplicationsByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
-    <TrafficByApplicationWidget filters={filters}/>
+    <TopApplicationsByTrafficWidget filters={filters}/>
   ),
   topSSIDsByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
-    <TrafficBySSID filters={filters}/>
+    <TopSSIDsByTrafficWidget filters={filters}/>
   ),
   topSSIDsByClient: ({ filters }: { filters: AnalyticsFilter }) => (
     <ClientBySSID filters={filters}/>
@@ -32,8 +33,10 @@ const widgetsMap = {
   ),
   topSwitchesByPoeUsage: ({ filters }: { filters: AnalyticsFilter }) => (
     <SwitchesByPoEUsageWidget filters={filters}/>
+  ),
+  topSwitchModelsByCount: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TopSwitchModelsWidget filters={filters} />
   )
-
 }
 
 function AnalyticsWidgets ({
