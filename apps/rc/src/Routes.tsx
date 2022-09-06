@@ -13,16 +13,7 @@ import { ServicesTable }                         from './pages/Services/Services
 export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path='networks' element={<NetworksTable />} />
-      <Route path='networks/create' element={<NetworkForm />} />
-      <Route
-        path='networks/:networkId/network-details/:activeTab'
-        element={<NetworkDetails />}
-      />
-      <Route
-        path='networks/:networkId/:action'
-        element={<NetworkForm />}
-      />
+      <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
     </Route>
   )
@@ -33,6 +24,22 @@ export default function RcRoutes () {
   )
 }
 
+function NetworkRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='networks' element={<NetworksTable />} />
+      <Route path='networks/create' element={<NetworkForm />} />
+      <Route
+        path='networks/:networkId/network-details/:activeTab'
+        element={<NetworkDetails />}
+      />
+      <Route
+        path='networks/:networkId/:action'
+        element={<NetworkForm />}
+      />
+    </Route>
+  )
+}
 
 function ServiceRoutes () {
   return rootRoutes(
