@@ -298,6 +298,7 @@ function Table <RecordType extends Record<string, any>> (
               return raw.filter(Boolean)
             })
               .flat())
+              .sort()
               .map(value =>
                 <Select.Option value={value} key={value} data-testid={`option-${value}`} >
                   {value}
