@@ -13,7 +13,6 @@ export type ApOrSwitch = {
   path: NetworkPath
   name: string
   mac: string
-  incidentSeverity: number
 }
 export type ApsOrSwitches = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
 export type Child = NetworkData & ApsOrSwitches
