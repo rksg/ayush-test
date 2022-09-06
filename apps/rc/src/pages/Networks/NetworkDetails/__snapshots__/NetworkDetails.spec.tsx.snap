@@ -100,14 +100,18 @@ exports[`NetworkDetails should render correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                type="button"
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/373377b0cb6e46ea8982b1c80aabe1fa/edit"
               >
-                <span>
-                  Configure
-                </span>
-              </button>
+                <button
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  type="button"
+                >
+                  <span>
+                    Configure
+                  </span>
+                </button>
+              </a>
             </div>
             <div
               class="ant-space-item"

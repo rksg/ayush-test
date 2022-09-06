@@ -2,12 +2,14 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader }                       from '@acx-ui/components'
 import { ArrowExpand, ClockOutlined, BulbOutlined } from '@acx-ui/icons'
+import { TenantLink, useParams }                    from '@acx-ui/react-router-dom'
 
 import NetworkTabs       from './NetworkTabs'
 import { useGetNetwork } from './services'
 
 function NetworkPageHeader () {
   const network = useGetNetwork()
+  const { networkId } = useParams()
   const { $t } = useIntl()
   return (
     <PageHeader
@@ -20,7 +22,9 @@ function NetworkPageHeader () {
           {$t({ defaultMessage: 'Last 24 Hours' })}</Button>,
         <Button key='hierarchy-filter'>
           {$t({ defaultMessage: 'Entire Organization' })}<ArrowExpand /></Button>,
-        <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>,
+        <TenantLink to={`/networks/${networkId}/edit`} key='edit'>
+          <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+        </TenantLink>,
         <Button key='insight' icon={<BulbOutlined />} />
       ]}
       footer={<NetworkTabs />}
