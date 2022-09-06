@@ -13,6 +13,7 @@
     "common-test-utils": "libs/common/test-utils",
     "common-utils": "libs/common/utils",
     "main": "apps/main",
+    "msp": "apps/msp",
     "rc-services": "libs/rc/services",
     "rc-utils": "libs/rc/utils",
     "rc": "apps/rc",

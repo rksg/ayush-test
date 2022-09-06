@@ -5,7 +5,8 @@ import { Table, TableProps } from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
   CancelCircle: () => <div data-testid='cancel-circle'/>,
-  SettingsOutlined: () => <div data-testid='settings'/>
+  InformationOutlined: () => <div data-testid='information-outlined'/>,
+  SettingsOutlined: () => <div data-testid='settings-outlined'/>
 }), { virtual: true })
 
 
@@ -13,7 +14,7 @@ describe('Table component', () => {
   it('should render correctly', () => {
     const basicColumns = [
       { title: 'Name', dataIndex: 'name', key: 'name' },
-      { title: 'Age', dataIndex: 'age', key: 'age' },
+      { title: 'Age', tooltip: 'tooltip', dataIndex: 'age', key: 'age' },
       { title: 'Address', dataIndex: 'address', key: 'address' }
     ]
     const basicData = [
@@ -307,5 +308,40 @@ describe('Table component', () => {
     expect(selectedRows.filter(el => el.checked)).toHaveLength(3)
     fireEvent.click(await body.findByText('Will Smith'))
     expect(selectedRows.filter(el => el.checked)).toHaveLength(2)
+  })
+
+  it('dynamically scales based on scroll prop', () => {
+    const basicColumns = [
+      { title: 'Name', key: 'name' },
+      { title: 'Age', key: 'age' },
+      { title: 'Address', key: 'address' }
+    ]
+    const basicData = [
+      {
+        key: '1',
+        name: 'John Doe',
+        age: 32,
+        address: 'sample address'
+      },
+      {
+        key: '2',
+        name: 'Jane Doe',
+        age: 33,
+        address: 'new address'
+      },
+      {
+        key: '3',
+        name: 'Will Smith',
+        age: 45,
+        address: 'address'
+      }
+    ]
+    const scroll = { y: 'max-content' }
+    const { asFragment } = render(<Table
+      columns={basicColumns}
+      dataSource={basicData}
+      scroll={scroll}
+    />)
+    expect(asFragment()).toMatchSnapshot()
   })
 })

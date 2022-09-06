@@ -22,7 +22,11 @@ const { useWatch } = Form
 export function NetworkDetailForm () {
   const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
-  const { setNetworkType: setSettingStepTitle, editMode } = useContext(NetworkFormContext)
+  const { 
+    setNetworkType: setSettingStepTitle, 
+    editMode,
+    cloneMode 
+  } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
     setSettingStepTitle(e.target.value as NetworkTypeEnum)
   }
@@ -46,7 +50,7 @@ export function NetworkDetailForm () {
   }
 
   const types = [
-    { type: NetworkTypeEnum.PSK, disabled: true },
+    { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: false },
     { type: NetworkTypeEnum.AAA, disabled: false },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: true },
@@ -76,7 +80,7 @@ export function NetworkDetailForm () {
           children={<TextArea rows={4} maxLength={64} />}
         />
         <Form.Item>
-          {!editMode &&
+          {( !editMode && !cloneMode ) &&
             <Form.Item
               name='type'
               label={intl.$t({ defaultMessage: 'Network Type' })}
@@ -96,7 +100,7 @@ export function NetworkDetailForm () {
               </Radio.Group>
             </Form.Item>
           }
-          {editMode &&
+          {( editMode || cloneMode ) &&
             <Form.Item name='type' label='Network Type'>
               <>
                 <h4 className='ant-typography'>{type && intl.$t(networkTypes[type])}</h4>

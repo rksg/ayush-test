@@ -40,7 +40,18 @@ const filters: AnalyticsFilter = {
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours
-}
+} as AnalyticsFilter
+
+const switchModelsData = [
+  {
+    name: 'ICX7150-C12P',
+    count: 13
+  },
+  {
+    name: 'Unknown',
+    count: 8
+  }
+]
 
 const connectedClientsOverTimeSample = {
   time: [
@@ -87,7 +98,17 @@ test('should render Top 5 Switches by PoE Usage widget', async () => {
   mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', { data: topSwitchesByPoEUsageResponse })
   render( <Provider> <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/></Provider>)
   expect(await screen.findByText('Top 5 Switches by PoE Usage')).toBeVisible()
-  
+})
+
+test('should render Top 5 Switch Models widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
+    data: { network: { hierarchyNode: { topNSwitchModels: switchModelsData } } }
+  })
+  render(
+    <Provider>
+      <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
+    </Provider>)
+  expect(await screen.findByText('Top 5 Switch Models')).not.toBe(null)
 })
 
 test('should render Traffic By Application Widget', async () => {

@@ -19,12 +19,9 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function CloudpathServerForm () {
-  const { editMode, data } = useContext(NetworkFormContext)
+  const { data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
-  if(data){
-    form.setFieldsValue(data)
-  }
+
   const selectedId = useWatch('cloudpathServerId')
   const { selectOptions, selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -40,10 +37,10 @@ export function CloudpathServerForm () {
       <Form.Item
         name='cloudpathServerId'
         label={$t({ defaultMessage: 'Cloudpath Server' })}
+        initialValue={data?.cloudpathServerId}
         rules={[{ required: true }]}>
         <Select placeholder={$t({ defaultMessage: 'Select...' })}
-          children={selectOptions}
-          disabled={editMode} />
+          children={selectOptions} />
       </Form.Item>
 
       <Button type='link'>{ $t({ defaultMessage: 'Add Server' }) }</Button>
@@ -65,7 +62,7 @@ export function CloudpathServerForm () {
           }
         />
         <Form.Item
-          label={$t({ defaultMessage: 'Radius Shared secret' })}
+          label={$t({ defaultMessage: 'Radius Shared Secret' })}
           children={<Input.Password
             readOnly
             bordered={false}
