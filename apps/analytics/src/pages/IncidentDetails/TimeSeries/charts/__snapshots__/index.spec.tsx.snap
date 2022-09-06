@@ -40,7 +40,7 @@ exports[`AttemptAndFailureChart should match snapshot 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            _echarts_instance_="ec_1662431919059"
+            _echarts_instance_="ec_1662434275371"
             class="echarts-for-react "
             size-sensor-id="2"
             style="height: 280px; width: 280px; position: relative;"
@@ -539,7 +539,7 @@ exports[`ClientCountChart should match snapshot 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            _echarts_instance_="ec_1662431919060"
+            _echarts_instance_="ec_1662434275372"
             class="echarts-for-react "
             size-sensor-id="3"
             style="height: 280px; width: 280px; position: relative;"
@@ -1183,7 +1183,7 @@ exports[`IncidentChart should match snapshot 1`] = `
           style="overflow: visible; height: 0px; width: 0px;"
         >
           <div
-            _echarts_instance_="ec_1662431919058"
+            _echarts_instance_="ec_1662434275370"
             class="echarts-for-react "
             size-sensor-id="1"
             style="height: 280px; width: 280px; position: relative;"

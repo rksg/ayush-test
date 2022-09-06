@@ -10,6 +10,9 @@ jest.mock('../NetworkImpact', () => ({
 jest.mock('../IncidentDetails/IncidentAttributes', () => ({
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
 }))
+jest.mock('../IncidentDetails/TimeSeries', () => ({
+  TimeSeries: () => <div data-testid='timeSeries' />
+}))
 
 describe('IncidentDetailsTemplate', () => {
   mockAutoSizer()
@@ -24,6 +27,7 @@ describe('IncidentDetailsTemplate', () => {
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
+    expect(screen.getByTestId('timeSeries')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
 })
