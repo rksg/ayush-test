@@ -72,7 +72,7 @@ describe('Timeseries component', () => {
     )
     
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getByText(/eap failures/i).textContent).toEqual('EAP Failures')
+    expect(screen.getByText(/clients/i).textContent).toEqual('CLIENTS')
   })
 })
