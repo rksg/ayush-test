@@ -4,7 +4,12 @@ const globalIntlCache = createIntlCache()
 
 let intl: IntlShape | undefined
 
-export function setUpIntl (config: IntlConfig) {
+export function setUpIntl (config?: IntlConfig) {
+  if (!config) {
+    intl = undefined
+    return
+  }
+  
   intl = createIntl(config, globalIntlCache)
 }
 

@@ -2,8 +2,8 @@ import { rest } from 'msw'
 
 import { mockServer } from '@acx-ui/test-utils'
 
-import { setUpIntl, getIntl } from './intlUtil'
-import { loadLocale }         from './locales'
+import * as intlUtil  from './intlUtil'
+import { loadLocale } from './locales'
 
 describe('IntlUtils', () => {
   const messages = {
@@ -33,45 +33,47 @@ describe('IntlUtils', () => {
     )
   })
   it('should throw error when called without setup', () => {
-    expect(() => getIntl()).toThrow('setUpIntl must be called before getIntl')
-  })
-
-  it('should handle default translation', () => {
-    setUpIntl({
+    intlUtil.setUpIntl()
+    expect(() => intlUtil.getIntl()).toThrow('setUpIntl must be called before getIntl')
+    // restore intl
+    intlUtil.setUpIntl({
       locale: 'en-US',
       messages: {}
     })
+    expect(intlUtil.getIntl()).toBeTruthy()
+  })
 
-    const intl = getIntl()
+  it('should handle default translation', () => {
+    const intl = intlUtil.getIntl()
     expect(intl).toBeTruthy()
   })
 
   it('should be able to handle translations', async () => {
     
     const usMessages = await loadLocale('en-US')
-    setUpIntl({
+    intlUtil.setUpIntl({
       locale: 'en-US',
       messages: usMessages
     })
-    let intl = getIntl()
+    let intl = intlUtil.getIntl()
     expect(intl).toBeTruthy()
 
     expect(intl.messages).toMatchObject(usMessages!)
 
     const jpMessages = await loadLocale('ja-JP')
-    setUpIntl({
+    intlUtil.setUpIntl({
       locale: 'ja-JP',
       messages: jpMessages
     })
-    intl = getIntl()
+    intl = intlUtil.getIntl()
     expect(intl.messages).toMatchObject(jpMessages!)
 
     const deMessages = await loadLocale('de-DE')
-    setUpIntl({
+    intlUtil.setUpIntl({
       locale: 'de-DE',
       messages: deMessages
     })
-    intl = getIntl()
+    intl = intlUtil.getIntl()
     expect(intl.messages).toMatchObject(deMessages!)
   })
 
