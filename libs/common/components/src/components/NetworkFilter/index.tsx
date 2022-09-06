@@ -52,7 +52,7 @@ export function NetworkFilter (props: CascaderProps) {
       setSavedValues(currentValues)
       onApply(currentValues)
     }
-  
+
     const withFooter = (menus: JSX.Element) => <>
       {menus}
       <UI.Divider />
@@ -78,12 +78,6 @@ export function NetworkFilter (props: CascaderProps) {
       open={currentValues !== savedValues || open}
     />
   } else {
-    const onChangeSingle = (
-      triggeredValue: SingleValueType,
-      selectedValues: DefaultOptionType[]
-    ) => {
-      onApply(selectedValues && selectedValues.map(option => option.value) as SingleValueType | SingleValueType[] | undefined)
-    }
     return <UI.Cascader
       {...antProps}
       changeOnSelect
@@ -96,7 +90,8 @@ export function NetworkFilter (props: CascaderProps) {
         onApply(value)
       }}
       expandTrigger='hover'
-      showSearch
+      showSearch={antProps.showSearch || true}
+      onDropdownVisibleChange={setOpen}
     />
   }
 }
