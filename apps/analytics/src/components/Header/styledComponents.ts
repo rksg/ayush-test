@@ -7,5 +7,5 @@ export const Divider = styled(AntDivider).attrs({ type: 'vertical' })`
 export const ConnectedHeaderWrapper = styled.div`
   position: sticky;
   top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
-  z-index: 4;
+  z-index: 5;
 `
