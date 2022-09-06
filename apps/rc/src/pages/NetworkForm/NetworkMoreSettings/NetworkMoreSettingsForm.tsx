@@ -74,8 +74,10 @@ export function NetworkMoreSettingsForm (props: {
           data.wlan?.advancedCustomization?.userDownlinkRateLimiting > 0,
         enableOfdmOnly: get(data,
           'wlan.advancedCustomization.radioCustomization.phyTypeConstraint') === 'OFDM',
-        managementFrameMinimumPhyRate: get(data, 'wlan.advancedCustomization.radioCustomization.managementFrameMinimumPhyRate'),
-        bssMinimumPhyRate:  get(data, 'wlan.advancedCustomization.radioCustomization.bssMinimumPhyRate')
+        managementFrameMinimumPhyRate: get(data, 
+          'wlan.advancedCustomization.radioCustomization.managementFrameMinimumPhyRate'),
+        bssMinimumPhyRate: get(data, 
+          'wlan.advancedCustomization.radioCustomization.bssMinimumPhyRate')
       })
     }
   }, [data])
@@ -165,7 +167,8 @@ export function MoreSettingsForm (props: {
   const onBbsMinRateChange = function (value: BssMinRateEnum) {
     if (value === BssMinRateEnum.VALUE_NONE) {
       form.setFieldsValue({
-        managementFrameMinimumPhyRate: enableOfdmOnly ? MgmtTxRateEnum.VALUE_6 : MgmtTxRateEnum.VALUE_2
+        managementFrameMinimumPhyRate: enableOfdmOnly ? 
+          MgmtTxRateEnum.VALUE_6 : MgmtTxRateEnum.VALUE_2
       })
     } else {
       form.setFieldsValue({

@@ -287,7 +287,8 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
       ...advancedCustomization.radioCustomization,
       rfBandUsage: RfBandUsageEnum.BOTH,
       bssMinimumPhyRate: get(data, 'wlan.bssMinimumPhyRate'),
-      phyTypeConstraint: get(data, 'wlan.enableOfdmOnly') ? PhyTypeConstraintEnum.OFDM: PhyTypeConstraintEnum.NONE,
+      phyTypeConstraint: get(data, 'wlan.enableOfdmOnly') ? 
+        PhyTypeConstraintEnum.OFDM: PhyTypeConstraintEnum.NONE,
       managementFrameMinimumPhyRate: get(data, 'wlan.managementFrameMinimumPhyRate')
     }
   }
