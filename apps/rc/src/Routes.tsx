@@ -6,6 +6,7 @@ import { Provider }          from '@acx-ui/store'
 import { NetworkDetails }                        from './pages/NetworkDetails/NetworkDetails'
 import { NetworkForm }                           from './pages/NetworkForm/NetworkForm'
 import { NetworksTable }                         from './pages/NetworksTable'
+import { MdnsProxyForm }                         from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import { SelectServiceForm }                     from './pages/Services/SelectServiceForm'
 import { getServiceRoutePath, ServiceOperation } from './pages/Services/serviceRouteUtils'
 import { ServicesTable }                         from './pages/Services/ServicesTable'
@@ -41,11 +42,11 @@ function ServiceRoutes () {
       <Route path='services/select' element={<SelectServiceForm />} />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
-        element={<h1>mDNS Proxy create page</h1>}
+        element={<MdnsProxyForm />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })}
-        element={<h1>mDNS Proxy edit page</h1>}
+        element={<MdnsProxyForm editMode={true} />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })}
