@@ -9,7 +9,7 @@ import {
   Table,
   NoData,
   SparklineChart } from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+import { formatter, intlFormats } from '@acx-ui/utils'
 
 import { useTopSSIDsByTrafficQuery, TopSSIDsByTraffic } from './services'
 import { TrafficPercent }                               from './styledComponents'
@@ -59,7 +59,7 @@ export default function TopSSIDsByTrafficWidget ({
         ...item,
         traffic: <Space>{formatter('bytesFormat')(item.userTraffic)}
           <TrafficPercent>
-          ({formatter('percentFormatRound')(item.userTraffic/overallTrafic)})
+          ({$t(intlFormats.percentFormatRound, { value: item.userTraffic/overallTrafic })})
           </TrafficPercent>
         </Space>,
         trafficHistory: <SparklineChart

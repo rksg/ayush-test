@@ -27,7 +27,7 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
                 Top 5 Applications by Traffic
               </div>
               <div
-                class="styledComponents__SubTitleWrapper-sc-13w5wfx-6 lpmFrk"
+                class="styledComponents__SubTitle-sc-13w5wfx-5 xivbA"
               >
                 Insight Text coming from analytics
               </div>
