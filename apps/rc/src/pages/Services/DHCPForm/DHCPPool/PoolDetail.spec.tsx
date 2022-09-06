@@ -64,4 +64,28 @@ describe('Create DHCP: Pool detail', () => {
     await screen.findByText('Add DHCP Pool')
     expect(asFragment()).toMatchSnapshot()
   })
+
+
+  it('Table action bar add pool', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getNetworksVenuesList.url,
+        (req, res, ctx) => res(ctx.json(data))
+      )
+    )
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    render(<PoolDetail/>, {
+      wrapper,
+      route: { params, path: '/:tenantId/:networkId' }
+    })
+    const addButton = screen.getByRole('button', { name: 'Add DHCP Pool' })
+    await userEvent.click(addButton)
+    const insertInput = screen.getByLabelText('Pool Name')
+    fireEvent.change(insertInput, { target: { value: 'pool name test' } })
+    fireEvent.blur(insertInput)
+    screen.getByText('pool name test')
+
+  })
+
 })

@@ -205,8 +205,11 @@ export function PoolDetail () {
           </Form.Item>
           <Form.Item
             name='vlan'
+            rules={[
+              { required: true }
+            ]}
             label={$t({ defaultMessage: 'VLAN' })}
-            children={<InputNumber min={1} max={300} style={{ width: '100%' }} />}
+            children={<InputNumber min={1} max={4094} style={{ width: '100%' }} required/>}
           />
           <Form.Item name='dhcpOptions' style={{ height: 0 }}></Form.Item>
         </Col>

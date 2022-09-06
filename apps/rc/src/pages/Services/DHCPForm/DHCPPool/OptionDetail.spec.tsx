@@ -72,4 +72,28 @@ describe('Create DHCP: Option detail', () => {
     await screen.findByText('Add option')
     expect(asFragment()).toMatchSnapshot()
   })
+
+
+  it('Table action bar add option', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getNetworksVenuesList.url,
+        (req, res, ctx) => res(ctx.json(data))
+      )
+    )
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    render(<OptionDetail optionData={data}/>, {
+      wrapper,
+      route: { params, path: '/:tenantId/:networkId' }
+    })
+    const addButton = screen.getByRole('button', { name: 'Add option' })
+    await userEvent.click(addButton)
+    const insertInput = screen.getByLabelText('Option Name')
+    fireEvent.change(insertInput, { target: { value: 'Option name test' } })
+    fireEvent.blur(insertInput)
+    screen.getByText('Option name test')
+
+  })
+
 })
