@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { renderHook, render } from '@testing-library/react'
+import { MemoryRouter }       from 'react-router-dom'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
@@ -29,6 +30,15 @@ describe('useAnalyticsFilter', () => {
 })
 
 describe('AnalyticsFilterProvider', () => {
+  const filter = {
+    path: [
+      { type: 'network', name: 'Network' },
+      { type: 'zone', name: 'A-T-Venue' },
+      { type: 'AP', name: 'D8:38:FC:36:78:D0' }
+    ],
+    raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+  }
+  const path = Buffer.from(JSON.stringify(filter)).toString('base64')
   it('should render correctly', () => {
     function Component () {
       const { filters } = useAnalyticsFilter()
@@ -39,6 +49,38 @@ describe('AnalyticsFilterProvider', () => {
         <Component />
       </AnalyticsFilterProvider>
     </BrowserRouter>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('changes filter value', () => {
+    function Component () {
+      const { filters, raw, setNetworkPath } = useAnalyticsFilter()
+      useEffect(() => {
+        setNetworkPath(filters.path, raw)
+      })
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(<BrowserRouter>
+      <AnalyticsFilterProvider>
+        <Component />
+      </AnalyticsFilterProvider>
+    </BrowserRouter>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('gets initial value from search parameters', () => {
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/incidents',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <AnalyticsFilterProvider>
+          <Component />
+        </AnalyticsFilterProvider>
+      </MemoryRouter>
+    )
     expect(asFragment()).toMatchSnapshot()
   })
 })

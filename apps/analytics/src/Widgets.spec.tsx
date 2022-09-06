@@ -1,6 +1,5 @@
 import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
-import { BrowserRouter }                    from '@acx-ui/react-router-dom'
 import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
@@ -40,7 +39,18 @@ const filters: AnalyticsFilter = {
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours
-}
+} as AnalyticsFilter
+
+const switchModelsData = [
+  {
+    name: 'ICX7150-C12P',
+    count: 13
+  },
+  {
+    name: 'Unknown',
+    count: 8
+  }
+]
 
 const connectedClientsOverTimeSample = {
   time: [
@@ -60,9 +70,7 @@ test('should render Traffic by Volume widget', async () => {
   mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
     data: { network: { hierarchyNode: { timeSeries: sample } } }
   })
-  render(<BrowserRouter>
-    <Provider><AnalyticsWidgets name='trafficByVolume' filters={filters}/></Provider>
-  </BrowserRouter>)
+  render( <Provider> <AnalyticsWidgets name='trafficByVolume' filters={filters}/></Provider>)
   expect(await screen.findByText('Traffic by Volume')).not.toBe(null)
 })
 
@@ -70,9 +78,7 @@ test('should render Network History widget', async () => {
   mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
     data: { network: { hierarchyNode: { timeSeries: networkHistorySample } } }
   })
-  render(<BrowserRouter>
-    <Provider> <AnalyticsWidgets name='networkHistory' filters={filters}/></Provider>
-  </BrowserRouter>)
+  render( <Provider> <AnalyticsWidgets name='networkHistory' filters={filters}/></Provider>)
   expect(await screen.findByText('Network History')).not.toBe(null)
 })
 
@@ -80,29 +86,36 @@ test('should render Connected Clients Over Time widget', async () => {
   mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
     data: { network: { hierarchyNode: { timeSeries: connectedClientsOverTimeSample } } }
   })
-  render(<BrowserRouter>
+  render(
     <Provider>
       <AnalyticsWidgets name='connectedClientsOverTime' filters={filters}/>
-    </Provider>
-  </BrowserRouter>)
+    </Provider>)
   expect(await screen.findByText('Connected Clients Over Time')).not.toBe(null)
 })
 
 test('should render Top 5 Switches by PoE Usage widget', async () => {
   mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', { data: topSwitchesByPoEUsageResponse })
-  render(<BrowserRouter>
-    <Provider> <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/></Provider>
-  </BrowserRouter>)
+  render( <Provider> <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/></Provider>)
   expect(await screen.findByText('Top 5 Switches by PoE Usage')).toBeVisible()
+})
 
+test('should render Top 5 Switch Models widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
+    data: { network: { hierarchyNode: { topNSwitchModels: switchModelsData } } }
+  })
+  render(
+    <Provider>
+      <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
+    </Provider>)
+  expect(await screen.findByText('Top 5 Switch Models')).not.toBe(null)
 })
 
 test('should render Traffic By Application Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
     data: { network: { hierarchyNode: trafficByApplicationFixture } }
   })
-  render(<BrowserRouter><Provider> <AnalyticsWidgets
+  render( <Provider> <AnalyticsWidgets
     name='topApplicationsByTraffic'
-    filters={filters} /></Provider></BrowserRouter>)
+    filters={filters} /></Provider>)
   await screen.findByText('Top 5 Applications by Traffic')
 })

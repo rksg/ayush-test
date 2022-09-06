@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useEffect } from 'react'
+import React, { ReactNode, useContext } from 'react'
 
 import { Buffer } from 'buffer'
 
@@ -39,35 +39,31 @@ export function useAnalyticsFilter () {
       ...getDateRangeFilter(range, startDate, endDate)
     } as const,
     setNetworkPath,
-    raw    
+    raw
   }
 }
 
 export function AnalyticsFilterProvider (props: { children: ReactNode }) {
-  const [search, setSearch] = useSearchParams(window.location.search)
+  const [search, setSearch] = useSearchParams()
   const getNetworkFilter = () => search.has('analyticsNetworkFilter')
     ? JSON.parse(
       Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
     )
     : { path: [], raw: [] }
-  
-  const setNetworkPath = (networkFilter: NetworkPath, raw: object = []) => {
-    search.delete('analyticsNetworkFilter')
-    const filter = {
-      path: networkFilter,
-      raw
-    }
-    search.append(
+
+  const setNetworkPath = (path: NetworkPath, raw: object) => {
+    search.set(
       'analyticsNetworkFilter',
-      Buffer.from(JSON.stringify(filter)).toString('base64')
+      Buffer.from(JSON.stringify({ path, raw })).toString('base64')
     )
     setSearch(search)
   }
   const { path } = getNetworkFilter()
-  useEffect(() => {
-    if (!path.length) setNetworkPath(defaultNetworkPath)
-  }, [path, setNetworkPath])
-  const providerValue = { path, setNetworkPath, getNetworkFilter }
+  const providerValue = {
+    path: path.length ? path : defaultNetworkPath,
+    setNetworkPath,
+    getNetworkFilter
+  }
   return (
     <AnalyticsFilterContext.Provider
       {...props}

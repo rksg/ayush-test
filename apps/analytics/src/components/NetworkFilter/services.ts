@@ -4,7 +4,6 @@ import { dataApi } from '@acx-ui/analytics/services'
 import {
   AnalyticsFilter,
   defaultNetworkPath,
-  incidentCodes,
   NetworkPath,
   PathNode
 } from '@acx-ui/analytics/utils'
@@ -33,9 +32,9 @@ export const api = dataApi.injectEndpoints({
       query: payload => ({
         document: gql`
           query NetworkHierarchy(
-            $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $code: [String]
+            $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime
           ) {
-            network(start: $start, end: $end, code: $code) {
+            network(start: $start, end: $end) {
               hierarchyNode(path: $path, querySwitch: true) {
                 type
                 name
@@ -66,8 +65,7 @@ export const api = dataApi.injectEndpoints({
         variables: {
           path: defaultNetworkPath,
           start: payload.startDate,
-          end: payload.endDate,
-          code: incidentCodes
+          end: payload.endDate
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_FILTER' }],
