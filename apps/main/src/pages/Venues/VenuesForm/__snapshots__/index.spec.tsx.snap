@@ -254,7 +254,7 @@ exports[`Venues Form google map is not enabled 1`] = `
                     style="width: 470px; height: 260px; position: relative; margin-bottom: 30px;"
                   >
                     <div
-                      class="addressContainer"
+                      class="styledComponents__AddressContainer-sc-1jr0ig3-1 irGUDT"
                       style="position: absolute; z-index: 10; width: 450px; margin: 12px;"
                     >
                       <div
@@ -273,7 +273,7 @@ exports[`Venues Form google map is not enabled 1`] = `
                                 class="ant-form-item-control-input-content"
                               >
                                 <span
-                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled styledComponents__AddressInput-sc-1jr0ig3-1 DZuxu"
+                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled"
                                 >
                                   <span
                                     class="ant-input-prefix"
@@ -617,7 +617,7 @@ exports[`Venues Form should render venues form 1`] = `
                     style="width: 470px; height: 260px; position: relative; margin-bottom: 30px;"
                   >
                     <div
-                      class="addressContainer"
+                      class="styledComponents__AddressContainer-sc-1jr0ig3-1 irGUDT"
                       style="position: absolute; z-index: 10; width: 450px; margin: 12px;"
                     >
                       <div
@@ -636,7 +636,7 @@ exports[`Venues Form should render venues form 1`] = `
                                 class="ant-form-item-control-input-content"
                               >
                                 <span
-                                  class="ant-input-affix-wrapper styledComponents__AddressInput-sc-1jr0ig3-1 DZuxu"
+                                  class="ant-input-affix-wrapper"
                                 >
                                   <span
                                     class="ant-input-prefix"
