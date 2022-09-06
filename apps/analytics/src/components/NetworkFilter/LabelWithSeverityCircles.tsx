@@ -14,7 +14,7 @@ type LabelProps = {
 const getSeverityCircles = (
   data: ApOrSwitch[],
   venueWiseSeverities: NodesWithSeverity[],
-  sliceType?: string
+  nodeType?: string
 ) => {
   if (!venueWiseSeverities) return
   let severityArray = data.reduce((acc: string[], val: ApOrSwitch) => {
@@ -24,7 +24,7 @@ const getSeverityCircles = (
     })
     return acc
   }, [])
-  if (sliceType === 'venue')
+  if (nodeType === 'venue')
     venueWiseSeverities.forEach((venue: NodesWithSeverity) => {
       if (venue.sliceType === 'zone') {
         const severity = calculateSeverity(venue?.severity[venue.venueName])
