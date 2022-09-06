@@ -25,6 +25,7 @@ export * from './types/wifi/GuestNetwork'
 export * from './types/wifi/GuestPortal'
 export * from './types/wifi/GuestWlan'
 export * from './types/wifi/DhcpServiceProfile'
+export * from './types/wifi/GuestWlanAdvancedCustomization'
 
 export * from './pipes/networkPipes'
 export * from './pipes/apPipes'

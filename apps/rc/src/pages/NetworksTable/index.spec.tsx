@@ -208,5 +208,5 @@ describe('Networks Table', () => {
     fireEvent.click(deleteNetworkButton)
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-  })
+  }, 15000)
 })

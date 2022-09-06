@@ -6,7 +6,6 @@ import {
   IntlShape
 } from 'react-intl'
 
-const count = ['', ' k', ' m', ' b', ' t'] // from numeral, we could add more
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
 
@@ -105,12 +104,6 @@ function calendarFormat (number: number, intl: IntlShape) {
 const formats = {
   durationFormat,
   calendarFormat: (number: number, intl: IntlShape) => calendarFormat(number, intl),
-  percentFormat: (number: number) => numeral(number).format('0.[00]%'),
-  percentFormatWithoutScalingBy100: (number: number) => numeral(number / 100).format('0.[00]%'),
-  percentFormatNoSign: (number: number) => formats['percentFormat'](number).replace('%', ''),
-  percentFormatRound: (number: number) => numeral(number).format('0%'),
-  countFormat: (number: number) => numberFormat(1000, count, Math.round(number)),
-  countWithCommas: (number: number) => numeral(number).format('0,0'),
   decibelFormat: (number: number) => Math.round(number) + ' dB',
   decibelMilliWattsFormat: (number: number) => Math.round(number) + ' dBm',
   milliWattsFormat: (number:number) => numberFormat(1000, watts, number),
@@ -119,7 +112,6 @@ const formats = {
   radioFormat: (value: string|number) => `${value} GHz`,
   floatFormat: (number: number) => numeral(number).format('0.[000]'),
   enabledFormat: (value: boolean) => (value ? 'Enabled' : 'Disabled'),
-  noFormat: (value: unknown) => value,
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
   txFormat: (value: keyof typeof txpowerMapping) =>
     (txpowerMapping[value] ? txpowerMapping[value] : value)
@@ -139,7 +131,7 @@ export const dateTimeFormats = {
 }
 
 export function formatter (
-  name: keyof typeof formats | keyof typeof dateTimeFormats = 'countFormat',
+  name: keyof typeof formats | keyof typeof dateTimeFormats,
   intl?: IntlShape
 ) {
   return function formatter (value: unknown, tz?: string) {
@@ -155,14 +147,17 @@ export function formatter (
   }
 }
 
-
 const countFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::K .##/@##r}'
 })
 const percentFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::percent .##}'
 })
+const percentFormatRound: MessageDescriptor = defineMessage({
+  defaultMessage: '{value, number, ::percent}'
+})
 export const intlFormats = {
   countFormat,
-  percentFormat
+  percentFormat,
+  percentFormatRound
 }

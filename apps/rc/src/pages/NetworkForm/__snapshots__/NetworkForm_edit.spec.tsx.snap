@@ -181,39 +181,6 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                     </div>
                   </div>
                 </div>
-                <div
-                  class="ant-steps-item ant-steps-item-wait"
-                >
-                  <div
-                    class="ant-steps-item-container"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
-                    >
-                      <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
-                    <div
-                      class="ant-steps-item-content"
-                    >
-                      <div
-                        class="ant-steps-item-title"
-                      >
-                        Summary
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -940,198 +907,6 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                   </div>
                 </form>
               </div>
-              <div
-                class="ant-pro-steps-form-step"
-              >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="summary"
-                >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
-                  <h3
-                    class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                  >
-                    Summary
-                  </h3>
-                  <div
-                    class="ant-row"
-                    style="margin-left: -10px; margin-right: -10px;"
-                  >
-                    <div
-                      class="ant-col"
-                      style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
-                    >
-                      <h4
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        Network Info
-                      </h4>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              title="Network Name:"
-                            >
-                              Network Name:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              title="Info:"
-                            >
-                              Info:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                --
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              title="Type:"
-                            >
-                              Type:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                Enterprise AAA (802.1X)
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              title="Use Cloudpath Server:"
-                            >
-                              Use Cloudpath Server:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                No
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-divider ant-divider-vertical"
-                      role="separator"
-                      style="height: 300px;"
-                    />
-                    <div
-                      class="ant-col"
-                      style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
-                    >
-                      <h4
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        Activated in venues
-                      </h4>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                --
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
             </div>
           </div>
         </div>
@@ -1147,7 +922,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 geFEjT"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
               type="button"
             >
               <span>
@@ -1159,7 +934,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 clMRFp"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
               type="button"
             >
               <span>

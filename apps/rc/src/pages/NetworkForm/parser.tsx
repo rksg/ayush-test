@@ -3,32 +3,41 @@ import { get } from 'lodash'
 import {
   NetworkTypeEnum,
   NetworkSaveData,
-  OpenNetwork,
-  AAANetwork,
-  GuestNetwork,
-  DpskNetwork,
-  PassphraseFormatEnum,
-  PassphraseExpirationEnum,
-  Radius,
-  PskWlanAdvancedCustomization
+  OpenWlanAdvancedCustomization,
+  AAAWlanAdvancedCustomization,
+  DpskWlanAdvancedCustomization,
+  PskWlanAdvancedCustomization,
+  GuestWlanAdvancedCustomization,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = new AAANetwork()
+  let saveData = {
+    enableAccountingService: data.enableAccountingService,
+    isCloudpathEnabled: data.isCloudpathEnabled
+  }
 
   if (data.isCloudpathEnabled) {
-    saveData.cloudpathServerId = data.cloudpathServerId
-    saveData.enableAccountingProxy = false
-    saveData.enableAuthProxy = false
+    delete data?.accountingRadius
+    delete data?.authRadius
+    saveData = {
+      ...saveData,
+      ...{
+        cloudpathServerId: data.cloudpathServerId,
+        enableAccountingProxy: false,
+        enableAuthProxy: false
+      }
+    }
   } else {
-    let authRadius = new Radius()
+    delete data?.cloudpathServerId
+    let authRadius = {}
     if (get(data, 'authRadius.primary.ip')) {
       authRadius = {
         ...authRadius,
         ...{
           primary: {
             ip: get(data, 'authRadius.primary.ip'),
-            port: Number(get(data, 'authRadius.primary.port')),
+            port: get(data, 'authRadius.primary.port'),
             sharedSecret: get(data, 'authRadius.primary.sharedSecret')
           }
         }
@@ -40,24 +49,30 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
         ...{
           secondary: {
             ip: get(data, 'authRadius.secondary.ip'),
-            port: Number(get(data, 'authRadius.secondary.port')),
+            port: get(data, 'authRadius.secondary.port'),
             sharedSecret: get(data, 'authRadius.secondary.sharedSecret')
           }
         }
       }
     }
 
-    saveData.enableAuthProxy = data.enableAuthProxy
-    saveData.authRadius = authRadius
+    saveData = {
+      ...saveData,
+      ...{
+        enableAuthProxy: data.enableAuthProxy,
+        enableSecondaryAuthServer: data.enableSecondaryAuthServer,
+        authRadius
+      }
+    }
 
     if (data.enableAccountingService) {
-      let accountingRadius = new Radius()
+      let accountingRadius = {}
       accountingRadius = {
         ...accountingRadius,
         ...{
           primary: {
             ip: get(data, 'accountingRadius.primary.ip'),
-            port: Number(get(data, 'accountingRadius.primary.port')),
+            port: get(data, 'accountingRadius.primary.port'),
             sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
           }
         }
@@ -69,7 +84,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
           ...{
             secondary: {
               ip: get(data, 'accountingRadius.secondary.ip'),
-              port: Number(get(data, 'accountingRadius.secondary.port')),
+              port: get(data, 'accountingRadius.secondary.port'),
               sharedSecret: get(
                 data,
                 'accountingRadius.secondary.sharedSecret'
@@ -79,8 +94,28 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
         }
       }
 
-      saveData.enableAccountingProxy = data.enableAccountingProxy
-      saveData.accountingRadius = accountingRadius
+      saveData = {
+        ...saveData,
+        ...{
+          enableAccountingProxy: data.enableAccountingProxy,
+          enableSecondaryAcctServer: data.enableSecondaryAcctServer,
+          accountingRadius
+        }
+      }
+    }
+  }
+  saveData = {
+    ...saveData,
+    ...{
+      wlan: {
+        wlanSecurity: data.wlanSecurity,
+        advancedCustomization: new AAAWlanAdvancedCustomization(),
+        bypassCNA: false,
+        bypassCPUsingMacAddressAuthentication: false,
+        enable: true,
+        managementFrameProtection: 'Disabled',
+        vlanId: 1
+      }
     }
   }
 
@@ -88,40 +123,66 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
 }
 
 const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = new OpenNetwork()
+  let saveData = { ...data }
 
-  if (data.cloudpathServerId) {
-    saveData.cloudpathServerId = data.cloudpathServerId
+  saveData = {
+    ...saveData,
+    ...{
+      wlan: {
+        advancedCustomization: new OpenWlanAdvancedCustomization(),
+        enable: true,
+        vlanId: 1
+      }
+    }
   }
 
   return saveData
 }
 
 const parseCaptivePortalDataToSave = (data: NetworkSaveData) => {
-  let saveData = new GuestNetwork()
+  let saveData = { ...data,
+    ...{
+      wlan: {
+        wlanSecurity: WlanSecurityEnum.None,
+        bypassCPUsingMacAddressAuthentication: true,
+        advancedCustomization: new GuestWlanAdvancedCustomization(),
+        macAddressAuthentication: false,
+        vlanId: 1,
+        enabled: true,
+        bypassCNA: false
+      }
+    }
+  }
   saveData.type = data.type
   saveData.guestPortal = { ...data.guestPortal }
   return saveData
 }
 
 const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = new DpskNetwork()
-
-  saveData.dpskPassphraseGeneration = {
-    length: data.passphraseLength as number,
-    format: data.passphraseFormat as PassphraseFormatEnum,
-    expiration: data.expiration as PassphraseExpirationEnum
+  let saveData = { ...data,
+    ...{
+      wlan: {
+        wlanSecurity: data.dpskWlanSecurity,
+        enable: true,
+        vlanId: 1,
+        advancedCustomization: new DpskWlanAdvancedCustomization()
+      }
+    }
   }
 
   if (data.cloudpathServerId) {
-    saveData.cloudpathServerId = data.cloudpathServerId
+    saveData = {
+      ...saveData,
+      cloudpathServerId: data.cloudpathServerId
+    }
   }
-
   return saveData
 }
 
 const parsePskSettingDataToSave = (data: NetworkSaveData) => {
-  let saveData = {}
+  let saveData = {
+    enableAccountingService: data.enableAccountingService
+  }
   if (data.wlan?.macAddressAuthentication) {
     let authRadius = {
       primary: {
@@ -142,10 +203,11 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
         }
       }
     }
-  
+
     saveData = {
       ...saveData,
       ...{
+        enableSecondaryAuthServer: data.enableSecondaryAuthServer,
         authRadius
       }
     }
@@ -157,9 +219,9 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
           port: get(data, 'accountingRadius.primary.port'),
           sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
         }
-        
+
       }
-  
+
       if (data.enableSecondaryAcctServer) {
         accountingRadius = {
           ...accountingRadius,
@@ -175,10 +237,11 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
           }
         }
       }
-  
+
       saveData = {
         ...saveData,
         ...{
+          enableSecondaryAcctServer: data.enableSecondaryAcctServer,
           accountingRadius
         }
       }
@@ -222,4 +285,25 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
     [NetworkTypeEnum.PSK]: parsePskSettingDataToSave(data)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
+}
+
+export function transferMoreSettingsToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
+  const advancedCustomization = {
+    ...originalData?.wlan?.advancedCustomization,
+    ...data?.wlan?.advancedCustomization
+  } as OpenWlanAdvancedCustomization | 
+       AAAWlanAdvancedCustomization | 
+       DpskWlanAdvancedCustomization | 
+       PskWlanAdvancedCustomization
+
+  let saveData:NetworkSaveData = {
+    ...originalData,
+    wlan: {
+      ...originalData?.wlan,
+      vlanId: data?.wlan?.vlanId ?? originalData?.wlan?.vlanId,
+      advancedCustomization
+    }
+  }
+
+  return saveData
 }

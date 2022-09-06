@@ -29,7 +29,8 @@ export enum WlanSecurityEnum {
   OpenCaptivePortal = 'OpenCaptivePortal',
   WEP = 'WEP',
   WPA23Mixed = 'WPA23Mixed',
-  WPA3 = 'WPA3'
+  WPA3 = 'WPA3',
+  None = 'None'
 }
 
 export enum PassphraseFormatEnum {
@@ -104,7 +105,7 @@ export enum CloudpathDeploymentTypeEnum {
 
 export enum ServiceType {
   PORTAL = 'PORTAL',
-  DHCP_WIFI = 'DHCP_WIFI',
+  DHCP = 'DHCP',
   WIFI_CALLING = 'WIFI_CALLING',
   MDNS_PROXY = 'MDNS_PROXY',
   DPSK = 'DPSK'

@@ -3,6 +3,10 @@ import { ApiInfo } from '../apiService'
 export const websocketServerUrl = '/api/websocket/socket.io'
 
 export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
+  getVlanPools: {
+    method: 'get',
+    url: '/api/tenant/{tenantId}/wifi/vlan-pool'
+  },
   getVMNetworksList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/network'
@@ -63,6 +67,34 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/admin-settings/ui'
   },
+  getL2AclPolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/l2-acl-policy/query'
+  },
+  getL3AclPolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/l3-acl-policy/query'
+  },
+  getDevicePolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/device-policy/query'
+  },
+  getApplicationPolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/application-policy/query'
+  },
+  getAccessControlProfileList: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/access-control-profile'
+  },
+  getWifiCallingProfileList: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/wifi-calling-profile'
+  },
+  getVlanPoolList: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/vlan-pool'
+  },
   getServicesList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/services'
@@ -74,6 +106,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenuesList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'
+  },
+  getVenue: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/venue/:venueId'
   },
   getVenueDetailsHeader: {
     method: 'get',
