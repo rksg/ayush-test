@@ -65,7 +65,7 @@ describe('Timeseries component', () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: expectedResult
     })
-    const { asFragment } = render(
+    render(
       <Provider>
         <TimeSeries {...props} />
       </Provider>

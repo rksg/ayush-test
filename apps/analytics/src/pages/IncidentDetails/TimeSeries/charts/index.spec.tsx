@@ -1,5 +1,5 @@
-import { fakeIncident1 }              from '@acx-ui/analytics/utils'
-import { store }                 from '@acx-ui/store'
+import { fakeIncident1 }                 from '@acx-ui/analytics/utils'
+import { store }                         from '@acx-ui/store'
 import { mockAutoSizer, render, screen } from '@acx-ui/test-utils'
 
 import { ChartsData } from '../services'
