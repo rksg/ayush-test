@@ -1,4 +1,5 @@
 import { dataApiURL }                      from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                 from '@acx-ui/analytics/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { render, screen }                  from '@acx-ui/test-utils'
 import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
@@ -14,7 +15,7 @@ const filters = {
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours
-}
+} as AnalyticsFilter
 
 describe('SwitchesByPoEUsageWidget', () => {
   mockAutoSizer()

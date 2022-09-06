@@ -3,11 +3,33 @@ import { configureStore } from '@reduxjs/toolkit'
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
-import { DateRange }           from '@acx-ui/utils'
 
 import { api } from './services'
 
-describe('IncidentsBySeverityApi', () => {
+export const topSwitchModelsResponse = {
+  network: {
+    hierarchyNode: {
+      topNSwitchModels: [{
+        name: 'ICX7150-C12P',
+        count: 13
+      }, {
+        name: 'Unknown',
+        count: 8
+      }, {
+        name: 'ICX7150-24P',
+        count: 5
+      }, {
+        name: 'ICX7250-48P',
+        count: 5
+      }, {
+        name: 'ICX7650-48ZP',
+        count: 4
+      }]
+    }
+  }
+}
+
+describe('TopSwitchModelsByCountApi', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
@@ -15,42 +37,35 @@ describe('IncidentsBySeverityApi', () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([dataApi.middleware])
   })
-  const props : AnalyticsFilter = {
+  const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'network', name: 'Network' }],
-    range: DateRange.last24Hours
-  }
+    path: [{ type: 'network', name: 'Network' }]
+  } as AnalyticsFilter
+
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
+
   it('should return correct data', async () => {
-    const expectedResult = {
-      network: {
-        hierarchyNode: {
-          P1: 1,
-          P2: 2,
-          P3: 3,
-          P4: 4
-        }
-      }
-    }
-    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
-      data: expectedResult
+    mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
+      data: topSwitchModelsResponse
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.incidentsBySeverity.initiate(props)
+      api.endpoints.topSwitchModels.initiate(props)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
+    expect(data).toStrictEqual(
+      topSwitchModelsResponse.network.hierarchyNode.topNSwitchModels
+    )
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+    mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.incidentsBySeverity.initiate(props)
+      api.endpoints.topSwitchModels.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

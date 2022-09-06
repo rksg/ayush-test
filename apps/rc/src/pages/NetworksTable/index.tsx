@@ -193,6 +193,12 @@ export function NetworksTable () {
         }
       },
       {
+        label: $t({ defaultMessage: 'Clone' }),
+        onClick: (selectedRows) => {
+          navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
+        }
+      },
+      {
         label: $t({ defaultMessage: 'Delete' }),
         onClick: ([{ name, id }], clearSelection) => {
           showActionModal({

@@ -39,7 +39,7 @@ describe('Dashboard', () => {
       'topSwitchesByPoeUsage',
       'topSwitchesByTraffic',
       'topSwitchesByErrors',
-      'topSwitchesByModels'
+      'topSwitchModelsByCount'
     ]
     switchWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
   })
