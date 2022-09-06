@@ -4,11 +4,12 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import {
   Alert,
-  Button,
   Table,
   TableProps
 } from '@acx-ui/components'
 import { DHCPOption } from '@acx-ui/rc/utils'
+
+import { OptionAddButton } from '../styledComponents'
 
 const dataOption = {
   id: 0,
@@ -19,20 +20,9 @@ const dataOption = {
 }
 export function OptionList (props:{
   optionData: DHCPOption[],
-  updateOptionData: (data:DHCPOption[]) => void,
-  showOptionForm: (data:DHCPOption) => void,
+  updateOptionData?: (data:DHCPOption[]) => void,
+  showOptionForm?: (data:DHCPOption) => void,
 }) {
-  const style= {
-    top: '35px',
-    backgroundColor: 'transparent',
-    right: '-640px',
-    zIndex: '1',
-    color: '#5496ea',
-    fontWeight: 600,
-    border: 0,
-    cursor: 'pointer',
-    fontSize: '14px'
-  }
   const { $t } = useIntl()
   const { optionData, updateOptionData, showOptionForm } = props
   const [ errorVisible, showError ] = useState<Boolean>(false)
@@ -44,7 +34,7 @@ export function OptionList (props:{
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (rows: DHCPOption | DHCPOption[]) => {
         if (Array.isArray(rows) && rows.length===1) {
-          showOptionForm(rows[0])
+          showOptionForm?.(rows[0])
         }else{
           showError(true)
         }
@@ -68,7 +58,7 @@ export function OptionList (props:{
           }
         }
         clearSelection()
-        updateOptionData(optionData)
+        updateOptionData?.(optionData)
       }
     }
   ]
@@ -105,14 +95,13 @@ export function OptionList (props:{
       <Alert message={$t(errorMessage)} type='error' showIcon closable />
       }
       <div>
-        <Button key='addOpt'
-          style={style}
+        <OptionAddButton key='addOpt'
           type='primary'
           onClick={() => {
-            showOptionForm(dataOption)
+            showOptionForm?.(dataOption)
           }}>
           {$t({ defaultMessage: 'Add option' })}
-        </Button>
+        </OptionAddButton>
       </div>
       <Table
         rowKey='id'

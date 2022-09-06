@@ -8,7 +8,6 @@ import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   act,
-  fireEvent,
   mockServer,
   render,
   screen
@@ -81,10 +80,9 @@ describe('Create DHCP: Pool detail', () => {
     })
     const addButton = screen.getByRole('button', { name: 'Add DHCP Pool' })
     await userEvent.click(addButton)
-    const insertInput = screen.getByLabelText('Pool Name')
-    fireEvent.change(insertInput, { target: { value: 'pool name test' } })
-    fireEvent.blur(insertInput)
-    screen.getByText('pool name test')
+
+    const insertInput = screen.getByRole('textbox', { name: 'Description' })
+    await userEvent.type(insertInput,'Des test')
 
   })
 

@@ -89,11 +89,9 @@ describe('Create DHCP: Option detail', () => {
     })
     const addButton = screen.getByRole('button', { name: 'Add option' })
     await userEvent.click(addButton)
-    const insertInput = screen.getByLabelText('Option Name')
-    fireEvent.change(insertInput, { target: { value: 'Option name test' } })
-    fireEvent.blur(insertInput)
-    screen.getByText('Option name test')
+
+    const insertInput = screen.getByRole('textbox', { name: 'Option Name' })
+    await userEvent.type(insertInput,'Option name test')
 
   })
-
 })

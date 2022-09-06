@@ -1,17 +1,13 @@
 import '@testing-library/jest-dom'
-import { Form } from 'antd'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 
 import { networkApi }      from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   act,
-  fireEvent,
-  mockServer,
   render,
-  screen,
-  within
+  screen
 } from '@acx-ui/test-utils'
 
 import { OptionList } from './OptionsTable'
@@ -53,19 +49,9 @@ describe('Create DHCP: Option table', () => {
   })
 
   it('should render correctly', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      )
-    )
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<OptionList optionData={list.data}
-      updateOptionData={()=>{}}
-      showOptionForm={()=>{}}/>, {
-      wrapper,
-      route: { params, path: '/:tenantId/:networkId' }
+    const { asFragment } = render(<OptionList optionData={list.data}/>, {
+      wrapper
     })
 
     await screen.findByText('option1')
@@ -74,19 +60,9 @@ describe('Create DHCP: Option table', () => {
 
 
   it('Table action bar edit pool', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      )
-    )
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    render(<OptionList optionData={list.data}
-      updateOptionData={()=>{}}
-      showOptionForm={()=>{}} />, {
-      wrapper,
-      route: { params, path: '/:tenantId/:networkId' }
+    render(<OptionList optionData={list.data}/>, {
+      wrapper
     })
 
     const tbody = (await screen.findAllByRole('rowgroup'))
@@ -94,10 +70,11 @@ describe('Create DHCP: Option table', () => {
 
     expect(tbody).toBeVisible()
 
-    const body = within(tbody)
-    fireEvent.click(await body.findByText('option2'))
-    const editButton = screen.getByRole('button', { name: 'Edit' })
-    fireEvent.click(editButton)
+    userEvent.click(screen.getByText('option1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
+
+    userEvent.click(screen.getByText('option2'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
 
   })
 

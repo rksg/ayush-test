@@ -4,11 +4,12 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import {
   Alert,
-  Button,
   Table,
   TableProps
 } from '@acx-ui/components'
 import { DHCPPool } from '@acx-ui/rc/utils'
+
+import { PoolAddButton } from '../styledComponents'
 
 const dataPool = {
   id: 0,
@@ -37,17 +38,6 @@ export function PoolList (props:{
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
   })
-  const style= {
-    top: '36px',
-    backgroundColor: 'transparent',
-    right: '-650px',
-    zIndex: '1',
-    color: '#5496ea',
-    fontWeight: 600,
-    border: 0,
-    cursor: 'pointer',
-    fontSize: '12px'
-  }
   const actions: TableProps<DHCPPool>['actions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
@@ -122,10 +112,10 @@ export function PoolList (props:{
       <Alert message={$t(errorMessage)} type='error' showIcon closable />
       }
       { !readonly && <div>
-        <Button style={style}
+        <PoolAddButton
           onClick={()=>
             showPoolForm?.(dataPool)
-          }>{$t({ defaultMessage: 'Add DHCP Pool' })}</Button>
+          }>{$t({ defaultMessage: 'Add DHCP Pool' })}</PoolAddButton>
       </div> }
 
       <Table

@@ -6,12 +6,13 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Button, StepsForm, StepsFormInstance }              from '@acx-ui/components'
+import { StepsForm, StepsFormInstance }                      from '@acx-ui/components'
 import { Drawer }                                            from '@acx-ui/components'
 import { DHCPPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { validationMessages }                                from '@acx-ui/utils'
 
-import DHCPFormContext from '../DHCPFormContext'
+import DHCPFormContext             from '../DHCPFormContext'
+import { CancelButton, AddButton } from '../styledComponents'
 
 import { OptionDetail } from './OptionDetail'
 import { PoolList }     from './PoolTable'
@@ -71,16 +72,6 @@ export function PoolDetail () {
     }
     onClose()
     return true
-  }
-  const style= {
-    top: '10px',
-    right: '-600px',
-    zIndex: '1',
-    backgroundColor: '#5496ea',
-    fontWeight: 600,
-    border: 0,
-    cursor: 'pointer',
-    fontSize: '14px'
   }
   const [visible, setVisible] = useState(false)
   const onClose = () => {
@@ -218,14 +209,13 @@ export function PoolDetail () {
           checked={addOn}
           onClick={()=>{setAddOn(!addOn)}}
           style={{ width: '20px', top: '3px' }}/>{$t({ defaultMessage: 'Add other pool' })}</label>}
-        <Button key='Cancel'
+        <CancelButton key='Cancel'
           type='primary'
           onClick={onClose}
-          style={{ ...style, backgroundColor: 'transparent', color: '#5496ea' }}>
+        >
           {$t({ defaultMessage: 'Cancel' })}
-        </Button>
-        <Button key='add'
-          style={style}
+        </CancelButton>
+        <AddButton key='add'
           type='primary'
           onClick={async ()=> {
             await formRef.current?.validateFields()
@@ -234,7 +224,7 @@ export function PoolDetail () {
           }>
           {selectedData.id === 0 && $t({ defaultMessage: 'Add' })}
           {selectedData.id !== 0 && $t({ defaultMessage: 'Update' })}
-        </Button>
+        </AddButton>
       </Row>
     </StepsForm.StepForm>:null
 
