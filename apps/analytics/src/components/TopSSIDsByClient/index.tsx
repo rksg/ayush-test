@@ -1,6 +1,6 @@
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
-
 
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -9,19 +9,19 @@ import {
   Table,
   NoData,
   SparklineChart } from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+import { formatter, intlFormats } from '@acx-ui/utils'
 
-import { useClientBySSIDQuery, ClientBySSID } from './services'
-import { TrafficPercent }                     from './styledComponents'
+import { useTopSSIDsByClientQuery, TopSSIDsByClient } from './services'
+import { TrafficPercent }                             from './styledComponents'
 
 
-export default function ClientBySSIDWidget ({
+export default function TopSSIDsByClientWidget ({
   filters
 }: {
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const queryResults = useClientBySSIDQuery(filters)
+  const queryResults = useTopSSIDsByClientQuery(filters)
 
   const columns=[
     {
@@ -49,7 +49,7 @@ export default function ClientBySSIDWidget ({
     }
   ]
 
-  const getDataSource= (userTrafficData: ClientBySSID[],
+  const getDataSource= (userTrafficData: TopSSIDsByClient[],
     overallTrafic:number) => {
     return userTrafficData.map((item,index) => {
       const sparkLineData = item.timeSeries.userTraffic
@@ -57,11 +57,11 @@ export default function ClientBySSIDWidget ({
       const sparklineChartStyle = { height: 22, width: 80, display: 'inline' }
       return {
         ...item,
-        traffic: <>{formatter('bytesFormat')(item.userTraffic)} &nbsp;
+        traffic: <Space>{formatter('bytesFormat')(item.userTraffic)} &nbsp;
           <TrafficPercent>
-          ({formatter('percentFormatRound')(item.userTraffic/overallTrafic)})
+          ({$t(intlFormats.percentFormatRound, { value: item.userTraffic/overallTrafic })})
           </TrafficPercent>
-        </>,
+        </Space>,
         trafficHistory: <SparklineChart
           key={index}
           data={sparkLineData}

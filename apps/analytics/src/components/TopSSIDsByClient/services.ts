@@ -7,14 +7,14 @@ import { getSparklineGranularity } from '../../utils'
 
 export type HierarchyNodeData = {
   totalUserTraffic: number
-  topNSSIDByClient: ClientBySSID[]
+  topNSSIDByClient: TopSSIDsByClient[]
 }
 
 export type TrafficTimeseriesData = {
     userTraffic: number[]
 }
 
-export type ClientBySSID = {
+export type TopSSIDsByClient = {
     name: string
     userTraffic: number
     clientCount: number
@@ -29,13 +29,13 @@ interface Response <T> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    ClientBySSID: build.query<
+    topSSIDsByClient: build.query<
       HierarchyNodeData,
       AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`
-        query ClientBySSIDWidget($path: [HierarchyNodeInput],
+        query TopSSIDsByClientWidget($path: [HierarchyNodeInput],
           $start: DateTime, $end: DateTime, $n: Int!, $granularity: String!) {
           network(end: $end, start: $start) {
             hierarchyNode(path: $path) {
@@ -66,4 +66,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useClientBySSIDQuery } = api
+export const { useTopSSIDsByClientQuery } = api

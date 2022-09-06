@@ -5,8 +5,8 @@ import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 import { DateRange }           from '@acx-ui/utils'
 
-import { clinetBySSIDFixture } from './__tests__/fixtures'
-import { api }                 from './services'
+import { topSSIDsByClientFixture } from './__tests__/fixtures'
+import { api }                     from './services'
 
 describe('clientsBySSIDWidget', () => {
   const store = configureStore({
@@ -29,14 +29,14 @@ describe('clientsBySSIDWidget', () => {
   it('should return correct data', async () => {
     const expectedResult = {
       network: {
-        hierarchyNode: clinetBySSIDFixture
+        hierarchyNode: topSSIDsByClientFixture
       }
     }
-    mockGraphqlQuery(dataApiURL, 'ClientBySSIDWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsByClientWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.ClientBySSID.initiate(props)
+      api.endpoints.topSSIDsByClient.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
@@ -51,22 +51,22 @@ describe('clientsBySSIDWidget', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'ClientBySSIDWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsByClientWidget', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.ClientBySSID.initiate(props)
+      api.endpoints.topSSIDsByClient.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'ClientBySSIDWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSSIDsByClientWidget', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.ClientBySSID.initiate(props)
+      api.endpoints.topSSIDsByClient.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

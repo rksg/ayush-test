@@ -2,12 +2,12 @@ import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { Card }            from '@acx-ui/components'
 import { Provider }        from '@acx-ui/store'
 
-import ClientBySSID                   from './components/ClientBySSID'
 import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
 import NetworkHistoryWidget           from './components/NetworkHistory'
 import SwitchesByPoEUsageWidget       from './components/SwitchesByPoEUsage'
 import TopSwitchModelsWidget          from './components/SwitchModels'
 import TopApplicationsByTrafficWidget from './components/TopApplicationsByTraffic'
+import TopSSIDsByClientWidget         from './components/TopSSIDsByClient'
 import TopSSIDsByTrafficWidget        from './components/TopSSIDsByTraffic'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
 
@@ -26,7 +26,7 @@ const widgetsMap = {
     <TopSSIDsByTrafficWidget filters={filters}/>
   ),
   topSSIDsByClient: ({ filters }: { filters: AnalyticsFilter }) => (
-    <ClientBySSID filters={filters}/>
+    <TopSSIDsByClientWidget filters={filters}/>
   ),
   connectedClientsOverTime: ({ filters }: { filters: AnalyticsFilter }) => (
     <ConnectedClientsOverTimeWidget filters={filters}/>
