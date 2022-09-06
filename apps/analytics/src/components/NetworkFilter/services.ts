@@ -8,7 +8,7 @@ import {
   PathNode
 } from '@acx-ui/analytics/utils'
 
-type NetworkData = PathNode & { path: NetworkPath, incidentSeverity? : number }
+type NetworkData = PathNode & { path: NetworkPath }
 export type ApOrSwitch = {
   path: NetworkPath
   name: string
