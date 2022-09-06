@@ -10,12 +10,11 @@ import {
 } from 'antd'
 import TextArea    from 'antd/lib/input/TextArea'
 import { useIntl } from 'react-intl'
-import styled      from 'styled-components/macro'
 
 import { PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { get }                                                 from '@acx-ui/config'
 import { useSplitTreatment }                                   from '@acx-ui/feature-toggle'
-import { Close, SearchOutlined }                               from '@acx-ui/icons'
+import { SearchOutlined }                                      from '@acx-ui/icons'
 import { useAddVenueMutation, useLazyVenuesListQuery }         from '@acx-ui/rc/services'
 import { Address, VenueSaveData, checkObjectNotExists }        from '@acx-ui/rc/utils'
 import {
@@ -24,15 +23,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import VenueMap from './VenueMap'
-
-export const CloseIcon = styled.svg`
-  width: 10px;
-  height: 10px;
-  path {
-    stroke: var(--acx-primary-black);
-  }
-`
+import { CloseIcon, AddressInput } from './styledComponents'
+import VenueMap                    from './VenueMap'
 
 export const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
   const [marker, setMarker] = React.useState<google.maps.Marker>()
@@ -307,10 +299,8 @@ export function VenuesForm () {
                   validateTrigger: 'onChange'
                 }]}
               >
-                <Input
-                  allowClear={{ clearIcon: 
-                  <CloseIcon><Close width='10' height='10' /></CloseIcon>
-                  }}
+                <AddressInput
+                  allowClear={{ clearIcon: <CloseIcon /> }}
                   prefix={<SearchOutlined />}
                   onChange={addressOnChange}
                   data-testid='address-input'

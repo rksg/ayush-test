@@ -273,7 +273,7 @@ exports[`Venues Form google map is not enabled 1`] = `
                                 class="ant-form-item-control-input-content"
                               >
                                 <span
-                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled"
+                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled styledComponents__AddressInput-sc-1jr0ig3-1 DZuxu"
                                 >
                                   <span
                                     class="ant-input-prefix"
@@ -299,14 +299,9 @@ exports[`Venues Form google map is not enabled 1`] = `
                                       tabindex="-1"
                                     >
                                       <svg
-                                        class="VenuesForm__CloseIcon-sc-1bc6c3h-0 hlKMQk"
+                                        class="styledComponents__CloseIcon-sc-1jr0ig3-0 etwmVJ"
                                       >
-                                        <svg
-                                          height="10"
-                                          width="10"
-                                        >
-                                          Close.svg
-                                        </svg>
+                                        Close.svg
                                       </svg>
                                     </span>
                                   </span>
@@ -641,7 +636,7 @@ exports[`Venues Form should render venues form 1`] = `
                                 class="ant-form-item-control-input-content"
                               >
                                 <span
-                                  class="ant-input-affix-wrapper"
+                                  class="ant-input-affix-wrapper styledComponents__AddressInput-sc-1jr0ig3-1 DZuxu"
                                 >
                                   <span
                                     class="ant-input-prefix"
@@ -666,14 +661,9 @@ exports[`Venues Form should render venues form 1`] = `
                                       tabindex="-1"
                                     >
                                       <svg
-                                        class="VenuesForm__CloseIcon-sc-1bc6c3h-0 hlKMQk"
+                                        class="styledComponents__CloseIcon-sc-1jr0ig3-0 etwmVJ"
                                       >
-                                        <svg
-                                          height="10"
-                                          width="10"
-                                        >
-                                          Close.svg
-                                        </svg>
+                                        Close.svg
                                       </svg>
                                     </span>
                                   </span>
