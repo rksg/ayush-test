@@ -1,5 +1,5 @@
 import { dataApiURL }                                                  from '@acx-ui/analytics/services'
-import { fakeIncident1 }                                                    from '@acx-ui/analytics/utils'
+import { fakeIncident1 }                                               from '@acx-ui/analytics/utils'
 import { Provider, store }                                             from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
