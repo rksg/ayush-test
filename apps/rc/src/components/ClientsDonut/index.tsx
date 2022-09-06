@@ -2,9 +2,7 @@ import { countBy, isEmpty }   from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader }                        from '@acx-ui/components'
-import { Card }                                  from '@acx-ui/components'
-import { DonutChart }                            from '@acx-ui/components'
+import { cssStr, Loader, Card , DonutChart }     from '@acx-ui/components'
 import type { DonutChartData }                   from '@acx-ui/components'
 import { useDashboardOverviewQuery }             from '@acx-ui/rc/services'
 import { Dashboard }                             from '@acx-ui/rc/utils'
@@ -17,7 +15,7 @@ export const getAPClientChartData = (
   const seriesMapping = [
     { name: $t({ defaultMessage: 'Poor' }), color: cssStr('--acx-semantics-red-50') },
     { name: $t({ defaultMessage: 'Average' }), color: cssStr('--acx-semantics-yellow-40') },
-    { name: $t({ defaultMessage: 'Good' }), color: cssStr('--acx-semantics-green-60') },
+    { name: $t({ defaultMessage: 'Good' }), color: cssStr('--acx-semantics-green-50') },
     { name: $t({ defaultMessage: 'Unknown' }), color: cssStr('--acx-neutrals-50') }
   ] as Array<{ name: string, color: string }>
 
@@ -48,7 +46,7 @@ export const getSwitchClientChartData = (
     chartData.push({
       name: $t({ defaultMessage: 'Clients' }),
       value: switchClients.totalCount,
-      color: cssStr('--acx-semantics-green-60')
+      color: cssStr('--acx-semantics-green-50')
     })
   }
   return chartData

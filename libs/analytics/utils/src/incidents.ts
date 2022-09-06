@@ -74,7 +74,7 @@ export function normalizeNodeType (nodeType: NodeType): NormalizedNodeType {
  */
 export function nodeTypes (nodeType: NodeType): MessageDescriptor {
   switch (normalizeNodeType(nodeType)) {
-    case 'network': return defineMessage({ defaultMessage: 'Entire Organization' })
+    case 'network': return defineMessage({ defaultMessage: 'Organization' })
     case 'apGroup': return defineMessage({ defaultMessage: 'AP Group' })
     case 'zone': return defineMessage({ defaultMessage: 'Venue' })
     case 'switchGroup': return defineMessage({ defaultMessage: 'Venue' })
