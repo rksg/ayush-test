@@ -36,18 +36,14 @@ const getSeverityCircles = (
 
 export const LabelWithSeverityCicle = (props: LabelProps) => {
   const { nodes, nodesWithSeverities, name, nodeType } = props
-  const severityCircles = getSeverityCircles(
-    nodes,
-    nodesWithSeverities,
-    nodeType
-  )
+  const severityCircles = getSeverityCircles(nodes, nodesWithSeverities, nodeType)
 
   return (
     <UI.LabelContainer>
       <UI.Label>{name}</UI.Label>
       <UI.SeverityContainer>
         {severityCircles?.map((severityCircle, index) => (
-          <UI.SeveritySpan role='severityCirlce' severity={severityCircle} key={index}/>
+          <UI.SeveritySpan severity={severityCircle} key={index} />
         ))}
       </UI.SeverityContainer>
     </UI.LabelContainer>
