@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { renderHook, render } from '@testing-library/react'
 
-import { BrowserRouter } from '@acx-ui/react-router-dom'
+import { BrowserRouter, MemoryRouter } from '@acx-ui/react-router-dom'
 
 import { useDateFilter, DateFilterProvider }            from './dateFilterContext'
 import { defaultRanges, DateRange, getDateRangeFilter } from './dateUtil'
@@ -37,23 +37,20 @@ describe('DateFilterProvider', () => {
     expect(asFragment()).toMatchSnapshot()
   })
   it('should set url on rerender', () => {
+    const period = Buffer.from(JSON.stringify({ range: 'Last Month' })).toString('base64')
     function Component () {
       const filters = useDateFilter()
-      useEffect(() => {
-        filters?.setDateFilter?.({
-          ...getDateRangeFilter(DateRange.lastMonth)
-        })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [])
       return <div>{JSON.stringify(filters)}</div>
     }
-
     const { asFragment } = render(
-      <BrowserRouter>
+      <MemoryRouter initialEntries={[{
+        pathname: '/incidents',
+        search: `?period=${period}`
+      }]}>
         <DateFilterProvider>
           <Component />
         </DateFilterProvider>
-      </BrowserRouter>
+      </MemoryRouter>
     )
     expect(asFragment()).toMatchSnapshot()
   })
