@@ -47,6 +47,10 @@ This doc is for I18n management for local development
     }
     ```
 
+4. Use `getIntl function` for usage outside of React
+
+    Check the [IncidentTable services -> transformData method](apps/analytics/src/components/IncidentTable/services.ts) for usage outside of React.
+
 ## Update i18n messages for all locales
 
 Run command below when there are new/updated contents added to the code base

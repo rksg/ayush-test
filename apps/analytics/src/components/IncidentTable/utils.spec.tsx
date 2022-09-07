@@ -3,9 +3,7 @@ import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
 import { 
-  incidentCodes,
   noDataSymbol,
-  incidentInformation,
   fakeIncident,
   NodeType,
   PathNode
@@ -20,9 +18,7 @@ import {
   severitySort,
   FormatIntlString,
   FormatIntlStringProps,
-  GetCategory,
   IncidentTableComponentProps,
-  GetScope,
   dateSort,
   defaultSort,
   ShortIncidentDescription
@@ -237,37 +233,6 @@ describe('IncidentTable: utils', () => {
     })
   })
 
-  describe('getCategory', () => {
-    interface RenderGetCategoryProps {
-      code?: string
-      subCategory?: boolean
-    }
-  
-    const RenderGetCategory = (props: RenderGetCategoryProps) => {
-      return <Provider>
-        {GetCategory(props.code as string, props.subCategory)}
-      </Provider>
-    }
-  
-    it('getCategory: valid codes', async () => {
-      incidentCodes.forEach(async (code) => {
-        render(<RenderGetCategory code={code}/>)
-        const category = incidentInformation[code].category.defaultMessage as string
-        await screen.findByText(category)
-        expect(screen.getByText(category).textContent).toBe(category)
-      })
-    })
-
-    it('getCategory: valid codes on subCategory', async () => {
-      incidentCodes.forEach(async (code) => {
-        render(<RenderGetCategory code={code} subCategory={true}/>)
-        const subCategory = incidentInformation[code].subCategory.defaultMessage as string
-        await screen.findByText(subCategory)
-        expect(screen.getByText(subCategory).textContent).toBe(subCategory)
-      })
-    })
-  })
-
   describe('ShortIncidentDescription', () => {  
     const RenderShortDescription = (props: IncidentTableComponentProps) => {
       return <Provider><ShortIncidentDescription onClickDesc={jest.fn()} {...props}/></Provider>
@@ -279,18 +244,6 @@ describe('IncidentTable: utils', () => {
       const expectedShortDesc = '802.11 Authentication failures are unusually high in Venue: Venue-3-US'
       await screen.findByText(expectedShortDesc)
       expect(screen.getByText(expectedShortDesc).textContent).toBe(expectedShortDesc)
-    })
-  })
-
-  describe('GetScope', () => {
-    const RenderGetScope = (props: IncidentTableComponentProps) => {
-      return <Provider><GetScope {...props} /></Provider>
-    }
-  
-    it('should render GetScope on correct incident', async () => {
-      const { asFragment } = 
-        render(<RenderGetScope incident={sampleIncident}/>)
-      expect(asFragment()).toMatchSnapshot()
     })
   })
 
