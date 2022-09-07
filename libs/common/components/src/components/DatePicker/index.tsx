@@ -73,11 +73,10 @@ export const RangePicker = ({
       }
     }
     document.addEventListener('click', handleClickForDatePicker)
-    if (!didMountRef.current) {
-      didMountRef.current = true
-      return
+    if (didMountRef.current) {
+      onDateChange?.(range)
     }
-    onDateChange?.(range)
+    didMountRef.current = true
     return () => {
       document.removeEventListener('click', handleClickForDatePicker)
     }

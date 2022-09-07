@@ -1,12 +1,20 @@
 import '@testing-library/jest-dom'
+
 import { dataApiURL }                                  from '@acx-ui/analytics/services'
 import { Provider }                                    from '@acx-ui/store'
-import { render, screen, mockGraphqlQuery, fireEvent } from '@acx-ui/test-utils'
+import { fireEvent, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import Incidents from '.'
 
 jest.mock('../../components/NetworkHistory', () => () => <div>Network</div>)
-jest.mock('../../components/IncidentBySeverity', () => () => <div>bar chart</div>)
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  useAnalyticsFilter: () => ({
+    filters: { path: [{ type: 'network', name: 'Network' }] }
+  })
+}))
+jest.mock('../../components/IncidentBySeverity', () => () => <div>IncidentBySeverity</div>)
+jest.mock('../../components/IncidentTable', () => () => <div>IncidentTable</div>)
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
@@ -38,7 +46,7 @@ describe('Incidents Page', () => {
       { route: { params } }
     )
     expect(await screen.findByText('Incidents')).toBeVisible()
-    expect(await screen.findByText('table')).toBeVisible()
+    expect(await screen.findByText('IncidentTable')).toBeVisible()
   })
   it('should render page with Overview tab selection', async () => {
     render(

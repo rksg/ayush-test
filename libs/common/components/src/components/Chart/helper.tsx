@@ -7,13 +7,21 @@ import {
 } from 'echarts'
 import moment             from 'moment-timezone'
 import { renderToString } from 'react-dom/server'
+import {
+  MessageDescriptor,
+  IntlShape,
+  RawIntlProvider,
+  FormattedMessage,
+  defineMessage
+} from 'react-intl'
 
-import { TimeStamp } from '@acx-ui/types'
-import { formatter } from '@acx-ui/utils'
+import { TimeStamp }              from '@acx-ui/types'
+import { formatter, intlFormats } from '@acx-ui/utils'
 
 import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
+
 
 export type TooltipFormatterParams = Exclude<
   TooltipComponentFormatterCallbackParams,
@@ -99,8 +107,8 @@ export const dateAxisFormatter = (value: number): string => {
     formatted = formatter('monthFormat')(value)
   else if (dateTime.match(/^\d{4}-\d{2}-\d{2} 00:00$/))
     formatted = formatter('monthDateFormat')(value)
-  return formatted ||
-    formatter('shortDateTimeFormat')(value) as string
+  return (formatted ||
+    formatter('shortDateTimeFormat')(value)) as string
 }
 
 export const tooltipOptions = () => ({
@@ -128,7 +136,7 @@ export const timeSeriesTooltipFormatter = (
     ? parameters[0].data : parameters.data) as [TimeStamp, number]
   return renderToString(
     <UI.TooltipWrapper>
-      <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time)}</time>
+      <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
       <ul>{
         (Array.isArray(parameters) ? parameters : [parameters])
           .map((parameter: TooltipFormatterParams)=> {
@@ -166,21 +174,42 @@ export const stackedBarTooltipFormatter = (
 }
 
 export const donutChartTooltipFormatter = (
-  dataFormatter?: ((value: unknown) => string | null)
+  intl: IntlShape,
+  dataFormatter: ((value: unknown) => string | null),
+  total: number,
+  format?: MessageDescriptor
 ) => (
   parameters: TooltipFormatterParams
 ) => {
+  const { name, value } = parameters
+  let percent = (parameters.percent ?? 0)
+  if (percent) percent = percent / 100
+  const formattedValue = dataFormatter(parameters.value)
+  const formattedTotal = dataFormatter(total)
+  const formattedPercent = intl.$t(intlFormats.percentFormat, { value: percent })
+  const tooltipFormat = format ?? defineMessage({
+    defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
+    description: 'DonutChart: default tooltip format for donut chart'
+  })
+
+  const text = <FormattedMessage {...tooltipFormat}
+    values={{
+      name, value, percent, total,
+      formattedPercent, formattedValue, formattedTotal,
+      br: () => <br />,
+      div: content => <div>{content}</div>,
+      span: content => <span>{content}</span>,
+      b: content => <b>{content}</b>,
+      space: content => <span style={{ marginLeft: 10 }}>{content}</span>
+    }}
+  />
+
   return renderToString(
-    <UI.TooltipWrapper>
-      <UI.Badge
-        color={parameters.color?.toString()}
-        text={<>
-          {`${parameters.name}`}<br/>
-          <b><span>{`${dataFormatter
-            ? dataFormatter(parameters.value): parameters.value}`}</span></b>
-        </>}
-      />
-    </UI.TooltipWrapper>
+    <RawIntlProvider value={intl}>
+      <UI.TooltipWrapper>
+        <UI.Badge color={parameters.color?.toString()} text={text} />
+      </UI.TooltipWrapper>
+    </RawIntlProvider>
   )
 }
 

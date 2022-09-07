@@ -3,7 +3,7 @@ import { useIntl }          from 'react-intl'
 
 import { renderHook } from '@acx-ui/test-utils'
 
-import { fakeIncident } from './fakeIncident'
+import { fakeIncident, fakeIncident1 } from './fakeIncident'
 import {
   calculateSeverity,
   impactValues,
@@ -11,7 +11,9 @@ import {
   useFormattedNodeType,
   useFormattedPath,
   useImpactedArea,
-  useShortDescription
+  useImpactValues,
+  useShortDescription,
+  useIncidentScope
 } from './incidents'
 
 import type { Incident, NodeType, PathNode } from './types/incidents'
@@ -72,7 +74,7 @@ describe('useFormattedNodeType', () => {
     renderHook(() => useFormattedNodeType(nodeType)).result.current
 
   it('should return correct value', () => {
-    expect(renderNodeType('network')).toEqual('Entire Organization')
+    expect(renderNodeType('network')).toEqual('Organization')
     expect(renderNodeType('apGroupName')).toEqual('AP Group')
     expect(renderNodeType('apGroup')).toEqual('AP Group')
     expect(renderNodeType('zoneName')).toEqual('Venue')
@@ -130,6 +132,21 @@ describe('useImpactedArea', () => {
     const sliceValue = 'AP'
     expect(renderImpactedArea(emptyPath, sliceValue)).toEqual(sliceValue)
   })
+
+
+  describe('useImpactValues', () => {
+
+    const renderImpactValues: typeof useImpactValues = 
+    (type: 'ap' | 'client', incident: Incident) => 
+      renderHook(() => useImpactValues(type, incident)).result.current
+
+    it('returns object for invalid count & impactArea', () => {
+      expect(renderImpactValues('client', fakeIncident1)).toMatchObject({
+        clientImpactDescription: '5 of 27 clients (18.52%)'
+      })
+    })
+
+  })
 })
 
 describe('impactValues', () => {
@@ -174,5 +191,25 @@ describe('impactValues', () => {
 
   it('formats impacted ap count', () => {
     expect(renderImpactValues('ap', 1, 1)).toMatchSnapshot()
+  })
+
+  describe('useIncidentScope', () => {  
+    const renderUseIncidentScope = () => renderHook(
+      () => useIncidentScope(
+        fakeIncident({
+          id: '1',
+          code: 'dhcp-failure',
+          startTime: '2022-08-12T00:00:00.000Z',
+          endTime: '2022-08-12T01:00:00.000Z',
+          path: [
+            { type: 'network', name: 'Network' },
+            { type: 'zone', name: 'Venue 1' }
+          ]
+        })
+      )).result.current
+
+    it('formats correct incident scope', () => {
+      expect(renderUseIncidentScope()).toMatchSnapshot()
+    })
   })
 })

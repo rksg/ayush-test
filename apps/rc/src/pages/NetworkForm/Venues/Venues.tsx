@@ -11,8 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery }    from '@acx-ui/rc/services'
-import { useTableQuery, Venue } from '@acx-ui/rc/utils'
+import { useNetworkVenueListQuery } from '@acx-ui/rc/services'
+import { useTableQuery, Venue }     from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -54,12 +54,22 @@ const getNetworkId = () => {
 
 export function Venues () {
   const form = Form.useFormInstance()
-  const { editMode } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  if(data){
+    if(cloneMode){
+      const venuesData = data?.venues?.map(item => {
+        return { ...item, networkId: null, id: null }
+      })
+      form.setFieldsValue({ venues: venuesData })
+    }else{
+      form.setFieldsValue({ venues: data.venues })
+    }
+  }
   const venues = Form.useWatch('venues')
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
-    useQuery: useVenueListQuery,
+    useQuery: useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
     defaultPayload
   })
@@ -141,11 +151,12 @@ export function Venues () {
   ]
 
   useEffect(()=>{
-    if(editMode){
+    if(editMode || cloneMode){
       if(tableQuery.data && activateVenues.length === 0){
         const selected: Venue[] = []
         const tableData = tableQuery.data.data.map((item: Venue) =>
         {
+          item = cloneMode ? _.omit(item, 'networkId') : item
           const isActivated = venues &&
             venues.filter((venue: Venue) => venue.venueId === item.id).length > 0
           if(isActivated){
@@ -178,25 +189,30 @@ export function Venues () {
 
   const columns: TableProps<Venue>['columns'] = [
     {
+      key: 'name',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       sorter: true
     },
     {
+      key: 'city',
       title: $t({ defaultMessage: 'City' }),
       dataIndex: 'city',
       sorter: true
     },
     {
+      key: 'country',
       title: $t({ defaultMessage: 'Country' }),
       dataIndex: 'country',
       sorter: true
     },
     {
+      key: 'network',
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: ['networks', 'count']
     },
     {
+      key: 'aggregatedApStatus',
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       dataIndex: 'aggregatedApStatus',
       render: function (data, row) {
@@ -207,6 +223,7 @@ export function Venues () {
       }
     },
     {
+      key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       render: function (data, row) {
@@ -220,22 +237,25 @@ export function Venues () {
       }
     },
     {
+      key: 'aps',
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
-      width: '80px',
+      width: 80,
       render: function (data, row) {
         return row.activated.isActivated ? 'All APs' : ''
       }
     },
     {
+      key: 'radios',
       title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
-      width: '140px',
+      width: 140,
       render: function (data, row) {
         return row.activated.isActivated ? '2.4 GHz / 5 GHz' : ''
       }
     },
     {
+      key: 'scheduling',
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {

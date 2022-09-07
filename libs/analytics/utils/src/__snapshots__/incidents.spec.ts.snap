@@ -62,3 +62,5 @@ Object {
   "clientImpactRatioFormatted": "",
 }
 `;
+
+exports[`impactValues useIncidentScope formats correct incident scope 1`] = `"Venue: Venue 1"`;

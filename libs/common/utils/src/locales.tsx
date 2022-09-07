@@ -1,7 +1,9 @@
-import { createContext, ReactElement, useContext, useEffect, useState } from 'react'
+import { createContext, ReactElement, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Locale } from 'antd/lib/locale-provider'
 import { merge }  from 'lodash'
+
+import { setUpIntl } from './intlUtil'
 
 type Message = string | NestedMessages
 type NestedMessages = { [key: string]: Message }
@@ -103,9 +105,16 @@ function LocaleProvider (props: LocaleProviderProps) {
   const [messages, setMessages] = useState<Messages>()
 
   useEffect(() => {
-    loadLocale(lang).then(setMessages)
+    loadLocale(lang).then((message) => {
+      setMessages(() => message)
+      setUpIntl({
+        locale: lang,
+        messages: message
+      })
+    })
   }, [lang])
 
-  const context = { lang, setLang, messages }
+  const context = useMemo(() => 
+    ({ lang, setLang, messages }), [lang, messages])
   return <LocaleContext.Provider value={context} children={props.children} />
 }

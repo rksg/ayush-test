@@ -11,20 +11,17 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
-  useGetAllUserSettingsQuery,
-  useUpdateNetworkMutation,
-  useVenueListQuery
+  useNetworkVenueListQuery,
+  useUpdateNetworkMutation
 } from '@acx-ui/rc/services'
 import {
-  Constants,
   useTableQuery,
-  getUserSettingsFromDict,
   NetworkSaveData,
   NetworkVenue,
-  UserSettings,
   Venue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -64,15 +61,13 @@ const notificationMessage = defineMessage({
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
-    useQuery: useVenueListQuery,
+    useQuery: useNetworkVenueListQuery,
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)
   const params = useParams()
   const [updateNetwork] = useUpdateNetworkMutation()
-  const userSetting = useGetAllUserSettingsQuery({ params: { tenantId: params.tenantId } })
-  const supportTriBandRadio = String(getUserSettingsFromDict(userSetting.data as UserSettings,
-    Constants.triRadioUserSettingsKey)) === 'true'
+  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
@@ -125,7 +120,7 @@ export function NetworkVenuesTab () {
     const network = networkQuery.data
     const defaultVenueData = generateDefaultNetworkVenue(row.id)
     const isWPA3security = row.wlan && row.wlan.wlanSecurity === 'WPA3'
-    if (supportTriBandRadio && isWPA3security) {
+    if (triBandRadioFeatureFlag && isWPA3security) {
       defaultVenueData.allApGroupsRadioTypes.push('6-GHz')
     }
 
@@ -232,27 +227,32 @@ export function NetworkVenuesTab () {
 
   const columns: TableProps<Venue>['columns'] = [
     {
+      key: 'name',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       sorter: true
     },
     {
+      key: 'city',
       title: $t({ defaultMessage: 'City' }),
       dataIndex: 'city',
       sorter: true
     },
     {
+      key: 'country',
       title: $t({ defaultMessage: 'Country' }),
       dataIndex: 'country',
       sorter: true
     },
     {
+      key: 'networks',
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: ['networks', 'count'],
       align: 'center',
       render: function (data) { return data ? data : 0 }
     },
     {
+      key: 'aggregatedApStatus',
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       dataIndex: 'aggregatedApStatus',
       align: 'center',
@@ -264,6 +264,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
+      key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
@@ -278,22 +279,25 @@ export function NetworkVenuesTab () {
       }
     },
     {
+      key: 'aps',
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
-      width: '80px',
+      width: 80,
       render: function (data, row) {
         return row.activated.isActivated ? $t({ defaultMessage: 'All APs' }) : ''
       }
     },
     {
+      key: 'radios',
       title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
-      width: '140px',
+      width: 140,
       render: function (data, row) {
         return row.activated.isActivated ? '2.4 GHz / 5 GHz' : ''
       }
     },
     {
+      key: 'scheduling',
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {

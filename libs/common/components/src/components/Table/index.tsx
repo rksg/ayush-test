@@ -1,17 +1,19 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
-import ProTable                   from '@ant-design/pro-table'
-import { Space, Divider, Button } from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
+import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
+import { Space, Divider, Button }                      from 'antd'
+import _                                               from 'lodash'
+import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
+import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
-import type { TableColumn, ColumnStateOption } from './types'
-import type { SettingOptionType }              from '@ant-design/pro-table/lib/components/ToolBar'
+import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType } from './types'
+import type { ParamsType }                                                  from '@ant-design/pro-provider'
+import type { SettingOptionType }                                           from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
   TablePaginationConfig
@@ -23,17 +25,29 @@ export type {
   TableColumn
 } from './types'
 
+function isGroupColumn <RecordType, ValueType = 'text'> (
+  column: TableColumn<RecordType, ValueType>
+): column is ColumnGroupType<RecordType, ValueType> {
+  return column.hasOwnProperty('children')
+}
+
 export interface TableProps <RecordType>
-  extends Omit<AntTableProps<RecordType>, 'bordered' | 'columns' | 'title'> {
+  extends Omit<ProAntTableProps<RecordType, ParamsType>,
+  'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip'
-    rowKey?: Exclude<AntTableProps<RecordType>['rowKey'], Function>
+    rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
+    rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection']
+      & AntTableProps<RecordType>['rowSelection']
+      & {
+      alwaysShowAlert?: boolean;
+  })
   }
 
 const defaultPagination = {
@@ -64,6 +78,8 @@ function Table <RecordType extends object> (
 ) {
   const { $t } = useIntl()
 
+  const [colWidth, setColWidth] = useState<Record<string, number>>({})
+
   const columns = useMemo(() => {
     const settingsColumn = {
       key: settingsKey,
@@ -84,7 +100,8 @@ function Table <RecordType extends object> (
         <UI.InformationTooltip title={column.tooltip as string} />
       </UI.TitleWithTooltip> : column.title,
       disable: Boolean(column.fixed || column.disable),
-      show: Boolean(column.fixed || column.disable || (column.show ?? true))
+      show: Boolean(column.fixed || column.disable || (column.show ?? true)),
+      children: isGroupColumn(column) ? column.children : undefined
     }))
   }, [props.columns, type])
 
@@ -103,7 +120,7 @@ function Table <RecordType extends object> (
         children={$t({ defaultMessage: 'Reset to default' })}
       />
     </div>,
-    children: <SettingsOutlined />
+    children: <SettingsOutlined/>
   } : false
 
   const rowKey = (props.rowKey ?? 'key') as keyof RecordType
@@ -156,16 +173,31 @@ function Table <RecordType extends object> (
     }
   }
 
+  const getResizeProps = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
+    ...col,
+    width: (col.key === settingsKey)
+      ? col.width
+      : colWidth[col.key as keyof typeof colWidth] || col.width,
+    onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
+      width: colWidth[column.key],
+      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
+    })
+  })
+
   return <UI.Wrapper $type={type} $hasRowSelection={Boolean(props.rowSelection)}>
     <UI.TableSettingsGlobalOverride />
     <ProTable<RecordType>
       {...props}
       bordered={false}
       search={false}
-      columns={columns}
+      columns={(type === 'tall' ? columns.map(col=>({
+        ...getResizeProps(col),
+        children: col.children?.map(getResizeProps)
+      })): columns) as typeof columns}
+      components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
-      scroll={{ x: 'max-content' }}
+      scroll={props.scroll ? props.scroll : { x: 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
