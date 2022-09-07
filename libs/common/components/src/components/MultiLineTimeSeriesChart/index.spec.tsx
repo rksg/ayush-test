@@ -30,7 +30,7 @@ describe('useBrush', () => {
     const eChartsRef = {} as RefObject<ReactECharts>
     renderHook(() => useBrush(eChartsRef, ['2022-09-07', '2022-09-07']))
   })
-  it('should handle when brush props is unavailable', () => {
+  it('should handle brush props unavailable', () => {
     const mockDispatchActionFn = jest.fn() as unknown as ((payload: unknown, opt?: boolean | {
       silent?: boolean;
       flush?: boolean | undefined;
@@ -63,7 +63,7 @@ describe('useBrush', () => {
 })
 
 describe('useOnBrushChange', () => {
-  it('should return correct boundary',() => {
+  it('should call OnBrushChange',() => {
     const OnBrushChange = jest.fn()
     const params = {
       batch: [{ areas: [{ coordRange: ['2022-09-07', '2022-09-07'] as [TimeStamp, TimeStamp] }] }]
