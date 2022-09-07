@@ -361,15 +361,6 @@ describe('Table component', () => {
       }
     ]
   
-    it('should match search & filter snapshot', () => {
-      const { asFragment } = render(<Table 
-        columns={filteredColumns}
-        dataSource={filteredData}
-        rowSelection={{ selectedRowKeys: [] }}
-      />)
-      expect(asFragment()).toMatchSnapshot()
-    })
-  
     it('search input with terms', async () => {
       render(<Table 
         columns={filteredColumns}
