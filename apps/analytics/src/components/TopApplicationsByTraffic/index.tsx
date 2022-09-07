@@ -99,11 +99,10 @@ export default function TopApplicationsByTrafficWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 Applications by Traffic' })}  
-        subTitle={$t({ defaultMessage: 'Insight Text coming from analytics' })}>
+      <Card title={$t({ defaultMessage: 'Top 5 Applications by Traffic' })}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ display: 'block', height, width, marginTop: '-10px' }}>
+            <div style={{ display: 'block', height, width}}>
               <ContentSwitcher tabDetails={tabDetails} size='small' align='center' />
             </div>
           )}

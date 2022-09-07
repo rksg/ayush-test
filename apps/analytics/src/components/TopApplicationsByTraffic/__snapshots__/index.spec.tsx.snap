@@ -26,11 +26,6 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
               >
                 Top 5 Applications by Traffic
               </div>
-              <div
-                class="styledComponents__SubTitle-sc-13w5wfx-5 xivbA"
-              >
-                Insight Text coming from analytics
-              </div>
             </div>
             <div
               class="ant-card-extra"
@@ -48,7 +43,7 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              style="display: block; height: 280px; width: 280px; margin-top: -10px;"
+              style="display: block; height: 280px; width: 280px;"
             >
               <div
                 style="text-align: center; padding: 5px 0px 10px 0px;"
