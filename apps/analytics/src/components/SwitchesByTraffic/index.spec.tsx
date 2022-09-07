@@ -18,7 +18,7 @@ const filters = {
   range: DateRange.last24Hours
 }
 
-describe('SwitchesByTrafficWidget', () => {
+describe('TopSwitchesByTrafficWidget', () => {
   mockAutoSizer()
 
   beforeEach(() =>

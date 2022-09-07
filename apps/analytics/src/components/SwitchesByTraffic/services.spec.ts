@@ -44,7 +44,7 @@ describe('topSwitchesByTrafficApi', () => {
       data: topSwitchesByTrafficResponse
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.SwitchesByTraffic.initiate(props)
+      api.endpoints.TopSwitchesByTraffic.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(
@@ -57,7 +57,7 @@ describe('topSwitchesByTrafficApi', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.SwitchesByTraffic.initiate(props)
+      api.endpoints.TopSwitchesByTraffic.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

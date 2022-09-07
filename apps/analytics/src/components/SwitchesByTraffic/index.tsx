@@ -15,7 +15,7 @@ import {
 import { BarChart, Card, cssNumber, Loader, cssStr, NoData, TooltipWrapper } from '@acx-ui/components'
 import { formatter }                                                         from '@acx-ui/utils'
 
-import { useSwitchesByTrafficQuery } from './services'
+import { useTopSwitchesByTrafficQuery } from './services'
 
 export const barColors = [
   cssStr('--acx-accents-blue-50'),
@@ -55,9 +55,9 @@ export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams
   )
 }
 
-function SwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
+function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
-  const queryResults = useSwitchesByTrafficQuery(filters,
+  const queryResults = useTopSwitchesByTrafficQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
         data: getBarChartSeriesData(data!,seriesMapping, 'name'),
@@ -91,4 +91,4 @@ function SwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
   )
 }
 
-export default SwitchesByTrafficWidget
+export default TopSwitchesByTrafficWidget

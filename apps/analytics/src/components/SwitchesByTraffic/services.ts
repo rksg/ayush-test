@@ -19,7 +19,7 @@ interface Response <SwitchesByTrafficData> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    SwitchesByTraffic: build.query<
+    TopSwitchesByTraffic: build.query<
       SwitchesByTrafficData[],
       AnalyticsFilter
     >({
@@ -54,4 +54,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useSwitchesByTrafficQuery } = api
+export const { useTopSwitchesByTrafficQuery } = api
