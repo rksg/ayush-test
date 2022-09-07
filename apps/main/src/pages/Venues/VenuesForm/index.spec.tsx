@@ -1,7 +1,6 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import { rest }       from 'msw'
 
-import * as config            from '@acx-ui/config'
 import { useSplitTreatment }  from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
@@ -151,16 +150,6 @@ const timezoneResult = {
 }
 
 describe('Venues Form', () => {
-  beforeAll(async () => {
-    const env = {
-      GOOGLE_MAPS_KEY: 'GOOGLE_MAPS_KEY'
-    }
-    mockServer.use(
-      rest.get('/env.json', (_, r, c) => r(c.json(env)))
-    )
-    
-    await config.initialize()
-  })
   let params: { tenantId: string }
   beforeEach(async () => {
     params = {
@@ -180,8 +169,8 @@ describe('Venues Form', () => {
         (req, res, ctx) => res(ctx.json(timezoneResult))
       )
     )
-    
-    initialize()    
+
+    initialize()
   })
 
   it('should render venues form', async () => {

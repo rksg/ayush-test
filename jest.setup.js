@@ -5,9 +5,20 @@ const { registerTsProject } = require('nx/src/utils/register')
 const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
 
 const { mockServer, mockLightTheme } = require('@acx-ui/test-utils')
+const config = require('@acx-ui/config')
+const { mockInstances } = require('@googlemaps/jest-mocks')
+const { rest } = require('msw')
 
 beforeAll(() => mockServer.listen())
-afterEach(() => mockServer.resetHandlers())
+beforeEach(async () => {
+  const env = require('./apps/main/src/env.json')
+  mockServer.use(rest.get('/env.json', (_, res, ctx) => res(ctx.json(env))))
+  await config.initialize()
+})
+afterEach(() => {
+  mockServer.resetHandlers()
+  mockInstances.clearAll()
+})
 afterAll(() => mockServer.close())
 
 cleanupRegisteredPaths()
