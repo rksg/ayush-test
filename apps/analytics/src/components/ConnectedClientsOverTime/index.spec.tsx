@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import { BrowserRouter } from 'react-router-dom'
+
 import { dataApiURL }                                      from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                                 from '@acx-ui/analytics/utils'
 import { Provider, store }                                 from '@acx-ui/store'
@@ -42,7 +44,9 @@ describe('ConnectedClientsOverTimeWidget', () => {
     mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    render( <Provider> <ConnectedClientsOverTimeWidget filters={filters}/></Provider>)
+    render(<BrowserRouter>
+      <Provider> <ConnectedClientsOverTimeWidget filters={filters}/></Provider>
+    </BrowserRouter>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
@@ -50,9 +54,11 @@ describe('ConnectedClientsOverTimeWidget', () => {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
     const { asFragment } =render(
-      <Provider>
-        <ConnectedClientsOverTimeWidget filters={filters}/>
-      </Provider>)
+      <BrowserRouter>
+        <Provider>
+          <ConnectedClientsOverTimeWidget filters={filters}/>
+        </Provider>
+      </BrowserRouter>)
     await screen.findByText('Connected Clients Over Time')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -62,7 +68,9 @@ describe('ConnectedClientsOverTimeWidget', () => {
     mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
       error: new Error('something went wrong!')
     })
-    render( <Provider><ConnectedClientsOverTimeWidget filters={filters}/></Provider>)
+    render(<BrowserRouter>
+      <Provider><ConnectedClientsOverTimeWidget filters={filters}/></Provider>
+    </BrowserRouter>)
     await screen.findByText('Something went wrong.')
     jest.resetAllMocks()
   })
