@@ -74,7 +74,7 @@ describe('useFormattedNodeType', () => {
     renderHook(() => useFormattedNodeType(nodeType)).result.current
 
   it('should return correct value', () => {
-    expect(renderNodeType('network')).toEqual('Entire Organization')
+    expect(renderNodeType('network')).toEqual('Organization')
     expect(renderNodeType('apGroupName')).toEqual('AP Group')
     expect(renderNodeType('apGroup')).toEqual('AP Group')
     expect(renderNodeType('zoneName')).toEqual('Venue')
