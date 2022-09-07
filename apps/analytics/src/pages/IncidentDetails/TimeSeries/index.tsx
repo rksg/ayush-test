@@ -1,3 +1,5 @@
+import { Space } from 'antd'
+
 import { Loader } from '@acx-ui/components'
 
 import { failureCharts }                  from './config'
@@ -12,7 +14,14 @@ export const TimeSeries : React.FC<ChartDataProps> = ({ charts, incident }) => {
     <Loader states={[queryResults]}>
       {filteredCharts.map((chart, index) => {
         const Chart = failureCharts[chart].chart!
-        return <Chart incident={incident} data={queryResults.data!} key={index}/>
+        return <Space
+          direction='vertical'
+          size={'middle'}
+          key={`space${index}`}
+          style={{ paddingBottom: '10px' }}
+        >
+          <Chart incident={incident} data={queryResults.data!} key={index}/>
+        </Space>
       })}
     </Loader>
   )
