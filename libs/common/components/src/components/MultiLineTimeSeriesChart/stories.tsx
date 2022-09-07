@@ -35,13 +35,13 @@ storiesOf('MultiLineTimeSeriesChart', module)
   .add('Chart View', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}
     data={getSeriesData()}
-    dataFormatter={formatter()}
+    dataFormatter={formatter('countFormat')}
   />)
   .add('With Knobs', () =>
     <div style={{ width: 504, height: 278, padding: 10, border: '1px solid lightgray' }}>
       <MultiLineTimeSeriesChart
         style={{ height: 190 }}
         data={object('data', getSeriesData())}
-        dataFormatter={formatter()}
+        dataFormatter={formatter('countFormat')}
       />
     </div>)
