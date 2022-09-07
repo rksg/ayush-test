@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { renderHook, render } from '@testing-library/react'
 
@@ -36,25 +36,19 @@ describe('DateFilterProvider', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should set url on rerender', () => {
-    function Component () {
+  it('sets period params when calling setDateFilter', async () => {
+    function Component (props: { update: boolean }) {
       const filters = useDateFilter()
-      useEffect(() => {
-        filters?.setDateFilter?.({
-          ...getDateRangeFilter(DateRange.lastMonth)
-        })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [])
+      props.update && filters?.setDateFilter?.(getDateRangeFilter(DateRange.lastMonth))
       return <div>{JSON.stringify(filters)}</div>
     }
-
-    const { asFragment } = render(
-      <BrowserRouter>
-        <DateFilterProvider>
-          <Component />
-        </DateFilterProvider>
-      </BrowserRouter>
-    )
+    const component = (update: boolean) => <BrowserRouter>
+      <DateFilterProvider>
+        <Component update={update} />
+      </DateFilterProvider>
+    </BrowserRouter>
+    const { asFragment, rerender } = render(component(true))
+    rerender(component(false))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render correctly with default date from url', () => {
