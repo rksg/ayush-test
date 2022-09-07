@@ -60,7 +60,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                 Incident Details
               </h1>
               <span
-                class="styledComponents__Pill-sc-j61ge1-0 fpazJI"
+                class="styledComponents__Pill-sc-j61ge1-0 eziBsl"
                 type="P3"
               >
                 P3
