@@ -36,13 +36,13 @@ interface AddressComponent {
   types?: Array<string>;
 }
 
-export const retrieveCityState = (address_components: Array<AddressComponent>, country: string) => {
+export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
 
   // array reverse applied since search should be done from general to specific, google provides from vice-versa
-  const reversed_addr_components = address_components.reverse()
+  const reversedAddrComponents = addressComponents.reverse()
 
   /** Step 1. Looking for locality / sublocality_level_X / postal_town */
-  let city_component = reversed_addr_components.find(el => {
+  let cityComponent = reversedAddrComponents.find(el => {
     return el.types?.includes('locality')
       || el.types?.some((t: string) => /sublocality_level_[1-5]/.test(t))
       || el.types?.includes('postal_town')
@@ -51,25 +51,25 @@ export const retrieveCityState = (address_components: Array<AddressComponent>, c
   /** Step 2. If nothing found, proceed with administrative_area_level_2-5 / neighborhood
    * administrative_area_level_1 excluded from search since considered as `political state`
    */
-  if (!city_component) {
-    city_component = reversed_addr_components.find(el => {
+  if (!cityComponent) {
+    cityComponent = reversedAddrComponents.find(el => {
       return el.types?.includes('neighborhood')
         || el.types?.some((t: string) => /administrative_area_level_[2-5]/.test(t))
     })
   }
 
-  const state_component = address_components
+  const stateComponent = addressComponents
     .find(el => el.types?.includes('administrative_area_level_1'))
 
 
   // Address in some country doesn't have city and state component, we will use the country as the default value of the city.
-  if (!city_component && !state_component) {
-    city_component = { long_name: country }
+  if (!cityComponent && !stateComponent) {
+    cityComponent = { long_name: country }
   }
 
   return {
-    city: city_component? city_component.long_name: '',
-    state: state_component ? state_component.long_name : null
+    city: cityComponent? cityComponent.long_name: '',
+    state: stateComponent ? stateComponent.long_name : null
   }
 }
 
