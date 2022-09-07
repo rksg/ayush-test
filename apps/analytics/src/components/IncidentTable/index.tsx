@@ -6,7 +6,6 @@ import {
   Incident,
   noDataSymbol,
   IncidentFilter,
-  nodeTypes,
   getRootCauseAndRecommendations,
   useShortDescription
 } from '@acx-ui/analytics/utils'
@@ -21,16 +20,12 @@ import {
   FormatDate,
   clientImpactSort,
   ShortIncidentDescription,
-  GetCategory,
-  GetScope,
   severitySort,
   dateSort,
-  defaultSort,
-  ClientImpact
+  defaultSort
 } from './utils'
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
-
   const { $t } = useIntl()
   const { metadata } = props.selectedIncidentToShowDescription
   const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
@@ -121,14 +116,14 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
       dataIndex: 'description',
       key: 'description',
-      render: (_, value: Incident ) => (
+      render: (_, value ) => (
         <ShortIncidentDescription
           onClickDesc={setDrawerSelection}
           incident={value}
         />
       ),
       sorter: {
-        compare: (a: Incident, b: Incident) => defaultSort(a.code, b.code),
+        compare: (a, b) => defaultSort(a.description, b.description),
         multiple: 4
       },
       ellipsis: true
@@ -137,9 +132,8 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       title: $t(defineMessage({ defaultMessage: 'Category' })),
       dataIndex: 'category',
       key: 'category',
-      render: (_, value) => GetCategory(value.code),
       sorter: {
-        compare: (a, b) => defaultSort(a.code, b.code),
+        compare: (a, b) => defaultSort(a.category as string, b.category as string),
         multiple: 5
       }
     },
@@ -147,31 +141,28 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
       dataIndex: 'subCategory',
       key: 'subCategory',
-      render: (_, value) => GetCategory(value.code, true),
       sorter: {
-        compare: (a, b) => defaultSort(a.code, b.code),
-        multiple: 5
+        compare: (a, b) => defaultSort(a.subCategory as string, b.subCategory as string),
+        multiple: 6
       },
       show: false
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
-      dataIndex: 'clientCount',
-      key: 'clientCount',
-      render: (_, incident) => <ClientImpact type='clientImpact' incident={incident}/>,
+      dataIndex: 'clientImpact',
+      key: 'clientImpact',
       sorter: {
-        compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount),
-        multiple: 6
+        compare: (a, b) => clientImpactSort(a.clientImpact, b.clientImpact),
+        multiple: 7
       }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
-      dataIndex: 'impactedClientCount',
-      key: 'impactedClientCount',
-      render: (_, incident) => <ClientImpact type='impactedClients' incident={incident}/>,
+      dataIndex: 'impactedClients',
+      key: 'impactedClients',
       sorter: {
-        compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount),
-        multiple: 7
+        compare: (a, b) => clientImpactSort(a.impactedClients, b.impactedClients),
+        multiple: 8
       },
       align: 'center'
     },
@@ -180,20 +171,18 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'scope',
       ellipsis: true,
       key: 'scope',
-      render: (_, value) => <GetScope incident={value} />,
       sorter: {
-        compare: (a, b) => clientImpactSort(a.code, b.code),
-        multiple: 8
+        compare: (a, b) => defaultSort(a.scope, b.scope),
+        multiple: 9
       }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Type' })),
       dataIndex: 'type',
       key: 'type',
-      render: (_, value) => $t(nodeTypes(value.sliceType)),
       sorter: {
-        compare: (a, b) => clientImpactSort(a.code, b.code),
-        multiple: 8
+        compare: (a, b) => defaultSort(a.type, b.type),
+        multiple: 10
       },
       show: false
     }

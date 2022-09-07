@@ -83,9 +83,13 @@ export function nodeTypes (nodeType: NodeType): MessageDescriptor {
   }
 }
 
+export function formattedNodeType (nodeType: NodeType, intl: IntlShape) {
+  return intl.$t(nodeTypes(nodeType))
+}
+
 export function useFormattedNodeType (nodeType: NodeType) {
-  const { $t } = useIntl()
-  return $t(nodeTypes(nodeType))
+  const intl = useIntl()
+  return formattedNodeType(nodeType, intl)
 }
 
 export const useImpactValues = 
@@ -113,8 +117,7 @@ function formattedNodeName (
   }, { isComplexName, name: sliceValue, nodeName: node.name })
 }
 
-export function useFormattedPath (path: PathNode[], sliceValue: string) {
-  const intl = useIntl()
+export function formattedPath (path: PathNode[], sliceValue: string, intl: IntlShape) {
   return path
     .filter(node => node.type !== 'network')
     .map(node => ({
@@ -131,30 +134,48 @@ export function useFormattedPath (path: PathNode[], sliceValue: string) {
     }, { nodeA, nodeB, newline: '\n' }))
 }
 
-export function useImpactedArea (path: PathNode[], sliceValue: string) {
+export function useFormattedPath (path: PathNode[], sliceValue: string) {
   const intl = useIntl()
+  return formattedPath(path, sliceValue, intl)
+}
+
+export function impactedArea (path: PathNode[], sliceValue: string, intl: IntlShape) {
   const lastNode = path[path.length - 1]
   return lastNode
     ? formattedNodeName(intl, lastNode, sliceValue)
     : sliceValue
 }
 
-export const useIncidentScope = (incident: Incident) => {
-  const { $t } = useIntl()
-  const scope = $t({
+export function useImpactedArea (path: PathNode[], sliceValue: string) {
+  const intl = useIntl()
+  return impactedArea(path, sliceValue, intl)
+}
+
+export function incidentScope (incident: Incident, intl: IntlShape) {
+  const scope = intl.$t({
     defaultMessage: '{nodeType}: {nodeName}',
     description: 'Uses to generate incident impacted scope for various incident descriptions'
   }, {
-    nodeType: useFormattedNodeType(incident.sliceType),
-    nodeName: useImpactedArea(incident.path, incident.sliceValue)
+    nodeType: formattedNodeType(incident.sliceType, intl),
+    nodeName: impactedArea(incident.path, incident.sliceValue, intl)
   })
   return scope
 }
 
+export const useIncidentScope = (incident: Incident) => {
+  const intl = useIntl()
+  const scope = incidentScope(incident, intl)
+  return scope
+}
+
+export const shortDescription = (incident: Incident, intl: IntlShape) => {
+  const scope = incidentScope(incident, intl)
+  return intl.$t(incident.shortDescription, { scope })
+}
+
 export const useShortDescription = (incident: Incident) => {
-  const { $t } = useIntl()
-  const scope = useIncidentScope(incident)
-  return $t(incident.shortDescription, { scope })
+  const intl = useIntl()
+  return shortDescription(incident, intl)
 }
 
 export const impactValues = <Type extends 'ap' | 'client'> (

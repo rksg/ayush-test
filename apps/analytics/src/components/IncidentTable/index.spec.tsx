@@ -12,7 +12,7 @@ import {
   waitForElementToBeRemoved,
   cleanup
 } from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import { DateRange, setUpIntl } from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -128,10 +128,14 @@ const filters : IncidentFilter = {
 }
 describe('IncidentTableWidget', () => {
 
-  beforeEach(() =>
+  beforeEach(() => {
+    setUpIntl({
+      locale: 'en-US',
+      messages: {}
+    })
     store.dispatch(api.util.resetApiState())
-  )
-
+  })
+  
   afterEach(() => cleanup())
 
   it('should render loader', () => {
