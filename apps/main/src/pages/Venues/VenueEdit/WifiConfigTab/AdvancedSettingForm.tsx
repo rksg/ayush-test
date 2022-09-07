@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import {
   Select,
@@ -7,6 +7,7 @@ import {
   Col,
   Space
 } from 'antd'
+import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
 
@@ -24,6 +25,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { VenueEditContext, AdvancedSettingContext } from '../index'
+
 export interface ModelOption {
   label: string
   value: string
@@ -31,12 +34,13 @@ export interface ModelOption {
 
 export function AdvancedSettingForm () {
   const { $t } = useIntl()
-  const { tenantId, venueId } = useParams()
+  const { tenantId, venueId, activeSubTab } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
   const venueCaps = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
   const venueLed = useGetVenueLedOnQuery({ params: { tenantId, venueId } })
   const [updateVenueLedOn] = useUpdateVenueLedOnMutation()
+  const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
   const defaultArray: VenueLed[] = []
   const defaultOptionArray: ModelOption[] = []
@@ -44,6 +48,20 @@ export function AdvancedSettingForm () {
   const [selectedModels, setSelectedModels] = useState([] as string[])
   const [modelOptions, setModelOptions] = useState(defaultOptionArray)
   const [supportModelOptions, setSupportModelOptions] = useState(defaultOptionArray)
+
+  useEffect(() => {
+    const tab = activeSubTab as keyof AdvancedSettingContext['tempData']
+    const data = editContextData?.tempData?.[tab] || []
+    setEditContextData({
+      ...editContextData,
+      title: $t({ defaultMessage: 'Advanced Settings' }),
+      orinData: data,
+      editData: data,
+      isDirty: false,
+      updateChanges: handleUpdateSetting,
+      setTableData: setTableData
+    })
+  }, [navigate])
 
   useEffect(() => {
     const apModels = venueCaps?.data?.apModels
@@ -62,9 +80,31 @@ export function AdvancedSettingForm () {
         [...opts, { label: item, value: item }], []))
       setSelectedModels(existingModels as string[])
       setModelOptions(availableModels)
-    }
 
+      setEditContextData({
+        ...editContextData,
+        title: $t({ defaultMessage: 'Advanced Settings' }),
+        orinData: (venueLed?.data as VenueLed[])?.map(
+          (item: VenueLed) => ({ ...item, key: item.model, value: item.model })
+        ),
+        isDirty: false,
+        updateChanges: handleUpdateSetting,
+        setTableData: setTableData
+      })
+    }
   }, [venueLed.data, venueCaps.data])
+
+  useEffect(() => {
+    setEditContextData({
+      ...editContextData,
+      editData: tableData,
+      orinData: (venueLed?.data as VenueLed[])?.map(
+        (item: VenueLed) => ({ ...item, key: item.model, value: item.model })
+      ),
+      isDirty: editContextData?.orinData ? !isEqual(editContextData?.orinData, tableData) : false,
+      updateChanges: handleUpdateSetting
+    })
+  }, [tableData])
 
   const columns: TableProps<VenueLed>['columns'] = [
     {
@@ -142,28 +182,34 @@ export function AdvancedSettingForm () {
       )])
   }
 
-  const handleUpdateSetting = async () => {
+  const handleUpdateSetting = async (redirect?: boolean) => {
     try {
+      setEditContextData({
+        ...editContextData,
+        orinData: editContextData?.editData,
+        isDirty: false
+      })
       await updateVenueLedOn({
         params: { tenantId, venueId },
         payload: tableData.filter(data => data.model)
       })
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-      })
+      if (redirect) {
+        navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
+        })
+      }
     } catch {
       showToast({
         type: 'error',
         content: 'An error occurred'
       })
     }
-
   }
 
   return (
     <StepsForm
-      onFinish={handleUpdateSetting}
+      onFinish={() => handleUpdateSetting(true)}
       onCancel={() => navigate({
         ...basePath,
         pathname: `${basePath.pathname}/${venueId}/venue-details/overview`

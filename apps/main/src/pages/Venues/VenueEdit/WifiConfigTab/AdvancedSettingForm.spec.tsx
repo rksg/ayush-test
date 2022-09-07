@@ -5,8 +5,12 @@ import { CommonUrlsInfo }                                                   from
 import { Provider }                                                         from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { VenueEditContext, AdvancedSettingContext } from '../index'
+
 import { AdvancedSettingForm } from './AdvancedSettingForm'
 
+let editContextData = {} as AdvancedSettingContext
+const setEditContextData = jest.fn()
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
@@ -16,122 +20,14 @@ jest.mock('react-router-dom', () => ({
 
 const mockVenueCaps = {
   apModels: [{
-    allowDfsCountry: ['US', 'SG'],
-    canSupportCellular: false,
-    canSupportLacp: false,
-    canSupportPoeMode: false,
-    canSupportPoeOut: false,
-    externalAntenna: {
-      enable24G: false,
-      enable50G: false,
-      gain24G: 3,
-      gain50G: 3,
-      supportDisable: true,
-      coupled: false
-    },
-    has160MHzChannelBandwidth: false,
-    isOutdoor: true,
-    lanPortPictureDownloadUrl: '',
-    lanPorts: [{
-      defaultType: 'TRUNK',
-      id: '1',
-      isPoeOutPort: false,
-      isPoePort: true,
-      supportDisable: false,
-      trunkPortOnly: true,
-      untagId: 1,
-      vlanMembers: '1-4094'
-    }],
     ledOn: true,
-    lldpAdInterval: 30,
-    lldpEnable: true,
-    lldpHoldTime: 120,
-    lldpMgmtEnable: true,
-    model: 'E510',
-    pictureDownloadUrl: '',
-    requireOneEnabledTrunkPort: true,
-    simCardPrimaryEnabled: true,
-    simCardPrimaryRoaming: true,
-    simCardSecondaryEnabled: true,
-    simCardSecondaryRoaming: true
+    model: 'E510'
   }, {
-    allowDfsCountry: ['US', 'SG'],
-    canSupportCellular: false,
-    canSupportLacp: false,
-    canSupportPoeMode: false,
-    canSupportPoeOut: false,
-    externalAntenna: {
-      enable24G: false,
-      enable50G: false,
-      gain24G: 3,
-      gain50G: 3,
-      supportDisable: true,
-      coupled: false
-    },
-    has160MHzChannelBandwidth: false,
-    isOutdoor: true,
-    lanPortPictureDownloadUrl: '',
-    lanPorts: [{
-      defaultType: 'TRUNK',
-      id: '1',
-      isPoeOutPort: false,
-      isPoePort: true,
-      supportDisable: false,
-      trunkPortOnly: true,
-      untagId: 1,
-      vlanMembers: '1-4094'
-    }],
     ledOn: true,
-    lldpAdInterval: 30,
-    lldpEnable: true,
-    lldpHoldTime: 120,
-    lldpMgmtEnable: true,
-    model: 'H320',
-    pictureDownloadUrl: '',
-    requireOneEnabledTrunkPort: true,
-    simCardPrimaryEnabled: true,
-    simCardPrimaryRoaming: true,
-    simCardSecondaryEnabled: true,
-    simCardSecondaryRoaming: true
+    model: 'H320'
   }, {
-    allowDfsCountry: ['US', 'SG'],
-    canSupportCellular: false,
-    canSupportLacp: false,
-    canSupportPoeMode: false,
-    canSupportPoeOut: false,
-    externalAntenna: {
-      enable24G: false,
-      enable50G: false,
-      gain24G: 3,
-      gain50G: 3,
-      supportDisable: true,
-      coupled: false
-    },
-    has160MHzChannelBandwidth: false,
-    isOutdoor: true,
-    lanPortPictureDownloadUrl: '',
-    lanPorts: [{
-      defaultType: 'TRUNK',
-      id: '1',
-      isPoeOutPort: false,
-      isPoePort: true,
-      supportDisable: false,
-      trunkPortOnly: true,
-      untagId: 1,
-      vlanMembers: '1-4094'
-    }],
     ledOn: true,
-    lldpAdInterval: 30,
-    lldpEnable: true,
-    lldpHoldTime: 120,
-    lldpMgmtEnable: true,
-    model: 'H350',
-    pictureDownloadUrl: '',
-    requireOneEnabledTrunkPort: true,
-    simCardPrimaryEnabled: true,
-    simCardPrimaryRoaming: true,
-    simCardSecondaryEnabled: true,
-    simCardSecondaryRoaming: true
+    model: 'H350'
   }],
   version: '6.0.0.x.xxx'
 }
@@ -145,8 +41,7 @@ describe('AdvancedSettingForm', () => {
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getVenueCapabilities.url,
-        (_, res, ctx) => res(ctx.json([]))
-      ),
+        (_, res, ctx) => res(ctx.json([]))),
       rest.get(CommonUrlsInfo.getVenueLedOn.url,
         (_, res, ctx) => res(ctx.json([])))
     )
@@ -156,9 +51,14 @@ describe('AdvancedSettingForm', () => {
       venueId: 'venue-id',
       activeTab: 'wifi'
     }
-    render(<Provider><AdvancedSettingForm /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab' }
-    })
+    render(
+      <Provider>
+        <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
+          <AdvancedSettingForm />
+        </VenueEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab' }
+      })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByText('LEDs Status')
     await screen.findByRole('button', { name: 'Add Model' })
@@ -170,10 +70,11 @@ describe('AdvancedSettingForm', () => {
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getVenueCapabilities.url,
-        (_, res, ctx) => res(ctx.json(mockVenueCaps))
-      ),
+        (_, res, ctx) => res(ctx.json(mockVenueCaps))),
       rest.get(CommonUrlsInfo.getVenueLedOn.url,
-        (_, res, ctx) => res(ctx.json(mockVenueLed)))
+        (_, res, ctx) => res(ctx.json(mockVenueLed))),
+      rest.put(CommonUrlsInfo.updateVenueLedOn.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
 
     const params = {
@@ -181,9 +82,14 @@ describe('AdvancedSettingForm', () => {
       venueId: 'venue-id',
       activeTab: 'wifi'
     }
-    render(<Provider><AdvancedSettingForm /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab' }
-    })
+    render(
+      <Provider>
+        <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
+          <AdvancedSettingForm />
+        </VenueEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab' }
+      })
     await screen.findByText('E510')
     fireEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
     expect(screen.getByRole('button', { name: 'Add Model' })).toBeDisabled()
@@ -204,11 +110,17 @@ describe('AdvancedSettingForm', () => {
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',
-      activeTab: 'wifi'
+      activeTab: 'wifi',
+      activeSubTab: 'settings'
     }
-    render(<Provider><AdvancedSettingForm /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab' }
-    })
+    render(
+      <Provider>
+        <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
+          <AdvancedSettingForm />
+        </VenueEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+      })
     fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/overview`,
