@@ -1,6 +1,10 @@
+import { RefObject, useEffect, useImperativeHandle, useRef } from 'react'
+
 import ReactECharts from 'echarts-for-react'
+import _            from 'lodash'
 
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
+import type { TimeStamp }                    from '@acx-ui/types'
 
 import { cssStr }              from '../../theme/helper'
 import {
@@ -15,8 +19,8 @@ import {
   timeSeriesTooltipFormatter
 } from '../Chart/helper'
 
-import type { EChartsOption }     from 'echarts'
-import type { EChartsReactProps } from 'echarts-for-react'
+import type { ECharts, EChartsOption } from 'echarts'
+import type { EChartsReactProps }      from 'echarts-for-react'
 
 interface MultiLineTimeSeriesChartProps
   <TChartData extends MultiLineTimeSeriesChartData>
@@ -25,8 +29,37 @@ interface MultiLineTimeSeriesChartProps
     /** @default 'name' */
     legendProp?: keyof TChartData,
     lineColors?: string[],
-    dataFormatter?: (value: unknown) => string | null
+    dataFormatter?: (value: unknown) => string | null,
+    brush?: [TimeStamp, TimeStamp]
+    onBrushChange?: (coordRange: TimeStamp[]) => void
+    chartRef?: RefObject<ReactECharts>
   }
+
+export const useBrush = (
+  eChartsRef: RefObject<ReactECharts>,
+  brush?: [TimeStamp, TimeStamp]
+) => {
+  useEffect(() => {
+    if (!eChartsRef || !eChartsRef.current || _.isEmpty(brush)) return
+    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
+    echartInstance.dispatchAction({
+      type: 'brush',
+      areas: [{
+        brushType: 'lineX',
+        coordRange: brush,
+        xAxisIndex: 0
+      }]
+    })
+  }, [eChartsRef, brush])
+}
+
+export const useOnBrushChange = (
+  onBrushChange?: (coordRange: TimeStamp[]) => void
+) => {
+  return (params: { batch: { areas: { coordRange: [TimeStamp, TimeStamp] }[] }[] }) => {
+    onBrushChange && onBrushChange(params.batch[0].areas[0].coordRange)
+  }
+}
 
 export function MultiLineTimeSeriesChart
   <TChartData extends MultiLineTimeSeriesChartData>
@@ -36,6 +69,11 @@ export function MultiLineTimeSeriesChart
   dataFormatter,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData>) {
+
+  const eChartsRef = useRef<ReactECharts>(null)
+  useImperativeHandle(props.chartRef, () => eChartsRef.current!)
+  useBrush(eChartsRef, props.brush)
+
   const option: EChartsOption = {
     color: props.lineColors || [
       cssStr('--acx-accents-blue-30'),
@@ -53,6 +91,15 @@ export function MultiLineTimeSeriesChart
       ...tooltipOptions(),
       trigger: 'axis',
       formatter: timeSeriesTooltipFormatter(dataFormatter)
+    },
+    toolbox: { show: false },
+    brush: {
+      xAxisIndex: 'all',
+      brushStyle: {
+        borderWidth: 1,
+        color: 'rgba(0, 0, 0, 0.05)', // --acx-primary-white 5%
+        borderColor: cssStr('--acx-accents-blue-50')
+      }
     },
     xAxis: {
       ...xAxisOptions(),
@@ -86,7 +133,9 @@ export function MultiLineTimeSeriesChart
   return (
     <ReactECharts
       {...props}
+      ref={eChartsRef}
       opts={{ renderer: 'svg' }}
-      option={option} />
+      option={option}
+      onEvents={{ brushselected: useOnBrushChange(props.onBrushChange) }}/>
   )
 }
