@@ -40,7 +40,11 @@ export const LabelWithSeverityCicle = (props: LabelProps) => {
 
   return (
     <UI.LabelContainer>
-      <UI.Label>{name}</UI.Label>
+      <UI.Label>
+        <UI.ElipsisText ellipsis={true}>
+          {name}
+        </UI.ElipsisText>
+      </UI.Label>
       <UI.SeverityContainer>
         {severityCircles?.map((severityCircle, index) => (
           <UI.SeveritySpan severity={severityCircle} key={index} />
