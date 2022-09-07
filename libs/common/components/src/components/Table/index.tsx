@@ -8,12 +8,13 @@ import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
+import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
-import type { TableColumn, ColumnStateOption } from './types'
-import type { ParamsType }                     from '@ant-design/pro-provider'
-import type { SettingOptionType }              from '@ant-design/pro-table/lib/components/ToolBar'
+import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType } from './types'
+import type { ParamsType }                                                  from '@ant-design/pro-provider'
+import type { SettingOptionType }                                           from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
   TablePaginationConfig
@@ -24,6 +25,12 @@ export type {
   ColumnGroupType,
   TableColumn
 } from './types'
+
+function isGroupColumn <RecordType, ValueType = 'text'> (
+  column: TableColumn<RecordType, ValueType>
+): column is ColumnGroupType<RecordType, ValueType> {
+  return column.hasOwnProperty('children')
+}
 
 export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
@@ -37,7 +44,7 @@ export interface TableProps <RecordType>
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
-    rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection'] 
+    rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection']
       & AntTableProps<RecordType>['rowSelection']
       & {
       alwaysShowAlert?: boolean;
@@ -81,7 +88,9 @@ function Table <RecordType extends Record<string, any>> (
   const [searchValue, setSearchValue] = useState<string>('')
   const { dataSource } = props
 
-  let columns = useMemo(() => {
+  const [colWidth, setColWidth] = useState<Record<string, number>>({})
+
+  const columns = useMemo(() => {
     const settingsColumn = {
       key: settingsKey,
       fixed: 'right' as 'right',
@@ -101,7 +110,8 @@ function Table <RecordType extends Record<string, any>> (
         <UI.InformationTooltip title={column.tooltip as string} />
       </UI.TitleWithTooltip> : column.title,
       disable: Boolean(column.fixed || column.disable),
-      show: Boolean(column.fixed || column.disable || (column.show ?? true))
+      show: Boolean(column.fixed || column.disable || (column.show ?? true)),
+      children: isGroupColumn(column) ? column.children : undefined
     }))
   }, [props.columns, type])
 
@@ -245,6 +255,17 @@ function Table <RecordType extends Record<string, any>> (
     }
   }
 
+  const getResizeProps = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
+    ...col,
+    width: (col.key === settingsKey)
+      ? col.width
+      : colWidth[col.key as keyof typeof colWidth] || col.width,
+    onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
+      width: colWidth[column.key],
+      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
+    })
+  })
+
   return <UI.Wrapper
     $type={type}
     $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
@@ -322,7 +343,11 @@ function Table <RecordType extends Record<string, any>> (
       dataSource={filteredData}
       bordered={false}
       search={false}
-      columns={columns}
+      columns={(type === 'tall' ? columns.map(col=>({
+        ...getResizeProps(col),
+        children: col.children?.map(getResizeProps)
+      })): columns) as typeof columns}
+      components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
       scroll={props.scroll ? props.scroll : { x: 'max-content' }}

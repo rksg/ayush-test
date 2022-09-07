@@ -5,6 +5,8 @@ import type {
 } from '@ant-design/pro-table'
 
 type AdditionalColumnType = {
+  // mandatory column for mapping columns
+  key: string
   /**
    * Mark column as fixed
    */
@@ -21,6 +23,8 @@ type AdditionalColumnType = {
    * @default true
    */
   show?: boolean
+  // overwrite type of width to number for column resize
+  width?: number
   /**
    * Set the column to be searchable
    * If one column has this to true the table will start showing search input
