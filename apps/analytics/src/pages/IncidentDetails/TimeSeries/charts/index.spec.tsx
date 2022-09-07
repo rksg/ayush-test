@@ -1,6 +1,6 @@
-import { fakeIncident1 }                 from '@acx-ui/analytics/utils'
-import { store }                         from '@acx-ui/store'
-import { mockAutoSizer, render, screen } from '@acx-ui/test-utils'
+import { fakeIncident1 }         from '@acx-ui/analytics/utils'
+import { store }                 from '@acx-ui/store'
+import { mockAutoSizer, render } from '@acx-ui/test-utils'
 
 import { ChartsData } from '../services'
 import { Api }        from '../services'
@@ -55,8 +55,8 @@ describe('IncidentChart', () => {
     const { asFragment } = render(
       <IncidentChart incident={fakeIncident1} data={expectedResult}/>
     )
-    expect(screen.getByText(/failures/i).textContent).toEqual('EAP Failures')
-    expect(asFragment()).toMatchSnapshot()
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('svg')).toBeDefined()
   })
 })
 describe('AttemptAndFailureChart', () => {
@@ -65,7 +65,8 @@ describe('AttemptAndFailureChart', () => {
     const { asFragment } = render(
       <AttemptAndFailureChart incident={fakeIncident1} data={expectedResult}/>
     )
-    expect(asFragment()).toMatchSnapshot()
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('svg')).toBeDefined()
   })
 })
 describe('ClientCountChart', () => {
@@ -74,6 +75,7 @@ describe('ClientCountChart', () => {
     const { asFragment } = render(
       <ClientCountChart incident={fakeIncident1} data={expectedResult}/>
     )
-    expect(asFragment()).toMatchSnapshot()
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('svg')).toBeDefined()
   })
 })
