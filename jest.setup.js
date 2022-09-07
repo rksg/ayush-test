@@ -20,7 +20,7 @@ beforeAll(() => {
 })
 beforeEach(async () => {
   const env = require('./apps/main/src/env.json')
-  mockServer.use(rest.get('/env.json', (_, res, ctx) => res(ctx.json(env))))
+  mockServer.use(rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(env))))
   await config.initialize()
 })
 afterEach(() => {
