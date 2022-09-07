@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react'
+import { render }        from '@testing-library/react'
+import { BrowserRouter } from 'react-router-dom'
 
 import { getSeriesData } from './stories'
 
 import { MultiLineTimeSeriesChart } from '.'
 
-import { BrowserRouter } from 'react-router-dom'
 
 
 describe('MultiLineTimeSeriesChart', () => {
@@ -31,7 +31,7 @@ describe('MultiLineTimeSeriesChart', () => {
         code: 'eap'
       }
     ]
-    const { asFragment } = render(<BrowserRouter>
+    render(<BrowserRouter>
       <MultiLineTimeSeriesChart
         data={getSeriesData()}
         dataFormatter={formatter}
@@ -40,7 +40,5 @@ describe('MultiLineTimeSeriesChart', () => {
       />
     </BrowserRouter>)
     expect(formatter).toBeCalled()
-    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
-    expect(asFragment().querySelector('svg')).toBeDefined()
   })
 })
