@@ -24,8 +24,7 @@ export function OpenSettingsForm () {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   if(data){
-    form.setFieldsValue({ 
-      cloudpathServerId: data.cloudpathServerId,
+    form.setFieldsValue({
       isCloudpathEnabled: data.cloudpathServerId !== undefined
     })
   }
@@ -70,8 +69,6 @@ function SettingsForm () {
       </Form.Item>
 
       {isCloudpathEnabled && <CloudpathServerForm />}
-
-      { /*TODO: <div><Button type='link'>Show more settings</Button></div> */ }
     </>
   )
 }

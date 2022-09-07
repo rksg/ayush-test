@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { IncidentFilter }      from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 import { DateRange }           from '@acx-ui/utils'
 
@@ -15,7 +15,7 @@ describe('networkHistoryWidgetApi', () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([dataApi.middleware])
   })
-  const props: IncidentFilter = {
+  const props: AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
     path: [{ type: 'network', name: 'Network' }],
@@ -75,7 +75,7 @@ describe('networkHistoryWidgetApi', () => {
       input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-01T00:10:00+08:00' },
       output: 'PT180S'
     }]
-    data.forEach(({ input, output }) => 
+    data.forEach(({ input, output }) =>
       expect(calcGranularity(input.start, input.end)).toStrictEqual(output)
     )
   })

@@ -6,6 +6,7 @@ import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTim
 import NetworkHistoryWidget           from './components/NetworkHistory'
 import SwitchesByPoEUsageWidget       from './components/SwitchesByPoEUsage'
 import SwitchesTrafficByVolumeWidget  from './components/SwitchesTrafficByVolume'
+import TopSwitchModelsWidget          from './components/SwitchModels'
 import TrafficByApplicationWidget     from './components/TrafficByApplication'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
 
@@ -28,8 +29,10 @@ const widgetsMap = {
   ),
   switchTrafficByVolume: ({ filters }: { filters: AnalyticsFilter }) => (
     <SwitchesTrafficByVolumeWidget filters={filters}/>
+  ),
+  topSwitchModelsByCount: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TopSwitchModelsWidget filters={filters} />
   )
-
 }
 
 function AnalyticsWidgets ({

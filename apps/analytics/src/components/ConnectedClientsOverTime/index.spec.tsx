@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 
 import { dataApiURL }                                      from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                                 from '@acx-ui/analytics/utils'
 import { Provider, store }                                 from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 import { DateRange }                                       from '@acx-ui/utils'
@@ -14,7 +15,7 @@ const filters = {
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours
-}
+} as AnalyticsFilter
 
 const sample = {
   time: [
@@ -62,7 +63,7 @@ describe('ConnectedClientsOverTimeWidget', () => {
     mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    const { asFragment } =render( 
+    const { asFragment } =render(
       <Provider>
         <ConnectedClientsOverTimeWidget filters={filters}/>
       </Provider>)

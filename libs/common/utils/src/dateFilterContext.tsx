@@ -17,7 +17,7 @@ export type DateFilterContextprops = {
   dateFilter: DateFilter,
   setDateFilter?: (c: DateFilter) => void
 }
-interface DateFilter {
+export interface DateFilter {
   range: DateRange;
   startDate: string;
   endDate: string;
@@ -59,12 +59,13 @@ export function DateFilterProvider (props: { children: ReactNode }) {
       didMountRef.current = true
       return
     }
-    const params = new URLSearchParams()
-    params.append(
+    
+    search.delete('period')
+    search.append(
       'period',
       Buffer.from(JSON.stringify({ ...dateFilter })).toString('base64')
     )
-    setSearch(params)
+    setSearch(search)
   }, [dateFilter, setSearch])
   const providerValue = useMemo(
     () => ({ dateFilter, setDateFilter }),
