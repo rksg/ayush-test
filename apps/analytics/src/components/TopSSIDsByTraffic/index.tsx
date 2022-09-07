@@ -27,9 +27,7 @@ export default function TopSSIDsByTrafficWidget ({
     {
       title: $t({ defaultMessage: 'SSID Name' }),
       dataIndex: 'name',
-      key: 'name',
-      render: (name:unknown) => {
-        return <a href='/#TBD'>{name as string}</a>}
+      key: 'name'
     },
     {
       title: $t({ defaultMessage: 'Total Traffic' }),
