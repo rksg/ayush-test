@@ -90,7 +90,7 @@ function Table <RecordType extends Record<string, any>> (
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
 
-  const columns = useMemo(() => {
+  let columns = useMemo(() => {
     const settingsColumn = {
       key: settingsKey,
       fixed: 'right' as 'right',
