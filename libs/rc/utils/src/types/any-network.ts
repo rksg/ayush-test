@@ -1,20 +1,20 @@
-import { NetworkVenue }                  from './network'
-import { AAANetwork }                    from './wifi/AAANetwork'
-import { AAAWlan }                       from './wifi/AAAWlan'
-import { DpskNetwork }                   from './wifi/DpskNetwork'
-import { DpskPassphraseGeneration }      from './wifi/DpskPassphraseGeneration'
-import { DpskWlan }                      from './wifi/DpskWlan'
-import { GuestNetwork }                  from './wifi/GuestNetwork'
-import { GuestPortal }                   from './wifi/GuestPortal'
-import { GuestWlan }                     from './wifi/GuestWlan'
-import { MacAuthMacFormatEnum }          from './wifi/MacAuthMacFormatEnum'
-import { ManagementFrameProtectionEnum } from './wifi/ManagementFrameProtectionEnum'
-import { OpenNetwork }                   from './wifi/OpenNetwork'
-import { OpenWlan }                      from './wifi/OpenWlan'
-import { PskNetwork }                    from './wifi/PskNetwork'
-import { PskWlan }                       from './wifi/PskWlan'
-import { Radius }                        from './wifi/Radius'
-import { WlanAdvancedCustomization }     from './wifi/WlanAdvancedCustomization'
+import { AAANetwork }                    from '../models/AAANetwork'
+import { AAAWlan }                       from '../models/AAAWlan'
+import { DpskNetwork }                   from '../models/DpskNetwork'
+import { DpskPassphraseGeneration }      from '../models/DpskPassphraseGeneration'
+import { DpskWlan }                      from '../models/DpskWlan'
+import { GuestNetwork }                  from '../models/GuestNetwork'
+import { GuestPortal }                   from '../models/GuestPortal'
+import { GuestWlan }                     from '../models/GuestWlan'
+import { MacAuthMacFormatEnum }          from '../models/MacAuthMacFormatEnum'
+import { ManagementFrameProtectionEnum } from '../models/ManagementFrameProtectionEnum'
+import { NetworkVenue }                  from '../models/NetworkVenue'
+import { OpenNetwork }                   from '../models/OpenNetwork'
+import { OpenWlan }                      from '../models/OpenWlan'
+import { PskNetwork }                    from '../models/PskNetwork'
+import { PskWlan }                       from '../models/PskWlan'
+import { Radius }                        from '../models/Radius'
+import { WlanAdvancedCustomization }     from '../models/WlanAdvancedCustomization'
 
 
 export class AnyWlan implements AAAWlan, PskWlan, OpenWlan, GuestWlan, DpskWlan {
@@ -49,7 +49,7 @@ export class AnyNetwork implements
   
   name: string
   description?: string
-  venues?: NetworkVenue
+  venues?: NetworkVenue[]
   type: string
   tenandId?: string
   wlan: AnyWlan

@@ -4,14 +4,14 @@ import {
   PassphraseFormatEnum,
   WlanSecurityEnum
 } from '../constants'
-import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
-import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
-import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
-import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
-
-import { GuestPortal }                    from './wifi/GuestPortal'
-import { GuestWlanAdvancedCustomization } from './wifi/GuestWlanAdvancedCustomization'
-import { Radius }                         from './wifi/Radius'
+import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomization'
+import { DpskWlanAdvancedCustomization }  from '../models/DpskWlanAdvancedCustomization'
+import { GuestPortal }                    from '../models/GuestPortal'
+import { GuestWlanAdvancedCustomization } from '../models/GuestWlanAdvancedCustomization'
+import { NetworkVenue }                   from '../models/NetworkVenue'
+import { OpenWlanAdvancedCustomization }  from '../models/OpenWlanAdvancedCustomization'
+import { PskWlanAdvancedCustomization }   from '../models/PskWlanAdvancedCustomization'
+import { Radius }                         from '../models/Radius'
 
 export interface CreateNetworkFormFields {
   name: string;
@@ -79,18 +79,4 @@ export interface NetworkSaveData {
     format?: PassphraseFormatEnum;
     expiration?: PassphraseExpirationEnum;
   }
-}
-
-export interface NetworkVenue {
-  id?: string
-  name?: string
-  apGroups: string[],
-  scheduler: {
-    type: string
-  },
-  isAllApGroups: boolean,
-  allApGroupsRadio: string,
-  allApGroupsRadioTypes: string[],
-  venueId: string,
-  networkId: string
 }

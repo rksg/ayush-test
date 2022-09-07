@@ -5,7 +5,7 @@ export class OpenWlan {
 
   vlanId: number
 
-  ssid: string
+  ssid?: string
 
   enabled?: boolean
 
@@ -13,8 +13,6 @@ export class OpenWlan {
     this.advancedCustomization = new OpenWlanAdvancedCustomization()
 
     this.vlanId = 1
-
-    this.ssid = ''
 
     this.enabled = true
   }

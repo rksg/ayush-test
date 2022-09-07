@@ -1,26 +1,14 @@
-import { NetworkVenue } from './NetworkVenue'
-import { OpenWlan }     from './OpenWlan'
+import { NetworkDetail } from './NetworkDetail'
+import { OpenWlan }      from './OpenWlan'
 
-export class OpenNetwork {
+export class OpenNetwork extends NetworkDetail{
   wlan: OpenWlan
-
-  tenantId?: string
-
-  venues?: NetworkVenue[]
-
+  
   cloudpathServerId?: string
 
-  name: string
-
-  description?: string
-
-  id?: string
-
   constructor () {
+    super()
+
     this.wlan = new OpenWlan()
-
-    this.venues = []
-
-    this.name = ''
   }
 }

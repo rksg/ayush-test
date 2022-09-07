@@ -1,11 +1,7 @@
-
-import { 
-  PskWlanSecurityEnum,
-  MacAuthMacFormatEnum,
-  ManagementFrameProtectionEnum
-} from '../contents'
-
-import { PskWlanAdvancedCustomization } from './PskWlanAdvancedCustomization'
+import { MacAuthMacFormatEnum }          from './MacAuthMacFormatEnum'
+import { ManagementFrameProtectionEnum } from './ManagementFrameProtectionEnum'
+import { PskWlanAdvancedCustomization }  from './PskWlanAdvancedCustomization'
+import { PskWlanSecurityEnum }           from './PskWlanSecurityEnum'
 
 export class PskWlan {
   wlanSecurity: PskWlanSecurityEnum
@@ -19,8 +15,8 @@ export class PskWlan {
   managementFrameProtection?: ManagementFrameProtectionEnum
 
   vlanId: number
-
-  ssid: string
+  
+  ssid?: string
 
   enabled?: boolean
 
@@ -38,8 +34,6 @@ export class PskWlan {
     this.macAddressAuthentication = false
 
     this.vlanId = 1
-
-    this.ssid = ''
 
     this.enabled = true
   }

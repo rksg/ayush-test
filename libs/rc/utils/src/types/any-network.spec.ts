@@ -1,10 +1,11 @@
-import { AnyNetwork }   from './any-network'
-import { AAANetwork }   from './wifi/AAANetwork'
-import { DpskNetwork }  from './wifi/DpskNetwork'
-import { GuestNetwork } from './wifi/GuestNetwork'
-import { NetworkVenue } from './wifi/NetworkVenue'
-import { OpenNetwork }  from './wifi/OpenNetwork'
-import { PskNetwork }   from './wifi/PskNetwork'
+import { AAANetwork }   from '../models/AAANetwork'
+import { DpskNetwork }  from '../models/DpskNetwork'
+import { GuestNetwork } from '../models/GuestNetwork'
+import { NetworkVenue } from '../models/NetworkVenue'
+import { OpenNetwork }  from '../models/OpenNetwork'
+import { PskNetwork }   from '../models/PskNetwork'
+
+import { AnyNetwork } from './any-network'
 
 
 describe('Test Any Network model type', () => {
