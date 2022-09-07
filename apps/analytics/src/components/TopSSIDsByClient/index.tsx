@@ -55,10 +55,13 @@ export default function TopSSIDsByClientWidget ({
       const sparklineChartStyle = { height: 22, width: 80, display: 'inline' }
       return {
         ...item,
-        traffic: <Space>{formatter('bytesFormat')(item.userTraffic)} &nbsp;
-          <TrafficPercent>
-          ({$t(intlFormats.percentFormatRound, { value: item.userTraffic/overallTrafic })})
-          </TrafficPercent>
+        traffic: <Space align='start' size={4}>
+          <>
+            {formatter('bytesFormat')(item.userTraffic)}
+            <TrafficPercent>
+              ({$t(intlFormats.percentFormatRound, { value: item.userTraffic/overallTrafic })})
+            </TrafficPercent>
+          </>
         </Space>,
         trafficHistory: <SparklineChart
           key={index}

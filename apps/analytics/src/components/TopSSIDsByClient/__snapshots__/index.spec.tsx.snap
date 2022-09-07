@@ -158,19 +158,13 @@ Array [
       class="ant-table-cell"
     >
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center"
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
         <div
           class="ant-space-item"
-          style="margin-right: 8px;"
+          style="margin-right: 4px;"
         >
           11.1 GB
-        </div>
-        <div
-          class="ant-space-item"
-          style="margin-right: 8px;"
-        >
-            
         </div>
         <div
           class="ant-space-item"
@@ -264,19 +258,13 @@ Array [
       class="ant-table-cell"
     >
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center"
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
         <div
           class="ant-space-item"
-          style="margin-right: 8px;"
+          style="margin-right: 4px;"
         >
           51.6 GB
-        </div>
-        <div
-          class="ant-space-item"
-          style="margin-right: 8px;"
-        >
-            
         </div>
         <div
           class="ant-space-item"
@@ -370,19 +358,13 @@ Array [
       class="ant-table-cell"
     >
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center"
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
         <div
           class="ant-space-item"
-          style="margin-right: 8px;"
+          style="margin-right: 4px;"
         >
           728 MB
-        </div>
-        <div
-          class="ant-space-item"
-          style="margin-right: 8px;"
-        >
-            
         </div>
         <div
           class="ant-space-item"
@@ -476,19 +458,13 @@ Array [
       class="ant-table-cell"
     >
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center"
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
         <div
           class="ant-space-item"
-          style="margin-right: 8px;"
+          style="margin-right: 4px;"
         >
           1.44 GB
-        </div>
-        <div
-          class="ant-space-item"
-          style="margin-right: 8px;"
-        >
-            
         </div>
         <div
           class="ant-space-item"
@@ -582,19 +558,13 @@ Array [
       class="ant-table-cell"
     >
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center"
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
         <div
           class="ant-space-item"
-          style="margin-right: 8px;"
+          style="margin-right: 4px;"
         >
           49.2 MB
-        </div>
-        <div
-          class="ant-space-item"
-          style="margin-right: 8px;"
-        >
-            
         </div>
         <div
           class="ant-space-item"

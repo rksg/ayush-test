@@ -14,7 +14,6 @@ import { formatter, intlFormats } from '@acx-ui/utils'
 import { useTopSSIDsByTrafficQuery, TopSSIDsByTraffic } from './services'
 import { TrafficPercent }                               from './styledComponents'
 
-
 export default function TopSSIDsByTrafficWidget ({
   filters
 }: {
@@ -23,7 +22,7 @@ export default function TopSSIDsByTrafficWidget ({
   const { $t } = useIntl()
   const queryResults = useTopSSIDsByTrafficQuery(filters)
 
-  const columns=[
+  const columns = [
     {
       title: $t({ defaultMessage: 'SSID Name' }),
       dataIndex: 'name',
@@ -47,7 +46,7 @@ export default function TopSSIDsByTrafficWidget ({
     }
   ]
 
-  const getDataSource= (appTrafficData: TopSSIDsByTraffic[],
+  const getDataSource = (appTrafficData: TopSSIDsByTraffic[],
     overallTrafic:number) => {
     return appTrafficData.map((item,index) => {
       const sparkLineData = item.timeSeries.userTraffic
@@ -55,10 +54,13 @@ export default function TopSSIDsByTrafficWidget ({
       const sparklineChartStyle = { height: 22, width: 80, display: 'inline' }
       return {
         ...item,
-        traffic: <Space>{formatter('bytesFormat')(item.userTraffic)}
-          <TrafficPercent>
-          ({$t(intlFormats.percentFormatRound, { value: item.userTraffic/overallTrafic })})
-          </TrafficPercent>
+        traffic: <Space align='start' size={4}>
+          <>
+            {formatter('bytesFormat')(item.userTraffic)}
+            <TrafficPercent>
+            ({$t(intlFormats.percentFormatRound, { value: item.userTraffic/overallTrafic })})
+            </TrafficPercent>
+          </>
         </Space>,
         trafficHistory: <SparklineChart
           key={index}
