@@ -1,7 +1,7 @@
 import { RefObject, useEffect, useImperativeHandle, useRef } from 'react'
 
 import ReactECharts from 'echarts-for-react'
-import _            from 'lodash'
+import { isEmpty }  from 'lodash'
 
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
 import type { TimeStamp }                    from '@acx-ui/types'
@@ -40,7 +40,7 @@ export const useBrush = (
   brush?: [TimeStamp, TimeStamp]
 ) => {
   useEffect(() => {
-    if (!eChartsRef || !eChartsRef.current || _.isEmpty(brush)) return
+    if (!eChartsRef || !eChartsRef.current || isEmpty(brush)) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
     echartInstance.dispatchAction({
       type: 'brush',
