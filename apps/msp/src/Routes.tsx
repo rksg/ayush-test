@@ -3,12 +3,21 @@ import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
 import Layout from './pages/Layout'
+import { MspCustomers } from './components/MspCustomers'
+import { VarCustomers } from './components/VarCustomers'
+import { Integrators } from './components/Integrators'
 
 export default function MspRoutes () {
   const routes = rootRoutes(
     <Route path='v/:tenantId' element={<Layout />}>
       <Route index element={<TenantNavigate to='/dashboard' tenantType='v' />} />
-      <Route path='dashboard' element={<div>MSP Page</div>} />
+      <Route path='dashboard' element={<MspCustomers/ >} />
+      <Route path='mspCustomers' element={<MspCustomers />} />
+      <Route path='varCustomers' element={<VarCustomers />} />
+      <Route path='integrators' element={<Integrators />} />
+      <Route path='deviceInventory' element={<div>Device Inventory</div>} />
+      <Route path='portalSetting' element={<div>Portal Setting</div>} />
+      <Route path='mspLicenses' element={<div>MSP License</div>} />
     </Route>
   )
   return (

@@ -6,7 +6,15 @@ import {
   QuestionMarkCircleSolid,
   RocketOutlined,
   SpeedIndicatorOutlined,
-  SpeedIndicatorSolid
+  SpeedIndicatorSolid,
+  LocationOutlined,
+  LocationSolid,
+  ReportsOutlined,
+  ReportsSolid,
+  CalendarDateOutlined,
+  CalendarDateSolid,
+  ConfigurationOutlined,
+  ConfigurationSolid
 } from '@acx-ui/icons'
 
 export const Wrapper = styled.div`
@@ -89,4 +97,37 @@ export const SpeedIndicatorIcon = styled(SpeedIndicatorOutlined)`
 `
 export const EnabledSpeedIndicatorIcon = styled(SpeedIndicatorSolid)`
   ${enabledMenuIconStyle}
+`
+export const LocationIcon = styled(LocationOutlined)`
+  ${disabledMenuIconStyle}
+`
+export const EnabledLocationIcon = styled(LocationSolid)`
+  ${enabledMenuIconStyle}
+`
+
+export const ReportsIcon = styled(ReportsOutlined)`
+  ${disabledMenuIconStyle}
+`
+export const EnabledReportsIcon = styled(ReportsSolid)`
+  ${enabledMenuIconStyle}
+`  
+export const ConfigurationIcon = styled(ConfigurationOutlined)`
+  ${disabledMenuIconStyle}
+`
+export const EnabledConfigurationIcon = styled(ConfigurationSolid)`
+  ${enabledMenuIconStyle}
+`
+export const CalendarIcon = styled(CalendarDateOutlined)`
+  ${disabledMenuIconStyle}
+  circle {
+    fill: var(--acx-primary-black);
+    stroke: var(--acx-primary-white);
+  }
+`
+export const EnabledCalendarIcon = styled(CalendarDateSolid)`
+  ${enabledMenuIconStyle}
+  circle {
+    fill: var(--acx-primary-white);
+    stroke: var(--acx-primary-black);
+  }
 `

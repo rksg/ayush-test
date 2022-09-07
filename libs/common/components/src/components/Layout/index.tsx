@@ -48,7 +48,7 @@ export function Layout ({
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
 
-  const bashPathname = useTenantLink('/').pathname
+  const bashPathname = useTenantLink('/', 'v').pathname
   const newRoutes = routes.map((item => ({
     ...item,
     path: `${bashPathname}${item.path}`,

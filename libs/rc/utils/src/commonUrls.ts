@@ -117,5 +117,25 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
-  }
+  },
+  getMspCustomersList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/msp-ec'
+  },
+  getMspDeviceInventory: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/ec-inventory',
+  },
+  getIntegratorDeviceInventory: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:mspTenantId/ec-inventory',
+  },
+  getVarDelegations: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/delegations'
+  },
+  deleteMspEcAccount: {
+    method: 'delete',
+    url: '/api/mspservice/tenant/:mspEcTenantId',
+  },
 }

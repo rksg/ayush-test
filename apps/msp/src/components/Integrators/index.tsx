@@ -1,0 +1,150 @@
+import { SortOrder } from 'antd/lib/table/interface'
+import { useIntl } from 'react-intl'
+
+import { Button, PageHeader, showToast, Table, TableProps, Loader } from '@acx-ui/components'
+import { useMspCustomerListQuery }                  from '@acx-ui/rc/services'
+import {
+  useTableQuery,
+  MspEc
+} from '@acx-ui/rc/utils'
+import { Space } from 'antd'
+import { TenantLink } from '@acx-ui/react-router-dom'
+
+function useColumns () {
+  const { $t } = useIntl()
+  const columns: TableProps<MspEc>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Name' }),
+      dataIndex: 'name',
+      sorter: true,
+      defaultSortOrder: 'ascend' as SortOrder,
+      render: function (data, row) {
+        return (
+          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Account Type' }),
+      dataIndex: 'tenantType',
+      sorter: true
+    },
+    {
+      title: $t({ defaultMessage: 'Customers Assigned' }),
+      dataIndex: 'assignedMspEcList',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return transformAssignedCustomerCount(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'MSP Admins' }),
+      dataIndex: 'mspAdminCount',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return (
+          <TenantLink to={`/networks/${row.name}/network-details/overview`}>{data}</TenantLink>
+          )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Account Admins' }),
+      dataIndex: 'mspEcAdminCount',
+      sorter: true,
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Tenant Id' }),
+      dataIndex: 'id',
+      sorter: true
+    },
+    {
+      title: $t({ defaultMessage: 'Active Incidents' }),
+      dataIndex: 'activeIncidents',
+      sorter: true
+    }
+  ]
+  return columns
+}
+
+const transformAssignedCustomerCount = (row: MspEc) => {
+  return row.assignedMspEcList.length;
+}
+
+const defaultPayload = {
+  searchString: '',
+  filters: {tenantType: ["MSP_INTEGRATOR", "MSP_INSTALLER"]},
+  fields: [
+    'check-all',
+    'id',
+    'name',
+    'tenantType',
+    'mspAdminCount',
+    'mspEcAdminCount',
+    'wifiLicense',
+    'switchLicens',
+  ]
+}
+
+export function Integrators () {
+  const { $t } = useIntl()
+
+  const IntegratorssTable = () => {
+    const tableQuery = useTableQuery({
+      useQuery: useMspCustomerListQuery,
+      defaultPayload
+    })
+
+    const actions: TableProps<MspEc>['actions'] = [
+      {
+        label: 'Manage',
+        onClick: (selectedRows) =>
+         showToast({
+          type: 'info',
+          content: `Edit ${selectedRows[0].name}`
+        })
+      },
+      {
+        label: 'Resend Invitation Email',
+        onClick: (selectedRows) => alert()
+      },
+      {
+        label: 'Delete',
+        onClick: (selectedRows) => alert()
+      }
+    ]
+    
+    return (
+      <Loader states={[tableQuery]}>
+        <Table
+          columns={useColumns()}
+          actions={actions}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+          rowSelection={{ type: 'radio' }}
+        />
+      </Loader>
+    )
+  }
+
+  return (
+    <>
+      <PageHeader
+        title={$t({ defaultMessage: 'Integrators' })}        
+        extra={[
+          <TenantLink to='/networks/create' key='add'>
+            <Space size={8}>
+              <Button type='primary'>Add Integrator</Button>
+              {/* <Button>Refresh</Button> */}
+            </Space>
+          </TenantLink>
+        ]}
+      />
+      <IntegratorssTable />
+    </>
+  )
+}
