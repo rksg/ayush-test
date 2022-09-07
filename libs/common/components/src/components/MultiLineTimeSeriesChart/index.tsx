@@ -4,6 +4,7 @@ import ReactECharts from 'echarts-for-react'
 import moment       from 'moment-timezone'
 
 import { Incident, MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
 
 import { cssStr }              from '../../theme/helper'
 import {
@@ -36,7 +37,8 @@ interface MultiLineTimeSeriesChartProps
       min: number
     },
     start?: string,
-    end?: string
+    end?: string,
+    disableLegend?: boolean
   }
 
 export function MultiLineTimeSeriesChart
@@ -50,14 +52,26 @@ export function MultiLineTimeSeriesChart
   yAxisProps,
   start,
   end,
+  disableLegend,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/analytics/incidents/')
+
+  const onMarkedAreaClick = (id: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${id}`
+    })
+  }
 
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
-    echartInstance.on('click', 'series.line', function () {
+    echartInstance.on('click', 'series.line', function (params) {
+      const markedAreaProps = params.data as { id: string }
+      onMarkedAreaClick(markedAreaProps.id)
     })
   }, [eChartsRef])
   
@@ -136,6 +150,8 @@ export function MultiLineTimeSeriesChart
       }
     }))
   }
+
+  if (option && disableLegend === true) { delete(option.legend) }
 
   return (
     <ReactECharts

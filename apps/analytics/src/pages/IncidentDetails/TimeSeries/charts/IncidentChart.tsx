@@ -40,6 +40,7 @@ export const IncidentChart = ({ incident, data }: { incident: Incident, data: Ch
           yAxisProps={{ max: 1, min: 0 }}
           start={incident.startTime}
           end={incident.endTime}
+          disableLegend={true}
         />
       )}
     </AutoSizer>
