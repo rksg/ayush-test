@@ -76,7 +76,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     {
       title: $t(defineMessage({ defaultMessage: 'Severity' })),
       width: 80,
-      dataIndex: 'severity',
+      dataIndex: 'severityLabel',
       key: 'severity',
       render: (_, value) => <GetIncidentBySeverity value={value.severity} id={value.id}/>,
       sorter: {
@@ -84,7 +84,8 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         multiple: 1
       },
       defaultSortOrder: 'descend',
-      fixed: 'left'
+      fixed: 'left',
+      filterable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Date' })),
@@ -129,7 +130,8 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => defaultSort(a.description, b.description),
         multiple: 4
       },
-      ellipsis: true
+      ellipsis: true,
+      searchable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Category' })),
@@ -139,7 +141,8 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => defaultSort(a.category as string, b.category as string),
         multiple: 5
-      }
+      },
+      filterable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
@@ -182,7 +185,8 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => defaultSort(a.scope, b.scope),
         multiple: 9
-      }
+      },
+      searchable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Type' })),
@@ -193,7 +197,8 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => defaultSort(a.type, b.type),
         multiple: 10
       },
-      show: false
+      show: false,
+      filterable: true
     }
   ]
 

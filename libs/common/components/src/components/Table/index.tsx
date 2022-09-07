@@ -154,7 +154,7 @@ function Table <RecordType extends Record<string, any>> (
   columns = columns.map(column => column.searchable && searchValue
     ? {
       ...column,
-      render: text => <Highlighter
+      render: (_, value) => <Highlighter
         highlightStyle={{
           fontWeight: 'bold',
           background: 'none',
@@ -162,7 +162,7 @@ function Table <RecordType extends Record<string, any>> (
         }}
         searchWords={[searchValue]}
         autoEscape
-        textToHighlight={text ? text.toString() : ''}
+        textToHighlight={value[column.dataIndex as keyof RecordType]}
       />
     }
     : column
@@ -176,7 +176,7 @@ function Table <RecordType extends Record<string, any>> (
 
     return filteredValue
   })
-  const deepDataCopy = _.cloneDeep(dataSource) as unknown as Array<RecordType & {
+  const deepDataCopy = dataSource?.map(val => ({ ...val })) as Array<RecordType & {
     children?: RecordType[]
   }>
   const filteredData = (deepDataCopy) && deepDataCopy.filter(

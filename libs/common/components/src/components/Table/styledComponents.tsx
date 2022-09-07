@@ -51,8 +51,8 @@ export const ActionButton = styled.button.attrs({ type: 'button' })`
 
 export const ClearButton: typeof AntButton = styled(AntButton)<AntButtonProps>`
   position: absolute;
-  right: 0;
-  top: 20px;
+  right: 0px;
+  top: 0px;
 `
 
 export const TableSettingTitle = styled(Subtitle).attrs({ level: 5 })``
