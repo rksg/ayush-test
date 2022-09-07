@@ -17,7 +17,7 @@ import {
 } from '@acx-ui/components'
 import { formatter, intlFormats } from '@acx-ui/utils'
 
-import { useSwitchesByPoEUsageQuery } from './services'
+import { useTopSwitchesByPoEUsageQuery } from './services'
 
 const barColors = [
   cssStr('--acx-semantics-yellow-40'),
@@ -58,9 +58,9 @@ const getSwitchUsageRichStyle = () => ({
   }
 })
 
-function SwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
+function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
   const intl = useIntl()
-  const queryResults = useSwitchesByPoEUsageQuery(filters,
+  const queryResults = useTopSwitchesByPoEUsageQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
         data: getBarChartSeriesData(data!,seriesMapping),
@@ -93,4 +93,4 @@ function SwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
   )
 }
 
-export default SwitchesByPoEUsageWidget
+export default TopSwitchesByPoEUsageWidget

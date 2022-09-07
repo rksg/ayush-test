@@ -55,7 +55,7 @@ describe('topSwitchesByPoEUsageApi', () => {
       data: topSwitchesByPoEUsageResponse
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.switchesByPoEUsage.initiate(props)
+      api.endpoints.topSwitchesByPoEUsage.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(
@@ -68,7 +68,7 @@ describe('topSwitchesByPoEUsageApi', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.switchesByPoEUsage.initiate(props)
+      api.endpoints.topSwitchesByPoEUsage.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

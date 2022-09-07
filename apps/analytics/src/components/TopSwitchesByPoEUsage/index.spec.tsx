@@ -17,7 +17,7 @@ const filters = {
   range: DateRange.last24Hours
 } as AnalyticsFilter
 
-describe('SwitchesByPoEUsageWidget', () => {
+describe('TopSwitchesByPoEUsageWidget', () => {
   mockAutoSizer()
 
   beforeEach(() =>
