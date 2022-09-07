@@ -195,7 +195,7 @@ describe('Venues Form', () => {
     fireEvent.change(descriptionInput, { target: { value: 'Ruckus Network Info' } })
 
     const addressInput = screen.getByTestId('address-input')
-    fireEvent.change(addressInput, { target: 
+    fireEvent.change(addressInput, { target:
       { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
     })
 
@@ -203,7 +203,7 @@ describe('Venues Form', () => {
   })
   it('should call address parser', async () => {
     const { address } = await addressParser(autocompleteResult)
-    
+
     const addressResult = {
       addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
       city: 'Sunnyvale, California',
@@ -212,7 +212,7 @@ describe('Venues Form', () => {
       longitude: -122.0191908,
       timezone: 'America/Los_Angeles'
     }
-  
+
     expect(address).toEqual(addressResult)
   })
   it('google map is enabled', async () => {

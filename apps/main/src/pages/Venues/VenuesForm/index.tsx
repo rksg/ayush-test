@@ -81,12 +81,10 @@ export const addressParser = async (place: google.maps.places.PlaceResult) => {
   address.longitude = lng
 
   // eslint-disable-next-line max-len
-  const timezoneResult = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
-  const timezone = await timezoneResult.json()
+  const timezone = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
+    .then(res => res.json())
   address.timezone = timezone.timeZoneId
-
   address.addressLine = place.formatted_address
-
 
   const latlng = new google.maps.LatLng({
     lat: Number(lat),
@@ -96,17 +94,17 @@ export const addressParser = async (place: google.maps.places.PlaceResult) => {
   const countryObj = place?.address_components?.find(
     el => el.types.includes('country')
   )
-  const country = countryObj && countryObj.long_name || ''
+  const country = countryObj?.long_name ?? ''
   address.country = country
 
   if (place && place.address_components) {
-    const city_obj = retrieveCityState(
+    const cityObj = retrieveCityState(
       place.address_components,
       country
     )
-    if (city_obj) {
-      address.city = city_obj.state
-        ? `${city_obj.city}, ${city_obj.state}` : city_obj.city
+    if (cityObj) {
+      address.city = cityObj.state
+        ? `${cityObj.city}, ${cityObj.state}` : cityObj.city
     }
   }
   return { latlng, address }
@@ -135,13 +133,8 @@ export function VenuesForm () {
     lat: 0,
     lng: 0
   })
-  const [markers, setMarkers] = React.useState<google.maps.LatLng>()
-
+  const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
-
-  const render = (Status: string | null | undefined) => {
-    return <h1>{Status}</h1>
-  }
 
   const venuesListPayload = {
     searchString: '',
@@ -179,7 +172,7 @@ export function VenuesForm () {
 
       const { latlng, address } = await addressParser(place)
 
-      setMarkers(latlng)
+      setMarker(latlng)
       setCenter(latlng.toJSON())
       updateAddress(address)
       setZoom(16)
@@ -277,13 +270,13 @@ export function VenuesForm () {
                     validator: () => addressValidator(),
                     validateTrigger: 'onChange'
                   }]}
+                  initialValue={!isMapEnabled ? defaultAddress.addressLine : ''}
                 >
                   <Input
                     allowClear={{ clearIcon: <CloseIcon /> }}
                     prefix={<SearchOutlined />}
                     onChange={addressOnChange}
                     data-testid='address-input'
-                    defaultValue={!isMapEnabled ? defaultAddress.addressLine : ''}
                     disabled={!isMapEnabled}
                     value={address.addressLine}
                   />

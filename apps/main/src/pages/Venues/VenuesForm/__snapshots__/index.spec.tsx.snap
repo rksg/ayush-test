@@ -239,7 +239,7 @@ exports[`Venues Form google map is not enabled 1`] = `
                     </div>
                     <div
                       class="ant-col ant-col-9"
-                      style="text-align: left; padding-left: 2rem;"
+                      style="text-align: right;"
                     >
                       <span
                         class="ant-form-item-label"
@@ -251,73 +251,78 @@ exports[`Venues Form google map is not enabled 1`] = `
                     </div>
                   </div>
                   <div
-                    style="width: 470px; height: 260px; position: relative; margin-bottom: 30px;"
+                    class="ant-row"
                   >
                     <div
-                      class="styledComponents__AddressContainer-sc-1jr0ig3-1 irGUDT"
-                      style="position: absolute; z-index: 10; width: 450px; margin: 12px;"
+                      class="ant-col ant-col-11"
+                      style="position: relative; margin-bottom: 30px;"
                     >
                       <div
-                        class="ant-form-item"
+                        class="styledComponents__AddressContainer-sc-1jr0ig3-1 irGUDT"
+                        style="position: absolute; z-index: 10; width: calc(100% - 24px); margin: 12px;"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-form-item"
                         >
                           <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-row ant-form-item-row"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-col ant-form-item-control"
                             >
                               <div
-                                class="ant-form-item-control-input-content"
+                                class="ant-form-item-control-input"
                               >
-                                <span
-                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled"
+                                <div
+                                  class="ant-form-item-control-input-content"
                                 >
                                   <span
-                                    class="ant-input-prefix"
-                                  >
-                                    <svg>
-                                      SearchOutlined.svg
-                                    </svg>
-                                  </span>
-                                  <input
-                                    class="ant-input ant-input-disabled"
-                                    data-testid="address-input"
-                                    disabled=""
-                                    id="0_address_addressLine"
-                                    type="text"
-                                    value="350 W Java Dr, Sunnyvale, CA 94089, USA"
-                                  />
-                                  <span
-                                    class="ant-input-suffix"
+                                    class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled"
                                   >
                                     <span
-                                      class="ant-input-clear-icon ant-input-clear-icon-hidden"
-                                      role="button"
-                                      tabindex="-1"
+                                      class="ant-input-prefix"
                                     >
-                                      <svg
-                                        class="styledComponents__CloseIcon-sc-1jr0ig3-0 etwmVJ"
-                                      >
-                                        Close.svg
+                                      <svg>
+                                        SearchOutlined.svg
                                       </svg>
                                     </span>
+                                    <input
+                                      class="ant-input ant-input-disabled"
+                                      data-testid="address-input"
+                                      disabled=""
+                                      id="0_address_addressLine"
+                                      type="text"
+                                      value="350 W Java Dr, Sunnyvale, CA 94089, USA"
+                                    />
+                                    <span
+                                      class="ant-input-suffix"
+                                    >
+                                      <span
+                                        class="ant-input-clear-icon ant-input-clear-icon-hidden"
+                                        role="button"
+                                        tabindex="-1"
+                                      >
+                                        <svg
+                                          class="styledComponents__CloseIcon-sc-1jr0ig3-0 etwmVJ"
+                                        >
+                                          Close.svg
+                                        </svg>
+                                      </span>
+                                    </span>
                                   </span>
-                                </span>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
+                      <h2
+                        class="ant-typography"
+                        style="text-align: center; padding-top: 3em;"
+                      >
+                        Map is not enabled
+                      </h2>
                     </div>
-                    <h2
-                      class="ant-typography"
-                      style="text-align: center; padding-top: 3em;"
-                    >
-                      Map is not enabled
-                    </h2>
                   </div>
                 </form>
               </div>
@@ -602,7 +607,7 @@ exports[`Venues Form should render venues form 1`] = `
                     </div>
                     <div
                       class="ant-col ant-col-9"
-                      style="text-align: left; padding-left: 2rem;"
+                      style="text-align: right;"
                     >
                       <span
                         class="ant-form-item-label"
@@ -614,69 +619,74 @@ exports[`Venues Form should render venues form 1`] = `
                     </div>
                   </div>
                   <div
-                    style="width: 470px; height: 260px; position: relative; margin-bottom: 30px;"
+                    class="ant-row"
                   >
                     <div
-                      class="styledComponents__AddressContainer-sc-1jr0ig3-1 irGUDT"
-                      style="position: absolute; z-index: 10; width: 450px; margin: 12px;"
+                      class="ant-col ant-col-11"
+                      style="position: relative; margin-bottom: 30px;"
                     >
                       <div
-                        class="ant-form-item"
+                        class="styledComponents__AddressContainer-sc-1jr0ig3-1 irGUDT"
+                        style="position: absolute; z-index: 10; width: calc(100% - 24px); margin: 12px;"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-form-item"
                         >
                           <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-row ant-form-item-row"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-col ant-form-item-control"
                             >
                               <div
-                                class="ant-form-item-control-input-content"
+                                class="ant-form-item-control-input"
                               >
-                                <span
-                                  class="ant-input-affix-wrapper"
+                                <div
+                                  class="ant-form-item-control-input-content"
                                 >
                                   <span
-                                    class="ant-input-prefix"
-                                  >
-                                    <svg>
-                                      SearchOutlined.svg
-                                    </svg>
-                                  </span>
-                                  <input
-                                    class="ant-input"
-                                    data-testid="address-input"
-                                    id="0_address_addressLine"
-                                    type="text"
-                                    value=""
-                                  />
-                                  <span
-                                    class="ant-input-suffix"
+                                    class="ant-input-affix-wrapper"
                                   >
                                     <span
-                                      class="ant-input-clear-icon ant-input-clear-icon-hidden"
-                                      role="button"
-                                      tabindex="-1"
+                                      class="ant-input-prefix"
                                     >
-                                      <svg
-                                        class="styledComponents__CloseIcon-sc-1jr0ig3-0 etwmVJ"
-                                      >
-                                        Close.svg
+                                      <svg>
+                                        SearchOutlined.svg
                                       </svg>
                                     </span>
+                                    <input
+                                      class="ant-input"
+                                      data-testid="address-input"
+                                      id="0_address_addressLine"
+                                      type="text"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-input-suffix"
+                                    >
+                                      <span
+                                        class="ant-input-clear-icon ant-input-clear-icon-hidden"
+                                        role="button"
+                                        tabindex="-1"
+                                      >
+                                        <svg
+                                          class="styledComponents__CloseIcon-sc-1jr0ig3-0 etwmVJ"
+                                        >
+                                          Close.svg
+                                        </svg>
+                                      </span>
+                                    </span>
                                   </span>
-                                </span>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
+                      <div
+                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                      />
                     </div>
-                    <h1>
-                      LOADING
-                    </h1>
                   </div>
                 </form>
               </div>
