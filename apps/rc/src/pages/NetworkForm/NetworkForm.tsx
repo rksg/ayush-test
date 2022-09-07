@@ -11,8 +11,8 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import {
-  useCreateNetworkMutation,
+import { 
+  useAddNetworkMutation,
   useGetNetworkQuery,
   useUpdateNetworkMutation,
   useLazyValidateRadiusQuery
@@ -64,9 +64,10 @@ export function NetworkForm () {
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
   const editMode = params.action === 'edit'
+  const cloneMode = params.action === 'clone'
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
-  const [createNetwork] = useCreateNetworkMutation()
+  const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
   const [getValidateRadius] = useLazyValidateRadiusQuery()
   const [enableMoreSettings, setEnabled] = useState(false)
@@ -81,6 +82,12 @@ export function NetworkForm () {
   })
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
+    if(saveData.isCloudpathEnabled){
+      delete saveState.authRadius
+      delete saveState.accountingRadius
+    }else{
+      delete saveState.cloudpathServerId
+    }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -92,13 +99,17 @@ export function NetworkForm () {
     if(data){
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
+      if (cloneMode) {
+        formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
+      }
       updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
     }
   }, [data])
 
   const handleAddNetwork = async () => {
     try {
-      await createNetwork({ params, payload: saveState }).unwrap()
+      const payload = _.omit(saveState, 'id') // omit id to handle clone
+      await addNetwork({ params: { tenantId: params.tenantId }, payload: payload }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -210,13 +221,13 @@ export function NetworkForm () {
   return (
     <>
       <PageHeader
-        title={editMode ? intl.$t({ defaultMessage: 'Edit Network' })
-          : intl.$t({ defaultMessage: 'Create New Network' })}
+        title={editMode ?
+          intl.$t({ defaultMessage: 'Edit Network' }) : intl.$t({ defaultMessage: 'Add Network' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
-      <NetworkFormContext.Provider value={{ setNetworkType, editMode, data }}>
+      <NetworkFormContext.Provider value={{ setNetworkType, editMode, cloneMode, data }}>
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
@@ -283,14 +294,6 @@ export function NetworkForm () {
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
-            initialValues={data}
-            params={data}
-            request={(params) => {
-              return Promise.resolve({
-                data: params,
-                success: true
-              })
-            }}
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
@@ -300,10 +303,11 @@ export function NetworkForm () {
           >
             <Venues />
           </StepsForm.StepForm>
-
-          <StepsForm.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
-            <SummaryForm summaryData={saveState} />
-          </StepsForm.StepForm>
+          {!editMode &&
+            <StepsForm.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
+              <SummaryForm summaryData={saveState} />
+            </StepsForm.StepForm>
+          }
         </StepsForm>
       </NetworkFormContext.Provider>
     </>

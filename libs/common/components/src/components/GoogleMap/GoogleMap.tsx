@@ -1,0 +1,65 @@
+import React, { useRef, useEffect } from 'react'
+
+import { Wrapper, WrapperProps, Status } from '@googlemaps/react-wrapper'
+import { useIntl }                       from 'react-intl'
+
+import { get } from '@acx-ui/config'
+
+import { Loader } from '../Loader'
+
+export interface MapProps extends google.maps.MapOptions {
+  style?: React.CSSProperties
+  onClick?: (e: google.maps.MapMouseEvent) => void;
+  onIdle?: (map: google.maps.Map) => void;
+  children?: React.ReactNode;
+  libraries: WrapperProps['libraries']
+}
+
+export const GoogleMap: React.FC<MapProps> = ({
+  libraries,
+  ...props
+}) => {
+  const { $t } = useIntl()
+  return <Wrapper
+    apiKey={get('GOOGLE_MAPS_KEY')}
+    libraries={libraries}
+    render={(status) => {
+      switch (status) {
+        case Status.LOADING: return <Loader />
+        case Status.SUCCESS: return <Map {...props} />
+        case Status.FAILURE: return <Loader states={[{
+          isLoading: false,
+          error: new Error($t({ defaultMessage: 'Failed to load Google Maps' }))
+        }]} />
+      }
+    }}
+  />
+}
+
+const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
+  children, ...options
+}) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<google.maps.Map>()
+
+  useEffect(() => {
+    if (!ref.current) return
+    mapRef.current = new google.maps.Map(ref.current)
+  }, [ref])
+
+  useEffect(() => { mapRef.current?.setOptions(options) }, [mapRef, options])
+
+  return (
+    <>
+      <div ref={ref} style={{ height: '100%', width: '100%', margin: '0' }}/>
+      {React.Children.map(children, (child) => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child, { map: mapRef.current })
+        } else {
+          return null
+        }
+      })}
+    </>
+  )
+}
+

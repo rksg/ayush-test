@@ -1,5 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`AnalyticsFilterProvider changes filter value 1`] = `
+<DocumentFragment>
+  <div>
+    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours"}
+  </div>
+</DocumentFragment>
+`;
+
+exports[`AnalyticsFilterProvider gets initial value from search parameters 1`] = `
+<DocumentFragment>
+  <div>
+    {"path":[{"type":"network","name":"Network"},{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours"}
+  </div>
+</DocumentFragment>
+`;
+
 exports[`AnalyticsFilterProvider should render correctly 1`] = `
 <DocumentFragment>
   <div>

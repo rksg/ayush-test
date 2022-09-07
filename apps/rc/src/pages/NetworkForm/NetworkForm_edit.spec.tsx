@@ -124,9 +124,6 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(screen.getByText('Finish'))
   })
 })

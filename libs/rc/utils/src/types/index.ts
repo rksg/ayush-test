@@ -71,6 +71,7 @@ export interface Venue {
   activated: { isActivated: boolean, isDisabled?: boolean }
   deepVenue?: NetworkVenue
   disabledActivation: boolean
+  networkId? : string
 }
 
 export interface AlarmBase {

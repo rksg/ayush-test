@@ -1,29 +1,64 @@
-import { useIntl, defineMessage } from 'react-intl'
+import { useState } from 'react'
 
-import { Incident, noDataSymbol, IncidentFilter, nodeTypes } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table }                         from '@acx-ui/components'
-import { useTenantLink, Link }                               from '@acx-ui/react-router-dom'
-import { formatter }                                         from '@acx-ui/utils'
+import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
+
+import {
+  Incident,
+  noDataSymbol,
+  IncidentFilter,
+  getRootCauseAndRecommendations,
+  useShortDescription
+} from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
+import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
+import { formatter }                         from '@acx-ui/utils'
 
 import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
+import * as UI                                                       from './styledComponents'
 import {
   GetIncidentBySeverity,
   FormatDate,
   clientImpactSort,
   ShortIncidentDescription,
-  GetCategory,
-  GetScope,
   severitySort,
   dateSort,
-  defaultSort,
-  ClientImpact
+  defaultSort
 } from './utils'
 
+const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
+  const { $t } = useIntl()
+  const { metadata } = props.selectedIncidentToShowDescription
+  const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
+  const values = {
+    p: (text: string) => <UI.DrawerPara>{text}</UI.DrawerPara>,
+    ol: (text: string) => <UI.DrawerOrderList>{text}</UI.DrawerOrderList>,
+    li: (text: string) => <UI.DrawerList>{text}</UI.DrawerList>
+  }
+  const { dominant } = metadata
+  const wlanInfo = (dominant && dominant.ssid)
+    ? $t(defineMessage({ defaultMessage: 'Most impacted WLAN: {ssid}' }), { ssid: dominant.ssid })
+    : ''
+  const desc = useShortDescription(props.selectedIncidentToShowDescription)
+  return (
+    <UI.IncidentDrawerContent>
+      <UI.IncidentCause>{desc}</UI.IncidentCause>
+      <UI.IncidentImpactedClient showImpactedClient={!!(dominant && dominant.ssid)}>
+        {wlanInfo}
+      </UI.IncidentImpactedClient>
+      <UI.IncidentRootCauses>
+        {$t(defineMessage({ defaultMessage: 'Root cause' }))}{':'}
+      </UI.IncidentRootCauses>
+      <FormattedMessage {...rootCauses} values={values} />
+    </UI.IncidentDrawerContent>
+  )
+}
 
 function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
   const queryResults = useIncidentsListQuery(filters)
   const basePath = useTenantLink('/analytics/incidents/')
+  const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
+  const onDrawerClose = () => setDrawerSelection(null)
   const mutedKeysFilter = (data: IncidentNodeData) => {
     return data.filter((row) => row.isMuted === true).map((row) => row.id)
   }
@@ -53,12 +88,11 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Date' })),
-      width: 'auto',
       dataIndex: 'endTime',
       valueType: 'dateTime',
       key: 'endTime',
       render: (_, value) => {
-        return <Link to={`${basePath.pathname}/${value.id}`}>
+        return <Link to={{ ...basePath, pathname: `${basePath.pathname}/${value.id}` }}>
           <FormatDate datetimestamp={value.endTime} />
         </Link>
       },
@@ -70,7 +104,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Duration' })),
-      width: 'auto',
       dataIndex: 'duration',
       key: 'duration',
       render: (_, value) => formatter('durationFormat')(value.duration) as string,
@@ -81,83 +114,75 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
-      width: 'auto',
       dataIndex: 'description',
       key: 'description',
-      render: (_, value) => <ShortIncidentDescription incident={value}/>,
+      render: (_, value ) => (
+        <ShortIncidentDescription
+          onClickDesc={setDrawerSelection}
+          incident={value}
+        />
+      ),
       sorter: {
-        compare: (a, b) => defaultSort(a.code, b.code),
+        compare: (a, b) => defaultSort(a.description, b.description),
         multiple: 4
       },
       ellipsis: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Category' })),
-      width: 'auto',
       dataIndex: 'category',
       key: 'category',
-      render: (_, value) => GetCategory(value.code),
       sorter: {
-        compare: (a, b) => defaultSort(a.code, b.code),
+        compare: (a, b) => defaultSort(a.category as string, b.category as string),
         multiple: 5
       }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
-      width: 'auto',
       dataIndex: 'subCategory',
       key: 'subCategory',
-      render: (_, value) => GetCategory(value.code, true),
       sorter: {
-        compare: (a, b) => defaultSort(a.code, b.code),
-        multiple: 5
+        compare: (a, b) => defaultSort(a.subCategory as string, b.subCategory as string),
+        multiple: 6
       },
       show: false
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
-      width: 'auto',
-      dataIndex: 'clientCount',
-      key: 'clientCount',
-      render: (_, incident) => <ClientImpact type='clientImpact' incident={incident}/>,
+      dataIndex: 'clientImpact',
+      key: 'clientImpact',
       sorter: {
-        compare: (a, b) => clientImpactSort(a.clientCount, b.clientCount),
-        multiple: 6
+        compare: (a, b) => clientImpactSort(a.clientImpact, b.clientImpact),
+        multiple: 7
       }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
-      width: 'auto',
-      dataIndex: 'impactedClientCount',
-      key: 'impactedClientCount',
-      render: (_, incident) => <ClientImpact type='impactedClients' incident={incident}/>,
+      dataIndex: 'impactedClients',
+      key: 'impactedClients',
       sorter: {
-        compare: (a, b) => clientImpactSort(a.impactedClientCount, b.impactedClientCount),
-        multiple: 7
+        compare: (a, b) => clientImpactSort(a.impactedClients, b.impactedClients),
+        multiple: 8
       },
       align: 'center'
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Scope' })),
-      width: 'auto',
       dataIndex: 'scope',
       ellipsis: true,
       key: 'scope',
-      render: (_, value) => <GetScope incident={value} />,
       sorter: {
-        compare: (a, b) => clientImpactSort(a.code, b.code),
-        multiple: 8
+        compare: (a, b) => defaultSort(a.scope, b.scope),
+        multiple: 9
       }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Type' })),
-      width: 'auto',
       dataIndex: 'type',
       key: 'type',
-      render: (_, value) => $t(nodeTypes(value.sliceType)),
       sorter: {
-        compare: (a, b) => clientImpactSort(a.code, b.code),
-        multiple: 8
+        compare: (a, b) => defaultSort(a.type, b.type),
+        multiple: 10
       },
       show: false
     }
@@ -188,6 +213,15 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         scroll={{ y: 'max-content' }}
         indentSize={6}
       />
+      {drawerSelection &&
+      <Drawer
+        visible
+        title={$t(defineMessage({ defaultMessage: 'Incident Description' }))}
+        onClose={onDrawerClose}
+        children={<IncidentDrawerContent selectedIncidentToShowDescription={drawerSelection} />}
+        width={400}
+      />
+      }
     </Loader>
   )
 }

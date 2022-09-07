@@ -4,9 +4,7 @@ import React from 'react'
 import { MarkerClusterer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer'
 import * as _                                     from 'lodash'
 import { createRoot }                             from 'react-dom/client'
-import { useIntl }                                from 'react-intl'
-
-import { ConfigProvider } from '@acx-ui/components'
+import { RawIntlProvider, useIntl }               from 'react-intl'
 
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
@@ -62,9 +60,9 @@ const GMap: React.FC<MapProps> = ({
         const legendControlBoxDiv = document.createElement('div')
         const root = createRoot(legendControlBoxDiv!)
         root.render(
-          <ConfigProvider lang='en-US'>
+          <RawIntlProvider value={intl}>
             <VenueFilterControlBox onChange={onFilterChange} />
-          </ConfigProvider>
+          </RawIntlProvider>
         )
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(legendControlBoxDiv)
       }
@@ -139,12 +137,12 @@ const GMap: React.FC<MapProps> = ({
 
           const infoDiv = document.createElement('div')
           createRoot(infoDiv).render(
-            <ConfigProvider lang='en-US'>
+            <RawIntlProvider value={intl}>
               <VenueMarkerTooltip
                 venue={venue}
                 onNavigate={onNavigate}
               />
-            </ConfigProvider>
+            </RawIntlProvider>
           )
           infoDiv.addEventListener('mouseover', () => {
             clearTimeout(closeInfoWindowWithTimeout)

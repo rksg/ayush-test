@@ -12,7 +12,7 @@
     "test": "nx test",
     "extract": "formatjs extract",
     "compile": "formatjs compile",
-    "extract-compile": "formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/*{.d.ts,.spec.ts,.spec.tsx}' --out-file apps/main/src/locales/en-US.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '$t' && formatjs compile 'apps/main/src/locales/en-US.json' --out-file apps/main/src/locales/compiled/en-US.json"
+    "extract-compile": "formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/{*.d.ts,*.spec.ts,*.spec.tsx,stories.tsx}' --out-file apps/main/src/locales/en-US.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '$t' && formatjs compile 'apps/main/src/locales/en-US.json' --out-file apps/main/src/locales/compiled/en-US.json"
   },
   "private": true,
   "dependencies": {
@@ -39,6 +39,7 @@
     "react-intl": "6.0.5",
     "react-is": "18.1.0",
     "react-redux": "8.0.2",
+    "react-resizable": "3.0.4",
     "react-router-dom": "6.3.0",
     "react-virtualized-auto-sizer": "1.0.6",
     "regenerator-runtime": "0.13.9",
@@ -87,6 +88,7 @@
     "@types/react": "18.0.12",
     "@types/react-dom": "18.0.5",
     "@types/react-is": "17.0.3",
+    "@types/react-resizable": "3.0.2",
     "@types/react-virtualized-auto-sizer": "1.0.1",
     "@types/socket.io-client": "1.4.36",
     "@types/styled-components": "5.1.25",
