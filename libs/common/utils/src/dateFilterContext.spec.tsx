@@ -2,7 +2,7 @@ import React from 'react'
 
 import { renderHook, render } from '@testing-library/react'
 
-import { BrowserRouter, MemoryRouter } from '@acx-ui/react-router-dom'
+import { BrowserRouter } from '@acx-ui/react-router-dom'
 
 import { useDateFilter, DateFilterProvider }            from './dateFilterContext'
 import { defaultRanges, DateRange, getDateRangeFilter } from './dateUtil'
@@ -36,22 +36,19 @@ describe('DateFilterProvider', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should set url on rerender', () => {
-    const period = Buffer.from(JSON.stringify({ range: 'Last Month' })).toString('base64')
-    function Component () {
+  it('sets period params when calling setDateFilter', async () => {
+    function Component (props: { update: boolean }) {
       const filters = useDateFilter()
+      props.update && filters?.setDateFilter?.(getDateRangeFilter(DateRange.lastMonth))
       return <div>{JSON.stringify(filters)}</div>
     }
-    const { asFragment } = render(
-      <MemoryRouter initialEntries={[{
-        pathname: '/incidents',
-        search: `?period=${period}`
-      }]}>
-        <DateFilterProvider>
-          <Component />
-        </DateFilterProvider>
-      </MemoryRouter>
-    )
+    const component = (update: boolean) => <BrowserRouter>
+      <DateFilterProvider>
+        <Component update={update} />
+      </DateFilterProvider>
+    </BrowserRouter>
+    const { asFragment, rerender } = render(component(true))
+    rerender(component(false))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render correctly with default date from url', () => {

@@ -44,7 +44,7 @@ export function DateFilterProvider (props: { children: ReactNode }) {
     ? getDateRangeFilter(period.range, period.startDate, period.endDate)
     : defaultDateFilter.dateFilter
   const setDateFilter = (date: DateFilter) => {
-    search.set('period', Buffer.from(JSON.stringify({ ...date })).toString('base64'))
+    search.set('period', Buffer.from(JSON.stringify(date)).toString('base64'))
     setSearch(search, { replace: true })
   }
   return <DateFilterContext.Provider {...props} value={{ dateFilter, setDateFilter }} />
