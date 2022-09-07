@@ -102,7 +102,7 @@ export default function TopApplicationsByTrafficWidget ({
       <Card title={$t({ defaultMessage: 'Top 5 Applications by Traffic' })}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ display: 'block', height, width}}>
+            <div style={{ display: 'block', height, width }}>
               <ContentSwitcher tabDetails={tabDetails} size='small' align='center' />
             </div>
           )}
