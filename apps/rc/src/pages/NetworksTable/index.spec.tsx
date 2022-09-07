@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { WifiUrlsInfo }       from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import {
   fireEvent,
@@ -158,11 +158,11 @@ describe('Networks Table', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
+        WifiUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteNetwork.url,
+        WifiUrlsInfo.deleteNetwork.url,
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
       )
     )

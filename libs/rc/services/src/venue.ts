@@ -8,7 +8,8 @@ import {
   showActivityMessage,
   TableResult,
   Venue,
-  VenueDetailHeader
+  VenueDetailHeader,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -40,7 +41,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenue: build.query<Venue, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.getVenue, params)
         return{
           ...req
         }

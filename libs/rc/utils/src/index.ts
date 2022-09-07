@@ -1,4 +1,4 @@
-export * from './commonUrls'
+export * from './urls'
 export * from './apiService'
 export * from './userService'
 export * from './constants'
