@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useMemo,
   ReactNode
 } from 'react'
 
@@ -40,12 +41,14 @@ export function DateFilterProvider (props: { children: ReactNode }) {
   const period = search.has('period') && JSON.parse(
     Buffer.from(search.get('period') as string, 'base64').toString('ascii')
   )
-  const dateFilter = period
-    ? getDateRangeFilter(period.range, period.startDate, period.endDate)
-    : defaultDateFilter.dateFilter
-  const setDateFilter = (date: DateFilter) => {
-    search.set('period', Buffer.from(JSON.stringify({ ...date })).toString('base64'))
-    setSearch(search)
-  }
-  return <DateFilterContext.Provider {...props} value={{ dateFilter, setDateFilter }} />
+  const providerValue = useMemo(() => ({
+    dateFilter: period
+      ? getDateRangeFilter(period.range, period.startDate, period.endDate)
+      : defaultDateFilter.dateFilter,
+    setDateFilter: (date: DateFilter) => {
+      search.set('period', Buffer.from(JSON.stringify({ ...date })).toString('base64'))
+      setSearch(search)
+    }
+  }), [search]) // eslint-disable-line react-hooks/exhaustive-deps
+  return <DateFilterContext.Provider {...props} value={providerValue} />
 }
