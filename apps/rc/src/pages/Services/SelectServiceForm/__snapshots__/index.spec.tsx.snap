@@ -160,7 +160,7 @@ exports[`Select Service Form should render form 1`] = `
                               id="selectService_serviceType"
                             >
                               <div
-                                class="styledComponents__CategoryContainer-sc-y5574i-0 ckKsOr"
+                                class="styledComponents__CategoryContainer-sc-994pwt-0 hbJKTH"
                               >
                                 <h3
                                   class="ant-typography"
@@ -230,7 +230,7 @@ exports[`Select Service Form should render form 1`] = `
                                 </div>
                               </div>
                               <div
-                                class="styledComponents__CategoryContainer-sc-y5574i-0 ckKsOr"
+                                class="styledComponents__CategoryContainer-sc-994pwt-0 hbJKTH"
                               >
                                 <h3
                                   class="ant-typography"
@@ -300,7 +300,7 @@ exports[`Select Service Form should render form 1`] = `
                                 </div>
                               </div>
                               <div
-                                class="styledComponents__CategoryContainer-sc-y5574i-0 ckKsOr"
+                                class="styledComponents__CategoryContainer-sc-994pwt-0 hbJKTH"
                               >
                                 <h3
                                   class="ant-typography"

@@ -78,7 +78,7 @@ function ClientIsolationForm () {
           initialValue={false}
           children={<Switch />} />
       </UI.FieldLabel>
-      <Tooltip title={'Does not support in Beta.'}>
+      <Tooltip title={$t({ defaultMessage: 'Drop#1 is not support.' })}>
         <UI.FieldLabel width='230px'>
           {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
           <Form.Item
@@ -158,7 +158,7 @@ export function ServicesForm () {
       </UI.FieldLabel>
 
 
-      <Tooltip title={'Does not support in Beta.'}>
+      <Tooltip title={$t({ defaultMessage: 'Drop#1 is not support.' })}>
         <UI.FieldLabel width='125px'>
           {$t({ defaultMessage: 'Wi-Fi Calling:' })}
           <UI.FieldLabel width='30px'>
