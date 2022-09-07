@@ -24,7 +24,7 @@ beforeEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('AttemptAndFailureChart', () => {
   mockAutoSizer()
-  it('should match snapshot', async () => {
+  it('should render chart', async () => {
     const { asFragment } = render(
       <AttemptAndFailureChart incident={fakeIncident1} data={expectedResult}/>
     )
