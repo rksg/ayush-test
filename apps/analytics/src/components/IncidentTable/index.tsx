@@ -92,7 +92,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       valueType: 'dateTime',
       key: 'endTime',
       render: (_, value) => {
-        return <Link to={`${basePath.pathname}/${value.id}`}>
+        return <Link to={{ ...basePath, pathname: `${basePath.pathname}/${value.id}` }}>
           <FormatDate datetimestamp={value.endTime} />
         </Link>
       },
