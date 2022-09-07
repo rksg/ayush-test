@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef, ChangeEventHandler } from 'react'
+import React, { useState, useRef, ChangeEventHandler } from 'react'
 
-import { Wrapper } from '@googlemaps/react-wrapper'
 import {
   Form,
   Input,
@@ -8,15 +7,21 @@ import {
   Col,
   Typography
 } from 'antd'
-import TextArea    from 'antd/lib/input/TextArea'
 import { useIntl } from 'react-intl'
 
-import { PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { get }                                                 from '@acx-ui/config'
-import { useSplitTreatment }                                   from '@acx-ui/feature-toggle'
-import { SearchOutlined }                                      from '@acx-ui/icons'
-import { useAddVenueMutation, useLazyVenuesListQuery }         from '@acx-ui/rc/services'
-import { Address, VenueSaveData, checkObjectNotExists }        from '@acx-ui/rc/utils'
+import {
+  GoogleMap,
+  GoogleMapMarker,
+  PageHeader,
+  showToast,
+  StepsForm,
+  StepsFormInstance
+} from '@acx-ui/components'
+import { get }                                          from '@acx-ui/config'
+import { useSplitTreatment }                            from '@acx-ui/feature-toggle'
+import { SearchOutlined }                               from '@acx-ui/icons'
+import { useAddVenueMutation, useLazyVenuesListQuery }  from '@acx-ui/rc/services'
+import { Address, VenueSaveData, checkObjectNotExists } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -24,32 +29,7 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import { CloseIcon, AddressContainer } from './styledComponents'
-import VenueMap                        from './VenueMap'
 
-export const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
-  const [marker, setMarker] = React.useState<google.maps.Marker>()
-
-  useEffect(() => {
-    if (!marker) {
-      setMarker(new google.maps.Marker())
-    }
-
-    // remove marker from map on unmount
-    return () => {
-      if (marker) {
-        marker.setMap(null)
-      }
-    }
-  }, [marker])
-
-  useEffect(() => {
-    if (marker) {
-      marker.setOptions(options)
-    }
-  }, [marker, options])
-
-  return null
-}
 interface AddressComponent {
   long_name?: string;
   short_name?: string;
@@ -250,7 +230,7 @@ export function VenuesForm () {
             name='description'
             label={intl.$t({ defaultMessage: 'Description' })}
             wrapperCol={{ span: 5 }}
-            children={<TextArea rows={2} maxLength={180} />} />
+            children={<Input.TextArea rows={2} maxLength={180} />} />
           {/*
         <Form.Item
         name='tags'
@@ -310,21 +290,16 @@ export function VenuesForm () {
                 </Form.Item>
               </AddressContainer>
               {isMapEnabled ?
-                <Wrapper
-                  apiKey={get('GOOGLE_MAPS_KEY')}
+                <GoogleMap
                   libraries={['places']}
-                  render={render}
+                  mapTypeControl={false}
+                  streetViewControl={false}
+                  fullscreenControl={false}
+                  zoom={zoom}
+                  center={center}
                 >
-                  <VenueMap
-                    mapTypeControl={false}
-                    streetViewControl={false}
-                    fullscreenControl={false}
-                    zoom={zoom}
-                    center={center}
-                  >
-                    <Marker key={0} position={markers} />
-                  </VenueMap>
-                </Wrapper>
+                  {marker && <GoogleMapMarker position={marker} />}
+                </GoogleMap>
                 :
                 <Typography.Title level={2}
                   style={{ textAlign: 'center', paddingTop: '3em' }}

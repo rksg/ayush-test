@@ -7,6 +7,7 @@ const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
 const { mockServer, mockLightTheme } = require('@acx-ui/test-utils')
 const config = require('@acx-ui/config')
 const { mockInstances } = require('@googlemaps/jest-mocks')
+const { Loader } = require('@googlemaps/js-api-loader')
 const { rest } = require('msw')
 
 beforeAll(() => mockServer.listen())
@@ -17,6 +18,7 @@ beforeEach(async () => {
 })
 afterEach(() => {
   mockServer.resetHandlers()
+  Loader['instance']?.reset()
   mockInstances.clearAll()
 })
 afterAll(() => mockServer.close())
