@@ -26,11 +26,6 @@ exports[`TopSSIDsByTrafficWidget should render for empty data: NoData 1`] = `
               >
                 Top 5 SSIDs by Traffic
               </div>
-              <div
-                class="styledComponents__SubTitle-sc-13w5wfx-5 xivbA"
-              >
-                Insight Text coming from analytics
-              </div>
             </div>
             <div
               class="ant-card-extra"
@@ -48,7 +43,7 @@ exports[`TopSSIDsByTrafficWidget should render for empty data: NoData 1`] = `
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              style="display: block; height: 280px; width: 280px; padding-top: 10px;"
+              style="display: block; height: 280px; width: 280px; padding-top: 20px;"
             >
               <div
                 class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
@@ -151,11 +146,7 @@ Array [
     <td
       class="ant-table-cell"
     >
-      <a
-        href="/#TBD"
-      >
-        birdywlan-dev
-      </a>
+      birdywlan-dev
     </td>,
     <td
       class="ant-table-cell"
@@ -255,11 +246,7 @@ Array [
     <td
       class="ant-table-cell"
     >
-      <a
-        href="/#TBD"
-      >
-        Home-550
-      </a>
+      Home-550
     </td>,
     <td
       class="ant-table-cell"

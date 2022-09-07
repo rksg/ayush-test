@@ -27,9 +27,7 @@ export default function TopSSIDsByTrafficWidget ({
     {
       title: $t({ defaultMessage: 'SSID Name' }),
       dataIndex: 'name',
-      key: 'name',
-      render: (name:unknown) => {
-        return <a href='/#TBD'>{name as string}</a>}
+      key: 'name'
     },
     {
       title: $t({ defaultMessage: 'Total Traffic' }),
@@ -83,11 +81,10 @@ export default function TopSSIDsByTrafficWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 SSIDs by Traffic' })}
-        subTitle={$t({ defaultMessage: 'Insight Text coming from analytics' })}>
+      <Card title={$t({ defaultMessage: 'Top 5 SSIDs by Traffic' })}>
         <AutoSizer>
           {({ height, width }) => (
-            <div style={{ display: 'block', height, width, paddingTop: '10px' }}>
+            <div style={{ display: 'block', height, width, paddingTop: '20px' }}>
               {ssidTable}
             </div>
           )}
