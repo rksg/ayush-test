@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 export const Wrapper = styled.div`
   position: sticky;
   top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
-  z-index: 4;
+  z-index: 5;
   background-color: var(--acx-primary-white);
 
   .ant-page-header {

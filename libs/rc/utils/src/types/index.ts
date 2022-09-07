@@ -13,6 +13,7 @@ export * from './ap'
 export * from './venue'
 export * from './network'
 export * from './user'
+export * from './service'
 
 export interface CommonResult {
   requestId: string
@@ -68,6 +69,7 @@ export interface Venue {
   activated: { isActivated: boolean, isDisabled?: boolean }
   deepVenue?: NetworkVenue
   disabledActivation: boolean
+  networkId? : string
 }
 
 export interface AlarmBase {
@@ -292,4 +294,15 @@ export interface Service {
   scope: number
   health: string
   tags: string[]
+}
+
+export interface DnsProxyRule {
+  domainName?: string,
+  key?: string,
+  ipList?: string[] | undefined
+}
+
+export interface DnsProxyContextType {
+  dnsProxyList: DnsProxyRule[] | [],
+  setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
 }

@@ -243,27 +243,32 @@ export function NetworkVenuesTab () {
 
   const columns: TableProps<Venue>['columns'] = [
     {
+      key: 'name',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       sorter: true
     },
     {
+      key: 'city',
       title: $t({ defaultMessage: 'City' }),
       dataIndex: 'city',
       sorter: true
     },
     {
+      key: 'country',
       title: $t({ defaultMessage: 'Country' }),
       dataIndex: 'country',
       sorter: true
     },
     {
+      key: 'networks',
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: ['networks', 'count'],
       align: 'center',
       render: function (data) { return data ? data : 0 }
     },
     {
+      key: 'aggregatedApStatus',
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       dataIndex: 'aggregatedApStatus',
       align: 'center',
@@ -275,6 +280,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
+      key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
@@ -289,6 +295,7 @@ export function NetworkVenuesTab () {
       }
     },
     {
+      key: 'vlan',
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (data, row) {
@@ -296,22 +303,25 @@ export function NetworkVenuesTab () {
       }
     },
     {
+      key: 'aps',
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
-      width: '80px',
+      width: 80,
       render: function (data, row) {
         return transformAps(row)
       }
     },
     {
+      key: 'radios',
       title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
-      width: '140px',
+      width: 140,
       render: function (data, row) {
         return transformRadios(row)
       }
     },
     {
+      key: 'scheduling',
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {

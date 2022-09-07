@@ -50,7 +50,7 @@ describe('getVenuesDonutChartData', () => {
       name: 'In Setup Phase',
       value: 4
     },{
-      color: '#258D36',
+      color: '#23AB36',
       name: 'Operational',
       value: 5
     }])

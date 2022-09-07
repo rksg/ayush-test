@@ -12,7 +12,7 @@ import {
   waitForElementToBeRemoved,
   cleanup
 } from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import { DateRange, setUpIntl } from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -48,7 +48,6 @@ const incidentTests = [
     mutedBy: null,
     mutedAt: null
   },
-
   {
     severity: 0.15997624339040492,
     startTime: '2022-07-21T08:12:00.000Z',
@@ -77,6 +76,47 @@ const incidentTests = [
     isMuted: true,
     mutedBy: null,
     mutedAt: null
+  },
+  {
+    severity: 0.12098536225957168,
+    startTime: '2022-08-03T05:45:00.000Z',
+    endTime: '2022-08-03T05:54:00.000Z',
+    code: 'radius-failure',
+    sliceType: 'ap',
+    sliceValue: 'r710_!21690',
+    id: 'c5917024-fd4f-4e11-b65d-610f0251242b123',
+    path: [
+      {
+        type: 'zone',
+        name: 'Vaibhav-venue'
+      },
+      {
+        type: 'apGroup',
+        name: 'No group (inherit from Venue)'
+      },
+      {
+        type: 'ap',
+        name: '60:D0:2C:22:6B:90'
+      }
+    ],
+    metadata: {
+      dominant: {
+        ssid: 'test'
+      },
+      rootCauseChecks: {
+        checks: [
+          {
+            CCD_REASON_AAA_AUTH_FAIL: true
+          }
+        ],
+        params: {}
+      }
+    },
+    clientCount: 3,
+    impactedClientCount: 2,
+    isMuted: false,
+    mutedBy: null,
+    mutedAt: null
   }
 ]
 
@@ -88,10 +128,14 @@ const filters : IncidentFilter = {
 }
 describe('IncidentTableWidget', () => {
 
-  beforeEach(() =>
+  beforeEach(() => {
+    setUpIntl({
+      locale: 'en-US',
+      messages: {}
+    })
     store.dispatch(api.util.resetApiState())
-  )
-
+  })
+  
   afterEach(() => cleanup())
 
   it('should render loader', () => {
@@ -190,30 +234,28 @@ describe('IncidentTableWidget', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const priorityHeader = columnHeaders[0]
-    const elem = await screen.findByText(priorityHeader)
     const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
     expect(caretDown).toHaveLength(1)
 
-    fireEvent.click(elem)
-    fireEvent.click(elem)
+    fireEvent.click(await screen.findByText(priorityHeader))
+    fireEvent.click(await screen.findByText(priorityHeader))
     const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
     expect(caretUp).toHaveLength(1)
 
-    fireEvent.click(elem)
+    fireEvent.click(await screen.findByText(priorityHeader))
 
     for (let i = 1; i < columnHeaders.length; i++) {
       const header = columnHeaders[i]
-      const elem = await screen.findByText(header)
 
-      fireEvent.click(elem)
+      fireEvent.click(await screen.findByText(header))
       const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
       expect(caretUp).toHaveLength(1)
 
-      fireEvent.click(elem)
+      fireEvent.click(await screen.findByText(header))
       const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
       expect(caretDown).toHaveLength(2)
 
-      fireEvent.click(elem)
+      fireEvent.click(await screen.findByText(header))
     }
   })
 
@@ -236,7 +278,7 @@ describe('IncidentTableWidget', () => {
     const hiddenCheckboxes =
       await screen.findAllByRole('radio', { hidden: true, checked: false })
 
-    expect(hiddenCheckboxes).toHaveLength(1)
+    expect(hiddenCheckboxes).toHaveLength(2)
 
     fireEvent.click(await screen.findByRole('button', { name: /Mute/i }))
     expect(screen.getByRole('alert')).toBeInTheDocument()
@@ -292,5 +334,71 @@ describe('IncidentTableWidget', () => {
     }
 
   })
+  it('should render drawer when click on description', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>,{
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+    fireEvent.click(
+      await screen.findByText(
+        'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
+      )
+    ) 
+    expect(await screen.findByText('Root cause:')).toBeVisible()
+  })
+  it('should render drawer when click on description & show impacted clients', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>,{
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+    fireEvent.click(
+      await screen.findByText(
+        'RADIUS failures are unusually high in Access Point: r710_!21690 (60:D0:2C:22:6B:90)'
+      )
+    ) 
+    expect(await screen.findByText('Root cause:')).toBeVisible()
+  })
+  it('should close drawer when click on drawer close button', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+  
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>,{
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+    fireEvent.click(
+      await screen.findByText(
+        'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
+      )
+    ) 
+    fireEvent.click(await screen.findByRole('button', { name: /close/i }))
+    expect(screen.queryByText('Root cause:')).toBeNull()
+  })
 
 })
+
+
