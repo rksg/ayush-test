@@ -34,7 +34,7 @@ exports[`Services Table should delete selected row 1`] = `
               class="ant-space-item"
             >
               <a
-                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/create"
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/select"
               >
                 <button
                   class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
@@ -909,7 +909,7 @@ exports[`Services Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                DHCP for Wi-Fi
+                                DHCP
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1073,7 +1073,7 @@ exports[`Services Table should render table 1`] = `
               class="ant-space-item"
             >
               <a
-                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/create"
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/select"
               >
                 <button
                   class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
@@ -1948,7 +1948,7 @@ exports[`Services Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                DHCP for Wi-Fi
+                                DHCP
                               </td>
                               <td
                                 class="ant-table-cell"

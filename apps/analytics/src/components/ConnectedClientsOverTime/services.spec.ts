@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
+import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
 import { api } from './services'
@@ -17,7 +18,7 @@ describe('connectedClientsOverTimeApi', () => {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
     path: [{ type: 'network', name: 'Network' }]
-  }
+  } as AnalyticsFilter
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
