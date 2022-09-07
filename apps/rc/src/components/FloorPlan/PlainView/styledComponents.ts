@@ -1,5 +1,5 @@
-import { Card, Image, Space } from 'antd'
-import styled                 from 'styled-components'
+import { Card, Space } from 'antd'
+import styled          from 'styled-components'
 
 import { Button } from '@acx-ui/components'
 
@@ -54,19 +54,27 @@ export const Thumbnail = styled('div')`
 `
 
 export const ImageContainerWrapper = styled('div')`
-    display: flex;
-    justify-content: center;
-    padding: 30px 0;
+    margin: 30px 0;
+    position: relative;
+    display: block;
+    overflow: scroll;
+    width: 100%;
+    height: 400px;
+    max-width: 100%;
+    max-height: 100%;
 `
 
-export const ImageContainer = styled('div')`
-    width: 520px;
-    height: 350px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column
-`
-export const FloorPlanImage = styled(Image)`
-    object-fit: cover
+export const ImageContainer = styled('div')< { currentZoom: number } >`
+    width: calc(${props => 100 * props.currentZoom}%);
+    position: relative;
+    margin: 0 auto;
+    height: 100%;
+    padding: 30px auto;
+    max-height: 100%;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 `

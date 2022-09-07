@@ -27,7 +27,7 @@ export default function FloorPlan () {
           <UI.StyledSpace size={24}>
             <Button size='small' type='link'>{$t({ defaultMessage: '+ Add Floor Plan' })}</Button>
             <Button size='small' type='link'>
-              {$t({ defaultMessage: 'Unplaced Devices (12)' })}
+              {$t({ defaultMessage: 'Unplaced Devices (0)' })}
             </Button>
             <UI.Button
               key={'expand-btn'}
