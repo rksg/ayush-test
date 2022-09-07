@@ -47,7 +47,6 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
-
   const bashPathname = useTenantLink('/').pathname
   const newRoutes = routes.map((item => ({
     ...item,
@@ -57,10 +56,9 @@ export function Layout ({
       path: `${bashPathname}${sub.path}`
     }))
   })))
-
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
     const path = item.routes ? item.routes[0].path : item.path
-    return <NavLink to={path}>
+    return <NavLink to={`${path}${location.search}`}>
       {({ isActive }) => {
         const Icon = isActive ? item.enableIcon : item.disableIcon
         return <>

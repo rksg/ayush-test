@@ -46,8 +46,7 @@ function useDefaultAndInitialState <RecordType> ({
 }: UseColumnsStateOptions<RecordType>) {
   return useMemo(() => {
     const defaultState = columns.reduce<TableColumnState>((state, column, order) => {
-      const key = (column.key ?? column.dataIndex ?? order).toString()
-      state[key] = {
+      state[column.key] = {
         order,
         fixed: column.fixed ?? undefined,
         show: column.fixed ? Boolean(column.fixed) : column.show ?? true,

@@ -5,8 +5,15 @@ const { registerTsProject } = require('nx/src/utils/register')
 const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
 
 const { mockServer, mockLightTheme } = require('@acx-ui/test-utils')
+const { setUpIntl } = require('@acx-ui/utils')
 
-beforeAll(() => mockServer.listen())
+beforeAll(() => {
+  mockServer.listen()
+  setUpIntl({
+    locale: 'en-US',
+    messages: {}
+  })
+})
 afterEach(() => mockServer.resetHandlers())
 afterAll(() => mockServer.close())
 

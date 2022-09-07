@@ -76,7 +76,7 @@ function DashboardPageHeader () {
 }
 
 function ApWidgets () {
-  const filters = useAnalyticsFilter()
+  const { filters } = useAnalyticsFilter()
 
   return (
     <GridRow>
@@ -97,7 +97,7 @@ function ApWidgets () {
 }
 
 function SwitchWidgets () {
-  const filters = useAnalyticsFilter()
+  const { filters } = useAnalyticsFilter()
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
@@ -113,14 +113,14 @@ function SwitchWidgets () {
         <AnalyticsWidgets name='topSwitchesByErrors'filters={filters} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <AnalyticsWidgets name='topSwitchesByModels' filters={filters}/>
+        <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
       </GridCol>
     </GridRow>
   )
 }
 
 function CommonDashboardWidgets () {
-  const filters = useAnalyticsFilter()
+  const { filters } = useAnalyticsFilter()
 
   return (
     <GridRow>

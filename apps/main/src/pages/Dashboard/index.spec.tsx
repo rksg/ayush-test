@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import { BrowserRouter }             from '@acx-ui/react-router-dom'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import Dashboard from '.'
@@ -15,14 +16,14 @@ jest.mock(
 
 describe('Dashboard', () => {
   it('renders correctly', async () => {
-    render(<Dashboard />)
+    render(<BrowserRouter><Dashboard /></BrowserRouter>)
 
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(6)
     expect(await screen.findAllByTestId(/^networks/)).toHaveLength(5)
   })
 
   it('switches between tabs', async () => {
-    render(<Dashboard />)
+    render(<BrowserRouter><Dashboard /></BrowserRouter>)
 
     const wifiWidgets = [
       'trafficByVolume',
@@ -39,13 +40,13 @@ describe('Dashboard', () => {
       'topSwitchesByPoeUsage',
       'topSwitchesByTraffic',
       'topSwitchesByErrors',
-      'topSwitchesByModels'
+      'topSwitchModelsByCount'
     ]
     switchWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
   })
 
   it('should switch tab correctly', async () => {
-    render(<Dashboard />)
+    render(<BrowserRouter><Dashboard /></BrowserRouter>)
     fireEvent.click(await screen.findByText('Switch'))
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
     expect(await screen.findAllByTestId(/^networks/)).toHaveLength(5)
