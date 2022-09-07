@@ -132,6 +132,15 @@ export const addressParser = async (place: google.maps.places.PlaceResult) => {
   return { latlng, address }
 }
 
+const defaultAddress: Address = {
+  addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
+  city: 'Sunnyvale, California',
+  country: 'United States',
+  latitude: 37.4112751,
+  longitude: -122.0191908,
+  timezone: 'America/Los_Angeles'
+}
+
 export function VenuesForm () {
   const intl = useIntl()
   const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
@@ -148,14 +157,7 @@ export function VenuesForm () {
   })
   const [markers, setMarkers] = React.useState<google.maps.LatLng>()
 
-  const [address, updateAddress] = useState<Address>(isMapEnabled? {} : {
-    addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
-    city: 'Sunnyvale, California',
-    country: 'United States',
-    latitude: 37.4112751,
-    longitude: -122.0191908,
-    timezone: 'America/Los_Angeles'
-  })
+  const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
   const render = (Status: string | null | undefined) => {
     return <h1>{Status}</h1>
@@ -301,7 +303,7 @@ export function VenuesForm () {
                     prefix={<SearchOutlined />}
                     onChange={addressOnChange}
                     data-testid='address-input'
-                    defaultValue={!isMapEnabled ? '350 W Java Dr, Sunnyvale, CA 94089, USA' : ''}
+                    defaultValue={!isMapEnabled ? defaultAddress.addressLine : ''}
                     disabled={!isMapEnabled}
                     value={address.addressLine}
                   />
