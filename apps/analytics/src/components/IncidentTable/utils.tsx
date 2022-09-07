@@ -7,10 +7,7 @@ import {
 import {
   calculateSeverity,
   Incident,
-  incidentInformation,
   noDataSymbol,
-  useImpactedArea,
-  useImpactValues,
   useShortDescription
 } from '@acx-ui/analytics/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
@@ -75,32 +72,6 @@ export const ShortIncidentDescription = (props: IncidentTableDescriptionProps) =
       {shortDesc}
     </UI.DescriptionSpan>
   )
-}
-
-export const GetCategory = (code: string, subCategory?: boolean) => {
-  const incidentInfo = incidentInformation[code]
-  if (subCategory) {
-    const { subCategory } = incidentInfo
-    return <FormatIntlString message={subCategory} />
-  }
-  const { category } = incidentInfo
-  return <FormatIntlString message={category} />
-}
-
-export const GetScope = (props: IncidentTableComponentProps) => {
-  const { incident } = props
-  const scope = useImpactedArea(incident.path, incident.sliceValue)
-  return <span>{scope}</span>
-}
-
-export const ClientImpact = (props: IncidentTableComponentProps & {
-  type: 'clientImpact' | 'impactedClients'
-}) => {
-  const { type, incident } = props
-  const values = useImpactValues('client', incident)
-  if (type === 'clientImpact') return <span>{values['clientImpactRatioFormatted'] as string}</span>
-
-  return <span>{values['clientImpactCountFormatted'] as string}</span>
 }
 
 export const durationValue = (start: string, end: string) => moment(end).diff(moment(start))
