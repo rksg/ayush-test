@@ -88,7 +88,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Date' })),
-      width: 'auto',
       dataIndex: 'endTime',
       valueType: 'dateTime',
       key: 'endTime',
@@ -105,7 +104,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Duration' })),
-      width: 'auto',
       dataIndex: 'duration',
       key: 'duration',
       render: (_, value) => formatter('durationFormat')(value.duration) as string,
@@ -116,7 +114,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
-      width: 'auto',
       dataIndex: 'description',
       key: 'description',
       render: (_, value ) => (
@@ -133,7 +130,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Category' })),
-      width: 'auto',
       dataIndex: 'category',
       key: 'category',
       sorter: {
@@ -143,7 +139,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
-      width: 'auto',
       dataIndex: 'subCategory',
       key: 'subCategory',
       sorter: {
@@ -154,7 +149,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
-      width: 'auto',
       dataIndex: 'clientImpact',
       key: 'clientImpact',
       sorter: {
@@ -164,7 +158,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
-      width: 'auto',
       dataIndex: 'impactedClients',
       key: 'impactedClients',
       sorter: {
@@ -175,7 +168,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Scope' })),
-      width: 'auto',
       dataIndex: 'scope',
       ellipsis: true,
       key: 'scope',
@@ -186,7 +178,6 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Type' })),
-      width: 'auto',
       dataIndex: 'type',
       key: 'type',
       sorter: {
