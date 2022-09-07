@@ -86,11 +86,13 @@ describe('Create DHCP: Pool table', () => {
 
     expect(tbody).toBeVisible()
 
+    userEvent.click(screen.getByText('test2'))
+    userEvent.click(screen.getByText('test1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    userEvent.click(screen.getByText('test1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
     userEvent.click(screen.getByText('test1'))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
-
-    userEvent.click(screen.getByText('test2'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
 
   })
 

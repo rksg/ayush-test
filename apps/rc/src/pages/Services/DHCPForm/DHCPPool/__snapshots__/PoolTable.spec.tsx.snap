@@ -7,8 +7,7 @@ exports[`Create DHCP: Pool table should render correctly 1`] = `
   >
     <div>
       <button
-        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-        style="top: 36px; background-color: transparent; right: -650px; z-index: 1; color: rgb(84, 150, 234); font-weight: 600; border: 0px; cursor: pointer; font-size: 12px;"
+        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__PoolAddButton-sc-187er8i-4 sbWGz"
         type="button"
       >
         <span>

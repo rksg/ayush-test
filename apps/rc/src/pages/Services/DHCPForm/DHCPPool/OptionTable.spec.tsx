@@ -10,7 +10,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { OptionList } from './OptionsTable'
+import { OptionList } from './OptionTable'
 
 const list = {
   totalCount: 2,
@@ -69,12 +69,15 @@ describe('Create DHCP: Option table', () => {
       .find(element => element.classList.contains('ant-table-tbody'))!
 
     expect(tbody).toBeVisible()
-
+    userEvent.click(screen.getByText('option2'))
     userEvent.click(screen.getByText('option1'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
-
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
     userEvent.click(screen.getByText('option2'))
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    userEvent.click(screen.getByText('option1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
+    userEvent.click(screen.getByText('option2'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
 
   })
 

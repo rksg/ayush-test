@@ -7,8 +7,7 @@ exports[`Create DHCP: Option table should render correctly 1`] = `
   >
     <div>
       <button
-        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-        style="top: 35px; background-color: transparent; right: -640px; z-index: 1; color: rgb(84, 150, 234); font-weight: 600; border: 0px; cursor: pointer; font-size: 14px;"
+        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__OptionAddButton-sc-187er8i-7 gLEkLD"
         type="button"
       >
         <span>

@@ -4,7 +4,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { networkApi }      from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, DHCPConfigTypeEnum, ServiceTechnology }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   act,
@@ -13,12 +13,14 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
+import DHCPFormContext from '../DHCPFormContext'
+
 import { PoolDetail } from './PoolDetail'
 
 const data =
     {
       id: 2,
-      name: '12',
+      name: 'pool2',
       allowWired: false,
       ip: '1.1.1.1',
       mask: '255.0.0.0',
@@ -32,11 +34,32 @@ const data =
     }
 
 function wrapper ({ children }: { children: React.ReactElement }) {
-  return <Provider>
+  return <DHCPFormContext.Provider value={{ editMode: false,
+    saveState: {
+      name: '',
+      tags: [],
+      createType: ServiceTechnology.WIFI,
+      dhcpConfig: DHCPConfigTypeEnum.SIMPLE,
+      venues: [],
+      dhcpPools: [{
+        id: 0,
+        name: '',
+        allowWired: false,
+        ip: '',
+        mask: '',
+        primaryDNS: '',
+        secondaryDNS: '',
+        excludedRangeStart: '',
+        excludedRangeEnd: '',
+        dhcpOptions: [],
+        leaseTime: 24,
+        vlan: 300
+      }] },
+    updateSaveState: () => {} }}>
     <Form>
       {children}
     </Form>
-  </Provider>
+  </DHCPFormContext.Provider>
 }
 
 describe('Create DHCP: Pool detail', () => {
@@ -80,10 +103,23 @@ describe('Create DHCP: Pool detail', () => {
     })
     const addButton = screen.getByRole('button', { name: 'Add DHCP Pool' })
     await userEvent.click(addButton)
-
-    const insertInput = screen.getByRole('textbox', { name: 'Description' })
-    await userEvent.type(insertInput,'Des test')
-
+    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }),'pool1')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Description' }),'Desc test')
+    await userEvent.type(screen.getByRole('textbox', { name: 'IP Address' }),'1.1.1.1')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }),'255.255.0.0')
+    await userEvent.type(screen.getByRole('spinbutton', { name: 'Lease Time' }),'24')
+    await userEvent.type(screen.getByRole('spinbutton', { name: 'VLAN' }),'30')
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    await userEvent.click(addButton)
+    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }),'pool2')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Description' }),'Desc test')
+    await userEvent.type(screen.getByRole('textbox', { name: 'IP Address' }),'1.1.1.1')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }),'255.255.0.0')
+    await userEvent.type(screen.getByRole('spinbutton', { name: 'Lease Time' }),'24')
+    await userEvent.type(screen.getByRole('spinbutton', { name: 'VLAN' }),'30')
+    userEvent.click(screen.getByText('Add other pool'))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
   })
 
 })

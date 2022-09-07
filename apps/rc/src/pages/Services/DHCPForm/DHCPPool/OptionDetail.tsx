@@ -12,7 +12,7 @@ import {
 import { DHCPOption }         from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
-import { OptionList } from './OptionsTable'
+import { OptionList } from './OptionTable'
 
 
 export function OptionDetail (props:{
@@ -34,19 +34,16 @@ export function OptionDetail (props:{
     return Promise.resolve()
   }
   const handleSaveData = () => {
-    if(_.find(formRef.current?.getFieldsError(), (item)=>{return item.errors.length>0})){
-      return false
-    }
     const dhcpOption = formRef.current?.getFieldsValue()
     if(dhcpOption && !dhcpOption.id){
       dhcpOption.id = new Date().getTime()
     }
-    const findIndex = _.findIndex(form.getFieldsValue()['dhcpOptions'],
+    const findIndex = _.findIndex(form?.getFieldsValue()?.['dhcpOptions'],
       (item:DHCPOption)=>{return dhcpOption?.id === item.id})
     if(findIndex > -1){
       form.getFieldsValue()['dhcpOptions'][findIndex] = dhcpOption
     }
-    else form.getFieldsValue()['dhcpOptions'].push({ ...dhcpOption })
+    else form?.getFieldsValue()?.['dhcpOptions']?.push({ ...dhcpOption })
     setTableData(form.getFieldsValue()['dhcpOptions'])
     onClose()
     return true
@@ -64,11 +61,13 @@ export function OptionDetail (props:{
       {$t({ defaultMessage: 'Cancel' })}
     </Button>,
     <Button key='forward'
-      onClick={
-        async ()=>{
-          await formRef.current?.validateFields()
+      onClick={()=>{
+        formRef.current?.validateFields().then(()=>{
           handleSaveData()
-        }
+        },()=>{
+          return false
+        })
+      }
       }>
       {$t({ defaultMessage: 'Save' })}
     </Button>
@@ -109,7 +108,7 @@ export function OptionDetail (props:{
         />
         <Form.Item
           name='value'
-          label={$t({ defaultMessage: 'Option value' })}
+          label={$t({ defaultMessage: 'Option Value' })}
           rules={[
             { required: true },
             { validator: (_, value) => { return value ? Promise.resolve() : Promise.reject() } }
@@ -126,7 +125,7 @@ export function OptionDetail (props:{
       <OptionList
         optionData={tableData}
         updateOptionData={(optionsData: DHCPOption[]) => {
-          form.setFieldsValue({ dhcpOptions: optionsData })
+          form?.setFieldsValue({ dhcpOptions: optionsData })
           setTableData([...optionsData])
         }}
         showOptionForm={(selectedOption: DHCPOption) => {

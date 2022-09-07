@@ -42,7 +42,7 @@ export function PoolDetail () {
   const { updateSaveState, saveState } = useContext(DHCPFormContext)
   const nameValidator = async (value: string) => {
     const { id } = { ...formRef.current?.getFieldsValue(), ...selectedData }
-    if(_.find(saveState.dhcpPools, (item)=>{return item.name === value && id !== item.id})){
+    if(_.find(saveState?.dhcpPools, (item)=>{return item.name === value && id !== item.id})){
       const entityName = intl.$t({ defaultMessage: 'Pool Name' })
       const key = 'name'
       return Promise.reject(intl.$t(validationMessages.duplication, { entityName, key }))
@@ -50,22 +50,19 @@ export function PoolDetail () {
     return Promise.resolve()
   }
   const updateSaveData = () => {
-    if(_.find(formRef.current?.getFieldsError(), (item)=>{return item.errors.length>0})){
-      return false
-    }
     const dhcpPool = { ...selectedData, ...formRef.current?.getFieldsValue() }
-    if(saveState.dhcpPools.length === 0){
+    if(saveState?.dhcpPools.length === 0){
       dhcpPool.id = new Date().getTime()
-    }else if(dhcpPool.id === 0 && saveState.dhcpPools.length>0){
+    }else if(dhcpPool.id === 0 && saveState?.dhcpPools.length>0){
       dhcpPool.id = new Date().getTime()
     }
-    const findIndex = _.findIndex(saveState.dhcpPools, (item)=>{return dhcpPool.id === item.id})
+    const findIndex = _.findIndex(saveState?.dhcpPools, (item)=>{return dhcpPool.id === item.id})
     if(findIndex > -1){
       saveState.dhcpPools[findIndex] = dhcpPool
     }
     else saveState?.dhcpPools?.push({ ...dhcpPool })
 
-    updateSaveState({ ...saveState,...form.getFieldsValue() })
+    updateSaveState?.({ ...saveState,...form.getFieldsValue() })
     if(addOn){
       formRef?.current?.setFieldsValue({ id: 0 })
       return
@@ -75,7 +72,7 @@ export function PoolDetail () {
   }
   const [visible, setVisible] = useState(false)
   const onClose = () => {
-    updateSaveState({ ...saveState,...form.getFieldsValue() })
+    updateSaveState?.({ ...saveState,...form.getFieldsValue() })
     formRef?.current?.resetFields()
     setVisible(false)
   }
@@ -217,9 +214,13 @@ export function PoolDetail () {
         </CancelButton>
         <AddButton key='add'
           type='primary'
-          onClick={async ()=> {
-            await formRef.current?.validateFields()
-            updateSaveData()
+          onClick={()=> {
+            formRef.current?.validateFields().then(()=>{
+              updateSaveData()
+            },()=>{
+              return false
+            })
+
           }
           }>
           {selectedData.id === 0 && $t({ defaultMessage: 'Add' })}

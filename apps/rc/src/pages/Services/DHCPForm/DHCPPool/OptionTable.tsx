@@ -51,11 +51,6 @@ export function OptionList (props:{
               optionData.splice(index, 1)
             }
           })
-        } else {
-          const index = optionData.findIndex(i => i.id === rows.id)
-          if (index !== -1) {
-            optionData.splice(index, 1)
-          }
         }
         clearSelection()
         updateOptionData?.(optionData)
