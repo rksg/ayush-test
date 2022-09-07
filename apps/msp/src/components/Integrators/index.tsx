@@ -1,13 +1,13 @@
+import { Space }     from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
 
 import { Button, PageHeader, showToast, Table, TableProps, Loader } from '@acx-ui/components'
-import { useMspCustomerListQuery }                  from '@acx-ui/rc/services'
+import { useMspCustomerListQuery }                                  from '@acx-ui/rc/services'
 import {
   useTableQuery,
   MspEc
 } from '@acx-ui/rc/utils'
-import { Space } from 'antd'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 function useColumns () {
@@ -46,7 +46,7 @@ function useColumns () {
       render: function (data, row) {
         return (
           <TenantLink to={`/networks/${row.name}/network-details/overview`}>{data}</TenantLink>
-          )
+        )
       }
     },
     {
@@ -70,12 +70,12 @@ function useColumns () {
 }
 
 const transformAssignedCustomerCount = (row: MspEc) => {
-  return row.assignedMspEcList.length;
+  return row.assignedMspEcList.length
 }
 
 const defaultPayload = {
   searchString: '',
-  filters: {tenantType: ["MSP_INTEGRATOR", "MSP_INSTALLER"]},
+  filters: { tenantType: ['MSP_INTEGRATOR', 'MSP_INSTALLER'] },
   fields: [
     'check-all',
     'id',
@@ -84,7 +84,7 @@ const defaultPayload = {
     'mspAdminCount',
     'mspEcAdminCount',
     'wifiLicense',
-    'switchLicens',
+    'switchLicens'
   ]
 }
 
@@ -101,18 +101,18 @@ export function Integrators () {
       {
         label: 'Manage',
         onClick: (selectedRows) =>
-         showToast({
-          type: 'info',
-          content: `Edit ${selectedRows[0].name}`
-        })
+          showToast({
+            type: 'info',
+            content: `Edit ${selectedRows[0].name}`
+          })
       },
       {
         label: 'Resend Invitation Email',
-        onClick: (selectedRows) => alert()
+        onClick: () => alert()
       },
       {
         label: 'Delete',
-        onClick: (selectedRows) => alert()
+        onClick: () => alert()
       }
     ]
     

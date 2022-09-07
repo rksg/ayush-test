@@ -124,11 +124,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspDeviceInventory: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/ec-inventory',
+    url: '/api/viewmodel/tenant/:tenantId/ec-inventory'
   },
   getIntegratorDeviceInventory: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:mspTenantId/ec-inventory',
+    url: '/api/viewmodel/tenant/:mspTenantId/ec-inventory'
   },
   getVarDelegations: {
     method: 'post',
@@ -136,6 +136,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteMspEcAccount: {
     method: 'delete',
-    url: '/api/mspservice/tenant/:mspEcTenantId',
-  },
+    url: '/api/mspservice/tenant/:mspEcTenantId'
+  }
 }

@@ -1,7 +1,7 @@
-import { useIntl } from 'react-intl'
+import { uniqueId } from 'lodash'
+import { useIntl }  from 'react-intl'
 
 import { LayoutProps } from '@acx-ui/components'
-import { uniqueId } from 'lodash'
 
 import * as UI from './styledComponents'
 const genPlaceholder = () => ({

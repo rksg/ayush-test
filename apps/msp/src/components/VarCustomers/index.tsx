@@ -1,16 +1,14 @@
 import { SortOrder } from 'antd/lib/table/interface'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { useNetworkListQuery }                  from '@acx-ui/rc/services'
 import { 
   useVarCustomerListQuery, 
   useInviteCustomerListQuery 
 } from '@acx-ui/rc/services'
 import { MspEc, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }           from '@acx-ui/react-router-dom'
 
-import { TenantLink } from '@acx-ui/react-router-dom'
-
-const columnsPendingInvitaion: TableProps<any>['columns'] = [
+const columnsPendingInvitaion: TableProps<MspEc>['columns'] = [
   {
     title: 'Account Name',
     dataIndex: 'tenantName',
@@ -29,7 +27,7 @@ const columnsPendingInvitaion: TableProps<any>['columns'] = [
   }
 ]
 
-const columns: TableProps<any>['columns'] = [
+const columns: TableProps<MspEc>['columns'] = [
   {
     title: 'Customer',
     dataIndex: 'tenantName',
@@ -113,7 +111,16 @@ const invitationPayload = {
 
 const varCustomerPayload = {
   searchString: '',
-  fields: ['tenantName', 'tenantEmail', 'alarmCount', 'priorityIncidents', 'apEntitlement.quantity', 'apEntitlement', 'switchEntitlement', 'nextExpirationLicense', 'id'],
+  fields: [
+    'tenantName', 
+    'tenantEmail', 
+    'alarmCount', 
+    'priorityIncidents', 
+    'apEntitlement.quantity', 
+    'apEntitlement', 
+    'switchEntitlement', 
+    'nextExpirationLicense', 
+    'id'],
   searchTargetFields: ['tenantName', 'tenantEmail'],
   filters: {
     status: ['DELEGATION_STATUS_ACCEPTED'],

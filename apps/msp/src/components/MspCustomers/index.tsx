@@ -1,3 +1,7 @@
+import { Space }   from 'antd'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
+
 import { 
   Button, 
   Loader,
@@ -7,18 +11,17 @@ import {
   Table, 
   TableProps  
 } from '@acx-ui/components'
-import { useIntl } from 'react-intl'
 import { 
   useDeleteMspEcMutation, 
   useMspCustomerListQuery 
 } from '@acx-ui/rc/services'
 import { 
+  DelegationEntitlementRecord,
   MspEc, 
   useTableQuery 
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { Space } from 'antd'
-import moment from 'moment-timezone'
+import { TenantLink } from '@acx-ui/react-router-dom'
+
 
 function useColumns () {
   const { $t } = useIntl()
@@ -50,7 +53,7 @@ function useColumns () {
       dataIndex: 'alarmCount',
       sorter: true,
       align: 'center',
-      render: function (data) {
+      render: function () {
         return '0'
       }
     },
@@ -59,7 +62,7 @@ function useColumns () {
       dataIndex: 'activeIncindents',
       sorter: true,
       align: 'center',
-      render: function (data) {
+      render: function () {
         return '0'
       }
     },
@@ -127,73 +130,74 @@ function useColumns () {
   return columns
 }
 
-const transformApEntitlement = (row: any) => {
-  return row.wifiLicenses ? row.wifiLicenses : 0;
+const transformApEntitlement = (row: MspEc) => {
+  return row.wifiLicenses ? row.wifiLicenses : 0
 }
 
-const transformApUtilization = (row: any) => {
-  // const entitlements = row.entitlements;
-  const entitlement = row.entitlements.filter((en:any) => en.entitlementDeviceType === 'DVCNWTYPE_WIFI');
+const transformApUtilization = (row: MspEc) => {
+  const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) => 
+    en.entitlementDeviceType === 'DVCNWTYPE_WIFI')
   if (entitlement.length > 0) {
-    const apEntitlement = entitlement[0];
-    const quantity = apEntitlement.quantity;
+    const apEntitlement = entitlement[0]
+    const quantity = parseInt(apEntitlement.quantity, 10)
+    const consumed = parseInt(apEntitlement.consumed, 10)
     if (quantity > 0) {
-      const value = (Math.round(((parseInt(apEntitlement.consumed, 10) / parseInt(apEntitlement.quantity, 10)) * 10000)) / 100) + '%';
-      return value;
+      const value = 
+      (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
+      return value
     } else {
-      return '0%';
+      return '0%'
     }
   }
-  return '0%';
+  return '0%'
 }
 
-const transformSwitchEntitlement = (row: any) => {
-  const entitlements = row.entitlements;
-  let totalCount = 0;
-  const switchEntitlements: any[] = [];
-  entitlements.forEach((entitlement:any) => {
+const transformSwitchEntitlement = (row: MspEc) => {
+  const entitlements = row.entitlements
+  let totalCount = 0
+  const switchEntitlements: DelegationEntitlementRecord[] = []
+  entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
     if (entitlement.entitlementDeviceType !== 'DVCNWTYPE_SWITCH') {
-      return;
+      return
     }
-    switchEntitlements.push(entitlement);
-  });
-  totalCount = switchEntitlements.reduce((total, current) => total + parseInt(current.quantity, 10), 0)
-  return totalCount;
+    switchEntitlements.push(entitlement)
+  })
+  totalCount = switchEntitlements.reduce((total, current) => 
+    total + parseInt(current.quantity, 10), 0)
+  return totalCount
 }
 
-const transformCreationDate = (row: any) => {
-  const creationDate = row.creationDate;
+const transformCreationDate = (row: MspEc) => {
+  const creationDate = row.creationDate
   if (!creationDate || isNaN(creationDate)) {
-    return '';
+    return ''
   }
-  const Epoch = creationDate - (creationDate % 1000);
-  const activeDate = moment(Epoch).format('MMM DD YYYY');
-  return activeDate;
+  const Epoch = creationDate - (creationDate % 1000)
+  const activeDate = moment(Epoch).format('MMM DD YYYY')
+  return activeDate
 }
 
-const transformExpirationDate = (row: any) => {
-  let expirationDate = '';
-  const entitlements = row.entitlements;
-  let targetRecord:any = null;
-  entitlements.forEach((entitlement:any) => {
-    targetRecord = entitlement;
-    const consumed = parseInt(entitlement.quantity, 10);
-    const quantity = parseInt(entitlement.quantity, 10);
+const transformExpirationDate = (row: MspEc) => {
+  let expirationDate = ''
+  const entitlements = row.entitlements
+  let target: DelegationEntitlementRecord
+  entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+    target = entitlement
+    const consumed = parseInt(entitlement.quantity, 10)
+    const quantity = parseInt(entitlement.quantity, 10)
     if (consumed > 0 || quantity > 0) {
-      if (!targetRecord || moment(entitlement.expirationDate).isBefore(targetRecord.expirationDate)) {
-        targetRecord = entitlement;
+      if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
+        target = entitlement
       }
     }
-  });
-  if (targetRecord) {
-    expirationDate = moment(targetRecord.expirationDate).format('MMM DD YYYY');
-  }
-  return expirationDate;
+    expirationDate = moment(target.expirationDate).format('MMM DD YYYY')
+  })
+  return expirationDate
 }
 
 const defaultPayload = {
   searchString: '',
-  filters: {tenantType: ["MSP_EC"]},
+  filters: { tenantType: ['MSP_EC'] },
   fields: [
     'check-all',
     'id',
@@ -219,7 +223,6 @@ export function MspCustomers () {
       useQuery: useMspCustomerListQuery,
       defaultPayload
     })
-    const { tenantId } = useParams()
     const [
       deleteMspEc,
       { isLoading: isDeleteEcUpdating }
@@ -229,30 +232,30 @@ export function MspCustomers () {
       {
         label: 'Manage',
         onClick: (selectedRows) =>
-         showToast({
-          type: 'info',
-          content: `Manage ${selectedRows[0].name}`
-        })
+          showToast({
+            type: 'info',
+            content: `Manage ${selectedRows[0].name}`
+          })
       },
       {
         label: 'Resend Invitation Email',
-        onClick: (selectedRows) => alert()
+        onClick: () => alert()
       },
       {
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'EC' }),
-            entityValue: name
-          },
-          onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
-            .then(clearSelection)
-        })
-      }
-    }]
+        label: $t({ defaultMessage: 'Delete' }),
+        onClick: ([{ name, id }], clearSelection) => {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'EC' }),
+              entityValue: name
+            },
+            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+              .then(clearSelection)
+          })
+        }
+      }]
 
     return (
       <Loader states={[
@@ -276,14 +279,14 @@ export function MspCustomers () {
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}        
         extra={[
-            <Space size={8}>
-              <TenantLink to='' key='ownAccount'>
-                <Button>Manage own account</Button>
-              </TenantLink>
-              <TenantLink to='/mspcustomers/create' key='addMspEc'>
-                <Button type='primary'>Add Customer</Button>
-              </TenantLink>
-            </Space>
+          <Space size={8}>
+            <TenantLink to='' key='ownAccount'>
+              <Button>Manage own account</Button>
+            </TenantLink>
+            <TenantLink to='/mspcustomers/create' key='addMspEc'>
+              <Button type='primary'>Add Customer</Button>
+            </TenantLink>
+          </Space>
         ]}
       />
       <MspEcTable />

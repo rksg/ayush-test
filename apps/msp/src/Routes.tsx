@@ -2,10 +2,10 @@ import { ConfigProvider }                    from '@acx-ui/components'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import Layout from './pages/Layout'
+import { Integrators }  from './components/Integrators'
 import { MspCustomers } from './components/MspCustomers'
 import { VarCustomers } from './components/VarCustomers'
-import { Integrators } from './components/Integrators'
+import Layout           from './pages/Layout'
 
 export default function MspRoutes () {
   const routes = rootRoutes(
