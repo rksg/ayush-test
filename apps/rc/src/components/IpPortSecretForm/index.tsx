@@ -78,7 +78,7 @@ function checkIpAndPortUnique (
       return ip && port ? `${ip}_${port}` : null
     }).filter(item => item)
 
-  const revalitateErrorFields = () => {
+  const revalidateErrorFields = () => {
     const fields = getFieldsError(relatedFields)
       .filter(item => item.errors.length)
       .map(item => item.name)
@@ -104,6 +104,6 @@ function checkIpAndPortUnique (
       : Promise.reject(new Error(''))
   }
 
-  revalitateErrorFields()
+  revalidateErrorFields()
   return Promise.resolve()
 }
