@@ -70,7 +70,7 @@ storiesOf('MultiLineTimeSeriesChart', module)
     style={{ width: 504, height: 300 }}
     data={getSeriesData()}
     brush={['2020-11-10', '2020-11-20']}
-    onBrushChange={ranges => {console.log(ranges.map(r=>new Date(r).toISOString()))}} // eslint-disable-line no-console
+    onBrushChange={range => {console.log(range.map(r=>new Date(r).toISOString()))}} // eslint-disable-line no-console
   />)
   .add('Connected Chart', () => <ConnectedCharts/>)
   .add('With Knobs', () =>

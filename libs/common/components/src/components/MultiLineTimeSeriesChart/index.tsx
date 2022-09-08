@@ -39,7 +39,7 @@ interface MultiLineTimeSeriesChartProps
     lineColors?: string[],
     dataFormatter?: (value: unknown) => string | null,
     brush?: [TimeStamp, TimeStamp]
-    onBrushChange?: (coordRange: TimeStamp[]) => void
+    onBrushChange?: (range: TimeStamp[]) => void
     chartRef?: RefObject<ReactECharts>
   }
 
@@ -62,7 +62,7 @@ export const useBrush = (
 }
 
 export const useOnBrushChange = (
-  onBrushChange?: (coordRange: TimeStamp[]) => void
+  onBrushChange?: (range: TimeStamp[]) => void
 ) => {
   return (params: { batch: { areas: { coordRange: [TimeStamp, TimeStamp] }[] }[] }) => {
     onBrushChange && onBrushChange(params.batch[0].areas[0].coordRange)
@@ -105,7 +105,7 @@ export function MultiLineTimeSeriesChart
       xAxisIndex: 'all',
       brushStyle: {
         borderWidth: 4,
-        color: 'rgba(0, 0, 0, 0.05)', // --acx-primary-white 5%
+        color: 'rgba(0, 0, 0, 0.05)',
         borderColor: '#123456' // special color code to identify path of brush
       }
     },
