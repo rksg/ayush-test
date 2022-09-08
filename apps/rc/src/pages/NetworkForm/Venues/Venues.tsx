@@ -11,8 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery }    from '@acx-ui/rc/services'
-import { useTableQuery, Venue } from '@acx-ui/rc/utils'
+import { useNetworkVenueListQuery } from '@acx-ui/rc/services'
+import { useTableQuery, Venue }     from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -69,7 +69,7 @@ export function Venues () {
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
-    useQuery: useVenueListQuery,
+    useQuery: useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
     defaultPayload
   })

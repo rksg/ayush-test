@@ -15,8 +15,8 @@ import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
-  useUpdateNetworkMutation,
-  useVenueListQuery
+  useNetworkVenueListQuery,
+  useUpdateNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -61,7 +61,7 @@ const notificationMessage = defineMessage({
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
-    useQuery: useVenueListQuery,
+    useQuery: useNetworkVenueListQuery,
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)

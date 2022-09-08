@@ -247,7 +247,7 @@ export function NetworksTable () {
       <PageHeader
         title={$t({ defaultMessage: 'Networks' })}
         extra={[
-          <TenantLink to='/networks/create' key='add'>
+          <TenantLink to='/networks/add' key='add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Wi-Fi Network' }) }</Button>
           </TenantLink>
         ]}
