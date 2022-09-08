@@ -4,7 +4,7 @@ import { Select, Input } from 'antd'
 import { uniq }          from 'lodash'
 import { IntlShape }     from 'react-intl'
 
-import type { TableColumn } from './types'
+import type { TableColumn, RecordWithChildren } from './types'
 
 export interface FilterValue {
   key: string[]
@@ -37,7 +37,6 @@ export function getFilteredData <RecordType> (
           return false
         }
       }
-
       if (searchValue) {
         return searchables.some(column => {
           const key = column.dataIndex as keyof RecordType
@@ -47,10 +46,8 @@ export function getFilteredData <RecordType> (
               .toString()
               .toLowerCase()
               .includes(searchValue.toLowerCase())
-
           row.children = children
             && children.filter((child) => matchHelper(child, key, searchValue))
-
           if (row.children && row.children.length > 0) {
             return true
           }
@@ -107,20 +104,17 @@ export function renderFilter <RecordType> (
     showArrow
     style={{ width: 200 }}
   >
-    {uniq(dataSource?.map((datum: RecordType) => {
-      // eslint-disable-next-line max-len
-      const children = datum['children' as keyof typeof datum] as unknown as RecordType[] | undefined
-      const validChildren = children
-        && children.map((child) => child[key] as unknown as string)
-
-      if (!validChildren) return [datum[key] as unknown as string]
-
-      const raw = [
-        ...validChildren,
-        datum[key] as unknown as string
-      ]
-
-      return raw.filter(Boolean)
+    {uniq(dataSource?.map((datum: RecordWithChildren<RecordType>) => {
+      const { children } = datum
+      if (children) {
+        const raw = [
+          ...children.map((child) => child[key] as unknown as string),
+          datum[key] as unknown as string
+        ]
+        return raw.filter(Boolean)
+      } else {
+        return [datum[key] as unknown as string]
+      }
     })
       .flat())
       .sort()

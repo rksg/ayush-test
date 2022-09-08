@@ -14,7 +14,8 @@ import {
   calculateSeverity,
   noDataSymbol
 } from '@acx-ui/analytics/utils'
-import { getIntl } from '@acx-ui/utils'
+import type { RecordWithChildren } from '@acx-ui/components'
+import { getIntl }                 from '@acx-ui/utils'
 
 import { durationValue } from './utils'
 
@@ -52,16 +53,12 @@ export type AdditionalIncidentTableFields = {
   severityLabel: string
 }
 
-export type IncidentTableRow = Incident
-& AdditionalIncidentTableFields 
-& {
-  children?: IncidentTableRow[]
-}
+export type IncidentTableRow = RecordWithChildren<Incident & AdditionalIncidentTableFields>
 
 export const transformData = (incident: Incident): IncidentTableRow => {
   const { relatedIncidents } = incident
   const intl = getIntl()
-  
+
   const children = relatedIncidents
   && relatedIncidents.map((child) => {
     const childDuration = durationValue(child.startTime, child.endTime)

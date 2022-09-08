@@ -68,3 +68,7 @@ export type ColumnStateOption = {
 }
 
 export type TableColumnState = Record<string, AntColumnsState>
+
+export type RecordWithChildren <RecordType> = RecordType & {
+  children?: RecordType[]
+}

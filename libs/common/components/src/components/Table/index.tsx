@@ -24,6 +24,7 @@ import type {
 export type {
   ColumnType,
   ColumnGroupType,
+  RecordWithChildren,
   TableColumn
 } from './types'
 
@@ -75,11 +76,7 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
-// following the same typing from antd
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Table <RecordType extends Record<string, any>> (
-  { type = 'tall', columnState, ...props }: TableProps<RecordType>
-) {
+function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProps<RecordType>) {
   const intl = useIntl()
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
@@ -163,14 +160,10 @@ function Table <RecordType extends Record<string, any>> (
     ? {
       ...column,
       render: (_, value) => <Highlighter
-        highlightStyle={{
-          fontWeight: 'bold',
-          background: 'none',
-          padding: 0
-        }}
+        highlightStyle={{ fontWeight: 'bold', background: 'none', padding: 0 }}
         searchWords={[searchValue]}
+        textToHighlight={value[column.dataIndex as keyof RecordType] as unknown as string}
         autoEscape
-        textToHighlight={value[column.dataIndex as keyof RecordType]}
       />
     }
     : column
