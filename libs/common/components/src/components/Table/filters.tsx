@@ -88,18 +88,7 @@ export function renderFilter <RecordType> (
     maxTagCount='responsive'
     mode='multiple'
     value={filterValues[key as keyof FilterValue]}
-    onChange={value => {
-      const uncheckedFilters = { ...filterValues, [key]: value }
-      const checkFilter = {} as FilterValue
-      for (const property in uncheckedFilters) {
-        if (uncheckedFilters[property as keyof FilterValue]
-          && uncheckedFilters[property as keyof FilterValue].length > 0) {
-          checkFilter[property as keyof FilterValue] =
-              uncheckedFilters[property as keyof FilterValue]
-        }
-      }
-      setFilterValues(checkFilter)
-    }}
+    onChange={value => setFilterValues({ ...filterValues, [key]: value.length ? value: undefined })}
     placeholder={column.title as string}
     showArrow
     style={{ width: 200 }}
@@ -122,6 +111,7 @@ export function renderFilter <RecordType> (
         <Select.Option value={value} key={value} data-testid={`option-${value}`} >
           {value}
         </Select.Option>
-      )}
+      )
+    }
   </Select>
 }
