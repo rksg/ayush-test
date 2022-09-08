@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { Select } from 'antd'
-import { uniq }   from 'lodash'
+import { Select, Input } from 'antd'
+import { uniq }          from 'lodash'
+import { IntlShape }     from 'react-intl'
 
 import type { TableColumn } from './types'
 
@@ -9,8 +10,23 @@ export interface FilterValue {
   key: string[]
 }
 
-export function renderFilter <RecordType, ValueType> (
-  column: TableColumn<RecordType, ValueType>,
+export function renderSearch <RecordType> (
+  intl: IntlShape,
+  searchables: TableColumn<RecordType, 'text'>[],
+  searchValue: string,
+  setSearchValue: Function
+): React.ReactNode {
+  return <Input
+    onChange={e => setSearchValue(e.target.value)}
+    placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
+      searchables: searchables.map(column => column.title).join(', ')
+    })}
+    style={{ width: 292 }}
+    value={searchValue}
+  />
+}
+export function renderFilter <RecordType> (
+  column: TableColumn<RecordType, 'text'>,
   index: number,
   dataSource: readonly RecordType[] | undefined,
   filterValues: FilterValue,

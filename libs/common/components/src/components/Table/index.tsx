@@ -1,17 +1,17 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space, Divider, Button, Input }               from 'antd'
+import { Space, Divider, Button }                      from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import { FilterValue, renderFilter }    from './filters'
-import { ResizableColumn }              from './ResizableColumn'
-import * as UI                          from './styledComponents'
-import { settingsKey, useColumnsState } from './useColumnsState'
+import { FilterValue, renderFilter, renderSearch } from './filters'
+import { ResizableColumn }                         from './ResizableColumn'
+import * as UI                                     from './styledComponents'
+import { settingsKey, useColumnsState }            from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType } from './types'
 import type { ParamsType }                                                  from '@ant-design/pro-provider'
@@ -77,10 +77,11 @@ function useSelectedRowKeys <RecordType> (
 
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Table <RecordType extends Record<string, any>, ValueType> (
+function Table <RecordType extends Record<string, any>> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>
 ) {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
   const [searchValue, setSearchValue] = useState<string>('')
   const { dataSource } = props
@@ -268,16 +269,11 @@ function Table <RecordType extends Record<string, any>, ValueType> (
   >
     {hasHeader && (
       <UI.Header>
-        {Boolean(searchables.length) && <Input
-          onChange={e => setSearchValue(e.target.value)}
-          placeholder={$t({ defaultMessage: 'Search {searchables}' }, {
-            searchables: searchables.map(column => column.title).join(', ')
-          })}
-          style={{ width: 292 }}
-          value={searchValue}
-        />}
+        {Boolean(searchables.length) &&
+          renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
+        }
         {filterables.map((column, i) =>
-          renderFilter<RecordType, ValueType>(column, i, dataSource, filterValues, setFilterValues)
+          renderFilter<RecordType>(column, i, dataSource, filterValues, setFilterValues)
         )}
         {(Boolean(activeFilters.length) || Boolean(searchValue)) && <UI.ClearButton
           onClick={() => {
