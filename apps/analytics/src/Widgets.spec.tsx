@@ -4,8 +4,8 @@ import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { topSwitchesByPoEUsageResponse } from './components/TopSwitchesByPoEUsage/services.spec'
-import { topSwitchesByTrafficResponse }  from './components/TopSwitchesByTraffic/services.spec'
+import { topSwitchesByPoEUsageResponse } from './components/TopSwitchesByPoEUsage/__tests__/fixtures'
+import { topSwitchesByTrafficResponse }  from './components/TopSwitchesByTraffic/__tests__/fixtures'
 import { trafficByApplicationFixture }   from './components/TrafficByApplication/__tests__/fixtures'
 import AnalyticsWidgets                  from './Widgets'
 

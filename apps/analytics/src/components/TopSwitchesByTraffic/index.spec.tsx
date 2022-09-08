@@ -6,8 +6,8 @@ import { render, screen }                  from '@acx-ui/test-utils'
 import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 import { DateRange }                       from '@acx-ui/utils'
 
+import { topSwitchesByTrafficResponse } from './__tests__/fixtures'
 import { api }                          from './services'
-import { topSwitchesByTrafficResponse } from './services.spec'
 
 import SwitchesByTraffic, { tooltipFormatter } from '.'
 
