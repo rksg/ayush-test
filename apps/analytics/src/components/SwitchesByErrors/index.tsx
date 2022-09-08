@@ -9,6 +9,7 @@ import {
   NoData } from '@acx-ui/components'
 
 import { useSwitchesByErrorsQuery, SwitchesByErrorsData } from './services'
+import { CustomTable }                                    from './styledComponents'
 
 export default function SwitchesByErrorsWidget ({
   filters
@@ -64,12 +65,11 @@ export default function SwitchesByErrorsWidget ({
   const { data } = queryResults
 
   const switchesByErrorsTable = 
-  data && data.topNSwitchesByErrors && data.topNSwitchesByErrors.length ? <Table
+  data && data.topNSwitchesByErrors && data.topNSwitchesByErrors.length ? <CustomTable><Table
     columns={columns}
     dataSource={getDataSource(data.topNSwitchesByErrors)}
     type={'compact'}
-    pagination={false}
-  /> : <NoData/>
+    pagination={false} /></CustomTable> : <NoData/>
 
   return (
     <Loader states={[queryResults]}>
