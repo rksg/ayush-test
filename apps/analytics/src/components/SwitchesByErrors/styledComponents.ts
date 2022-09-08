@@ -5,7 +5,7 @@ export const CustomTable = styled.div`
   .ant-table {
     &-tbody > tr > td {
       padding-top: 10px;
-      padding-bottom: 5px;
+      padding-bottom: 10px;
     }
   }
 }
