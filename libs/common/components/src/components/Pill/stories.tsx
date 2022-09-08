@@ -19,15 +19,15 @@ storiesOf('Pill', module)
   .add('Progress', () => {
     const formatter = (percent: number|undefined) => `${percent}% success`
     return <>
-      <p><ProgressPill percent={0}/></p>
-      <p><ProgressPill percent={33.33}/></p>
-      <p><ProgressPill percent={50.00}/></p>
-      <p><ProgressPill percent={66.6600}/></p>
-      <p><ProgressPill percent={100}/></p>
-      <p><ProgressPill percent={150}/></p>
-      <p><ProgressPill percent={0} width={200} formatter={formatter}/></p>
-      <p><ProgressPill percent={50} width={200} formatter={formatter}/></p>
-      <p><ProgressPill percent={100} width={200} formatter={formatter}/></p>
+      <p style={{ width: '100px' }}><ProgressPill percent={0}/></p>
+      <p style={{ width: '100px' }}><ProgressPill percent={33.33}/></p>
+      <p style={{ width: '100px' }}><ProgressPill percent={50.00}/></p>
+      <p style={{ width: '100px' }}><ProgressPill percent={66.6600}/></p>
+      <p style={{ width: '100px' }}><ProgressPill percent={100}/></p>
+      <p style={{ width: '100px' }}><ProgressPill percent={150}/></p>
+      <p style={{ width: '100px' }}><ProgressPill percent={0} formatter={formatter}/></p>
+      <p style={{ width: '100px' }}><ProgressPill percent={50} formatter={formatter}/></p>
+      <p style={{ width: '100px' }}><ProgressPill percent={100} formatter={formatter}/></p>
     </>
   })
 

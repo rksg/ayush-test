@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { Progress } from 'antd'
-
 import type { IncidentSeverities } from '@acx-ui/analytics/utils'
 
 import { cssStr } from '../../theme/helper'
@@ -32,15 +30,13 @@ export function SeverityPill ({ severity }: SeverityPillProps) {
 }
 
 export function ProgressPill (
-  props: { percent: number, width?: number, formatter?: (percent: number|undefined) => string }
+  props: { percent: number, formatter?: (percent: number|undefined) => string }
 ) {
-  return <UI.ProgressPillWrapper width={props.width||100}>
-    <Progress
-      percent={props.percent}
-      strokeWidth={16}
-      trailColor={cssStr('--acx-neutrals-50')}
-      strokeLinecap={'butt'}
-      format={props.formatter||((percent) => `${percent}%`)}
-    />
-  </UI.ProgressPillWrapper>
+  return <UI.Progress
+    percent={props.percent}
+    strokeWidth={20}
+    trailColor={cssStr('--acx-neutrals-40')}
+    strokeLinecap={'butt'}
+    format={props.formatter||((percent) => `${percent}%`)}
+  />
 }

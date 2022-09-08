@@ -3,32 +3,27 @@
 exports[`ProgressPill should rende with customized props 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__ProgressPillWrapper-sc-j61ge1-1 jbIUJA"
-    width="200"
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
   >
     <div
-      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default"
+      class="ant-progress-outer"
     >
       <div
-        class="ant-progress-outer"
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
-          class="ant-progress-inner"
-          style="background-color: rgb(172, 174, 176); border-radius: 0;"
-        >
-          <div
-            class="ant-progress-bg"
-            style="width: 66.66%; height: 16px; border-radius: 0;"
-          />
-        </div>
+          class="ant-progress-bg"
+          style="width: 66.66%; height: 20px; border-radius: 0;"
+        />
       </div>
-      <span
-        class="ant-progress-text"
-        title="66.66% success"
-      >
-        66.66% success
-      </span>
     </div>
+    <span
+      class="ant-progress-text"
+      title="66.66% success"
+    >
+      66.66% success
+    </span>
   </div>
 </DocumentFragment>
 `;
@@ -36,32 +31,27 @@ exports[`ProgressPill should rende with customized props 1`] = `
 exports[`ProgressPill should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__ProgressPillWrapper-sc-j61ge1-1 lgpvsD"
-    width="100"
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
   >
     <div
-      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default"
+      class="ant-progress-outer"
     >
       <div
-        class="ant-progress-outer"
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
-          class="ant-progress-inner"
-          style="background-color: rgb(172, 174, 176); border-radius: 0;"
-        >
-          <div
-            class="ant-progress-bg"
-            style="width: 0%; height: 16px; border-radius: 0;"
-          />
-        </div>
+          class="ant-progress-bg"
+          style="width: 0%; height: 20px; border-radius: 0;"
+        />
       </div>
-      <span
-        class="ant-progress-text"
-        title="0%"
-      >
-        0%
-      </span>
     </div>
+    <span
+      class="ant-progress-text"
+      title="0%"
+    >
+      0%
+    </span>
   </div>
 </DocumentFragment>
 `;
@@ -69,32 +59,27 @@ exports[`ProgressPill should render correctly 1`] = `
 exports[`ProgressPill should render correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__ProgressPillWrapper-sc-j61ge1-1 lgpvsD"
-    width="100"
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
   >
     <div
-      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default"
+      class="ant-progress-outer"
     >
       <div
-        class="ant-progress-outer"
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
-          class="ant-progress-inner"
-          style="background-color: rgb(172, 174, 176); border-radius: 0;"
-        >
-          <div
-            class="ant-progress-bg"
-            style="width: 33.33%; height: 16px; border-radius: 0;"
-          />
-        </div>
+          class="ant-progress-bg"
+          style="width: 33.33%; height: 20px; border-radius: 0;"
+        />
       </div>
-      <span
-        class="ant-progress-text"
-        title="33.33%"
-      >
-        33.33%
-      </span>
     </div>
+    <span
+      class="ant-progress-text"
+      title="33.33%"
+    >
+      33.33%
+    </span>
   </div>
 </DocumentFragment>
 `;
@@ -102,32 +87,27 @@ exports[`ProgressPill should render correctly 2`] = `
 exports[`ProgressPill should render correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__ProgressPillWrapper-sc-j61ge1-1 lgpvsD"
-    width="100"
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
   >
     <div
-      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default"
+      class="ant-progress-outer"
     >
       <div
-        class="ant-progress-outer"
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
-          class="ant-progress-inner"
-          style="background-color: rgb(172, 174, 176); border-radius: 0;"
-        >
-          <div
-            class="ant-progress-bg"
-            style="width: 50%; height: 16px; border-radius: 0;"
-          />
-        </div>
+          class="ant-progress-bg"
+          style="width: 50%; height: 20px; border-radius: 0;"
+        />
       </div>
-      <span
-        class="ant-progress-text"
-        title="50%"
-      >
-        50%
-      </span>
     </div>
+    <span
+      class="ant-progress-text"
+      title="50%"
+    >
+      50%
+    </span>
   </div>
 </DocumentFragment>
 `;
@@ -135,32 +115,27 @@ exports[`ProgressPill should render correctly 3`] = `
 exports[`ProgressPill should render correctly 4`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__ProgressPillWrapper-sc-j61ge1-1 lgpvsD"
-    width="100"
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
   >
     <div
-      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default"
+      class="ant-progress-outer"
     >
       <div
-        class="ant-progress-outer"
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
-          class="ant-progress-inner"
-          style="background-color: rgb(172, 174, 176); border-radius: 0;"
-        >
-          <div
-            class="ant-progress-bg"
-            style="width: 66.66%; height: 16px; border-radius: 0;"
-          />
-        </div>
+          class="ant-progress-bg"
+          style="width: 66.66%; height: 20px; border-radius: 0;"
+        />
       </div>
-      <span
-        class="ant-progress-text"
-        title="66.66%"
-      >
-        66.66%
-      </span>
     </div>
+    <span
+      class="ant-progress-text"
+      title="66.66%"
+    >
+      66.66%
+    </span>
   </div>
 </DocumentFragment>
 `;
@@ -168,32 +143,27 @@ exports[`ProgressPill should render correctly 4`] = `
 exports[`ProgressPill should render correctly 5`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__ProgressPillWrapper-sc-j61ge1-1 lgpvsD"
-    width="100"
+    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
   >
     <div
-      class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default"
+      class="ant-progress-outer"
     >
       <div
-        class="ant-progress-outer"
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
-          class="ant-progress-inner"
-          style="background-color: rgb(172, 174, 176); border-radius: 0;"
-        >
-          <div
-            class="ant-progress-bg"
-            style="width: 100%; height: 16px; border-radius: 0;"
-          />
-        </div>
+          class="ant-progress-bg"
+          style="width: 100%; height: 20px; border-radius: 0;"
+        />
       </div>
-      <span
-        class="ant-progress-text"
-        title="100%"
-      >
-        100%
-      </span>
     </div>
+    <span
+      class="ant-progress-text"
+      title="100%"
+    >
+      100%
+    </span>
   </div>
 </DocumentFragment>
 `;
@@ -201,32 +171,27 @@ exports[`ProgressPill should render correctly 5`] = `
 exports[`ProgressPill should render correctly 6`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__ProgressPillWrapper-sc-j61ge1-1 lgpvsD"
-    width="100"
+    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
   >
     <div
-      class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default"
+      class="ant-progress-outer"
     >
       <div
-        class="ant-progress-outer"
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
-          class="ant-progress-inner"
-          style="background-color: rgb(172, 174, 176); border-radius: 0;"
-        >
-          <div
-            class="ant-progress-bg"
-            style="width: 100%; height: 16px; border-radius: 0;"
-          />
-        </div>
+          class="ant-progress-bg"
+          style="width: 100%; height: 20px; border-radius: 0;"
+        />
       </div>
-      <span
-        class="ant-progress-text"
-        title="100%"
-      >
-        100%
-      </span>
     </div>
+    <span
+      class="ant-progress-text"
+      title="100%"
+    >
+      100%
+    </span>
   </div>
 </DocumentFragment>
 `;
@@ -234,7 +199,7 @@ exports[`ProgressPill should render correctly 6`] = `
 exports[`SeverityPill renders P1 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 jcWMnq"
+    class="styledComponents__Pill-sc-j61ge1-0 brxtGo"
     type="P1"
   >
     P1
@@ -245,7 +210,7 @@ exports[`SeverityPill renders P1 1`] = `
 exports[`SeverityPill renders P2 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 dvJvxN"
+    class="styledComponents__Pill-sc-j61ge1-0 lblvQX"
     type="P2"
   >
     P2
@@ -256,7 +221,7 @@ exports[`SeverityPill renders P2 1`] = `
 exports[`SeverityPill renders P3 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 eziBsl"
+    class="styledComponents__Pill-sc-j61ge1-0 itEtwH"
     type="P3"
   >
     P3
@@ -267,7 +232,7 @@ exports[`SeverityPill renders P3 1`] = `
 exports[`SeverityPill renders P4 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 eOSbvr"
+    class="styledComponents__Pill-sc-j61ge1-0 dtRgxd"
     type="P4"
   >
     P4
@@ -278,7 +243,7 @@ exports[`SeverityPill renders P4 1`] = `
 exports[`TrendPill renders negative trend 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 jcWMnq"
+    class="styledComponents__Pill-sc-j61ge1-0 brxtGo"
     type="negative"
   >
     -123
@@ -289,7 +254,7 @@ exports[`TrendPill renders negative trend 1`] = `
 exports[`TrendPill renders no trend 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 IImNP"
+    class="styledComponents__Pill-sc-j61ge1-0 lhsrLR"
     type="none"
   >
     0
@@ -300,7 +265,7 @@ exports[`TrendPill renders no trend 1`] = `
 exports[`TrendPill renders positive trend 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 eKEDXy"
+    class="styledComponents__Pill-sc-j61ge1-0 jVxBqg"
     type="positive"
   >
     123

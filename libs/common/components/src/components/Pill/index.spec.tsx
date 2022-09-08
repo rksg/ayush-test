@@ -48,7 +48,7 @@ describe('ProgressPill', () => {
   })
   it('should rende with customized props', () => {
     const formatter = jest.fn((percent: number|undefined) => `${percent}% success`)
-    expect(render(<ProgressPill percent={66.6600} width={200} formatter={formatter}/>).asFragment())
+    expect(render(<ProgressPill percent={66.6600} formatter={formatter}/>).asFragment())
       .toMatchSnapshot()
     expect(formatter).toBeCalledTimes(1)
     expect(formatter).toBeCalledWith(66.66, 0)
