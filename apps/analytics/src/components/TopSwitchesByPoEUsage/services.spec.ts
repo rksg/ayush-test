@@ -4,7 +4,8 @@ import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
-import { api } from './services'
+import { topSwitchesByPoEUsageResponse } from './__tests__/fixtures'
+import { api }                           from './services'
 
 describe('topSwitchesByPoEUsageApi', () => {
   const store = configureStore({

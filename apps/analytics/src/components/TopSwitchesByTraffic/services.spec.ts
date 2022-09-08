@@ -3,7 +3,8 @@ import { configureStore } from '@reduxjs/toolkit'
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
-import { api } from './services'
+import { topSwitchesByTrafficResponse } from './__tests__/fixtures'
+import { api }                          from './services'
 
 describe('topSwitchesByTrafficApi', () => {
   const store = configureStore({
