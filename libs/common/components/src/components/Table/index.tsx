@@ -8,10 +8,10 @@ import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import { FilterValue, renderFilter, renderSearch } from './filters'
-import { ResizableColumn }                         from './ResizableColumn'
-import * as UI                                     from './styledComponents'
-import { settingsKey, useColumnsState }            from './useColumnsState'
+import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
+import { ResizableColumn }                                          from './ResizableColumn'
+import * as UI                                                      from './styledComponents'
+import { settingsKey, useColumnsState }                             from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType } from './types'
 import type { ParamsType }                                                  from '@ant-design/pro-provider'
@@ -183,52 +183,6 @@ function Table <RecordType extends Record<string, any>> (
     const filteredValue = filterValues[key as keyof FilterValue]
     return filteredValue
   })
-  const deepDataCopy = dataSource?.map(val => ({ ...val })) as Array<RecordType & {
-    children?: RecordType[]
-  }>
-  const filteredData = (deepDataCopy) && deepDataCopy.filter(
-    (row) => {
-      for (const column of activeFilters) {
-        const key = column.dataIndex as keyof RecordType
-        const filteredValue = filterValues[key as keyof FilterValue]
-        const filterHelper = (val: typeof row, filterKey: keyof typeof row) =>
-          filteredValue.includes(val[filterKey] as unknown as string)
-
-        const childValues = row.children && row.children.filter((child) => filterHelper(child, key))
-
-        if (childValues && childValues.length > 0) {
-          return true
-        }
-        row.children = undefined
-        if (!filterHelper(row, key)) {
-          return false
-        }
-      }
-
-      if (searchValue) {
-        return searchables.some(column => {
-          const key = column.dataIndex as keyof RecordType
-          const { children } = row
-          const matchHelper = (val: typeof row, key: keyof typeof row, searchValue: string) =>
-            (val[key] as unknown as string)
-              .toString()
-              .toLowerCase()
-              .includes(searchValue.toLowerCase())
-
-          row.children = children
-            && children.filter((child) => matchHelper(child, key, searchValue))
-
-          if (row.children && row.children.length > 0) {
-            return true
-          }
-          // parent rows with no matching children, search parent
-          row.children = undefined
-          return matchHelper(row, key, searchValue)
-        })
-      }
-      return true
-    })
-
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasHeader = !hasRowSelected && (Boolean(filterables.length) || Boolean(searchables.length))
   const rowSelection: TableProps<RecordType>['rowSelection'] = props.rowSelection ? {
@@ -288,7 +242,9 @@ function Table <RecordType extends Record<string, any>> (
     <UI.TableSettingsGlobalOverride />
     <ProTable<RecordType>
       {...props}
-      dataSource={filteredData}
+      dataSource={getFilteredData<RecordType>(
+        dataSource, filterValues, activeFilters, searchables, searchValue
+      )}
       bordered={false}
       search={false}
       columns={(type === 'tall' ? columns.map(col=>({
