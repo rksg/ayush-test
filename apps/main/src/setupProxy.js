@@ -39,3 +39,4 @@ module.exports = async function setupProxy (app) {
     { target: CLOUD_URL, changeOrigin: true }
   ))
   return app
+}
