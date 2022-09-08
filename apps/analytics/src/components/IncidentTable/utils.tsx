@@ -27,7 +27,7 @@ export const GetIncidentBySeverity = (props: GetIncidentBySeverityProps) => {
   const severity = calculateSeverity(value)
   if (typeof severity === 'undefined') return <span>{noDataSymbol}</span>
 
-  return <UI.UnstyledLink to={`${basePath.pathname}/${id}`}>
+  return <UI.UnstyledLink to={{ ...basePath, pathname: `${basePath.pathname}/${id}` }}>
     <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
   </UI.UnstyledLink>
 }
