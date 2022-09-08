@@ -108,7 +108,8 @@ export function renderFilter <RecordType> (
     style={{ width: 200 }}
   >
     {uniq(dataSource?.map((datum: RecordType) => {
-      const children = datum['children'] as RecordType[] | undefined
+      // eslint-disable-next-line max-len
+      const children = datum['children' as keyof typeof datum] as unknown as RecordType[] | undefined
       const validChildren = children
         && children.map((child) => child[key] as unknown as string)
 
