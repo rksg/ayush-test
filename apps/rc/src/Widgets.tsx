@@ -8,7 +8,7 @@ import AlarmWidget from './components/AlarmWidget'
 import Clients     from './components/ClientsDonut'
 import Devices     from './components/DevicesDonut'
 import FloorPlan   from './components/FloorPlan'
-import { Map }     from './components/Map'
+import Map         from './components/Map'
 import Venues      from './components/VenuesDonut'
 
 const SPLIT_NAME = 'sara-demo-toggle' // this is sample splitName, needs to be switched based on the epic level FF name
