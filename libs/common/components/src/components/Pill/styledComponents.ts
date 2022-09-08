@@ -57,6 +57,6 @@ export const Progress = styled(AntProgress)`
     top: -20px;
     line-height: 20px;
     ${textStyle}
-    font-weight: var(acx-subtitle-5-font-weight)
+    font-weight: var(--acx-subtitle-5-font-weight)
   }
 `

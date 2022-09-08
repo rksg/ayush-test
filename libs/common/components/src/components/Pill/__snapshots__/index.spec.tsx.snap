@@ -1,37 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ProgressPill should rende with customized props 1`] = `
-<DocumentFragment>
-  <div
-    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
-  >
-    <div
-      class="ant-progress-outer"
-    >
-      <div
-        class="ant-progress-inner"
-        style="background-color: rgb(196, 196, 196); border-radius: 0;"
-      >
-        <div
-          class="ant-progress-bg"
-          style="width: 66.66%; height: 20px; border-radius: 0;"
-        />
-      </div>
-    </div>
-    <span
-      class="ant-progress-text"
-      title="66.66% success"
-    >
-      66.66% success
-    </span>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`ProgressPill should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 iBhALw"
   >
     <div
       class="ant-progress-outer"
@@ -59,7 +31,7 @@ exports[`ProgressPill should render correctly 1`] = `
 exports[`ProgressPill should render correctly 2`] = `
 <DocumentFragment>
   <div
-    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 iBhALw"
   >
     <div
       class="ant-progress-outer"
@@ -87,7 +59,7 @@ exports[`ProgressPill should render correctly 2`] = `
 exports[`ProgressPill should render correctly 3`] = `
 <DocumentFragment>
   <div
-    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 iBhALw"
   >
     <div
       class="ant-progress-outer"
@@ -115,7 +87,7 @@ exports[`ProgressPill should render correctly 3`] = `
 exports[`ProgressPill should render correctly 4`] = `
 <DocumentFragment>
   <div
-    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 iBhALw"
   >
     <div
       class="ant-progress-outer"
@@ -143,7 +115,7 @@ exports[`ProgressPill should render correctly 4`] = `
 exports[`ProgressPill should render correctly 5`] = `
 <DocumentFragment>
   <div
-    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
+    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 iBhALw"
   >
     <div
       class="ant-progress-outer"
@@ -171,7 +143,7 @@ exports[`ProgressPill should render correctly 5`] = `
 exports[`ProgressPill should render correctly 6`] = `
 <DocumentFragment>
   <div
-    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 JCGcY"
+    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 iBhALw"
   >
     <div
       class="ant-progress-outer"
@@ -191,6 +163,34 @@ exports[`ProgressPill should render correctly 6`] = `
       title="100%"
     >
       100%
+    </span>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ProgressPill should render with customized props 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 iBhALw"
+  >
+    <div
+      class="ant-progress-outer"
+    >
+      <div
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
+      >
+        <div
+          class="ant-progress-bg"
+          style="width: 66.66%; height: 20px; border-radius: 0;"
+        />
+      </div>
+    </div>
+    <span
+      class="ant-progress-text"
+      title="66.66% success"
+    >
+      66.66% success
     </span>
   </div>
 </DocumentFragment>
