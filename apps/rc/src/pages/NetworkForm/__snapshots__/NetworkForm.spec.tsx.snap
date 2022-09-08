@@ -54,7 +54,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
             <h1
               class="ant-typography"
             >
-              Create New Network
+              Add Network
             </h1>
           </span>
         </div>
