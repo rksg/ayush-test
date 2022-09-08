@@ -2,6 +2,7 @@ import { RefObject, useEffect, useImperativeHandle, useRef } from 'react'
 
 import ReactECharts from 'echarts-for-react'
 import { isEmpty }  from 'lodash'
+import styled       from 'styled-components/macro'
 
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
 import type { TimeStamp }                    from '@acx-ui/types'
@@ -21,6 +22,12 @@ import {
 
 import type { ECharts, EChartsOption } from 'echarts'
 import type { EChartsReactProps }      from 'echarts-for-react'
+
+const Chart = styled(ReactECharts)`
+  svg path[stroke="#123456"] {
+    stroke-dasharray: 2;
+    stroke: var(--acx-accents-blue-50);
+  }`
 
 interface MultiLineTimeSeriesChartProps
   <TChartData extends MultiLineTimeSeriesChartData>
@@ -98,7 +105,7 @@ export function MultiLineTimeSeriesChart
       brushStyle: {
         borderWidth: 1,
         color: 'rgba(0, 0, 0, 0.05)', // --acx-primary-white 5%
-        borderColor: cssStr('--acx-accents-blue-50')
+        borderColor: '#123456' // special color code to identify path of brush
       }
     },
     xAxis: {
@@ -131,7 +138,7 @@ export function MultiLineTimeSeriesChart
   }
 
   return (
-    <ReactECharts
+    <Chart
       {...props}
       ref={eChartsRef}
       opts={{ renderer: 'svg' }}
