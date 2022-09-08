@@ -3,6 +3,9 @@ import { useIntl }               from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
+import { MdnsProxyForwardingRulesTable } from './MdnsProxyForwardingRulesTable'
+
+
 export function MdnsProxySettingsForm () {
   const { $t } = useIntl()
 
@@ -39,6 +42,12 @@ export function MdnsProxySettingsForm () {
           label={$t({ defaultMessage: 'Tags' })}
           children={<Input />}
         />
+        <Form.Item
+          name='forwardingRules'
+          label={$t({ defaultMessage: 'Forwarding Rules' })}
+        >
+          <MdnsProxyForwardingRulesTable />
+        </Form.Item>
       </Col>
     </Row>
   )

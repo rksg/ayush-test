@@ -1,25 +1,31 @@
+import { useEffect, useRef } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { PageHeader, StepsForm } from '@acx-ui/components'
-import { MdnsProxySaveData }     from '@acx-ui/rc/utils'
+import { PageHeader, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { MdnsProxyFormData }                        from '@acx-ui/rc/utils'
 
 import { MdnsProxyScope }   from '../MdnsProxyScope/MdnsProxyScope'
 import { MdnsProxySummary } from '../MdnsProxySummary/MdnsProxySummary'
 
-import MdnsProxyFormContextType  from './MdnsProxyFormContext'
+import MdnsProxyFormContext      from './MdnsProxyFormContext'
 import { MdnsProxySettingsForm } from './MdnsProxySettingsForm'
-
-
 
 
 export interface MdnsProxyFormProps {
   editMode?: boolean;
 }
 
-export function MdnsProxyForm (props: MdnsProxyFormProps) {
-  const editMode = props.editMode || false
+export function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps) {
   const { $t } = useIntl()
-  const data = {} as MdnsProxySaveData
+  const formRef = useRef<StepsFormInstance<MdnsProxyFormData>>()
+
+  useEffect(() => {
+    // formRef?.current?.setFieldsValue({
+    //   name: 'JackyDefault',
+    //   forwardingRules: [{ type: 'AirPlay', fromVlan: 99, toVlan: 999 }]
+    // })
+  })
 
   return (
     <>
@@ -32,8 +38,10 @@ export function MdnsProxyForm (props: MdnsProxyFormProps) {
           { text: $t({ defaultMessage: 'Add Service' }), link: '/services/select' }
         ]}
       />
-      <MdnsProxyFormContextType.Provider value={{ editMode, data }}>
-        <StepsForm<MdnsProxySaveData>>
+      <MdnsProxyFormContext.Provider value={{ editMode }}>
+        <StepsForm<MdnsProxyFormData>
+          formRef={formRef}
+        >
           <StepsForm.StepForm
             name='settings'
             title={$t({ defaultMessage: 'Settings' })}
@@ -62,7 +70,7 @@ export function MdnsProxyForm (props: MdnsProxyFormProps) {
             <MdnsProxySummary />
           </StepsForm.StepForm>
         </StepsForm>
-      </MdnsProxyFormContextType.Provider>
+      </MdnsProxyFormContext.Provider>
     </>
   )
 }

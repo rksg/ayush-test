@@ -1,10 +1,7 @@
 import { createContext } from 'react'
 
-import { MdnsProxySaveData } from '@acx-ui/rc/utils'
-
 export interface MdnsProxyFormContextType {
-  editMode: boolean,
-  data?: MdnsProxySaveData
+  editMode: boolean
 }
 const MdnsProxyFormContext = createContext({} as MdnsProxyFormContextType)
 

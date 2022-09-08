@@ -1,12 +1,18 @@
-export interface MdnsProxyRule {
+export interface MdnsProxyForwardingRule {
   type: string;
   fromVlan: number;
   toVlan: number;
 }
 
-export interface MdnsProxySaveData {
+export interface MdnsProxyScope {
+  venueId: string;
+  venueName?: string;
+  aps: { id: string, name: string }[]
+}
+
+export interface MdnsProxyFormData {
   name: string;
   tags?: string;
-  rules: MdnsProxyRule[];
-  apIdList: string[];
+  forwardingRules: MdnsProxyForwardingRule[];
+  scope: MdnsProxyScope[];
 }
