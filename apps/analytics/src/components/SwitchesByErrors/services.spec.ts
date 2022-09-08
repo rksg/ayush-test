@@ -5,26 +5,8 @@ import { IncidentFilter }      from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 import { DateRange }           from '@acx-ui/utils'
 
-import { api } from './services'
-
-export const topSwitchesByErrorsResponse = {
-  network: {
-    hierarchyNode: {
-      topNSwitchesByErrors: [{
-        name: 'CIOT-ISOLATION-MLISA',
-        mac: 'D4:C1:9E:20:5F:25',
-        inErr: 1,
-        outErr: 1
-      },
-      {
-        name: 'Fong@Home',
-        mac: 'D4:C1:9E:95:CF:DA',
-        inErr: 2,
-        outErr: 1
-      }]
-    }
-  }
-}
+import { topSwitchesByErrorsResponse } from './__tests__/fixtures'
+import { api }                         from './services'
 
 describe('switchesByErrorsApi', () => {
   const store = configureStore({

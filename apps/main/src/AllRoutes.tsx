@@ -9,6 +9,7 @@ import NetworksBase     from './pages/Networks'
 import ServicesBase     from './pages/Services'
 import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
+import { VenuesForm }   from './pages/Venues/VenuesForm'
 import { VenuesTable }  from './pages/Venues/VenuesTable'
 
 const RcRoutes = React.lazy(() => import('rc/Routes'))
@@ -32,6 +33,7 @@ function AllRoutes () {
         </Route>
         <Route path='venues'>
           <Route index element={<VenuesTable />} />
+          <Route path='add' element={<VenuesForm />} />
           <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
           <Route path=':venueId/edit/:activeTab' element={<VenueEdit />} />
         </Route>

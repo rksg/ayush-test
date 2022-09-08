@@ -12,7 +12,7 @@ import {
   waitForElementToBeRemoved,
   cleanup
 } from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import { DateRange, setUpIntl } from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -128,10 +128,14 @@ const filters : IncidentFilter = {
 }
 describe('IncidentTableWidget', () => {
 
-  beforeEach(() =>
+  beforeEach(() => {
+    setUpIntl({
+      locale: 'en-US',
+      messages: {}
+    })
     store.dispatch(api.util.resetApiState())
-  )
-
+  })
+  
   afterEach(() => cleanup())
 
   it('should render loader', () => {
@@ -230,30 +234,28 @@ describe('IncidentTableWidget', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const priorityHeader = columnHeaders[0]
-    const elem = await screen.findByText(priorityHeader)
     const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
     expect(caretDown).toHaveLength(1)
 
-    fireEvent.click(elem)
-    fireEvent.click(elem)
+    fireEvent.click(await screen.findByText(priorityHeader))
+    fireEvent.click(await screen.findByText(priorityHeader))
     const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
     expect(caretUp).toHaveLength(1)
 
-    fireEvent.click(elem)
+    fireEvent.click(await screen.findByText(priorityHeader))
 
     for (let i = 1; i < columnHeaders.length; i++) {
       const header = columnHeaders[i]
-      const elem = await screen.findByText(header)
 
-      fireEvent.click(elem)
+      fireEvent.click(await screen.findByText(header))
       const caretUp = await screen.findAllByRole('img', { name: 'caret-up', hidden: false })
       expect(caretUp).toHaveLength(1)
 
-      fireEvent.click(elem)
+      fireEvent.click(await screen.findByText(header))
       const caretDown = await screen.findAllByRole('img', { name: 'caret-down', hidden: false })
       expect(caretDown).toHaveLength(2)
 
-      fireEvent.click(elem)
+      fireEvent.click(await screen.findByText(header))
     }
   })
 
