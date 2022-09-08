@@ -10,12 +10,11 @@ export function getSeriesData (
   data: TimeSeriesData | null,
   seriesMapping: Array<{ key: string, name: string }>
 ): MultiLineTimeSeriesChartData[] {
-  if (!data) return []
   if (checkNoData(data)) return []
   return seriesMapping.map(({ key, name }) => ({
     name,
-    data: (data['time'] as TimeStamp[]).map((t, index) => {
-      const value = data[key][index] as number
+    data: (data!['time'] as TimeStamp[]).map((t, index) => {
+      const value = data![key][index] as number
       return [t, value === null ? '-' : value]
     })
   }))
