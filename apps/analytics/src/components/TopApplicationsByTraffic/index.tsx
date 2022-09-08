@@ -2,7 +2,6 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
@@ -62,10 +61,13 @@ export default function TopApplicationsByTrafficWidget ({
       const sparklineChartStyle = { height: 18, width: 80, display: 'inline' }
       return {
         ...item,
-        traffic: <Space>{formatter('bytesFormat')(item.applicationTraffic)}
-          <TrafficPercent>
+        traffic: <Space align='start' size={4}>
+          <>
+            {formatter('bytesFormat')(item.applicationTraffic)}
+            <TrafficPercent>
             ({$t(intlFormats.percentFormatRound, { value: item.applicationTraffic/overallTrafic })})
-          </TrafficPercent>
+            </TrafficPercent>
+          </>
         </Space>,
         trafficHistory: <SparklineChart
           key={index}
@@ -103,7 +105,7 @@ export default function TopApplicationsByTrafficWidget ({
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
-              <ContentSwitcher tabDetails={tabDetails} size='small' align='center' />
+              <ContentSwitcher tabDetails={tabDetails} size='small' space={8} />
             </div>
           )}
         </AutoSizer>

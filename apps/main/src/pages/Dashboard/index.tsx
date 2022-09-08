@@ -40,7 +40,7 @@ export default function Dashboard () {
     <AnalyticsFilterProvider>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
-      <ContentSwitcher tabDetails={tabDetails} size='large' />
+      <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
     </AnalyticsFilterProvider>
   )
 }

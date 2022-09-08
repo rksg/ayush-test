@@ -7,6 +7,7 @@ import NetworkHistoryWidget           from './components/NetworkHistory'
 import SwitchesByPoEUsageWidget       from './components/SwitchesByPoEUsage'
 import TopSwitchModelsWidget          from './components/SwitchModels'
 import TopApplicationsByTrafficWidget from './components/TopApplicationsByTraffic'
+import TopSSIDsByClientWidget         from './components/TopSSIDsByClient'
 import TopSSIDsByTrafficWidget        from './components/TopSSIDsByTraffic'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
 
@@ -23,6 +24,9 @@ const widgetsMap = {
   ),
   topSSIDsByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
     <TopSSIDsByTrafficWidget filters={filters}/>
+  ),
+  topSSIDsByClient: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TopSSIDsByClientWidget filters={filters}/>
   ),
   connectedClientsOverTime: ({ filters }: { filters: AnalyticsFilter }) => (
     <ConnectedClientsOverTimeWidget filters={filters}/>

@@ -11,22 +11,29 @@ import {
   SparklineChart } from '@acx-ui/components'
 import { formatter, intlFormats } from '@acx-ui/utils'
 
-import { useTopSSIDsByTrafficQuery, TopSSIDsByTraffic } from './services'
-import { TrafficPercent }                               from './styledComponents'
+import { useTopSSIDsByClientQuery, TopSSIDsByClient } from './services'
+import { TrafficPercent }                             from './styledComponents'
 
-export default function TopSSIDsByTrafficWidget ({
+
+export default function TopSSIDsByClientWidget ({
   filters
 }: {
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const queryResults = useTopSSIDsByTrafficQuery(filters)
+  const queryResults = useTopSSIDsByClientQuery(filters)
 
-  const columns = [
+  const columns=[
     {
       title: $t({ defaultMessage: 'SSID Name' }),
       dataIndex: 'name',
       key: 'name'
+    },
+    {
+      title: $t({ defaultMessage: 'Clients' }),
+      dataIndex: 'clientCount',
+      key: 'clientCount',
+      align: 'right' as const
     },
     {
       title: $t({ defaultMessage: 'Total Traffic' }),
@@ -37,18 +44,12 @@ export default function TopSSIDsByTrafficWidget ({
       title: $t({ defaultMessage: 'Traffic History' }),
       dataIndex: 'trafficHistory',
       key: 'trafficHistory'
-    },
-    {
-      title: $t({ defaultMessage: 'Clients' }),
-      dataIndex: 'clientCount',
-      key: 'clientCount',
-      align: 'right' as const
     }
   ]
 
-  const getDataSource = (appTrafficData: TopSSIDsByTraffic[],
+  const getDataSource= (userTrafficData: TopSSIDsByClient[],
     overallTrafic:number) => {
-    return appTrafficData.map((item,index) => {
+    return userTrafficData.map((item,index) => {
       const sparkLineData = item.timeSeries.userTraffic
         .map(value => value ? value : 0)
       const sparklineChartStyle = { height: 22, width: 80, display: 'inline' }
@@ -58,7 +59,7 @@ export default function TopSSIDsByTrafficWidget ({
           <>
             {formatter('bytesFormat')(item.userTraffic)}
             <TrafficPercent>
-            ({$t(intlFormats.percentFormatRound, { value: item.userTraffic/overallTrafic })})
+              ({$t(intlFormats.percentFormatRound, { value: item.userTraffic/overallTrafic })})
             </TrafficPercent>
           </>
         </Space>,
@@ -73,9 +74,9 @@ export default function TopSSIDsByTrafficWidget ({
 
   const { data } = queryResults
 
-  const ssidTable = data && data.topNSSIDByTraffic && data.topNSSIDByTraffic.length ? <Table
+  const ssidTable = data && data.topNSSIDByClient && data.topNSSIDByClient.length ? <Table
     columns={columns}
-    dataSource={getDataSource(data.topNSSIDByTraffic, data.totalUserTraffic)}
+    dataSource={getDataSource(data.topNSSIDByClient, data.totalUserTraffic)}
     type={'compact'}
     pagination={false}
   /> : <NoData/>
@@ -83,7 +84,7 @@ export default function TopSSIDsByTrafficWidget ({
 
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Top 5 SSIDs by Traffic' })}>
+      <Card title={$t({ defaultMessage: 'Top 5 SSIDs by Clients' })}>
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width, paddingTop: '20px' }}>
