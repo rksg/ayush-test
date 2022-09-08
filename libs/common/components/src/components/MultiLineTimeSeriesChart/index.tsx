@@ -27,6 +27,7 @@ const Chart = styled(ReactECharts)`
   svg path[stroke="#123456"] {
     stroke-dasharray: 2;
     stroke: var(--acx-accents-blue-50);
+    clip-path: inset(0 round 5px);
   }`
 
 interface MultiLineTimeSeriesChartProps
@@ -103,7 +104,7 @@ export function MultiLineTimeSeriesChart
     brush: {
       xAxisIndex: 'all',
       brushStyle: {
-        borderWidth: 1,
+        borderWidth: 4,
         color: 'rgba(0, 0, 0, 0.05)', // --acx-primary-white 5%
         borderColor: '#123456' // special color code to identify path of brush
       }
