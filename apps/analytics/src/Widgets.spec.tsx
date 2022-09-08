@@ -4,11 +4,13 @@ import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { topSwitchesByErrorsResponse }   from './components/SwitchesByErrors/__tests__/fixtures'
-import { topSwitchesByPoEUsageResponse } from './components/TopSwitchesByPoEUsage/__tests__/fixtures'
-import { topSwitchesByTrafficResponse }  from './components/TopSwitchesByTraffic/__tests__/fixtures'
-import { trafficByApplicationFixture }   from './components/TrafficByApplication/__tests__/fixtures'
-import AnalyticsWidgets                  from './Widgets'
+import { topSwitchesByErrorsResponse }    from './components/SwitchesByErrors/__tests__/fixtures'
+import { topApplicationByTrafficFixture } from './components/TopApplicationsByTraffic/__tests__/fixtures'
+import { topSSIDsByClientFixture }        from './components/TopSSIDsByClient/__tests__/fixtures'
+import { topSSIDsByTrafficFixture }       from './components/TopSSIDsByTraffic/__tests__/fixtures'
+import { topSwitchesByPoEUsageResponse }  from './components/TopSwitchesByPoEUsage/__tests__/fixtures'
+import { topSwitchesByTrafficResponse }   from './components/TopSwitchesByTraffic/__tests__/fixtures'
+import AnalyticsWidgets                   from './Widgets'
 
 const sample = {
   time: [
@@ -88,7 +90,7 @@ test('should render Top Switches by Traffic widget', async () => {
   mockGraphqlQuery(dataApiURL, 'SwitchesByTraffic', {
     data: topSwitchesByTrafficResponse
   })
-  render( 
+  render(
     <Provider>
       <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
     </Provider>)
@@ -132,11 +134,31 @@ test('should render Top 5 Switches by Error widget', async () => {
 })
 
 test('should render Traffic By Application Widget', async () => {
-  mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
-    data: { network: { hierarchyNode: trafficByApplicationFixture } }
+  mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
+    data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
   })
   render( <Provider> <AnalyticsWidgets
     name='topApplicationsByTraffic'
     filters={filters} /></Provider>)
   await screen.findByText('Top 5 Applications by Traffic')
+})
+
+test('should render Traffic By SSID Widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
+    data: { network: { hierarchyNode: topSSIDsByTrafficFixture } }
+  })
+  render( <Provider> <AnalyticsWidgets
+    name='topSSIDsByTraffic'
+    filters={filters} /></Provider>)
+  await screen.findByText('Top 5 SSIDs by Traffic')
+})
+
+test('should render Clients By SSID Widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'TopSSIDsByClientWidget', {
+    data: { network: { hierarchyNode: topSSIDsByClientFixture } }
+  })
+  render( <Provider> <AnalyticsWidgets
+    name='topSSIDsByClient'
+    filters={filters} /></Provider>)
+  await screen.findByText('Top 5 SSIDs by Clients')
 })
