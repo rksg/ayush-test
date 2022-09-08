@@ -1,13 +1,14 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space, Divider, Button, Select, Input }       from 'antd'
+import { Space, Divider, Button, Input }               from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
+import { FilterValue, renderFilter }    from './filters'
 import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
@@ -51,10 +52,6 @@ export interface TableProps <RecordType>
   })
   }
 
-interface FilterValue {
-  key: string[]
-}
-
 const defaultPagination = {
   mini: true,
   defaultPageSize: 10,
@@ -80,7 +77,7 @@ function useSelectedRowKeys <RecordType> (
 
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Table <RecordType extends Record<string, any>> (
+function Table <RecordType extends Record<string, any>, ValueType> (
   { type = 'tall', columnState, ...props }: TableProps<RecordType>
 ) {
   const { $t } = useIntl()
@@ -183,7 +180,6 @@ function Table <RecordType extends Record<string, any>> (
   const activeFilters = filterables.filter(column => {
     const key = column.dataIndex as keyof RecordType
     const filteredValue = filterValues[key as keyof FilterValue]
-
     return filteredValue
   })
   const deepDataCopy = dataSource?.map(val => ({ ...val })) as Array<RecordType & {
@@ -198,7 +194,7 @@ function Table <RecordType extends Record<string, any>> (
           filteredValue.includes(val[filterKey] as unknown as string)
 
         const childValues = row.children && row.children.filter((child) => filterHelper(child, key))
-        
+
         if (childValues && childValues.length > 0) {
           return true
         }
@@ -212,13 +208,13 @@ function Table <RecordType extends Record<string, any>> (
         return searchables.some(column => {
           const key = column.dataIndex as keyof RecordType
           const { children } = row
-          const matchHelper = (val: typeof row, key: keyof typeof row, searchValue: string) => 
+          const matchHelper = (val: typeof row, key: keyof typeof row, searchValue: string) =>
             (val[key] as unknown as string)
               .toString()
               .toLowerCase()
               .includes(searchValue.toLowerCase())
 
-          row.children = children 
+          row.children = children
             && children.filter((child) => matchHelper(child, key, searchValue))
 
           if (row.children && row.children.length > 0) {
@@ -280,53 +276,9 @@ function Table <RecordType extends Record<string, any>> (
           style={{ width: 292 }}
           value={searchValue}
         />}
-        {filterables.map((column, i) => {
-          const key = column.dataIndex as keyof RecordType
-          return <Select
-            data-testid='options-selector'
-            key={i}
-            maxTagCount='responsive'
-            mode='multiple'
-            value={filterValues[key as keyof FilterValue]}
-            onChange={value => {
-              const uncheckedFilters = { ...filterValues, [key]: value }
-              const checkFilter = {} as FilterValue
-              for (const property in uncheckedFilters) {
-                if (uncheckedFilters[property as keyof FilterValue] 
-                  && uncheckedFilters[property as keyof FilterValue].length > 0) {
-                  checkFilter[property as keyof FilterValue] = 
-                      uncheckedFilters[property as keyof FilterValue]
-                }
-              }
-              setFilterValues(checkFilter)
-            }}
-            placeholder={column.title as string}
-            showArrow
-            style={{ width: 200 }}
-          >
-            {_.uniq(dataSource?.map((datum: RecordType) => {
-              const children = datum['children'] as RecordType[] | undefined
-              const validChildren = children 
-                && children.map((child) => child[key] as unknown as string)
-
-              if (!validChildren) return [datum[key] as unknown as string]
-
-              const raw = [
-                ...validChildren,
-                datum[key] as unknown as string
-              ]
-
-              return raw.filter(Boolean)
-            })
-              .flat())
-              .sort()
-              .map(value =>
-                <Select.Option value={value} key={value} data-testid={`option-${value}`} >
-                  {value}
-                </Select.Option>
-              )}
-          </Select>
-        })}
+        {filterables.map((column, i) =>
+          renderFilter<RecordType, ValueType>(column, i, dataSource, filterValues, setFilterValues)
+        )}
         {(Boolean(activeFilters.length) || Boolean(searchValue)) && <UI.ClearButton
           onClick={() => {
             setFilterValues({} as FilterValue)
