@@ -55,7 +55,7 @@ export function SummaryForm (props: {
   return (
     <>
       <StepsForm.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsForm.Title>
-      <Row gutter={20}>
+      <Row gutter={20} style={{ paddingTop: 20 }}>
         <Col flex={1}>
           <Subtitle level={4}>
             { $t({ defaultMessage: 'DHCP Settings' }) }
@@ -71,7 +71,7 @@ export function SummaryForm (props: {
           />
 
         </Col>
-        <Divider type='vertical' style={{ height: '300px' }}/>
+        <Divider type='vertical' style={{ height: 250 }}/>
         <Col flex={1}>
           <Subtitle level={4}>
             { $t({ defaultMessage: 'Activated in venues' }) }

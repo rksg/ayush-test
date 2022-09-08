@@ -54,12 +54,14 @@ export function SettingForm () {
         />
         <Form.Item
           name='tags'
+          style={{ display: 'none' }}
           label={intl.$t({ defaultMessage: 'Tags' })}
           children={<Input />}
         />
 
         <Form.Item
           name='createType'
+          style={{ display: 'none' }}
           initialValue={ServiceTechnology.WIFI}
           label={intl.$t({ defaultMessage: 'Type' })}>
           <Radio.Group onChange={createTypeChange} value={createType}>
