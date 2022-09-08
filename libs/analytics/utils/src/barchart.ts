@@ -36,16 +36,27 @@ type BarChartAPIData = {
 
 export function getBarChartSeriesData (
   data: BarChartAPIData[],
-  seriesMapping: BarChartData['seriesEncode']
+  seriesMapping: BarChartData['seriesEncode'],
+  uniqueColumnName?: string
 ): BarChartData {
   const dimensions: BarChartData['dimensions'] = data && data.length > 0 ? Object.keys(data[0]): []
   const source: BarChartData['source'] = []
-
+  let space = ' '
   data && data.forEach(datum =>{
-    source.unshift(Object.values(datum))
+    const row = Object.values(datum)
+    // Bar chart groups the category names which leads to overlapping of bars on the axis, 
+    // adding space to the names makes the value unique. These spaces are trimmed in the axisLabelFormatter.
+    if(uniqueColumnName){
+      const index = dimensions.indexOf(uniqueColumnName)
+      if(index>=0){
+        row[index] = space + row[index] 
+        space = ' ' + space
+      }
+    }
+    source.unshift(row)
   })
   const seriesEncode: BarChartData['seriesEncode'] = seriesMapping
-
+  
   return {
     dimensions,
     source,
