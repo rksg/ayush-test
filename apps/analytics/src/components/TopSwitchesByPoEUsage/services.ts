@@ -19,7 +19,7 @@ interface Response <SwitchesByPoeUsageData> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    switchesByPoEUsage: build.query<
+    topSwitchesByPoEUsage: build.query<
       SwitchesByPoEUsageData[],
       AnalyticsFilter
     >({
@@ -53,4 +53,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useSwitchesByPoEUsageQuery } = api
+export const { useTopSwitchesByPoEUsageQuery } = api
