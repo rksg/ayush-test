@@ -15,7 +15,7 @@ export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='networks' element={<NetworksTable />} />
-      <Route path='networks/create' element={<NetworkForm />} />
+      <Route path='networks/add' element={<NetworkForm />} />
       <Route
         path='networks/:networkId/network-details/:activeTab'
         element={<NetworkDetails />}

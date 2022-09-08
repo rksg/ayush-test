@@ -12,7 +12,8 @@ import {
   useFormattedPath,
   useImpactedArea,
   useImpactValues,
-  useShortDescription
+  useShortDescription,
+  useIncidentScope
 } from './incidents'
 
 import type { Incident, NodeType, PathNode } from './types/incidents'
@@ -73,7 +74,7 @@ describe('useFormattedNodeType', () => {
     renderHook(() => useFormattedNodeType(nodeType)).result.current
 
   it('should return correct value', () => {
-    expect(renderNodeType('network')).toEqual('Entire Organization')
+    expect(renderNodeType('network')).toEqual('Organization')
     expect(renderNodeType('apGroupName')).toEqual('AP Group')
     expect(renderNodeType('apGroup')).toEqual('AP Group')
     expect(renderNodeType('zoneName')).toEqual('Venue')
@@ -190,5 +191,25 @@ describe('impactValues', () => {
 
   it('formats impacted ap count', () => {
     expect(renderImpactValues('ap', 1, 1)).toMatchSnapshot()
+  })
+
+  describe('useIncidentScope', () => {  
+    const renderUseIncidentScope = () => renderHook(
+      () => useIncidentScope(
+        fakeIncident({
+          id: '1',
+          code: 'dhcp-failure',
+          startTime: '2022-08-12T00:00:00.000Z',
+          endTime: '2022-08-12T01:00:00.000Z',
+          path: [
+            { type: 'network', name: 'Network' },
+            { type: 'zone', name: 'Venue 1' }
+          ]
+        })
+      )).result.current
+
+    it('formats correct incident scope', () => {
+      expect(renderUseIncidentScope()).toMatchSnapshot()
+    })
   })
 })
