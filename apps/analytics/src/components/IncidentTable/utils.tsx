@@ -1,16 +1,13 @@
 import moment         from 'moment-timezone'
 import {
-  FormattedMessage, 
+  FormattedMessage,
   MessageDescriptor
 } from 'react-intl'
 
-import { 
+import {
   calculateSeverity,
   Incident,
-  incidentInformation,
   noDataSymbol,
-  useImpactedArea,
-  useImpactValues,
   useShortDescription
 } from '@acx-ui/analytics/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
@@ -30,7 +27,7 @@ export const GetIncidentBySeverity = (props: GetIncidentBySeverityProps) => {
   const severity = calculateSeverity(value)
   if (typeof severity === 'undefined') return <span>{noDataSymbol}</span>
 
-  return <UI.UnstyledLink to={`${basePath.pathname}/${id}`}>
+  return <UI.UnstyledLink to={{ ...basePath, pathname: `${basePath.pathname}/${id}` }}>
     <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
   </UI.UnstyledLink>
 }
@@ -59,45 +56,28 @@ export const FormatIntlString = (props: FormatIntlStringProps) => {
 }
 
 export interface IncidentTableComponentProps {
-  incident: Incident
+  incident: Incident,
+}
+export interface IncidentTableDescriptionProps {
+  incident: Incident,
+  onClickDesc : CallableFunction
 }
 
-export const ShortIncidentDescription = (props: IncidentTableComponentProps) => {
-  const { incident } = props
+export const ShortIncidentDescription = (props: IncidentTableDescriptionProps) => {
+  const { incident, onClickDesc } = props
   const shortDesc = useShortDescription(incident)
-    
-  return <UI.DescriptionSpan>{shortDesc}</UI.DescriptionSpan>
-}
-
-export const GetCategory = (code: string, subCategory?: boolean) => {
-  const incidentInfo = incidentInformation[code]
-  if (subCategory) {
-    const { subCategory } = incidentInfo
-    return <FormatIntlString message={subCategory} />
-  }
-  const { category } = incidentInfo
-  return <FormatIntlString message={category} />
-}
-
-export const GetScope = (props: IncidentTableComponentProps) => {
-  const { incident } = props
-  const scope = useImpactedArea(incident.path, incident.sliceValue)
-  return <span>{scope}</span>
-}
-
-export const ClientImpact = (props: IncidentTableComponentProps & {
-  type: 'clientImpact' | 'impactedClients'
-}) => {
-  const { type, incident } = props
-  const values = useImpactValues('client', incident)
-  if (type === 'clientImpact') return <span>{values['clientImpactRatioFormatted'] as string}</span>
-
-  return <span>{values['clientImpactCountFormatted'] as string}</span>
+  return (
+    <UI.DescriptionSpan
+      onClick={() => onClickDesc(incident)}
+    >
+      {shortDesc}
+    </UI.DescriptionSpan>
+  )
 }
 
 export const durationValue = (start: string, end: string) => moment(end).diff(moment(start))
 
-export const dateSort = (dateA: string, dateB: string) => 
+export const dateSort = (dateA: string, dateB: string) =>
   Math.sign(durationValue(dateA, dateB))
 
 export const defaultSort = (a: string | number, b: string | number) => {

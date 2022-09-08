@@ -2,13 +2,15 @@ import React from 'react'
 
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
-import App              from './App'
-import AnalyticsBase    from './App/Analytics'
-import Dashboard        from './App/Dashboard'
-import NetworksBase     from './App/Networks'
-import ServicesBase     from './App/Services'
-import { VenueDetails } from './App/Venues/VenueDetails'
-import { VenuesTable }  from './App/Venues/VenuesTable'
+import AnalyticsBase    from './pages/Analytics'
+import Dashboard        from './pages/Dashboard'
+import Layout           from './pages/Layout'
+import NetworksBase     from './pages/Networks'
+import ServicesBase     from './pages/Services'
+import { VenueDetails } from './pages/Venues/VenueDetails'
+import { VenueEdit }    from './pages/Venues/VenueEdit'
+import { VenuesForm }   from './pages/Venues/VenuesForm'
+import { VenuesTable }  from './pages/Venues/VenuesTable'
 
 const RcRoutes = React.lazy(() => import('rc/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
@@ -17,7 +19,7 @@ const MspRoutes = React.lazy(() => import('msp/Routes'))
 function AllRoutes () {
   return rootRoutes(
     <>
-      <Route path='t/:tenantId' element={<App />}>
+      <Route path='t/:tenantId' element={<Layout />}>
         <Route index element={<TenantNavigate replace to='/dashboard' />} />
         <Route path='dashboard' element={<Dashboard />} />
         <Route path='analytics/*' element={<AnalyticsBase />}>
@@ -31,7 +33,9 @@ function AllRoutes () {
         </Route>
         <Route path='venues'>
           <Route index element={<VenuesTable />} />
+          <Route path='add' element={<VenuesForm />} />
           <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
+          <Route path=':venueId/edit/:activeTab' element={<VenueEdit />} />
         </Route>
       </Route>
       <Route path='v/:tenantId/*' element={<MspRoutes />} />

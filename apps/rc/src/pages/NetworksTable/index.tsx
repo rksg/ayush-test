@@ -14,6 +14,7 @@ import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
     {
+      key: 'name',
       title: intl.$t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
       sorter: true,
@@ -25,11 +26,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       }
     },
     {
+      key: 'description',
       title: intl.$t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
       sorter: true
     },
     {
+      key: 'nwSubType',
       title: intl.$t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
@@ -39,6 +42,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       />
     },
     {
+      key: 'venues',
       title: intl.$t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
@@ -53,6 +57,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       }
     },
     {
+      key: 'aps',
       title: intl.$t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       sorter: true,
@@ -64,18 +69,21 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       }
     },
     {
+      key: 'clients',
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       sorter: true,
       align: 'center'
     },
     {
+      key: 'services',
       title: intl.$t({ defaultMessage: 'Services' }),
       dataIndex: 'services',
       sorter: true,
       align: 'center'
     },
     {
+      key: 'vlan',
       title: intl.$t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       sorter: true,
@@ -84,11 +92,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       }
     },
     {
+      key: 'health',
       title: intl.$t({ defaultMessage: 'Health' }),
       dataIndex: 'health',
       sorter: true
     },
     {
+      key: 'tags',
       title: intl.$t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
       sorter: true
@@ -148,6 +158,12 @@ export function NetworksTable () {
         }
       },
       {
+        label: $t({ defaultMessage: 'Clone' }),
+        onClick: (selectedRows) => {
+          navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
+        }
+      },
+      {
         label: $t({ defaultMessage: 'Delete' }),
         onClick: ([{ name, id }], clearSelection) => {
           showActionModal({
@@ -186,7 +202,7 @@ export function NetworksTable () {
       <PageHeader
         title={$t({ defaultMessage: 'Networks' })}
         extra={[
-          <TenantLink to='/networks/create' key='add'>
+          <TenantLink to='/networks/add' key='add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Wi-Fi Network' }) }</Button>
           </TenantLink>
         ]}

@@ -3,7 +3,7 @@ import { Col, Divider, Form, Input, Row } from 'antd'
 import { useIntl }                        from 'react-intl'
 
 import { StepsForm, Subtitle }                                           from '@acx-ui/components'
-import { useCloudpathListQuery, useVenueListQuery }                      from '@acx-ui/rc/services'
+import { useCloudpathListQuery, useVenuesListQuery }                     from '@acx-ui/rc/services'
 import { NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue } from '@acx-ui/rc/utils'
 import { useParams }                                                     from '@acx-ui/react-router-dom'
 
@@ -35,7 +35,8 @@ export function SummaryForm (props: {
       }
     }
   })
-  const { data } = useVenueListQuery({ params:
+
+  const { data } = useVenuesListQuery({ params:
     { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' }, payload: defaultPayload })
 
   const venueList = data?.data.reduce<Record<Venue['id'], Venue>>((map, obj) => {
@@ -114,7 +115,7 @@ export function SummaryForm (props: {
           {summaryData.type === NetworkTypeEnum.DPSK &&
             <DpskSummaryForm summaryData={summaryData} />
           }
-          {summaryData.type === NetworkTypeEnum.PSK && 
+          {summaryData.type === NetworkTypeEnum.PSK &&
             <PskSummaryForm summaryData={summaryData} />
           }
         </Col>

@@ -57,7 +57,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
-    createNetwork: build.mutation<Network, RequestPayload>({
+    addNetwork: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
         const createNetworkReq = createHttpRequest(CommonUrlsInfo.addNetworkDeep, params)
         return {
@@ -136,7 +136,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
-    venueList: build.query<TableResult<Venue>, RequestPayload>({
+    networkVenueList: build.query<TableResult<Venue>, RequestPayload>({
       query: ({ params, payload }) => {
         const venueListReq = createHttpRequest(CommonUrlsInfo.getNetworksVenuesList, params)
         return{
@@ -271,10 +271,10 @@ export const {
   useLazyNetworkListQuery,
   useGetNetworkQuery,
   useNetworkDetailHeaderQuery,
-  useCreateNetworkMutation,
+  useNetworkVenueListQuery,
+  useAddNetworkMutation,
   useUpdateNetworkMutation,
   useDeleteNetworkMutation,
-  useVenueListQuery,
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useVenueNetworkListQuery,
