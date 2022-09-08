@@ -18,7 +18,7 @@ interface Response <ChartsData> {
 }
 
 export type ChartsData = {
-  relatedIncidents: [Partial<Incident>],
+  relatedIncidents: Incident[],
 } & Record<string, Record<string, number[] | string[]>>
 
 export const calcGranularity = (start: string, end: string): string => {

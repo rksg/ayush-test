@@ -26,8 +26,7 @@ const failureTitles = {
 }
 
 const attemptTitles = {
-  ...readCodesIntoMap('attemptsText')(ccdFailureTypes as MapElement[]),
-  ttc: defineMessage({ defaultMessage: 'Time To Connect Attempts' })
+  ...readCodesIntoMap('attemptsText')(ccdFailureTypes as MapElement[])
 }
 
 const ccdReasonCodeMap = readCodesIntoMap()(

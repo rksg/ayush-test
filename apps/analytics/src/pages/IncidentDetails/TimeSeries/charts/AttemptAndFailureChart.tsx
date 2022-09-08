@@ -56,8 +56,6 @@ export const AttemptAndFailureChart = (
           data={chartResults}
           dataFormatter={(value: unknown) =>
             $t(intlFormats.countFormat, { value: value as number })}
-          start={incident.startTime}
-          end={incident.endTime}
           lineColors={lineColors}
         />
       )}

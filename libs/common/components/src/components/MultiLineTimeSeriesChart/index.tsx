@@ -3,8 +3,7 @@ import { useRef, useEffect } from 'react'
 import ReactECharts from 'echarts-for-react'
 import moment       from 'moment-timezone'
 
-import { Incident, MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
-import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
+import { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
 
 import { cssStr }              from '../../theme/helper'
 import {
@@ -23,55 +22,54 @@ import type { EChartsOption, ECharts } from 'echarts'
 import type { EChartsReactProps }      from 'echarts-for-react'
 
 interface MultiLineTimeSeriesChartProps
-  <TChartData extends MultiLineTimeSeriesChartData>
+  <TChartData extends MultiLineTimeSeriesChartData,
+  ChartMarker extends { startTime: string, endTime: string }>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
-    data: TChartData[]
+    data: TChartData[],
     /** @default 'name' */
     legendProp?: keyof TChartData,
     lineColors?: string[],
     dataFormatter?: (value: unknown) => string | null,
-    marker?: Partial<Incident>[],
+    // markers?: Partial<Incident>[],
+    markers?: ChartMarker[],
     areaColor?: string,
     yAxisProps?: {
       max: number,
       min: number
-    },
-    start?: string,
-    end?: string,
-    disableLegend?: boolean
+    }
+    disableLegend?: boolean,
+    handleMarkedAreaClick?: (props: ChartMarker) => void
   }
 
 export function MultiLineTimeSeriesChart
-  <TChartData extends MultiLineTimeSeriesChartData>
+  <TChartData extends MultiLineTimeSeriesChartData,
+  ChartMarker extends { startTime: string, endTime: string }>
 ({
   data,
   legendProp = 'name' as keyof TChartData,
   dataFormatter,
-  marker,
+  markers,
   areaColor,
   yAxisProps,
-  start,
-  end,
   disableLegend,
+  handleMarkedAreaClick,
   ...props
-}: MultiLineTimeSeriesChartProps<TChartData>) {
+}: MultiLineTimeSeriesChartProps<TChartData, ChartMarker>) {
   const eChartsRef = useRef<ReactECharts>(null)
-  const navigate = useNavigate()
-  const basePath = useTenantLink('/analytics/incidents/')
 
-  const onMarkedAreaClick = (id: string) => {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/${id}`
-    })
-  }
+  const startEndTimes = data.map(datum => {
+    return {
+      start: datum.data[0][0],
+      end: datum.data[datum.data.length - 1][0]
+    }
+  })
 
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
     echartInstance.on('click', 'series.line', function (params) {
-      const markedAreaProps = params.data as { id: string }
-      onMarkedAreaClick(markedAreaProps.id)
+      const markedAreaProps = (params.data as unknown as { data: ChartMarker }).data
+      handleMarkedAreaClick?.(markedAreaProps)
     })
   }, [eChartsRef])
   
@@ -117,7 +115,8 @@ export function MultiLineTimeSeriesChart
         id: 'zoom',
         type: 'inside',
         orient: 'horizontal',
-        minValueSpan: 60 * 60 * moment.duration(moment(end).diff(moment(start))).asSeconds(),
+        minValueSpan: 30 * moment.duration(
+          moment(startEndTimes[0].end).diff(moment(startEndTimes[0].start))).asSeconds(),
         moveOnMouseMove: false,
         moveOnMouseWheel: false
       }
@@ -136,11 +135,11 @@ export function MultiLineTimeSeriesChart
           opacity: 0.4,
           color: areaColor
         },
-        data: marker?.map(mark => {
+        data: markers?.map(mark => {
           return [
             {
               xAxis: mark.startTime,
-              id: mark.id
+              data: mark
             },
             {
               xAxis: mark.endTime
