@@ -1,11 +1,7 @@
 import {
   createContext,
   useContext,
-  ReactNode,
-  useState,
-  useEffect,
-  useRef,
-  useMemo
+  ReactNode
 } from 'react'
 
 import { Buffer } from 'buffer'
@@ -17,7 +13,7 @@ export type DateFilterContextprops = {
   dateFilter: DateFilter,
   setDateFilter?: (c: DateFilter) => void
 }
-interface DateFilter {
+export interface DateFilter {
   range: DateRange;
   startDate: string;
   endDate: string;
@@ -41,35 +37,15 @@ export const useDateFilter = () => {
 
 export function DateFilterProvider (props: { children: ReactNode }) {
   const [search, setSearch] = useSearchParams()
-  const didMountRef = useRef(false)
-
-  const period = search.has('period')
-    ? JSON.parse(
-      Buffer.from(search.get('period') as string, 'base64').toString('ascii')
-    )
-    : {}
-  const defaultFilter = search.has('period')
+  const period = search.has('period') && JSON.parse(
+    Buffer.from(search.get('period') as string, 'base64').toString('ascii')
+  )
+  const dateFilter = period
     ? getDateRangeFilter(period.range, period.startDate, period.endDate)
     : defaultDateFilter.dateFilter
-
-  const [dateFilter, setDateFilter] = useState<DateFilter>(defaultFilter)
-
-  useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true
-      return
-    }
-    const params = new URLSearchParams()
-    params.append(
-      'period',
-      Buffer.from(JSON.stringify({ ...dateFilter })).toString('base64')
-    )
-    setSearch(params)
-  }, [dateFilter, setSearch])
-  const providerValue = useMemo(
-    () => ({ dateFilter, setDateFilter }),
-    [dateFilter, setDateFilter]
-  )
-  return <DateFilterContext.Provider {...props} value={providerValue} />
+  const setDateFilter = (date: DateFilter) => {
+    search.set('period', Buffer.from(JSON.stringify(date)).toString('base64'))
+    setSearch(search, { replace: true })
+  }
+  return <DateFilterContext.Provider {...props} value={{ dateFilter, setDateFilter }} />
 }
-
