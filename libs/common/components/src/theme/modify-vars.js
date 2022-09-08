@@ -100,6 +100,7 @@ module.exports = {
   '@tabs-horizontal-gutter': '18px',
   '@tabs-horizontal-padding': '0px',
 
+  '@table-border-radius-base': '0',
   '@table-bg': 'var(--acx-primary-white)',
   '@table-header-bg': 'var(--acx-primary-white)',
   '@table-header-sort-bg': 'var(--acx-primary-white)',

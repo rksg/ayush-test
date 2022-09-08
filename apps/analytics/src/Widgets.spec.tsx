@@ -4,10 +4,11 @@ import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { topSwitchesByPoEUsageResponse }  from './components/SwitchesByPoEUsage/services.spec'
 import { topApplicationByTrafficFixture } from './components/TopApplicationsByTraffic/__tests__/fixtures'
 import { topSSIDsByClientFixture }        from './components/TopSSIDsByClient/__tests__/fixtures'
 import { topSSIDsByTrafficFixture }       from './components/TopSSIDsByTraffic/__tests__/fixtures'
+import { topSwitchesByPoEUsageResponse }  from './components/TopSwitchesByPoEUsage/__tests__/fixtures'
+import { topSwitchesByTrafficResponse }   from './components/TopSwitchesByTraffic/__tests__/fixtures'
 import AnalyticsWidgets                   from './Widgets'
 
 const sample = {
@@ -83,6 +84,18 @@ test('should render Network History widget', async () => {
   render( <Provider> <AnalyticsWidgets name='networkHistory' filters={filters}/></Provider>)
   expect(await screen.findByText('Network History')).not.toBe(null)
 })
+
+test('should render Top Switches by Traffic widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'SwitchesByTraffic', {
+    data: topSwitchesByTrafficResponse
+  })
+  render(
+    <Provider>
+      <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
+    </Provider>)
+  expect(await screen.findByText('Top 5 Switches by Traffic')).not.toBe(null)
+})
+
 
 test('should render Connected Clients Over Time widget', async () => {
   mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {

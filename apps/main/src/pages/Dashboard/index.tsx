@@ -22,6 +22,7 @@ import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
 const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
+
 export default function Dashboard () {
   const { $t } = useIntl()
   const tabDetails: ContentSwitcherProps['tabDetails'] = [

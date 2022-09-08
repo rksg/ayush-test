@@ -35,20 +35,18 @@ export default function TopApplicationsByTrafficWidget ({
     {
       title: $t({ defaultMessage: 'Traffic' }),
       dataIndex: 'traffic',
-      key: 'traffic',
-      width: '20%'
+      key: 'traffic'
     },
     {
       title: $t({ defaultMessage: 'Traffic History' }),
       dataIndex: 'trafficHistory',
       key: 'trafficHistory',
-      width: '5%'
+      width: 100
     },
     {
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clientCount',
       key: 'clientCount',
-      width: '15%',
       align: 'right' as const
     }
   ]
