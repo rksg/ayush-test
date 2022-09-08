@@ -1,6 +1,9 @@
 import React from 'react'
 
+import { useIntl } from 'react-intl'
+
 import type { IncidentSeverities } from '@acx-ui/analytics/utils'
+import { intlFormats }             from '@acx-ui/utils'
 
 import { cssStr } from '../../theme/helper'
 
@@ -32,11 +35,15 @@ export function SeverityPill ({ severity }: SeverityPillProps) {
 export function ProgressPill (
   props: { percent: number, formatter?: (percent: number|undefined) => string }
 ) {
+  const { $t } = useIntl()
   return <UI.Progress
     percent={props.percent}
     strokeWidth={20}
     trailColor={cssStr('--acx-neutrals-40')}
     strokeLinecap={'butt'}
-    format={props.formatter||((percent) => `${percent}%`)}
+    format={
+      props.formatter ||
+      ((percent) => $t(intlFormats.percentFormat, { value: percent! / 100 }))
+    }
   />
 }
