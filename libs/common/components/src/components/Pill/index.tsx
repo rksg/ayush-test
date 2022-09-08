@@ -39,6 +39,7 @@ export function ProgressPill (
   return <UI.Progress
     percent={props.percent}
     strokeWidth={20}
+    strokeColor={cssStr('--acx-accents-blue-50')}
     trailColor={cssStr('--acx-neutrals-40')}
     strokeLinecap={'butt'}
     format={

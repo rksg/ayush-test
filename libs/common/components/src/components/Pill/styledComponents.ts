@@ -24,10 +24,10 @@ export const Pill = styled.span`
   display: inline-block;
   border-radius: 10px;
   padding: 3px 8px;
+  background-color: var(${pillColor});
+  line-height: var(--acx-subtitle-6-line-height);
   ${textStyle}
   font-weight: var(--acx-subtitle-6-font-weight-bold);
-  line-height: var(--acx-subtitle-6-line-height);
-  background-color: var(${pillColor});
 `
 
 export const Progress = styled(AntProgress)`
@@ -41,10 +41,6 @@ export const Progress = styled(AntProgress)`
 
     .ant-progress-inner {
       border-radius: 25px !important;
-
-      .ant-progress-bg {
-        background-color: var(--acx-accents-blue-50);
-      }
     }
   }
 
@@ -57,6 +53,6 @@ export const Progress = styled(AntProgress)`
     top: -20px;
     line-height: 20px;
     ${textStyle}
-    font-weight: var(--acx-subtitle-5-font-weight)
+    font-weight: var(--acx-body-font-weight-bold);
   }
 `
