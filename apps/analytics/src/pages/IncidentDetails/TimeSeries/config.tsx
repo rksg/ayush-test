@@ -1,13 +1,13 @@
 import { gql } from 'graphql-request'
 
-import { Incident } from '@acx-ui/analytics/utils'
+import { Incident, IncidentCode } from '@acx-ui/analytics/utils'
 
 import { AttemptAndFailureChart } from './charts/AttemptAndFailureChart'
 import { ClientCountChart }       from './charts/ClientCountChart'
 import { IncidentChart }          from './charts/IncidentChart'
 import { ChartsData }             from './services'
 
-export const codeToFailureTypeMap = {
+export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'ttc': 'ttc',
   'radius-failure': 'radius',
   'eap-failure': 'eap',

@@ -19,11 +19,11 @@ export const AttemptAndFailureChart = (
   const { attemptAndFailureCharts } = data
   const { $t } = useIntl()
   const title = mapCodeToReason(
-    codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap],
+    codeToFailureTypeMap[incident.code],
     useIntl()
   )
   const attempt = mapCodeToAttempt(
-    codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap],
+    codeToFailureTypeMap[incident.code],
     useIntl()
   )
 
@@ -32,11 +32,11 @@ export const AttemptAndFailureChart = (
       key: 'totalFailureCount',
       name: $t({ defaultMessage: 'Total Failures' })
     },
-    { 
+    {
       key: 'failureCount',
       name: title
     },
-    { 
+    {
       key: 'attemptCount',
       name: attempt
     }
@@ -54,7 +54,7 @@ export const AttemptAndFailureChart = (
         <MultiLineTimeSeriesChart
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={(value: unknown) => 
+          dataFormatter={(value: unknown) =>
             $t(intlFormats.countFormat, { value: value as number })}
           start={incident.startTime}
           end={incident.endTime}
