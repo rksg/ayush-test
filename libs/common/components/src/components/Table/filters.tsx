@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { Select, Input } from 'antd'
-import { uniq }          from 'lodash'
 import { IntlShape }     from 'react-intl'
 
 import type { TableColumn, RecordWithChildren } from './types'
@@ -82,6 +81,11 @@ export function renderFilter <RecordType> (
   setFilterValues: Function
 ): React.ReactNode {
   const key = column.dataIndex as keyof RecordType
+  const addToFilter = (data: string[], value: string) => {
+    if (!data.includes(value)) {
+      data.push(value)
+    }
+  }
   return <Select
     data-testid='options-selector'
     key={index}
@@ -93,19 +97,17 @@ export function renderFilter <RecordType> (
     showArrow
     style={{ width: 200 }}
   >
-    {uniq(dataSource?.map((datum: RecordWithChildren<RecordType>) => {
-      const { children } = datum
-      if (children) {
-        const raw = [
-          ...children.map((child) => child[key] as unknown as string),
-          datum[key] as unknown as string
-        ]
-        return raw.filter(Boolean)
-      } else {
-        return [datum[key] as unknown as string]
-      }
-    })
-      .flat())
+    {dataSource
+      ?.reduce((data: string[], datum: RecordWithChildren<RecordType>) => {
+        const { children } = datum
+        if (children) {
+          for (const child of children) {
+            addToFilter(data, child[key] as unknown as string)
+          }
+        }
+        addToFilter(data, datum[key] as unknown as string)
+        return data
+      }, [])
       .sort()
       .map(value =>
         <Select.Option value={value} key={value} data-testid={`option-${value}`} >
