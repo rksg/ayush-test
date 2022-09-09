@@ -1,46 +1,45 @@
-import { Row, Col, Typography }   from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
-import AutoSizer                  from 'react-virtualized-auto-sizer'
+import { Row, Col, Typography, Space } from 'antd'
+import { defineMessage, useIntl }      from 'react-intl'
+import AutoSizer                       from 'react-virtualized-auto-sizer'
 
-import { IncidentFilter, incidentInformation } from '@acx-ui/analytics/utils'
+import { categoryCodeMap, IncidentFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
   Loader,
-  StackedBarChart,
-  NoData
+  StackedBarChart
 } from '@acx-ui/components'
-import { useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 
-import { IncidentsBySeverityData, useIncidentsBySeverityDashboardQuery } from './services'
-import * as UI                                                           from './styledComponents'
+import { 
+  IncidentsDashboardData,
+  IncidentsBySeverityDataKey,
+  IncidentByCategory,
+  useIncidentsBySeverityDashboardQuery,
+  useIncidentsByCategoryDashboardQuery
+} from './services'
+import * as UI from './styledComponents'
 
 interface IncidentSeverityWidgetProps {
-  incidents: IncidentsBySeverityData[keyof IncidentsBySeverityData];
-  severityKey: keyof IncidentsBySeverityData;
+  severityKey: IncidentsBySeverityDataKey;
+  incidentsCount: number;
+  impactedClients: number;
 }
 
 const { Title, Paragraph, Text } = Typography
 
 const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
-  // account for i8tn
   const intl = useIntl()
-  const { incidents, severityKey } = props
-  const incidentsCount = intl.formatNumber(incidents.length)
-  const impactedClients = intl.formatNumber((incidents
-    .map(incidents => incidents.impactedClientCount)
-    .filter((count) => count && count > 1) as number[])
-    .reduce((prev: number, curr: number) => prev + curr, 0))
+  const { severityKey, incidentsCount, impactedClients } = props
   
   return <Col span={12}>
     <Typography>
-      <Title level={2}>
+      <Title level={1}>
         <Row>
           <Col>
             <UI.SeverityContainer>
               <UI.SeveritySpan severity={severityKey} />
             </UI.SeverityContainer>
           </Col>
-          <Col>{incidentsCount}</Col>
+          <Col>{intl.formatNumber(incidentsCount)}</Col>
         </Row>
       </Title>
       <Paragraph>
@@ -51,90 +50,134 @@ const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
       <Paragraph>
         {intl.$t(
           defineMessage({ defaultMessage: '{impactedClients} clients impacted' }), 
-          { impactedClients })}
+          { impactedClients: impactedClients ?? 0 })}
       </Paragraph>
     </Typography>
   </Col>
 }
 
-const IncidentSeverityStackCharts = (props: IncidentsBySeverityData) => {
+interface IncidentSeverityStackChartsWidgetProps { 
+  filters: IncidentFilter;
+  style: React.CSSProperties | undefined
+}
+
+function IncidentSeverityStackChartsWidget (props: IncidentSeverityStackChartsWidgetProps) {
+  const { filters, style } = props
   const intl = useIntl()
-  const incidents = Object.entries(props).map((val) => val[1].map(
-    (incident) => {
-      const category = incidentInformation[incident.code].category
-      return { ...incident, label: val[0], category: intl.$t(category) }
-    }
-  )).flat()
-  const categories = Array.from(new Set(incidents.map(incidents => incidents.category))).sort()
-  const chartData = categories.map(category => dataHelper(category, incidents))
+  const { connection, performance, infrastructure } = categoryCodeMap
+  const connectionQueryResult = useIncidentsByCategoryDashboardQuery({
+    ...filters,
+    code: connection.codes
+  }, {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: { ...data } as IncidentByCategory,
+      ...rest
+    })
+  })
+  const performanceQueryResult = useIncidentsByCategoryDashboardQuery({
+    ...filters,
+    code: performance.codes
+  }, {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: { ...data } as IncidentByCategory,
+      ...rest
+    })
+  })
+  const infrastructureQueryResult = useIncidentsByCategoryDashboardQuery({
+    ...filters,
+    code: infrastructure.codes
+  }, {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: { ...data } as IncidentByCategory,
+      ...rest
+    })
+  })
 
-  return <StackedBarChart 
-    data={chartData}
-    showLabels
-    style={{ height: 140, width: 200 }}
-  />
+  const connectionData = getChartData(connectionQueryResult, 'Connection')
+  const performanceData = getChartData(performanceQueryResult, 'Performance')
+  const infrastructureData = getChartData(infrastructureQueryResult, 'Infrastructure')
+  const plotData = [connectionData, performanceData, infrastructureData]
 
-  function dataHelper (targetCategory: string, dataIncidents: typeof incidents) {
-    const countData = dataIncidents
-      .filter(incident => incident.category === targetCategory)
-      .reduce((prev, curr) => ({
-        ...prev,
-        [curr.label]: prev[curr.label as keyof IncidentsBySeverityData] + 1
-      }),
-        {
-          P1: 0,
-          P2: 0,
-          P3: 0,
-          P4: 0
-        } as Record<keyof IncidentsBySeverityData, number>)
-    
-    const series = Object.entries(countData).map(val => ({ name: val[0], value: val[1] }))
-    return {
-      category: targetCategory,
+  return <Loader 
+    states={[connectionQueryResult, performanceQueryResult, infrastructureQueryResult ]}>
+    <StackedBarChart 
+      data={plotData}
+      showLabels
+      showTooltip
+      style={style}
+    />
+  </Loader>
+
+  function getChartData (queryResult: typeof connectionQueryResult, category: string) {
+    const { data } = queryResult
+    const series = Object.entries(data).map(([key, value]) => ({ name: key, value }))
+    const plotData = {
+      category: intl.$t(defineMessage({ defaultMessage: '{category}' }), { category }),
       series
     }
+    return plotData
   }
 }
 
 
 function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
-  const basePath = useTenantLink('/analytics/incidents')
-  const navigator = useNavigate()
-  const { startDate, endDate } = filters
   const { $t } = useIntl()
-  const queryResult = useIncidentsBySeverityDashboardQuery({
-    ...filters,
-    startDate,
-    endDate
-  }, {
+  const queryResult = useIncidentsBySeverityDashboardQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: { ...data } as IncidentsBySeverityData,
+      data: { ...data } as IncidentsDashboardData,
       ...rest
     })
   })
 
-  const expandCallback = () => navigator(basePath.pathname)
+  const {
+    P1Count, P1Impact,
+    P2Count, P2Impact,
+    P3Count, P3Impact,
+    P4Count, P4Impact
+  } = queryResult.data
+
+  const topData = [
+    {
+      severityKey: 'P1',
+      incidentsCount: P1Count,
+      impactedClients: P1Impact
+    },
+    {
+      severityKey: 'P2',
+      incidentsCount: P2Count,
+      impactedClients: P2Impact
+    },
+    {
+      severityKey: 'P3',
+      incidentsCount: P3Count,
+      impactedClients: P3Impact
+    },
+    {
+      severityKey: 'P4',
+      incidentsCount: P4Count,
+      impactedClients: P4Impact
+    }
+  ] 
 
   return <Loader states={[queryResult]}>
     <Card 
       title={$t(defineMessage({ defaultMessage: 'Incidents' }))}
-      onExpandClick={expandCallback}
     >
       <AutoSizer>
         {
           ({ width }) => <div style={{ width, height: 150 }}>
-            <Row gutter={[16, 16]}>
-              {
-                Object.entries(queryResult.data).map((datum) =>
-                  <IncidentSeverityWidget 
-                    severityKey={datum[0] as keyof IncidentsBySeverityData} 
-                    incidents={datum[1]}
-                  />
-                ) ?? <NoData />
-              }
+            <Row gutter={[8, 8]} justify='space-evenly' align='middle'>
+              {topData.map((datum) => 
+                <IncidentSeverityWidget 
+                  severityKey={datum.severityKey as IncidentsBySeverityDataKey}
+                  incidentsCount={datum.incidentsCount}
+                  impactedClients={datum.impactedClients.impactedClientCount[0]}
+                />)}
             </Row>
-            <IncidentSeverityStackCharts 
-              {...queryResult.data}
+            <Space />
+            <IncidentSeverityStackChartsWidget 
+              filters={filters} 
+              style={{ width, height: 130 }}
             />
           </div>
         }
