@@ -1,7 +1,9 @@
 import React from 'react'
 
-import { Select, Input } from 'antd'
-import { IntlShape }     from 'react-intl'
+import { Select }    from 'antd'
+import { IntlShape } from 'react-intl'
+
+import * as UI from './styledComponents'
 
 import type { TableColumn, RecordWithChildren } from './types'
 
@@ -50,13 +52,14 @@ export function renderSearch <RecordType> (
   searchValue: string,
   setSearchValue: Function
 ): React.ReactNode {
-  return <Input
+  return <UI.SearchInput
     onChange={e => setSearchValue(e.target.value)}
     placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
       searchables: searchables.map(column => column.title).join(', ')
     })}
     style={{ width: 292 }}
     value={searchValue}
+    allowClear
   />
 }
 export function renderFilter <RecordType> (
@@ -72,13 +75,15 @@ export function renderFilter <RecordType> (
       data.push(value)
     }
   }
-  return <Select
+  return <UI.FilterSelect
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'
     mode='multiple'
     value={filterValues[key as keyof FilterValue]}
-    onChange={value => setFilterValues({ ...filterValues, [key]: value.length ? value: undefined })}
+    onChange={(value: unknown) =>
+      setFilterValues({ ...filterValues, [key]: (value as string[]).length ? value: undefined })
+    }
     placeholder={column.title as string}
     showArrow
     allowClear
@@ -102,5 +107,5 @@ export function renderFilter <RecordType> (
         </Select.Option>
       )
     }
-  </Select>
+  </UI.FilterSelect>
 }

@@ -1,6 +1,8 @@
-import { 
-  Button as AntButton, 
-  Space, 
+import {
+  Input,
+  Button as AntButton,
+  Space,
+  Select,
   ButtonProps as AntButtonProps,
   Tooltip as AntTooltip
 } from 'antd'
@@ -24,6 +26,22 @@ export const SubTitle = styled.span`
   font-size: var(--acx-subtitle-5-font-size);
   line-height: var(--acx-subtitle-5-line-height);
   font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+`
+
+export const SearchInput = styled(Input)`
+  .ant-input-suffix {
+    right: 0;
+  }
+  ${({ value }) => value ? 'border-color: var(--acx-neutrals-70) !important;' : ''}
+`
+
+export const FilterSelect = styled(Select).attrs({ style: { width: 200 } })`
+  ${({ value }) => value
+    ? `.ant-select-selector {
+      background-color: var(--acx-accents-orange-10) !important;
+      border-color: var(--acx-neutrals-70) !important;
+    }` : ''
+}
 `
 
 export const CloseButton = styled(AntButton).attrs({ icon: <CancelCircle /> })`
