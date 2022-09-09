@@ -11,7 +11,7 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { 
+import {
   useAddNetworkMutation,
   useGetNetworkQuery,
   useUpdateNetworkMutation,
@@ -146,16 +146,18 @@ export function NetworkForm () {
     error: RadiusValidate
   ) => {
     const { status, data } = error
-    if (status === 404) {
-      return false
-    } else if (status === 422) {
+    if (status === 404) { return false }
+
+    if (status === 422) {
       showActionModal({
         type: 'error',
         title: intl.$t({ defaultMessage: 'Server Configuration Conflict' }),
         content: data.errors[0].message
       })
       return true
-    } else if (data?.errors) {
+    }
+
+    if (data?.errors) {
       const radiusType = ['accountingRadius', 'authRadius']
       const errors = data?.errors
       const errorList = errors.reduce((
@@ -182,13 +184,13 @@ export function NetworkForm () {
       if (conflictErrors.length) {
         const keys = conflictErrors.map(k => k.split('Radius')[0].toUpperCase())
         const conflictMessage = keys.length === 2
-          ? intl.$t( multipleConflictMessage[RadiusErrorsType.AUTH_AND_ACC] )
-          : intl.$t( multipleConflictMessage[keys[0] as RadiusErrorsType] )
+          ? multipleConflictMessage[RadiusErrorsType.AUTH_AND_ACC]
+          : multipleConflictMessage[keys[0] as RadiusErrorsType]
 
         showActionModal({
           type: 'error',
           title: intl.$t({ defaultMessage: 'Server Configuration Conflict' }),
-          content: conflictMessage
+          content: intl.$t(conflictMessage)
         })
       } else if (radiusErrors.length) {
         const errorMessage = radiusErrors.length === 2
@@ -258,7 +260,7 @@ export function NetworkForm () {
                 ? await checkRadiusError(data, radiusValidate) : false
 
               if (!hasRadiusError) {
-                const settingData = { 
+                const settingData = {
                   ...{ type: saveState.type },
                   ...data
                 }
@@ -328,64 +330,63 @@ function showConfigConflictModal (
   const authIndex = _.get(errorList, 'authRadius') as number
   const accountIndex = _.get(errorList, 'accountingRadius') as number
 
-  const handleAction = async (action: string) => {
-    if (action === 'existing') {
-      let resetFields = [] as string[]
-      const authErrors = authIndex > -1 && errors[authIndex].value
-      const accountErrors = accountIndex > -1 && errors[accountIndex].value
-      const updateField = ['primary', 'secondary',
-        'tlsEnabled', 'cnSanIdentity', 'ocspUrl', 'trustedCAChain']
+  const handleExisting = async () => {
+    let resetFields = [] as string[]
+    const authErrors = authIndex > -1 && errors[authIndex].value
+    const accountErrors = accountIndex > -1 && errors[accountIndex].value
+    const updateField = ['primary', 'secondary',
+      'tlsEnabled', 'cnSanIdentity', 'ocspUrl', 'trustedCAChain']
 
-      // remove Secondary Server setting
-      if (authErrors) resetFields.push('enableSecondaryAuthServer', 'authRadius')
-      if (accountErrors) resetFields.push('enableSecondaryAcctServer', 'accountingRadius')
-      if (resetFields.length) {
-        resetFields.forEach(x => delete data[x as keyof CreateNetworkFormFields])
-        form?.resetFields(resetFields)
-      }
-
-      const authRadius = authErrors && updateField.reduce((result, key) => {
-        const value = authErrors[key as keyof RadiusValidateErrors['value']] 
-        return value ? { ...result, [key]: value } : result
-      }, {})
-
-      const accountingRadius = accountErrors && updateField.reduce((result, key) => {
-        const value = accountErrors[key as keyof RadiusValidateErrors['value']] 
-        return value ? { ...result, [key]: value } : result
-      }, {})
-
-      let saveData = {
-        ...tranferSettingsToSave({
-          ...saveState,
-          ...data
-        }),
-        ...authRadius && { authRadius },
-        ...accountingRadius && { accountingRadius }
-      } as Partial<CreateNetworkFormFields>
-
-      // update form value
-      form?.setFieldsValue({
-        ...form?.getFieldsValue(),
-        ...saveData
-      })
-
-      if(!editMode) {
-        saveData = transferMoreSettingsToSave(data, saveData)
-      }
-      updateSaveData(saveData)
-      form?.submit()
-
-    } else if (action === 'override') {
-      const settingData = { 
-        ...{ type: saveState.type },
-        ...data
-      }
-      let settingSaveData = tranferSettingsToSave(settingData)
-      if(!editMode) {
-        settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
-      }
-      updateSaveData(settingSaveData)
+    // remove Secondary Server setting
+    if (authErrors) resetFields.push('enableSecondaryAuthServer', 'authRadius')
+    if (accountErrors) resetFields.push('enableSecondaryAcctServer', 'accountingRadius')
+    if (resetFields.length) {
+      resetFields.forEach(x => delete data[x as keyof CreateNetworkFormFields])
+      form?.resetFields(resetFields)
     }
+
+    const authRadius = authErrors && updateField.reduce((result, key) => {
+      const value = authErrors[key as keyof RadiusValidateErrors['value']]
+      return value ? { ...result, [key]: value } : result
+    }, {})
+
+    const accountingRadius = accountErrors && updateField.reduce((result, key) => {
+      const value = accountErrors[key as keyof RadiusValidateErrors['value']]
+      return value ? { ...result, [key]: value } : result
+    }, {})
+
+    let saveData = {
+      ...tranferSettingsToSave({
+        ...saveState,
+        ...data
+      }),
+      ...authRadius && { authRadius },
+      ...accountingRadius && { accountingRadius }
+    } as Partial<CreateNetworkFormFields>
+
+    // update form value
+    form?.setFieldsValue({
+      ...form?.getFieldsValue(),
+      ...saveData
+    })
+
+    if(!editMode) {
+      saveData = transferMoreSettingsToSave(data, saveData)
+    }
+    updateSaveData(saveData)
+    form?.submit()
+  }
+
+  const handleOverride = async () => {
+    const settingData = {
+      ...{ type: saveState.type },
+      ...data
+    }
+    let settingSaveData = tranferSettingsToSave(settingData)
+    if(!editMode) {
+      settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
+    }
+    updateSaveData(settingSaveData)
   }
 
   showActionModal({
@@ -397,20 +398,20 @@ function showConfigConflictModal (
       action: 'CUSTOM_BUTTONS',
       buttons: [{
         text: intl.$t({ defaultMessage: 'Cancel' }),
-        type: 'link', // TODO: will change after DS update
+        type: 'link',
         key: 'cancel'
       }, {
         text: intl.$t({ defaultMessage: 'Use existing server configuration' }),
         type: 'primary',
         key: 'existing',
         closeAfterAction: true,
-        handler: () => handleAction('existing')
+        handler: handleExisting
       }, {
         text: intl.$t({ defaultMessage: 'Override the conflicting server configuration' }),
         type: 'primary',
         key: 'override',
         closeAfterAction: true,
-        handler: () => handleAction('override')
+        handler: handleOverride
       }]
     }
   })
