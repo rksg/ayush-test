@@ -7,7 +7,7 @@ import {
   Loader,
   Table,
   NoData } from '@acx-ui/components'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { useTopSwitchesByErrorQuery, TopSwitchesByErrorData } from './services'
 import { CustomTable }                                        from './styledComponents'
@@ -20,44 +20,40 @@ export default function TopSwitchesByErrorWidget ({
   const { $t } = useIntl()
   const queryResults = useTopSwitchesByErrorQuery(filters
   )
-  const basePath = useTenantLink('/switches/')
-  const navigate = useNavigate()
-  const onClick = (param: string) => {
-    navigate({
-      ...basePath,
-      // TODO Actual path to be updated later
-      pathname: `${basePath.pathname}/${param}`
-    })
-  }
 
   const columns=[
     {
-      title: 'Switch',
+      title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'name',
       key: 'name',
       render: (name:unknown) => {
-        return <span onClick={() => onClick('TBD')} 
-          className='test-span-click' >{name as string}</span>}
+        // TODO Actual path to be updated later
+        return (
+          <TenantLink to={'/switches/TBD'}>
+            { name as string }
+          </TenantLink>
+        )
+      }
     },
     {
-      title: 'Switch Id',
+      title: $t({ defaultMessage: 'Switch Id' }),
       dataIndex: 'mac',
       key: 'mac'
     },
     {
-      title: 'Total Errors',
+      title: $t({ defaultMessage: 'Total Errors' }),
       dataIndex: 'totalErr',
       key: 'inErr',
       align: 'right' as const
     },
     {
-      title: 'In Errors',
+      title: $t({ defaultMessage: 'In Errors' }),
       dataIndex: 'inErr',
       key: 'inErr',
       align: 'right' as const
     },
     {
-      title: 'Out Errors',
+      title: $t({ defaultMessage: 'Out Errors' }),
       dataIndex: 'outErr',
       key: 'outErr',
       align: 'right' as const

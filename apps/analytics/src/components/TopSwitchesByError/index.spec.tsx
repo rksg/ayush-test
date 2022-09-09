@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom'
 
-import { fireEvent } from '@testing-library/react'
-
 import { dataApiURL }                                      from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                                 from '@acx-ui/analytics/utils'
 import { Provider, store }                                 from '@acx-ui/store'
@@ -11,13 +9,6 @@ import { DateRange }                                       from '@acx-ui/utils'
 import { api } from './services'
 
 import TopSwitchesByErrorWidget from '.'
-
-const mockedUsedNavigate = jest.fn()
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
 
 const filters: AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -66,13 +57,6 @@ describe('TopSwitchesByErrorWidget', () => {
       </Provider>, { route: { params } })
     
     expect(await screen.findByText('Top 5 Switches by Error')).toBeVisible()
-
-    fireEvent.click(await screen.findByText('CIOT-ISOLATION-MLISA'))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      hash: '',
-      pathname: '/t/ecc2d7cf9d2342fdb31ae0e24958fcac/switches/TBD',
-      search: ''
-    })
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[class="ant-pro-table"]')).not.toBeNull()
   })
