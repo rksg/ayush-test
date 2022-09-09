@@ -11,9 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenuesListQuery }   from '@acx-ui/rc/services'
-import { useTableQuery, Venue } from '@acx-ui/rc/utils'
-
+import { useNetworkVenueListQuery } from '@acx-ui/rc/services'
+import { useTableQuery, Venue }     from '@acx-ui/rc/utils'
 
 import DHCPFormContext from '../DHCPFormContext'
 
@@ -43,25 +42,28 @@ const defaultPayload = {
 
 const defaultArray: Venue[] = []
 
-// const getNetworkId = () => {
-//   //  Identify tenantId in browser URL
-//   // const parsedUrl = /\/networks\/([0-9a-f]*)/.exec(window.location.pathname)
-//   // Avoid breaking unit-tests even when browser URL has no tenantId.
-//   // if (Array.isArray(parsedUrl) && parsedUrl.length >= 1 && parsedUrl[1].length > 0) {
-//   //   return parsedUrl[1]
-//   // }
-//   return 'UNKNOWN-NETWORK-ID'
-// }
+const getNetworkId = () => {
+  //  Identify tenantId in browser URL
+  // const parsedUrl = /\/networks\/([0-9a-f]*)/.exec(window.location.pathname)
+  // Avoid breaking unit-tests even when browser URL has no tenantId.
+  // if (Array.isArray(parsedUrl) && parsedUrl.length >= 1 && parsedUrl[1].length > 0) {
+  //   return parsedUrl[1]
+  // }
+  return 'UNKNOWN-NETWORK-ID'
+}
 
 export function Venues () {
   const form = Form.useFormInstance()
-  const { editMode } = useContext(DHCPFormContext)
+  const { editMode, saveState } = useContext(DHCPFormContext)
+  if(saveState){
+    form.setFieldsValue({ venues: saveState.venues })
+  }
   const venues = Form.useWatch('venues')
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
-    useQuery: useVenuesListQuery,
-    apiParams: { networkId: 'UNKNOWN-NETWORK-ID' },
+    useQuery: useNetworkVenueListQuery,
+    apiParams: { networkId: getNetworkId() },
     defaultPayload
   })
 
@@ -143,25 +145,9 @@ export function Venues () {
 
   useEffect(()=>{
     if(editMode){
-      // if(tableQuery.data && activateVenues.length === 0){
-      //   const selected: Venue[] = []
-      //   const tableData = tableQuery.data.data.map((item: Venue) =>
-      //   {
-      //     const isActivated = venues &&
-      //       venues.filter((venue: Venue) => venue.venueId === item.id).length > 0
-      //     if(isActivated){
-      //       selected.push(item)
-      //     }
-      //     return {
-      //       ...item,
-      //       // work around of read-only records from RTKQ
-      //       activated: { isActivated }
-      //     }
-      //   })
-      //   setTableData(tableData)
-      //   setTableDataActivate(tableData, selected)
-      //   setActivateVenues(selected)
-      // }
+      if(tableQuery.data && activateVenues.length === 0){
+
+      }
     }else{
       if(tableQuery.data && tableData.length === 0){
         const tableData = tableQuery.data.data.map((item: Venue) =>
@@ -197,7 +183,7 @@ export function Venues () {
       sorter: true
     },
     {
-      key: 'Networks',
+      key: 'network',
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: ['networks', 'count']
     },

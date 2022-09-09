@@ -90,14 +90,6 @@ export function DHCPForm () {
 
 
           <StepsForm.StepForm
-            initialValues={data}
-            params={data}
-            request={(params) => {
-              return Promise.resolve({
-                data: params,
-                success: true
-              })
-            }}
             name='venues'
             title={$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
