@@ -81,6 +81,7 @@ export function renderFilter <RecordType> (
     onChange={value => setFilterValues({ ...filterValues, [key]: value.length ? value: undefined })}
     placeholder={column.title as string}
     showArrow
+    allowClear
     style={{ width: 200 }}
   >
     {dataSource
