@@ -162,13 +162,26 @@ function CustomButtonsTemplate (props: {
   buttons?: CustomButtonProps[],
   modal: ModalRef
 }) {
+  const { $t } = getIntl()
   const destroyModal = () => props.modal.destroy()
   const handleClick = async (b: CustomButtonProps) => {
-    if (b.key === 'cancel') {
-      destroyModal()
-    } else {
-      b?.handler && await b.handler()
-      b?.closeAfterAction && destroyModal()
+    try {
+      if (b?.handler) await b.handler()
+      if (b.key === 'cancel' || b?.closeAfterAction) destroyModal()
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+
+      showActionModal({
+        type: 'error',
+        title: $t(
+          { defaultMessage: 'Failed to "{buttonLabel}"' },
+          { buttonLabel: b.text }
+        ),
+        content: isErrorWithMessage(error)
+          ? error.message
+          : $t({ defaultMessage: 'Unknown Error' })
+      })
     }
   }
   return (<>
@@ -236,4 +249,12 @@ function ConfirmForm (props: {
       </Form.Item>
     </Form>
   )
+}
+
+export function isErrorWithMessage <
+  Result extends { message: string }
+> (value: unknown): value is Result {
+  if (value instanceof Error) return true
+  if (has(value, 'message')) return true
+  return false
 }

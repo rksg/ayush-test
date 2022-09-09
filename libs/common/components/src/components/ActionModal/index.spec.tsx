@@ -290,6 +290,62 @@ describe('ActionModal', () => {
       })
     })
 
+    describe('custom modal error handling', () => {
+      const assertErrorHandlingModal = (
+        error: Error | { message: string } | string
+      ) => async () => {
+        const onOk = jest.fn()
+        const logError = jest.spyOn(console, 'error')
+          .mockImplementation(() => {})
+
+        showActionModal({
+          type: 'warning',
+          width: 600,
+          title: 'This is a warning message',
+          content: 'Some warning descriptions',
+          customContent: {
+            action: 'CUSTOM_BUTTONS',
+            buttons: [{
+              text: 'Throw Error',
+              type: 'primary',
+              key: 'action1',
+              handler: onOk
+            }]
+          }
+        })
+
+        onOk.mockRejectedValue(error)
+
+        await assertModalVisible({
+          className: 'ant-modal-confirm-warning',
+          contents: [
+            'This is a warning message',
+            'Some warning descriptions'
+          ]
+        })
+
+        await assertButtonClicked({
+          label: 'Throw Error',
+          handler: onOk,
+          shouldClose: false
+        })
+
+        await assertModalVisible({
+          className: 'ant-modal-confirm-error',
+          contents: [
+            'Failed to "Throw Error"',
+            isErrorWithMessage(error) ? error.message : 'Unknown Error'
+          ]
+        })
+
+        expect(logError).toBeCalledWith(error)
+      }
+
+      it('handle error', assertErrorHandlingModal(new Error('Error!!!')))
+      it('handle object with message', assertErrorHandlingModal({ message: 'Error Message' }))
+      it('show error modal with unknown error object', assertErrorHandlingModal('Error!'))
+    })
+
     describe('custom modal', () => {
       beforeEach(async () => {
         showActionModal({
