@@ -47,20 +47,18 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
-
-  const bashPathname = useTenantLink('/').pathname
+  const basePath = useTenantLink('/')
   const newRoutes = routes.map((item => ({
     ...item,
-    path: `${bashPathname}${item.path}`,
+    path: `${basePath.pathname}${item.path}`,
     routes: item.routes?.map(sub=>({
       ...sub,
-      path: `${bashPathname}${sub.path}`
+      path: `${basePath.pathname}${sub.path}`
     }))
   })))
-
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
-    const path = item.routes ? item.routes[0].path : item.path
-    return <NavLink to={path}>
+    const pathname = item.routes ? item.routes[0].path : item.path
+    return <NavLink to={{ ...basePath, pathname }}>
       {({ isActive }) => {
         const Icon = isActive ? item.enableIcon : item.disableIcon
         return <>

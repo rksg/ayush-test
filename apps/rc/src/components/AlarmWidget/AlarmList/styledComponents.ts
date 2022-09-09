@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 
 export const AlarmListWrapper = styled.div`
-  margin-top: 10px;
   padding: 0px 5px;
 
   .ant-list-item {

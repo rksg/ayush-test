@@ -54,7 +54,7 @@ const GMap: React.FC<MapProps> = ({
   }, [ref])
 
   React.useEffect(() => {
-    if(map){
+    if(map) {
       if (enableVenueFilter && onFilterChange
         && map.controls[google.maps.ControlPosition.TOP_LEFT].getLength() === 0) {
         const legendControlBoxDiv = document.createElement('div')
@@ -66,10 +66,6 @@ const GMap: React.FC<MapProps> = ({
         )
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(legendControlBoxDiv)
       }
-
-      ['click', 'idle', 'zoom_changed'].forEach((eventName) =>
-        google.maps.event.clearListeners(map, eventName)
-      )
       if (onClick) {
         google.maps.event.addListener(map, 'click', onClick)
       }
@@ -100,36 +96,26 @@ const GMap: React.FC<MapProps> = ({
         _.maxBy(venues, 'apsCount')?.apsCount : null
 
       // Build the updated markers
-      let markers = venues?.map((venue: VenueMarkerOptions) => {
+      let markers = venues?.map((venueMarker: VenueMarkerOptions) => {
         let markerSize = 32
         // DEFINITIONS: No APs = 32px, minimum # of APs (>0) = 48 px, maximum # of APs = 96px
 
-        if(venue?.apsCount > 0){
-          markerSize = 48 + (venue?.apsCount / maxVenueCountPerVenue!) * 48
+        if(venueMarker?.apsCount > 0){
+          markerSize = 48 + (venueMarker?.apsCount / maxVenueCountPerVenue!) * 48
         }
-        const markerColor = getMarkerColor([venue.status])
+        const markerColor = getMarkerColor([venueMarker.status])
         const svgMarkerDefault = getMarkerSVG(markerColor.default)
         const svgMarkerHover = getMarkerSVG(markerColor.hover)
         const scaledSize = new google.maps.Size(markerSize, markerSize)
 
         const marker = new VenueMarkerWithLabel({
           labelContent: '',
-          position: (venue.latitude && venue.longitude) ?
-            new google.maps.LatLng(venue.latitude, venue.longitude):
-            venue.position,
+          position: (venueMarker.latitude && venueMarker.longitude) ?
+            new google.maps.LatLng(venueMarker.latitude, venueMarker.longitude):
+            venueMarker.position,
           ...getIcon(svgMarkerDefault, scaledSize),
-          visible: venue.visible
-        }, {
-          venueId: venue.venueId,
-          name: venue.name,
-          status: venue.status,
-          apStat: venue.apStat,
-          apsCount: venue.apsCount,
-          switchStat: venue.switchStat,
-          switchesCount: venue.switchesCount,
-          clientsCount: venue.clientsCount,
-          switchClientsCount: venue.switchClientsCount
-        })
+          visible: venueMarker.visible
+        }, venueMarker)
 
         let closeInfoWindowWithTimeout: NodeJS.Timeout
         marker.addListener('mouseover', () => {
@@ -139,7 +125,7 @@ const GMap: React.FC<MapProps> = ({
           createRoot(infoDiv).render(
             <RawIntlProvider value={intl}>
               <VenueMarkerTooltip
-                venue={venue}
+                venueMarker={venueMarker}
                 onNavigate={onNavigate}
               />
             </RawIntlProvider>
@@ -164,7 +150,7 @@ const GMap: React.FC<MapProps> = ({
         })
         marker.addListener('click', () => {
           onNavigate && onNavigate({
-            venueId: venue.venueId,
+            venueId: venueMarker.venueId,
             path: 'overview'
           })
         })
@@ -177,7 +163,7 @@ const GMap: React.FC<MapProps> = ({
           setMarkerClusterer(new MarkerClusterer({
             map,
             markers,
-            renderer: new VenueClusterRenderer(map, intl),
+            renderer: new VenueClusterRenderer(map, intl, onNavigate),
             algorithm: new SuperClusterAlgorithm({ maxZoom: 22 }),
             onClusterClick: onClusterClick
           }))
