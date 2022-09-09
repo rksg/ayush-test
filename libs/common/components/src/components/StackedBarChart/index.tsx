@@ -106,6 +106,19 @@ const massageData = (
       }
     }))
     .value()
+    .map((datum) => {
+      const dataWithColor = datum.data.map(val => ({
+        ...val,
+        itemStyle: {
+          ...val.itemStyle,
+          color: cssStr(incidentSeverities[val.value[2] as keyof typeof incidentSeverities].color)
+        }
+      }))
+      return {
+        ...datum,
+        data: dataWithColor
+      }
+    })
 }
 
 export function StackedBarChart <TChartData extends ChartData = ChartData> ({

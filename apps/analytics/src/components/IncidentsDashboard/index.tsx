@@ -119,7 +119,6 @@ function IncidentSeverityStackChartsWidget (props: IncidentSeverityStackChartsWi
   }
 }
 
-
 function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
   const queryResult = useIncidentsBySeverityDashboardQuery(filters, {
