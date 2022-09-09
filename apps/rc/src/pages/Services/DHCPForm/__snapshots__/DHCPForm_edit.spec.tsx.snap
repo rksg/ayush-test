@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DHCPForm should create DHCP successfully 1`] = `
+exports[`DHCPForm should edit open DHCP successfully 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
@@ -54,7 +54,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
             <h1
               class="ant-typography"
             >
-              Add DHCP for Wi-Fi Service
+              Edit DHCP Service
             </h1>
           </span>
         </div>
@@ -62,7 +62,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 jzCCYL"
+    class="styledComponents__Wrapper-sc-1ibvcih-0 dglWqi"
   >
     <div
       class="ant-pro-steps-form"
@@ -120,6 +120,8 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                 >
                   <div
                     class="ant-steps-item-container"
+                    role="button"
+                    tabindex="0"
                   >
                     <div
                       class="ant-steps-item-tail"
@@ -151,6 +153,8 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                 >
                   <div
                     class="ant-steps-item-container"
+                    role="button"
+                    tabindex="0"
                   >
                     <div
                       class="ant-steps-item-tail"

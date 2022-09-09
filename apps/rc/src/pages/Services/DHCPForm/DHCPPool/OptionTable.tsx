@@ -60,24 +60,28 @@ export function OptionList (props:{
 
   const columns: TableProps<DHCPOption>['columns'] = [
     {
+      key: 'optId',
       title: $t({ defaultMessage: 'Option ID' }),
       dataIndex: 'optId',
       width: 10,
       sorter: true
     },
     {
+      key: 'name',
       title: $t({ defaultMessage: 'Option Name' }),
       dataIndex: 'name',
       width: 10,
       sorter: true
     },
     {
+      key: 'format',
       title: $t({ defaultMessage: 'Option Format' }),
       dataIndex: 'format',
       width: 10,
       sorter: true
     },
     {
+      key: 'value',
       title: $t({ defaultMessage: 'Option Value' }),
       width: 50,
       dataIndex: 'value'

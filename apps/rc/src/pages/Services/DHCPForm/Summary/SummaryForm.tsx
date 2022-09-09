@@ -3,7 +3,7 @@ import { Col, Divider, Form, Row } from 'antd'
 import { useIntl }                 from 'react-intl'
 
 import { StepsForm, Subtitle }                       from '@acx-ui/components'
-import { useVenueListQuery }                         from '@acx-ui/rc/services'
+import { useVenuesListQuery }                        from '@acx-ui/rc/services'
 import { DHCPSaveData, transformDisplayText, Venue } from '@acx-ui/rc/utils'
 import { useParams }                                 from '@acx-ui/react-router-dom'
 
@@ -26,7 +26,7 @@ export function SummaryForm (props: {
   const params = useParams()
 
 
-  const { data } = useVenueListQuery({ params:
+  const { data } = useVenuesListQuery({ params:
     { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' }, payload: defaultPayload })
 
   const venueList = data?.data.reduce<Record<Venue['id'], Venue>>((map, obj) => {

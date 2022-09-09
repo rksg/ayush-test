@@ -69,24 +69,28 @@ export function PoolList (props:{
 
   const columns: TableProps<DHCPPool>['columns'] = [
     {
+      key: 'name',
       title: $t({ defaultMessage: 'Pool Name' }),
       dataIndex: 'name',
       width: 10,
       sorter: true
     },
     {
+      key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ip',
       width: 10,
       sorter: true
     },
     {
+      key: 'mask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
       dataIndex: 'mask',
       width: 10,
       sorter: true
     },
     {
+      key: 'leaseTime',
       title: $t({ defaultMessage: 'Lease Time' }),
       width: 50,
       dataIndex: 'leaseTime',
@@ -95,11 +99,13 @@ export function PoolList (props:{
       }
     },
     {
+      key: 'vlan',
       title: $t({ defaultMessage: 'Vlan' }),
       width: 50,
       dataIndex: 'vlan'
     },
     {
+      key: 'leaseTime',
       title: $t({ defaultMessage: 'Number of hosts' }),
       width: 50,
       dataIndex: 'leaseTime'

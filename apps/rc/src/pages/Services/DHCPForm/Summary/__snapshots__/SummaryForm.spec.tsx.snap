@@ -12,7 +12,7 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
     </h3>
     <div
       class="ant-row"
-      style="margin-left: -10px; margin-right: -10px;"
+      style="margin-left: -10px; margin-right: -10px; padding-top: 20px;"
     >
       <div
         class="ant-col"
@@ -120,7 +120,7 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
       <div
         class="ant-divider ant-divider-vertical"
         role="separator"
-        style="height: 300px;"
+        style="height: 250px;"
       />
       <div
         class="ant-col"
@@ -202,7 +202,7 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-6 fbRkQw"
+      class="styledComponents__Wrapper-sc-1abm7iv-6 dRjmqW"
     >
       <div
         class="ant-pro-table"
@@ -299,7 +299,7 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
                                 <div
@@ -357,9 +357,12 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
                                 <div
@@ -417,9 +420,12 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
                                 <div
@@ -477,26 +483,42 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
                                 Vlan
+                                <div
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
                                 Lease Time
+                                <div
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
                                 Number of hosts
+                                <div
+                                  class="react-resizable-handle"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                 style="position: sticky; right: 0px;"
-                              />
+                              >
+                                <div
+                                  class="react-resizable-handle"
+                                />
+                              </th>
                             </tr>
                           </thead>
                           <tbody
