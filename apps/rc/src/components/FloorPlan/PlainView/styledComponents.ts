@@ -2,6 +2,7 @@ import { Card, Space } from 'antd'
 import styled          from 'styled-components'
 
 import { Button } from '@acx-ui/components'
+import { ImageMode } from './PlainView'
 
 export const StyledSpace = styled(Space)`
     scroll-behavior: smooth;
@@ -54,7 +55,7 @@ export const Thumbnail = styled('div')`
 `
 
 export const ImageContainerWrapper = styled('div')`
-    margin: 30px 0;
+    margin: 30px auto 20px;
     position: relative;
     display: block;
     overflow: scroll;
@@ -64,11 +65,11 @@ export const ImageContainerWrapper = styled('div')`
     max-height: 100%;
 `
 
-export const ImageContainer = styled('div')< { currentZoom: number } >`
+export const ImageContainer = styled('div')< { currentZoom: number, imageMode: ImageMode } >`
     width: calc(${props => 100 * props.currentZoom}%);
     position: relative;
     margin: 0 auto;
-    height: 100%;
+    height: ${props => props.imageMode === ImageMode.FIT ? '100%' : 'auto'};
     padding: 30px auto;
     max-height: 100%;
     -webkit-touch-callout: none;
@@ -77,4 +78,20 @@ export const ImageContainer = styled('div')< { currentZoom: number } >`
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+`
+export const ImageLoaderContainer = styled('div')`
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    display: flex;
+`
+export const ImageButtonsContainer = styled('div')`
+    position: absolute;
+    bottom: 88px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
 `
