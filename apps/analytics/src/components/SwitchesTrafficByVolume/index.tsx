@@ -6,29 +6,27 @@ import { Card, Loader, MultiLineTimeSeriesChart, cssStr, NoData } from '@acx-ui/
 import { formatter }                                              from '@acx-ui/utils'
 
 import {
-  useTrafficByVolumeQuery,
-  TrafficByVolumeData
+  useSwitchesTrafficByVolumeQuery,
+  SwitchesTrafficByVolumeData
 } from './services'
 
 
-type Key = keyof Omit<TrafficByVolumeData, 'time'>
+type Key = keyof Omit<SwitchesTrafficByVolumeData, 'time'>
 
 const lineColors = [
   cssStr('--acx-accents-blue-30'),
   cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-orange-50'),
-  cssStr('--acx-semantics-yellow-40')
+  cssStr('--acx-accents-orange-50')
 ]
 
-function TrafficByVolumeWidget ({ filters }: { filters : AnalyticsFilter }) {
+function SwitchesTrafficByVolumeWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
   const seriesMapping = [
-    { key: 'totalTraffic_all', name: $t({ defaultMessage: 'All Radios' }) },
-    { key: 'totalTraffic_24', name: formatter('radioFormat')('2.4') },
-    { key: 'totalTraffic_5', name: formatter('radioFormat')('5') },
-    { key: 'totalTraffic_6', name: formatter('radioFormat')('6') }
+    { key: 'switchTotalTraffic', name: $t({ defaultMessage: 'Total' }) },
+    { key: 'switchTotalTraffic_tx', name: $t({ defaultMessage: 'Tx' }) },
+    { key: 'switchTotalTraffic_rx', name: $t({ defaultMessage: 'Rx' }) }
   ] as Array<{ key: Key, name: string }>
-  const queryResults = useTrafficByVolumeQuery(filters, {
+  const queryResults = useSwitchesTrafficByVolumeQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
       ...rest
@@ -54,4 +52,4 @@ function TrafficByVolumeWidget ({ filters }: { filters : AnalyticsFilter }) {
   )
 }
 
-export default TrafficByVolumeWidget
+export default SwitchesTrafficByVolumeWidget
