@@ -2,6 +2,7 @@ import { Card, Space } from 'antd'
 import styled          from 'styled-components'
 
 import { Button } from '@acx-ui/components'
+
 import { ImageMode } from './PlainView'
 
 export const StyledSpace = styled(Space)`

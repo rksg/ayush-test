@@ -3,8 +3,13 @@ import { useEffect, useRef, useState } from 'react'
 import { Col, Divider, Row, Space, Typography } from 'antd'
 import { useIntl }                              from 'react-intl'
 
-import { Button, Loader }       from '@acx-ui/components'
-import { AppIcon, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, SearchFitOutlined, SearchFullOutlined }      from '@acx-ui/icons'
+import { Button, Loader }                 from '@acx-ui/components'
+import {
+  AppIcon,
+  MagnifyingGlassMinusOutlined,
+  MagnifyingGlassPlusOutlined,
+  SearchFitOutlined, SearchFullOutlined
+} from '@acx-ui/icons'
 import { FloorPlanDto } from '@acx-ui/rc/utils'
 
 import * as UI   from './styledComponents'
@@ -152,37 +157,41 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[] }) {
         </UI.ImageLoaderContainer>
       </UI.ImageContainerWrapper>
       <UI.ImageButtonsContainer>
-        <Space direction='vertical' style={
-          {
-            border: '1px solid var(--acx-neutrals-30)',
-            borderRadius: '4px',
-            backgroundColor: 'var(--acx-primary-white)'
+        <Space direction='vertical'
+          style={
+            {
+              border: '1px solid var(--acx-neutrals-30)',
+              borderRadius: '4px',
+              backgroundColor: 'var(--acx-primary-white)'
+            }
           }
-        } split={<Divider style={{ 
+          split={<Divider style={{
             lineHeight: '0px',
             margin: '0px',
             border: '1px solid var(--acx-neutrals-30)',
-            borderRadius: '4px' }}/>} size={0}>
+            borderRadius: '4px'
+          }} />}
+          size={0}>
           <Button
-              onClick={() => setImageModeHandler(ImageMode.ZOOM_IN)}
-              type='link'
-              size='middle'
-              icon={ <MagnifyingGlassPlusOutlined /> }/>
+            onClick={() => setImageModeHandler(ImageMode.ZOOM_IN)}
+            type='link'
+            size='middle'
+            icon={<MagnifyingGlassPlusOutlined />} />
           <Button
-              onClick={() => setImageModeHandler(ImageMode.ZOOM_OUT)}
-              type='link'
-              size='middle'
-              icon={ <MagnifyingGlassMinusOutlined /> }/>
+            onClick={() => setImageModeHandler(ImageMode.ZOOM_OUT)}
+            type='link'
+            size='middle'
+            icon={<MagnifyingGlassMinusOutlined />} />
           <Button
-              onClick={() => setImageModeHandler(ImageMode.ORIGINAL)}
-              size='middle'
-              type='link'
-              icon={ <SearchFullOutlined /> }/>
+            onClick={() => setImageModeHandler(ImageMode.ORIGINAL)}
+            size='middle'
+            type='link'
+            icon={<SearchFullOutlined />} />
           <Button
             onClick={() => setImageModeHandler(ImageMode.FIT)}
             size='middle'
             type='link'
-            icon={ <SearchFitOutlined /> }/>
+            icon={<SearchFitOutlined />}/>
         </Space>
       </UI.ImageButtonsContainer>
       {floorPlans.length > 1 && <Row>
