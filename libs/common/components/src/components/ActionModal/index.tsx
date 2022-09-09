@@ -3,8 +3,10 @@ import { useRef } from 'react'
 import { Modal, Collapse, Form, Input } from 'antd'
 import { TextAreaRef }                  from 'antd/lib/input/TextArea'
 import { ModalFuncProps }               from 'antd/lib/modal'
+import { pick, has }                    from 'lodash'
 
 import { ExpandSquareUp, ExpandSquareDown } from '@acx-ui/icons'
+import { getIntl }                          from '@acx-ui/utils'
 
 import { Button, ButtonProps } from '../Button'
 
@@ -61,7 +63,7 @@ export interface CustomButtonProps {
   text: string,
   type: ButtonProps['type'],
   key: string,
-  handler?: () => void;
+  handler?: () => (void | Promise<void>);
   closeAfterAction?: boolean;
 }
 
@@ -76,23 +78,38 @@ export const showActionModal = (props: ModalProps) => {
     ...config,
     icon: <> </>
   })
+  return pick(modal, 'destroy')
 }
 
 const transformProps = (props: ModalProps, modal: ModalRef) => {
+  const { $t } = getIntl()
   switch (props.customContent?.action) {
     case 'DELETE':
-      const { numOfEntities, entityName, entityValue, confirmationText } = props.customContent
-      const entityNameText = numOfEntities ? `${numOfEntities} ${entityName}` : entityValue
-      const desp = (<>
-        {`Are you sure you want to delete ${numOfEntities ? 'these' : 'this'} ${entityName}?`}
-        { confirmationText && <ConfirmForm text={confirmationText} modal={modal} /> }
+      const { numOfEntities = 1, entityName, entityValue, confirmationText } = props.customContent
+
+      const title = $t({
+        defaultMessage: `Delete "{count, plural,
+          one {{entityValue}}
+          other {{count} {formattedEntityName}}
+        }"?`
+      }, { count: numOfEntities, formattedEntityName: entityName, entityValue })
+
+      const content = (<>
+        {$t({
+          defaultMessage: `Are you sure you want to delete {count, plural,
+            one {this}
+            other {these}
+          } {formattedEntityName}?`
+        }, { count: numOfEntities, formattedEntityName: entityName })}
+        {confirmationText && <ConfirmForm text={confirmationText} modal={modal} />}
       </>)
       props = {
-        ...props,
-        title: `Delete "${entityNameText}"?`,
-        content: desp,
-        okText: `Delete ${entityName}`,
-        okButtonProps: { disabled: !!confirmationText }
+        ...props, title, content,
+        okText: $t(
+          { defaultMessage: 'Delete {formattedEntityName}' },
+          { formattedEntityName: entityName }
+        ),
+        okButtonProps: { disabled: Boolean(confirmationText) }
       }
       break
     case 'SHOW_ERRORS':
@@ -122,13 +139,18 @@ function ErrorTemplate (props: {
   errors: ErrorDetailsProps,
   modal: ModalRef
 }) {
+  const { $t } = getIntl()
+  const okText = $t({ defaultMessage: 'OK' })
   return (
     <>
       <UI.Content>{props.content}</UI.Content>
       <UI.Footer>
-        <CollapsePanel header='Technical details' content={props.errors} />
+        <CollapsePanel
+          header={$t({ defaultMessage: 'Technical details' })}
+          content={props.errors}
+        />
         <UI.FooterButtons>
-          <Button type='primary' onClick={() => props.modal.destroy()}>OK</Button>
+          <Button type='primary' onClick={() => props.modal.destroy()}>{okText}</Button>
         </UI.FooterButtons>
       </UI.Footer>
     </>
@@ -173,6 +195,7 @@ function CollapsePanel (props: {
   header: string,
   content: ErrorDetailsProps
 }) {
+  const { $t } = getIntl()
   const inputEl = useRef<TextAreaRef>(null)
   const copyText = () => {
     navigator.clipboard.writeText(convertToJSON(props.content))
@@ -186,9 +209,10 @@ function CollapsePanel (props: {
     >
       <Panel header={props.header} key={props.header}>
         <TextArea ref={inputEl} rows={20} readOnly={true} value={convertToJSON(props.content)} />
-        <UI.CopyButton type='link' onClick={copyText}>
-          Copy to clipboard
-        </UI.CopyButton>
+        <UI.CopyButton
+          type='link'
+          onClick={copyText}
+        >{$t({ defaultMessage: 'Copy to clipboard' })}</UI.CopyButton>
       </Panel>
     </UI.Collapse>
   )
@@ -198,9 +222,11 @@ function ConfirmForm (props: {
   text: string,
   modal: ModalRef
 }) {
+  const { $t } = getIntl()
+  const label = $t({ defaultMessage: 'Type the word "{text}" to confirm:' }, { text: props.text })
   return (
     <Form>
-      <Form.Item name='name' label={`Type the word "${props.text}" to confirm:`}>
+      <Form.Item name='name' label={label}>
         <Input onChange={(e) => {
           const disabled = e.target.value.toLowerCase() !== props.text.toLowerCase()
           props.modal.update({
