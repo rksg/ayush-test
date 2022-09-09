@@ -1,7 +1,7 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space, Divider, Button }                      from 'antd'
+import { Space, Divider, Button, Col }                 from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
@@ -216,20 +216,26 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
   >
     {hasHeader && (
       <UI.Header>
-        {Boolean(searchables.length) &&
-          renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
-        }
-        {filterables.map((column, i) =>
-          renderFilter<RecordType>(column, i, dataSource, filterValues, setFilterValues)
-        )}
-        {(Boolean(activeFilters.length) || Boolean(searchValue)) && <UI.ClearButton
-          onClick={() => {
-            setFilterValues({} as FilterValue)
-            setSearchValue('')
-          }}
-        >
-          {$t({ defaultMessage: 'Clear Filters' })}
-        </UI.ClearButton>}
+        <Col span={12}>
+          <Space size={12}>
+            {Boolean(searchables.length) &&
+              renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
+            }
+            {filterables.map((column, i) =>
+              renderFilter<RecordType>(column, i, dataSource, filterValues, setFilterValues)
+            )}
+          </Space>
+        </Col>
+        <UI.ClearButtonContainer>
+          {(Boolean(activeFilters.length) || Boolean(searchValue)) && <Button
+            onClick={() => {
+              setFilterValues({} as FilterValue)
+              setSearchValue('')
+            }}
+          >
+            {$t({ defaultMessage: 'Clear Filters' })}
+          </Button>}
+        </UI.ClearButtonContainer>
       </UI.Header>
     )}
     <UI.TableSettingsGlobalOverride />

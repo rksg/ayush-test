@@ -311,7 +311,7 @@ describe('Table component', () => {
         searchable: true
       }
     ]
-  
+
     const filteredData = [
       {
         key: '1',
@@ -360,9 +360,9 @@ describe('Table component', () => {
         ]
       }
     ]
-  
+
     it('search input with terms', async () => {
-      render(<Table 
+      render(<Table
         columns={filteredColumns}
         dataSource={filteredData}
         rowSelection={{ selectedRowKeys: [] }}
@@ -370,22 +370,22 @@ describe('Table component', () => {
       const validSearchTerm = 'John Doe'
       const input = await screen.findByPlaceholderText('Search Name, Description, Address')
       fireEvent.change(input, { target: { value: validSearchTerm } })
-      
+
       expect(await screen.findAllByText(validSearchTerm)).toHaveLength(2)
-  
+
       const childSearchTerm = 'edna'
       fireEvent.change(input, { target: { value: childSearchTerm } })
       expect(await screen.findAllByText('Jordan Doe')).toHaveLength(1)
 
       const buttons = await screen.findAllByRole('button')
-      expect(buttons).toHaveLength(4)
-      fireEvent.click(buttons[0])
+      expect(buttons).toHaveLength(5)
+      fireEvent.click(buttons[1])
 
       expect(await screen.findAllByRole('checkbox')).toHaveLength(4)
     })
-  
+
     it('filtering inputs & searching', async () => {
-      render(<Table 
+      render(<Table
         columns={filteredColumns}
         dataSource={filteredData}
         rowSelection={{ selectedRowKeys: [] }}
@@ -396,7 +396,7 @@ describe('Table component', () => {
 
       expect(tbody).toBeVisible()
       const body = within(tbody)
-      const before = 
+      const before =
         (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
       expect(before).toHaveLength(3)
 
@@ -411,8 +411,8 @@ describe('Table component', () => {
 
       expect(johnDoeOptions).toHaveLength(1)
       fireEvent.click(johnDoeOptions[0])
-      
-      const after = 
+
+      const after =
         (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
       expect(after).toHaveLength(1)
       expect(await screen.findByRole('img', { name: 'check', hidden: true }))

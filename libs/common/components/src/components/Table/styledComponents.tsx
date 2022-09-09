@@ -1,9 +1,9 @@
 import {
+  Button,
   Input,
-  Button as AntButton,
-  Space,
   Select,
-  ButtonProps as AntButtonProps,
+  Row,
+  Col,
   Tooltip as AntTooltip
 } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
@@ -44,7 +44,7 @@ export const FilterSelect = styled(Select).attrs({ style: { width: 200 } })`
 }
 `
 
-export const CloseButton = styled(AntButton).attrs({ icon: <CancelCircle /> })`
+export const CloseButton = styled(Button).attrs({ icon: <CancelCircle /> })`
   border: none;
   box-shadow: none;
   &.ant-btn-icon-only {
@@ -65,12 +65,6 @@ export const ActionButton = styled.button.attrs({ type: 'button' })`
   background-color: transparent;
   color: var(--acx-accents-blue-50);
   cursor: pointer;
-`
-
-export const ClearButton: typeof AntButton = styled(AntButton)<AntButtonProps>`
-  position: absolute;
-  right: 0px;
-  top: 0px;
 `
 
 export const TableSettingTitle = styled(Subtitle).attrs({ level: 5 })``
@@ -301,8 +295,11 @@ const styles = {
   tooltip: tooltipStyle
 }
 
-export const Header = styled(Space).attrs({ size: 12 })`
+export const Header = styled(Row)`
   height: ${actionsHeight};
+`
+export const ClearButtonContainer = styled(Col).attrs({ span: 12 })`
+  text-align: right;
 `
 
 export const Wrapper = styled.div<StyledTable>`

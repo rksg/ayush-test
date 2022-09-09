@@ -55,7 +55,7 @@ exports[`Services Table should delete selected row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-8 cyFdBi"
+      class="styledComponents__Wrapper-sc-1abm7iv-10 OolVr"
     >
       <div
         class="ant-pro-table"
@@ -1126,7 +1126,7 @@ exports[`Services Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-8 cyFdBi"
+      class="styledComponents__Wrapper-sc-1abm7iv-10 OolVr"
     >
       <div
         class="ant-pro-table"
