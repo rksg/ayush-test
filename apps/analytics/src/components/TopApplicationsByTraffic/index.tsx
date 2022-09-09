@@ -1,6 +1,6 @@
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
-
 
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -14,51 +14,44 @@ import {
 } from '@acx-ui/components'
 import { formatter, intlFormats } from '@acx-ui/utils'
 
-import { useTrafficByApplicationQuery, TrafficByApplicationData } from './services'
-import { TrafficPercent }                                         from './styledComponents'
+import { useTopApplicationsByTrafficQuery, TopApplicationByTrafficData } from './services'
+import { TrafficPercent }                                                from './styledComponents'
 
 
-export default function TrafficByApplicationWidget ({
+export default function TopApplicationsByTrafficWidget ({
   filters
 }: {
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const queryResults = useTrafficByApplicationQuery(filters,
-    {
-      selectFromResult: ({ data, ...rest }) => ({
-        data,
-        ...rest
-      })
-    }
-  )
+  const queryResults = useTopApplicationsByTrafficQuery(filters)
 
   const columns=[
     {
-      title: 'Application',
+      title: $t({ defaultMessage: 'Application' }),
       dataIndex: 'name',
       key: 'name'
     },
     {
-      title: 'Total Traffic',
+      title: $t({ defaultMessage: 'Traffic' }),
       dataIndex: 'traffic',
       key: 'traffic'
     },
     {
-      title: 'Traffic History',
+      title: $t({ defaultMessage: 'Traffic History' }),
       dataIndex: 'trafficHistory',
       key: 'trafficHistory',
       width: 100
     },
     {
-      title: 'Clients',
+      title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clientCount',
       key: 'clientCount',
       align: 'right' as const
     }
   ]
 
-  const getDataSource= (appTrafficData: TrafficByApplicationData[],
+  const getDataSource= (appTrafficData: TopApplicationByTrafficData[],
     overallTrafic:number) => {
     return appTrafficData.map((item,index) => {
       const sparkLineData = item.timeSeries.applicationTraffic
@@ -66,11 +59,14 @@ export default function TrafficByApplicationWidget ({
       const sparklineChartStyle = { height: 18, width: 80, display: 'inline' }
       return {
         ...item,
-        traffic: <>{formatter('bytesFormat')(item.applicationTraffic)} &nbsp;
-          <TrafficPercent>
+        traffic: <Space align='start' size={4}>
+          <>
+            {formatter('bytesFormat')(item.applicationTraffic)}
+            <TrafficPercent>
             ({$t(intlFormats.percentFormatRound, { value: item.applicationTraffic/overallTrafic })})
-          </TrafficPercent>
-        </>,
+            </TrafficPercent>
+          </>
+        </Space>,
         trafficHistory: <SparklineChart
           key={index}
           data={sparkLineData}
@@ -107,7 +103,7 @@ export default function TrafficByApplicationWidget ({
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
-              <ContentSwitcher tabDetails={tabDetails} size='small' align='center' />
+              <ContentSwitcher tabDetails={tabDetails} size='small' space={8} />
             </div>
           )}
         </AutoSizer>

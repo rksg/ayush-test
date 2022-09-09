@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
+exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
@@ -46,7 +46,7 @@ exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
               style="display: block; height: 280px; width: 280px;"
             >
               <div
-                style="text-align: center; padding: 10px 0px;"
+                style="text-align: center; padding: 8px 0px;"
               >
                 <div
                   class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
@@ -132,9 +132,9 @@ exports[`TrafficByApplicationWidget should render for empty data: NoData 1`] = `
 </DocumentFragment>
 `;
 
-exports[`TrafficByApplicationWidget should render table with sparkline svg: contentSwitcher 1`] = `
+exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: contentSwitcher 1`] = `
 <div
-  style="text-align: center; padding: 10px 0px;"
+  style="text-align: center; padding: 8px 0px;"
 >
   <div
     class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
@@ -186,7 +186,7 @@ exports[`TrafficByApplicationWidget should render table with sparkline svg: cont
 </div>
 `;
 
-exports[`TrafficByApplicationWidget should render table with sparkline svg: downloadRows 1`] = `
+exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: downloadRows 1`] = `
 Array [
   Array [
     <td
@@ -226,12 +226,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      12.5 GB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
-        (98%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 4px;"
+        >
+          12.5 GB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
+          >
+            (98%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -313,12 +326,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      153 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
-        (1%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 4px;"
+        >
+          153 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
+          >
+            (1%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -400,12 +426,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      23 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 4px;"
+        >
+          23 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -487,12 +526,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      17.6 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 4px;"
+        >
+          17.6 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -574,12 +626,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      13.3 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 4px;"
+        >
+          13.3 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -655,7 +720,7 @@ Array [
 ]
 `;
 
-exports[`TrafficByApplicationWidget should render table with sparkline svg: tableHeaders 1`] = `
+exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: tableHeaders 1`] = `
 <thead
   class="ant-table-thead"
 >
@@ -668,7 +733,7 @@ exports[`TrafficByApplicationWidget should render table with sparkline svg: tabl
     <th
       class="ant-table-cell"
     >
-      Total Traffic
+      Traffic
     </th>
     <th
       class="ant-table-cell"
@@ -685,7 +750,7 @@ exports[`TrafficByApplicationWidget should render table with sparkline svg: tabl
 </thead>
 `;
 
-exports[`TrafficByApplicationWidget should render table with sparkline svg: uploadRows 1`] = `
+exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: uploadRows 1`] = `
 Array [
   Array [
     <td
@@ -725,12 +790,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      5.38 GB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
-        (100%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 4px;"
+        >
+          5.38 GB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
+          >
+            (100%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -812,12 +890,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      2.61 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 4px;"
+        >
+          2.61 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -899,12 +990,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      1.79 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 4px;"
+        >
+          1.79 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -986,12 +1090,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      1.63 MB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 4px;"
+        >
+          1.63 MB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"
@@ -1073,12 +1190,25 @@ Array [
     <td
       class="ant-table-cell"
     >
-      942 KB  
-      <span
-        class="styledComponents__TrafficPercent-sc-13hdke-0 dLMlaG"
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-start"
       >
-        (0%)
-      </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 4px;"
+        >
+          942 KB
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <span
+            class="styledComponents__TrafficPercent-sc-1vtzd10-0 eMuYMK"
+          >
+            (0%)
+          </span>
+        </div>
+      </div>
     </td>,
     <svg
       baseProfile="full"

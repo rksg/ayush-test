@@ -4,10 +4,13 @@ import { Provider }        from '@acx-ui/store'
 
 import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
 import NetworkHistoryWidget           from './components/NetworkHistory'
+import SwitchesTrafficByVolumeWidget  from './components/SwitchesTrafficByVolume'
 import TopSwitchModelsWidget          from './components/SwitchModels'
+import TopApplicationsByTrafficWidget from './components/TopApplicationsByTraffic'
+import TopSSIDsByClientWidget         from './components/TopSSIDsByClient'
+import TopSSIDsByTrafficWidget        from './components/TopSSIDsByTraffic'
 import TopSwitchesByPoEUsageWidget    from './components/TopSwitchesByPoEUsage'
 import TopSwitchesByTrafficWidget     from './components/TopSwitchesByTraffic'
-import TrafficByApplicationWidget     from './components/TrafficByApplication'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
 
 const widgetsMap = {
@@ -18,13 +21,22 @@ const widgetsMap = {
     <NetworkHistoryWidget filters={filters} />
   ),
   topApplicationsByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
-    <TrafficByApplicationWidget filters={filters}/>
+    <TopApplicationsByTrafficWidget filters={filters}/>
+  ),
+  topSSIDsByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TopSSIDsByTrafficWidget filters={filters}/>
+  ),
+  topSSIDsByClient: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TopSSIDsByClientWidget filters={filters}/>
   ),
   connectedClientsOverTime: ({ filters }: { filters: AnalyticsFilter }) => (
     <ConnectedClientsOverTimeWidget filters={filters}/>
   ),
   topSwitchesByPoeUsage: ({ filters }: { filters: AnalyticsFilter }) => (
     <TopSwitchesByPoEUsageWidget filters={filters}/>
+  ),
+  switchTrafficByVolume: ({ filters }: { filters: AnalyticsFilter }) => (
+    <SwitchesTrafficByVolumeWidget filters={filters}/>
   ),
   topSwitchModelsByCount: ({ filters }: { filters: AnalyticsFilter }) => (
     <TopSwitchModelsWidget filters={filters} />

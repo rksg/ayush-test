@@ -1,25 +1,22 @@
 import { gql } from 'graphql-request'
 
-
 import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
 import { getSparklineGranularity } from '../../utils'
 
 export type HierarchyNodeData = {
-  uploadAppTraffic: number
-  downloadAppTraffic: number
-  topNAppByUpload: TrafficByApplicationData[]
-  topNAppByDownload: TrafficByApplicationData[]
+  totalUserTraffic: number
+  topNSSIDByClient: TopSSIDsByClient[]
 }
 
 export type TrafficTimeseriesData = {
-    applicationTraffic: number[]
+    userTraffic: number[]
 }
 
-export type TrafficByApplicationData = {
+export type TopSSIDsByClient = {
     name: string
-    applicationTraffic: number
+    userTraffic: number
     clientCount: number
     timeSeries: TrafficTimeseriesData
 }
@@ -32,34 +29,26 @@ interface Response <T> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    trafficByApplication: build.query<
+    topSSIDsByClient: build.query<
       HierarchyNodeData,
       AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`
-        query TrafficByApplicationWidget($path: [HierarchyNodeInput],
+        query TopSSIDsByClientWidget($path: [HierarchyNodeInput],
           $start: DateTime, $end: DateTime, $n: Int!, $granularity: String!) {
           network(end: $end, start: $start) {
             hierarchyNode(path: $path) {
-              uploadAppTraffic: applicationTraffic(direction: "rx")
-              downloadAppTraffic: applicationTraffic(direction: "tx")
-              topNAppByUpload:topNApplicationByTraffic(n: $n, direction: "rx") {
-                ...applicationTrafficData
-              }
-              topNAppByDownload:topNApplicationByTraffic(n: $n, direction: "tx") {
-                ...applicationTrafficData
+              totalUserTraffic: userTraffic
+              topNSSIDByClient: topNSSIDByClient(n: $n) {
+                name
+                userTraffic
+                clientCount
+                timeSeries(granularity: $granularity) {
+                    userTraffic
+                }
               }
             }
-          }
-        }
-        
-        fragment applicationTrafficData on ApplicationTrafficTopN{
-          name
-          applicationTraffic
-          clientCount
-          timeSeries(granularity: $granularity) {
-            applicationTraffic
           }
         }
         `,
@@ -77,4 +66,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useTrafficByApplicationQuery } = api
+export const { useTopSSIDsByClientQuery } = api

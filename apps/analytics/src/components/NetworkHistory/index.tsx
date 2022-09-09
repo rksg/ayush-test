@@ -7,7 +7,8 @@ import {
   CardTypes,
   Loader,
   MultiLineTimeSeriesChart,
-  cssStr
+  cssStr,
+  NoData
 } from '@acx-ui/components'
 
 import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
@@ -53,11 +54,13 @@ function NetworkHistoryWidget ({
       <Card title={title} type={type}>
         <AutoSizer>
           {({ height, width }) => (
-            <MultiLineTimeSeriesChart
-              style={{ width, height }}
-              data={queryResults.data}
-              lineColors={lineColors}
-            />
+            queryResults.data.length ?
+              <MultiLineTimeSeriesChart
+                style={{ width, height }}
+                data={queryResults.data}
+                lineColors={lineColors}
+              />
+              : <NoData/>
           )}
         </AutoSizer>
       </Card>
