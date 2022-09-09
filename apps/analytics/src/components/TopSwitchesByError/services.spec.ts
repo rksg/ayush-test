@@ -5,10 +5,10 @@ import { IncidentFilter }      from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 import { DateRange }           from '@acx-ui/utils'
 
-import { topSwitchesByErrorsResponse } from './__tests__/fixtures'
-import { api }                         from './services'
+import { topSwitchesByErrorResponse } from './__tests__/fixtures'
+import { api }                        from './services'
 
-describe('switchesByErrorsApi', () => {
+describe('TopSwitchesByErrorApi', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
@@ -26,22 +26,22 @@ describe('switchesByErrorsApi', () => {
     store.dispatch(api.util.resetApiState())
   )
   it('should return correct data', async () => {
-    mockGraphqlQuery(dataApiURL, 'SwitchesByErrorsWidget', {
-      data: topSwitchesByErrorsResponse
+    mockGraphqlQuery(dataApiURL, 'TopSwitchesByErrorWidget', {
+      data: topSwitchesByErrorResponse
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.switchesByErrors.initiate(props)
+      api.endpoints.TopSwitchesByError.initiate(props)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(topSwitchesByErrorsResponse.network.hierarchyNode)
+    expect(data).toStrictEqual(topSwitchesByErrorResponse.network.hierarchyNode)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'SwitchesByErrorsWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSwitchesByErrorWidget', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.switchesByErrors.initiate(props)
+      api.endpoints.TopSwitchesByError.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

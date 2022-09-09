@@ -4,10 +4,10 @@ import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { topSwitchesByErrorsResponse }    from './components/SwitchesByErrors/__tests__/fixtures'
 import { topApplicationByTrafficFixture } from './components/TopApplicationsByTraffic/__tests__/fixtures'
 import { topSSIDsByClientFixture }        from './components/TopSSIDsByClient/__tests__/fixtures'
 import { topSSIDsByTrafficFixture }       from './components/TopSSIDsByTraffic/__tests__/fixtures'
+import { topSwitchesByErrorResponse }     from './components/TopSwitchesByError/__tests__/fixtures'
 import { topSwitchesByPoEUsageResponse }  from './components/TopSwitchesByPoEUsage/__tests__/fixtures'
 import { topSwitchesByTrafficResponse }   from './components/TopSwitchesByTraffic/__tests__/fixtures'
 import AnalyticsWidgets                   from './Widgets'
@@ -152,7 +152,7 @@ test('should render Switches Traffic by Volume widget', async () => {
 })
 
 test('should render Top 5 Switches by Error widget', async () => {
-  mockGraphqlQuery(dataApiURL, 'SwitchesByErrorsWidget', { data: topSwitchesByErrorsResponse })
+  mockGraphqlQuery(dataApiURL, 'TopSwitchesByErrorWidget', { data: topSwitchesByErrorResponse })
   render( <Provider> <AnalyticsWidgets name='topSwitchesByErrors' filters={filters}/></Provider>)
   expect(await screen.findByText('Top 5 Switches by Error')).toBeVisible()
 })

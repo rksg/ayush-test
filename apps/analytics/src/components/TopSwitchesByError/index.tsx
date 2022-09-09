@@ -8,16 +8,16 @@ import {
   Table,
   NoData } from '@acx-ui/components'
 
-import { useSwitchesByErrorsQuery, SwitchesByErrorsData } from './services'
-import { CustomTable }                                    from './styledComponents'
+import { useTopSwitchesByErrorQuery, TopSwitchesByErrorData } from './services'
+import { CustomTable }                                        from './styledComponents'
 
-export default function SwitchesByErrorsWidget ({
+export default function TopSwitchesByErrorWidget ({
   filters
 }: {
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
-  const queryResults = useSwitchesByErrorsQuery(filters
+  const queryResults = useTopSwitchesByErrorQuery(filters
   )
 
   const columns=[
@@ -53,8 +53,8 @@ export default function SwitchesByErrorsWidget ({
     }
   ]
 
-  const getDataSource= (switchesByErrorsData: SwitchesByErrorsData[]) => {
-    return switchesByErrorsData.map((item) => {
+  const getDataSource= (topSwitchesByErrorData: TopSwitchesByErrorData[]) => {
+    return topSwitchesByErrorData.map((item) => {
       return {
         ...item,
         totalErr: item.inErr+item.outErr
@@ -64,7 +64,7 @@ export default function SwitchesByErrorsWidget ({
 
   const { data } = queryResults
 
-  const switchesByErrorsTable = 
+  const topSwitchesByErrorTable = 
   data && data.topNSwitchesByErrors && data.topNSwitchesByErrors.length ? <CustomTable><Table
     columns={columns}
     dataSource={getDataSource(data.topNSwitchesByErrors)}
@@ -77,7 +77,7 @@ export default function SwitchesByErrorsWidget ({
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
-              {switchesByErrorsTable}
+              {topSwitchesByErrorTable}
             </div>
           )}
         </AutoSizer>

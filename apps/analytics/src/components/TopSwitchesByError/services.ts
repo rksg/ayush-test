@@ -4,9 +4,9 @@ import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
 export type HierarchyNodeData = {
-  topNSwitchesByErrors: SwitchesByErrorsData[]
+  topNSwitchesByErrors: TopSwitchesByErrorData[]
 }
-export type SwitchesByErrorsData = {
+export type TopSwitchesByErrorData = {
   name: string
   mac: string
   inErr: number
@@ -21,13 +21,13 @@ interface Response <T> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    switchesByErrors: build.query<
+    TopSwitchesByError: build.query<
       HierarchyNodeData,
       AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`
-        query SwitchesByErrorsWidget($path: [HierarchyNodeInput],
+        query TopSwitchesByErrorWidget($path: [HierarchyNodeInput],
           $start: DateTime, $end: DateTime, $n: Int!) {
           network(end: $end, start: $start) {
             hierarchyNode(path: $path) {
@@ -54,4 +54,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useSwitchesByErrorsQuery } = api
+export const { useTopSwitchesByErrorQuery } = api

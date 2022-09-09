@@ -1,4 +1,4 @@
-export const topSwitchesByErrorsResponse = {
+export const topSwitchesByErrorResponse = {
   network: {
     hierarchyNode: {
       topNSwitchesByErrors: [{

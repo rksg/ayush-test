@@ -8,7 +8,7 @@ import { DateRange }                                       from '@acx-ui/utils'
 
 import { api } from './services'
 
-import SwitchesByErrorsWidget from '.'
+import TopSwitchesByErrorWidget from '.'
 
 const filters: AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -26,7 +26,7 @@ const sample = {
   }]
 }
 
-describe('SwitchesByErrorsWidget', () => {
+describe('TopSwitchesByErrorWidget', () => {
   mockAutoSizer()
 
   beforeEach(() =>
@@ -34,19 +34,19 @@ describe('SwitchesByErrorsWidget', () => {
   )
 
   it('should render loader', () => {
-    mockGraphqlQuery(dataApiURL, 'SwitchesByErrorsWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSwitchesByErrorWidget', {
       data: { network: { hierarchyNode: sample } }
     })
-    render( <Provider> <SwitchesByErrorsWidget filters={filters}/></Provider>)
+    render( <Provider> <TopSwitchesByErrorWidget filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
-    mockGraphqlQuery(dataApiURL, 'SwitchesByErrorsWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSwitchesByErrorWidget', {
       data: { network: { hierarchyNode: sample } }
     })
     const { asFragment } =render( 
       <Provider>
-        <SwitchesByErrorsWidget filters={filters}/>
+        <TopSwitchesByErrorWidget filters={filters}/>
       </Provider>)
     
     expect(await screen.findByText('Top 5 Switches by Error')).toBeVisible()
@@ -55,10 +55,10 @@ describe('SwitchesByErrorsWidget', () => {
   })
   it('should render error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockGraphqlQuery(dataApiURL, 'SwitchesByErrorsWidget', {
+    mockGraphqlQuery(dataApiURL, 'TopSwitchesByErrorWidget', {
       error: new Error('something went wrong!')
     })
-    render( <Provider><SwitchesByErrorsWidget filters={filters}/></Provider>)
+    render( <Provider><TopSwitchesByErrorWidget filters={filters}/></Provider>)
     await screen.findByText('Something went wrong.')
     jest.resetAllMocks()
   })
