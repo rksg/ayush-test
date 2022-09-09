@@ -152,8 +152,12 @@ test('should render Switches Traffic by Volume widget', async () => {
 })
 
 test('should render Top 5 Switches by Error widget', async () => {
+  const params = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+  }
   mockGraphqlQuery(dataApiURL, 'TopSwitchesByErrorWidget', { data: topSwitchesByErrorResponse })
-  render( <Provider> <AnalyticsWidgets name='topSwitchesByErrors' filters={filters}/></Provider>)
+  render( <Provider> <AnalyticsWidgets name='topSwitchesByErrors' filters={filters}/></Provider>,
+    { route: { params } })
   expect(await screen.findByText('Top 5 Switches by Error')).toBeVisible()
 })
 

@@ -7,6 +7,7 @@ import {
   Loader,
   Table,
   NoData } from '@acx-ui/components'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { useTopSwitchesByErrorQuery, TopSwitchesByErrorData } from './services'
 import { CustomTable }                                        from './styledComponents'
@@ -19,6 +20,15 @@ export default function TopSwitchesByErrorWidget ({
   const { $t } = useIntl()
   const queryResults = useTopSwitchesByErrorQuery(filters
   )
+  const basePath = useTenantLink('/switches/')
+  const navigate = useNavigate()
+  const onClick = (param: string) => {
+    navigate({
+      ...basePath,
+      // TODO Actual path to be updated later
+      pathname: `${basePath.pathname}/${param}`
+    })
+  }
 
   const columns=[
     {
@@ -26,7 +36,8 @@ export default function TopSwitchesByErrorWidget ({
       dataIndex: 'name',
       key: 'name',
       render: (name:unknown) => {
-        return <a href='/#TBD'>{name as string}</a>}
+        return <span onClick={() => onClick('TBD')} 
+          className='test-span-click' >{name as string}</span>}
     },
     {
       title: 'Switch Id',
