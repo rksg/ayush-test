@@ -1,6 +1,8 @@
-import { LabelFormatterCallback, RegisteredSeriesOption } from 'echarts'
-import ReactECharts                                       from 'echarts-for-react'
-import { CallbackDataParams, GridOption }                 from 'echarts/types/dist/shared'
+import { LabelFormatterCallback, RegisteredSeriesOption }           from 'echarts'
+import { TooltipComponentFormatterCallbackParams }                  from 'echarts'
+import ReactECharts                                                 from 'echarts-for-react'
+import { CallbackDataParams, GridOption, TooltipFormatterCallback } from 'echarts/types/dist/shared'
+
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
 
@@ -9,7 +11,8 @@ import {
   barChartAxisLabelOptions,
   barChartSeriesLabelOptions,
   legendOptions,
-  legendTextStyleOptions
+  legendTextStyleOptions,
+  tooltipOptions
 } from '../Chart/helper'
 
 import type { EChartsOption }     from 'echarts'
@@ -23,6 +26,7 @@ export interface BarChartProps
   barColors: string[]
   barWidth?: number
   labelFormatter?: string | LabelFormatterCallback<CallbackDataParams>
+  tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
   labelRichStyle?: object
 }
 
@@ -56,6 +60,7 @@ export function BarChart<TChartData extends BarChartData>
   data,
   grid: gridProps,
   labelFormatter,
+  tooltipFormatter,
   labelRichStyle,
   barColors,
   barWidth,
@@ -70,6 +75,15 @@ export function BarChart<TChartData extends BarChartData>
     barWidth: barWidth || 12,
     barGap: '50%',
     color: barColors,
+    tooltip: {
+      show: tooltipFormatter !== undefined,
+      ...tooltipOptions(),
+      trigger: 'axis',
+      axisPointer: {
+        type: 'none'
+      },
+      formatter: tooltipFormatter
+    },
     legend: {
       ...legendOptions(),
       textStyle: legendTextStyleOptions()
@@ -94,7 +108,10 @@ export function BarChart<TChartData extends BarChartData>
         show: false
       },
       axisLabel: {
-        ...barChartAxisLabelOptions()
+        ...barChartAxisLabelOptions(),
+        formatter: function (value: string) {
+          return value.trim()
+        }
       }
     },
 

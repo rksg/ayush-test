@@ -1,35 +1,39 @@
 import { ReactNode } from 'react'
 
-import { withKnobs, object }  from '@storybook/addon-knobs'
-import { storiesOf }          from '@storybook/react'
-import { CallbackDataParams } from 'echarts/types/dist/shared'
+import { withKnobs, object }                       from '@storybook/addon-knobs'
+import { storiesOf }                               from '@storybook/react'
+import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import { CallbackDataParams }                      from 'echarts/types/dist/shared'
+import { renderToString }                          from 'react-dom/server'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
 import { formatter }         from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import { Card }              from '../Card'
+import { TooltipWrapper }    from '../Chart/styledComponents'
 
 import { BarChart } from '.'
 
+
 export const data = (multiseries = false): BarChartData => ({
-  dimensions: ['Switch Name', 'PoE Usage', 'Utilisation_per', 'Transmited', 'Received'],
+  dimensions: ['Switch Name', 'PoE Usage', 'Utilisation_per', 'Transmitted', 'Received', 'Mac'],
   source: [
-    ['Switch 1', 53, 7.3, 309773533136, 109773533136],
-    ['Switch 2', 73, 19.3, 409773533136, 179773533136],
-    ['Switch 3', 107, 79.11, 509773533136, 219773533136],
-    ['Switch 4', 207, 89.11, 709773533136, 309773533136],
-    ['Switch 5', 307, 99.11, 809773533136, 509773533136]
+    ['Switch 1', 53, 7.3, 309773533136, 109773533136, 'C0:C5:20:AA:33:1B'],
+    ['Switch 2', 73, 19.3, 409773533136, 179773533136, 'D4:C1:9E:84:59:4A'],
+    ['Switch 3', 107, 79.11, 509773533136, 219773533136, 'C0:C5:20:AA:32:31'],
+    ['Switch 4', 207, 89.11, 709773533136, 309773533136, 'D4:C1:9E:14:68:0D'],
+    ['Switch 5', 307, 99.11, 809773533136, 509773533136, 'C0:C5:20:AA:32:C1']
   ],
   seriesEncode: multiseries ?
     [
       {
         // Map "tx" to x-axis.
-        x: 'Transmited',
+        x: 'Transmitted',
         // Map "switch_name" to y-axis.
         y: 'Switch Name',
         // series name
-        seriesName: 'Transmited'
+        seriesName: 'Transmitted'
       },
       {
         // Map "rx" to x-axis.
@@ -70,6 +74,19 @@ function switchUsageLabelFormatter (params: CallbackDataParams): string {
 function switchTrafficLabelFormatter (params: CallbackDataParams): string {
   const usage = Array.isArray(params.data) ? params.data[params?.encode?.['x'][0]!] : params.data
   return '{traffic|' +formatter('bytesFormat')(usage) + '}'
+}
+
+export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+  const name = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[0] : ''
+  const mac = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[5] : ''
+  return renderToString(
+    <TooltipWrapper>
+      <div> 
+        {name as string}
+        <b> ({mac as string})</b> 
+      </div>
+    </TooltipWrapper>
+  )
 }
 
 const getSwitchUsageRichStyle = () => ({
@@ -135,6 +152,7 @@ storiesOf('BarChart', module)
           cssStr('--acx-accents-blue-50'),
           cssStr('--acx-accents-orange-30')
         ]}
+        tooltipFormatter={tooltipFormatter}
         labelFormatter={switchTrafficLabelFormatter}
         labelRichStyle={getSwitchTrafficRichStyle()}
       />))

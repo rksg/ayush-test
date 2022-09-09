@@ -1,9 +1,205 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ProgressPill should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  >
+    <div
+      class="ant-progress-outer"
+    >
+      <div
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
+      >
+        <div
+          class="ant-progress-bg"
+          style="width: 0%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
+        />
+      </div>
+    </div>
+    <span
+      class="ant-progress-text"
+      title="0%"
+    >
+      0%
+    </span>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ProgressPill should render correctly 2`] = `
+<DocumentFragment>
+  <div
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  >
+    <div
+      class="ant-progress-outer"
+    >
+      <div
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
+      >
+        <div
+          class="ant-progress-bg"
+          style="width: 33.33%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
+        />
+      </div>
+    </div>
+    <span
+      class="ant-progress-text"
+      title="33.33%"
+    >
+      33.33%
+    </span>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ProgressPill should render correctly 3`] = `
+<DocumentFragment>
+  <div
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  >
+    <div
+      class="ant-progress-outer"
+    >
+      <div
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
+      >
+        <div
+          class="ant-progress-bg"
+          style="width: 50%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
+        />
+      </div>
+    </div>
+    <span
+      class="ant-progress-text"
+      title="50%"
+    >
+      50%
+    </span>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ProgressPill should render correctly 4`] = `
+<DocumentFragment>
+  <div
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  >
+    <div
+      class="ant-progress-outer"
+    >
+      <div
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
+      >
+        <div
+          class="ant-progress-bg"
+          style="width: 66.66%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
+        />
+      </div>
+    </div>
+    <span
+      class="ant-progress-text"
+      title="66.66%"
+    >
+      66.66%
+    </span>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ProgressPill should render correctly 5`] = `
+<DocumentFragment>
+  <div
+    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  >
+    <div
+      class="ant-progress-outer"
+    >
+      <div
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
+      >
+        <div
+          class="ant-progress-bg"
+          style="width: 100%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
+        />
+      </div>
+    </div>
+    <span
+      class="ant-progress-text"
+      title="100%"
+    >
+      100%
+    </span>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ProgressPill should render correctly 6`] = `
+<DocumentFragment>
+  <div
+    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  >
+    <div
+      class="ant-progress-outer"
+    >
+      <div
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
+      >
+        <div
+          class="ant-progress-bg"
+          style="width: 100%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
+        />
+      </div>
+    </div>
+    <span
+      class="ant-progress-text"
+      title="100%"
+    >
+      100%
+    </span>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ProgressPill should render with customized props 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  >
+    <div
+      class="ant-progress-outer"
+    >
+      <div
+        class="ant-progress-inner"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
+      >
+        <div
+          class="ant-progress-bg"
+          style="width: 66.66%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
+        />
+      </div>
+    </div>
+    <span
+      class="ant-progress-text"
+      title="66.66% success"
+    >
+      66.66% success
+    </span>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`SeverityPill renders P1 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 iOCTSz"
+    class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
     type="P1"
   >
     P1
@@ -14,7 +210,7 @@ exports[`SeverityPill renders P1 1`] = `
 exports[`SeverityPill renders P2 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 jnJmAg"
+    class="styledComponents__Pill-sc-j61ge1-0 fA-dLEH"
     type="P2"
   >
     P2
@@ -25,7 +221,7 @@ exports[`SeverityPill renders P2 1`] = `
 exports[`SeverityPill renders P3 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 fpazJI"
+    class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
     type="P3"
   >
     P3
@@ -36,7 +232,7 @@ exports[`SeverityPill renders P3 1`] = `
 exports[`SeverityPill renders P4 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 pnkZm"
+    class="styledComponents__Pill-sc-j61ge1-0 jWXhBJ"
     type="P4"
   >
     P4
@@ -47,7 +243,7 @@ exports[`SeverityPill renders P4 1`] = `
 exports[`TrendPill renders negative trend 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 iOCTSz"
+    class="styledComponents__Pill-sc-j61ge1-0 chVxOo"
     type="negative"
   >
     -123
@@ -58,7 +254,7 @@ exports[`TrendPill renders negative trend 1`] = `
 exports[`TrendPill renders no trend 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 rOohS"
+    class="styledComponents__Pill-sc-j61ge1-0 ddNaCp"
     type="none"
   >
     0
@@ -69,7 +265,7 @@ exports[`TrendPill renders no trend 1`] = `
 exports[`TrendPill renders positive trend 1`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__Pill-sc-j61ge1-0 deswGX"
+    class="styledComponents__Pill-sc-j61ge1-0 NKxEo"
     type="positive"
   >
     123

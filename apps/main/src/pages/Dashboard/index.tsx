@@ -22,6 +22,7 @@ import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
 const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
+
 export default function Dashboard () {
   const { $t } = useIntl()
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -40,7 +41,7 @@ export default function Dashboard () {
     <AnalyticsFilterProvider>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
-      <ContentSwitcher tabDetails={tabDetails} size='large' />
+      <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
     </AnalyticsFilterProvider>
   )
 }
@@ -91,6 +92,12 @@ function ApWidgets () {
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <AnalyticsWidgets name='topApplicationsByTraffic' filters={filters}/>
+      </GridCol>
+      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='topSSIDsByTraffic' filters={filters}/>
+      </GridCol>
+      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <AnalyticsWidgets name='topSSIDsByClient' filters={filters}/>
       </GridCol>
     </GridRow>
   )

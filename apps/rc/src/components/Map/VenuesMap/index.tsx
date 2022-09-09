@@ -20,10 +20,9 @@ export interface NavigateProps {
   path?: string
 }
 
-export function VenuesMap ({ cluster, data, enableVenueFilter }: GoogleMapProps) {
+function VenuesMap ({ cluster, data, enableVenueFilter }: GoogleMapProps) {
 
   const [venues, setVenues] = React.useState<VenueMarkerOptions[]>([])
-
   const basePath = useTenantLink('/venues/')
   const navigate = useNavigate()
 
@@ -83,3 +82,5 @@ export function VenuesMap ({ cluster, data, enableVenueFilter }: GoogleMapProps)
     </Wrapper>
   )
 }
+
+export default React.memo(VenuesMap)
