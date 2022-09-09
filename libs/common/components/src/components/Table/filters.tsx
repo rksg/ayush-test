@@ -15,48 +15,34 @@ export function getFilteredData <RecordType> (
   searchables: TableColumn<RecordType, 'text'>[],
   searchValue: string
 ): RecordType[] | undefined {
-  const deepDataCopy = dataSource?.map(val => ({ ...val })) as Array<RecordType & {
-    children?: RecordType[]
-  }>
-  return (deepDataCopy) && deepDataCopy.filter(
-    (row) => {
-      for (const column of activeFilters) {
-        const key = column.dataIndex as keyof RecordType
-        const filteredValue = filterValues[key as keyof FilterValue]
-        const filterHelper = (val: typeof row, filterKey: keyof typeof row) =>
-          filteredValue.includes(val[filterKey] as unknown as string)
-
-        const childValues = row.children && row.children.filter((child) => filterHelper(child, key))
-
-        if (childValues && childValues.length > 0) {
-          return true
-        }
-        row.children = undefined
-        if (!filterHelper(row, key)) {
-          return false
-        }
+  const isRowMatching = (row: RecordType): Boolean => {
+    for (const column of activeFilters) {
+      const key = column.dataIndex as keyof RecordType
+      const filteredValue = filterValues[key as keyof FilterValue]
+      if (!filteredValue.includes(row[key] as unknown as string)) {
+        return false
       }
-      if (searchValue) {
-        return searchables.some(column => {
-          const key = column.dataIndex as keyof RecordType
-          const { children } = row
-          const matchHelper = (val: typeof row, key: keyof typeof row, searchValue: string) =>
-            (val[key] as unknown as string)
-              .toString()
-              .toLowerCase()
-              .includes(searchValue.toLowerCase())
-          row.children = children
-            && children.filter((child) => matchHelper(child, key, searchValue))
-          if (row.children && row.children.length > 0) {
-            return true
-          }
-          // parent rows with no matching children, search parent
-          row.children = undefined
-          return matchHelper(row, key, searchValue)
-        })
-      }
-      return true
-    })
+    }
+    if (searchValue) {
+      return searchables.some(column => {
+        return (row[column.dataIndex as keyof RecordType] as unknown as string)
+          .toString()
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+      })
+    }
+    return true
+  }
+  type Record = RecordWithChildren<RecordType>
+  return dataSource?.reduce((rows: Record[], row: Record) => {
+    const children = row.children?.filter(isRowMatching)
+    if (children?.length) {
+      rows.push({ ...row, children })
+    } else if (isRowMatching(row)) {
+      rows.push(row)
+    }
+    return rows
+  }, [] as Record[])
 }
 export function renderSearch <RecordType> (
   intl: IntlShape,
