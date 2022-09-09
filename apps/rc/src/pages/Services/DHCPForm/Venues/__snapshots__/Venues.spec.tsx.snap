@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Create Network: Venues Step should render correctly 1`] = `
+exports[`Create DHCP: Venues Step should render correctly 1`] = `
 <DocumentFragment>
   <form
     class="ant-form ant-form-horizontal"
@@ -11,7 +11,7 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
       Venues
     </h3>
     <p>
-      Select venues to activate this network
+      Select venues to activate this DHCP service
     </p>
     <div
       class="ant-form-item"

@@ -55,9 +55,16 @@ const getNetworkId = () => {
 export function Venues () {
   const form = Form.useFormInstance()
   const { editMode, saveState } = useContext(DHCPFormContext)
-  if(saveState){
-    form.setFieldsValue({ venues: saveState.venues })
-  }
+
+
+  useEffect(()=>{
+    if(saveState){
+      form.setFieldsValue({ venues: saveState.venues })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
+
   const venues = Form.useWatch('venues')
 
   const { $t } = useIntl()
