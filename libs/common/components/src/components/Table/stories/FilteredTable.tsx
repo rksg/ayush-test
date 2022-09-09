@@ -1,3 +1,5 @@
+import { omit } from 'lodash'
+
 import { Table, TableProps } from '..'
 import { showToast }         from '../../Toast'
 
@@ -194,6 +196,13 @@ export function FilteredTable () {
     <Table<RecordType>
       columns={columns}
       dataSource={data}
+    />
+    without children:
+    <Table<RecordType>
+      columns={columns}
+      actions={actions}
+      dataSource={data.map(row => omit(row, 'children'))}
+      rowSelection={{ defaultSelectedRowKeys: [] }}
     />
     with filter only:
     <Table<RecordType>
