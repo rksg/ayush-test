@@ -1,16 +1,18 @@
+/* eslint-disable max-len */
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/analytics/services'
+import { dataApi }  from '@acx-ui/analytics/services'
 import {
   IncidentFilter,
   incidentSeverities,
-  incidentCodes
+  incidentCodes,
+  categoryCodeMap
 } from '@acx-ui/analytics/utils'
 
 export type IncidentsBySeverityDataKey = keyof typeof incidentSeverities
 
 type ImpactedCount = {
-  impactedClientCount: number[]
+  impactedClientCount: (number | null)[]
 }
 
 export type IncidentsDashboardData = {
@@ -22,6 +24,18 @@ export type IncidentsDashboardData = {
   P2Impact: ImpactedCount,
   P3Impact: ImpactedCount,
   P4Impact: ImpactedCount,
+  connectionP1: number,
+  performanceP1: number,
+  infrastructureP1: number,
+  connectionP2: number,
+  performanceP2: number,
+  infrastructureP2: number,
+  connectionP3: number,
+  performanceP3: number,
+  infrastructureP3: number,
+  connectionP4: number,
+  performanceP4: number,
+  infrastructureP4: number,
 }
 
 interface HeaderResponse <IncidentsBySeverityData> {
@@ -30,7 +44,7 @@ interface HeaderResponse <IncidentsBySeverityData> {
   }
 }
 
-export const headerApi = dataApi.injectEndpoints({
+export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsBySeverityDashboard: build.query<
       IncidentsDashboardData,
@@ -43,7 +57,10 @@ export const headerApi = dataApi.injectEndpoints({
             $end: DateTime,
             $path: [HierarchyNodeInput],
             $code: [String],
-            $granularity: String
+            $granularity: String,
+            $connectionCodes: [String],
+            $performanceCodes: [String],
+            $infrastructureCodes: [String],
           ){
             network(start: $start, end: $end) {
               hierarchyNode(path: $path) {
@@ -52,7 +69,10 @@ export const headerApi = dataApi.injectEndpoints({
               ${name}Impact: timeSeries(granularity: $granularity) {
               impactedClientCount: impactedClientCountBySeverity(
               filter: {severity:[{gt: ${gt}, lte: ${lte}}], code: $code})
-              }  
+              }
+              connection${name}: incidentCount(filter: {severity: {gt: ${gt}, lte: ${lte}}, code: $connectionCodes})
+              performance${name}: incidentCount(filter: {severity: {gt: ${gt}, lte: ${lte}}, code: $performanceCodes})
+              infrastructure${name}: incidentCount(filter: {severity: {gt: ${gt}, lte: ${lte}}, code: $infrastructureCodes})
               `).join('')}
               }
             }
@@ -63,6 +83,9 @@ export const headerApi = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           code: incidentCodes,
+          connectionCodes: categoryCodeMap.connection.codes,
+          performanceCodes: categoryCodeMap.performance.codes,
+          infrastructureCodes: categoryCodeMap.infrastructure.codes,
           granularity: 'all'
         }
       }),
@@ -72,52 +95,4 @@ export const headerApi = dataApi.injectEndpoints({
   })
 })
 
-export const { useIncidentsBySeverityDashboardQuery } = headerApi
-
-export type IncidentByCategory = {
-  [Key in IncidentsBySeverityDataKey]: number
-}
-
-interface BarchartResponse <IncidentByCategory> {
-  network: {
-    hierarchyNode: IncidentByCategory
-  }
-}
-
-export const barchartApi = dataApi.injectEndpoints({
-  endpoints: (build) => ({
-    incidentsByCategoryDashboard: build.query<
-    IncidentByCategory,
-      IncidentFilter
-    >({
-      query: (payload) => ({
-        document: gql`
-        query IncidentDashboardStackChartWidget(
-          $path: [HierarchyNodeInput],
-          $start: DateTime,
-          $end: DateTime,
-          $code: [String]
-        ) {
-          network(start: $start, end: $end) {
-            hierarchyNode(path: $path) {
-            ${Object.entries(incidentSeverities).map(([name, { gt, lte }]) => `
-              ${name}: incidentCount(filter: {severity: {gt: ${gt}, lte: ${lte}}, code: $code})
-            `).join('')}
-            }
-          }
-        }
-        `,
-        variables: {
-          path: payload.path,
-          start: payload.startDate,
-          end: payload.endDate,
-          code: payload.code
-        }
-      }),
-      transformResponse: (response: BarchartResponse<IncidentByCategory>) => 
-        response.network.hierarchyNode
-    })
-  })
-})
-
-export const { useIncidentsByCategoryDashboardQuery } = barchartApi
+export const { useIncidentsBySeverityDashboardQuery } = api

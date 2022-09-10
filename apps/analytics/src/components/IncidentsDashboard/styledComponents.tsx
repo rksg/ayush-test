@@ -9,8 +9,7 @@ type SeveritySpanProps = {
 
 export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => props)`
   background-color: ${(props) => {
-    const color =
-      incidentSeverities[props.severity]?.color ?? ''
+    const color = incidentSeverities[props.severity]?.color
     return cssStr(color)
   }};
   width: 11px;

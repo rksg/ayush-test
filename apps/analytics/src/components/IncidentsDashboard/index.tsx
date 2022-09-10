@@ -2,7 +2,7 @@ import { Row, Col, Typography, Space } from 'antd'
 import { defineMessage, useIntl }      from 'react-intl'
 import AutoSizer                       from 'react-virtualized-auto-sizer'
 
-import { categoryCodeMap, IncidentFilter } from '@acx-ui/analytics/utils'
+import { IncidentFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
   Loader,
@@ -12,25 +12,23 @@ import {
 import { 
   IncidentsDashboardData,
   IncidentsBySeverityDataKey,
-  IncidentByCategory,
-  useIncidentsBySeverityDashboardQuery,
-  useIncidentsByCategoryDashboardQuery
+  useIncidentsBySeverityDashboardQuery
 } from './services'
 import * as UI from './styledComponents'
 
 interface IncidentSeverityWidgetProps {
   severityKey: IncidentsBySeverityDataKey;
-  incidentsCount: number;
-  impactedClients: number;
+  incidentsCount: number | undefined;
+  impactedClients: number | null | undefined;
 }
 
 const { Title, Paragraph, Text } = Typography
 
-const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
+export const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
   const intl = useIntl()
   const { severityKey, incidentsCount, impactedClients } = props
   
-  return <Col span={12}>
+  return <Col span={12} key={severityKey}>
     <Typography>
       <Title level={1}>
         <Row>
@@ -39,7 +37,7 @@ const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
               <UI.SeveritySpan severity={severityKey} />
             </UI.SeverityContainer>
           </Col>
-          <Col>{intl.formatNumber(incidentsCount)}</Col>
+          <Col>{intl.formatNumber(incidentsCount ?? 0)}</Col>
         </Row>
       </Title>
       <Paragraph>
@@ -54,69 +52,6 @@ const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
       </Paragraph>
     </Typography>
   </Col>
-}
-
-interface IncidentSeverityStackChartsWidgetProps { 
-  filters: IncidentFilter;
-  style: React.CSSProperties | undefined
-}
-
-function IncidentSeverityStackChartsWidget (props: IncidentSeverityStackChartsWidgetProps) {
-  const { filters, style } = props
-  const intl = useIntl()
-  const { connection, performance, infrastructure } = categoryCodeMap
-  const connectionQueryResult = useIncidentsByCategoryDashboardQuery({
-    ...filters,
-    code: connection.codes
-  }, {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: { ...data } as IncidentByCategory,
-      ...rest
-    })
-  })
-  const performanceQueryResult = useIncidentsByCategoryDashboardQuery({
-    ...filters,
-    code: performance.codes
-  }, {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: { ...data } as IncidentByCategory,
-      ...rest
-    })
-  })
-  const infrastructureQueryResult = useIncidentsByCategoryDashboardQuery({
-    ...filters,
-    code: infrastructure.codes
-  }, {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: { ...data } as IncidentByCategory,
-      ...rest
-    })
-  })
-
-  const connectionData = getChartData(connectionQueryResult, 'Connection')
-  const performanceData = getChartData(performanceQueryResult, 'Performance')
-  const infrastructureData = getChartData(infrastructureQueryResult, 'Infrastructure')
-  const plotData = [connectionData, performanceData, infrastructureData]
-
-  return <Loader 
-    states={[connectionQueryResult, performanceQueryResult, infrastructureQueryResult ]}>
-    <StackedBarChart 
-      data={plotData}
-      showLabels
-      showTooltip
-      style={style}
-    />
-  </Loader>
-
-  function getChartData (queryResult: typeof connectionQueryResult, category: string) {
-    const { data } = queryResult
-    const series = Object.entries(data).map(([key, value]) => ({ name: key, value }))
-    const plotData = {
-      category: intl.$t(defineMessage({ defaultMessage: '{category}' }), { category }),
-      series
-    }
-    return plotData
-  }
 }
 
 function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
@@ -156,7 +91,52 @@ function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
       incidentsCount: P4Count,
       impactedClients: P4Impact
     }
-  ] 
+  ]
+
+  const { 
+    connectionP1,
+    connectionP2,
+    connectionP3,
+    connectionP4,
+    performanceP1,
+    performanceP2,
+    performanceP3,
+    performanceP4,
+    infrastructureP1,
+    infrastructureP2,
+    infrastructureP3,
+    infrastructureP4
+  } = queryResult.data
+
+  const barChartData = [
+    {
+      category: $t({ defaultMessage: 'Connection' }),
+      series: [
+        { name: 'P1', value: connectionP1 },
+        { name: 'P2', value: connectionP2 },
+        { name: 'P3', value: connectionP3 },
+        { name: 'P4', value: connectionP4 }
+      ]
+    },
+    {
+      category: $t({ defaultMessage: 'Performance' }),
+      series: [
+        { name: 'P1', value: performanceP1 },
+        { name: 'P2', value: performanceP2 },
+        { name: 'P3', value: performanceP3 },
+        { name: 'P4', value: performanceP4 }
+      ]
+    },
+    {
+      category: $t({ defaultMessage: 'Infrastructure' }),
+      series: [
+        { name: 'P1', value: infrastructureP1 },
+        { name: 'P2', value: infrastructureP2 },
+        { name: 'P3', value: infrastructureP3 },
+        { name: 'P4', value: infrastructureP4 }
+      ]
+    }
+  ]
 
   return <Loader states={[queryResult]}>
     <Card 
@@ -174,9 +154,10 @@ function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
                 />)}
             </Row>
             <Space />
-            <IncidentSeverityStackChartsWidget 
-              filters={filters} 
-              style={{ width, height: 130 }}
+            <StackedBarChart 
+              data={barChartData}
+              showTooltip
+              style={{ width, height: 120 }}
             />
           </div>
         }
