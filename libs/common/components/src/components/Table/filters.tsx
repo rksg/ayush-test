@@ -41,7 +41,7 @@ export function getFilteredData <RecordType> (
     if (children?.length) {
       rows.push({ ...row, children })
     } else if (isRowMatching(row)) {
-      rows.push(row)
+      rows.push({ ...row, children: undefined })
     }
     return rows
   }, [] as Record[])
