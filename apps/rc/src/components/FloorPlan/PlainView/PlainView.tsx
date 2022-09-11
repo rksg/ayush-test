@@ -194,7 +194,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[] }) {
             icon={<SearchFitOutlined />}/>
         </Space>
       </UI.ImageButtonsContainer>
-      {floorPlans.length > 1 && <Row>
+      {floorPlans.length > 1 && <Row style={{ backgroundColor: 'var(--acx-neutrals-10' }}>
         <UI.GallaryWrapper>
           <UI.GallaryIcon
             type='default'

@@ -13,17 +13,17 @@ import * as UI   from './styledComponents'
 
 export default function FloorPlan () {
   const params = useParams()
-  const { data } = useFloorPlanListQuery({ params })
+  const responseData = useFloorPlanListQuery({ params })
   const { $t } = useIntl()
 
-  const floorPlans: FloorPlanDto[] = (data as FloorPlanDto[])
+  const floorPlans: FloorPlanDto[] = (responseData?.data as FloorPlanDto[])
 
   const expandClickHandler = () => {
 
   }
 
   return (
-    <Loader states={[{ isLoading: !floorPlans, isFetching: !floorPlans }]}>
+    <Loader states={[responseData]}>
       {floorPlans?.length ?
         <>
           <PlainView floorPlans={floorPlans} />
@@ -43,7 +43,7 @@ export default function FloorPlan () {
         :
         <Empty description={
           <Space><BulbOutlined />
-            <span>
+            <span id='noFloorPlansTemplate'>
               {$t({ defaultMessage:
           'You can place your devices on floor plans or map to view their geographical distribution'
               })}

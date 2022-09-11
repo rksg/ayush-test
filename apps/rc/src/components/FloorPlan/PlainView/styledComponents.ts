@@ -10,6 +10,8 @@ export const StyledSpace = styled(Space)`
     overflow-x: scroll;
     width: 100%;
     height: 80px;
+    overflow-y: hidden;
+    overflow: overlay;
 `
 
 export const StyledCardGrid = styled(Card.Grid)<{ active: boolean }>`
@@ -59,7 +61,7 @@ export const ImageContainerWrapper = styled('div')`
     margin: 30px auto 20px;
     position: relative;
     display: block;
-    overflow: scroll;
+    overflow: overlay;
     width: 100%;
     height: 400px;
     max-width: 100%;
