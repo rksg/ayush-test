@@ -8,7 +8,7 @@ import { DateRange }                                       from '@acx-ui/utils'
 
 import { api } from './services'
 
-import TrafficByVolumeWidget from '.'
+import SwitchesTrafficByVolumeWidget from '.'
 
 const sample = {
   time: [
@@ -18,10 +18,9 @@ const sample = {
     '2022-04-07T10:00:00.000Z',
     '2022-04-07T10:15:00.000Z'
   ],
-  totalTraffic_all: [1, 2, 3, 4, 5],
-  totalTraffic_6: [6, 7, 8, 9, 10],
-  totalTraffic_5: [11, 12, 13, 14, 15],
-  totalTraffic_24: [16, 17, 18, 19, 20]
+  switchTotalTraffic: [1, 2, 3, 4, 5],
+  switchTotalTraffic_tx: [6, 7, 8, 9, 10],
+  switchTotalTraffic_rx: [11, 12, 13, 14, 15]
 }
 
 const sampleNoData = {
@@ -32,13 +31,12 @@ const sampleNoData = {
     '2022-04-07T10:00:00.000Z',
     '2022-04-07T10:15:00.000Z'
   ],
-  totalTraffic_all: [null],
-  totalTraffic_6: [null],
-  totalTraffic_5: [null],
-  totalTraffic_24: [null]
+  switchTotalTraffic: [null],
+  switchTotalTraffic_tx: [null],
+  switchTotalTraffic_rx: [null]
 }
 
-describe('TrafficByVolumeWidget', () => {
+describe('SwitchesTrafficByVolumeWidget', () => {
   mockAutoSizer()
   const filters : AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
@@ -51,36 +49,37 @@ describe('TrafficByVolumeWidget', () => {
   )
 
   it('should render loader', () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+    mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    render( <Provider> <TrafficByVolumeWidget filters={filters}/></Provider>)
+    render( <Provider> <SwitchesTrafficByVolumeWidget filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+    mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
-    const { asFragment } =render( <Provider> <TrafficByVolumeWidget filters={filters}/></Provider>)
+    const { asFragment } =render( 
+      <Provider> <SwitchesTrafficByVolumeWidget filters={filters}/></Provider>)
     await screen.findByText('Traffic by Volume')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
   it('should render error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+    mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
       error: new Error('something went wrong!')
     })
-    render( <Provider> <TrafficByVolumeWidget filters={filters}/> </Provider>)
+    render( <Provider> <SwitchesTrafficByVolumeWidget filters={filters}/> </Provider>)
     await screen.findByText('Something went wrong.')
     jest.resetAllMocks()
   })
   it('should render "No data to display" when data is empty', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+    mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
       data: { network: { hierarchyNode: { timeSeries: sampleNoData } } }
     })
-    render( <Provider> <TrafficByVolumeWidget filters={filters}/> </Provider>)
+    render( <Provider> <SwitchesTrafficByVolumeWidget filters={filters}/> </Provider>)
     expect(await screen.findByText('No data to display')).toBeVisible()
     jest.resetAllMocks()
   })
