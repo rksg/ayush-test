@@ -8,7 +8,7 @@ import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
+import { FilterValue, getFilteredData, RenderFilter, RenderSearch } from './filters'
 import { ResizableColumn }                                          from './ResizableColumn'
 import * as UI                                                      from './styledComponents'
 import { settingsKey, useColumnsState }                             from './useColumnsState'
@@ -219,10 +219,10 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
         <Col span={12}>
           <Space size={12}>
             {Boolean(searchables.length) &&
-              renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
+              RenderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
             }
             {filterables.map((column, i) =>
-              renderFilter<RecordType>(column, i, dataSource, filterValues, setFilterValues)
+              RenderFilter<RecordType>(column, i, dataSource, filterValues, setFilterValues)
             )}
           </Space>
         </Col>

@@ -3,9 +3,14 @@ import React from 'react'
 import { Select }    from 'antd'
 import { IntlShape } from 'react-intl'
 
+import { CloseSymbol } from '@acx-ui/icons'
+
 import * as UI from './styledComponents'
 
+
 import type { TableColumn, RecordWithChildren } from './types'
+
+type Record<RecordType> = RecordWithChildren<RecordType>
 
 export interface FilterValue {
   key: string[]
@@ -35,47 +40,47 @@ export function getFilteredData <RecordType> (
     }
     return true
   }
-  type Record = RecordWithChildren<RecordType>
-  return dataSource?.reduce((rows: Record[], row: Record) => {
-    const children = row.children?.filter(isRowMatching)
+
+  return dataSource?.reduce((rows, row) => {
+    const children = (row as Record<RecordType>).children?.filter(isRowMatching)
     if (children?.length) {
       rows.push({ ...row, children })
     } else if (isRowMatching(row)) {
       rows.push({ ...row, children: undefined })
     }
     return rows
-  }, [] as Record[])
+  }, [] as Record<RecordType>[])
 }
-export function renderSearch <RecordType> (
+export function RenderSearch <RecordType> (
   intl: IntlShape,
   searchables: TableColumn<RecordType, 'text'>[],
   searchValue: string,
   setSearchValue: Function
-): React.ReactNode {
-  return <UI.SearchInput
+) {
+  return (<UI.SearchInput
     onChange={e => setSearchValue(e.target.value)}
     placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
       searchables: searchables.map(column => column.title).join(', ')
     })}
     style={{ width: 292 }}
     value={searchValue}
-    allowClear
-  />
+    allowClear={{ clearIcon: <CloseSymbol /> }}
+  />)
 }
-export function renderFilter <RecordType> (
+export function RenderFilter <RecordType> (
   column: TableColumn<RecordType, 'text'>,
   index: number,
   dataSource: readonly RecordType[] | undefined,
   filterValues: FilterValue,
   setFilterValues: Function
-): React.ReactNode {
+) {
   const key = column.dataIndex as keyof RecordType
   const addToFilter = (data: string[], value: string) => {
     if (!data.includes(value)) {
       data.push(value)
     }
   }
-  return <UI.FilterSelect
+  return (<UI.FilterSelect
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'
@@ -90,8 +95,8 @@ export function renderFilter <RecordType> (
     style={{ width: 200 }}
   >
     {dataSource
-      ?.reduce((data: string[], datum: RecordWithChildren<RecordType>) => {
-        const { children } = datum
+      ?.reduce((data, datum) => {
+        const { children } = datum as Record<RecordType>
         if (children) {
           for (const child of children) {
             addToFilter(data, child[key] as unknown as string)
@@ -107,5 +112,5 @@ export function renderFilter <RecordType> (
         </Select.Option>
       )
     }
-  </UI.FilterSelect>
+  </UI.FilterSelect>)
 }

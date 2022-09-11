@@ -4,9 +4,10 @@ import { render, fireEvent, screen, within } from '@acx-ui/test-utils'
 import { Table, TableProps } from '.'
 
 jest.mock('@acx-ui/icons', ()=> ({
-  CancelCircle: () => <div data-testid='cancel-circle'/>,
+  CancelCircle: () => <div data-testid='cancel-circle' />,
   InformationOutlined: () => <div data-testid='information-outlined'/>,
-  SettingsOutlined: () => <div data-testid='settings-outlined'/>
+  SettingsOutlined: () => <div data-testid='settings-outlined'/>,
+  CloseSymbol: () => <div data-testid='close-symbol'/>
 }), { virtual: true })
 
 jest.mock('react-resizable', () => ({
@@ -362,7 +363,7 @@ describe('Table component', () => {
     ]
 
     it('search input with terms', async () => {
-      render(<Table
+      render(<Table<typeof filteredData[0]>
         columns={filteredColumns}
         dataSource={filteredData}
         rowSelection={{ selectedRowKeys: [] }}
@@ -371,7 +372,7 @@ describe('Table component', () => {
       const input = await screen.findByPlaceholderText('Search Name, Description, Address')
       fireEvent.change(input, { target: { value: validSearchTerm } })
 
-      expect(await screen.findAllByText(validSearchTerm)).toHaveLength(2)
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(2)
 
       const childSearchTerm = 'edna'
       fireEvent.change(input, { target: { value: childSearchTerm } })
@@ -385,7 +386,7 @@ describe('Table component', () => {
     })
 
     it('filtering inputs & searching', async () => {
-      render(<Table
+      render(<Table<typeof filteredData[0]>
         columns={filteredColumns}
         dataSource={filteredData}
         rowSelection={{ selectedRowKeys: [] }}
@@ -417,6 +418,45 @@ describe('Table component', () => {
       expect(after).toHaveLength(1)
       expect(await screen.findByRole('img', { name: 'check', hidden: true }))
         .toBeInTheDocument()
+    })
+
+    it('filtering parent & child', async () => {
+      render(<Table<typeof filteredData[0]>
+        columns={filteredColumns}
+        dataSource={filteredData}
+        rowSelection={{ selectedRowKeys: [] }}
+      />)
+
+      const tbody = (await screen.findAllByRole('rowgroup'))
+        .find(element => element.classList.contains('ant-table-tbody'))!
+
+      expect(tbody).toBeVisible()
+      const body = within(tbody)
+      const before =
+        (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
+      expect(before).toHaveLength(3)
+
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters).toHaveLength(2)
+
+      const nameFilter = filters[0]
+      fireEvent.keyDown(nameFilter, { key: 'Fred Mayers', code: 'Fred Mayers' })
+
+      const testIdFirst = 'option-Fred Mayers'
+      const fredMayersOption = await screen.findAllByTestId(testIdFirst)
+
+      expect(fredMayersOption).toHaveLength(1)
+      fireEvent.click(fredMayersOption[0])
+
+      const testIdSecond = 'option-Edna Wee'
+      const ednaWeeOption = await screen.findAllByTestId(testIdSecond)
+
+      expect(ednaWeeOption).toHaveLength(1)
+      fireEvent.click(ednaWeeOption[0])
+
+      const after =
+      (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
+      expect(after).toHaveLength(2)
     })
   })
 })
