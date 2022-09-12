@@ -5,7 +5,6 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
   <form
     class="ant-form ant-form-horizontal"
   >
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
     <div>
       <button
         class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
@@ -15,14 +14,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           Show less settings
         </span>
       </button>
-=======
-    <div
-      class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollpasePanel-sc-lhsic1-3 wFNOT"
-      style="width: 600px;"
-    >
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
       <div
-        class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollpasePanel-sc-1vnv53e-3 eQdnmT"
+        class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollpasePanel-sc-lhsic1-3 wFNOT"
         style="width: 100%; max-width: 600px;"
       >
         <div
@@ -68,15 +61,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             class="ant-collapse-content ant-collapse-content-active"
           >
             <div
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               class="ant-collapse-content-box"
-=======
-              class="styledComponents__FieldLabel-sc-lhsic1-0 INHbI"
-              width="90px"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
             >
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 iVYgKM"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 INHbI"
                 width="90px"
               >
                 VLAN Pooling:
@@ -228,17 +216,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-            </div>
-            <div
-              class="styledComponents__FieldLabel-sc-lhsic1-0 INHbI"
-              width="90px"
-            >
-              Proxy ARP:
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 iVYgKM"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 INHbI"
                 width="90px"
               >
                 Proxy ARP:
@@ -324,25 +303,15 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             class="ant-collapse-content ant-collapse-content-active"
           >
             <div
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               class="ant-collapse-content-box"
-=======
-              class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
-              width="125px"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
             >
               <div
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 dosfSj"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
                 width="125px"
-=======
-                class="styledComponents__FieldLabel-sc-lhsic1-0 bbwIyS"
-                width="30px"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               >
                 DNS Proxy:
                 <div
-                  class="styledComponents__FieldLabel-sc-1vnv53e-0 jpUEyC"
+                  class="styledComponents__FieldLabel-sc-lhsic1-0 bbwIyS"
                   width="30px"
                 >
                   <div
@@ -402,25 +371,13 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 dosfSj"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
                 width="125px"
-=======
-            </div>
-            <div
-              class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
-              width="125px"
-            >
-              Wi-Fi Calling:
-              <div
-                class="styledComponents__FieldLabel-sc-lhsic1-0 bbwIyS"
-                width="30px"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               >
                 Wi-Fi Calling:
                 <div
-                  class="styledComponents__FieldLabel-sc-1vnv53e-0 jpUEyC"
+                  class="styledComponents__FieldLabel-sc-lhsic1-0 bbwIyS"
                   width="30px"
                 >
                   <div
@@ -461,17 +418,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-            </div>
-            <div
-              class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
-              width="125px"
-            >
-              Client Isolation:
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 dosfSj"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
                 width="125px"
               >
                 Client Isolation:
@@ -511,17 +459,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-            </div>
-            <div
-              class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
-              width="125px"
-            >
-              Anti-spoofing:
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 dosfSj"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
                 width="125px"
               >
                 Anti-spoofing:
@@ -561,15 +500,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-            </div>
-            <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
-            >
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+                class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
               >
                 <div
                   class="ant-row ant-form-item-row"
@@ -580,14 +512,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     <div
                       class="ant-form-item-control-input"
                     >
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       <div
                         class="ant-form-item-control-input-content"
-=======
-                      <span
-                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
-                        id="wlan_advancedCustomization_forceMobileDeviceDhcp"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       >
                         <label
                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
@@ -614,15 +540,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-            </div>
-            <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
-            >
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+                class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
               >
                 <div
                   class="ant-row ant-form-item-row"
@@ -633,14 +552,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     <div
                       class="ant-form-item-control-input"
                     >
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       <div
                         class="ant-form-item-control-input-content"
-=======
-                      <span
-                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
-                        id="wlan_advancedCustomization_enableSyslog"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       >
                         <label
                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
@@ -713,14 +626,10 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
             class="ant-collapse-content ant-collapse-content-active"
           >
             <div
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               class="ant-collapse-content-box"
-=======
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
             >
               <div
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+                class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
               >
                 <div
                   class="ant-row ant-form-item-row"
@@ -731,14 +640,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     <div
                       class="ant-form-item-control-input"
                     >
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       <div
                         class="ant-form-item-control-input-content"
-=======
-                      <span
-                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
-                        id="wlan_advancedCustomization_hideSsid"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       >
                         <label
                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
@@ -765,23 +668,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <h4
-                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1vnv53e-6 fPbHyn bixyod"
+                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
               >
                 Load Control
               </h4>
-=======
-            </div>
-            <h4
-              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
-            >
-              Load Control
-            </h4>
-            <div
-              class="ant-form-item"
-            >
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
                 class="ant-form-item"
               >
@@ -955,15 +846,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-            </div>
-            <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
-            >
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+                class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
               >
                 <div
                   class="ant-row ant-form-item-row"
@@ -974,14 +858,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     <div
                       class="ant-form-item-control-input"
                     >
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       <div
                         class="ant-form-item-control-input-content"
-=======
-                      <span
-                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
-                        id="wlan_advancedCustomization_enableBandBalancing"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       >
                         <label
                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
@@ -1008,15 +886,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-            </div>
-            <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
-            >
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+                class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
               >
                 <div
                   class="ant-row ant-form-item-row"
@@ -1027,14 +898,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     <div
                       class="ant-form-item-control-input"
                     >
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       <div
                         class="ant-form-item-control-input-content"
-=======
-                      <span
-                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
-                        id="wlan_advancedCustomization_clientLoadBalancingEnable"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       >
                         <label
                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
@@ -1064,16 +929,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               <div
                 style="margin-bottom: 30px;"
               >
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                 <span
                   style="display: grid; grid-template-columns: 220px 130px auto; align-items: baseline; margin: 20px 0px;"
-=======
-                <h4
-                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                 >
                   <h4
-                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1vnv53e-6 fPbHyn bixyod"
+                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
                   >
                     Access Control
                   </h4>
@@ -1100,10 +960,9 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </button>
                 </span>
                 <div
-                  class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+                  class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
                   width="175px"
                 >
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                   Layer 2
                   <div
                     style="display: grid; grid-template-columns: 50px 190px auto;"
@@ -1145,20 +1004,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     </div>
                   </div>
                 </div>
-=======
-                  <span>
-                    Select Access Control profile
-                  </span>
-                </button>
-              </span>
-              <div
-                class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
-                width="175px"
-              >
-                Layer 2
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                 <div
-                  class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+                  class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
                   width="175px"
                 >
                   Layer 3
@@ -1202,17 +1049,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     </div>
                   </div>
                 </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-              </div>
-              <div
-                class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
-                width="175px"
-              >
-                Layer 3
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                 <div
-                  class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+                  class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
                   width="175px"
                 >
                   Device & OS
@@ -1256,17 +1094,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     </div>
                   </div>
                 </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-              </div>
-              <div
-                class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
-                width="175px"
-              >
-                Device & OS
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                 <div
-                  class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+                  class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
                   width="175px"
                 >
                   Applications
@@ -1310,17 +1139,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     </div>
                   </div>
                 </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-              </div>
-              <div
-                class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
-                width="175px"
-              >
-                Applications
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                 <div
-                  class="styledComponents__FieldLabel-sc-1vnv53e-0 hwPmPy"
+                  class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
                   width="175px"
                 >
                   Client Rate Limit
@@ -1362,13 +1182,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+                class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
                 style="margin-bottom: 15px;"
-=======
-                class="styledComponents__FieldLabel-sc-lhsic1-0 hGBTBq"
-                width="175px"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               >
                 <div
                   class="ant-row ant-form-item-row"
@@ -1380,55 +1195,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-form-item-control-input"
                     >
                       <div
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                         class="ant-form-item-control-input-content"
-=======
-                        class="ant-form-item-control-input"
-                      >
-                        <div
-                          class="ant-form-item-control-input-content"
-                        >
-                          <button
-                            aria-checked="false"
-                            class="ant-switch"
-                            id="enableClientRateLimit"
-                            role="switch"
-                            type="button"
-                          >
-                            <div
-                              class="ant-switch-handle"
-                            />
-                            <span
-                              class="ant-switch-inner"
-                            />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
-              style="margin-bottom: 15px;"
-            >
-              <div
-                class="ant-row ant-form-item-row"
-              >
-                <div
-                  class="ant-col ant-form-item-control"
-                >
-                  <div
-                    class="ant-form-item-control-input"
-                  >
-                    <div
-                      class="ant-form-item-control-input-content"
-                    >
-                      <span
-                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
-                        id="enableOfdmOnly"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       >
                         <label
                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
@@ -1455,23 +1222,11 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <h4
-                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-1vnv53e-6 fPbHyn bixyod"
+                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
               >
                 Data Rate Control (2.4 GHz & 5 GHz)
               </h4>
-=======
-            </div>
-            <h4
-              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
-            >
-              Data Rate Control (2.4 GHz & 5 GHz)
-            </h4>
-            <div
-              style="display: grid; grid-template-columns: auto 1fr; column-gap: 20px;"
-            >
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
                 style="display: grid; grid-template-columns: auto 1fr; column-gap: 20px;"
               >
@@ -1664,16 +1419,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-            </div>
-            <div
-              class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
-              style="margin-bottom: 15px;"
-            >
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-1vnv53e-1 cqAzZX"
+                class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
                 style="margin-bottom: 15px;"
               >
                 <div
@@ -1685,14 +1432,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     <div
                       class="ant-form-item-control-input"
                     >
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       <div
                         class="ant-form-item-control-input-content"
-=======
-                      <span
-                        class="styledComponents__Label-sc-lhsic1-2 hyMegq"
-                        id="wlan_advancedCustomization_enableNeighborReport"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                       >
                         <label
                           class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
@@ -1932,33 +1673,6 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                         </div>
                       </div>
                     </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-                  </div>
-                  <div
-                    class="ant-form-item-extra"
-                  >
-                    Per radio client count at which an AP will stop converting group addressed data traffic to unicast
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
-              width="190px"
-            >
-              Airtime Decongestion:
-              <div
-                class="ant-form-item"
-                style="margin-bottom: 10px;"
-              >
-                <div
-                  class="ant-row ant-form-item-row"
-                >
-                  <div
-                    class="ant-col ant-form-item-control"
-                  >
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
                     <div
                       class="ant-form-item-extra"
                     >
@@ -1967,17 +1681,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-            </div>
-            <div
-              class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
-              width="190px"
-            >
-              Join RSSI Threshold:
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 eGESUp"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
                 width="190px"
               >
                 Airtime Decongestion:
@@ -2017,17 +1722,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-            </div>
-            <div
-              class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
-              width="190px"
-            >
-              Transient Client Management:
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 eGESUp"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
                 width="190px"
               >
                 Join RSSI Threshold:
@@ -2071,17 +1767,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </div>
                 </div>
               </div>
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
-=======
-            </div>
-            <div
-              class="styledComponents__FieldLabel-sc-lhsic1-0 dKJWxS"
-              width="250px"
-            >
-              Optimized Connectivity Experience (OCE):
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/NetworkMoreSettingsForm.spec.tsx.snap
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 eGESUp"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
                 width="190px"
               >
                 Transient Client Management:
@@ -2122,7 +1809,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
-                class="styledComponents__FieldLabel-sc-1vnv53e-0 eYyOKy"
+                class="styledComponents__FieldLabel-sc-lhsic1-0 dKJWxS"
                 width="250px"
               >
                 Optimized Connectivity Experience (OCE):

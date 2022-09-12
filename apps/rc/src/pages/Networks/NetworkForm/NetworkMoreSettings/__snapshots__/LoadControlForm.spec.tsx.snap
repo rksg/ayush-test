@@ -193,14 +193,8 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
             <div
               class="ant-form-item-control-input-content"
             >
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/LoadControlForm.spec.tsx.snap
               <label
                 class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
-=======
-              <span
-                class="styledComponents__Label-sc-lhsic1-2 hyMegq"
-                id="wlan_advancedCustomization_enableBandBalancing"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/LoadControlForm.spec.tsx.snap
               >
                 <span
                   class="ant-checkbox"
@@ -239,14 +233,8 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
             <div
               class="ant-form-item-control-input-content"
             >
-<<<<<<< HEAD:apps/rc/src/pages/NetworkForm/NetworkMoreSettings/__snapshots__/LoadControlForm.spec.tsx.snap
               <label
                 class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
-=======
-              <span
-                class="styledComponents__Label-sc-lhsic1-2 hyMegq"
-                id="wlan_advancedCustomization_clientLoadBalancingEnable"
->>>>>>> b75c807facc6e7ca008ea823d5b78773270ac048:apps/rc/src/pages/Networks/NetworkForm/NetworkMoreSettings/__snapshots__/LoadControlForm.spec.tsx.snap
               >
                 <span
                   class="ant-checkbox"
