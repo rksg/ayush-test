@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { Wrapper, Anchor, Container } from './styledComponents'
 
-export * from './styledComponents'
+export { Anchor } from './styledComponents'
 
 const { Link } = Anchor
 
