@@ -50,7 +50,7 @@ function VenueEditTabs () {
     } else {
       unblockRef.current?.()
     }
-  }, [editContextData.isDirty])
+  }, [editContextData])
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
