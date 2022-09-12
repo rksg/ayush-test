@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
+exports[`NetworkForm should edit open network successfully 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
@@ -54,7 +54,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
             <h1
               class="ant-typography"
             >
-              Add Network
+              Edit Network
             </h1>
           </span>
         </div>
@@ -62,7 +62,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 jzCCYL"
+    class="styledComponents__Wrapper-sc-1ibvcih-0 dglWqi"
   >
     <div
       class="ant-pro-steps-form"
@@ -120,6 +120,8 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                 >
                   <div
                     class="ant-steps-item-container"
+                    role="button"
+                    tabindex="0"
                   >
                     <div
                       class="ant-steps-item-tail"
@@ -151,6 +153,8 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                 >
                   <div
                     class="ant-steps-item-container"
+                    role="button"
+                    tabindex="0"
                   >
                     <div
                       class="ant-steps-item-tail"
@@ -173,37 +177,6 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                         class="ant-steps-item-title"
                       >
                         Venues
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-steps-item ant-steps-item-wait"
-                >
-                  <div
-                    class="ant-steps-item-container"
-                  >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
-                    >
-                      <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
-                    <div
-                      class="ant-steps-item-content"
-                    >
-                      <div
-                        class="ant-steps-item-title"
-                      >
-                        Summary
                       </div>
                     </div>
                   </div>
@@ -353,7 +326,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                                       class="ant-col ant-form-item-label"
                                     >
                                       <label
-                                        class="ant-form-item-required"
+                                        class=""
                                         for="details_type"
                                         title="Network Type"
                                       >
@@ -369,160 +342,10 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                                         <div
                                           class="ant-form-item-control-input-content"
                                         >
-                                          <div
-                                            class="ant-radio-group ant-radio-group-outline"
-                                            id="details_type"
-                                          >
-                                            <div
-                                              class="ant-space ant-space-vertical"
-                                            >
-                                              <div
-                                                class="ant-space-item"
-                                                style="margin-bottom: 8px;"
-                                              >
-                                                <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                                >
-                                                  <span
-                                                    class="ant-radio"
-                                                  >
-                                                    <input
-                                                      class="ant-radio-input"
-                                                      type="radio"
-                                                      value="psk"
-                                                    />
-                                                    <span
-                                                      class="ant-radio-inner"
-                                                    />
-                                                  </span>
-                                                  <span>
-                                                    Pre-Shared Key (PSK)
-                                                    <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                                    >
-                                                      Require users to enter a passphrase (that you have defined for the network) to connect
-                                                    </div>
-                                                  </span>
-                                                </label>
-                                              </div>
-                                              <div
-                                                class="ant-space-item"
-                                                style="margin-bottom: 8px;"
-                                              >
-                                                <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                                >
-                                                  <span
-                                                    class="ant-radio"
-                                                  >
-                                                    <input
-                                                      class="ant-radio-input"
-                                                      type="radio"
-                                                      value="dpsk"
-                                                    />
-                                                    <span
-                                                      class="ant-radio-inner"
-                                                    />
-                                                  </span>
-                                                  <span>
-                                                    Dynamic Pre-Shared Key (DPSK)
-                                                    <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                                    >
-                                                      Require users to enter a passphrase to connect. The passphrase is unique per device
-                                                    </div>
-                                                  </span>
-                                                </label>
-                                              </div>
-                                              <div
-                                                class="ant-space-item"
-                                                style="margin-bottom: 8px;"
-                                              >
-                                                <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                                >
-                                                  <span
-                                                    class="ant-radio"
-                                                  >
-                                                    <input
-                                                      class="ant-radio-input"
-                                                      type="radio"
-                                                      value="aaa"
-                                                    />
-                                                    <span
-                                                      class="ant-radio-inner"
-                                                    />
-                                                  </span>
-                                                  <span>
-                                                    Enterprise AAA (802.1X)
-                                                    <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                                    >
-                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
-                                                    </div>
-                                                  </span>
-                                                </label>
-                                              </div>
-                                              <div
-                                                class="ant-space-item"
-                                                style="margin-bottom: 8px;"
-                                              >
-                                                <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
-                                                >
-                                                  <span
-                                                    class="ant-radio ant-radio-disabled"
-                                                  >
-                                                    <input
-                                                      class="ant-radio-input"
-                                                      disabled=""
-                                                      type="radio"
-                                                      value="guest"
-                                                    />
-                                                    <span
-                                                      class="ant-radio-inner"
-                                                    />
-                                                  </span>
-                                                  <span>
-                                                    Captive Portal
-                                                    <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                                    >
-                                                      Users are authorized through a captive portal in various methods
-                                                    </div>
-                                                  </span>
-                                                </label>
-                                              </div>
-                                              <div
-                                                class="ant-space-item"
-                                              >
-                                                <label
-                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                                >
-                                                  <span
-                                                    class="ant-radio"
-                                                  >
-                                                    <input
-                                                      class="ant-radio-input"
-                                                      type="radio"
-                                                      value="open"
-                                                    />
-                                                    <span
-                                                      class="ant-radio-inner"
-                                                    />
-                                                  </span>
-                                                  <span>
-                                                    Open Network
-                                                    <div
-                                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                                    >
-                                                      Allow users to access the network without any authentication/security (not recommended)
-                                                    </div>
-                                                  </span>
-                                                </label>
-                                              </div>
-                                            </div>
-                                          </div>
+                                          <h4
+                                            class="ant-typography"
+                                          />
+                                          <label />
                                         </div>
                                       </div>
                                     </div>
@@ -545,7 +368,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                           class="ant-col"
                         >
                           <div
-                            class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
+                            class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                           >
                             <img
                               src="none.png"
@@ -599,7 +422,8 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                               >
                                 <button
                                   aria-checked="false"
-                                  class="ant-switch"
+                                  class="ant-switch ant-switch-disabled"
+                                  disabled=""
                                   id="settings_isCloudpathEnabled"
                                   role="switch"
                                   type="button"
@@ -631,7 +455,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                           class="ant-col"
                         >
                           <div
-                            class="styledComponents__Diagram-sc-1bxt3n4-0 iVGgJh"
+                            class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                           >
                             <img
                               alt="Open Network"
@@ -642,14 +466,6 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                       </div>
                     </div>
                   </div>
-                  <button
-                    class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                    type="button"
-                  >
-                    <span>
-                      Show more settings
-                    </span>
-                  </button>
                 </form>
               </div>
               <div
@@ -720,198 +536,6 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                                     </span>
                                   </div>
                                 </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-              <div
-                class="ant-pro-steps-form-step"
-              >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="summary"
-                >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
-                  <h3
-                    class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                  >
-                    Summary
-                  </h3>
-                  <div
-                    class="ant-row"
-                    style="margin-left: -10px; margin-right: -10px;"
-                  >
-                    <div
-                      class="ant-col"
-                      style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
-                    >
-                      <h4
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        Network Info
-                      </h4>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              title="Network Name:"
-                            >
-                              Network Name:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              title="Description:"
-                            >
-                              Description:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                --
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              title="Type:"
-                            >
-                              Type:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                Open Network
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              title="Use Cloudpath Server:"
-                            >
-                              Use Cloudpath Server:
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                No
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-divider ant-divider-vertical"
-                      role="separator"
-                      style="height: 300px;"
-                    />
-                    <div
-                      class="ant-col"
-                      style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
-                    >
-                      <h4
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        Activated in venues
-                      </h4>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                --
                               </div>
                             </div>
                           </div>
