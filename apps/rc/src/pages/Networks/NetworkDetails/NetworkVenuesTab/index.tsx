@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
-import { ClockCircleOutlined }     from '@ant-design/icons'
-import { Switch, Button, Tooltip } from 'antd'
-import _                           from 'lodash'
-import { defineMessage, useIntl }  from 'react-intl'
+import { ClockCircleOutlined }    from '@ant-design/icons'
+import { Switch, Tooltip }        from 'antd'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Alert,
+  Button,
   Loader,
   showActionModal,
   Table,
@@ -358,7 +359,7 @@ export function NetworkVenuesTab () {
       if (!currentVenue.isAllApGroups && Array.isArray(currentVenue.apGroups) && currentVenue.apGroups.length > 1) {
         vlanString = $t({ defaultMessage: 'Per AP Group' })
       }
-      else if (!currentVenue.isAllApGroups && currentVenue?.apGroups?.length === 1) { 
+      else if (!currentVenue.isAllApGroups && currentVenue?.apGroups?.length === 1) {
         valueSuffix = $t({ defaultMessage: '(Custom)' })
         const firstApGroup = currentVenue.apGroups[0]
 
