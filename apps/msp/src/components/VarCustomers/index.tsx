@@ -6,35 +6,35 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import { 
-  useVarCustomerListQuery, 
-  useInviteCustomerListQuery 
+  useVarCustomerListQuery 
+  // useInviteCustomerListQuery 
 } from '@acx-ui/rc/services'
 import { MspEc, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink }           from '@acx-ui/react-router-dom'
 
-function useInvitaionColumns () {
-  const { $t } = useIntl()
+// function useInvitaionColumns () {
+//   const { $t } = useIntl()
 
-  const columnsPendingInvitaion: TableProps<MspEc>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Account Name' }),
-      dataIndex: 'tenantName',
-      sorter: true,
-      defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data, row) {
-        return (
-          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Account Email' }),
-      dataIndex: 'tenantEmail',
-      sorter: true
-    }
-  ]
-  return columnsPendingInvitaion
-}
+//   const columnsPendingInvitaion: TableProps<MspEc>['columns'] = [
+//     {
+//       title: $t({ defaultMessage: 'Account Name' }),
+//       dataIndex: 'tenantName',
+//       sorter: true,
+//       defaultSortOrder: 'ascend' as SortOrder,
+//       render: function (data, row) {
+//         return (
+//           <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+//         )
+//       }
+//     },
+//     {
+//       title: $t({ defaultMessage: 'Account Email' }),
+//       dataIndex: 'tenantEmail',
+//       sorter: true
+//     }
+//   ]
+//   return columnsPendingInvitaion
+// }
 
 function useCustomerColumns () {
   const { $t } = useIntl()
@@ -100,15 +100,15 @@ function useCustomerColumns () {
   return columns
 }
 
-const invitationPayload = {
-  searchString: '',
-  fields: ['tenantName', 'tenantEmail'],
-  filters: {
-    status: ['DELEGATION_STATUS_INVITED'],
-    delegationType: ['DELEGATION_TYPE_VAR'],
-    isValid: [true]
-  }
-}
+// const invitationPayload = {
+//   searchString: '',
+//   fields: ['tenantName', 'tenantEmail'],
+//   filters: {
+//     status: ['DELEGATION_STATUS_INVITED'],
+//     delegationType: ['DELEGATION_TYPE_VAR'],
+//     isValid: [true]
+//   }
+// }
 
 const varCustomerPayload = {
   searchString: '',
@@ -133,24 +133,24 @@ const varCustomerPayload = {
 export function VarCustomers () {
   const { $t } = useIntl()
 
-  const PendingInvitaion = () => {
-    const tableQuery = useTableQuery({
-      useQuery: useInviteCustomerListQuery,
-      defaultPayload: invitationPayload
-    })
+  // const PendingInvitaion = () => {
+  //   const tableQuery = useTableQuery({
+  //     useQuery: useInviteCustomerListQuery,
+  //     defaultPayload: invitationPayload
+  //   })
 
-    return (
-      <Loader states={[tableQuery]}>
-        <Table
-          columns={useInvitaionColumns()}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='id'
-        />
-      </Loader>
-    )
-  }
+  //   return (
+  //     <Loader states={[tableQuery]}>
+  //       <Table
+  //         columns={useInvitaionColumns()}
+  //         dataSource={tableQuery.data?.data}
+  //         pagination={tableQuery.pagination}
+  //         onChange={tableQuery.handleTableChange}
+  //         rowKey='id'
+  //       />
+  //     </Loader>
+  //   )
+  // }
 
   const VarCustomerTable = () => {
     const tableQuery = useTableQuery({
@@ -185,7 +185,7 @@ export function VarCustomers () {
       <PageHeader
         title={$t({ defaultMessage: 'Pending Invitations' })}
       />
-      <PendingInvitaion />
+      {/* <PendingInvitaion /> */}
       <PageHeader
         title=''
         extra={[
