@@ -1,6 +1,5 @@
 export * from './components/ActionModal'
 export * from './components/Alert'
-export * from './components/Anchor'
 export * from './components/BarChart'
 export * from './components/Boundary'
 export * from './components/Button'
