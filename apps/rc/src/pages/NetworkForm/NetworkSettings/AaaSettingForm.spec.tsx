@@ -215,6 +215,44 @@ describe('NetworkForm', () => {
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
     expect(diagram[1].src).toContain('aaa-proxy.png')
   })
+
+  it('IP address and Port combinations must be unique', async () => {
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
+
+    await fillInBeforeSettings('AAA network test')
+
+    let toggle = screen.getAllByRole('switch', { checked: false })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      await userEvent.click(toggle[2]) // Accounting Service
+    })
+
+    const ipTextbox = screen.getAllByLabelText('IP Address')[0]
+    fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
+
+    const portTextbox = screen.getAllByLabelText('Port')[0]
+    fireEvent.change(portTextbox, { target: { value: '1111' } })
+
+    const secondaryIpTextbox = screen.getAllByLabelText('IP Address')[1]
+    fireEvent.change(secondaryIpTextbox, { target: { value: '192.168.1.1' } })
+
+    const secondaryPortTextbox = screen.getAllByLabelText('Port')[1]
+    fireEvent.change(secondaryPortTextbox, { target: { value: '1111' } })
+
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.blur(secondaryIpTextbox)
+      fireEvent.blur(secondaryPortTextbox)
+    })
+
+    expect(screen.getByText('IP address and Port combinations must be unique')).toBeVisible()
+
+    fireEvent.change(secondaryPortTextbox, { target: { value: '22222' } })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.blur(secondaryPortTextbox)
+    })  
+  })  
 })
 
 

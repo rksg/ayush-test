@@ -79,7 +79,10 @@ describe('Venue Marker Tooltip', () => {
     }
     const onNavigateMock = jest.fn()
 
-    const { asFragment } = render(<VenueMarkerTooltip venue={venue} onNavigate={onNavigateMock} />)
+    const { asFragment } = render(
+      <VenueMarkerTooltip
+        venueMarker={venue}
+        onNavigate={onNavigateMock} />)
     expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelectorAll('svg').length).toEqual(2)
 
@@ -109,7 +112,7 @@ describe('Venue Marker Tooltip', () => {
     }
     const onNavigateMock = jest.fn()
     const { asFragment } = render(
-      <VenueMarkerTooltip venue={venue} onNavigate={onNavigateMock} />)
+      <VenueMarkerTooltip venueMarker={venue} onNavigate={onNavigateMock} />)
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render tooltip without padding', async () => {
@@ -119,7 +122,7 @@ describe('Venue Marker Tooltip', () => {
     }
     const onNavigateMock = jest.fn()
     const { asFragment } = render(
-      <VenueMarkerTooltip venue={venue} onNavigate={onNavigateMock} needPadding={false}/>)
+      <VenueMarkerTooltip venueMarker={venue} onNavigate={onNavigateMock} needPadding={false}/>)
     expect(asFragment()).toMatchSnapshot()
   })
 })

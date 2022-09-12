@@ -5,8 +5,8 @@ import { render, screen }                  from '@acx-ui/test-utils'
 import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 import { DateRange }                       from '@acx-ui/utils'
 
+import { topSwitchesByPoEUsageResponse } from './__tests__/fixtures'
 import { api }                           from './services'
-import { topSwitchesByPoEUsageResponse } from './services.spec'
 
 import SwitchesByPoEUsage from '.'
 
@@ -17,7 +17,7 @@ const filters = {
   range: DateRange.last24Hours
 } as AnalyticsFilter
 
-describe('SwitchesByPoEUsageWidget', () => {
+describe('TopSwitchesByPoEUsageWidget', () => {
   mockAutoSizer()
 
   beforeEach(() =>
