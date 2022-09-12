@@ -1,4 +1,4 @@
-import { ApStatusDetails } from './ap'
+import { ApStatusDetails, ApModel } from './ap'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
 
@@ -48,4 +48,15 @@ export interface VenueDetailHeader {
 		type: string,
 		venueStatus: string
 	}
+}
+
+export interface VenueCapabilities {
+	apModels: ApModel[]
+	version: string
+}
+  
+export interface VenueLed {
+	ledEnabled: boolean
+	model: string,
+	key?: string
 }
