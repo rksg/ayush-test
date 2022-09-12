@@ -18,8 +18,8 @@ import * as UI from './styledComponents'
 
 interface IncidentSeverityWidgetProps {
   severityKey: IncidentsBySeverityDataKey;
-  incidentsCount: number | undefined;
-  impactedClients: number | null | undefined;
+  incidentsCount?: number;
+  impactedClients?: number | null;
 }
 
 const { Title, Paragraph, Text } = Typography
