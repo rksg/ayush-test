@@ -5,7 +5,11 @@ const { registerTsProject } = require('nx/src/utils/register')
 const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
 
 const { mockServer, mockLightTheme } = require('@acx-ui/test-utils')
+const config = require('@acx-ui/config')
 const { setUpIntl } = require('@acx-ui/utils')
+const { mockInstances } = require('@googlemaps/jest-mocks')
+const { Loader } = require('@googlemaps/js-api-loader')
+const { rest } = require('msw')
 
 beforeAll(() => {
   mockServer.listen()
@@ -14,7 +18,16 @@ beforeAll(() => {
     messages: {}
   })
 })
-afterEach(() => mockServer.resetHandlers())
+beforeEach(async () => {
+  const env = require('./apps/main/src/env.json')
+  mockServer.use(rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(env))))
+  await config.initialize()
+})
+afterEach(() => {
+  mockServer.resetHandlers()
+  Loader['instance']?.reset()
+  mockInstances.clearAll()
+})
 afterAll(() => mockServer.close())
 
 cleanupRegisteredPaths()
