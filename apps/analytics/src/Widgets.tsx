@@ -4,11 +4,15 @@ import { Provider }        from '@acx-ui/store'
 
 import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
 import NetworkHistoryWidget           from './components/NetworkHistory'
-import SwitchesByPoEUsageWidget       from './components/SwitchesByPoEUsage'
+import SwitchesTrafficByVolumeWidget  from './components/SwitchesTrafficByVolume'
 import TopSwitchModelsWidget          from './components/SwitchModels'
-import TrafficByApplicationWidget     from './components/TrafficByApplication'
+import TopApplicationsByTrafficWidget from './components/TopApplicationsByTraffic'
+import TopSSIDsByClientWidget         from './components/TopSSIDsByClient'
+import TopSSIDsByTrafficWidget        from './components/TopSSIDsByTraffic'
+import TopSwitchesByErrorWidget       from './components/TopSwitchesByError'
+import TopSwitchesByPoEUsageWidget    from './components/TopSwitchesByPoEUsage'
+import TopSwitchesByTrafficWidget     from './components/TopSwitchesByTraffic'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
-
 
 const widgetsMap = {
   trafficByVolume: ({ filters }: { filters: AnalyticsFilter }) => (
@@ -18,16 +22,31 @@ const widgetsMap = {
     <NetworkHistoryWidget filters={filters} />
   ),
   topApplicationsByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
-    <TrafficByApplicationWidget filters={filters}/>
+    <TopApplicationsByTrafficWidget filters={filters}/>
+  ),
+  topSSIDsByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TopSSIDsByTrafficWidget filters={filters}/>
+  ),
+  topSSIDsByClient: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TopSSIDsByClientWidget filters={filters}/>
   ),
   connectedClientsOverTime: ({ filters }: { filters: AnalyticsFilter }) => (
     <ConnectedClientsOverTimeWidget filters={filters}/>
   ),
   topSwitchesByPoeUsage: ({ filters }: { filters: AnalyticsFilter }) => (
-    <SwitchesByPoEUsageWidget filters={filters}/>
+    <TopSwitchesByPoEUsageWidget filters={filters}/>
+  ),
+  switchTrafficByVolume: ({ filters }: { filters: AnalyticsFilter }) => (
+    <SwitchesTrafficByVolumeWidget filters={filters}/>
+  ),
+  topSwitchesByErrors: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TopSwitchesByErrorWidget filters={filters}/>
   ),
   topSwitchModelsByCount: ({ filters }: { filters: AnalyticsFilter }) => (
     <TopSwitchModelsWidget filters={filters} />
+  ),
+  topSwitchesByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TopSwitchesByTrafficWidget filters={filters}/>
   )
 }
 

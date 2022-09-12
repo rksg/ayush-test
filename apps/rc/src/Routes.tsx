@@ -3,9 +3,9 @@ import { ServiceType }       from '@acx-ui/rc/utils'
 import { rootRoutes, Route } from '@acx-ui/react-router-dom'
 import { Provider }          from '@acx-ui/store'
 
-import { NetworkDetails }                        from './pages/NetworkDetails/NetworkDetails'
-import { NetworkForm }                           from './pages/NetworkForm/NetworkForm'
-import { NetworksTable }                         from './pages/NetworksTable'
+import { NetworkDetails }                        from './pages/Networks/NetworkDetails/NetworkDetails'
+import { NetworkForm }                           from './pages/Networks/NetworkForm/NetworkForm'
+import { NetworksTable }                         from './pages/Networks/NetworksTable'
 import { SelectServiceForm }                     from './pages/Services/SelectServiceForm'
 import { getServiceRoutePath, ServiceOperation } from './pages/Services/serviceRouteUtils'
 import { ServicesTable }                         from './pages/Services/ServicesTable'
@@ -13,16 +13,7 @@ import { ServicesTable }                         from './pages/Services/Services
 export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path='networks' element={<NetworksTable />} />
-      <Route path='networks/create' element={<NetworkForm />} />
-      <Route
-        path='networks/:networkId/network-details/:activeTab'
-        element={<NetworkDetails />}
-      />
-      <Route
-        path='networks/:networkId/:action'
-        element={<NetworkForm />}
-      />
+      <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
     </Route>
   )
@@ -33,6 +24,22 @@ export default function RcRoutes () {
   )
 }
 
+function NetworkRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='networks' element={<NetworksTable />} />
+      <Route path='networks/add' element={<NetworkForm />} />
+      <Route
+        path='networks/:networkId/network-details/:activeTab'
+        element={<NetworkDetails />}
+      />
+      <Route
+        path='networks/:networkId/:action'
+        element={<NetworkForm />}
+      />
+    </Route>
+  )
+}
 
 function ServiceRoutes () {
   return rootRoutes(
