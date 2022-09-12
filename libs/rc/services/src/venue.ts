@@ -8,13 +8,14 @@ import {
   showActivityMessage,
   TableResult,
   Venue,
-  VenueDetailHeader
+  VenueDetailHeader,
+  AP
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue'],
+  tagTypes: ['Venue', 'Device'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -65,6 +66,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Venue', id: 'DETAIL' }]
+    }),
+    meshAps: build.query<TableResult<AP>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+        return {
+          ...venueMeshReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }]
     })
   })
 })
@@ -74,5 +85,6 @@ export const {
   useLazyVenuesListQuery,
   useAddVenueMutation,
   useGetVenueQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useMeshApsQuery
 } = venueApi

@@ -1,8 +1,7 @@
-import { useIntl } from 'react-intl'
+import { VenueMeshApsTable } from './VenueMeshAps'
 
 export function VenueDevicesTab () {
-  const { $t } = useIntl()
   return (
-    <>{$t({ defaultMessage: 'Devices' })}</>
+    <VenueMeshApsTable />
   )
 }

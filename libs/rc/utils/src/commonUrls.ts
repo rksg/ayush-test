@@ -121,5 +121,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+  },
+  getMeshAps: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/aps/mesh'
   }
 }
