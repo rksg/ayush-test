@@ -42,21 +42,22 @@ const list: FloorPlanDto[] = [
 describe('Floor Plans', () => {
   it('Floor Plans should render correctly', async () => {
     mockServer.use(
-      rest.post(
+      rest.get(
         CommonUrlsInfo.getVenueFloorplans.url,
         (req, res, ctx) => res(ctx.json(list))
       )
     )
     const params = {
-      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1'
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
     }
 
     const { asFragment } = render(<Provider><FloorPlan /></Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/venue/:venueId/floor-plan' }
     })
 
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const {
       asFragment: asChildrenFragment

@@ -6,7 +6,7 @@ import * as UI from './styledComponents'
 
 export default function Thumbnail (props: { 
     floorPlan: FloorPlanDto,
-    active: boolean,
+    active: number,
     onFloorPlanSelection: CallableFunction }) {
   const { floorPlan, active, onFloorPlanSelection } = { ...props }
   function selectFloorPlan () {
@@ -14,11 +14,16 @@ export default function Thumbnail (props: {
   }
 
   return <UI.Thumbnail>
-    <UI.StyledCardGrid onClick={selectFloorPlan} hoverable={false} active={active}>
+    <UI.StyledCardGrid
+      onClick={selectFloorPlan}
+      hoverable={false}
+      active={active}
+      data-testid='thumbnailBg'>
       <Image
         style={{ width: '78px', height: '53px' }}
         preview={false}
-        src={floorPlan.imageUrl} />
+        src={floorPlan.imageUrl}
+        alt={`alt-${floorPlan?.name}`}/>
     </UI.StyledCardGrid>
     <UI.ImageDesc key={floorPlan.name} active={active}>
       {floorPlan.name}

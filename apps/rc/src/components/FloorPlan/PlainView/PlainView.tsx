@@ -146,6 +146,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[] }) {
       <UI.ImageContainerWrapper>
         <UI.ImageContainer imageMode={imageMode} ref={imageContainerRef} currentZoom={currentZoom}>
           <img
+            data-testid='floorPlanImage'
             onLoad={() => setImageLoaded(true)}
             style={{ maxHeight: '100%', width: '100%' }}
             ref={imageRef}
@@ -173,21 +174,25 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[] }) {
           }} />}
           size={0}>
           <Button
+            data-testid='image-zoom-in'
             onClick={() => setImageModeHandler(ImageMode.ZOOM_IN)}
             type='link'
             size='middle'
             icon={<MagnifyingGlassPlusOutlined />} />
           <Button
+            data-testid='image-zoom-out'
             onClick={() => setImageModeHandler(ImageMode.ZOOM_OUT)}
             type='link'
             size='middle'
             icon={<MagnifyingGlassMinusOutlined />} />
           <Button
+            data-testid='image-zoom-original'
             onClick={() => setImageModeHandler(ImageMode.ORIGINAL)}
             size='middle'
             type='link'
             icon={<SearchFullOutlined />} />
           <Button
+            data-testid='image-zoom-fit'
             onClick={() => setImageModeHandler(ImageMode.FIT)}
             size='middle'
             type='link'
@@ -207,7 +212,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[] }) {
               return <Thumbnail
                 key={index}
                 floorPlan={floorPlan}
-                active={selectedFloorPlan?.id === floorPlan?.id ? true : false}
+                active={selectedFloorPlan?.id === floorPlan?.id ? 1 : 0}
                 onFloorPlanSelection={onFloorPlanSelectionHandler} />
             })}
           </UI.StyledSpace>

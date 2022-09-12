@@ -6,7 +6,8 @@ import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { VenueDetails } from './VenueDetails'
+import { VenueDetails }     from './VenueDetails'
+import { VenueOverviewTab } from './VenueOverviewTab'
 
 const venueDetailHeaderData = {
   activeNetworkCount: 1,
@@ -19,11 +20,6 @@ const venueDetailHeaderData = {
   }
 }
 
-jest.mock(
-  'rc/Widgets',
-  () => ({ name }: { name: string }) => <div data-testid={`networks-${name}`} title={name} />,
-  { virtual: true })
-
 describe('VenueDetails', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -35,7 +31,7 @@ describe('VenueDetails', () => {
     )
   })
 
-  it('should render correctly', async () => {
+  it('should render correctly venue_overview', async () => {
     const params = {
       tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
@@ -45,8 +41,10 @@ describe('VenueDetails', () => {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
 
-    expect(await screen.findByText('testVenue')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(7)
+    const {
+      asFragment: asChildrenOverviewTabFragment
+    } = render(<VenueOverviewTab/>)
+    expect(asChildrenOverviewTabFragment()).toMatchSnapshot()
 
     expect(asFragment()).toMatchSnapshot()
   })

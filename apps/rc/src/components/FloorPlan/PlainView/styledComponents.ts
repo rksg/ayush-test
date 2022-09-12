@@ -14,7 +14,7 @@ export const StyledSpace = styled(Space)`
     overflow: overlay;
 `
 
-export const StyledCardGrid = styled(Card.Grid)<{ active: boolean }>`
+export const StyledCardGrid = styled(Card.Grid)<{ active: number }>`
     width: 100px;
     padding: 9px 13px 6px;
     border-radius: 4px;
@@ -34,7 +34,7 @@ export const GallaryIcon = styled(Button)`
     height: 68px;
     width: 28px;
 `
-export const ImageDesc = styled('div')<{ active: boolean }>`
+export const ImageDesc = styled('div')<{ active: number }>`
     position: absolute;
     width: 100px;
     height: 20px;

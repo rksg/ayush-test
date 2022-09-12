@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VenueOverviewTab should render Venue Overview contentswitcher 1`] = `
+<DocumentFragment>
+  <div
+    style="text-align: center; padding: 10px 0px;"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+    >
+      <div
+        class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+      >
+        <label
+          class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+        >
+          <span
+            class="ant-radio-button ant-radio-button-checked"
+          >
+            <input
+              checked=""
+              class="ant-radio-button-input"
+              type="radio"
+              value="topology"
+            />
+            <span
+              class="ant-radio-button-inner"
+            />
+          </span>
+          <span>
+            Topology
+          </span>
+        </label>
+        <label
+          class="ant-radio-button-wrapper"
+        >
+          <span
+            class="ant-radio-button"
+          >
+            <input
+              class="ant-radio-button-input"
+              type="radio"
+              value="floor-plans"
+            />
+            <span
+              class="ant-radio-button-inner"
+            />
+          </span>
+          <span>
+            Floor Plans
+          </span>
+        </label>
+      </div>
+    </div>
+  </div>
+  <span>
+    Topology
+  </span>
+</DocumentFragment>
+`;
+
+exports[`VenueOverviewTab should render component with default selection 1`] = `
+<DocumentFragment>
+  <div
+    style="text-align: center; padding: 10px 0px;"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+    >
+      <div
+        class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+      >
+        <label
+          class="ant-radio-button-wrapper"
+        >
+          <span
+            class="ant-radio-button"
+          >
+            <input
+              class="ant-radio-button-input"
+              type="radio"
+              value="topology"
+            />
+            <span
+              class="ant-radio-button-inner"
+            />
+          </span>
+          <span>
+            Topology
+          </span>
+        </label>
+        <label
+          class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+        >
+          <span
+            class="ant-radio-button ant-radio-button-checked"
+          >
+            <input
+              checked=""
+              class="ant-radio-button-input"
+              type="radio"
+              value="floor-plans"
+            />
+            <span
+              class="ant-radio-button-inner"
+            />
+          </span>
+          <span>
+            Floor Plans
+          </span>
+        </label>
+      </div>
+    </div>
+  </div>
+  <span>
+    Floor Plans
+  </span>
+</DocumentFragment>
+`;
