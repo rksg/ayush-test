@@ -35,7 +35,7 @@ export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'tooltip'
+    type?: 'tall' | 'compact' | 'tooltip' | 'form'
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
@@ -195,11 +195,11 @@ function Table <RecordType extends object> (
         children: col.children?.map(getResizeProps)
       })): columns) as typeof columns}
       components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
-      options={props?.options ?? { setting, reload: false, density: false }}
+      options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
       scroll={props.scroll ? props.scroll : { x: 'max-content' }}
       rowSelection={rowSelection}
-      pagination={(type === 'tall' && props.pagination !== false
+      pagination={(type === 'tall'
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
         : false)}
       columnEmptyText={false}

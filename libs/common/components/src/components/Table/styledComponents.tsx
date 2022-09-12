@@ -104,7 +104,7 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
 `
 
 type StyledTable = {
-  $type: 'tall' | 'compact' | 'tooltip',
+  $type: 'tall' | 'compact' | 'tooltip' | 'form',
   $hasRowSelection: boolean
 }
 
@@ -264,10 +264,34 @@ const tooltipStyle = css`
   }
 `
 
+const formStyle = css`
+  .ant-pro-table {
+    .ant-table {
+      &-thead > tr:first-child > th,
+      &-thead > tr:last-child > th {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-5-line-height);
+        font-weight: var(--acx-body-font-weight-bold);
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+
+      &-tbody > tr > td {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+    }
+  }
+`
+
 const styles = {
   tall: tallStyle,
   compact: compactStyle,
-  tooltip: tooltipStyle
+  tooltip: tooltipStyle,
+  form: formStyle
 }
 
 export const Wrapper = styled.div<StyledTable>`

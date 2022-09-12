@@ -63,6 +63,15 @@ describe('Table component', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('renders form table', () => {
+    const { asFragment } = render(<Table
+      type='form'
+      columns={basicColumns}
+      dataSource={basicData}
+    />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should render multi select table and render action buttons correctly', async () => {
     const [onEdit, onDelete] = [jest.fn(), jest.fn()]
     const actions = [

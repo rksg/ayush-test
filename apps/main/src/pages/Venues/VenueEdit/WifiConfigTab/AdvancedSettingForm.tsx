@@ -48,8 +48,8 @@ export function AdvancedSettingForm () {
   const [modelOptions, setModelOptions] = useState(defaultOptionArray)
   const [supportModelOptions, setSupportModelOptions] = useState(defaultOptionArray)
 
-  // set default data when switching sub tab
   useEffect(() => {
+    // set default data when switching sub tab
     const tab = activeSubTab as keyof AdvancedSettingContext['tempData']
     const data = editContextData?.tempData?.[tab] || []
     setEditContextData({
@@ -108,7 +108,6 @@ export function AdvancedSettingForm () {
         options={modelOptions}
         placeholder={$t({ defaultMessage: 'Select Model...' })}
         onChange={handleChange}
-        style={{ width: '120px' }}
       />)
     }
   }, {
@@ -135,6 +134,7 @@ export function AdvancedSettingForm () {
       role='deleteBtn'
       ghost={true}
       icon={<DeleteOutlined />}
+      style={{ height: '16px' }}
       onClick={() => handleDelete(row.model)}
     />
   }]
@@ -203,15 +203,13 @@ export function AdvancedSettingForm () {
     >
       <StepsForm.StepForm>
         <Row>
-          <Col span={8}>
+          <Col span={7}>
             <Loader states={[{ isLoading: venueLed.isLoading || venueCaps.isLoading }]}>
               <Space size={8} direction='vertical'>
                 <Table
                   columns={columns}
                   dataSource={tableData}
-                  pagination={false}
-                  options={false}
-                  size='small'
+                  type='form'
                 />
                 <Button
                   onClick={handleAdd}
@@ -220,7 +218,7 @@ export function AdvancedSettingForm () {
                       || !modelOptions.length
                       || !!tableData?.find((item) => !item.model)
                   }
-                  style={{ margin: '8px 0', padding: 0 }}>
+                  style={{ fontSize: '12px' }}>
                   {$t({ defaultMessage: 'Add Model' })}
                 </Button>
               </Space>
