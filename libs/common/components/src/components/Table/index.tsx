@@ -59,7 +59,7 @@ const defaultPagination = {
   pageSizeOptions: [5, 10, 20, 25, 50, 100],
   position: ['bottomCenter'],
   showTotal: false
-} as const
+}
 
 function useSelectedRowKeys <RecordType> (
   rowSelection?: TableProps<RecordType>['rowSelection']
@@ -169,7 +169,10 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     : column
   )
 
-  const filterables = columns.filter(column => column.filterable)
+  const filterables = columns.filter(column => {
+    console.log(column.dataIndex, column.filterable)
+    return column.filterable
+  })
   const searchables = columns.filter(column => column.searchable)
   const activeFilters = filterables.filter(column => {
     const key = column.dataIndex as keyof RecordType
