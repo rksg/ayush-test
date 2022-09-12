@@ -20,19 +20,16 @@ function getCols ({ $t }: ReturnType<typeof useIntl>) {
     {
       title: $t({ defaultMessage: 'Networking Devices' }),
       dataIndex: 'networkDevices',
-      key: 'networkDevices',
-      width: 162
+      key: 'networkDevices'
     },
     {
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
-      key: 'clients',
-      width: 162
+      key: 'clients'
     }
   ]
   return columns
 }
-
 
 interface VenueMarkerTooltipProps {
   onNavigate?: (params: NavigateProps) => void;
@@ -40,9 +37,10 @@ interface VenueMarkerTooltipProps {
 }
 
 export function VenueMarkerTooltip (
-  props: { venue: VenueMarkerOptions } & VenueMarkerTooltipProps) {
+  props: { venueMarker: VenueMarkerOptions } & VenueMarkerTooltipProps) {
   const { $t } = useIntl()
   const {
+    name,
     venueId,
     apStat,
     switchStat,
@@ -50,7 +48,7 @@ export function VenueMarkerTooltip (
     switchesCount,
     clientsCount,
     switchClientsCount
-  } = props.venue
+  } = props.venueMarker
 
   const { onNavigate, needPadding = true } = props
   const deviceConnectionStatusColors = getDeviceConnectionStatusColors()
@@ -119,7 +117,7 @@ export function VenueMarkerTooltip (
     <UI.Wrapper needPadding={needPadding}>
       <UI.InfoWindowHeader>
         <UI.Title onClick={() => onNavigate && onNavigate({ venueId, path: 'overview' })}>
-          {props.venue.name}
+          {name}
         </UI.Title>
       </UI.InfoWindowHeader>
       <Table

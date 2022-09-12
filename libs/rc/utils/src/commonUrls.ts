@@ -133,5 +133,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getNetworkDeepList: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/get/deep'
+  },
+  validateRadius: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   }
 }

@@ -76,13 +76,17 @@ const CustomButtonsModal = () => {
       buttons: [{
         text: 'cancel',
         type: 'link', // TODO: will change after DS update
-        key: 'cancel',
-        handler () {}
+        key: 'cancel'
       }, {
         text: 'Use existing server configuration',
         type: 'primary',
         key: 'existing',
-        handler () {}
+        closeAfterAction: true,
+        handler () {
+          return new Promise(resolve => {
+            setTimeout(resolve, 1000)
+          })
+        }
       }, {
         text: 'Override the conflicting server configuration',
         type: 'primary',
