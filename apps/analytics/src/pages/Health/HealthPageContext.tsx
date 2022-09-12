@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useEffect, useRef } from 'react'
+import { createContext, ReactNode, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { isEqual } from 'lodash'
 
@@ -16,21 +16,26 @@ export const HealthPageContext = createContext(null as unknown as AnalyticsFilte
 })
 
 export function HealthPageContextProvider (props: { children: ReactNode }) {
-  const filters = useAnalyticsFilter()
-  const timeWindow = useRef<TimeWindow>([filters.startDate, filters.endDate])
+  const analyticsFilter = useAnalyticsFilter()
+  const { startDate, endDate } = analyticsFilter.filters
+  const timeWindow = useRef<TimeWindow>([startDate, endDate])
 
   useEffect(() => {
-    const nextTimeWindow: TimeWindow = [filters.startDate, filters.endDate]
+    const nextTimeWindow: TimeWindow = [startDate, endDate]
     if (isEqual(timeWindow.current, nextTimeWindow)) return
 
     timeWindow.current = nextTimeWindow
-  }, [filters.startDate, filters.endDate])
+  }, [startDate, endDate])
 
   const setTimeWindow = useCallback((nextTimeWindow: TimeWindow) => {
     timeWindow.current = nextTimeWindow
   }, [])
 
-  const context = { ...filters, setTimeWindow, timeWindow: timeWindow.current }
+  const context = useMemo(() => ({
+    ...analyticsFilter.filters,
+    setTimeWindow,
+    timeWindow: timeWindow.current
+  }), [analyticsFilter.filters, setTimeWindow, timeWindow])
 
   return <HealthPageContext.Provider {...props} value={context} />
 }
