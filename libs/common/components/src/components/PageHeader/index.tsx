@@ -17,7 +17,7 @@ export interface PageHeaderProps extends Omit<AntPageHeaderProps,
   title: string,
   titleExtra?: React.ReactNode,
   breadcrumb?: { text: string, link: string }[],
-  ellipsis: boolean
+  ellipsis?: boolean
 }
 
 function PageHeader (props: PageHeaderProps) {
