@@ -1,13 +1,9 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }            from '@acx-ui/analytics/utils'
-import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
-import { Card }                     from '@acx-ui/components'
-import { Loader }                   from '@acx-ui/components'
-import { MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { cssStr }                   from '@acx-ui/components'
-import { formatter }                from '@acx-ui/utils'
+import { getSeriesData, AnalyticsFilter }                         from '@acx-ui/analytics/utils'
+import { Card, Loader, MultiLineTimeSeriesChart, cssStr, NoData } from '@acx-ui/components'
+import { formatter }                                              from '@acx-ui/utils'
 
 import {
   useTrafficByVolumeQuery,
@@ -43,12 +39,14 @@ function TrafficByVolumeWidget ({ filters }: { filters : AnalyticsFilter }) {
       <Card title={$t({ defaultMessage: 'Traffic by Volume' })} >
         <AutoSizer>
           {({ height, width }) => (
-            <MultiLineTimeSeriesChart
-              style={{ width, height }}
-              data={queryResults.data}
-              lineColors={lineColors}
-              dataFormatter={formatter('bytesFormat')}
-            />
+            queryResults.data.length ?
+              <MultiLineTimeSeriesChart
+                style={{ width, height }}
+                data={queryResults.data}
+                lineColors={lineColors}
+                dataFormatter={formatter('bytesFormat')}
+              />
+              : <NoData/>
           )}
         </AutoSizer>
       </Card>

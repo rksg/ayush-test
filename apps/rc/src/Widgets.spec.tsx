@@ -21,7 +21,7 @@ jest.mock('./components/ClientsDonut', () => ({
 }))
 jest.mock('./components/Map', () => ({
   __esModule: true,
-  Map: () => <div>Map Widget</div>
+  default: () => <div>Map Widget</div>
 }))
 
 describe('Wi-Fi Widgets', () => {
