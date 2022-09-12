@@ -10,9 +10,11 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateNetworkMutation,
+import { 
+  useAddNetworkMutation,
   useGetNetworkQuery,
-  useUpdateNetworkMutation } from '@acx-ui/rc/services'
+  useUpdateNetworkMutation
+} from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   NetworkSaveData
@@ -55,7 +57,7 @@ export function NetworkForm () {
   const cloneMode = params.action === 'clone'
   const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
-  const [createNetwork] = useCreateNetworkMutation()
+  const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
   const [enableMoreSettings, setEnabled] = useState(false)
 
@@ -97,7 +99,7 @@ export function NetworkForm () {
   const handleAddNetwork = async () => {
     try {
       const payload = _.omit(saveState, 'id') // omit id to handle clone
-      await createNetwork({ params: { tenantId: params.tenantId }, payload: payload }).unwrap()
+      await addNetwork({ params: { tenantId: params.tenantId }, payload: payload }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -122,7 +124,7 @@ export function NetworkForm () {
     <>
       <PageHeader
         title={editMode ?
-          $t({ defaultMessage: 'Edit Network' }) : $t({ defaultMessage: 'Create New Network' })}
+          $t({ defaultMessage: 'Edit Network' }) : $t({ defaultMessage: 'Add Network' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}

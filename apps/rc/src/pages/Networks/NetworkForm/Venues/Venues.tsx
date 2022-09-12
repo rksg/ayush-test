@@ -11,8 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useVenueListQuery }    from '@acx-ui/rc/services'
-import { useTableQuery, Venue } from '@acx-ui/rc/utils'
+import { useNetworkVenueListQuery } from '@acx-ui/rc/services'
+import { useTableQuery, Venue }     from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -60,7 +60,7 @@ export function Venues () {
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
-    useQuery: useVenueListQuery,
+    useQuery: useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
     defaultPayload
   })
@@ -191,25 +191,30 @@ export function Venues () {
 
   const columns: TableProps<Venue>['columns'] = [
     {
+      key: 'name',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'name',
       sorter: true
     },
     {
+      key: 'city',
       title: $t({ defaultMessage: 'City' }),
       dataIndex: 'city',
       sorter: true
     },
     {
+      key: 'country',
       title: $t({ defaultMessage: 'Country' }),
       dataIndex: 'country',
       sorter: true
     },
     {
+      key: 'network',
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: ['networks', 'count']
     },
     {
+      key: 'aggregatedApStatus',
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       dataIndex: 'aggregatedApStatus',
       render: function (data, row) {
@@ -220,6 +225,7 @@ export function Venues () {
       }
     },
     {
+      key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       render: function (data, row) {
@@ -233,22 +239,25 @@ export function Venues () {
       }
     },
     {
+      key: 'aps',
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
-      width: '80px',
+      width: 80,
       render: function (data, row) {
         return row.activated.isActivated ? 'All APs' : ''
       }
     },
     {
+      key: 'radios',
       title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
-      width: '140px',
+      width: 140,
       render: function (data, row) {
         return row.activated.isActivated ? '2.4 GHz / 5 GHz' : ''
       }
     },
     {
+      key: 'scheduling',
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {
