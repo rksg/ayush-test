@@ -143,7 +143,7 @@ test('should render Switches Traffic by Volume widget', async () => {
   mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
     data: { network: { hierarchyNode: { timeSeries: switchTrafficByVolumeSample } } }
   })
-  render( 
+  render(
     <Provider>
       <AnalyticsWidgets name='switchTrafficByVolume' filters={filters}/>
     </Provider>)

@@ -105,7 +105,7 @@ export interface NetworkVenue {
   },
   isAllApGroups: boolean,
   allApGroupsRadio: string,
-  allApGroupsRadioTypes: string[],
+  allApGroupsRadioTypes?: string[],
   venueId: string,
-  networkId: string
+  networkId?: string
 }
