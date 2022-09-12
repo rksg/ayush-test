@@ -7,6 +7,14 @@ import { api }              from './services'
 
 import Header, { Header as DumbHeader } from './index'
 
+jest.mock('../../components/NetworkFilter', () => () => <div>network filter</div>)
+
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  useAnalyticsFilter: () => ({
+    filters: { path: [{ type: 'network', name: 'Network' }] }
+  })
+}))
 describe('Analytics dumb header', () => {
   const props = {
     title: 'title',
@@ -45,6 +53,6 @@ describe('Analytics connected header', () => {
     })
     render(<Provider><Header title={'Title'}/></Provider>)
     await screen.findByText('Title')
-    expect(screen.getByTitle('Entire Organization')).toHaveTextContent('Type:')
+    expect(screen.getByTitle('Organization')).toHaveTextContent('Type:')
   })
 })

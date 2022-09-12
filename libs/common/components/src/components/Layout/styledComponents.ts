@@ -164,7 +164,7 @@ export const Content = styled.div`
     height: var(--acx-content-vertical-space);
     width: 100%;
     background-color: var(--acx-primary-white);
-    z-index: 4;
+    z-index: 5;
   }
 `
 

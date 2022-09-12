@@ -2,11 +2,12 @@ import { Table, TableProps } from '..'
 
 const basicColumns: TableProps<typeof basicData[0]>['columns'] = [
   {
+    key: 'name',
     title: 'Name',
-    dataIndex: 'name',
-    key: 'name'
+    dataIndex: 'name'
   },
   {
+    key: 'math',
     title: 'Math Score',
     dataIndex: 'math',
     sorter: {
@@ -15,6 +16,7 @@ const basicColumns: TableProps<typeof basicData[0]>['columns'] = [
     }
   },
   {
+    key: 'english',
     title: 'English Score',
     dataIndex: 'english',
     sorter: {
@@ -23,6 +25,7 @@ const basicColumns: TableProps<typeof basicData[0]>['columns'] = [
     }
   },
   {
+    key: 'chinese',
     title: 'Chinese Score',
     dataIndex: 'chinese',
     sorter: {

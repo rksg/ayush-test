@@ -1,14 +1,18 @@
 import { gql }               from 'graphql-request'
 import { MessageDescriptor } from 'react-intl'
 
-import { dataApi }               from '@acx-ui/analytics/services'
+import { dataApi } from '@acx-ui/analytics/services'
 import {
   IncidentFilter,
   incidentCodes,
   Incident,
-  noDataSymbol,
-  transformIncidentQueryResult
+  transformIncidentQueryResult,
+  shortDescription,
+  formattedNodeType,
+  formattedPath,
+  impactValues
 } from '@acx-ui/analytics/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import { durationValue } from './utils'
 
@@ -32,9 +36,8 @@ const listQueryProps = {
 }
 
 export type AdditionalIncidentTableFields = {
-  children?: Incident[],
   duration: number,
-  description: string | MessageDescriptor,
+  description: string,
   category: string | MessageDescriptor,
   subCategory: string | MessageDescriptor,
   shortDescription: string | MessageDescriptor,
@@ -42,43 +45,71 @@ export type AdditionalIncidentTableFields = {
   incidentType: string | MessageDescriptor,
   scope: string,
   type: string,
+  clientImpact: string | number,
+  impactedClients: string | number
 }
 
-export type IncidentTableRow = Incident & AdditionalIncidentTableFields
+export type IncidentTableRow = Incident
+& AdditionalIncidentTableFields 
+& {
+  children?: IncidentTableRow[]
+}
 
 export const transformData = (incident: Incident): IncidentTableRow => {
   const { relatedIncidents } = incident
-  const children = relatedIncidents 
+  const intl = getIntl()
+  
+  const children = relatedIncidents
   && relatedIncidents.map((child) => {
     const childDuration = durationValue(child.startTime, child.endTime)
-    const childDescription = noDataSymbol
-    const childScope = noDataSymbol
-    const childType = noDataSymbol
     const childIncident = transformIncidentQueryResult(child)
 
+    const partialChildIncident = {
+      ...childIncident
+    }
+
+    const impactValueObj = impactValues(intl, 'client', partialChildIncident)
+    const childClientImpact = impactValueObj['clientImpactRatioFormatted']
+    const childClientCount = impactValueObj['clientImpactCountFormatted']
+    const childDescription = shortDescription(partialChildIncident, intl)
+    const childScope = formattedPath(child.path, child.sliceValue, intl)
+    const childType = formattedNodeType(child.sliceType, intl)
+
     return {
-      ...childIncident,
+      ...partialChildIncident,
+      category: intl.$t(partialChildIncident.category),
+      subCategory: intl.$t(partialChildIncident.subCategory),
       children: undefined,
       duration: childDuration,
       description: childDescription,
       scope: childScope,
-      type: childType
+      type: childType,
+      clientImpact: childClientImpact,
+      impactedClients: childClientCount
     }
   })
 
   const incidentInfo = transformIncidentQueryResult(incident)
   const duration = durationValue(incident.startTime, incident.endTime)
-  const description = noDataSymbol
-  const scope = noDataSymbol
-  const type = noDataSymbol
+
+  const impactValueObj = impactValues(intl, 'client', incidentInfo)
+  const clientImpact = impactValueObj['clientImpactRatioFormatted']
+  const impactedClients = impactValueObj['clientImpactCountFormatted']
+  const description = shortDescription(incidentInfo, intl)
+  const scope = formattedPath(incident.path, incident.sliceValue, intl)
+  const type = formattedNodeType(incident.sliceType, intl) 
 
   return {
     ...incidentInfo,
+    category: intl.$t(incidentInfo.category),
+    subCategory: intl.$t(incidentInfo.subCategory),
     children: (children && children?.length > 0) ? children : undefined,
     duration,
     description,
     scope,
-    type
+    type,
+    clientImpact,
+    impactedClients
   }
 }
 

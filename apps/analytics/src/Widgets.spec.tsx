@@ -4,9 +4,12 @@ import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { topSwitchesByPoEUsageResponse } from './components/SwitchesByPoEUsage/__tests__/fixtures'
-import { trafficByApplicationFixture }   from './components/TrafficByApplication/__tests__/fixtures'
-import AnalyticsWidgets                  from './Widgets'
+import { topApplicationByTrafficFixture } from './components/TopApplicationsByTraffic/__tests__/fixtures'
+import { topSSIDsByClientFixture }        from './components/TopSSIDsByClient/__tests__/fixtures'
+import { topSSIDsByTrafficFixture }       from './components/TopSSIDsByTraffic/__tests__/fixtures'
+import { topSwitchesByPoEUsageResponse }  from './components/TopSwitchesByPoEUsage/__tests__/fixtures'
+import { topSwitchesByTrafficResponse }   from './components/TopSwitchesByTraffic/__tests__/fixtures'
+import AnalyticsWidgets                   from './Widgets'
 
 const sample = {
   time: [
@@ -65,6 +68,20 @@ const connectedClientsOverTimeSample = {
   uniqueUsers_5: [11, 12, 13, 14, 15],
   uniqueUsers_24: [16, 17, 18, 19, 20]
 }
+
+const switchTrafficByVolumeSample = {
+  time: [
+    '2022-04-07T09:15:00.000Z',
+    '2022-04-07T09:30:00.000Z',
+    '2022-04-07T09:45:00.000Z',
+    '2022-04-07T10:00:00.000Z',
+    '2022-04-07T10:15:00.000Z'
+  ],
+  switchTotalTraffic: [1, 2, 3, 4, 5],
+  switchTotalTraffic_tx: [6, 7, 8, 9, 10],
+  switchTotalTraffic_rx: [11, 12, 13, 14, 15]
+}
+
 test('should render Traffic by Volume widget', async () => {
 
   mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
@@ -81,6 +98,18 @@ test('should render Network History widget', async () => {
   render( <Provider> <AnalyticsWidgets name='networkHistory' filters={filters}/></Provider>)
   expect(await screen.findByText('Network History')).not.toBe(null)
 })
+
+test('should render Top Switches by Traffic widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'SwitchesByTraffic', {
+    data: topSwitchesByTrafficResponse
+  })
+  render(
+    <Provider>
+      <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
+    </Provider>)
+  expect(await screen.findByText('Top 5 Switches by Traffic')).not.toBe(null)
+})
+
 
 test('should render Connected Clients Over Time widget', async () => {
   mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
@@ -110,12 +139,43 @@ test('should render Top 5 Switch Models widget', async () => {
   expect(await screen.findByText('Top 5 Switch Models')).not.toBe(null)
 })
 
+test('should render Switches Traffic by Volume widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
+    data: { network: { hierarchyNode: { timeSeries: switchTrafficByVolumeSample } } }
+  })
+  render(
+    <Provider>
+      <AnalyticsWidgets name='switchTrafficByVolume' filters={filters}/>
+    </Provider>)
+  expect(await screen.findByText('Traffic by Volume')).not.toBe(null)
+})
+
 test('should render Traffic By Application Widget', async () => {
-  mockGraphqlQuery(dataApiURL, 'TrafficByApplicationWidget', {
-    data: { network: { hierarchyNode: trafficByApplicationFixture } }
+  mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficWidget', {
+    data: { network: { hierarchyNode: topApplicationByTrafficFixture } }
   })
   render( <Provider> <AnalyticsWidgets
     name='topApplicationsByTraffic'
     filters={filters} /></Provider>)
   await screen.findByText('Top 5 Applications by Traffic')
+})
+
+test('should render Traffic By SSID Widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'TopSSIDsByTrafficWidget', {
+    data: { network: { hierarchyNode: topSSIDsByTrafficFixture } }
+  })
+  render( <Provider> <AnalyticsWidgets
+    name='topSSIDsByTraffic'
+    filters={filters} /></Provider>)
+  await screen.findByText('Top 5 SSIDs by Traffic')
+})
+
+test('should render Clients By SSID Widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'TopSSIDsByClientWidget', {
+    data: { network: { hierarchyNode: topSSIDsByClientFixture } }
+  })
+  render( <Provider> <AnalyticsWidgets
+    name='topSSIDsByClient'
+    filters={filters} /></Provider>)
+  await screen.findByText('Top 5 SSIDs by Clients')
 })

@@ -3,7 +3,7 @@
 exports[`NetworkForm should create AAA network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
+    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -54,7 +54,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
             <h1
               class="ant-typography"
             >
-              Create New Network
+              Add Network
             </h1>
           </span>
         </div>
