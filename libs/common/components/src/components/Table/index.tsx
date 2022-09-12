@@ -170,7 +170,6 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
   )
 
   const filterables = columns.filter(column => {
-    console.log(column.dataIndex, column.filterable)
     return column.filterable
   })
   const searchables = columns.filter(column => column.searchable)
