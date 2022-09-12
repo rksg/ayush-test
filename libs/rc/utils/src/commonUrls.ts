@@ -126,8 +126,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
   },
-  getDevicesList: {
+  validateRadius: {
     method: 'post',
-    url: '/api/tenant/:tenantId/venue/:venueId/devices'
+    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   }
 }
