@@ -4,11 +4,12 @@ import { Card }              from '@acx-ui/components'
 import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import { Provider }          from '@acx-ui/store'
 
-import AlarmWidget from './components/AlarmWidget'
-import Clients     from './components/ClientsDonut'
-import Devices     from './components/DevicesDonut'
-import Map         from './components/Map'
-import Venues      from './components/VenuesDonut'
+import AlarmWidget     from './components/AlarmWidget'
+import Clients         from './components/ClientsDonut'
+import Devices         from './components/DevicesDonut'
+import Map             from './components/Map'
+import VenueAlarmDonut from './components/VenueAlarmDonut'
+import Venues          from './components/VenuesDonut'
 
 const SPLIT_NAME = 'sara-demo-toggle' // this is sample splitName, needs to be switched based on the epic level FF name
 
@@ -18,6 +19,8 @@ const widgetsMap = {
   venues: () => <Venues />,
   devices: () => <Devices />,
   clients: () => <Clients />,
+  // Venue Overview Page Widgets
+  venueAlarmDonut: () => <VenueAlarmDonut />,
   none: null
 }
 

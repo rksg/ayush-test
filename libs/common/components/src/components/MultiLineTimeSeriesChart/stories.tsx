@@ -7,9 +7,7 @@ import ReactECharts         from 'echarts-for-react'
 
 import { TimeStamp } from '@acx-ui/types'
 
-
 import { MultiLineTimeSeriesChart } from '.'
-
 
 const getData = () => {
   const base = +new Date(2020, 9, 29)
