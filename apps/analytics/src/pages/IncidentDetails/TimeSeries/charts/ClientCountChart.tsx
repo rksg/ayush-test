@@ -28,7 +28,8 @@ export const ClientCountChart = ({ data }: { data: ChartsData }) => {
   return <Card
     key={'clientCountChart'}
     title={$t({ defaultMessage: 'CLIENTS' })}
-    setHeight={true}
+    isIncidentChart={true}
+    type={'no-border'}
   >
     <AutoSizer>
       {({ height, width }) => (

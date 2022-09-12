@@ -47,7 +47,8 @@ export const AttemptAndFailureChart = (
   return <Card
     key={'attemptAndFailureChart'}
     title={$t({ defaultMessage: 'FAILURES' })}
-    setHeight={true}
+    isIncidentChart={true}
+    type={'no-border'}
   >
     <AutoSizer>
       {({ height, width }) => (

@@ -14,20 +14,20 @@ export interface CardProps extends Pick<AntCardProps, 'children'> {
   subTitle?: string
   onExpandClick?: () => void
   onMoreClick?: () => void
-  setHeight?: boolean
+  isIncidentChart?: boolean
 }
 
 function Card ({
   type = 'default',
   title,
   subTitle,
-  setHeight,
+  isIncidentChart,
   ...props
 }: CardProps) {
   const wrapperProps = {
     type,
     hasTitle: Boolean(title),
-    hasHeight: Boolean(setHeight)
+    isChart: Boolean(isIncidentChart)
   }
   return (
     <UI.Wrapper {...wrapperProps}>

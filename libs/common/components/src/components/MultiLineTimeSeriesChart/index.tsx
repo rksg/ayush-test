@@ -30,7 +30,6 @@ interface MultiLineTimeSeriesChartProps
     legendProp?: keyof TChartData,
     lineColors?: string[],
     dataFormatter?: (value: unknown) => string | null,
-    // markers?: Partial<Incident>[],
     markers?: ChartMarker[],
     areaColor?: string,
     yAxisProps?: {
@@ -38,7 +37,8 @@ interface MultiLineTimeSeriesChartProps
       min: number
     }
     disableLegend?: boolean,
-    handleMarkedAreaClick?: (props: ChartMarker) => void
+    handleMarkedAreaClick?: (props: ChartMarker) => void,
+    markerColor?: string[]
   }
 
 export function MultiLineTimeSeriesChart
@@ -53,6 +53,7 @@ export function MultiLineTimeSeriesChart
   yAxisProps,
   disableLegend,
   handleMarkedAreaClick,
+  markerColor,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData, ChartMarker>) {
   const eChartsRef = useRef<ReactECharts>(null)
@@ -131,15 +132,15 @@ export function MultiLineTimeSeriesChart
       zlevel: 1,
       lineStyle: { width: 1 },
       markArea: {
-        itemStyle: {
-          opacity: 0.4,
-          color: areaColor
-        },
-        data: markers?.map(mark => {
+        data: markers?.map((mark, index) => {
           return [
             {
               xAxis: mark.startTime,
-              data: mark
+              data: mark,
+              itemStyle: {
+                opacity: 0.6,
+                color: cssStr(markerColor![index])
+              }
             },
             {
               xAxis: mark.endTime

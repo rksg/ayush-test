@@ -18,7 +18,7 @@ export const TimeSeries : React.FC<ChartDataProps> = ({ charts, incident }) => {
           direction='vertical'
           size={'middle'}
           key={`space${index}`}
-          style={{ paddingBottom: '10px' }}
+          style={{ paddingTop: '30px' }}
         >
           <Chart incident={incident} data={queryResults.data!} key={index}/>
         </Space>
