@@ -1,4 +1,5 @@
 import { SortOrder } from 'antd/lib/table/interface'
+import { useIntl }   from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import {
@@ -11,96 +12,93 @@ import {
 import { MspEc, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink }           from '@acx-ui/react-router-dom'
 
-const columnsPendingInvitaion: TableProps<MspEc>['columns'] = [
-  {
-    title: 'Account Name',
-    dataIndex: 'tenantName',
-    sorter: true,
-    defaultSortOrder: 'ascend' as SortOrder,
-    render: function (data, row) {
-      return (
-        <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
-      )
-    }
-  },
-  {
-    title: 'Account Email',
-    dataIndex: 'tenantEmail',
-    sorter: true
-  }
-]
+function useInvitaionColumns () {
+  const { $t } = useIntl()
 
-const columns: TableProps<MspEc>['columns'] = [
-  {
-    title: 'Customer',
-    dataIndex: 'tenantName',
-    sorter: true,
-    defaultSortOrder: 'ascend' as SortOrder,
-    render: function (data, row) {
-      return (
-        <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
-      )
+  const columnsPendingInvitaion: TableProps<MspEc>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Account Name' }),
+      dataIndex: 'tenantName',
+      sorter: true,
+      defaultSortOrder: 'ascend' as SortOrder,
+      render: function (data, row) {
+        return (
+          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Account Email' }),
+      dataIndex: 'tenantEmail',
+      sorter: true
     }
-  },
-  {
-    title: 'Account Email',
-    dataIndex: 'tenantEmail',
-    sorter: true
-  },
-  {
-    title: 'Active Alarms',
-    dataIndex: 'alarmCount',
-    sorter: true,
-    align: 'center',
-    render: function (data, row) {
-      return (
-        <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
-      )
+  ]
+  return columnsPendingInvitaion
+}
+
+function useCustomerColumns () {
+  const { $t } = useIntl()
+
+  const columns: TableProps<MspEc>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Customer' }),
+      dataIndex: 'tenantName',
+      sorter: true,
+      defaultSortOrder: 'ascend' as SortOrder,
+      render: function (data, row) {
+        return (
+          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Account Email' }),
+      dataIndex: 'tenantEmail',
+      sorter: true
+    },
+    {
+      title: $t({ defaultMessage: 'Active Alarms' }),
+      dataIndex: 'alarmCount',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return (
+          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Active Incidents' }),
+      dataIndex: 'activeIncindents',
+      sorter: true,
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+      dataIndex: 'wifiLicenses',
+      sorter: true,
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
+      dataIndex: 'wifiLicensesUtilization',
+      sorter: true,
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Switch Licenses' }),
+      dataIndex: 'switchLicenses',
+      sorter: true,
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Next License EXpiration' }),
+      dataIndex: 'expirationDate',
+      sorter: true
     }
-  },
-  {
-    title: 'Active Incidents',
-    dataIndex: 'venues',
-    sorter: true,
-    align: 'center',
-    render: function (count, row) {
-      return (
-        <TenantLink
-          to={`/networks/${row.id}/network-details/venues`}
-          // children={count ? count : 0}
-        />
-      )
-    }
-  },
-  {
-    title: 'Wi-Fi Licenses',
-    dataIndex: 'aps',
-    sorter: true,
-    align: 'center',
-    render: function (data, row) {
-      return (
-        <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
-      )
-    }
-  },
-  {
-    title: 'Wi-Fi Licenses Utilization',
-    dataIndex: 'clients',
-    sorter: true,
-    align: 'center'
-  },
-  {
-    title: 'Switch Licenses',
-    dataIndex: 'switchLicenses',
-    sorter: true,
-    align: 'center'
-  },
-  {
-    title: 'Next License EXpiration',
-    dataIndex: 'tags',
-    sorter: true
-  }
-]
+  ]
+  return columns
+}
 
 const invitationPayload = {
   searchString: '',
@@ -133,6 +131,7 @@ const varCustomerPayload = {
 }
 
 export function VarCustomers () {
+  const { $t } = useIntl()
 
   const PendingInvitaion = () => {
     const tableQuery = useTableQuery({
@@ -143,7 +142,7 @@ export function VarCustomers () {
     return (
       <Loader states={[tableQuery]}>
         <Table
-          columns={columnsPendingInvitaion}
+          columns={useInvitaionColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
@@ -162,7 +161,7 @@ export function VarCustomers () {
     return (
       <Loader states={[tableQuery]}>
         <Table
-          columns={columns}
+          columns={useCustomerColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
@@ -175,18 +174,18 @@ export function VarCustomers () {
   return (
     <>
       <PageHeader
-        title='VAR Customers'
+        title={$t({ defaultMessage: 'VAR Customers' })}
         extra={[
           <TenantLink to='/dashboard' key='add'>
-            <Button>Manage own account</Button>
+            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>
         ]}
       />
 
       <PageHeader
-        title='Pending Invitations'
+        title={$t({ defaultMessage: 'Pending Invitations' })}
       />
-      {/* <PendingInvitaion /> */}
+      <PendingInvitaion />
       <PageHeader
         title=''
         extra={[

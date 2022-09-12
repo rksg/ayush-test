@@ -101,19 +101,19 @@ export function Integrators () {
 
     const actions: TableProps<MspEc>['actions'] = [
       {
-        label: 'Manage',
+        label: $t({ defaultMessage: 'Manage' }),
         onClick: (selectedRows) =>
           showToast({
             type: 'info',
-            content: `Edit ${selectedRows[0].name}`
+            content: `Manage ${selectedRows[0].name}`
           })
       },
       {
-        label: 'Resend Invitation Email',
+        label: $t({ defaultMessage: 'Resend Invitation Email' }),
         onClick: () => alert()
       },
       {
-        label: 'Delete',
+        label: $t({ defaultMessage: 'Delete' }),
         onClick: () => alert()
       }
     ]
@@ -139,10 +139,10 @@ export function Integrators () {
         title={$t({ defaultMessage: 'Integrators' })}        
         extra={[
           <TenantLink to='/dashboard' key='ownAccount'>
-            <Button>Manage own account</Button>
+            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
           <TenantLink to='/networks/create' key='add'>
-            <Button type='primary'>Add Integrator</Button>
+            <Button type='primary'>{$t({ defaultMessage: 'Add Integrator' })}</Button>
           </TenantLink>,
           <Button key='download' icon={<DownloadOutlined />} />
         ]}

@@ -50,7 +50,7 @@ describe('VarCustomers', () => {
     }
   
     const { asFragment } = render(<Provider><VarCustomers /></Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/varCustomers' }
     })
   
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

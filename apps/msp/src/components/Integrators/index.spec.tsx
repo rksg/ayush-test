@@ -41,7 +41,7 @@ describe('Integrators', () => {
     }
   
     const { asFragment } = render(<Provider><Integrators /></Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/integrators' }
     })
   
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

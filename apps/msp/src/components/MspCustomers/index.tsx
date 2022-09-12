@@ -232,7 +232,7 @@ export function MspCustomers () {
 
     const actions: TableProps<MspEc>['actions'] = [
       {
-        label: 'Manage',
+        label: $t({ defaultMessage: 'Manage' }),
         onClick: (selectedRows) =>
           showToast({
             type: 'info',
@@ -240,7 +240,7 @@ export function MspCustomers () {
           })
       },
       {
-        label: 'Resend Invitation Email',
+        label: $t({ defaultMessage: 'Resend Invitation Email' }),
         onClick: () => alert()
       },
       {
@@ -279,13 +279,13 @@ export function MspCustomers () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'MSP Customers' })}        
+        title={$t({ defaultMessage: 'MSP Customers' })}
         extra={[
           <TenantLink to='/dashboard' key='ownAccount'>
-            <Button>Manage own account</Button>
+            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
           <TenantLink to='/mspcustomers/create' key='addMspEc'>
-            <Button type='primary'>Add Customer</Button>
+            <Button type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </TenantLink>,
           <Button key='download' icon={<DownloadOutlined />} />
         ]}

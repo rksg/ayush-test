@@ -821,18 +821,12 @@ exports[`VarCustomers should render correctly 1`] = `
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
-                              >
-                                <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/2ea8eaabc07840caa5fed7a80913a83a/network-details/venues"
-                                />
-                              </td>
+                              />
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/2ea8eaabc07840caa5fed7a80913a83a/network-details/aps"
-                                />
+                                1040
                               </td>
                               <td
                                 class="ant-table-cell"
