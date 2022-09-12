@@ -9,8 +9,6 @@ import { VenueEditContext, AdvancedSettingContext } from '../index'
 
 import { AdvancedSettingForm } from './AdvancedSettingForm'
 
-const { TabPane } = Tabs
-
 export function WifiConfigTab () {
   const { $t } = useIntl()
   const params = useParams()
@@ -24,7 +22,7 @@ export function WifiConfigTab () {
       ...editContextData,
       tabKey: activeSubTab,
       tempData: {
-        [activeSubTab]: editContextData.editData
+        [activeSubTab]: editContextData.newData
       }
     })
     navigate({
@@ -33,8 +31,18 @@ export function WifiConfigTab () {
     })
   }
 
-  const isDirty = (tabkey: string) => {
-    return editContextData.isDirty && params?.activeSubTab === tabkey ? ' *' : ''
+  const tabTitleMap = (tabkey: string) => {
+    const tabTitle = {
+      radio: $t({ defaultMessage: 'Radio' }),
+      networking: $t({ defaultMessage: 'Networking' }),
+      security: $t({ defaultMessage: 'Security' }),
+      servers: $t({ defaultMessage: 'External Servers' }),
+      settings: $t({ defaultMessage: 'Advanced Settings' })
+    } 
+
+    const title = tabTitle[tabkey as keyof typeof tabTitle]
+    return editContextData.isDirty && params?.activeSubTab === tabkey
+      ? `${title} *` : title
   }
 
   return (
@@ -44,34 +52,19 @@ export function WifiConfigTab () {
       activeKey={params.activeSubTab}
       type='card'
     >
-      <TabPane
-        tab={`${$t({ defaultMessage: 'Radio' })}${isDirty('radio')}`}
-        key='radio'
-      >
+      <Tabs.TabPane tab={tabTitleMap('radio')} key='radio'>
         {$t({ defaultMessage: 'Radio' })}
-      </TabPane>
-      <TabPane
-        tab={`${$t({ defaultMessage: 'Networking' })}${isDirty('networking')}`}
-        key='networking'
-      >
+      </Tabs.TabPane>
+      <Tabs.TabPane tab={tabTitleMap('networking')} key='networking'>
         {$t({ defaultMessage: 'Networking' })}
-      </TabPane>
-      <TabPane
-        tab={`${$t({ defaultMessage: 'Security' })}${isDirty('security')}`}
-        key='security'
-      >
+      </Tabs.TabPane>
+      <Tabs.TabPane tab={tabTitleMap('security')} key='security'>
         {$t({ defaultMessage: 'Security' })}
-      </TabPane>
-      <TabPane
-        tab={`${$t({ defaultMessage: 'External Servers' })}${isDirty('servers')}`}
-        key='servers'
-      >
+      </Tabs.TabPane>
+      <Tabs.TabPane tab={tabTitleMap('servers')} key='servers'>
         {$t({ defaultMessage: 'External Servers' })}
-      </TabPane>
-      <Tabs.TabPane
-        tab={`${$t({ defaultMessage: 'Advanced Settings' })}${isDirty('settings')}`}
-        key='settings'
-      >
+      </Tabs.TabPane>
+      <Tabs.TabPane tab={tabTitleMap('settings')} key='settings'>
         <AdvancedSettingForm />
       </Tabs.TabPane>
     </Tabs>

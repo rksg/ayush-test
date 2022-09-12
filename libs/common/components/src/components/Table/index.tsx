@@ -195,11 +195,11 @@ function Table <RecordType extends object> (
         children: col.children?.map(getResizeProps)
       })): columns) as typeof columns}
       components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
-      options={{ setting, reload: false, density: false }}
+      options={props?.options ?? { setting, reload: false, density: false }}
       columnsState={columnsState}
       scroll={props.scroll ? props.scroll : { x: 'max-content' }}
       rowSelection={rowSelection}
-      pagination={(type === 'tall'
+      pagination={(type === 'tall' && props.pagination !== false
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
         : false)}
       columnEmptyText={false}

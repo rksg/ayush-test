@@ -10,7 +10,6 @@ import {
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-
 import { Button, StepsForm, Table, TableProps, Loader, showToast } from '@acx-ui/components'
 import { DeleteOutlined }                                          from '@acx-ui/icons'
 import {
@@ -49,17 +48,18 @@ export function AdvancedSettingForm () {
   const [modelOptions, setModelOptions] = useState(defaultOptionArray)
   const [supportModelOptions, setSupportModelOptions] = useState(defaultOptionArray)
 
+  // set default data when switching sub tab
   useEffect(() => {
     const tab = activeSubTab as keyof AdvancedSettingContext['tempData']
     const data = editContextData?.tempData?.[tab] || []
     setEditContextData({
       ...editContextData,
-      title: $t({ defaultMessage: 'Advanced Settings' }),
-      orinData: data,
-      editData: data,
+      tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
+      oldData: data,
+      newData: data,
       isDirty: false,
       updateChanges: handleUpdateSetting,
-      setTableData: setTableData
+      setData: setTableData
     })
   }, [navigate])
 
@@ -80,78 +80,64 @@ export function AdvancedSettingForm () {
         [...opts, { label: item, value: item }], []))
       setSelectedModels(existingModels as string[])
       setModelOptions(availableModels)
-
-      setEditContextData({
-        ...editContextData,
-        title: $t({ defaultMessage: 'Advanced Settings' }),
-        orinData: (venueLed?.data as VenueLed[])?.map(
-          (item: VenueLed) => ({ ...item, key: item.model, value: item.model })
-        ),
-        isDirty: false,
-        updateChanges: handleUpdateSetting,
-        setTableData: setTableData
-      })
     }
   }, [venueLed.data, venueCaps.data])
 
   useEffect(() => {
     setEditContextData({
       ...editContextData,
-      editData: tableData,
-      orinData: (venueLed?.data as VenueLed[])?.map(
+      tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
+      newData: tableData,
+      oldData: (venueLed?.data as VenueLed[])?.map(
         (item: VenueLed) => ({ ...item, key: item.model, value: item.model })
       ),
-      isDirty: editContextData?.orinData ? !isEqual(editContextData?.orinData, tableData) : false,
+      isDirty: editContextData?.oldData ? !isEqual(editContextData?.oldData, tableData) : false,
+      setData: setTableData,
       updateChanges: handleUpdateSetting
     })
   }, [tableData])
 
-  const columns: TableProps<VenueLed>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Model' }),
-      dataIndex: 'model',
-      key: 'model',
-      width: 150,
-      render: function (data) {
-        return (data ? data : <Select
-          size='small'
-          options={modelOptions}
-          placeholder='Select Model...'
-          onChange={handleChange}
-          style={{ width: '120px' }}
-        />)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'LEDs Status' }),
-      dataIndex: 'ledEnabled',
-      key: 'ledEnabled',
-      render: function (data, row) {
-        return <Switch
-          checked={!!data}
-          onClick={(checked) => {
-            setTableData([
-              ...tableData.map((item) => {
-                if (item.model === row.model) item.ledEnabled = checked
-                return item
-              })
-            ])
-          }}
-        />
-      }
-    },
-    {
-      title: '',
-      key: 'action',
-      render: (data, row) => <Button
-        key='delete'
-        role='deleteBtn'
-        ghost={true}
-        icon={<DeleteOutlined />}
-        onClick={() => handleDelete(row.model)}
+  const columns: TableProps<VenueLed>['columns'] = [{
+    title: $t({ defaultMessage: 'Model' }),
+    dataIndex: 'model',
+    key: 'model',
+    width: 150,
+    render: function (data) {
+      return (data ? data : <Select
+        size='small'
+        options={modelOptions}
+        placeholder={$t({ defaultMessage: 'Select Model...' })}
+        onChange={handleChange}
+        style={{ width: '120px' }}
+      />)
+    }
+  }, {
+    title: $t({ defaultMessage: 'LEDs Status' }),
+    dataIndex: 'ledEnabled',
+    key: 'ledEnabled',
+    render: function (data, row) {
+      return <Switch
+        checked={!!data}
+        onClick={(checked) => {
+          setTableData([
+            ...tableData.map((item) => {
+              if (item.model === row.model) item.ledEnabled = checked
+              return item
+            })
+          ])
+        }}
       />
     }
-  ]
+  }, {
+    key: 'action',
+    render: (data, row) => <Button
+      key='delete'
+      role='deleteBtn'
+      ghost={true}
+      icon={<DeleteOutlined />}
+      onClick={() => handleDelete(row.model)}
+    />
+  }]
 
   const handleAdd = () => {
     setTableData([...tableData, { ledEnabled: true, model: '', key: '' }])
@@ -186,7 +172,7 @@ export function AdvancedSettingForm () {
     try {
       setEditContextData({
         ...editContextData,
-        orinData: editContextData?.editData,
+        oldData: editContextData?.newData,
         isDirty: false
       })
       await updateVenueLedOn({
@@ -202,7 +188,7 @@ export function AdvancedSettingForm () {
     } catch {
       showToast({
         type: 'error',
-        content: 'An error occurred'
+        content: $t({ defaultMessage: 'An error occurred' })
       })
     }
   }

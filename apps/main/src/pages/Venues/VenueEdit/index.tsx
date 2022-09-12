@@ -1,8 +1,10 @@
 import { createContext, useState } from 'react'
 
-import { showActionModal } from '@acx-ui/components'
-import { VenueLed }        from '@acx-ui/rc/utils'
-import { useParams }       from '@acx-ui/react-router-dom'
+import { IntlShape } from 'react-intl'
+
+import { showActionModal, CustomButtonProps } from '@acx-ui/components'
+import { VenueLed }                           from '@acx-ui/rc/utils'
+import { useParams }                          from '@acx-ui/react-router-dom'
 
 import { SwitchConfigTab } from './SwitchConfigTab'
 import { VenueDetailsTab } from './VenueDetailsTab'
@@ -16,13 +18,14 @@ const tabs = {
 }
 
 export interface AdvancedSettingContext {
-  title: string,
-  isDirty: boolean,
-  orinData: VenueLed[],
-  editData: VenueLed[],
-  updateChanges: () => void,
-  setTableData: (data: VenueLed[]) => void,
+  tabTitle: string,
   tabKey?: string,
+  isDirty: boolean,
+  hasError?: boolean,
+  oldData: VenueLed[],
+  newData: VenueLed[],
+  updateChanges: () => void,
+  setData: (data: VenueLed[]) => void,
   tempData?: {
     settings?: VenueLed[]
   }
@@ -49,54 +52,63 @@ export function VenueEdit () {
 export function showUnsavedModal (
   editContextData: AdvancedSettingContext,
   setEditContextData: (data: AdvancedSettingContext) => void,
+  intl: IntlShape,
   callback?: () => void
 ) {
+  const title = editContextData?.tabTitle ?? ''
+  const hasError = editContextData?.hasError ?? false
+  const btns = [{
+    text: intl.$t({ defaultMessage: 'Cancel' }),
+    key: 'close',
+    closeAfterAction: true,
+    handler () {
+      setEditContextData({
+        ...editContextData,
+        isDirty: true
+      })
+    }
+  }, {
+    text: intl.$t({ defaultMessage: 'Discard Changes' }),
+    key: 'discard',
+    closeAfterAction: true,
+    handler: async () => {
+      const { setData, oldData, tabKey } = editContextData
+      setEditContextData({
+        ...editContextData,
+        isDirty: false,
+        tempData: {
+          ...editContextData.tempData,
+          [tabKey as keyof AdvancedSettingContext]: oldData
+        }
+      })
+      setData(oldData)
+      callback?.()
+    }
+  }, {
+    text: intl.$t({ defaultMessage: 'Save Changes' }),
+    type: 'primary',
+    key: 'save',
+    closeAfterAction: true,
+    handler: async () => {
+      editContextData?.updateChanges?.()
+      callback?.()
+    }
+  }]
+
   showActionModal({
     type: 'confirm',
-    title: 'You Have Unsaved Changes',
-    content: `Do you want to save your changes in '${editContextData?.title}', 
-          or discard all changes?`,
+    width: 450,
+    title: hasError
+      ? intl.$t({ defaultMessage: 'You Have Invalid Changes' })
+      : intl.$t({ defaultMessage: 'You Have Unsaved Changes' }),
+    content: hasError
+      ? intl.$t({ defaultMessage: 'Do you want to discard your changes in "{title}"?' }, { title })
+      : intl.$t({
+        defaultMessage: 'Do you want to save your changes in "{title}", or discard all changes?'
+      }, { title }),
     customContent: {
       action: 'CUSTOM_BUTTONS',
-      buttons: [{
-        text: 'Cancel',
-        type: 'link',
-        key: 'close',
-        closeAfterAction: true,
-        handler () {
-          setEditContextData({
-            ...editContextData,
-            isDirty: true
-          })
-        }
-      }, {
-        text: 'Discard Changes',
-        type: 'primary',
-        key: 'discard',
-        closeAfterAction: true,
-        handler: async () => {
-          const { setTableData, orinData, tabKey } = editContextData
-          setEditContextData({
-            ...editContextData,
-            isDirty: false,
-            tempData: {
-              ...editContextData.tempData,
-              [tabKey as keyof AdvancedSettingContext]: orinData
-            }
-          })
-          setTableData(orinData)
-          if (callback) callback()
-        }
-      }, {
-        text: 'Save Changes',
-        type: 'primary',
-        key: 'save',
-        closeAfterAction: true,
-        handler: async () => {
-          if (editContextData?.updateChanges) editContextData?.updateChanges()
-          if (callback) callback()
-        }
-      }]
+      buttons: (hasError ? btns.slice(0, 2) : btns) as CustomButtonProps[]
     }
   })  
 }
