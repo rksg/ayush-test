@@ -192,7 +192,7 @@ exports[`Select Service Form should render form 1`] = `
                                       <span>
                                         DHCP
                                         <div
-                                          class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                          class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
                                         >
                                           Provides IP address to end devices
                                         </div>
@@ -220,7 +220,7 @@ exports[`Select Service Form should render form 1`] = `
                                       <span>
                                         DPSK
                                         <div
-                                          class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                          class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
                                         >
                                           RUCKUS Dynamic Pre Shared Key Service
                                         </div>
@@ -262,7 +262,7 @@ exports[`Select Service Form should render form 1`] = `
                                       <span>
                                         mDNS Proxy
                                         <div
-                                          class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                          class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
                                         >
                                           Provides mDNS service
                                         </div>
@@ -290,7 +290,7 @@ exports[`Select Service Form should render form 1`] = `
                                       <span>
                                         Wi-Fi Calling
                                         <div
-                                          class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                          class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
                                         >
                                           Provides voice calling service over WiFi
                                         </div>
@@ -325,7 +325,7 @@ exports[`Select Service Form should render form 1`] = `
                                   <span>
                                     Portal
                                     <div
-                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
                                     >
                                       Provides "portal" for guest access. Includes hotspot access (Passpoint, OpenRoaming)
                                     </div>

@@ -4,8 +4,8 @@ import { Provider, store }                                 from '@acx-ui/store'
 import { mockGraphqlQuery, mockAutoSizer, render, screen } from '@acx-ui/test-utils'
 import { DateRange }                                       from '@acx-ui/utils'
 
+import { topSwitchModelsResponse } from './__tests__/fixtures'
 import { api }                     from './services'
-import { topSwitchModelsResponse } from './services.spec'
 
 import TopSwitchModelsWidget from '.'
 

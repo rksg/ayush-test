@@ -7,6 +7,7 @@ import { DateRange }                        from '@acx-ui/utils'
 import { topApplicationByTrafficFixture } from './components/TopApplicationsByTraffic/__tests__/fixtures'
 import { topSSIDsByClientFixture }        from './components/TopSSIDsByClient/__tests__/fixtures'
 import { topSSIDsByTrafficFixture }       from './components/TopSSIDsByTraffic/__tests__/fixtures'
+import { topSwitchesByErrorResponse }     from './components/TopSwitchesByError/__tests__/fixtures'
 import { topSwitchesByPoEUsageResponse }  from './components/TopSwitchesByPoEUsage/__tests__/fixtures'
 import { topSwitchesByTrafficResponse }   from './components/TopSwitchesByTraffic/__tests__/fixtures'
 import AnalyticsWidgets                   from './Widgets'
@@ -143,11 +144,21 @@ test('should render Switches Traffic by Volume widget', async () => {
   mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
     data: { network: { hierarchyNode: { timeSeries: switchTrafficByVolumeSample } } }
   })
-  render( 
+  render(
     <Provider>
       <AnalyticsWidgets name='switchTrafficByVolume' filters={filters}/>
     </Provider>)
   expect(await screen.findByText('Traffic by Volume')).not.toBe(null)
+})
+
+test('should render Top 5 Switches by Error widget', async () => {
+  const params = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+  }
+  mockGraphqlQuery(dataApiURL, 'TopSwitchesByErrorWidget', { data: topSwitchesByErrorResponse })
+  render( <Provider> <AnalyticsWidgets name='topSwitchesByErrors' filters={filters}/></Provider>,
+    { route: { params } })
+  expect(await screen.findByText('Top 5 Switches by Error')).toBeVisible()
 })
 
 test('should render Traffic By Application Widget', async () => {

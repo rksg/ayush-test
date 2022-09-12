@@ -133,5 +133,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueLedOn: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/led'
+  },
+  validateRadius: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   }
 }
