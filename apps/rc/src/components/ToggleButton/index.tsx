@@ -1,7 +1,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { Button } from 'antd'
+import { Button } from '@acx-ui/components'
 
 export function ToggleButton (props: {
     value?: boolean
