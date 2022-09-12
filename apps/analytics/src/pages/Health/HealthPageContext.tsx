@@ -8,25 +8,25 @@ import {
 } from '@acx-ui/analytics/utils'
 import { TimeStamp } from '@acx-ui/types'
 
-export type TimeStamps = [TimeStamp, TimeStamp]
+export type TimeWindow = [TimeStamp, TimeStamp]
 
 export const HealthPageContext = createContext(null as unknown as AnalyticsFilter & {
-  timeWindow: TimeStamps
-  setTimeWindow: (timeWindow: TimeStamps) => void
+  timeWindow: TimeWindow
+  setTimeWindow: (timeWindow: TimeWindow) => void
 })
 
 export function HealthPageContextProvider (props: { children: ReactNode }) {
   const filters = useAnalyticsFilter()
-  const timeWindow = useRef<TimeStamps>([filters.startDate, filters.endDate])
+  const timeWindow = useRef<TimeWindow>([filters.startDate, filters.endDate])
 
   useEffect(() => {
-    const nextTimeWindow: TimeStamps = [filters.startDate, filters.endDate]
+    const nextTimeWindow: TimeWindow = [filters.startDate, filters.endDate]
     if (isEqual(timeWindow.current, nextTimeWindow)) return
 
     timeWindow.current = nextTimeWindow
   }, [filters.startDate, filters.endDate])
 
-  const setTimeWindow = useCallback((nextTimeWindow: TimeStamps) => {
+  const setTimeWindow = useCallback((nextTimeWindow: TimeWindow) => {
     timeWindow.current = nextTimeWindow
   }, [])
 

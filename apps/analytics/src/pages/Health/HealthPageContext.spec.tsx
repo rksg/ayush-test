@@ -4,7 +4,7 @@ import { act, renderHook }              from '@acx-ui/test-utils'
 import { DateFilterContext, DateRange } from '@acx-ui/utils'
 
 import {
-  TimeStamps,
+  TimeWindow,
   HealthPageContext,
   HealthPageContextProvider
 } from './HealthPageContext'
@@ -35,7 +35,7 @@ describe('HealthPageContextProvider', () => {
       result.current.endDate
     ])
 
-    const nextTimeWindow: TimeStamps = [
+    const nextTimeWindow: TimeWindow = [
       '2022-01-01T01:00:00.000Z',
       '2022-01-01T02:00:00.000Z'
     ]
