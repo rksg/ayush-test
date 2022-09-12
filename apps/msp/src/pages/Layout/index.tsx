@@ -13,7 +13,7 @@ import * as UI           from './styledComponents'
 function Layout () {
   const { $t } = useIntl()
   const headerDropdownList = [
-    $t({ defaultMessage: 'NA' })
+    $t({ defaultMessage: 'US' })
   ]
   return (
     <UI.Wrapper>

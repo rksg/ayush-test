@@ -1,6 +1,9 @@
 import { SortOrder } from 'antd/lib/table/interface'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
 import { 
   useVarCustomerListQuery, 
   useInviteCustomerListQuery 
@@ -174,7 +177,7 @@ export function VarCustomers () {
       <PageHeader
         title='VAR Customers'
         extra={[
-          <TenantLink to='/networks/create' key='add'>
+          <TenantLink to='/dashboard' key='add'>
             <Button>Manage own account</Button>
           </TenantLink>
         ]}
@@ -182,15 +185,13 @@ export function VarCustomers () {
 
       <PageHeader
         title='Pending Invitations'
-        extra={[
-          <TenantLink to='/networks/create' key='add'>
-            {/* <Button>Refresh All</Button> */}
-          </TenantLink>
-        ]}
       />
-      <PendingInvitaion />
+      {/* <PendingInvitaion /> */}
       <PageHeader
         title=''
+        extra={[
+          <Button key='download' icon={<DownloadOutlined />} />
+        ]}
       />
       <VarCustomerTable />
     </>

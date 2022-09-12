@@ -1,9 +1,11 @@
-import { Space }     from 'antd'
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
 
 import { Button, PageHeader, showToast, Table, TableProps, Loader } from '@acx-ui/components'
-import { useMspCustomerListQuery }                                  from '@acx-ui/rc/services'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
+import { useMspCustomerListQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   MspEc
@@ -136,12 +138,13 @@ export function Integrators () {
       <PageHeader
         title={$t({ defaultMessage: 'Integrators' })}        
         extra={[
+          <TenantLink to='/dashboard' key='ownAccount'>
+            <Button>Manage own account</Button>
+          </TenantLink>,
           <TenantLink to='/networks/create' key='add'>
-            <Space size={8}>
-              <Button type='primary'>Add Integrator</Button>
-              {/* <Button>Refresh</Button> */}
-            </Space>
-          </TenantLink>
+            <Button type='primary'>Add Integrator</Button>
+          </TenantLink>,
+          <Button key='download' icon={<DownloadOutlined />} />
         ]}
       />
       <IntegratorssTable />

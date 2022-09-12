@@ -1,4 +1,3 @@
-import { Space }   from 'antd'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -11,6 +10,9 @@ import {
   Table, 
   TableProps  
 } from '@acx-ui/components'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
 import { 
   useDeleteMspEcMutation, 
   useMspCustomerListQuery 
@@ -43,11 +45,11 @@ function useColumns () {
       dataIndex: 'status',
       sorter: true
     },
-    // {
-    //   title: $t({ defaultMessage: 'Address' }),
-    //   dataIndex: 'streetAddress',
-    //   sorter: true
-    // },
+    {
+      title: $t({ defaultMessage: 'Address' }),
+      dataIndex: 'streetAddress',
+      sorter: true
+    },
     {
       title: $t({ defaultMessage: 'Active Alarm' }),
       dataIndex: 'alarmCount',
@@ -279,14 +281,13 @@ export function MspCustomers () {
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}        
         extra={[
-          <Space size={8}>
-            <TenantLink to='' key='ownAccount'>
-              <Button>Manage own account</Button>
-            </TenantLink>
-            <TenantLink to='/mspcustomers/create' key='addMspEc'>
-              <Button type='primary'>Add Customer</Button>
-            </TenantLink>
-          </Space>
+          <TenantLink to='/dashboard' key='ownAccount'>
+            <Button>Manage own account</Button>
+          </TenantLink>,
+          <TenantLink to='/mspcustomers/create' key='addMspEc'>
+            <Button type='primary'>Add Customer</Button>
+          </TenantLink>,
+          <Button key='download' icon={<DownloadOutlined />} />
         ]}
       />
       <MspEcTable />

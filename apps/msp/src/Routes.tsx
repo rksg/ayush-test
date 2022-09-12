@@ -10,8 +10,8 @@ import Layout           from './pages/Layout'
 export default function MspRoutes () {
   const routes = rootRoutes(
     <Route path='v/:tenantId' element={<Layout />}>
-      <Route index element={<TenantNavigate to='/dashboard' tenantType='v' />} />
-      <Route path='dashboard' element={<MspCustomers/ >} />
+      <Route index element={<TenantNavigate to='/dashboard' />} />
+      <Route path='dashboard' element={<MspCustomers />} />
       <Route path='mspCustomers' element={<MspCustomers />} />
       <Route path='varCustomers' element={<VarCustomers />} />
       <Route path='integrators' element={<Integrators />} />
