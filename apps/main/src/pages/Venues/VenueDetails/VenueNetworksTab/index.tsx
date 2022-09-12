@@ -108,6 +108,7 @@ export function VenueNetworksTab () {
 
   const columns: TableProps<Network>['columns'] = [
     {
+      key: 'name',
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
       sorter: true,
@@ -119,6 +120,7 @@ export function VenueNetworksTab () {
       }
     },
     {
+      key: 'nwSubType',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
@@ -128,10 +130,12 @@ export function VenueNetworksTab () {
       />
     },
     {
+      key: 'health',
       title: $t({ defaultMessage: 'Health' }),
       dataIndex: 'health'
     },
     {
+      key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
@@ -146,30 +150,34 @@ export function VenueNetworksTab () {
       }
     },
     {
+      key: 'vlan',
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
-      width: '80px',
+      width: 80,
       render: function (data, row) {
         return row.activated.isActivated ? 'All APs' : ''
       }
     },
     {
+      key: 'aps',
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
-      width: '80px',
+      width: 80,
       render: function (data, row) {
         return row.activated.isActivated ? 'All APs' : ''
       }
     },
     {
+      key: 'radios',
       title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
-      width: '140px',
+      width: 140,
       render: function (data, row) {
         return row.activated.isActivated ? '2.4 GHz / 5 GHz' : ''
       }
     },
     {
+      key: 'scheduling',
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {
