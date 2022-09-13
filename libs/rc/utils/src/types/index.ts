@@ -15,6 +15,7 @@ export * from './venue'
 export * from './network'
 export * from './user'
 export * from './service'
+export * from './msp'
 
 export interface CommonResult {
   requestId: string

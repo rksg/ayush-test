@@ -10,7 +10,6 @@ export * from './models/OpenWlanAdvancedCustomization'
 export * from './models/AAAWlanAdvancedCustomization'
 export * from './models/DpskWlanAdvancedCustomization'
 export * from './models/PskWlanAdvancedCustomization'
-export * from './models/Entitlement'
 
 export * from './types'
 
