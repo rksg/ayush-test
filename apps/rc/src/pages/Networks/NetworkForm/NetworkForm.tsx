@@ -80,7 +80,7 @@ export function NetworkForm () {
   })
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
-    if(saveData.isCloudpathEnabled){
+    if(saveState.isCloudpathEnabled){
       delete saveState.authRadius
       delete saveState.accountingRadius
     }else{

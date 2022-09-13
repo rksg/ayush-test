@@ -939,9 +939,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                   </h4>
                   <span>
                     <button
-                      class="ant-btn ant-btn-link"
+                      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                       disabled=""
-                      style="padding: 0px;"
                       type="button"
                     >
                       <span>
@@ -950,8 +949,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     </button>
                   </span>
                   <button
-                    class="ant-btn ant-btn-link"
-                    style="padding: 0px;"
+                    class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
                     type="button"
                   >
                     <span>
