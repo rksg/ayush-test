@@ -1,6 +1,12 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { AaaServerOrderEnum, GuestNetworkTypeEnum, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import {
+  AaaServerOrderEnum,
+  GuestNetworkTypeEnum,
+  NetworkTypeEnum,
+  WlanSecurityEnum,
+  RadiusErrorsType
+} from '@acx-ui/rc/utils'
 
 export const networkTypes: Record<NetworkTypeEnum, MessageDescriptor> = {
   [NetworkTypeEnum.OPEN]: defineMessage({ defaultMessage: 'Open Network' }),
@@ -122,3 +128,29 @@ export const states = {
   enabled: defineMessage({ defaultMessage: 'Enabled' }),
   disabled: defineMessage({ defaultMessage: 'Disabled' })
 }
+
+/* eslint-disable max-len */
+export const multipleConflictMessage = {
+  [RadiusErrorsType.AUTH_AND_ACC]: defineMessage({
+    defaultMessage: 'The IP addresses you entered conflict with existing authentication and accounting server configuration in another network. Please change the IP address.'
+  }),
+  [RadiusErrorsType.AUTH]: defineMessage({
+    defaultMessage: 'The IP addresses you entered conflict with existing authentication server configuration in another network. Please change the IP address.'
+  }),
+  [RadiusErrorsType.ACCOUNTING]: defineMessage({
+    defaultMessage: 'The IP addresses you entered conflict with existing accounting server configuration in another network. Please change the IP address.'
+  })
+}
+
+export const radiusErrorMessage = {
+  [RadiusErrorsType.AUTH_AND_ACC]: defineMessage({
+    defaultMessage: 'One of the values you entered conflicts with existing authentication and accounting server configurations in another network.'
+  }),
+  [RadiusErrorsType.AUTH]: defineMessage({
+    defaultMessage: 'One of the values you entered conflicts with an existing authentication server configuration in another network.'
+  }),
+  [RadiusErrorsType.ACCOUNTING]: defineMessage({
+    defaultMessage: 'One of the values you entered conflicts with an existing accounting server configuration in another network.'
+  })
+}
+/* eslint-enable */

@@ -2,7 +2,6 @@
 import React, { createContext, useState } from 'react'
 
 import {
-  Button,
   Checkbox,
   Form,
   InputNumber,
@@ -12,6 +11,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Button }                            from '@acx-ui/components'
 import { DnsProxyRule, DnsProxyContextType } from '@acx-ui/rc/utils'
 
 import { DnsProxyModal } from './DnsProxyModal'

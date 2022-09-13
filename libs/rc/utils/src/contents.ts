@@ -127,9 +127,3 @@ export enum RadioEnum {
   _2_4_GHz = '2.4-GHz',
   _5_GHz = '5-GHz',
 }
-  
-export enum SchedulerTypeEnum {
-  ALWAYS_ON = 'ALWAYS_ON',
-  ALWAYS_OFF = 'ALWAYS_OFF',
-  CUSTOM = 'CUSTOM',
-}  
