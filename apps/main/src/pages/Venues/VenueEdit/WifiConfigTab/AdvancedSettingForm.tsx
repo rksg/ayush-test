@@ -152,7 +152,7 @@ export function AdvancedSettingForm () {
   }]
 
   const handleAdd = () => {
-    setTableData([...tableData, { ledEnabled: true, model: '', key: '' }])
+    setTableData([...tableData, { ledEnabled: true, model: '', key: '', manual: true }])
   }
   const handleDelete = (model: string) => {
     const models = selectedModels.filter((item) => item !== model)
@@ -170,6 +170,7 @@ export function AdvancedSettingForm () {
         if (index === tableData.length - 1) {
           item.model = model
           item.key = model
+          item.manual = !venueApModels?.data?.models?.includes(item.model)
         }
         return item
       })
