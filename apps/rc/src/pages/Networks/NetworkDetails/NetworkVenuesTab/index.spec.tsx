@@ -211,7 +211,7 @@ describe('NetworkVenuesTab', () => {
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
     await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
-  })
+  }, 20000)
 
   it('Table action bar activate Network', async () => {
     mockServer.use(
@@ -258,7 +258,7 @@ describe('NetworkVenuesTab', () => {
     const body = within(tbody)
     fireEvent.click(await body.findByText('My-Venue'))
     const activateButton = screen.getByRole('button', { name: 'Activate' })
-    fireEvent.click(activateButton) 
+    fireEvent.click(activateButton)
 
     mockServer.use(
       rest.put(
