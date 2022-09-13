@@ -643,19 +643,19 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                                 style="width: 10px;"
                                               />
                                               <col
-                                                style="width: 10px;"
+                                                style="width: 100px;"
                                               />
                                               <col
-                                                style="width: 10px;"
-                                              />
-                                              <col
-                                                style="width: 50px;"
+                                                style="width: 100px;"
                                               />
                                               <col
                                                 style="width: 50px;"
                                               />
                                               <col
-                                                style="width: 50px;"
+                                                style="width: 100px;"
+                                              />
+                                              <col
+                                                style="width: 120px;"
                                               />
                                               <col
                                                 style="width: 32px;"
@@ -1356,19 +1356,19 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                             style="width: 10px;"
                                           />
                                           <col
-                                            style="width: 10px;"
+                                            style="width: 100px;"
                                           />
                                           <col
-                                            style="width: 10px;"
-                                          />
-                                          <col
-                                            style="width: 50px;"
+                                            style="width: 100px;"
                                           />
                                           <col
                                             style="width: 50px;"
                                           />
                                           <col
-                                            style="width: 50px;"
+                                            style="width: 100px;"
+                                          />
+                                          <col
+                                            style="width: 120px;"
                                           />
                                           <col
                                             style="width: 32px;"
