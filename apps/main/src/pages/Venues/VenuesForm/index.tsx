@@ -251,7 +251,7 @@ export function VenuesForm () {
               initialValue={!isMapEnabled ? defaultAddress.addressLine : ''}
             >
               <Input
-                allowClear={{ clearIcon: <UI.CloseIcon /> }}
+                allowClear
                 prefix={<SearchOutlined />}
                 onChange={addressOnChange}
                 data-testid='address-input'
