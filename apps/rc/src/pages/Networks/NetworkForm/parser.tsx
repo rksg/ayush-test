@@ -232,7 +232,6 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
     ...saveData,
     ...{
       type: data.type,
-      isCloudpathEnabled: typeof data.cloudpathServerId !== undefined,
       wlan: {
         ...data.wlan,
         advancedCustomization: new PskWlanAdvancedCustomization(),

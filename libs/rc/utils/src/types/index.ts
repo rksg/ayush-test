@@ -7,9 +7,9 @@ import {
   GuestNetworkTypeEnum,
   WlanSecurityEnum
 } from '../constants'
+import { NetworkVenue }   from '../models/NetworkVenue'
 import { TrustedCAChain } from '../models/TrustedCAChain'
 
-import { NetworkVenue } from './network'
 
 export * from './ap'
 export * from './venue'
