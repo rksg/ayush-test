@@ -74,9 +74,9 @@ export function NetworkMoreSettingsForm (props: {
           data.wlan?.advancedCustomization?.userDownlinkRateLimiting > 0,
         enableOfdmOnly: get(data,
           'wlan.advancedCustomization.radioCustomization.phyTypeConstraint') === 'OFDM',
-        managementFrameMinimumPhyRate: get(data, 
+        managementFrameMinimumPhyRate: get(data,
           'wlan.advancedCustomization.radioCustomization.managementFrameMinimumPhyRate'),
-        bssMinimumPhyRate: get(data, 
+        bssMinimumPhyRate: get(data,
           'wlan.advancedCustomization.radioCustomization.bssMinimumPhyRate')
       })
     }
@@ -167,7 +167,7 @@ export function MoreSettingsForm (props: {
   const onBbsMinRateChange = function (value: BssMinRateEnum) {
     if (value === BssMinRateEnum.VALUE_NONE) {
       form.setFieldsValue({
-        managementFrameMinimumPhyRate: enableOfdmOnly ? 
+        managementFrameMinimumPhyRate: enableOfdmOnly ?
           MgmtTxRateEnum.VALUE_6 : MgmtTxRateEnum.VALUE_2
       })
     } else {
@@ -186,7 +186,7 @@ export function MoreSettingsForm (props: {
           managementFrameMinimumPhyRate: MgmtTxRateEnum.VALUE_6
         })
       }
-    } 
+    }
 
   }
   return (
@@ -215,6 +215,11 @@ export function MoreSettingsForm (props: {
               name={['wlan', 'vlanId']}
               label={$t({ defaultMessage: 'VLAN ID' })}
               initialValue={1}
+              rules={[
+                { required: true }, {
+                  type: 'number', max: 4094, min: 1,
+                  message: $t({ defaultMessage: 'VLAN ID must be between 1 and 4094' })
+                }]}
               style={{ marginBottom: '15px' }}
               children={<InputNumber style={{ width: '80px' }} />}
             />
@@ -240,6 +245,10 @@ export function MoreSettingsForm (props: {
             label={$t({ defaultMessage: 'VLAN Pool:' })}
             name={['wlan', 'advancedCustomization', 'vlanPool']}
             style={{ marginBottom: '15px' }}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select VLAN Pool profile' })
+            }]}
             children={
               <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}

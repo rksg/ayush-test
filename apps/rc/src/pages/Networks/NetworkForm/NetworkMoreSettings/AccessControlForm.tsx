@@ -390,6 +390,10 @@ function AccessControlConfigForm () {
           <Form.Item
             name={['wlan','advancedCustomization','l2AclPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select Layer 2 profile' })
+            }]}
             children={
               <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
@@ -416,6 +420,10 @@ function AccessControlConfigForm () {
           <Form.Item
             name={['wlan','advancedCustomization','l3AclPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select Layer 3 profile' })
+            }]}
             children={
               <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
@@ -442,6 +450,10 @@ function AccessControlConfigForm () {
           <Form.Item
             name={['wlan','advancedCustomization','devicePolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select Device & OS profile' })
+            }]}
             children={
               <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
@@ -469,6 +481,10 @@ function AccessControlConfigForm () {
           <Form.Item
             name={['wlan','advancedCustomization','applicationPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select Applications profile' })
+            }]}
             children={
               <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}

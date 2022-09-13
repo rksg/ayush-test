@@ -118,7 +118,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                       class="ant-col ant-form-item-label"
                     >
                       <label
-                        class=""
+                        class="ant-form-item-required"
                         for="wlan_vlanId"
                         title="VLAN ID"
                       >
