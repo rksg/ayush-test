@@ -52,8 +52,6 @@ describe('IncidentDashboard helper widgets', () => {
     render(<Provider>
       <IncidentSeverityWidget 
         severityKey='P2'
-        impactedClients={undefined}
-        incidentsCount={undefined}
       />
     </Provider>)
       

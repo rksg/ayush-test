@@ -1,4 +1,5 @@
-import styled from 'styled-components'
+import { Typography } from 'antd'
+import styled         from 'styled-components'
 
 import { incidentSeverities }         from '@acx-ui/analytics/utils'
 import { IncidentSeverities, cssStr } from '@acx-ui/components'
@@ -23,4 +24,13 @@ export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => prop
 export const SeverityContainer = styled.div`
   display: flex;
   padding-right: 10px;
+`
+
+export const ClientImpactParagraph = styled(Typography.Paragraph)`
+  font-family: var(--acx-neutral-brand-font);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 13px;
+  color: var(--acx-neutrals-70)
 `

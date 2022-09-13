@@ -6,6 +6,7 @@ import { IncidentFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
   Loader,
+  NoData,
   StackedBarChart
 } from '@acx-ui/components'
 
@@ -28,7 +29,7 @@ export const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
   const intl = useIntl()
   const { severityKey, incidentsCount, impactedClients } = props
   
-  return <Col span={12} key={severityKey}>
+  return <Col span={12} key={severityKey} push={1}>
     <Typography>
       <Title level={1}>
         <Row>
@@ -45,11 +46,11 @@ export const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
           {intl.$t(defineMessage({ defaultMessage: 'Incident {severityKey}' }), { severityKey })}
         </Text>
       </Paragraph>
-      <Paragraph>
+      <UI.ClientImpactParagraph>
         {intl.$t(
           defineMessage({ defaultMessage: '{impactedClients} clients impacted' }), 
           { impactedClients: impactedClients ?? 0 })}
-      </Paragraph>
+      </UI.ClientImpactParagraph>
     </Typography>
   </Col>
 }
@@ -58,7 +59,7 @@ function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
   const queryResult = useIncidentsBySeverityDashboardQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: { ...data } as IncidentsDashboardData,
+      data: data as IncidentsDashboardData,
       ...rest
     })
   })
@@ -68,7 +69,7 @@ function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
     P2Count, P2Impact,
     P3Count, P3Impact,
     P4Count, P4Impact
-  } = queryResult.data
+  } = queryResult.data ?? {}
 
   const topData = [
     {
@@ -106,7 +107,7 @@ function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
     infrastructureP2,
     infrastructureP3,
     infrastructureP4
-  } = queryResult.data
+  } = queryResult.data ?? {}
 
   const barChartData = [
     {
@@ -136,7 +137,7 @@ function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
         { name: 'P4', value: infrastructureP4 }
       ]
     }
-  ]
+  ].reverse()
 
   return <Loader states={[queryResult]}>
     <Card 
@@ -144,22 +145,24 @@ function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
     >
       <AutoSizer>
         {
-          ({ width }) => <div style={{ width, height: 150 }}>
-            <Row gutter={[8, 8]} justify='space-evenly' align='middle'>
-              {topData.map((datum) => 
-                <IncidentSeverityWidget 
-                  severityKey={datum.severityKey as IncidentsBySeverityDataKey}
-                  incidentsCount={datum.incidentsCount}
-                  impactedClients={datum.impactedClients.impactedClientCount[0]}
-                />)}
-            </Row>
-            <Space />
-            <StackedBarChart 
-              data={barChartData}
-              showTooltip
-              style={{ width, height: 120 }}
-            />
-          </div>
+          ({ width }) => (queryResult && queryResult.data)
+            ? <div style={{ width, height: 150 }}>
+              <Row gutter={[8, 8]} justify='space-evenly' align='middle'>
+                {topData.map((datum) => 
+                  <IncidentSeverityWidget 
+                    severityKey={datum.severityKey as IncidentsBySeverityDataKey}
+                    incidentsCount={datum.incidentsCount}
+                    impactedClients={datum.impactedClients.impactedClientCount[0]}
+                  />)}
+              </Row>
+              <Space />
+              <StackedBarChart 
+                data={barChartData}
+                showTooltip
+                style={{ width, height: 120 }}
+              />
+            </div>
+            : <div style={{ width, height: 150 }}><NoData/></div>
         }
       </AutoSizer>
     </Card>
