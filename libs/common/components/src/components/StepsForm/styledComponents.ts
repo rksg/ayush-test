@@ -26,14 +26,14 @@ export const StepsContainer = styled.div`
 export const ActionsContainer = styled.div`
   position: fixed;
   bottom: 0;
-  padding: var(--acx-content-vertical-space) 0;
+  padding: var(--acx-steps-form-actions-vertical-space) 0;
   margin-right: var(--acx-content-horizontal-space);
   width: -moz-available;
   width: -webkit-fill-available;
   width: stretch;
   background-color: var(--acx-neutrals-10);
   z-index: 3;
-  &&::before {
+  &::before {
     content: '';
     position: absolute;
     inset: 0 -100% 0 -100%;
@@ -42,7 +42,7 @@ export const ActionsContainer = styled.div`
   .ant-space-item .ant-space {
     position: absolute;
     left: 50%;
-    bottom: var(--acx-content-vertical-space);
+    bottom: var(--acx-steps-form-actions-vertical-space);
     transform: translate(-50%, 0);
   }
 `
@@ -72,6 +72,8 @@ export const Wrapper = styled.section<{
     )
     0 0 0
   ;
+
+  --acx-steps-form-actions-vertical-space: 12px;
 
   .ant-pro-steps-form {
     position: relative;
@@ -188,7 +190,7 @@ export const Wrapper = styled.section<{
       );`}
     // 20px = gutter
     margin-bottom: calc(
-      var(--acx-content-vertical-space) * 2 +
+      var(--acx-steps-form-actions-vertical-space) * 2 +
       32px
     );
     // 32px = button height

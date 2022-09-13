@@ -62,7 +62,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-2 dllRro"
+    class="styledComponents__Wrapper-sc-1ibvcih-2 vTECa"
   >
     <div
       class="ant-pro-steps-form"
@@ -922,7 +922,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-1 fnOhXk"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-1 gsxuAG"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
