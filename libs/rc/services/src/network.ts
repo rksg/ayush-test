@@ -14,7 +14,8 @@ import {
   Network,
   Venue,
   NetworkDetailHeader,
-  CommonResult
+  CommonResult,
+  RadiusValidate
 } from '@acx-ui/rc/utils'
 
 export const baseNetworkApi = createApi({
@@ -158,6 +159,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...dashboardOverviewReq
         }
       }
+    }),
+    validateRadius: build.query<RadiusValidate, RequestPayload>({
+      query: ({ params, payload }) => {
+        const validateRadiusReq = createHttpRequest(CommonUrlsInfo.validateRadius, params)
+        return {
+          ...validateRadiusReq,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -172,5 +182,7 @@ export const {
   useDeleteNetworkMutation,
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
-  useDashboardOverviewQuery
+  useDashboardOverviewQuery,
+  useValidateRadiusQuery,
+  useLazyValidateRadiusQuery
 } = networkApi

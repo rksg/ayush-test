@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 
 import {
-  Button,
   Checkbox,
   Form,
   Select,
@@ -11,6 +10,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Button }                    from '@acx-ui/components'
 import {
   useDevicePolicyListQuery,
   useL2AclPolicyListQuery,
@@ -55,7 +55,6 @@ export function AccessControlForm () {
         </span>
         <Button
           type='link'
-          style={{ padding: 0 }}
           onClick={() => {
             setEnabledProfile(!enabledProfile)
           }}
@@ -78,7 +77,6 @@ function SaveAsAcProfileButton () {
   return (
     <Button
       type='link'
-      style={{ padding: 0 }}
       disabled={true}
     >
       {$t({ defaultMessage: 'Save as AC Profile' })}

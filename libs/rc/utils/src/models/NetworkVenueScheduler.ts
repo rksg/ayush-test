@@ -1,9 +1,13 @@
-import { SchedulerTypeEnum } from '../contents'
+import { SchedulerTypeEnum } from './SchedulerTypeEnum'
 
 export class NetworkVenueScheduler {
   type: SchedulerTypeEnum
 
+  sun?: string
+
   mon?: string
+
+  tue?: string
 
   wed?: string
 

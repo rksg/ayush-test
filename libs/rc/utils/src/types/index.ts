@@ -7,8 +7,9 @@ import {
   GuestNetworkTypeEnum,
   WlanSecurityEnum
 } from '../constants'
+import { NetworkVenue }   from '../models/NetworkVenue'
+import { TrustedCAChain } from '../models/TrustedCAChain'
 
-import { NetworkVenue } from './network'
 
 export * from './ap'
 export * from './venue'
@@ -262,7 +263,6 @@ export interface Dashboard {
   }>;
 }
 
-
 interface RadiusService {
   ip: string
   port: number
@@ -297,6 +297,27 @@ export interface Service {
   tags: string[]
 }
 
+export interface RadiusValidate {
+  data: {
+    errors: RadiusValidateErrors[],
+    requestId: string
+  },
+  status: number
+}
+export interface RadiusValidateErrors {
+  code: string,
+  message: string,
+  object: string,
+  value: {
+    id: string,
+    primary?: RadiusService,
+    secondary?: RadiusService,
+    tlsEnabled?: boolean,
+    cnSanIdentity?: string,
+    ocspUrl?: string,
+    trustedCAChain?: TrustedCAChain
+  }
+}
 export interface DnsProxyRule {
   domainName?: string,
   key?: string,
