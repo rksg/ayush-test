@@ -282,4 +282,23 @@ describe('Table component', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('col')?.style.width).toBe('99px')
   })
+
+  it('renders action items', async () => {
+    const actions = [
+      { label: 'Action 1', onClick: jest.fn() },
+      { label: 'Action 2', onClick: jest.fn() }
+    ]
+
+    render(<Table
+      actions={actions}
+      columns={basicColumns}
+      dataSource={basicData}
+    />)
+
+    const action1 = await screen.findByRole('button', { name: actions[0].label })
+    expect(action1).toBeVisible()
+    expect(actions[0].onClick).not.toBeCalled()
+    fireEvent.click(action1)
+    expect(actions[0].onClick).toBeCalled()
+  })
 })

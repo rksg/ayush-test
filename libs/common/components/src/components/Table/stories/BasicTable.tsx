@@ -1,4 +1,5 @@
-import { Table } from '..'
+import { Table }     from '..'
+import { showToast } from '../../Toast'
 
 const basicColumns = [
   {
@@ -44,6 +45,13 @@ export function BasicTable () {
     <Table
       columns={basicColumns}
       dataSource={basicData}
+      actions={[{
+        label: 'Add Item',
+        onClick: () => showToast({ type: 'info', content: 'Add Item Clicked' })
+      }, {
+        label: 'Add Other Item',
+        onClick: () => showToast({ type: 'info', content: 'Add Other Item Clicked' })
+      }]}
     />
   </>)
 }

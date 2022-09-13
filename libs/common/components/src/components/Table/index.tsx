@@ -1,11 +1,13 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space, Divider, Button }                      from 'antd'
+import { Space, Divider }                              from 'antd'
 import _                                               from 'lodash'
 import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
+
+import { Button } from '../Button'
 
 import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
@@ -38,6 +40,10 @@ export interface TableProps <RecordType>
     type?: 'tall' | 'compact' | 'tooltip'
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
+    actions?: Array<{
+      label: string
+      onClick: () => void
+    }>
     rowActions?: Array<{
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
@@ -186,6 +192,15 @@ function Table <RecordType extends object> (
 
   return <UI.Wrapper $type={type} $hasRowSelection={Boolean(props.rowSelection)}>
     <UI.TableSettingsGlobalOverride />
+    {props.actions && <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      {props.actions?.map((action, index) => <Button
+        key={index}
+        type='link'
+        size='small'
+        onClick={action.onClick}
+        children={action.label}
+      />)}
+    </Space>}
     <ProTable<RecordType>
       {...props}
       bordered={false}
