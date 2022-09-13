@@ -2,7 +2,7 @@ import { dataApiURL }                      from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                 from '@acx-ui/analytics/utils'
 import { BrowserRouter }                   from '@acx-ui/react-router-dom'
 import { Provider, store }                 from '@acx-ui/store'
-import { fireEvent, render, screen }       from '@acx-ui/test-utils'
+import { render, screen }                  from '@acx-ui/test-utils'
 import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 import { DateRange }                       from '@acx-ui/utils'
 
@@ -10,13 +10,6 @@ import { topSwitchesByPoEUsageResponse } from './__tests__/fixtures'
 import { api }                           from './services'
 
 import SwitchesByPoEUsage from '.'
-
-const mockedUsedNavigate = jest.fn()
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
 
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
