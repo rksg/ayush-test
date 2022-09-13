@@ -1,14 +1,16 @@
 import { storiesOf } from '@storybook/react'
 
-import { AsyncValidationStory }     from './AsyncValidationStory'
-import { BasicMultiStepsFormStory } from './BasicMultiStepsFormStory'
-import { DynamicStepsStory }        from './DynamicStepsStory'
-import { EditModeStory }            from './EditModeStory'
+import { AsyncValidation } from './AsyncValidation'
+import { BasicMultiSteps } from './BasicMultiSteps'
+import { DynamicSteps }    from './DynamicSteps'
+import { EditMode }        from './EditMode'
+import { SingleStep }      from './SingleStep'
 
 storiesOf('StepsForm', module)
-  .add('Basic', BasicMultiStepsFormStory)
-  .add('With Async Validation', AsyncValidationStory)
-  .add('Edit Mode', EditModeStory)
-  .add('Dynamic Steps', DynamicStepsStory)
+  .add('Basic', BasicMultiSteps)
+  .add('With Async Validation', AsyncValidation)
+  .add('Edit Mode', EditMode)
+  .add('Dynamic Steps', DynamicSteps)
+  .add('Single Step', SingleStep)
 
 export {}

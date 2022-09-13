@@ -6,7 +6,7 @@ exports[`Create Network: Venues Step should render correctly 1`] = `
     class="ant-form ant-form-horizontal"
   >
     <h3
-      class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
     >
       Venues
     </h3>

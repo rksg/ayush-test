@@ -94,7 +94,7 @@ export function StepsForm <FormValue = any> (
 
   const stepsFormRender: ProAntStepsFormProps['stepsFormRender'] = (form, submitter) => (
     <>
-      <UI.Container>{form}</UI.Container>
+      {form}
       <UI.ActionsContainer>
         <Space align='center' size={12}>{submitter}</Space>
       </UI.ActionsContainer>
@@ -104,37 +104,57 @@ export function StepsForm <FormValue = any> (
   const buttonLabel = {
     next: $t({ defaultMessage: 'Next' }),
     submit: $t({ defaultMessage: 'Finish' }),
+    pre: $t({ defaultMessage: 'Back' }),
     cancel: $t({ defaultMessage: 'Cancel' })
   }
 
-  const cancel = <Button
+  const cancelButton = <Button
     key='cancel'
     onClick={() => onCancel?.()}
     children={buttonLabel.cancel}
   />
 
-  const submitter: ProAntStepsFormProps<FormValue>['submitter'] = {
-    render (_, submitterDom) {
-      const button = Array.from(submitterDom).pop() as React.ReactElement<ButtonProps>
-      const key = button.key as 'next' | 'submit'
+  function submitter (
+    stepCount: number
+  ): ProAntStepsFormProps<FormValue>['submitter'] {
+    return {
+      render (props, dom) {
+        const domArray = Array.from(dom)
 
-      const submitButton = <Button
-        {...button.props}
-        key={key}
-        type='secondary'
-        children={buttonLabel[key]}
-      />
-      return [submitButton, cancel]
+        const submit = domArray.pop() as React.ReactElement<ButtonProps>
+        const submitKey = stepCount - 1 === props.step ? 'submit' : 'next'
+        const submitButton = <Button
+          {...submit.props}
+          key={submitKey}
+          type='secondary'
+          children={buttonLabel[submitKey]}
+        />
+
+        const back = domArray.pop() as React.ReactElement<ButtonProps>
+        const backButton = <Button
+          {...back?.props || {}}
+          key='pre'
+          children={buttonLabel.pre}
+          disabled={props.step === 0}
+        />
+
+        return stepCount > 1
+          ? [
+            cancelButton,
+            <Space align='center' size={12} key='back-submit'>{[backButton, submitButton]}</Space>
+          ]
+          : [submitButton, cancelButton]
+      }
     }
   }
 
   return (
-    <UI.Wrapper editMode={editMode}>
+    <UI.Wrapper singleStep={items.length === 1} editMode={editMode}>
       <ProAntStepsForm<FormValue>
         {...otherProps}
         {...{ current, onCurrentChange, stepsRender, stepsFormRender, formRef }}
         children={items}
-        submitter={submitter}
+        submitter={submitter(items.length)}
       />
     </UI.Wrapper>
   )

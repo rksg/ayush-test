@@ -7,7 +7,7 @@ import { showToast } from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
-export function EditModeStory () {
+export function EditMode () {
   return (
     <Row gutter={20}>
       <Col span={10}>

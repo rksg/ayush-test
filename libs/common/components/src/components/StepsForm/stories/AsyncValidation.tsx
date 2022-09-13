@@ -15,7 +15,7 @@ interface Fields {
   field4: string
 }
 
-export function AsyncValidationStory () {
+export function AsyncValidation () {
   const remoteValidation = async (rule: RuleObject, value: string) => {
     await wait(1000) // mimic external request
     if (value === 'value') throw new Error(rule.message?.toString())
