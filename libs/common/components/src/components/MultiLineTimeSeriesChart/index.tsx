@@ -22,7 +22,7 @@ import type { EChartsOption, ECharts, MarkAreaComponentOption } from 'echarts'
 import type { EChartsReactProps }                               from 'echarts-for-react'
 
 export interface ChartMarker { startTime: string, endTime: string }
-interface MultiLineTimeSeriesChartProps
+export interface MultiLineTimeSeriesChartProps
   <TChartData extends MultiLineTimeSeriesChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[],

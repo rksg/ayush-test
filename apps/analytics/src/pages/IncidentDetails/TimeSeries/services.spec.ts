@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
+import moment             from 'moment-timezone'
 
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { fakeIncident1 }       from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
-import { Api, calcGranularity } from './services'
+import { Api, calcGranularity, getIncidentTimeSeriesPeriods, getBuffer, BufferConfig } from './services'
 
 describe('chartQuery', () => {
   const store = configureStore({
@@ -102,5 +103,29 @@ describe('chartQuery', () => {
     data.forEach(({ input, output }) => 
       expect(calcGranularity(input.start, input.end)).toStrictEqual(output)
     )
+  })
+  it('should getIncidentTimeSeriesPeriods', () => {
+    expect(getIncidentTimeSeriesPeriods(fakeIncident1).start).toEqual(
+      moment(fakeIncident1.startTime).subtract(6, 'hours'))
+    expect(getIncidentTimeSeriesPeriods(fakeIncident1).end).toEqual(
+      moment(fakeIncident1.endTime).add(6, 'hours'))
+  })
+  it('should getBuffer', () => {
+    const sampleBuffer = {
+      front: {
+        value: 1,
+        unit: 'hour'
+      } as BufferConfig,
+      back: {
+        value: 10,
+        unit: 'minutes'
+      } as BufferConfig
+    }
+    expect(getBuffer(undefined)).toEqual(
+      { back: { unit: 'hours', value: 6 }, front: { unit: 'hours', value: 6 } })
+    expect(getBuffer(10)).toEqual(
+      { back: { unit: 'hours', value: 10 }, front: { unit: 'hours', value: 10 } })
+    expect(getBuffer(sampleBuffer)).toEqual(
+      { back: { unit: 'minutes', value: 10 }, front: { unit: 'hour', value: 1 } })
   })
 })

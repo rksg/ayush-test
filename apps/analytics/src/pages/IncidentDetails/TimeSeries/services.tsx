@@ -7,7 +7,7 @@ import { Incident } from '@acx-ui/analytics/utils'
 
 import { failureCharts } from './config'
 
-type BufferConfig = {
+export type BufferConfig = {
   value: number;
   unit: unitOfTime.Base;
 }
@@ -37,7 +37,7 @@ export const calcGranularity = (start: string, end: string): string => {
   return 'PT180S'
 }
 
-function getBuffer (chartBuffer: ChartIncident['buffer']) {
+export function getBuffer (chartBuffer: ChartIncident['buffer']) {
   /** @type {{ front: BufferConfig, back: BufferConfig }} */
   const buffer = {
     front: { value: 6, unit: 'hours' },
@@ -52,8 +52,8 @@ function getBuffer (chartBuffer: ChartIncident['buffer']) {
     return buffer
   }
 
-  if (chartBuffer.hasOwnProperty('front')) buffer.front = chartBuffer.front
-  if (chartBuffer.hasOwnProperty('back')) buffer.back = chartBuffer.back
+  (chartBuffer.hasOwnProperty('front')) && (buffer.front = chartBuffer.front);
+  (chartBuffer.hasOwnProperty('back')) && (buffer.back = chartBuffer.back)
 
   return buffer
 }

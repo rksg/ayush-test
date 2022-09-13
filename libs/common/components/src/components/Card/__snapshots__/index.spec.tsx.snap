@@ -3,7 +3,7 @@
 exports[`Card component should render card with grey background 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-3 iYnEqR"
+    class="styledComponents__Wrapper-sc-13w5wfx-3 dbhfoR"
     type="solid-bg"
   >
     <div
@@ -44,7 +44,7 @@ exports[`Card component should render card with grey background 1`] = `
 exports[`Card component should render card with no border 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-3 dUzIYR"
+    class="styledComponents__Wrapper-sc-13w5wfx-3 kPkDWB"
     type="no-border"
   >
     <div

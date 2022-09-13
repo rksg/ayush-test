@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IncidentChart should handle markAreaProps 1`] = `
+Object {
+  "data": Array [
+    Array [
+      Object {
+        "data": Object {
+          "code": "eap",
+          "endTime": "2022-07-20T02:42:00.000Z",
+          "id": "df5339ba-da3b-4110-a291-7f8993a274f3",
+          "severity": 0.5,
+          "startTime": "2022-07-19T05:15:00.000Z",
+        },
+        "itemStyle": Object {
+          "color": "#F7B41E",
+          "opacity": 1,
+        },
+        "xAxis": "2022-07-19T05:15:00.000Z",
+      },
+      Object {
+        "xAxis": "2022-07-20T02:42:00.000Z",
+      },
+    ],
+    Array [
+      Object {
+        "data": Object {
+          "code": "eap",
+          "endTime": "2022-04-08T13:15:00.000Z",
+          "id": "07965e24-84ba-48a5-8200-f310f8197f41",
+          "severity": 0.8,
+          "startTime": "2022-04-08T12:15:00.000Z",
+        },
+        "itemStyle": Object {
+          "color": "#F7B41E",
+          "opacity": 0.3,
+        },
+        "xAxis": "2022-04-08T12:15:00.000Z",
+      },
+      Object {
+        "xAxis": "2022-04-08T13:15:00.000Z",
+      },
+    ],
+  ],
+}
+`;
