@@ -35,6 +35,13 @@ export type StepsFormProps <FormValue = any> =
      * Uses to cancel or reset current form action
      */
     onCancel?: () => void
+
+    buttonLabel?: {
+      next?: string
+      submit?: string
+      pre?: string
+      cancel?: string
+    }
   }
 
 export type StepFormProps <FormValue> = Omit<
@@ -58,6 +65,16 @@ export function StepsForm <FormValue = any> (
   const { $t } = useIntl()
   const formRef = useRef()
   const [current, setStep] = useState(propCurrent ?? 0)
+
+  const buttonLabel = {
+    ...{
+      next: $t({ defaultMessage: 'Next' }),
+      submit: $t({ defaultMessage: 'Finish' }),
+      pre: $t({ defaultMessage: 'Back' }),
+      cancel: $t({ defaultMessage: 'Cancel' })
+    },
+    ...props.buttonLabel
+  }
 
   useImperativeHandle(propFormRef, () => formRef.current)
 
@@ -100,13 +117,6 @@ export function StepsForm <FormValue = any> (
       </UI.ActionsContainer>
     </>
   )
-
-  const buttonLabel = {
-    next: $t({ defaultMessage: 'Next' }),
-    submit: $t({ defaultMessage: 'Finish' }),
-    pre: $t({ defaultMessage: 'Back' }),
-    cancel: $t({ defaultMessage: 'Cancel' })
-  }
 
   const cancelButton = <Button
     key='cancel'

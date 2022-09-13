@@ -315,7 +315,7 @@ exports[`Venues Form google map is not enabled 1`] = `
               type="button"
             >
               <span>
-                Finish
+                Add
               </span>
             </button>
           </div>
@@ -650,7 +650,7 @@ exports[`Venues Form should render venues form 1`] = `
               type="button"
             >
               <span>
-                Finish
+                Add
               </span>
             </button>
           </div>

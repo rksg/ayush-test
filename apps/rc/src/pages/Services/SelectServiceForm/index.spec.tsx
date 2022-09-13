@@ -48,7 +48,7 @@ describe('Select Service Form', () => {
     )
 
     const wifiCallingRadio = screen.getByRole('radio', { name: /Wi-Fi Calling/ })
-    const submitButton = screen.getByRole('button', { name: 'Finish' })
+    const submitButton = screen.getByRole('button', { name: 'Add' })
 
     await userEvent.click(wifiCallingRadio)
     await userEvent.click(submitButton)

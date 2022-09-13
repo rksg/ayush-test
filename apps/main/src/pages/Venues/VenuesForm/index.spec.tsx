@@ -199,7 +199,7 @@ describe('Venues Form', () => {
       { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
     })
 
-    fireEvent.click(screen.getByText('Finish'))
+    fireEvent.click(screen.getByText('Add'))
   })
   it('should call address parser', async () => {
     const { address } = await addressParser(autocompleteResult)

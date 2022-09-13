@@ -17,6 +17,7 @@ export function SingleStep () {
             await wait(1000) // mimic external service call
             showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
           }}
+          buttonLabel={{ submit: 'Add' }}
         >
           <StepsForm.StepForm>
             <Form.Item name='field1' label='Field 1'>

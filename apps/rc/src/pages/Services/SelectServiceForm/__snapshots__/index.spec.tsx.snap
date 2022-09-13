@@ -355,7 +355,7 @@ exports[`Select Service Form should render form 1`] = `
               type="button"
             >
               <span>
-                Finish
+                Add
               </span>
             </button>
           </div>

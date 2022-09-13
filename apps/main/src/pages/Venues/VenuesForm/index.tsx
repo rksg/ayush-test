@@ -199,6 +199,7 @@ export function VenuesForm () {
         formRef={formRef}
         onFinish={handleAddVenue}
         onCancel={() => navigate(linkToVenues)}
+        buttonLabel={{ submit: 'Add' }}
       >
         <StepsForm.StepForm>
           <Form.Item
