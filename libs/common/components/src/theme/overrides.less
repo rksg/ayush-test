@@ -161,6 +161,15 @@
     }
   }
 
+  .ant-input:focus,
+  .ant-input-affix-wrapper-focused,
+  .ant-input-number-focused,
+  .ant-picker-focused,
+  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-color: var(--acx-primary-black);
+    box-shadow: none !important;
+  }
+
   .ant-input-affix-wrapper-readonly.ant-input-password {
     width: fit-content;
   }
@@ -237,6 +246,17 @@
         }
       }
     }
+    .ant-picker-dropdown {
+      .ant-picker-time-panel-column {
+        .ant-picker-time-panel-cell .ant-picker-time-panel-cell-inner:hover {
+          background: var(--acx-accents-orange-10);
+        }
+        .ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner {
+          background: var(--acx-accents-orange-20);
+          font-weight: var(--acx-body-font-weight-bold);
+        }
+      }
+    }
   }
 
   .ant-radio {
@@ -254,7 +274,9 @@
         margin-left: calc(var(--size) / -2);
       }
     }
-
+    &-checked .ant-radio-inner {
+      box-shadow: none;
+    }
     &-disabled .ant-radio-inner {
       border-color: var(--acx-neutrals-40) !important;
     }

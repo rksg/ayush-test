@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Row, Col, Form, Input } from 'antd'
+import { Row, Col, Form, Input, Select } from 'antd'
 
 import { StepsForm } from '..'
 import { showToast } from '../../Toast'
@@ -24,13 +24,21 @@ export function BasicMultiSteps () {
               <Input />
             </Form.Item>
             <Form.Item name='field2' label='Field 2'>
-              <Input />
+              <Select>
+                <Select.Option value='option1'>Option 1</Select.Option>
+                <Select.Option value='option2'>Option 2</Select.Option>
+                <Select.Option value='option3'>Option 3</Select.Option>
+              </Select>
             </Form.Item>
             <Form.Item name='field3' label='Field 3'>
-              <Input />
+              <Select disabled>
+                <Select.Option value='option1'>Option 1</Select.Option>
+                <Select.Option value='option2'>Option 2</Select.Option>
+                <Select.Option value='option3'>Option 3</Select.Option>
+              </Select>
             </Form.Item>
             <Form.Item name='field4' label='Field 4'>
-              <Input />
+              <Input disabled />
             </Form.Item>
             <Form.Item name='field5' label='Field 5'>
               <Input />
