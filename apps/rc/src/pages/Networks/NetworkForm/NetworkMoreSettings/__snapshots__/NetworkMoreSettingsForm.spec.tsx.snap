@@ -6,7 +6,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
     class="ant-form ant-form-horizontal"
   >
     <div
-      class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollpasePanel-sc-lhsic1-3 wFNOT"
+      class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollapsePanel-sc-lhsic1-3 ijzxTj"
       style="width: 600px;"
     >
       <div

@@ -108,7 +108,7 @@ export function NetworkMoreSettingsForm (props: {
   })
 
   return (
-    <UI.CollpasePanel
+    <UI.CollapsePanel
       defaultActiveKey={['1', '2', '3']}
       expandIconPosition='end'
       ghost={true}
@@ -427,7 +427,7 @@ export function NetworkMoreSettingsForm (props: {
             </div>
           </>}
       </Panel>
-    </UI.CollpasePanel>
+    </UI.CollapsePanel>
   )
 }
 
