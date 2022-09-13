@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, websocketServerUrl } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen }         from '@acx-ui/test-utils'
+import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { DHCPForm } from './DHCPForm'
 
@@ -51,8 +51,7 @@ describe('DHCPForm', () => {
       rest.post(
         CommonUrlsInfo.saveDHCPService.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))
-      ),
-      rest.all(websocketServerUrl, (_, res) => res.networkError('')))
+      ))
 
 
 
