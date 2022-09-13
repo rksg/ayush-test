@@ -174,7 +174,7 @@ export function VenuesTable () {
       defaultPayload
     })
 
-    const actions: TableProps<Venue>['actions'] = [{
+    const rowActions: TableProps<Venue>['rowActions'] = [{
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
@@ -191,7 +191,7 @@ export function VenuesTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          actions={actions}
+          rowActions={rowActions}
           rowSelection={{ type: 'checkbox' }}
         />
       </Loader>

@@ -195,7 +195,7 @@ export function NetworksTable () {
       { isLoading: isDeleteNetworkUpdating }
     ] = useDeleteNetworkMutation()
 
-    const actions: TableProps<Network>['actions'] = [
+    const rowActions: TableProps<Network>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
         onClick: (selectedRows) => {
@@ -235,7 +235,7 @@ export function NetworksTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          actions={actions}
+          rowActions={rowActions}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

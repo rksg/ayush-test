@@ -133,7 +133,7 @@ export function MultiSelectTable (props: {
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
   const { modalState, setModalState } = props
 
-  const actions: TableProps<(typeof dnsProxyList)[0]>['actions'] = [
+  const rowActions: TableProps<(typeof dnsProxyList)[0]>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
       onClick: (row: DnsProxyRule[], clearSelection) => {
@@ -175,7 +175,7 @@ export function MultiSelectTable (props: {
     <Table
       columns={useColumns()}
       dataSource={dnsProxyList}
-      actions={actions}
+      rowActions={rowActions}
       rowKey='domainName'
       rowSelection={{ type: 'checkbox' }}
     />

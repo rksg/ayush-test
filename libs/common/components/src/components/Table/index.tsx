@@ -38,7 +38,7 @@ export interface TableProps <RecordType>
     type?: 'tall' | 'compact' | 'tooltip'
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
-    actions?: Array<{
+    rowActions?: Array<{
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
@@ -218,7 +218,7 @@ function Table <RecordType extends object> (
             />
           </Space>
           <Space size={0} split={<Divider type='vertical' />}>
-            {props.actions?.map((option) =>
+            {props.rowActions?.map((option) =>
               <UI.ActionButton
                 key={option.label}
                 onClick={() =>
