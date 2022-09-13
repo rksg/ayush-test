@@ -79,20 +79,20 @@ export function PoolList (props:{
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ip',
-      width: 10,
+      width: 100,
       sorter: true
     },
     {
       key: 'mask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
       dataIndex: 'mask',
-      width: 10,
+      width: 100,
       sorter: true
     },
     {
       key: 'leaseTime',
       title: $t({ defaultMessage: 'Lease Time' }),
-      width: 50,
+      width: 100,
       dataIndex: 'leaseTime',
       render: (data) =>{
         return data + ' Hours'
@@ -107,7 +107,7 @@ export function PoolList (props:{
     {
       key: 'leaseTime',
       title: $t({ defaultMessage: 'Number of hosts' }),
-      width: 50,
+      width: 120,
       dataIndex: 'leaseTime'
     }
   ]

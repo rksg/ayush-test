@@ -3,9 +3,9 @@ import { ServiceType }       from '@acx-ui/rc/utils'
 import { rootRoutes, Route } from '@acx-ui/react-router-dom'
 import { Provider }          from '@acx-ui/store'
 
-import { NetworkDetails }                        from './pages/NetworkDetails/NetworkDetails'
-import { NetworkForm }                           from './pages/NetworkForm/NetworkForm'
-import { NetworksTable }                         from './pages/NetworksTable'
+import { NetworkDetails }                        from './pages/Networks/NetworkDetails/NetworkDetails'
+import { NetworkForm }                           from './pages/Networks/NetworkForm/NetworkForm'
+import { NetworksTable }                         from './pages/Networks/NetworksTable'
 import { DHCPForm }                              from './pages/Services/DHCPForm/DHCPForm'
 import { SelectServiceForm }                     from './pages/Services/SelectServiceForm'
 import { getServiceRoutePath, ServiceOperation } from './pages/Services/serviceRouteUtils'
@@ -13,6 +13,20 @@ import { ServicesTable }                         from './pages/Services/Services
 
 export default function RcRoutes () {
   const routes = rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='networks/*' element={<NetworkRoutes />} />
+      <Route path='services/*' element={<ServiceRoutes />} />
+    </Route>
+  )
+  return (
+    <ConfigProvider>
+      <Provider children={routes} />
+    </ConfigProvider>
+  )
+}
+
+function NetworkRoutes () {
+  return rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='networks' element={<NetworksTable />} />
       <Route path='networks/add' element={<NetworkForm />} />
@@ -24,16 +38,9 @@ export default function RcRoutes () {
         path='networks/:networkId/:action'
         element={<NetworkForm />}
       />
-      <Route path='services/*' element={<ServiceRoutes />} />
     </Route>
   )
-  return (
-    <ConfigProvider>
-      <Provider children={routes} />
-    </ConfigProvider>
-  )
 }
-
 
 function ServiceRoutes () {
   return rootRoutes(

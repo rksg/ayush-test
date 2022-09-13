@@ -129,5 +129,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   saveDHCPService: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
+  },
+  validateRadius: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   }
 }
