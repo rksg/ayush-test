@@ -143,6 +143,7 @@ const tallStyle = css<StyledTable>`
     `}
 
     .ant-table {
+
       &-thead > tr:last-child > th,
       &-thead > tr:first-child > th[rowspan] {
         &:not(.ant-table-selection-column):not(.ant-table-cell-fix-right) {
@@ -300,6 +301,7 @@ export const Header = styled(Row)`
 `
 export const ClearButtonContainer = styled(Col).attrs({ span: 12 })`
   text-align: right;
+  z-index: -1;
 `
 
 export const Wrapper = styled.div<StyledTable>`
@@ -313,6 +315,10 @@ export const Wrapper = styled.div<StyledTable>`
     }
 
     .ant-table {
+      &-cell-fix-left {
+        border-bottom: 1px solid var(--acx-neutrals-30) !important;
+      }
+
       &-thead > tr:first-child > th {
         padding-top: 12px;
         font-size: var(--acx-subtitle-4-font-size);
