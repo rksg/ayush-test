@@ -16,7 +16,6 @@ export * from './venue'
 export * from './network'
 export * from './user'
 export * from './service'
-export * from './services/dhcp'
 
 export interface CommonResult {
   requestId: string

@@ -87,7 +87,11 @@ describe('DHCPForm', () => {
 
     expect(asFragment()).toMatchSnapshot()
     fillInBeforeSettings('open dhcp edit test')
-    // screen.getByRole('heading', { level: 3, name: 'Settings' })
+
+    await screen.findByRole('heading', { level: 3, name: 'Settings' })
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    //Venues
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
