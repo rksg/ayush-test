@@ -11,10 +11,10 @@ import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, StepsForm, Table, TableProps, Loader, showToast } from '@acx-ui/components'
-import { DeleteOutlined }                                          from '@acx-ui/icons'
 import {
   useGetVenueCapabilitiesQuery,
   useGetVenueLedOnQuery,
+  useGetVenueApModelsQuery,
   useUpdateVenueLedOnMutation
 } from '@acx-ui/rc/services'
 import { VenueLed } from '@acx-ui/rc/utils'
@@ -24,6 +24,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { DeleteOutlinedIcon }                       from '../../../Layout/styledComponents'
 import { VenueEditContext, AdvancedSettingContext } from '../index'
 
 export interface ModelOption {
@@ -38,6 +39,7 @@ export function AdvancedSettingForm () {
   const basePath = useTenantLink('/venues/')
   const venueCaps = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
   const venueLed = useGetVenueLedOnQuery({ params: { tenantId, venueId } })
+  const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
   const [updateVenueLedOn] = useUpdateVenueLedOnMutation()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
@@ -68,12 +70,16 @@ export function AdvancedSettingForm () {
     if (apModels?.length) {
       const supportModels: string[] = apModels?.filter(apModel => apModel.ledOn)
         .map(apModel => apModel.model)
-      const existingModels = venueLed.data?.map((item: VenueLed) => item.model)
+      const venueApLeds = venueLed?.data?.map((item: VenueLed) => ({
+        ...item,
+        manual: !venueApModels?.data?.models?.includes(item.model)
+      }))
+      const existingModels = venueApLeds?.map((item: VenueLed) => item.model)
       const availableModels = supportModels
         ?.filter((item) => existingModels ? existingModels?.indexOf(item) === -1 : item)
         .reduce((opts: ModelOption[], item) => [...opts, { label: item, value: item }], [])
 
-      setTableData((venueLed?.data as VenueLed[])?.map(
+      setTableData((venueApLeds as VenueLed[])?.map(
         (item: VenueLed) => ({ ...item, key: item.model, value: item.model })
       ))
       setSupportModelOptions(supportModels?.reduce((opts: ModelOption[], item) =>
@@ -89,7 +95,12 @@ export function AdvancedSettingForm () {
       tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
       newData: tableData,
       oldData: (venueLed?.data as VenueLed[])?.map(
-        (item: VenueLed) => ({ ...item, key: item.model, value: item.model })
+        (item: VenueLed) => ({
+          ...item,
+          key: item.model,
+          value: item.model,
+          manual: !venueApModels?.data?.models?.includes(item.model)
+        })
       ),
       isDirty: editContextData?.oldData ? !isEqual(editContextData?.oldData, tableData) : false,
       hasError: tableData.filter(item => !item.model).length > 0,
@@ -130,14 +141,14 @@ export function AdvancedSettingForm () {
     }
   }, {
     key: 'action',
-    render: (data, row) => <Button
+    render: (data, row) => row.manual ? <Button
       key='delete'
       role='deleteBtn'
       ghost={true}
-      icon={<DeleteOutlined />}
+      icon={<DeleteOutlinedIcon />}
       style={{ height: '16px' }}
       onClick={() => handleDelete(row.model)}
-    />
+    /> : null
   }]
 
   const handleAdd = () => {

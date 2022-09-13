@@ -10,6 +10,7 @@ import {
   CalendarDateSolid,
   ConfigurationOutlined,
   ConfigurationSolid,
+  DeleteOutlined,
   DevicesOutlined,
   DevicesSolid,
   LocationOutlined,
@@ -187,4 +188,10 @@ export const SpeedIndicatorIcon = styled(SpeedIndicatorOutlined)`
 `
 export const EnabledSpeedIndicatorIcon = styled(SpeedIndicatorSolid)`
   ${enabledMenuIconStyle}
+`
+
+export const DeleteOutlinedIcon = styled(DeleteOutlined)`
+  path {
+    stroke: var(--acx-accents-blue-50) !important;
+  }
 `

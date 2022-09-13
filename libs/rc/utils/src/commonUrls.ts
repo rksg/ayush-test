@@ -126,6 +126,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
   },
+  getVenueApModels: {
+    method: 'get',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/ap-models'
+  },
   getVenueLedOn: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/led'

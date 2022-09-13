@@ -58,5 +58,10 @@ export interface VenueCapabilities {
 export interface VenueLed {
 	ledEnabled: boolean
 	model: string,
-	key?: string
+	key?: string,
+	manual?: boolean
+}
+
+export interface VenueApModels {
+	models: string[]
 }
