@@ -1,7 +1,8 @@
 import { dataApiURL }                      from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                 from '@acx-ui/analytics/utils'
+import { BrowserRouter }                   from '@acx-ui/react-router-dom'
 import { Provider, store }                 from '@acx-ui/store'
-import { render, screen }                  from '@acx-ui/test-utils'
+import { fireEvent, render, screen }       from '@acx-ui/test-utils'
 import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
 import { DateRange }                       from '@acx-ui/utils'
 
@@ -9,6 +10,13 @@ import { topSwitchesByPoEUsageResponse } from './__tests__/fixtures'
 import { api }                           from './services'
 
 import SwitchesByPoEUsage from '.'
+
+const mockedUsedNavigate = jest.fn()
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -20,6 +28,12 @@ const filters = {
 describe('TopSwitchesByPoEUsageWidget', () => {
   mockAutoSizer()
 
+  const wrapper = (<BrowserRouter>
+    <Provider> 
+      <SwitchesByPoEUsage filters={filters}/>
+    </Provider>
+  </BrowserRouter>)
+
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
   )
@@ -28,14 +42,14 @@ describe('TopSwitchesByPoEUsageWidget', () => {
     mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', {
       data: topSwitchesByPoEUsageResponse
     })
-    render( <Provider> <SwitchesByPoEUsage filters={filters}/></Provider>)
+    render(wrapper)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', {
       data: topSwitchesByPoEUsageResponse
     })
-    const { asFragment } =render( <Provider> <SwitchesByPoEUsage filters={filters}/></Provider>)
+    const { asFragment } =render(wrapper)
     await screen.findByText('Top 5 Switches by PoE Usage')
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
@@ -44,7 +58,7 @@ describe('TopSwitchesByPoEUsageWidget', () => {
     mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', {
       error: new Error('something went wrong!')
     })
-    render( <Provider> <SwitchesByPoEUsage filters={filters}/> </Provider>)
+    render(wrapper)
     await screen.findByText('Something went wrong.')
     jest.resetAllMocks()
   })
@@ -53,7 +67,7 @@ describe('TopSwitchesByPoEUsageWidget', () => {
     mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', {
       data: { network: { hierarchyNode: { topNSwitchesByPoEUsage: [] } } }
     })
-    render( <Provider> <SwitchesByPoEUsage filters={filters}/> </Provider>)
+    render(wrapper)
     expect(await screen.findByText('No data to display')).toBeVisible()
     jest.resetAllMocks()
   })

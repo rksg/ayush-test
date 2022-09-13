@@ -1,3 +1,5 @@
+import { BrowserRouter } from 'react-router-dom'
+
 import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { Provider }                         from '@acx-ui/store'
@@ -104,9 +106,12 @@ test('should render Top Switches by Traffic widget', async () => {
     data: topSwitchesByTrafficResponse
   })
   render(
-    <Provider>
-      <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
-    </Provider>)
+    <BrowserRouter>
+      <Provider>
+        <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
+      </Provider>
+    </BrowserRouter>
+  )
   expect(await screen.findByText('Top 5 Switches by Traffic')).not.toBe(null)
 })
 
@@ -124,7 +129,12 @@ test('should render Connected Clients Over Time widget', async () => {
 
 test('should render Top 5 Switches by PoE Usage widget', async () => {
   mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', { data: topSwitchesByPoEUsageResponse })
-  render( <Provider> <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/></Provider>)
+  render(
+    <BrowserRouter>
+      <Provider> 
+        <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/>
+      </Provider>
+    </BrowserRouter>)
   expect(await screen.findByText('Top 5 Switches by PoE Usage')).toBeVisible()
 })
 
@@ -135,7 +145,8 @@ test('should render Top 5 Switch Models widget', async () => {
   render(
     <Provider>
       <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
-    </Provider>)
+    </Provider>
+  )
   expect(await screen.findByText('Top 5 Switch Models')).not.toBe(null)
 })
 

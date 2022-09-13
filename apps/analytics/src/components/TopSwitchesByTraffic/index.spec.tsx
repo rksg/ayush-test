@@ -1,6 +1,8 @@
 import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import { BrowserRouter }                           from 'react-router-dom'
 
 import { dataApiURL }                      from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                 from '@acx-ui/analytics/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { render, screen }                  from '@acx-ui/test-utils'
 import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
@@ -16,10 +18,16 @@ const filters = {
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours
-}
+} as AnalyticsFilter
 
 describe('TopSwitchesByTrafficWidget', () => {
   mockAutoSizer()
+
+  const wrapper = (<BrowserRouter>
+    <Provider> 
+      <SwitchesByTraffic filters={filters}/>
+    </Provider>
+  </BrowserRouter>)
 
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
@@ -29,14 +37,14 @@ describe('TopSwitchesByTrafficWidget', () => {
     mockGraphqlQuery(dataApiURL, 'SwitchesByTraffic', {
       data: topSwitchesByTrafficResponse
     })
-    render( <Provider> <SwitchesByTraffic filters={filters}/></Provider>)
+    render(wrapper)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'SwitchesByTraffic', {
       data: topSwitchesByTrafficResponse
     })
-    const { asFragment } =render( <Provider> <SwitchesByTraffic filters={filters}/></Provider>)
+    const { asFragment } =render(wrapper)
     await screen.findByText('Top 5 Switches by Traffic')
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
@@ -45,7 +53,7 @@ describe('TopSwitchesByTrafficWidget', () => {
     mockGraphqlQuery(dataApiURL, 'SwitchesByTraffic', {
       error: new Error('something went wrong!')
     })
-    render( <Provider> <SwitchesByTraffic filters={filters}/> </Provider>)
+    render(wrapper)
     await screen.findByText('Something went wrong.')
     jest.resetAllMocks()
   })
@@ -54,7 +62,7 @@ describe('TopSwitchesByTrafficWidget', () => {
     mockGraphqlQuery(dataApiURL, 'SwitchesByTraffic', {
       data: { network: { hierarchyNode: { topNSwitchesByTraffic: [] } } }
     })
-    render( <Provider> <SwitchesByTraffic filters={filters}/> </Provider>)
+    render(wrapper)
     expect(await screen.findByText('No data to display')).toBeVisible()
     jest.resetAllMocks()
   })
