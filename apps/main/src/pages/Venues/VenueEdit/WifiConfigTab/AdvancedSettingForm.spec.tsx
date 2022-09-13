@@ -9,8 +9,9 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from
 
 import {
   venueData,
-  mockVenueCaps,
-  mockVenueLed
+  venueCaps,
+  venueLed,
+  venueApModels
 } from '../../__tests__/fixtures'
 import { VenueEditContext, AdvancedSettingContext } from '../index'
 
@@ -34,9 +35,11 @@ describe('AdvancedSettingForm', () => {
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(
         CommonUrlsInfo.getVenueCapabilities.url,
-        (_, res, ctx) => res(ctx.json(mockVenueCaps))),
+        (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(CommonUrlsInfo.getVenueLedOn.url,
-        (_, res, ctx) => res(ctx.json(mockVenueLed))),
+        (_, res, ctx) => res(ctx.json(venueLed))),
+      rest.get(CommonUrlsInfo.getVenueApModels.url,
+        (_, res, ctx) => res(ctx.json(venueApModels))),
       rest.put(CommonUrlsInfo.updateVenueLedOn.url,
         (_, res, ctx) => res(ctx.json({})))
     )
@@ -84,13 +87,14 @@ describe('AdvancedSettingForm', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab' }
       })
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByText('E510')
     fireEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
     expect(screen.getByRole('button', { name: 'Add Model' })).toBeDisabled()
 
     fireEvent.mouseDown(await screen.findByRole('combobox'))
     const allOptions = screen.getAllByRole('option')
-    expect(allOptions).toHaveLength(mockVenueCaps.apModels.length - 1)
+    expect(allOptions).toHaveLength(venueCaps.apModels.length - 1)
     fireEvent.click(allOptions[0])
 
     const toggle = screen.getAllByRole('switch')

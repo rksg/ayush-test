@@ -8,8 +8,8 @@ import { render, screen, fireEvent, mockServer, waitForElementToBeRemoved } from
 
 import {
   venueData,
-  mockVenueCaps,
-  mockVenueLed
+  venueCaps,
+  venueLed
 } from '../__tests__/fixtures'
 
 import { VenueEdit } from './index'
@@ -30,9 +30,9 @@ describe('VenueEdit', () => {
         (req, res, ctx) => res(ctx.json(venueData))),
       rest.get(
         CommonUrlsInfo.getVenueCapabilities.url,
-        (_, res, ctx) => res(ctx.json(mockVenueCaps))),
+        (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(CommonUrlsInfo.getVenueLedOn.url,
-        (_, res, ctx) => res(ctx.json(mockVenueLed)))
+        (_, res, ctx) => res(ctx.json(venueLed)))
     )
   })
 

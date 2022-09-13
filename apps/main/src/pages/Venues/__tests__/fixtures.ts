@@ -58,7 +58,7 @@ export const venueData = {
   updatedDate: '2022-07-08T04:59:22.351+00:00'
 }
 
-export const mockVenueCaps = {
+export const venueCaps = {
   apModels: [{
     ledOn: true,
     model: 'E510'
@@ -72,9 +72,13 @@ export const mockVenueCaps = {
   version: '6.0.0.x.xxx'
 }
 
-export const mockVenueLed = [{
+export const venueLed = [{
   ledEnabled: true,
   model: 'E510'
+}]
+
+export const venueApModels = [{
+  models: []
 }]
 
 export const autocompleteResult = {

@@ -103,7 +103,7 @@ export function AdvancedSettingForm () {
         })
       ),
       isDirty: editContextData?.oldData ? !isEqual(editContextData?.oldData, tableData) : false,
-      hasError: tableData.filter(item => !item.model).length > 0,
+      hasError: tableData?.filter(item => !item.model).length > 0,
       setData: setTableData,
       updateChanges: handleUpdateSetting
     })
