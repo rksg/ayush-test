@@ -12,7 +12,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { serviceTypeLabelMapping, serviceStatusLabelMapping, serviceAdminStateLabelMapping, serviceTechnologyabelMapping } from '../contentsMap'
+import { serviceTypeLabelMapping, serviceStatusLabelMapping, serviceAdminStateLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
 
 
 function useColumns () {
@@ -64,7 +64,7 @@ function useColumns () {
       dataIndex: 'technology',
       sorter: true,
       render: function (data) {
-        return $t(serviceTechnologyabelMapping[data as ServiceTechnology])
+        return $t(serviceTechnologyLabelMapping[data as ServiceTechnology])
       }
     },
     {
