@@ -62,276 +62,246 @@ exports[`Venues Form google map is not enabled 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 jzCCYL"
+    class="styledComponents__Wrapper-sc-1ibvcih-2 fwyVrN"
   >
     <div
       class="ant-pro-steps-form"
     >
       <div
-        class="styledComponents__Container-sc-1ibvcih-4 fAuOsZ"
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
       >
         <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
+            class="styledComponents__StepsContainer-sc-1ibvcih-0 dnQbZE"
           >
             <div
-              class="styledComponents__StepsContainer-sc-1ibvcih-2 gGLpjE"
+              class="ant-steps ant-steps-vertical ant-steps-dot"
             >
               <div
-                class="ant-steps ant-steps-vertical ant-steps-dot"
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
               >
                 <div
-                  class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                  class="ant-steps-item-container"
                 >
                   <div
-                    class="ant-steps-item-container"
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
                   >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
+                    <span
+                      class="ant-steps-icon"
                     >
                       <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
-                    <div
-                      class="ant-steps-item-content"
-                    >
-                      <div
-                        class="ant-steps-item-title"
+                        class="ant-steps-icon-dot"
                       />
-                    </div>
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
         <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
+            class="ant-pro-steps-form-container"
           >
             <div
-              class="ant-pro-steps-form-container"
+              class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
             >
-              <div
-                class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="0"
               >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="0"
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div
+                  class="ant-form-item"
                 >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
                   <div
-                    class="ant-form-item"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-row ant-form-item-row"
+                      class="ant-col ant-col-8 ant-form-item-label"
+                    >
+                      <label
+                        class="ant-form-item-required"
+                        for="0_name"
+                        title="Venue Name"
+                      >
+                        Venue Name
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-col-8 ant-form-item-control"
                     >
                       <div
-                        class="ant-col ant-form-item-label"
-                      >
-                        <label
-                          class="ant-form-item-required"
-                          for="0_name"
-                          title="Venue Name"
-                        >
-                          Venue Name
-                        </label>
-                      </div>
-                      <div
-                        class="ant-col ant-col-5 ant-form-item-control"
+                        class="ant-form-item-control-input"
                       >
                         <div
-                          class="ant-form-item-control-input"
+                          class="ant-form-item-control-input-content"
                         >
-                          <div
-                            class="ant-form-item-control-input-content"
+                          <span
+                            class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
+                          >
+                            <input
+                              class="ant-input"
+                              id="0_name"
+                              type="text"
+                              value=""
+                            />
+                            <span
+                              class="ant-input-suffix"
+                            />
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-col-8 ant-form-item-label"
+                    >
+                      <label
+                        class=""
+                        for="0_description"
+                        title="Description"
+                      >
+                        Description
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-col-8 ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <textarea
+                            class="ant-input"
+                            id="0_description"
+                            rows="2"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item styledComponents__AddressFormItem-sc-1jr0ig3-1 duvejm"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-col-10 ant-form-item-label"
+                    >
+                      <label
+                        class="ant-form-item-required"
+                        title="Address"
+                      >
+                        Address
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-col-10 ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <span
+                            class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled"
                           >
                             <span
-                              class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
+                              class="ant-input-prefix"
                             >
-                              <input
-                                class="ant-input"
-                                id="0_name"
-                                type="text"
-                                value=""
-                              />
-                              <span
-                                class="ant-input-suffix"
-                              />
+                              <svg>
+                                SearchOutlined.svg
+                              </svg>
                             </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-form-item"
-                  >
-                    <div
-                      class="ant-row ant-form-item-row"
-                    >
-                      <div
-                        class="ant-col ant-form-item-label"
-                      >
-                        <label
-                          class=""
-                          for="0_description"
-                          title="Description"
-                        >
-                          Description
-                        </label>
-                      </div>
-                      <div
-                        class="ant-col ant-col-5 ant-form-item-control"
-                      >
-                        <div
-                          class="ant-form-item-control-input"
-                        >
-                          <div
-                            class="ant-form-item-control-input-content"
-                          >
-                            <textarea
-                              class="ant-input"
-                              id="0_description"
-                              rows="2"
+                            <input
+                              class="ant-input ant-input-disabled"
+                              data-testid="address-input"
+                              disabled=""
+                              id="0_address_addressLine"
+                              type="text"
+                              value="350 W Java Dr, Sunnyvale, CA 94089, USA"
                             />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row ant-row-middle"
-                  >
-                    <div
-                      class="ant-col ant-col-2"
-                      style="text-align: left;"
-                    >
-                      <span
-                        class="ant-form-item-label"
-                      >
-                        <label
-                          class="ant-form-item-required"
-                        >
-                          Address
-                        </label>
-                      </span>
-                    </div>
-                    <div
-                      class="ant-col ant-col-9"
-                      style="text-align: right;"
-                    >
-                      <span
-                        class="ant-form-item-label"
-                      >
-                        <label>
-                          Make sure to include a city and country in the address
-                        </label>
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-11"
-                      style="position: relative; margin-bottom: 30px;"
-                    >
-                      <div
-                        class="styledComponents__AddressContainer-sc-1jr0ig3-1 irGUDT"
-                        style="position: absolute; z-index: 10; width: calc(100% - 24px); margin: 12px;"
-                      >
-                        <div
-                          class="ant-form-item"
-                        >
-                          <div
-                            class="ant-row ant-form-item-row"
-                          >
-                            <div
-                              class="ant-col ant-form-item-control"
+                            <span
+                              class="ant-input-suffix"
                             >
-                              <div
-                                class="ant-form-item-control-input"
+                              <span
+                                class="ant-input-clear-icon ant-input-clear-icon-hidden"
+                                role="button"
+                                tabindex="-1"
                               >
-                                <div
-                                  class="ant-form-item-control-input-content"
+                                <svg
+                                  class="styledComponents__CloseIcon-sc-1jr0ig3-0 etwmVJ"
                                 >
-                                  <span
-                                    class="ant-input-affix-wrapper ant-input-affix-wrapper-disabled"
-                                  >
-                                    <span
-                                      class="ant-input-prefix"
-                                    >
-                                      <svg>
-                                        SearchOutlined.svg
-                                      </svg>
-                                    </span>
-                                    <input
-                                      class="ant-input ant-input-disabled"
-                                      data-testid="address-input"
-                                      disabled=""
-                                      id="0_address_addressLine"
-                                      type="text"
-                                      value="350 W Java Dr, Sunnyvale, CA 94089, USA"
-                                    />
-                                    <span
-                                      class="ant-input-suffix"
-                                    >
-                                      <span
-                                        class="ant-input-clear-icon ant-input-clear-icon-hidden"
-                                        role="button"
-                                        tabindex="-1"
-                                      >
-                                        <svg
-                                          class="styledComponents__CloseIcon-sc-1jr0ig3-0 etwmVJ"
-                                        >
-                                          Close.svg
-                                        </svg>
-                                      </span>
-                                    </span>
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
+                                  Close.svg
+                                </svg>
+                              </span>
+                            </span>
+                          </span>
+                          <div
+                            class="styledComponents__AddressMap-sc-1jr0ig3-2 kKTYqB"
+                          >
+                            <h3
+                              class="ant-typography"
+                            >
+                              Map is not enabled
+                            </h3>
                           </div>
                         </div>
                       </div>
-                      <h2
-                        class="ant-typography"
-                        style="text-align: center; padding-top: 3em;"
+                      <div
+                        class="ant-form-item-extra"
                       >
-                        Map is not enabled
-                      </h2>
+                        Make sure to include a city and country in the address
+                      </div>
                     </div>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-3 jmOuwe"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-1 fnOhXk"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
@@ -345,7 +315,7 @@ exports[`Venues Form google map is not enabled 1`] = `
               type="button"
             >
               <span>
-                Next
+                Finish
               </span>
             </button>
           </div>
@@ -430,272 +400,243 @@ exports[`Venues Form should render venues form 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 jzCCYL"
+    class="styledComponents__Wrapper-sc-1ibvcih-2 fwyVrN"
   >
     <div
       class="ant-pro-steps-form"
     >
       <div
-        class="styledComponents__Container-sc-1ibvcih-4 fAuOsZ"
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
       >
         <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
+            class="styledComponents__StepsContainer-sc-1ibvcih-0 dnQbZE"
           >
             <div
-              class="styledComponents__StepsContainer-sc-1ibvcih-2 gGLpjE"
+              class="ant-steps ant-steps-vertical ant-steps-dot"
             >
               <div
-                class="ant-steps ant-steps-vertical ant-steps-dot"
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
               >
                 <div
-                  class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                  class="ant-steps-item-container"
                 >
                   <div
-                    class="ant-steps-item-container"
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
                   >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
+                    <span
+                      class="ant-steps-icon"
                     >
                       <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
-                    <div
-                      class="ant-steps-item-content"
-                    >
-                      <div
-                        class="ant-steps-item-title"
+                        class="ant-steps-icon-dot"
                       />
-                    </div>
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
         <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
+            class="ant-pro-steps-form-container"
           >
             <div
-              class="ant-pro-steps-form-container"
+              class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
             >
-              <div
-                class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="0"
               >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="0"
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div
+                  class="ant-form-item"
                 >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
                   <div
-                    class="ant-form-item"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-row ant-form-item-row"
+                      class="ant-col ant-col-8 ant-form-item-label"
+                    >
+                      <label
+                        class="ant-form-item-required"
+                        for="0_name"
+                        title="Venue Name"
+                      >
+                        Venue Name
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-col-8 ant-form-item-control"
                     >
                       <div
-                        class="ant-col ant-form-item-label"
-                      >
-                        <label
-                          class="ant-form-item-required"
-                          for="0_name"
-                          title="Venue Name"
-                        >
-                          Venue Name
-                        </label>
-                      </div>
-                      <div
-                        class="ant-col ant-col-5 ant-form-item-control"
+                        class="ant-form-item-control-input"
                       >
                         <div
-                          class="ant-form-item-control-input"
+                          class="ant-form-item-control-input-content"
                         >
-                          <div
-                            class="ant-form-item-control-input-content"
+                          <span
+                            class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
                           >
+                            <input
+                              class="ant-input"
+                              id="0_name"
+                              type="text"
+                              value=""
+                            />
                             <span
-                              class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
-                            >
-                              <input
-                                class="ant-input"
-                                id="0_name"
-                                type="text"
-                                value=""
-                              />
-                              <span
-                                class="ant-input-suffix"
-                              />
-                            </span>
-                          </div>
+                              class="ant-input-suffix"
+                            />
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
                   <div
-                    class="ant-form-item"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-row ant-form-item-row"
+                      class="ant-col ant-col-8 ant-form-item-label"
+                    >
+                      <label
+                        class=""
+                        for="0_description"
+                        title="Description"
+                      >
+                        Description
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-col-8 ant-form-item-control"
                     >
                       <div
-                        class="ant-col ant-form-item-label"
-                      >
-                        <label
-                          class=""
-                          for="0_description"
-                          title="Description"
-                        >
-                          Description
-                        </label>
-                      </div>
-                      <div
-                        class="ant-col ant-col-5 ant-form-item-control"
+                        class="ant-form-item-control-input"
                       >
                         <div
-                          class="ant-form-item-control-input"
+                          class="ant-form-item-control-input-content"
                         >
-                          <div
-                            class="ant-form-item-control-input-content"
+                          <textarea
+                            class="ant-input"
+                            id="0_description"
+                            rows="2"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-form-item styledComponents__AddressFormItem-sc-1jr0ig3-1 duvejm"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-col-10 ant-form-item-label"
+                    >
+                      <label
+                        class="ant-form-item-required"
+                        title="Address"
+                      >
+                        Address
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-col-10 ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <span
+                            class="ant-input-affix-wrapper"
                           >
-                            <textarea
+                            <span
+                              class="ant-input-prefix"
+                            >
+                              <svg>
+                                SearchOutlined.svg
+                              </svg>
+                            </span>
+                            <input
                               class="ant-input"
-                              id="0_description"
-                              rows="2"
+                              data-testid="address-input"
+                              id="0_address_addressLine"
+                              type="text"
+                              value=""
+                            />
+                            <span
+                              class="ant-input-suffix"
+                            >
+                              <span
+                                class="ant-input-clear-icon ant-input-clear-icon-hidden"
+                                role="button"
+                                tabindex="-1"
+                              >
+                                <svg
+                                  class="styledComponents__CloseIcon-sc-1jr0ig3-0 etwmVJ"
+                                >
+                                  Close.svg
+                                </svg>
+                              </span>
+                            </span>
+                          </span>
+                          <div
+                            class="styledComponents__AddressMap-sc-1jr0ig3-2 kKTYqB"
+                          >
+                            <div
+                              class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
                             />
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row ant-row-middle"
-                  >
-                    <div
-                      class="ant-col ant-col-2"
-                      style="text-align: left;"
-                    >
-                      <span
-                        class="ant-form-item-label"
-                      >
-                        <label
-                          class="ant-form-item-required"
-                        >
-                          Address
-                        </label>
-                      </span>
-                    </div>
-                    <div
-                      class="ant-col ant-col-9"
-                      style="text-align: right;"
-                    >
-                      <span
-                        class="ant-form-item-label"
-                      >
-                        <label>
-                          Make sure to include a city and country in the address
-                        </label>
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-11"
-                      style="position: relative; margin-bottom: 30px;"
-                    >
                       <div
-                        class="styledComponents__AddressContainer-sc-1jr0ig3-1 irGUDT"
-                        style="position: absolute; z-index: 10; width: calc(100% - 24px); margin: 12px;"
+                        class="ant-form-item-extra"
                       >
-                        <div
-                          class="ant-form-item"
-                        >
-                          <div
-                            class="ant-row ant-form-item-row"
-                          >
-                            <div
-                              class="ant-col ant-form-item-control"
-                            >
-                              <div
-                                class="ant-form-item-control-input"
-                              >
-                                <div
-                                  class="ant-form-item-control-input-content"
-                                >
-                                  <span
-                                    class="ant-input-affix-wrapper"
-                                  >
-                                    <span
-                                      class="ant-input-prefix"
-                                    >
-                                      <svg>
-                                        SearchOutlined.svg
-                                      </svg>
-                                    </span>
-                                    <input
-                                      class="ant-input"
-                                      data-testid="address-input"
-                                      id="0_address_addressLine"
-                                      type="text"
-                                      value=""
-                                    />
-                                    <span
-                                      class="ant-input-suffix"
-                                    >
-                                      <span
-                                        class="ant-input-clear-icon ant-input-clear-icon-hidden"
-                                        role="button"
-                                        tabindex="-1"
-                                      >
-                                        <svg
-                                          class="styledComponents__CloseIcon-sc-1jr0ig3-0 etwmVJ"
-                                        >
-                                          Close.svg
-                                        </svg>
-                                      </span>
-                                    </span>
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        Make sure to include a city and country in the address
                       </div>
-                      <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
-                      />
                     </div>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-3 jmOuwe"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-1 fnOhXk"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
@@ -709,7 +650,7 @@ exports[`Venues Form should render venues form 1`] = `
               type="button"
             >
               <span>
-                Next
+                Finish
               </span>
             </button>
           </div>
