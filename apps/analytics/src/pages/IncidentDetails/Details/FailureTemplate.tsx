@@ -14,9 +14,12 @@ import { TimeSeries }         from '../TimeSeries'
 
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (incident: Incident) => {
+export const IncidentDetailsTemplate = (newIncident: Incident) => {
   const networkImpactCharts = [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
-
+  const chartProps = {
+    buffer: 6
+  }
+  const incident = { ...newIncident, ...chartProps }
   const { $t } = useIntl()
   const timeSeriesCharts = [
     'incidentCharts',
@@ -57,10 +60,10 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <NetworkImpact incident={incident} charts={networkImpactCharts}/>
+          <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <TimeSeries incident={incident} charts={timeSeriesCharts}/>
+          <TimeSeries incident={incident} charts={timeSeriesCharts} />
         </GridCol>
       </GridRow>
     </>

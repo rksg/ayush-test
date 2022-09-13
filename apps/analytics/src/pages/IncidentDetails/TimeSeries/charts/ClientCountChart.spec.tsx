@@ -1,6 +1,5 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { fakeIncident1 }         from '@acx-ui/analytics/utils'
 import { store }                 from '@acx-ui/store'
 import { mockAutoSizer, render } from '@acx-ui/test-utils'
 
@@ -31,7 +30,7 @@ describe('ClientCountChart', () => {
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <ClientCountChart incident={fakeIncident1} data={expectedResult}/>
+        <ClientCountChart data={expectedResult}/>
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()

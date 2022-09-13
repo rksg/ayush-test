@@ -1,14 +1,23 @@
-import { gql } from 'graphql-request'
-import moment  from 'moment-timezone'
+import { gql }                from 'graphql-request'
+import _                      from 'lodash'
+import moment, { unitOfTime } from 'moment-timezone'
 
 import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
 
 import { failureCharts } from './config'
 
+type BufferConfig = {
+  value: number;
+  unit: unitOfTime.Base;
+}
+
+interface ChartIncident extends Incident {
+  buffer?: number | { front: BufferConfig, back: BufferConfig }
+}
 export interface ChartDataProps {
   charts: string[]
-  incident: Incident
+  incident: ChartIncident
 }
 
 interface Response <ChartsData> {
@@ -28,14 +37,37 @@ export const calcGranularity = (start: string, end: string): string => {
   return 'PT180S'
 }
 
-export function getIncidentTimeSeriesPeriods (incident: Incident) {
-  const { startTime, endTime } = incident
-  const queryPeriod = {
-    start: moment(startTime).subtract(48, 'hours'),
-    end: moment(endTime)
+function getBuffer (chartBuffer: ChartIncident['buffer']) {
+  /** @type {{ front: BufferConfig, back: BufferConfig }} */
+  const buffer = {
+    front: { value: 6, unit: 'hours' },
+    back: { value: 6, unit: 'hours' }
   }
+
+  if (chartBuffer === undefined) return buffer
+
+  if (_.isNumber(chartBuffer)) {
+    buffer.front.value = chartBuffer
+    buffer.back.value = chartBuffer
+    return buffer
+  }
+
+  if (chartBuffer.hasOwnProperty('front')) buffer.front = chartBuffer.front
+  if (chartBuffer.hasOwnProperty('back')) buffer.back = chartBuffer.back
+
+  return buffer
+}
+
+
+export function getIncidentTimeSeriesPeriods (incident: ChartIncident) {
+  const { startTime, endTime } = incident
+  const buffer = getBuffer(incident.buffer)
+
   return {
-    queryPeriod
+    start: moment(startTime).subtract(
+      buffer.front.value, buffer.front.unit as unitOfTime.DurationConstructor),
+    end: moment(endTime).add(
+      buffer.back.value, buffer.back.unit as unitOfTime.DurationConstructor)
   }
 }
 
@@ -68,8 +100,7 @@ export const Api = dataApi.injectEndpoints({
           variables: {
             code: payload.incident.code,
             codeMap: [payload.incident.code],
-            start: getIncidentTimeSeriesPeriods(payload.incident).queryPeriod.start,
-            end: getIncidentTimeSeriesPeriods(payload.incident).queryPeriod.end,
+            ...getIncidentTimeSeriesPeriods(payload.incident),
             path: payload.incident.path,
             granularity: calcGranularity(payload.incident.startTime, payload.incident.endTime)
           }

@@ -1,3 +1,5 @@
+import { BrowserRouter } from 'react-router-dom'
+
 import { dataApiURL }                                                  from '@acx-ui/analytics/services'
 import { fakeIncident1 }                                               from '@acx-ui/analytics/utils'
 import { Provider, store }                                             from '@acx-ui/store'
@@ -28,13 +30,13 @@ describe('Timeseries component', () => {
           ],
           radius: [1, 1]
         },
-        relatedIncidents: {
+        relatedIncidents: [{
           id: '07965e24-84ba-48a5-8200-f310f8197f40',
           severity: 0.5,
           code: 'radius',
           startTime: '2022-07-19T12:15:00.000Z',
           endTime: '2022-07-19T13:15:00.000Z'
-        },
+        }],
         clientCountCharts: {
           time: [
             '2022-07-19T09:15:00.000Z',
@@ -65,10 +67,11 @@ describe('Timeseries component', () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: expectedResult
     })
-    render(
+    render(<BrowserRouter>
       <Provider>
         <TimeSeries {...props} />
       </Provider>
+    </BrowserRouter>
     )
     
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

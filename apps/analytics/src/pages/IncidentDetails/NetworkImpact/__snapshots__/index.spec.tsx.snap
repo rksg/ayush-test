@@ -6,7 +6,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 iCGrzE"
+      class="styledComponents__Wrapper-sc-13w5wfx-3 MLqIY"
       type="no-border"
     >
       <div
@@ -49,7 +49,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 dUzIYR"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 kPkDWB"
           type="no-border"
         >
           <div
@@ -218,7 +218,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 dUzIYR"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 kPkDWB"
           type="no-border"
         >
           <div
@@ -381,7 +381,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 dUzIYR"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 kPkDWB"
           type="no-border"
         >
           <div
@@ -551,7 +551,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
         style="height: 200px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-3 dUzIYR"
+          class="styledComponents__Wrapper-sc-13w5wfx-3 kPkDWB"
           type="no-border"
         >
           <div

@@ -2,17 +2,11 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Incident, getSeriesData, mapCodeToReason, mapCodeToAttempt } from '@acx-ui/analytics/utils'
-import { Card, MultiLineTimeSeriesChart, cssStr }                     from '@acx-ui/components'
+import { Card, MultiLineTimeSeriesChart }                             from '@acx-ui/components'
 import { intlFormats }                                                from '@acx-ui/utils'
 
 import { codeToFailureTypeMap } from '../config'
 import { ChartsData }           from '../services'
-
-const lineColors = [
-  cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-blue-30'),
-  cssStr('--acx-accents-orange-50')
-]
 
 export const AttemptAndFailureChart = (
   { incident, data }: { incident: Incident, data: ChartsData }) => {
@@ -57,7 +51,6 @@ export const AttemptAndFailureChart = (
           data={chartResults}
           dataFormatter={(value: unknown) =>
             $t(intlFormats.countFormat, { value: value as number })}
-          lineColors={lineColors}
         />
       )}
     </AutoSizer>

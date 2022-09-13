@@ -10,20 +10,20 @@ import { Api }        from '../services'
 import { IncidentChart } from './IncidentChart'
 
 const expectedResult = {
-  incidentChart: {
+  incidentCharts: {
     time: [
       '2022-04-07T09:15:00.000Z',
       '2022-04-08T09:30:00.000Z'
     ],
-    radius: [1, 1]
+    eap: [1, 1]
   },
-  relatedIncidents: {
+  relatedIncidents: [{
     id: '07965e24-84ba-48a5-8200-f310f8197f40',
     severity: 0.5,
-    code: 'radius',
+    code: 'eap',
     startTime: '2022-04-07T12:15:00.000Z',
     endTime: '2022-04-07T13:15:00.000Z'
-  }
+  }]
 } as unknown as ChartsData
 
 beforeEach(() => store.dispatch(Api.util.resetApiState()))

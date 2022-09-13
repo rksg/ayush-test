@@ -1,17 +1,11 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                          from '@acx-ui/analytics/utils'
-import { Card, MultiLineTimeSeriesChart, cssStr } from '@acx-ui/components'
-import { intlFormats }                            from '@acx-ui/utils'
+import { getSeriesData }                  from '@acx-ui/analytics/utils'
+import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { intlFormats }                    from '@acx-ui/utils'
 
 import { ChartsData } from '../services'
-
-const lineColors = [
-  cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-blue-30'),
-  cssStr('--acx-accents-orange-50')
-]
 
 export const ClientCountChart = ({ data }: { data: ChartsData }) => {
   const { clientCountCharts } = data
@@ -38,7 +32,6 @@ export const ClientCountChart = ({ data }: { data: ChartsData }) => {
           data={chartResults}
           dataFormatter={(value: unknown) => 
             $t(intlFormats.countFormat, { value: value as number })}
-          lineColors={lineColors}
         />
       )}
     </AutoSizer>

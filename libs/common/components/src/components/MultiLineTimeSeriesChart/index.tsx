@@ -18,19 +18,18 @@ import {
   timeSeriesTooltipFormatter
 } from '../Chart/helper'
 
-import type { EChartsOption, ECharts } from 'echarts'
-import type { EChartsReactProps }      from 'echarts-for-react'
+import type { EChartsOption, ECharts, MarkAreaComponentOption } from 'echarts'
+import type { EChartsReactProps }                               from 'echarts-for-react'
 
+export interface ChartMarker { startTime: string, endTime: string }
 interface MultiLineTimeSeriesChartProps
-  <TChartData extends MultiLineTimeSeriesChartData,
-  ChartMarker extends { startTime: string, endTime: string }>
+  <TChartData extends MultiLineTimeSeriesChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[],
     /** @default 'name' */
     legendProp?: keyof TChartData,
     lineColors?: string[],
     dataFormatter?: (value: unknown) => string | null,
-    markers?: ChartMarker[],
     areaColor?: string,
     yAxisProps?: {
       max: number,
@@ -38,24 +37,22 @@ interface MultiLineTimeSeriesChartProps
     }
     disableLegend?: boolean,
     handleMarkedAreaClick?: (props: ChartMarker) => void,
-    markerColor?: string[]
+    markAreaProps?: MarkAreaComponentOption
   }
 
 export function MultiLineTimeSeriesChart
-  <TChartData extends MultiLineTimeSeriesChartData,
-  ChartMarker extends { startTime: string, endTime: string }>
+  <TChartData extends MultiLineTimeSeriesChartData>
 ({
   data,
   legendProp = 'name' as keyof TChartData,
   dataFormatter,
-  markers,
   areaColor,
   yAxisProps,
   disableLegend,
   handleMarkedAreaClick,
-  markerColor,
+  markAreaProps,
   ...props
-}: MultiLineTimeSeriesChartProps<TChartData, ChartMarker>) {
+}: MultiLineTimeSeriesChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
 
   const startEndTimes = data.map(datum => {
@@ -131,23 +128,7 @@ export function MultiLineTimeSeriesChart
       z: 1,
       zlevel: 1,
       lineStyle: { width: 1 },
-      markArea: {
-        data: markers?.map((mark, index) => {
-          return [
-            {
-              xAxis: mark.startTime,
-              data: mark,
-              itemStyle: {
-                opacity: 0.6,
-                color: cssStr(markerColor![index])
-              }
-            },
-            {
-              xAxis: mark.endTime
-            }
-          ]
-        })
-      }
+      markArea: markAreaProps
     }))
   }
 
