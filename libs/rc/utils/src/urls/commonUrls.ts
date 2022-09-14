@@ -107,6 +107,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'
   },
+  addVenue: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/venue'
+  },
   getVenue: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId'
@@ -114,5 +118,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+  },
+  validateRadius: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   }
 }

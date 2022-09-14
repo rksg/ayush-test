@@ -5,8 +5,11 @@ import { useIntl }                   from 'react-intl'
 import { ApVenueStatusEnum } from '@acx-ui/rc/utils'
 import { renderHook }        from '@acx-ui/test-utils'
 
-import VenueClusterRenderer, { generateClusterInfoContent, renderItemForList, VenueClusterTooltipData } from './VenueClusterRenderer'
-import VenueMarkerWithLabel                                                                             from './VenueMarkerWithLabel'
+import VenueClusterRenderer,
+{ generateClusterInfoContent,
+  renderItemForList,
+  VenueClusterTooltipData } from './VenueClusterRenderer'
+import VenueMarkerWithLabel from './VenueMarkerWithLabel'
 
 const series=[
   {
@@ -26,7 +29,7 @@ const series=[
     value: 1
   }
 ]
-const venueData = {
+const venueMarker = {
   venueId: 'someVenueId',
   name: 'someVenueName',
   status: ApVenueStatusEnum.OPERATIONAL,
@@ -99,9 +102,9 @@ describe('VenueClusterRenderer', () => {
     const markers = Array.from(Array(15).keys()).map(index=>{
       return new VenueMarkerWithLabel({
         labelContent: ''
-      },{ ...venueData,
+      },{ ...venueMarker,
         venueId: `venueId#${index+1}`,name: `Venue #${index+1}`,
-        status: index % 2 === 0 ? ApVenueStatusEnum.TRANSIENT_ISSUE : venueData.status })
+        status: index % 2 === 0 ? ApVenueStatusEnum.TRANSIENT_ISSUE : venueMarker.status })
     })
 
     const clusterInfoWindow = new google.maps.InfoWindow({})
@@ -116,9 +119,9 @@ describe('VenueClusterRenderer', () => {
     const markers = Array.from(Array(25).keys()).map(index=>{
       return new VenueMarkerWithLabel({
         labelContent: ''
-      },{ ...venueData,
+      },{ ...venueMarker,
         venueId: `venueId#${index+1}`,name: `Venue #${index+1}`,
-        status: index % 2 === 0 ? ApVenueStatusEnum.REQUIRES_ATTENTION : venueData.status })
+        status: index % 2 === 0 ? ApVenueStatusEnum.REQUIRES_ATTENTION : venueMarker.status })
     })
 
     const clusterInfoWindow = new google.maps.InfoWindow({})
@@ -133,7 +136,7 @@ describe('VenueClusterRenderer', () => {
     const markers = Array.from(Array(3).keys()).map(index=>{
       return new VenueMarkerWithLabel({
         labelContent: ''
-      },{ ...venueData,venueId: `venueId#${index+1}`,name: `Venue #${index+1}` })
+      },{ ...venueMarker,venueId: `venueId#${index+1}`,name: `Venue #${index+1}` })
     })
 
     const clusterInfoWindow = new google.maps.InfoWindow({})
@@ -150,4 +153,3 @@ describe('VenueClusterRenderer', () => {
     expect(renderItemForList(item)).toMatchSnapshot()
   })
 })
-

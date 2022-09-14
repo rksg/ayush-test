@@ -1,10 +1,12 @@
-import { NetworkVenueScheduler } from './NetworkVenueScheduler'
-import { RadioEnum }             from './RadioEnum'
+import { RadioEnum }     from '../contents'
+import { RadioTypeEnum } from '../contents'
 
+import { NetworkApGroup }        from './NetworkApGroup'
+import { NetworkVenueScheduler } from './NetworkVenueScheduler'
 
 export class NetworkVenue {
   // Venue ID
-  venueId: string
+  venueId?: string
 
   // Dual 5G Enabled
   dual5gEnabled?: boolean
@@ -18,12 +20,12 @@ export class NetworkVenue {
   // Client Isolation Allowlist ID
   clientIsolationAllowlistId?: string
 
-  apGroups?: string[]
+  apGroups?: NetworkApGroup[]
 
   // *Deprecated* Legacy all ap groups radio type configuration (might be removed in later release)
-  allApGroupsRadio: string
+  allApGroupsRadio: RadioEnum
 
-  scheduler?: { type: string }
+  scheduler?: NetworkVenueScheduler
 
   // Activate the network on all AP-groups in the venue
   isAllApGroups?: boolean
@@ -34,13 +36,11 @@ export class NetworkVenue {
   vlanPoolId?: string
 
   // All ap groups radio types configuration
-  allApGroupsRadioTypes?: string[]
+  allApGroupsRadioTypes?: RadioTypeEnum[]
 
   id?: string
 
   constructor () {
-    this.venueId = ''
-
     this.dual5gEnabled = true
 
     this.tripleBandEnabled = false

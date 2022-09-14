@@ -24,6 +24,20 @@ const sample = {
   totalTraffic_24: [16, 17, 18, 19, 20]
 }
 
+const sampleNoData = {
+  time: [
+    '2022-04-07T09:15:00.000Z',
+    '2022-04-07T09:30:00.000Z',
+    '2022-04-07T09:45:00.000Z',
+    '2022-04-07T10:00:00.000Z',
+    '2022-04-07T10:15:00.000Z'
+  ],
+  totalTraffic_all: [null],
+  totalTraffic_6: [null],
+  totalTraffic_5: [null],
+  totalTraffic_24: [null]
+}
+
 describe('TrafficByVolumeWidget', () => {
   mockAutoSizer()
   const filters : AnalyticsFilter = {
@@ -59,6 +73,15 @@ describe('TrafficByVolumeWidget', () => {
     })
     render( <Provider> <TrafficByVolumeWidget filters={filters}/> </Provider>)
     await screen.findByText('Something went wrong.')
+    jest.resetAllMocks()
+  })
+  it('should render "No data to display" when data is empty', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sampleNoData } } }
+    })
+    render( <Provider> <TrafficByVolumeWidget filters={filters}/> </Provider>)
+    expect(await screen.findByText('No data to display')).toBeVisible()
     jest.resetAllMocks()
   })
 })
