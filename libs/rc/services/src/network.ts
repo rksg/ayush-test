@@ -4,6 +4,7 @@ import { createApi, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } fr
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  NetworkVenue,
   NetworkSaveData,
   onSocketActivityChanged,
   refetchByUsecase,
@@ -15,6 +16,7 @@ import {
   Venue,
   NetworkDetailHeader,
   CommonResult,
+  NetworkDetail,
   RadiusValidate
 } from '@acx-ui/rc/utils'
 
@@ -35,6 +37,13 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...networkListReq,
           body: payload
         }
+      },
+      transformResponse (result: TableResult<Network>) {
+        result.data = result.data.map(item => ({
+          ...item,
+          activated: item.activated ?? { isActivated: false }
+        }))
+        return result
       },
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -152,6 +161,43 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
+    venueNetworkList: build.query<TableResult<Network>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const venueNetworkListInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getVenueNetworkList, arg.params),
+          body: arg.payload
+        }
+        const venueNetworkListQuery = await fetchWithBQ(venueNetworkListInfo)
+        const networkList = venueNetworkListQuery.data as TableResult<Network>
+
+        const venueNetworkApGroupInfo = {
+          ...createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, arg.params),
+          body: networkList.data.map(item => ({
+            networkId: item.id,
+            ssids: [item.ssid],
+            venueId: arg.params?.venueId
+          }))
+        }
+        const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
+        const venueNetworkApGroupList = 
+              venueNetworkApGroupQuery.data as { response: NetworkVenue[] }
+
+        const networkDeepListInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
+          body: networkList.data.map(item => item.id)
+        }
+        const networkDeepListQuery = await fetchWithBQ(networkDeepListInfo)
+        const networkDeepListList = networkDeepListQuery.data as { response: NetworkDetail[] }
+
+        const aggregatedList = aggregatedVenueNetworksData(
+          networkList, venueNetworkApGroupList, networkDeepListList)
+
+        return venueNetworkListQuery.data
+          ? { data: aggregatedList }
+          : { error: venueNetworkListQuery.error as FetchBaseQueryError }
+      },
+      providesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
     dashboardOverview: build.query<Dashboard, RequestPayload>({
       query: ({ params }) => {
         const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
@@ -171,6 +217,65 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     })
   })
 })
+
+export const aggregatedVenueNetworksData = (networkList: TableResult<Network>, 
+  venueNetworkApGroupList:{ response: NetworkVenue[] }, 
+  networkDeepListList:{ response: NetworkDetail[] }) => {
+  const data:Network[] = []
+  networkList.data.forEach(item => {
+    const networkApGroup = venueNetworkApGroupList?.response?.find(
+      i => i.networkId === item.id
+    )
+    const deepNetwork = networkDeepListList?.response?.find(
+      i => i.id === item.id
+    )
+    if (networkApGroup) {
+      data.push({
+        ...item,
+        activated: calculateNetworkActivated(networkApGroup),
+        deepNetwork: deepNetwork
+      })
+    }
+  })
+
+  return {
+    ...networkList,
+    data
+  }
+}
+
+const calculateNetworkActivated = (res: NetworkVenue) => {
+  const activatedObj = { isActivated: false, isDisabled: false, errors: [] as string[] }
+  let errorsCounter = 0
+  if (res && !res.isAllApGroups) {
+    if (res.apGroups && res.apGroups.length) {
+      res.apGroups.forEach(group => {
+        if (group.id) {
+          activatedObj.isActivated = true
+        }
+        if (group.validationError) {
+          ++errorsCounter
+          if (group.validationErrorReachedMaxConnectedNetworksLimit) {
+            activatedObj.errors.push('validationErrorReachedMaxConnectedNetworksLimit')
+          }
+          if (group.validationErrorSsidAlreadyActivated) {
+            activatedObj.errors.push('validationErrorSsidAlreadyActivated')
+          }
+          if (group.validationErrorReachedMaxConnectedCaptiveNetworksLimit) {
+            activatedObj.errors.push('validationErrorReachedMaxConnectedCaptiveNetworksLimit')
+          }
+        }
+      })
+      if (errorsCounter === res.apGroups.length) {
+        activatedObj.isDisabled = true
+      }
+    }
+  } else {
+    activatedObj.isActivated = true
+  }
+  return activatedObj
+}
+
 export const {
   useNetworkListQuery,
   useLazyNetworkListQuery,
@@ -182,6 +287,7 @@ export const {
   useDeleteNetworkMutation,
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
+  useVenueNetworkListQuery,
   useDashboardOverviewQuery,
   useValidateRadiusQuery,
   useLazyValidateRadiusQuery
