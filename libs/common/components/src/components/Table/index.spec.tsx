@@ -6,6 +6,7 @@ import { Table, TableProps } from '.'
 jest.mock('@acx-ui/icons', ()=> ({
   CancelCircle: () => <div data-testid='cancel-circle'/>,
   InformationOutlined: () => <div data-testid='information-outlined'/>,
+  SearchOutlined: () => <div data-testid='search-outlined'/>,
   SettingsOutlined: () => <div data-testid='settings-outlined'/>
 }), { virtual: true })
 
