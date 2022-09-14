@@ -1,7 +1,7 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space, Divider, Button, Col }                 from 'antd'
+import { Space, Divider, Button }                      from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
@@ -218,7 +218,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
   >
     {hasHeader && (
       <UI.Header>
-        <Col span={12}>
+        <div>
           <Space size={12}>
             {Boolean(searchables.length) &&
               renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
@@ -227,8 +227,8 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
               renderFilter<RecordType>(column, i, dataSource, filterValues, setFilterValues)
             )}
           </Space>
-        </Col>
-        <UI.ClearButtonContainer>
+        </div>
+        <UI.HeaderRight>
           {(Boolean(activeFilters.length) || Boolean(searchValue)) && <Button
             onClick={() => {
               setFilterValues({} as FilterValue)
@@ -237,7 +237,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
           >
             {$t({ defaultMessage: 'Clear Filters' })}
           </Button>}
-        </UI.ClearButtonContainer>
+        </UI.HeaderRight>
       </UI.Header>
     )}
     <UI.TableSettingsGlobalOverride />

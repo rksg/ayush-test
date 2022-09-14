@@ -2,8 +2,6 @@ import {
   Button,
   Input,
   Select,
-  Row,
-  Col,
   Tooltip as AntTooltip
 } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
@@ -296,12 +294,13 @@ const styles = {
   tooltip: tooltipStyle
 }
 
-export const Header = styled(Row)`
+export const Header = styled.div`
   height: ${actionsHeight};
+  display: flex;
+  justify-content: space-between;
 `
-export const ClearButtonContainer = styled(Col).attrs({ span: 12 })`
+export const HeaderRight = styled.div`
   text-align: right;
-  z-index: -1;
 `
 
 export const Wrapper = styled.div<StyledTable>`
