@@ -10,11 +10,11 @@ import {
 } from '../constants'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
+import { NetworkVenue }                  from '../models/NetworkVenue'
 import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { NetworkVenue } from './network'
 
 export * from './ap'
 export * from './venue'

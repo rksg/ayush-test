@@ -7,6 +7,7 @@ import {
 } from '../constants'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
+import { NetworkVenue }                  from '../models/NetworkVenue'
 import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 
@@ -132,25 +133,4 @@ export interface NetworkSaveData {
     format?: PassphraseFormatEnum;
     expiration?: PassphraseExpirationEnum;
   }
-}
-
-export interface ApGroup {
-  id:string,
-  validationError?: boolean,
-  validationErrorReachedMaxConnectedNetworksLimit?: boolean,
-  validationErrorSsidAlreadyActivated?: boolean,
-  validationErrorReachedMaxConnectedCaptiveNetworksLimit?: boolean
-}
-
-export interface NetworkVenue {
-  id?: string,
-  apGroups: ApGroup[],
-  scheduler: {
-    type: string
-  },
-  isAllApGroups: boolean,
-  allApGroupsRadio: string,
-  allApGroupsRadioTypes?: string[],
-  venueId: string,
-  networkId?: string
 }
