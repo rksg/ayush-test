@@ -45,7 +45,9 @@ describe('validator', () => {
     })
     it('Should display error meesage if passphrase values incorrectly', async () => {
       const result = renderHook(() =>
+        // eslint-disable-next-line max-len
         passphraseRegExp(useIntl(), '122333444455555666666777777788888888999999999000000000012233344z')).result.current
+      // eslint-disable-next-line max-len
       await expect(result).rejects.toEqual('This field is invalid')
     })
   })
