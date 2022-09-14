@@ -1,8 +1,8 @@
 import { RefObject, useEffect, useImperativeHandle, useRef } from 'react'
 
 import ReactECharts from 'echarts-for-react'
-import moment       from 'moment-timezone'
 import { isEmpty }  from 'lodash'
+import moment       from 'moment-timezone'
 import styled       from 'styled-components/macro'
 
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
