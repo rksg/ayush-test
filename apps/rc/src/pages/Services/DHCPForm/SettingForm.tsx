@@ -9,7 +9,7 @@ import { DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
 import DHCPFormContext              from './DHCPFormContext'
-import { PoolDetail }               from './DHCPPool/PoolDetail'
+import DHCPPoolMain                 from './DHCPPool'
 import { RadioDescription }         from './styledComponents'
 
 
@@ -92,7 +92,7 @@ export function SettingForm () {
         <Form.Item
           label={intl.$t({ defaultMessage: 'Set DHCP Pools' })}
         />
-        <PoolDetail/>
+        <DHCPPoolMain/>
       </Col>
       {createType === ServiceTechnology.WIFI &&
       <Col span={14}>

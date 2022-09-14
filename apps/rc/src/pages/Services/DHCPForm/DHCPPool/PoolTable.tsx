@@ -13,10 +13,10 @@ import { PoolAddButton } from '../styledComponents'
 
 
 
-export function PoolList (props:{
+export function PoolTable (props:{
   poolData: DHCPPool[],
   updatePoolData?: (data:DHCPPool[]) => void,
-  showPoolForm?: (data:DHCPPool) => void,
+  showPoolForm?: (data?:DHCPPool) => void,
   readonly?: Boolean
 }) {
 
@@ -108,7 +108,7 @@ export function PoolList (props:{
       { !readonly && <div>
         <PoolAddButton
           onClick={()=>
-            showPoolForm?.({}as DHCPPool)
+            showPoolForm?.()
           }>{$t({ defaultMessage: 'Add DHCP Pool' })}</PoolAddButton>
       </div> }
 

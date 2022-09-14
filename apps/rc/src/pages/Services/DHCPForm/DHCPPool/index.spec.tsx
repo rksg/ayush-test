@@ -15,7 +15,7 @@ import {
 
 import DHCPFormContext from '../DHCPFormContext'
 
-import { PoolDetail } from './PoolDetail'
+import  DHCPPoolMain from '.'
 
 const data =
     {
@@ -78,7 +78,7 @@ describe('Create DHCP: Pool detail', () => {
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<PoolDetail/>, {
+    const { asFragment } = render(<DHCPPoolMain/>, {
       wrapper,
       route: { params, path: '/:tenantId/:networkId' }
     })
@@ -97,7 +97,7 @@ describe('Create DHCP: Pool detail', () => {
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    render(<PoolDetail/>, {
+    render(<DHCPPoolMain/>, {
       wrapper,
       route: { params, path: '/:tenantId/:networkId' }
     })
@@ -109,17 +109,38 @@ describe('Create DHCP: Pool detail', () => {
     await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }),'255.255.0.0')
     await userEvent.type(screen.getByRole('spinbutton', { name: 'Lease Time' }),'24')
     await userEvent.type(screen.getByRole('spinbutton', { name: 'VLAN' }),'30')
+
+    const addOptButton = screen.getByRole('button', { name: 'Add option' })
+    await userEvent.click(addOptButton)
+    await userEvent.type(screen.getByRole('textbox', { name: 'Option ID' }),'21')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Option Name' }),'option1')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Option Format' }),'IP')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Option Value' }),'1.1.1.1')
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await userEvent.click(addButton)
-    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }),'pool2')
+    userEvent.click(screen.getByText('Add other pool'))
+    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }),'pool123')
     await userEvent.type(screen.getByRole('textbox', { name: 'Description' }),'Desc test')
     await userEvent.type(screen.getByRole('textbox', { name: 'IP Address' }),'1.1.1.1')
     await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }),'255.255.0.0')
     await userEvent.type(screen.getByRole('spinbutton', { name: 'Lease Time' }),'24')
     await userEvent.type(screen.getByRole('spinbutton', { name: 'VLAN' }),'30')
-    userEvent.click(screen.getByText('Add other pool'))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    await userEvent.click(addButton)
+
+    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }),'pool1')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Description' }),'Desc test')
+    await userEvent.type(screen.getByRole('textbox', { name: 'IP Address' }),'1.1.1.1')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }),'255.255.0.0')
+    await userEvent.type(screen.getByRole('spinbutton', { name: 'Lease Time' }),'24')
+    await userEvent.type(screen.getByRole('spinbutton', { name: 'VLAN' }),'30')
+
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    userEvent.click(screen.getByText('pool1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
   })
 
 })

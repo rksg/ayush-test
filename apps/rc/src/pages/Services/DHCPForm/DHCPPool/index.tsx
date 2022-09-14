@@ -6,42 +6,43 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { StepsForm, StepsFormInstance }                      from '@acx-ui/components'
-import { Drawer }                                            from '@acx-ui/components'
-import { DHCPPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-import { validationMessages }                                from '@acx-ui/utils'
+import { StepsForm, StepsFormInstance }                                  from '@acx-ui/components'
+import { Drawer }                                                        from '@acx-ui/components'
+import { DHCPPool, DHCPOption, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { validationMessages }                                            from '@acx-ui/utils'
 
 import DHCPFormContext             from '../DHCPFormContext'
 import { CancelButton, AddButton } from '../styledComponents'
 
-import { OptionDetail } from './OptionDetail'
-import { PoolList }     from './PoolTable'
+import { PoolOption } from './PoolOption'
+import { PoolTable }  from './PoolTable'
 
 
-export function PoolDetail () {
+const initPoolData = {
+  id: 0,
+  name: '',
+  allowWired: false,
+  ip: '',
+  mask: '',
+  primaryDNS: '',
+  secondaryDNS: '',
+  excludedRangeStart: '',
+  excludedRangeEnd: '',
+  dhcpOptions: [],
+  leaseTime: 24,
+  vlan: 300
+}
+export default function DHCPPoolMain () {
   const { $t } = useIntl()
   const intl = useIntl()
   const { Option } = Select
   const formRef = useRef<StepsFormInstance<DHCPPool>>()
-  const form = Form.useFormInstance()
   const [ addOn, setAddOn ] = useState(false)
-  const [selectedData, setSelectedData] = useState<DHCPPool>({
-    id: 0,
-    name: '',
-    allowWired: false,
-    ip: '',
-    mask: '',
-    primaryDNS: '',
-    secondaryDNS: '',
-    excludedRangeStart: '',
-    excludedRangeEnd: '',
-    dhcpOptions: [],
-    leaseTime: 24,
-    vlan: 300
-  })
+  const [optionList, setOptionList] = useState<DHCPOption[]>([])
+  const [selectedData, setSelectedData] = useState<DHCPPool>(initPoolData)
   const { updateSaveState, saveState } = useContext(DHCPFormContext)
   const nameValidator = async (value: string) => {
-    const { id } = { ...formRef.current?.getFieldsValue(), ...selectedData }
+    const id = formRef.current?.getFieldValue('id')
     if(_.find(saveState?.dhcpPools, (item)=>{return item.name === value && id !== item.id})){
       const entityName = intl.$t({ defaultMessage: 'Pool Name' })
       const key = 'name'
@@ -50,43 +51,46 @@ export function PoolDetail () {
     return Promise.resolve()
   }
   const updateSaveData = () => {
-    const dhcpPool = { ...selectedData, ...formRef.current?.getFieldsValue() }
-    if(saveState?.dhcpPools.length === 0){
-      dhcpPool.id = new Date().getTime()
-    }else if(dhcpPool.id === 0 && saveState?.dhcpPools.length>0){
+    const dhcpPool:DHCPPool =
+    { ...formRef.current?.getFieldsValue(), dhcpOptions: optionList } as DHCPPool
+
+    if(dhcpPool.id===0){
       dhcpPool.id = new Date().getTime()
     }
-    const findIndex = _.findIndex(saveState?.dhcpPools, (item)=>{return dhcpPool.id === item.id})
+
+    const findIndex = _.findIndex(saveState?.dhcpPools,
+      (item: DHCPPool)=>{return dhcpPool.id === item.id})
     if(findIndex > -1){
+      //edit
       saveState.dhcpPools[findIndex] = dhcpPool
     }
     else saveState?.dhcpPools?.push({ ...dhcpPool })
 
-    updateSaveState?.({ ...saveState,...form.getFieldsValue() })
+    //@FIXME: DELETE ...form.getFieldsValue()
+    updateSaveState?.({ ...saveState })
     if(addOn){
       formRef?.current?.setFieldsValue({ id: 0 })
       return
     }
     onClose()
-    return true
   }
   const [visible, setVisible] = useState(false)
   const onClose = () => {
-    updateSaveState?.({ ...saveState,...form.getFieldsValue() })
+    updateSaveState?.({ ...saveState })
     formRef?.current?.resetFields()
     setVisible(false)
   }
-  const onOpen = () => {
-    setVisible(true)
-  }
+
   useEffect(() => {
+    formRef?.current?.resetFields()
     if (selectedData) {
-      formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(selectedData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedData])
-  const getContent = visible?
+  const isEdit = ()=> selectedData.id !== 0
+
+  const getContent =visible?
     <StepsForm.StepForm formRef={formRef}>
       <Row gutter={20}>
         <Col span={12}>
@@ -201,8 +205,22 @@ export function PoolDetail () {
           />
           <Form.Item name='dhcpOptions' style={{ height: 0 }}></Form.Item>
         </Col>
-        <OptionDetail optionData={selectedData.dhcpOptions}></OptionDetail>
-        {selectedData.id === 0 &&<label><Input type={'checkbox'}
+        <PoolOption optionData={optionList}
+          setOptionList={setOptionList}
+          onSave={(form, dhcpOption)=>{
+            if(dhcpOption && !dhcpOption.id){
+              dhcpOption.id = new Date().getTime()
+            }
+            const findIndex = _.findIndex(form?.getFieldsValue()?.['dhcpOptions'],
+              (item:DHCPOption)=>{return dhcpOption?.id === item.id})
+            if(findIndex > -1){
+              form.getFieldsValue()['dhcpOptions'][findIndex] = dhcpOption
+            }
+            else form?.getFieldsValue()?.['dhcpOptions']?.push({ ...dhcpOption })
+            setOptionList(form?.getFieldsValue()['dhcpOptions'])
+          }}
+        ></PoolOption>
+        {!isEdit() &&<label><Input type={'checkbox'}
           checked={addOn}
           onClick={()=>{setAddOn(!addOn)}}
           style={{ width: '20px', top: '3px' }}/>{$t({ defaultMessage: 'Add other pool' })}</label>}
@@ -223,23 +241,22 @@ export function PoolDetail () {
 
           }
           }>
-          {selectedData.id === 0 && $t({ defaultMessage: 'Add' })}
-          {selectedData.id !== 0 && $t({ defaultMessage: 'Update' })}
+          { isEdit()? $t({ defaultMessage: 'Update' }) : $t({ defaultMessage: 'Add' })}
         </AddButton>
       </Row>
     </StepsForm.StepForm>:null
 
   return (
     <>
-      <PoolList poolData={saveState?.dhcpPools || []}
+      <PoolTable poolData={saveState?.dhcpPools || []}
         updatePoolData={(poolsData: DHCPPool[]) => {
           updateSaveState({ ...saveState, ...{ dhcpPools: poolsData } })
         }}
-        showPoolForm={(selectedPool: DHCPPool): void => {
-          onOpen()
-          formRef?.current?.setFieldsValue(selectedPool)
-          setSelectedData({ ...selectedPool })
-
+        showPoolForm={(selectedPool: DHCPPool = { ...initPoolData }): void => {
+          setVisible(true)
+          setAddOn(false)
+          setSelectedData(selectedPool)
+          setOptionList(selectedPool.dhcpOptions)
         }} />
       <Drawer
         title={$t({ defaultMessage: 'Add DHCP Pool' })}
@@ -247,6 +264,7 @@ export function PoolDetail () {
         onClose={onClose}
         mask={true}
         children={getContent}
+        destroyOnClose={true}
         width={900}
       />
     </>

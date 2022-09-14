@@ -14,11 +14,11 @@ import { OptionAddButton } from '../styledComponents'
 const dataOption = {
   id: 0,
   optId: '',
-  name: '',
+  optName: '',
   format: '',
   value: ''
 }
-export function OptionList (props:{
+export function OptionTable (props:{
   optionData: DHCPOption[],
   updateOptionData?: (data:DHCPOption[]) => void,
   showOptionForm?: (data:DHCPOption) => void,
@@ -67,9 +67,9 @@ export function OptionList (props:{
       sorter: true
     },
     {
-      key: 'name',
+      key: 'optName',
       title: $t({ defaultMessage: 'Option Name' }),
-      dataIndex: 'name',
+      dataIndex: 'optName',
       width: 10,
       sorter: true
     },

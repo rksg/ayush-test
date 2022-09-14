@@ -120,7 +120,7 @@ export interface DHCPPool {
 export interface DHCPOption{
   optId: string;
   id: number;
-  name: string;
+  optName: string;
   format: string;
   value: string;
 }

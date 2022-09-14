@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { PoolList } from './PoolTable'
+import { PoolTable } from './PoolTable'
 
 const list = {
   totalCount: 2,
@@ -65,7 +65,7 @@ describe('Create DHCP: Pool table', () => {
 
   it('should render correctly', async () => {
 
-    const { asFragment } = render(<PoolList poolData={list.data}/>, {
+    const { asFragment } = render(<PoolTable poolData={list.data}/>, {
       wrapper
     })
 
@@ -77,7 +77,7 @@ describe('Create DHCP: Pool table', () => {
   it('Table action bar edit pool', async () => {
 
 
-    render(<PoolList poolData={list.data}/>, {
+    render(<PoolTable poolData={list.data}/>, {
       wrapper
     })
 
@@ -85,7 +85,8 @@ describe('Create DHCP: Pool table', () => {
       .find(element => element.classList.contains('ant-table-tbody'))!
 
     expect(tbody).toBeVisible()
-
+    const addButton = screen.getByRole('button', { name: 'Add DHCP Pool' })
+    await userEvent.click(addButton)
     userEvent.click(screen.getByText('test2'))
     userEvent.click(screen.getByText('test1'))
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))

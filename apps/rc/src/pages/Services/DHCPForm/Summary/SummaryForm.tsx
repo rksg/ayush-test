@@ -8,7 +8,7 @@ import { DHCPSaveData, transformDisplayText, Venue } from '@acx-ui/rc/utils'
 import { useParams }                                 from '@acx-ui/react-router-dom'
 
 import { dhcpTypes } from '../contentsMap'
-import { PoolList }  from '../DHCPPool/PoolTable'
+import { PoolTable } from '../DHCPPool/PoolTable'
 
 const defaultPayload = {
   searchString: '',
@@ -79,7 +79,7 @@ export function SummaryForm (props: {
           <Form.Item children={getVenues()} />
         </Col>
       </Row>
-      <PoolList readonly={true} poolData={summaryData.dhcpPools}/>
+      <PoolTable readonly={true} poolData={summaryData.dhcpPools}/>
     </>
   )
 }

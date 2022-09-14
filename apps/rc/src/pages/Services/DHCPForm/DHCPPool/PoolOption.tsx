@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
+import { FormInstance }          from 'antd/es/form/Form'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
@@ -12,21 +13,22 @@ import {
 import { DHCPOption }         from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
-import { OptionList } from './OptionTable'
+import { OptionTable } from './OptionTable'
 
 
-export function OptionDetail (props:{
-  optionData: DHCPOption[]
+export function PoolOption (props:{
+  optionData: DHCPOption[],
+  setOptionList?: (data: DHCPOption[]) => void
+  onSave?: (form: FormInstance, data?:DHCPOption ) => void
 }) {
   const form = Form.useFormInstance()
   const { $t } = useIntl()
   const { optionData } = props
   const formRef = useRef<StepsFormInstance<DHCPOption>>()
 
-  const [tableData, setTableData] = useState(optionData)
   const idValidator = async (value: string) => {
     const { id } = { id: 0, ...formRef.current?.getFieldsValue() }
-    if(_.find(tableData, (item)=>{return id !== item.id && item.optId === value})){
+    if(_.find(optionData, (item)=>{return id !== item.id && item.optId === value})){
       const entityName = $t({ defaultMessage: 'Option ID' })
       const key = 'optId'
       return Promise.reject($t(validationMessages.duplication, { entityName, key }))
@@ -34,27 +36,14 @@ export function OptionDetail (props:{
     return Promise.resolve()
   }
   const handleSaveData = () => {
-    const dhcpOption = formRef.current?.getFieldsValue()
-    if(dhcpOption && !dhcpOption.id){
-      dhcpOption.id = new Date().getTime()
-    }
-    const findIndex = _.findIndex(form?.getFieldsValue()?.['dhcpOptions'],
-      (item:DHCPOption)=>{return dhcpOption?.id === item.id})
-    if(findIndex > -1){
-      form.getFieldsValue()['dhcpOptions'][findIndex] = dhcpOption
-    }
-    else form?.getFieldsValue()?.['dhcpOptions']?.push({ ...dhcpOption })
-    setTableData(form.getFieldsValue()['dhcpOptions'])
+    props?.onSave?.(form, formRef?.current?.getFieldsValue())
     onClose()
-    return true
+    return
   }
   const [visible, setVisible] = useState(false)
   const onClose = () => {
     formRef?.current?.resetFields()
     setVisible(false)
-  }
-  const onOpen = () => {
-    setVisible(true)
   }
   const footer = [
     <Button key='back' onClick={onClose}>
@@ -91,7 +80,7 @@ export function OptionDetail (props:{
           children={<Input />}
         />
         <Form.Item
-          name='name'
+          name='optName'
           label={$t({ defaultMessage: 'Option Name' })}
           rules={[
             { required: true }
@@ -122,16 +111,16 @@ export function OptionDetail (props:{
 
 
     <Form.Item label={$t({ defaultMessage: 'Add DHCP options:' })}>
-      <OptionList
-        optionData={tableData}
+      <OptionTable
+        optionData={[...optionData]}
         updateOptionData={(optionsData: DHCPOption[]) => {
           form?.setFieldsValue({ dhcpOptions: optionsData })
-          setTableData([...optionsData])
+          props.setOptionList?.(optionsData)
         }}
         showOptionForm={(selectedOption: DHCPOption) => {
-          onOpen()
+          setVisible(true)
           formRef.current?.setFieldsValue(selectedOption)
-        }}></OptionList>
+        }}></OptionTable>
       <Modal
         title={$t({ defaultMessage: 'DHCP option' })}
         visible={visible}

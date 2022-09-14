@@ -10,7 +10,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { OptionList } from './OptionTable'
+import { OptionTable } from './OptionTable'
 
 const list = {
   totalCount: 2,
@@ -19,14 +19,14 @@ const list = {
     {
       id: 12,
       optId: '12',
-      name: 'option1',
+      optName: 'option1',
       format: '12',
       value: '12'
     },
     {
       id: 13,
       optId: '13',
-      name: 'option2',
+      optName: 'option2',
       format: '13',
       value: '13'
     }
@@ -50,7 +50,7 @@ describe('Create DHCP: Option table', () => {
 
   it('should render correctly', async () => {
 
-    const { asFragment } = render(<OptionList optionData={list.data}/>, {
+    const { asFragment } = render(<OptionTable optionData={list.data}/>, {
       wrapper
     })
 
@@ -61,7 +61,7 @@ describe('Create DHCP: Option table', () => {
 
   it('Table action bar edit pool', async () => {
 
-    render(<OptionList optionData={list.data}/>, {
+    render(<OptionTable optionData={list.data}/>, {
       wrapper
     })
 
@@ -69,6 +69,8 @@ describe('Create DHCP: Option table', () => {
       .find(element => element.classList.contains('ant-table-tbody'))!
 
     expect(tbody).toBeVisible()
+    const addButton = screen.getByRole('button', { name: 'Add option' })
+    await userEvent.click(addButton)
     userEvent.click(screen.getByText('option2'))
     userEvent.click(screen.getByText('option1'))
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))

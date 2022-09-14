@@ -13,27 +13,27 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { OptionDetail } from './OptionDetail'
+import { PoolOption } from './PoolOption'
 
 const data =[
   {
     id: 2,
     optId: '21',
-    name: 'Option1',
+    optName: 'Option1',
     format: '22',
     value: '22'
   },
   {
     id: 3,
     optId: '33',
-    name: 'Option2',
+    optName: 'Option2',
     format: '22',
     value: '22'
   },
   {
     id: 4,
     optId: '44',
-    name: 'Option3',
+    optName: 'Option3',
     format: '22',
     value: '22'
   }
@@ -63,7 +63,7 @@ describe('Create DHCP: Option detail', () => {
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<OptionDetail optionData={data}/>, {
+    const { asFragment } = render(<PoolOption optionData={data}/>, {
       wrapper,
       route: { params, path: '/:tenantId/:networkId' }
     })
@@ -82,7 +82,7 @@ describe('Create DHCP: Option detail', () => {
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    render(<OptionDetail optionData={data}/>, {
+    render(<PoolOption optionData={data}/>, {
       wrapper,
       route: { params, path: '/:tenantId/:networkId' }
     })
@@ -97,9 +97,6 @@ describe('Create DHCP: Option detail', () => {
 
 
     await userEvent.type(screen.getByRole('textbox', { name: 'Option ID' }),'11')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Option Name' }),'option1')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Option Format' }),'IP')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Option Value' }),'1.1.1.1')
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
 
   })
