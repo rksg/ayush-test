@@ -6,7 +6,7 @@ exports[`Alarm widget should render "No active alarms" when no alarms exist 1`] 
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 jQFlAv"
+      class="styledComponents__Wrapper-sc-13w5wfx-3 bvBxTb"
       type="default"
     >
       <div

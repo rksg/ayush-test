@@ -30,7 +30,6 @@ export interface MultiLineTimeSeriesChartProps
     legendProp?: keyof TChartData,
     lineColors?: string[],
     dataFormatter?: (value: unknown) => string | null,
-    areaColor?: string,
     yAxisProps?: {
       max: number,
       min: number
@@ -46,7 +45,6 @@ export function MultiLineTimeSeriesChart
   data,
   legendProp = 'name' as keyof TChartData,
   dataFormatter,
-  areaColor,
   yAxisProps,
   disableLegend,
   handleMarkedAreaClick,

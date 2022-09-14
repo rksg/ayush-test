@@ -76,7 +76,6 @@ export const IncidentChart = ({ incident, data }: { incident: Incident, data: Ch
           data={chartResults}
           dataFormatter={(value: unknown) => 
             $t(intlFormats.percentFormat, { value: value as number })}
-          areaColor={'green'}
           yAxisProps={{ max: 1, min: 0 }}
           disableLegend={true}
           handleMarkedAreaClick={onMarkedAreaClick(navigate, basePath, relatedIncidents)}
