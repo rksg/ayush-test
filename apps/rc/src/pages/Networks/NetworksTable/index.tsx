@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { Tooltip }                   from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -197,12 +199,10 @@ const defaultPayload = {
 
 const rowSelection = (intl: ReturnType<typeof useIntl>) => {
   const params = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getCheckboxProps: (record: any) => ({
+    getCheckboxProps: (record: Network) => ({
       disabled: disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
     }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    renderCell (checked: any, record: any, index: any, node: any) {
+    renderCell (checked: boolean, record: Network, index: number, node: ReactNode) {
       if (disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1) {
         return <Tooltip 
           title={intl.$t({ defaultMessage: 'Not available in Beta1' })}>{node}</Tooltip>
