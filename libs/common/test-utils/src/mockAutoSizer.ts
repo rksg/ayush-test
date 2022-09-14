@@ -1,16 +1,24 @@
+function descriptor (property: string) {
+  return Object.getOwnPropertyDescriptor(HTMLElement.prototype, property)
+}
+
 export function mockAutoSizer (width = 280, height = 280) {
-  const originalOffsetHeight =
-    Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetHeight') as PropertyDescriptor
-  const originalOffsetWidth =
-    Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth') as PropertyDescriptor
+  const props = Object.entries({
+    offsetWidth: { descriptor: descriptor('offsetWidth'), value: width },
+    clientWidth: { descriptor: descriptor('clientWidth'), value: width },
+    offsetHeight: { descriptor: descriptor('offsetHeight'), value: height },
+    clientHeight: { descriptor: descriptor('clientHeight'), value: height }
+  })
+
   beforeAll(() => {
-    Object.defineProperty(HTMLElement.prototype,
-      'offsetWidth', { configurable: true, value: width })
-    Object.defineProperty(HTMLElement.prototype,
-      'offsetHeight', { configurable: true, value: height })
+    for (const [property, { value }] of props) {
+      Object.defineProperty(HTMLElement.prototype, property, { configurable: true, value })
+    }
   })
   afterAll(() => {
-    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', originalOffsetWidth)
-    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', originalOffsetHeight)
+    const defaultDescriptor = { configurable: true, value: 0 }
+    for (const [property, { descriptor }] of props) {
+      Object.defineProperty(HTMLElement.prototype, property, descriptor ?? defaultDescriptor)
+    }
   })
 }
