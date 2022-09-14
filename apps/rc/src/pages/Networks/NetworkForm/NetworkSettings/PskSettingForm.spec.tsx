@@ -100,8 +100,8 @@ describe('NetworkForm', () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
-    }, true)
-  }, 10000)
+    })
+  })
 
 
   it('should create PSK network with WP3 and mac auth security protocol', async () => {
@@ -136,7 +136,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  }, 10000)
+  })
 
   it('should create PSK network with WEP security protocol', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })

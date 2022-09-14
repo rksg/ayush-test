@@ -20,8 +20,8 @@ import {
   Button,
   Subtitle
 } from '@acx-ui/components'
-import { useSplitTreatment }     from '@acx-ui/feature-toggle'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
+import { useCloudpathListQuery }       from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
   AaaServerTypeEnum,
@@ -133,7 +133,7 @@ function SettingsForm () {
     useWatch('enableSecondaryAcctServer')
   ]
 
-  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
+  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
