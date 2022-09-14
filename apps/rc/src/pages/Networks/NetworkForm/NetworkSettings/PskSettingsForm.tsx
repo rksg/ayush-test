@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
+
 
 import {
   QuestionCircleOutlined,
@@ -36,20 +37,24 @@ import {
   WlanSecurityEnum,
   WifiNetworkMessages,
   hexRegExp,
-  passphraseRegExp
+  passphraseRegExp,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { IpPortSecretForm } from '../../../../components/IpPortSecretForm'
-import { ToggleButton }     from '../../../../components/ToggleButton'
-import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext   from '../NetworkFormContext'
+import { IpPortSecretForm }        from '../../../../components/IpPortSecretForm'
+import { ToggleButton }            from '../../../../components/ToggleButton'
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext          from '../NetworkFormContext'
+import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
-export function PskSettingsForm () {
+export function PskSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -93,8 +98,9 @@ export function PskSettingsForm () {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
-      <Col span={14}>
+      <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram
           type={NetworkTypeEnum.PSK}
           cloudpathType={selected?.deploymentType}
