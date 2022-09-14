@@ -20,12 +20,13 @@ const diagramMapping = {
 
 
 interface DHCPDiagramProps {
-  type: DHCPConfigTypeEnum;
+  type?: DHCPConfigTypeEnum;
 }
 
 
 export function DHCPDiagram (props: DHCPDiagramProps) {
-  const diagram = diagramMapping[props.type]
+
+  const diagram = diagramMapping[props.type || DHCPConfigTypeEnum.SIMPLE]
 
   return (
     <Row justify='center'>

@@ -93,10 +93,10 @@ export function PoolList (props:{
       dataIndex: 'vlan'
     },
     {
-      key: 'leaseTime',
+      key: 'NumberOfHosts',
       title: $t({ defaultMessage: 'Number of hosts' }),
       width: 120,
-      dataIndex: 'leaseTime'
+      dataIndex: 'NumberOfhosts'
     }
   ]
   return (
