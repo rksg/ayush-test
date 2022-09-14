@@ -9,8 +9,8 @@ import {
   transformIncidentQueryResult,
   shortDescription,
   formattedNodeType,
-  formattedPath,
-  impactValues
+  impactValues,
+  impactedArea
 } from '@acx-ui/analytics/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -50,7 +50,7 @@ export type AdditionalIncidentTableFields = {
 }
 
 export type IncidentTableRow = Incident
-& AdditionalIncidentTableFields 
+& AdditionalIncidentTableFields
 & {
   children?: IncidentTableRow[]
 }
@@ -58,7 +58,7 @@ export type IncidentTableRow = Incident
 export const transformData = (incident: Incident): IncidentTableRow => {
   const { relatedIncidents } = incident
   const intl = getIntl()
-  
+
   const children = relatedIncidents
   && relatedIncidents.map((child) => {
     const childDuration = durationValue(child.startTime, child.endTime)
@@ -72,7 +72,7 @@ export const transformData = (incident: Incident): IncidentTableRow => {
     const childClientImpact = impactValueObj['clientImpactRatioFormatted']
     const childClientCount = impactValueObj['clientImpactCountFormatted']
     const childDescription = shortDescription(partialChildIncident, intl)
-    const childScope = formattedPath(child.path, child.sliceValue, intl)
+    const childScope = impactedArea(child.path, child.sliceValue, intl)!
     const childType = formattedNodeType(child.sliceType, intl)
 
     return {
@@ -96,8 +96,8 @@ export const transformData = (incident: Incident): IncidentTableRow => {
   const clientImpact = impactValueObj['clientImpactRatioFormatted']
   const impactedClients = impactValueObj['clientImpactCountFormatted']
   const description = shortDescription(incidentInfo, intl)
-  const scope = formattedPath(incident.path, incident.sliceValue, intl)
-  const type = formattedNodeType(incident.sliceType, intl) 
+  const scope = impactedArea(incident.path, incident.sliceValue, intl)!
+  const type = formattedNodeType(incident.sliceType, intl)
 
   return {
     ...incidentInfo,

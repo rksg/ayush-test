@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { Tooltip }                                  from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
@@ -7,7 +8,8 @@ import {
   noDataSymbol,
   IncidentFilter,
   getRootCauseAndRecommendations,
-  useShortDescription
+  useShortDescription,
+  formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
 import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
@@ -54,7 +56,8 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
 }
 
 function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const queryResults = useIncidentsListQuery(filters)
   const basePath = useTenantLink('/analytics/incidents/')
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
@@ -171,6 +174,11 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       dataIndex: 'scope',
       ellipsis: true,
       key: 'scope',
+      render: (_, value ) => {
+        return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue, intl)}>
+          {value.scope}
+        </Tooltip>
+      },
       sorter: {
         compare: (a, b) => defaultSort(a.scope, b.scope),
         multiple: 9
