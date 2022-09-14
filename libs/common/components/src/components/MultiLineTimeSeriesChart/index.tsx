@@ -1,9 +1,12 @@
-import { useRef, useEffect } from 'react'
+import { RefObject, useEffect, useImperativeHandle, useRef } from 'react'
 
 import ReactECharts from 'echarts-for-react'
 import moment       from 'moment-timezone'
+import { isEmpty }  from 'lodash'
+import styled       from 'styled-components/macro'
 
-import { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
+import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
+import type { TimeStamp }                    from '@acx-ui/types'
 
 import { cssStr }              from '../../theme/helper'
 import {
@@ -18,8 +21,15 @@ import {
   timeSeriesTooltipFormatter
 } from '../Chart/helper'
 
-import type { EChartsOption, ECharts, MarkAreaComponentOption } from 'echarts'
+import type { ECharts, EChartsOption, MarkAreaComponentOption } from 'echarts'
 import type { EChartsReactProps }                               from 'echarts-for-react'
+
+const Chart = styled(ReactECharts)`
+  svg path[stroke="#123456"] {
+    stroke-dasharray: 2;
+    stroke: var(--acx-accents-blue-50);
+    clip-path: inset(0 round 5px);
+  }`
 
 export interface ChartMarker { startTime: string, endTime: string }
 export interface MultiLineTimeSeriesChartProps
@@ -37,7 +47,36 @@ export interface MultiLineTimeSeriesChartProps
     disableLegend?: boolean,
     handleMarkedAreaClick?: (props: ChartMarker) => void,
     markAreaProps?: MarkAreaComponentOption
+    brush?: [TimeStamp, TimeStamp]
+    onBrushChange?: (range: TimeStamp[]) => void
+    chartRef?: RefObject<ReactECharts>
   }
+
+export const useBrush = (
+  eChartsRef: RefObject<ReactECharts>,
+  brush?: [TimeStamp, TimeStamp]
+) => {
+  useEffect(() => {
+    if (!eChartsRef || !eChartsRef.current || isEmpty(brush)) return
+    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
+    echartInstance.dispatchAction({
+      type: 'brush',
+      areas: [{
+        brushType: 'lineX',
+        coordRange: brush,
+        xAxisIndex: 0
+      }]
+    })
+  }, [eChartsRef, brush])
+}
+
+export const useOnBrushChange = (
+  onBrushChange?: (range: TimeStamp[]) => void
+) => {
+  return (params: { batch: { areas: { coordRange: [TimeStamp, TimeStamp] }[] }[] }) => {
+    onBrushChange && onBrushChange(params.batch[0].areas[0].coordRange)
+  }
+}
 
 export function MultiLineTimeSeriesChart
   <TChartData extends MultiLineTimeSeriesChartData>
@@ -52,6 +91,8 @@ export function MultiLineTimeSeriesChart
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
+  useImperativeHandle(props.chartRef, () => eChartsRef.current!)
+  useBrush(eChartsRef, props.brush)
 
   const startEndTimes = data.map(datum => {
     return {
@@ -68,7 +109,7 @@ export function MultiLineTimeSeriesChart
       handleMarkedAreaClick?.(markedAreaProps)
     })
   }, [eChartsRef])
-  
+
   const option: EChartsOption = {
     color: props.lineColors || [
       cssStr('--acx-accents-blue-30'),
@@ -86,6 +127,15 @@ export function MultiLineTimeSeriesChart
       ...tooltipOptions(),
       trigger: 'axis',
       formatter: timeSeriesTooltipFormatter(dataFormatter)
+    },
+    toolbox: { show: false },
+    brush: {
+      xAxisIndex: 'all',
+      brushStyle: {
+        borderWidth: 4,
+        color: 'rgba(0, 0, 0, 0.05)',
+        borderColor: '#123456' // special color code to identify path of brush
+      }
     },
     xAxis: {
       ...xAxisOptions(),
@@ -133,11 +183,12 @@ export function MultiLineTimeSeriesChart
   if (option && disableLegend === true) { delete(option.legend) }
 
   return (
-    <ReactECharts
+    <Chart
       {...props}
+      ref={eChartsRef}
       opts={{ renderer: 'svg' }}
       option={option}
-      ref={eChartsRef}  
+      onEvents={{ brushselected: useOnBrushChange(props.onBrushChange) }}
     />
   )
 }

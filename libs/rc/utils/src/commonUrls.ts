@@ -28,7 +28,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteNetwork: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/network/:networkId'
+    url: '/api/tenant/:tenantId/wifi/network/:networkId?quickAck=true'
   },
   getNetworksDetailHeader: {
     method: 'get',
@@ -121,5 +121,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+  },
+  getVenueNetworkList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
+  },
+  venueNetworkApGroup: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venue/network-ap-group'
+  },
+  getNetworkDeepList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/get/deep'
+  },
+  validateRadius: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   }
 }

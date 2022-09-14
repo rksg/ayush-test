@@ -1,10 +1,15 @@
+import { useEffect, useMemo, useRef } from 'react'
+
 import { withKnobs,object } from '@storybook/addon-knobs'
 import { storiesOf }        from '@storybook/react'
+import { connect }          from 'echarts'
+import ReactECharts         from 'echarts-for-react'
 
 import { TimeStamp } from '@acx-ui/types'
-import { formatter } from '@acx-ui/utils'
+
 
 import { MultiLineTimeSeriesChart } from '.'
+
 
 const getData = () => {
   const base = +new Date(2020, 9, 29)
@@ -30,18 +35,48 @@ export const getSeriesData = () => {
   return series
 }
 
+const ConnectedCharts = () => {
+  const chartRef1 = useRef<ReactECharts>(null)
+  const chartRef2 = useRef<ReactECharts>(null)
+  const chartRefs = useMemo(() => [chartRef1, chartRef2],[])
+  useEffect(()=>{
+    if(chartRefs.every(ref => ref && ref.current)){
+      [chartRefs[0], chartRefs[1]].forEach(ref => {
+        let instance = ref.current!.getEchartsInstance()
+        instance.group = 'group1'
+      })
+      connect('group1')
+    }
+  }, [chartRefs])
+  return (
+    <>
+      {chartRefs.map((ref, index) => <MultiLineTimeSeriesChart
+        key={index}
+        chartRef={ref}
+        style={{ width: 504, height: 300 }}
+        data={getSeriesData()}
+      />)}
+    </>
+  )
+}
+
 storiesOf('MultiLineTimeSeriesChart', module)
   .addDecorator(withKnobs)
   .add('Chart View', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}
     data={getSeriesData()}
-    dataFormatter={formatter('countFormat')}
   />)
+  .add('With Brush', () => <MultiLineTimeSeriesChart
+    style={{ width: 504, height: 300 }}
+    data={getSeriesData()}
+    brush={['2020-11-10', '2020-11-20']}
+    onBrushChange={range => {console.log(range.map(r=>new Date(r).toISOString()))}} // eslint-disable-line no-console
+  />)
+  .add('Connected Chart', () => <ConnectedCharts/>)
   .add('With Knobs', () =>
     <div style={{ width: 504, height: 278, padding: 10, border: '1px solid lightgray' }}>
       <MultiLineTimeSeriesChart
         style={{ height: 190 }}
         data={object('data', getSeriesData())}
-        dataFormatter={formatter('countFormat')}
       />
     </div>)
