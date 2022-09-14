@@ -7,7 +7,9 @@ import {
   OpenWlanAdvancedCustomization,
   AAAWlanAdvancedCustomization,
   DpskWlanAdvancedCustomization,
-  PskWlanAdvancedCustomization
+  PskWlanAdvancedCustomization,
+  RfBandUsageEnum,
+  PhyTypeConstraintEnum
 } from '@acx-ui/rc/utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
@@ -266,13 +268,31 @@ export function tranferSettingsToSave (data: NetworkSaveData) {
 }
 
 export function transferMoreSettingsToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
-  const advancedCustomization = {
+  let advancedCustomization = {
     ...originalData?.wlan?.advancedCustomization,
     ...data?.wlan?.advancedCustomization
-  } as OpenWlanAdvancedCustomization | 
-       AAAWlanAdvancedCustomization | 
-       DpskWlanAdvancedCustomization | 
+  } as OpenWlanAdvancedCustomization |
+       AAAWlanAdvancedCustomization |
+       DpskWlanAdvancedCustomization |
        PskWlanAdvancedCustomization
+
+  if (get(data, 'wlan.advancedCustomization.dnsProxyEnabled')) {
+    advancedCustomization.dnsProxy = { dnsProxyRules: get(data, 'dnsProxyRules') }
+  }
+  
+  
+  if (get(data, 'wlan.advancedCustomization.radioCustomization')) {
+    advancedCustomization.radioCustomization = {
+      ...advancedCustomization.radioCustomization,
+      rfBandUsage: RfBandUsageEnum.BOTH,
+      bssMinimumPhyRate: get(data, 'wlan.bssMinimumPhyRate'),
+      phyTypeConstraint: get(data, 'wlan.enableOfdmOnly') ? 
+        PhyTypeConstraintEnum.OFDM: PhyTypeConstraintEnum.NONE,
+      managementFrameMinimumPhyRate: get(data, 'wlan.managementFrameMinimumPhyRate')
+    }
+  }
+ 
+
 
   let saveData:NetworkSaveData = {
     ...originalData,
