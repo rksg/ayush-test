@@ -92,7 +92,8 @@ export function NetworkDetailForm () {
                     <Radio key={type} value={type} disabled={disabled}>
                       <Tooltip
                         title={[NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
-                          .indexOf(type) > -1 ? 'Not available in Beta1' : ''}>
+                          .indexOf(type) > -1 ? 
+                          intl.$t({ defaultMessage: 'Not available in Beta1' }) : ''}>
                         {intl.$t(networkTypes[type])}
                         <RadioDescription>
                           {intl.$t(networkTypesDescription[type])}

@@ -194,18 +194,23 @@ const defaultPayload = {
     'id'
   ]
 }
-const rowSelection = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getCheckboxProps: (record: any) => ({
-    disabled: disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-  }),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  renderCell (checked: any, record: any, index: any, node: any) {
-    if (disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1) {
-      return <Tooltip title='Not available in Beta1'>{node}</Tooltip>
+
+const rowSelection = (intl: ReturnType<typeof useIntl>) => {
+  const params = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getCheckboxProps: (record: any) => ({
+      disabled: disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
+    }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    renderCell (checked: any, record: any, index: any, node: any) {
+      if (disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1) {
+        return <Tooltip 
+          title={intl.$t({ defaultMessage: 'Not available in Beta1' })}>{node}</Tooltip>
+      }
+      return node
     }
-    return node
   }
+  return params
 }
 export function NetworksTable () {
   const { $t } = useIntl()
@@ -265,7 +270,7 @@ export function NetworksTable () {
           actions={actions}
           rowSelection={{
             type: 'radio',
-            ...rowSelection
+            ...rowSelection(useIntl())
           }}
         />
       </Loader>
