@@ -12,31 +12,20 @@ import MultipleDiagram     from '../../../../assets/images/network-wizard-diagra
 import { Diagram }         from '../styledComponents'
 
 
+const diagramMapping = {
+  [DHCPConfigTypeEnum.SIMPLE]: SimpleDiagram,
+  [DHCPConfigTypeEnum.MULTIPLE]: MultipleDiagram,
+  [DHCPConfigTypeEnum.HIERARCHICAL]: HierarchicalDiagram
+}
+
+
 interface DHCPDiagramProps {
-  type?: DHCPConfigTypeEnum;
+  type: DHCPConfigTypeEnum;
 }
 
-function getDiagram (props: DHCPConfigTypeEnum | undefined) {
-  let diagram = null
-  switch (props) {
-    case DHCPConfigTypeEnum.SIMPLE:
-      diagram = SimpleDiagram
-      break
-    case DHCPConfigTypeEnum.MULTIPLE:
-      diagram = MultipleDiagram
-      break
-    case DHCPConfigTypeEnum.HIERARCHICAL:
-      diagram = HierarchicalDiagram
-      break
-    default:
-      diagram = SimpleDiagram
-  }
-
-  return diagram
-}
 
 export function DHCPDiagram (props: DHCPDiagramProps) {
-  const diagram = getDiagram(props.type)
+  const diagram = diagramMapping[props.type]
 
   return (
     <Row justify='center'>

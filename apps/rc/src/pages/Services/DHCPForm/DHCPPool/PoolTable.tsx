@@ -11,20 +11,8 @@ import { DHCPPool } from '@acx-ui/rc/utils'
 
 import { PoolAddButton } from '../styledComponents'
 
-const dataPool = {
-  id: 0,
-  name: '',
-  allowWired: false,
-  ip: '',
-  mask: '',
-  primaryDNS: '',
-  secondaryDNS: '',
-  dhcpOptions: [],
-  excludedRangeStart: '',
-  excludedRangeEnd: '',
-  leaseTime: 24,
-  vlan: 300
-}
+
+
 export function PoolList (props:{
   poolData: DHCPPool[],
   updatePoolData?: (data:DHCPPool[]) => void,
@@ -120,7 +108,7 @@ export function PoolList (props:{
       { !readonly && <div>
         <PoolAddButton
           onClick={()=>
-            showPoolForm?.(dataPool)
+            showPoolForm?.({}as DHCPPool)
           }>{$t({ defaultMessage: 'Add DHCP Pool' })}</PoolAddButton>
       </div> }
 

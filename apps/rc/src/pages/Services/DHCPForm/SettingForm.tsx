@@ -22,19 +22,8 @@ export function SettingForm () {
   const createType = useWatch<ServiceTechnology>('createType')
   const { saveState, updateSaveState } = useContext(DHCPFormContext)
 
+  const types = Object.values(DHCPConfigTypeEnum)
 
-  const types = [
-    { type: DHCPConfigTypeEnum.SIMPLE },
-    { type: DHCPConfigTypeEnum.MULTIPLE },
-    { type: DHCPConfigTypeEnum.HIERARCHICAL }
-  ]
-
-  const createTypeChange = (e: RadioChangeEvent) => {
-    updateSaveState({
-      ...saveState,
-      createType: e.target.value as ServiceTechnology
-    })
-  }
   return (
     <Row gutter={20}>
       <Col span={10}>
@@ -64,7 +53,13 @@ export function SettingForm () {
           style={{ display: 'none' }}
           initialValue={ServiceTechnology.WIFI}
           label={intl.$t({ defaultMessage: 'Type' })}>
-          <Radio.Group onChange={createTypeChange} value={createType}>
+          <Radio.Group onChange={(e: RadioChangeEvent) => {
+            updateSaveState({
+              ...saveState,
+              createType: e.target.value as ServiceTechnology
+            })
+          }}
+          value={createType}>
             <Radio value={ServiceTechnology.WIFI}>{intl.$t({ defaultMessage: 'Wi-Fi' })}</Radio>
             <Radio value={ServiceTechnology.SWITCH}>{intl.$t({ defaultMessage: 'Switch' })}</Radio>
           </Radio.Group>
@@ -81,7 +76,7 @@ export function SettingForm () {
           >
             <Radio.Group>
               <Space direction='vertical'>
-                {types.map(({ type }) => (
+                {types.map(type => (
                   <Radio key={type} value={type}>
                     {intl.$t(dhcpTypes[type])}
                     <RadioDescription>
