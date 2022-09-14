@@ -142,7 +142,7 @@ export function VenuesForm () {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.map(n => ({ name: n.name }))
-    return checkObjectNotExists(intl, list, { name: value } , 'Venue')
+    return checkObjectNotExists(intl, list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
 
   const addressValidator = async () => {
@@ -192,14 +192,14 @@ export function VenuesForm () {
       <PageHeader
         title={intl.$t({ defaultMessage: 'Add New Venue' })}
         breadcrumb={[
-          { text: 'Venues', link: '/venues' }
+          { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
         ]}
       />
       <StepsForm
         formRef={formRef}
         onFinish={handleAddVenue}
         onCancel={() => navigate(linkToVenues)}
-        buttonLabel={{ submit: 'Add' }}
+        buttonLabel={{ submit: intl.$t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm>
           <Form.Item
