@@ -248,9 +248,6 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0"
-                    title="Edu2-611-Mesh (Venue)
-> 255_Edu2-611-group (AP Group)
-> RuckusAP (70:CA:97:01:A0:C0) (Access Point)"
                   >
                     RuckusAP (70:CA:97:01:A0:C0)
                   </span>

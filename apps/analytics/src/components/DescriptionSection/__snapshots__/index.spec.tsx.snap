@@ -4,11 +4,12 @@ exports[`DescriptionRow should match snapshot 1`] = `
 <DocumentFragment>
   <span
     class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
-    title="title"
   >
     <div
       data-testid="children"
-    />
+    >
+      Children
+    </div>
   </span>
 </DocumentFragment>
 `;
@@ -17,11 +18,12 @@ exports[`DescriptionRow should match snapshot 2`] = `
 <DocumentFragment>
   <span
     class="styledComponents__TextContent-sc-1627zcn-0"
-    title="title"
   >
     <div
       data-testid="children"
-    />
+    >
+      Children
+    </div>
   </span>
 </DocumentFragment>
 `;
@@ -92,7 +94,6 @@ exports[`DescriptionSection should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
-                    title="title-0"
                   >
                     <div
                       data-testid="children-0"
@@ -135,7 +136,6 @@ exports[`DescriptionSection should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
-                    title="title-1"
                   >
                     <div
                       data-testid="children-1"
@@ -178,7 +178,6 @@ exports[`DescriptionSection should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
-                    title="title-2"
                   >
                     <div
                       data-testid="children-2"
@@ -266,7 +265,6 @@ exports[`DescriptionSection should match snapshot 2`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
-                    title="title-0"
                   >
                     <div
                       data-testid="children-0"
@@ -287,7 +285,6 @@ exports[`DescriptionSection should match snapshot 2`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
-                    title="title-1"
                   >
                     <div
                       data-testid="children-1"
@@ -308,7 +305,6 @@ exports[`DescriptionSection should match snapshot 2`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
-                    title="title-2"
                   >
                     <div
                       data-testid="children-2"

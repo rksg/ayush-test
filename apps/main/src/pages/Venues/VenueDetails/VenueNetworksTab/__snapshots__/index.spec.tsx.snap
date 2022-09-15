@@ -6,7 +6,7 @@ exports[`VenueNetworksTab should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-6 dRjmqW"
+      class="styledComponents__Wrapper-sc-1abm7iv-8 hdIasn"
     >
       <div
         class="ant-pro-table"
@@ -103,6 +103,9 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                                 tabindex="0"
                               >
                                 <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                />
+                                <div
                                   class="ant-table-column-sorters"
                                 >
                                   <span
@@ -158,13 +161,16 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -221,56 +227,74 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                />
                                 Health
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                                 style="text-align: center;"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                />
                                 Activated
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                />
                                 VLAN
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                />
                                 APs
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                />
                                 Radios
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                />
                                 Scheduling
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
                                 />
                               </th>
                               <th
@@ -278,7 +302,10 @@ exports[`VenueNetworksTab should render correctly 1`] = `
                                 style="position: sticky; right: 0px;"
                               >
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                />
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
                                 />
                               </th>
                             </tr>
