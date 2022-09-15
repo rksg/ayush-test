@@ -1,7 +1,6 @@
 import { RefObject } from 'react'
 
-import ReactECharts      from 'echarts-for-react'
-import { BrowserRouter } from 'react-router-dom'
+import ReactECharts from 'echarts-for-react'
 
 
 import { render, renderHook } from '@acx-ui/test-utils'
@@ -19,24 +18,20 @@ import {
 describe('MultiLineTimeSeriesChart', () => {
   it('should call formatter for yAxis', () => {
     const formatter = jest.fn()
-    render(<BrowserRouter>
-      <MultiLineTimeSeriesChart
-        data={getSeriesData()}
-        dataFormatter={formatter}
-      />
-    </BrowserRouter>)
+    render(<MultiLineTimeSeriesChart
+      data={getSeriesData()}
+      dataFormatter={formatter}
+    />)
     expect(formatter).toBeCalled()
   })
 
   it('should render with additional props', () => {
     const formatter = jest.fn()
-    render(<BrowserRouter>
-      <MultiLineTimeSeriesChart
-        data={getSeriesData()}
-        dataFormatter={formatter}
-        disableLegend={true}
-      />
-    </BrowserRouter>)
+    render(<MultiLineTimeSeriesChart
+      data={getSeriesData()}
+      dataFormatter={formatter}
+      disableLegend={true}
+    />)
     expect(formatter).toBeCalled()
   })
 })
