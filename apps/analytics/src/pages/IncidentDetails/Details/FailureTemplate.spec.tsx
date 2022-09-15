@@ -1,6 +1,6 @@
-import { fakeIncident1 }                 from '@acx-ui/analytics/utils'
-import { Provider }                      from '@acx-ui/store'
-import { mockAutoSizer, render, screen } from '@acx-ui/test-utils'
+import { fakeIncident1 }                from '@acx-ui/analytics/utils'
+import { Provider }                     from '@acx-ui/store'
+import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
 import { IncidentDetailsTemplate } from './FailureTemplate'
 
@@ -15,7 +15,7 @@ jest.mock('../IncidentDetails/TimeSeries', () => ({
 }))
 
 describe('IncidentDetailsTemplate', () => {
-  mockAutoSizer()
+  mockDOMWidth()
 
   it('should render correctly', () => {
     const params = {

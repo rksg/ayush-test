@@ -2,7 +2,7 @@ function descriptor (property: string) {
   return Object.getOwnPropertyDescriptor(HTMLElement.prototype, property)
 }
 
-export function mockAutoSizer (width = 280, height = 280) {
+export function mockDOMWidth (width = 280, height = 280) {
   const props = Object.entries({
     offsetWidth: { descriptor: descriptor('offsetWidth'), value: width },
     clientWidth: { descriptor: descriptor('clientWidth'), value: width },

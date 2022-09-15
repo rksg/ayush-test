@@ -1,8 +1,8 @@
 import { BrowserRouter, Path } from 'react-router-dom'
 
-import { fakeIncident1 }         from '@acx-ui/analytics/utils'
-import { store }                 from '@acx-ui/store'
-import { mockAutoSizer, render } from '@acx-ui/test-utils'
+import { fakeIncident1 }        from '@acx-ui/analytics/utils'
+import { store }                from '@acx-ui/store'
+import { mockDOMWidth, render } from '@acx-ui/test-utils'
 
 import { ChartsData, Api } from '../services'
 
@@ -37,7 +37,7 @@ const expectedResult = {
 beforeEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('IncidentChart', () => {
-  mockAutoSizer()
+  mockDOMWidth()
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>

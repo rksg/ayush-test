@@ -1,7 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { store }                 from '@acx-ui/store'
-import { mockAutoSizer, render } from '@acx-ui/test-utils'
+import { store }                from '@acx-ui/store'
+import { mockDOMWidth, render } from '@acx-ui/test-utils'
 
 import { ChartsData } from '../services'
 import { Api }        from '../services'
@@ -26,7 +26,7 @@ const expectedResult = {
 beforeEach(() => store.dispatch(Api.util.resetApiState()))
 
 describe('ClientCountChart', () => {
-  mockAutoSizer()
+  mockDOMWidth()
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
