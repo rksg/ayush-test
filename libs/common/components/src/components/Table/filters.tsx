@@ -55,7 +55,7 @@ export function renderSearch <RecordType> (
   setSearchValue: Function
 ): React.ReactNode {
   return <UI.SearchInput
-    prefix={<SearchOutlined style={{ marginRight: 4 }} />}
+    prefix={<SearchOutlined />}
     onChange={e => setSearchValue(e.target.value)}
     placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
       searchables: searchables.map(column => column.title).join(', ')
