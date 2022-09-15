@@ -108,6 +108,9 @@ type StyledTable = {
   $hasRowSelection: boolean
 }
 
+export const ResizableHover = styled.div``
+export const ResizableHandle = styled.div``
+
 /* eslint-disable max-len */
 const tallStyle = css<StyledTable>`
   .ant-pro-table {
@@ -121,11 +124,24 @@ const tallStyle = css<StyledTable>`
       &-thead > tr:last-child > th,
       &-thead > tr:first-child > th[rowspan] {
         &:not(.ant-table-selection-column):not(.ant-table-cell-fix-right) {
+          ${ResizableHover} {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 1px solid transparent;
+            border-width: 0 1px;
+            pointer-events: none;
+          }
           &:hover {
             background: var(--acx-accents-orange-10);
-            border-color: var(--acx-accents-orange-30);
+            ${ResizableHover} {
+              border-color: var(--acx-accents-orange-30);
+            }
           }
-          .react-resizable-handle {
+          ${ResizableHandle} {
             display: block;
             position: absolute;
             right: -10px;
@@ -138,33 +154,11 @@ const tallStyle = css<StyledTable>`
         }
       }
 
-      &-thead > tr:last-child > th,
-      &-thead > tr:first-child > th[rowspan],
-      &-thead > tr > th,
-      &-tbody > tr > td {
-        border-width: 0 1px 1px;
-        border-style: solid;
-        border-color: transparent;
-      }
       &-thead > tr > th {
         -webkit-user-select: none;
-        .react-resizable-handle {
-            display: none;
-        }
-      }
-
-      &-thead > tr:last-child,
-      &-tbody > tr {
-        position: relative;
-        &::after {
-          content: '';
-          position: absolute;
-          width: 100%;
-          height: 1px;
-          left: 0;
-          bottom: 0;
-          background-color: var(--acx-neutrals-30);
-          z-index: 2;
+        ${ResizableHover},
+        ${ResizableHandle} {
+          display: none;
         }
       }
     }

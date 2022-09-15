@@ -11,7 +11,7 @@ import { SingleSelectTable }          from './SingleSelectTable'
 
 storiesOf('Table', module)
   .add('Basic', BasicTable)
-  .add('With Custom Cell', CustomTable)
+  .add('Customizations', CustomTable)
   .add('Multiple Sorter', MultipleSorterTable)
   .add('Multi Select', MultiSelectTable)
   .add('Single Select', SingleSelectTable)

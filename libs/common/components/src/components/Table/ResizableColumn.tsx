@@ -3,7 +3,9 @@ import React, { useState, useRef, useEffect } from 'react'
 import _                                 from 'lodash'
 import { Resizable, ResizeCallbackData } from 'react-resizable'
 
-interface ResizableColumnProps {
+import { ResizableHover, ResizableHandle } from './styledComponents'
+
+interface ResizableColumnProps extends React.PropsWithChildren {
   width?: number
   onResize: (width: number) => void
 }
@@ -20,10 +22,11 @@ export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
   if(_.isNil(width)) {
     return <th ref={refContainer} {...rest} />
   }
+  rest.children = <><ResizableHover />{rest.children}</>
   return <Resizable
     width={width}
     height={0}
-    handle={<div className='react-resizable-handle' onClick={e => { e.stopPropagation() }} />}
+    handle={<ResizableHandle onClick={e => { e.stopPropagation() }} />}
     onResize={(_: React.SyntheticEvent<Element>, callbackData: ResizeCallbackData)=>{
       onResize(callbackData.size.width)
       setWidth(callbackData.size.width)
