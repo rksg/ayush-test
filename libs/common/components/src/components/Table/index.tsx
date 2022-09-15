@@ -1,7 +1,7 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space, Divider }                              from 'antd'
+import { Space }                                       from 'antd'
 import _                                               from 'lodash'
 import { useIntl }                                     from 'react-intl'
 
@@ -192,7 +192,10 @@ function Table <RecordType extends object> (
 
   return <UI.Wrapper $type={type} $hasRowSelection={Boolean(props.rowSelection)}>
     <UI.TableSettingsGlobalOverride />
-    {props.actions && <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
+    {props.actions && <Space
+      size={0}
+      split={<UI.Divider type='vertical' />}
+      style={{ display: 'flex', justifyContent: 'flex-end' }}>
       {props.actions?.map((action, index) => <Button
         key={index}
         type='link'
@@ -232,7 +235,7 @@ function Table <RecordType extends object> (
               title={$t({ defaultMessage: 'Clear selection' })}
             />
           </Space>
-          <Space size={0} split={<Divider type='vertical' />}>
+          <Space size={0} split={<UI.Divider type='vertical' />}>
             {props.rowActions?.map((option) =>
               <UI.ActionButton
                 key={option.label}

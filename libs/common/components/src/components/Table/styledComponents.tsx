@@ -1,5 +1,9 @@
-import { Button as AntButton, Tooltip as AntTooltip } from 'antd'
-import styled, { css, createGlobalStyle }             from 'styled-components/macro'
+import {
+  Button as AntButton,
+  Divider as AntDivider,
+  Tooltip as AntTooltip
+} from 'antd'
+import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 import { InformationOutlined, CancelCircle } from '@acx-ui/icons'
 
@@ -199,10 +203,6 @@ const tallStyle = css<StyledTable>`
         .ant-pro-table-alert-info {
           font-size: var(--acx-body-4-font-size);
           line-height: var(--acx-body-4-line-height);
-
-          .ant-divider-vertical {
-            border-left-color: var(--acx-neutrals-40);
-          }
         }
       }
     }
@@ -360,4 +360,9 @@ export const Wrapper = styled.div<StyledTable>`
   }
 
   ${props => styles[props.$type]}
+`
+
+export const Divider = styled(AntDivider)`
+  height: 12px;
+  border-left-color: var(--acx-neutrals-30);
 `
