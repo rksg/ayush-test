@@ -1076,7 +1076,7 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Portal - Click-Through
+                                Captive Portal - Click-Through
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1250,7 +1250,7 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Portal - Managed Guest Pass
+                                Captive Portal - Managed Guest Pass
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1424,7 +1424,7 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Portal - Self Sign-In
+                                Captive Portal - Self Sign-In
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1511,7 +1511,7 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Portal - Host Approval
+                                Captive Portal - Host Approval
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1598,7 +1598,7 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Portal - 3rd Party Captive Portal (WISPr)
+                                Captive Portal - 3rd Party Captive Portal (WISPr)
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -2918,7 +2918,7 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Portal - Click-Through
+                                Captive Portal - Click-Through
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3092,7 +3092,7 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Portal - Managed Guest Pass
+                                Captive Portal - Managed Guest Pass
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3266,7 +3266,7 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Portal - Self Sign-In
+                                Captive Portal - Self Sign-In
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3353,7 +3353,7 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Portal - Host Approval
+                                Captive Portal - Host Approval
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3440,7 +3440,7 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Portal - 3rd Party Captive Portal (WISPr)
+                                Captive Portal - 3rd Party Captive Portal (WISPr)
                               </td>
                               <td
                                 class="ant-table-cell"
