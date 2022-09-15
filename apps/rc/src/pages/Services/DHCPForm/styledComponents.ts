@@ -65,3 +65,7 @@ export const OptionAddButton = styled(Button)`
   cursor: pointer;
   font-size: 14px;
 `
+
+export const AntLabel = styled.label`
+  color: #808284;
+`

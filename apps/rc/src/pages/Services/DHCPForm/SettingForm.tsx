@@ -10,7 +10,7 @@ import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
 import DHCPFormContext              from './DHCPFormContext'
 import DHCPPoolMain                 from './DHCPPool'
-import { RadioDescription }         from './styledComponents'
+import { RadioDescription, AntLabel }         from './styledComponents'
 
 
 const { useWatch } = Form
@@ -25,48 +25,53 @@ export function SettingForm () {
   const types = Object.values(DHCPConfigTypeEnum)
 
   return (
-    <Row gutter={20}>
-      <Col span={10}>
-        <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
-        <Form.Item
-          name='name'
-          label={intl.$t({ defaultMessage: 'Service Name' })}
-          rules={[
-            { required: true },
-            { min: 2 },
-            { max: 32 }
+    <>
+      <Row gutter={20}>
+        <Col span={10}>
+          <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+          <Form.Item
+            name='name'
+            label={intl.$t({ defaultMessage: 'Service Name' })}
+            rules={[
+              { required: true },
+              { min: 2 },
+              { max: 32 }
             // { validator: (_, value) => nameValidator(value) }
-          ]}
-          validateFirst
-          hasFeedback
-          children={<Input />}
-        />
-        <Form.Item
-          name='tags'
-          style={{ display: 'none' }}
-          label={intl.$t({ defaultMessage: 'Tags' })}
-          children={<Input />}
-        />
+            ]}
+            validateFirst
+            hasFeedback
+            children={<Input />}
+          />
+          <Form.Item
+            name='tags'
+            style={{ display: 'none' }}
+            label={intl.$t({ defaultMessage: 'Tags' })}
+            children={<Input />}
+          />
 
-        <Form.Item
-          name='createType'
-          style={{ display: 'none' }}
-          initialValue={ServiceTechnology.WIFI}
-          label={intl.$t({ defaultMessage: 'Type' })}>
-          <Radio.Group onChange={(e: RadioChangeEvent) => {
-            updateSaveState({
-              ...saveState,
-              createType: e.target.value as ServiceTechnology
-            })
-          }}
-          value={createType}>
-            <Radio value={ServiceTechnology.WIFI}>{intl.$t({ defaultMessage: 'Wi-Fi' })}</Radio>
-            <Radio value={ServiceTechnology.SWITCH}>{intl.$t({ defaultMessage: 'Switch' })}</Radio>
-          </Radio.Group>
-        </Form.Item>
+          <Form.Item
+            name='createType'
+            style={{ display: 'none' }}
+            initialValue={ServiceTechnology.WIFI}
+            label={intl.$t({ defaultMessage: 'Type' })}>
+            <Radio.Group onChange={(e: RadioChangeEvent) => {
+              updateSaveState({
+                ...saveState,
+                createType: e.target.value as ServiceTechnology
+              })
+            }}
+            value={createType}>
+              <Radio value={ServiceTechnology.WIFI}>
+                {intl.$t({ defaultMessage: 'Wi-Fi' })}
+              </Radio>
+              <Radio value={ServiceTechnology.SWITCH}>
+                {intl.$t({ defaultMessage: 'Switch' })}
+              </Radio>
+            </Radio.Group>
+          </Form.Item>
 
-        <Form.Item>
-          {createType === ServiceTechnology.WIFI &&
+          <Form.Item>
+            {createType === ServiceTechnology.WIFI &&
           <Form.Item
             name='dhcpConfig'
             initialValue={DHCPConfigTypeEnum.SIMPLE}
@@ -88,17 +93,21 @@ export function SettingForm () {
             </Radio.Group>
           </Form.Item>}
 
-        </Form.Item>
-        <Form.Item
-          label={intl.$t({ defaultMessage: 'Set DHCP Pools' })}
-        />
-        <DHCPPoolMain/>
-      </Col>
-      {createType === ServiceTechnology.WIFI &&
-      <Col span={14}>
+          </Form.Item>
+
+        </Col>
+        {createType === ServiceTechnology.WIFI &&
+      <Col span={10}>
         <DHCPDiagram type={type}/>
       </Col>
-      }
-    </Row>
+        }
+      </Row>
+      <AntLabel>
+        {intl.$t({ defaultMessage: 'Set DHCP Pools' })}
+      </AntLabel>
+      <Col span={20}>
+        <DHCPPoolMain/>
+      </Col>
+    </>
   )
 }

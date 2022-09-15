@@ -95,12 +95,12 @@ export function PoolTable (props:{
     {
       key: 'NumberOfHosts',
       title: $t({ defaultMessage: 'Number of hosts' }),
-      width: 120,
+      width: 200,
       dataIndex: 'NumberOfhosts'
     }
   ]
   return (
-    <>
+    <div>
       {
         errorVisible &&
       <Alert message={$t(errorMessage)} type='error' showIcon closable />
@@ -114,13 +114,12 @@ export function PoolTable (props:{
 
       <Table
         rowKey='id'
-        style={{ width: '800px' }}
         columns={columns}
         dataSource={[...poolData]}
         type={'tall'}
         actions={actions}
         rowSelection={readonly ? undefined : { defaultSelectedRowKeys: [] }}
       />
-    </>
+    </div>
   )
 }
