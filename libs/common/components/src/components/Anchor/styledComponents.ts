@@ -28,5 +28,5 @@ export const Anchor = styled(AntAnchor)`
 `
 
 export const Container = styled.div`
-  min-height: 100%;
+  min-height: 100vh;
 `
