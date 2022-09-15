@@ -3,84 +3,99 @@
 exports[`Anchor should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1u6w09d-1 ngruH"
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
   >
-    <div>
+    <div
+      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
       <div
-        class=""
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div
-          class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 iOMkNv"
-          style="max-height: 100vh;"
-        >
+        <div>
           <div
-            class="ant-anchor"
+            class=""
           >
             <div
-              class="ant-anchor-ink"
+              class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 gMCsgt"
+              style="max-height: 100vh;"
             >
-              <span
-                class="ant-anchor-ink-ball visible"
-                style="top: -4.5px;"
-              />
-            </div>
-            <div
-              class="ant-anchor-link ant-anchor-link-active"
-            >
-              <a
-                class="ant-anchor-link-title ant-anchor-link-title-active"
-                href="#Anchor-1"
-                title="Anchor 1"
+              <div
+                class="ant-anchor"
               >
-                Anchor 1
-              </a>
-            </div>
-            <div
-              class="ant-anchor-link"
-            >
-              <a
-                class="ant-anchor-link-title"
-                href="#Anchor-2"
-                title="Anchor 2"
-              >
-                Anchor 2
-              </a>
-            </div>
-            <div
-              class="ant-anchor-link"
-            >
-              <a
-                class="ant-anchor-link-title"
-                href="#Anchor-3"
-                title="Anchor 3"
-              >
-                Anchor 3
-              </a>
+                <div
+                  class="ant-anchor-ink"
+                >
+                  <span
+                    class="ant-anchor-ink-ball visible"
+                    style="top: -4.5px;"
+                  />
+                </div>
+                <div
+                  class="ant-anchor-link ant-anchor-link-active"
+                >
+                  <a
+                    class="ant-anchor-link-title ant-anchor-link-title-active"
+                    href="#Anchor-1"
+                    title="Anchor 1"
+                  >
+                    Anchor 1
+                  </a>
+                </div>
+                <div
+                  class="ant-anchor-link"
+                >
+                  <a
+                    class="ant-anchor-link-title"
+                    href="#Anchor-2"
+                    title="Anchor 2"
+                  >
+                    Anchor 2
+                  </a>
+                </div>
+                <div
+                  class="ant-anchor-link"
+                >
+                  <a
+                    class="ant-anchor-link-title"
+                    href="#Anchor-3"
+                    title="Anchor 3"
+                  >
+                    Anchor 3
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="styledComponents__Container-sc-1u6w09d-2 jyXhBD"
+      class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="section"
-        id="Anchor-1"
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        Content 1
-      </div>
-      <div
-        class="section"
-        id="Anchor-2"
-      >
-        Content 2
-      </div>
-      <div
-        class="section"
-        id="Anchor-3"
-      >
-        Content 3
+        <div
+          class="styledComponents__Container-sc-1u6w09d-1 ITNIp"
+          id="Anchor-1"
+        >
+          Content 1
+        </div>
+        <div
+          class="styledComponents__Container-sc-1u6w09d-1 ITNIp"
+          id="Anchor-2"
+        >
+          Content 2
+        </div>
+        <div
+          class="styledComponents__Container-sc-1u6w09d-1 ITNIp"
+          id="Anchor-3"
+        >
+          Content 3
+        </div>
       </div>
     </div>
   </div>

@@ -15,27 +15,18 @@ export const Anchor = styled(AntAnchor)`
     width: fit-content;
     font-size: var(--acx-body-4-font-size);
     padding: 2px 8px;
-    margin: 4px 0;
+    margin-bottom: 8px;
     background: var(--acx-accents-blue-10);
     border: 1px solid var(--acx-accents-blue-10);
     border-radius: 12px;
     color: var(--acx-accents-blue-50);
     &:hover, &-active {
-      border: 1px solid var(--acx-accents-blue-20);
+      border-color: var(--acx-accents-blue-20);
       color: var(--acx-accents-blue-60);
     }
   }
 `
 
-export const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 135px auto;
-`
-
 export const Container = styled.div`
-  height: 100%;
-  overflow-y: auto;
-  .section {
-    min-height: 100%;
-  }
+  min-height: 100%;
 `

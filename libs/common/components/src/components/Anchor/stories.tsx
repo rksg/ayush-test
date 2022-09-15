@@ -9,7 +9,28 @@ const items = [{
   content: 'Content 1'
 }, {
   title: 'Anchor 2',
-  content: 'Content 2'
+  content: (
+    <div>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+      <p>Content 2</p>
+    </div>
+  )
 }, {
   title: 'Anchor 3',
   content: 'Content 3'
@@ -17,7 +38,7 @@ const items = [{
 
 storiesOf('Anchor', module)
   .add('Basic', () =>
-    <Anchor>
+    <Anchor onClick={(e) => e.preventDefault()}>
       <Link href='#1' title='Anchor 1' />
       <Link href='#2' title='Anchor 2' />
       <Link href='#3' title='Anchor 3'>
@@ -26,5 +47,5 @@ storiesOf('Anchor', module)
       </Link>
     </Anchor>
   ).add('Anchor with Page Layout', () =>
-    <AnchorLayout items={items} />
+    <AnchorLayout items={items} offsetTop={50} />
   )

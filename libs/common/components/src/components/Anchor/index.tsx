@@ -1,6 +1,8 @@
 import { ReactNode } from 'react'
 
-import { Wrapper, Anchor, Container } from './styledComponents'
+import { GridRow, GridCol } from '../Grid'
+
+import { Anchor, Container } from './styledComponents'
 
 export { Anchor } from './styledComponents'
 
@@ -11,22 +13,26 @@ export interface AnchorPageItem {
   content: ReactNode
 }
 
-export const AnchorLayout = (props: {
-  items: AnchorPageItem[]
+export const AnchorLayout = ({ items, offsetTop } : {
+  items: AnchorPageItem[],
+  offsetTop?: number
 }) => {
-  return <Wrapper>
-    <Anchor>{
-      props?.items.map(item => 
-        <Link href={`#${item.title.split(' ').join('-')}`} title={item.title} />
-      )
-    }
-    </Anchor>
-    <Container>{
-      props.items.map(item => 
-        <div className='section' id={item.title.split(' ').join('-')}>
+  return <GridRow>
+    <GridCol col={{ span: 4 }}>
+      <Anchor offsetTop={offsetTop} onClick={(e) => e.preventDefault()}>{
+        items.map(item => {
+          const linkId = item.title.split(' ').join('-')
+          return <Link href={`#${linkId}`} title={item.title} key={linkId} />
+        })
+      }</Anchor>
+    </GridCol>
+    <GridCol col={{ span: 20 }}>{
+      items.map(item => {
+        const linkId = item.title.split(' ').join('-')
+        return <Container id={linkId} key={linkId}>
           {item.content}
-        </div>
-      )
-    }</Container>
-  </Wrapper>
+        </Container>
+      })
+    }</GridCol>
+  </GridRow>
 }
