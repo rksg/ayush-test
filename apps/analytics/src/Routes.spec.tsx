@@ -51,6 +51,16 @@ test('should navigate to analytics/health', () => {
   })
   expect(screen.getByTestId('healthPage')).toBeVisible()
 })
+test('should navigate to analytics/health/tab/overview', async () => {
+  render(< Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/analytics/health/tab/overview',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('healthPage')).toBeVisible()
+})
+
 test('should navigate to analytics/configChange', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
