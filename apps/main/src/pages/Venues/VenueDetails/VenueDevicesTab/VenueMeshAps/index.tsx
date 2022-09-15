@@ -184,7 +184,7 @@ const defaultPayload = {
   ]
 }
 
-export const transformData = (venueMeshApsList: APMesh) => {
+export const transformData = (venueMeshApsList: APMesh[]) => {
   if(!venueMeshApsList) return
   venueMeshApsList.map((item: APMesh) =>{
     // set the apDownRssi/apUpRssi value for each child
@@ -212,6 +212,8 @@ export function VenueMeshApsTable () {
       defaultPayload
     })
     
+    const data = tableQuery?.data?.data ? transformData(tableQuery?.data?.data) : []
+
     return (
       <Loader states={[
         tableQuery,
@@ -219,7 +221,7 @@ export function VenueMeshApsTable () {
       ]}>
         <Table
           columns={getCols(useIntl())}
-          dataSource={transformData(tableQuery?.data?.data)}
+          dataSource={data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='serialNumber'

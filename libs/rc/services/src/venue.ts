@@ -9,7 +9,7 @@ import {
   TableResult,
   Venue,
   VenueDetailHeader,
-  AP
+  APMesh
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -67,7 +67,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       providesTags: [{ type: 'Venue', id: 'DETAIL' }]
     }),
-    meshAps: build.query<TableResult<AP>, RequestPayload>({
+    meshAps: build.query<TableResult<APMesh>, RequestPayload>({
       query: ({ params, payload }) => {
         const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
         return {
