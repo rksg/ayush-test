@@ -13,10 +13,10 @@ import { networkHierarchy } from '../../components/NetworkFilter/__tests__/fixtu
 
 import HealthPage from '.'
 
-const mockedUsedNavigate = jest.fn()
+const mockedUseNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+  useNavigate: () => mockedUseNavigate
 }))
 
 describe('HealthPage', () => {
@@ -53,7 +53,7 @@ describe('HealthPage', () => {
     render(<Provider><HealthPage /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     fireEvent.click(screen.getByText('Connection'))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+    expect(mockedUseNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/analytics/health/tab/connection`,
       hash: '',
       search: ''
