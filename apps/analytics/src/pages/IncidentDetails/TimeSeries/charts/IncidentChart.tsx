@@ -44,7 +44,7 @@ export const markAreaProps = (
       }
     ]
   }) } as MarkAreaComponentOption
-) 
+)
 
 export const IncidentChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
   const { incidentCharts, relatedIncidents } = data
@@ -74,11 +74,11 @@ export const IncidentChart = ({ incident, data }: { incident: Incident, data: Ch
         <MultiLineTimeSeriesChart
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={(value: unknown) => 
+          dataFormatter={(value: unknown) =>
             $t(intlFormats.percentFormat, { value: value as number })}
           yAxisProps={{ max: 1, min: 0 }}
           disableLegend={true}
-          handleMarkedAreaClick={onMarkedAreaClick(navigate, basePath, relatedIncidents)}
+          onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, relatedIncidents)}
           markAreaProps={markAreaProps(relatedIncidents, incident)}
         />
       )}

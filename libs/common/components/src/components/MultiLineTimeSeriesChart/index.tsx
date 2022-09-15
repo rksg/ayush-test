@@ -45,7 +45,7 @@ export interface MultiLineTimeSeriesChartProps
       min: number
     }
     disableLegend?: boolean,
-    handleMarkedAreaClick?: (props: ChartMarker) => void,
+    onMarkedAreaClick?: (props: ChartMarker) => void,
     markAreaProps?: MarkAreaComponentOption
     brush?: [TimeStamp, TimeStamp]
     onBrushChange?: (range: TimeStamp[]) => void
@@ -86,7 +86,7 @@ export function MultiLineTimeSeriesChart
   dataFormatter,
   yAxisProps,
   disableLegend,
-  handleMarkedAreaClick,
+  onMarkedAreaClick,
   markAreaProps,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData>) {
@@ -106,9 +106,9 @@ export function MultiLineTimeSeriesChart
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
     echartInstance.on('click', 'series.line', function (params) {
       const markedAreaProps = (params.data as unknown as { data: ChartMarker }).data
-      handleMarkedAreaClick?.(markedAreaProps)
+      onMarkedAreaClick?.(markedAreaProps)
     })
-  }, [eChartsRef])
+  }, [eChartsRef, onMarkedAreaClick])
 
   const option: EChartsOption = {
     color: props.lineColors || [
