@@ -22,7 +22,7 @@ function useColumns () {
       defaultSortOrder: 'ascend' as SortOrder,
       render: function (data, row) {
         return (
-          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+          <TenantLink to={``}>{data}</TenantLink>
         )
       }
     },
@@ -47,7 +47,7 @@ function useColumns () {
       align: 'center',
       render: function (data, row) {
         return (
-          <TenantLink to={`/networks/${row.name}/network-details/overview`}>{data}</TenantLink>
+          <TenantLink to={``}>{data}</TenantLink>
         )
       }
     },
@@ -58,13 +58,17 @@ function useColumns () {
       align: 'center'
     },
     {
-      title: $t({ defaultMessage: 'Tenant Id' }),
-      dataIndex: 'id',
-      sorter: true
-    },
-    {
       title: $t({ defaultMessage: 'Active Incidents' }),
       dataIndex: 'activeIncidents',
+      sorter: true,
+      align: 'center',
+      render: function () {
+        return '0'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Tenant Id' }),
+      dataIndex: 'id',
       sorter: true
     }
   ]
@@ -141,7 +145,7 @@ export function Integrators () {
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <TenantLink to='/networks/create' key='add'>
+          <TenantLink to='/mspcustomers/create' key='add'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Integrator' })}</Button>
           </TenantLink>,
           <Button key='download' icon={<DownloadOutlined />} />

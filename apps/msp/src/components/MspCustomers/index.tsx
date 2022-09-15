@@ -18,12 +18,13 @@ import {
   useMspCustomerListQuery 
 } from '@acx-ui/rc/services'
 import { 
+  DateFormatEnum,
   DelegationEntitlementRecord,
-  MspEc, 
+  EntitlementNetworkDeviceType,
+  MspEc,
   useTableQuery 
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
-
 
 function useColumns () {
   const { $t } = useIntl()
@@ -36,7 +37,7 @@ function useColumns () {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
-          <TenantLink to={`/networks/${row.name}/network-details/overview`}>{data}</TenantLink>
+          <TenantLink to={``}>{data}</TenantLink>
         )
       }
     },
@@ -75,7 +76,7 @@ function useColumns () {
       align: 'center',
       render: function (data, row) {
         return (
-          <TenantLink to={`/networks/${row.name}/network-details/overview`}>{data}</TenantLink>
+          <TenantLink to={``}>{data}</TenantLink>
         )
       }
     },
@@ -138,7 +139,7 @@ const transformApEntitlement = (row: MspEc) => {
 
 const transformApUtilization = (row: MspEc) => {
   const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) => 
-    en.entitlementDeviceType === 'DVCNWTYPE_WIFI')
+    en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
   if (entitlement.length > 0) {
     const apEntitlement = entitlement[0]
     const quantity = parseInt(apEntitlement.quantity, 10)
@@ -159,7 +160,7 @@ const transformSwitchEntitlement = (row: MspEc) => {
   let totalCount = 0
   const switchEntitlements: DelegationEntitlementRecord[] = []
   entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
-    if (entitlement.entitlementDeviceType !== 'DVCNWTYPE_SWITCH') {
+    if (entitlement.entitlementDeviceType !== EntitlementNetworkDeviceType.SWITCH) {
       return
     }
     switchEntitlements.push(entitlement)
@@ -175,12 +176,12 @@ const transformCreationDate = (row: MspEc) => {
     return ''
   }
   const Epoch = creationDate - (creationDate % 1000)
-  const activeDate = moment(Epoch).format('MMM DD YYYY')
+  const activeDate = moment(Epoch).format(DateFormatEnum.UserDateFormat);
   return activeDate
 }
 
 const transformExpirationDate = (row: MspEc) => {
-  let expirationDate = ''
+  let expirationDate = '--'
   const entitlements = row.entitlements
   let target: DelegationEntitlementRecord
   entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
@@ -192,7 +193,7 @@ const transformExpirationDate = (row: MspEc) => {
         target = entitlement
       }
     }
-    expirationDate = moment(target.expirationDate).format('MMM DD YYYY')
+    expirationDate = moment(target.expirationDate).format(DateFormatEnum.UserDateFormat)
   })
   return expirationDate
 }

@@ -68,31 +68,6 @@ exports[`VarCustomers should render correctly 1`] = `
           >
             <h1
               class="ant-typography"
-            >
-              Pending Invitations
-            </h1>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
-  >
-    <div
-      class="ant-page-header ant-page-header-ghost"
-    >
-      <div
-        class="ant-page-header-heading"
-      >
-        <div
-          class="ant-page-header-heading-left"
-        >
-          <span
-            class="ant-page-header-heading-title"
-          >
-            <h1
-              class="ant-typography"
             />
           </span>
         </div>
@@ -636,6 +611,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -644,7 +620,7 @@ exports[`VarCustomers should render correctly 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Next License EXpiration
+                                    Next License Expiration
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -798,7 +774,7 @@ exports[`VarCustomers should render correctly 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/2ea8eaabc07840caa5fed7a80913a83a/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
                                 >
                                   Dog Company 151
                                 </a>
@@ -813,7 +789,7 @@ exports[`VarCustomers should render correctly 1`] = `
                                 style="text-align: center;"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/2ea8eaabc07840caa5fed7a80913a83a/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
                                 >
                                   0
                                 </a>
@@ -821,7 +797,9 @@ exports[`VarCustomers should render correctly 1`] = `
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
-                              />
+                              >
+                                0
+                              </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
@@ -831,7 +809,9 @@ exports[`VarCustomers should render correctly 1`] = `
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
-                              />
+                              >
+                                0%
+                              </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
@@ -840,7 +820,10 @@ exports[`VarCustomers should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                              />
+                                style="text-align: center;"
+                              >
+                                09/09/2023 (0 AP)
+                              </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"

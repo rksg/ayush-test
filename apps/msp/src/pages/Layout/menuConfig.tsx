@@ -16,8 +16,8 @@ export function useMenuConfig () {
       path: '/dashboard',
       name: $t({ defaultMessage: 'My Customers' }),
       tenantType: 'v',
-      disableIcon: UI.SpeedIndicatorIcon,
-      enableIcon: UI.EnabledSpeedIndicatorIcon,
+      disableIcon: UI.CustomerIcon,
+      enableIcon: UI.EnabledCustomerIcon,
       routes: [
         {
           path: '/mspCustomers',
@@ -33,22 +33,22 @@ export function useMenuConfig () {
       path: '/integrators',
       name: 'Integrators',
       tenantType: 'v',
-      disableIcon: UI.LocationIcon,
-      enableIcon: UI.EnabledLocationIcon
+      disableIcon: UI.IntegratorIcon,
+      enableIcon: UI.EnabledIntegratorIcon
     },
     {
       path: '/deviceInventory',
       name: 'Device Inventory',
       tenantType: 'v',
-      disableIcon: UI.ReportsIcon,
-      enableIcon: UI.EnabledReportsIcon
+      disableIcon: UI.InventoryIcon,
+      enableIcon: UI.EnableInventoryIcon
     },
     {
       path: '/mspLicenses',
       name: 'MSP Licenses',
       tenantType: 'v',
-      disableIcon: UI.CalendarIcon,
-      enableIcon: UI.EnabledCalendarIcon
+      disableIcon: UI.MspLicenseIcon,
+      enableIcon: UI.EnableMspLicenseIcon
     },
     genPlaceholder(),
     {

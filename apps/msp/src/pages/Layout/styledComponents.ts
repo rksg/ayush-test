@@ -4,17 +4,18 @@ import styled, { css }                                from 'styled-components/ma
 import {
   AccountCircleSolidSmall,
   QuestionMarkCircleSolid,
-  RocketOutlined,
-  SpeedIndicatorOutlined,
-  SpeedIndicatorSolid,
-  LocationOutlined,
-  LocationSolid,
-  ReportsOutlined,
-  ReportsSolid,
-  CalendarDateOutlined,
-  CalendarDateSolid,
   ConfigurationOutlined,
-  ConfigurationSolid
+  ConfigurationSolid,
+  MspCustomersOutlined,
+  MspCustomersSolid,
+  MspIntegratorsOutlined,
+  MspIntegratorsSolid,
+  MspInventoryOutlined,
+  MspInventorySolid,
+  MspLicenseOutlined,
+  NotificationSolid,
+  SearchOutlined,
+  WorldSmall,
 } from '@acx-ui/icons'
 
 export const Wrapper = styled.div`
@@ -54,6 +55,10 @@ const buttonIconStyle = css`
 export const AccountIconSmall = styled(AccountCircleSolidSmall)`
   ${buttonIconStyle}
 `
+export const NotificationIcon = styled(NotificationSolid)`
+  ${buttonIconStyle}
+  stroke: var(--acx-primary-white);
+`
 
 export const QuestionIcon = styled(QuestionMarkCircleSolid)`
   ${buttonIconStyle}
@@ -66,9 +71,12 @@ const iconStyle = css`
   }
 `
 
-export const RocketIcon = styled(RocketOutlined)`
+export const RegionIcon = styled(WorldSmall)`
   ${iconStyle}
   vertical-align: text-bottom;
+`
+export const SearchIcon = styled(SearchOutlined)`
+  ${iconStyle}
 `
 
 const menuIconStyle = `
@@ -91,43 +99,33 @@ const disabledMenuIconStyle = `
     stroke: var(--acx-primary-white);
   }
 `
-
-export const SpeedIndicatorIcon = styled(SpeedIndicatorOutlined)`
+export const CustomerIcon = styled(MspCustomersOutlined)`
   ${disabledMenuIconStyle}
 `
-export const EnabledSpeedIndicatorIcon = styled(SpeedIndicatorSolid)`
+export const EnabledCustomerIcon = styled(MspCustomersSolid)`
   ${enabledMenuIconStyle}
 `
-export const LocationIcon = styled(LocationOutlined)`
+export const IntegratorIcon = styled(MspIntegratorsOutlined)`
   ${disabledMenuIconStyle}
 `
-export const EnabledLocationIcon = styled(LocationSolid)`
+export const EnabledIntegratorIcon = styled(MspIntegratorsSolid)`
   ${enabledMenuIconStyle}
 `
-
-export const ReportsIcon = styled(ReportsOutlined)`
+export const InventoryIcon = styled(MspInventoryOutlined)`
   ${disabledMenuIconStyle}
 `
-export const EnabledReportsIcon = styled(ReportsSolid)`
+export const EnableInventoryIcon = styled(MspInventorySolid)`
   ${enabledMenuIconStyle}
-`  
+`
+export const MspLicenseIcon = styled(MspLicenseOutlined)`
+  ${disabledMenuIconStyle}
+`
+export const EnableMspLicenseIcon = styled(MspLicenseOutlined)`
+  ${enabledMenuIconStyle}
+`
 export const ConfigurationIcon = styled(ConfigurationOutlined)`
   ${disabledMenuIconStyle}
 `
 export const EnabledConfigurationIcon = styled(ConfigurationSolid)`
   ${enabledMenuIconStyle}
-`
-export const CalendarIcon = styled(CalendarDateOutlined)`
-  ${disabledMenuIconStyle}
-  circle {
-    fill: var(--acx-primary-black);
-    stroke: var(--acx-primary-white);
-  }
-`
-export const EnabledCalendarIcon = styled(CalendarDateSolid)`
-  ${enabledMenuIconStyle}
-  circle {
-    fill: var(--acx-primary-white);
-    stroke: var(--acx-primary-black);
-  }
 `

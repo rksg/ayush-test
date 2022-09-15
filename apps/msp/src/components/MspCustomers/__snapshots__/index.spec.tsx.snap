@@ -1077,7 +1077,7 @@ exports[`MspCustomers should render correctly 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ec 111/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
                                 >
                                   ec 111
                                 </a>
@@ -1109,7 +1109,7 @@ exports[`MspCustomers should render correctly 1`] = `
                                 style="text-align: center;"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ec 111/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
                                 >
                                   1
                                 </a>
@@ -1141,12 +1141,12 @@ exports[`MspCustomers should render correctly 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                Aug 04 2022
+                                08/04/2022
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
-                                Nov 02 2022
+                                11/02/2022
                               </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"

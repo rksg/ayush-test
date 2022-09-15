@@ -52,7 +52,7 @@ exports[`Integrators should render correctly 1`] = `
               style="margin-right: 8px;"
             >
               <a
-                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/create"
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/mspcustomers/create"
               >
                 <button
                   class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
@@ -481,6 +481,7 @@ exports[`Integrators should render correctly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -489,7 +490,7 @@ exports[`Integrators should render correctly 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Tenant Id
+                                    Active Incidents
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -549,7 +550,7 @@ exports[`Integrators should render correctly 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Active Incidents
+                                    Tenant Id
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -723,7 +724,7 @@ exports[`Integrators should render correctly 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/701fe9df5f6b4c17928a29851c07cc04/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
                                 >
                                   ec 111
                                 </a>
@@ -744,7 +745,7 @@ exports[`Integrators should render correctly 1`] = `
                                 style="text-align: center;"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ec 111/network-details/overview"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
                                 >
                                   1
                                 </a>
@@ -757,12 +758,15 @@ exports[`Integrators should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
-                                701fe9df5f6b4c17928a29851c07cc04
+                                0
                               </td>
                               <td
                                 class="ant-table-cell"
-                              />
+                              >
+                                701fe9df5f6b4c17928a29851c07cc04
+                              </td>
                               <td
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"

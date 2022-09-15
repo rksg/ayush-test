@@ -1,5 +1,6 @@
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
+import moment        from 'moment-timezone'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import {
@@ -9,7 +10,15 @@ import {
   useVarCustomerListQuery 
   // useInviteCustomerListQuery 
 } from '@acx-ui/rc/services'
-import { MspEc, useTableQuery } from '@acx-ui/rc/utils'
+import {
+  DateFormatEnum,
+  DelegationEntitlementRecord,
+  EntitlementNetworkDeviceType,
+  EntitlementUtil,
+  MspEc, 
+  useTableQuery 
+} from '@acx-ui/rc/utils'
+
 import { TenantLink }           from '@acx-ui/react-router-dom'
 
 // function useInvitaionColumns () {
@@ -23,7 +32,7 @@ import { TenantLink }           from '@acx-ui/react-router-dom'
 //       defaultSortOrder: 'ascend' as SortOrder,
 //       render: function (data, row) {
 //         return (
-//           <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+//           <TenantLink to={``}>{data}</TenantLink>
 //         )
 //       }
 //     },
@@ -47,7 +56,7 @@ function useCustomerColumns () {
       defaultSortOrder: 'ascend' as SortOrder,
       render: function (data, row) {
         return (
-          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+          <TenantLink to={``}>{data}</TenantLink>
         )
       }
     },
@@ -63,7 +72,7 @@ function useCustomerColumns () {
       align: 'center',
       render: function (data, row) {
         return (
-          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+          <TenantLink to={``}>{data}</TenantLink>
         )
       }
     },
@@ -71,7 +80,10 @@ function useCustomerColumns () {
       title: $t({ defaultMessage: 'Active Incidents' }),
       dataIndex: 'activeIncindents',
       sorter: true,
-      align: 'center'
+      align: 'center',
+      render: function () {
+        return '0'
+      }
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
@@ -83,7 +95,10 @@ function useCustomerColumns () {
       title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
       dataIndex: 'wifiLicensesUtilization',
       sorter: true,
-      align: 'center'
+      align: 'center',
+      render: function (data, row) {
+        return transformApUtilization(row)
+      }
     },
     {
       title: $t({ defaultMessage: 'Switch Licenses' }),
@@ -92,12 +107,56 @@ function useCustomerColumns () {
       align: 'center'
     },
     {
-      title: $t({ defaultMessage: 'Next License EXpiration' }),
+      title: $t({ defaultMessage: 'Next License Expiration' }),
       dataIndex: 'expirationDate',
-      sorter: true
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return transformNextExpirationDate(row)
+      }
     }
   ]
   return columns
+}
+
+const transformApUtilization = (row: MspEc) => {
+  const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) => 
+    en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
+  if (entitlement.length > 0) {
+    const apEntitlement = entitlement[0]
+    const quantity = parseInt(apEntitlement.quantity, 10)
+    const consumed = parseInt(apEntitlement.consumed, 10)
+    if (quantity > 0) {
+      const value = 
+      (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
+      return value
+    } else {
+      return '0%'
+    }
+  }
+  return '0%'
+}
+
+const transformNextExpirationDate = (row: MspEc) => {
+  let expirationDate = '--'
+  let toBeRemoved = ''
+  const entitlements = row.entitlements
+  let target: DelegationEntitlementRecord
+  entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+    target = entitlement
+    const consumed = parseInt(entitlement.quantity, 10)
+    const quantity = parseInt(entitlement.quantity, 10)
+    if (consumed > 0 || quantity > 0) {
+      if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
+        target = entitlement
+      }
+    }
+    expirationDate = moment(target.expirationDate).format(DateFormatEnum.UserDateFormat)
+    toBeRemoved = EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType, 
+      parseInt(target.toBeRemovedQuantity, 10));
+  })
+
+  return `${expirationDate} (${toBeRemoved})`
 }
 
 // const invitationPayload = {
@@ -182,10 +241,10 @@ export function VarCustomers () {
         ]}
       />
 
-      <PageHeader
+      {/* <PageHeader
         title={$t({ defaultMessage: 'Pending Invitations' })}
       />
-      {/* <PendingInvitaion /> */}
+      <PendingInvitaion /> */}
       <PageHeader
         title=''
         extra={[
