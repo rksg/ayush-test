@@ -6,7 +6,7 @@ export interface APRadio {
   txPower?: string,
   Rssi: string
 }
-export interface AP {
+export interface APMesh {
   IP?: string
   apMac?: string
   apStatusData?: {
@@ -18,7 +18,7 @@ export interface AP {
   deviceStatus?: string,
   meshRole: string,
   hops?: number,
-  downlink?: AP,
+  downlink?: APMesh,
   uplink?:{
     txFrames: string,
     rssi: number,
