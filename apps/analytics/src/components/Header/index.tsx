@@ -69,7 +69,6 @@ export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
   return (
     <PageHeader
       {...props}
-      ellipsis
       extra={[
         <NetworkFilter key='network-filter' />,
         <RangePicker

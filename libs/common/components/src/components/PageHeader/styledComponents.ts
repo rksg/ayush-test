@@ -1,5 +1,4 @@
-import { Typography } from 'antd'
-import styled         from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   position: sticky;
@@ -12,7 +11,6 @@ export const Wrapper = styled.div`
     &-heading {
       h1 {
         margin-bottom: 0;
-        width: 200px;
       }
       &-left {
         overflow: visible;
@@ -62,10 +60,4 @@ export const Wrapper = styled.div`
 
 export const Spacer = styled.div`
   height: var(--acx-content-vertical-space);
-`
-export const Title = styled(Typography.Title)`
-  width: 250px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 `

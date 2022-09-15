@@ -12,31 +12,15 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
-export interface PageHeaderProps extends Omit<AntPageHeaderProps, 
-'title' | 'breadcrumb' | 'boolean'> {
+export interface PageHeaderProps extends Omit<AntPageHeaderProps, 'title' | 'breadcrumb'> {
   title: string,
   titleExtra?: React.ReactNode,
-  breadcrumb?: { text: string, link: string }[],
-  ellipsis: boolean
+  breadcrumb?: { text: string, link: string }[]
 }
 
 function PageHeader (props: PageHeaderProps) {
-  const pageHeaderProps: AntPageHeaderProps = _.omit(props, ['breadcrumb'])
-  pageHeaderProps.title = 
-  <Typography.Title 
-    ellipsis={(props.ellipsis) 
-      ? {
-        rows: 2,
-        tooltip: {
-          title: props.title
-        },
-        suffix: ''
-      }
-      : undefined
-    }
-  >
-    {props.title}
-  </Typography.Title>
+  const pageHeaderProps: AntPageHeaderProps = _.omit(props, 'breadcrumb')
+  pageHeaderProps.title = <Typography.Title>{props.title}</Typography.Title>
   if (props.titleExtra) {
     pageHeaderProps.title = <>
       {pageHeaderProps.title}

@@ -3,7 +3,7 @@
 exports[`Venues Form google map is not enabled 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hilBqm"
+    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -371,7 +371,7 @@ exports[`Venues Form google map is not enabled 1`] = `
 exports[`Venues Form should render venues form 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hilBqm"
+    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
