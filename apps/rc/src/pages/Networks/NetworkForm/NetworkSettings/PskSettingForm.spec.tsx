@@ -100,7 +100,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
-    }, true)
+    })
   }, 20000)
 
 
