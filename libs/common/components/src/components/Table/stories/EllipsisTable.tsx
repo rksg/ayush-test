@@ -3,7 +3,7 @@ import { Table, TableProps } from '..'
 const basicColumns: TableProps<(typeof basicData)[0]>['columns'] = [
   {
     title: 'Name',
-    dataIndex: 'name1',
+    dataIndex: 'name',
     key: 'name',
     fixed: 'left'
   },
@@ -16,20 +16,17 @@ const basicColumns: TableProps<(typeof basicData)[0]>['columns'] = [
   {
     title: 'Distance',
     dataIndex: 'distance',
-    key: 'distance',
-    show: false
+    key: 'distance'
   },
   {
     title: 'Address 1',
     dataIndex: 'address1',
-    key: 'address1',
-    disable: true
+    key: 'address1'
   },
   {
     title: 'Address 2',
     dataIndex: 'address2',
-    key: 'address2',
-    show: false
+    key: 'address2'
   },
   {
     title: 'Address 3',
@@ -94,26 +91,15 @@ const basicData = [
 
 export function EllipsisTable () {
   return (<>
-    <p>Open Browser Debug Console to see updated state</p>
+    <p>
+      With ellipsis set to true,
+      &hellip; will appear when content is too long (affects all columns).
+      Resize columns to see this effect.
+    </p>
     <Table
-      ellipsis={true}
+      ellipsis
       columns={basicColumns}
       dataSource={basicData}
-      columnState={{
-        // eslint-disable-next-line no-console
-        onChange: (state) => console.log(JSON.stringify(state, null, 2)),
-        defaultValue: {
-          name: true,
-          age: true,
-          address1: true,
-          address2: true,
-          address3: true,
-          address4: true,
-          distance: true,
-          address5: false,
-          address6: true
-        }
-      }}
     />
   </>)
 }
