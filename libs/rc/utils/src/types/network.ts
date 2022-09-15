@@ -14,6 +14,7 @@ import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomiz
 
 export interface CreateNetworkFormFields {
   name: string;
+  ssid?: string;
   description?: string;
   type: NetworkTypeEnum;
   isCloudpathEnabled?: boolean;

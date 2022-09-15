@@ -250,7 +250,7 @@ export function transferDetailToSave (data: CreateNetworkFormFields) {
     description: data.description,
     type: data.type,
     wlan: {
-      ssid: data.name
+      ssid: data.ssid || data.name
     }
   }
 }
