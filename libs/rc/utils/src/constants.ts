@@ -121,3 +121,9 @@ export enum ServiceAdminState {
   ENABLED = 'ENABLED',
   DISABLED = 'DISABLED'
 }
+
+export enum RadiusErrorsType {
+  AUTH_AND_ACC = 'AUTH_AND_ACC',
+  AUTH = 'AUTH',
+  ACCOUNTING = 'ACCOUNTING'
+}

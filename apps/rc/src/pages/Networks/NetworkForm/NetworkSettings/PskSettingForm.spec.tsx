@@ -26,8 +26,12 @@ async function fillInBeforeSettings (networkName: string) {
   await screen.findByRole('heading', { level: 3, name: 'Settings' })
 }
 
-async function fillInAfterSettings (checkSummary: Function) {
+async function fillInAfterSettings (checkSummary: Function, waitForIpValidation?: boolean) {
   await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+  if (waitForIpValidation) {
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+  }
   await screen.findByRole('heading', { level: 3, name: 'Venues' })
 
   await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -51,7 +55,9 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json([])))
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => res(ctx.json(successResponse)))
     )
   })
 
@@ -95,7 +101,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  }, 10000)
+  })
 
 
   it('should create PSK network with WP3 and mac auth security protocol', async () => {
@@ -130,7 +136,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  }, 10000)
+  })
 
   it('should create PSK network with WEP security protocol', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
