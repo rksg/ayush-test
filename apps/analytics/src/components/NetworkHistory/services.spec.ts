@@ -5,7 +5,9 @@ import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 import { DateRange }           from '@acx-ui/utils'
 
-import { api, calcGranularity } from './services'
+import { calcGranularity } from '../../utils'
+
+import { api } from './services'
 
 describe('networkHistoryWidgetApi', () => {
   const store = configureStore({

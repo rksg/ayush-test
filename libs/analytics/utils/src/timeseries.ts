@@ -33,11 +33,11 @@ export function checkNoData (data: TimeSeriesData | null): boolean {
   return isNoData
 }
 
-export function getDataSeries (
+export function getHealthTimeseries (
   data: TimeSeriesData | null,
   seriesMapping: Array<{ key: string, name: string }>
 ): MultiLineTimeSeriesChartData[] {
-  if (checkInvalidData(data)) return []
+  if (checkInvalidHealthData(data)) return []
   return seriesMapping.map(({ key, name }) => ({
     name,
     data: (data!['time'] as TimeStamp[]).map((t, index) => {
@@ -47,8 +47,7 @@ export function getDataSeries (
   }))
 }
 
-
-export function checkInvalidData (data: TimeSeriesData | null) {
+export function checkInvalidHealthData (data: TimeSeriesData | null) {
   if (!data) return true
   // iterate through data values
   const validIterables = Object.entries(data).map(([, value]) => Symbol.iterator in Object(value))

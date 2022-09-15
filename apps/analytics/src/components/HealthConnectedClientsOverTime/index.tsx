@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
+import { forwardRef } from 'react'
 
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import ReactECharts from 'echarts-for-react'
+import { useIntl }  from 'react-intl'
+import AutoSizer    from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, getDataSeries, MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
-import { Card, cssStr, Loader, MultiLineTimeSeriesChart, NoData }       from '@acx-ui/components'
+import { AnalyticsFilter, getSeriesData, TimeSeriesData }         from '@acx-ui/analytics/utils'
+import { Card, cssStr, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 
-import { HealthTimeseriesData, useHealthTimeseriesQuery } from './services'
+import { useHealthTimeseriesQuery } from './services'
 
 
 const lineColors = [
@@ -14,40 +15,36 @@ const lineColors = [
   cssStr('--acx-accents-orange-50')
 ]
 
-function HealthTimeSeriesChart ({ filters }: { filters: AnalyticsFilter }) {
+const HealthTimeSeriesChart = 
+forwardRef(function HealthTimeSeriesChart ({ filters, ref, key }: 
+  { filters: AnalyticsFilter, 
+    ref: React.RefObject<ReactECharts>,
+    key: string
+  }
+) {
   const { $t } = useIntl()
-  const [data, setData] = useState<MultiLineTimeSeriesChartData[]>([])
+  const { startDate, endDate } = filters
+
+  const seriesMapping = [
+    { 
+      key: 'newClientCount', 
+      name: $t({ defaultMessage: 'New Clients' }) 
+    },
+    {
+      key: 'connectedClientCount',
+      name: $t({ defaultMessage: 'Connected Clients' })
+    }
+  ] as Array<{ key: string; name: string }>
 
   const queryResults = useHealthTimeseriesQuery(filters, {
     selectFromResult: ({
       data,
       ...rest
     }) => ({
-      data: data as HealthTimeseriesData,
+      data: getSeriesData(data as TimeSeriesData | null, seriesMapping),
       ...rest
     })
   })
-
-  useEffect(() => {
-    const seriesMapping = [
-      { 
-        key: 'newClientCount', 
-        name: $t({ defaultMessage: 'New Clients' }) 
-      },
-      {
-        key: 'connectedClientCount',
-        name: $t({ defaultMessage: 'Connected Clients' })
-      }
-    ] as Array<{ key: string; name: string }>
-    if (!queryResults.data) return
-    const chartData = 
-    getDataSeries(queryResults.data, seriesMapping)
-    setData(chartData)
-  }, [queryResults, queryResults.data, $t, queryResults.isSuccess])
-
-  useEffect(() => {}, [data])
-
-  const { startDate, endDate } = filters
 
   return (
     <Loader states={[queryResults]}>
@@ -55,12 +52,14 @@ function HealthTimeSeriesChart ({ filters }: { filters: AnalyticsFilter }) {
         {({ width }) => (
           <div style={{ width, height: 250 }}>
             <Card>
-              {(queryResults.data && data.length > 0)
+              {(queryResults.data && queryResults.data.length > 0)
                 ? <MultiLineTimeSeriesChart
-                  data={data}
+                  data={queryResults.data}
                   lineColors={lineColors}
                   brush={[startDate, endDate]}
                   style={{ width, height: 200 }}
+                  chartRef={ref}
+                  key={key}
                 />
                 : <NoData />}
             </Card>
@@ -69,6 +68,6 @@ function HealthTimeSeriesChart ({ filters }: { filters: AnalyticsFilter }) {
       </AutoSizer>
     </Loader>
   )
-}
+})
 
 export default HealthTimeSeriesChart
