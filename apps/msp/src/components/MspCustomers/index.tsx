@@ -35,9 +35,9 @@ function useColumns () {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (data) {
         return (
-          <TenantLink to={``}>{data}</TenantLink>
+          <TenantLink to={''}>{data}</TenantLink>
         )
       }
     },
@@ -74,9 +74,9 @@ function useColumns () {
       dataIndex: 'mspAdminCount',
       sorter: true,
       align: 'center',
-      render: function (data, row) {
+      render: function (data) {
         return (
-          <TenantLink to={``}>{data}</TenantLink>
+          <TenantLink to={''}>{data}</TenantLink>
         )
       }
     },
@@ -176,7 +176,7 @@ const transformCreationDate = (row: MspEc) => {
     return ''
   }
   const Epoch = creationDate - (creationDate % 1000)
-  const activeDate = moment(Epoch).format(DateFormatEnum.UserDateFormat);
+  const activeDate = moment(Epoch).format(DateFormatEnum.UserDateFormat)
   return activeDate
 }
 

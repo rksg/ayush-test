@@ -20,9 +20,9 @@ function useColumns () {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data, row) {
+      render: function (data) {
         return (
-          <TenantLink to={``}>{data}</TenantLink>
+          <TenantLink to={''}>{data}</TenantLink>
         )
       }
     },
@@ -45,9 +45,9 @@ function useColumns () {
       dataIndex: 'mspAdminCount',
       sorter: true,
       align: 'center',
-      render: function (data, row) {
+      render: function (data) {
         return (
-          <TenantLink to={``}>{data}</TenantLink>
+          <TenantLink to={''}>{data}</TenantLink>
         )
       }
     },

@@ -28,44 +28,45 @@ export enum EntitlementDeviceSubType {
 }
   
 export class EntitlementUtil {
-  public static deviceSubTypeToText(deviceSubType: EntitlementDeviceSubType): string {
+  public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType): string {
     switch (deviceSubType) {
       case EntitlementDeviceSubType.ICX71L:
-        return 'ICX 7150-C08P';
+        return 'ICX 7150-C08P'
       case EntitlementDeviceSubType.ICX71:
-        return 'ICX 7150';
+        return 'ICX 7150'
       case EntitlementDeviceSubType.ICX75:
-        return 'ICX 7550';
+        return 'ICX 7550'
       case EntitlementDeviceSubType.ICX76:
-        return 'ICX 7650';
+        return 'ICX 7650'
       case EntitlementDeviceSubType.ICX78:
-        return 'ICX 7850';
+        return 'ICX 7850'
       case EntitlementDeviceSubType.ICXTEMP:
-        return 'Trial';
+        return 'Trial'
     }
-    return '';
+    return ''
   }
 
-  public static tempLicenseToString(isTempLicense:boolean): string {
-    return isTempLicense ? 'Trial' : 'Basic';
+  public static tempLicenseToString (isTempLicense:boolean): string {
+    return isTempLicense ? 'Trial' : 'Basic'
   }
 
-  public static getNetworkDeviceTypeUnitText(networkDeviceType: EntitlementNetworkDeviceType, count: number): string {
-    const unitArray = [count, ' '];
+  public static getNetworkDeviceTypeUnitText (networkDeviceType: EntitlementNetworkDeviceType, 
+    count: number): string {
+    const unitArray = [count, ' ']
 
     switch (networkDeviceType) {
       case EntitlementNetworkDeviceType.SWITCH:
-        unitArray.push(count > 1 ? 'Switches' : 'Switch');
-        break;
+        unitArray.push(count > 1 ? 'Switches' : 'Switch')
+        break
       case EntitlementNetworkDeviceType.WIFI:
-        unitArray.push(count > 1 ? 'APs' : 'AP');
-        break;
+        unitArray.push(count > 1 ? 'APs' : 'AP')
+        break
       case EntitlementNetworkDeviceType.LTE:
-        unitArray.push(count > 1 ? 'APs' : 'AP');
-        break;
+        unitArray.push(count > 1 ? 'APs' : 'AP')
+        break
     }
 
-    return unitArray.join('');
+    return unitArray.join('')
   }
 }
 

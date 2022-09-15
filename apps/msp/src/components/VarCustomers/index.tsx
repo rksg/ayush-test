@@ -1,6 +1,6 @@
 import { SortOrder } from 'antd/lib/table/interface'
-import { useIntl }   from 'react-intl'
 import moment        from 'moment-timezone'
+import { useIntl }   from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import {
@@ -18,8 +18,7 @@ import {
   MspEc, 
   useTableQuery 
 } from '@acx-ui/rc/utils'
-
-import { TenantLink }           from '@acx-ui/react-router-dom'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 // function useInvitaionColumns () {
 //   const { $t } = useIntl()
@@ -54,9 +53,9 @@ function useCustomerColumns () {
       dataIndex: 'tenantName',
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data, row) {
+      render: function (data) {
         return (
-          <TenantLink to={``}>{data}</TenantLink>
+          <TenantLink to={''}>{data}</TenantLink>
         )
       }
     },
@@ -70,9 +69,9 @@ function useCustomerColumns () {
       dataIndex: 'alarmCount',
       sorter: true,
       align: 'center',
-      render: function (data, row) {
+      render: function (data) {
         return (
-          <TenantLink to={``}>{data}</TenantLink>
+          <TenantLink to={''}>{data}</TenantLink>
         )
       }
     },
@@ -153,7 +152,7 @@ const transformNextExpirationDate = (row: MspEc) => {
     }
     expirationDate = moment(target.expirationDate).format(DateFormatEnum.UserDateFormat)
     toBeRemoved = EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType, 
-      parseInt(target.toBeRemovedQuantity, 10));
+      parseInt(target.toBeRemovedQuantity, 10))
   })
 
   return `${expirationDate} (${toBeRemoved})`

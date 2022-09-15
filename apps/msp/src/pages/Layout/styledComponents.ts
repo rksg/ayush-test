@@ -15,7 +15,7 @@ import {
   MspLicenseOutlined,
   NotificationSolid,
   SearchOutlined,
-  WorldSmall,
+  WorldSmall
 } from '@acx-ui/icons'
 
 export const Wrapper = styled.div`
