@@ -8,7 +8,7 @@ export const websocketServerUrl = '/api/websocket/socket.io'
 export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVlanPools: {
     method: 'get',
-    url: '/api/tenant/{tenantId}/wifi/vlan-pool'
+    url: '/api/tenant/:tenantId/wifi/vlan-pool'
   },
   getVMNetworksList: {
     method: 'post',
@@ -28,7 +28,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteNetwork: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/network/:networkId'
+    url: '/api/tenant/:tenantId/wifi/network/:networkId?quickAck=true'
   },
   getNetworksDetailHeader: {
     method: 'get',
@@ -125,6 +125,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueFloorplans: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
+  },
+  getVenueNetworkList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
+  },
+  venueNetworkApGroup: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venue/network-ap-group'
+  },
+  getNetworkDeepList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/get/deep'
   },
   validateRadius: {
     method: 'post',

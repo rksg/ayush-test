@@ -65,7 +65,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...venueDetailReq
         }
       },
-      providesTags: [{ type: 'Venue', id: 'DETAIL' }]
+      providesTags: [{ type: 'Venue', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, 
+            ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
+            })
+        })
+      }
     }),
     floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
       query: ({ params }) => {

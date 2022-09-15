@@ -4,7 +4,6 @@ import _                                     from 'lodash'
 import { defineMessage, useIntl, IntlShape } from 'react-intl'
 
 import {
-  Button,
   PageHeader,
   showToast,
   showActionModal,
@@ -70,7 +69,6 @@ export function NetworkForm () {
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
   const [getValidateRadius] = useLazyValidateRadiusQuery()
-  const [enableMoreSettings, setEnabled] = useState(false)
 
   const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
 
@@ -82,7 +80,7 @@ export function NetworkForm () {
   })
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
-    if(saveData.isCloudpathEnabled){
+    if(saveState.isCloudpathEnabled){
       delete saveState.authRadius
       delete saveState.accountingRadius
     }else{
@@ -274,27 +272,26 @@ export function NetworkForm () {
               return false
             }}
           >
-            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
-            {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
-            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
+            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm saveState={saveState}/>}
 
-            {!editMode && <>
-              <Button
-                type='link'
-                onClick={() => {
-                  setEnabled(!enableMoreSettings)
-                }}
-              >
-                {enableMoreSettings ? intl.$t({ defaultMessage: 'Show less settings' }) :
-                  intl.$t({ defaultMessage: 'Show more settings' })}
-              </Button>
-              {enableMoreSettings &&
-                <NetworkMoreSettingsForm wlanData={saveState} />}
-            </>
-            }
           </StepsForm.StepForm>
+          {editMode &&
+            <StepsForm.StepForm
+              name='moreSettings'
+              title={intl.$t({ defaultMessage: 'More Settings' })}
+              onFinish={async (data) => {
+                const settingSaveData = transferMoreSettingsToSave(data, saveState)
 
+                updateSaveData(settingSaveData)
+                return true
+              }}>
+
+              <NetworkMoreSettingsForm wlanData={saveState} />
+
+            </StepsForm.StepForm>}
           <StepsForm.StepForm
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
@@ -315,6 +312,7 @@ export function NetworkForm () {
     </>
   )
 }
+
 
 function showConfigConflictModal (
   message: string,
