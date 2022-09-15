@@ -1,5 +1,6 @@
 import { RefObject } from 'react'
 
+import { ECharts }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 
 
@@ -11,9 +12,9 @@ import { getSeriesData } from './stories'
 import {
   useBrush,
   useOnBrushChange,
+  useOnMarkedAreaClick,
   MultiLineTimeSeriesChart
 } from '.'
-
 
 describe('MultiLineTimeSeriesChart', () => {
   mockDOMWidth()
@@ -84,5 +85,39 @@ describe('useOnBrushChange', () => {
     renderHook(() => useOnBrushChange(OnBrushChange)(params))
     expect(OnBrushChange).toBeCalledTimes(1)
     expect(OnBrushChange).toBeCalledWith(['2022-09-07', '2022-09-07'])
+  })
+})
+
+describe('useOnMarkedAreaClick', () => {
+  it('handles eChartsRef = null', async () => {
+    const eChartsRef = { current: null } as RefObject<ReactECharts>
+    renderHook(() => useOnMarkedAreaClick(eChartsRef, jest.fn()))
+
+    // intentionally left blank to cover the line where echart ref is null
+  })
+
+  it('handles marked area click', async () => {
+    const callbacks: Array<(params: unknown) => void> = []
+    const on = jest.fn().mockImplementation((
+      _0: string,
+      _1: string,
+      callback: ((params: unknown) => void)
+    ) => callbacks.push(callback))
+
+    const instance = { on } as unknown as ECharts
+    const onClick = jest.fn()
+
+    renderHook(() => useOnMarkedAreaClick(
+      { current: { getEchartsInstance: () => instance } } as RefObject<ReactECharts>,
+      onClick
+    ))
+
+    expect(on).toBeCalledWith('click', 'series.line', expect.any(Function))
+    expect(callbacks).toHaveLength(1)
+
+    const data = { a: '1', b: '2' }
+    callbacks[0]({ data: { data } })
+
+    expect(onClick).toBeCalledWith(data)
   })
 })

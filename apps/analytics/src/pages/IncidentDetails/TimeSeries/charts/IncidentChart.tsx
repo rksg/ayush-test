@@ -1,9 +1,8 @@
-import { MarkAreaComponentOption } from 'echarts'
-import { useIntl }                 from 'react-intl'
-import AutoSizer                   from 'react-virtualized-auto-sizer'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Incident, getSeriesData, mapCodeToReason, incidentSeverities, calculateSeverity } from '@acx-ui/analytics/utils'
-import { Card, cssStr, MultiLineTimeSeriesChart, ChartMarker }                             from '@acx-ui/components'
+import { Card, cssStr, MultiLineTimeSeriesChart }                                          from '@acx-ui/components'
 import { NavigateFunction, Path, useNavigate, useTenantLink }                              from '@acx-ui/react-router-dom'
 import { intlFormats }                                                                     from '@acx-ui/utils'
 
@@ -13,38 +12,31 @@ import { ChartsData }           from '../services'
 export const onMarkedAreaClick = (
   navigate: NavigateFunction,
   basePath: Path,
-  relatedIncidents: Incident[]
+  incident: Incident
 ) => (
-  props: ChartMarker
+  data: Incident
 ) => {
-  const currentIncident = relatedIncidents.find((incident: Incident) => (
-    incident.startTime === props.startTime && incident.endTime === props.endTime))
+  // click on current incident marker
+  if (data.id === incident.id) return
+
   navigate({
     ...basePath,
-    pathname: `${basePath.pathname}/${currentIncident!.id}`
+    pathname: `${basePath.pathname}/${data.id}`
   })
 }
 
-export const markAreaProps = (
+export const getMarkers = (
   relatedIncidents: Incident[],
   incident: Incident
-) => ({
-  data: relatedIncidents?.map(mark => {
-    return [
-      {
-        xAxis: mark.startTime,
-        data: mark,
-        itemStyle: {
-          opacity: mark.id === incident.id ? 1 : 0.3,
-          color: cssStr(incidentSeverities[calculateSeverity(incident.severity)].color)
-        }
-      },
-      {
-        xAxis: mark.endTime
-      }
-    ]
-  }) } as MarkAreaComponentOption
-)
+) => relatedIncidents?.map(related => ({
+  data: related,
+  startTime: related.startTime,
+  endTime: related.endTime,
+  itemStyle: {
+    opacity: related.id === incident.id ? 1 : 0.3,
+    color: cssStr(incidentSeverities[calculateSeverity(incident.severity)].color)
+  }
+}))
 
 export const IncidentChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
   const { incidentCharts, relatedIncidents } = data
@@ -78,8 +70,8 @@ export const IncidentChart = ({ incident, data }: { incident: Incident, data: Ch
             $t(intlFormats.percentFormat, { value: value as number })}
           yAxisProps={{ max: 1, min: 0 }}
           disableLegend={true}
-          onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, relatedIncidents)}
-          markAreaProps={markAreaProps(relatedIncidents, incident)}
+          onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}
+          markers={getMarkers(relatedIncidents, incident)}
         />
       )}
     </AutoSizer>

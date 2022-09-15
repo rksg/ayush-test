@@ -31,9 +31,22 @@ const Chart = styled(ReactECharts)`
     clip-path: inset(0 round 5px);
   }`
 
-export interface ChartMarker { startTime: string, endTime: string }
-export interface MultiLineTimeSeriesChartProps
-  <TChartData extends MultiLineTimeSeriesChartData>
+type MarkAreaOption = Extract<
+  Exclude<MarkAreaComponentOption['data'], undefined>[number],
+  Array<unknown>
+>[number]
+
+type Marker <MarkerData> = {
+  startTime: Exclude<MarkAreaOption['xAxis'], undefined>
+  endTime: Exclude<MarkAreaOption['xAxis'], undefined>
+  data: MarkerData
+  itemStyle?: MarkAreaOption['itemStyle']
+}
+
+export interface MultiLineTimeSeriesChartProps <
+  TChartData extends MultiLineTimeSeriesChartData,
+  MarkerData
+>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[],
     /** @default 'name' */
@@ -45,8 +58,8 @@ export interface MultiLineTimeSeriesChartProps
       min: number
     }
     disableLegend?: boolean,
-    onMarkedAreaClick?: (props: ChartMarker) => void,
-    markAreaProps?: MarkAreaComponentOption
+    onMarkedAreaClick?: (data: MarkerData) => void,
+    markers?: Marker<MarkerData>[]
     brush?: [TimeStamp, TimeStamp]
     onBrushChange?: (range: TimeStamp[]) => void
     chartRef?: RefObject<ReactECharts>
@@ -78,8 +91,24 @@ export const useOnBrushChange = (
   }
 }
 
-export function MultiLineTimeSeriesChart
-  <TChartData extends MultiLineTimeSeriesChartData>
+export function useOnMarkedAreaClick <MarkerData> (
+  eChartsRef: RefObject<ReactECharts>,
+  onMarkedAreaClick?: (data: MarkerData) => void
+) {
+  useEffect(() => {
+    if (!eChartsRef || !eChartsRef.current) return
+    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
+    echartInstance.on('click', 'series.line', function (params) {
+      const markedAreaProps = (params.data as unknown as { data: MarkerData }).data
+      onMarkedAreaClick?.(markedAreaProps)
+    })
+  }, [eChartsRef, onMarkedAreaClick])
+}
+
+export function MultiLineTimeSeriesChart <
+  TChartData extends MultiLineTimeSeriesChartData,
+  MarkerData
+>
 ({
   data,
   legendProp = 'name' as keyof TChartData,
@@ -87,12 +116,12 @@ export function MultiLineTimeSeriesChart
   yAxisProps,
   disableLegend,
   onMarkedAreaClick,
-  markAreaProps,
   ...props
-}: MultiLineTimeSeriesChartProps<TChartData>) {
+}: MultiLineTimeSeriesChartProps<TChartData, MarkerData>) {
   const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(props.chartRef, () => eChartsRef.current!)
   useBrush(eChartsRef, props.brush)
+  useOnMarkedAreaClick(eChartsRef, onMarkedAreaClick)
 
   const startEndTimes = data.map(datum => {
     return {
@@ -100,15 +129,6 @@ export function MultiLineTimeSeriesChart
       end: datum.data[datum.data.length - 1][0]
     }
   })
-
-  useEffect(() => {
-    if (!eChartsRef || !eChartsRef.current) return
-    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
-    echartInstance.on('click', 'series.line', function (params) {
-      const markedAreaProps = (params.data as unknown as { data: ChartMarker }).data
-      onMarkedAreaClick?.(markedAreaProps)
-    })
-  }, [eChartsRef, onMarkedAreaClick])
 
   const option: EChartsOption = {
     color: props.lineColors || [
@@ -176,7 +196,12 @@ export function MultiLineTimeSeriesChart
       z: 1,
       zlevel: 1,
       lineStyle: { width: 1 },
-      markArea: markAreaProps
+      markArea: props.markers ? {
+        data: props.markers?.map(marker => [
+          { xAxis: marker.startTime, itemStyle: marker.itemStyle, data: marker.data },
+          { xAxis: marker.endTime }
+        ])
+      } : undefined
     }))
   }
 
