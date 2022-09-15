@@ -32,3 +32,26 @@ export function checkNoData (data: TimeSeriesData | null): boolean {
   }
   return isNoData
 }
+
+export function getDataSeries (
+  data: TimeSeriesData | null,
+  seriesMapping: Array<{ key: string, name: string }>
+): MultiLineTimeSeriesChartData[] {
+  if (checkInvalidData(data)) return []
+  return seriesMapping.map(({ key, name }) => ({
+    name,
+    data: (data!['time'] as TimeStamp[]).map((t, index) => {
+      const value = data![key][index] as number
+      return [t, value === null ? '-' : value]
+    })
+  }))
+}
+
+
+export function checkInvalidData (data: TimeSeriesData | null) {
+  if (!data) return true
+  // iterate through data values
+  const validIterables = Object.entries(data).map(([, value]) => Symbol.iterator in Object(value))
+  const checkValid = new Set(validIterables)
+  return checkValid.has(false)
+}
