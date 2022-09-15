@@ -7,6 +7,8 @@ import type {
 type AdditionalColumnType = {
   // mandatory column for mapping columns
   key: string
+  // mandatory column to (1) render correct data (2) use ellipsis
+  dataIndex: string | string[]
   /**
    * Mark column as fixed
    */

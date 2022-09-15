@@ -78,7 +78,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const ColumnHeaders: TableProps<IncidentTableRow>['columns'] = [
     {
       title: $t(defineMessage({ defaultMessage: 'Severity' })),
-      width: 80,
+      width: 90,
       dataIndex: 'severity',
       key: 'severity',
       render: (_, value) => <GetIncidentBySeverity value={value.severity} id={value.id}/>,
@@ -91,6 +91,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Date' })),
+      width: 130,
       dataIndex: 'endTime',
       valueType: 'dateTime',
       key: 'endTime',
@@ -107,6 +108,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Duration' })),
+      width: 100,
       dataIndex: 'duration',
       key: 'duration',
       render: (_, value) => formatter('durationFormat')(value.duration) as string,
@@ -117,6 +119,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
+      width: 200,
       dataIndex: 'description',
       key: 'description',
       render: (_, value ) => (
@@ -128,11 +131,11 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       sorter: {
         compare: (a, b) => defaultSort(a.description, b.description),
         multiple: 4
-      },
-      ellipsis: true
+      }
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Category' })),
+      width: 100,
       dataIndex: 'category',
       key: 'category',
       sorter: {
@@ -142,6 +145,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
+      width: 130,
       dataIndex: 'subCategory',
       key: 'subCategory',
       sorter: {
@@ -152,6 +156,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
+      width: 130,
       dataIndex: 'clientImpact',
       key: 'clientImpact',
       sorter: {
@@ -161,6 +166,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
+      width: 160,
       dataIndex: 'impactedClients',
       key: 'impactedClients',
       sorter: {
@@ -171,8 +177,8 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Scope' })),
+      width: 200,
       dataIndex: 'scope',
-      ellipsis: true,
       key: 'scope',
       render: (_, value ) => {
         return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue, intl)}>
@@ -186,6 +192,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Type' })),
+      width: 90,
       dataIndex: 'type',
       key: 'type',
       sorter: {
@@ -218,7 +225,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
-        scroll={{ y: 'max-content' }}
+        ellipsis={true}
         indentSize={6}
       />
       {drawerSelection &&

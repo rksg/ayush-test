@@ -236,11 +236,11 @@ describe('Table component', () => {
     expect(selectedRows.filter(el => el.checked)).toHaveLength(2)
   })
 
-  it('dynamically scales based on scroll prop', () => {
+  it('should handle ellipsis', () => {
     const basicColumns = [
-      { title: 'Name', key: 'name' },
-      { title: 'Age', key: 'age' },
-      { title: 'Address', key: 'address' }
+      { title: 'Name', key: 'name', dataIndex: 'name', width: 1 },
+      { title: 'Age', key: 'age', dataIndex: 'age' },
+      { title: 'Address', key: 'address', dataIndex: 'name' }
     ]
     const basicData = [
       {
@@ -262,11 +262,10 @@ describe('Table component', () => {
         address: 'address'
       }
     ]
-    const scroll = { y: 'max-content' }
     const { asFragment } = render(<Table
       columns={basicColumns}
       dataSource={basicData}
-      scroll={scroll}
+      ellipsis={true}
     />)
     expect(asFragment()).toMatchSnapshot()
   })
