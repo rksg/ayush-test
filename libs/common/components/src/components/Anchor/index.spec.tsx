@@ -1,7 +1,17 @@
 import '@testing-library/jest-dom'
-import { render } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
+import userEvent               from '@testing-library/user-event'
+import { MemoryRouter }        from 'react-router-dom'
+
+import { BrowserRouter } from '@acx-ui/react-router-dom'
 
 import { AnchorLayout } from './index'
+
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
 const items = [{
   title: 'Anchor 1',
@@ -15,10 +25,32 @@ const items = [{
 }]
 
 describe('Anchor', () => {
-  it('should render correctly', () => {
+  it('should render correctly', async () => {
     const { asFragment } = render(
-      <AnchorLayout items={items} />
+      <BrowserRouter><AnchorLayout items={items} /></BrowserRouter>
     )
     expect(asFragment()).toMatchSnapshot()
+    await userEvent.click(screen.getByText('Anchor 2'))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '/',
+      hash: 'Anchor-2'
+    })
+  })
+
+  it('should scroll to anchor correctly', async () => {
+    jest.useFakeTimers()
+    render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/',
+        hash: 'Anchor-3'
+      }]}>
+        <AnchorLayout items={items} />
+      </MemoryRouter>
+    )
+    act(() => {
+      jest.runAllTimers() // trigger setTimeout
+    })
+    expect(await screen.findByText('Content 3')).toBeVisible()
   })
 })
+

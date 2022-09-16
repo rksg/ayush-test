@@ -1,4 +1,8 @@
-import { ReactNode } from 'react'
+import { ReactNode, useRef, useEffect } from 'react'
+
+import { InternalAnchorClass } from 'antd/lib/anchor/Anchor'
+
+import { useNavigate, useLocation } from '@acx-ui/react-router-dom'
 
 import { GridRow, GridCol } from '../Grid'
 
@@ -17,9 +21,27 @@ export const AnchorLayout = ({ items, offsetTop } : {
   items: AnchorPageItem[],
   offsetTop?: number
 }) => {
-  return <GridRow>
+  const anchorRef = useRef<InternalAnchorClass>(null)
+  const navigate = useNavigate()
+  const location = useLocation() 
+
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    const hash = (e.target as HTMLElement).title.split(' ').join('-')
+    navigate({ pathname: `${location.pathname}`, hash: hash })
+  }
+
+  useEffect(()=>{
+    if (location.hash) {
+      setTimeout(() => 
+        anchorRef?.current?.handleScrollTo(`${location.hash}`)
+      , 500)
+    }
+  }, [])
+
+  return <GridRow >
     <GridCol col={{ span: 4 }}>
-      <Anchor offsetTop={offsetTop} onClick={(e) => e.preventDefault()}>{
+      <Anchor ref={anchorRef} offsetTop={offsetTop} onClick={(e) => handleClick(e)}>{
         items.map(item => {
           const linkId = item.title.split(' ').join('-')
           return <Link href={`#${linkId}`} title={item.title} key={linkId} />

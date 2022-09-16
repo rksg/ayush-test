@@ -79,19 +79,19 @@ exports[`Anchor should render correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          class="styledComponents__Container-sc-1u6w09d-1 ITNIp"
+          class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
           id="Anchor-1"
         >
           Content 1
         </div>
         <div
-          class="styledComponents__Container-sc-1u6w09d-1 ITNIp"
+          class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
           id="Anchor-2"
         >
           Content 2
         </div>
         <div
-          class="styledComponents__Container-sc-1u6w09d-1 ITNIp"
+          class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
           id="Anchor-3"
         >
           Content 3

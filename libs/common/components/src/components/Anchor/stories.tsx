@@ -1,5 +1,7 @@
 import { storiesOf } from '@storybook/react'
 
+import { BrowserRouter } from '@acx-ui/react-router-dom'
+
 import { Anchor, AnchorLayout } from './index'
 
 const { Link } = Anchor
@@ -47,5 +49,7 @@ storiesOf('Anchor', module)
       </Link>
     </Anchor>
   ).add('Anchor with Page Layout', () =>
-    <AnchorLayout items={items} offsetTop={50} />
+    <BrowserRouter>
+      <AnchorLayout items={items} offsetTop={50} />
+    </BrowserRouter>
   )
