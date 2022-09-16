@@ -27,6 +27,7 @@ import {
   NetworkVenue,
   NetworkApGroup,
   Venue,
+  RadioEnum,
   generateDefaultNetworkVenue,
   VLAN_PREFIX,
   ISlotIndex,

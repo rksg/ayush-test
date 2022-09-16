@@ -278,7 +278,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
     )
   }
 
-  const ApGroupItem = ({ apgroup, selected, name }: { apgroup: NetworkApGroup, selected: boolean, name: number }) => {
+  const ApGroupItem = ({ apgroup, name }: { apgroup: NetworkApGroup, name: number }) => {
     const apGroupName = apgroup?.isDefault ? $t({ defaultMessage: 'APs not assigned to any group' }) : apgroup?.apGroupName
 
     const apGroupVlanId = apgroup?.vlanId || network?.wlan?.vlanId
@@ -291,7 +291,9 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
 
     const onApGroupChange = (e: CheckboxChangeEvent) => {
       console.log('checked = ', e.target.checked)
-      // form.setFieldValue()
+      form.setFields([
+        { name: ['apgroups', name, 'selected'], value: !!e.target.checked }
+      ])
     }
 
     const handleRadioChange = (value: string) => {
@@ -308,6 +310,8 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
         { name: ['apgroups', name, 'vlanType'], value: value.vlanType }
       ])
     }
+
+    const selected = Form.useWatch(['apgroups', name, 'selected'], form)
 
     return (
       <>
@@ -418,7 +422,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
                         </Col>
                         { fields.map((field, index) => (
                           <Form.Item key={field.key} noStyle>
-                            <ApGroupItem name={field.name} apgroup={formInitData.apgroups[index]} selected={true}/>
+                            <ApGroupItem name={field.name} apgroup={formInitData.apgroups[index]} />
                           </Form.Item>
                         ))}
                       </Row>
