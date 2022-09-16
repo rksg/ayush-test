@@ -5,10 +5,15 @@ import {
   ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  NetworkTypeEnum
 } from '../constants'
-import { NetworkVenue }   from '../models/NetworkVenue'
-import { TrustedCAChain } from '../models/TrustedCAChain'
+import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
+import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
+import { NetworkVenue }                  from '../models/NetworkVenue'
+import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
+import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
+import { TrustedCAChain }                from '../models/TrustedCAChain'
 
 
 export * from './ap'
@@ -33,13 +38,29 @@ export interface Network {
   clients: number
   venues: { count: number, names: string[] }
   captiveType: GuestNetworkTypeEnum
-  deepNetwork?: {
-    wlan: {
-      wlanSecurity: WlanSecurityEnum
-    }
-  }
+  deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
-  // cog ??
+  activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
+  allApDisabled?: boolean
+}
+
+export interface NetworkDetail {
+  type: NetworkTypeEnum
+  tenantId: string
+  name: string
+  venues: NetworkVenue[]
+  id: string,
+  wlan: {
+    wlanSecurity: WlanSecurityEnum,
+    ssid?: string;
+    vlanId?: number;
+    enable?: boolean;
+    advancedCustomization?:   
+      OpenWlanAdvancedCustomization |
+      AAAWlanAdvancedCustomization |
+      DpskWlanAdvancedCustomization |
+      PskWlanAdvancedCustomization;
+  },
 }
 
 export interface Venue {
