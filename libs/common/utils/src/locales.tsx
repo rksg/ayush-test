@@ -114,7 +114,7 @@ function LocaleProvider (props: LocaleProviderProps) {
     })
   }, [lang])
 
-  const context = useMemo(() => 
+  const context = useMemo(() =>
     ({ lang, setLang, messages }), [lang, messages])
   return <LocaleContext.Provider value={context} children={props.children} />
 }
