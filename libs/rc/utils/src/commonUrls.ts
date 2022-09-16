@@ -42,6 +42,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network-venue'
   },
+  updateNetworkVenue: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId?quickAck=true'
+  },
   deleteNetworkVenue: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId'

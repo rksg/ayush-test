@@ -63,14 +63,6 @@ export interface AccessControlProfile {
   }
 }
 
-export interface VlanPool {
-  name: string,
-  id: string,
-  tenantId: string,
-  vlanMembers: string[]
-}
-
-
 export interface CloudpathServer {
   id: string
   name: string
