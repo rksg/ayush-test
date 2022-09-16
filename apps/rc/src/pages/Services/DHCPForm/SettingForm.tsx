@@ -6,11 +6,11 @@ import { useIntl }                                               from 'react-int
 import { StepsForm }                             from '@acx-ui/components'
 import { DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
 
-import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
-import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
-import DHCPFormContext              from './DHCPFormContext'
-import DHCPPoolMain                 from './DHCPPool'
-import { RadioDescription, AntLabel }         from './styledComponents'
+import { dhcpTypes, dhcpTypesDesc }   from './contentsMap'
+import { DHCPDiagram }                from './DHCPDiagram/DHCPDiagram'
+import DHCPFormContext                from './DHCPFormContext'
+import DHCPPoolMain                   from './DHCPPool'
+import { RadioDescription, AntLabel } from './styledComponents'
 
 
 const { useWatch } = Form
