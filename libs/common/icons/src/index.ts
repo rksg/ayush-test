@@ -39,6 +39,7 @@ export { ReactComponent as MspIntegratorsSolid } from './icons/MspIntegratorsSol
 export { ReactComponent as MspInventoryOutlined } from './icons/MspInventoryOutlined.svg'
 export { ReactComponent as MspInventorySolid } from './icons/MspInventorySolid.svg'
 export { ReactComponent as MspLicenseOutlined } from './icons/MspLicenseOutlined.svg'
+export { ReactComponent as MspLicenseSolid } from './icons/MspLicenseSolid.svg'
 export { ReactComponent as NetworksOutlined } from './icons/NetworksOutlined.svg'
 export { ReactComponent as NetworksSolid } from './icons/NetworksSolid.svg'
 export { ReactComponent as NotificationSolid } from './icons/NotificationSolid.svg'

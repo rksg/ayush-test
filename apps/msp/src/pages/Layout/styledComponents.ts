@@ -13,6 +13,7 @@ import {
   MspInventoryOutlined,
   MspInventorySolid,
   MspLicenseOutlined,
+  MspLicenseSolid,
   NotificationSolid,
   SearchOutlined,
   WorldSmall
@@ -120,7 +121,7 @@ export const EnableInventoryIcon = styled(MspInventorySolid)`
 export const MspLicenseIcon = styled(MspLicenseOutlined)`
   ${disabledMenuIconStyle}
 `
-export const EnableMspLicenseIcon = styled(MspLicenseOutlined)`
+export const EnableMspLicenseIcon = styled(MspLicenseSolid)`
   ${enabledMenuIconStyle}
 `
 export const ConfigurationIcon = styled(ConfigurationOutlined)`
