@@ -31,7 +31,7 @@ const tabsMap : Record<IncidentListTabs, MessageDescriptor> = {
 
 const IncidentTabContent = (props: { tabSelection: IncidentListTabs }) => {
   const { tabSelection } = props
-  const filters = useAnalyticsFilter()
+  const { filters } = useAnalyticsFilter()
   const incidentCodesBasedOnCategory: IncidentCode[] | undefined = categoryCodeMap[
     tabSelection as Exclude<IncidentListTabs, 'overview'>
   ]?.codes as IncidentCode[]

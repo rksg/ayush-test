@@ -23,11 +23,11 @@ export interface VenueMarkerOptions extends google.maps.MarkerOptions {
   }
 
 class VenueMarkerWithLabel extends MarkerWithLabel {
-  venueData: VenueMarkerOptions
+  venueMarker: VenueMarkerOptions
 
-  constructor (options: MarkerWithLabelOptions, venueData: VenueMarkerOptions) {
+  constructor (options: MarkerWithLabelOptions, venueMarker: VenueMarkerOptions) {
     super(options)
-    this.venueData = venueData
+    this.venueMarker = venueMarker
   }
 }
 

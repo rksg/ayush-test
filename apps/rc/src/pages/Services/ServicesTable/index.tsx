@@ -12,13 +12,15 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { serviceAdminStateLabelMapping, serviceStatusLabelMapping, serviceTechnologyabelMapping, serviceTypeLabelMapping } from '../contentsMap'
+import { serviceTypeLabelMapping, serviceStatusLabelMapping, serviceAdminStateLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
+
 
 function useColumns () {
   const { $t } = useIntl()
 
   const columns: TableProps<Service>['columns'] = [
     {
+      key: 'name',
       title: $t({ defaultMessage: 'Service Name' }),
       dataIndex: 'name',
       sorter: true,
@@ -30,6 +32,7 @@ function useColumns () {
       }
     },
     {
+      key: 'type',
       title: $t({ defaultMessage: 'Service Type' }),
       dataIndex: 'type',
       sorter: true,
@@ -38,6 +41,7 @@ function useColumns () {
       }
     },
     {
+      key: 'status',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       sorter: true,
@@ -46,6 +50,7 @@ function useColumns () {
       }
     },
     {
+      key: 'adminState',
       title: $t({ defaultMessage: 'Admin State' }),
       dataIndex: 'adminState',
       sorter: true,
@@ -54,25 +59,29 @@ function useColumns () {
       }
     },
     {
+      key: 'technology',
       title: $t({ defaultMessage: 'Technology' }),
       dataIndex: 'technology',
       sorter: true,
       render: function (data) {
-        return $t(serviceTechnologyabelMapping[data as ServiceTechnology])
+        return $t(serviceTechnologyLabelMapping[data as ServiceTechnology])
       }
     },
     {
+      key: 'scope',
       title: $t({ defaultMessage: 'Scope' }),
       dataIndex: 'scope',
       sorter: true,
       align: 'center'
     },
     {
+      key: 'health',
       title: $t({ defaultMessage: 'Health' }),
       dataIndex: 'health',
       sorter: true
     },
     {
+      key: 'tags',
       title: $t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
       sorter: true
