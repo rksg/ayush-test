@@ -991,39 +991,37 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
   >
     <button
       class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-      style="border-radius: 5px 0 0 5px; display: inline; align-items: center;"
       type="button"
     >
       <svg
-        class="styledComponents__LineChartIcon-sc-12uzynx-2 bMNWSx"
+        class="styledComponents__LineChartIcon-sc-12uzynx-2 kBALdR"
       >
         LineChartOutline1.svg
       </svg>
     </button>
     <button
       class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-      style="border-radius: 0; display: inline; align-items: center;"
       type="button"
     >
       <svg
-        class="styledComponents__ListIcon-sc-12uzynx-0 VPNGv"
+        class="styledComponents__ListIcon-sc-12uzynx-0 lbRPxz"
       >
         List.svg
       </svg>
     </button>
     <button
       class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 hFgoIn"
-      style="border-radius: 0 5px 5px 0; display: inline; align-items: center;"
+      style="border-radius: 0 4px 4px 0;"
       type="button"
     >
       <svg
-        class="styledComponents__MeshIcon-sc-12uzynx-4 dXDgEt"
+        class="styledComponents__MeshIcon-sc-12uzynx-4 jnavlp"
       >
         Mesh.svg
       </svg>
     </button>
     <svg
-      class="styledComponents__MeshIcon-sc-12uzynx-4 dXDgEt"
+      class="styledComponents__MeshIcon-sc-12uzynx-4 jnavlp"
       style="stroke: white;"
     >
       Mesh.svg

@@ -16,7 +16,8 @@ import {
   MeshIcon
 } from './styledComponents'
 
-function venueNameColTpl (name: string, meshRole: string, id: string){
+function venueNameColTpl (
+  name: string, meshRole: string, id: string, intl: ReturnType<typeof useIntl>){
   const icon = {
     [APMeshRole.RAP]: 'icon-arrow-corner',
     [APMeshRole.MAP]: 'icon-ap-single',
@@ -24,10 +25,10 @@ function venueNameColTpl (name: string, meshRole: string, id: string){
     [APMeshRole.DISABLED]: ''
   }
   const tooltipTitle = {
-    [APMeshRole.RAP]: 'Root AP',
-    [APMeshRole.MAP]: 'Mesh AP',
-    [APMeshRole.EMAP]: 'eMesh AP',
-    [APMeshRole.DISABLED]: 'disabled'
+    [APMeshRole.RAP]: intl.$t({ defaultMessage: 'Root AP' }),
+    [APMeshRole.MAP]: intl.$t({ defaultMessage: 'Mesh AP' }),
+    [APMeshRole.EMAP]: intl.$t({ defaultMessage: 'eMesh AP' }),
+    [APMeshRole.DISABLED]: intl.$t({ defaultMessage: 'disabled' })
   }
   return (
     <Tooltip title={tooltipTitle[meshRole as APMeshRole]} 
@@ -72,7 +73,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       width: 400,
       render: function (data, row) {
         return (
-          venueNameColTpl(data as string, row.meshRole, row.serialNumber)
+          venueNameColTpl(data as string, row.meshRole, row.serialNumber, intl)
         )
       }
     },
@@ -229,15 +230,13 @@ export function VenueMeshApsTable () {
     <>
       <span className='ant-input-group ant-input-group-compact'>
         <Button icon={<LineChartIcon />}
-          size='small' 
-          style={{ borderRadius: '5px 0 0 5px' , display: 'inline', alignItems: 'center' }} />
+          size='small' />
         <Button icon={<ListIcon />}
-          size='small' 
-          style={{ borderRadius: 0 , display: 'inline', alignItems: 'center' }} />
+          size='small' />
         <Button type='secondary'
           icon={<MeshIcon />}
           size='small' 
-          style={{ borderRadius: '0 5px 5px 0' , display: 'inline', alignItems: 'center' }} />
+          style={{ borderRadius: '0 4px 4px 0' }}/>
         <MeshIcon style={{ stroke: 'white' }} />
       </span>
       <VenueMeshApsTable />
