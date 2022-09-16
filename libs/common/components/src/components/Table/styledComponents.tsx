@@ -6,7 +6,7 @@ import {
 } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
-import { InformationOutlined, CancelCircle } from '@acx-ui/icons'
+import { InformationOutlined, CancelCircle, SearchOutlined } from '@acx-ui/icons'
 
 import { Subtitle } from '../Subtitle'
 
@@ -26,11 +26,8 @@ export const SubTitle = styled.span`
   font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
 `
 
-export const SearchInput = styled(Input)`
-  .ant-input-suffix {
-    right: 0;
-  }
-  ${({ value }) => value ? 'border-color: var(--acx-neutrals-70) !important;' : ''}
+export const SearchInput = styled(Input).attrs({ prefix: <SearchOutlined /> })`
+  ${({ value }) => value ? 'border-color: var(--acx-primary-black) !important;' : ''}
 `
 
 export const FilterSelect = styled(Select).attrs({ style: { width: 200 } })`
@@ -38,6 +35,11 @@ export const FilterSelect = styled(Select).attrs({ style: { width: 200 } })`
     ? `.ant-select-selector {
       background-color: var(--acx-accents-orange-10) !important;
       border-color: var(--acx-neutrals-70) !important;
+    }
+    .ant-select-clear {
+      span[role=img] {
+        background-color: var(--acx-accents-orange-10) !important;
+      }
     }` : ''
 }
 `

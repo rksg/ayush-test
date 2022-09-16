@@ -3,8 +3,6 @@ import React from 'react'
 import { Select }    from 'antd'
 import { IntlShape } from 'react-intl'
 
-import { SearchOutlined } from '@acx-ui/icons'
-
 import * as UI from './styledComponents'
 
 import type { TableColumn, RecordWithChildren } from './types'
@@ -55,7 +53,6 @@ export function renderSearch <RecordType> (
   setSearchValue: Function
 ): React.ReactNode {
   return <UI.SearchInput
-    prefix={<SearchOutlined />}
     onChange={e => setSearchValue(e.target.value)}
     placeholder={intl.$t({ defaultMessage: 'Search {searchables}' }, {
       searchables: searchables.map(column => column.title).join(', ')
