@@ -53,12 +53,11 @@ export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => prop
       incidentSeverities[props.severity as IncidentSeverities]?.color ?? ''
     return cssStr(color)
   }};
-  width: 11px;
-  height: 11px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  margin-left: -3px;
-  border-width: 5px;
-  border-color: var(--acx-primary-white);
+  margin-left: -4px;
+  border: 1px solid var(--acx-primary-white);
   z-index: ${(props) => severityZIndexMap[props.severity]}
 `
 
