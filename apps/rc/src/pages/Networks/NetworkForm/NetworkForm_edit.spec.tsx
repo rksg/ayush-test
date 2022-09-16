@@ -120,10 +120,10 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('open network edit test')
 
-    await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
+    screen.getByText('Settings')
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'Venues' })
+    const button = screen.getByRole('button', { name: /venues/i })
+    await button.click()
     await userEvent.click(screen.getByText('Finish'))
   })
 })
