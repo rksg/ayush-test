@@ -184,25 +184,22 @@ const defaultPayload = {
   ]
 }
 
-export const transformData = (venueMeshApsList: APMesh[]) => {
-  if(!venueMeshApsList) return
-  venueMeshApsList.map((item: APMesh) =>{
-    // set the apDownRssi/apUpRssi value for each child
+function transformData (data: APMesh[]) {
+  return data.map((item: APMesh) => {
+    const newItem = { ...item }
     if (item && item.uplink && item.uplink.length > 0) {
-      item.apUpRssi = item.uplink[0].rssi
+      newItem.apUpRssi = item.uplink[0].rssi
     }
 
     if (item.rssi) {
-      item.apDownRssi = item.rssi
+      newItem.apDownRssi = item.rssi
     }
-
     if(Array.isArray(item.downlink) && item.downlink.length > 0){
-      item.children = item.downlink
+      newItem.children = transformData(item.downlink)
       transformData(item.downlink)
     }
+    return newItem
   })
-  
-  return venueMeshApsList
 }
 
 export function VenueMeshApsTable () {
@@ -211,8 +208,6 @@ export function VenueMeshApsTable () {
       useQuery: useMeshApsQuery,
       defaultPayload
     })
-    
-    const data = tableQuery?.data?.data ? transformData(tableQuery?.data?.data) : []
 
     return (
       <Loader states={[
@@ -221,7 +216,7 @@ export function VenueMeshApsTable () {
       ]}>
         <Table
           columns={getCols(useIntl())}
-          dataSource={data}
+          dataSource={transformData(tableQuery?.data?.data || [])}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='serialNumber'

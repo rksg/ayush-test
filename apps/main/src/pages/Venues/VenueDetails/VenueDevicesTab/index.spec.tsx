@@ -208,7 +208,26 @@ const meshData = {
       meshRole: 'RAP',
       hops: 0,
       uplink: [],
-      downlink: []
+      downlink: [{
+        serialNumber: '321602105278',
+        name: 'AP-321602105278',
+        model: 'R510',
+        venueId: '8caa8f5e01494b5499fa156a6c565138',
+        venueName: 'Ada',
+        IP: '192.168.34.203',
+        apMac: 'EC:8C:A2:32:88:93',
+        meshRole: 'MAP',
+        hops: 3,
+        txFrames: '3847',
+        rssi: 78,
+        rxBytes: '495421',
+        txBytes: '787581',
+        rxFrames: '1726',
+        type: 2,
+        downMac: 'ec:8c:a2:32:88:93',
+        uplink: [],
+        downlink: []
+      }]
     },
     {
       serialNumber: '321602105275',

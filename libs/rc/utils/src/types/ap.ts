@@ -49,21 +49,26 @@ export interface APMesh {
   deviceStatus?: string,
   meshRole: string,
   hops?: number,
-  downlink?: APMesh,
-  uplink?: uplink[],
+  downlink?: APMesh[],
+  uplink?: Uplink[],
   model: string,
   name?: string,
   serialNumber: string,
-  tags: string,
+  tags?: string,
   venueId: string,
   venueName: string,
   apUpRssi?: number,
   apDownRssi?: number,
   rssi?: number,
-  children: APMesh
+  children?: APMesh[],
+  txFrames?: string,
+  rxBytes?: string,
+  txBytes?: string,
+  rxFrames?: string,
+  type?: number,
+  upMac?: string
 }
-
-interface uplink{
+interface Uplink{
   txFrames: string,
   rssi: number,
   rxBytes: string,
