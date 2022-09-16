@@ -12,12 +12,7 @@ export interface DescriptionRowProps {
 }
 
 export const DescriptionRow: React.FC<DescriptionRowProps> = (props) => {
-  let textContent = <TextContent
-    title={!props.tooltip && typeof props.children === 'string' ? props.children : undefined}
-    onClick={props.onClick}
-  >
-    {props.children}
-  </TextContent>
+  let textContent = <TextContent onClick={props.onClick}>{props.children}</TextContent>
   if (props.tooltip) { textContent = <Tooltip title={props.tooltip}>{textContent}</Tooltip> }
   return textContent
 }

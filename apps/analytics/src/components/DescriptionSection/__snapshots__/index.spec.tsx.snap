@@ -32,7 +32,6 @@ exports[`DescriptionRow should match snapshot 3`] = `
 <DocumentFragment>
   <span
     class="styledComponents__TextContent-sc-1627zcn-0"
-    title="children"
   >
     children
   </span>
