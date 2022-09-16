@@ -183,7 +183,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component should handle ellipsis 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-8 hdIasn"
+    class="styledComponents__Wrapper-sc-1abm7iv-8 iTrwWc"
   >
     <div
       class="ant-pro-table"
@@ -264,52 +264,36 @@ exports[`Table component should handle ellipsis 1`] = `
                           class="ant-table-thead"
                         >
                           <tr>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-ellipsis"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
                               />
                               Name
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-ellipsis"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
                               />
                               Age
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-ellipsis"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
                               />
                               Address
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
                             >
                               <div
@@ -551,7 +535,7 @@ exports[`Table component should handle ellipsis 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-8 hdIasn"
+    class="styledComponents__Wrapper-sc-1abm7iv-8 iTrwWc"
   >
     <div
       class="ant-pro-table"
@@ -631,26 +615,18 @@ exports[`Table component should render correctly 1`] = `
                           class="ant-table-thead"
                         >
                           <tr>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
                               />
                               Name
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
@@ -664,26 +640,18 @@ exports[`Table component should render correctly 1`] = `
                                 />
                               </span>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
                               />
                               Address
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
                             >
                               <div
@@ -907,7 +875,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-8 jEeuMI"
+    class="styledComponents__Wrapper-sc-1abm7iv-8 ekNJRb"
   >
     <div
       class="ant-pro-table"
@@ -990,13 +958,9 @@ exports[`Table component should render multi select table and render action butt
                           class="ant-table-thead"
                         >
                           <tr>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
@@ -1022,26 +986,18 @@ exports[`Table component should render multi select table and render action butt
                                 </label>
                               </div>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
                               />
                               Name
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
@@ -1055,26 +1011,18 @@ exports[`Table component should render multi select table and render action butt
                                 />
                               </span>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
                               />
                               Address
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
                             >
                               <div
@@ -1367,7 +1315,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-8 jEeuMI"
+    class="styledComponents__Wrapper-sc-1abm7iv-8 ekNJRb"
   >
     <div
       class="ant-pro-table"
@@ -1548,13 +1496,9 @@ exports[`Table component should render multi select table and render action butt
                           class="ant-table-thead"
                         >
                           <tr>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
@@ -1581,26 +1525,18 @@ exports[`Table component should render multi select table and render action butt
                                 </label>
                               </div>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
                               />
                               Name
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
@@ -1614,26 +1550,18 @@ exports[`Table component should render multi select table and render action butt
                                 />
                               </span>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
                               />
                               Address
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
                             >
                               <div
@@ -1926,7 +1854,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-8 jEeuMI"
+    class="styledComponents__Wrapper-sc-1abm7iv-8 ekNJRb"
   >
     <div
       class="ant-pro-table"
@@ -2009,13 +1937,9 @@ exports[`Table component should render multi select table and render action butt
                           class="ant-table-thead"
                         >
                           <tr>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
@@ -2041,26 +1965,18 @@ exports[`Table component should render multi select table and render action butt
                                 </label>
                               </div>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
                               />
                               Name
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
@@ -2074,26 +1990,18 @@ exports[`Table component should render multi select table and render action butt
                                 />
                               </span>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
                               <div
                                 class="styledComponents__ResizableHover-sc-1abm7iv-6"
                               />
                               Address
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
                             >
                               <div

@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
-import { render, fireEvent, screen, within } from '@acx-ui/test-utils'
+import userEvent from '@testing-library/user-event'
+
+import { render, fireEvent, screen, within, mockAutoSizer } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
 
@@ -10,14 +12,16 @@ jest.mock('@acx-ui/icons', ()=> ({
 }), { virtual: true })
 
 jest.mock('react-resizable', () => ({
-  Resizable: jest.fn().mockImplementation((props) => {
-    return <td><div
-      data-testid='react-resizable'
-      onMouseDown={()=>{
+  Resizable: jest.fn().mockImplementation((props) => (
+    // eslint-disable-next-line testing-library/no-node-access
+    require('react').cloneElement(props.children, {
+      'data-testid': 'react-resizable',
+      'onMouseDown': () => {
+        props.onResizeStart()
         props.onResize(null, { size: { width: 99 } })
-      // eslint-disable-next-line testing-library/no-node-access
-      }}/>{props.children}</td>
-  })
+      }
+    })
+  ))
 }))
 
 describe('Table component', () => {
@@ -270,15 +274,19 @@ describe('Table component', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should allow column resizing', async () => {
-    const { asFragment } = render(<Table
-      columns={basicColumns}
-      dataSource={basicData}
-    />)
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector('col')?.style.width).toBe('')
-    fireEvent.mouseDown((await screen.findAllByTestId('react-resizable'))[0])
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector('col')?.style.width).toBe('99px')
+  describe('resize', () => {
+    mockAutoSizer(99)
+    it('should allow column resizing', async () => {
+      const { asFragment } = render(<Table
+        columns={basicColumns}
+        dataSource={basicData}
+      />)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(asFragment().querySelector('col')?.style.width).toBe('')
+      await userEvent.click((await screen.findAllByTestId('react-resizable'))[0])
+      //screen.debug()
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(asFragment().querySelector('col')?.style.width).toBe('99px')
+    })
   })
 })

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 
-import _                                 from 'lodash'
-import { Resizable, ResizeCallbackData } from 'react-resizable'
+import _             from 'lodash'
+import { Resizable } from 'react-resizable'
 
 import { ResizableHover, ResizableHandle } from './styledComponents'
 
@@ -13,25 +13,33 @@ interface ResizableColumnProps extends React.PropsWithChildren {
 export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
   const { onResize, width: columnWidth, ...rest } = props
   const [width, setWidth] = useState(columnWidth)
-  const refContainer = useRef<HTMLTableHeaderCellElement>(null)
-  useEffect(()=>{
-    if(refContainer){
-      setWidth(refContainer.current?.offsetWidth as number)
+  const [currentHeaderCell, setCurrentHeaderCell] = useState<HTMLTableHeaderCellElement>()
+  const headerCellRef = useRef<HTMLTableHeaderCellElement>(null)
+
+  useEffect(() => {
+    if (headerCellRef && headerCellRef.current !== currentHeaderCell) {
+      if (onResize) onResize(headerCellRef.current?.offsetWidth as number)
+      setWidth(headerCellRef.current?.offsetWidth as number)
     }
-  }, [refContainer])
-  if(_.isNil(width)) {
-    return <th ref={refContainer} {...rest} />
-  }
+  }, [headerCellRef, headerCellRef?.current?.offsetWidth, currentHeaderCell])
+
+  if (_.isNil(width)) return <th ref={headerCellRef} {...rest} />
+
   rest.children = <><ResizableHover />{rest.children}</>
   return <Resizable
     width={width}
     height={0}
-    handle={<ResizableHandle onClick={e => { e.stopPropagation() }} />}
-    onResize={(_: React.SyntheticEvent<Element>, callbackData: ResizeCallbackData)=>{
-      onResize(callbackData.size.width)
-      setWidth(callbackData.size.width)
+    handle={<ResizableHandle />}
+    onResizeStart={() => {
+      setCurrentHeaderCell(headerCellRef.current!)
+      document.addEventListener('mouseup', () => setCurrentHeaderCell(undefined), { once: true })
+      headerCellRef.current!.addEventListener('click', e => e.stopPropagation(), { once: true })
+    }}
+    onResize={(_: React.SyntheticEvent<Element>, { size }) => {
+      onResize(size.width)
+      setWidth(size.width)
     }}
     draggableOpts={{ enableUserSelectHack: false }}
-    children={<th ref={refContainer} {...rest} />}
+    children={<th ref={headerCellRef} {...rest} />}
   />
 }

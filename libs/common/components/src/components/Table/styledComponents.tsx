@@ -144,10 +144,10 @@ const tallStyle = css<StyledTable>`
           ${ResizableHandle} {
             display: block;
             position: absolute;
-            right: -10px;
+            right: -5px;
             bottom: 0;
             z-index: 1;
-            width: 20px;
+            width: 10px;
             height: 100%;
             cursor: col-resize;
           }
