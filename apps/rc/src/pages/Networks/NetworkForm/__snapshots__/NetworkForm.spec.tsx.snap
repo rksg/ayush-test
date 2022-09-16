@@ -3,7 +3,7 @@
 exports[`NetworkForm should create open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -52,7 +52,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               Add Network
             </h1>
