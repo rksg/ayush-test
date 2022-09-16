@@ -1,14 +1,15 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { withKnobs,object } from '@storybook/addon-knobs'
 import { storiesOf }        from '@storybook/react'
-import { connect }          from 'echarts'
+import { connect, disConnect }          from 'echarts'
 import ReactECharts         from 'echarts-for-react'
 
 import { TimeStamp } from '@acx-ui/types'
 
 
 import { MultiLineTimeSeriesChart } from '.'
+import { Button } from '../Button'
 
 
 const getData = () => {
@@ -36,25 +37,32 @@ export const getSeriesData = () => {
 }
 
 const ConnectedCharts = () => {
+  const [data, setData]= useState(getSeriesData())
   const chartRef1 = useRef<ReactECharts>(null)
   const chartRef2 = useRef<ReactECharts>(null)
   const chartRefs = useMemo(() => [chartRef1, chartRef2],[])
   useEffect(()=>{
+    console.log([chartRef1, chartRef2])
     if(chartRefs.every(ref => ref && ref.current)){
-      [chartRefs[0], chartRefs[1]].forEach(ref => {
+      chartRefs.forEach(ref => {
         let instance = ref.current!.getEchartsInstance()
         instance.group = 'group1'
       })
-      connect('group1')
     }
-  }, [chartRefs])
+    // disConnect('group1')
+    connect('group1')
+  }, [chartRefs, data])
   return (
     <>
+      <Button
+        size='small'
+        type='primary'
+        onClick={()=>{ setData(getSeriesData()) }}>Update</Button>
       {chartRefs.map((ref, index) => <MultiLineTimeSeriesChart
         key={index}
         chartRef={ref}
         style={{ width: 504, height: 300 }}
-        data={getSeriesData()}
+        data={data}
       />)}
     </>
   )
@@ -72,7 +80,12 @@ storiesOf('MultiLineTimeSeriesChart', module)
     brush={['2020-11-10', '2020-11-20']}
     onBrushChange={range => {console.log(range.map(r=>new Date(r).toISOString()))}} // eslint-disable-line no-console
   />)
-  .add('Connected Chart', () => <ConnectedCharts/>)
+  .add('Connected Chart', () => {
+    let data = getSeriesData()
+    return <>
+      <ConnectedCharts connectData={data}/>
+    </>
+  })
   .add('With Knobs', () =>
     <div style={{ width: 504, height: 278, padding: 10, border: '1px solid lightgray' }}>
       <MultiLineTimeSeriesChart

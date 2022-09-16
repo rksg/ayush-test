@@ -10,7 +10,7 @@ import {
 
 import * as UI from './styledComponents'
 
-interface QueryState {
+export interface QueryState {
   isLoading: boolean;
   error?: Error | SerializedError | FetchBaseQueryError;
   isFetching?: boolean;
