@@ -5,6 +5,7 @@ import { renderHook } from '@acx-ui/test-utils'
 import {
   networkWifiIpRegExp,
   domainNameRegExp,
+  passphraseRegExp,
   checkObjectNotExists,
   checkItemNotIncluded
 } from './validator'
@@ -32,6 +33,20 @@ describe('validator', () => {
     it('Should display error meesage if domain name values incorrectly', async () => {
       const result = renderHook(() =>
         domainNameRegExp(useIntl(), 'testcom')).result.current
+      await expect(result).rejects.toEqual('This field is invalid')
+    })
+  })
+
+  describe('passphraseRegExp', () => {
+    it('Should take care of passphrase values correctly', async () => {
+      const result = renderHook(() =>
+        passphraseRegExp(useIntl(), 'test passphrase')).result.current
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error meesage if passphrase values incorrectly', async () => {
+      const result = renderHook(() =>
+        // eslint-disable-next-line max-len
+        passphraseRegExp(useIntl(), '122333444455555666666777777788888888999999999000000000012233344z')).result.current
       await expect(result).rejects.toEqual('This field is invalid')
     })
   })
