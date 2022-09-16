@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import {
   QuestionCircleOutlined,
@@ -35,20 +35,24 @@ import {
   NetworkTypeEnum,
   WlanSecurityEnum,
   WifiNetworkMessages,
-  hexRegExp
+  hexRegExp,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { IpPortSecretForm } from '../../../../components/IpPortSecretForm'
-import { ToggleButton }     from '../../../../components/ToggleButton'
-import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext   from '../NetworkFormContext'
+import { IpPortSecretForm }        from '../../../../components/IpPortSecretForm'
+import { ToggleButton }            from '../../../../components/ToggleButton'
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext          from '../NetworkFormContext'
+import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
-export function PskSettingsForm () {
+export function PskSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -78,7 +82,7 @@ export function PskSettingsForm () {
     macAddressAuthentication
   ] = [
     useWatch('cloudpathServerId'),
-    useWatch('macAddressAuthentication')
+    useWatch<boolean>(['wlan', 'macAddressAuthentication'])
   ]
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -92,48 +96,16 @@ export function PskSettingsForm () {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
-      <Col span={14}>
+      <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram
           type={NetworkTypeEnum.PSK}
           cloudpathType={selected?.deploymentType}
           enableMACAuth={macAddressAuthentication}
         />
-        <AaaButtons />
       </Col>
     </Row>
-  )
-}
-
-function AaaButtons () {
-  const { $t } = useIntl()
-  const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
-  const [
-    isCloudpathEnabled,
-    enableAuthProxy,
-    enableAccountingService,
-    enableAccountingProxy
-  ] = [
-    useWatch('isCloudpathEnabled'),
-    useWatch('enableAuthProxy'),
-    useWatch('enableAccountingService'),
-    useWatch('enableAccountingProxy')
-  ]
-  const show = enableAuthProxy !== Boolean(enableAccountingProxy) &&
-    enableAccountingService &&
-    !isCloudpathEnabled
-
-  if (!show) return null
-
-  return (
-    <Space align='center' style={{ display: 'flex', justifyContent: 'center' }}>
-      <Button type='link' disabled={enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(true)}>
-        {$t({ defaultMessage: 'Authentication Service' })}
-      </Button>
-      <Button type='link' disabled={!enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(false)}>
-        {$t({ defaultMessage: 'Accounting Service' })}
-      </Button>
-    </Space>
   )
 }
 

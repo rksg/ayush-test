@@ -1,20 +1,18 @@
 import { ReactNode } from 'react'
 
-import { Tooltip }                   from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Tooltip } from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { useNetworkListQuery, useDeleteNetworkMutation }                  from '@acx-ui/rc/services'
 import {
   VLAN_PREFIX,
   NetworkTypeEnum,
-  GuestNetworkTypeEnum,
   useTableQuery,
-  Network
+  Network,
+  NetworkType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-
-import * as contents from '../NetworkForm/contentsMap'
 
 const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
 
@@ -133,49 +131,6 @@ const transformVLAN = (row: Network) => {
     return VLAN_PREFIX.POOL + (vlanPool ? vlanPool.name : '')
   }
   return VLAN_PREFIX.VLAN + row.vlan
-}
-
-const NetworkType: React.FC<{
-  networkType: NetworkTypeEnum,
-  row: Network
-}> = ({ networkType, row }) => {
-  const { $t } = useIntl()
-  const captiveType = row.captiveType
-  const wlan = row?.deepNetwork?.wlan
-
-  switch (networkType) {
-    case NetworkTypeEnum.OPEN:
-      return <FormattedMessage
-        {...contents.networkTypes[NetworkTypeEnum.OPEN]}
-      />
-    case NetworkTypeEnum.PSK:
-    case NetworkTypeEnum.DPSK:
-    case NetworkTypeEnum.AAA:
-      const message = contents.networkTypes[networkType]
-      return wlan?.wlanSecurity
-        ? <FormattedMessage
-          defaultMessage={'{networkType} - {authMethod}'}
-          values={{
-            networkType: $t(message),
-            authMethod: $t(contents.wlanSecurity[wlan?.wlanSecurity!])
-          }}
-        />
-        : <FormattedMessage {...message} />
-    case NetworkTypeEnum.CAPTIVEPORTAL:
-      return <FormattedMessage
-        defaultMessage={`
-          {isCaptiveNetwork, select, true {Captive Portal} other {Portal}}
-          -
-          {captiveNetworkType}
-        `}
-        values={{
-          isCaptiveNetwork: String(Boolean(wlan)),
-          captiveNetworkType: $t(contents.captiveNetworkTypes[
-            captiveType || GuestNetworkTypeEnum.Cloudpath
-          ])
-        }}
-      />
-  }
 }
 
 const defaultPayload = {
