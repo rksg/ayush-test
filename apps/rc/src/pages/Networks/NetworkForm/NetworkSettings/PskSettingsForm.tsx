@@ -1,5 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
-
+import React, { useContext, useEffect } from 'react'
 
 import {
   QuestionCircleOutlined,
@@ -84,7 +83,7 @@ export function PskSettingsForm (props: {
     macAddressAuthentication
   ] = [
     useWatch('cloudpathServerId'),
-    useWatch('macAddressAuthentication')
+    useWatch<boolean>(['wlan', 'macAddressAuthentication'])
   ]
   const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -106,41 +105,8 @@ export function PskSettingsForm (props: {
           cloudpathType={selected?.deploymentType}
           enableMACAuth={macAddressAuthentication}
         />
-        <AaaButtons />
       </Col>
     </Row>
-  )
-}
-
-function AaaButtons () {
-  const { $t } = useIntl()
-  const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
-  const [
-    isCloudpathEnabled,
-    enableAuthProxy,
-    enableAccountingService,
-    enableAccountingProxy
-  ] = [
-    useWatch('isCloudpathEnabled'),
-    useWatch('enableAuthProxy'),
-    useWatch('enableAccountingService'),
-    useWatch('enableAccountingProxy')
-  ]
-  const show = enableAuthProxy !== Boolean(enableAccountingProxy) &&
-    enableAccountingService &&
-    !isCloudpathEnabled
-
-  if (!show) return null
-
-  return (
-    <Space align='center' style={{ display: 'flex', justifyContent: 'center' }}>
-      <Button type='link' disabled={enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(true)}>
-        {$t({ defaultMessage: 'Authentication Service' })}
-      </Button>
-      <Button type='link' disabled={!enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(false)}>
-        {$t({ defaultMessage: 'Accounting Service' })}
-      </Button>
-    </Space>
   )
 }
 
