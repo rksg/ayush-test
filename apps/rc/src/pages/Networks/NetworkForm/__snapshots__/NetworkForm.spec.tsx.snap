@@ -616,10 +616,20 @@ exports[`NetworkForm should create open network successfully 1`] = `
                         </div>
                       </div>
                     </div>
+                    <div>
+                      <button
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        type="button"
+                      >
+                        <span>
+                          Show more settings
+                        </span>
+                      </button>
+                    </div>
                   </div>
                   <div
                     class="ant-col ant-col-14"
-                    style="padding-left: 10px; padding-right: 10px;"
+                    style="padding-left: 10px; padding-right: 10px; height: 100%;"
                   >
                     <div
                       class="ant-row ant-row-center"
@@ -639,14 +649,6 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     </div>
                   </div>
                 </div>
-                <button
-                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                  type="button"
-                >
-                  <span>
-                    Show more settings
-                  </span>
-                </button>
               </form>
             </div>
             <div

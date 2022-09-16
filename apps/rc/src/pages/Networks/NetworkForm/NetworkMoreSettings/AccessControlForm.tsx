@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import {
   Checkbox,
@@ -8,6 +8,7 @@ import {
   Slider,
   Switch
 } from 'antd'
+import _, { get }  from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button }                    from '@acx-ui/components'
@@ -24,6 +25,8 @@ import {
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 
+import NetworkFormContext from '../NetworkFormContext'
+
 import * as UI from './styledComponents'
 
 const { useWatch } = Form
@@ -37,6 +40,27 @@ const listPayload = {
 export function AccessControlForm () {
   const { $t } = useIntl()
   const [enabledProfile, setEnabledProfile] = useState(false)
+
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+
+  useEffect(() => {
+    if (data) {
+      if (data.wlan?.advancedCustomization) {
+        form.setFieldsValue({
+          enableDeviceOs: !_.isEmpty(data.wlan.advancedCustomization.devicePolicyId),
+          enableDownloadLimit: data.wlan.advancedCustomization.userDownlinkRateLimiting !== 0,
+          enableUploadLimit: data.wlan.advancedCustomization.userUplinkRateLimiting !== 0,
+          enableClientRateLimit: data.wlan.advancedCustomization.userDownlinkRateLimiting !== 0 ||
+            data.wlan.advancedCustomization.userUplinkRateLimiting !== 0,
+          accessControlProfileEnable: !_.isEmpty(get(data,
+            'wlan.advancedCustomization.accessControlProfileId'))
+        })
+        setEnabledProfile(!_.isEmpty(
+          get(data, 'wlan.advancedCustomization.accessControlProfileId')))
+      }
+    }
+  }, [data])
 
   return (
     <div style={{ marginBottom: '30px' }}>
@@ -103,6 +127,16 @@ function getAccessControlProfile <
 
 function SelectAccessProfileProfile () {
   const { $t } = useIntl()
+  const { data } = useContext(NetworkFormContext)
+
+  useEffect(() => {
+    if (data) {
+      if (!_.isEmpty(get(data, 'wlan.advancedCustomization.accessControlProfileId'))) {
+        onAccessPolicyChange(get(data, 'wlan.advancedCustomization.accessControlProfileId'))
+      }
+    }
+  }, [data])
+
   const [state, updateState] = useState({
     selectedAccessControlProfile: undefined as AccessControlProfile | undefined
   })
@@ -198,12 +232,13 @@ function SelectAccessProfileProfile () {
       return limit
     }
 
-  const [enableAccessControlProfile] = [useWatch('enableAccessControlProfile')]
+  const [enableAccessControlProfile] = [
+    useWatch('accessControlProfileEnable')]
   return (<>
     <UI.FieldLabel width='175px'>
       {$t({ defaultMessage: 'Access Control' })}
       <Form.Item
-        name='enableAccessControlProfile'
+        name='accessControlProfileEnable'
         style={{ marginBottom: '10px' }}
         valuePropName='checked'
         initialValue={false}
@@ -355,6 +390,10 @@ function AccessControlConfigForm () {
           <Form.Item
             name={['wlan','advancedCustomization','l2AclPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select Layer 2 profile' })
+            }]}
             children={
               <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
@@ -381,6 +420,10 @@ function AccessControlConfigForm () {
           <Form.Item
             name={['wlan','advancedCustomization','l3AclPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select Layer 3 profile' })
+            }]}
             children={
               <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
@@ -407,6 +450,10 @@ function AccessControlConfigForm () {
           <Form.Item
             name={['wlan','advancedCustomization','devicePolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select Device & OS profile' })
+            }]}
             children={
               <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
@@ -434,6 +481,10 @@ function AccessControlConfigForm () {
           <Form.Item
             name={['wlan','advancedCustomization','applicationPolicyId']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
+            rules={[{
+              required: true,
+              message: $t({ defaultMessage: 'Please select Applications profile' })
+            }]}
             children={
               <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
                 style={{ width: '180px' }}
@@ -465,15 +516,13 @@ function AccessControlConfigForm () {
           initialValue={false}
           style={{ lineHeight: '50px' }}
           children={
-            <UI.Label>
-              <Checkbox data-testid='enableUploadLimit'
-                children={$t({ defaultMessage: 'Upload Limit' })} />
-            </UI.Label>}
+            <Checkbox data-testid='enableUploadLimit'
+              children={$t({ defaultMessage: 'Upload Limit' })} />}
         />
         {
           enableUploadLimit ?
             <UI.FormItemNoLabel
-              name='uploadLimit'
+              name={['wlan','advancedCustomization','userUplinkRateLimiting']}
               children={
                 <RateSlider />
               }
@@ -489,16 +538,14 @@ function AccessControlConfigForm () {
           initialValue={false}
           style={{ lineHeight: '50px' }}
           children={
-            <UI.Label>
-              <Checkbox data-testid='enableDownloadLimit'
-                children={$t({ defaultMessage: 'Download Limit' })} />
-            </UI.Label>}
+            <Checkbox data-testid='enableDownloadLimit'
+              children={$t({ defaultMessage: 'Download Limit' })} />}
         />
 
         {
           enableDownloadLimit ?
             <UI.FormItemNoLabel
-              name='downloadLimit'
+              name={['wlan','advancedCustomization','userDownlinkRateLimiting']}
               children={
                 <RateSlider />
               }

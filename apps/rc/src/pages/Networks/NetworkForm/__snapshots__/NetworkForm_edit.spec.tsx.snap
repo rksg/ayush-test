@@ -173,6 +173,39 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                     <div
                       class="ant-steps-item-title"
                     >
+                      More Settings
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-steps-item ant-steps-item-wait"
+              >
+                <div
+                  class="ant-steps-item-container"
+                  role="button"
+                  tabindex="0"
+                >
+                  <div
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
+                  >
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    >
                       Venues
                     </div>
                   </div>
@@ -440,10 +473,20 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         </div>
                       </div>
                     </div>
+                    <div>
+                      <button
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        type="button"
+                      >
+                        <span>
+                          Show more settings
+                        </span>
+                      </button>
+                    </div>
                   </div>
                   <div
                     class="ant-col ant-col-14"
-                    style="padding-left: 10px; padding-right: 10px;"
+                    style="padding-left: 10px; padding-right: 10px; height: 100%;"
                   >
                     <div
                       class="ant-row ant-row-center"
@@ -462,6 +505,30 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                       </div>
                     </div>
                   </div>
+                </div>
+              </form>
+            </div>
+            <div
+              class="ant-pro-steps-form-step"
+            >
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="moreSettings"
+              >
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div>
+                  <button
+                    class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                    type="button"
+                  >
+                    <span>
+                      Show more settings
+                    </span>
+                  </button>
                 </div>
               </form>
             </div>
