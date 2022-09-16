@@ -6,13 +6,11 @@ import {
   ServiceType,
   useTableQuery,
   Service,
-  ServiceTechnology,
-  ServiceStatus,
-  ServiceAdminState
+  ServiceTechnology
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { serviceTypeLabelMapping, serviceStatusLabelMapping, serviceAdminStateLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
+import { serviceTypeLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
 
 
 function useColumns () {
@@ -40,24 +38,24 @@ function useColumns () {
         return $t(serviceTypeLabelMapping[data as ServiceType])
       }
     },
-    {
-      key: 'status',
-      title: $t({ defaultMessage: 'Status' }),
-      dataIndex: 'status',
-      sorter: true,
-      render: function (data) {
-        return $t(serviceStatusLabelMapping[data as ServiceStatus])
-      }
-    },
-    {
-      key: 'adminState',
-      title: $t({ defaultMessage: 'Admin State' }),
-      dataIndex: 'adminState',
-      sorter: true,
-      render: function (data) {
-        return $t(serviceAdminStateLabelMapping[data as ServiceAdminState])
-      }
-    },
+    // {
+    //   key: 'status',
+    //   title: $t({ defaultMessage: 'Status' }),
+    //   dataIndex: 'status',
+    //   sorter: true,
+    //   render: function (data) {
+    //     return $t(serviceStatusLabelMapping[data as ServiceStatus])
+    //   }
+    // },
+    // {
+    //   key: 'adminState',
+    //   title: $t({ defaultMessage: 'Admin State' }),
+    //   dataIndex: 'adminState',
+    //   sorter: true,
+    //   render: function (data) {
+    //     return $t(serviceAdminStateLabelMapping[data as ServiceAdminState])
+    //   }
+    // },
     {
       key: 'technology',
       title: $t({ defaultMessage: 'Technology' }),
@@ -73,19 +71,19 @@ function useColumns () {
       dataIndex: 'scope',
       sorter: true,
       align: 'center'
-    },
-    {
-      key: 'health',
-      title: $t({ defaultMessage: 'Health' }),
-      dataIndex: 'health',
-      sorter: true
-    },
-    {
-      key: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      sorter: true
     }
+    // {
+    //   key: 'health',
+    //   title: $t({ defaultMessage: 'Health' }),
+    //   dataIndex: 'health',
+    //   sorter: true
+    // },
+    // {
+    //   key: 'tags',
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   dataIndex: 'tags',
+    //   sorter: true
+    // }
   ]
 
   return columns
