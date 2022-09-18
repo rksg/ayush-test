@@ -18,17 +18,24 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
 }
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 
-const getSeverityFromIncidents = (incidentsList: Incident[]): VenuesWithSeverityNodes =>
+const getSeverityFromIncidents = (
+  incidentsList: Incident[]
+): VenuesWithSeverityNodes => 
   groupBy(
     incidentsList.map((incident: Incident) => ({
       ...pick(incident, ['sliceType', 'path']),
       severity: {
-        [find(incident.path, { type: incident.sliceType })?.name ?? '']: incident.severity
+        [find(incident.path, { type: incident.sliceType })?.name ?? '']:
+          incident.severity
       },
-      venueName: find(incident.path, { type: 'zone' })?.name ?? ''
+      venueName:
+        find(incident.path, { type: 'zone' })?.name ??
+        find(incident.path, { type: 'switchGroup' })?.name ??
+        ''
     })),
     'venueName'
   )
+
 const getFilterData = (
   data: Child[],
   $t: CallableFunction,
@@ -142,7 +149,6 @@ function ConnectedNetworkFilter () {
       data: data ? getSeverityFromIncidents(data) : []
     })
   })
-
   const queryResults = useNetworkFilterQuery(omit(filters, 'path'), {
     selectFromResult: ({ data, ...rest }) => ({
       data: data ? getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes) : [],

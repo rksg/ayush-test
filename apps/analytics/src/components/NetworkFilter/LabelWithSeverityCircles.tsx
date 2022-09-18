@@ -12,12 +12,12 @@ type LabelProps = {
   nodeType?: string;
 }
 const getSeverityCircles = (
-  data: ApOrSwitch[],
+  nodes: ApOrSwitch[],
   venueWiseSeverities: NodesWithSeverity[],
   nodeType?: string
 ) => {
   if (!venueWiseSeverities) return
-  let severityArray = data.reduce((acc: string[], val: ApOrSwitch) => {
+  let severityArray = nodes.reduce((acc: string[], val: ApOrSwitch) => {
     venueWiseSeverities.forEach((apOrSwitchWithSeverity: NodesWithSeverity) => {
       const severity = calculateSeverity(apOrSwitchWithSeverity.severity[val?.mac])
       if (severity && !acc.includes(severity)) acc.push(severity)
@@ -41,9 +41,7 @@ export const LabelWithSeverityCicle = (props: LabelProps) => {
   return (
     <UI.LabelContainer>
       <UI.Label>
-        <UI.ElipsisText ellipsis={true}>
-          {name}
-        </UI.ElipsisText>
+        {name}
       </UI.Label>
       <UI.SeverityContainer>
         {severityCircles?.map((severityCircle, index) => (

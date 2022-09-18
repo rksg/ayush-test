@@ -1,6 +1,4 @@
-import { Typography } from 'antd'
-import { TextProps }  from 'antd/lib/typography/Text'
-import styled         from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import {
   IncidentSeverities,
@@ -60,9 +58,4 @@ export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => prop
   border-width: 5px;
   border-color: var(--acx-primary-white);
   z-index: ${(props) => severityZIndexMap[props.severity]}
-`
-
-const { Text } = Typography
-export const ElipsisText = styled(Text).attrs((props: TextProps) => props)`
-  width: 100px;
 `

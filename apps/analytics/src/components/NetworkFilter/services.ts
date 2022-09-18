@@ -69,7 +69,7 @@ export const api = dataApi.injectEndpoints({
       }),
       providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_FILTER' }],
       transformResponse: (response: Response) =>
-        response.network.hierarchyNode.children 
+        response.network.hierarchyNode.children
     })
   })
 })
