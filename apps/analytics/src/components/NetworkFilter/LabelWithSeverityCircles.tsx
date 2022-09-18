@@ -1,43 +1,14 @@
-import { calculateSeverity } from '@acx-ui/analytics/utils'
 
-import { ApOrSwitch } from './services'
-import * as UI        from './styledComponents'
+import * as UI from './styledComponents'
 
-import { NodesWithSeverity } from '.'
 
 type LabelProps = {
-  nodes: ApOrSwitch[];
-  nodesWithSeverities: NodesWithSeverity[];
-  name: string;
-  nodeType?: string;
-}
-const getSeverityCircles = (
-  nodes: ApOrSwitch[],
-  venueWiseSeverities: NodesWithSeverity[],
-  nodeType?: string
-) => {
-  if (!venueWiseSeverities) return
-  let severityArray = nodes.reduce((acc: string[], val: ApOrSwitch) => {
-    venueWiseSeverities.forEach((apOrSwitchWithSeverity: NodesWithSeverity) => {
-      const severity = calculateSeverity(apOrSwitchWithSeverity.severity[val?.mac])
-      if (severity && !acc.includes(severity)) acc.push(severity)
-    })
-    return acc
-  }, [])
-  if (nodeType === 'venue')
-    venueWiseSeverities.forEach((venue: NodesWithSeverity) => {
-      if (venue.sliceType === 'zone') {
-        const severity = calculateSeverity(venue?.severity[venue.venueName])
-        if (severity && !severityArray.includes(severity)) severityArray.push(severity)
-      }
-    })
-  return severityArray.sort()
+  severityCircles? : string[],
+  name : string
 }
 
 export const LabelWithSeverityCicle = (props: LabelProps) => {
-  const { nodes, nodesWithSeverities, name, nodeType } = props
-  const severityCircles = getSeverityCircles(nodes, nodesWithSeverities, nodeType)
-
+  const { name, severityCircles } = props
   return (
     <UI.LabelContainer>
       <UI.Label>

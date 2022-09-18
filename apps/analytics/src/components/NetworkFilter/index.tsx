@@ -4,6 +4,7 @@ import { SingleValueType }           from 'rc-cascader/lib/Cascader'
 import { useIntl }                   from 'react-intl'
 
 import { useAnalyticsFilter, defaultNetworkPath, Incident } from '@acx-ui/analytics/utils'
+import { calculateSeverity }                                from '@acx-ui/analytics/utils'
 import { NetworkFilter, Option, Loader }                    from '@acx-ui/components'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
@@ -35,7 +36,28 @@ const getSeverityFromIncidents = (
     })),
     'venueName'
   )
-
+const getSeverityCircles = (
+  nodes: ApOrSwitch[],
+  venueWiseSeverities: NodesWithSeverity[],
+  nodeType?: string
+) => {
+  if (!venueWiseSeverities) return
+  let severityArray = nodes.reduce((acc: string[], val: ApOrSwitch) => {
+    venueWiseSeverities.forEach((apOrSwitchWithSeverity: NodesWithSeverity) => {
+      const severity = calculateSeverity(apOrSwitchWithSeverity.severity[val?.mac])
+      if (severity && !acc.includes(severity)) acc.push(severity)
+    })
+    return acc
+  }, [])
+  if (nodeType === 'venue')
+    venueWiseSeverities.forEach((venue: NodesWithSeverity) => {
+      if (venue.sliceType === 'zone') {
+        const severity = calculateSeverity(venue?.severity[venue.venueName])
+        if (severity && !severityArray.includes(severity)) severityArray.push(severity)
+      }
+    })
+  return severityArray.sort()
+}
 const getFilterData = (
   data: Child[],
   $t: CallableFunction,
@@ -47,10 +69,12 @@ const getFilterData = (
       venues[name] = {
         label: (
           <LabelWithSeverityCicle
-            nodes={[...(aps || []), ...(switches || [])]}
-            nodesWithSeverities={nodesWithSeverities[name]}
+            severityCircles={getSeverityCircles(
+              [...(aps || []), ...(switches || [])],
+              nodesWithSeverities[name],
+              'venue'
+            )}
             name={name}
-            nodeType='venue'
           />
         ),
         value: JSON.stringify(path),
@@ -64,8 +88,10 @@ const getFilterData = (
         label: (
           <UI.NonSelectableItem key={name}>
             <LabelWithSeverityCicle
-              nodes={aps}
-              nodesWithSeverities={nodesWithSeverities[name]}
+              severityCircles={getSeverityCircles(
+                aps,
+                nodesWithSeverities[name]
+              )}
               name={$t({ defaultMessage: 'APs' })}
             />
           </UI.NonSelectableItem>
@@ -77,8 +103,10 @@ const getFilterData = (
           return {
             label: (
               <LabelWithSeverityCicle
-                nodes={[ap]}
-                nodesWithSeverities={nodesWithSeverities[name]}
+                severityCircles={getSeverityCircles(
+                  [ap],
+                  nodesWithSeverities[name]
+                )}
                 name={ap.name}
               />
             ),
@@ -93,8 +121,10 @@ const getFilterData = (
         label: (
           <UI.NonSelectableItem key={name}>
             <LabelWithSeverityCicle
-              nodes={switches}
-              nodesWithSeverities={nodesWithSeverities[name]}
+              severityCircles={getSeverityCircles(
+                switches,
+                nodesWithSeverities[name]
+              )}
               name={$t({ defaultMessage: 'Switches' })}
             />
           </UI.NonSelectableItem>
@@ -106,8 +136,10 @@ const getFilterData = (
           return {
             label: (
               <LabelWithSeverityCicle
-                nodes={[switchNode]}
-                nodesWithSeverities={nodesWithSeverities[name]}
+                severityCircles={getSeverityCircles(
+                  [switchNode],
+                  nodesWithSeverities[name]
+                )}
                 name={switchNode.name}
               />
             ),
