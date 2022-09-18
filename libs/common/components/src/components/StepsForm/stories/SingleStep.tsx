@@ -9,17 +9,17 @@ function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, m
 
 export function SingleStep () {
   return (
-    <Row gutter={20}>
-      <Col span={10}>
-        <StepsForm
-          onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
-          onFinish={async () => {
-            await wait(1000) // mimic external service call
-            showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
-          }}
-          buttonLabel={{ submit: 'Add' }}
-        >
-          <StepsForm.StepForm>
+    <StepsForm
+      onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
+      onFinish={async () => {
+        await wait(1000) // mimic external service call
+        showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
+      }}
+      buttonLabel={{ submit: 'Add' }}
+    >
+      <StepsForm.StepForm>
+        <Row gutter={20}>
+          <Col span={8}>
             <Form.Item name='field1' label='Field 1'>
               <Input />
             </Form.Item>
@@ -41,9 +41,9 @@ export function SingleStep () {
             <Form.Item name='field7' label='Field 7'>
               <Input />
             </Form.Item>
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Col>
-    </Row>
+          </Col>
+        </Row>
+      </StepsForm.StepForm>
+    </StepsForm>
   )
 }

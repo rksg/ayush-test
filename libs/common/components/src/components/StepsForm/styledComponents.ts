@@ -1,5 +1,5 @@
-import { Typography }  from 'antd'
-import styled, { css } from 'styled-components/macro'
+import { Typography }                     from 'antd'
+import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
 const stepCompletedStyle = css`
   .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
@@ -13,24 +13,38 @@ const stepCompletedStyle = css`
 
 export const StepsContainer = styled.div`
   position: fixed;
-  display: block;
-  padding: var(--acx-steps-form-steps-container-margin);
-  padding-left: var(--acx-content-horizontal-space);
-  margin-left: calc(-1 * var(--acx-content-horizontal-space));
-  height: 100%;
-  width: 100%;
-  max-width: var(--acx-steps-form-steps-container-max-width);
+  padding-top: calc(
+    var(--acx-steps-form-form-title-line-height) +
+    var(--acx-steps-form-form-title-margin-bottom) +
+    3px
+  );
   z-index: 1;
+`
+export const StepsContainerGlobalOverride = createGlobalStyle`
+  .ant-pro-basicLayout {
+    ${StepsContainer} {
+      // col span=4/24, gutter=20px
+      width: calc((
+        100% - var(--acx-sider-width) -
+        var(--acx-content-horizontal-space) * 2
+      ) * 4 / 24 - 20px);
+    }
+  }
+  .ant-pro-basicLayout.sider-collapsed {
+    ${StepsContainer} {
+      // col span=4/24, gutter=20px
+      width: calc((
+        100% - var(--acx-sider-collapsed-width) -
+        var(--acx-content-horizontal-space) * 2
+      ) * 4 / 24 - 20px);
+    }
+  }
 `
 
 export const ActionsContainer = styled.div`
   position: fixed;
   bottom: 0;
   padding: var(--acx-steps-form-actions-vertical-space) 0;
-  margin-right: var(--acx-content-horizontal-space);
-  width: -moz-available;
-  width: -webkit-fill-available;
-  width: stretch;
   background-color: var(--acx-neutrals-10);
   z-index: 3;
   &::before {
@@ -46,12 +60,29 @@ export const ActionsContainer = styled.div`
     transform: translate(-50%, 0);
   }
 `
+export const ActionsContainerGlobalOverride = createGlobalStyle`
+  .ant-pro-basicLayout {
+    ${ActionsContainer} {
+      width: calc(
+        100% - var(--acx-sider-width) -
+        var(--acx-content-horizontal-space) * 2
+      );
+    }
+  }
+  .ant-pro-basicLayout.sider-collapsed {
+    ${ActionsContainer} {
+      width: calc(
+        100% - var(--acx-sider-collapsed-width) -
+        var(--acx-content-horizontal-space) * 2
+      );
+    }
+  }
+`
 
 export const Wrapper = styled.section<{
   singleStep: boolean,
   editMode?: boolean
 }>`
-  --acx-steps-form-steps-container-max-width: 152px;
   --acx-steps-form-steps-title-color: var(--acx-primary-black);
   --acx-steps-form-steps-title-font-size: var(--acx-body-4-font-size);
   --acx-steps-form-steps-title-line-height: var(--acx-body-4-line-height);
@@ -63,15 +94,6 @@ export const Wrapper = styled.section<{
   --acx-steps-form-form-title-font-weight: var(--acx-headline-3-font-weight);
   --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
   --acx-steps-form-form-title-margin-bottom: 16px;
-
-  --acx-steps-form-steps-container-margin:
-    calc(
-      var(--acx-steps-form-form-title-line-height) +
-      var(--acx-steps-form-form-title-margin-bottom) +
-      2px
-    )
-    0 0 0
-  ;
 
   --acx-steps-form-actions-vertical-space: 12px;
 
@@ -182,25 +204,14 @@ export const Wrapper = styled.section<{
 
   .ant-pro-steps-form-container {
     margin: unset;
-    margin-left: ${props => props.singleStep
-    ? '0;'
-    : `calc(
-        var(--acx-steps-form-steps-container-max-width) +
-        20px
-      );`}
-    // 20px = gutter
-    margin-bottom: calc(
-      var(--acx-steps-form-actions-vertical-space) * 2 +
-      32px
-    );
-    // 32px = button height
-    margin-right: 0;
+    // col span=4/24
+    margin-left: ${props => props.singleStep ? '0;' : '16.66666667%;'}
+    // button height=32px
+    margin-bottom: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
     width: unset;
     min-width: unset;
     flex: 1;
   }
-
-  ${ActionsContainer}
 `
 
 export const Title = styled(Typography.Title).attrs({ level: 3 })`

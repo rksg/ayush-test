@@ -1,6 +1,6 @@
 import React, { useState, useRef, ChangeEventHandler } from 'react'
 
-import { Form, Input, Typography } from 'antd'
+import { Row, Col, Form, Input, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
 import {
@@ -202,82 +202,84 @@ export function VenuesForm () {
         buttonLabel={{ submit: intl.$t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm>
-          <Form.Item
-            name='name'
-            label={intl.$t({ defaultMessage: 'Venue Name' })}
-            rules={[{
-              required: true
-            },{
-              validator: (_, value) => nameValidator(value)
-            }]}
-            wrapperCol={{ span: 8 }}
-            labelCol={{ span: 8 }}
-            validateFirst
-            hasFeedback
-            children={<Input />}
-          />
-          <Form.Item
-            name='description'
-            label={intl.$t({ defaultMessage: 'Description' })}
-            wrapperCol={{ span: 8 }}
-            labelCol={{ span: 8 }}
-            children={<Input.TextArea rows={2} maxLength={180} />}
-          />
-          {/*
-          <Form.Item
-          name='tags'
-          label='Tags:'
-          children={<Input />} />
-          */}
-          <UI.AddressFormItem
-            label={intl.$t({ defaultMessage: 'Address' })}
-            required
-            extra={intl.$t({
-              defaultMessage: 'Make sure to include a city and country in the address'
-            })}
-            wrapperCol={{ span: 10 }}
-            labelCol={{ span: 10 }}
-          >
-            <Form.Item
-              noStyle
-              label={intl.$t({ defaultMessage: 'Address' })}
-              name={['address', 'addressLine']}
-              rules={[{
-                required: isMapEnabled ? true : false
-              },{
-                validator: () => addressValidator(),
-                validateTrigger: 'onChange'
-              }]}
-              initialValue={!isMapEnabled ? defaultAddress.addressLine : ''}
-            >
-              <Input
-                allowClear
-                prefix={<SearchOutlined />}
-                onChange={addressOnChange}
-                data-testid='address-input'
-                disabled={!isMapEnabled}
-                value={address.addressLine}
+          <Row gutter={20}>
+            <Col span={8}>
+              <Form.Item
+                name='name'
+                label={intl.$t({ defaultMessage: 'Venue Name' })}
+                rules={[{
+                  required: true
+                },{
+                  validator: (_, value) => nameValidator(value)
+                }]}
+                validateFirst
+                hasFeedback
+                children={<Input />}
               />
-            </Form.Item>
-            <UI.AddressMap>
-              {isMapEnabled ?
-                <GoogleMap
-                  libraries={['places']}
-                  mapTypeControl={false}
-                  streetViewControl={false}
-                  fullscreenControl={false}
-                  zoom={zoom}
-                  center={center}
+              <Form.Item
+                name='description'
+                label={intl.$t({ defaultMessage: 'Description' })}
+                children={<Input.TextArea rows={2} maxLength={180} />}
+              />
+              {/*
+              <Form.Item
+              name='tags'
+              label='Tags:'
+              children={<Input />} />
+              */}
+            </Col>
+          </Row>
+          <Row gutter={20}>
+            <Col span={10}>
+              <UI.AddressFormItem
+                label={intl.$t({ defaultMessage: 'Address' })}
+                required
+                extra={intl.$t({
+                  defaultMessage: 'Make sure to include a city and country in the address'
+                })}
+              >
+                <Form.Item
+                  noStyle
+                  label={intl.$t({ defaultMessage: 'Address' })}
+                  name={['address', 'addressLine']}
+                  rules={[{
+                    required: isMapEnabled ? true : false
+                  },{
+                    validator: () => addressValidator(),
+                    validateTrigger: 'onChange'
+                  }]}
+                  initialValue={!isMapEnabled ? defaultAddress.addressLine : ''}
                 >
-                  {marker && <GoogleMapMarker position={marker} />}
-                </GoogleMap>
-                :
-                <Typography.Title level={3}>
-                  {intl.$t({ defaultMessage: 'Map is not enabled' })}
-                </Typography.Title>
-              }
-            </UI.AddressMap>
-          </UI.AddressFormItem>
+                  <Input
+                    allowClear
+                    prefix={<SearchOutlined />}
+                    onChange={addressOnChange}
+                    data-testid='address-input'
+                    disabled={!isMapEnabled}
+                    value={address.addressLine}
+                  />
+                </Form.Item>
+                <UI.AddressMap>
+                  {isMapEnabled ?
+                    <GoogleMap
+                      libraries={['places']}
+                      mapTypeControl={false}
+                      streetViewControl={false}
+                      fullscreenControl={false}
+                      zoom={zoom}
+                      center={center}
+                    >
+                      {marker && <GoogleMapMarker position={marker} />}
+                    </GoogleMap>
+                    :
+                    <Typography.Title level={3}>
+                      {intl.$t({ defaultMessage: 'Map is not enabled' })}
+                    </Typography.Title>
+                  }
+                </UI.AddressMap>
+              </UI.AddressFormItem>
+            </Col>
+          </Row>
         </StepsForm.StepForm>
       </StepsForm>
     </>

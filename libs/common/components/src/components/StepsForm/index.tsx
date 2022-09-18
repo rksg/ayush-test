@@ -94,7 +94,8 @@ export function StepsForm <FormValue = any> (
     if (otherProps.onCurrentChange) otherProps.onCurrentChange(next)
   }
 
-  const stepsRender: ProAntStepsFormProps['stepsRender'] = () => (
+  const stepsRender: ProAntStepsFormProps['stepsRender'] = () => (<>
+    <UI.StepsContainerGlobalOverride />
     <UI.StepsContainer>
       <Steps current={current} progressDot direction='vertical'>
         {_children.map((child, index) => {
@@ -107,11 +108,12 @@ export function StepsForm <FormValue = any> (
         })}
       </Steps>
     </UI.StepsContainer>
-  )
+  </>)
 
   const stepsFormRender: ProAntStepsFormProps['stepsFormRender'] = (form, submitter) => (
     <>
       {form}
+      <UI.ActionsContainerGlobalOverride />
       <UI.ActionsContainer>
         <Space align='center' size={12}>{submitter}</Space>
       </UI.ActionsContainer>

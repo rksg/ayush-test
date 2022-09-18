@@ -9,16 +9,16 @@ function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, m
 
 export function BasicMultiSteps () {
   return (
-    <Row gutter={20}>
-      <Col span={10}>
-        <StepsForm
-          onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
-          onFinish={async () => {
-            await wait(1000) // mimic external service call
-            showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
-          }}
-        >
-          <StepsForm.StepForm title='Step 1'>
+    <StepsForm
+      onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
+      onFinish={async () => {
+        await wait(1000) // mimic external service call
+        showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
+      }}
+    >
+      <StepsForm.StepForm title='Step 1'>
+        <Row gutter={20}>
+          <Col span={10}>
             <StepsForm.Title children='Step 1' />
             <Form.Item name='field1' label='Field 1'>
               <Input />
@@ -49,9 +49,13 @@ export function BasicMultiSteps () {
             <Form.Item name='field7' label='Field 7'>
               <Input />
             </Form.Item>
-          </StepsForm.StepForm>
+          </Col>
+        </Row>
+      </StepsForm.StepForm>
 
-          <StepsForm.StepForm title='Step 2'>
+      <StepsForm.StepForm title='Step 2'>
+        <Row gutter={20}>
+          <Col span={10}>
             <StepsForm.Title children='Step 2' />
             <Form.Item name='field8' label='Field 8'>
               <Input />
@@ -59,9 +63,9 @@ export function BasicMultiSteps () {
             <Form.Item name='field9' label='Field 9'>
               <Input />
             </Form.Item>
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Col>
-    </Row>
+          </Col>
+        </Row>
+      </StepsForm.StepForm>
+    </StepsForm>
   )
 }

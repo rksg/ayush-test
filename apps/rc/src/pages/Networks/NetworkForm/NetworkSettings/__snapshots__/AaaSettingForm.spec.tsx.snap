@@ -62,7 +62,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-2 vTECa"
+    class="styledComponents__Wrapper-sc-1ibvcih-2 kqqYPH"
   >
     <div
       class="ant-pro-steps-form"
@@ -76,7 +76,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
           style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="styledComponents__StepsContainer-sc-1ibvcih-0 dnQbZE"
+            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
           >
             <div
               class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -924,7 +924,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-1 gsxuAG"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"

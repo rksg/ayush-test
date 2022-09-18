@@ -6,11 +6,15 @@ import { DynamicSteps }    from './DynamicSteps'
 import { EditMode }        from './EditMode'
 import { SingleStep }      from './SingleStep'
 
+function MockLayout (props: React.PropsWithChildren) {
+  return <div className='ant-pro-basicLayout'>{props.children}</div>
+}
+
 storiesOf('StepsForm', module)
-  .add('Basic', BasicMultiSteps)
-  .add('With Async Validation', AsyncValidation)
-  .add('Edit Mode', EditMode)
-  .add('Dynamic Steps', DynamicSteps)
-  .add('Single Step', SingleStep)
+  .add('Basic', () => <MockLayout><BasicMultiSteps /></MockLayout>)
+  .add('With Async Validation', () => <MockLayout><AsyncValidation /></MockLayout>)
+  .add('Edit Mode', () => <MockLayout><EditMode/ ></MockLayout>)
+  .add('Dynamic Steps', () => <MockLayout><DynamicSteps /></MockLayout>)
+  .add('Single Step', () => <MockLayout><SingleStep /></MockLayout>)
 
 export {}

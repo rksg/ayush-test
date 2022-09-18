@@ -9,17 +9,17 @@ function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, m
 
 export function EditMode () {
   return (
-    <Row gutter={20}>
-      <Col span={10}>
-        <StepsForm
-          editMode
-          onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
-          onFinish={async () => {
-            await wait(1000) // mimic external service call
-            showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
-          }}
-        >
-          <StepsForm.StepForm name='step1' title='Step 1'>
+    <StepsForm
+      editMode
+      onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
+      onFinish={async () => {
+        await wait(1000) // mimic external service call
+        showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
+      }}
+    >
+      <StepsForm.StepForm name='step1' title='Step 1'>
+        <Row gutter={20}>
+          <Col span={10}>
             <StepsForm.Title children='Step 1' />
             <Form.Item name='field1' label='Field 1'>
               <Input />
@@ -27,9 +27,13 @@ export function EditMode () {
             <Form.Item name='field2' label='Field 2'>
               <Input />
             </Form.Item>
-          </StepsForm.StepForm>
+          </Col>
+        </Row>
+      </StepsForm.StepForm>
 
-          <StepsForm.StepForm title='Step 2'>
+      <StepsForm.StepForm title='Step 2'>
+        <Row gutter={20}>
+          <Col span={10}>
             <StepsForm.Title children='Step 2' />
             <Form.Item name='field3' label='Field 3'>
               <Input />
@@ -37,9 +41,13 @@ export function EditMode () {
             <Form.Item name='field4' label='Field 4'>
               <Input />
             </Form.Item>
-          </StepsForm.StepForm>
+          </Col>
+        </Row>
+      </StepsForm.StepForm>
 
-          <StepsForm.StepForm title='Step 3'>
+      <StepsForm.StepForm title='Step 3'>
+        <Row gutter={20}>
+          <Col span={10}>
             <StepsForm.Title children='Step 3' />
             <Form.Item name='field5' label='Field 5'>
               <Input />
@@ -47,9 +55,9 @@ export function EditMode () {
             <Form.Item name='field7' label='Field 6'>
               <Input />
             </Form.Item>
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Col>
-    </Row>
+          </Col>
+        </Row>
+      </StepsForm.StepForm>
+    </StepsForm>
   )
 }
