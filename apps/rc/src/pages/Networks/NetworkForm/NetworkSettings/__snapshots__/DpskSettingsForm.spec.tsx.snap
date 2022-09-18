@@ -23,7 +23,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
           >
             <div>
               <h3
-                class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
+                class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
               >
                 DPSK Settings
               </h3>
