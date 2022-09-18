@@ -1,7 +1,7 @@
 import React, { useState, useRef, ChangeEventHandler } from 'react'
 
 import { Row, Col, Form, Input, Typography } from 'antd'
-import { useIntl }                 from 'react-intl'
+import { useIntl }                           from 'react-intl'
 
 import {
   GoogleMap,
