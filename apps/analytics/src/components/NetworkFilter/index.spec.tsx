@@ -7,12 +7,11 @@ import { Provider, store }                             from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent } from '@acx-ui/test-utils'
 import { DateRange }                                   from '@acx-ui/utils'
 
+import { networkHierarchy }  from './__tests__/fixtures'
 import { api }               from './services'
-import { networkHierarchy }  from './services.spec'
 import { NonSelectableItem } from './styledComponents'
 
 import NetworkFilter, { onApply, displayRender } from './index'
-
 
 const mockSetNetworkPath = jest.fn()
 const filters = {
@@ -31,7 +30,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   useAnalyticsFilter: () => mockUseAnalyticsFilter
 }))
 describe('Network Filter', () => {
-  
+
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
     jest.clearAllMocks()
@@ -84,7 +83,7 @@ describe('Network Filter', () => {
     render(<Provider><NetworkFilter /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.type(screen.getByRole('combobox'), 'swg')
-    await screen.findByText('swg')    
+    await screen.findByText('swg')
     fireEvent.click(screen.getByText('swg'))
     const path = [
       { type: 'network', name: 'Network' },
@@ -93,7 +92,7 @@ describe('Network Filter', () => {
     const raw = [JSON.stringify(path)]
     expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
     expect(mockSetNetworkPath).toHaveBeenCalledWith(path, raw)
-   
+
   })
   it('should return correct value to render', () => {
     const data = [

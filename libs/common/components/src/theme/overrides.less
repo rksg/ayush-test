@@ -166,11 +166,42 @@
     }
   }
 
+  .ant-input:focus,
+  .ant-input-affix-wrapper-focused,
+  .ant-input-number-focused,
+  .ant-picker-focused,
+  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-color: var(--acx-primary-black);
+    box-shadow: none !important;
+  }
+
   .ant-input-affix-wrapper-readonly.ant-input-password {
     width: fit-content;
   }
 
-  .ant-input-suffix {
+  .ant-input-affix-wrapper .ant-input-prefix {
+    margin-right: 10px;
+  }
+
+  .ant-input-affix-wrapper .ant-input-suffix {
+    .ant-input-clear-icon {
+      span[role=img] {
+        svg { display: none; }
+
+        &::after {
+          content: '';
+          display: inline-block;
+          width: 12px;
+          height: 12px;
+          background-size: 12px 12px;
+          // encodeURIComponent(renderToStaticMarkup(<Close />))
+          background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22NestedListSingle__CloseIcon-sc-1yefg1u-0%20lilJnS%22%3E%3Cpath%20d%3D%22M14.0625%203.9375L3.9375%2014.0625%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M14.0625%2014.0625L3.9375%203.9375%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+        }
+      }
+    }
+  }
+
+  .ant-input-affix-wrapper-has-feedback .ant-input-suffix {
     position: relative;
     right: -30px;
 
@@ -202,6 +233,7 @@
       }
     }
   }
+
   .ant-pagination {
     font-size: var(--acx-body-5-font-size);
     font-weight: var(--acx-body-font-weight-bold);
@@ -241,6 +273,17 @@
         }
       }
     }
+    .ant-picker-dropdown {
+      .ant-picker-time-panel-column {
+        .ant-picker-time-panel-cell .ant-picker-time-panel-cell-inner:hover {
+          background: var(--acx-accents-orange-10);
+        }
+        .ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner {
+          background: var(--acx-accents-orange-20);
+          font-weight: var(--acx-body-font-weight-bold);
+        }
+      }
+    }
   }
 
   .ant-radio {
@@ -258,7 +301,9 @@
         margin-left: calc(var(--size) / -2);
       }
     }
-
+    &-checked .ant-radio-inner {
+      box-shadow: none !important;
+    }
     &-disabled .ant-radio-inner {
       border-color: var(--acx-neutrals-40) !important;
     }
@@ -355,14 +400,38 @@
           background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M3%206L8%2011L13%206L3%206Z%22%20fill%3D%22%23333333%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M3%206L8%2011L13%206L3%206Z%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
         }
       }
+      &-loading {
+        margin-right: -1px;
+      }
       span[role=img][aria-label=loading] {
         &::after {
+          width: 12px;
+          height: 12px;
+          background-size: 12px 12px;
           // encodeURIComponent(renderToStaticMarkup(<LoadingSolid />))
           background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M6.7742%200.590088V0.998907C6.7742%201.26404%206.95035%201.49362%207.20209%201.56496C9.07752%202.09633%2010.4516%203.84076%2010.4516%205.91399C10.4516%208.40948%208.46061%2010.4294%206.00001%2010.4294C3.53979%2010.4294%201.5484%208.40987%201.5484%205.91399C1.5484%203.84106%202.92225%202.09638%204.79788%201.56496C5.04966%201.49362%205.22581%201.26399%205.22581%200.998833V0.590284C5.22581%200.204779%204.86693%20-0.0760617%204.49889%200.0201123C1.9017%200.698704%20-0.0146495%203.09689%208.43825e-05%205.94667C0.0175037%209.30999%202.69711%2012.0071%206.01293%2012C9.32069%2011.9929%2012%209.27082%2012%205.91399C12%203.0763%2010.0853%200.692299%207.4949%200.0184926C7.12931%20-0.0766015%206.7742%200.207258%206.7742%200.590088Z%22%20fill%3D%22%23565758%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
         }
       }
     }
-    .ant-select-clear { margin-right: -1px }
+    .ant-select-clear {
+      margin-right: 1px;
+      margin-top: -8px;
+      span[role=img] {
+        line-height: 0;
+        padding: 2px;
+        background-color: var(--acx-primary-white);
+        svg { display: none; }
+        &::after {
+          content: '';
+          display: inline-block;
+          width: 12px;
+          height: 12px;
+          background-size: 12px 12px;
+          // encodeURIComponent(renderToStaticMarkup(<Close />))
+          background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22NestedListSingle__CloseIcon-sc-1yefg1u-0%20lilJnS%22%3E%3Cpath%20d%3D%22M14.0625%203.9375L3.9375%2014.0625%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M14.0625%2014.0625L3.9375%203.9375%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+        }
+      }
+    }
 
     &.ant-select-sm {
       font-size: var(--acx-body-4-font-size);
@@ -379,7 +448,10 @@
           }
         }
       }
-      .ant-select-clear { margin-right: -5px }
+      .ant-select-clear {
+        margin-right: -5px;
+        margin-top: -8px;
+      }
     }
   }
 

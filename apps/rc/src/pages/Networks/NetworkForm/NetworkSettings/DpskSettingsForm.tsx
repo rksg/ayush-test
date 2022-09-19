@@ -25,13 +25,16 @@ import { NetworkDiagram }    from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext    from '../NetworkFormContext'
 import { FieldExtraTooltip } from '../styledComponents'
 
-import { CloudpathServerForm } from './CloudpathServerForm'
+import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { CloudpathServerForm }     from './CloudpathServerForm'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
-export function DpskSettingsForm () {
+export function DpskSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -56,8 +59,9 @@ export function DpskSettingsForm () {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
-      <Col span={14}>
+      <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram
           type={NetworkTypeEnum.DPSK}
           cloudpathType={selected?.deploymentType}
@@ -236,3 +240,4 @@ function PassphraseGeneration () {
     </div>
   )
 }
+

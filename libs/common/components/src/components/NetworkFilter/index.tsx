@@ -76,6 +76,7 @@ export function NetworkFilter (props: CascaderProps) {
       showSearch
       onDropdownVisibleChange={setOpen}
       open={currentValues !== savedValues || open}
+      getPopupContainer={(triggerNode) => triggerNode.parentNode}
     />
   } else {
     return <UI.Cascader
@@ -92,6 +93,7 @@ export function NetworkFilter (props: CascaderProps) {
       expandTrigger='hover'
       showSearch={antProps.showSearch || true}
       onDropdownVisibleChange={setOpen}
+      getPopupContainer={(triggerNode) => triggerNode.parentNode}
     />
   }
 }

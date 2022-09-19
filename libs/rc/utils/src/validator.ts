@@ -49,6 +49,14 @@ export function hasGraveAccentAndDollarSign ({ $t }: IntlShape, value: string) {
   return Promise.resolve()
 }
 
+export function passphraseRegExp ({ $t }: IntlShape, value: string) {
+  const re = new RegExp('^[!-_a-~]((?!\\$\\()[ !-_a-~]){6,61}[!-_a-~]$|^[A-Fa-f0-9]{64}$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function checkObjectNotExists <ItemType> (
   intl: IntlShape,
   list: ItemType[],
