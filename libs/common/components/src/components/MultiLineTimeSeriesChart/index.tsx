@@ -162,7 +162,7 @@ export function MultiLineTimeSeriesChart <
       type: 'time',
       axisLabel: {
         ...axisLabelOptions(),
-        formatter: dateAxisFormatter
+        formatter: dateAxisFormatter()
       }
     },
     yAxis: {
