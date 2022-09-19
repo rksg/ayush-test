@@ -1,6 +1,6 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { getSeriesData, checkNoData } from './index'
+import { getSeriesData, checkNoData, getHealthTimeseries, checkInvalidHealthData } from './index'
 
 const seriesMapping = [
   { key: 'newClientCount', name: 'New Clients' },
@@ -85,5 +85,74 @@ describe('checkNoData', () => {
   it('should return true if all data point is null', () => {
     expect(
       checkNoData(sampleNoData)).toEqual(true)
+  })
+})
+
+describe('getHealthTimeseries', () => {
+  it('should return correct format', ()=>{
+    expect(getHealthTimeseries(sample, seriesMapping))
+      .toEqual([
+        {
+          name: 'New Clients',
+          data: sample.time.map((t,index)=>[t, 1+index])
+        },
+        {
+          name: 'Impacted Clients',
+          data: sample.time.map((t,index)=>[t, 6+index])
+        },
+        {
+          name: 'Connected Clients',
+          data: sample.time.map((t,index)=>[t, 11+index])
+        }
+      ])
+  })
+
+  const nullDataPointSample = {
+    ...sample,
+    newClientCount: [1, 2, null, 4, 5]
+  }
+
+  it('should return - if data point is null', () => {
+    expect(
+      getHealthTimeseries(nullDataPointSample, seriesMapping)
+        .find(d => d.name === 'New Clients')!
+        .data[2][1]
+    ).toEqual('-')
+  })
+  it('should return empty array if no data', ()=>{
+    expect(getHealthTimeseries(null, seriesMapping))
+      .toEqual([])
+  })
+  it('should return valid array if any data point is null', () => {
+    expect(
+      getHealthTimeseries(nullDataPointSample, seriesMapping)).toEqual([
+      {
+        name: 'New Clients',
+        data: sample.time.map((t,index)=> (index + 1 === 3) ? [t, '-'] : [t, 1+index])
+      },
+      {
+        name: 'Impacted Clients',
+        data: sample.time.map((t,index)=>[t, 6+index])
+      },
+      {
+        name: 'Connected Clients',
+        data: sample.time.map((t,index)=>[t, 11+index])
+      }
+    ])
+  })
+})
+
+describe('checkInvalidHealthData', () => {
+  it('should return false if data is present', ()=>{
+    expect(checkInvalidHealthData(sample))
+      .toEqual(false)
+  })
+  it('should return true if no data', ()=>{
+    expect(checkInvalidHealthData(null))
+      .toEqual(true)
+  })
+  it('should return false if all data point is null', () => {
+    expect(
+      checkInvalidHealthData(sampleNoData)).toEqual(false)
   })
 })
