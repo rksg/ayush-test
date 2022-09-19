@@ -20,10 +20,9 @@ describe('chartQuery', () => {
   )
 
   const charts = [
-    'incidentCharts',
-    'relatedIncidents',
-    'clientCountCharts',
-    'attemptAndFailureCharts'
+    'incidentChart',
+    'clientCountChart',
+    'attemptAndFailureChart'
   ]
 
   it('should return correct data', async () => {
@@ -37,14 +36,7 @@ describe('chartQuery', () => {
             ],
             radius: [1, 1]
           },
-          relatedIncidents: {
-            id: '07965e24-84ba-48a5-8200-f310f8197f40',
-            severity: 0.5,
-            code: 'radius',
-            startTime: '2022-04-07T12:15:00.000Z',
-            endTime: '2022-04-07T13:15:00.000Z'
-          },
-          clientCountCharts: {
+          clientCountChart: {
             time: [
               '2022-04-07T09:15:00.000Z',
               '2022-04-07T09:30:00.000Z',
@@ -56,7 +48,7 @@ describe('chartQuery', () => {
             impactedClientCount: [6, 7, 8, 9, 10],
             connectedClientCount: [11, 12, 13, 14, 15]
           },
-          attemptAndFailureCharts: {
+          attemptAndFailureChart: {
             time: [
               '2022-04-07T09:15:00.000Z',
               '2022-04-07T09:30:00.000Z'
@@ -64,6 +56,13 @@ describe('chartQuery', () => {
             failureCount: [1, 2],
             totalFailureCount: [1, 2],
             attemptCount: [1, 2]
+          },
+          relatedIncidents: {
+            id: '07965e24-84ba-48a5-8200-f310f8197f40',
+            severity: 0.5,
+            code: 'radius',
+            startTime: '2022-04-07T12:15:00.000Z',
+            endTime: '2022-04-07T13:15:00.000Z'
           }
         }
       }
@@ -100,7 +99,7 @@ describe('chartQuery', () => {
       input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-01T00:10:00+08:00' },
       output: 'PT180S'
     }]
-    data.forEach(({ input, output }) => 
+    data.forEach(({ input, output }) =>
       expect(calcGranularity(input.start, input.end)).toStrictEqual(output)
     )
   })

@@ -11,10 +11,9 @@ import { TimeSeries } from '.'
 
 describe('Timeseries component', () => {
   const charts = [
-    'incidentCharts',
-    'relatedIncidents',
-    'clientCountCharts',
-    'attemptAndFailureCharts'
+    'incidentChart',
+    'clientCountChart',
+    'attemptAndFailureChart'
   ]
   const props = {
     incident: fakeIncident1,
@@ -30,14 +29,7 @@ describe('Timeseries component', () => {
           ],
           radius: [1, 1]
         },
-        relatedIncidents: [{
-          id: '07965e24-84ba-48a5-8200-f310f8197f40',
-          severity: 0.5,
-          code: 'radius',
-          startTime: '2022-07-19T12:15:00.000Z',
-          endTime: '2022-07-19T13:15:00.000Z'
-        }],
-        clientCountCharts: {
+        clientCountChart: {
           time: [
             '2022-07-19T09:15:00.000Z',
             '2022-07-19T09:30:00.000Z',
@@ -49,7 +41,7 @@ describe('Timeseries component', () => {
           impactedClientCount: [6, 7, 8, 9, 10],
           connectedClientCount: [11, 12, 13, 14, 15]
         },
-        attemptAndFailureCharts: {
+        attemptAndFailureChart: {
           time: [
             '2022-07-20T09:15:00.000Z',
             '2022-07-20T09:30:00.000Z'
@@ -57,7 +49,14 @@ describe('Timeseries component', () => {
           failureCount: [1, 2],
           totalFailureCount: [1, 2],
           attemptCount: [1, 2]
-        }
+        },
+        relatedIncidents: [{
+          id: '07965e24-84ba-48a5-8200-f310f8197f40',
+          severity: 0.5,
+          code: 'radius',
+          startTime: '2022-07-19T12:15:00.000Z',
+          endTime: '2022-07-19T13:15:00.000Z'
+        }]
       }
     }
   }

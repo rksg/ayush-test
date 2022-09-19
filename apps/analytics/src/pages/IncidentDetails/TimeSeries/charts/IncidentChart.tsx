@@ -1,13 +1,19 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Incident, getSeriesData, mapCodeToReason, incidentSeverities, calculateSeverity } from '@acx-ui/analytics/utils'
-import { Card, cssStr, MultiLineTimeSeriesChart }                                          from '@acx-ui/components'
-import { NavigateFunction, Path, useNavigate, useTenantLink }                              from '@acx-ui/react-router-dom'
-import { intlFormats }                                                                     from '@acx-ui/utils'
+import {
+  Incident,
+  getSeriesData,
+  mapCodeToReason,
+  incidentSeverities,
+  calculateSeverity,
+  codeToFailureTypeMap
+} from '@acx-ui/analytics/utils'
+import { Card, cssStr, MultiLineTimeSeriesChart }             from '@acx-ui/components'
+import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { intlFormats }                                        from '@acx-ui/utils'
 
-import { codeToFailureTypeMap } from '../config'
-import { ChartsData }           from '../services'
+import { ChartsData } from '../services'
 
 export const onMarkedAreaClick = (
   navigate: NavigateFunction,

@@ -14,19 +14,9 @@ import { TimeSeries }         from '../TimeSeries'
 
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (newIncident: Incident) => {
+export const IncidentDetailsTemplate = (incident: Incident) => {
   const networkImpactCharts = [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
-  const chartProps = {
-    buffer: 6
-  }
-  const incident = { ...newIncident, ...chartProps }
   const { $t } = useIntl()
-  const timeSeriesCharts = [
-    'incidentCharts',
-    'relatedIncidents',
-    'clientCountCharts',
-    'attemptAndFailureCharts'
-  ]
   const attributeList = [
     'clientImpactCount',
     'incidentCategory',
@@ -36,6 +26,11 @@ export const IncidentDetailsTemplate = (newIncident: Incident) => {
     'duration',
     'eventStartTime',
     'eventEndTime'
+  ]
+  const timeSeriesCharts = [
+    'incidentChart',
+    'clientCountChart',
+    'attemptAndFailureChart'
   ]
 
   return (

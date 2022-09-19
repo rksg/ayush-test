@@ -38,7 +38,6 @@ export const calcGranularity = (start: string, end: string): string => {
 }
 
 export function getBuffer (chartBuffer: ChartIncident['buffer']) {
-  /** @type {{ front: BufferConfig, back: BufferConfig }} */
   const buffer = {
     front: { value: 6, unit: 'hours' },
     back: { value: 6, unit: 'hours' }
@@ -81,6 +80,12 @@ export const Api = dataApi.injectEndpoints({
         const queries = payload.charts.map(
           chart => failureCharts[chart].query(payload.incident)
         )
+        queries.push(gql`
+          relatedIncidents: incidents(filter: {code: [$code]}) {
+            id severity code startTime endTime
+          }
+        `)
+
         return {
           document: gql`
             query Network(
