@@ -6,7 +6,7 @@ exports[`TopSSIDsByClientWidget should render for empty data: NoData 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 bvBxTb"
+      class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
       type="default"
     >
       <div
@@ -22,7 +22,7 @@ exports[`TopSSIDsByClientWidget should render for empty data: NoData 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
               >
                 Top 5 SSIDs by Clients
               </div>
