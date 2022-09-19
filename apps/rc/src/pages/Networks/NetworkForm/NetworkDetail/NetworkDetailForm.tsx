@@ -1,14 +1,15 @@
 import { useContext } from 'react'
 
 
-import { Form, Input, Col, Radio, Row, Space } from 'antd'
-import TextArea                                from 'antd/lib/input/TextArea'
-import { useIntl }                             from 'react-intl'
+import { QuestionCircleOutlined }                       from '@ant-design/icons'
+import { Form, Input, Col, Radio, Row, Space, Tooltip } from 'antd'
+import TextArea                                         from 'antd/lib/input/TextArea'
+import { useIntl }                                      from 'react-intl'
 
-import { StepsForm }                             from '@acx-ui/components'
-import { useLazyNetworkListQuery }               from '@acx-ui/rc/services'
-import { NetworkTypeEnum, checkObjectNotExists } from '@acx-ui/rc/utils'
-import { useParams }                             from '@acx-ui/react-router-dom'
+import { StepsForm }                                                                               from '@acx-ui/components'
+import { useLazyNetworkListQuery }                                                                 from '@acx-ui/rc/services'
+import { NetworkTypeEnum, WifiNetworkMessages, checkObjectNotExists, hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
+import { useParams }                                                                               from '@acx-ui/react-router-dom'
 
 import { networkTypesDescription, networkTypes } from '../contentsMap'
 import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
@@ -63,12 +64,21 @@ export function NetworkDetailForm () {
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
         <Form.Item
           name='name'
-          label={intl.$t({ defaultMessage: 'Network Name' })}
+          label={<>
+            { intl.$t({ defaultMessage: 'Network Name' }) }
+            <Tooltip
+              title={WifiNetworkMessages.NETWORK_NAME_TOOLTIP}
+              placement='bottom'
+            >
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </>}
           rules={[
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: (_, value) => nameValidator(value) }
+            { validator: (_, value) => nameValidator(value) },
+            { validator: (_, value) => hasGraveAccentAndDollarSign(intl, value) }
           ]}
           validateFirst
           hasFeedback

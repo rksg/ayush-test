@@ -38,6 +38,17 @@ export function trailingNorLeadingSpaces ({ $t }: IntlShape, value: string) {
   return Promise.resolve()
 }
 
+export function hasGraveAccentAndDollarSign ({ $t }: IntlShape, value: string) {
+  if (value.indexOf('`') !== -1 && value.indexOf('$(') !== -1) {
+    return Promise.reject($t(validationMessages.hasGraveAccentAndDollarSign))
+  } else if (value.indexOf('`') !== -1) {
+    return Promise.reject($t(validationMessages.hasGraveAccent))
+  } else if (value.indexOf('$(') !== -1) {
+    return Promise.reject($t(validationMessages.hasDollarSign))
+  }
+  return Promise.resolve()
+}
+
 export function checkObjectNotExists <ItemType> (
   intl: IntlShape,
   list: ItemType[],

@@ -280,12 +280,21 @@ function SettingsForm () {
             name={['wlan', 'managementFrameProtection']}
             initialValue={ManagementFrameProtectionEnum.Disabled}
           >
-            <Select disabled={[
-              WlanSecurityEnum.WPA3,
-              WlanSecurityEnum.WPA23Mixed
-            ].includes(wlanSecurity)}>
-              {frameOptions}
-            </Select>
+            <Space style={{
+              display: 'grid',
+              gridTemplateColumns: '100% 15px',
+              position: 'relative', zIndex: 1
+            }}>
+              <Select disabled={[
+                WlanSecurityEnum.WPA3,
+                WlanSecurityEnum.WPA23Mixed
+              ].includes(wlanSecurity)}>
+                {frameOptions}
+              </Select>
+              <Tooltip title={WifiNetworkMessages.NETWORK_MFP_TOOLTIP} placement='bottom'>
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </Space>
           </Form.Item>
         }
       </div>
