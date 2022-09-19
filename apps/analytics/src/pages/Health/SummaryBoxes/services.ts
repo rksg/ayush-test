@@ -16,7 +16,7 @@ export interface SummaryData {
   }
 }
 
-interface requestPayload {
+export interface RequestPayload {
   path: NetworkPath
   start: string
   end: string
@@ -24,7 +24,7 @@ interface requestPayload {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    summary: build.query<SummaryData, requestPayload>({
+    summary: build.query<SummaryData, RequestPayload>({
       query: payload => ({
         document: gql`
           query Summary($path: [HierarchyNodeInput],

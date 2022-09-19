@@ -8,7 +8,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import Header from '../../components/Header'
 
 import { HealthPageContextProvider } from './HealthPageContext'
-import SummaryBoxes                  from './SummaryBoxes'
+import { SummaryBoxes }              from './SummaryBoxes'
 
 
 

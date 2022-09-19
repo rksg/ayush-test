@@ -19,6 +19,10 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUseNavigate
 }))
 
+jest.mock('./SummaryBoxes', () => ({
+  SummaryBoxes: () => <div data-testid='Summary Boxes' />
+}))
+
 describe('HealthPage', () => {
   beforeEach(() => {
     store.dispatch(dataApi.util.resetApiState())
@@ -32,7 +36,7 @@ describe('HealthPage', () => {
     render(<Provider><HealthPage /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     expect(screen.getByText('Health')).toBeVisible()
-    expect(screen.getByText('Summary Boxes')).toBeVisible()
+    expect(screen.getByTestId('Summary Boxes')).toBeVisible()
     expect(screen.getByText('Summary Timeserise')).toBeVisible()
     expect(screen.getByText('overview')).toBeVisible()
     expect(screen.getByText('Threshold')).toBeVisible()

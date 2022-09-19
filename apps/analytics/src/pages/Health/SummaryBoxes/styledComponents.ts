@@ -28,40 +28,43 @@ const arrowStyle = css`
   vertical-align: middle;
 `
 
-export const getBoxComponents = (type: string) => ({
-  Wrapper: styled.div`
-    padding-block: 10px 5px;
-    writing-mode: horizontal-tb;
-    background: var(${colors[type as keyof typeof colors].background});
-    border-radius: 3px;
-    text-align: center;
-  `,
-  Statistic: styled(antStatistic)`
-    display: flex;
-    flex-direction: column-reverse;
-    .ant-statistic-title {
-      color: var(${colors[type as keyof typeof colors].text});
-      font-size: var(--acx-body-4-font-size);
+export const Wrapper = styled.div<{ type: string }>`
+  padding-block: 10px 5px;
+  writing-mode: horizontal-tb;
+  background: var(${props => colors[props.type as keyof typeof colors].background});
+  border-radius: 3px;
+  text-align: center;
+`
+
+export const Statistic = styled(antStatistic)<{ type: string }>`
+  display: flex;
+  flex-direction: column-reverse;
+  .ant-statistic-title {
+    color: var(${props => colors[props.type as keyof typeof colors].text});
+    font-size: var(--acx-body-4-font-size);
+  }
+  .ant-statistic-content {
+    color: var(${props => colors[props.type as keyof typeof colors].text});
+    .ant-statistic-content-value {
+      font-size: 36px;
+      font-weight: var(--acx-body-font-weight-bold);
     }
-    .ant-statistic-content {
-      color: var(${colors[type as keyof typeof colors].text});
-      .ant-statistic-content-value {
-        font-size: 36px;
-        font-weight: var(--acx-body-font-weight-bold);
-      }
-      .ant-statistic-content-suffix {
-        font-size: var(--acx-body-2-font-size);
-      }
+    .ant-statistic-content-suffix {
+      font-size: var(--acx-body-2-font-size);
     }
-  `,
-  UpArrow: styled(CaretDoubleUpOutlined)`
-    ${arrowStyle}
-    path {
-      stroke: var(${colors[type as keyof typeof colors].text});
-    }`,
-  DownArrow: styled(CaretDoubleDownOutlined)`
-    ${arrowStyle}
-    path {
-      stroke: var(${colors[type as keyof typeof colors].text});
-    }`
-})
+  }
+`
+
+export const UpArrow = styled(CaretDoubleUpOutlined)<{ type: string }>`
+  ${arrowStyle}
+  path {
+    stroke: var(${props => colors[props.type as keyof typeof colors].text});
+  }
+`
+
+export const DownArrow = styled(CaretDoubleDownOutlined)<{ type: string }>`
+  ${arrowStyle}
+  path {
+    stroke: var(${props => colors[props.type as keyof typeof colors].text});
+  }
+`

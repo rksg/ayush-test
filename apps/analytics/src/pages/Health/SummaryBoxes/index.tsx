@@ -5,10 +5,10 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { useAnalyticsFilter }       from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader } from '@acx-ui/components'
-import { intlFormats }              from '@acx-ui/utils'
+import { formatter, intlFormats }   from '@acx-ui/utils'
 
-import { useSummaryQuery }  from './services'
-import { getBoxComponents } from './styledComponents'
+import { useSummaryQuery }                        from './services'
+import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
 
 interface BoxProps {
   type: string,
@@ -22,20 +22,20 @@ interface BoxProps {
 
 const Box = (props: BoxProps) => {
   const { $t } = useIntl()
-  const { Wrapper, Statistic, UpArrow, DownArrow } = getBoxComponents(props.type)
   return (
-    <Wrapper onClick={props.onClick}>
+    <Wrapper type={props.type} onClick={props.onClick}>
       <Statistic
+        type={props.type}
         title={$t(props.title)}
         value={props.value}
         suffix={props.suffixValue}
       />
-      {props.isOpen ? <UpArrow/> : <DownArrow/>}
+      {props.isOpen ? <UpArrow type={props.type}/> : <DownArrow type={props.type}/>}
     </Wrapper>
   )
 }
 
-const SummaryBoxes = () => {
+export const SummaryBoxes = () => {
   const { $t } = useIntl()
   const [ isOpen, setIsOpen ] = useState(false)
   const { filters } = useAnalyticsFilter()
@@ -72,7 +72,7 @@ const SummaryBoxes = () => {
             ? '-' : $t(intlFormats.countFormat, { value: failureCount }),
           successPercentage,
           averageTtc: isNull(averageTtc)
-            ? '-' : $t(intlFormats.countFormat, { value: averageTtc }) //todo
+            ? '-' : formatter('durationFormat')(averageTtc) as string
         }
       }
     }
@@ -117,5 +117,3 @@ const SummaryBoxes = () => {
     </Loader>
   )
 }
-
-export default SummaryBoxes
