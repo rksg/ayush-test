@@ -10,6 +10,7 @@ import TopSwitchModelsWidget          from './components/SwitchModels'
 import TopApplicationsByTrafficWidget from './components/TopApplicationsByTraffic'
 import TopSSIDsByClientWidget         from './components/TopSSIDsByClient'
 import TopSSIDsByTrafficWidget        from './components/TopSSIDsByTraffic'
+import TopSwitchesByErrorWidget       from './components/TopSwitchesByError'
 import TopSwitchesByPoEUsageWidget    from './components/TopSwitchesByPoEUsage'
 import TopSwitchesByTrafficWidget     from './components/TopSwitchesByTraffic'
 import TrafficByVolumeWidget          from './components/TrafficByVolume'
@@ -38,6 +39,9 @@ const widgetsMap = {
   ),
   switchTrafficByVolume: ({ filters }: { filters: AnalyticsFilter }) => (
     <SwitchesTrafficByVolumeWidget filters={filters}/>
+  ),
+  topSwitchesByErrors: ({ filters }: { filters: AnalyticsFilter }) => (
+    <TopSwitchesByErrorWidget filters={filters}/>
   ),
   topSwitchModelsByCount: ({ filters }: { filters: AnalyticsFilter }) => (
     <TopSwitchModelsWidget filters={filters} />
