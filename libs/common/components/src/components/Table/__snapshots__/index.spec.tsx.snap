@@ -511,7 +511,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component renders form table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 egoTYm"
+    class="styledComponents__Wrapper-sc-1abm7iv-10 iodwbP"
   >
     <div
       class="ant-pro-table"

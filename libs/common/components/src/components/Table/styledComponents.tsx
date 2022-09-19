@@ -130,7 +130,7 @@ const actionsHeight = '36px'
 
 type StyledTable = {
   $type: 'tall' | 'compact' | 'tooltip' | 'form',
-  $hasRowSelection: boolean
+  $rowSelectionActive: boolean
 }
 
 /* eslint-disable max-len */

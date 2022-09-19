@@ -70,7 +70,7 @@ describe('AdvancedSettingForm', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await screen.findByText('LEDs Status')
     await screen.findByRole('button', { name: 'Add Model' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
   it('should handle add/edit/delete action', async () => {
@@ -101,7 +101,7 @@ describe('AdvancedSettingForm', () => {
     fireEvent.click(toggle[0])
     const deleteBtns = screen.getAllByRole('deleteBtn')
     fireEvent.click(deleteBtns[deleteBtns.length - 1])
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
   it('should navigate to venue details page when clicking cancel button', async () => {

@@ -213,6 +213,7 @@ export function AdvancedSettingForm () {
         ...basePath,
         pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
       })}
+      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>
         <Row>
