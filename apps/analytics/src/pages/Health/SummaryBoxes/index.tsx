@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { isNull }                                    from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
@@ -5,17 +7,37 @@ import { useAnalyticsFilter }       from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader } from '@acx-ui/components'
 import { intlFormats }              from '@acx-ui/utils'
 
-import { useSummaryQuery } from './services'
-import { Statistic }       from './styledComponents'
+import { useSummaryQuery }  from './services'
+import { getBoxComponents } from './styledComponents'
 
 interface BoxProps {
   type: string,
   title: MessageDescriptor
+  value: string
   suffix: boolean,
-  suffixValue: string,
+  suffixValue: string|undefined,
+  isOpen: boolean,
+  onClick: () => void
 }
+
+const Box = (props: BoxProps) => {
+  const { $t } = useIntl()
+  const { Wrapper, Statistic, UpArrow, DownArrow } = getBoxComponents(props.type)
+  return (
+    <Wrapper onClick={props.onClick}>
+      <Statistic
+        title={$t(props.title)}
+        value={props.value}
+        suffix={props.suffixValue}
+      />
+      {props.isOpen ? <UpArrow/> : <DownArrow/>}
+    </Wrapper>
+  )
+}
+
 const SummaryBoxes = () => {
   const { $t } = useIntl()
+  const [ isOpen, setIsOpen ] = useState(false)
   const { filters } = useAnalyticsFilter()
   const payload = {
     path: filters.path,
@@ -70,12 +92,10 @@ const SummaryBoxes = () => {
     {
       type: 'successPercentage',
       title: defineMessage({ defaultMessage: 'Connection Success Ratio' })
-      // suffix
     },
     {
       type: 'averageTtc',
       title: defineMessage({ defaultMessage: 'Avg. Time to Connect' })
-      // suffix
     }
   ] as BoxProps[]
 
@@ -83,11 +103,13 @@ const SummaryBoxes = () => {
     <Loader states={[queryResults]}>
       <GridRow>{
         mapping.map((box: BoxProps)=>
-          <GridCol col={{ span: 6 }}>
-            <Statistic
-              title={$t(box.title)}
+          <GridCol key={box.type} col={{ span: 6 }}>
+            <Box
+              {...box}
+              isOpen={isOpen}
+              onClick={()=>{ setIsOpen(!isOpen)}}
               value={queryResults.data[box.type as keyof typeof queryResults.data]}
-              suffix={box.suffix?`/${queryResults.data.totalCount}`:undefined}
+              suffixValue={box.suffix?`/${queryResults.data.totalCount}`:undefined}
             />
           </GridCol>
         )}
