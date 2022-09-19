@@ -25,7 +25,10 @@ describe('HealthPage', () => {
   it('can see Health', async () => {
     render(<Provider><HealthPage /></Provider>)
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(
+      () => screen.queryByRole('img', { name: 'loader' }),
+      { timeout: 10000 }
+    )
 
     expect(screen.getByText('Health')).toBeVisible()
   })
