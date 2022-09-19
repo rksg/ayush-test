@@ -1,5 +1,5 @@
 
-import React, { createContext, useState } from 'react'
+import React, { createContext, useState, useEffect, useContext } from 'react'
 
 import {
   Checkbox,
@@ -13,6 +13,8 @@ import { useIntl } from 'react-intl'
 
 import { Button }                            from '@acx-ui/components'
 import { DnsProxyRule, DnsProxyContextType } from '@acx-ui/rc/utils'
+
+import NetworkFormContext from '../NetworkFormContext'
 
 import { DnsProxyModal } from './DnsProxyModal'
 import * as UI           from './styledComponents'
@@ -76,20 +78,17 @@ function ClientIsolationForm () {
           initialValue={false}
           children={<Switch />} />
       </UI.FieldLabel>
-      <UI.FieldLabel width='230px'>
-        {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
-
-        <Tooltip title={'Does not support in Beta.'}>
+      <Tooltip title={$t({ defaultMessage: 'Drop#1 is not support.' })}>
+        <UI.FieldLabel width='230px'>
+          {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
           <Form.Item
-
             name='enableVenueClientIsolationAllowlist'
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch />} />
-        </Tooltip>
-      </UI.FieldLabel>
-      {/* Client Isolation Allowlist by Venue TODOTODO */}
+            children={<Switch disabled={true} />} />
+        </UI.FieldLabel>
+      </Tooltip>
     </>
     }
   </>
@@ -106,18 +105,31 @@ export function ServicesForm () {
     enableArpRequestRateLimit,
     enableDhcpRequestRateLimit,
     enableWifiCalling
-    // dnsProxyRules
   ] = [
     useWatch<boolean>(['wlan','advancedCustomization','dnsProxyEnabled']),
     useWatch<boolean>(['wlan','advancedCustomization','enableAntiSpoofing']),
     useWatch<boolean>(['wlan','advancedCustomization','enableArpRequestRateLimit']),
     useWatch<boolean>(['wlan','advancedCustomization','enableDhcpRequestRateLimit']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'wifiCallingEnabled'])
-    // useWatch<DnsProxyRule[]>(['wlan','advancedCustomization','dnsProxy', 'dnsProxyRules'])
   ]
 
-  const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxyRule[])
+  const { data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
 
+  useEffect(() => {
+    if (data) {
+      if (data.wlan?.advancedCustomization?.dnsProxy?.dnsProxyRules) {
+        setDnsProxyList(
+          data.wlan.advancedCustomization.dnsProxy.dnsProxyRules
+        )
+        form.setFieldsValue({
+          dnsProxyRules: data.wlan.advancedCustomization.dnsProxy.dnsProxyRules
+        })
+      }
+    }
+  }, [data])
+
+  const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxyRule[])
 
   return (
     <>
@@ -132,7 +144,7 @@ export function ServicesForm () {
             children={<Switch />}
           />
           <Form.Item
-            name={['wlan', 'advancedCustomization', 'dnsProxy', 'dnsProxyRules']}
+            name='dnsProxyRules'
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -146,26 +158,28 @@ export function ServicesForm () {
       </UI.FieldLabel>
 
 
-      <UI.FieldLabel width='125px'>
-        { $t({ defaultMessage: 'Wi-Fi Calling:' }) }
-        <UI.FieldLabel width='30px'>
-          <Form.Item
-            name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}
-          />
-          {enableWifiCalling &&
-            <div>
-              <Button type='link'
-                disabled={true}>
-                {$t({ defaultMessage: 'Select profiles' })}
-              </Button>
-            </div>
-          }
+      <Tooltip title={$t({ defaultMessage: 'Drop#1 is not support.' })}>
+        <UI.FieldLabel width='125px'>
+          {$t({ defaultMessage: 'Wi-Fi Calling:' })}
+          <UI.FieldLabel width='30px'>
+            <Form.Item
+              name={['wlan', 'advancedCustomization', 'wifiCallingEnabled']}
+              style={{ marginBottom: '10px' }}
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch disabled={true}/>}
+            />
+            {enableWifiCalling &&
+              <div>
+                <Button type='link'
+                  disabled={true}>
+                  {$t({ defaultMessage: 'Select profiles' })}
+                </Button>
+              </div>
+            }
+          </UI.FieldLabel>
         </UI.FieldLabel>
-      </UI.FieldLabel>
+      </Tooltip>
 
       <ClientIsolationForm/>
       <>
@@ -225,21 +239,19 @@ export function ServicesForm () {
       </>
 
       <UI.FormItemNoLabel
-        name={['wlan','advancedCustomization','forceMobileDeviceDhcp']}
-
+        name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
+        valuePropName='checked'
         children={
-          <UI.Label>
-            <Checkbox disabled={enableAntiSpoofing}
-              children={$t({ defaultMessage: 'Force DHCP' })} />
-          </UI.Label>}
+          <Checkbox disabled={enableAntiSpoofing}
+            children={$t({ defaultMessage: 'Force DHCP' })} />}
       />
       <UI.FormItemNoLabel
         name={['wlan','advancedCustomization','enableSyslog']}
+        valuePropName='checked'
         children={
-          <UI.Label>
-            <Checkbox children={
-              $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
-          </UI.Label>}
+          <Checkbox children={
+            $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
+        }
       />
     </>
   )

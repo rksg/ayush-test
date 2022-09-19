@@ -20,7 +20,7 @@ export interface PageHeaderProps extends Omit<AntPageHeaderProps, 'title' | 'bre
 
 function PageHeader (props: PageHeaderProps) {
   const pageHeaderProps: AntPageHeaderProps = _.omit(props, 'breadcrumb')
-  pageHeaderProps.title = <Typography.Title>{props.title}</Typography.Title>
+  pageHeaderProps.title = <Typography.Title ellipsis>{props.title}</Typography.Title>
   if (props.titleExtra) {
     pageHeaderProps.title = <>
       {pageHeaderProps.title}
