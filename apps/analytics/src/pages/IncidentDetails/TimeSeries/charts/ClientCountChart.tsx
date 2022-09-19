@@ -21,16 +21,15 @@ export const ClientCountChart = ({ data }: { data: ChartsData }) => {
 
   return <Card
     key={'clientCountChart'}
-    title={$t({ defaultMessage: 'CLIENTS' })}
-    isIncidentChart={true}
-    type={'no-border'}
+    title={$t({ defaultMessage: 'Clients' })}
+    type='no-border'
   >
     <AutoSizer>
       {({ height, width }) => (
         <MultiLineTimeSeriesChart
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={(value: unknown) => 
+          dataFormatter={(value: unknown) =>
             $t(intlFormats.countFormat, { value: value as number })}
         />
       )}

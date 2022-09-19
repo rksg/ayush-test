@@ -1,6 +1,4 @@
-import { Space } from 'antd'
-
-import { Loader } from '@acx-ui/components'
+import { Loader, GridRow, GridCol } from '@acx-ui/components'
 
 import { failureCharts }                  from './config'
 import { ChartDataProps, useChartsQuery } from './services'
@@ -12,17 +10,14 @@ export const TimeSeries : React.FC<ChartDataProps> = ({ charts, incident }) => {
 
   return (
     <Loader states={[queryResults]}>
-      {filteredCharts.map((chart, index) => {
-        const Chart = failureCharts[chart].chart!
-        return <Space
-          direction='vertical'
-          size={'middle'}
-          key={`space${index}`}
-          style={{ paddingTop: '30px' }}
-        >
-          <Chart incident={incident} data={queryResults.data!} key={index}/>
-        </Space>
-      })}
+      <GridRow>
+        {filteredCharts.map((chart, index) => {
+          const Chart = failureCharts[chart].chart!
+          return <GridCol col={{ span: 24 }} style={{ height: '250px' }}>
+            <Chart incident={incident} data={queryResults.data!} key={index}/>
+          </GridCol>
+        })}
+      </GridRow>
     </Loader>
   )
 }

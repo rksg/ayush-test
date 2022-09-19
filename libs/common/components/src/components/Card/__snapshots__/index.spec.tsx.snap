@@ -3,7 +3,7 @@
 exports[`Card component should render card with grey background 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-3 dbhfoR"
+    class="styledComponents__Wrapper-sc-13w5wfx-3 gHqQDa"
     type="solid-bg"
   >
     <div
@@ -19,7 +19,7 @@ exports[`Card component should render card with grey background 1`] = `
             class="ant-card-head-title"
           >
             <div
-              class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+              class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
             />
           </div>
           <div
@@ -44,7 +44,7 @@ exports[`Card component should render card with grey background 1`] = `
 exports[`Card component should render card with no border 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-3 kPkDWB"
+    class="styledComponents__Wrapper-sc-13w5wfx-3 dGuEbi"
     type="no-border"
   >
     <div
@@ -60,7 +60,7 @@ exports[`Card component should render card with no border 1`] = `
             class="ant-card-head-title"
           >
             <div
-              class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+              class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
             />
           </div>
           <div

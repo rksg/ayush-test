@@ -8,7 +8,6 @@ import type { CardTypes } from '.'
 type WrapperProps = {
   type: CardTypes
   hasTitle: boolean
-  isChart: boolean
 }
 
 export const ArrowOutIcon = styled(ArrowsOut)``
@@ -25,10 +24,8 @@ export const Button = styled(AntButton)`
   }
 `
 
-const height = '250px'
-
 export const Wrapper = styled.div<WrapperProps>`
-  height: ${(props) => (props.isChart ? height : '100%')};
+  height: 100%;
   width: 100%;
   .ant-card {
     height: 100%;
@@ -50,7 +47,7 @@ export const Wrapper = styled.div<WrapperProps>`
     padding: 0;
     border-bottom: none;
     min-height: 0;
-    ${(props) => (props.isChart ? '' : 'margin-bottom: 10px;')}
+    margin-bottom: 10px;
   }
   .ant-card-head-title {
     padding: 0;
@@ -77,10 +74,10 @@ export const Title = styled.div`
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
   height: var(--acx-headline-4-line-height);
-  margin-bottom: 5px;
 `
 
 export const SubTitle = styled.div`
+  margin-top: 5px;
   font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-5-line-height);
   color: var(--acx-primary-black);

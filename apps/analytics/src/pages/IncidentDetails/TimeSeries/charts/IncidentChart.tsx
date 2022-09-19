@@ -58,8 +58,7 @@ export const IncidentChart = ({ incident, data }: { incident: Incident, data: Ch
   return <Card
     key={'incidentChart'}
     title={title}
-    isIncidentChart={true}
-    type={'no-border'}
+    type='no-border'
   >
     <AutoSizer>
       {({ height, width }) => (

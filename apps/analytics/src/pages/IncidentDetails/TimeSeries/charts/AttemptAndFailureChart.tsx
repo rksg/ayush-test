@@ -22,27 +22,17 @@ export const AttemptAndFailureChart = (
   )
 
   const seriesMapping = [
-    {
-      key: 'totalFailureCount',
-      name: $t({ defaultMessage: 'Total Failures' })
-    },
-    {
-      key: 'failureCount',
-      name: title
-    },
-    {
-      key: 'attemptCount',
-      name: attempt
-    }
+    { key: 'totalFailureCount', name: $t({ defaultMessage: 'Total Failures' }) },
+    { key: 'failureCount', name: title },
+    { key: 'attemptCount', name: attempt }
   ]
 
   const chartResults = getSeriesData(attemptAndFailureCharts, seriesMapping)
 
   return <Card
     key={'attemptAndFailureChart'}
-    title={$t({ defaultMessage: 'FAILURES' })}
-    isIncidentChart={true}
-    type={'no-border'}
+    title={$t({ defaultMessage: 'Failures' })}
+    type='no-border'
   >
     <AutoSizer>
       {({ height, width }) => (
