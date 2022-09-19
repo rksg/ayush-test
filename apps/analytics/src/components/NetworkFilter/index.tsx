@@ -58,6 +58,14 @@ const getSeverityCircles = (
     })
   return severityArray.sort()
 }
+const getApsAndSwitches = ( data: Child[], name : string) =>
+  data.reduce((acc : ApOrSwitch[] | [], datum : Child) => { 
+    const { aps, switches } = datum
+    if(datum.name === name) 
+      acc = [...acc,...(aps || []), ...(switches || [])]
+    return acc
+  }, [] )
+
 const getFilterData = (
   data: Child[],
   $t: CallableFunction,
@@ -70,7 +78,7 @@ const getFilterData = (
         label: (
           <LabelWithSeverityCicle
             severityCircles={getSeverityCircles(
-              [...(aps || []), ...(switches || [])],
+              getApsAndSwitches(data, name),
               nodesWithSeverities[name],
               'venue'
             )}
