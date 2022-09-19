@@ -130,10 +130,10 @@ describe('NetworkVenuesTab', () => {
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
 
     expect(asFragment()).toMatchSnapshot()
 
-    const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
     expect(within(row1).queryAllByRole('button')).toHaveLength(4)
     expect(row1).toHaveTextContent('VLAN-1 (Default)')
     expect(row1).toHaveTextContent('All APs')
