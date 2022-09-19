@@ -31,6 +31,37 @@ export const venuesResponse = {
   ]
 }
 
+export const venueListResponse = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 5,
+  page: 1,
+  data: [
+    {
+      id: '01b1fe5d153d4a2a90455795af6ad877',
+      name: 'airport'
+    },
+    {
+      id: 'b2efc20b6d2b426c836d76110f88941b',
+      name: 'dsfds'
+    },
+    {
+      id: 'f27f33e0475d4f49af57350fed788c7b',
+      name: 'SG office'
+    },
+    {
+      id: '4c778ed630394b76b17bce7fe230cf9f',
+      name: 'My-Venue'
+    },
+    {
+      id: 'a678f2e5767746a394a7b10c45235119',
+      name: 'sadas'
+    }
+  ]
+}
+
 export const successResponse = { requestId: 'request-id' }
 
 export const cloudpathResponse = [{

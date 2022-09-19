@@ -15,6 +15,7 @@ import {
 
 import {
   venuesResponse,
+  venueListResponse,
   networksResponse,
   successResponse,
   cloudpathResponse
@@ -40,6 +41,8 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
@@ -126,6 +129,8 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
