@@ -33,7 +33,7 @@ RUN export $(cat ${ENV_FILE}) \
 ###############################################################
 FROM build-base as acx-ui
 RUN npx nx run-many --target=lint --all --verbose
-RUN npx --max_old_space_size=4096 nx run-many --target=test --all --coverage --runInBand --verbose
+RUN npx --max_old_space_size=8192 nx run-many --target=test --all --coverage --runInBand --verbose
 
 ###############################################################
 
