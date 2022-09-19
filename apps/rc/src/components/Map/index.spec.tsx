@@ -1,23 +1,11 @@
-
-import { rest } from 'msw'
-
-import * as config                                                     from '@acx-ui/config'
 import { useSplitTreatment }                                           from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }                                              from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { render, screen, mockRestApiQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { mockServer }                                                  from '@acx-ui/test-utils'
 
 import { Map } from '.'
 
 describe('Map', () => {
-  beforeAll(async () => {
-    const env = {
-      GOOGLE_MAPS_KEY: 'GOOGLE_MAPS_KEY'
-    }
-    mockServer.use(rest.get('/env.json', (_, r, c) => r(c.json(env))))
-    await config.initialize()
-  })
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get', {})
   })

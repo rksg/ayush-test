@@ -5,6 +5,8 @@ import type {
 } from '@ant-design/pro-table'
 
 type AdditionalColumnType = {
+  // mandatory column for mapping columns
+  key: string
   /**
    * Mark column as fixed
    */
@@ -21,6 +23,20 @@ type AdditionalColumnType = {
    * @default true
    */
   show?: boolean
+  // overwrite type of width to number for column resize
+  width?: number
+  /**
+   * Set the column to be searchable
+   * If one column has this to true the table will start showing search input
+   * @default false
+   */
+  searchable?: boolean
+  /**
+   * Set the column to be filterable
+   * the table will show a multi select dropdown to filter the column
+   * @default false
+   */
+  filterable?: boolean
 }
 
 type ProColumnTypeSubset <RecordType, ValueType> = Omit<
@@ -52,3 +68,7 @@ export type ColumnStateOption = {
 }
 
 export type TableColumnState = Record<string, AntColumnsState>
+
+export type RecordWithChildren <RecordType> = RecordType & {
+  children?: RecordType[]
+}

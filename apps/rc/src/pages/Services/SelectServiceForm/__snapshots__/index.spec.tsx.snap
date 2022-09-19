@@ -3,7 +3,7 @@
 exports[`Select Service Form should render form 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
+    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -62,290 +62,286 @@ exports[`Select Service Form should render form 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 jzCCYL"
+    class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
   >
     <div
       class="ant-pro-steps-form"
     >
       <div
-        class="styledComponents__Container-sc-1ibvcih-4 fAuOsZ"
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
       >
         <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
+            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
           >
             <div
-              class="styledComponents__StepsContainer-sc-1ibvcih-2 gGLpjE"
+              class="ant-steps ant-steps-vertical ant-steps-dot"
             >
               <div
-                class="ant-steps ant-steps-vertical ant-steps-dot"
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
               >
                 <div
-                  class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                  class="ant-steps-item-container"
                 >
                   <div
-                    class="ant-steps-item-container"
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
                   >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
+                    <span
+                      class="ant-steps-icon"
                     >
                       <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
-                    <div
-                      class="ant-steps-item-content"
-                    >
-                      <div
-                        class="ant-steps-item-title"
+                        class="ant-steps-icon-dot"
                       />
-                    </div>
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
         <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
+            class="ant-pro-steps-form-container"
           >
             <div
-              class="ant-pro-steps-form-container"
+              class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
             >
-              <div
-                class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="selectService"
               >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="selectService"
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div
+                  class="ant-form-item"
                 >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
                   <div
-                    class="ant-form-item"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-row ant-form-item-row"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
-                        class="ant-col ant-form-item-control"
+                        class="ant-form-item-control-input"
                       >
                         <div
-                          class="ant-form-item-control-input"
+                          class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="ant-form-item-control-input-content"
+                            class="ant-radio-group ant-radio-group-outline"
+                            id="selectService_serviceType"
                           >
                             <div
-                              class="ant-radio-group ant-radio-group-outline"
-                              id="selectService_serviceType"
+                              class="styledComponents__CategoryContainer-sc-994pwt-0 hbJKTH"
                             >
-                              <div
-                                class="styledComponents__CategoryContainer-sc-994pwt-0 hbJKTH"
+                              <h3
+                                class="ant-typography"
                               >
-                                <h3
-                                  class="ant-typography"
-                                >
-                                  Connectivity
-                                </h3>
+                                Connectivity
+                              </h3>
+                              <div
+                                class="ant-space ant-space-horizontal ant-space-align-center"
+                              >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                  class="ant-space-item"
+                                  style="margin-right: 8px;"
                                 >
-                                  <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                   >
-                                    <label
-                                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                    >
-                                      <span
-                                        class="ant-radio"
-                                      >
-                                        <input
-                                          class="ant-radio-input"
-                                          type="radio"
-                                          value="DHCP"
-                                        />
-                                        <span
-                                          class="ant-radio-inner"
-                                        />
-                                      </span>
-                                      <span>
-                                        DHCP
-                                        <div
-                                          class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                        >
-                                          Provides IP address to end devices
-                                        </div>
-                                      </span>
-                                    </label>
-                                  </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <label
-                                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                    >
-                                      <span
-                                        class="ant-radio"
-                                      >
-                                        <input
-                                          class="ant-radio-input"
-                                          type="radio"
-                                          value="DPSK"
-                                        />
-                                        <span
-                                          class="ant-radio-inner"
-                                        />
-                                      </span>
-                                      <span>
-                                        DPSK
-                                        <div
-                                          class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                        >
-                                          RUCKUS Dynamic Pre Shared Key Service
-                                        </div>
-                                      </span>
-                                    </label>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                class="styledComponents__CategoryContainer-sc-994pwt-0 hbJKTH"
-                              >
-                                <h3
-                                  class="ant-typography"
-                                >
-                                  Application
-                                </h3>
-                                <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center"
-                                >
-                                  <div
-                                    class="ant-space-item"
-                                    style="margin-right: 8px;"
-                                  >
-                                    <label
-                                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                    >
-                                      <span
-                                        class="ant-radio"
-                                      >
-                                        <input
-                                          class="ant-radio-input"
-                                          type="radio"
-                                          value="MDNS_PROXY"
-                                        />
-                                        <span
-                                          class="ant-radio-inner"
-                                        />
-                                      </span>
-                                      <span>
-                                        mDNS Proxy
-                                        <div
-                                          class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                        >
-                                          Provides mDNS service
-                                        </div>
-                                      </span>
-                                    </label>
-                                  </div>
-                                  <div
-                                    class="ant-space-item"
-                                  >
-                                    <label
-                                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                    >
-                                      <span
-                                        class="ant-radio"
-                                      >
-                                        <input
-                                          class="ant-radio-input"
-                                          type="radio"
-                                          value="WIFI_CALLING"
-                                        />
-                                        <span
-                                          class="ant-radio-inner"
-                                        />
-                                      </span>
-                                      <span>
-                                        Wi-Fi Calling
-                                        <div
-                                          class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
-                                        >
-                                          Provides voice calling service over WiFi
-                                        </div>
-                                      </span>
-                                    </label>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                class="styledComponents__CategoryContainer-sc-994pwt-0 hbJKTH"
-                              >
-                                <h3
-                                  class="ant-typography"
-                                >
-                                  More Services
-                                </h3>
-                                <label
-                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                >
-                                  <span
-                                    class="ant-radio"
-                                  >
-                                    <input
-                                      class="ant-radio-input"
-                                      type="radio"
-                                      value="PORTAL"
-                                    />
                                     <span
-                                      class="ant-radio-inner"
-                                    />
-                                  </span>
-                                  <span>
-                                    Portal
-                                    <div
-                                      class="styledComponents__RadioDescription-sc-1bxt3n4-2 YBVkl"
+                                      class="ant-radio"
                                     >
-                                      Provides "portal" for guest access. Includes hotspot access (Passpoint, OpenRoaming)
-                                    </div>
-                                  </span>
-                                </label>
+                                      <input
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="DHCP"
+                                      />
+                                      <span
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      DHCP
+                                      <div
+                                        class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                      >
+                                        Provides IP address to end devices
+                                      </div>
+                                    </span>
+                                  </label>
+                                </div>
+                                <div
+                                  class="ant-space-item"
+                                >
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-radio"
+                                    >
+                                      <input
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="DPSK"
+                                      />
+                                      <span
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      DPSK
+                                      <div
+                                        class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                      >
+                                        RUCKUS Dynamic Pre Shared Key Service
+                                      </div>
+                                    </span>
+                                  </label>
+                                </div>
                               </div>
+                            </div>
+                            <div
+                              class="styledComponents__CategoryContainer-sc-994pwt-0 hbJKTH"
+                            >
+                              <h3
+                                class="ant-typography"
+                              >
+                                Application
+                              </h3>
+                              <div
+                                class="ant-space ant-space-horizontal ant-space-align-center"
+                              >
+                                <div
+                                  class="ant-space-item"
+                                  style="margin-right: 8px;"
+                                >
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-radio"
+                                    >
+                                      <input
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="MDNS_PROXY"
+                                      />
+                                      <span
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      mDNS Proxy
+                                      <div
+                                        class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                      >
+                                        Provides mDNS service
+                                      </div>
+                                    </span>
+                                  </label>
+                                </div>
+                                <div
+                                  class="ant-space-item"
+                                >
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-radio"
+                                    >
+                                      <input
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="WIFI_CALLING"
+                                      />
+                                      <span
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Wi-Fi Calling
+                                      <div
+                                        class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                      >
+                                        Provides voice calling service over WiFi
+                                      </div>
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="styledComponents__CategoryContainer-sc-994pwt-0 hbJKTH"
+                            >
+                              <h3
+                                class="ant-typography"
+                              >
+                                More Services
+                              </h3>
+                              <label
+                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                              >
+                                <span
+                                  class="ant-radio"
+                                >
+                                  <input
+                                    class="ant-radio-input"
+                                    type="radio"
+                                    value="PORTAL"
+                                  />
+                                  <span
+                                    class="ant-radio-inner"
+                                  />
+                                </span>
+                                <span>
+                                  Portal
+                                  <div
+                                    class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                  >
+                                    Provides "portal" for guest access. Includes hotspot access (Passpoint, OpenRoaming)
+                                  </div>
+                                </span>
+                              </label>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-3 jmOuwe"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
@@ -359,7 +355,7 @@ exports[`Select Service Form should render form 1`] = `
               type="button"
             >
               <span>
-                Next
+                Add
               </span>
             </button>
           </div>

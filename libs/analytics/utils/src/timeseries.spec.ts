@@ -1,6 +1,6 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { getSeriesData } from './index'
+import { getSeriesData, checkNoData } from './index'
 
 const seriesMapping = [
   { key: 'newClientCount', name: 'New Clients' },
@@ -19,6 +19,19 @@ const sample = {
   newClientCount: [1, 2, 3, 4, 5],
   impactedClientCount: [6, 7, 8, 9, 10],
   connectedClientCount: [11, 12, 13, 14, 15]
+}
+
+const sampleNoData = {
+  time: [
+    '2022-04-07T09:15:00.000Z',
+    '2022-04-07T09:30:00.000Z',
+    '2022-04-07T09:45:00.000Z',
+    '2022-04-07T10:00:00.000Z',
+    '2022-04-07T10:15:00.000Z'
+  ] as TimeStamp[],
+  newClientCount: [null],
+  impactedClientCount: [null],
+  connectedClientCount: [null]
 }
 
 describe('getSeriesData', () => {
@@ -53,5 +66,24 @@ describe('getSeriesData', () => {
   it('should return empty array if no data', ()=>{
     expect(getSeriesData(null, seriesMapping))
       .toEqual([])
+  })
+  it('should return empty array if all data point is null', () => {
+    expect(
+      getSeriesData(sampleNoData, seriesMapping)).toEqual([])
+  })
+})
+
+describe('checkNoData', () => {
+  it('should return false if data is present', ()=>{
+    expect(checkNoData(sample))
+      .toEqual(false)
+  })
+  it('should return true if no data', ()=>{
+    expect(checkNoData(null))
+      .toEqual(true)
+  })
+  it('should return true if all data point is null', () => {
+    expect(
+      checkNoData(sampleNoData)).toEqual(true)
   })
 })

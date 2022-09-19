@@ -31,6 +31,20 @@ const sample = {
   uniqueUsers_24: [16, 17, 18, 19, 20]
 }
 
+const sampleNoData = {
+  time: [
+    '2022-04-07T09:15:00.000Z',
+    '2022-04-07T09:30:00.000Z',
+    '2022-04-07T09:45:00.000Z',
+    '2022-04-07T10:00:00.000Z',
+    '2022-04-07T10:15:00.000Z'
+  ],
+  uniqueUsers_all: [null],
+  uniqueUsers_6: [null],
+  uniqueUsers_5: [null],
+  uniqueUsers_24: [null]
+}
+
 describe('ConnectedClientsOverTimeWidget', () => {
   mockAutoSizer()
 
@@ -64,6 +78,15 @@ describe('ConnectedClientsOverTimeWidget', () => {
     })
     render( <Provider><ConnectedClientsOverTimeWidget filters={filters}/></Provider>)
     await screen.findByText('Something went wrong.')
+    jest.resetAllMocks()
+  })
+  it('should render "No data to display" when data is empty', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+    mockGraphqlQuery(dataApiURL, 'ConnectedClientsOverTimeWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sampleNoData } } }
+    })
+    render( <Provider> <ConnectedClientsOverTimeWidget filters={filters}/> </Provider>)
+    expect(await screen.findByText('No data to display')).toBeVisible()
     jest.resetAllMocks()
   })
 })

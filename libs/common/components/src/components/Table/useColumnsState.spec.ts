@@ -10,21 +10,17 @@ describe('useColumnsState', () => {
     const options: Options = {
       columns: [
         { key: 'col1', fixed: 'left' },
-        { dataIndex: 'col2' },
         { key: 'col3', disable: true },
         { key: 'col4', show: false },
-        { key: 'col5', show: true },
-        { show: true }
+        { key: 'col5', show: true }
       ]
     }
     const { result } = renderHook(useColumnsState, { initialProps: options })
     expect(result.current.value).toEqual({
       col1: { order: 0, fixed: 'left', show: true, disable: true },
-      col2: { order: 1, fixed: undefined, show: true, disable: false },
-      col3: { order: 2, fixed: undefined, show: true, disable: true },
-      col4: { order: 3, fixed: undefined, show: false, disable: false },
-      col5: { order: 4, fixed: undefined, show: true, disable: false },
-      5: { order: 5, fixed: undefined, show: true, disable: false }
+      col3: { order: 1, fixed: undefined, show: true, disable: true },
+      col4: { order: 2, fixed: undefined, show: false, disable: false },
+      col5: { order: 3, fixed: undefined, show: true, disable: false }
     })
   })
 

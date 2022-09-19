@@ -9,8 +9,8 @@ import { DateRange }                                    from '@acx-ui/utils'
 
 import { api as incidentApi } from '../IncidentTable/services'
 
+import { networkHierarchy }  from './__tests__/fixtures'
 import { api }               from './services'
-import { networkHierarchy }  from './services.spec'
 import { NonSelectableItem } from './styledComponents'
 
 import NetworkFilter, { onApply, displayRender } from './index'
@@ -129,7 +129,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   useAnalyticsFilter: () => mockUseAnalyticsFilter
 }))
 describe('Network Filter', () => {
-  
+
   beforeEach(() => {
 
     store.dispatch(api.util.resetApiState())
@@ -196,7 +196,7 @@ describe('Network Filter', () => {
     render(<Provider><NetworkFilter /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.type(screen.getByRole('combobox'), 'swg')
-    await screen.findByText('swg')    
+    await screen.findByText('swg')
     fireEvent.click(screen.getByText('swg'))
     const path = [
       { type: 'network', name: 'Network' },
@@ -205,7 +205,7 @@ describe('Network Filter', () => {
     const raw = [JSON.stringify(path)]
     expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
     expect(mockSetNetworkPath).toHaveBeenCalledWith(path, raw)
-   
+
   })
   it('should return correct value to render', () => {
     const data = [
