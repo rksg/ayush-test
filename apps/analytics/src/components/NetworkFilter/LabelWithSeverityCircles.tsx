@@ -11,7 +11,7 @@ export const LabelWithSeverityCicle = (props: LabelProps) => {
   const { name, severityCircles } = props
   return (
     <UI.LabelContainer>
-      <UI.Label>
+      <UI.Label title={name}>
         {name}
       </UI.Label>
       <UI.SeverityContainer>
