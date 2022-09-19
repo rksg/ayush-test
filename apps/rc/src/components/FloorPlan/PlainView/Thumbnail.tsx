@@ -8,7 +8,7 @@ export default function Thumbnail (props: {
     floorPlan: FloorPlanDto,
     active: number,
     onFloorPlanSelection: CallableFunction }) {
-  const { floorPlan, active, onFloorPlanSelection } = { ...props }
+  const { floorPlan, active, onFloorPlanSelection } = props
   function selectFloorPlan () {
     onFloorPlanSelection(floorPlan)
   }

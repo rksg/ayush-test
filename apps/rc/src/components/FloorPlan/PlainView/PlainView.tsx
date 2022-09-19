@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { Col, Divider, Row, Space, Typography } from 'antd'
 import { useIntl }                              from 'react-intl'
@@ -22,42 +22,71 @@ export enum ImageMode {
   ORIGINAL = 'original'
 }
 
-export default function PlainView (props: { floorPlans: FloorPlanDto[] }) {
-  const { floorPlans } = { ...props }
+export function getImageFitPercentage (containerCoordsX: number,
+  containerCoordsY: number, imageCoordsX: number, imageCoordsY: number) {
+  let differencePercentage = 0
+
+  if (containerCoordsX !== imageCoordsX || containerCoordsY !== imageCoordsY) {
+    if (containerCoordsX > imageCoordsX) {
+      differencePercentage = (imageCoordsX / containerCoordsX) * 100
+    }
+    if (imageCoordsX > containerCoordsX) {
+      const temp_differencePercentage = (containerCoordsX / imageCoordsX) * 100
+      differencePercentage = (temp_differencePercentage < differencePercentage)
+        ? temp_differencePercentage : differencePercentage
+    }
+    if (containerCoordsY > imageCoordsY) {
+      const temp_differencePercentage = (imageCoordsY / containerCoordsY) * 100
+      differencePercentage = (temp_differencePercentage < differencePercentage)
+        ? temp_differencePercentage : differencePercentage
+    }
+    if (imageCoordsY > containerCoordsY) {
+      const temp_differencePercentage = (containerCoordsY / imageCoordsY) * 100
+      differencePercentage = (temp_differencePercentage < differencePercentage)
+        ? temp_differencePercentage : differencePercentage
+    }
+  }
+  return differencePercentage
+}
+
+export default function PlainView (props: { floorPlans: FloorPlanDto[],
+  toggleGalleryView: Function,
+  defaultFloorPlan: FloorPlanDto }) {
+  const { floorPlans, toggleGalleryView, defaultFloorPlan } = props
   const { $t } = useIntl()
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
 
-  const [selectedFloorPlan, setSelectedFloorPlan] = useState(floorPlans[0])
+  const [selectedFloorPlan, setSelectedFloorPlan] = useState(defaultFloorPlan)
   const [currentZoom, setCurrentZoom] = useState(1)
   const [imageLoaded, setImageLoaded] = useState(false)
-  const [imageMode, setImageMode] = useState(ImageMode.FIT)
+  const [imageMode, setImageMode] = useState(ImageMode.ORIGINAL)
   const [fitContainerSize, setFitContanierSize] = useState(0)
 
   function onFloorPlanSelectionHandler (floorPlan: FloorPlanDto) {
     if (floorPlan.imageId !== selectedFloorPlan.imageId)
     {
+      zoom(ImageMode.ORIGINAL)
+      setFitContanierSize(0)
       setImageLoaded(false)
       setSelectedFloorPlan(floorPlan)
-      setCurrentZoom(1)
     }
   }
 
-  useEffect(()=>{
-    if (imageLoaded)
-      fitFloorplanImage()
-  },[selectedFloorPlan, imageLoaded])
+  function onImageLoad () {
+    fitFloorplanImage()
+    setImageLoaded(true)
+  }
 
-  function zoom (type: ImageMode) {
-    switch (type) {
-      case '+':
+  function zoom (mode: ImageMode) {
+    switch (mode) {
+      case ImageMode.ZOOM_IN:
         if (currentZoom < 5) {
           const calculatedZoom = currentZoom + 0.25
           setCurrentZoom(calculatedZoom)
         }
-        setImageMode(ImageMode.ZOOM_IN)
         break
-      case '-':
+      case ImageMode.ZOOM_OUT:
         if (currentZoom > 0.1) {
           if (currentZoom > 0.25) {
             const newZoomVal = currentZoom - 0.25
@@ -67,60 +96,48 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[] }) {
             setCurrentZoom(0.1)
           }
         }
-        setImageMode(ImageMode.ZOOM_OUT)
         break
-      case 'original':
+      case ImageMode.ORIGINAL:
         setCurrentZoom(1)
-        setImageMode(ImageMode.ORIGINAL)
         break
-      case 'fit':
+      case ImageMode.FIT:
         if (!fitContainerSize) {
           fitFloorplanImage()
         } else {
           setCurrentZoom(fitContainerSize)
         }
-        setImageMode(ImageMode.FIT)
         break
     }
+    setImageMode(mode)
   }
 
-  function setImageModeHandler (type: ImageMode) {
-    zoom(type)
+  function setImageModeHandler (mode: ImageMode) {
+    zoom(mode)
   }
 
   function fitFloorplanImage () {
-    let differencePercentage = 0
+    if (imageMode !== ImageMode.FIT) {
+      const containerCoordsX = imageContainerRef?.current?.parentElement?.offsetWidth || 0
+      const containerCoordsY = imageContainerRef?.current?.parentElement?.offsetHeight || 0
 
-    const containerCoordsX = imageContainerRef?.current?.parentElement?.offsetWidth || 0
-    const containerCoordsY = imageContainerRef?.current?.parentElement?.offsetHeight || 0
+      const imageCoordsX = imageRef?.current?.offsetWidth || 0
+      const imageCoordsY = imageRef?.current?.offsetHeight || 0
 
-    const imageCoordsX = imageRef?.current?.naturalWidth || 0
-    const imageCoordsY = imageRef?.current?.naturalHeight || 0
-
-    if (containerCoordsX !== imageCoordsX || containerCoordsY !== imageCoordsY) {
-      if (containerCoordsX > imageCoordsX) {
-        differencePercentage = (imageCoordsX / containerCoordsX) * 100
-      }
-      if (imageCoordsX > containerCoordsX) {
-        const temp_differencePercentage = (containerCoordsX / imageCoordsX) * 100
-        differencePercentage = (temp_differencePercentage < differencePercentage)
-          ? temp_differencePercentage : differencePercentage
-      }
-      if (containerCoordsY > imageCoordsY) {
-        differencePercentage = (imageCoordsY / containerCoordsY) * 100
-      }
-      if (imageCoordsY > containerCoordsY) {
-        const temp_differencePercentage = (containerCoordsY / imageCoordsY) * 100
-        differencePercentage = (temp_differencePercentage < differencePercentage)
-          ? temp_differencePercentage : differencePercentage
-      }
-    }
     
-    if (differencePercentage) {
-      const _zoom = Math.floor(differencePercentage) / 100
-      setCurrentZoom(_zoom)
-      setFitContanierSize(_zoom)
+      const differencePercentage = getImageFitPercentage(containerCoordsX,
+        containerCoordsY, imageCoordsX, imageCoordsY)
+      
+      if (differencePercentage) {
+        const _zoom = Math.floor(differencePercentage) / 100
+        setCurrentZoom(_zoom)
+        setFitContanierSize(_zoom)
+        setImageMode(ImageMode.FIT)
+      }
     }
+  }
+
+  const onGalleryIconClick = function () {
+    toggleGalleryView()
   }
 
   return (
@@ -147,7 +164,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[] }) {
         <UI.ImageContainer imageMode={imageMode} ref={imageContainerRef} currentZoom={currentZoom}>
           <img
             data-testid='floorPlanImage'
-            onLoad={() => setImageLoaded(true)}
+            onLoad={() => onImageLoad()}
             style={{ maxHeight: '100%', width: '100%' }}
             ref={imageRef}
             alt={selectedFloorPlan?.name}
@@ -169,8 +186,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[] }) {
           split={<Divider style={{
             lineHeight: '0px',
             margin: '0px',
-            border: '1px solid var(--acx-neutrals-30)',
-            borderRadius: '4px'
+            border: '1px solid var(--acx-neutrals-30)'
           }} />}
           size={0}>
           <Button
@@ -202,6 +218,8 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[] }) {
       {floorPlans.length > 1 && <Row style={{ backgroundColor: 'var(--acx-neutrals-10' }}>
         <UI.GallaryWrapper>
           <UI.GallaryIcon
+            data-testid='galleryIcon'
+            onClick={() => onGalleryIconClick()}
             type='default'
             icon={<AppIcon />}
           />

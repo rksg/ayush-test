@@ -41,13 +41,12 @@ export const ImageDesc = styled('div')<{ active: number }>`
     top: 48px;
     opacity: 0.95;
     border-radius: 0px 0px 4px 4px;
-    color: #ffffff;
+    color: var(--acx-primary-white);
     text-align: center;
-    font-family: 'Open Sans';
     font-style: normal;
-    font-weight: 400;
-    font-size: 10px;
-    line-height: 20px;
+    font-weight: var(--acx-subtitle-6-font-weight);
+    font-size: var(--acx-subtitle-6-font-size);
+    line-height: var(--acx-subtitle-4-line-height);
     background: ${ props => props.active
     ? 'var(--acx-accents-orange-55)' : 'var(--acx-neutrals-80)'};
 `
@@ -63,9 +62,10 @@ export const ImageContainerWrapper = styled('div')`
     display: block;
     overflow: overlay;
     width: 100%;
-    height: 400px;
+    height: 460px;
     max-width: 100%;
     max-height: 100%;
+    padding-right: 35px;
 `
 
 export const ImageContainer = styled('div')< { currentZoom: number, imageMode: ImageMode } >`
@@ -75,12 +75,6 @@ export const ImageContainer = styled('div')< { currentZoom: number, imageMode: I
     height: ${props => props.imageMode === ImageMode.FIT ? '100%' : 'auto'};
     padding: 30px auto;
     max-height: 100%;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 `
 export const ImageLoaderContainer = styled('div')`
     position: absolute;

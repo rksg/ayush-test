@@ -3,11 +3,10 @@ import styled                         from 'styled-components'
 
 import { ArrowsOut } from '@acx-ui/icons'
 
-
 export const StyledSpace = styled(Space)`
-    position: absolute;
-    top: -34px;
-    right: 0;
+  position: absolute;
+  top: -34px;
+  right: 0;
 `
 export const ArrowOutIcon = styled(ArrowsOut)``
 

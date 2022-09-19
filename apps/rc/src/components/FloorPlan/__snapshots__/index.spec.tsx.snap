@@ -64,10 +64,10 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="styledComponents__ImageContainerWrapper-rlzd0s-6 khEqsh"
+    class="styledComponents__ImageContainerWrapper-rlzd0s-6 dQopJU"
   >
     <div
-      class="styledComponents__ImageContainer-rlzd0s-7 ecMuop"
+      class="styledComponents__ImageContainer-rlzd0s-7 jWJHGm"
     >
       <img
         alt="TEST_2"
@@ -144,7 +144,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         <div
           class="ant-divider ant-divider-horizontal"
           role="separator"
-          style="line-height: 0px; margin: 0px; border-radius: 4px;"
+          style="line-height: 0px; margin: 0px;"
         />
       </span>
       <div
@@ -168,7 +168,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         <div
           class="ant-divider ant-divider-horizontal"
           role="separator"
-          style="line-height: 0px; margin: 0px; border-radius: 4px;"
+          style="line-height: 0px; margin: 0px;"
         />
       </span>
       <div
@@ -192,7 +192,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         <div
           class="ant-divider ant-divider-horizontal"
           role="separator"
-          style="line-height: 0px; margin: 0px; border-radius: 4px;"
+          style="line-height: 0px; margin: 0px;"
         />
       </span>
       <div
@@ -221,6 +221,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
       >
         <button
           class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 lbgWNL"
+          data-testid="galleryIcon"
           type="button"
         >
           <svg>
@@ -259,7 +260,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 iglNbz"
+              class="styledComponents__ImageDesc-rlzd0s-4 eYxTGe"
             >
               TEST_2
             </div>
@@ -288,7 +289,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 kxOHYR"
+              class="styledComponents__ImageDesc-rlzd0s-4 kwOGUY"
             >
               dscx
             </div>
@@ -367,10 +368,10 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
       style="margin: 0px;"
     />
     <div
-      class="styledComponents__ImageContainerWrapper-rlzd0s-6 khEqsh"
+      class="styledComponents__ImageContainerWrapper-rlzd0s-6 dQopJU"
     >
       <div
-        class="styledComponents__ImageContainer-rlzd0s-7 ecMuop"
+        class="styledComponents__ImageContainer-rlzd0s-7 jWJHGm"
       >
         <img
           alt="TEST_2"
@@ -447,7 +448,7 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
           <div
             class="ant-divider ant-divider-horizontal"
             role="separator"
-            style="line-height: 0px; margin: 0px; border-radius: 4px;"
+            style="line-height: 0px; margin: 0px;"
           />
         </span>
         <div
@@ -471,7 +472,7 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
           <div
             class="ant-divider ant-divider-horizontal"
             role="separator"
-            style="line-height: 0px; margin: 0px; border-radius: 4px;"
+            style="line-height: 0px; margin: 0px;"
           />
         </span>
         <div
@@ -495,7 +496,7 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
           <div
             class="ant-divider ant-divider-horizontal"
             role="separator"
-            style="line-height: 0px; margin: 0px; border-radius: 4px;"
+            style="line-height: 0px; margin: 0px;"
           />
         </span>
         <div
@@ -524,6 +525,7 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
         >
           <button
             class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 lbgWNL"
+            data-testid="galleryIcon"
             type="button"
           >
             <svg>
@@ -562,7 +564,7 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__ImageDesc-rlzd0s-4 iglNbz"
+                class="styledComponents__ImageDesc-rlzd0s-4 eYxTGe"
               >
                 TEST_2
               </div>
@@ -591,7 +593,7 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__ImageDesc-rlzd0s-4 kxOHYR"
+                class="styledComponents__ImageDesc-rlzd0s-4 kwOGUY"
               >
                 dscx
               </div>
@@ -634,6 +636,7 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
       >
         <button
           class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-1v7l7qr-2 bnlKLs"
+          data-testid="expandIcon"
           title="Expand"
           type="button"
         >
@@ -648,3 +651,5 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
   </div>
 </DocumentFragment>
 `;
+
+exports[`Floor Plans Gallaryview should render correctly 1`] = `[Function]`;
