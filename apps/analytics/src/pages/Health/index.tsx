@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
@@ -6,15 +6,17 @@ import { useIntl }  from 'react-intl'
 
 import { getSeriesData, TimeSeriesData, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 
-import Header                from '../../components/Header'
-import HealthTimeSeriesChart from '../../components/HealthConnectedClientsOverTime'
-
-import { HealthPageContextProvider } from './HealthPageContext'
+import Header                       from '../../components/Header'
+import HealthTimeSeriesChart        from '../../components/HealthConnectedClientsOverTime'
 import { useHealthTimeseriesQuery } from '../../components/HealthConnectedClientsOverTime/services'
+
+import { HealthPageContextProvider, TimeWindow } from './HealthPageContext'
 
 export default function HealthPage () {
   const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
+  const { startDate, endDate } = filters
+  const [timeWindow, setTimeWindow] = useState<TimeWindow>([startDate, endDate])
 
   const seriesMapping = [
     {
@@ -27,7 +29,11 @@ export default function HealthPage () {
     }
   ] as Array<{ key: string; name: string }>
 
-  const queryResults = useHealthTimeseriesQuery(filters, {
+  const queryResults = useHealthTimeseriesQuery({
+    ...filters,
+    startDate: timeWindow[0] as string,
+    endDate: timeWindow[1] as string
+  }, {
     selectFromResult: ({
       data,
       ...rest
@@ -39,28 +45,28 @@ export default function HealthPage () {
 
   const clientsRef = useRef<ReactECharts>(null)
   const clientsRef1 = useRef<ReactECharts>(null)
-
-  const chartRefs = useMemo(() => [
-    clientsRef,
-    clientsRef1
-  ],[])
-
+  const chartRefs = useMemo(() => [clientsRef, clientsRef1],[])
   useEffect(() => {
-    console.log(chartRefs)
     if(chartRefs.every(ref => ref && ref.current)){
       [chartRefs[0], chartRefs[1]].forEach(ref => {
         let instance = ref.current!.getEchartsInstance()
         instance.group = 'group1'
       })
-      // connect('group1')
-      // console.log('trigger')
     }
     connect('group1')
-  }, [chartRefs, queryResults])
+  }, [chartRefs, queryResults.data])
 
   return <HealthPageContextProvider>
     <Header title={$t({ defaultMessage: 'Health' })} />
-    <HealthTimeSeriesChart filters={filters} chartRef={chartRefs[0]} data={queryResults}/>
-    <HealthTimeSeriesChart filters={filters} chartRef={chartRefs[1]} data={queryResults}/>
+    <HealthTimeSeriesChart
+      ref={chartRefs[0]}
+      queryResults={queryResults}
+      setTimeWindow={setTimeWindow}
+    />
+    <HealthTimeSeriesChart
+      ref={chartRefs[1]}
+      queryResults={queryResults}
+      setTimeWindow={setTimeWindow}
+    />
   </HealthPageContextProvider>
 }

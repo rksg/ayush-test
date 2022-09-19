@@ -1,58 +1,53 @@
-import { forwardRef } from 'react'
+import { forwardRef, RefObject } from 'react'
 
 import ReactECharts from 'echarts-for-react'
-import { useIntl }  from 'react-intl'
+import EChartsReact from 'echarts-for-react'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, getSeriesData, MultiLineTimeSeriesChartData, TimeSeriesData }         from '@acx-ui/analytics/utils'
+import { MultiLineTimeSeriesChartData }                                       from '@acx-ui/analytics/utils'
 import { Card, cssStr, Loader, MultiLineTimeSeriesChart, NoData, QueryState } from '@acx-ui/components'
 
-import { useHealthTimeseriesQuery } from './services'
+import { TimeWindow } from '../../pages/Health/HealthPageContext'
 
 
 const lineColors = [
   cssStr('--acx-accents-blue-50'),
   cssStr('--acx-accents-orange-50')
 ]
-function HealthTimeSeriesChart ({ filters, chartRef, data }:
-  {
-    filters: AnalyticsFilter,
-    chartRef: React.RefObject<ReactECharts>
-    data: QueryState & { data: MultiLineTimeSeriesChartData[] }
-  }
-) {
 
-  // const { $t } = useIntl()
-  const { startDate, endDate } = filters
-
-  return (
-    <MultiLineTimeSeriesChart
-      data={data.data}
-      lineColors={lineColors}
-      brush={[startDate, endDate]}
-      style={{ width: 500, height: 200 }}
-      chartRef={chartRef}
-    />
-    // <Loader states={[data]}>
-    //   <AutoSizer>
-    //     {({ width }) => (
-    //       <div style={{ width, height: 250 }}>
-    //         <Card>
-    //           {(data.data && data.data.length > 0)
-    //             ? <MultiLineTimeSeriesChart
-    //               data={data.data}
-    //               lineColors={lineColors}
-    //               brush={[startDate, endDate]}
-    //               style={{ width, height: 200 }}
-    //               chartRef={chartRef}
-    //             />
-    //             : <NoData />}
-    //         </Card>
-    //       </div>
-    //     )}
-    //   </AutoSizer>
-    // </Loader>
-  )
+interface HealthTimeSeriesChartProps {
+  queryResults: QueryState & { data: MultiLineTimeSeriesChartData[] }
+  setTimeWindow: React.Dispatch<React.SetStateAction<TimeWindow>>
+  brush?: TimeWindow
 }
+
+const HealthTimeSeriesChart = forwardRef<ReactECharts, HealthTimeSeriesChartProps>((
+  props,
+  ref
+) => {
+  const { queryResults, setTimeWindow, brush } = props
+  return (
+    <Loader states={[queryResults]}>
+      <AutoSizer>
+        {({ width }) => (
+          <div style={{ width, height: 250 }}>
+            <Card>
+              {(queryResults.data && queryResults.data.length > 0)
+                ? <MultiLineTimeSeriesChart
+                  data={queryResults.data}
+                  lineColors={lineColors}
+                  brush={brush}
+                  style={{ width, height: 200 }}
+                  chartRef={ref as RefObject<EChartsReact> | undefined}
+                  ref={ref}
+                  onBrushChange={(range) => setTimeWindow(range as TimeWindow)}
+                />
+                : <NoData />}
+            </Card>
+          </div>
+        )}
+      </AutoSizer>
+    </Loader>
+  )})
 
 export default HealthTimeSeriesChart

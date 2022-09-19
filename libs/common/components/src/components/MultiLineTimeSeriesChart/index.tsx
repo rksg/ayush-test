@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useImperativeHandle, useRef } from 'react'
+import { forwardRef, RefObject, useEffect, useImperativeHandle, useRef } from 'react'
 
 import ReactECharts from 'echarts-for-react'
 import { isEmpty }  from 'lodash'
@@ -69,17 +69,22 @@ export const useOnBrushChange = (
   }
 }
 
-export function MultiLineTimeSeriesChart
-  <TChartData extends MultiLineTimeSeriesChartData>
-({
-  data,
-  legendProp = 'name' as keyof TChartData,
-  dataFormatter,
-  ...props
-}: MultiLineTimeSeriesChartProps<TChartData>) {
+export const MultiLineTimeSeriesChart = forwardRef<
+  ReactECharts,
+  MultiLineTimeSeriesChartProps<MultiLineTimeSeriesChartData> & {
+    data: MultiLineTimeSeriesChartData[]
+  }
+>
+((props, ref) => {
+  const {
+    data,
+    legendProp = 'name' as keyof MultiLineTimeSeriesChartData,
+    dataFormatter,
+    ...rest
+  } = props
 
   const eChartsRef = useRef<ReactECharts>(null)
-  useImperativeHandle(props.chartRef, () => eChartsRef.current!)
+  useImperativeHandle(ref, () => eChartsRef.current!)
   useBrush(eChartsRef, props.brush)
 
   const option: EChartsOption = {
@@ -140,10 +145,10 @@ export function MultiLineTimeSeriesChart
 
   return (
     <Chart
-      {...props}
+      {...rest}
       ref={eChartsRef}
       opts={{ renderer: 'svg' }}
       option={option}
       onEvents={{ brushselected: useOnBrushChange(props.onBrushChange) }}/>
   )
-}
+})
