@@ -126,6 +126,7 @@ const mockUseAnalyticsFilter = {
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   defaultNetworkPath: [{ type: 'network', name: 'Network' }],
+  formattedPath: jest.fn(),
   useAnalyticsFilter: () => mockUseAnalyticsFilter
 }))
 describe('Network Filter', () => {
