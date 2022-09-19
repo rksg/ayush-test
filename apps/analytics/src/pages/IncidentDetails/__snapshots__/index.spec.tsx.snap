@@ -6,7 +6,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+      class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -55,9 +55,26 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
               class="ant-page-header-heading-title"
             >
               <h1
-                class="ant-typography"
+                aria-label="Incident Details"
+                class="ant-typography ant-typography-ellipsis ant-typography-single-line"
               >
                 Incident Details
+                <span
+                  aria-hidden="true"
+                  style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
+                >
+                  lg
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
+                >
+                  <span
+                    aria-hidden="true"
+                  >
+                    ...
+                  </span>
+                </span>
               </h1>
               <span
                 class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
