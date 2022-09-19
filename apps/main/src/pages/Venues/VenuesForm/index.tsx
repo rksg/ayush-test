@@ -1,13 +1,7 @@
 import React, { useState, useRef, ChangeEventHandler } from 'react'
 
-import {
-  Form,
-  Input,
-  Row,
-  Col,
-  Typography
-} from 'antd'
-import { useIntl } from 'react-intl'
+import { Row, Col, Form, Input, Typography } from 'antd'
+import { useIntl }                           from 'react-intl'
 
 import {
   GoogleMap,
@@ -28,7 +22,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CloseIcon, AddressContainer } from './styledComponents'
+import * as UI from './styledComponents'
 
 interface AddressComponent {
   long_name?: string;
@@ -148,7 +142,7 @@ export function VenuesForm () {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.map(n => ({ name: n.name }))
-    return checkObjectNotExists(intl, list, { name: value } , 'Venue')
+    return checkObjectNotExists(intl, list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
 
   const addressValidator = async () => {
@@ -198,71 +192,55 @@ export function VenuesForm () {
       <PageHeader
         title={intl.$t({ defaultMessage: 'Add New Venue' })}
         breadcrumb={[
-          { text: 'Venues', link: '/venues' }
+          { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
         ]}
       />
       <StepsForm
         formRef={formRef}
         onFinish={handleAddVenue}
         onCancel={() => navigate(linkToVenues)}
+        buttonLabel={{ submit: intl.$t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm>
-          <Form.Item
-            name='name'
-            label={intl.$t({ defaultMessage: 'Venue Name' })}
-            rules={[{
-              required: true
-            },{
-              validator: (_, value) => nameValidator(value)
-            }]}
-            wrapperCol={{ span: 5 }}
-            validateFirst
-            hasFeedback
-            children={<Input />} />
-          <Form.Item
-            name='description'
-            label={intl.$t({ defaultMessage: 'Description' })}
-            wrapperCol={{ span: 5 }}
-            children={<Input.TextArea rows={2} maxLength={180} />} />
-          {/*
-        <Form.Item
-        name='tags'
-        label='Tags:'
-        children={<Input />} />
-        */}
-          <Row align='middle'>
-            <Col span={2} style={{ textAlign: 'left' }}>
-              <span className='ant-form-item-label'>
-                <label className='ant-form-item-required'>
-                  {intl.$t({ defaultMessage: 'Address' })}
-                </label>
-              </span>
-            </Col>
-            <Col span={9} style={{ textAlign: 'right' }}>
-              <span className='ant-form-item-label'>
-                <label>
-                  {intl.$t({
-                    defaultMessage: 'Make sure to include a city and country in the address'
-                  })}
-                </label>
-              </span>
+          <Row gutter={20}>
+            <Col span={8}>
+              <Form.Item
+                name='name'
+                label={intl.$t({ defaultMessage: 'Venue Name' })}
+                rules={[{
+                  required: true
+                },{
+                  validator: (_, value) => nameValidator(value)
+                }]}
+                validateFirst
+                hasFeedback
+                children={<Input />}
+              />
+              <Form.Item
+                name='description'
+                label={intl.$t({ defaultMessage: 'Description' })}
+                children={<Input.TextArea rows={2} maxLength={180} />}
+              />
+              {/*
+              <Form.Item
+              name='tags'
+              label='Tags:'
+              children={<Input />} />
+              */}
             </Col>
           </Row>
-          <Row>
-            <Col span={11}
-              style={{
-                aspectRatio: '470 / 260',
-                position: 'relative',
-                marginBottom: 30
-              }}>
-              <AddressContainer
-                style={{
-                  position: 'absolute',
-                  zIndex: 10,
-                  width: 'calc(100% - 24px)',
-                  margin: 12
-                }}>
+          <Row gutter={20}>
+            <Col span={10}>
+              <UI.AddressFormItem
+                label={intl.$t({ defaultMessage: 'Address' })}
+                required
+                extra={intl.$t({
+                  defaultMessage: 'Make sure to include a city and country in the address'
+                })}
+              >
                 <Form.Item
+                  noStyle
+                  label={intl.$t({ defaultMessage: 'Address' })}
                   name={['address', 'addressLine']}
                   rules={[{
                     required: isMapEnabled ? true : false
@@ -273,7 +251,7 @@ export function VenuesForm () {
                   initialValue={!isMapEnabled ? defaultAddress.addressLine : ''}
                 >
                   <Input
-                    allowClear={{ clearIcon: <CloseIcon /> }}
+                    allowClear
                     prefix={<SearchOutlined />}
                     onChange={addressOnChange}
                     data-testid='address-input'
@@ -281,25 +259,25 @@ export function VenuesForm () {
                     value={address.addressLine}
                   />
                 </Form.Item>
-              </AddressContainer>
-              {isMapEnabled ?
-                <GoogleMap
-                  libraries={['places']}
-                  mapTypeControl={false}
-                  streetViewControl={false}
-                  fullscreenControl={false}
-                  zoom={zoom}
-                  center={center}
-                >
-                  {marker && <GoogleMapMarker position={marker} />}
-                </GoogleMap>
-                :
-                <Typography.Title level={2}
-                  style={{ textAlign: 'center', paddingTop: '3em' }}
-                >
-                Map is not enabled
-                </Typography.Title>
-              }
+                <UI.AddressMap>
+                  {isMapEnabled ?
+                    <GoogleMap
+                      libraries={['places']}
+                      mapTypeControl={false}
+                      streetViewControl={false}
+                      fullscreenControl={false}
+                      zoom={zoom}
+                      center={center}
+                    >
+                      {marker && <GoogleMapMarker position={marker} />}
+                    </GoogleMap>
+                    :
+                    <Typography.Title level={3}>
+                      {intl.$t({ defaultMessage: 'Map is not enabled' })}
+                    </Typography.Title>
+                  }
+                </UI.AddressMap>
+              </UI.AddressFormItem>
             </Col>
           </Row>
         </StepsForm.StepForm>
