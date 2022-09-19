@@ -190,3 +190,14 @@ test('should render Clients By SSID Widget', async () => {
     filters={filters} /></Provider>)
   await screen.findByText('Top 5 SSIDs by Clients')
 })
+
+test('should render Venue Overview Incidents Widget', async () => {
+  const sample = { P1: 0, P2: 2, P3: 3, P4: 4 }
+  mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+    data: { network: { hierarchyNode: sample } }
+  })
+  render( <Provider> <AnalyticsWidgets
+    name='venueIncidentsDonut'
+    filters={filters} /></Provider>)
+  await screen.findByText('Incidents')
+})

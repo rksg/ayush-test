@@ -162,11 +162,11 @@ export function DonutChart ({
       formatter: name => {
         const value = find(data, (pie) => pie.name === name)?.value
         switch(props.legend) {
-          case 'value': return `${dataFormatter(value)}`
           case 'name': return name
           case 'name-value': return `${name} - ${dataFormatter(value)}`
+          case 'value':
           default:
-            return ''
+            return `${dataFormatter(value)}`
         }
       }
     },

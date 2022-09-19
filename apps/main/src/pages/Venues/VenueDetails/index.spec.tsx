@@ -6,7 +6,7 @@ import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { VenueDetails } from './VenueDetails'
+import { VenueDetails } from '.'
 
 const venueDetailHeaderData = {
   activeNetworkCount: 1,

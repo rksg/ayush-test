@@ -157,19 +157,36 @@ export const timeSeriesTooltipFormatter = (
 }
 
 export const stackedBarTooltipFormatter = (
-  dataFormatter?: ((value: unknown) => string | null)
+  intl: IntlShape,
+  dataFormatter?: ((value: unknown) => string | null),
+  format?: MessageDescriptor
 ) => (
   parameters: TooltipComponentFormatterCallbackParams
 ) => {
   const param = parameters as TooltipFormatterParams
   const value = param.value as string[]
+  const name = param.seriesName
+  const formattedValue = dataFormatter ? dataFormatter(value[0]) : value[0]
+  const tooltipFormat = format ?? defineMessage({
+    defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
+    description: 'StackedBarChart: default tooltip format for stacked bar chart'
+  })
+  const text = <FormattedMessage {...tooltipFormat}
+    values={{
+      name, formattedValue,
+      br: () => <br />,
+      span: content => <span>{content}</span>,
+      b: content => <b>{content}</b>,
+      space: content => <span style={{ marginLeft: 10 }}>{content}</span>
+    }}
+  />
+
   return renderToString(
-    <UI.TooltipWrapper>
-      <UI.Badge
-        color={param.color?.toString()}
-        text={dataFormatter ? dataFormatter(value[0]) : value[0]}
-      />
-    </UI.TooltipWrapper>
+    <RawIntlProvider value={intl}>
+      <UI.TooltipWrapper>
+        <UI.Badge color={param.color?.toString()} text={text} />
+      </UI.TooltipWrapper>
+    </RawIntlProvider>
   )
 }
 

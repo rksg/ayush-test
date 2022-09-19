@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Venue Overview Alarm Widget should render "No active alarms" when no alarms exist 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
+      type="default"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+              >
+                Alarms
+              </div>
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        >
+          <div
+            style="overflow: visible; height: 0px; width: 0px;"
+          >
+            <div
+              class="styledComponents__NoDataWrapper-sc-nsxigl-0 bdmYWy"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-nsxigl-2 fysri"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <svg
+                    class="styledComponents__GreenTickIcon-sc-nsxigl-1 brkrJs"
+                  >
+                    CheckMarkCircleSolid.svg
+                  </svg>
+                </div>
+              </div>
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-nsxigl-2 fysri"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  No active alarms
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 281px; height: 281px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

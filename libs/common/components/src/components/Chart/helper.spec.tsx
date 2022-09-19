@@ -57,11 +57,35 @@ describe('stackedBarTooltipFormatter', () => {
   } as TooltipFormatterParams
   it('should return correct Html string for single value', async () => {
     const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(stackedBarTooltipFormatter(formatter)(singleparameters)).toMatchSnapshot()
+    expect(renderHook(() => stackedBarTooltipFormatter(
+      useIntl(),
+      formatter
+    )(singleparameters)).result.current).toMatchSnapshot()
     expect(formatter).toBeCalledTimes(1)
   })
-  it('should handle when no formatter', async () => {
-    expect(stackedBarTooltipFormatter()(singleparameters)).toMatchSnapshot()
+  it('should handle custom format', async () => {
+    const format = defineMessage({
+      defaultMessage: `<span>{name}</span>
+        <br></br>
+        <space>
+          <b>{formattedValue} {value, plural, one {unit} other {units} }</b>
+        </space>
+      `
+    })
+    const formatter = jest.fn(value => `formatted-${value}`)
+    expect(renderHook(() => stackedBarTooltipFormatter(
+      useIntl(),
+      formatter,
+      format
+    )({ ...singleparameters, percent: 10 })).result.current).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(1)
+  })
+  it('should handle when dataFormatter is null', async () => {
+    const formatter = jest.fn(value=>`formatted-${value}`)
+    expect(renderHook(() => stackedBarTooltipFormatter(
+      useIntl()
+    )(singleparameters)).result.current).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(0)
   })
 })
 

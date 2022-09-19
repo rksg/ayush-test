@@ -6,14 +6,15 @@ import { renderToString }                          from 'react-dom/server'
 import { useIntl }                                 from 'react-intl'
 import AutoSizer                                   from 'react-virtualized-auto-sizer'
 
-
-import { 
-  getBarChartSeriesData, 
-  AnalyticsFilter, 
-  BarChartData 
+import {
+  getBarChartSeriesData,
+  AnalyticsFilter,
+  BarChartData
 }                             from '@acx-ui/analytics/utils'
-import { BarChart, Card, cssNumber, Loader, cssStr, NoData, TooltipWrapper } from '@acx-ui/components'
-import { formatter }                                                         from '@acx-ui/utils'
+import {
+  BarChart, Card, cssNumber, Loader, cssStr, NoData, TooltipWrapper
+} from '@acx-ui/components'
+import { formatter } from '@acx-ui/utils'
 
 import { useTopSwitchesByTrafficQuery } from './services'
 
@@ -25,7 +26,7 @@ export const barColors = [
 const seriesMapping: BarChartData['seriesEncode'] = [
   { x: 'Transmitted', y: 'name', seriesName: 'Transmitted' },
   { x: 'Received', y: 'name', seriesName: 'Received' }
-] 
+]
 
 function switchTrafficLabelFormatter (params: CallbackDataParams): string {
   const usage = Array.isArray(params.data) && params.data[params?.encode?.['x'][0]!]
@@ -47,9 +48,9 @@ export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams
   const mac = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[1] : ''
   return renderToString(
     <TooltipWrapper>
-      <div> 
+      <div>
         {name as string}
-        <b> ({mac as string})</b> 
+        <b> ({mac as string})</b>
       </div>
     </TooltipWrapper>
   )

@@ -13,6 +13,8 @@ import {
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 
+import * as UI from '../styledComponents'
+
 const defaultPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,
   fields: [
@@ -44,7 +46,7 @@ const seriesMapping = [
 
 type ReduceReturnType = Record<string, number>
 
-export const getAlarmsDonutChartData = (alarms: Alarm[]): DonutChartData[] => {
+export const getChartData = (alarms: Alarm[]): DonutChartData[] => {
   const chartData: DonutChartData[] = []
   if (alarms && alarms.length > 0) {
     const alarmsSummary = alarms.reduce<ReduceReturnType>((acc, { severity }) => {
@@ -89,16 +91,21 @@ function VenueAlarmWidget () {
     }
   })
 
-  const data = getAlarmsDonutChartData(alarmQuery.data?.data!)
+  const data = getChartData(alarmQuery.data?.data!)
   return (
     <Loader states={[alarmQuery]}>
       <Card title={$t({ defaultMessage: 'Alarms' })}>
         <AutoSizer>
           {({ height, width }) => (
-            <DonutChart
-              style={{ width, height }}
-              legend={'name-value'}
-              data={data}/>
+            data && data.length > 0
+              ? <DonutChart
+                style={{ width, height }}
+                legend={'name-value'}
+                data={data}/>
+              : <UI.NoDataWrapper>
+                <UI.TextWrapper><UI.GreenTickIcon /></UI.TextWrapper>
+                <UI.TextWrapper>{$t({ defaultMessage: 'No active alarms' })}</UI.TextWrapper>
+              </UI.NoDataWrapper>
           )}
         </AutoSizer>
       </Card>

@@ -18,32 +18,37 @@ import { useVenueDetailsHeaderQuery } from '@acx-ui/rc/services'
 const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
-export function VenueOverviewTab () {
+function VenueOverviewTab () {
   const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
   const params = useParams()
   const { data } = useVenueDetailsHeaderQuery({ params })
 
-  const venueFilter = {
+  const venueApFilter = {
     ...filters,
-    path: [filters.path[0], { type: 'zone', name: data?.venue.name }]
-  }
+    path: [{ type: 'zone', name: data?.venue.name }]
+  } as AnalyticsFilter
+
+  const venueSwitchFilter = {
+    ...filters,
+    path: [{ type: 'switchGroup', name: data?.venue.name }]
+  } as AnalyticsFilter
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
       value: 'ap',
-      children: <ApWidgets filters={venueFilter}/>
+      children: <ApWidgets filters={venueApFilter}/>
     },
     {
       label: $t({ defaultMessage: 'Switch' }),
       value: 'switch',
-      children: <SwitchWidgets filters={venueFilter}/>
+      children: <SwitchWidgets filters={venueSwitchFilter}/>
     }
   ]
   return (
     <AnalyticsFilterProvider>
-      <CommonDashboardWidgets filters={venueFilter}/>
+      <CommonDashboardWidgets filters={venueApFilter}/>
       <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
     </AnalyticsFilterProvider>
   )
@@ -60,7 +65,7 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
         <AnalyticsWidgets name='venueIncidentsDonut' filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 10 }} style={{ height: '176px' }}>
-        <AnalyticsWidgets name='venueDevices' filters={filters}/>
+        <WifiWidgets name='venueDevices'/>
       </GridCol>
 
       <GridCol col={{ span: 24 }} style={{ height: '88px' }}>
@@ -122,3 +127,5 @@ function SwitchWidgets (props: { filters: AnalyticsFilter }) {
     </GridRow>
   )
 }
+
+export default VenueOverviewTab
