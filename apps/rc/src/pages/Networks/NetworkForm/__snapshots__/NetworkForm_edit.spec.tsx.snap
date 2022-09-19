@@ -3,7 +3,7 @@
 exports[`NetworkForm should edit open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -52,7 +52,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               Edit Network
             </h1>
@@ -62,122 +62,151 @@ exports[`NetworkForm should edit open network successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 dglWqi"
+    class="styledComponents__Wrapper-sc-1ibvcih-2 inVovS"
   >
     <div
       class="ant-pro-steps-form"
     >
       <div
-        class="styledComponents__Container-sc-1ibvcih-4 fAuOsZ"
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
       >
         <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
+            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
           >
             <div
-              class="styledComponents__StepsContainer-sc-1ibvcih-2 gGLpjE"
+              class="ant-steps ant-steps-vertical ant-steps-dot"
             >
               <div
-                class="ant-steps ant-steps-vertical ant-steps-dot"
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
               >
                 <div
-                  class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                  class="ant-steps-item-container"
                 >
                   <div
-                    class="ant-steps-item-container"
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
                   >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
+                    <span
+                      class="ant-steps-icon"
                     >
                       <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
                     <div
-                      class="ant-steps-item-content"
+                      class="ant-steps-item-title"
                     >
-                      <div
-                        class="ant-steps-item-title"
-                      >
-                        Network Details
-                      </div>
+                      Network Details
                     </div>
                   </div>
                 </div>
+              </div>
+              <div
+                class="ant-steps-item ant-steps-item-wait"
+              >
                 <div
-                  class="ant-steps-item ant-steps-item-wait"
+                  class="ant-steps-item-container"
+                  role="button"
+                  tabindex="0"
                 >
                   <div
-                    class="ant-steps-item-container"
-                    role="button"
-                    tabindex="0"
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
                   >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
+                    <span
+                      class="ant-steps-icon"
                     >
                       <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
                     <div
-                      class="ant-steps-item-content"
+                      class="ant-steps-item-title"
                     >
-                      <div
-                        class="ant-steps-item-title"
-                      >
-                        Settings
-                      </div>
+                      Settings
                     </div>
                   </div>
                 </div>
+              </div>
+              <div
+                class="ant-steps-item ant-steps-item-wait"
+              >
                 <div
-                  class="ant-steps-item ant-steps-item-wait"
+                  class="ant-steps-item-container"
+                  role="button"
+                  tabindex="0"
                 >
                   <div
-                    class="ant-steps-item-container"
-                    role="button"
-                    tabindex="0"
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
                   >
-                    <div
-                      class="ant-steps-item-tail"
-                    />
-                    <div
-                      class="ant-steps-item-icon"
+                    <span
+                      class="ant-steps-icon"
                     >
                       <span
-                        class="ant-steps-icon"
-                      >
-                        <span
-                          class="ant-steps-icon-dot"
-                        />
-                      </span>
-                    </div>
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
                     <div
-                      class="ant-steps-item-content"
+                      class="ant-steps-item-title"
                     >
-                      <div
-                        class="ant-steps-item-title"
-                      >
-                        Venues
-                      </div>
+                      More Settings
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-steps-item ant-steps-item-wait"
+              >
+                <div
+                  class="ant-steps-item-container"
+                  role="button"
+                  tabindex="0"
+                >
+                  <div
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
+                  >
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    >
+                      Venues
                     </div>
                   </div>
                 </div>
@@ -185,168 +214,168 @@ exports[`NetworkForm should edit open network successfully 1`] = `
             </div>
           </div>
         </div>
+      </div>
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
         <div
-          class="ant-row"
-          style="margin-left: -12px; margin-right: -12px;"
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="ant-col ant-col-24"
-            style="padding-left: 12px; padding-right: 12px;"
+            class="ant-pro-steps-form-container"
           >
             <div
-              class="ant-pro-steps-form-container"
+              class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
             >
-              <div
-                class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="details"
               >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="details"
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div
+                  class="ant-row"
+                  style="margin-left: -10px; margin-right: -10px;"
                 >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
                   <div
-                    class="ant-row"
-                    style="margin-left: -10px; margin-right: -10px;"
+                    class="ant-col ant-col-10"
+                    style="padding-left: 10px; padding-right: 10px;"
                   >
-                    <div
-                      class="ant-col ant-col-10"
-                      style="padding-left: 10px; padding-right: 10px;"
+                    <h3
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
                     >
-                      <h3
-                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                      >
-                        Network Details
-                      </h3>
+                      Network Details
+                    </h3>
+                    <div
+                      class="ant-form-item"
+                    >
                       <div
-                        class="ant-form-item"
+                        class="ant-row ant-form-item-row"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-label"
                         >
-                          <div
-                            class="ant-col ant-form-item-label"
+                          <label
+                            class="ant-form-item-required"
+                            for="details_name"
+                            title="Network Name"
                           >
-                            <label
-                              class="ant-form-item-required"
-                              for="details_name"
-                              title="Network Name"
-                            >
-                              Network Name
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                <span
-                                  class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
-                                >
-                                  <input
-                                    class="ant-input"
-                                    id="details_name"
-                                    type="text"
-                                    value=""
-                                  />
-                                  <span
-                                    class="ant-input-suffix"
-                                  />
-                                </span>
-                              </div>
-                            </div>
-                          </div>
+                            Network Name
+                          </label>
                         </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-control"
                         >
                           <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              for="details_description"
-                              title="Description"
-                            >
-                              Description
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-form-item-control-input"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-form-item-control-input-content"
                             >
-                              <div
-                                class="ant-form-item-control-input-content"
+                              <span
+                                class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
                               >
-                                <textarea
+                                <input
                                   class="ant-input"
-                                  id="details_description"
-                                  rows="4"
+                                  id="details_name"
+                                  type="text"
+                                  value=""
                                 />
-                              </div>
+                                <span
+                                  class="ant-input-suffix"
+                                />
+                              </span>
                             </div>
                           </div>
                         </div>
                       </div>
+                    </div>
+                    <div
+                      class="ant-form-item"
+                    >
                       <div
-                        class="ant-form-item"
+                        class="ant-row ant-form-item-row"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            for="details_description"
+                            title="Description"
+                          >
+                            Description
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
                         >
                           <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-form-item-control-input"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-form-item-control-input-content"
+                            >
+                              <textarea
+                                class="ant-input"
+                                id="details_description"
+                                rows="4"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="ant-form-item-control-input-content"
+                                class="ant-form-item"
                               >
                                 <div
-                                  class="ant-form-item"
+                                  class="ant-row ant-form-item-row"
                                 >
                                   <div
-                                    class="ant-row ant-form-item-row"
+                                    class="ant-col ant-form-item-label"
+                                  >
+                                    <label
+                                      class=""
+                                      for="details_type"
+                                      title="Network Type"
+                                    >
+                                      Network Type
+                                    </label>
+                                  </div>
+                                  <div
+                                    class="ant-col ant-form-item-control"
                                   >
                                     <div
-                                      class="ant-col ant-form-item-label"
-                                    >
-                                      <label
-                                        class=""
-                                        for="details_type"
-                                        title="Network Type"
-                                      >
-                                        Network Type
-                                      </label>
-                                    </div>
-                                    <div
-                                      class="ant-col ant-form-item-control"
+                                      class="ant-form-item-control-input"
                                     >
                                       <div
-                                        class="ant-form-item-control-input"
+                                        class="ant-form-item-control-input-content"
                                       >
-                                        <div
-                                          class="ant-form-item-control-input-content"
-                                        >
-                                          <h4
-                                            class="ant-typography"
-                                          />
-                                          <label />
-                                        </div>
+                                        <h4
+                                          class="ant-typography"
+                                        />
+                                        <label />
                                       </div>
                                     </div>
                                   </div>
@@ -357,200 +386,234 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         </div>
                       </div>
                     </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-14"
+                    style="padding-left: 10px; padding-right: 10px;"
+                  >
                     <div
-                      class="ant-col ant-col-14"
-                      style="padding-left: 10px; padding-right: 10px;"
+                      class="ant-row ant-row-center"
                     >
                       <div
-                        class="ant-row ant-row-center"
+                        class="ant-col"
                       >
                         <div
-                          class="ant-col"
+                          class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
                         >
-                          <div
-                            class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
-                          >
-                            <img
-                              src="none.png"
-                            />
-                          </div>
+                          <img
+                            src="none.png"
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
-                </form>
-              </div>
-              <div
-                class="ant-pro-steps-form-step"
+                </div>
+              </form>
+            </div>
+            <div
+              class="ant-pro-steps-form-step"
+            >
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="settings"
               >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="settings"
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div
+                  class="ant-row"
+                  style="margin-left: -10px; margin-right: -10px;"
                 >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
                   <div
-                    class="ant-row"
-                    style="margin-left: -10px; margin-right: -10px;"
+                    class="ant-col ant-col-10"
+                    style="padding-left: 10px; padding-right: 10px;"
                   >
-                    <div
-                      class="ant-col ant-col-10"
-                      style="padding-left: 10px; padding-right: 10px;"
+                    <h3
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
                     >
-                      <h3
-                        class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                      >
-                        Open Settings
-                      </h3>
+                      Open Settings
+                    </h3>
+                    <div
+                      class="ant-form-item"
+                    >
                       <div
-                        class="ant-form-item"
+                        class="ant-row ant-form-item-row"
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-col ant-form-item-control"
                         >
                           <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-form-item-control-input"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-form-item-control-input-content"
                             >
-                              <div
-                                class="ant-form-item-control-input-content"
+                              <button
+                                aria-checked="false"
+                                class="ant-switch ant-switch-disabled"
+                                disabled=""
+                                id="settings_isCloudpathEnabled"
+                                role="switch"
+                                type="button"
                               >
-                                <button
-                                  aria-checked="false"
-                                  class="ant-switch ant-switch-disabled"
-                                  disabled=""
-                                  id="settings_isCloudpathEnabled"
-                                  role="switch"
-                                  type="button"
-                                >
-                                  <div
-                                    class="ant-switch-handle"
-                                  />
-                                  <span
-                                    class="ant-switch-inner"
-                                  />
-                                </button>
-                                <span>
-                                  Use Cloudpath Server
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-col ant-col-14"
-                      style="padding-left: 10px; padding-right: 10px;"
-                    >
-                      <div
-                        class="ant-row ant-row-center"
-                      >
-                        <div
-                          class="ant-col"
-                        >
-                          <div
-                            class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
-                          >
-                            <img
-                              alt="Open Network"
-                              src="open.png"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-              <div
-                class="ant-pro-steps-form-step"
-              >
-                <form
-                  autocomplete="off"
-                  class="ant-form ant-form-vertical"
-                  id="venues"
-                >
-                  <input
-                    style="display: none;"
-                    type="text"
-                  />
-                  <h3
-                    class="ant-typography styledComponents__Title-sc-1ibvcih-1 dPStZa"
-                  >
-                    Venues
-                  </h3>
-                  <p>
-                    Select venues to activate this network
-                  </p>
-                  <div
-                    class="ant-form-item"
-                  >
-                    <div
-                      class="ant-row ant-form-item-row"
-                    >
-                      <div
-                        class="ant-col ant-form-item-control"
-                      >
-                        <div
-                          class="ant-form-item-control-input"
-                        >
-                          <div
-                            class="ant-form-item-control-input-content"
-                          >
-                            <div
-                              class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
-                            >
-                              <div
-                                class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
-                              >
+                                <div
+                                  class="ant-switch-handle"
+                                />
                                 <span
-                                  aria-label="loader"
-                                  role="img"
+                                  class="ant-switch-inner"
+                                />
+                              </button>
+                              <span>
+                                Use Cloudpath Server
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        type="button"
+                      >
+                        <span>
+                          Show more settings
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-14"
+                    style="padding-left: 10px; padding-right: 10px; height: 100%;"
+                  >
+                    <div
+                      class="ant-row ant-row-center"
+                    >
+                      <div
+                        class="ant-col"
+                      >
+                        <div
+                          class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+                        >
+                          <img
+                            alt="Open Network"
+                            src="open.png"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div
+              class="ant-pro-steps-form-step"
+            >
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="moreSettings"
+              >
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div>
+                  <button
+                    class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                    type="button"
+                  >
+                    <span>
+                      Show more settings
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div
+              class="ant-pro-steps-form-step"
+            >
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="venues"
+              >
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <h3
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                >
+                  Venues
+                </h3>
+                <p>
+                  Select venues to activate this network
+                </p>
+                <div
+                  class="ant-form-item"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <div
+                            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                          >
+                            <div
+                              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                            >
+                              <span
+                                aria-label="loader"
+                                role="img"
+                              >
+                                <div
+                                  aria-busy="true"
+                                  aria-live="polite"
+                                  class="ant-spin ant-spin-lg ant-spin-spinning"
                                 >
-                                  <div
-                                    aria-busy="true"
-                                    aria-live="polite"
-                                    class="ant-spin ant-spin-lg ant-spin-spinning"
+                                  <span
+                                    class="ant-spin-dot ant-spin-dot-spin"
                                   >
-                                    <span
-                                      class="ant-spin-dot ant-spin-dot-spin"
-                                    >
-                                      <i
-                                        class="ant-spin-dot-item"
-                                      />
-                                      <i
-                                        class="ant-spin-dot-item"
-                                      />
-                                      <i
-                                        class="ant-spin-dot-item"
-                                      />
-                                      <i
-                                        class="ant-spin-dot-item"
-                                      />
-                                    </span>
-                                  </div>
-                                </span>
-                              </div>
+                                    <i
+                                      class="ant-spin-dot-item"
+                                    />
+                                    <i
+                                      class="ant-spin-dot-item"
+                                    />
+                                    <i
+                                      class="ant-spin-dot-item"
+                                    />
+                                    <i
+                                      class="ant-spin-dot-item"
+                                    />
+                                  </span>
+                                </div>
+                              </span>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-3 jmOuwe"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
@@ -560,18 +623,6 @@ exports[`NetworkForm should edit open network successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
-              type="button"
-            >
-              <span>
-                Next
-              </span>
-            </button>
-          </div>
-          <div
-            class="ant-space-item"
-          >
-            <button
               class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
               type="button"
             >
@@ -579,6 +630,40 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                 Cancel
               </span>
             </button>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+                style="margin-right: 12px;"
+              >
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  type="button"
+                >
+                  <span>
+                    Back
+                  </span>
+                </button>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <button
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                  type="button"
+                >
+                  <span>
+                    Next
+                  </span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

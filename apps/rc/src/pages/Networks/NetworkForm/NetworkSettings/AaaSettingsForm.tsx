@@ -20,13 +20,14 @@ import {
   Button,
   Subtitle
 } from '@acx-ui/components'
-import { useSplitTreatment }     from '@acx-ui/feature-toggle'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
+import { useCloudpathListQuery }       from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
   AaaServerTypeEnum,
   AaaServerOrderEnum,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -35,13 +36,16 @@ import { ToggleButton }     from '../../../../components/ToggleButton'
 import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext   from '../NetworkFormContext'
 
-import { CloudpathServerForm } from './CloudpathServerForm'
+import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { CloudpathServerForm }     from './CloudpathServerForm'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
-export function AaaSettingsForm () {
+export function AaaSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -87,8 +91,9 @@ export function AaaSettingsForm () {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
-      <Col span={14}>
+      <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram
           type={NetworkTypeEnum.AAA}
           cloudpathType={selected?.deploymentType}
@@ -133,7 +138,7 @@ function SettingsForm () {
     useWatch('enableSecondaryAcctServer')
   ]
 
-  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
+  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
