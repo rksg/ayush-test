@@ -28,16 +28,8 @@ export function useMenuConfig () {
           name: $t({ defaultMessage: 'Incidents' })
         },
         {
-          path: '/analytics/recommendations',
-          name: $t({ defaultMessage: 'Recommendations' })
-        },
-        {
           path: '/analytics/health',
           name: $t({ defaultMessage: 'Health' })
-        },
-        {
-          path: '/analytics/configChange',
-          name: $t({ defaultMessage: 'Config Change' })
         }
       ]
     },

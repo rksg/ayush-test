@@ -3,13 +3,15 @@ import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
 import { Space, Divider, Button }                      from 'antd'
 import _                                               from 'lodash'
+import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import { ResizableColumn }              from './ResizableColumn'
-import * as UI                          from './styledComponents'
-import { settingsKey, useColumnsState } from './useColumnsState'
+import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
+import { ResizableColumn }                                          from './ResizableColumn'
+import * as UI                                                      from './styledComponents'
+import { settingsKey, useColumnsState }                             from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType } from './types'
 import type { ParamsType }                                                  from '@ant-design/pro-provider'
@@ -22,6 +24,7 @@ import type {
 export type {
   ColumnType,
   ColumnGroupType,
+  RecordWithChildren,
   TableColumn
 } from './types'
 
@@ -73,14 +76,16 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
-function Table <RecordType extends object> (
-  { type = 'tall', columnState, ...props }: TableProps<RecordType>
-) {
-  const { $t } = useIntl()
+function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProps<RecordType>) {
+  const intl = useIntl()
+  const { $t } = intl
+  const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
+  const [searchValue, setSearchValue] = useState<string>('')
+  const { dataSource } = props
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
 
-  const columns = useMemo(() => {
+  let columns = useMemo(() => {
     const settingsColumn = {
       key: settingsKey,
       fixed: 'right' as 'right',
@@ -92,7 +97,7 @@ function Table <RecordType extends object> (
       ? [...props.columns, settingsColumn] as typeof props.columns
       : props.columns
 
-    return cols.map((column) => ({
+    return cols.map(column => ({
       ...column,
       tooltip: null,
       title: column.tooltip ? <UI.TitleWithTooltip>
@@ -152,7 +157,30 @@ function Table <RecordType extends object> (
         : [...selectedRowKeys, key])
     }
   }
+  columns = columns.map(column => column.searchable && searchValue
+    ? {
+      ...column,
+      render: (_, value) => <Highlighter
+        highlightStyle={{ fontWeight: 'bold', background: 'none', padding: 0 }}
+        searchWords={[searchValue]}
+        textToHighlight={value[column.dataIndex as keyof RecordType] as unknown as string}
+        autoEscape
+      />
+    }
+    : column
+  )
 
+  const filterables = columns.filter(column => {
+    return column.filterable
+  })
+  const searchables = columns.filter(column => column.searchable)
+  const activeFilters = filterables.filter(column => {
+    const key = column.dataIndex as keyof RecordType
+    const filteredValue = filterValues[key as keyof FilterValue]
+    return filteredValue
+  })
+  const hasRowSelected = Boolean(selectedRowKeys.length)
+  const hasHeader = !hasRowSelected && (Boolean(filterables.length) || Boolean(searchables.length))
   const rowSelection: TableProps<RecordType>['rowSelection'] = props.rowSelection ? {
     ..._.omit(props.rowSelection, 'defaultSelectedRowKeys'),
     selectedRowKeys,
@@ -185,10 +213,40 @@ function Table <RecordType extends object> (
     })
   })
 
-  return <UI.Wrapper $type={type} $hasRowSelection={Boolean(props.rowSelection)}>
+  return <UI.Wrapper
+    $type={type}
+    $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
+  >
+    {hasHeader && (
+      <UI.Header>
+        <div>
+          <Space size={12}>
+            {Boolean(searchables.length) &&
+              renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
+            }
+            {filterables.map((column, i) =>
+              renderFilter<RecordType>(column, i, dataSource, filterValues, setFilterValues)
+            )}
+          </Space>
+        </div>
+        <UI.HeaderRight>
+          {(Boolean(activeFilters.length) || Boolean(searchValue)) && <Button
+            onClick={() => {
+              setFilterValues({} as FilterValue)
+              setSearchValue('')
+            }}
+          >
+            {$t({ defaultMessage: 'Clear Filters' })}
+          </Button>}
+        </UI.HeaderRight>
+      </UI.Header>
+    )}
     <UI.TableSettingsGlobalOverride />
     <ProTable<RecordType>
       {...props}
+      dataSource={getFilteredData<RecordType>(
+        dataSource, filterValues, activeFilters, searchables, searchValue
+      )}
       bordered={false}
       search={false}
       columns={(type === 'tall' ? columns.map(col=>({

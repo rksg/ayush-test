@@ -36,6 +36,7 @@ import {
   WlanSecurityEnum,
   WifiNetworkMessages,
   hexRegExp,
+  passphraseRegExp,
   NetworkSaveData
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -197,8 +198,11 @@ function SettingsForm () {
               ??SecurityOptionsPassphraseLabel.WPA2Personal}
             rules={[
               { required: true, min: 8 },
-              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) }
+              { max: 64 },
+              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) },
+              { validator: (_, value) => passphraseRegExp(intl, value) }
             ]}
+            validateFirst
             extra={intl.$t({ defaultMessage: '8 characters minimum' })}
             children={<Input.Password />}
           />
@@ -229,8 +233,11 @@ function SettingsForm () {
             }
             rules={[
               { required: true, min: 8 },
-              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) }
+              { max: 64 },
+              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) },
+              { validator: (_, value) => passphraseRegExp(intl, value) }
             ]}
+            validateFirst
             extra={intl.$t({ defaultMessage: '8 characters minimum' })}
             children={<Input.Password />}
           />
