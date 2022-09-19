@@ -3,7 +3,7 @@
 exports[`PageHeader should render basic page header 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -18,7 +18,7 @@ exports[`PageHeader should render basic page header 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               Basic
             </h1>
@@ -33,7 +33,7 @@ exports[`PageHeader should render basic page header 1`] = `
 exports[`PageHeader should render page header with tabs 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -82,7 +82,7 @@ exports[`PageHeader should render page header with tabs 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               With Tabs
             </h1>
@@ -190,7 +190,7 @@ exports[`PageHeader should render page header with tabs 1`] = `
 exports[`PageHeader should render page header with title, breadcrumb & subtitle 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -239,7 +239,7 @@ exports[`PageHeader should render page header with title, breadcrumb & subtitle 
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               With Subtitle
             </h1>
@@ -261,7 +261,7 @@ exports[`PageHeader should render page header with title, breadcrumb & subtitle 
 exports[`PageHeader should render page header with titleExtra 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -276,7 +276,7 @@ exports[`PageHeader should render page header with titleExtra 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               With Subtitle
             </h1>
