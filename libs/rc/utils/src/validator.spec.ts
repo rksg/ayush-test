@@ -41,22 +41,22 @@ describe('validator', () => {
   describe('hasGraveAccentAndDollarSign', () => {
     it('Should take care of value do not have grave accent and dollar sign', async () => {
       const result = renderHook(() =>
-      hasGraveAccentAndDollarSign(useIntl(), 'test')).result.current
+        hasGraveAccentAndDollarSign(useIntl(), 'test')).result.current
       await expect(result).resolves.toEqual(undefined)
     })
     it('Should display error message if value contains dollar sign', async () => {
       const result = renderHook(() =>
-      hasGraveAccentAndDollarSign(useIntl(), '$(test')).result.current
+        hasGraveAccentAndDollarSign(useIntl(), '$(test')).result.current
       await expect(result).rejects.toEqual('"$(" is not allowed')
     })
     it('Should display error message if value contains grave accent', async () => {
       const result = renderHook(() =>
-      hasGraveAccentAndDollarSign(useIntl(), 'test`')).result.current
+        hasGraveAccentAndDollarSign(useIntl(), 'test`')).result.current
       await expect(result).rejects.toEqual('"`" is not allowed')
     })
     it('Should display error message if value contains grave accent and dollar sign', async () => {
       const result = renderHook(() =>
-      hasGraveAccentAndDollarSign(useIntl(), '$(test`')).result.current
+        hasGraveAccentAndDollarSign(useIntl(), '$(test`')).result.current
       await expect(result).rejects.toEqual('"`" and "$(" are not allowed')
     })
   })
