@@ -8,6 +8,16 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { VenueDetails } from '.'
 
+jest.mock(
+  'analytics/Widgets',
+  () => ({ name }: { name: string }) => <div data-testid={`analytics-${name}`} title={name} />,
+  { virtual: true })
+
+jest.mock(
+  'rc/Widgets',
+  () => ({ name }: { name: string }) => <div data-testid={`networks-${name}`} title={name} />,
+  { virtual: true })
+
 const venueDetailHeaderData = {
   activeNetworkCount: 1,
   aps: {

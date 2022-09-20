@@ -7,7 +7,7 @@ import { generatePath }                          from '@acx-ui/react-router-dom'
 import { Provider, store  }                      from '@acx-ui/store'
 import { mockServer, fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import VenueOverviewTab from '.'
+import { VenueOverviewTab } from '.'
 
 jest.mock(
   'analytics/Widgets',

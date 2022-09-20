@@ -18,7 +18,7 @@ import { useVenueDetailsHeaderQuery } from '@acx-ui/rc/services'
 const WifiWidgets = React.lazy(() => import('rc/Widgets'))
 const AnalyticsWidgets = React.lazy(() => import('analytics/Widgets'))
 
-function VenueOverviewTab () {
+export function VenueOverviewTab () {
   const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
   const params = useParams()
@@ -127,5 +127,3 @@ function SwitchWidgets (props: { filters: AnalyticsFilter }) {
     </GridRow>
   )
 }
-
-export default VenueOverviewTab
