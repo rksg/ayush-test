@@ -3,7 +3,7 @@
 exports[`Services Table should delete selected row 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -18,7 +18,7 @@ exports[`Services Table should delete selected row 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               Services
             </h1>
@@ -55,7 +55,7 @@ exports[`Services Table should delete selected row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-8 ekNJRb"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
     >
       <div
         class="ant-pro-table"
@@ -147,10 +147,10 @@ exports[`Services Table should delete selected row 1`] = `
                                 class="ant-table-cell ant-table-selection-column react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -159,7 +159,7 @@ exports[`Services Table should delete selected row 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -217,7 +217,7 @@ exports[`Services Table should delete selected row 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -225,7 +225,7 @@ exports[`Services Table should delete selected row 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -283,7 +283,7 @@ exports[`Services Table should delete selected row 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -291,7 +291,7 @@ exports[`Services Table should delete selected row 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -349,7 +349,7 @@ exports[`Services Table should delete selected row 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -357,7 +357,7 @@ exports[`Services Table should delete selected row 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -415,7 +415,7 @@ exports[`Services Table should delete selected row 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -423,7 +423,7 @@ exports[`Services Table should delete selected row 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -481,7 +481,7 @@ exports[`Services Table should delete selected row 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -490,7 +490,7 @@ exports[`Services Table should delete selected row 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -548,7 +548,7 @@ exports[`Services Table should delete selected row 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -556,7 +556,7 @@ exports[`Services Table should delete selected row 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -614,7 +614,7 @@ exports[`Services Table should delete selected row 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -622,7 +622,7 @@ exports[`Services Table should delete selected row 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -680,7 +680,7 @@ exports[`Services Table should delete selected row 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -688,10 +688,10 @@ exports[`Services Table should delete selected row 1`] = `
                                 style="position: sticky; right: 0px;"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-6"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-7"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                             </tr>
@@ -1104,7 +1104,7 @@ exports[`Services Table should delete selected row 1`] = `
 exports[`Services Table should render table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -1119,7 +1119,7 @@ exports[`Services Table should render table 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               Services
             </h1>
@@ -1156,7 +1156,7 @@ exports[`Services Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-8 ekNJRb"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
     >
       <div
         class="ant-pro-table"

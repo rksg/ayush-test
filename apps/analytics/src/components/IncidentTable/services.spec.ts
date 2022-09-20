@@ -173,7 +173,8 @@ describe('IncidentTable: services', () => {
     category: 'Connection',
     subCategory: '802.11 Authentication',
     clientImpact: '100%',
-    impactedClients: '2'
+    impactedClients: '2',
+    severityLabel: 'P4'
   }
 
   const transformedResult = [

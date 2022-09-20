@@ -14,7 +14,7 @@ export type ApOrSwitch = {
   name: string
   mac: string
 }
-type ApsOrSwitches = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
+export type ApsOrSwitches = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
 export type Child = NetworkData & ApsOrSwitches
 interface Response {
   network: {
