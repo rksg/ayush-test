@@ -13,7 +13,8 @@ import {
 import {
   loadLocale,
   LocaleProvider,
-  LocaleContext
+  LocaleContext,
+  localeLoaders
 } from './locales'
 
 const messages = {
@@ -74,7 +75,6 @@ describe('loadLocale', () => {
     }))
   })
 
-
   it('loads from cache when available', async () => {
     mockServer.close()
     mockServer.listen({ onUnhandledRequest: 'error' })
@@ -88,6 +88,14 @@ describe('loadLocale', () => {
     await loadLocale('en-US')
     // should throw if cache not being use
     await loadLocale('en-US')
+  })
+
+  it('locale provided is in allowed list of languages', async () => {
+    const allowedalang = Object.keys(localeLoaders)
+    const locale = 'ja-JP'
+    expect(allowedalang).toHaveLength(3)
+    expect(allowedalang).toContain(locale)
+    await loadLocale(locale)
   })
 })
 

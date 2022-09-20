@@ -28,8 +28,6 @@ function localePath (locale: string) {
   return `locales/compiled/${locale}.json`
 }
 
-const allowedLang = ['en-US', 'de-DE', 'ja-JP']
-
 async function loadEnUS (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/en_US').then(result => result.default),
@@ -63,12 +61,13 @@ async function loadJp (): Promise<Messages> {
   return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
 }
 
-const localeLoaders = {
+export const localeLoaders = {
   'en-US': loadEnUS,
   'de-DE': loadDe,
   'ja-JP': loadJp
 }
 
+const allowedLang = Object.keys(localeLoaders)
 type Key = keyof typeof localeLoaders
 const cache: Partial<Record<Key, Messages>> = {}
 export async function loadLocale (locale: Key) {
