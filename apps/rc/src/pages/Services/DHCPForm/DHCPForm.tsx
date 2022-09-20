@@ -12,9 +12,9 @@ import { DHCPSaveData, DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/
 import { useParams, useTenantLink, useNavigate }               from '@acx-ui/react-router-dom'
 
 import DHCPFormContext from './DHCPFormContext'
-import { SettingForm } from './SettingForm'
-import { SummaryForm } from './Summary/SummaryForm'
-import { Venues }      from './Venues/Venues'
+import { SettingForm } from './DHCPSettingForm'
+import { SummaryForm } from './DHCPSummary/SummaryForm'
+import { Venues }      from './DHCPVenues/Venues'
 
 
 export function DHCPForm () {
