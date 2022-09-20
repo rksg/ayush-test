@@ -60,11 +60,10 @@ export const useSubTitle = (subTitles: SubTitle[]) => {
   )
 }
 
-export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
+export const Header = ({ data, replaceTitle, ...props }: HeaderProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
   const { title, subTitle } = data
-  const props = { ...otherProps, subTitle: useSubTitle(subTitle) }
   if (replaceTitle) props.title = title
   return (
     <PageHeader
@@ -83,7 +82,7 @@ export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
           selectionType={range}
         />
       ]}
-    />
+    >{useSubTitle(subTitle)}</PageHeader>
   )
 }
 

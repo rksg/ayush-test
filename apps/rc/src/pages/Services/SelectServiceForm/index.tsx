@@ -40,6 +40,7 @@ export function SelectServiceForm () {
       />
       <StepsForm
         onCancel={() => navigate(servicesTablePath)}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm
           name='selectService'

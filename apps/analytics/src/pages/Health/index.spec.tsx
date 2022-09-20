@@ -38,8 +38,10 @@ describe('HealthPage', () => {
     expect(screen.getByText('Health')).toBeVisible()
     expect(screen.getByTestId('Summary Boxes')).toBeVisible()
     expect(screen.getByText('Summary Timeserise')).toBeVisible()
+    expect(screen.getByText('Overview')).toBeVisible()
+    expect(screen.getByText('Customized SLA Threshold')).toBeVisible()
     expect(screen.getByText('overview')).toBeVisible()
-    expect(screen.getByText('Threshold')).toBeVisible()
+    expect(screen.getByText('Threshold Content')).toBeVisible()
   })
   it('should render default tab when activeTab param is not set', async () => {
     const params = { tenantId: 'tenant-id' }
