@@ -91,7 +91,7 @@ export const Api = dataApi.injectEndpoints({
 
         return {
           document: gql`
-            query Network(
+            query IncidentTimeSeries(
               $path: [HierarchyNodeInput],
               $start: DateTime,
               $end: DateTime,
