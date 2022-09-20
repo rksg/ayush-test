@@ -3,7 +3,7 @@
 exports[`IncidentDetailsTemplate should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 hUKKeS"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -63,13 +63,16 @@ exports[`IncidentDetailsTemplate should render correctly 1`] = `
               P3
             </span>
           </span>
-          <span
-            class="ant-page-header-heading-sub-title"
-            title="EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
-          >
-            EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
-          </span>
         </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+        </span>
       </div>
     </div>
   </div>

@@ -6,7 +6,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 hUKKeS"
+      class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -83,13 +83,33 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                 P3
               </span>
             </span>
-            <span
-              class="ant-page-header-heading-sub-title"
-              title="EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
-            >
-              EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
-            </span>
           </div>
+        </div>
+        <div
+          class="ant-page-header-content"
+        >
+          <span
+            aria-label="EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
+            class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+          >
+            EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+            <span
+              aria-hidden="true"
+              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
+            >
+              lg
+            </span>
+            <span
+              aria-hidden="true"
+              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
+            >
+              <span
+                aria-hidden="true"
+              >
+                ...
+              </span>
+            </span>
+          </span>
         </div>
       </div>
     </div>
