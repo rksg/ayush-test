@@ -221,6 +221,31 @@ describe('Table component', () => {
     expect(selectedRow.filter(el => el.checked)).toHaveLength(1)
   })
 
+  it('single select disabled row click', async () => {
+    render(<Table
+      columns={basicColumns}
+      dataSource={basicData}
+      rowSelection={{ 
+        type: 'radio', 
+        getCheckboxProps: () => ({
+          disabled: true
+        })
+      }}
+    />)
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText('Jane Doe'))
+    // to ensure it doesn't get unselected
+    fireEvent.click(await body.findByText('Jane Doe'))
+    const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
+    expect(selectedRow.filter(el => el.checked)).toHaveLength(0)
+  })
+
   it('multible select row click', async () => {
     render(<Table
       columns={basicColumns}

@@ -141,6 +141,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
 
   const onRowClick = (record: RecordType) => {
     if (!props.rowSelection) return
+    if (rowSelection?.getCheckboxProps?.(record)?.disabled) return
 
     const key = record[rowKey] as unknown as Key
     const isSelected = selectedRowKeys.includes(key)
