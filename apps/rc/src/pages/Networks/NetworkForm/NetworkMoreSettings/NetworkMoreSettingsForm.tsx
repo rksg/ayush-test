@@ -190,7 +190,7 @@ export function MoreSettingsForm (props: {
 
   }
   return (
-    <UI.CollpasePanel
+    <UI.CollapsePanel
       defaultActiveKey={['1', '2', '3']}
       expandIconPosition='end'
       ghost={true}
@@ -576,7 +576,7 @@ export function MoreSettingsForm (props: {
             </div>
           </>}
       </Panel>
-    </UI.CollpasePanel>
+    </UI.CollapsePanel>
   )
 }
 
