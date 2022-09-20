@@ -5,8 +5,8 @@ import { DescriptionRow, DescriptionSection } from '.'
 describe('DescriptionRow', () => {
   const props = {
     label: 'label',
-    title: 'title',
-    children: <div data-testid='children'/>
+    tooltip: 'tooltip',
+    children: <div data-testid='children'>Children</div>
   }
   it('should match snapshot', () => {
     const { asFragment } = render(<DescriptionRow {...props} onClick={jest.fn()}/>)
@@ -28,7 +28,7 @@ describe('DescriptionRow', () => {
   it('should handle onClick', async () => {
     const onClick = jest.fn()
     render(<DescriptionRow {...props} onClick={onClick}/>)
-    const component = await screen.findByTitle(props.title)
+    const component = await screen.findByText('Children')
     fireEvent.click(component)
     expect(onClick).toBeCalledTimes(1)
   })
@@ -39,7 +39,7 @@ describe('DescriptionSection', () => {
   const props = {
     fields: new Array(3).fill(0).map((_, index) => ({
       label: `label-${index}`,
-      title: `title-${index}`,
+      tooltip: `tooltip-${index}`,
       children: <div data-testid={`children-${index}`}/>,
       onClick: jest.fn()
     }))

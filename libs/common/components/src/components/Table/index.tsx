@@ -39,6 +39,7 @@ export interface TableProps <RecordType>
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip'
+    ellipsis?: boolean
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
@@ -210,7 +211,8 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
       width: colWidth[column.key],
       onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width })
-    })
+    }),
+    ...((props.ellipsis && col.key !== settingsKey) && { ellipsis: true })
   })
 
   return <UI.Wrapper
@@ -256,7 +258,7 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
       components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
       options={{ setting, reload: false, density: false }}
       columnsState={columnsState}
-      scroll={props.scroll ? props.scroll : { x: 'max-content' }}
+      scroll={props.ellipsis ? {} : { x: 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall'
         ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
