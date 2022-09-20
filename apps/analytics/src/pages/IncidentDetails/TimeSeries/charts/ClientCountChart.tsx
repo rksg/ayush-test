@@ -3,13 +3,14 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { getSeriesData }                  from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { intlFormats }                    from '@acx-ui/utils'
+import { formatter }                      from '@acx-ui/utils'
 
 import { ChartsData } from '../services'
 
 export const ClientCountChart = ({ data }: { data: ChartsData }) => {
   const { clientCountChart } = data
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
 
   const seriesMapping = [
     { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
@@ -25,8 +26,7 @@ export const ClientCountChart = ({ data }: { data: ChartsData }) => {
         <MultiLineTimeSeriesChart
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={(value: unknown) =>
-            $t(intlFormats.countFormat, { value: value as number })}
+          dataFormatter={(value) => formatter('countFormat', intl)(value)}
         />
       )}
     </AutoSizer>

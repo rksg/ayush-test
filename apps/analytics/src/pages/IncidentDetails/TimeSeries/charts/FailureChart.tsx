@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/analytics/utils'
 import { Card, cssStr, MultiLineTimeSeriesChart }             from '@acx-ui/components'
 import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { intlFormats }                                        from '@acx-ui/utils'
+import { formatter }                                          from '@acx-ui/utils'
 
 import { ChartsData } from '../services'
 
@@ -46,13 +46,10 @@ export const getMarkers = (
 
 export const FailureChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
   const { failureChart, relatedIncidents } = data
-  const { $t } = useIntl()
+  const intl = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/')
-  const title = mapCodeToReason(
-    codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap],
-    useIntl()
-  )
+  const title = mapCodeToReason(codeToFailureTypeMap[incident.code], intl)
 
   const seriesMapping = [{
     key: codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap],
@@ -67,8 +64,7 @@ export const FailureChart = ({ incident, data }: { incident: Incident, data: Cha
         <MultiLineTimeSeriesChart
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={(value: unknown) =>
-            $t(intlFormats.percentFormat, { value: value as number })}
+          dataFormatter={(value) => formatter('countFormat', intl)(value)}
           yAxisProps={{ max: 1, min: 0 }}
           disableLegend={true}
           onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}

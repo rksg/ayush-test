@@ -9,22 +9,17 @@ import {
   codeToFailureTypeMap
 } from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
-import { intlFormats }                    from '@acx-ui/utils'
+import { formatter }                      from '@acx-ui/utils'
 
 import { ChartsData } from '../services'
 
 export const AttemptAndFailureChart = (
   { incident, data }: { incident: Incident, data: ChartsData }) => {
   const { attemptAndFailureChart } = data
-  const { $t } = useIntl()
-  const title = mapCodeToReason(
-    codeToFailureTypeMap[incident.code],
-    useIntl()
-  )
-  const attempt = mapCodeToAttempt(
-    codeToFailureTypeMap[incident.code],
-    useIntl()
-  )
+  const intl = useIntl()
+  const { $t } = intl
+  const title = mapCodeToReason(codeToFailureTypeMap[incident.code], intl)
+  const attempt = mapCodeToAttempt(codeToFailureTypeMap[incident.code], intl)
 
   const seriesMapping = [
     { key: 'totalFailureCount', name: $t({ defaultMessage: 'Total Failures' }) },
@@ -40,8 +35,7 @@ export const AttemptAndFailureChart = (
         <MultiLineTimeSeriesChart
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={(value: unknown) =>
-            $t(intlFormats.countFormat, { value: value as number })}
+          dataFormatter={(value) => formatter('countFormat', intl)(value)}
         />
       )}
     </AutoSizer>

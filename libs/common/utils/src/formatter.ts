@@ -130,23 +130,6 @@ export const dateTimeFormats = {
   secondFormat: 'HH:mm:ss'
 }
 
-export function formatter (
-  name: keyof typeof formats | keyof typeof dateTimeFormats,
-  intl?: IntlShape
-) {
-  return function formatter (value: unknown, tz?: string) {
-    if (value === null || value === '-') {
-      return value
-    }
-
-    if (dateTimeFormats[name as keyof typeof dateTimeFormats]) {
-      return dateTimeFormatter(value, dateTimeFormats[name as keyof typeof dateTimeFormats], tz)
-    } else {
-      return formats[name as keyof typeof formats](value, intl)
-    }
-  }
-}
-
 const countFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::K .##/@##r}'
 })
@@ -160,4 +143,28 @@ export const intlFormats = {
   countFormat,
   percentFormat,
   percentFormatRound
+}
+
+export function formatter (
+  name: keyof typeof formats | keyof typeof dateTimeFormats | keyof typeof intlFormats,
+  intl?: IntlShape
+) {
+  return function formatter (value: unknown, tz?: string): string | null {
+    if (value === null || value === '-') {
+      return value
+    }
+    if (intlFormats[name as keyof typeof intlFormats]) {
+      return intl?.$t(
+        intlFormats[name as keyof typeof intlFormats],
+        { value: value as number }
+      ) as string
+    }
+    if (dateTimeFormats[name as keyof typeof dateTimeFormats]) {
+      return dateTimeFormatter(value, dateTimeFormats[name as keyof typeof dateTimeFormats], tz)
+    }
+    if (formats[name as keyof typeof formats]) {
+      return formats[name as keyof typeof formats](value, intl)
+    }
+    return null
+  }
 }
