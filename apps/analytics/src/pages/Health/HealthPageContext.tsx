@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useEffect, useMemo, useRef } from 'react'
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef } from 'react'
 
 import { isEqual } from 'lodash'
 
@@ -10,10 +10,17 @@ import { TimeStamp } from '@acx-ui/types'
 
 export type TimeWindow = [TimeStamp, TimeStamp]
 
-export const HealthPageContext = createContext(null as unknown as AnalyticsFilter & {
+export interface HealthFilter extends AnalyticsFilter {
   timeWindow: TimeWindow
   setTimeWindow: (timeWindow: TimeWindow) => void
-})
+}
+
+export const HealthPageContext = createContext(null as unknown as HealthFilter)
+
+export const useHealthFilter = () => {
+  const context = useContext(HealthPageContext)
+  return context
+}
 
 export function HealthPageContextProvider (props: { children: ReactNode }) {
   const analyticsFilter = useAnalyticsFilter()

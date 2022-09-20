@@ -1,0 +1,611 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HealthConnectedClientsOverTime should render data 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      style="overflow: visible; height: 0px; width: 0px;"
+    >
+      <div
+        style="width: 280px; height: 250px;"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-3 gtmGMB"
+          type="default"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+                  />
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                _echarts_instance_="ec_1663713282263"
+                class="echarts-for-react MultiLineTimeSeriesChart__Chart-sc-52dl0i-0 eMRDyh"
+                size-sensor-id="1"
+                style="height: 200px; width: 280px; position: relative;"
+              >
+                <div
+                  style="position: relative; overflow: hidden; width: 280px; height: 200px;"
+                >
+                  <svg
+                    baseProfile="full"
+                    height="200"
+                    style="position:absolute;left:0;top:0;user-select:none"
+                    version="1.1"
+                    width="280"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                  >
+                    <rect
+                      fill="none"
+                      fill-opacity="1"
+                      height="200"
+                      id="0"
+                      width="280"
+                      x="0"
+                      y="0"
+                    />
+                    <g>
+                      <path
+                        d="M10 176.5L280 176.5"
+                        fill="none"
+                        stroke="#E0E6F1"
+                      />
+                      <path
+                        d="M10 151.5L280 151.5"
+                        fill="none"
+                        stroke="#E0E6F1"
+                      />
+                      <path
+                        d="M10 127.5L280 127.5"
+                        fill="none"
+                        stroke="#E0E6F1"
+                      />
+                      <path
+                        d="M10 103.5L280 103.5"
+                        fill="none"
+                        stroke="#E0E6F1"
+                      />
+                      <path
+                        d="M10 78.5L280 78.5"
+                        fill="none"
+                        stroke="#E0E6F1"
+                      />
+                      <path
+                        d="M10 54.5L280 54.5"
+                        fill="none"
+                        stroke="#E0E6F1"
+                      />
+                      <path
+                        d="M10 30.5L280 30.5"
+                        fill="none"
+                        stroke="#E0E6F1"
+                      />
+                      <path
+                        d="M10 176.5L280 176.5"
+                        fill="none"
+                        stroke="none"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M10.5 176L10.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M32.5 176L32.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M55.5 176L55.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M77.5 176L77.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M100.5 176L100.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M122.5 176L122.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M145.5 176L145.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M167.5 176L167.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M190.5 176L190.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M212.5 176L212.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M235.5 176L235.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M257.5 176L257.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M280.5 176L280.5 181"
+                        fill="none"
+                        stroke="none"
+                      />
+                      <path
+                        d="M-1 -8l1 0l0 16l-1 0Z"
+                        fill="none"
+                        transform="translate(2 176)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="end"
+                        transform="translate(2 176)"
+                      >
+                        0
+                      </text>
+                      <path
+                        d="M-1 -8l1 0l0 16l-1 0Z"
+                        fill="none"
+                        transform="translate(2 151.6667)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="end"
+                        transform="translate(2 151.6667)"
+                      >
+                        3
+                      </text>
+                      <path
+                        d="M-1 -8l1 0l0 16l-1 0Z"
+                        fill="none"
+                        transform="translate(2 127.3333)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="end"
+                        transform="translate(2 127.3333)"
+                      >
+                        6
+                      </text>
+                      <path
+                        d="M-1 -8l1 0l0 16l-1 0Z"
+                        fill="none"
+                        transform="translate(2 103)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="end"
+                        transform="translate(2 103)"
+                      >
+                        9
+                      </text>
+                      <path
+                        d="M-2 -8l2 0l0 16l-2 0Z"
+                        fill="none"
+                        transform="translate(2 78.6667)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="end"
+                        transform="translate(2 78.6667)"
+                      >
+                        12
+                      </text>
+                      <path
+                        d="M-2 -8l2 0l0 16l-2 0Z"
+                        fill="none"
+                        transform="translate(2 54.3333)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="end"
+                        transform="translate(2 54.3333)"
+                      >
+                        15
+                      </text>
+                      <path
+                        d="M-2 -8l2 0l0 16l-2 0Z"
+                        fill="none"
+                        transform="translate(2 30)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="end"
+                        transform="translate(2 30)"
+                      >
+                        18
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(10 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(10 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 09:15
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(32.5 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(32.5 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 09:20
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(55 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(55 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 09:25
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(77.5 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(77.5 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 09:30
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(100 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(100 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 09:35
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(122.5 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(122.5 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 09:40
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(145 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(145 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 09:45
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(167.5 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(167.5 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 09:50
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(190 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(190 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 09:55
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(235 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(235 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 10:05
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(257.5 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(257.5 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 10:10
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(280 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(280 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 10:15
+                      </text>
+                      <path
+                        d="M-6 0l12 0l0 16l-12 0Z"
+                        fill="none"
+                        transform="translate(212.5 184)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#ACAEB0"
+                        style="font: normal 400 10px 'Open Sans', sans-serif"
+                        text-anchor="middle"
+                        transform="translate(212.5 184)"
+                        xml:space="preserve"
+                        y="8"
+                      >
+                        Apr 07 10:00
+                      </text>
+                      <g
+                        clip-path="url(#zr0-c0)"
+                      >
+                        <path
+                          d="M10 167.8889C10 167.8889 43.75 163.8333 77.5 159.7778C111.25 155.7222 111.25 155.7222 145 151.6667C178.75 147.6111 178.75 147.6111 212.5 143.5556C246.25 139.5 280 135.4444 280 135.4444"
+                          fill="none"
+                          stroke="#5496EA"
+                          stroke-linejoin="bevel"
+                        />
+                      </g>
+                      <g
+                        clip-path="url(#zr0-c1)"
+                      >
+                        <path
+                          d="M10 86.7778C10 86.7778 43.75 82.7222 77.5 78.6667C111.25 74.6111 111.25 74.6111 145 70.5556C178.75 66.5 178.75 66.5 212.5 62.4444C246.25 58.3889 280 54.3333 280 54.3333"
+                          fill="none"
+                          stroke="#EC7100"
+                          stroke-linejoin="bevel"
+                        />
+                      </g>
+                      <path
+                        d="M-5 -5l93 0l0 26l-93 0Z"
+                        fill="rgb(0,0,0)"
+                        fill-opacity="0"
+                        stroke="#ccc"
+                        stroke-width="0"
+                        transform="translate(177 5)"
+                      />
+                      <path
+                        d="M0 0l14 0l0 14l-14 0Z"
+                        fill="#5496EA"
+                        transform="translate(177 6)"
+                      />
+                      <path
+                        d="M20 -1l11 0l0 16l-11 0Z"
+                        fill="none"
+                        transform="translate(177 6)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#333333"
+                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(177 6)"
+                        x="20"
+                        xml:space="preserve"
+                        y="7"
+                      >
+                        New Clients
+                      </text>
+                      <path
+                        d="M0 0l14 0l0 14l-14 0Z"
+                        fill="#EC7100"
+                        transform="translate(223 6)"
+                      />
+                      <path
+                        d="M20 -1l17 0l0 16l-17 0Z"
+                        fill="none"
+                        transform="translate(223 6)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#333333"
+                        style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(223 6)"
+                        x="20"
+                        xml:space="preserve"
+                        y="7"
+                      >
+                        Connected Clients
+                      </text>
+                    </g>
+                    <defs>
+                      <clippath
+                        id="zr0-c0"
+                      >
+                        <path
+                          d="M9 29.5l0 0l0 147l0 0Z"
+                          fill="#000"
+                        />
+                      </clippath>
+                      <clippath
+                        id="zr0-c1"
+                      >
+                        <path
+                          d="M9 29.5l0 0l0 147l0 0Z"
+                          fill="#000"
+                        />
+                      </clippath>
+                    </defs>
+                  </svg>
+                </div>
+                <div
+                  class=""
+                />
+                <object
+                  class="size-sensor-object"
+                  data="about:blank"
+                  style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                  tabindex="-1"
+                  type="text/html"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="resize-triggers"
+    >
+      <div
+        class="expand-trigger"
+      >
+        <div
+          style="width: 281px; height: 281px;"
+        />
+      </div>
+      <div
+        class="contract-trigger"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
