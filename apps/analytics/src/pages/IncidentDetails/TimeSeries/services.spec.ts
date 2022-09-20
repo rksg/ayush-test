@@ -5,7 +5,14 @@ import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { fakeIncident1 }       from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
-import { Api, calcGranularity, getIncidentTimeSeriesPeriods, getBuffer, BufferConfig } from './services'
+import { TimeSeriesChartTypes } from './config'
+import {
+  Api,
+  calcGranularity,
+  getIncidentTimeSeriesPeriods,
+  getBuffer,
+  BufferConfig
+} from './services'
 
 describe('chartQuery', () => {
   const store = configureStore({
@@ -20,9 +27,9 @@ describe('chartQuery', () => {
   )
 
   const charts = [
-    'failureChart',
-    'clientCountChart',
-    'attemptAndFailureChart'
+    TimeSeriesChartTypes.FailureChart,
+    TimeSeriesChartTypes.ClientCountChart,
+    TimeSeriesChartTypes.AttemptAndFailureChart
   ]
 
   const expectedQueryResults = {

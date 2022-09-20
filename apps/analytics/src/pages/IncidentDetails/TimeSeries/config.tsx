@@ -12,8 +12,14 @@ interface TimeSeriesChart {
   chart?: ({ incident, data }: { incident: Incident, data: ChartsData }) => JSX.Element
 }
 
-export const timeSeriesCharts: Readonly<Record<string, TimeSeriesChart>> = {
-  failureChart: {
+export enum TimeSeriesChartTypes {
+  FailureChart,
+  ClientCountChart,
+  AttemptAndFailureChart
+}
+
+export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesChart>> = {
+  [TimeSeriesChartTypes.FailureChart]: {
     query: (incident) => gql`
       failureChart: timeSeries(granularity: $granularity) {
         time
@@ -24,7 +30,7 @@ export const timeSeriesCharts: Readonly<Record<string, TimeSeriesChart>> = {
     `,
     chart: FailureChart
   },
-  clientCountChart: {
+  [TimeSeriesChartTypes.ClientCountChart]: {
     query: () => gql`
       clientCountChart: timeSeries(granularity: $granularity) {
         time
@@ -35,7 +41,7 @@ export const timeSeriesCharts: Readonly<Record<string, TimeSeriesChart>> = {
     `,
     chart: ClientCountChart
   },
-  attemptAndFailureChart: {
+  [TimeSeriesChartTypes.AttemptAndFailureChart]: {
     query: (incident) => gql`
       attemptAndFailureChart: timeSeries(granularity: $granularity) {
         time

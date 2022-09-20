@@ -7,10 +7,11 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { IncidentAttributes } from '../IncidentAttributes'
-import { Insights }           from '../Insights'
-import { NetworkImpact }      from '../NetworkImpact'
-import { TimeSeries }         from '../TimeSeries'
+import { IncidentAttributes }   from '../IncidentAttributes'
+import { Insights }             from '../Insights'
+import { NetworkImpact }        from '../NetworkImpact'
+import { TimeSeries }           from '../TimeSeries'
+import { TimeSeriesChartTypes } from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
@@ -27,10 +28,10 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
     'eventStartTime',
     'eventEndTime'
   ]
-  const timeSeriesCharts = [
-    'failureChart',
-    'clientCountChart',
-    'attemptAndFailureChart'
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.FailureChart,
+    TimeSeriesChartTypes.ClientCountChart,
+    TimeSeriesChartTypes.AttemptAndFailureChart
   ]
 
   return (
@@ -58,7 +59,7 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <TimeSeries incident={incident} charts={timeSeriesCharts} queryRelatedIncidents />
+          <TimeSeries incident={incident} charts={timeSeriesCharts} />
         </GridCol>
       </GridRow>
     </>

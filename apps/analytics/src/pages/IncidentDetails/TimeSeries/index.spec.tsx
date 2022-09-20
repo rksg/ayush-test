@@ -5,15 +5,16 @@ import { fakeIncident1 }                                               from '@ac
 import { Provider, store }                                             from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { Api } from './services'
+import { TimeSeriesChartTypes } from './config'
+import { Api }                  from './services'
 
 import { TimeSeries } from '.'
 
 describe('Timeseries component', () => {
   const charts = [
-    'failureChart',
-    'clientCountChart',
-    'attemptAndFailureChart'
+    TimeSeriesChartTypes.FailureChart,
+    TimeSeriesChartTypes.ClientCountChart,
+    TimeSeriesChartTypes.AttemptAndFailureChart
   ]
   const props = {
     incident: fakeIncident1,
