@@ -7,7 +7,8 @@ import {
   domainNameRegExp,
   passphraseRegExp,
   checkObjectNotExists,
-  checkItemNotIncluded
+  checkItemNotIncluded,
+  hasGraveAccentAndDollarSign
 } from './validator'
 
 describe('validator', () => {
@@ -17,7 +18,7 @@ describe('validator', () => {
         networkWifiIpRegExp(useIntl(), '111.111.111.111')).result.current
       await expect(result).resolves.toEqual(undefined)
     })
-    it('Should display error meesage if ip address values incorrectly', async () => {
+    it('Should display error message if ip address values incorrectly', async () => {
       const result = renderHook(() =>
         networkWifiIpRegExp(useIntl(), '000.000.000.000')).result.current
       await expect(result).rejects.toEqual('Please enter a valid IP address')
@@ -30,10 +31,33 @@ describe('validator', () => {
         domainNameRegExp(useIntl(), 'test.com')).result.current
       await expect(result).resolves.toEqual(undefined)
     })
-    it('Should display error meesage if domain name values incorrectly', async () => {
+    it('Should display error message if domain name values incorrectly', async () => {
       const result = renderHook(() =>
         domainNameRegExp(useIntl(), 'testcom')).result.current
       await expect(result).rejects.toEqual('This field is invalid')
+    })
+  })
+
+  describe('hasGraveAccentAndDollarSign', () => {
+    it('Should take care of value do not have grave accent and dollar sign', async () => {
+      const result = renderHook(() =>
+      hasGraveAccentAndDollarSign(useIntl(), 'test')).result.current
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if value contains dollar sign', async () => {
+      const result = renderHook(() =>
+      hasGraveAccentAndDollarSign(useIntl(), '$(test')).result.current
+      await expect(result).rejects.toEqual('"$(" is not allowed')
+    })
+    it('Should display error message if value contains grave accent', async () => {
+      const result = renderHook(() =>
+      hasGraveAccentAndDollarSign(useIntl(), 'test`')).result.current
+      await expect(result).rejects.toEqual('"`" is not allowed')
+    })
+    it('Should display error message if value contains grave accent and dollar sign', async () => {
+      const result = renderHook(() =>
+      hasGraveAccentAndDollarSign(useIntl(), '$(test`')).result.current
+      await expect(result).rejects.toEqual('"`" and "$(" are not allowed')
     })
   })
 
@@ -43,7 +67,7 @@ describe('validator', () => {
         passphraseRegExp(useIntl(), 'test passphrase')).result.current
       await expect(result).resolves.toEqual(undefined)
     })
-    it('Should display error meesage if passphrase values incorrectly', async () => {
+    it('Should display error message if passphrase values incorrectly', async () => {
       const result = renderHook(() =>
         // eslint-disable-next-line max-len
         passphraseRegExp(useIntl(), '122333444455555666666777777788888888999999999000000000012233344z')).result.current

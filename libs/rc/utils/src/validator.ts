@@ -39,11 +39,11 @@ export function trailingNorLeadingSpaces ({ $t }: IntlShape, value: string) {
 }
 
 export function hasGraveAccentAndDollarSign ({ $t }: IntlShape, value: string) {
-  if (value.indexOf('`') !== -1 && value.indexOf('$(') !== -1) {
+  if (value.includes('`') && value.includes('$(')) {
     return Promise.reject($t(validationMessages.hasGraveAccentAndDollarSign))
-  } else if (value.indexOf('`') !== -1) {
+  } else if (value.includes('`')) {
     return Promise.reject($t(validationMessages.hasGraveAccent))
-  } else if (value.indexOf('$(') !== -1) {
+  } else if (value.includes('$(')) {
     return Promise.reject($t(validationMessages.hasDollarSign))
   }
   return Promise.resolve()
