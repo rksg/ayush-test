@@ -28,7 +28,7 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
     'eventEndTime'
   ]
   const timeSeriesCharts = [
-    'incidentChart',
+    'failureChart',
     'clientCountChart',
     'attemptAndFailureChart'
   ]

@@ -44,8 +44,8 @@ export const getMarkers = (
   }
 }))
 
-export const IncidentChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
-  const { incidentCharts, relatedIncidents } = data
+export const FailureChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
+  const { failureChart, relatedIncidents } = data
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/')
@@ -59,13 +59,9 @@ export const IncidentChart = ({ incident, data }: { incident: Incident, data: Ch
     name: title
   }]
 
-  const chartResults = getSeriesData(incidentCharts, seriesMapping)
+  const chartResults = getSeriesData(failureChart, seriesMapping)
 
-  return <Card
-    key={'incidentChart'}
-    title={title}
-    type='no-border'
-  >
+  return <Card title={title} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         <MultiLineTimeSeriesChart

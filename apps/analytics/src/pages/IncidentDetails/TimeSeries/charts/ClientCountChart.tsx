@@ -8,7 +8,7 @@ import { intlFormats }                    from '@acx-ui/utils'
 import { ChartsData } from '../services'
 
 export const ClientCountChart = ({ data }: { data: ChartsData }) => {
-  const { clientCountCharts } = data
+  const { clientCountChart } = data
   const { $t } = useIntl()
 
   const seriesMapping = [
@@ -17,13 +17,9 @@ export const ClientCountChart = ({ data }: { data: ChartsData }) => {
     { key: 'connectedClientCount', name: $t({ defaultMessage: 'Connected Clients' }) }
   ]
 
-  const chartResults = getSeriesData(clientCountCharts, seriesMapping)
+  const chartResults = getSeriesData(clientCountChart, seriesMapping)
 
-  return <Card
-    key={'clientCountChart'}
-    title={$t({ defaultMessage: 'Clients' })}
-    type='no-border'
-  >
+  return <Card title={$t({ defaultMessage: 'Clients' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         <MultiLineTimeSeriesChart

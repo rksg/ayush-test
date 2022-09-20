@@ -15,7 +15,7 @@ import { ChartsData } from '../services'
 
 export const AttemptAndFailureChart = (
   { incident, data }: { incident: Incident, data: ChartsData }) => {
-  const { attemptAndFailureCharts } = data
+  const { attemptAndFailureChart } = data
   const { $t } = useIntl()
   const title = mapCodeToReason(
     codeToFailureTypeMap[incident.code],
@@ -32,13 +32,9 @@ export const AttemptAndFailureChart = (
     { key: 'attemptCount', name: attempt }
   ]
 
-  const chartResults = getSeriesData(attemptAndFailureCharts, seriesMapping)
+  const chartResults = getSeriesData(attemptAndFailureChart, seriesMapping)
 
-  return <Card
-    key={'attemptAndFailureChart'}
-    title={$t({ defaultMessage: 'Failures' })}
-    type='no-border'
-  >
+  return <Card title={$t({ defaultMessage: 'Failures' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         <MultiLineTimeSeriesChart

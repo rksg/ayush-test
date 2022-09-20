@@ -5,7 +5,7 @@ import moment, { unitOfTime } from 'moment-timezone'
 import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
 
-import { failureCharts } from './config'
+import { timeSeriesCharts } from './config'
 
 export type BufferConfig = {
   value: number;
@@ -78,7 +78,7 @@ export const Api = dataApi.injectEndpoints({
     >({
       query: (payload) => {
         const queries = payload.charts.map(
-          chart => failureCharts[chart].query(payload.incident)
+          chart => timeSeriesCharts[chart].query(payload.incident)
         )
         queries.push(gql`
           relatedIncidents: incidents(filter: {code: [$code]}) {

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`IncidentChart should handle markAreaProps 1`] = `
+exports[`FailureChart should handle markAreaProps 1`] = `
 Array [
   Object {
     "data": Object {

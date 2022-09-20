@@ -9,10 +9,10 @@ import { mockDOMWidth, render } from '@acx-ui/test-utils'
 
 import { ChartsData, Api } from '../services'
 
-import { IncidentChart, onMarkedAreaClick, getMarkers } from './IncidentChart'
+import { FailureChart, onMarkedAreaClick, getMarkers } from './FailureChart'
 
 const expectedResult = {
-  incidentCharts: {
+  failureChart: {
     time: [
       '2022-04-07T09:15:00.000Z',
       '2022-04-08T09:30:00.000Z'
@@ -41,12 +41,12 @@ const expectedResult = {
 
 beforeEach(() => store.dispatch(Api.util.resetApiState()))
 
-describe('IncidentChart', () => {
+describe('FailureChart', () => {
   mockDOMWidth()
   it('should render chart', () => {
     const { asFragment } = render(
       <BrowserRouter>
-        <IncidentChart incident={fakeIncident1} data={expectedResult}/>
+        <FailureChart incident={fakeIncident1} data={expectedResult}/>
       </BrowserRouter>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()

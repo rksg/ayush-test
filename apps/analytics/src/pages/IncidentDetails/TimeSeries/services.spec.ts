@@ -20,7 +20,7 @@ describe('chartQuery', () => {
   )
 
   const charts = [
-    'incidentChart',
+    'failureChart',
     'clientCountChart',
     'attemptAndFailureChart'
   ]
@@ -29,12 +29,12 @@ describe('chartQuery', () => {
     const expectedResult = {
       network: {
         hierarchyNode: {
-          incidentChart: {
+          failureChart: {
             time: [
               '2022-04-07T09:15:00.000Z',
               '2022-04-08T09:30:00.000Z'
             ],
-            radius: [1, 1]
+            eap: [1, 1]
           },
           clientCountChart: {
             time: [

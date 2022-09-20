@@ -11,7 +11,7 @@ import { TimeSeries } from '.'
 
 describe('Timeseries component', () => {
   const charts = [
-    'incidentChart',
+    'failureChart',
     'clientCountChart',
     'attemptAndFailureChart'
   ]
@@ -22,12 +22,12 @@ describe('Timeseries component', () => {
   const expectedResult = {
     network: {
       hierarchyNode: {
-        incidentChart: {
+        failureChart: {
           time: [
             '2022-07-18T09:15:00.000Z',
             '2022-07-19T09:30:00.000Z'
           ],
-          radius: [1, 1]
+          eap: [1, 1]
         },
         clientCountChart: {
           time: [

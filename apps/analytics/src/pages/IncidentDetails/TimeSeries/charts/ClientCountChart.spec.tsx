@@ -9,7 +9,7 @@ import { Api }        from '../services'
 import { ClientCountChart } from './ClientCountChart'
 
 const expectedResult = {
-  clientCountCharts: {
+  clientCountChart: {
     time: [
       '2022-04-07T09:15:00.000Z',
       '2022-04-07T09:30:00.000Z',
