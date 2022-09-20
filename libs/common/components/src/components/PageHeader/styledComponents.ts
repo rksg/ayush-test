@@ -47,17 +47,6 @@ export const Wrapper = styled.div`
         margin-bottom: 0;
       }
     }
-    &-footer {
-      .ant-tabs {
-        border-bottom: 1px solid var(--acx-neutrals-30);
-        .ant-tabs-tab {
-          padding: 4px 0 14px 0;
-          &.ant-tabs-tab-active .ant-tabs-tab-btn {
-            font-weight: var(--acx-subtitle-4-font-weight);
-          }
-        }
-      }
-    }
     .ant-tabs-tab + .ant-tabs-tab {
       margin-left: 30px;
     }
