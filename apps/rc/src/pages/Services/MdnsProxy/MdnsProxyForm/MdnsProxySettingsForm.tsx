@@ -1,13 +1,30 @@
+import { useContext, useEffect, useRef } from 'react'
+
 import { Form, Input, Col, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
+import MdnsProxyFormContext              from './MdnsProxyFormContext'
 import { MdnsProxyForwardingRulesTable } from './MdnsProxyForwardingRulesTable'
+
 
 
 export function MdnsProxySettingsForm () {
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
+  const { defaultData } = useContext(MdnsProxyFormContext)
+  const defaultDataLoaded = useRef<boolean>(false)
+
+  useEffect(() => {
+    if (!defaultData?.scope || defaultDataLoaded.current) {
+      return
+    }
+    form.resetFields()
+    form.setFieldsValue(defaultData)
+
+    defaultDataLoaded.current = true
+  }, [defaultData, form])
 
   const nameValidator = async (value: string) => {
     // const payload = { ...networkListPayload, searchString: value }

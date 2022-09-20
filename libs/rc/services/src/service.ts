@@ -6,7 +6,9 @@ import {
   RequestPayload,
   TableResult,
   Service,
-  CommonResult
+  CommonResult,
+  MdnsProxyFormData,
+  MdnsProxyUrls
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -17,8 +19,6 @@ import {
   VlanPool,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
-
-
 
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -75,8 +75,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-
-
     devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
         const devicePolicyListReq = createHttpRequest(
@@ -89,7 +87,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-
     applicationPolicyList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
         const applicationPolicyListReq = createHttpRequest(
@@ -132,6 +129,54 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getMdnsProxy: build.query<MdnsProxyFormData, RequestPayload>({
+      query: ({ params, payload }) => {
+        const mdnsProxyReq = createHttpRequest(MdnsProxyUrls.getMdnsProxy, params)
+        return {
+          ...mdnsProxyReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.updateMdnsProxy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Service', id: 'DETAIL' }]
+    }),
+    deleteMdnsProxy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxy, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    deleteMdnsProxyList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxyList, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    addMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.addMdnsProxy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     })
   })
 })
@@ -146,5 +191,10 @@ export const {
   useServiceListQuery,
   useDeleteServiceMutation,
   useVlanPoolListQuery,
-  useAccessControlProfileListQuery
+  useAccessControlProfileListQuery,
+  useGetMdnsProxyQuery,
+  useAddMdnsProxyMutation,
+  useUpdateMdnsProxyMutation,
+  useDeleteMdnsProxyMutation,
+  useDeleteMdnsProxyListMutation
 } = serviceApi

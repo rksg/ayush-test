@@ -55,7 +55,7 @@ export interface NetworkDetail {
     ssid?: string;
     vlanId?: number;
     enable?: boolean;
-    advancedCustomization?:   
+    advancedCustomization?:
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |
@@ -93,6 +93,7 @@ export interface Venue {
   deepVenue?: NetworkVenue
   disabledActivation: boolean
   networkId? : string
+  activatedApsId?: string[]
 }
 
 export interface AlarmBase {

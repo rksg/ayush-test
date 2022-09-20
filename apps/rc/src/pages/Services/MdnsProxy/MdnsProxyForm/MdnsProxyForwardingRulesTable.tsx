@@ -25,7 +25,7 @@ export function MdnsProxyForwardingRulesTable () {
   }
 
   const handleSetRule = (data: MdnsProxyForwardingRule) => {
-    const newRules = rules ? rules.slice() : []
+    const newRules: MdnsProxyForwardingRule[] = rules ? rules.slice() : []
 
     if (drawerEditMode) {
       newRules[selectedRuleIndex] = data
@@ -39,16 +39,19 @@ export function MdnsProxyForwardingRulesTable () {
     {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
+      key: 'type',
       sorter: true
     },
     {
       title: $t({ defaultMessage: 'From VLAN' }),
       dataIndex: 'fromVlan',
+      key: 'fromVlan',
       sorter: true
     },
     {
       title: $t({ defaultMessage: 'To VLAN' }),
       dataIndex: 'toVlan',
+      key: 'toVlan',
       sorter: true
     }
   ]
