@@ -30,10 +30,6 @@ export const Wrapper = styled.div<WrapperProps>`
     }
   }
 
-  .ant-picker-focused {
-    box-shadow: none;
-  }
-
   .ant-picker-dropdown {
     font-size: var(--acx-body-4-font-size);
     padding: 10px 0;
@@ -121,23 +117,15 @@ export const Wrapper = styled.div<WrapperProps>`
     .ant-picker-cell-in-view.ant-picker-cell-range-end.ant-picker-cell-range-hover::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single).ant-picker-cell-range-hover-start::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single).ant-picker-cell-range-hover-end::before,
-    .ant-picker-panel
-      > :not(.ant-picker-date-panel)
-      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,
-    .ant-picker-panel
-      > :not(.ant-picker-date-panel)
-      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
+    .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,
+    .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
     .ant-picker-cell-in-view.ant-picker-cell-in-range::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single)::before,
     .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single)::before {
       background: var(--acx-accents-blue-10);
     }
-    .ant-picker-date-panel
-      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start
-      .ant-picker-cell-inner::after,
-    .ant-picker-date-panel
-      .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end
-      .ant-picker-cell-inner::after {
+    .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start .ant-picker-cell-inner::after,
+    .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end .ant-picker-cell-inner::after {
       background: var(--acx-accents-blue-10);
     }
     .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
@@ -148,12 +136,11 @@ export const Wrapper = styled.div<WrapperProps>`
     .ant-picker-cell-in-view.ant-picker-cell-range-hover-end:not(.ant-picker-cell-in-range)::after {
       border-color: var(--acx-accents-blue-50);
     }
-    .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end)
-      .ant-picker-cell-inner,
-    .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start)
-      .ant-picker-cell-inner {
+    .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end) .ant-picker-cell-inner,
+    .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start) .ant-picker-cell-inner {
       border-radius: 20px;
     }
+    .ant-picker-cell:hover .ant-picker-cell-inner,
     .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
       border-radius: 20px;
     }
@@ -171,9 +158,6 @@ export const Wrapper = styled.div<WrapperProps>`
 export const TimePickerRow = styled.div`
   height: 48px;
   text-align: center;
-  .ant-picker {
-    border-color: var(--acx-neutrals-50);
-  }
 `
 export const TimePickerColon = styled.span`
   margin-left: 3px;
@@ -194,9 +178,6 @@ export const TimePickerWrapper = styled(TimePicker)`
       }
     }
     .ant-picker-time-panel-column {
-      .ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner {
-        background: var(--acx-accents-blue-10);
-      }
       &::after {
         display: none;
       }
