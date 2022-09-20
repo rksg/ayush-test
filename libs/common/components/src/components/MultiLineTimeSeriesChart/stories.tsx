@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { withKnobs,object } from '@storybook/addon-knobs'
 import { storiesOf }        from '@storybook/react'
@@ -42,8 +42,11 @@ const ConnectedCharts = () => {
   const chartRef2 = useRef<ReactECharts>(null)
   const chartRefs = useMemo(() => [chartRef1, chartRef2],[])
   const n = data.length
-  const timeWindowInit = [data[0].data[0][0], data[n-1].data[n-1][0]]
-  const [timeWindow, setTimeWindow] = useState(timeWindowInit)
+  const timeWindowInit = (data: {
+    name: string;
+    data: [TimeStamp, number][];
+}[]) => [data[0].data[0][0], data[n-1].data[n-1][0]]
+  const [timeWindow, setTimeWindow] = useState(timeWindowInit(data))
 
   useEffect(()=>{
     // eslint-disable-next-line no-console
@@ -58,19 +61,33 @@ const ConnectedCharts = () => {
     connect('group1')
   }, [chartRefs, data])
 
+  const onBrushChangeCallback = useCallback((range: TimeStamp[]) => {    
+    if (range[0] !== timeWindow[0]) {
+      setTimeWindow(range)
+    }
+
+    if (range[1] !== timeWindow[1]) {
+      setTimeWindow(range)
+    }
+  }, [timeWindow])
+
   return (
     <>
       <Button
         size='small'
         type='primary'
-        onClick={()=>{ setData(getSeriesData()) }}>Update Data</Button>
+        onClick={()=>{
+          const copyData = getSeriesData()
+          setData(copyData) 
+          setTimeWindow(timeWindowInit(copyData))
+        }}>Update Data</Button>
       {chartRefs.map((ref, index) => <MultiLineTimeSeriesChart
         key={index}
         ref={ref}
         style={{ width: 504, height: 300 }}
         data={data}
         brush={timeWindow as [TimeStamp, TimeStamp]}
-        //onBrushChange={(range) => {setTimeWindow(range)}}
+        onBrushChange={onBrushChangeCallback}
       />)}
     </>
   )

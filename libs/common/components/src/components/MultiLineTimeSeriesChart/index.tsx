@@ -112,7 +112,9 @@ export const MultiLineTimeSeriesChart = forwardRef<
         borderWidth: 4,
         color: 'rgba(0, 0, 0, 0.05)',
         borderColor: '#123456' // special color code to identify path of brush
-      }
+      },
+      throttleType: 'debounce',
+      throttleDelay: 20
     },
     xAxis: {
       ...xAxisOptions(),
