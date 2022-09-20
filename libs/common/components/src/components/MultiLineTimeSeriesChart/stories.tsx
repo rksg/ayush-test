@@ -48,28 +48,31 @@ const ConnectedCharts = () => {
 }[]) => [data[0].data[0][0], data[n-1].data[n-1][0]]
   const [timeWindow, setTimeWindow] = useState(timeWindowInit(data))
 
-  useEffect(()=>{
-    // eslint-disable-next-line no-console
-    console.log([chartRef1, chartRef2])
-    if(chartRefs.every(ref => ref && ref.current)){
-      chartRefs.forEach(ref => {
-        let instance = ref.current!.getEchartsInstance()
-        instance.group = 'group1'
-      })
-    }
-
+  const connectRefs = useCallback(() => {
+    const validRefs = chartRefs.filter(ref => ref && ref.current)
+    validRefs.forEach(ref => {
+      let instance = ref.current!.getEchartsInstance()
+      instance.group = 'group1'
+    })
     connect('group1')
-  }, [chartRefs, data])
+  }, [chartRefs])
+
+
+  useEffect(()=>{
+    connectRefs()
+  }, [connectRefs])
 
   const onBrushChangeCallback = useCallback((range: TimeStamp[]) => {    
     if (range[0] !== timeWindow[0]) {
       setTimeWindow(range)
+      connectRefs()
     }
 
     if (range[1] !== timeWindow[1]) {
       setTimeWindow(range)
+      connectRefs()
     }
-  }, [timeWindow])
+  }, [timeWindow, connectRefs])
 
   return (
     <>
@@ -80,6 +83,7 @@ const ConnectedCharts = () => {
           const copyData = getSeriesData()
           setData(copyData) 
           setTimeWindow(timeWindowInit(copyData))
+          connectRefs()
         }}>Update Data</Button>
       {chartRefs.map((ref, index) => <MultiLineTimeSeriesChart
         key={index}

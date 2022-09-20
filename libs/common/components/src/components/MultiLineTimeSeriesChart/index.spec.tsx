@@ -66,10 +66,17 @@ describe('useOnBrushChange', () => {
   it('should call OnBrushChange',() => {
     const OnBrushChange = jest.fn()
     const params = {
-      batch: [{ areas: [{ coordRange: ['2022-09-07', '2022-09-07'] as [TimeStamp, TimeStamp] }] }]
+      areas: [{ coordRange: ['2022-09-07', '2022-09-07'] as [TimeStamp, TimeStamp] }]
     }
     renderHook(() => useOnBrushChange(OnBrushChange)(params))
     expect(OnBrushChange).toBeCalledTimes(1)
     expect(OnBrushChange).toBeCalledWith(['2022-09-07', '2022-09-07'])
+  })
+
+  it('should handle invalid brushes', () => {
+    const OnBrushChange = jest.fn()
+    const params = undefined as unknown as { areas: { coordRange: [TimeStamp, TimeStamp]; }[]; }
+    renderHook(() => useOnBrushChange(OnBrushChange)(params))
+    expect(OnBrushChange).toBeCalledTimes(0)
   })
 })

@@ -40,12 +40,11 @@ interface MultiLineTimeSeriesChartProps
     dataFormatter?: (value: unknown) => string | null,
     brush?: [TimeStamp, TimeStamp]
     onBrushChange?: (range: TimeStamp[]) => void
-    chartRef?: RefObject<ReactECharts>
   }
 
 export const useBrush = (
   eChartsRef: RefObject<ReactECharts>,
-  brush?: [TimeStamp, TimeStamp]
+  brush?: [TimeStamp, TimeStamp] 
 ) => {
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current || isEmpty(brush)) return
@@ -64,8 +63,19 @@ export const useBrush = (
 export const useOnBrushChange = (
   onBrushChange?: (range: TimeStamp[]) => void
 ) => {
-  return (params: { batch: { areas: { coordRange: [TimeStamp, TimeStamp] }[] }[] }) => {
-    onBrushChange && onBrushChange(params.batch[0].areas[0].coordRange)
+  return (params: { 
+    areas: { coordRange: [TimeStamp, TimeStamp] }[]
+  }) => {
+    if (
+      isEmpty(params) ||
+      isEmpty(params.areas) ||
+      isEmpty(params.areas[0]) ||
+      isEmpty(params.areas[0].coordRange) 
+    )
+    {
+      return
+    }
+    onBrushChange && onBrushChange(params.areas[0].coordRange)
   }
 }
 
@@ -83,7 +93,7 @@ export const MultiLineTimeSeriesChart = forwardRef<
     ...rest
   } = props
 
-  const eChartsRef = useRef<ReactECharts>(null)
+  const eChartsRef = useRef<ReactECharts | null>(null)
   useImperativeHandle(ref, () => eChartsRef.current!)
   useBrush(eChartsRef, props.brush)
 
@@ -112,9 +122,7 @@ export const MultiLineTimeSeriesChart = forwardRef<
         borderWidth: 4,
         color: 'rgba(0, 0, 0, 0.05)',
         borderColor: '#123456' // special color code to identify path of brush
-      },
-      throttleType: 'debounce',
-      throttleDelay: 20
+      }
     },
     xAxis: {
       ...xAxisOptions(),
@@ -151,6 +159,6 @@ export const MultiLineTimeSeriesChart = forwardRef<
       ref={eChartsRef}
       opts={{ renderer: 'svg' }}
       option={option}
-      onEvents={{ brushselected: useOnBrushChange(props.onBrushChange) }}/>
+      onEvents={{ brushEnd: useOnBrushChange(props.onBrushChange) }}/>
   )
 })
