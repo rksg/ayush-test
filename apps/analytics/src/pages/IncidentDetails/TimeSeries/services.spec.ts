@@ -97,7 +97,7 @@ describe('chartQuery', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'Network', {
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
@@ -112,7 +112,7 @@ describe('chartQuery', () => {
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'Network', {
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
