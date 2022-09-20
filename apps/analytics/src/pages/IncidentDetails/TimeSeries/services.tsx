@@ -18,6 +18,7 @@ interface ChartIncident extends Incident {
 export interface ChartDataProps {
   charts: string[]
   incident: ChartIncident
+  queryRelatedIncidents?: boolean
 }
 
 interface Response <ChartsData> {
@@ -80,11 +81,13 @@ export const Api = dataApi.injectEndpoints({
         const queries = payload.charts.map(
           chart => timeSeriesCharts[chart].query(payload.incident)
         )
-        queries.push(gql`
-          relatedIncidents: incidents(filter: {code: [$code]}) {
-            id severity code startTime endTime
-          }
-        `)
+        if (payload.queryRelatedIncidents) {
+          queries.push(gql`
+            relatedIncidents: incidents(filter: {code: [$code]}) {
+              id severity code startTime endTime
+            }
+          `)
+        }
 
         return {
           document: gql`

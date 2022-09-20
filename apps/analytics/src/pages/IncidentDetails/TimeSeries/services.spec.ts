@@ -25,38 +25,46 @@ describe('chartQuery', () => {
     'attemptAndFailureChart'
   ]
 
-  it('should return correct data', async () => {
+  const expectedQueryResults = {
+    network: {
+      hierarchyNode: {
+        failureChart: {
+          time: [
+            '2022-04-07T09:15:00.000Z',
+            '2022-04-08T09:30:00.000Z'
+          ],
+          eap: [1, 1]
+        },
+        clientCountChart: {
+          time: [
+            '2022-04-07T09:15:00.000Z',
+            '2022-04-07T09:30:00.000Z',
+            '2022-04-07T09:45:00.000Z',
+            '2022-04-07T10:00:00.000Z',
+            '2022-04-07T10:15:00.000Z'
+          ],
+          newClientCount: [1, 2, 3, 4, 5],
+          impactedClientCount: [6, 7, 8, 9, 10],
+          connectedClientCount: [11, 12, 13, 14, 15]
+        },
+        attemptAndFailureChart: {
+          time: [
+            '2022-04-07T09:15:00.000Z',
+            '2022-04-07T09:30:00.000Z'
+          ],
+          failureCount: [1, 2],
+          totalFailureCount: [1, 2],
+          attemptCount: [1, 2]
+        }
+      }
+    }
+  }
+
+  it('should return correct data when relatedIncidents is requested', async () => {
     const expectedResult = {
       network: {
         hierarchyNode: {
-          failureChart: {
-            time: [
-              '2022-04-07T09:15:00.000Z',
-              '2022-04-08T09:30:00.000Z'
-            ],
-            eap: [1, 1]
-          },
-          clientCountChart: {
-            time: [
-              '2022-04-07T09:15:00.000Z',
-              '2022-04-07T09:30:00.000Z',
-              '2022-04-07T09:45:00.000Z',
-              '2022-04-07T10:00:00.000Z',
-              '2022-04-07T10:15:00.000Z'
-            ],
-            newClientCount: [1, 2, 3, 4, 5],
-            impactedClientCount: [6, 7, 8, 9, 10],
-            connectedClientCount: [11, 12, 13, 14, 15]
-          },
-          attemptAndFailureChart: {
-            time: [
-              '2022-04-07T09:15:00.000Z',
-              '2022-04-07T09:30:00.000Z'
-            ],
-            failureCount: [1, 2],
-            totalFailureCount: [1, 2],
-            attemptCount: [1, 2]
-          },
+          ...expectedQueryResults,
           relatedIncidents: {
             id: '07965e24-84ba-48a5-8200-f310f8197f40',
             severity: 0.5,
@@ -71,7 +79,33 @@ describe('chartQuery', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      Api.endpoints.Charts.initiate({ incident: fakeIncident1, charts })
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncident1,
+        charts,
+        queryRelatedIncidents: true
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
+    expect(error).toBe(undefined)
+  })
+  it('should return correct data when relatedIncidents is not requested', async () => {
+    const expectedResult = {
+      network: {
+        hierarchyNode: {
+          ...expectedQueryResults
+        }
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: expectedResult
+    })
+    const { status, data, error } = await store.dispatch(
+      Api.endpoints.Charts.initiate({
+        incident: fakeIncident1,
+        charts,
+        queryRelatedIncidents: false
+      })
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode)

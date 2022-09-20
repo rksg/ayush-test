@@ -4,11 +4,11 @@ import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
 import { IncidentDetailsTemplate } from './FailureTemplate'
 
-jest.mock('../NetworkImpact', () => ({
-  NetworkImpact: () => <div data-testid='networkImpact' />
-}))
 jest.mock('../IncidentDetails/IncidentAttributes', () => ({
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
+}))
+jest.mock('../NetworkImpact', () => ({
+  NetworkImpact: () => <div data-testid='networkImpact' />
 }))
 jest.mock('../IncidentDetails/TimeSeries', () => ({
   TimeSeries: () => <div data-testid='timeSeries' />
@@ -27,6 +27,7 @@ describe('IncidentDetailsTemplate', () => {
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
+    expect(screen.getByTestId('networkImpact')).toBeVisible()
     expect(screen.getByTestId('timeSeries')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
