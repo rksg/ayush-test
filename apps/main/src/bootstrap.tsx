@@ -31,7 +31,6 @@ export async function init () {
   const container = document.getElementById('root')
   const root = createRoot(container!)
   const browserLang = loadMessages(navigator.language)
-  alert(`Browser lang: ${browserLang}`) // temperory fix till dialog component and UX design comes up
   const queryParams = new URLSearchParams(window.location.search)
   const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
 
