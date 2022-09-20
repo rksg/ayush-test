@@ -10,11 +10,30 @@ import AllRoutes from './AllRoutes'
 
 import '@acx-ui/theme'
 
+// Needed for Browser language detection
+export function loadMessages (locale: string) {
+  switch (locale) {
+    case 'en':
+    case 'en-US':
+      return 'en-US'
+    case 'de':
+    case 'de-DE':
+      return 'de-DE'
+    case 'ja':
+    case 'ja-JP':
+      return 'ja-JP'
+    default:
+      return 'en-US'
+  }
+}
+
 export async function init () {
   const container = document.getElementById('root')
   const root = createRoot(container!)
+  const browserLang = loadMessages(navigator.language)
+  alert(`Browser lang: ${browserLang}`) // temperory fix till dialog component and UX design comes up
   const queryParams = new URLSearchParams(window.location.search)
-  const lang = (queryParams.get('lang') ?? 'en-US') as ConfigProviderProps['lang']
+  const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
 
   root.render(
     <React.StrictMode>

@@ -28,6 +28,8 @@ function localePath (locale: string) {
   return `locales/compiled/${locale}.json`
 }
 
+const allowedLang = ['en-US', 'de-DE', 'ja-JP']
+
 async function loadEnUS (): Promise<Messages> {
   const [base, proBase, translation] = await Promise.all([
     import('antd/lib/locale/en_US').then(result => result.default),
@@ -70,6 +72,9 @@ const localeLoaders = {
 type Key = keyof typeof localeLoaders
 const cache: Partial<Record<Key, Messages>> = {}
 export async function loadLocale (locale: Key) {
+  // TODO: need to consolidate
+  // fallback when browser detected or url param provided lang not supported
+  locale = allowedLang.includes(locale) ? locale : 'en-US'
   const result = cache[locale]
   if (result) { return result }
 
