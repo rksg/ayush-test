@@ -27,15 +27,15 @@ const basicData = [
   },
   {
     key: '2',
-    name: 'John Doe',
-    age: 32,
-    address: 'sample address'
+    name: 'Jane Doe',
+    age: 33,
+    address: 'new address'
   },
   {
     key: '3',
-    name: 'John Doe',
-    age: 32,
-    address: 'sample address'
+    name: 'Will Smith',
+    age: 45,
+    address: 'address'
   }
 ]
 
