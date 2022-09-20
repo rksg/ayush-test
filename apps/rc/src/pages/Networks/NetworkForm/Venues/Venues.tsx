@@ -11,8 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useNetworkVenueListQuery } from '@acx-ui/rc/services'
-import { useTableQuery, Venue }     from '@acx-ui/rc/utils'
+import { useNetworkVenueListQuery }                           from '@acx-ui/rc/services'
+import { RadioEnum, SchedulerTypeEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -54,7 +54,7 @@ const getNetworkId = () => {
 
 export function Venues () {
   const form = Form.useFormInstance()
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
 
   const venues = Form.useWatch('venues')
 
@@ -71,9 +71,9 @@ export function Venues () {
   const handleVenueSaveData = (selectedRows: Venue[]) => {
     const defaultSetup = {
       apGroups: [],
-      scheduler: { type: 'ALWAYS_ON' },
+      scheduler: { type: SchedulerTypeEnum.ALWAYS_ON },
       isAllApGroups: true,
-      allApGroupsRadio: 'Both'
+      allApGroupsRadio: RadioEnum.Both
     }
     const selected = selectedRows.map((row) => ({
       ...defaultSetup,
@@ -81,6 +81,7 @@ export function Venues () {
       name: row.name
     }))
 
+    setData && setData({ ...data, venues: selected })
     form.setFieldsValue({ venues: selected })
   }
 

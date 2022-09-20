@@ -200,6 +200,12 @@ function SettingsForm () {
 
   function AaaService () {
     const { $t } = useIntl()
+    const { data, setData } = useContext(NetworkFormContext)
+    
+    const onChange = (value: boolean) => {
+      setData && setData({ ...data, enableAuthProxy: value })
+    }
+
     const proxyServiceTooltip = <Tooltip
       placement='bottom'
       children={<QuestionCircleOutlined />}
@@ -237,7 +243,7 @@ function SettingsForm () {
               name='enableAuthProxy'
               valuePropName='checked'
               initialValue={false}
-              children={<Switch />}
+              children={<Switch onChange={onChange}/>}
             />
             <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
             {proxyServiceTooltip}

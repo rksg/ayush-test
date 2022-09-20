@@ -64,7 +64,6 @@ export function NetworkForm () {
   const params = useParams()
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
-  const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
@@ -227,7 +226,9 @@ export function NetworkForm () {
           { text: intl.$t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
-      <NetworkFormContext.Provider value={{ setNetworkType, editMode, cloneMode, data }}>
+      <NetworkFormContext.Provider value={{
+        editMode, cloneMode, data: saveState, setData: updateSaveState
+      }}>
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
@@ -248,7 +249,7 @@ export function NetworkForm () {
 
           <StepsForm.StepForm
             name='settings'
-            title={intl.$t(settingTitle, { type: networkType })}
+            title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
               const radiusChanged = !_.isEqual(data?.authRadius, saveState?.authRadius)
                           || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)

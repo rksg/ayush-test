@@ -22,13 +22,14 @@ const { useWatch } = Form
 export function NetworkDetailForm () {
   const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
-  const { 
-    setNetworkType: setSettingStepTitle, 
+  const {
     editMode,
-    cloneMode 
+    cloneMode,
+    data,
+    setData
   } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
-    setSettingStepTitle(e.target.value as NetworkTypeEnum)
+    setData && setData({ ...data, type: e.target.value as NetworkTypeEnum })
   }
   const networkListPayload = {
     searchString: '',
@@ -49,6 +50,7 @@ export function NetworkDetailForm () {
     return checkObjectNotExists(intl, list, value, intl.$t({ defaultMessage: 'Network' }))
   }
 
+  console.log(data)
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: false },
@@ -111,8 +113,15 @@ export function NetworkDetailForm () {
         </Form.Item>
       </Col>
 
-      <Col span={14}>
-        <NetworkDiagram type={type}/>
+      <Col span={14}>  
+        <NetworkDiagram
+          type={data?.type}
+          enableAuthProxy={data?.enableAuthProxy}
+          enableAccountingProxy={data?.enableAccountingProxy}
+          enableAaaAuthBtn={data?.accountingRadius !== undefined}
+          showButtons={data?.enableAuthProxy !== !!data?.enableAccountingProxy
+                    && data?.enableAccountingService && !data?.isCloudpathEnabled}
+        />
       </Col>
     </Row>
   )
