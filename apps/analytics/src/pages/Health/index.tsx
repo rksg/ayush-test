@@ -2,7 +2,7 @@ import { Tabs }                                      from 'antd'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { categoryNames }                         from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }                      from '@acx-ui/components'
+import { GridCol, GridRow, Subtitle }            from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import Header from '../../components/Header'
@@ -29,7 +29,16 @@ const tabsMap : Record<HealthTab, MessageDescriptor> = {
 }
 
 const HealthTabContent = (props: { tabSelection: HealthTab }) => {
-  return <div>{props.tabSelection}</div>
+  return (
+    <GridRow>
+      <GridCol col={{ span: 16 }} >
+        <div>{props.tabSelection}</div>
+      </GridCol>
+      <GridCol col={{ span: 8 }} >
+        <div>Threshold Content</div>
+      </GridCol>
+    </GridRow>
+  )
 }
 
 export default function HealthPage () {
@@ -62,10 +71,14 @@ export default function HealthPage () {
                 />
               ))}
             </Tabs>
-            <HealthTabContent tabSelection={activeTab as HealthTab} />
           </GridCol>
-          <GridCol col={{ span: 8 }}>
-            <div>Threshold</div>
+          <GridCol col={{ span: 8 }} >
+            <Subtitle level={4}>
+              {$t(defineMessage({ defaultMessage: 'Customized SLA Threshold' }))}
+            </Subtitle>
+          </GridCol>
+          <GridCol col={{ span: 24 }}>
+            <HealthTabContent tabSelection={activeTab as HealthTab} />
           </GridCol>
         </HealthPageContextProvider>
       </GridRow>
