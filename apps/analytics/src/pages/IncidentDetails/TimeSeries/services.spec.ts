@@ -75,7 +75,7 @@ describe('chartQuery', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'Network', {
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(

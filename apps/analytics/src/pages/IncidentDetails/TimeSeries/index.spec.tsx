@@ -63,7 +63,7 @@ describe('Timeseries component', () => {
 
   it('should match snapshot', async () => {
     store.dispatch(Api.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'Network', {
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
       data: expectedResult
     })
     render(<BrowserRouter>
