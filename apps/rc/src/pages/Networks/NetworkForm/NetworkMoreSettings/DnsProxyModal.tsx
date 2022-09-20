@@ -64,6 +64,7 @@ function useColumns () {
 }
 
 export function DnsProxyModal () {
+  const form = Form.useFormInstance()
   const { $t } = useIntl()
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
   const [modalState, setModalState] = useState(state)
@@ -76,6 +77,9 @@ export function DnsProxyModal () {
   }, [])
 
   const handleUpdate = () => {
+    form.setFieldsValue({
+      dnsProxyRules: dnsProxyList
+    })
     const list = dnsProxyList?.map(item => ({
       domainName: item.domainName,
       key: item.domainName,

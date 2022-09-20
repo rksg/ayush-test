@@ -18,7 +18,7 @@ export const Label = styled.span`
   line-height: 34px;
 `
 
-export const CollpasePanel = styled(Collapse)`
+export const CollapsePanel = styled(Collapse)`
   &.ant-collapse-icon-position-end
     > .ant-collapse-item {
       > .ant-collapse-header {
