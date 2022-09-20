@@ -47,9 +47,6 @@ export const Wrapper = styled.div`
         margin-bottom: 0;
       }
     }
-    .ant-tabs-tab + .ant-tabs-tab {
-      margin-left: 30px;
-    }
   }
 `
 
