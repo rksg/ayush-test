@@ -51,6 +51,7 @@ function useCustomerColumns () {
     {
       title: $t({ defaultMessage: 'Customer' }),
       dataIndex: 'tenantName',
+      key: 'tenantName',
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
       render: function (data) {
@@ -62,11 +63,13 @@ function useCustomerColumns () {
     {
       title: $t({ defaultMessage: 'Account Email' }),
       dataIndex: 'tenantEmail',
+      key: 'tenantEmail',
       sorter: true
     },
     {
       title: $t({ defaultMessage: 'Active Alarms' }),
       dataIndex: 'alarmCount',
+      key: 'alarmCount',
       sorter: true,
       align: 'center',
       render: function (data) {
@@ -78,6 +81,7 @@ function useCustomerColumns () {
     {
       title: $t({ defaultMessage: 'Active Incidents' }),
       dataIndex: 'activeIncindents',
+      key: 'activeIncindents',
       sorter: true,
       align: 'center',
       render: function () {
@@ -87,12 +91,14 @@ function useCustomerColumns () {
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
+      key: 'wifiLicenses',
       sorter: true,
       align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
       dataIndex: 'wifiLicensesUtilization',
+      key: 'wifiLicensesUtilization',
       sorter: true,
       align: 'center',
       render: function (data, row) {
@@ -102,12 +108,14 @@ function useCustomerColumns () {
     {
       title: $t({ defaultMessage: 'Switch Licenses' }),
       dataIndex: 'switchLicenses',
+      key: 'switchLicenses',
       sorter: true,
       align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Next License Expiration' }),
       dataIndex: 'expirationDate',
+      key: 'expirationDate',
       sorter: true,
       align: 'center',
       render: function (data, row) {

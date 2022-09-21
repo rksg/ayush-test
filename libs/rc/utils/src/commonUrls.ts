@@ -122,6 +122,22 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
   },
+  getVenueNetworkList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
+  },
+  venueNetworkApGroup: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venue/network-ap-group'
+  },
+  getNetworkDeepList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/get/deep'
+  },
+  validateRadius: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
+  },
   getMspCustomersList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/msp-ec'
@@ -141,21 +157,5 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   deleteMspEcAccount: {
     method: 'delete',
     url: '/api/mspservice/tenant/:mspEcTenantId'
-  },
-  getVenueNetworkList: {
-    method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
-  },
-  venueNetworkApGroup: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/venue/network-ap-group'
-  },
-  getNetworkDeepList: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/get/deep'
-  },
-  validateRadius: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   }
 }

@@ -18,6 +18,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
+      key: 'name',
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
       render: function (data) {
@@ -29,11 +30,13 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Account Type' }),
       dataIndex: 'tenantType',
+      key: 'tenantType',
       sorter: true
     },
     {
       title: $t({ defaultMessage: 'Customers Assigned' }),
       dataIndex: 'assignedMspEcList',
+      key: 'assignedMspEcList',
       sorter: true,
       align: 'center',
       render: function (data, row) {
@@ -43,6 +46,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'MSP Admins' }),
       dataIndex: 'mspAdminCount',
+      key: 'mspAdminCount',
       sorter: true,
       align: 'center',
       render: function (data) {
@@ -54,12 +58,14 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Account Admins' }),
       dataIndex: 'mspEcAdminCount',
+      key: 'mspEcAdminCount',
       sorter: true,
       align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Active Incidents' }),
       dataIndex: 'activeIncidents',
+      key: 'activeIncidents',
       sorter: true,
       align: 'center',
       render: function () {
@@ -69,6 +75,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Tenant Id' }),
       dataIndex: 'id',
+      key: 'id',
       sorter: true
     }
   ]

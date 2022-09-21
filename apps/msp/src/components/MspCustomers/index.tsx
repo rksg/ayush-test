@@ -33,6 +33,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Customers' }),
       dataIndex: 'name',
+      key: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data) {
@@ -44,16 +45,19 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
+      key: 'status',
       sorter: true
     },
     {
       title: $t({ defaultMessage: 'Address' }),
       dataIndex: 'streetAddress',
+      key: 'streetAddress',
       sorter: true
     },
     {
       title: $t({ defaultMessage: 'Active Alarm' }),
       dataIndex: 'alarmCount',
+      key: 'alarmCount',
       sorter: true,
       align: 'center',
       render: function () {
@@ -63,6 +67,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Active Incindents' }),
       dataIndex: 'activeIncindents',
+      key: 'activeIncindents',
       sorter: true,
       align: 'center',
       render: function () {
@@ -72,6 +77,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'MSP Admins' }),
       dataIndex: 'mspAdminCount',
+      key: 'mspAdminCount',
       sorter: true,
       align: 'center',
       render: function (data) {
@@ -83,12 +89,14 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Customer Admins' }),
       dataIndex: 'mspEcAdminCount',
+      key: 'mspEcAdminCount',
       sorter: true,
       align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
+      key: 'wifiLicenses',
       sorter: true,
       align: 'center',
       render: function (data, row) {
@@ -98,6 +106,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
       dataIndex: 'wifiLicensesUtilization',
+      key: 'wifiLicensesUtilization',
       sorter: true,
       align: 'center',
       render: function (data, row) {
@@ -107,6 +116,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Switch Licenses' }),
       dataIndex: 'switchLicens',
+      key: 'switchLicens',
       sorter: true,
       align: 'center',
       render: function (data, row) {
@@ -116,6 +126,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Active From' }),
       dataIndex: 'creationDate',
+      key: 'creationDate',
       sorter: true,
       render: function (data, row) {
         return transformCreationDate(row)
@@ -124,6 +135,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Service Expired On' }),
       dataIndex: 'expirationDate',
+      key: 'expirationDate',
       sorter: true,
       render: function (data, row) {
         return transformExpirationDate(row)
