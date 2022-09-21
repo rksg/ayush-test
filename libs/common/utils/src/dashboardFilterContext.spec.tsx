@@ -35,8 +35,7 @@ describe('DashboardFilterProvider', () => {
       { type: 'network', name: 'Network' },
       { type: 'zone', name: 'A-T-Venue' },
       { type: 'AP', name: 'D8:38:FC:36:78:D0' }
-    ],
-    raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    ]
   }
   const path = Buffer.from(JSON.stringify(filter)).toString('base64')
   it('should render correctly', () => {
@@ -74,7 +73,7 @@ describe('DashboardFilterProvider', () => {
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
         pathname: '/incidents',
-        search: `?analyticsNetworkFilter=${path}`
+        search: `?dashboardVenueFilter=${path}`
       }]}>
         <DashboardFilterProvider>
           <Component />
@@ -82,5 +81,20 @@ describe('DashboardFilterProvider', () => {
       </MemoryRouter>
     )
     expect(asFragment()).toMatchSnapshot() 
+  })
+  it('set empty array when path is empty', () => {
+    function Component () {
+      const { filters, setNodeFilter } = useDashboardFilter()
+      useEffect(() => {
+        setNodeFilter([])
+      })
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(<BrowserRouter>
+      <DashboardFilterProvider>
+        <Component />
+      </DashboardFilterProvider>
+    </BrowserRouter>)
+    expect(asFragment()).toMatchSnapshot()
   })
 })

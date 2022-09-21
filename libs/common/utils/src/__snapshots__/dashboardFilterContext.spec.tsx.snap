@@ -11,6 +11,14 @@ exports[`DashboardFilterProvider changes filter value 1`] = `
 exports[`DashboardFilterProvider gets initial value from search parameters 1`] = `
 <DocumentFragment>
   <div>
+    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{}}
+  </div>
+</DocumentFragment>
+`;
+
+exports[`DashboardFilterProvider set empty array when path is empty 1`] = `
+<DocumentFragment>
+  <div>
     {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[],"switchNodes":[]}}
   </div>
 </DocumentFragment>
