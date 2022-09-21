@@ -225,6 +225,19 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     $type={type}
     $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
   >
+    <UI.TableSettingsGlobalOverride />
+    {props.actions && <Space
+      size={0}
+      split={<UI.Divider type='vertical' />}
+      style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      {props.actions?.map((action, index) => <Button
+        key={index}
+        type='link'
+        size='small'
+        onClick={action.onClick}
+        children={action.label}
+      />)}
+    </Space>}
     {hasHeader && (
       <UI.Header>
         <div>
@@ -249,19 +262,6 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
         </UI.HeaderRight>
       </UI.Header>
     )}
-    <UI.TableSettingsGlobalOverride />
-    {props.actions && <Space
-      size={0}
-      split={<UI.Divider type='vertical' />}
-      style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      {props.actions?.map((action, index) => <Button
-        key={index}
-        type='link'
-        size='small'
-        onClick={action.onClick}
-        children={action.label}
-      />)}
-    </Space>}
     <ProTable<RecordType>
       {...props}
       dataSource={getFilteredData<RecordType>(

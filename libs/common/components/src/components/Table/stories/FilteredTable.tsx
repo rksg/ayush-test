@@ -166,7 +166,7 @@ const data: TableProps<RecordType>['dataSource'] = [
   }
 ]
 
-const actions: TableProps<(typeof data)[0]>['actions'] = [
+const rowActions: TableProps<(typeof data)[0]>['rowActions'] = [
   {
     label: 'Edit',
     onClick: (selectedRows) => showToast({
@@ -188,7 +188,7 @@ export function FilteredTable () {
     with selection:
     <Table<RecordType>
       columns={columns}
-      actions={actions}
+      rowActions={rowActions}
       dataSource={data}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />
@@ -200,7 +200,7 @@ export function FilteredTable () {
     without children:
     <Table<RecordType>
       columns={columns}
-      actions={actions}
+      rowActions={rowActions}
       dataSource={data.map(row => omit(row, 'children'))}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />
