@@ -43,6 +43,7 @@ function useColumns () {
     },
     {
       key: 'incidents',
+      dataIndex: 'incidents',
       title: () => {
         return (
           <>
@@ -55,6 +56,7 @@ function useColumns () {
     },
     {
       key: 'health',
+      dataIndex: 'health',
       title: () => {
         return (
           <>
@@ -68,6 +70,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Services' }),
       key: 'services',
+      dataIndex: 'services',
       align: 'center'
     },
     {
@@ -135,6 +138,7 @@ function useColumns () {
     },
     {
       key: 'tags',
+      dataIndex: 'tags',
       title: $t({ defaultMessage: 'Tags' })
     }
   ]
