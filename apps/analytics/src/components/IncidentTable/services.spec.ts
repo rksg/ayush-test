@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom'
 import { configureStore } from '@reduxjs/toolkit'
 
-import { dataApi, dataApiURL }    from '@acx-ui/analytics/services'
-import { 
-  fakeIncident, 
-  NetworkPath, 
-  NodeType, 
-  PathNode, 
-  transformIncidentQueryResult 
+import { dataApi, dataApiURL }   from '@acx-ui/analytics/services'
+import {
+  fakeIncident,
+  NetworkPath,
+  NodeType,
+  PathNode,
+  transformIncidentQueryResult
 } from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }     from '@acx-ui/test-utils'
 import { DateRange, setUpIntl } from '@acx-ui/utils'
@@ -162,19 +162,20 @@ describe('IncidentTable: services', () => {
     slaThreshold: null,
     currentSlaThreshold: null
   }
-  
+
   const sampleIncident = fakeIncident(incidentValues)
 
   const sampleIncidentWithTableFields = {
     ...transformIncidentQueryResult(sampleIncident),
     description: '802.11 Authentication failures are unusually high in Venue: Venue-3-US',
-    scope: 'Venue-3-US (Venue)',
+    scope: 'Venue-3-US',
     type: 'Venue',
     duration: 180000,
     category: 'Connection',
     subCategory: '802.11 Authentication',
     clientImpact: '100%',
-    impactedClients: '2'
+    impactedClients: '2',
+    severityLabel: 'P4'
   }
 
   const transformedResult = [
@@ -207,7 +208,7 @@ describe('IncidentTable: services', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.incidentsList.initiate(props)
     )
-    
+
     expect(error).toBe(undefined)
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual([])
@@ -221,7 +222,7 @@ describe('IncidentTable: services', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.incidentsList.initiate(props)
     )
-    
+
     expect(status).toBe('fulfilled')
     expect(error).toBe(undefined)
     expect(data).toStrictEqual(transformedResult)

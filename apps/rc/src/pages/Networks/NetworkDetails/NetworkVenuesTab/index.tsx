@@ -13,7 +13,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
+import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
@@ -23,9 +23,9 @@ import {
 import {
   useTableQuery,
   NetworkSaveData,
-  RadioEnum,
   NetworkVenue,
   Venue,
+  generateDefaultNetworkVenue,
   VLAN_PREFIX,
   ISlotIndex,
   getSchedulingCustomTooltip,
@@ -78,7 +78,7 @@ export function NetworkVenuesTab () {
   const [tableData, setTableData] = useState(defaultArray)
   const params = useParams()
   const [updateNetwork] = useUpdateNetworkMutation()
-  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
+  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
@@ -119,18 +119,6 @@ export function NetworkVenuesTab () {
     }
   }, [tableQuery.data, networkQuery.data])
 
-  const generateDefaultNetworkVenue = (venueId: string): NetworkVenue => {
-    const network = networkQuery.data
-    return {
-      apGroups: [],
-      isAllApGroups: true,
-      allApGroupsRadio: RadioEnum.Both,
-      allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
-      venueId: venueId,
-      networkId: network?.id
-    }
-  }
-
   const activateNetwork = async (checked: boolean, row: Venue) => {
     // TODO: Service
     // if (checked) {
@@ -139,23 +127,23 @@ export function NetworkVenuesTab () {
     //   }
     // }
     const network = networkQuery.data
-    const defaultVenueData = generateDefaultNetworkVenue(row.id)
+    const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
     const isWPA3security = row.wlan && row.wlan.wlanSecurity === 'WPA3'
     if (triBandRadioFeatureFlag && isWPA3security) {
-      defaultVenueData.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
+      newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
 
     let deactivateNetworkVenueId = ''
     if (!checked && network?.venues) {
       network?.venues.forEach((venue: NetworkVenue) => {
         if (venue.venueId === row.id || venue.id === row.id) {
-          deactivateNetworkVenueId = row.id
+          deactivateNetworkVenueId = venue.id ? venue.id : row.id
         }
       })
     }
     if (!row.allApDisabled || !checked) {
       if (checked) { // activate
-        addNetworkVenue({ params: { tenantId: params.tenantId }, payload: defaultVenueData })
+        addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
       } else { // deactivate
         deleteNetworkVenue({
           params: {
@@ -173,15 +161,16 @@ export function NetworkVenuesTab () {
   const activateSelected = (networkActivatedVenues: NetworkVenue[], activatingVenues: Venue[]) => {
     const enabledNotActivatedVenues:string[] = []
     const networkVenues = [...networkActivatedVenues]
+    const network = networkQuery.data
     activatingVenues.forEach(venue => {
-      const defaultVenueData = generateDefaultNetworkVenue(venue.id)
+      const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
 
       const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
       if (!alreadyActivatedVenue && !venue.disabledActivation && !venue.allApDisabled) {
         if (!venue.activated.isDisabled) {
           venue.activated.isActivated = true
-          venue.deepVenue = defaultVenueData
-          networkVenues.push(defaultVenueData)
+          venue.deepVenue = newNetworkVenue
+          networkVenues.push(newNetworkVenue)
         }
       }
 

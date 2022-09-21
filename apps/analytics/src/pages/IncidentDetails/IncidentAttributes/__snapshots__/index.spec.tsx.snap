@@ -43,7 +43,6 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
-                    title="5 of 27 clients (18.52%)"
                   >
                     5 of 27 clients (18.52%)
                   </span>
@@ -84,7 +83,6 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0 blknsi"
-                    title="1 of 1 AP (100%)"
                   >
                     1 of 1 AP (100%)
                   </span>
@@ -125,7 +123,6 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0"
-                    title="Connection"
                   >
                     Connection
                   </span>
@@ -166,7 +163,6 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0"
-                    title="EAP"
                   >
                     EAP
                   </span>
@@ -207,7 +203,6 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0"
-                    title="Access Point"
                   >
                     Access Point
                   </span>
@@ -248,9 +243,6 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0"
-                    title="Edu2-611-Mesh (Venue)
-> 255_Edu2-611-group (AP Group)
-> RuckusAP (70:CA:97:01:A0:C0) (Access Point)"
                   >
                     RuckusAP (70:CA:97:01:A0:C0)
                   </span>
@@ -291,7 +283,6 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0"
-                    title="21h 27m"
                   >
                     21h 27m
                   </span>
@@ -332,7 +323,6 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0"
-                    title="Jul 19 2022 05:15"
                   >
                     Jul 19 2022 05:15
                   </span>
@@ -373,7 +363,6 @@ exports[`IncidentAttributes should match snapshot 1`] = `
                 >
                   <span
                     class="styledComponents__TextContent-sc-1627zcn-0"
-                    title="Jul 20 2022 02:42"
                   >
                     Jul 20 2022 02:42
                   </span>
