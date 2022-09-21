@@ -37,7 +37,7 @@ describe('HealthPage', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     expect(screen.getByText('Health')).toBeVisible()
     expect(screen.getByTestId('Summary Boxes')).toBeVisible()
-    expect(screen.getByText('Summary Timeserise')).toBeVisible()
+    expect(screen.getByText('Summary TimeSeries')).toBeVisible()
     expect(screen.getByText('Overview')).toBeVisible()
     expect(screen.getByText('Customized SLA Threshold')).toBeVisible()
     expect(screen.getByText('overview')).toBeVisible()

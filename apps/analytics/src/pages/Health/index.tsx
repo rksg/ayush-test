@@ -2,15 +2,14 @@ import { Tabs }                                      from 'antd'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { categoryNames }                         from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Subtitle }            from '@acx-ui/components'
+import { GridCol, GridRow }                      from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import Header from '../../components/Header'
 
 import { HealthPageContextProvider } from './HealthPageContext'
+import * as UI                       from './styledComponents'
 import { SummaryBoxes }              from './SummaryBoxes'
-
-
 
 const healthTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
 type HealthTab = 'overview' | 'connection' | 'performance' | 'infrastructure'
@@ -62,7 +61,7 @@ export default function HealthPage () {
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
-            <div>Summary Timeserise</div>
+            <div>Summary TimeSeries</div>
           </GridCol>
           <GridCol col={{ span: 16 }} >
             <Tabs activeKey={activeTab} onChange={onTabChange}>
@@ -75,9 +74,9 @@ export default function HealthPage () {
             </Tabs>
           </GridCol>
           <GridCol col={{ span: 8 }} >
-            <Subtitle level={4}>
-              {$t(defineMessage({ defaultMessage: 'Customized SLA Threshold' }))}
-            </Subtitle>
+            <UI.ThresholdTitle>
+              {$t({ defaultMessage: 'Customized SLA Threshold' })}
+            </UI.ThresholdTitle>
           </GridCol>
           <GridCol col={{ span: 24 }}>
             <HealthTabContent tabSelection={activeTab as HealthTab} />

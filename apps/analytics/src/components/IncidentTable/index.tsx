@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { Tooltip }                                  from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
@@ -7,7 +8,8 @@ import {
   noDataSymbol,
   IncidentFilter,
   getRootCauseAndRecommendations,
-  useShortDescription
+  useShortDescription,
+  formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
 import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
@@ -90,6 +92,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Date' })),
+      width: 130,
       dataIndex: 'endTime',
       valueType: 'dateTime',
       key: 'endTime',
@@ -106,6 +109,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Duration' })),
+      width: 100,
       dataIndex: 'duration',
       key: 'duration',
       render: (_, value) => formatter('durationFormat', intl)(value.duration) as string,
@@ -116,6 +120,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Description' })),
+      width: 200,
       dataIndex: 'description',
       key: 'description',
       render: (_, value ) => (
@@ -128,11 +133,11 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         compare: (a, b) => defaultSort(a.description, b.description),
         multiple: 4
       },
-      ellipsis: true,
       searchable: true
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Category' })),
+      width: 100,
       dataIndex: 'category',
       key: 'category',
       sorter: {
@@ -143,6 +148,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Sub-Category' })),
+      width: 130,
       dataIndex: 'subCategory',
       key: 'subCategory',
       sorter: {
@@ -153,6 +159,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Client Impact' })),
+      width: 130,
       dataIndex: 'clientImpact',
       key: 'clientImpact',
       sorter: {
@@ -162,6 +169,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Impacted Clients' })),
+      width: 160,
       dataIndex: 'impactedClients',
       key: 'impactedClients',
       sorter: {
@@ -172,9 +180,14 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Scope' })),
+      width: 200,
       dataIndex: 'scope',
-      ellipsis: true,
       key: 'scope',
+      render: (_, value ) => {
+        return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue, intl)}>
+          {value.scope}
+        </Tooltip>
+      },
       sorter: {
         compare: (a, b) => defaultSort(a.scope, b.scope),
         multiple: 9
@@ -183,6 +196,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Type' })),
+      width: 90,
       dataIndex: 'type',
       key: 'type',
       sorter: {
@@ -210,7 +224,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
-        scroll={{ y: 'max-content' }}
+        ellipsis={true}
         indentSize={6}
       />
       {drawerSelection &&

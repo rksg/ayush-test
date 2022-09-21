@@ -83,7 +83,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
           description: 'Incident impacted scope'
         }),
         children: impactedArea,
-        title: scope
+        tooltip: scope
       })
     },
     {
