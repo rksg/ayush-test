@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 
 import {
-  QuestionCircleOutlined,
   ExclamationCircleFilled
 } from '@ant-design/icons'
 import { Space } from 'antd'
@@ -14,7 +13,7 @@ import {
   Tooltip,
   Input
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import {
   StepsForm,
@@ -41,11 +40,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { IpPortSecretForm }        from '../../../../components/IpPortSecretForm'
-import { ToggleButton }            from '../../../../components/ToggleButton'
-import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext          from '../NetworkFormContext'
-import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { IpPortSecretForm }         from '../../../../components/IpPortSecretForm'
+import { ToggleButton }             from '../../../../components/ToggleButton'
+import { NetworkDiagram }           from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext           from '../NetworkFormContext'
+import { NetworkMoreSettingsForm }  from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { QuestionMarkOutlinedIcon } from '../styledComponents'
 
 const { Option } = Select
 
@@ -258,9 +258,16 @@ function SettingsForm () {
             label={<>
               { intl.$t({ defaultMessage: 'Management Frame Protection (802.11w)' }) }
               <Tooltip
-                title={WifiNetworkMessages.NETWORK_MFP_TOOLTIP}
+                title={<FormattedMessage
+                  {...WifiNetworkMessages.NETWORK_MFP_TOOLTIP}
+                  values={{
+                    p: (text: string) => <p>{text}</p>,
+                    ul: (text: string) => <ul>{text}</ul>,
+                    li: (text: string) => <li>{text}</li>
+                  }}
+                />}
                 placement='bottom'>
-                <QuestionCircleOutlined />
+                <QuestionMarkOutlinedIcon />
               </Tooltip>                  
             </>}
             name={['wlan', 'managementFrameProtection']}
@@ -282,8 +289,11 @@ function SettingsForm () {
               <Switch disabled={editMode} />
             </Form.Item>
             <span>{intl.$t({ defaultMessage: 'Use MAC Auth' })}</span>
-            <Tooltip title={WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP} placement='bottom'>
-              <QuestionCircleOutlined />
+            <Tooltip
+              title={intl.$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              placement='bottom'
+            >
+              <QuestionMarkOutlinedIcon />
             </Tooltip>
           </Form.Item>
         </Form.Item>

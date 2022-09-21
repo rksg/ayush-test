@@ -1,3 +1,5 @@
+import { defineMessage } from 'react-intl'
+
 export enum PskWlanSecurityEnum {
   WPA2Personal = 'WPA2 (Recommended)',
   WPA3 = 'WPA3',
@@ -52,25 +54,29 @@ export enum macAuthMacFormatOptions {
 
 /* eslint-disable max-len */
 export const WifiNetworkMessages = {
-  ENABLE_PROXY_TOOLTIP: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.',
-  
-  WPA2_DESCRIPTION: 'WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.',
-  
-  WPA3_DESCRIPTION: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.',
-  
-  ENABLE_MAC_AUTH_TOOLTIP: 'MAC Authentication provides an additional level of security for corporate networks. Client MAC Addresses are passed to the configured RADIUS servers for authentication and accounting. Note that changing this option requires to re-create the network (no edit option)',
-
-  NETWORK_NAME_TOOLTIP: 'By default, will be used as the network SSID as well. Length is limited to 2-32 characters (depending on the language you use)',
-
-  NETWORK_MFP_TOOLTIP: (
-    <>Management Frame Protection (MFP) is defined in 802.11w to protect 802.11 Robust Management frames, including Disassociation, Deauthentication, and Robust Action frames.
+  ENABLE_PROXY_TOOLTIP: defineMessage({
+    defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
+  }),
+  WPA2_DESCRIPTION: defineMessage({
+    defaultMessage: 'WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.'
+  }),
+  WPA3_DESCRIPTION: defineMessage({
+    defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
+  }),
+  ENABLE_MAC_AUTH_TOOLTIP: defineMessage({
+    defaultMessage: 'MAC Authentication provides an additional level of security for corporate networks. Client MAC Addresses are passed to the configured RADIUS servers for authentication and accounting. Note that changing this option requires to re-create the network (no edit option)'
+  }),
+  NETWORK_NAME_TOOLTIP: defineMessage({
+    defaultMessage: 'By default, will be used as the network SSID as well. Length is limited to 2-32 characters (depending on the language you use)'
+  }),
+  NETWORK_MFP_TOOLTIP: defineMessage({
+    defaultMessage: `Management Frame Protection (MFP) is defined in 802.11w to protect 802.11 Robust Management frames, including Disassociation, Deauthentication, and Robust Action frames.
       <ul>
         <li>Optional allows legacy devices that do not support the 802.11w standard to associate with the SSID while also
         allowing devices that support 802.11w to use the 802.11w features.</li>
         <li>Required will prevent clients that do not support 802.11w from associating.</li>
-      </ul>
-    </>
-  )
+      </ul>`
+  })
 }
 /* eslint-enable */
   

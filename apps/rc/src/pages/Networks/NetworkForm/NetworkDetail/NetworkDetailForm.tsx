@@ -1,6 +1,5 @@
 import { useContext } from 'react'
 
-import { QuestionCircleOutlined }                       from '@ant-design/icons'
 import { Form, Input, Col, Radio, Row, Space, Tooltip } from 'antd'
 import TextArea                                         from 'antd/lib/input/TextArea'
 import { useIntl }                                      from 'react-intl'
@@ -10,10 +9,10 @@ import { useLazyNetworkListQuery }                                              
 import { NetworkTypeEnum, WifiNetworkMessages, checkObjectNotExists, hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
 import { useParams }                                                                               from '@acx-ui/react-router-dom'
 
-import { networkTypesDescription, networkTypes } from '../contentsMap'
-import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext                        from '../NetworkFormContext'
-import { RadioDescription }                      from '../styledComponents'
+import { networkTypesDescription, networkTypes }      from '../contentsMap'
+import { NetworkDiagram }                             from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext                             from '../NetworkFormContext'
+import { RadioDescription, QuestionMarkOutlinedIcon } from '../styledComponents'
 
 import type { RadioChangeEvent } from 'antd'
 
@@ -66,10 +65,10 @@ export function NetworkDetailForm () {
           label={<>
             { intl.$t({ defaultMessage: 'Network Name' }) }
             <Tooltip
-              title={WifiNetworkMessages.NETWORK_NAME_TOOLTIP}
+              title={intl.$t(WifiNetworkMessages.NETWORK_NAME_TOOLTIP)}
               placement='bottom'
             >
-              <QuestionCircleOutlined />
+              <QuestionMarkOutlinedIcon required />
             </Tooltip>
           </>}
           rules={[

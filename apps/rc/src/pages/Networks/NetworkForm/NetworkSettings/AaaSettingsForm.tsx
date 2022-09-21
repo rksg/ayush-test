@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 
 import {
-  ExclamationCircleFilled,
-  QuestionCircleOutlined
+  ExclamationCircleFilled
 } from '@ant-design/icons'
 import { Space } from 'antd'
 import {
@@ -31,10 +30,11 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { IpPortSecretForm } from '../../../../components/IpPortSecretForm'
-import { ToggleButton }     from '../../../../components/ToggleButton'
-import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext   from '../NetworkFormContext'
+import { IpPortSecretForm }         from '../../../../components/IpPortSecretForm'
+import { ToggleButton }             from '../../../../components/ToggleButton'
+import { NetworkDiagram }           from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext           from '../NetworkFormContext'
+import { QuestionMarkOutlinedIcon } from '../styledComponents'
 
 import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { CloudpathServerForm }     from './CloudpathServerForm'
@@ -202,7 +202,7 @@ function SettingsForm () {
     const { $t } = useIntl()
     const proxyServiceTooltip = <Tooltip
       placement='bottom'
-      children={<QuestionCircleOutlined />}
+      children={<QuestionMarkOutlinedIcon />}
       title={$t({
         // eslint-disable-next-line max-len
         defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'

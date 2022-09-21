@@ -46,7 +46,7 @@ describe('NetworkForm', () => {
 
     expect(asFragment()).toMatchSnapshot()
 
-    const insertInput = screen.getByLabelText('Network Name')
+    const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     fireEvent.blur(insertInput)
 
@@ -72,7 +72,7 @@ describe('NetworkForm', () => {
 
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
 
-    const insertInput = screen.getByLabelText('Network Name')
+    const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     fireEvent.blur(insertInput)
     const validating = await screen.findByRole('img', { name: 'loading' })
