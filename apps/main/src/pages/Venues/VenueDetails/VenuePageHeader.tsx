@@ -35,7 +35,7 @@ function VenuePageHeader () {
           onClick={() => 
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/edit/details`
+              pathname: `${basePath.pathname}/edit/details/details`
             })
           }          
         >{$t({ defaultMessage: 'Configure' })}</Button> 

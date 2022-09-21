@@ -6,18 +6,11 @@ import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { VenueDetails } from './VenueDetails'
+import {
+  venueDetailHeaderData
+} from '../__tests__/fixtures'
 
-const venueDetailHeaderData = {
-  activeNetworkCount: 1,
-  aps: {
-    totalApCount: 1
-  },
-  totalClientCount: 2,
-  venue: {
-    name: 'testVenue'
-  }
-}
+import { VenueDetails } from './VenueDetails'
 
 describe('VenueDetails', () => {
   beforeEach(() => {
