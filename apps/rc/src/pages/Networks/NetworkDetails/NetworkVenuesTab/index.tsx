@@ -137,7 +137,7 @@ export function NetworkVenuesTab () {
     if (!checked && network?.venues) {
       network?.venues.forEach((venue: NetworkVenue) => {
         if (venue.venueId === row.id || venue.id === row.id) {
-          deactivateNetworkVenueId = row.id
+          deactivateNetworkVenueId = venue.id ? venue.id : row.id
         }
       })
     }
