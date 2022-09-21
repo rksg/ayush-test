@@ -16,7 +16,7 @@ import {
   MspLicenseSolid,
   NotificationSolid,
   SearchOutlined,
-  WorldSmall
+  WorldSolid
 } from '@acx-ui/icons'
 
 export const Wrapper = styled.div`
@@ -72,7 +72,7 @@ const iconStyle = css`
   }
 `
 
-export const RegionIcon = styled(WorldSmall)`
+export const RegionIcon = styled(WorldSolid)`
   ${iconStyle}
   vertical-align: text-bottom;
 `

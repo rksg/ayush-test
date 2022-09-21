@@ -215,8 +215,6 @@ export { ReactComponent as WavinghandWawingHandOutlined }
   from './icons/WavinghandWawingHandOutlined.svg'
 export { ReactComponent as WindowsOutlined } from './icons/WindowsOutlined.svg'
 export { ReactComponent as WindowsSolid } from './icons/WindowsSolid.svg'
-export { ReactComponent as World } from './icons/World.svg'
-export { ReactComponent as WorldSmall } from './icons/WorldSmall.svg'
 export { ReactComponent as WorldOutlined } from './icons/WorldOutlined.svg'
 export { ReactComponent as WorldSolid } from './icons/WorldSolid.svg'
 
