@@ -254,27 +254,24 @@ function SettingsForm () {
         </Form.Item>
         {[WlanSecurityEnum.WPA2Personal, WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed]
           .includes(wlanSecurity) &&
-          <Form.Item>
-            <Space style={{
-              display: 'grid',
-              gridTemplateColumns: '100% 15px',
-              position: 'relative', zIndex: 1 }}>
-              <Form.Item
-                label={intl.$t({ defaultMessage: 'Management Frame Protection (802.11w)' })}
-                name={['wlan', 'managementFrameProtection']}
-                initialValue={ManagementFrameProtectionEnum.Disabled}
-              >
-                <Select disabled={[
-                  WlanSecurityEnum.WPA3,
-                  WlanSecurityEnum.WPA23Mixed
-                ].includes(wlanSecurity)}>
-                  {frameOptions}
-                </Select>
-              </Form.Item>
-              <Tooltip title={WifiNetworkMessages.NETWORK_MFP_TOOLTIP} placement='bottom'>
+          <Form.Item
+            label={<>
+              { intl.$t({ defaultMessage: 'Management Frame Protection (802.11w)' }) }
+              <Tooltip
+                title={WifiNetworkMessages.NETWORK_MFP_TOOLTIP}
+                placement='bottom'>
                 <QuestionCircleOutlined />
-              </Tooltip>
-            </Space>
+              </Tooltip>                  
+            </>}
+            name={['wlan', 'managementFrameProtection']}
+            initialValue={ManagementFrameProtectionEnum.Disabled}
+          >
+            <Select disabled={[
+              WlanSecurityEnum.WPA3,
+              WlanSecurityEnum.WPA23Mixed
+            ].includes(wlanSecurity)}>
+              {frameOptions}
+            </Select>
           </Form.Item>
         }
       </div>

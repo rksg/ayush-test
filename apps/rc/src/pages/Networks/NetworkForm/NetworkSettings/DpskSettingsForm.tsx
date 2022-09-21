@@ -21,9 +21,8 @@ import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkTyp
   transformDpskNetwork, PassphraseExpirationEnum, NetworkSaveData }      from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { NetworkDiagram }    from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext    from '../NetworkFormContext'
-import { FieldExtraTooltip } from '../styledComponents'
+import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext from '../NetworkFormContext'
 
 import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { CloudpathServerForm }     from './CloudpathServerForm'
@@ -168,61 +167,52 @@ function PassphraseGeneration () {
   return (
     <div style={{ display: isCloudpathEnabled ? 'none' : 'block' }}>
       <Subtitle level={3}>{ $t({ defaultMessage: 'Passphrase Generation Parameters' }) }</Subtitle>
-      <Row align='middle' gutter={8}>
-        <Col span={23}>
-          <Form.Item
-            name={['dpskPassphraseGeneration', 'format']}
-            label={$t({ defaultMessage: 'Passphrase format' })}
-            rules={[{ required: true }]}
-            initialValue={state.dpskPassphraseGeneration?.format}
-            extra={passphraseFormatDescription[
-              state.dpskPassphraseGeneration?.format?
-                state?.dpskPassphraseGeneration?.format:
-                PassphraseFormatEnum.MOST_SECURED]}
-          >
-            <Select
-              onChange={onFormatChange}
-            >
-              {passphraseOptions}
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col span={1}>
-          <FieldExtraTooltip>
-            <Tooltip
-              placement='bottom'
-              title={<FormattedMessage
-                defaultMessage={`<p>Format options:</p>
-                  <p>Most secured - all printable ASCII characters can be used</p>
-                  <p>Keyboard friendly - only letters and numbers will be used</p>
-                  <p>Numbers only - only numbers will be used</p>
-                `}
-                values={{ p: (chunks) => <p>{chunks}</p> }}
-              />}
-              children={<QuestionCircleOutlined />}
-            />
-          </FieldExtraTooltip>
-        </Col>
-      </Row>
 
-      <Row align='middle' gutter={8}>
-        <Col span={23}>
-          <Form.Item
-            name={['dpskPassphraseGeneration', 'length']}
-            label={$t({ defaultMessage: 'Passphrase length' })}
-            rules={[{ required: true }]}
-            initialValue={state.dpskPassphraseGeneration?.length}
-            children={<InputNumber min={8} max={63} style={{ width: '100%' }}/>}
+      <Form.Item
+        name={['dpskPassphraseGeneration', 'format']}
+        label={<>
+          { $t({ defaultMessage: 'Passphrase format' }) }
+          <Tooltip
+            placement='bottom'
+            title={<FormattedMessage
+              defaultMessage={`<p>Format options:</p>
+                <p>Most secured - all printable ASCII characters can be used</p>
+                <p>Keyboard friendly - only letters and numbers will be used</p>
+                <p>Numbers only - only numbers will be used</p>
+              `}
+              values={{ p: (chunks) => <p>{chunks}</p> }}
+            />}
+            children={<QuestionCircleOutlined />} 
           />
-        </Col>
-        <Col span={1}>
+        </>}
+        rules={[{ required: true }]}
+        initialValue={state.dpskPassphraseGeneration?.format}
+        extra={passphraseFormatDescription[
+          state.dpskPassphraseGeneration?.format?
+            state?.dpskPassphraseGeneration?.format:
+            PassphraseFormatEnum.MOST_SECURED]}
+      >
+        <Select
+          onChange={onFormatChange}
+        >
+          {passphraseOptions}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        name={['dpskPassphraseGeneration', 'length']}
+        label={<>
+          { $t({ defaultMessage: 'Passphrase length' }) }
           <Tooltip
             title={$t({ defaultMessage: 'Number of characters in passphrase. Valid range 8-63' })}
             placement='bottom'
             children={<QuestionCircleOutlined />}
           />
-        </Col>
-      </Row>
+        </>}
+        rules={[{ required: true }]}
+        initialValue={state.dpskPassphraseGeneration?.length}
+        children={<InputNumber min={8} max={63} style={{ width: '100%' }}/>}
+      />
 
       <Form.Item
         name={['dpskPassphraseGeneration', 'expiration']}
