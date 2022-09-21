@@ -3,7 +3,6 @@ import React from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   Button,
   GridRow,
@@ -14,7 +13,6 @@ import {
   ContentSwitcherProps
 } from '@acx-ui/components'
 import {
-  ArrowExpand,
   DownloadOutlined,
   BulbOutlined
 } from '@acx-ui/icons'
@@ -77,8 +75,6 @@ function DashboardPageHeader () {
 
 function ApWidgets () {
   const { filters } = useDashboardFilter()
-  console.log(filters)
-
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>

@@ -4,9 +4,8 @@ import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
 
-import { DateFilterContext, getDateRangeFilter, DateFilter } from '@acx-ui/utils'
-
-// import type { NetworkPath } from './types/incidents'
+import { DateFilterContext, DateFilter } from './dateFilterContext'
+import {  getDateRangeFilter }           from './dateUtil'
 
 export type NodeType = 'network'
   | 'apGroupName'
@@ -32,67 +31,70 @@ export type NetworkNode = {
 }
 export type NetworkNodePath = NetworkNode[] | []
 
+export type pathFilter = {
+  networkNodes? : NetworkPath[]
+}
 
-interface AnalyticsFilterProps {
+interface DashboardFilterProps {
   path: NetworkPath
-  setNetworkNodeFilter: CallableFunction
-  getNetworkNodeFilter: CallableFunction
-  networkNodes: NetworkNodePath
+  setNodeFilter: CallableFunction
+  getNodeFilter: CallableFunction
+  nodes: NetworkNodePath
 }
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
-export const defaultAnalyticsFilter = {
+export const defaultDashboardFilter = {
   path: defaultNetworkPath,
-  raw: [],
-  setNetworkNodeFilter: () => {}, // abstract, comsumer should wrap provider
-  getNetworkNodeFilter: () => ({ path: defaultNetworkPath }),
-  networkNodes: []
+  setNodeFilter: () => {}, 
+  getNodeFilter: () => ({ path: defaultNetworkPath }),
+  nodes: []
 } 
 
-export const AnalyticsFilterContext = React.createContext<AnalyticsFilterProps>(
-  defaultAnalyticsFilter
+export const DashboardFilterContext = React.createContext<DashboardFilterProps>(
+  defaultDashboardFilter
 )
-export type AnalyticsFilter = DateFilter & { path: NetworkPath }
+export type DashboardFilter = DateFilter & { path: NetworkPath } & { filter? : pathFilter }
 
 export function useDashboardFilter () {
-  const { getNetworkNodeFilter, setNetworkNodeFilter } = useContext(AnalyticsFilterContext)
-  const { networkNodes } = getNetworkNodeFilter()
+  const { getNodeFilter, setNodeFilter } = useContext(DashboardFilterContext)
+  const { nodes } = getNodeFilter()
   const { dateFilter } = useContext(DateFilterContext)
   const { range, startDate, endDate } = dateFilter
   return {
     filters: {
       path: defaultNetworkPath,
       ...getDateRangeFilter(range, startDate, endDate),
-      networkNodes
-    } as const,
-    setNetworkNodeFilter,
+      filter: { networkNodes: nodes, switchNodes: nodes } 
+    },
+    setNodeFilter
   }
 }
 
 export function DashboardFilterProvider (props: { children: ReactNode }) {
   const [search, setSearch] = useSearchParams()
-  const getNetworkNodeFilter = () => search.has('dashboardVenueFilter')
+  const getNodeFilter = () => search.has('dashboardVenueFilter')
     ? JSON.parse(
       Buffer.from(search.get('dashboardVenueFilter') as string, 'base64').toString('ascii')
     )
-    : { networkNodes: [] }
+    : { nodes: [] }
 
-  const setNetworkNodeFilter = (networkNodes: NetworkPath) => {
+  const setNodeFilter = (Nodes: NetworkPath) => {
     search.set(
       'dashboardVenueFilter',
-      Buffer.from(JSON.stringify({ networkNodes })).toString('base64')
+      Buffer.from(JSON.stringify({ nodes: Nodes.length ? Nodes : [] })).toString('base64')
     )
     setSearch(search, { replace: true })
   }
-  const { networkNodes } = getNetworkNodeFilter()
+  const { nodes } = getNodeFilter()
+
   const providerValue = {
     path: defaultNetworkPath,
-    setNetworkNodeFilter,
-    getNetworkNodeFilter,
-    networkNodes
+    setNodeFilter,
+    getNodeFilter,
+    nodes
   }
   return (
-    <AnalyticsFilterContext.Provider
+    <DashboardFilterContext.Provider
       {...props}
       value={providerValue}
     />

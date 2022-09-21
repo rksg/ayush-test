@@ -16,7 +16,7 @@ const getFilterData = (data: Child[]): Option [] => {
     if (!venues[name]) {
       venues[name] = {
         label: name,
-        value: JSON.stringify(path.at(-1))
+        value: JSON.stringify(path?.slice(-1)[0])
       }
     }
   }
@@ -31,23 +31,25 @@ export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefin
     ?.map(option => option?.displayLabel || option?.label).join(' / ')
 export const onApply = (
   selectedOptions: SingleValueType | SingleValueType[] | undefined,
-  setNetworkPath: CallableFunction
+  setNodeFilter: CallableFunction
 ) => {
-  const networkNodes = selectedOptions?.map(
-    (selectedOption) => JSON.parse(selectedOption as string)
+  const nodes = selectedOptions?.map(
+    (selectedOption) => [JSON.parse(selectedOption as string)]
   )
-  setNetworkPath(networkNodes)
+  setNodeFilter(nodes)
 }
 
 function VenueFilter () {
   const { $t } = useIntl()
-  const { setNetworkNodeFilter, filters } = useDashboardFilter()
-  const { networkNodes } = filters
+  const { setNodeFilter, filters } = useDashboardFilter()
+  const { filter } = filters
+  const { networkNodes } = filter
   const queryResults = useNetworkFilterQuery(omit(filters, 'path'), {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: data ? getFilterData(data) : [],
-      ...rest
-    })
+    selectFromResult: ({ data, ...rest }) => {
+      return { data: data ? getFilterData(data) : [],
+        ...rest
+      }
+    }
   })
   return (
     <UI.Container>
@@ -55,15 +57,15 @@ function VenueFilter () {
         <NetworkFilter
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple
-          defaultValue={networkNodes.map((networkNode: NetworkNode) => [
+          defaultValue={networkNodes?.[0]?.map((networkNode: NetworkNode) => [
             JSON.stringify(networkNode)
           ])}
-          value={networkNodes.map((networkNode: NetworkNode) => [
+          value={networkNodes?.[0]?.map((networkNode: NetworkNode) => [
             JSON.stringify(networkNode)
           ])}
           options={queryResults.data}
           onApply={(selectedOptions) =>
-            onApply(selectedOptions, setNetworkNodeFilter)
+            onApply(selectedOptions, setNodeFilter)
           }
           placement='bottomRight'
           showSearch={{ filter: search }}

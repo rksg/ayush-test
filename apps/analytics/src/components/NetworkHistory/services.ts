@@ -39,9 +39,10 @@ export const api = dataApi.injectEndpoints({
             $end: DateTime,
             $granularity: String,
             $severity: [Range],
-            $code: [String]
+            $code: [String],
+            $filter: FilterInput
             ){
-            network(start: $start end: $end){
+            network(start: $start end: $end, filter : $filter){
                 hierarchyNode(path:$path){
                 timeSeries(granularity:$granularity){
                     time
@@ -61,7 +62,8 @@ export const api = dataApi.injectEndpoints({
           end: payload.endDate,
           granularity: calcGranularity(payload.startDate, payload.endDate),
           severity: [{ gt: 0, lte: 1 }], // all severities
-          code: payload.code ?? incidentCodes
+          code: payload.code ?? incidentCodes,
+          filter: payload.filter ?? {}
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'NETWORK_HISTORY' }],

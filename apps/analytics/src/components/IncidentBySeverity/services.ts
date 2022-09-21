@@ -20,20 +20,25 @@ interface Response <IncidentsBySeverityData> {
 }
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    incidentsBySeverity: build.query<
-      IncidentsBySeverityData,
-      IncidentFilter
-    >({
+    incidentsBySeverity: build.query<IncidentsBySeverityData, IncidentFilter>({
       query: (payload) => ({
         document: gql`
         query IncidentsBySeverityWidget(
-          $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $code: [String]
+          $path: [HierarchyNodeInput], 
+          $start: DateTime, 
+          $end: DateTime, 
+          $code: [String], 
+          $filter: FilterInput
         ) {
-          network(start: $start, end: $end) {
+          network(start: $start, end: $end, filter : $filter) {
             hierarchyNode(path: $path) {
-              ${Object.entries(incidentSeverities).map(([name, { gt, lte }]) => `
+              ${Object.entries(incidentSeverities)
+          .map(
+            ([name, { gt, lte }]) => `
               ${name}: incidentCount(filter: {severity: {gt: ${gt}, lte: ${lte}}, code: $code})
-            `).join('')}
+            `
+          )
+          .join('')}
             }
           }
         }
@@ -42,7 +47,8 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          code: payload.code ?? incidentCodes
+          code: payload.code ?? incidentCodes,
+          filter: payload.filter ?? {}
         }
       }),
       transformResponse: (response: Response<IncidentsBySeverityData>) =>

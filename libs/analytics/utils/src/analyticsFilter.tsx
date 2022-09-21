@@ -15,6 +15,10 @@ interface AnalyticsFilterProps {
   getNetworkFilter: CallableFunction
 }
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
+export type pathFilter = {
+  networkNodes? : NetworkPath[],
+  switchNodes? : NetworkPath[]
+}
 
 export const defaultAnalyticsFilter = {
   path: defaultNetworkPath,
@@ -26,7 +30,7 @@ export const defaultAnalyticsFilter = {
 export const AnalyticsFilterContext = React.createContext<AnalyticsFilterProps>(
   defaultAnalyticsFilter
 )
-export type AnalyticsFilter = DateFilter & { path: NetworkPath }
+export type AnalyticsFilter = DateFilter & { path: NetworkPath } & { filter? : pathFilter }
 
 export function useAnalyticsFilter () {
   const { getNetworkFilter, setNetworkPath } = useContext(AnalyticsFilterContext)

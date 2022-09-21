@@ -2,7 +2,6 @@ import { gql } from 'graphql-request'
 
 import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-
 export type HierarchyNodeData = {
   topNSwitchesByErrors: TopSwitchesByErrorData[]
 }
@@ -28,8 +27,8 @@ export const api = dataApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query TopSwitchesByErrorWidget($path: [HierarchyNodeInput],
-          $start: DateTime, $end: DateTime, $n: Int!) {
-          network(end: $end, start: $start) {
+          $start: DateTime, $end: DateTime, $n: Int!,$filter: FilterInput) {
+          network(end: $end, start: $start, filter : $filter) {
             hierarchyNode(path: $path) {
               topNSwitchesByErrors(n: $n) {
                 name
@@ -45,7 +44,8 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          n: 5
+          n: 5,
+          filter: payload.filter ?? {}
         }
       }),
       transformResponse: (response: Response<HierarchyNodeData>) =>

@@ -27,7 +27,8 @@ describe('IncidentTable: services', () => {
     startDate: '2022-08-15T00:00:00+08:00',
     endDate: '2022-08-16T00:00:00+08:00',
     range: DateRange.last24Hours,
-    path: [{ type: 'network', name: 'Network' }] as NetworkPath
+    path: [{ type: 'network', name: 'Network' }] as NetworkPath,
+    filter: {}
   } as const
 
   const expectedResult = {

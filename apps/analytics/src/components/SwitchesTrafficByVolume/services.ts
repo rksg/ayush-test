@@ -22,7 +22,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     switchesTrafficByVolume: build.query<
     SwitchesTrafficByVolumeData,
-      AnalyticsFilter
+      AnalyticsFilter 
     >({
       query: (payload) => ({
         document: gql`
@@ -31,8 +31,9 @@ export const api = dataApi.injectEndpoints({
             $start: DateTime
             $end: DateTime
             $granularity: String
+            $filter: FilterInput
           ) {
-            network(start: $start, end: $end) {
+            network(start: $start, end: $end, filter : $filter) {
               hierarchyNode(path: $path) {
                 timeSeries(granularity: $granularity) {
                   time
@@ -48,7 +49,9 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: 'PT15M'
+          granularity: 'PT15M',
+          filter: payload.filter ?? {}
+
         }
       }),
       transformResponse: (response: Response<SwitchesTrafficByVolumeData>) =>

@@ -37,7 +37,7 @@ export const networkHierarchy = {
   type: 'network',
   path: defaultNetworkPath
 }
-describe('networkFilterApi', () => {
+describe('venueFilterApi', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
