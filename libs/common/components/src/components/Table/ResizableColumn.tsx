@@ -34,10 +34,6 @@ export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
     width={width}
     height={0}
     handle={<ResizableHandle />}
-    onResizeStop={() => {
-      document.removeEventListener('mouseup', handleResizeStop)
-      headerCellRef.current!.addEventListener('click', handleStopPropagation)
-    }}
     onResizeStart={() => {
       setCurrentHeaderCell(headerCellRef.current!)
       document.addEventListener('mouseup', handleResizeStop, { once: true })
