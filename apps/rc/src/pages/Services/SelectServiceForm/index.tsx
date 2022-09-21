@@ -5,7 +5,7 @@ import { PageHeader, StepsForm }            from '@acx-ui/components'
 import { ServiceType }                      from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { RadioDescription }                                from '../../NetworkForm/styledComponents'
+import { RadioDescription }                                from '../../Networks/NetworkForm/styledComponents'
 import { serviceTypeDescMapping, serviceTypeLabelMapping } from '../contentsMap'
 import { getServiceRoutePath, ServiceOperation }           from '../serviceRouteUtils'
 
@@ -40,6 +40,7 @@ export function SelectServiceForm () {
       />
       <StepsForm
         onCancel={() => navigate(servicesTablePath)}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm
           name='selectService'

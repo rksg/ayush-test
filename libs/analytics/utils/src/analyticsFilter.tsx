@@ -56,7 +56,7 @@ export function AnalyticsFilterProvider (props: { children: ReactNode }) {
       'analyticsNetworkFilter',
       Buffer.from(JSON.stringify({ path, raw })).toString('base64')
     )
-    setSearch(search)
+    setSearch(search, { replace: true })
   }
   const { path } = getNetworkFilter()
   const providerValue = {

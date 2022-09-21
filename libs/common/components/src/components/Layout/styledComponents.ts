@@ -151,7 +151,10 @@ export const Wrapper = styled.div`
 
 export const Content = styled.div`
   margin: var(--acx-content-vertical-space) var(--acx-content-horizontal-space);
-  min-width: calc(${modifyVars['@screen-xl']} - var(--acx-sider-width));
+  min-width: calc(${modifyVars['@screen-xl']}
+    - var(--acx-sider-width)
+    - var(--acx-content-horizontal-space) * 2
+  );
   min-height: calc(100vh - var(--acx-header-height));
   position: relative;
   display: flex;
@@ -164,7 +167,7 @@ export const Content = styled.div`
     height: var(--acx-content-vertical-space);
     width: 100%;
     background-color: var(--acx-primary-white);
-    z-index: 4;
+    z-index: 5;
   }
 `
 

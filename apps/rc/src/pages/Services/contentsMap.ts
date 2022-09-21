@@ -18,7 +18,7 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'Provides mDNS service' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'RUCKUS Dynamic Pre Shared Key Service' })
 }
-export const serviceTechnologyabelMapping: Record<ServiceTechnology, MessageDescriptor> = {
+export const serviceTechnologyLabelMapping: Record<ServiceTechnology, MessageDescriptor> = {
   [ServiceTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
   [ServiceTechnology.SWITCH]: defineMessage({ defaultMessage: 'Switch' })
 }

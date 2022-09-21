@@ -11,6 +11,10 @@ jest.mock('./pages/IncidentDetails', () => () => {
   return <div data-testid='incidentDetails' />
 })
 
+jest.mock('./pages/Health', () => () => {
+  return <div data-testid='healthPage' />
+})
+
 test('should redirect analytics to analytics/incidents', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
@@ -45,7 +49,16 @@ test('should navigate to analytics/health', () => {
       wrapRoutes: false
     }
   })
-  expect(screen.getByText('Health')).toBeVisible()
+  expect(screen.getByTestId('healthPage')).toBeVisible()
+})
+test('should navigate to analytics/health/tab/overview', async () => {
+  render(< Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/analytics/health/tab/overview',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('healthPage')).toBeVisible()
 })
 test('should navigate to analytics/configChange', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {

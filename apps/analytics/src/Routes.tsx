@@ -4,6 +4,7 @@ import { AnalyticsFilterProvider }           from '@acx-ui/analytics/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
+import HealthPage          from './pages/Health'
 import IncidentDetailsPage from './pages/IncidentDetails'
 import IncidentListPage    from './pages/Incidents'
 
@@ -17,8 +18,8 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetailsPage />} />
       <Route path='analytics/recommendations'
         element={<div>{ $t({ defaultMessage: 'Recommendations' }) } </div>} />
-      <Route path='analytics/health'
-        element={<div>{$t({ defaultMessage: 'Health' }) }</div>} />
+      <Route path='analytics/health' element={<HealthPage />} />
+      <Route path='analytics/health/tab/:activeTab' element={<HealthPage />} />
       <Route path='analytics/configChange'
         element={<div>{$t({ defaultMessage: 'Config Change' }) }</div>} />
     </Route>

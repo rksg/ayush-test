@@ -43,6 +43,7 @@ function useColumns () {
     },
     {
       key: 'incidents',
+      dataIndex: 'incidents',
       title: () => {
         return (
           <>
@@ -55,6 +56,7 @@ function useColumns () {
     },
     {
       key: 'health',
+      dataIndex: 'health',
       title: () => {
         return (
           <>
@@ -68,6 +70,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Services' }),
       key: 'services',
+      dataIndex: 'services',
       align: 'center'
     },
     {
@@ -135,6 +138,7 @@ function useColumns () {
     },
     {
       key: 'tags',
+      dataIndex: 'tags',
       title: $t({ defaultMessage: 'Tags' })
     }
   ]
@@ -203,7 +207,7 @@ export function VenuesTable () {
       <PageHeader
         title={$t({ defaultMessage: 'Venues' })}
         extra={[
-          <TenantLink to='/venues/create' key='add'>
+          <TenantLink to='/venues/add' key='add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>
           </TenantLink>
         ]}

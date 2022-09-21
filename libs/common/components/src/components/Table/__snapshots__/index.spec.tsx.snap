@@ -1,9 +1,189 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Table component dynamically scales based on scroll prop 1`] = `
+exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 fbRkQw"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 hGynsR"
+  >
+    <div
+      class="ant-pro-table"
+    >
+      <div
+        class="ant-pro-card"
+      >
+        <div
+          class="ant-pro-card-body"
+          style="padding-top: 0px;"
+        >
+          <div
+            class="ant-pro-table-list-toolbar"
+          />
+          <div
+            class="ant-table-wrapper"
+          >
+            <div
+              class="ant-spin-nested-loading"
+            >
+              <div
+                class="ant-spin-container"
+              >
+                <div
+                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                >
+                  <div
+                    class="ant-table-container"
+                  >
+                    <div
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
+                    >
+                      <table
+                        style="min-width: 100%; table-layout: auto;"
+                      >
+                        <colgroup />
+                        <thead
+                          class="ant-table-thead"
+                        >
+                          <tr>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Name
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Address
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody
+                          class="ant-table-tbody"
+                        >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="1"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            >
+                              John Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              32
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              sample address
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="2"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            >
+                              Jane Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              33
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              new address
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="3"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            >
+                              Will Smith
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              45
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              address
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Table component should handle ellipsis 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1abm7iv-12 fsuxoG"
   >
     <div
       class="ant-pro-table"
@@ -59,119 +239,111 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
                 class="ant-spin-container"
               >
                 <div
-                  class="ant-table ant-table-middle ant-table-fixed-header ant-table-has-fix-right"
+                  class="ant-table ant-table-middle ant-table-has-fix-right"
                 >
                   <div
                     class="ant-table-container"
                   >
                     <div
-                      class="ant-table-header"
-                      style="overflow: hidden;"
-                    >
-                      <table
-                        style="table-layout: fixed; visibility: hidden;"
-                      >
-                        <colgroup />
-                        <thead
-                          class="ant-table-thead"
-                        >
-                          <tr>
-                            <th
-                              class="ant-table-cell"
-                            >
-                              Name
-                            </th>
-                            <th
-                              class="ant-table-cell"
-                            >
-                              Age
-                            </th>
-                            <th
-                              class="ant-table-cell"
-                            >
-                              Address
-                            </th>
-                            <th
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                              style="position: sticky; right: 0px;"
-                            />
-                          </tr>
-                        </thead>
-                      </table>
-                    </div>
-                    <div
-                      class="ant-table-body"
-                      style="overflow-y: scroll; max-height: max-content;"
+                      class="ant-table-content"
                     >
                       <table
                         style="table-layout: fixed;"
                       >
                         <colgroup>
-                          <col />
+                          <col
+                            style="width: 1px;"
+                          />
                           <col />
                           <col />
                           <col
                             style="width: 32px;"
                           />
                         </colgroup>
+                        <thead
+                          class="ant-table-thead"
+                        >
+                          <tr>
+                            <th
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
+                              Name
+                            </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
+                              Age
+                            </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              data-testid="react-resizable"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
+                              Address
+                            </th>
+                            <th
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
+                              style="position: sticky; right: 0px;"
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
+                            </th>
+                          </tr>
+                        </thead>
                         <tbody
                           class="ant-table-tbody"
                         >
-                          <tr
-                            aria-hidden="true"
-                            class="ant-table-measure-row"
-                            style="height: 0px; font-size: 0px;"
-                          >
-                            <td
-                              style="padding: 0px; border: 0px; height: 0px;"
-                            >
-                              <div
-                                style="height: 0px; overflow: hidden;"
-                              >
-                                 
-                              </div>
-                            </td>
-                            <td
-                              style="padding: 0px; border: 0px; height: 0px;"
-                            >
-                              <div
-                                style="height: 0px; overflow: hidden;"
-                              >
-                                 
-                              </div>
-                            </td>
-                            <td
-                              style="padding: 0px; border: 0px; height: 0px;"
-                            >
-                              <div
-                                style="height: 0px; overflow: hidden;"
-                              >
-                                 
-                              </div>
-                            </td>
-                            <td
-                              style="padding: 0px; border: 0px; height: 0px;"
-                            >
-                              <div
-                                style="height: 0px; overflow: hidden;"
-                              >
-                                 
-                              </div>
-                            </td>
-                          </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
                             data-row-key="1"
                           >
                             <td
-                              class="ant-table-cell"
-                            />
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="John Doe"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                John Doe
+                              </span>
+                            </td>
                             <td
-                              class="ant-table-cell"
-                            />
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                32
+                              </span>
+                            </td>
                             <td
-                              class="ant-table-cell"
-                            />
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="John Doe"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                John Doe
+                              </span>
+                            </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                               style="position: sticky; right: 0px;"
@@ -182,14 +354,40 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
                             data-row-key="2"
                           >
                             <td
-                              class="ant-table-cell"
-                            />
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Jane Doe"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Jane Doe
+                              </span>
+                            </td>
                             <td
-                              class="ant-table-cell"
-                            />
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                33
+                              </span>
+                            </td>
                             <td
-                              class="ant-table-cell"
-                            />
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Jane Doe"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Jane Doe
+                              </span>
+                            </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                               style="position: sticky; right: 0px;"
@@ -200,14 +398,40 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
                             data-row-key="3"
                           >
                             <td
-                              class="ant-table-cell"
-                            />
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Will Smith"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Will Smith
+                              </span>
+                            </td>
                             <td
-                              class="ant-table-cell"
-                            />
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                45
+                              </span>
+                            </td>
                             <td
-                              class="ant-table-cell"
-                            />
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Will Smith"
+                            >
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Will Smith
+                              </span>
+                            </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                               style="position: sticky; right: 0px;"
@@ -308,165 +532,10 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Table component renders compact table 1`] = `
-<DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 jxBzxC"
-  >
-    <div
-      class="ant-pro-table"
-    >
-      <div
-        class="ant-pro-card"
-      >
-        <div
-          class="ant-pro-card-body"
-          style="padding-top: 0px;"
-        >
-          <div
-            class="ant-pro-table-list-toolbar"
-          />
-          <div
-            class="ant-table-wrapper"
-          >
-            <div
-              class="ant-spin-nested-loading"
-            >
-              <div
-                class="ant-spin-container"
-              >
-                <div
-                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
-                >
-                  <div
-                    class="ant-table-container"
-                  >
-                    <div
-                      class="ant-table-content"
-                      style="overflow-x: auto; overflow-y: hidden;"
-                    >
-                      <table
-                        style="min-width: 100%; table-layout: auto;"
-                      >
-                        <colgroup />
-                        <thead
-                          class="ant-table-thead"
-                        >
-                          <tr>
-                            <th
-                              class="ant-table-cell"
-                            >
-                              Name
-                            </th>
-                            <th
-                              class="ant-table-cell"
-                            >
-                              Age
-                            </th>
-                            <th
-                              class="ant-table-cell"
-                            >
-                              Address
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody
-                          class="ant-table-tbody"
-                        >
-                          <tr
-                            aria-hidden="true"
-                            class="ant-table-measure-row"
-                            style="height: 0px; font-size: 0px;"
-                          >
-                            <td
-                              style="padding: 0px; border: 0px; height: 0px;"
-                            >
-                              <div
-                                style="height: 0px; overflow: hidden;"
-                              >
-                                 
-                              </div>
-                            </td>
-                            <td
-                              style="padding: 0px; border: 0px; height: 0px;"
-                            >
-                              <div
-                                style="height: 0px; overflow: hidden;"
-                              >
-                                 
-                              </div>
-                            </td>
-                            <td
-                              style="padding: 0px; border: 0px; height: 0px;"
-                            >
-                              <div
-                                style="height: 0px; overflow: hidden;"
-                              >
-                                 
-                              </div>
-                            </td>
-                          </tr>
-                          <tr
-                            class="ant-table-row ant-table-row-level-0"
-                            data-row-key="1"
-                          >
-                            <td
-                              class="ant-table-cell"
-                            />
-                            <td
-                              class="ant-table-cell"
-                            />
-                            <td
-                              class="ant-table-cell"
-                            />
-                          </tr>
-                          <tr
-                            class="ant-table-row ant-table-row-level-0"
-                            data-row-key="2"
-                          >
-                            <td
-                              class="ant-table-cell"
-                            />
-                            <td
-                              class="ant-table-cell"
-                            />
-                            <td
-                              class="ant-table-cell"
-                            />
-                          </tr>
-                          <tr
-                            class="ant-table-row ant-table-row-level-0"
-                            data-row-key="3"
-                          >
-                            <td
-                              class="ant-table-cell"
-                            />
-                            <td
-                              class="ant-table-cell"
-                            />
-                            <td
-                              class="ant-table-cell"
-                            />
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 fbRkQw"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 fsuxoG"
   >
     <div
       class="ant-pro-table"
@@ -548,12 +617,20 @@ exports[`Table component should render correctly 1`] = `
                           <tr>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               Name
                             </th>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               <span
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
@@ -565,13 +642,22 @@ exports[`Table component should render correctly 1`] = `
                             </th>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               Address
                             </th>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody
@@ -789,7 +875,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 dBvJkz"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
   >
     <div
       class="ant-pro-table"
@@ -874,7 +960,11 @@ exports[`Table component should render multi select table and render action butt
                           <tr>
                             <th
                               class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               <div
                                 class="ant-table-selection"
                               >
@@ -898,23 +988,47 @@ exports[`Table component should render multi select table and render action butt
                             </th>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               Name
                             </th>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
-                              Age
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
                             </th>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               Address
                             </th>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody
@@ -1201,7 +1315,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 dBvJkz"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
   >
     <div
       class="ant-pro-table"
@@ -1289,7 +1403,7 @@ exports[`Table component should render multi select table and render action butt
                               class="ant-space-item"
                             >
                               <button
-                                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-3 bLesss"
+                                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 dRUGlG"
                                 title="Clear selection"
                                 type="button"
                               >
@@ -1311,7 +1425,7 @@ exports[`Table component should render multi select table and render action butt
                               style="margin-right: 0px;"
                             >
                               <button
-                                class="styledComponents__ActionButton-sc-1abm7iv-4 cGXuIp"
+                                class="styledComponents__ActionButton-sc-1abm7iv-6 LSICL"
                                 type="button"
                               >
                                 Edit
@@ -1330,7 +1444,7 @@ exports[`Table component should render multi select table and render action butt
                               class="ant-space-item"
                             >
                               <button
-                                class="styledComponents__ActionButton-sc-1abm7iv-4 cGXuIp"
+                                class="styledComponents__ActionButton-sc-1abm7iv-6 LSICL"
                                 type="button"
                               >
                                 Delete
@@ -1384,7 +1498,11 @@ exports[`Table component should render multi select table and render action butt
                           <tr>
                             <th
                               class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               <div
                                 class="ant-table-selection"
                               >
@@ -1409,23 +1527,47 @@ exports[`Table component should render multi select table and render action butt
                             </th>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               Name
                             </th>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
-                              Age
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
                             </th>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               Address
                             </th>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody
@@ -1712,7 +1854,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 dBvJkz"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
   >
     <div
       class="ant-pro-table"
@@ -1797,7 +1939,11 @@ exports[`Table component should render multi select table and render action butt
                           <tr>
                             <th
                               class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               <div
                                 class="ant-table-selection"
                               >
@@ -1821,23 +1967,47 @@ exports[`Table component should render multi select table and render action butt
                             </th>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               Name
                             </th>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
-                              Age
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
                             </th>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
                               Address
                             </th>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody

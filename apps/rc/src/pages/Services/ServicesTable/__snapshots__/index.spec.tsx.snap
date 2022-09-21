@@ -3,7 +3,7 @@
 exports[`Services Table should delete selected row 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -18,7 +18,7 @@ exports[`Services Table should delete selected row 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               Services
             </h1>
@@ -55,7 +55,7 @@ exports[`Services Table should delete selected row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-6 dBvJkz"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
     >
       <div
         class="ant-pro-table"
@@ -144,13 +144,23 @@ exports[`Services Table should delete selected row 1`] = `
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-selection-column"
-                              />
+                                class="ant-table-cell ant-table-selection-column react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
                               <th
                                 aria-sort="ascending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -206,11 +216,17 @@ exports[`Services Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -266,11 +282,17 @@ exports[`Services Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -326,11 +348,17 @@ exports[`Services Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -386,11 +414,17 @@ exports[`Services Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -446,12 +480,18 @@ exports[`Services Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 style="text-align: center;"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -507,11 +547,17 @@ exports[`Services Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -567,11 +613,17 @@ exports[`Services Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -627,11 +679,21 @@ exports[`Services Table should delete selected row 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                 style="position: sticky; right: 0px;"
-                              />
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
                             </tr>
                           </thead>
                           <tbody
@@ -1042,7 +1104,7 @@ exports[`Services Table should delete selected row 1`] = `
 exports[`Services Table should render table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 ikSJVK"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -1057,7 +1119,7 @@ exports[`Services Table should render table 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               Services
             </h1>
@@ -1094,7 +1156,7 @@ exports[`Services Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-6 dBvJkz"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
     >
       <div
         class="ant-pro-table"

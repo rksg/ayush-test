@@ -2,9 +2,9 @@ import { rest } from 'msw'
 
 import { mockServer } from '@acx-ui/test-utils'
 
-import * as config from './index'
-
 it('initialize and be able to get value of key', async () => {
+  jest.resetModules()
+  const config = require('./index')
   const env = {
     GOOGLE_MAPS_KEY: 'GOOGLE_MAPS_KEY'
   }

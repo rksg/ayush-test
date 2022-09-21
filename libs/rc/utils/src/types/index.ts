@@ -5,10 +5,16 @@ import {
   ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  NetworkTypeEnum
 } from '../constants'
+import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
+import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
+import { NetworkVenue }                  from '../models/NetworkVenue'
+import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
+import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
+import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { NetworkVenue } from './network'
 
 export * from './ap'
 export * from './venue'
@@ -33,13 +39,29 @@ export interface Network {
   clients: number
   venues: { count: number, names: string[] }
   captiveType: GuestNetworkTypeEnum
-  deepNetwork?: {
-    wlan: {
-      wlanSecurity: WlanSecurityEnum
-    }
-  }
+  deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
-  // cog ??
+  activated: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
+  allApDisabled?: boolean
+}
+
+export interface NetworkDetail {
+  type: NetworkTypeEnum
+  tenantId: string
+  name: string
+  venues: NetworkVenue[]
+  id: string,
+  wlan: {
+    wlanSecurity: WlanSecurityEnum,
+    ssid?: string;
+    vlanId?: number;
+    enable?: boolean;
+    advancedCustomization?:   
+      OpenWlanAdvancedCustomization |
+      AAAWlanAdvancedCustomization |
+      DpskWlanAdvancedCustomization |
+      PskWlanAdvancedCustomization;
+  },
 }
 
 export interface Venue {
@@ -263,7 +285,6 @@ export interface Dashboard {
   }>;
 }
 
-
 interface RadiusService {
   ip: string
   port: number
@@ -298,6 +319,27 @@ export interface Service {
   tags: string[]
 }
 
+export interface RadiusValidate {
+  data: {
+    errors: RadiusValidateErrors[],
+    requestId: string
+  },
+  status: number
+}
+export interface RadiusValidateErrors {
+  code: string,
+  message: string,
+  object: string,
+  value: {
+    id: string,
+    primary?: RadiusService,
+    secondary?: RadiusService,
+    tlsEnabled?: boolean,
+    cnSanIdentity?: string,
+    ocspUrl?: string,
+    trustedCAChain?: TrustedCAChain
+  }
+}
 export interface DnsProxyRule {
   domainName?: string,
   key?: string,
@@ -308,4 +350,3 @@ export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
 }
-
