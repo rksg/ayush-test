@@ -71,7 +71,6 @@ const allowedLang = Object.keys(localeLoaders)
 type Key = keyof typeof localeLoaders
 const cache: Partial<Record<Key, Messages>> = {}
 export async function loadLocale (locale: Key) {
-  // TODO: need to consolidate
   // fallback when browser detected or url param provided lang not supported
   locale = allowedLang.includes(locale) ? locale : 'en-US'
   const result = cache[locale]

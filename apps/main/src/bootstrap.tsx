@@ -11,26 +11,33 @@ import AllRoutes from './AllRoutes'
 import '@acx-ui/theme'
 
 // Needed for Browser language detection
-export function loadMessages (locale: string) {
-  switch (locale) {
-    case 'en':
-    case 'en-US':
-      return 'en-US'
-    case 'de':
-    case 'de-DE':
-      return 'de-DE'
-    case 'ja':
-    case 'ja-JP':
-      return 'ja-JP'
-    default:
-      return 'en-US'
+export function loadMessages (locales: readonly string[]): string {
+  let browserLang = ''
+  for(let i = 0; i < locales.length; i++) {
+    switch (locales[i]) {
+      case 'en':
+      case 'en-US':
+        browserLang = 'en-US'
+        break
+      case 'de':
+      case 'de-DE':
+        browserLang = 'de-DE'
+        break
+      case 'ja':
+      case 'ja-JP':
+        browserLang = 'ja-JP'
+        break
+    }
+    if (browserLang) break
   }
+  if (!browserLang) browserLang = 'en-US'
+  return browserLang
 }
 
 export async function init () {
   const container = document.getElementById('root')
   const root = createRoot(container!)
-  const browserLang = loadMessages(navigator.language)
+  const browserLang = loadMessages(navigator.languages)
   const queryParams = new URLSearchParams(window.location.search)
   const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
 
