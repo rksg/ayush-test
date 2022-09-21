@@ -97,6 +97,14 @@ describe('loadLocale', () => {
     expect(allowedalang).toContain(locale)
     await loadLocale(locale)
   })
+
+  it('locale provided is not in allowed list of languages', async () => {
+    const allowedalang = Object.keys(localeLoaders)
+    const locale = 'ru-RU'
+    expect(allowedalang).toHaveLength(3)
+    expect(allowedalang).not.toContain(locale)
+    await loadLocale('en-US')
+  })
 })
 
 describe('LocaleProvider', () => {
