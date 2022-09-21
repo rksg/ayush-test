@@ -64,7 +64,7 @@ export const FailureChart = ({ incident, data }: { incident: Incident, data: Cha
         <MultiLineTimeSeriesChart
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={(value) => formatter('countFormat', intl)(value)}
+          dataFormatter={formatter('countFormat')}
           yAxisProps={{ max: 1, min: 0 }}
           disableLegend={true}
           onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}

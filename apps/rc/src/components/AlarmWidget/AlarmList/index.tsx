@@ -43,7 +43,7 @@ export function AlarmList ({ data, width, height, onNavigate }: AlarmListProps) 
                 </UI.Link>
             }
             <UI.TimeStamp>
-              {formatter('calendarFormat', intl)(alarm.startTime!)}
+              {formatter('calendarFormat')(alarm.startTime!)}
             </UI.TimeStamp>
           </UI.SubTextContainer>
         </List.Item>

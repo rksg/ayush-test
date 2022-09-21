@@ -108,28 +108,28 @@ describe('formatter', () => {
         )
     })
     it('should format date to "[Today,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659687682000))
-      expect(result.current).toBe('Today, 08:21')
+      const result = formatter('calendarFormat')(1659687682000)
+      expect(result).toBe('Today, 08:21')
     })
     it('should format date to "[Yesterday,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659608482000))
-      expect(result.current).toBe('Yesterday, 10:21')
+      const result = formatter('calendarFormat')(1659608482000)
+      expect(result).toBe('Yesterday, 10:21')
     })
     it('should format date to "[Tomorrow,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659774082000))
-      expect(result.current).toBe('Tomorrow, 08:21')
+      const result = formatter('calendarFormat')(1659774082000)
+      expect(result).toBe('Tomorrow, 08:21')
     })
     it('should format date to "[Last] dddd[,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659255682000))
-      expect(result.current).toBe('Last Sunday, 08:21')
+      const result = formatter('calendarFormat')(1659255682000)
+      expect(result).toBe('Last Sunday, 08:21')
     })
     it('should format date to "dddd[,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659860482000))
-      expect(result.current).toBe('Sunday, 08:21')
+      const result = formatter('calendarFormat')(1659860482000)
+      expect(result).toBe('Sunday, 08:21')
     })
     it('should format date to "MMM DD[,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1654590082000))
-      expect(result.current).toBe('Jun 07 08:21')
+      const result = formatter('calendarFormat')(1654590082000)
+      expect(result).toBe('Jun 07 08:21')
     })
   })
   describe('durationFormat', () => {
@@ -200,13 +200,11 @@ describe('formatter', () => {
   describe('intlFormats', () => {
     type TestSet = [number | undefined, string | null]
     const testFormat = (
-      format: string,
+      format: Parameters<typeof formatter>[0],
       sets: TestSet[]
     ) => sets.forEach(([value, expected]) => {
       it(`convert ${value} to ${expected}`, () => {
-        const result = renderHook(() => {
-          return formatter(format, useIntl())(value)
-        }).result.current
+        const result = formatter(format)(value)
         expect(result).toEqual(expected)
       })
     })

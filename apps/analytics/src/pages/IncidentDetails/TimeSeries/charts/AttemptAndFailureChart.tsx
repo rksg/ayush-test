@@ -35,7 +35,7 @@ export const AttemptAndFailureChart = (
         <MultiLineTimeSeriesChart
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={(value) => formatter('countFormat', intl)(value)}
+          dataFormatter={formatter('countFormat')}
         />
       )}
     </AutoSizer>

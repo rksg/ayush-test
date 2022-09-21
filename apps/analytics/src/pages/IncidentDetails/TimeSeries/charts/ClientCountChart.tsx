@@ -26,7 +26,7 @@ export const ClientCountChart = ({ data }: { data: ChartsData }) => {
         <MultiLineTimeSeriesChart
           style={{ height, width }}
           data={chartResults}
-          dataFormatter={(value) => formatter('countFormat', intl)(value)}
+          dataFormatter={formatter('countFormat')}
         />
       )}
     </AutoSizer>
