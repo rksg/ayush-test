@@ -57,7 +57,7 @@ function AnalyticsWidgets ({
   filters
 }: {
   name: keyof typeof widgetsMap;
-  filters: AnalyticsFilter | DashboardFilter;
+  filters: AnalyticsFilter;
 }) {
   const Widget = widgetsMap[name]
   return <Provider>{Widget ? <Widget filters={filters} /> : <Card>{name}</Card>}</Provider>

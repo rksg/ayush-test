@@ -16,7 +16,7 @@ const getFilterData = (data: Child[]): Option [] => {
     if (!venues[name]) {
       venues[name] = {
         label: name,
-        value: JSON.stringify(path?.slice(-1)[0])
+        value: JSON.stringify([path?.slice(-1)[0]])
       }
     }
   }
@@ -34,7 +34,7 @@ export const onApply = (
   setNodeFilter: CallableFunction
 ) => {
   const nodes = selectedOptions?.map(
-    (selectedOption) => [JSON.parse(selectedOption as string)]
+    (selectedOption) => JSON.parse(selectedOption as string)
   )
   setNodeFilter(nodes)
 }
@@ -57,12 +57,12 @@ function VenueFilter () {
         <NetworkFilter
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple
-          defaultValue={networkNodes?.[0]?.map((networkNode: NetworkNode) => [
-            JSON.stringify(networkNode)
-          ])}
-          value={networkNodes?.[0]?.map((networkNode: NetworkNode) => [
-            JSON.stringify(networkNode)
-          ])}
+          defaultValue={networkNodes?.map((networkNode: NetworkNode) => 
+            [JSON.stringify(networkNode)]
+          )}
+          value={networkNodes?.map((networkNode: NetworkNode) => 
+            [JSON.stringify(networkNode)]
+          )}
           options={queryResults.data}
           onApply={(selectedOptions) =>
             onApply(selectedOptions, setNodeFilter)

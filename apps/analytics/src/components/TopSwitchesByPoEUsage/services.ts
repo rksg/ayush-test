@@ -2,6 +2,7 @@ import { gql } from 'graphql-request'
 
 import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+
 export type SwitchesByPoEUsageData = {
   name: string
   usage: number
@@ -29,7 +30,6 @@ export const api = dataApi.injectEndpoints({
             $start: DateTime
             $end: DateTime
             $filter: FilterInput
-        ) {
           ) {
             network(start: $start, end: $end,filter : $filter) {
               hierarchyNode(path: $path) {

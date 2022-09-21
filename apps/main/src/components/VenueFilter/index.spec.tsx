@@ -62,14 +62,13 @@ describe('venue Filter', () => {
     render(<Provider><VenueFilter /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(await screen.findByRole('combobox'))
-    fireEvent.click(screen.getByText('venue1'))
+    fireEvent.click(await screen.findByText('venue1'))
+    fireEvent.click(await screen.findByText('Apply'))
     const path = [
-      { type: 'network', name: 'Network' },
       { type: 'zone', name: 'venue1' }
     ]
-    const raw = [JSON.stringify(path)]
     expect(mockSetNodeFilter).toHaveBeenCalledTimes(1)
-    expect(mockSetNodeFilter).toHaveBeenCalledWith(path, raw)
+    expect(mockSetNodeFilter).toHaveBeenCalledWith([path])
     await userEvent.click(screen.getByRole('combobox'))
   })
   it('should select multiple network node', async () => {
@@ -78,15 +77,19 @@ describe('venue Filter', () => {
     })
     render(<Provider><VenueFilter /></Provider>)
     await screen.findByText('Entire Organization')
-    await userEvent.click(screen.getByRole('combobox'))
-    fireEvent.click(screen.getByText('venue1'))
-    const path = [
-      { type: 'network', name: 'Network' },
+    await userEvent.click(await screen.findByRole('combobox'))
+    fireEvent.click(await screen.findByText('venue1'))
+    fireEvent.click(await screen.findByText('swg'))
+    fireEvent.click(await screen.findByText('Apply'))
+
+    const path1 = [
       { type: 'zone', name: 'venue1' }
     ]
-    const raw = [JSON.stringify(path)]
+    const path2 = [
+      { type: 'switchGroup', name: 'swg' }
+    ]
     expect(mockSetNodeFilter).toHaveBeenCalledTimes(1)
-    expect(mockSetNodeFilter).toHaveBeenCalledWith(path, raw)
+    expect(mockSetNodeFilter).toHaveBeenCalledWith([path1,path2])
     await userEvent.click(screen.getByRole('combobox'))
   })
   it('should search node', async () => {
@@ -95,16 +98,16 @@ describe('venue Filter', () => {
     })
     render(<Provider><VenueFilter /></Provider>)
     await screen.findByText('Entire Organization')
+    await userEvent.click(await screen.findByRole('combobox'))
     await userEvent.type(screen.getByRole('combobox'), 'swg')
-    await screen.findByText('swg')    
-    fireEvent.click(screen.getByText('swg'))
+    const ele = await screen.findAllByText('swg')
+    fireEvent.click(ele[1])
+    fireEvent.click(await screen.findByText('Apply'))
     const path = [
-      { type: 'network', name: 'Network' },
       { type: 'switchGroup', name: 'swg' }
     ]
-    const raw = [JSON.stringify(path)]
     expect(mockSetNodeFilter).toHaveBeenCalledTimes(1)
-    expect(mockSetNodeFilter).toHaveBeenCalledWith(path, raw)
+    expect(mockSetNodeFilter).toHaveBeenCalledWith([path])
    
   })
   it('should return correct value to render', () => {
@@ -117,12 +120,10 @@ describe('venue Filter', () => {
       expect(displayRender({}, input as DefaultOptionType[] | undefined)).toEqual(output)
     })
   })
-  it('should correctly call setNetworkPath', () => {
-    const setNetworkPath = jest.fn()
-    onApply(undefined, setNetworkPath)
-    expect(setNetworkPath).toBeCalledWith(defaultNetworkPath, [])
+  it('should correctly call setNodeFilter', () => {
+    const setNodeFilter = jest.fn()
     const path = [JSON.stringify(defaultNetworkPath)]
-    onApply(path, setNetworkPath)
-    expect(setNetworkPath).toBeCalledWith(defaultNetworkPath, path)
+    onApply(path, setNodeFilter)
+    expect(setNodeFilter).toBeCalledWith([defaultNetworkPath])
   })
 })
