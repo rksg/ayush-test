@@ -1,6 +1,5 @@
 import { useContext } from 'react'
 
-
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
 import { useIntl }                             from 'react-intl'
@@ -50,7 +49,6 @@ export function NetworkDetailForm () {
     return checkObjectNotExists(intl, list, value, intl.$t({ defaultMessage: 'Network' }))
   }
 
-  console.log(data)
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: false },
@@ -114,15 +112,10 @@ export function NetworkDetailForm () {
       </Col>
 
       <Col span={14}>  
-        <NetworkDiagram
-          type={data?.type}
-          enableAuthProxy={data?.enableAuthProxy}
-          enableAccountingProxy={data?.enableAccountingProxy}
-          enableAaaAuthBtn={data?.accountingRadius !== undefined}
-          showButtons={data?.enableAuthProxy !== !!data?.enableAccountingProxy
-                    && data?.enableAccountingService && !data?.isCloudpathEnabled}
-        />
+        <NetworkDiagram />
       </Col>
     </Row>
   )
 }
+
+

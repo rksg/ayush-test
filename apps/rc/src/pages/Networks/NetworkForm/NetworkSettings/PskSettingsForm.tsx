@@ -21,7 +21,6 @@ import {
   Button,
   Subtitle
 } from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -32,14 +31,12 @@ import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
   trailingNorLeadingSpaces,
-  NetworkTypeEnum,
   WlanSecurityEnum,
   WifiNetworkMessages,
   hexRegExp,
   passphraseRegExp,
   NetworkSaveData
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 import { IpPortSecretForm }        from '../../../../components/IpPortSecretForm'
 import { ToggleButton }            from '../../../../components/ToggleButton'
@@ -54,10 +51,10 @@ const { useWatch } = Form
 export function PskSettingsForm (props: {
   saveState: NetworkSaveData
 }) {
-  const { data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
-    if(data){
+    if((editMode || cloneMode) && data){
       form.setFieldsValue({
         wlan: {
           passphrase: data.wlan?.passphrase,
@@ -78,20 +75,6 @@ export function PskSettingsForm (props: {
       })
     }
   }, [data])
-  const [
-    selectedId,
-    macAddressAuthentication
-  ] = [
-    useWatch('cloudpathServerId'),
-    useWatch<boolean>(['wlan', 'macAddressAuthentication'])
-  ]
-  const { selected } = useCloudpathListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        selected: data?.find((item) => item.id === selectedId)
-      }
-    }
-  })
 
   return (
     <Row gutter={20}>
@@ -100,18 +83,14 @@ export function PskSettingsForm (props: {
         {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
-        <NetworkDiagram
-          type={NetworkTypeEnum.PSK}
-          cloudpathType={selected?.deploymentType}
-          enableMACAuth={macAddressAuthentication}
-        />
+        <NetworkDiagram />
       </Col>
     </Row>
   )
 }
 
 function SettingsForm () {
-  const { editMode } = useContext(NetworkFormContext)
+  const { editMode, data, setData } = useContext(NetworkFormContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
   const [
@@ -185,6 +164,9 @@ function SettingsForm () {
         })
         break
     }
+  }
+  const onMacAuthChange = (checked: boolean) => {
+    setData && setData({ ...data, wlan: { macAddressAuthentication: checked } })
   }
 
   return (
@@ -272,7 +254,7 @@ function SettingsForm () {
         <Form.Item>
           <Form.Item>
             <Form.Item noStyle name={['wlan', 'macAddressAuthentication']} valuePropName='checked'>
-              <Switch disabled={editMode} />
+              <Switch disabled={editMode} onChange={onMacAuthChange}/>
             </Form.Item>
             <span>{intl.$t({ defaultMessage: 'Use MAC Auth' })}</span>
             <Tooltip title={WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP} placement='bottom'>
