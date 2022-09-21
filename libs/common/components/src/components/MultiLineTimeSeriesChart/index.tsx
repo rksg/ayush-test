@@ -44,10 +44,11 @@ interface MultiLineTimeSeriesChartProps
 
 export const useBrush = (
   eChartsRef: RefObject<ReactECharts>,
-  brush?: [TimeStamp, TimeStamp] 
+  brush?: [TimeStamp, TimeStamp],
+  data?: MultiLineTimeSeriesChartData[]
 ) => {
   useEffect(() => {
-    if (!eChartsRef || !eChartsRef.current || isEmpty(brush)) return
+    if (!eChartsRef || !eChartsRef.current || isEmpty(brush) || isEmpty(data)) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
     echartInstance.dispatchAction({
       type: 'brush',
@@ -57,7 +58,7 @@ export const useBrush = (
         xAxisIndex: 0
       }]
     })
-  }, [eChartsRef, brush])
+  }, [eChartsRef, brush, data])
 }
 
 export const useOnBrushChange = (
@@ -95,7 +96,7 @@ export const MultiLineTimeSeriesChart = forwardRef<
 
   const eChartsRef = useRef<ReactECharts | null>(null)
   useImperativeHandle(ref, () => eChartsRef.current!)
-  useBrush(eChartsRef, props.brush)
+  useBrush(eChartsRef, props.brush, data)
 
   const option: EChartsOption = {
     color: props.lineColors || [
