@@ -148,7 +148,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Service', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     deleteMdnsProxy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {

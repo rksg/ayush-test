@@ -15,7 +15,7 @@ export interface DrawerFormFooterProps {
   onSave: () => void;
 }
 
-export function DrawerFormFooter (props: DrawerFormFooterProps) {
+export const DrawerFormFooter = (props: DrawerFormFooterProps) => {
   const { $t } = useIntl()
 
   const {
@@ -33,11 +33,11 @@ export function DrawerFormFooter (props: DrawerFormFooterProps) {
   return (
     <UI.FooterBar>
       <div>
-        {showAddAnother ? <Checkbox
+        {showAddAnother && <Checkbox
           onChange={onAddAnotherChange}
           checked={addAnotherChecked}
           children={addAnotherText}
-        /> : null}
+        />}
       </div>
       <div>
         <Button

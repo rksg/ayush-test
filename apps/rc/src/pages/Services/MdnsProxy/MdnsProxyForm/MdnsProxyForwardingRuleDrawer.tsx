@@ -4,10 +4,8 @@ import { Form, Input, Select } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }             from 'react-intl'
 
-import { Drawer }                  from '@acx-ui/components'
-import { MdnsProxyForwardingRule } from '@acx-ui/rc/utils'
-
-import { DrawerFormFooter } from '../../DrawerFormFooter/DrawerFormFooter'
+import { Drawer, DrawerFormFooter } from '@acx-ui/components'
+import { MdnsProxyForwardingRule }  from '@acx-ui/rc/utils'
 
 
 export interface MdnsProxyForwardingRuleDrawerProps {

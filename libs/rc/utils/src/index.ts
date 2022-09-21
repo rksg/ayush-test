@@ -29,4 +29,4 @@ export * from './pipes/apPipes'
 export * from './pipes/commonPipes'
 
 export * from './networkService'
-export * from './servicesUrls/mdnsProxyUrls'
+export * from './urls'

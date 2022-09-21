@@ -3,12 +3,14 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm, Table, Loader, TableProps } from '@acx-ui/components'
-import { useVenuesListQuery }                   from '@acx-ui/rc/services'
-import { useTableQuery, Venue, MdnsProxyScopeData }             from '@acx-ui/rc/utils'
+import { StepsForm, Table, Loader, TableProps }     from '@acx-ui/components'
+import { useVenuesListQuery }                       from '@acx-ui/rc/services'
+import { useTableQuery, Venue, MdnsProxyScopeData } from '@acx-ui/rc/utils'
+
+import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
 import { MdnsProxyScopeApDrawer, SimpleApRecord } from './MdnsProxyScopeApDrawer'
-import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
+
 
 export function MdnsProxyScope () {
   const { $t } = useIntl()
@@ -64,10 +66,13 @@ export function MdnsProxyScope () {
   const handleSetAps = (venue: Venue, aps: SimpleApRecord[] = []) => {
     const currentScope = form.getFieldValue('scope')
     const resultScope: MdnsProxyScopeData[] = currentScope ? currentScope.slice(0) : []
-    let targetVenue: MdnsProxyScopeData | undefined = resultScope.find((s: MdnsProxyScopeData) => s.venueId === venue.id)
+    let targetVenue = resultScope.find((s: MdnsProxyScopeData) => s.venueId === venue.id)
 
     if (targetVenue) {
-      targetVenue.aps = (aps.length === 0 ? [] : aps.map((a: SimpleApRecord) => ({ serialNumber: a.serialNumber, name: a.name })))
+      targetVenue.aps = (aps.length === 0
+        ? []
+        : aps.map(a => ({ serialNumber: a.serialNumber, name: a.name }))
+      )
     } else {
       targetVenue = { venueName: venue.name, venueId: venue.id, aps: aps }
       resultScope.push(targetVenue)
