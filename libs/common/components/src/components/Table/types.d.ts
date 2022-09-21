@@ -1,3 +1,4 @@
+import { DataIndex } from 'rc-table/lib/interface'
 
 import type {
   ProColumnType,
@@ -7,6 +8,8 @@ import type {
 type AdditionalColumnType = {
   // mandatory column for mapping columns
   key: string
+  // mandatory column to (1) render correct data (2) use ellipsis
+  dataIndex: DataIndex
   /**
    * Mark column as fixed
    */

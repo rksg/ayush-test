@@ -19,6 +19,7 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/recommendations'
         element={<div>{ $t({ defaultMessage: 'Recommendations' }) } </div>} />
       <Route path='analytics/health' element={<HealthPage />} />
+      <Route path='analytics/health/tab/:activeTab' element={<HealthPage />} />
       <Route path='analytics/configChange'
         element={<div>{$t({ defaultMessage: 'Config Change' }) }</div>} />
     </Route>

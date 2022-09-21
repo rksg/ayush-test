@@ -1,6 +1,5 @@
 import { useContext } from 'react'
 
-
 import { QuestionCircleOutlined }                       from '@ant-design/icons'
 import { Form, Input, Col, Radio, Row, Space, Tooltip } from 'antd'
 import TextArea                                         from 'antd/lib/input/TextArea'
@@ -52,7 +51,7 @@ export function NetworkDetailForm () {
 
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
-    { type: NetworkTypeEnum.DPSK, disabled: false },
+    { type: NetworkTypeEnum.DPSK, disabled: true },
     { type: NetworkTypeEnum.AAA, disabled: false },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: true },
     { type: NetworkTypeEnum.OPEN, disabled: false }
@@ -100,10 +99,15 @@ export function NetworkDetailForm () {
                 <Space direction='vertical'>
                   {types.map(({ type, disabled }) => (
                     <Radio key={type} value={type} disabled={disabled}>
-                      {intl.$t(networkTypes[type])}
-                      <RadioDescription>
-                        {intl.$t(networkTypesDescription[type])}
-                      </RadioDescription>
+                      <Tooltip
+                        title={[NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
+                          .indexOf(type) > -1 ? 
+                          intl.$t({ defaultMessage: 'Not available in Beta1' }) : ''}>
+                        {intl.$t(networkTypes[type])}
+                        <RadioDescription>
+                          {intl.$t(networkTypesDescription[type])}
+                        </RadioDescription>
+                      </Tooltip>
                     </Radio>
                   ))}
                 </Space>
