@@ -90,7 +90,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       key: 'duration',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Duration' }),
-        children: formatter('durationFormat')(durationOf(
+        children: formatter('durationFormat', intl)(durationOf(
           incident.startTime,
           incident.endTime
         ))

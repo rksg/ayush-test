@@ -130,34 +130,44 @@ describe('formatter', () => {
     })
   })
   describe('durationFormat', () => {
-    it('format durations', () =>
-      testFormat('durationFormat', {
-        0: '0',
-        2: '2ms',
-        2.54: '2.54ms',
-        2.54999: '2.55ms',
-        41: '41ms',
-        123: '123ms',
-        1000: '1s',
-        1234: '1.23s',
-        1600: '1.6s',
-        7000: '7s',
-        57111: '57.1s',
-        [60000 * 21]: '21m',
-        [60000 * 61]: '1h 1m',
-        [3600000 * 1]: '1h',
-        [3600000 * 23]: '23h',
-        [3600000 * 20 + 1000 * 37]: '20h', // seconds are not significant here
-        [3600000 * 20 + 60000 * 37]: '20h 37m',
-        86400000: '1d',
-        [86400000 * 8]: '8d',
-        [86400000 + 3600000 * 3 + 60000 * 4]: '1d 3h', // only 2 significant
-        2678400000: '1mo',
-        [2678400000 + 86400000 * 4]: '1mo 4d',
-        31622400000: '1y',
-        [31622400000 + 2678400000 * 8 + 86400000 * 4]: '1y 8mo',
-        [31622400000 + 2678400000 * 13]: '2y 1mo'
-      }))
+    const testFormat = (
+      format: string,
+      values: Record<string | number | symbol, string>,
+      tz?: string
+    ) => Object.entries(values).forEach(([value, expected]) => {
+      it(`convert ${value} to ${expected}`, () => {
+        const result = renderHook(() =>
+          formatter(format, useIntl())(parseFloat(value), tz)).result.current
+        expect(result).toEqual(expected)
+      })
+    })
+    testFormat('durationFormat', {
+      0: '0',
+      2: '2 ms',
+      2.54: '2.54 ms',
+      2.54999: '2.55 ms',
+      41: '41 ms',
+      123: '123 ms',
+      1000: '1 s',
+      1234: '1.23 s',
+      1600: '1.6 s',
+      7000: '7 s',
+      57111: '57.1 s',
+      [60000 * 21]: '21 m',
+      [60000 * 61]: '1 h 1 m',
+      [3600000 * 1]: '1 h',
+      [3600000 * 23]: '23 h',
+      [3600000 * 20 + 1000 * 37]: '20 h', // seconds are not significant here
+      [3600000 * 20 + 60000 * 37]: '20 h 37 m',
+      86400000: '1 d',
+      [86400000 * 8]: '8 d',
+      [86400000 + 3600000 * 3 + 60000 * 4]: '1 d 3 h', // only 2 significant
+      2678400000: '1 mo',
+      [2678400000 + 86400000 * 4]: '1 mo 4 d',
+      31622400000: '1 y',
+      [31622400000 + 2678400000 * 8 + 86400000 * 4]: '1 y 8 mo',
+      [31622400000 + 2678400000 * 13]: '2 y 1 mo'
+    })
   })
   describe('dateTimeFormats', () => {
     it('Should format a timestamp to MMM DD YYYY', () => {

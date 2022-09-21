@@ -54,7 +54,8 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
 }
 
 function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const queryResults = useIncidentsListQuery(filters)
   const basePath = useTenantLink('/analytics/incidents/')
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
@@ -107,7 +108,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       title: $t(defineMessage({ defaultMessage: 'Duration' })),
       dataIndex: 'duration',
       key: 'duration',
-      render: (_, value) => formatter('durationFormat')(value.duration) as string,
+      render: (_, value) => formatter('durationFormat', intl)(value.duration) as string,
       sorter: {
         compare: (a, b) => defaultSort(b.duration, a.duration),
         multiple: 3

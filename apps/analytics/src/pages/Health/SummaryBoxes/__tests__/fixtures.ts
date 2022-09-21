@@ -10,3 +10,16 @@ export const fakeSummary = {
     }
   }
 }
+
+export const fakeEmptySummary = {
+  timeSeries: {
+    connectionSuccessAndAttemptCount: [[null, null]]
+  },
+  avgTTC: {
+    hierarchyNode: {
+      incidentCharts: {
+        ttc: [null]
+      }
+    }
+  }
+}

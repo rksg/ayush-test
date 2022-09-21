@@ -4,8 +4,8 @@ import { dataApiURL }                                                  from '@ac
 import { Provider, store }                                             from '@acx-ui/store'
 import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 
-import { fakeSummary } from './__tests__/fixtures'
-import { api }         from './services'
+import { fakeSummary, fakeEmptySummary } from './__tests__/fixtures'
+import { api }                           from './services'
 
 import { SummaryBoxes } from '.'
 
@@ -18,14 +18,21 @@ jest.mock('@acx-ui/icons', ()=> ({
 describe('Incidents Page', () => {
   beforeEach(()=>{
     store.dispatch(api.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeSummary })
   })
   it('should match snapshot', async () => {
+    mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeSummary })
+    const { asFragment } = render(<Provider><SummaryBoxes/></Provider>)
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should show - when no data', async () => {
+    mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeEmptySummary })
     const { asFragment } = render(<Provider><SummaryBoxes/></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should handle onClick', async () => {
+    mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeSummary })
     render(<Provider><SummaryBoxes/></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const arrows = screen.getAllByTestId('down-arrow')

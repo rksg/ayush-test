@@ -36,7 +36,8 @@ const Box = (props: BoxProps) => {
 }
 
 export const SummaryBoxes = () => {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const [ isOpen, setIsOpen ] = useState(false)
   const { filters } = useAnalyticsFilter()
   const payload = {
@@ -72,7 +73,7 @@ export const SummaryBoxes = () => {
             ? '-' : $t(intlFormats.countFormat, { value: failureCount }),
           successPercentage,
           averageTtc: isNull(averageTtc)
-            ? '-' : formatter('durationFormat')(averageTtc) as string
+            ? '-' : formatter('durationFormat', intl)(averageTtc) as string
         }
       }
     }
