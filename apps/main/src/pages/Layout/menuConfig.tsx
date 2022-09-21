@@ -27,10 +27,20 @@ export function useMenuConfig () {
           path: '/analytics/incidents',
           name: $t({ defaultMessage: 'Incidents' })
         },
+        // TODO: add back when needed, comment for now
+        // {
+        //   path: '/analytics/recommendations',
+        //   name: $t({ defaultMessage: 'Recommendations' })
+        // },
         {
           path: '/analytics/health',
           name: $t({ defaultMessage: 'Health' })
         }
+        // TODO: add back when needed, comment for now
+        // {
+        //   path: '/analytics/configChange',
+        //   name: $t({ defaultMessage: 'Config Change' })
+        // }
       ]
     },
     {
