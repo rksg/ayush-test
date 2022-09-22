@@ -7,26 +7,32 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { IncidentAttributes }   from '../IncidentAttributes'
-import { Insights }             from '../Insights'
-import { NetworkImpact }        from '../NetworkImpact'
-import { TimeSeries }           from '../TimeSeries'
-import { TimeSeriesChartTypes } from '../TimeSeries/config'
+import { IncidentAttributes, Attributes } from '../IncidentAttributes'
+import { Insights }                       from '../Insights'
+import { NetworkImpact }                  from '../NetworkImpact'
+import { NetworkImpactChartTypes }        from '../NetworkImpact/config'
+import { TimeSeries }                     from '../TimeSeries'
+import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
 export const IncidentDetailsTemplate = (incident: Incident) => {
-  const networkImpactCharts = [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
   const { $t } = useIntl()
   const attributeList = [
-    'clientImpactCount',
-    'incidentCategory',
-    'incidentSubCategory',
-    'type',
-    'scope',
-    'duration',
-    'eventStartTime',
-    'eventEndTime'
+    Attributes.ClientImpactCount,
+    Attributes.IncidentCategory,
+    Attributes.IncidentSubCategory,
+    Attributes.Type,
+    Attributes.Scope,
+    Attributes.Duration,
+    Attributes.EventStartTime,
+    Attributes.EventEndTime
+  ]
+  const networkImpactCharts: NetworkImpactChartTypes[] = [
+    NetworkImpactChartTypes.WLAN,
+    NetworkImpactChartTypes.Radio,
+    NetworkImpactChartTypes.Reason,
+    NetworkImpactChartTypes.ClientManufacturer
   ]
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
     TimeSeriesChartTypes.FailureChart,

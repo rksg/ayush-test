@@ -1,5 +1,4 @@
 import { List, Space, Tooltip as AntTooltip } from 'antd'
-import { useIntl }                            from 'react-intl'
 
 import { Alarm, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
 import { formatter }                               from '@acx-ui/utils'
@@ -14,8 +13,6 @@ export interface AlarmListProps {
 }
 
 export function AlarmList ({ data, width, height, onNavigate }: AlarmListProps) {
-  const intl = useIntl()
-
   return <UI.AlarmListWrapper style={{
     height,
     width

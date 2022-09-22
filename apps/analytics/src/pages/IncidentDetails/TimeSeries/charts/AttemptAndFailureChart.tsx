@@ -1,3 +1,4 @@
+import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
@@ -12,6 +13,17 @@ import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/utils'
 
 import { ChartsData } from '../services'
+
+const attemptAndFailureChartQuery = (incident: Incident) => gql`
+  attemptAndFailureChart: timeSeries(granularity: $granularity) {
+    time
+    failureCount(
+      metric: "${codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap]}")
+    totalFailureCount: failureCount
+    attemptCount(
+      metric: "${codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap]}")
+  }
+`
 
 export const AttemptAndFailureChart = (
   { incident, data }: { incident: Incident, data: ChartsData }) => {
@@ -41,3 +53,6 @@ export const AttemptAndFailureChart = (
     </AutoSizer>
   </Card>
 }
+
+const chartConfig = { chart: AttemptAndFailureChart, query: attemptAndFailureChartQuery }
+export default chartConfig

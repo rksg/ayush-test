@@ -5,6 +5,7 @@ import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 import { IncidentDetailsTemplate } from './FailureTemplate'
 
 jest.mock('../IncidentDetails/IncidentAttributes', () => ({
+  ...jest.requireActual('../IncidentDetails/IncidentAttributes'),
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
 }))
 jest.mock('../NetworkImpact', () => ({

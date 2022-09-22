@@ -1,3 +1,4 @@
+import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
@@ -6,6 +7,15 @@ import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/utils'
 
 import { ChartsData } from '../services'
+
+const clientCountChartQuery = () => gql`
+  clientCountChart: timeSeries(granularity: $granularity) {
+    time
+    newClientCount: connectionAttemptCount
+    impactedClientCount: impactedClientCountByCode(filter: {code: $code})
+    connectedClientCount
+  }
+`
 
 export const ClientCountChart = ({ data }: { data: ChartsData }) => {
   const { clientCountChart } = data
@@ -32,3 +42,6 @@ export const ClientCountChart = ({ data }: { data: ChartsData }) => {
     </AutoSizer>
   </Card>
 }
+
+const chartConfig = { chart: ClientCountChart, query: clientCountChartQuery }
+export default chartConfig

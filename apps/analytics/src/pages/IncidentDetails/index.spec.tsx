@@ -13,6 +13,7 @@ import { api } from './services'
 import IncidentDetailsPage from '.'
 
 jest.mock('../IncidentDetails/IncidentAttributes', () => ({
+  ...jest.requireActual('../IncidentDetails/IncidentAttributes'),
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
 }))
 

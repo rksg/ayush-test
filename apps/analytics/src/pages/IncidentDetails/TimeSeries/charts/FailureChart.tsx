@@ -1,3 +1,4 @@
+import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
@@ -44,6 +45,18 @@ export const getMarkers = (
   }
 }))
 
+const failureChartQuery = (incident: Incident) => gql`
+  relatedIncidents: incidents(filter: {code: [$code]}) {
+    id severity code startTime endTime
+  }
+  failureChart: timeSeries(granularity: $granularity) {
+    time
+    ${codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap]}:
+      apConnectionFailureRatio(
+        metric: "${codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap]}")
+  }
+  `
+
 export const FailureChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
   const { failureChart, relatedIncidents } = data
   const intl = useIntl()
@@ -74,3 +87,6 @@ export const FailureChart = ({ incident, data }: { incident: Incident, data: Cha
     </AutoSizer>
   </Card>
 }
+
+const chartConfig = { chart: FailureChart, query: failureChartQuery }
+export default chartConfig

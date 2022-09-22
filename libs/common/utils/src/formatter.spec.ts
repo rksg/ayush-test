@@ -1,12 +1,9 @@
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment from 'moment-timezone'
 
-import { renderHook } from '@acx-ui/test-utils'
-
-import { formatter } from './formatter'
+import { formatter, formats } from './formatter'
 
 function testFormat (
-  format: string,
+  format: keyof typeof formats,
   values: Record<string | number | symbol, string>,
   tz?: string
 ) {
@@ -16,7 +13,7 @@ function testFormat (
 }
 describe('formatter', () => {
   it('returns null if format is not supported', () => {
-    expect(formatter('something')(1)).toBe(null)
+    expect(formatter('something' as keyof typeof formats)(1)).toBe(null)
   })
   it('Should take care of null values correctly', () => {
     expect(formatter('decibelFormat')(null)).toBe(null)

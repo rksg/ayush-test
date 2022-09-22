@@ -103,7 +103,7 @@ function calendarFormat (number: number, intl: IntlShape) {
   })
 }
 
-const formats = {
+export const formats = {
   durationFormat,
   calendarFormat: (number: number, intl: IntlShape) => calendarFormat(number, intl),
   decibelFormat: (number: number) => Math.round(number) + ' dB',
