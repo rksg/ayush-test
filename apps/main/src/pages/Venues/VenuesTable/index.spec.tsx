@@ -48,6 +48,10 @@ describe('Venues Table', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.delete(
+        CommonUrlsInfo.deleteVenue.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
       )
     )
     params = {
@@ -83,5 +87,29 @@ describe('Venues Table', () => {
 
     const editButton = screen.getByRole('button', { name: /edit/i })
     fireEvent.click(editButton)
+  })
+
+  it('should delete selected row', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <VenuesTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(asFragment()).toMatchSnapshot()
+
+    const row = await screen.findByRole('row', { name: /My-Venue/i })
+    fireEvent.click(within(row).getByRole('checkbox'))
+
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    fireEvent.click(deleteButton)
+
+    await screen.findByText('Delete "My-Venue"?')
+    const deleteVenueButton = await screen.findByText('Delete Venues')
+    fireEvent.click(deleteVenueButton)
+
+    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   })
 })

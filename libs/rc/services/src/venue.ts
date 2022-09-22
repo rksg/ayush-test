@@ -32,7 +32,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddVenue', 'DeleteVenue'], () => {
+          showActivityMessage(msg, ['AddVenue', 'DeleteVenue', 'DeleteVenues'], () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
@@ -73,6 +73,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
             })
         })
       }
+    }),
+    deleteVenue: build.mutation<Venue, RequestPayload>({
+      query: ({ params, payload }) => {
+        if(payload){ //delete multiple rows
+          const req = createHttpRequest(CommonUrlsInfo.deleteVenues, params)
+          return {
+            ...req,
+            body: payload
+          }
+        }else{ //delete single row
+          const req = createHttpRequest(CommonUrlsInfo.deleteVenue, params)
+          return {
+            ...req
+          }
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     })
   })
 })
@@ -82,5 +99,6 @@ export const {
   useLazyVenuesListQuery,
   useAddVenueMutation,
   useGetVenueQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useDeleteVenueMutation
 } = venueApi
