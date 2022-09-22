@@ -1,0 +1,63 @@
+import { useIntl } from 'react-intl'
+
+import {
+  calculateSeverity,
+  Incident,
+  useShortDescription
+} from '@acx-ui/analytics/utils'
+import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
+
+import { IncidentAttributes } from '../IncidentAttributes'
+import { Insights }           from '../Insights'
+import { NetworkImpact }      from '../NetworkImpact'
+
+import * as UI from './styledComponents'
+
+export const ApPoeLow = (incident: Incident) => {
+  const networkImpactCharts = [ 'apModels', 'apFwVersions']
+
+  const { $t } = useIntl()
+  const attributeList = [
+    'apImpactCount',
+    'incidentCategory',
+    'incidentSubCategory',
+    'type',
+    'scope',
+    'duration',
+    'eventStartTime',
+    'eventEndTime'
+  ]
+
+  return (
+    <>
+      <PageHeader
+        title={$t({ defaultMessage: 'Incident Details' })}
+        titleExtra={<SeverityPill severity={calculateSeverity(incident.severity)!} />}
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
+        ]}
+        subTitle={useShortDescription(incident)}
+      />
+      <GridRow>
+        <GridCol col={{ span: 4 }}>
+          <UI.FixedAutoSizer>
+            {({ width }) => (<div style={{ width }}>
+              <IncidentAttributes incident={incident} visibleFields={attributeList} />
+            </div>)}
+          </UI.FixedAutoSizer>
+        </GridCol>
+        <GridCol col={{ span: 20 }}>
+          <Insights incident={incident} />
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }}>
+          {/* <NetworkImpact incident={incident} charts={networkImpactCharts}/> */}
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }}>
+          <div>PoE Impact</div>
+        </GridCol>
+      </GridRow>
+    </>
+  )
+}
+
+export default ApPoeLow
