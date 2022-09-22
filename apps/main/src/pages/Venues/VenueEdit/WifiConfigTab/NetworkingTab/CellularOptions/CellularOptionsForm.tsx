@@ -5,12 +5,15 @@ import {
   Switch,
   Row,
   Col,
-  Space
+  Space,
+  Divider,
+  Checkbox,
+  Form
 } from 'antd'
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, StepsForm, Table, TableProps, Loader, showToast } from '@acx-ui/components'
+import { Button, StepsForm, Table, TableProps, Loader, showToast, Subtitle } from '@acx-ui/components'
 import {
   useGetVenueCapabilitiesQuery,
   useGetVenueLedOnQuery,
@@ -24,15 +27,15 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { DeleteOutlinedIcon }                       from '../../../Layout/styledComponents'
-import { VenueEditContext, AdvancedSettingContext } from '../index'
+import { DeleteOutlinedIcon }                       from '../../../../../Layout/styledComponents'
+import { VenueEditContext, AdvancedSettingContext } from '../../../index'
 
 export interface ModelOption {
   label: string
   value: string
 }
 
-export function AdvancedSettingForm () {
+export function CellularOptionsForm () {
   const { $t } = useIntl()
   const { tenantId, venueId, activeSubTab } = useParams()
   const navigate = useNavigate()
@@ -208,39 +211,68 @@ export function AdvancedSettingForm () {
   }
 
   return (
-    <StepsForm
-      onFinish={() => handleUpdateSetting(true)}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-      })}
-      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
-    >
-      <StepsForm.StepForm>
-        <Row>
-          <Col span={7}>
-            <Loader states={[{ isLoading: venueLed.isLoading || venueCaps.isLoading }]}>
-              <Space size={8} direction='vertical'>
-                <Table
-                  columns={columns}
-                  dataSource={tableData}
-                  type='form'
-                />
-                <Button
-                  onClick={handleAdd}
-                  type='link'
-                  disabled={venueLed.isLoading
+    <>
+      <Subtitle level={3}>{$t({ defaultMessage: 'Cellular Options' })}</Subtitle>
+      <StepsForm
+        onFinish={() => handleUpdateSetting(true)}
+        onCancel={() => navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
+        })}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      >
+        <StepsForm.StepForm>
+          {/* <Row>
+            <Col span={7}>
+              <Loader states={[{ isLoading: venueLed.isLoading || venueCaps.isLoading }]}>
+                <Space size={8} direction='vertical'>
+                  <Table
+                    columns={columns}
+                    dataSource={tableData}
+                    type='form'
+                  />
+                  <Button
+                    onClick={handleAdd}
+                    type='link'
+                    disabled={venueLed.isLoading
                       || !modelOptions.length
                       || !!tableData?.find((item) => !item.model)
-                  }
-                  style={{ fontSize: '12px' }}>
-                  {$t({ defaultMessage: 'Add Model' })}
-                </Button>
-              </Space>
-            </Loader>
-          </Col>
-        </Row>
-      </StepsForm.StepForm>
-    </StepsForm>
+                    }
+                    style={{ fontSize: '12px' }}>
+                    {$t({ defaultMessage: 'Add Model' })}
+                  </Button>
+                </Space>
+              </Loader>
+            </Col>
+          </Row> */}
+          <Divider orientation='left' plain>
+            <div style={{
+              display: 'grid', gridTemplateColumns: 'auto 100px', gridGap: '5px',
+              height: '30px'
+            }}>
+              <div style={{
+                display: 'flex', alignItems: 'center',
+                height: '30px'
+              }}>1 Primary SIM</div>
+
+              <Form.Item
+                style={{
+                  display: 'flex', alignItems: 'center',
+                  height: '30px'
+                }}
+                name={['wlan', 'advancedCustomization', 'hideSsid']}
+                initialValue={false}
+                valuePropName='checked'
+                children={
+                  <Switch />
+                }
+              />
+            </div>
+          </Divider>
+        </StepsForm.StepForm>
+      </StepsForm>
+
+    </>
+
   )
 }
