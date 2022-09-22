@@ -52,7 +52,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
     if (tableQuery.data) {
       setTableData(tableQuery.data.data)
     }
-  }, [venue.id, tableQuery?.data?.data.length])
+  }, [venue.id, tableQuery.data?.data.length])
 
   const onClose = () => {
     setVisible(false)

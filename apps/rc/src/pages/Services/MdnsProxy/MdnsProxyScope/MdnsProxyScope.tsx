@@ -15,19 +15,11 @@ import { MdnsProxyScopeApDrawer, SimpleApRecord } from './MdnsProxyScopeApDrawer
 export function MdnsProxyScope () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { defaultData } = useContext(MdnsProxyFormContext)
+  const { currentData } = useContext(MdnsProxyFormContext)
   const [ selectedVenue, setSelectedVenue ] = useState<Venue>()
   const [ drawerVisible, setDrawerVisible ] = useState(false)
-  const [ tableData, setTableData ] = useState<Venue[]>([])
-  const defaultDataLoaded = useRef<boolean>(false)
-
-  useEffect(() => {
-    if (!defaultData?.scope || defaultDataLoaded.current) {
-      return
-    }
-    applyTableSelectedAps(defaultData.scope)
-    defaultDataLoaded.current = true
-  }, [defaultData])
+  const [ tableData, setTableData ] = useState<Venue[]>()
+  const dataloadedRef = useRef<boolean>(false)
 
   const tableQuery = useTableQuery({
     useQuery: useVenuesListQuery,
@@ -40,13 +32,27 @@ export function MdnsProxyScope () {
   })
 
   useEffect(() => {
-    if (tableQuery.data && tableData.length === 0) {
-      setTableData(tableQuery.data?.data)
+    if (tableQuery.data) {
+      setTableData(tableQuery.data?.data ?? [])
     }
   }, [tableQuery.data])
 
+  useEffect(() => {
+    if (!dataloadedRef.current) {
+      updateField(currentData.scope)
+      dataloadedRef.current = true
+    }
+  }, [currentData, form])
+
+  useEffect(() => {
+    const formScope = form.getFieldValue('scope')
+    if (dataloadedRef.current && formScope) {
+      applyTableSelectedAps(formScope)
+    }
+  }, [tableQuery.pagination?.current])
+
   const applyTableSelectedAps = (selected: MdnsProxyScopeData[]) => {
-    const resultTableData: Venue[] = tableData.map((tableVenue: Venue) => {
+    const resultTableData: Venue[] = (tableData ?? []).map((tableVenue: Venue) => {
       const target: MdnsProxyScopeData | undefined = selected.find(s => s.venueId === tableVenue.id)
 
       return {
@@ -65,7 +71,7 @@ export function MdnsProxyScope () {
 
   const handleSetAps = (venue: Venue, aps: SimpleApRecord[] = []) => {
     const currentScope = form.getFieldValue('scope')
-    const resultScope: MdnsProxyScopeData[] = currentScope ? currentScope.slice(0) : []
+    const resultScope: MdnsProxyScopeData[] = currentScope?.slice() ?? []
     let targetVenue = resultScope.find((s: MdnsProxyScopeData) => s.venueId === venue.id)
 
     if (targetVenue) {
@@ -78,8 +84,12 @@ export function MdnsProxyScope () {
       resultScope.push(targetVenue)
     }
 
-    form.setFieldValue('scope', resultScope)
-    applyTableSelectedAps(resultScope)
+    updateField(resultScope)
+  }
+
+  const updateField = (scope: MdnsProxyScopeData[]) => {
+    form.setFieldValue('scope', scope)
+    applyTableSelectedAps(scope)
   }
 
   const actions: TableProps<Venue>['actions'] = [

@@ -1,9 +1,10 @@
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, Input, Col, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }               from '@acx-ui/components'
+import { MdnsProxyForwardingRule } from '@acx-ui/rc/utils'
 
 import MdnsProxyFormContext              from './MdnsProxyFormContext'
 import { MdnsProxyForwardingRulesTable } from './MdnsProxyForwardingRulesTable'
@@ -13,18 +14,13 @@ import { MdnsProxyForwardingRulesTable } from './MdnsProxyForwardingRulesTable'
 export function MdnsProxySettingsForm () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { defaultData } = useContext(MdnsProxyFormContext)
-  const defaultDataLoaded = useRef<boolean>(false)
+  const forwardingRules = Form.useWatch('forwardingRules')
+  const { currentData } = useContext(MdnsProxyFormContext)
 
   useEffect(() => {
-    if (!defaultData?.scope || defaultDataLoaded.current) {
-      return
-    }
     form.resetFields()
-    form.setFieldsValue(defaultData)
-
-    defaultDataLoaded.current = true
-  }, [defaultData, form])
+    form.setFieldsValue(currentData)
+  }, [currentData, form])
 
   const nameValidator = async (value: string) => {
     // const payload = { ...networkListPayload, searchString: value }
@@ -37,8 +33,12 @@ export function MdnsProxySettingsForm () {
     return Promise.resolve(value)
   }
 
+  const handleSetForwardingRules = (rules: MdnsProxyForwardingRule[]) => {
+    form.setFieldValue('forwardingRules', rules)
+  }
+
   return (
-    <Row gutter={20}>
+    <Row gutter={24}>
       <Col span={10}>
         <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
@@ -63,7 +63,11 @@ export function MdnsProxySettingsForm () {
           name='forwardingRules'
           label={$t({ defaultMessage: 'Forwarding Rules' })}
         >
-          <MdnsProxyForwardingRulesTable />
+          <MdnsProxyForwardingRulesTable
+            readonly={false}
+            rules={forwardingRules}
+            setRules={handleSetForwardingRules}
+          />
         </Form.Item>
       </Col>
     </Row>

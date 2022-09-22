@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import _                                from 'lodash'
 import { useIntl }                      from 'react-intl'
@@ -16,7 +16,6 @@ import MdnsProxyFormContext      from './MdnsProxyFormContext'
 import { MdnsProxySettingsForm } from './MdnsProxySettingsForm'
 
 
-
 export interface MdnsProxyFormProps {
   editMode?: boolean;
 }
@@ -27,25 +26,23 @@ export function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps) {
   const navigate = useNavigate()
   const servicesTablePath: Path = useTenantLink('/services')
   const selectServicePath: Path = useTenantLink('/services/select')
-  const [ defaultData, setDefaultData ] = useState<MdnsProxyFormData>()
   const [ currentData, setCurrentData ] = useState<MdnsProxyFormData>({} as MdnsProxyFormData)
-  const { data } = useGetMdnsProxyQuery({ params }, { skip: !editMode })
+  const { data: dataFromServer } = useGetMdnsProxyQuery({ params }, { skip: !editMode })
   const [ addMdnsProxy ] = useAddMdnsProxyMutation()
-  const defaultDataLoaded = useRef<boolean>(false)
 
   useEffect(() => {
-    if (!defaultDataLoaded.current && data && editMode) {
-      setDefaultData(data)
-      setCurrentData(data)
-      defaultDataLoaded.current = true
+    if (dataFromServer && editMode) {
+      setCurrentData(dataFromServer)
     }
-  }, [data, editMode])
+  }, [dataFromServer, editMode])
 
-  const updateCurrentData = (data: Partial<MdnsProxyFormData>) => {
+  const updateCurrentData = async (data: Partial<MdnsProxyFormData>) => {
     setCurrentData({
       ...currentData,
       ...data
     })
+
+    return true
   }
 
   const saveData = async (editMode: boolean, data: MdnsProxyFormData) => {
@@ -72,7 +69,7 @@ export function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps) {
           { text: $t({ defaultMessage: 'Add Service' }), link: '/services/select' }
         ]}
       />
-      <MdnsProxyFormContext.Provider value={{ editMode, defaultData, currentData }}>
+      <MdnsProxyFormContext.Provider value={{ editMode, currentData }}>
         <StepsForm<MdnsProxyFormData>
           editMode={editMode}
           onCancel={() => navigate(selectServicePath)}
@@ -81,20 +78,14 @@ export function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps) {
           <StepsForm.StepForm
             name='settings'
             title={$t({ defaultMessage: 'Settings' })}
-            onFinish={async (data) => {
-              updateCurrentData(data)
-              return true
-            }}
+            onFinish={updateCurrentData}
           >
             <MdnsProxySettingsForm />
           </StepsForm.StepForm>
           <StepsForm.StepForm
             name='scope'
             title={$t({ defaultMessage: 'Scope' })}
-            onFinish={async (data) => {
-              updateCurrentData(data)
-              return true
-            }}
+            onFinish={updateCurrentData}
           >
             <MdnsProxyScope />
           </StepsForm.StepForm>

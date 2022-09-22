@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, showActionModal, Table, TableProps } from '@acx-ui/components'
@@ -8,11 +7,15 @@ import { MdnsProxyForwardingRule }                    from '@acx-ui/rc/utils'
 
 import { MdnsProxyForwardingRuleDrawer } from './MdnsProxyForwardingRuleDrawer'
 
+interface MdnsProxyForwardingRulesTableProps {
+  readonly?: boolean;
+  rules?: MdnsProxyForwardingRule[];
+  setRules?: (r: MdnsProxyForwardingRule[]) => void;
+}
 
-export function MdnsProxyForwardingRulesTable () {
+export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTableProps) {
+  const { readonly = false, rules = [], setRules = () => null } = props
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
-  const rules: MdnsProxyForwardingRule[] = form.getFieldValue('forwardingRules')
   const [ drawerFormRule, setDrawerFormRule ] = useState<MdnsProxyForwardingRule>()
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
   const [ selectedRuleIndex, setSelectedItemIndex ] = useState(-1)
@@ -32,7 +35,8 @@ export function MdnsProxyForwardingRulesTable () {
     } else {
       newRules.push(data)
     }
-    form.setFieldValue('forwardingRules', newRules)
+
+    setRules(newRules)
   }
 
   const columns: TableProps<MdnsProxyForwardingRule>['columns'] = [
@@ -81,7 +85,7 @@ export function MdnsProxyForwardingRulesTable () {
             return selectedRows.every((s: MdnsProxyForwardingRule) => s.type !== r.type )
           })
 
-          form.setFieldValue('forwardingRules', newRules)
+          setRules(newRules)
           clearSelection()
         }
       })
@@ -90,25 +94,28 @@ export function MdnsProxyForwardingRulesTable () {
 
   return (
     <>
-      <Button
-        id='addRuleButton'
-        type='link'
-        onClick={handleAddAction}>
-        {$t({ defaultMessage: 'Add Rule' })}
-      </Button>
-      <MdnsProxyForwardingRuleDrawer
-        editMode={drawerEditMode}
-        rule={(drawerFormRule)}
-        visible={drawerVisible}
-        setVisible={setDrawerVisible}
-        setRule={handleSetRule}
-      />
+      {!readonly &&
+        <>
+          <Button
+            id='addRuleButton'
+            type='link'
+            onClick={handleAddAction}>
+            {$t({ defaultMessage: 'Add Rule' })}
+          </Button>
+          <MdnsProxyForwardingRuleDrawer
+            editMode={drawerEditMode}
+            rule={(drawerFormRule)}
+            visible={drawerVisible}
+            setVisible={setDrawerVisible}
+            setRule={handleSetRule} />
+        </>
+      }
       <Table
         columns={columns}
         dataSource={rules}
         rowKey='type'
         actions={actions}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={readonly ? false : { type: 'radio' }}
       />
     </>
   )
