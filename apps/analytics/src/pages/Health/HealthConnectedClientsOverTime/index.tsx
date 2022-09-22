@@ -26,6 +26,7 @@ const HealthTimeSeriesChart = forwardRef<ReactECharts, HealthTimeSeriesChartProp
       filters={filters}
       ref={ref}
       brush={{ timeWindow, setTimeWindow }}
+      type='no-border'
       hideTitle
       hideIncidents
     />
