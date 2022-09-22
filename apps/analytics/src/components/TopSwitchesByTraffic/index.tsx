@@ -11,10 +11,19 @@ import {
   getBarChartSeriesData, 
   AnalyticsFilter, 
   BarChartData 
-}                             from '@acx-ui/analytics/utils'
-import { BarChart, Card, cssNumber, Loader, cssStr, NoData, TooltipWrapper, EventParams } from '@acx-ui/components'
-import { useNavigate, useTenantLink }                                                     from '@acx-ui/react-router-dom'
-import { formatter }                                                                      from '@acx-ui/utils'
+}                                     from '@acx-ui/analytics/utils'
+import { 
+  BarChart, 
+  Card, 
+  cssNumber, 
+  Loader, 
+  cssStr, 
+  NoData, 
+  TooltipWrapper, 
+  EventParams 
+}                                     from '@acx-ui/components'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { formatter }                  from '@acx-ui/utils'
 
 import { useTopSwitchesByTrafficQuery } from './services'
 
