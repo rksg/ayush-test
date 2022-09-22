@@ -44,7 +44,7 @@ function VenueFilter () {
   const { setNodeFilter, filters } = useDashboardFilter()
   const { filter } = filters
   const { networkNodes } = filter
-  const queryResults = useNetworkFilterQuery(omit(filters, 'path'), {
+  const queryResults = useNetworkFilterQuery(omit(filters, 'filter','path'), {
     selectFromResult: ({ data, ...rest }) => {
       return { data: data ? getFilterData(data) : [],
         ...rest
