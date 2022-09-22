@@ -11,11 +11,8 @@ import { IncidentAttributes } from '../IncidentAttributes'
 import { Insights }           from '../Insights'
 
 import * as UI from './styledComponents'
-import { NetworkImpact } from '../NetworkImpact'
 
-export const Rss = (incident: Incident) => {
-  const networkImpactCharts = [ 'WLAN', 'radio' ]
-
+export const ApInfraTemplate = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
     'apImpactCount',
@@ -50,14 +47,14 @@ export const Rss = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <NetworkImpact incident={incident} charts={networkImpactCharts}/>
+          <div>Network Impact</div>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Chart</div>
+          <div>PoE Impact</div>
         </GridCol>
       </GridRow>
     </>
   )
 }
 
-export default Rss
+export default ApInfraTemplate

@@ -93,7 +93,7 @@ const extractFailureCode = (
 
 
 export const rootCauseRecommendationMap = {
-  assoc: {
+  'assoc': {
     CCD_REASON_NOT_AUTHED: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing to connect during the 802.11 open authentication, but the exact reason for the failures is unclear.</p>' }),
       recommendations: commonRecommendations
@@ -228,7 +228,7 @@ export const rootCauseRecommendationMap = {
       })
     }
   },
-  auth: {
+  'auth': {
     CCD_REASON_AUTH_FT_ROAM_FAILURE: {
       rootCauses: defineMessage({
         defaultMessage: `
@@ -378,7 +378,7 @@ export const rootCauseRecommendationMap = {
       })
     }
   },
-  eap: {
+  'eap': {
     CCD_REASON_EAPOL_STATE_INVALID: {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing authentication (4-way handshake) because the AP is receiving EAPOL keys (typically msg2 or msg4) from clients in an incorrect sequence.</p>' }),
       recommendations: defineMessage({
@@ -478,7 +478,7 @@ export const rootCauseRecommendationMap = {
       })
     }
   },
-  dhcp: {
+  'dhcp': {
     DEFAULT: {
       rootCauses: defineMessage({ defaultMessage: '<p>No specific root cause.</p>' }),
       recommendations: defineMessage({ defaultMessage: '<p>No recommendation.</p>' })
@@ -540,7 +540,7 @@ export const rootCauseRecommendationMap = {
       })
     }
   },
-  radius: {
+  'radius': {
     DEFAULT: {
       rootCauses: defineMessage({ defaultMessage: '<p>No specific root cause.</p>' }),
       recommendations: defineMessage({ defaultMessage: '<p>No recommendation.</p>' })
