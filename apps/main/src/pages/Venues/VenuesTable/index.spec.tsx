@@ -90,7 +90,7 @@ describe('Venues Table', () => {
   })
 
   it('should delete selected row', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <VenuesTable />
       </Provider>, {
