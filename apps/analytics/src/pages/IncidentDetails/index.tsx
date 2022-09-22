@@ -7,6 +7,7 @@ import Auth            from './Details/Auth'
 import Dhcp            from './Details/Dhcp'
 import Eap             from './Details/Eap'
 import Radius          from './Details/Radius'
+import ApPoeLow        from './Details/ApPoeLow'
 import { useIncident } from './services'
 
 export const incidentDetailsMap = {
@@ -14,7 +15,8 @@ export const incidentDetailsMap = {
   'dhcp-failure': Dhcp,
   'eap-failure': Eap,
   'auth-failure': Auth,
-  'assoc-failure': Assoc
+  'assoc-failure': Assoc,
+  'i-apinfra-poe-low': ApPoeLow
 }
 
 function IncidentDetailsPage () {
