@@ -18,7 +18,6 @@ interface ChartIncident extends Incident {
 export interface ChartDataProps {
   charts: TimeSeriesChartTypes[]
   incident: ChartIncident
-  queryRelatedIncidents?: boolean
 }
 
 interface Response <ChartsData> {

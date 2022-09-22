@@ -88,8 +88,7 @@ describe('chartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
-        charts,
-        queryRelatedIncidents: true
+        charts
       })
     )
     expect(status).toBe('fulfilled')
@@ -110,8 +109,7 @@ describe('chartQuery', () => {
     const { status, data, error } = await store.dispatch(
       Api.endpoints.Charts.initiate({
         incident: fakeIncident1,
-        charts,
-        queryRelatedIncidents: false
+        charts
       })
     )
     expect(status).toBe('fulfilled')
