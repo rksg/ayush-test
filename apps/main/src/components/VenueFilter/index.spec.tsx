@@ -51,7 +51,7 @@ describe('venue Filter', () => {
     const { asFragment } = render(<Provider><VenueFilter /></Provider>)
     await screen.findByText('Entire Organization')
     // eslint-disable-next-line testing-library/no-node-access
-    // expect(asFragment().querySelector('span[class="ant-select-arrow"]')).not.toBeNull()
+    expect(asFragment().querySelector('div[class="ant-select-selector"]')).not.toBeNull()
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
