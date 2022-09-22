@@ -26,7 +26,7 @@ describe('HealthPage', () => {
     render(<Provider><HealthPage /></Provider>)
 
     await waitForElementToBeRemoved(
-      () => screen.queryByRole('img', { name: 'loader' }),
+      () => screen.queryAllByRole('img', { name: 'loader' }),
       { timeout: 10000 }
     )
 

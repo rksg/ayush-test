@@ -1,4 +1,4 @@
-import { forwardRef, useCallback } from 'react'
+import { forwardRef } from 'react'
 
 import ReactECharts from 'echarts-for-react'
 import AutoSizer    from 'react-virtualized-auto-sizer'
@@ -9,16 +9,14 @@ import { TimeStamp }                                                          fr
 
 import { TimeWindow } from '../../pages/Health/HealthPageContext'
 
-
-
 const lineColors = [
   cssStr('--acx-accents-blue-50'),
   cssStr('--acx-accents-orange-50')
 ]
 
 export interface HealthTimeSeriesChartProps {
-  timeWindow?: TimeWindow
-  setTimeWindow?: (range: TimeWindow) => void,
+  timeWindow: TimeWindow
+  setTimeWindow: (range: TimeWindow) => void,
   queryResults: QueryState & { data: MultiLineTimeSeriesChartData[] }
 }
 
@@ -26,27 +24,7 @@ const HealthTimeSeriesChart = forwardRef<ReactECharts, HealthTimeSeriesChartProp
   props,
   ref
 ) => {
-  const { 
-    timeWindow,
-    setTimeWindow,
-    queryResults
-  } = props
-
-  const onBrushChange = useCallback((range: TimeWindow | TimeStamp[]) => {
-    if (!timeWindow) return
-
-    if (!ref) return
-
-    if (!setTimeWindow) return
-
-    if (range[0] !== timeWindow[0]) {
-      setTimeWindow(range as TimeWindow)
-    }
-
-    if (range[1] !== timeWindow[1]) {
-      setTimeWindow(range as TimeWindow)
-    }
-  }, [setTimeWindow, timeWindow, ref])
+  const { timeWindow, setTimeWindow, queryResults } = props
 
   return (
     <Loader states={[queryResults]}>
@@ -61,7 +39,7 @@ const HealthTimeSeriesChart = forwardRef<ReactECharts, HealthTimeSeriesChartProp
                   brush={timeWindow}
                   style={{ width, height: 200 }}
                   ref={ref}
-                  onBrushChange={onBrushChange}
+                  onBrushChange={setTimeWindow as (range: TimeStamp[]) => void}
                 />
                 : <NoData />}
             </Card>

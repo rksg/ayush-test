@@ -119,6 +119,7 @@ export const MultiLineTimeSeriesChart = forwardRef<
     toolbox: { show: false },
     brush: {
       xAxisIndex: 'all',
+      id: 'line-brush',
       brushStyle: {
         borderWidth: 4,
         color: 'rgba(0, 0, 0, 0.05)',

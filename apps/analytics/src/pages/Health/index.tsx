@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
@@ -40,19 +40,19 @@ export default function HealthPage () {
     })
   })
 
-  const chartRefs = useMemo(() => [
-    clientsRef,
-    clientsRef1
-  ], [])
-
   const connectRefs = useCallback(() => {
+    const chartRefs = [
+      clientsRef,
+      clientsRef1
+    ]
+
     const validRefs = chartRefs.filter(ref => ref && ref.current)
     validRefs.forEach(ref => {
       let instance = ref.current!.getEchartsInstance()
       instance.group = HealthChartGroup
     })
     connect(HealthChartGroup)
-  }, [chartRefs])
+  }, [])
 
   useEffect(() => {
     connectRefs()
@@ -67,12 +67,21 @@ export default function HealthPage () {
             context.setTimeWindow(range)
             connectRefs()
           }
-          return (<HealthTimeSeriesChart
-            {...context}
-            setTimeWindow={setTimeWindowCallback}
-            ref={clientsRef}
-            queryResults={healthQueryResults}
-          />)
+
+          return (<>
+            <HealthTimeSeriesChart
+              setTimeWindow={setTimeWindowCallback}
+              ref={clientsRef}
+              queryResults={healthQueryResults}
+              timeWindow={context.timeWindow}
+            />
+            <HealthTimeSeriesChart
+              setTimeWindow={setTimeWindowCallback}
+              ref={clientsRef1}
+              queryResults={healthQueryResults}
+              timeWindow={context.timeWindow}
+            />
+          </>)
         }
       }
     </HealthPageContext.Consumer>
