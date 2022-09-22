@@ -71,107 +71,15 @@ describe('IncidentDashboard', () => {
 
   afterEach(() => cleanup())
 
-  const mockComponentHelper = () => {
+  it('renders incident and category data', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
       data: { network: { hierarchyNode: expectedIncidentDashboardData } }
     })
-
-    render(<Provider><IncidentsDashboardWidget filters={filters} /></Provider>)
-  }
-
-  it('should render no data', () => {
-    mockComponentHelper()
+    const { asFragment } = render(<Provider>
+      <IncidentsDashboardWidget filters={filters} />
+    </Provider>)
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
-  })
-  it('should render loader', () => {
-    mockComponentHelper()
-    expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
-  })
-
-  it('should match p1 incidents', async () => {
-    mockComponentHelper()
-    const p1Incidents = await screen.findByText('1')
-    expect(p1Incidents.textContent).toMatch('1')
-
-    const p1Clients = await screen.findByText('2 clients impacted')
-    expect(p1Clients.textContent).toMatch('2 clients impacted')
-  })
-
-  it('should match p2 incidents', async () => {
-    mockComponentHelper()
-    const p2Incidents = await screen.findByText('3')
-    expect(p2Incidents.textContent).toMatch('3')
-
-    const p2Clients = await screen.findByText('4 clients impacted')
-    expect(p2Clients.textContent).toMatch('4 clients impacted')
-  })
-
-  it('should match p3 incidents', async () => {
-    mockComponentHelper()
-    const p3Incidents = await screen.findByText('5')
-    expect(p3Incidents.textContent).toMatch('5')
-
-    const p3Clients = await screen.findByText('6 clients impacted')
-    expect(p3Clients.textContent).toMatch('6 clients impacted')
-  })
-
-  it('should match p4 incidents', async () => {
-    mockComponentHelper()
-    const p4Incidents = await screen.findByText('7')
-    expect(p4Incidents.textContent).toMatch('7')
-
-    const p4Clients = await screen.findByText('8 clients impacted')
-    expect(p4Clients.textContent).toMatch('8 clients impacted')
-  })
-
-  it('should match connection total', async () => {
-    mockComponentHelper()
-    const {
-      connectionP1,
-      connectionP2,
-      connectionP3,
-      connectionP4
-    } = expectedIncidentDashboardData
-    const total = connectionP1 + connectionP2 + connectionP3 + connectionP4
-
-    const totalElem = await screen.findByText(total.toString())
-    expect(totalElem.textContent).toMatch(total.toString())
-
-    const connectionElem = await screen.findByText('Connection')
-    expect(connectionElem).toBeTruthy()
-  })
-
-  it('should match performance total', async () => {
-    mockComponentHelper()
-    const {
-      performanceP1,
-      performanceP2,
-      performanceP3,
-      performanceP4
-    } = expectedIncidentDashboardData
-    const total = performanceP1 + performanceP2 + performanceP3 + performanceP4
-
-    const totalElem = await screen.findByText(total.toString())
-    expect(totalElem.textContent).toMatch(total.toString())
-
-    const performanceElem = await screen.findByText('Performance')
-    expect(performanceElem).toBeTruthy()
-  })
-
-  it('should match infrastructure total', async () => {
-    mockComponentHelper()
-    const {
-      infrastructureP1,
-      infrastructureP2,
-      infrastructureP3,
-      infrastructureP4
-    } = expectedIncidentDashboardData
-    const total = infrastructureP1 + infrastructureP2 + infrastructureP3 + infrastructureP4
-
-    const totalElem = await screen.findByText(total.toString())
-    expect(totalElem.textContent).toMatch(total.toString())
-
-    const connectionElem = await screen.findByText('Infrastructure')
-    expect(connectionElem).toBeTruthy()
+    await screen.findByText('2 clients impacted')
+    expect(asFragment()).toMatchSnapshot()
   })
 })

@@ -1,0 +1,450 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IncidentDashboard renders incident and category data 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
+      type="default"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+              >
+                Incidents
+              </div>
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        >
+          <div
+            style="overflow: visible; height: 0px; width: 0px;"
+          >
+            <div
+              style="width: 280px; height: 150px;"
+            >
+              <div
+                class="ant-row ant-row-space-evenly ant-row-middle"
+                style="margin: -4px -4px -4px -4px;"
+              >
+                <div
+                  class="ant-col ant-col-12 ant-col-push-1"
+                  style="padding: 4px 4px 4px 4px;"
+                >
+                  <article
+                    class="ant-typography"
+                  >
+                    <h1
+                      class="ant-typography"
+                    >
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col"
+                        >
+                          <div
+                            class="styledComponents__SeverityContainer-sc-1kaeek5-1 fzljFW"
+                          >
+                            <span
+                              class="styledComponents__SeveritySpan-sc-1kaeek5-0 cPVwaw"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col"
+                        >
+                          1
+                        </div>
+                      </div>
+                    </h1>
+                    <div
+                      class="ant-typography"
+                    >
+                      <span
+                        class="ant-typography"
+                      >
+                        <strong>
+                          Incident P1
+                        </strong>
+                      </span>
+                    </div>
+                    <div
+                      class="ant-typography styledComponents__ClientImpactParagraph-sc-1kaeek5-2 eLlBsL"
+                    >
+                      2 clients impacted
+                    </div>
+                  </article>
+                </div>
+                <div
+                  class="ant-col ant-col-12 ant-col-push-1"
+                  style="padding: 4px 4px 4px 4px;"
+                >
+                  <article
+                    class="ant-typography"
+                  >
+                    <h1
+                      class="ant-typography"
+                    >
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col"
+                        >
+                          <div
+                            class="styledComponents__SeverityContainer-sc-1kaeek5-1 fzljFW"
+                          >
+                            <span
+                              class="styledComponents__SeveritySpan-sc-1kaeek5-0 bJqXkR"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col"
+                        >
+                          3
+                        </div>
+                      </div>
+                    </h1>
+                    <div
+                      class="ant-typography"
+                    >
+                      <span
+                        class="ant-typography"
+                      >
+                        <strong>
+                          Incident P2
+                        </strong>
+                      </span>
+                    </div>
+                    <div
+                      class="ant-typography styledComponents__ClientImpactParagraph-sc-1kaeek5-2 eLlBsL"
+                    >
+                      4 clients impacted
+                    </div>
+                  </article>
+                </div>
+                <div
+                  class="ant-col ant-col-12 ant-col-push-1"
+                  style="padding: 4px 4px 4px 4px;"
+                >
+                  <article
+                    class="ant-typography"
+                  >
+                    <h1
+                      class="ant-typography"
+                    >
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col"
+                        >
+                          <div
+                            class="styledComponents__SeverityContainer-sc-1kaeek5-1 fzljFW"
+                          >
+                            <span
+                              class="styledComponents__SeveritySpan-sc-1kaeek5-0 fsZhzm"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col"
+                        >
+                          5
+                        </div>
+                      </div>
+                    </h1>
+                    <div
+                      class="ant-typography"
+                    >
+                      <span
+                        class="ant-typography"
+                      >
+                        <strong>
+                          Incident P3
+                        </strong>
+                      </span>
+                    </div>
+                    <div
+                      class="ant-typography styledComponents__ClientImpactParagraph-sc-1kaeek5-2 eLlBsL"
+                    >
+                      6 clients impacted
+                    </div>
+                  </article>
+                </div>
+                <div
+                  class="ant-col ant-col-12 ant-col-push-1"
+                  style="padding: 4px 4px 4px 4px;"
+                >
+                  <article
+                    class="ant-typography"
+                  >
+                    <h1
+                      class="ant-typography"
+                    >
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col"
+                        >
+                          <div
+                            class="styledComponents__SeverityContainer-sc-1kaeek5-1 fzljFW"
+                          >
+                            <span
+                              class="styledComponents__SeveritySpan-sc-1kaeek5-0 eecDan"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col"
+                        >
+                          7
+                        </div>
+                      </div>
+                    </h1>
+                    <div
+                      class="ant-typography"
+                    >
+                      <span
+                        class="ant-typography"
+                      >
+                        <strong>
+                          Incident P4
+                        </strong>
+                      </span>
+                    </div>
+                    <div
+                      class="ant-typography styledComponents__ClientImpactParagraph-sc-1kaeek5-2 eLlBsL"
+                    >
+                      8 clients impacted
+                    </div>
+                  </article>
+                </div>
+              </div>
+              <div
+                _echarts_instance_="ec_1663832580972"
+                class="echarts-for-react "
+                size-sensor-id="1"
+                style="height: 120px; width: 280px; position: relative;"
+              >
+                <div
+                  style="position: relative; overflow: hidden; width: 280px; height: 120px;"
+                >
+                  <svg
+                    baseProfile="full"
+                    height="120"
+                    style="position:absolute;left:0;top:0;user-select:none"
+                    version="1.1"
+                    width="280"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                  >
+                    <rect
+                      fill="none"
+                      fill-opacity="1"
+                      height="120"
+                      id="0"
+                      width="280"
+                      x="0"
+                      y="0"
+                    />
+                    <g>
+                      <path
+                        d="M-75 -0.5l75 0l0 1l-75 0Z"
+                        fill="none"
+                        transform="translate(85 92.5)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#333333"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(85 92.5)"
+                        x="-75"
+                      >
+                        Infrastructure
+                      </text>
+                      <path
+                        d="M-75 -0.5l75 0l0 1l-75 0Z"
+                        fill="none"
+                        transform="translate(85 55.5)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#333333"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(85 55.5)"
+                        x="-75"
+                      >
+                        Performance
+                      </text>
+                      <path
+                        d="M-75 -0.5l75 0l0 1l-75 0Z"
+                        fill="none"
+                        transform="translate(85 18.5)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#333333"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(85 18.5)"
+                        x="-75"
+                      >
+                        Connection
+                      </text>
+                      <path
+                        d="M93 88.5L93 96.5L93 88.5"
+                        fill="#FAD278"
+                      />
+                      <path
+                        d="M93 51.5L93 59.5L93 51.5"
+                        fill="#FAD278"
+                      />
+                      <path
+                        d="M93 14.5L93 22.5L93 14.5"
+                        fill="#FAD278"
+                      />
+                      <path
+                        d="M140.7143 88.5L140.7143 96.5L140.7143 88.5"
+                        fill="#F7B41E"
+                      />
+                      <path
+                        d="M138.3286 51.5L138.3286 59.5L138.3286 51.5"
+                        fill="#F7B41E"
+                      />
+                      <path
+                        d="M135.9429 14.5L135.9429 22.5L135.9429 14.5"
+                        fill="#F7B41E"
+                      />
+                      <path
+                        d="M181.2714 88.5L181.2714 96.5L181.2714 88.5"
+                        fill="#EC7100"
+                      />
+                      <path
+                        d="M176.5 51.5L176.5 59.5L176.5 51.5"
+                        fill="#EC7100"
+                      />
+                      <path
+                        d="M171.7286 14.5L171.7286 22.5L171.7286 14.5"
+                        fill="#EC7100"
+                      />
+                      <path
+                        d="M214.6714 88.5L214.6714 96.5L214.6714 88.5"
+                        fill="#ED1C24"
+                      />
+                      <path
+                        d="M207.5143 51.5L207.5143 59.5L207.5143 51.5"
+                        fill="#ED1C24"
+                      />
+                      <path
+                        d="M200.3571 14.5L200.3571 22.5L200.3571 14.5"
+                        fill="#ED1C24"
+                      />
+                      <path
+                        d="M0 -10l2 0l0 20l-2 0Z"
+                        fill="none"
+                        transform="translate(219.6714 92.5)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#333333"
+                        fill-opacity="0"
+                        style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(219.6714 92.5)"
+                      >
+                        62
+                      </text>
+                      <path
+                        d="M0 -10l2 0l0 20l-2 0Z"
+                        fill="none"
+                        transform="translate(212.5143 55.5)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#333333"
+                        fill-opacity="0"
+                        style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(212.5143 55.5)"
+                      >
+                        58
+                      </text>
+                      <path
+                        d="M0 -10l2 0l0 20l-2 0Z"
+                        fill="none"
+                        transform="translate(205.3571 18.5)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#333333"
+                        fill-opacity="0"
+                        style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(205.3571 18.5)"
+                      >
+                        54
+                      </text>
+                    </g>
+                  </svg>
+                </div>
+                <div
+                  class=""
+                />
+                <object
+                  class="size-sensor-object"
+                  data="about:blank"
+                  style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                  tabindex="-1"
+                  type="text/html"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 281px; height: 281px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
