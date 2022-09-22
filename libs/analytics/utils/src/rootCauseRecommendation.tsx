@@ -620,7 +620,7 @@ export const rootCauseRecommendationMap = {
       })
     }
   },
-  ttc: {
+  'ttc': {
     DEFAULT: {
       rootCauses: ttcRootCause,
       recommendations: ttcRecommendation
@@ -630,7 +630,7 @@ export const rootCauseRecommendationMap = {
       recommendations: ttcRecommendation
     }
   },
-  rss: {
+  'rss': {
     DEFAULT: {
       rootCauses: defineMessage({
         defaultMessage: `
@@ -794,10 +794,10 @@ export const rootCauseRecommendationMap = {
   'switch-memory-high': {
     DEFAULT: {
       rootCauses: defineMessage({
-        defaultMessage:  `<p>System has detected abnormally high memory utilization in the switch. At the current rate, the switch will reach threshold limit* soon, as indicated in the graph.\\n\\nSwitch might run out of memory if the memory usage rate continues. This is typically indicative of a memory leak in the switch.\\n\\n*Note: Threshold limit is auto-calculated by the system.</p>`
+        defaultMessage: '<p>System has detected abnormally high memory utilization in the switch. At the current rate, the switch will reach threshold limit* soon, as indicated in the graph.\\n\\nSwitch might run out of memory if the memory usage rate continues. This is typically indicative of a memory leak in the switch.\\n\\n*Note: Threshold limit is auto-calculated by the system.</p>'
       }),
       recommendations: defineMessage({
-        defaultMessage: `<p>P3 - Contact RUCKUS Support.\\nP2 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.\\nP1 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.</p>`
+        defaultMessage: '<p>P3 - Contact RUCKUS Support.\\nP2 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.\\nP1 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.</p>'
       })
     }
   },
