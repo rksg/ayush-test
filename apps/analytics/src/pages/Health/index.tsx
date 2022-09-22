@@ -1,21 +1,65 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-import { connect }  from 'echarts'
-import ReactECharts from 'echarts-for-react'
-import { useIntl }  from 'react-intl'
+import { Tabs }                                      from 'antd'
+import { connect }                                   from 'echarts'
+import ReactECharts                                  from 'echarts-for-react'
+import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
+import { categoryNames }                                     from '@acx-ui/analytics/utils'
 import { getSeriesData, TimeSeriesData, useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import { GridCol, GridRow }                                  from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
 
 import Header                       from '../../components/Header'
-import HealthTimeSeriesChart        from '../../components/HealthConnectedClientsOverTime'
 import { useHealthTimeseriesQuery } from '../../components/HealthConnectedClientsOverTime/services'
 
-import { HealthPageContext, HealthPageContextProvider, TimeWindow } from './HealthPageContext'
+import { HealthPageContextProvider } from './HealthPageContext'
+import * as UI                       from './styledComponents'
+
+const healthTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
+type HealthTab = 'overview' | 'connection' | 'performance' | 'infrastructure'
+
+const tabsMap : Record<HealthTab, MessageDescriptor> = {
+  overview: defineMessage({
+    defaultMessage: 'Overview'
+  }),
+  connection: defineMessage({
+    defaultMessage: 'Connection'
+  }),
+  performance: defineMessage({
+    defaultMessage: 'Performance'
+  }),
+  infrastructure: defineMessage({
+    defaultMessage: 'Infrastructure'
+  })
+}
+
+const HealthTabContent = (props: { tabSelection: HealthTab }) => {
+  return (
+    <GridRow>
+      <GridCol col={{ span: 16 }} >
+        <div>{props.tabSelection}</div>
+      </GridCol>
+      <GridCol col={{ span: 8 }} >
+        <div>Threshold Content</div>
+      </GridCol>
+    </GridRow>
+  )
+}
 
 const HealthChartGroup = 'healthGroup'
 
 export default function HealthPage () {
   const { $t } = useIntl()
+  const { activeTab = healthTabs[0].value } = useParams()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/analytics/health/tab/')
+  const onTabChange = (tab: string) =>
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+
   const analyticsFilter = useAnalyticsFilter()
   const clientsRef = useRef<ReactECharts>(null)
   const clientsRef1 = useRef<ReactECharts>(null)
@@ -29,7 +73,7 @@ export default function HealthPage () {
       name: $t({ defaultMessage: 'Connected Clients' })
     }
   ] as Array<{ key: string; name: string }>
-
+  
   const healthQueryResults = useHealthTimeseriesQuery(analyticsFilter.filters, {
     selectFromResult: ({
       data,
@@ -39,13 +83,13 @@ export default function HealthPage () {
       ...rest
     })
   })
-
+  
   const connectRefs = useCallback(() => {
     const chartRefs = [
       clientsRef,
       clientsRef1
     ]
-
+  
     const validRefs = chartRefs.filter(ref => ref && ref.current)
     validRefs.forEach(ref => {
       let instance = ref.current!.getEchartsInstance()
@@ -53,37 +97,42 @@ export default function HealthPage () {
     })
     connect(HealthChartGroup)
   }, [])
-
+  
   useEffect(() => {
     connectRefs()
   }, [connectRefs, healthQueryResults.data])
 
-  return <HealthPageContextProvider>
-    <Header title={$t({ defaultMessage: 'Health' })} />
-    <HealthPageContext.Consumer>
-      {
-        (context) => {
-          const setTimeWindowCallback = (range: TimeWindow) => {
-            context.setTimeWindow(range)
-            connectRefs()
-          }
-
-          return (<>
-            <HealthTimeSeriesChart
-              setTimeWindow={setTimeWindowCallback}
-              ref={clientsRef}
-              queryResults={healthQueryResults}
-              timeWindow={context.timeWindow}
-            />
-            <HealthTimeSeriesChart
-              setTimeWindow={setTimeWindowCallback}
-              ref={clientsRef1}
-              queryResults={healthQueryResults}
-              timeWindow={context.timeWindow}
-            />
-          </>)
-        }
-      }
-    </HealthPageContext.Consumer>
-  </HealthPageContextProvider>
+  return (
+    <>
+      <Header title={$t({ defaultMessage: 'Health' })} />
+      <GridRow>
+        <GridCol col={{ span: 24 }} style={{ height: '105px' }}>
+          <div>Summary Boxes</div>
+        </GridCol>
+        <HealthPageContextProvider>
+          <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
+            <div>Summary TimeSeries</div>
+          </GridCol>
+          <GridCol col={{ span: 16 }} >
+            <Tabs activeKey={activeTab} onChange={onTabChange}>
+              {healthTabs.map((tab) => (
+                <Tabs.TabPane
+                  tab={$t(tabsMap[tab.value as HealthTab])}
+                  key={tab.value}
+                />
+              ))}
+            </Tabs>
+          </GridCol>
+          <GridCol col={{ span: 8 }} >
+            <UI.ThresholdTitle>
+              {$t({ defaultMessage: 'Customized SLA Threshold' })}
+            </UI.ThresholdTitle>
+          </GridCol>
+          <GridCol col={{ span: 24 }}>
+            <HealthTabContent tabSelection={activeTab as HealthTab} />
+          </GridCol>
+        </HealthPageContextProvider>
+      </GridRow>
+    </>
+  )
 }
