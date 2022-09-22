@@ -35,7 +35,7 @@ function AllRoutes () {
           <Route index element={<VenuesTable />} />
           <Route path='add' element={<VenuesForm />} />
           <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
-          <Route path=':venueId/edit/:activeTab' element={<VenueEdit />} />
+          <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
         </Route>
       </Route>
       <Route path='v/:tenantId/*' element={<MspRoutes />} />
