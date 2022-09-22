@@ -27,7 +27,7 @@ export function HealthPageContextProvider (props: { children: ReactNode }) {
   const context = useMemo(() => ({
     ...analyticsFilter.filters,
     setTimeWindow,
-    timeWindow: timeWindow as unknown as TimeWindow
+    timeWindow
   }), [analyticsFilter.filters, setTimeWindow, timeWindow])
 
   return <HealthPageContext.Provider {...props} value={context} />

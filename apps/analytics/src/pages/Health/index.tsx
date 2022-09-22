@@ -1,18 +1,16 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 import { Tabs }                                      from 'antd'
-import { connect }                                   from 'echarts'
 import ReactECharts                                  from 'echarts-for-react'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
-import { categoryNames }                                     from '@acx-ui/analytics/utils'
-import { getSeriesData, TimeSeriesData, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }                                  from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
+import { categoryNames }                         from '@acx-ui/analytics/utils'
+import { GridCol, GridRow }                      from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import Header                       from '../../components/Header'
-import { useHealthTimeseriesQuery } from '../../components/HealthConnectedClientsOverTime/services'
+import Header from '../../components/Header'
 
+import HealthTimeSeriesChart         from './HealthConnectedClientsOverTime'
 import { HealthPageContextProvider } from './HealthPageContext'
 import * as UI                       from './styledComponents'
 
@@ -47,8 +45,6 @@ const HealthTabContent = (props: { tabSelection: HealthTab }) => {
   )
 }
 
-const HealthChartGroup = 'healthGroup'
-
 export default function HealthPage () {
   const { $t } = useIntl()
   const { activeTab = healthTabs[0].value } = useParams()
@@ -60,47 +56,7 @@ export default function HealthPage () {
       pathname: `${basePath.pathname}/${tab}`
     })
 
-  const analyticsFilter = useAnalyticsFilter()
-  const clientsRef = useRef<ReactECharts>(null)
-  const clientsRef1 = useRef<ReactECharts>(null)
-  const seriesMapping = [
-    {
-      key: 'newClientCount',
-      name: $t({ defaultMessage: 'New Clients' })
-    },
-    {
-      key: 'connectedClientCount',
-      name: $t({ defaultMessage: 'Connected Clients' })
-    }
-  ] as Array<{ key: string; name: string }>
-  
-  const healthQueryResults = useHealthTimeseriesQuery(analyticsFilter.filters, {
-    selectFromResult: ({
-      data,
-      ...rest
-    }) => ({
-      data: getSeriesData(data as TimeSeriesData | null, seriesMapping),
-      ...rest
-    })
-  })
-  
-  const connectRefs = useCallback(() => {
-    const chartRefs = [
-      clientsRef,
-      clientsRef1
-    ]
-  
-    const validRefs = chartRefs.filter(ref => ref && ref.current)
-    validRefs.forEach(ref => {
-      let instance = ref.current!.getEchartsInstance()
-      instance.group = HealthChartGroup
-    })
-    connect(HealthChartGroup)
-  }, [])
-  
-  useEffect(() => {
-    connectRefs()
-  }, [connectRefs, healthQueryResults.data])
+  const connectedClientsRef = useRef<ReactECharts>(null)
 
   return (
     <>
@@ -111,7 +67,7 @@ export default function HealthPage () {
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
-            <div>Summary TimeSeries</div>
+            <HealthTimeSeriesChart ref={connectedClientsRef} />
           </GridCol>
           <GridCol col={{ span: 16 }} >
             <Tabs activeKey={activeTab} onChange={onTabChange}>
