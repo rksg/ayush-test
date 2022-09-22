@@ -67,4 +67,4 @@ export interface IncidentAttributesProps
     visibleFields: string[]
   }
 
-export type IncidentFilter = (AnalyticsFilter) & { code? : IncidentCode[] }
+export type IncidentFilter = AnalyticsFilter & { code? : IncidentCode[] }
