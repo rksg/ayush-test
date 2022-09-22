@@ -2,14 +2,16 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, websocketServerUrl }                               from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venuesResponse,
   networksResponse,
-  successResponse
+  successResponse,
+  networkDeepResponse,
+  venueListResponse
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
 
@@ -45,6 +47,7 @@ async function fillInAfterSettings (checkSummary: Function, waitForIpValidation?
 
 describe('NetworkForm', () => {
   beforeEach(() => {
+    networkDeepResponse.name = 'PSK network test'
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -57,7 +60,14 @@ describe('NetworkForm', () => {
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json([]))),
       rest.post(CommonUrlsInfo.validateRadius.url,
-        (_, res, ctx) => res(ctx.json(successResponse)))
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(CommonUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+      rest.get(`http://localhost${websocketServerUrl}/`,
+        (_, res, ctx) => res(ctx.json({})))
+
     )
   })
 
