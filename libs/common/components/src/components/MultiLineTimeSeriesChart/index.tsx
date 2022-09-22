@@ -2,7 +2,6 @@ import { RefObject, useEffect, useImperativeHandle, useRef } from 'react'
 
 import ReactECharts from 'echarts-for-react'
 import { isEmpty }  from 'lodash'
-import moment       from 'moment-timezone'
 import styled       from 'styled-components/macro'
 
 import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
@@ -118,17 +117,12 @@ export function MultiLineTimeSeriesChart <
   onMarkedAreaClick,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData, MarkerData>) {
+  const brushEnabled = Boolean(props.brush)
+
   const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(props.chartRef, () => eChartsRef.current!)
   useBrush(eChartsRef, props.brush)
   useOnMarkedAreaClick(eChartsRef, onMarkedAreaClick)
-
-  const startEndTimes = data.map(datum => {
-    return {
-      start: datum.data[0][0],
-      end: datum.data[datum.data.length - 1][0]
-    }
-  })
 
   const option: EChartsOption = {
     color: props.lineColors || [
@@ -147,15 +141,6 @@ export function MultiLineTimeSeriesChart <
       ...tooltipOptions(),
       trigger: 'axis',
       formatter: timeSeriesTooltipFormatter(dataFormatter)
-    },
-    toolbox: { show: false },
-    brush: {
-      xAxisIndex: 'all',
-      brushStyle: {
-        borderWidth: 4,
-        color: 'rgba(0, 0, 0, 0.05)',
-        borderColor: '#123456' // special color code to identify path of brush
-      }
     },
     xAxis: {
       ...xAxisOptions(),
@@ -176,17 +161,6 @@ export function MultiLineTimeSeriesChart <
         }
       }
     },
-    dataZoom: [
-      {
-        id: 'zoom',
-        type: 'inside',
-        orient: 'horizontal',
-        minValueSpan: 30 * moment.duration(
-          moment(startEndTimes[0].end).diff(moment(startEndTimes[0].start))).asSeconds(),
-        moveOnMouseMove: false,
-        moveOnMouseWheel: false
-      }
-    ],
     series: data.map(datum => ({
       name: datum[legendProp] as unknown as string,
       data: datum.data,
@@ -202,9 +176,36 @@ export function MultiLineTimeSeriesChart <
           { xAxis: marker.endTime }
         ])
       } : undefined
-    }))
+    })),
+    ...(!brushEnabled ? {
+      toolbox: {
+        top: '15%',
+        feature: {
+          dataZoom: {
+            yAxisIndex: 'none',
+            brushStyle: { color: 'rgba(0, 0, 0, 0.05)' }
+          },
+          brush: { type: ['rect'], icon: { rect: 'path://' } }
+        }
+      },
+      dataZoom: [
+        {
+          type: 'inside',
+          zoomLock: true
+        }
+      ]
+    } : {
+      toolbox: { show: false },
+      brush: {
+        xAxisIndex: 'all',
+        brushStyle: {
+          borderWidth: 4,
+          color: 'rgba(0, 0, 0, 0.05)',
+          borderColor: '#123456' // special color code to identify path of brush
+        }
+      }
+    })
   }
-
   if (option && disableLegend === true) { delete(option.legend) }
 
   return (
