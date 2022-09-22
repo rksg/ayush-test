@@ -98,7 +98,6 @@ describe('Venues Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     fireEvent.click(within(row).getByRole('checkbox'))
@@ -109,7 +108,5 @@ describe('Venues Table', () => {
     await screen.findByText('Delete "My-Venue"?')
     const deleteVenueButton = await screen.findByText('Delete Venues')
     fireEvent.click(deleteVenueButton)
-
-    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   })
 })
