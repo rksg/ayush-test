@@ -12,7 +12,7 @@ import { Insights }           from '../Insights'
 
 import * as UI from './styledComponents'
 
-export const ApPoeLow = (incident: Incident) => {
+export const SzNetLatency = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
     'apImpactCount',
@@ -47,14 +47,11 @@ export const ApPoeLow = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Network Impact</div>
-        </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
-          <div>PoE Impact</div>
+          <div>Charts</div>
         </GridCol>
       </GridRow>
     </>
   )
 }
 
-export default ApPoeLow
+export default SzNetLatency
