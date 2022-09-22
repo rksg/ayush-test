@@ -4,6 +4,7 @@ import AutoSizer                       from 'react-virtualized-auto-sizer'
 
 import { IncidentFilter }                from '@acx-ui/analytics/utils'
 import { Card, Loader, StackedBarChart } from '@acx-ui/components'
+import { intlFormats }                   from '@acx-ui/utils'
 
 import {
   IncidentsBySeverityDataKey,
@@ -11,6 +12,8 @@ import {
   ImpactedCount
 } from './services'
 import * as UI from './styledComponents'
+
+const { countFormat } = intlFormats
 
 interface IncidentSeverityWidgetProps {
   severityKey: IncidentsBySeverityDataKey;
@@ -21,7 +24,7 @@ interface IncidentSeverityWidgetProps {
 const { Title, Paragraph, Text } = Typography
 
 export const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const { severityKey, incidentsCount, impactedClients } = props
   return <Col span={12} key={severityKey} push={1}>
     <Typography>
@@ -32,18 +35,18 @@ export const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
               <UI.SeveritySpan severity={severityKey} />
             </UI.SeverityContainer>
           </Col>
-          <Col>{intl.formatNumber(incidentsCount ?? 0)}</Col>
+          <Col>{$t(countFormat, { value: incidentsCount ?? 0 })}</Col>
         </Row>
       </Title>
       <Paragraph>
         <Text strong>
-          {intl.$t(defineMessage({ defaultMessage: 'Incident {severityKey}' }), { severityKey })}
+          {$t(defineMessage({ defaultMessage: 'Incident {severityKey}' }), { severityKey })}
         </Text>
       </Paragraph>
       <UI.ClientImpactParagraph>
-        {intl.$t(
+        {$t(
           defineMessage({ defaultMessage: '{impactedClients} clients impacted' }),
-          { impactedClients: impactedClients ?? 0 })}
+          { impactedClients: $t(countFormat, { value: impactedClients ?? 0 }) })}
       </UI.ClientImpactParagraph>
     </Typography>
   </Col>
@@ -66,9 +69,10 @@ function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
   ]
   severities && Object.entries(severities).forEach(([severity, data]) => {
     headers.push({ severityKey: severity, ...data })
-    barCharts[0].series.push({ name: severity, value: data.infrastructure })
-    barCharts[1].series.push({ name: severity, value: data.performance })
-    barCharts[2].series.push({ name: severity, value: data.connection })
+    const categories = [data.infrastructure, data.performance, data.connection]
+    categories.forEach((value, index) => {
+      barCharts[index].series.push({ name: severity, value })
+    })
   })
   return <Loader states={[response]}>
     <Card title={$t(defineMessage({ defaultMessage: 'Incidents' }))}>
