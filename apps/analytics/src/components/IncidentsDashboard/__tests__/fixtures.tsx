@@ -1,4 +1,4 @@
-import { IncidentsDashboardData } from '../services'
+import { DataResponse } from '../services'
 
 const impactedClientHelper = (val: number) => ({
   impactedClientCount: [val]
@@ -24,4 +24,4 @@ export const expectedIncidentDashboardData = {
   connectionP4: 18,
   performanceP4: 19,
   infrastructureP4: 20
-} as IncidentsDashboardData
+} as DataResponse

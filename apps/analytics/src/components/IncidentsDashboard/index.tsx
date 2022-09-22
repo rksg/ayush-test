@@ -2,18 +2,13 @@ import { Row, Col, Typography, Space } from 'antd'
 import { defineMessage, useIntl }      from 'react-intl'
 import AutoSizer                       from 'react-virtualized-auto-sizer'
 
-import { IncidentFilter } from '@acx-ui/analytics/utils'
-import {
-  Card,
-  Loader,
-  NoData,
-  StackedBarChart
-} from '@acx-ui/components'
+import { IncidentFilter }                from '@acx-ui/analytics/utils'
+import { Card, Loader, StackedBarChart } from '@acx-ui/components'
 
-import { 
-  IncidentsDashboardData,
+import {
   IncidentsBySeverityDataKey,
-  useIncidentsBySeverityDashboardQuery
+  useIncidentsBySeverityDashboardQuery,
+  ImpactedCount
 } from './services'
 import * as UI from './styledComponents'
 
@@ -28,7 +23,6 @@ const { Title, Paragraph, Text } = Typography
 export const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
   const intl = useIntl()
   const { severityKey, incidentsCount, impactedClients } = props
-  
   return <Col span={12} key={severityKey} push={1}>
     <Typography>
       <Title level={1}>
@@ -48,121 +42,55 @@ export const IncidentSeverityWidget = (props: IncidentSeverityWidgetProps) => {
       </Paragraph>
       <UI.ClientImpactParagraph>
         {intl.$t(
-          defineMessage({ defaultMessage: '{impactedClients} clients impacted' }), 
+          defineMessage({ defaultMessage: '{impactedClients} clients impacted' }),
           { impactedClients: impactedClients ?? 0 })}
       </UI.ClientImpactParagraph>
     </Typography>
   </Col>
 }
-
+type Header = {
+  severityKey: string
+  incidentsCount: number
+  impactedClients: ImpactedCount
+}
+type Series = Array<{ name: string, value: number }>
 function IncidentsDashboardWidget ({ filters }: { filters: IncidentFilter }) {
   const { $t } = useIntl()
-  const queryResult = useIncidentsBySeverityDashboardQuery(filters, {
-    selectFromResult: ({ data, ...rest }) => ({
-      data: data as IncidentsDashboardData,
-      ...rest
-    })
-  })
-
-  const {
-    P1Count, P1Impact,
-    P2Count, P2Impact,
-    P3Count, P3Impact,
-    P4Count, P4Impact
-  } = queryResult.data ?? {}
-
-  const topData = [
-    {
-      severityKey: 'P1',
-      incidentsCount: P1Count,
-      impactedClients: P1Impact
-    },
-    {
-      severityKey: 'P2',
-      incidentsCount: P2Count,
-      impactedClients: P2Impact
-    },
-    {
-      severityKey: 'P3',
-      incidentsCount: P3Count,
-      impactedClients: P3Impact
-    },
-    {
-      severityKey: 'P4',
-      incidentsCount: P4Count,
-      impactedClients: P4Impact
-    }
+  const response = useIncidentsBySeverityDashboardQuery(filters)
+  const { data: severities } = response
+  const headers: Header[] = []
+  const barCharts = [
+    { category: $t({ defaultMessage: 'Infrastructure' }), series: [] as Series },
+    { category: $t({ defaultMessage: 'Performance' }), series: [] as Series },
+    { category: $t({ defaultMessage: 'Connection' }), series: [] as Series }
   ]
-
-  const { 
-    connectionP1,
-    connectionP2,
-    connectionP3,
-    connectionP4,
-    performanceP1,
-    performanceP2,
-    performanceP3,
-    performanceP4,
-    infrastructureP1,
-    infrastructureP2,
-    infrastructureP3,
-    infrastructureP4
-  } = queryResult.data ?? {}
-
-  const barChartData = [
-    {
-      category: $t({ defaultMessage: 'Connection' }),
-      series: [
-        { name: 'P1', value: connectionP1 },
-        { name: 'P2', value: connectionP2 },
-        { name: 'P3', value: connectionP3 },
-        { name: 'P4', value: connectionP4 }
-      ]
-    },
-    {
-      category: $t({ defaultMessage: 'Performance' }),
-      series: [
-        { name: 'P1', value: performanceP1 },
-        { name: 'P2', value: performanceP2 },
-        { name: 'P3', value: performanceP3 },
-        { name: 'P4', value: performanceP4 }
-      ]
-    },
-    {
-      category: $t({ defaultMessage: 'Infrastructure' }),
-      series: [
-        { name: 'P1', value: infrastructureP1 },
-        { name: 'P2', value: infrastructureP2 },
-        { name: 'P3', value: infrastructureP3 },
-        { name: 'P4', value: infrastructureP4 }
-      ]
-    }
-  ].reverse()
-
-  return <Loader states={[queryResult]}>
-    <Card 
-      title={$t(defineMessage({ defaultMessage: 'Incidents' }))}
-    >
+  severities && Object.entries(severities).forEach(([severity, data]) => {
+    headers.push({ severityKey: severity, ...data })
+    barCharts[0].series.push({ name: severity, value: data.infrastructure })
+    barCharts[1].series.push({ name: severity, value: data.performance })
+    barCharts[2].series.push({ name: severity, value: data.connection })
+  })
+  return <Loader states={[response]}>
+    <Card title={$t(defineMessage({ defaultMessage: 'Incidents' }))}>
       <AutoSizer>
-        {
-          ({ width }) => (queryResult && queryResult.data)
-            ? <div style={{ width, height: 150 }}>
-              <Row gutter={[8, 8]} justify='space-evenly' align='middle'>
-                {topData.map((datum) => 
-                  <IncidentSeverityWidget 
-                    severityKey={datum.severityKey as IncidentsBySeverityDataKey}
-                    incidentsCount={datum.incidentsCount}
-                    impactedClients={datum.impactedClients.impactedClientCount[0]}
-                  />)}
-              </Row>
-              <Space />
-              <StackedBarChart 
-                data={barChartData}
-                showTooltip
-                style={{ width, height: 120 }}
-              />
-            </div>
-            : <div style={{ width, height: 150 }}><NoData/></div>
+        {({ width }: { width: number }) =>
+          <div style={{ width, height: 150 }}>
+            <Row gutter={[8, 8]} justify='space-evenly' align='middle'>
+              {headers.map((datum, index) =>
+                <IncidentSeverityWidget
+                  key={index}
+                  severityKey={datum.severityKey as IncidentsBySeverityDataKey}
+                  incidentsCount={datum.incidentsCount}
+                  impactedClients={datum.impactedClients.impactedClientCount[0]}
+                />)}
+            </Row>
+            <Space />
+            <StackedBarChart
+              data={barCharts}
+              showTooltip
+              style={{ width, height: 120 }}
+            />
+          </div>
         }
       </AutoSizer>
     </Card>

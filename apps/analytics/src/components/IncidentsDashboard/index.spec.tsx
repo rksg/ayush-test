@@ -27,9 +27,9 @@ const filters : IncidentFilter = {
 
 describe('IncidentDashboard helper widgets', () => {
 
-  it('IncidentSeverityWidget should match data', async () => {      
+  it('IncidentSeverityWidget should match data', async () => {
     render(<Provider>
-      <IncidentSeverityWidget 
+      <IncidentSeverityWidget
         severityKey='P1'
         impactedClients={10}
         incidentsCount={20}
@@ -44,17 +44,17 @@ describe('IncidentDashboard helper widgets', () => {
     expect(impactedClients).toBeTruthy()
   })
 
-  it('IncidentSeverityWidget should match 0 on undefined', async () => {  
+  it('IncidentSeverityWidget should match 0 on undefined', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
       data: { network: { hierarchyNode: expectedIncidentDashboardData } }
     })
-      
+
     render(<Provider>
-      <IncidentSeverityWidget 
+      <IncidentSeverityWidget
         severityKey='P2'
       />
     </Provider>)
-      
+
     const severityKey = await screen.findByText('Incident P2')
     expect(severityKey).toBeTruthy()
     const incidentsCount = await screen.findByText('0')
@@ -75,10 +75,14 @@ describe('IncidentDashboard', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
       data: { network: { hierarchyNode: expectedIncidentDashboardData } }
     })
-  
+
     render(<Provider><IncidentsDashboardWidget filters={filters} /></Provider>)
   }
 
+  it('should render no data', () => {
+    mockComponentHelper()
+    expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
+  })
   it('should render loader', () => {
     mockComponentHelper()
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
@@ -103,7 +107,7 @@ describe('IncidentDashboard', () => {
   })
 
   it('should match p3 incidents', async () => {
-    mockComponentHelper() 
+    mockComponentHelper()
     const p3Incidents = await screen.findByText('5')
     expect(p3Incidents.textContent).toMatch('5')
 
@@ -122,7 +126,7 @@ describe('IncidentDashboard', () => {
 
   it('should match connection total', async () => {
     mockComponentHelper()
-    const { 
+    const {
       connectionP1,
       connectionP2,
       connectionP3,
@@ -132,14 +136,14 @@ describe('IncidentDashboard', () => {
 
     const totalElem = await screen.findByText(total.toString())
     expect(totalElem.textContent).toMatch(total.toString())
-    
+
     const connectionElem = await screen.findByText('Connection')
     expect(connectionElem).toBeTruthy()
-  }) 
+  })
 
   it('should match performance total', async () => {
     mockComponentHelper()
-    const { 
+    const {
       performanceP1,
       performanceP2,
       performanceP3,
@@ -149,14 +153,14 @@ describe('IncidentDashboard', () => {
 
     const totalElem = await screen.findByText(total.toString())
     expect(totalElem.textContent).toMatch(total.toString())
-    
+
     const performanceElem = await screen.findByText('Performance')
     expect(performanceElem).toBeTruthy()
-  }) 
+  })
 
   it('should match infrastructure total', async () => {
     mockComponentHelper()
-    const { 
+    const {
       infrastructureP1,
       infrastructureP2,
       infrastructureP3,
@@ -166,7 +170,7 @@ describe('IncidentDashboard', () => {
 
     const totalElem = await screen.findByText(total.toString())
     expect(totalElem.textContent).toMatch(total.toString())
-    
+
     const connectionElem = await screen.findByText('Infrastructure')
     expect(connectionElem).toBeTruthy()
   })

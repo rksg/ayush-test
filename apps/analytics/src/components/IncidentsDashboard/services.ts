@@ -11,11 +11,11 @@ import {
 
 export type IncidentsBySeverityDataKey = keyof typeof incidentSeverities
 
-type ImpactedCount = {
+export type ImpactedCount = {
   impactedClientCount: (number | null)[]
 }
 
-export type IncidentsDashboardData = {
+export type DataResponse = {
   P1Count: number,
   P2Count: number,
   P3Count: number,
@@ -37,17 +37,23 @@ export type IncidentsDashboardData = {
   performanceP4: number,
   infrastructureP4: number,
 }
-
-interface HeaderResponse <IncidentsBySeverityData> {
+interface ApiResponse {
   network: {
-    hierarchyNode: IncidentsBySeverityData
+    hierarchyNode: DataResponse
   }
 }
+export type SeverityData = Record<string, {
+  incidentsCount: number,
+  impactedClients: ImpactedCount,
+  connection: number,
+  performance: number,
+  infrastructure: number,
+}>
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsBySeverityDashboard: build.query<
-      IncidentsDashboardData,
+      SeverityData,
       IncidentFilter
     >({
       query: (payload) => ({
@@ -89,8 +95,20 @@ export const api = dataApi.injectEndpoints({
           granularity: 'all'
         }
       }),
-      transformResponse: (response: HeaderResponse<IncidentsDashboardData>) =>
-        response.network.hierarchyNode
+      transformResponse: (response: ApiResponse) => {
+        const data = response.network.hierarchyNode
+        const severities: SeverityData = {}
+        for (const severity in incidentSeverities) {
+          severities[severity] = {
+            incidentsCount: data[`${severity}Count` as keyof DataResponse] as number,
+            impactedClients: data[`${severity}Impact` as keyof DataResponse] as ImpactedCount,
+            infrastructure: data[`infrastructure${severity}` as keyof DataResponse] as number,
+            performance: data[`performance${severity}` as keyof DataResponse] as number,
+            connection: data[`connection${severity}` as keyof DataResponse] as number
+          }
+        }
+        return severities
+      }
     })
   })
 })
