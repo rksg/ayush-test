@@ -1,6 +1,8 @@
 import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { RadioTab } from './tabs/RadioTab'
+
 const { TabPane } = Tabs
 
 export function WifiConfigTab () {
@@ -8,7 +10,7 @@ export function WifiConfigTab () {
   return (
     <Tabs defaultActiveKey='radio' type='card'>
       <TabPane tab={$t({ defaultMessage: 'Radio' })} key='radio'>
-        {$t({ defaultMessage: 'Radio' })}
+        <RadioTab />
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'Networking' })} key='networking'>
         {$t({ defaultMessage: 'Networking' })}
