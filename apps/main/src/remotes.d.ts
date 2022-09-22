@@ -24,8 +24,8 @@ declare module 'analytics/Widgets' {
 
   // refer to modulefederation.config.js for correct mapping
   function Widgets (props: {
-    name: string;
-    filters: AnalyticsFilter | DashboardFilter;
+    name: string
+    filters: AnalyticsFilter | DashboardFilter
   }): React.ReactElement
   export = Widgets
 }

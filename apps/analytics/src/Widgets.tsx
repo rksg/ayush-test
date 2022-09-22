@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { Card }            from '@acx-ui/components'
 import { Provider }        from '@acx-ui/store'
