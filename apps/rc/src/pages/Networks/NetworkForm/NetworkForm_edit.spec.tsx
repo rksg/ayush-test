@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonUrlsInfo, websocketServerUrl } from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
 import {
   mockServer,
   render, screen,
@@ -14,7 +14,10 @@ import {
 import {
   venuesResponse,
   networksResponse,
-  successResponse
+  successResponse,
+  networkDeepResponse,
+  venueListResponse,
+  policyListResponse
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -92,6 +95,7 @@ const networkResponse = {
 
 describe('NetworkForm', () => {
   beforeEach(() => {
+    networkDeepResponse.name = 'open network edit test'
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -101,9 +105,27 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(CommonUrlsInfo.updateNetworkDeep.url,
+      rest.put(CommonUrlsInfo.updateNetworkDeep.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(`http://localhost${websocketServerUrl}/`,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.post(CommonUrlsInfo.getL2AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(CommonUrlsInfo.getL3AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(CommonUrlsInfo.getDevicePolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(CommonUrlsInfo.getApplicationPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.get(CommonUrlsInfo.getWifiCallingProfileList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.get(CommonUrlsInfo.getVlanPoolList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.get(CommonUrlsInfo.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json([])))
     )
   })

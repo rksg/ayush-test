@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonUrlsInfo, websocketServerUrl } from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -16,13 +16,16 @@ import {
   venuesResponse,
   networksResponse,
   successResponse,
-  cloudpathResponse
+  cloudpathResponse,
+  networkDeepResponse,
+  venueListResponse
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
 describe('NetworkForm', () => {
 
   beforeEach(() => {
+    networkDeepResponse.name = 'open network test'
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -33,7 +36,13 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse)))
+        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(CommonUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+      rest.get(`http://localhost${websocketServerUrl}/`,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 
