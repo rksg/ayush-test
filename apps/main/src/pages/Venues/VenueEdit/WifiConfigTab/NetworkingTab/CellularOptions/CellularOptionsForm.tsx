@@ -8,7 +8,8 @@ import {
   Space,
   Divider,
   Checkbox,
-  Form
+  Form,
+  Input
 } from 'antd'
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
@@ -210,6 +211,8 @@ export function CellularOptionsForm () {
     }
   }
 
+
+
   return (
     <>
       <Subtitle level={3}>{$t({ defaultMessage: 'Cellular Options' })}</Subtitle>
@@ -269,6 +272,27 @@ export function CellularOptionsForm () {
               />
             </div>
           </Divider>
+
+          <Form.Item
+            name={'apn'}
+            label={$t({ defaultMessage: 'APN' })}
+            initialValue={1}
+            children={<Input style={{ width: '150px' }}></Input>}
+          />
+
+          <Form.Item
+            name={'3/4g'}
+            label={$t({ defaultMessage: '3G/4G (LTE) Selection' })}
+            initialValue={1}
+            children={<Input style={{ width: '150px' }}></Input>}
+          />
+
+          <Form.Item
+            name={'dataRoming'}
+            label={$t({ defaultMessage: 'Data Roaming' })}
+            initialValue={1}
+            children={<Input style={{ width: '150px' }}></Input>}
+          />
         </StepsForm.StepForm>
       </StepsForm>
 
