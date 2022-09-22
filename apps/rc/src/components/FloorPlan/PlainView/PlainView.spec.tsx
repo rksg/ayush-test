@@ -1,14 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { act } from 'react-dom/test-utils'
-
-import { AppIcon }                   from '@acx-ui/icons'
-import { FloorPlanDto }              from '@acx-ui/rc/utils'
-import { Provider }                  from '@acx-ui/store'
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { FloorPlanDto }                       from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
 
 import PlainView, { getImageFitPercentage } from './PlainView'
-import * as UI                              from './styledComponents'
 import Thumbnail                            from './Thumbnail'
 
 const list: FloorPlanDto[] = [
@@ -58,87 +54,58 @@ describe('Floor Plan Plain View', () => {
     expect(onClick).toBeCalledTimes(1)
     expect(onClick).toHaveBeenCalledWith(list[1])
   })
-  it('test zoom in function', async () => {
-    const onClick = jest.fn()
+  it('test zoom-in button', async () => {
     const { asFragment } = await render(<Provider><PlainView floorPlans={list}
       toggleGalleryView={() => {}}
       defaultFloorPlan={list[0]}/></Provider>)
     const component = await screen.findByTestId('image-zoom-in')
+    const floorPlanContainer = await screen.findByTestId('image-container')
+    const actualWidth = window.getComputedStyle(floorPlanContainer).width
+    await waitFor(() => expect(actualWidth).toBe('calc(100%)'))
     fireEvent.click(component)
-    expect(onClick).toBeCalledTimes(0)
-    expect(asFragment).toMatchSnapshot()
+    const zoomedWidth = window.getComputedStyle(floorPlanContainer).width
+    await waitFor(() => expect(zoomedWidth).toBe('calc(125%)'))
+    expect(asFragment()).toMatchSnapshot()
   })
 
-  it('test zoom out function', async () => {
-    const onClick = jest.fn()
+  it('test zoom-out button', async () => {
     const { asFragment } = await render(<Provider><PlainView floorPlans={list}
       toggleGalleryView={() => {}}
       defaultFloorPlan={list[0]}/></Provider>)
     const component = await screen.findByTestId('image-zoom-out')
+    const floorPlanContainer = await screen.findByTestId('image-container')
+    const actualWidth = window.getComputedStyle(floorPlanContainer).width
+    await waitFor(() => expect(actualWidth).toBe('calc(100%)'))
     fireEvent.click(component)
-    expect(onClick).toBeCalledTimes(0)
-    expect(asFragment).toMatchSnapshot()
+    const zoomedWidth = window.getComputedStyle(floorPlanContainer).width
+    await waitFor(() => expect(zoomedWidth).toBe('calc(75%)'))
+    expect(asFragment()).toMatchSnapshot()
   })
 
-  it('test zoom fit function', async () => {
-    const onClick = jest.fn()
-    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}/></Provider>)
-    const component = await screen.findByTestId('image-zoom-fit')
-    fireEvent.click(component)
-    expect(onClick).toBeCalledTimes(0)
-    expect(asFragment).toMatchSnapshot()
-  })
-
-  it('test zoom original function', async () => {
-    const onClick = jest.fn()
+  it('test zoom original button', async () => {
     const { asFragment } = await render(<Provider><PlainView floorPlans={list}
       toggleGalleryView={() => {}}
       defaultFloorPlan={list[0]}/></Provider>)
     const component = await screen.findByTestId('image-zoom-original')
+    const floorPlanContainer = await screen.findByTestId('image-container')
+    window.getComputedStyle(floorPlanContainer).width = 'calc(75%)'
     fireEvent.click(component)
-    expect(onClick).toBeCalledTimes(0)
-    expect(asFragment).toMatchSnapshot()
+    const zoomedWidth = window.getComputedStyle(floorPlanContainer).width
+    await waitFor(() => expect(zoomedWidth).toBe('calc(100%)'))
+    expect(asFragment()).toMatchSnapshot()
   })
 
-  it('Check Gallary view Icon', async () => {
-    const onClick = jest.fn()
+  it('test zoom fit button', async () => {
     const { asFragment } = await render(<Provider><PlainView floorPlans={list}
       toggleGalleryView={() => {}}
       defaultFloorPlan={list[0]}/></Provider>)
-    const component = await screen.findByTestId('galleryIcon')
-    expect(component).toBeVisible()
+    const component = await screen.findByTestId('image-zoom-fit')
+    const floorPlanContainer = await screen.findByTestId('image-container')
+    window.getComputedStyle(floorPlanContainer).width = 'calc(120%)'
     fireEvent.click(component)
-    expect(onClick).toBeCalledTimes(0)
-    expect(asFragment).toMatchSnapshot()
-  })
-
-  it('Check onImageLoadFunction', async () => {
-    const onImageLoadFunction = jest.fn()
-    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}/></Provider>)
-    const component = await screen.findByTestId('floorPlanImage')
-    expect(component).toBeVisible()
-    act(() => {
-      component.dispatchEvent(new UIEvent('load'))
-    })
-    expect(onImageLoadFunction).toHaveBeenCalledTimes(0)
-    expect(asFragment).toMatchSnapshot()
-  })
-
-  it('On gallery icon click', async () => {
-    const onGalleryIconClick = jest.fn()
-    render(<UI.GallaryIcon
-      data-testid='galleryIcon'
-      onClick={() => onGalleryIconClick()}
-      type='default'
-      icon={<AppIcon />}
-    />)
-    expect(onGalleryIconClick).toBeCalledTimes(0)
-    act(() => screen.getByTestId('galleryIcon').click())
-    expect(onGalleryIconClick).toBeCalledTimes(1)
+    const zoomedWidth = window.getComputedStyle(floorPlanContainer).width
+    await waitFor(() => expect(zoomedWidth).toBe('calc(100%)'))
+    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should run getImageFitPercentage function', async () => {

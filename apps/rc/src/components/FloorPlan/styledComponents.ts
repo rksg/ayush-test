@@ -1,7 +1,8 @@
-import { Space, Button as AntButton } from 'antd'
-import styled                         from 'styled-components'
+import { Space } from 'antd'
+import styled    from 'styled-components'
 
-import { ArrowsOut } from '@acx-ui/icons'
+import { Button as acxButton } from '@acx-ui/components'
+import { ArrowsOut }           from '@acx-ui/icons'
 
 export const StyledSpace = styled(Space)`
   position: absolute;
@@ -10,7 +11,7 @@ export const StyledSpace = styled(Space)`
 `
 export const ArrowOutIcon = styled(ArrowsOut)``
 
-export const Button = styled(AntButton)`
+export const Button = styled(acxButton)`
   border: none;
   box-shadow: none;
   background: var(--acx-primary-white);

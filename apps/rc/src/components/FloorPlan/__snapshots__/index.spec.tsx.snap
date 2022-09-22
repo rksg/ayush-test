@@ -68,6 +68,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
   >
     <div
       class="styledComponents__ImageContainer-rlzd0s-7 jWJHGm"
+      data-testid="image-container"
     >
       <img
         alt="TEST_2"
@@ -252,7 +253,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                 class="ant-image"
               >
                 <img
-                  alt="alt-TEST_2"
+                  alt="Thumbnail for TEST_2"
                   class="ant-image-img"
                   src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
                   style="height: 53px; width: 78px;"
@@ -281,7 +282,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                 class="ant-image"
               >
                 <img
-                  alt="alt-dscx"
+                  alt="Thumbnail for dscx"
                   class="ant-image-img"
                   src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
                   style="height: 53px; width: 78px;"
@@ -372,6 +373,7 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
     >
       <div
         class="styledComponents__ImageContainer-rlzd0s-7 jWJHGm"
+        data-testid="image-container"
       >
         <img
           alt="TEST_2"
@@ -556,7 +558,7 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
                   class="ant-image"
                 >
                   <img
-                    alt="alt-TEST_2"
+                    alt="Thumbnail for TEST_2"
                     class="ant-image-img"
                     src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
                     style="height: 53px; width: 78px;"
@@ -585,7 +587,7 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
                   class="ant-image"
                 >
                   <img
-                    alt="alt-dscx"
+                    alt="Thumbnail for dscx"
                     class="ant-image-img"
                     src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
                     style="height: 53px; width: 78px;"
@@ -635,7 +637,7 @@ exports[`Floor Plans Floor Plans should render correctly 2`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-1v7l7qr-2 bnlKLs"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-1v7l7qr-2 bnlKLs"
           data-testid="expandIcon"
           title="Expand"
           type="button"

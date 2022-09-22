@@ -1,3 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Floor Plan Thumbnail Image should render correctly 1`] = `[Function]`;
+exports[`Floor Plan Thumbnail Image should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Thumbnail-rlzd0s-5 ceXyVJ"
+  >
+    <div
+      active="0"
+      class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 cBgsRo"
+      data-testid="thumbnailBg"
+    >
+      <div
+        class="ant-image"
+      >
+        <img
+          alt="Thumbnail for TEST_2"
+          class="ant-image-img"
+          src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+          style="height: 53px; width: 78px;"
+        />
+      </div>
+    </div>
+    <div
+      class="styledComponents__ImageDesc-rlzd0s-4 kwOGUY"
+    >
+      TEST_2
+    </div>
+  </div>
+</DocumentFragment>
+`;

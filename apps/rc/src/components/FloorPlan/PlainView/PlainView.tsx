@@ -161,7 +161,10 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
       </Row>
       <Divider style={{ margin: '0' }} />
       <UI.ImageContainerWrapper>
-        <UI.ImageContainer imageMode={imageMode} ref={imageContainerRef} currentZoom={currentZoom}>
+        <UI.ImageContainer imageMode={imageMode}
+          ref={imageContainerRef}
+          currentZoom={currentZoom}
+          data-testid='image-container'>
           <img
             data-testid='floorPlanImage'
             onLoad={() => onImageLoad()}

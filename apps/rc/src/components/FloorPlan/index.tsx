@@ -54,6 +54,7 @@ export default function FloorPlan () {
               {$t({ defaultMessage: 'Unplaced Devices (0)' })}
             </Button>
             <UI.Button
+              type='default'
               data-testid='expandIcon'
               key={'expand-btn'}
               title={$t({ defaultMessage: 'Expand' })}

@@ -1,5 +1,5 @@
-import { FloorPlanDto }   from '@acx-ui/rc/utils'
-import { render, screen } from '@acx-ui/test-utils'
+import { FloorPlanDto }              from '@acx-ui/rc/utils'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
 import Thumbnail from './Thumbnail'
@@ -21,15 +21,19 @@ const floorPlan: FloorPlanDto = {
 describe('Floor Plan Thumbnail Image', () => {
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<Thumbnail
+    const onClick = jest.fn()
+    const { asFragment } = await render(<Thumbnail
       floorPlan={floorPlan}
       active={0}
-      onFloorPlanSelection={jest.fn()}/>)
+      onFloorPlanSelection={onClick}/>)
     await screen.findByText(floorPlan?.name)
     expect(screen.getByText(floorPlan?.name).textContent).toBe(floorPlan?.name)
     expect(screen.getByRole('img')).toHaveAttribute('src', floorPlan?.imageUrl)
     expect(screen.getByRole('img')).toBeVisible()
-    expect(asFragment).toMatchSnapshot()
+    const component = screen.getByTestId('thumbnailBg')
+    fireEvent.click(component)
+    expect(onClick).toBeCalled()
+    expect(asFragment()).toMatchSnapshot()
   })
 
 })

@@ -1,16 +1,14 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, FloorPlanDto }                               from '@acx-ui/rc/utils'
-import { Provider }                                                   from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, act } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, FloorPlanDto }                                     from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
 
 import GalleryView from './GalleryView/GalleryView'
 import PlainView   from './PlainView/PlainView'
-import * as UI     from './styledComponents'
 
 import FloorPlan from '.'
-
 
 const list: FloorPlanDto[] = [
   {
@@ -60,15 +58,15 @@ describe('Floor Plans', () => {
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-    const onClick = jest.fn()
-
     const {
       asFragment: asChildrenFragment
     } = render(<PlainView floorPlans={list}
-      toggleGalleryView={() => onClick}
+      toggleGalleryView={jest.fn()}
       defaultFloorPlan={list[0]}/>)
+    const component = screen.getAllByTestId('floorPlanImage')
 
-    expect(onClick).toBeCalledTimes(0)
+    expect(component.length).toEqual(list.length)
+
     expect(asChildrenFragment()).toMatchSnapshot()
 
     expect(asFragment()).toMatchSnapshot()
@@ -79,25 +77,15 @@ describe('Floor Plans', () => {
     const {
       asFragment
     } = render(<GalleryView floorPlans={list}
-      onFloorPlanClick={() => setSelectedFloorPlanState}/>)
+      onFloorPlanClick={setSelectedFloorPlanState}/>)
 
-    expect(setSelectedFloorPlanState).toBeCalledTimes(0)
-
+    const images = screen.getAllByTestId('fpImage')
+    images.forEach((image) => {
+      fireEvent.click(image)
+    })
+    expect(setSelectedFloorPlanState).toBeCalledTimes(images.length)
+    
     expect(asFragment).toMatchSnapshot()
-  })
-
-  it('Floor plan should render expand icon', async () => {
-    const onExpandClick = jest.fn()
-    render(<UI.Button
-      data-testid='expandIcon'
-      key={'expand-btn'}
-      title='Expand'
-      icon={<UI.ArrowOutIcon />}
-      onClick={onExpandClick}
-    />)
-    expect(onExpandClick).toBeCalledTimes(0)
-    act(() => screen.getByTitle('Expand').click())
-    expect(onExpandClick).toBeCalledTimes(1)
   })
 
 })

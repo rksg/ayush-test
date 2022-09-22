@@ -1,4 +1,5 @@
-import { Image } from 'antd'
+import { Image }                                     from 'antd'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { FloorPlanDto } from '@acx-ui/rc/utils'
 
@@ -9,9 +10,14 @@ export default function Thumbnail (props: {
     active: number,
     onFloorPlanSelection: CallableFunction }) {
   const { floorPlan, active, onFloorPlanSelection } = props
+  const { $t } = useIntl()
   function selectFloorPlan () {
     onFloorPlanSelection(floorPlan)
   }
+
+  const altMessage: MessageDescriptor = defineMessage({
+    defaultMessage: 'Thumbnail for {floorPlanName}'
+  })
 
   return <UI.Thumbnail>
     <UI.StyledCardGrid
@@ -23,7 +29,8 @@ export default function Thumbnail (props: {
         style={{ width: '78px', height: '53px' }}
         preview={false}
         src={floorPlan.imageUrl}
-        alt={`alt-${floorPlan?.name}`}/>
+        alt={$t(altMessage,
+          { floorPlanName: floorPlan?.name })}/>
     </UI.StyledCardGrid>
     <UI.ImageDesc key={floorPlan.name} active={active}>
       {floorPlan.name}

@@ -1,18 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { useEffect, useState } from 'react'
-
 import { FloorPlanDto }   from '@acx-ui/rc/utils'
 import { render, screen } from '@acx-ui/test-utils'
 
 import GalleryView from './GalleryView'
 
-export enum ImageMode {
-  FIT = 'fit',
-  ZOOM_IN = '+',
-  ZOOM_OUT = '-',
-  ORIGINAL = 'original'
-}
 
 const list: FloorPlanDto[] = [
   {
@@ -50,23 +42,6 @@ describe('Floor Plan Gallery View', () => {
     const component = await screen.findAllByTestId('fpImage')
     expect(component.length).toEqual(list.length)
     expect(asFragment()).toMatchSnapshot()
-  })
-
-  it('Test useState for span', async () => {
-    const Component = () => {
-      const [span, setSpan] = useState(12)
-      useEffect(() => {
-        (list?.length > 4) ? setSpan(8) : setSpan(12)
-      }, [])
-    
-      return <>
-        <GalleryView floorPlans={list} onFloorPlanClick={jest.fn()}/>
-        <span>state: {String(span)}</span>
-      </>
-    }
-    render(<Component />)
-
-    expect(await screen.findByText('state: 12')).toBeVisible()
   })
 
 })
