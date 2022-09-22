@@ -32,6 +32,30 @@ const ccd80211CommonRecommendations = defineMessage({
   </ol>`
 })
 
+const ttcRootCause = defineMessage({
+  defaultMessage: `
+    <p>Users are experiencing a higher time to connect compared to the configured SLA goal. User's Wi-Fi connection process goes through several stages. Delays in any of the stages will result in a higher time to connect for the user.</p>
+    <ol>
+      <li>802.11 authentication, association.</li>
+      <li>802.11 re-association in case of roaming</li>
+      <li>L2/L3 authentication - Typical with 802.1x WLAN when RADIUS server is configured</li>
+      <li>DHCP</li>
+    </ol>
+  `
+})
+
+const ttcRecommendation = defineMessage({
+  defaultMessage: `
+    <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
+    <ol>
+      <li>This stage typically does not contribute to delays. Delays in this stage might indicates RF issues. Try changing channel or band.</li>
+      <li>Delays in this stage might indicate roaming issues. User device may be trying to connect to far off APs. Try changing channel or band.</li>
+      <li>(Typical) Delays in this stage might indicate high latency to the RADIUS server or an overloaded RADIUS server. Inspect RADIUS server configuration, isolate the component with high network latency or try dedicating CPU, memory, and disk to the RADIUS server if it is hosted on a shared VM.</li>
+      <li>(Typical) If there is high latency in receiving the DHCP response or if the DHCP response is not received it can add significant delays to the connection process. Common causes are overloaded DHCP server - DHCP server IP pool exhaustion or DHCP server not able to keep up with the rate of incoming DHCP requests. Inspect DHCP server configuration and assign dedicated CPU, memory, disk space to the DHCP server.</li>
+    </ol>
+  `
+})
+
 export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'ttc': 'ttc',
   'radius-failure': 'radius',
@@ -593,6 +617,247 @@ export const rootCauseRecommendationMap = {
           <li>Do the RADIUS logs indicate unusual failures messages or reasons?</li>
           <li>Is the wireless link showing symptoms of congestion (high airtime utilization or interference)?</li>
         </ol>`
+      })
+    }
+  },
+  ttc: {
+    DEFAULT: {
+      rootCauses: ttcRootCause,
+      recommendations: ttcRecommendation
+    },
+    VARIOUS_REASONS: {
+      rootCauses: ttcRootCause,
+      recommendations: ttcRecommendation
+    }
+  },
+  rss: {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>Client uplink RSSI is unusually low, which can have several root causes. Consider the following common behavior and design issues:</p>
+          <ol>
+            <li>General under-coverage (insufficient APs), localized coverage holes, or sub-optimal AP placement.</li>
+            <li>Conservative roaming behavior, also known as sticky clients (clients will not roam until their RSSI is very low).</li>
+            <li>If this problem is only affecting certain client types or OS versions, client firmware or configuration settings may be leading to aggressive power save measures that decrease transmit power.</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>Given the broad set of potential reasons for low RSSI, the recommendation will be based on the actual root cause, including some of the following possibilities:</p>
+          <ol>
+            <li>In cases of general or localized under-coverage (all clients have low RSSI), add APs as needed.</li>
+            <li>In cases of sub-optimal AP placement (sufficient APs, but localized coverage issues), consider re-locating APs based on RF design best practices or adding APs to supplement.</li>
+            <li>In cases of sticky clients, consider utilizing features like SmartRoam to assist clients with proactive roaming guidance (first, double-check to see if clients support 802.11v, or if the sticky client issue is affecting application performance).</li>
+            <li>In cases where low tx power is affecting only a subset of clients, check for unique configuration settings regarding power save, or potentially firmware upgrades that resolve client-side tx issues.</li>
+          </ol>
+        `
+      })
+    }
+  },
+  'time-future': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: '<p>Incorrect data timestamps are typically caused by NTP issues either on the controller or the underlying infrastructure.</p>'
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>To resolve data timestamp issues, check the controller time for accuracy:</p>
+          <ol>
+            <li>Ensure that the NTP server is online and reachable.</li>
+            <li>Execute a manual NTP sync to update the time.</li>
+            <li>Check the underlying infrastructure (in a VM environment) to ensure the hypervisor is providing the correct time.</li>
+          </ol>
+        `
+      })
+    }
+  },
+  'time-past': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: '<p>Incorrect data timestamps are typically caused by NTP issues either on the controller or the underlying infrastructure.</p>'
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>To resolve data timestamp issues, check the controller time for accuracy:</p>
+          <ol>
+            <li>Ensure that the NTP server is online and reachable.</li>
+            <li>Execute a manual NTP sync to update the time.</li>
+            <li>Check the underlying infrastructure (in a VM environment) to ensure the hypervisor is providing the correct time.</li>
+          </ol>
+        `
+      })
+    }
+  },
+  'sz-net-latency': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: '<p>Might be caused by network stability issues.</p>'
+      }),
+      recommendations: defineMessage({
+        defaultMessage: '<p>Please check the network routing, NIC to the switch, cable/medium between SZ nodes, upstream device interface hardware settings (duplex, speed, etc.) or interface errors, saturation status and upstream device port status as well.</p>'
+      })
+    }
+  },
+  'sz-cpu-load': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>High CPU usage can occur due to many reasons. CPU spikes can also occur for short duration under normal operation. This incident is raised when sustained high CPU usage is detected. Smartzone CPU is used by multiple processes, services and applications. There are approximately 5 groups of applications.</p>
+          <ol>
+            <li>Messaging group: This consists of applications that process, store, distribute and export stats.</li>
+            <li>Web group: This consists of the web server and other applications that process internal and external APIs.</li>
+            <li>Event group: This mainly consists of services that handle events and alarms.</li>
+            <li>WISPRr group: This consists of services that process user login/logout, session management etc.</li>
+            <li>Device group: This mainly consists of AP and switch connection status management.</li>
+          </ol>
+          <p>Sometimes memory intensive processes like downloading files or uploading firmwares might cause high CPU usage</p>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>For each group of reasons, corresponding recommendations are below:</p>
+          <ol>
+            <li>Turn off unused features - AVC, Wi-Fi Calling, Mesh, URL Filtering, Rogue client etc.</li>
+            <li>Check the rate and volume of data requested through public API calls.</li>
+            <li>Consider removing unnecessary events or reducing the duration of event storage.</li>
+            <li>Check the rate and volume of user login requests.</li>
+            <li>Address any alarms related to AP or switch connection status.</li>
+          </ol>
+          <p>Generally memory and I/O intensive process are transient. If a sustained high memory usage is observed, please work with Ruckus customer team.</p>
+        `
+      })
+    }
+  },
+  'ap-reboot': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>System has detected an abnormally high number of AP reboots. This can occur due to the following reasons:</p>
+          <ol>
+            <li>Insufficient power from the Power over Ethernet (PoE) switch or PoE injector device aka. Power Sourcing Equipment (PSE).</li>
+            <li>Configuration download failures.</li>
+            <li>Firmware update failures.</li>
+            <li>System initiated reboots.</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
+          <ol>
+            <li>Ensure that PSE - PoE switch or PoE injector capacity and cumulative power requirements of all APs for full operation are appropriately matched.</li>
+            <li>(Typical) Check the connectivity to the AP gateway and latency to the controller. In rare cases it might indicate configuration corruption.</li>
+            <li>(Typical) Check the connectivity to the AP gateway and latency to the controller. Download time out is the main cause.</li>
+            <li>Controller can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing controller to reboot the AP. In these cases, an alarm is raised. Use controller alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li>
+          </ol>
+        `
+      })
+    }
+  },
+  'ap-sz-conn-failure': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>System has detected high number of AP-controller connection failures. This can occur due to following reasons:</p>
+          <ol>
+            <li>Intermittent or permanent loss of connectivity between AP and controller. Losing consecutive heartbeat/keepalive messages from the AP will result in AP-controller connection failures.</li>
+            <li>Improperly configured Firewall or NAT device or a network switch can cause the AP-controller communication failure.</li>
+            <li>Lack of reachability from AP to controller over a WAN connection or cloud would cause APs to disconnect from controller.</li>
+            <li>In rare cases, AP certificate is invalid which forces controller to deny the incoming connection from the AP.</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
+          <ol>
+            <li>Test network connection between AP and controller.</li>
+            <li>Ensure that there is clear communication on all required ports.</li>
+            <li>Test WAN connection health to ensure there is a route from AP to the controller and there is no or acceptable packet loss.</li>
+            <li>Ensure that AP certificate is valid. Work with Ruckus customer support to identify and resolve this condition.</li>
+          </ol>
+        `
+      })
+    }
+  },
+  'vlan-mismatch': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: '<p>System has detected VLAN mismatches in your network. This is usually caused by misses during the VLAN configuration process.</p>'
+      }),
+      recommendations: defineMessage({
+        defaultMessage: '<p>Check and configure missing VLAN, or ensure type (untagged/tagged) match on both ends of the connection.</p>'
+      })
+    }
+  },
+  'switch-memory-high': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage:  `<p>System has detected abnormally high memory utilization in the switch. At the current rate, the switch will reach threshold limit* soon, as indicated in the graph.\\n\\nSwitch might run out of memory if the memory usage rate continues. This is typically indicative of a memory leak in the switch.\\n\\n*Note: Threshold limit is auto-calculated by the system.</p>`
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `<p>P3 - Contact RUCKUS Support.\\nP2 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.\\nP1 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.</p>`
+      })
+    }
+  },
+  'poe-pd': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: '<p>PoE power has been denied due to power exhaustion or because another high priority device is plugged in.</p>'
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>Increase power capacity by adding a second power supply or add additional switches if the switch doesn't have pluggable power supply. If the switch is part of a stack, connect the device to a different switch in the stack based on proximity.</p>
+          <p>If there is no more room for adding power supplies either due to the switch type or all the power supply slots are used, increase power capacity by adding additional switches because there is no room to add more power supplies.</p>
+          <p>If the switch has room for more power supplies, increase power capacity by adding a second power supply.</p>
+        `
+      })
+    }
+  },
+  'ap-poe-low': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>System has detected the AP(s) are underperforming w.r.t WiFi Radio spatial streams due to insufficient power available on PoE port. This can occur due to following reasons:</p>
+          <ol>
+            <li>Insufficient power from the Power over Ethernet (PoE) switch or PoE injector device aka. Power Sourcing Equipment (PSE).</li>
+            <li>Faulty cables, Wrong cable types and very long cables can lead to power deterioration supplied to AP.</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
+          <ol>
+            <li>Ensure that PSE (PoE switch or PoE injector) capacity is appropriately matching with deployed AP models power requirement.</li>
+            <li>Check the cable length, cable type for good PoE use.</li>
+          </ol>
+        `
+      })
+    }
+  },
+  'ap-wanthroughput-low': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>System has detected the AP(s) are underperforming due to low WAN bandwidth availability. This can occur due to following reasons:</p>
+          <ol>
+            <li>Upstream peer device configuration is wrong and not matching as per AP Ethernet WAN port capacity.</li>
+            <li>Upstream peer device cannnot support multi gig throughput needed by APs.</li>
+            <li>Faulty cables and incorrect cable types can lead to Ethernet link not negotiated properly.</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
+          <ol>
+            <li>Check the peer device configuration. It should match with AP WAN Port capacity.</li>
+            <li>Check the peer device capacity for supporting multi gig throughput.</li>
+            <li>Check the cable for good Ethernet link negotiation.</li>
+          </ol>
+        `
       })
     }
   }
