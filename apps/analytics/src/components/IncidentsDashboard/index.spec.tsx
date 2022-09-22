@@ -80,6 +80,9 @@ describe('IncidentDashboard', () => {
     </Provider>)
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
     await screen.findByText('2 clients impacted')
-    expect(asFragment()).toMatchSnapshot()
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
+    expect(fragment).toMatchSnapshot()
   })
 })

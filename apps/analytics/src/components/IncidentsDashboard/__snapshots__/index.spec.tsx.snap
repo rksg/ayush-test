@@ -247,7 +247,6 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                 </div>
               </div>
               <div
-                _echarts_instance_="ec_1663832580972"
                 class="echarts-for-react "
                 size-sensor-id="1"
                 style="height: 120px; width: 280px; position: relative;"
