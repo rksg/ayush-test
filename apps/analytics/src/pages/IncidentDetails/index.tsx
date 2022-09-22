@@ -12,7 +12,7 @@ import Dhcp               from './Details/Dhcp'
 import Eap                from './Details/Eap'
 import PoePd              from './Details/PoePd'
 import Radius             from './Details/Radius'
-import Rssi                from './Details/Rssi'
+import Rss                from './Details/Rss'
 import SwitchMemoryHigh   from './Details/SwitchMemoryHigh'
 import SzCpuLoad          from './Details/SzCpuLoad'
 import SzNetLatency       from './Details/SzNetLatency'
@@ -27,7 +27,7 @@ export const incidentDetailsMap = {
   'eap-failure': Eap,
   'auth-failure': Auth,
   'assoc-failure': Assoc,
-  'p-cov-clientrssi-low': Rssi,
+  'p-cov-clientrssi-low': Rss,
   'p-load-sz-cpu-load': SzCpuLoad,
   'p-switch-memory-high': SwitchMemoryHigh,
   'i-net-time-future': TimeFuture,
