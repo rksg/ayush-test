@@ -125,7 +125,7 @@ describe('NetworkVenuesTab', () => {
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
     }
 
-    const {asFragment} = render(<Provider><NetworkVenuesTab /></Provider>, {
+    const { asFragment } = render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
 

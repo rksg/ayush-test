@@ -146,14 +146,17 @@ export function VenuesForm () {
         description: data?.description,
         address: data?.address
       })
-      const latlng = new google.maps.LatLng({
-        lat: Number(data?.address?.latitude),
-        lng: Number(data?.address?.longitude)
-      })
-      setMarker(latlng)
-      setCenter(latlng.toJSON())
       updateAddress(data?.address as Address)
-      setZoom(16)
+
+      if(isMapEnabled){
+        const latlng = new google.maps.LatLng({
+          lat: Number(data?.address?.latitude),
+          lng: Number(data?.address?.longitude)
+        })
+        setMarker(latlng)
+        setCenter(latlng.toJSON())
+        setZoom(16)
+      }
     }
   }, [data])
 
@@ -168,7 +171,7 @@ export function VenuesForm () {
   const nameValidator = async (value: string) => {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
-      .unwrap()).data.map(n => ({ name: n.name }))
+      .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
     return checkObjectNotExists(intl, list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
 
