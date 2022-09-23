@@ -6,8 +6,7 @@ import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { VenueDetails }     from './VenueDetails'
-import { VenueOverviewTab } from './VenueOverviewTab'
+import { VenueDetails } from './VenueDetails'
 
 const venueDetailHeaderData = {
   activeNetworkCount: 1,
@@ -29,24 +28,6 @@ describe('VenueDetails', () => {
         (req, res, ctx) => res(ctx.json(venueDetailHeaderData))
       )
     )
-  })
-
-  it('should render correctly venue_overview', async () => {
-    const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
-      activeTab: 'overview'
-    }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
-    })
-
-    const {
-      asFragment: asChildrenOverviewTabFragment
-    } = render(<VenueOverviewTab/>)
-    expect(asChildrenOverviewTabFragment()).toMatchSnapshot()
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should navigate to analytic tab correctly', async () => {
