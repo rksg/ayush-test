@@ -16,6 +16,18 @@ import { DescriptionRowProps, DescriptionSection } from '../../../components/Des
 
 import { ImpactedClientsDrawer, ImpactedAPsDrawer } from './ImpactedDrawer'
 
+export enum Attributes {
+  ClientImpactCount,
+  ApImpactCount,
+  IncidentCategory,
+  IncidentSubCategory,
+  Type,
+  Scope,
+  Duration,
+  EventStartTime,
+  EventEndTime
+}
+
 export const durationOf = (start: string, end: string) =>
   moment(end).diff(moment(start), 'milliseconds', true)
 
@@ -28,14 +40,14 @@ export function useDrawer (init: string|boolean) {
 
 export const IncidentAttributes = ({ incident, visibleFields }: {
   incident: Incident
-  visibleFields: string[]
+  visibleFields: Attributes[]
 }) => {
   const intl = useIntl()
   const { visible, onOpen, onClose } = useDrawer(false)
   const scope = useFormattedPath(incident.path, incident.sliceValue)
   const impactedArea = useImpactedArea(incident.path, incident.sliceValue)
-  const fields = [
-    {
+  const fields = {
+    [Attributes.ClientImpactCount]: {
       key: 'clientImpactCount',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Client Impact Count' }),
@@ -43,7 +55,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
         onClick: () => onOpen('client')
       })
     },
-    {
+    [Attributes.ApImpactCount]: {
       key: 'apImpactCount',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'AP Impact Count' }),
@@ -51,21 +63,21 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
         onClick: () => onOpen('ap')
       })
     },
-    {
+    [Attributes.IncidentCategory]: {
       key: 'incidentCategory',
       getValue: (incident: Incident) => ({
         label: 'Incident Category',
         children: intl.$t(incident.category)
       })
     },
-    {
+    [Attributes.IncidentSubCategory]: {
       key: 'incidentSubCategory',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Incident Sub-Category' }),
         children: intl.$t(incident.subCategory)
       })
     },
-    {
+    [Attributes.Type]: {
       key: 'type',
       getValue: (incident: Incident) => ({
         label: intl.$t({
@@ -75,7 +87,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
         children: intl.$t(nodeTypes(incident.sliceType))
       })
     },
-    {
+    [Attributes.Scope]: {
       key: 'scope',
       getValue: () => ({
         label: intl.$t({
@@ -83,10 +95,10 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
           description: 'Incident impacted scope'
         }),
         children: impactedArea,
-        title: scope
+        tooltip: scope
       })
     },
-    {
+    [Attributes.Duration]: {
       key: 'duration',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Duration' }),
@@ -96,25 +108,24 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
         ))
       })
     },
-    {
+    [Attributes.EventStartTime]: {
       key: 'eventStartTime',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Event Start Time' }),
         children: formatter('dateTimeFormat')(incident.startTime)
       })
     },
-    {
+    [Attributes.EventEndTime]: {
       key: 'eventEndTime',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Event End Time' }),
         children: formatter('dateTimeFormat')(incident.endTime)
       })
     }
-  ]
+  }
 
-  const computedFields = fields
-    .filter(({ key }) => visibleFields.includes(key))
-    .map(({ getValue }) => getValue(incident) as DescriptionRowProps)
+  const computedFields = visibleFields
+    .map(key => fields[key].getValue(incident) as DescriptionRowProps)
   return <>
     <DescriptionSection fields={computedFields}/>
     { visible==='ap' && <ImpactedAPsDrawer

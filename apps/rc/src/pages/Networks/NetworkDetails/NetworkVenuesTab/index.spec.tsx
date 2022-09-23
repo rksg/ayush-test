@@ -125,13 +125,11 @@ describe('NetworkVenuesTab', () => {
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
     }
 
-    const { asFragment } = render(<Provider><NetworkVenuesTab /></Provider>, {
+    render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    expect(asFragment()).toMatchSnapshot()
 
     const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
     expect(within(row1).queryAllByRole('button')).toHaveLength(4)
@@ -264,7 +262,7 @@ describe('NetworkVenuesTab', () => {
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
     await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
-  })
+  }, 20000)
 
   it('Table action bar activate Network', async () => {
     mockServer.use(
