@@ -15,7 +15,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
       </a>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-6 jGxtAq"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 hDbAGt"
     >
       <div
         class="ant-pro-table"
@@ -215,7 +215,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
       </a>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-6 jGxtAq"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 hDbAGt"
     >
       <div
         class="ant-pro-table"

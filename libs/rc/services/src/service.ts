@@ -110,7 +110,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    vlanPoolList: build.query<TableResult<VlanPool>, RequestPayload>({
+    vlanPoolList: build.query<VlanPool[], RequestPayload>({
       query: ({ params }) => {
         const vlanPoolListReq = createHttpRequest(
           CommonUrlsInfo.getVlanPools,
