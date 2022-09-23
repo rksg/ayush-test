@@ -1,8 +1,10 @@
 import '@testing-library/jest-dom'
 
+import { TenantType }                from '@acx-ui/react-router-dom'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import menuConfig from './stories/menuConfig'
+import * as UI    from './stories/styledComponents'
 
 import { Layout } from '.'
 
@@ -41,6 +43,25 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, { route: true })
     await screen.findByTestId('ai')
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render with custom tenant type correctly', async () => {
+    const mspConfig = [
+      {
+        path: '/dashboard',
+        name: 'Dashboard',
+        tenantType: 'v' as TenantType,
+        disableIcon: UI.SpeedIndicatorIcon,
+        enableIcon: UI.EnabledSpeedIndicatorIcon
+      }
+    ]
+    const { asFragment } = render(<Layout
+      menuConfig={mspConfig}
+      rightHeaderContent={<div>Right header</div>}
+      leftHeaderContent={<div>Left header</div>}
+      content={<div>content</div>}
+    />, { route: true })
+    await screen.findByTestId('speed-indicator-outlined')
     expect(asFragment()).toMatchSnapshot()
   })
   it('should collapsed', async () => {

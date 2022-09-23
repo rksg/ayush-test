@@ -7,10 +7,10 @@ import { useIntl } from 'react-intl'
 
 import { Logo }   from '@acx-ui/icons'
 import {
-  NavLink,
   TenantType,
   useLocation,
-  useTenantLink
+  useTenantLink,
+  TenantNavLink
 } from '@acx-ui/react-router-dom'
 
 
@@ -22,13 +22,14 @@ interface MenuItem {
 }
 
 interface MenuItem {
-  path: string;
-  name: string;
-  tenantType?: TenantType;
-  disableIcon?: React.FC;
-  enableIcon?: React.FC;
+  path: string
+  uri?: string
+  name: string
+  tenantType?: TenantType
+  disableIcon?: React.FC
+  enableIcon?: React.FC
   routes?: Array<MenuItem>
-  pro_layout_parentKeys?: string[];
+  pro_layout_parentKeys?: string[]
 }
 
 export interface LayoutProps {
@@ -47,18 +48,20 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
-  const basePath = useTenantLink('/')
+  const basePath = useTenantLink('/', location.pathname.split('/')[1] as TenantType)
   const newRoutes = routes.map((item => ({
     ...item,
     path: `${basePath.pathname}${item.path}`,
+    uri: item.path,
     routes: item.routes?.map(sub=>({
       ...sub,
-      path: `${basePath.pathname}${sub.path}`
+      path: `${basePath.pathname}${sub.path}`,
+      uri: sub.path
     }))
   })))
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
-    const pathname = item.routes ? item.routes[0].path : item.path
-    return <NavLink to={{ ...basePath, pathname }}>
+    const path = (item.routes ? item.routes[0].uri : item.uri)!
+    return <TenantNavLink to={path} tenantType={item.tenantType}>
       {({ isActive }) => {
         const Icon = isActive ? item.enableIcon : item.disableIcon
         return <>
@@ -66,7 +69,7 @@ export function Layout ({
           {dom}
         </>
       }}
-    </NavLink>
+    </TenantNavLink>
   }
 
   return <UI.Wrapper>

@@ -504,3 +504,160 @@ exports[`Layout should render correctly 1`] = `
   </div>
 </DocumentFragment>
 `;
+
+exports[`Layout should render with custom tenant type correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1ik4x5l-0 iIIFGQ"
+  >
+    <div
+      class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
+    >
+      <section
+        class="ant-layout ant-layout-has-sider"
+        style="min-height: 100%;"
+      >
+        <div
+          style="width: 208px; overflow: hidden; flex: 0 0 208px; max-width: 208px; min-width: 208px; transition: background-color 0.3s, min-width 0.3s, max-width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);"
+        />
+        <aside
+          class="ant-layout-sider ant-layout-sider-dark ant-pro-sider ant-pro-sider-fixed ant-pro-sider-layout-side"
+          style="overflow: hidden; flex: 0 0 208px; max-width: 208px; min-width: 208px; width: 208px;"
+        >
+          <div
+            class="ant-layout-sider-children"
+          >
+            <div
+              class="ant-pro-sider-logo"
+              id="logo"
+            >
+              <div
+                data-testid="logo"
+              />
+            </div>
+            <div
+              style="flex: 1; overflow-y: auto; overflow-x: hidden;"
+            >
+              <ul
+                class="ant-menu ant-menu-root ant-menu-inline ant-menu-dark ant-pro-sider-menu"
+                data-menu-list="true"
+                role="menu"
+                style="width: 100%;"
+                tabindex="0"
+              >
+                <li
+                  class="ant-menu-item ant-menu-item-only-child"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                  title="Dashboard"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <a
+                      class=""
+                      href="/v/undefined/dashboard"
+                    >
+                      <div
+                        data-testid="speed-indicator-outlined"
+                      />
+                      <span
+                        class="ant-pro-menu-item"
+                      >
+                        <span
+                          class="ant-pro-menu-item-title"
+                        >
+                          Dashboard
+                        </span>
+                      </span>
+                    </a>
+                  </span>
+                </li>
+              </ul>
+              <div
+                aria-hidden="true"
+                style="display: none;"
+              />
+            </div>
+            <div
+              class="ant-pro-sider-links"
+            >
+              <ul
+                class="ant-menu ant-menu-root ant-menu-inline ant-menu-dark ant-pro-sider-link-menu"
+                data-menu-list="true"
+                role="menu"
+                tabindex="0"
+              >
+                <li
+                  class="ant-menu-item ant-pro-sider-collapsed-button"
+                  data-menu-id="rc-menu-uuid-test-collapsed"
+                  role="menuitem"
+                  style="padding-left: 16px;"
+                  tabindex="-1"
+                >
+                  <span
+                    class="ant-menu-title-content"
+                  >
+                    <div
+                      data-testid="arrow-left"
+                    />
+                    <div
+                      class="styledComponents__TextWrapper-sc-1ik4x5l-4 hOfIlg ant-pro-menu-item-title"
+                    >
+                      Collapse
+                    </div>
+                  </span>
+                </li>
+              </ul>
+              <div
+                aria-hidden="true"
+                style="display: none;"
+              />
+            </div>
+          </div>
+        </aside>
+        <div
+          class="ant-layout"
+          style="position: relative;"
+        >
+          <header
+            class="ant-layout-header"
+            style="height: 48px; line-height: 48px; background: transparent;"
+          />
+          <header
+            class="ant-layout-header ant-pro-fixed-header ant-pro-fixed-header-action ant-pro-header-dark"
+            style="padding: 0px; height: 48px; line-height: 48px; width: calc(100% - 208px); z-index: 19; right: 0px;"
+          >
+            <div
+              class="ant-pro-global-header ant-pro-global-header-layout-side"
+            >
+              <div
+                style="flex: 1;"
+              >
+                <div>
+                  Left header
+                </div>
+              </div>
+              <div>
+                Right header
+              </div>
+            </div>
+          </header>
+          <main
+            class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
+          >
+            <div
+              class="styledComponents__Content-sc-1ik4x5l-1 cYEdcy"
+            >
+              <div>
+                content
+              </div>
+            </div>
+          </main>
+        </div>
+      </section>
+    </div>
+  </div>
+</DocumentFragment>
+`;
