@@ -50,7 +50,7 @@ describe('NetworkMoreSettingsForm', () => {
       rest.get(CommonUrlsInfo.getWifiCallingProfileList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.get(CommonUrlsInfo.getVlanPoolList.url,
-        (_, res, ctx) => res(ctx.json(policyListResponse))),
+        (_, res, ctx) => res(ctx.json([]))),
       rest.get(CommonUrlsInfo.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json([])))
     )
