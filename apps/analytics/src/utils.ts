@@ -7,3 +7,11 @@ export const getSparklineGranularity = (start: string, end: string): string => {
   if (duration >= 1) return 'PT15M'
   return 'PT180S'
 }
+export const calcGranularity = (start: string, end: string): string => {
+  const duration = moment.duration(moment(end).diff(moment(start))).asHours()
+  switch (true) {
+    case duration > 24 * 7: return 'PT1H'
+    case duration > 24 * 3: return 'PT15M'
+    default: return 'PT180S'
+  }
+}
