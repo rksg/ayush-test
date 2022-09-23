@@ -30,6 +30,7 @@ interface MenuItem {
   enableIcon?: React.FC
   routes?: Array<MenuItem>
   pro_layout_parentKeys?: string[]
+  parentKeys?: string[]
 }
 
 export interface LayoutProps {
@@ -48,17 +49,21 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
-  const basePath = useTenantLink('/', location.pathname.split('/')[1] as TenantType)
-  const newRoutes = routes.map((item => ({
-    ...item,
-    path: `${basePath.pathname}${item.path}`,
-    uri: item.path,
-    routes: item.routes?.map(sub=>({
-      ...sub,
-      path: `${basePath.pathname}${sub.path}`,
-      uri: sub.path
-    }))
-  })))
+  const basePath = useTenantLink('/')
+  const mspBasePath = useTenantLink('/', 'v')
+  const newRoutes = routes.map((item => {
+    const base = item.tenantType === 'v' ? mspBasePath : basePath
+    return {
+      ...item,
+      path: `${base.pathname}${item.path}`,
+      uri: item.path,
+      routes: item.routes?.map(sub=>({
+        ...sub,
+        path: `${base.pathname}${sub.path}`,
+        uri: sub.path
+      }))
+    }
+  }))
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
     const path = (item.routes ? item.routes[0].uri : item.uri)!
     return <TenantNavLink to={path} tenantType={item.tenantType}>
