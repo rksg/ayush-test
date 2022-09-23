@@ -1,9 +1,9 @@
-import { dataApiURL }                      from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                 from '@acx-ui/analytics/utils'
-import { Provider, store }                 from '@acx-ui/store'
-import { render, screen }                  from '@acx-ui/test-utils'
-import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
-import { DateRange }                       from '@acx-ui/utils'
+import { dataApiURL }                     from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                from '@acx-ui/analytics/utils'
+import { Provider, store }                from '@acx-ui/store'
+import { render, screen }                 from '@acx-ui/test-utils'
+import { mockGraphqlQuery, mockDOMWidth } from '@acx-ui/test-utils'
+import { DateRange }                      from '@acx-ui/utils'
 
 import { topSwitchesByPoEUsageResponse } from './__tests__/fixtures'
 import { api }                           from './services'
@@ -18,7 +18,7 @@ const filters = {
 } as AnalyticsFilter
 
 describe('TopSwitchesByPoEUsageWidget', () => {
-  mockAutoSizer()
+  mockDOMWidth()
 
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockAutoSizer } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMWidth } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
 
@@ -225,8 +225,8 @@ describe('Table component', () => {
     render(<Table
       columns={basicColumns}
       dataSource={basicData}
-      rowSelection={{ 
-        type: 'radio', 
+      rowSelection={{
+        type: 'radio',
         getCheckboxProps: () => ({
           disabled: true
         })
@@ -301,7 +301,7 @@ describe('Table component', () => {
   })
 
   describe('resize', () => {
-    mockAutoSizer(99)
+    mockDOMWidth(99)
     it('should allow column resizing', async () => {
       const { asFragment } = render(<Table
         columns={basicColumns}
