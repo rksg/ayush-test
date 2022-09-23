@@ -92,7 +92,7 @@ export function MdnsProxyScope () {
     applyTableSelectedAps(scope)
   }
 
-  const actions: TableProps<Venue>['actions'] = [
+  const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Select APs' }),
       onClick: (rows: Venue[]) => {
@@ -144,7 +144,7 @@ export function MdnsProxyScope () {
         <Loader states={[tableQuery]}>
           <Table
             rowKey='id'
-            actions={actions}
+            rowActions={rowActions}
             rowSelection={{ type: 'radio' }}
             columns={columns}
             dataSource={tableData}

@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { MdnsProxyForwardingRule }                    from '@acx-ui/rc/utils'
+import { showActionModal, Table, TableProps } from '@acx-ui/components'
+import { MdnsProxyForwardingRule }            from '@acx-ui/rc/utils'
 
 import { MdnsProxyForwardingRuleDrawer } from './MdnsProxyForwardingRuleDrawer'
 
@@ -60,7 +60,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
     }
   ]
 
-  const actions: TableProps<MdnsProxyForwardingRule>['actions'] = [{
+  const rowActions: TableProps<MdnsProxyForwardingRule>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       setDrawerVisible(true)
@@ -95,26 +95,24 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
   return (
     <>
       {!readonly &&
-        <>
-          <Button
-            id='addRuleButton'
-            type='link'
-            onClick={handleAddAction}>
-            {$t({ defaultMessage: 'Add Rule' })}
-          </Button>
-          <MdnsProxyForwardingRuleDrawer
-            editMode={drawerEditMode}
-            rule={(drawerFormRule)}
-            visible={drawerVisible}
-            setVisible={setDrawerVisible}
-            setRule={handleSetRule} />
-        </>
+        <MdnsProxyForwardingRuleDrawer
+          editMode={drawerEditMode}
+          rule={(drawerFormRule)}
+          visible={drawerVisible}
+          setVisible={setDrawerVisible}
+          setRule={handleSetRule} />
       }
       <Table
         columns={columns}
         dataSource={rules}
         rowKey='type'
-        actions={actions}
+        actions={readonly
+          ? []
+          : [{
+            label: $t({ defaultMessage: 'Add Rule' }),
+            onClick: handleAddAction
+          }]}
+        rowActions={rowActions}
         rowSelection={readonly ? false : { type: 'radio' }}
       />
     </>

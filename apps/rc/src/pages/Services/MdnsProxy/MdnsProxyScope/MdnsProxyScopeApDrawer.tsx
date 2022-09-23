@@ -80,7 +80,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
     setActivatedAps(result)
   }
 
-  const actions: TableProps<AP>['actions'] = [
+  const rowActions: TableProps<AP>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
       onClick: (rows: AP[]) => {
@@ -148,7 +148,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
     }) }</p>
     <Table<AP>
       columns={columns}
-      actions={actions}
+      rowActions={rowActions}
       dataSource={tableData}
       rowKey='serialNumber'
       rowSelection={{ type: 'checkbox' }}
