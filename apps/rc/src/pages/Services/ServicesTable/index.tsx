@@ -12,7 +12,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { serviceAdminStateLabelMapping, serviceStatusLabelMapping, serviceTechnologyabelMapping, serviceTypeLabelMapping } from '../contentsMap'
+import { serviceTypeLabelMapping, serviceStatusLabelMapping, serviceAdminStateLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
+
 
 function useColumns () {
   const { $t } = useIntl()
@@ -63,7 +64,7 @@ function useColumns () {
       dataIndex: 'technology',
       sorter: true,
       render: function (data) {
-        return $t(serviceTechnologyabelMapping[data as ServiceTechnology])
+        return $t(serviceTechnologyLabelMapping[data as ServiceTechnology])
       }
     },
     {
@@ -121,7 +122,7 @@ export function ServicesTable () {
       { isLoading: isDeleteServiceUpdating }
     ] = useDeleteServiceMutation()
 
-    const actions: TableProps<Service>['actions'] = [{
+    const rowActions: TableProps<Service>['rowActions'] = [{
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
@@ -148,7 +149,7 @@ export function ServicesTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          actions={actions}
+          rowActions={rowActions}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

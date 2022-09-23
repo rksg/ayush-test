@@ -5,7 +5,7 @@ import { Provider  }      from '@acx-ui/store'
 import { render,
   screen,
   mockRestApiQuery,
-  mockAutoSizer,
+  mockDOMWidth,
   waitForElementToBeRemoved,
   renderHook
 } from '@acx-ui/test-utils'
@@ -14,7 +14,7 @@ import { render,
 import ClientsDonutWidget, { getAPClientChartData, getSwitchClientChartData } from '.'
 
 describe('Clients widget', () => {
-  mockAutoSizer()
+  mockDOMWidth()
 
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get',{})

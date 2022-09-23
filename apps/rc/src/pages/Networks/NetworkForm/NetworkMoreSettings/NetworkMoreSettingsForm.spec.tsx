@@ -8,7 +8,7 @@ import { Provider }          from '@acx-ui/store'
 import { fireEvent, within } from '@acx-ui/test-utils'
 import { render, screen }    from '@acx-ui/test-utils'
 
-import { NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
+import { MoreSettingsForm, NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
 
 const mockWlanData = {
   name: 'test',
@@ -29,6 +29,8 @@ describe('NetworkMoreSettingsForm', () => {
       </Provider>, {
         route: { params }
       })
+    const button = screen.getByText(/show more settings/i)
+    await userEvent.click(button)
 
     expect(asFragment()).toMatchSnapshot()
   })
@@ -38,7 +40,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(
       <Provider>
         <Form>
-          <NetworkMoreSettingsForm wlanData={mockWlanData} />
+          <MoreSettingsForm wlanData={mockWlanData} />
         </Form>
       </Provider>,
       { route: { params } })
@@ -56,7 +58,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(
       <Provider>
         <Form>
-          <NetworkMoreSettingsForm wlanData={mockWlanData} />
+          <MoreSettingsForm wlanData={mockWlanData} />
         </Form>
       </Provider>,
       { route: { params } })
@@ -73,7 +75,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(
       <Provider>
         <Form>
-          <NetworkMoreSettingsForm wlanData={mockWlanData} />
+          <MoreSettingsForm wlanData={mockWlanData} />
         </Form>
       </Provider>,
       { route: { params } })
@@ -83,8 +85,6 @@ describe('NetworkMoreSettingsForm', () => {
 
     expect(screen.getByText(/arp request rate limit/i)).toBeVisible()
     expect(screen.getByText(/dhcp request rate limit/i)).toBeVisible()
-
-
   })
 
   it('after click Access Control', async () => {
@@ -92,7 +92,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(
       <Provider>
         <Form>
-          <NetworkMoreSettingsForm wlanData={mockWlanData} />
+          <MoreSettingsForm wlanData={mockWlanData} />
         </Form>
       </Provider>,
       { route: { params } })
@@ -153,7 +153,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(
       <Provider>
         <Form>
-          <NetworkMoreSettingsForm wlanData={mockDpskWlanData} />
+          <MoreSettingsForm wlanData={mockDpskWlanData} />
         </Form>
       </Provider>,
       { route: { params } })

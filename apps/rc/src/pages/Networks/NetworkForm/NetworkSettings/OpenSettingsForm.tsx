@@ -8,19 +8,22 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }             from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
-import { NetworkTypeEnum }       from '@acx-ui/rc/utils'
-import { useParams }             from '@acx-ui/react-router-dom'
+import { StepsForm }                        from '@acx-ui/components'
+import { useCloudpathListQuery }            from '@acx-ui/rc/services'
+import { NetworkTypeEnum, NetworkSaveData } from '@acx-ui/rc/utils'
+import { useParams }                        from '@acx-ui/react-router-dom'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
 
-import { CloudpathServerForm } from './CloudpathServerForm'
+import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { CloudpathServerForm }     from './CloudpathServerForm'
 
 const { useWatch } = Form
 
-export function OpenSettingsForm () {
+export function OpenSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   if(data){
@@ -41,8 +44,9 @@ export function OpenSettingsForm () {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!data && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
-      <Col span={14}>
+      <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram
           type={NetworkTypeEnum.OPEN}
           cloudpathType={selected?.deploymentType}
@@ -56,7 +60,6 @@ function SettingsForm () {
   const isCloudpathEnabled = useWatch<boolean>('isCloudpathEnabled')
   const { editMode } = useContext(NetworkFormContext)
   const { $t } = useIntl()
-
   return (
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsForm.Title>
@@ -69,6 +72,7 @@ function SettingsForm () {
       </Form.Item>
 
       {isCloudpathEnabled && <CloudpathServerForm />}
+
     </>
   )
 }

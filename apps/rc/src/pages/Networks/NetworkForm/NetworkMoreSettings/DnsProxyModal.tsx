@@ -64,6 +64,7 @@ function useColumns () {
 }
 
 export function DnsProxyModal () {
+  const form = Form.useFormInstance()
   const { $t } = useIntl()
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
   const [modalState, setModalState] = useState(state)
@@ -76,6 +77,9 @@ export function DnsProxyModal () {
   }, [])
 
   const handleUpdate = () => {
+    form.setFieldsValue({
+      dnsProxyRules: dnsProxyList
+    })
     const list = dnsProxyList?.map(item => ({
       domainName: item.domainName,
       key: item.domainName,
@@ -133,7 +137,7 @@ export function MultiSelectTable (props: {
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
   const { modalState, setModalState } = props
 
-  const actions: TableProps<(typeof dnsProxyList)[0]>['actions'] = [
+  const rowActions: TableProps<(typeof dnsProxyList)[0]>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
       onClick: (row: DnsProxyRule[], clearSelection) => {
@@ -175,7 +179,7 @@ export function MultiSelectTable (props: {
     <Table
       columns={useColumns()}
       dataSource={dnsProxyList}
-      actions={actions}
+      rowActions={rowActions}
       rowKey='domainName'
       rowSelection={{ type: 'checkbox' }}
     />

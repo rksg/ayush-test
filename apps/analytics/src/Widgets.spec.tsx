@@ -6,6 +6,7 @@ import { Provider }                         from '@acx-ui/store'
 import { render, screen, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
 
+import { expectedIncidentDashboardData }  from './components/IncidentsDashboard/__tests__/fixtures'
 import { topApplicationByTrafficFixture } from './components/TopApplicationsByTraffic/__tests__/fixtures'
 import { topSSIDsByClientFixture }        from './components/TopSSIDsByClient/__tests__/fixtures'
 import { topSSIDsByTrafficFixture }       from './components/TopSSIDsByTraffic/__tests__/fixtures'
@@ -200,4 +201,16 @@ test('should render Clients By SSID Widget', async () => {
     name='topSSIDsByClient'
     filters={filters} /></Provider>)
   await screen.findByText('Top 5 SSIDs by Clients')
+})
+
+test('should render Incidents Dashboard Widget', async () => {
+  mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
+    data: { network: { hierarchyNode: expectedIncidentDashboardData } }
+  })
+  render( <Provider> <AnalyticsWidgets 
+    name='incidents'
+    filters={filters}
+  /></Provider>)
+
+  await screen.findByText('Incidents')
 })
