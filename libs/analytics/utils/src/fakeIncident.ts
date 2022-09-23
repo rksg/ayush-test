@@ -38,9 +38,9 @@ export function fakeIncident (props: FakeIncidentProps): Incident {
   } as Incident)
 }
 
-export const fakeIncident1 = fakeIncident({
+export const mockFakeIncident = (code: string = 'eap-failure') => fakeIncident({
   id: 'df5339ba-da3b-4110-a291-7f8993a274f3',
-  code: 'eap-failure',
+  code: code,
   path: [
     { type: 'network', name: 'Network' },
     { type: 'zone', name: 'Edu2-611-Mesh' },
@@ -77,3 +77,5 @@ export const fakeIncident1 = fakeIncident({
   connectedPowerDeviceCount: -1,
   mutedAt: null
 })
+
+export const fakeIncident1 = mockFakeIncident()

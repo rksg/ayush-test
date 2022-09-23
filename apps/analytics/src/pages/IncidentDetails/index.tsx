@@ -14,10 +14,7 @@ import PoePd              from './Details/PoePd'
 import Radius             from './Details/Radius'
 import Rss                from './Details/Rss'
 import SwitchMemoryHigh   from './Details/SwitchMemoryHigh'
-import SzCpuLoad          from './Details/SzCpuLoad'
-import SzNetLatency       from './Details/SzNetLatency'
-import TimeFuture         from './Details/TimeFuture'
-import TimePast           from './Details/TimePast'
+import Ttc                from './Details/Ttc'
 import VlanMismatch       from './Details/VlanMismatch'
 import { useIncident }    from './services'
 
@@ -27,12 +24,9 @@ export const incidentDetailsMap = {
   'eap-failure': Eap,
   'auth-failure': Auth,
   'assoc-failure': Assoc,
+  'ttc': Ttc,
   'p-cov-clientrssi-low': Rss,
-  'p-load-sz-cpu-load': SzCpuLoad,
   'p-switch-memory-high': SwitchMemoryHigh,
-  'i-net-time-future': TimeFuture,
-  'i-net-time-past': TimePast,
-  'i-net-sz-net-latency': SzNetLatency,
   'i-apserv-high-num-reboots': ApReboot,
   'i-apserv-continuous-reboots': ApReboot,
   'i-apserv-downtime-high': ApSzConnFailure,

@@ -2,7 +2,7 @@ import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
 import { Provider }                        from '@acx-ui/store'
 import { mockAutoSizer, render, screen }   from '@acx-ui/test-utils'
 
-import { ApInfraTemplate } from '../ApInfraTemplate'
+import { ApSzConnFailure } from '../ApSzConnFailure'
 
 jest.mock('../../IncidentAttributes', () => ({
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
@@ -11,7 +11,7 @@ jest.mock('../../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
 
-describe('i-apinfra-poe-low', () => {
+describe('i-apserv-downtime-high', () => {
   mockAutoSizer()
   it('should render correctly', () => {
     const params = {
@@ -19,7 +19,7 @@ describe('i-apinfra-poe-low', () => {
     }
 
     const { asFragment } = render(<Provider>
-      <ApInfraTemplate {...mockFakeIncident('i-apinfra-poe-low')}/>
+      <ApSzConnFailure {...mockFakeIncident('i-apserv-downtime-high')}/>
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
