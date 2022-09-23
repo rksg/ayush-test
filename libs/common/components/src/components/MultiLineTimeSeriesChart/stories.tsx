@@ -90,7 +90,7 @@ const ConnectedCharts = () => {
         }}>Update Data</Button>
       {chartRefs.map((ref, index) => <MultiLineTimeSeriesChart
         key={index}
-        ref={ref}
+        chartRef={ref}
         style={{ width: 504, height: 300 }}
         data={data}
         brush={timeWindow as [TimeStamp, TimeStamp]}
