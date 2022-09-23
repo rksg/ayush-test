@@ -1,19 +1,12 @@
 import { forwardRef, useContext } from 'react'
 
+import ReactECharts from 'echarts-for-react'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import NetworkHistoryWidget from 'apps/analytics/src/components/NetworkHistory'
-import ReactECharts         from 'echarts-for-react'
-
+import NetworkHistoryWidget  from '../../../components/NetworkHistory'
 import { HealthPageContext } from '../HealthPageContext'
 
 
-export interface HealthTimeSeriesChartProps {
-
-}
-
-const HealthTimeSeriesChart = forwardRef<ReactECharts, HealthTimeSeriesChartProps>((
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const HealthTimeSeriesChart = forwardRef<ReactECharts>((
   _props,
   ref
 ) => {

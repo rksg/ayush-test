@@ -61,7 +61,7 @@ const NetworkHistoryWidget = forwardRef<
   ] as Array<{ key: Key; name: string }>
 
   if (hideIncidents) {
-    seriesMapping = seriesMapping.filter(value => !value.name.includes('impacted'))
+    seriesMapping = seriesMapping.filter(value => value.key !== 'impactedClientCount')
   }
 
   const queryResults = useNetworkHistoryQuery(filters, {
