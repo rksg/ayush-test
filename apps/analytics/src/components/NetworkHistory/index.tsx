@@ -4,7 +4,7 @@ import EChartsReact from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, IncidentFilter, MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { getSeriesData, IncidentFilter } from '@acx-ui/analytics/utils'
 import {
   Card,
   CardTypes,
@@ -48,7 +48,7 @@ const NetworkHistoryWidget = forwardRef<
     brush
   } = props
   const { $t } = useIntl()
-  const seriesMappingIncidents = [
+  let seriesMapping = [
     { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
     {
       key: 'impactedClientCount',
@@ -60,45 +60,18 @@ const NetworkHistoryWidget = forwardRef<
     }
   ] as Array<{ key: Key; name: string }>
 
-  const seriesMappingWithoutIncidents = [
-    { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
-    {
-      key: 'connectedClientCount',
-      name: $t({ defaultMessage: 'Connected Clients' })
-    }
-  ] as Array<{ key: Key; name: string }>
+  if (hideIncidents) {
+    seriesMapping = seriesMapping.filter(value => value.name.includes('impacted'))
+  }
 
   const queryResults = useNetworkHistoryQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getSeriesData(
-        data!, 
-        (hideIncidents) ? seriesMappingWithoutIncidents : seriesMappingIncidents
-      ),
+      data: getSeriesData(data!, seriesMapping),
       ...rest
     })
   })
 
   const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
-
-  const Chart = ({ style, data, lineColors }: {
-    style: React.CSSProperties
-    data: MultiLineTimeSeriesChartData[],
-    lineColors: string[]
-  }) => (brush)
-    ? ( <MultiLineTimeSeriesChart
-      style={{ width: style.width, height: style.height }}
-      data={data}
-      lineColors={lineColors}
-      brush={brush.timeWindow}
-      onBrushChange={brush.setTimeWindow as (range: TimeStamp[]) => void}
-      chartRef={ref as RefObject<EChartsReact> | undefined}
-    />)
-    : (<MultiLineTimeSeriesChart
-      style={{ width: style.width, height: style.height }}
-      data={data}
-      lineColors={lineColors}
-      chartRef={ref as RefObject<EChartsReact> | undefined}
-    />)
 
   return (
     <Loader states={[queryResults]}>
@@ -106,10 +79,13 @@ const NetworkHistoryWidget = forwardRef<
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?
-              <Chart
-                style={{ width, height }}
+              <MultiLineTimeSeriesChart
+                style={{ width: width, height: height }}
                 data={queryResults.data}
                 lineColors={lineColors}
+                brush={brush?.timeWindow}
+                onBrushChange={brush?.setTimeWindow as (range: TimeStamp[]) => void}
+                chartRef={ref as RefObject<EChartsReact> | undefined}
               />
               : <NoData/>
           )}
