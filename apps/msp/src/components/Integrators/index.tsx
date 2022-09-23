@@ -110,7 +110,7 @@ export function Integrators () {
       defaultPayload
     })
 
-    const actions: TableProps<MspEc>['actions'] = [
+    const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Manage' }),
         onClick: (selectedRows) =>
@@ -128,12 +128,12 @@ export function Integrators () {
         onClick: () => alert()
       }
     ]
-    
+
     return (
       <Loader states={[tableQuery]}>
         <Table
           columns={useColumns()}
-          actions={actions}
+          rowActions={rowActions}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
@@ -147,7 +147,7 @@ export function Integrators () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Integrators' })}        
+        title={$t({ defaultMessage: 'Integrators' })}
         extra={[
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>

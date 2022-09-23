@@ -1,28 +1,28 @@
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { 
-  Button, 
+import {
+  Button,
   Loader,
   PageHeader,
   showActionModal,
-  showToast, 
-  Table, 
-  TableProps  
+  showToast,
+  Table,
+  TableProps
 } from '@acx-ui/components'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { 
-  useDeleteMspEcMutation, 
-  useMspCustomerListQuery 
+import {
+  useDeleteMspEcMutation,
+  useMspCustomerListQuery
 } from '@acx-ui/rc/services'
-import { 
+import {
   DateFormatEnum,
   DelegationEntitlementRecord,
   EntitlementNetworkDeviceType,
   MspEc,
-  useTableQuery 
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -150,14 +150,14 @@ const transformApEntitlement = (row: MspEc) => {
 }
 
 const transformApUtilization = (row: MspEc) => {
-  const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) => 
+  const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
     en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
   if (entitlement.length > 0) {
     const apEntitlement = entitlement[0]
     const quantity = parseInt(apEntitlement.quantity, 10)
     const consumed = parseInt(apEntitlement.consumed, 10)
     if (quantity > 0) {
-      const value = 
+      const value =
       (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
       return value
     } else {
@@ -177,7 +177,7 @@ const transformSwitchEntitlement = (row: MspEc) => {
     }
     switchEntitlements.push(entitlement)
   })
-  totalCount = switchEntitlements.reduce((total, current) => 
+  totalCount = switchEntitlements.reduce((total, current) =>
     total + parseInt(current.quantity, 10), 0)
   return totalCount
 }
@@ -243,7 +243,7 @@ export function MspCustomers () {
       { isLoading: isDeleteEcUpdating }
     ] = useDeleteMspEcMutation()
 
-    const actions: TableProps<MspEc>['actions'] = [
+    const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Manage' }),
         onClick: (selectedRows) =>
@@ -282,7 +282,7 @@ export function MspCustomers () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          actions={actions}
+          rowActions={rowActions}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
