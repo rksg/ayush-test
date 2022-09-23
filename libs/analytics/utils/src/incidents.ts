@@ -162,6 +162,13 @@ export function incidentScope (incident: Incident, intl: IntlShape) {
   return scope
 }
 
+export function ttcThreshold (incident: Incident, intl: IntlShape) {
+  const threshold = intl.$t({
+    defaultMessage: `test 123`
+  })
+  return threshold
+}
+
 export const useIncidentScope = (incident: Incident) => {
   const intl = useIntl()
   const scope = incidentScope(incident, intl)
@@ -170,7 +177,8 @@ export const useIncidentScope = (incident: Incident) => {
 
 export const shortDescription = (incident: Incident, intl: IntlShape) => {
   const scope = incidentScope(incident, intl)
-  return intl.$t(incident.shortDescription, { scope })
+  const threshold = ttcThreshold(incident, intl)
+  return intl.$t(incident.shortDescription, { scope, threshold })
 }
 
 export const useShortDescription = (incident: Incident) => {

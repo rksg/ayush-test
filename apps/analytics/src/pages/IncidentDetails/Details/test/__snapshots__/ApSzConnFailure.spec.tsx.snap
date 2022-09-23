@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`i-apinfra-poe-low should render correctly 1`] = `
+exports[`i-apserv-downtime-high should render correctly 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
@@ -71,7 +71,7 @@ exports[`i-apinfra-poe-low should render correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          AP(s) operating in Low Power Mode: Access Point: RuckusAP (70:CA:97:01:A0:C0)
+          High AP-Controller connection failures in Access Point: RuckusAP (70:CA:97:01:A0:C0)
         </span>
       </div>
     </div>
@@ -147,7 +147,7 @@ exports[`i-apinfra-poe-low should render correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div>
-          PoE Impact
+          Chart
         </div>
       </div>
     </div>
