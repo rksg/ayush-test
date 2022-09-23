@@ -9,12 +9,16 @@ import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
 import { IncidentAttributes } from '../IncidentAttributes'
 import { Insights }           from '../Insights'
+import { NetworkImpact }      from '../NetworkImpact'
 
 import * as UI from './styledComponents'
 
-export const SzCpuLoad = (incident: Incident) => {
+export const Ttc = (incident: Incident) => {
+  const networkImpactCharts = [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
+
   const { $t } = useIntl()
   const attributeList = [
+    'clientImpactCount',
     'apImpactCount',
     'incidentCategory',
     'incidentSubCategory',
@@ -25,6 +29,8 @@ export const SzCpuLoad = (incident: Incident) => {
     'eventEndTime'
   ]
 
+  console.log(incident)
+  console.log(useShortDescription(incident))
   return (
     <>
       <PageHeader
@@ -47,7 +53,7 @@ export const SzCpuLoad = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Network Impact</div>
+          <NetworkImpact incident={incident} charts={networkImpactCharts}/>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
           <div>Chart</div>
@@ -57,4 +63,4 @@ export const SzCpuLoad = (incident: Incident) => {
   )
 }
 
-export default SzCpuLoad
+export default Ttc
