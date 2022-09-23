@@ -20,7 +20,7 @@ export * from './ap'
 export * from './venue'
 export * from './network'
 export * from './user'
-export * from './service'
+export * from './services'
 
 export interface CommonResult {
   requestId: string
@@ -55,7 +55,7 @@ export interface NetworkDetail {
     ssid?: string;
     vlanId?: number;
     enable?: boolean;
-    advancedCustomization?:   
+    advancedCustomization?:
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |

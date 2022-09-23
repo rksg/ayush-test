@@ -137,5 +137,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   validateRadius: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
+  },
+  getDHCPVenueInstances: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/dhcp-service-profile/:serviceId'
   }
 }

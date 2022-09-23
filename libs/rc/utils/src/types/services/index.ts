@@ -1,3 +1,5 @@
+export * from './dhcpService'
+
 
 export enum AccessEnum {
   ALLOW = 'Allow',
