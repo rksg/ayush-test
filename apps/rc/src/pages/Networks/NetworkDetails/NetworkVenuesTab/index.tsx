@@ -166,7 +166,7 @@ export function NetworkVenuesTab () {
     if (!checked && network?.venues) {
       network?.venues.forEach((venue: NetworkVenue) => {
         if (venue.venueId === row.id || venue.id === row.id) {
-          deactivateNetworkVenueId = row.id
+          deactivateNetworkVenueId = venue.id ? venue.id : row.id
         }
       })
     }
@@ -241,7 +241,7 @@ export function NetworkVenuesTab () {
     return networkVenues
   }
 
-  const actions: TableProps<Venue>['actions'] = [
+  const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
       onClick: (rows, clearSelection) => {
@@ -625,7 +625,7 @@ export function NetworkVenuesTab () {
       }
       <Table
         rowKey='id'
-        actions={actions}
+        rowActions={rowActions}
         rowSelection={{
           type: 'checkbox'
         }}
