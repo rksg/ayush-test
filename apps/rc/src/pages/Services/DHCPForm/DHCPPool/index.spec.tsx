@@ -76,11 +76,8 @@ describe('Create DHCP: Pool detail', () => {
         (req, res, ctx) => res(ctx.json(data))
       )
     )
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
     const { asFragment } = render(<DHCPPoolMain/>, {
-      wrapper,
-      route: { params, path: '/:tenantId/:networkId' }
+      wrapper
     })
 
     await screen.findByText('Add DHCP Pool')
