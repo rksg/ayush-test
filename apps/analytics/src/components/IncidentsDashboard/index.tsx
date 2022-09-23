@@ -28,14 +28,14 @@ const IncidentSeverityWidget = ({ data }: { data: Header }) => {
       <UI.SeverityDot severity={severityKey as IncidentsBySeverityDataKey} />
     </div>
     <div>
-      <UI.Count>{$t(countFormat, { value: incidentsCount ?? 0 })}</UI.Count>
+      <UI.Count>{$t(countFormat, { value: incidentsCount || 0 })}</UI.Count>
       <UI.Title level={5}>
         {$t(defineMessage({ defaultMessage: 'Incident {severityKey}' }), { severityKey })}
       </UI.Title>
       <UI.Impact>
         {$t(
           defineMessage({ defaultMessage: '{impactedClients} clients impacted' }),
-          { impactedClients: $t(countFormat, { value: impactedClientCount[0] ?? 0 }) }
+          { impactedClients: $t(countFormat, { value: impactedClientCount[0] || 0 }) }
         )}
       </UI.Impact>
     </div>
