@@ -17,7 +17,7 @@ describe('dateAxisFormatter', () => {
     expect(dateAxisFormatter())
       .toEqual({
         day: '{MMM} {dd}',
-        hour: '{HH} {mm}',
+        hour: '{HH}:{mm}',
         month: '{MMM}',
         year: '{yyyy}'
       })

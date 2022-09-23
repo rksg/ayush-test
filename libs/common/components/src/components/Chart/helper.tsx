@@ -108,7 +108,12 @@ const dateTimeFormatMap: { [key: string]: string } = {
   D: 'd'
 }
 const convertDateTimeFormat = (format: string) => format
-  .split(/[ :]/).map(f => `{${dateTimeFormatMap[f] || f}}`).join(' ')
+  .split(/([ :])/)
+  .map((part, i, whole) => i % 2
+    ? null
+    : `{${dateTimeFormatMap[part] || part}}${whole[i + 1] || ''}`)
+  .filter(Boolean)
+  .join('')
 export const dateAxisFormatter = () => {
   return {
     year: convertDateTimeFormat(dateTimeFormats.yearFormat),
