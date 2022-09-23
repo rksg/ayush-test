@@ -14,9 +14,7 @@ import { DateRange } from '@acx-ui/utils'
 import { expectedIncidentDashboardData } from './__tests__/fixtures'
 import { api }                           from './services'
 
-import IncidentsDashboardWidget, {
-  IncidentSeverityWidget
-} from './index'
+import IncidentsDashboardWidget from './index'
 
 const filters : IncidentFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -24,45 +22,6 @@ const filters : IncidentFilter = {
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours
 }
-
-describe('IncidentDashboard helper widgets', () => {
-
-  it('IncidentSeverityWidget should match data', async () => {
-    render(<Provider>
-      <IncidentSeverityWidget
-        severityKey='P1'
-        impactedClients={10}
-        incidentsCount={20}
-      />
-    </Provider>)
-
-    const severityKey = await screen.findByText('Incident P1')
-    expect(severityKey).toBeTruthy()
-    const incidentsCount = await screen.findByText('20')
-    expect(incidentsCount).toBeTruthy()
-    const impactedClients = await screen.findByText('10 clients impacted')
-    expect(impactedClients).toBeTruthy()
-  })
-
-  it('IncidentSeverityWidget should match 0 on undefined', async () => {
-    mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
-      data: { network: { hierarchyNode: expectedIncidentDashboardData } }
-    })
-
-    render(<Provider>
-      <IncidentSeverityWidget
-        severityKey='P2'
-      />
-    </Provider>)
-
-    const severityKey = await screen.findByText('Incident P2')
-    expect(severityKey).toBeTruthy()
-    const incidentsCount = await screen.findByText('0')
-    expect(incidentsCount).toBeTruthy()
-    const impactedClients = await screen.findByText('0 clients impacted')
-    expect(impactedClients).toBeTruthy()
-  })
-})
 
 describe('IncidentDashboard', () => {
   mockAutoSizer()
