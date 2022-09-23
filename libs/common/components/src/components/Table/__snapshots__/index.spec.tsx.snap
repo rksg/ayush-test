@@ -183,7 +183,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component should handle ellipsis 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 fsuxoG"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 jSKMsx"
   >
     <div
       class="ant-pro-table"
@@ -535,7 +535,7 @@ exports[`Table component should handle ellipsis 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 fsuxoG"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 jSKMsx"
   >
     <div
       class="ant-pro-table"
@@ -875,7 +875,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
   >
     <div
       class="ant-pro-table"
@@ -1315,7 +1315,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
   >
     <div
       class="ant-pro-table"
@@ -1436,7 +1436,7 @@ exports[`Table component should render multi select table and render action butt
                               style="margin-right: 0px;"
                             >
                               <div
-                                class="ant-divider ant-divider-vertical"
+                                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-13 fsVtFP"
                                 role="separator"
                               />
                             </span>
@@ -1854,7 +1854,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
   >
     <div
       class="ant-pro-table"

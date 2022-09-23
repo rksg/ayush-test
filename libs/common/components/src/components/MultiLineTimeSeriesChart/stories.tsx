@@ -106,6 +106,23 @@ storiesOf('MultiLineTimeSeriesChart', module)
     style={{ width: 504, height: 300 }}
     data={getSeriesData()}
   />)
+  .add('With Marked Areas', () => <MultiLineTimeSeriesChart
+    style={{ width: 504, height: 300 }}
+    data={getSeriesData()}
+    markers={[{
+      startTime: +new Date('2020-11-01T00:00:00.000Z'),
+      endTime: +new Date('2020-11-05T00:00:00.000Z'),
+      data: { id: 1 },
+      itemStyle: { opacity: 0.2, color: '#FF0000' }
+    }, {
+      startTime: +new Date('2020-11-20T00:00:00.000Z'),
+      endTime: +new Date('2020-11-30T00:00:00.000Z'),
+      data: { id: 1 },
+      itemStyle: { opacity: 0.2, color: '#0000FF' }
+    }]}
+    // eslint-disable-next-line no-console
+    onMarkedAreaClick={(data) => { console.log(data) }}
+  />)
   .add('With Brush', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}
     data={getSeriesData()}

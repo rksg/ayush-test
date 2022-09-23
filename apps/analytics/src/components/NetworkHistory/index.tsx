@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, RefObject } from 'react'
 
 import EChartsReact from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
@@ -91,13 +91,13 @@ const NetworkHistoryWidget = forwardRef<
       lineColors={lineColors}
       brush={brush.timeWindow}
       onBrushChange={brush.setTimeWindow as (range: TimeStamp[]) => void}
-      ref={ref}
+      chartRef={ref as RefObject<EChartsReact> | undefined}
     />)
     : (<MultiLineTimeSeriesChart
       style={{ width: style.width, height: style.height }}
       data={data}
       lineColors={lineColors}
-      ref={ref}
+      chartRef={ref as RefObject<EChartsReact> | undefined}
     />)
 
   return (

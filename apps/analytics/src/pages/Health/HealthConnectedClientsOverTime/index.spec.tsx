@@ -7,7 +7,7 @@ import { AnalyticsFilter }    from '@acx-ui/analytics/utils'
 import { Provider, store }    from '@acx-ui/store'
 import {
   render,
-  mockAutoSizer,
+  mockDOMWidth,
   cleanup,
   mockGraphqlQuery,
   screen,
@@ -40,7 +40,7 @@ function mockGetClientSize (width = 280, height = 280) {
 }
 
 describe('HealthConnectedClientsOverTime', () => {
-  mockAutoSizer()
+  mockDOMWidth()
   mockGetClientSize(280, 200)
 
   beforeEach(() => store.dispatch(api.util.resetApiState()))
