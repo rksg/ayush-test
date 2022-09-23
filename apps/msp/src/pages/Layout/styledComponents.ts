@@ -4,9 +4,19 @@ import styled, { css }                                from 'styled-components/ma
 import {
   AccountCircleSolidSmall,
   QuestionMarkCircleSolid,
-  RocketOutlined,
-  SpeedIndicatorOutlined,
-  SpeedIndicatorSolid
+  ConfigurationOutlined,
+  ConfigurationSolid,
+  MspCustomersOutlined,
+  MspCustomersSolid,
+  MspIntegratorsOutlined,
+  MspIntegratorsSolid,
+  MspInventoryOutlined,
+  MspInventorySolid,
+  MspLicenseOutlined,
+  MspLicenseSolid,
+  NotificationSolid,
+  SearchOutlined,
+  WorldSolid
 } from '@acx-ui/icons'
 
 export const Wrapper = styled.div`
@@ -46,6 +56,10 @@ const buttonIconStyle = css`
 export const AccountIconSmall = styled(AccountCircleSolidSmall)`
   ${buttonIconStyle}
 `
+export const NotificationIcon = styled(NotificationSolid)`
+  ${buttonIconStyle}
+  stroke: var(--acx-primary-white);
+`
 
 export const QuestionIcon = styled(QuestionMarkCircleSolid)`
   ${buttonIconStyle}
@@ -58,9 +72,12 @@ const iconStyle = css`
   }
 `
 
-export const RocketIcon = styled(RocketOutlined)`
+export const RegionIcon = styled(WorldSolid)`
   ${iconStyle}
   vertical-align: text-bottom;
+`
+export const SearchIcon = styled(SearchOutlined)`
+  ${iconStyle}
 `
 
 const menuIconStyle = `
@@ -83,10 +100,33 @@ const disabledMenuIconStyle = `
     stroke: var(--acx-primary-white);
   }
 `
-
-export const SpeedIndicatorIcon = styled(SpeedIndicatorOutlined)`
+export const CustomerIcon = styled(MspCustomersOutlined)`
   ${disabledMenuIconStyle}
 `
-export const EnabledSpeedIndicatorIcon = styled(SpeedIndicatorSolid)`
+export const EnabledCustomerIcon = styled(MspCustomersSolid)`
+  ${enabledMenuIconStyle}
+`
+export const IntegratorIcon = styled(MspIntegratorsOutlined)`
+  ${disabledMenuIconStyle}
+`
+export const EnabledIntegratorIcon = styled(MspIntegratorsSolid)`
+  ${enabledMenuIconStyle}
+`
+export const InventoryIcon = styled(MspInventoryOutlined)`
+  ${disabledMenuIconStyle}
+`
+export const EnableInventoryIcon = styled(MspInventorySolid)`
+  ${enabledMenuIconStyle}
+`
+export const MspLicenseIcon = styled(MspLicenseOutlined)`
+  ${disabledMenuIconStyle}
+`
+export const EnableMspLicenseIcon = styled(MspLicenseSolid)`
+  ${enabledMenuIconStyle}
+`
+export const ConfigurationIcon = styled(ConfigurationOutlined)`
+  ${disabledMenuIconStyle}
+`
+export const EnabledConfigurationIcon = styled(ConfigurationSolid)`
   ${enabledMenuIconStyle}
 `

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { DropDown } from '@acx-ui/components'
 
-import { HeaderDropDownWrapper, Divider, RocketIcon } from './styledComponents'
+import { HeaderDropDownWrapper, Divider, RegionIcon } from './styledComponents'
 
 function HeaderDropDown ({
   list,
@@ -14,7 +14,7 @@ function HeaderDropDown ({
   return (
     <HeaderDropDownWrapper>
       <Divider />
-      <RocketIcon />
+      <RegionIcon />
       <DropDown list={list} selected={selected} />
     </HeaderDropDownWrapper>
   )
