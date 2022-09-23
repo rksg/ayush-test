@@ -159,7 +159,7 @@ const rowSelection = (intl: ReturnType<typeof useIntl>) => {
     }),
     renderCell (checked: boolean, record: Network, index: number, node: ReactNode) {
       if (disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1) {
-        return <Tooltip 
+        return <Tooltip
           title={intl.$t({ defaultMessage: 'Not available in Beta1' })}>{node}</Tooltip>
       }
       return node
@@ -182,7 +182,7 @@ export function NetworksTable () {
       { isLoading: isDeleteNetworkUpdating }
     ] = useDeleteNetworkMutation()
 
-    const actions: TableProps<Network>['actions'] = [
+    const rowActions: TableProps<Network>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
         onClick: (selectedRows) => {
@@ -222,7 +222,7 @@ export function NetworksTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          actions={actions}
+          rowActions={rowActions}
           rowSelection={{
             type: 'radio',
             ...rowSelection(useIntl())

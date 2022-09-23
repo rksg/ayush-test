@@ -212,7 +212,7 @@ export function NetworkVenuesTab () {
     return networkVenues
   }
 
-  const actions: TableProps<Venue>['actions'] = [
+  const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
       onClick: (rows, clearSelection) => {
@@ -511,7 +511,7 @@ export function NetworkVenuesTab () {
       }
       <Table
         rowKey='id'
-        actions={actions}
+        rowActions={rowActions}
         rowSelection={{
           type: 'checkbox'
         }}
