@@ -1,15 +1,30 @@
-import { dataApiURL }                      from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                 from '@acx-ui/analytics/utils'
-import { BrowserRouter }                   from '@acx-ui/react-router-dom'
-import { Provider, store }                 from '@acx-ui/store'
-import { render, screen }                  from '@acx-ui/test-utils'
-import { mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
-import { DateRange }                       from '@acx-ui/utils'
+import { dataApiURL }                                      from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                                 from '@acx-ui/analytics/utils'
+import { EventParams }                                     from '@acx-ui/components'
+import { BrowserRouter, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Provider, store }                                 from '@acx-ui/store'
+import { render, renderHook, screen }                      from '@acx-ui/test-utils'
+import { mockGraphqlQuery, mockAutoSizer }                 from '@acx-ui/test-utils'
+import { DateRange }                                       from '@acx-ui/utils'
 
 import { topSwitchesByPoEUsageResponse } from './__tests__/fixtures'
 import { api }                           from './services'
 
-import SwitchesByPoEUsage from '.'
+import SwitchesByPoEUsage, { onClick } from '.'
+
+const mockedUseNavigate = jest.fn()
+const mockedTenantPath: Path = {
+  pathname: 't/__tenantId__',
+  search: '',
+  hash: ''
+}
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (): Path => mockedTenantPath
+}))
+
 
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -64,4 +79,18 @@ describe('TopSwitchesByPoEUsageWidget', () => {
     expect(await screen.findByText('No data to display')).toBeVisible()
     jest.resetAllMocks()
   })
+
+  it('should handle onClick',() => {
+    const { result: basePath } = renderHook(
+      () => useTenantLink('/some/path?another=param')
+    )
+    const { result: navigate } = renderHook(
+      () => useNavigate()
+    )
+    const handleOnClick = onClick(navigate.current,basePath.current)
+    const param = { componentType: 'series', value: [1,2,3] } as EventParams
+    handleOnClick(param)
+    expect(mockedUseNavigate).toHaveBeenCalled()
+  })
+
 })

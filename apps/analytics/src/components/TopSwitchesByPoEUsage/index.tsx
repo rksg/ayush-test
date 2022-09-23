@@ -16,8 +16,8 @@ import {
   Loader,
   NoData
 } from '@acx-ui/components'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { formatter, intlFormats }     from '@acx-ui/utils'
+import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { formatter, intlFormats }                             from '@acx-ui/utils'
 
 import { useTopSwitchesByPoEUsageQuery } from './services'
 
@@ -59,6 +59,16 @@ const getSwitchUsageRichStyle = () => ({
     fontWeight: cssNumber('--acx-body-font-weight')
   }
 })
+export const onClick = (navigate: NavigateFunction, basePath: Path) => {
+  return (params: EventParams) => {
+    const mac = params.componentType ==='series' && Array.isArray(params.value) && params.value[3]
+    navigate({
+      ...basePath,
+      // TODO: Actual path to be updated later
+      pathname: `${basePath.pathname}/${mac}`
+    })
+  }
+}
 
 function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
   const basePath = useTenantLink('/switch/')
@@ -76,15 +86,6 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
     })
   const { data } = queryResults
 
-  const onClick = (params: EventParams) => {
-    const mac = params.componentType ==='series' && Array.isArray(params.value) && params.value[3]
-    navigate({
-      ...basePath,
-      // TODO: Actual path to be updated later
-      pathname: `${basePath.pathname}/${mac}`
-    })
-  }
-
   return (
     <Loader states={[queryResults]}>
       <Card title={intl.$t({ defaultMessage: 'Top 5 Switches by PoE Usage' })} >
@@ -98,7 +99,7 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
                 grid={{ top: '10%',right: '17%' }}
                 labelFormatter={switchUsageLabelFormatter(intl)}
                 labelRichStyle={getSwitchUsageRichStyle()}
-                onClick={onClick}
+                onClick={onClick(navigate,basePath)}
                 style={{ width, height: height * 0.9 }}
               />
               :
