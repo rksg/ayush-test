@@ -1,6 +1,7 @@
 import { Badge } from 'antd'
 
-import { Table } from '..'
+import { Table }     from '..'
+import { showToast } from '../../Toast'
 
 function CustomColumn (color: string, text: string | number) {
   return <Badge color={color} text={text} />
@@ -14,13 +15,26 @@ const customColumns = [
   },
   {
     title: 'Age',
+    tooltip: 'This is a tooltip',
     dataIndex: 'age',
-    key: 'age'
+    key: 'age',
+    width: 150
   },
   {
-    title: 'Address',
+    title: <>
+      Address
+      <Table.SubTitle>Sub Title</Table.SubTitle>
+    </>,
     dataIndex: 'address',
     key: 'address'
+  },
+  {
+    title: 'Children',
+    key: 'children',
+    children: [
+      { title: 'Child 1', key: 'child1', dataIndex: 'child1', width: 100 },
+      { title: 'Child 2', key: 'child2', dataIndex: 'child2', width: 100 }
+    ]
   },
   {
     title: 'Events',
@@ -35,6 +49,8 @@ const customData = [
     name: 'John Doe',
     age: 32,
     address: 'sample address',
+    child1: 'Sample one',
+    child2: 'Sample two',
     events: CustomColumn('var(--acx-semantics-red-50)', 1)
   },
   {
@@ -42,16 +58,25 @@ const customData = [
     name: 'Jane Doe',
     age: 33,
     address: 'new address',
+    child1: 'Sample three',
+    child2: 'Sample four',
     events: CustomColumn('var(--acx-semantics-green-50)', 'new')
   }
 ]
 
 export function CustomTable () {
   return (<>
-    With Custom Cell
+    Customizations
     <Table
       columns={customColumns}
       dataSource={customData}
+      actions={[{
+        label: 'Add Item',
+        onClick: () => showToast({ type: 'info', content: 'Add Item Clicked' })
+      }, {
+        label: 'Add Other Item',
+        onClick: () => showToast({ type: 'info', content: 'Add Other Item Clicked' })
+      }]}
     />
   </>)
 }

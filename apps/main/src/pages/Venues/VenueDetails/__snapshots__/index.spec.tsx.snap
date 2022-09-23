@@ -3,7 +3,7 @@
 exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -52,7 +52,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
           </span>
         </div>
@@ -333,7 +333,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
 exports[`VenueDetails should navigate to client tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -382,7 +382,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
           </span>
         </div>
@@ -663,7 +663,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
 exports[`VenueDetails should navigate to device tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -712,7 +712,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
           </span>
         </div>
@@ -993,7 +993,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
 exports[`VenueDetails should navigate to network tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1042,7 +1042,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
           </span>
         </div>
@@ -1357,7 +1357,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
 exports[`VenueDetails should navigate to service tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1406,7 +1406,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
           </span>
         </div>
@@ -1687,7 +1687,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
 exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1736,7 +1736,7 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
           </span>
         </div>
@@ -2017,7 +2017,7 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
 exports[`VenueDetails should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -2066,7 +2066,7 @@ exports[`VenueDetails should render correctly 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               testVenue
             </h1>
