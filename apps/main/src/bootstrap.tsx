@@ -11,27 +11,18 @@ import AllRoutes from './AllRoutes'
 import '@acx-ui/theme'
 
 // Needed for Browser language detection
+const supportedLocales = {
+  'en-US': 'en-US',
+  'en': 'en-US',
+  'de-DE': 'de-DE',
+  'de': 'de-DE',
+  'ja-JP': 'ja-JP',
+  'ja': 'ja-JP'
+}
 export function loadMessages (locales: readonly string[]): string {
-  let browserLang = ''
-  for(let i = 0; i < locales.length; i++) {
-    switch (locales[i]) {
-      case 'en':
-      case 'en-US':
-        browserLang = 'en-US'
-        break
-      case 'de':
-      case 'de-DE':
-        browserLang = 'de-DE'
-        break
-      case 'ja':
-      case 'ja-JP':
-        browserLang = 'ja-JP'
-        break
-    }
-    if (browserLang) break
-  }
-  if (!browserLang) browserLang = 'en-US'
-  return browserLang
+  const locale = locales.find(locale => 
+    supportedLocales[locale as keyof typeof supportedLocales]) || 'en-US'
+  return supportedLocales[locale as keyof typeof supportedLocales]
 }
 
 export async function init () {

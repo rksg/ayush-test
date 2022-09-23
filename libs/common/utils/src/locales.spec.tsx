@@ -99,11 +99,16 @@ describe('loadLocale', () => {
   })
 
   it('locale provided is not in allowed list of languages', async () => {
-    const allowedalang = Object.keys(localeLoaders)
     const locale = 'ru-RU'
-    expect(allowedalang).toHaveLength(3)
-    expect(allowedalang).not.toContain(locale)
-    await loadLocale('en-US')
+    mockServer.use(
+      rest.get('/locales/compiled/:locale.json', (req, res, ctx) => {
+        const { locale } = req.params as { locale: keyof typeof messages }
+        return res(ctx.json({ ...messages[locale], locale }))
+      })
+    )
+    const spy = jest.spyOn(localeLoaders, 'en-US')
+    await loadLocale(locale as keyof typeof localeLoaders, true)
+    expect(spy).toBeCalled()
   })
 })
 
