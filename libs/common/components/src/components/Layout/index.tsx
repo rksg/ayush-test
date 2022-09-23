@@ -30,7 +30,6 @@ interface MenuItem {
   enableIcon?: React.FC
   routes?: Array<MenuItem>
   pro_layout_parentKeys?: string[]
-  parentKeys?: string[]
 }
 
 export interface LayoutProps {
