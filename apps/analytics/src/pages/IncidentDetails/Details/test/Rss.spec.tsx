@@ -2,8 +2,11 @@ import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
 import { Provider }                        from '@acx-ui/store'
 import { mockAutoSizer, render, screen }   from '@acx-ui/test-utils'
 
-import { ApInfraTemplate } from '../ApInfraTemplate'
+import { Rss } from '../Rss'
 
+jest.mock('../../NetworkImpact', () => ({
+  NetworkImpact: () => <div data-testid='networkImpact' />
+}))
 jest.mock('../../IncidentAttributes', () => ({
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
 }))
@@ -11,7 +14,7 @@ jest.mock('../../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
 
-describe('i-apinfra-poe-low', () => {
+describe('p-cov-clientrssi-low', () => {
   mockAutoSizer()
   it('should render correctly', () => {
     const params = {
@@ -19,10 +22,11 @@ describe('i-apinfra-poe-low', () => {
     }
 
     const { asFragment } = render(<Provider>
-      <ApInfraTemplate {...mockFakeIncident('i-apinfra-poe-low')}/>
+      <Rss {...mockFakeIncident('p-cov-clientrssi-low')} />
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
+    expect(screen.getByTestId('networkImpact')).toBeVisible()
     expect(screen.getByTestId('insights')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
