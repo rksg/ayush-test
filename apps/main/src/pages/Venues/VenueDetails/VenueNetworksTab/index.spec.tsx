@@ -222,7 +222,7 @@ const list = {
         names: []
       },
       aps: 0,
-      description: '', 
+      description: '',
       clients: 0,
       captiveType: GuestNetworkTypeEnum.ClickThrough,
       activated: { isActivated: false }
@@ -238,7 +238,7 @@ const list = {
         names: []
       },
       aps: 0,
-      description: '', 
+      description: '',
       clients: 0,
       captiveType: GuestNetworkTypeEnum.ClickThrough,
       activated: { isActivated: false }

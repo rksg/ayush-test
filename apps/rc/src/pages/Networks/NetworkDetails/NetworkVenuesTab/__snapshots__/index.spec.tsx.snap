@@ -6,7 +6,7 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-10 eZVtsF"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
     >
       <div
         class="ant-pro-table"
@@ -104,6 +104,9 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                 class="ant-table-cell ant-table-selection-column react-resizable"
                               >
                                 <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
                                   class="ant-table-selection"
                                 >
                                   <label
@@ -124,13 +127,16 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                   </label>
                                 </div>
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -187,13 +193,16 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -250,13 +259,16 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -313,66 +325,87 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                                 style="text-align: center;"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Networks
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                                 style="text-align: center;"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Wi-Fi APs
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                                 style="text-align: center;"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Activated
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 VLAN
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 APs
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Radios
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
                                 class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Scheduling
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -380,7 +413,10 @@ exports[`NetworkVenuesTab should render correctly 1`] = `
                                 style="position: sticky; right: 0px;"
                               >
                                 <div
-                                  class="react-resizable-handle"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                             </tr>

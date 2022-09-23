@@ -1,3 +1,6 @@
+import { ReactNode } from 'react'
+
+import { Tooltip } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
@@ -11,6 +14,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
+const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
+
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
     {
@@ -20,9 +25,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
-        return (
-          <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
-        )
+        if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
+          return data
+        }else{
+          return (
+            <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+          )
+        }
       }
     },
     {
@@ -48,12 +57,16 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: true,
       align: 'center',
       render: function (count, row) {
-        return (
-          <TenantLink
-            to={`/networks/${row.id}/network-details/venues`}
-            children={count ? count : 0}
-          />
-        )
+        if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
+          return count
+        }else{
+          return (
+            <TenantLink
+              to={`/networks/${row.id}/network-details/venues`}
+              children={count ? count : 0}
+            />
+          )
+        }
       }
     },
     {
@@ -63,9 +76,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: true,
       align: 'center',
       render: function (data, row) {
-        return (
-          <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
-        )
+        if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
+          return data
+        }else{
+          return (
+            <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+          )
+        }
       }
     },
     {
@@ -135,6 +152,21 @@ const defaultPayload = {
   ]
 }
 
+const rowSelection = (intl: ReturnType<typeof useIntl>) => {
+  const params = {
+    getCheckboxProps: (record: Network) => ({
+      disabled: disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
+    }),
+    renderCell (checked: boolean, record: Network, index: number, node: ReactNode) {
+      if (disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1) {
+        return <Tooltip
+          title={intl.$t({ defaultMessage: 'Not available in Beta1' })}>{node}</Tooltip>
+      }
+      return node
+    }
+  }
+  return params
+}
 export function NetworksTable () {
   const { $t } = useIntl()
   const NetworksTable = () => {
@@ -150,7 +182,7 @@ export function NetworksTable () {
       { isLoading: isDeleteNetworkUpdating }
     ] = useDeleteNetworkMutation()
 
-    const actions: TableProps<Network>['actions'] = [
+    const rowActions: TableProps<Network>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
         onClick: (selectedRows) => {
@@ -190,8 +222,11 @@ export function NetworksTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          actions={actions}
-          rowSelection={{ type: 'radio' }}
+          rowActions={rowActions}
+          rowSelection={{
+            type: 'radio',
+            ...rowSelection(useIntl())
+          }}
         />
       </Loader>
     )
