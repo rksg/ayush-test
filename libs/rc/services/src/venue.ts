@@ -11,7 +11,8 @@ import {
   VenueDetailHeader,
   VenueCapabilities,
   VenueLed,
-  VenueApModels
+  VenueApModels,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -53,7 +54,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenue: build.query<Venue, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.getVenue, params)
         return{
           ...req
         }
@@ -70,7 +71,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, 
+          showActivityMessage(msg,
             ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
             })
