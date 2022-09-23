@@ -22,7 +22,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
               >
                 Incidents
               </div>
@@ -181,23 +181,23 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                 style="height: 100px; position: relative;"
               >
                 <div
-                  style="position: relative; overflow: hidden; width: 0px; height: 100px;"
+                  style="position: relative; overflow: hidden; width: 280px; height: 280px;"
                 >
                   <svg
                     baseProfile="full"
-                    height="100"
+                    height="280"
                     style="position:absolute;left:0;top:0;user-select:none"
                     version="1.1"
-                    width="0"
+                    width="280"
                     xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
                   >
                     <rect
                       fill="none"
                       fill-opacity="1"
-                      height="100"
+                      height="280"
                       id="0"
-                      width="0"
+                      width="280"
                       x="0"
                       y="0"
                     />
@@ -205,14 +205,14 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                       <path
                         d="M-75 -0.5l75 0l0 1l-75 0Z"
                         fill="none"
-                        transform="translate(55 75.8333)"
+                        transform="translate(85 225.8333)"
                       />
                       <text
                         dominant-baseline="central"
                         fill="#333333"
                         style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
-                        transform="translate(55 75.8333)"
+                        transform="translate(85 225.8333)"
                         x="-75"
                       >
                         Infrastructure
@@ -220,14 +220,14 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                       <path
                         d="M-75 -0.5l75 0l0 1l-75 0Z"
                         fill="none"
-                        transform="translate(55 45.5)"
+                        transform="translate(85 135.5)"
                       />
                       <text
                         dominant-baseline="central"
                         fill="#333333"
                         style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
-                        transform="translate(55 45.5)"
+                        transform="translate(85 135.5)"
                         x="-75"
                       >
                         Performance
@@ -235,70 +235,70 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                       <path
                         d="M-75 -0.5l75 0l0 1l-75 0Z"
                         fill="none"
-                        transform="translate(55 15.1667)"
+                        transform="translate(85 45.1667)"
                       />
                       <text
                         dominant-baseline="central"
                         fill="#333333"
                         style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
-                        transform="translate(55 15.1667)"
+                        transform="translate(85 45.1667)"
                         x="-75"
                       >
                         Connection
                       </text>
                       <path
-                        d="M63 71.8333L63 79.8333L63 71.8333"
+                        d="M93 221.8333L93 229.8333L93 221.8333"
                         fill="#FAD278"
                       />
                       <path
-                        d="M63 41.5L63 49.5L63 41.5"
+                        d="M93 131.5L93 139.5L93 131.5"
                         fill="#FAD278"
                       />
                       <path
-                        d="M63 11.1667L63 19.1667L63 11.1667"
+                        d="M93 41.1667L93 49.1667L93 41.1667"
                         fill="#FAD278"
                       />
                       <path
-                        d="M62.9293 71.8333L62.9293 79.8333L62.9293 71.8333"
+                        d="M93.2227 221.8333L93.2227 229.8333L93.2227 221.8333"
                         fill="#F7B41E"
                       />
                       <path
-                        d="M62.9329 41.5L62.9329 49.5L62.9329 41.5"
+                        d="M93.2115 131.5L93.2115 139.5L93.2115 131.5"
                         fill="#F7B41E"
                       />
                       <path
-                        d="M62.9364 11.1667L62.9364 19.1667L62.9364 11.1667"
+                        d="M93.2004 41.1667L93.2004 49.1667L93.2004 41.1667"
                         fill="#F7B41E"
                       />
                       <path
-                        d="M62.8693 71.8333L62.8693 79.8333L62.8693 71.8333"
+                        d="M93.4119 221.8333L93.4119 229.8333L93.4119 221.8333"
                         fill="#EC7100"
                       />
                       <path
-                        d="M62.8763 41.5L62.8763 49.5L62.8763 41.5"
+                        d="M93.3897 131.5L93.3897 139.5L93.3897 131.5"
                         fill="#EC7100"
                       />
                       <path
-                        d="M62.8834 11.1667L62.8834 19.1667L62.8834 11.1667"
+                        d="M93.3674 41.1667L93.3674 49.1667L93.3674 41.1667"
                         fill="#EC7100"
                       />
                       <path
-                        d="M13.4026 71.8333L13.4026 79.8333L13.4026 71.8333"
+                        d="M249.2786 221.8333L249.2786 229.8333L249.2786 221.8333"
                         fill="#ED1C24"
                       />
                       <path
-                        d="M16.943 41.5L16.943 49.5L16.943 41.5"
+                        d="M238.123 131.5L238.123 139.5L238.123 131.5"
                         fill="#ED1C24"
                       />
                       <path
-                        d="M20.4834 11.1667L20.4834 19.1667L20.4834 11.1667"
+                        d="M226.9674 41.1667L226.9674 49.1667L226.9674 41.1667"
                         fill="#ED1C24"
                       />
                       <path
                         d="M0 -10l5 0l0 20l-5 0Z"
                         fill="none"
-                        transform="translate(18.4026 75.8333)"
+                        transform="translate(254.2786 225.8333)"
                       />
                       <text
                         dominant-baseline="central"
@@ -306,14 +306,14 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                         fill-opacity="0"
                         style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
-                        transform="translate(18.4026 75.8333)"
+                        transform="translate(254.2786 225.8333)"
                       >
                         14048
                       </text>
                       <path
                         d="M0 -10l5 0l0 20l-5 0Z"
                         fill="none"
-                        transform="translate(21.943 45.5)"
+                        transform="translate(243.123 135.5)"
                       />
                       <text
                         dominant-baseline="central"
@@ -321,14 +321,14 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                         fill-opacity="0"
                         style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
-                        transform="translate(21.943 45.5)"
+                        transform="translate(243.123 135.5)"
                       >
                         13045
                       </text>
                       <path
                         d="M0 -10l5 0l0 20l-5 0Z"
                         fill="none"
-                        transform="translate(25.4834 15.1667)"
+                        transform="translate(231.9674 45.1667)"
                       />
                       <text
                         dominant-baseline="central"
@@ -336,7 +336,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                         fill-opacity="0"
                         style="font-size:14px;font-family:'Open Sans', sans-serif;font-weight:400;"
                         text-anchor="start"
-                        transform="translate(25.4834 15.1667)"
+                        transform="translate(231.9674 45.1667)"
                       >
                         12042
                       </text>

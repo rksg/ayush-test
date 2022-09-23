@@ -4,7 +4,7 @@ import { IncidentFilter }  from '@acx-ui/analytics/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   cleanup,
-  mockAutoSizer,
+  mockDOMWidth,
   mockGraphqlQuery,
   render,
   screen
@@ -24,7 +24,7 @@ const filters : IncidentFilter = {
 }
 
 describe('IncidentDashboard', () => {
-  mockAutoSizer()
+  mockDOMWidth()
 
   beforeEach(() => store.dispatch(api.util.resetApiState()))
 
