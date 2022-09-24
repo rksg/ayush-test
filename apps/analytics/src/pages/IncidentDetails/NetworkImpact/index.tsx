@@ -8,8 +8,8 @@ import { Incident }                         from '@acx-ui/analytics/utils'
 import { Card, cssStr, DonutChart, Loader } from '@acx-ui/components'
 import { intlFormats }                      from '@acx-ui/utils'
 
-import { networkImpactCharts, getDominanceByThreshold }        from './config'
-import { NetworkImpactChartData, useNetworkImpactChartsQuery } from './services'
+import { networkImpactCharts, getDominanceByThreshold, NetworkImpactChartTypes } from './config'
+import { NetworkImpactChartData, useNetworkImpactChartsQuery }                   from './services'
 
 const colors = [
   // TODO
@@ -21,13 +21,14 @@ const colors = [
 
 interface NetworkImpactProps {
   incident: Incident,
-  charts: string[]
+  charts: NetworkImpactChartTypes[]
 }
 
 export const transformSummary = (
   metric: NetworkImpactChartData, incident: Incident, intl: IntlShape
 ) => {
-  const config = networkImpactCharts[metric.key]
+  const [, config] = Object.entries(networkImpactCharts)
+    .find(([,chartConfig]) => chartConfig.key === metric.key)!
   const { count, data } = metric
   const dominance = (config.dominanceFn || getDominanceByThreshold())(data, incident)
   if (dominance) {
@@ -43,7 +44,8 @@ export const transformSummary = (
 }
 
 export const transformData = (metric: NetworkImpactChartData, intl: IntlShape) => {
-  const config = networkImpactCharts[metric.key]
+  const [, config] = Object.entries(networkImpactCharts)
+    .find(([,chartConfig]) => chartConfig.key === metric.key)!
   return metric.data.map((record, index) => ({
     ...record,
     name: config.transformKeyFn ? config.transformKeyFn(record.name, intl) : record.name,
@@ -59,7 +61,8 @@ export const NetworkImpact: React.FC<NetworkImpactProps> = ({ charts, incident }
     <Card title={intl.$t({ defaultMessage: 'Network Impact' })} type='no-border'></Card>
     <Row>
       {Object.entries(queryResults.data || {}).map(([chart, chartData])=>{
-        const config = networkImpactCharts[chartData.key]
+        const [, config] = Object.entries(networkImpactCharts)
+          .find(([, chartConfig]) => chartConfig.key === chartData.key)!
         return <Col key={chart} span={6} style={{ height: 200 }}>
           <Card type='no-border'>
             <AutoSizer>

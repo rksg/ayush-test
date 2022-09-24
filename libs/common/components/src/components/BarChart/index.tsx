@@ -12,7 +12,8 @@ import {
   barChartSeriesLabelOptions,
   legendOptions,
   legendTextStyleOptions,
-  tooltipOptions
+  tooltipOptions,
+  EventParams
 } from '../Chart/helper'
 
 import type { EChartsOption }     from 'echarts'
@@ -27,18 +28,21 @@ export interface BarChartProps
   barWidth?: number
   labelFormatter?: string | LabelFormatterCallback<CallbackDataParams>
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
-  labelRichStyle?: object
+  labelRichStyle?: object,
+  onClick?: (params: EventParams) => void
 }
 
 const getSeries = (
   data: BarChartData,
   barColors: string[],
   labelFormatter: string | LabelFormatterCallback<CallbackDataParams> | undefined,
-  labelRichStyle: object | undefined): RegisteredSeriesOption['bar'][] => {
-
+  labelRichStyle: object | undefined,
+  clickable?: boolean
+): RegisteredSeriesOption['bar'][] => {
   return data?.seriesEncode.map(encode => ({
     type: 'bar',
-    silent: true,
+    silent: !clickable,
+    cursor: clickable ? 'pointer' : 'auto',
     colorBy: data?.seriesEncode?.length === 1 ? 'data' : undefined,
     color: data?.seriesEncode?.length === 1 ? barColors : undefined,
     encode: encode,
@@ -55,6 +59,9 @@ const getSeries = (
   }))
 }
 
+export const handleOnClick = (onClick: BarChartProps<BarChartData>['onClick']) =>
+  (params: EventParams) => onClick && onClick(params)
+
 export function BarChart<TChartData extends BarChartData>
 ({
   data,
@@ -64,6 +71,7 @@ export function BarChart<TChartData extends BarChartData>
   labelRichStyle,
   barColors,
   barWidth,
+  onClick,
   ...props
 }: BarChartProps<TChartData>) {
   const option: EChartsOption = {
@@ -115,13 +123,14 @@ export function BarChart<TChartData extends BarChartData>
       }
     },
 
-    series: getSeries(data, barColors, labelFormatter, labelRichStyle)
+    series: getSeries(data, barColors, labelFormatter, labelRichStyle, !!onClick)
   }
 
   return (
     <ReactECharts
       {...props}
       opts={{ renderer: 'svg' }}
-      option={option} />
+      option={option}
+      onEvents={{ click: handleOnClick(onClick!) }} />
   )
 }
