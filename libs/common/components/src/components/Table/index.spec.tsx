@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
-import { render, fireEvent, screen, within } from '@acx-ui/test-utils'
+import userEvent from '@testing-library/user-event'
+
+import { render, fireEvent, screen, within, mockDOMWidth } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
 
@@ -11,14 +13,16 @@ jest.mock('@acx-ui/icons', ()=> ({
 }), { virtual: true })
 
 jest.mock('react-resizable', () => ({
-  Resizable: jest.fn().mockImplementation((props) => {
-    return <td><div
-      data-testid='react-resizable'
-      onMouseDown={()=>{
+  Resizable: jest.fn().mockImplementation((props) => (
+    // eslint-disable-next-line testing-library/no-node-access
+    require('react').cloneElement(props.children, {
+      'data-testid': 'react-resizable',
+      'onMouseDown': () => {
+        props.onResizeStart()
         props.onResize(null, { size: { width: 99 } })
-      // eslint-disable-next-line testing-library/no-node-access
-      }}/>{props.children}</td>
-  })
+      }
+    })
+  ))
 }))
 
 describe('Table component', () => {
@@ -75,7 +79,7 @@ describe('Table component', () => {
 
   it('should render multi select table and render action buttons correctly', async () => {
     const [onEdit, onDelete] = [jest.fn(), jest.fn()]
-    const actions = [
+    const rowActions = [
       { label: 'Edit', onClick: onEdit },
       { label: 'Delete', onClick: onDelete }
     ]
@@ -83,7 +87,7 @@ describe('Table component', () => {
     const { asFragment } = render(<Table
       columns={basicColumns}
       dataSource={basicData}
-      actions={actions}
+      rowActions={rowActions}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />)
     expect(asFragment()).toMatchSnapshot()
@@ -121,14 +125,14 @@ describe('Table component', () => {
   })
 
   it('allow action to clear selection', async () => {
-    const actions: TableProps<{ key: string, name: string }>['actions'] = [
+    const rowActions: TableProps<{ key: string, name: string }>['rowActions'] = [
       { label: 'Delete', onClick: (selected, clear) => clear() }
     ]
 
     render(<Table
       columns={basicColumns}
       dataSource={basicData}
-      actions={actions}
+      rowActions={rowActions}
       rowSelection={{ defaultSelectedRowKeys: ['1', '2'] }}
     />)
 
@@ -157,14 +161,14 @@ describe('Table component', () => {
       { key: '3', name: 'Will Smith' }
     ]
 
-    const actions: TableProps<{ key: string, name: string }>['actions'] = [
+    const rowActions: TableProps<{ key: string, name: string }>['rowActions'] = [
       { label: 'Delete', onClick: (selected, clear) => clear() }
     ]
 
     const { rerender } = render(<Table
       columns={columns}
       dataSource={data}
-      actions={actions}
+      rowActions={rowActions}
       rowSelection={{ selectedRowKeys: ['1', '2'] }}
     />)
 
@@ -181,7 +185,7 @@ describe('Table component', () => {
     rerender(<Table
       columns={columns}
       dataSource={data}
-      actions={actions}
+      rowActions={rowActions}
       rowSelection={{ selectedRowKeys: ['1'] }}
     />)
 
@@ -226,6 +230,31 @@ describe('Table component', () => {
     expect(selectedRow.filter(el => el.checked)).toHaveLength(1)
   })
 
+  it('single select disabled row click', async () => {
+    render(<Table
+      columns={basicColumns}
+      dataSource={basicData}
+      rowSelection={{
+        type: 'radio',
+        getCheckboxProps: () => ({
+          disabled: true
+        })
+      }}
+    />)
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText('Jane Doe'))
+    // to ensure it doesn't get unselected
+    fireEvent.click(await body.findByText('Jane Doe'))
+    const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
+    expect(selectedRow.filter(el => el.checked)).toHaveLength(0)
+  })
+
   it('multible select row click', async () => {
     render(<Table
       columns={basicColumns}
@@ -246,11 +275,11 @@ describe('Table component', () => {
     expect(selectedRows.filter(el => el.checked)).toHaveLength(2)
   })
 
-  it('dynamically scales based on scroll prop', () => {
+  it('should handle ellipsis', () => {
     const basicColumns = [
-      { title: 'Name', key: 'name' },
-      { title: 'Age', key: 'age' },
-      { title: 'Address', key: 'address' }
+      { title: 'Name', key: 'name', dataIndex: 'name', width: 1 },
+      { title: 'Age', key: 'age', dataIndex: 'age' },
+      { title: 'Address', key: 'address', dataIndex: 'name' }
     ]
     const basicData = [
       {
@@ -272,25 +301,47 @@ describe('Table component', () => {
         address: 'address'
       }
     ]
-    const scroll = { y: 'max-content' }
     const { asFragment } = render(<Table
       columns={basicColumns}
       dataSource={basicData}
-      scroll={scroll}
+      ellipsis={true}
     />)
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should allow column resizing', async () => {
-    const { asFragment } = render(<Table
+  describe('resize', () => {
+    mockDOMWidth(99)
+    it('should allow column resizing', async () => {
+      const { asFragment } = render(<Table
+        columns={basicColumns}
+        dataSource={basicData}
+      />)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(asFragment().querySelector('col')?.style.width).toBe('')
+      await userEvent.click((await screen.findAllByTestId('react-resizable'))[0])
+      //screen.debug()
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(asFragment().querySelector('col')?.style.width).toBe('99px')
+    })
+  })
+
+  it('renders action items', async () => {
+    const actions = [
+      { label: 'Action 1', onClick: jest.fn() },
+      { label: 'Action 2', onClick: jest.fn() }
+    ]
+
+    render(<Table
+      actions={actions}
       columns={basicColumns}
       dataSource={basicData}
     />)
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector('col')?.style.width).toBe('')
-    fireEvent.mouseDown((await screen.findAllByTestId('react-resizable'))[0])
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(asFragment().querySelector('col')?.style.width).toBe('99px')
+
+    const action1 = await screen.findByRole('button', { name: actions[0].label })
+    expect(action1).toBeVisible()
+    expect(actions[0].onClick).not.toBeCalled()
+    fireEvent.click(action1)
+    expect(actions[0].onClick).toBeCalled()
   })
 
   describe('search & filter', () => {

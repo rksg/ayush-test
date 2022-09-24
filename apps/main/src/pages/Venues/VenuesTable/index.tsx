@@ -43,6 +43,7 @@ function useColumns () {
     },
     {
       key: 'incidents',
+      dataIndex: 'incidents',
       title: () => {
         return (
           <>
@@ -55,6 +56,7 @@ function useColumns () {
     },
     {
       key: 'health',
+      dataIndex: 'health',
       title: () => {
         return (
           <>
@@ -68,6 +70,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Services' }),
       key: 'services',
+      dataIndex: 'services',
       align: 'center'
     },
     {
@@ -135,6 +138,7 @@ function useColumns () {
     },
     {
       key: 'tags',
+      dataIndex: 'tags',
       title: $t({ defaultMessage: 'Tags' })
     }
   ]
@@ -174,7 +178,7 @@ export function VenuesTable () {
       defaultPayload
     })
 
-    const actions: TableProps<Venue>['actions'] = [{
+    const rowActions: TableProps<Venue>['rowActions'] = [{
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate(`${selectedRows[0].id}/edit/details/details`, { replace: false })
@@ -191,7 +195,7 @@ export function VenuesTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          actions={actions}
+          rowActions={rowActions}
           rowSelection={{ type: 'checkbox' }}
         />
       </Loader>

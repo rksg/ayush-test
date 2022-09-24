@@ -4,6 +4,7 @@ import { BasicTable }                 from './BasicTable'
 import { ColumnSortAndShowHideTable } from './ColumnSortAndShowHideTable'
 import { CompactTable }               from './CompactTable'
 import { CustomTable }                from './CustomTable'
+import { EllipsisTable }              from './EllipsisTable'
 import { FilteredTable }              from './FilteredTable'
 import { FormTable }                  from './FormTable'
 import { MultipleSorterTable }        from './MultipleSorterTable'
@@ -12,12 +13,13 @@ import { SingleSelectTable }          from './SingleSelectTable'
 
 storiesOf('Table', module)
   .add('Basic', BasicTable)
-  .add('With Custom Cell', CustomTable)
+  .add('Customizations', CustomTable)
   .add('With Filters', FilteredTable)
   .add('Multiple Sorter', MultipleSorterTable)
   .add('Multi Select', MultiSelectTable)
   .add('Single Select', SingleSelectTable)
   .add('Column Sort & Show/Hide', ColumnSortAndShowHideTable)
+  .add('Ellipsis', EllipsisTable)
   .add('Compact', CompactTable)
   .add('Form Table', FormTable)
 

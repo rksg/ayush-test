@@ -67,13 +67,20 @@ export function NetworkMoreSettingsForm (props: {
   useEffect(() => {
     if (data) {
       form.setFieldsValue({
-        wlan: data.wlan,
+        wlan: {
+          ...data.wlan,
+          advancedCustomization: {
+            ...data?.wlan?.advancedCustomization,
+            vlanPool: JSON.stringify(get(data, 'wlan.advancedCustomization.vlanPool'))
+          }
+        },
         enableUploadLimit: data.wlan?.advancedCustomization?.userUplinkRateLimiting &&
           data.wlan?.advancedCustomization?.userUplinkRateLimiting > 0,
         enableDownloadLimit: data.wlan?.advancedCustomization?.userDownlinkRateLimiting &&
           data.wlan?.advancedCustomization?.userDownlinkRateLimiting > 0,
         enableOfdmOnly: get(data,
           'wlan.advancedCustomization.radioCustomization.phyTypeConstraint') === 'OFDM',
+        enableVlanPooling: get(data, 'wlan.advancedCustomization.vlanPool'),
         managementFrameMinimumPhyRate: get(data,
           'wlan.advancedCustomization.radioCustomization.managementFrameMinimumPhyRate'),
         bssMinimumPhyRate: get(data,
@@ -158,8 +165,8 @@ export function MoreSettingsForm (props: {
   }, {
     selectFromResult ({ data }) {
       return {
-        vlanPoolSelectOptions: data?.data?.map(
-          item => <Option key={item.id}>{item.name}</Option>) ?? []
+        vlanPoolSelectOptions: data?.map(
+          item => <Option key={item.id} value={JSON.stringify(item)}>{item.name}</Option>) ?? []
       }
     }
   })
