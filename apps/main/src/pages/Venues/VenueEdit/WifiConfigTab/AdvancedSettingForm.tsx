@@ -141,6 +141,7 @@ export function AdvancedSettingForm () {
     }
   }, {
     key: 'action',
+    dataIndex: 'action',
     render: (data, row) => row.manual ? <Button
       key='delete'
       role='deleteBtn'

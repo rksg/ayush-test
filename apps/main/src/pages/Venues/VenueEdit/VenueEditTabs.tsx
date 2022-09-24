@@ -15,7 +15,7 @@ import { VenueEditContext, showUnsavedModal } from './index'
 import type { History, Transition } from 'history'
 
 function VenueEditTabs () {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/venues/${params.venueId}/edit/`)
@@ -43,7 +43,6 @@ function VenueEditTabs () {
         showUnsavedModal(
           editContextData,
           setEditContextData,
-          intl,
           tx.retry
         )
       })
@@ -54,9 +53,9 @@ function VenueEditTabs () {
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Venue Details' })} key='details' />
-      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
-      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Switch Configuration' })} key='switch' />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Venue Details' })} key='details' />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Switch Configuration' })} key='switch' />
     </Tabs>
   )
 }
