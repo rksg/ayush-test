@@ -119,6 +119,18 @@
       margin-bottom: 16px;
     }
 
+    &-item-label,
+    &-item-control-input-content {
+      svg {
+        path {
+          stroke: var(--acx-primary-black);
+        }
+        width: 16px;
+        height: 16px;
+        margin-left: 5px;
+      }
+    }
+
     &-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
       flex-direction: row-reverse;
 
@@ -130,10 +142,8 @@
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
       }
-
-      .anticon.anticon-question-circle {
-        position: absolute;
-        right: -19px;        
+      svg {
+        order: -1
       }
     }
 
@@ -150,12 +160,6 @@
     label {
       font-size: var(--acx-body-4-font-size);
       line-height: var(--acx-body-4-line-height);
-      .anticon.anticon-question-circle {
-        margin-left: 6px;
-        path {
-          fill: var(--acx-primary-black);
-        }
-      }
     }
 
     &-item-margin-offset {

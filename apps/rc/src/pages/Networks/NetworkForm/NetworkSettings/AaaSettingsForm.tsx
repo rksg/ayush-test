@@ -1,8 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import {
-  ExclamationCircleFilled
-} from '@ant-design/icons'
 import { Space } from 'antd'
 import {
   Col,
@@ -19,8 +16,9 @@ import {
   Button,
   Subtitle
 } from '@acx-ui/components'
-import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
-import { useCloudpathListQuery }       from '@acx-ui/rc/services'
+import { Features, useSplitTreatment }                  from '@acx-ui/feature-toggle'
+import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { useCloudpathListQuery }                        from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
   AaaServerTypeEnum,
@@ -30,11 +28,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { IpPortSecretForm }         from '../../../../components/IpPortSecretForm'
-import { ToggleButton }             from '../../../../components/ToggleButton'
-import { NetworkDiagram }           from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext           from '../NetworkFormContext'
-import { QuestionMarkOutlinedIcon } from '../styledComponents'
+import { IpPortSecretForm } from '../../../../components/IpPortSecretForm'
+import { ToggleButton }     from '../../../../components/ToggleButton'
+import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext   from '../NetworkFormContext'
 
 import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { CloudpathServerForm }     from './CloudpathServerForm'
@@ -151,7 +148,7 @@ function SettingsForm () {
     /* eslint-enable */
     values={{
       highlight: (chunks) => <Space align='start'>
-        <ExclamationCircleFilled />
+        <InformationSolid />
         {chunks}
       </Space>
     }}
@@ -202,7 +199,7 @@ function SettingsForm () {
     const { $t } = useIntl()
     const proxyServiceTooltip = <Tooltip
       placement='bottom'
-      children={<QuestionMarkOutlinedIcon />}
+      children={<QuestionMarkCircleOutlined />}
       title={$t({
         // eslint-disable-next-line max-len
         defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'

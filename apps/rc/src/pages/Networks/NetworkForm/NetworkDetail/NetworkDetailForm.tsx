@@ -5,14 +5,15 @@ import TextArea                                         from 'antd/lib/input/Tex
 import { useIntl }                                      from 'react-intl'
 
 import { StepsForm }                                                                               from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                                                              from '@acx-ui/icons'
 import { useLazyNetworkListQuery }                                                                 from '@acx-ui/rc/services'
 import { NetworkTypeEnum, WifiNetworkMessages, checkObjectNotExists, hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
 import { useParams }                                                                               from '@acx-ui/react-router-dom'
 
-import { networkTypesDescription, networkTypes }      from '../contentsMap'
-import { NetworkDiagram }                             from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext                             from '../NetworkFormContext'
-import { RadioDescription, QuestionMarkOutlinedIcon } from '../styledComponents'
+import { networkTypesDescription, networkTypes } from '../contentsMap'
+import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext                        from '../NetworkFormContext'
+import { RadioDescription }                      from '../styledComponents'
 
 import type { RadioChangeEvent } from 'antd'
 
@@ -45,7 +46,7 @@ export function NetworkDetailForm () {
       .filter(n => n.id !== params.networkId)
       .map(n => n.name)
 
-    return checkObjectNotExists(intl, list, value, intl.$t({ defaultMessage: 'Network' }))
+    return checkObjectNotExists(list, value, intl.$t({ defaultMessage: 'Network' }))
   }
 
   const types = [
@@ -68,7 +69,7 @@ export function NetworkDetailForm () {
               title={intl.$t(WifiNetworkMessages.NETWORK_NAME_TOOLTIP)}
               placement='bottom'
             >
-              <QuestionMarkOutlinedIcon required />
+              <QuestionMarkCircleOutlined />
             </Tooltip>
           </>}
           rules={[
@@ -76,7 +77,7 @@ export function NetworkDetailForm () {
             { min: 2 },
             { max: 32 },
             { validator: (_, value) => nameValidator(value) },
-            { validator: (_, value) => hasGraveAccentAndDollarSign(intl, value) }
+            { validator: (_, value) => hasGraveAccentAndDollarSign(value) }
           ]}
           validateFirst
           hasFeedback

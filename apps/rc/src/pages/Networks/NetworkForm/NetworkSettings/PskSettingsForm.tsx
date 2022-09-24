@@ -1,8 +1,5 @@
 import React, { useContext, useEffect } from 'react'
 
-import {
-  ExclamationCircleFilled
-} from '@ant-design/icons'
 import { Space } from 'antd'
 import {
   Col,
@@ -20,7 +17,8 @@ import {
   Button,
   Subtitle
 } from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { useCloudpathListQuery }                        from '@acx-ui/rc/services'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -40,12 +38,11 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { IpPortSecretForm }         from '../../../../components/IpPortSecretForm'
-import { ToggleButton }             from '../../../../components/ToggleButton'
-import { NetworkDiagram }           from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext           from '../NetworkFormContext'
-import { NetworkMoreSettingsForm }  from '../NetworkMoreSettings/NetworkMoreSettingsForm'
-import { QuestionMarkOutlinedIcon } from '../styledComponents'
+import { IpPortSecretForm }        from '../../../../components/IpPortSecretForm'
+import { ToggleButton }            from '../../../../components/ToggleButton'
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext          from '../NetworkFormContext'
+import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 const { Option } = Select
 
@@ -133,7 +130,7 @@ function SettingsForm () {
           WlanSecurityEnum.WEP
         ].indexOf(wlanSecurity) > -1 &&
           <Space align='start'>
-            <ExclamationCircleFilled />
+            <InformationSolid />
             {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
           </Space>
         }
@@ -199,8 +196,8 @@ function SettingsForm () {
             rules={[
               { required: true, min: 8 },
               { max: 64 },
-              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) },
-              { validator: (_, value) => passphraseRegExp(intl, value) }
+              { validator: (_, value) => trailingNorLeadingSpaces(value) },
+              { validator: (_, value) => passphraseRegExp(value) }
             ]}
             validateFirst
             extra={intl.$t({ defaultMessage: '8 characters minimum' })}
@@ -213,7 +210,7 @@ function SettingsForm () {
             label={SecurityOptionsPassphraseLabel[PskWlanSecurityEnum.WEP]}
             rules={[
               { required: true },
-              { validator: (_, value) => hexRegExp(intl, value) }
+              { validator: (_, value) => hexRegExp(value) }
             ]}
             extra={intl.$t({ defaultMessage: 'Must be 26 hex characters' })}
             children={<Input.Password />}
@@ -234,8 +231,8 @@ function SettingsForm () {
             rules={[
               { required: true, min: 8 },
               { max: 64 },
-              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) },
-              { validator: (_, value) => passphraseRegExp(intl, value) }
+              { validator: (_, value) => trailingNorLeadingSpaces(value) },
+              { validator: (_, value) => passphraseRegExp(value) }
             ]}
             validateFirst
             extra={intl.$t({ defaultMessage: '8 characters minimum' })}
@@ -267,7 +264,7 @@ function SettingsForm () {
                   }}
                 />}
                 placement='bottom'>
-                <QuestionMarkOutlinedIcon />
+                <QuestionMarkCircleOutlined />
               </Tooltip>                  
             </>}
             name={['wlan', 'managementFrameProtection']}
@@ -293,7 +290,7 @@ function SettingsForm () {
               title={intl.$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
               placement='bottom'
             >
-              <QuestionMarkOutlinedIcon />
+              <QuestionMarkCircleOutlined />
             </Tooltip>
           </Form.Item>
         </Form.Item>

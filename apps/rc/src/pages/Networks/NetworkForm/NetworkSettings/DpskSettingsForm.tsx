@@ -12,14 +12,14 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { StepsForm, Subtitle }                                      from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
 import { useCloudpathListQuery }                                    from '@acx-ui/rc/services'
 import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkType,
   transformDpskNetwork, PassphraseExpirationEnum, NetworkSaveData }      from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { NetworkDiagram }           from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext           from '../NetworkFormContext'
-import { QuestionMarkOutlinedIcon } from '../styledComponents'
+import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext from '../NetworkFormContext'
 
 import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { CloudpathServerForm }     from './CloudpathServerForm'
@@ -179,7 +179,7 @@ function PassphraseGeneration () {
               `}
               values={{ p: (chunks) => <p>{chunks}</p> }}
             />}
-            children={<QuestionMarkOutlinedIcon required />} 
+            children={<QuestionMarkCircleOutlined />} 
           />
         </>}
         rules={[{ required: true }]}
@@ -203,7 +203,7 @@ function PassphraseGeneration () {
           <Tooltip
             title={$t({ defaultMessage: 'Number of characters in passphrase. Valid range 8-63' })}
             placement='bottom'
-            children={<QuestionMarkOutlinedIcon required />}
+            children={<QuestionMarkCircleOutlined />}
           />
         </>}
         rules={[{ required: true }]}

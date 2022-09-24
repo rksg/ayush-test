@@ -266,10 +266,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                             title=""
                           >
                             Network Name
-                            <svg
-                              class="styledComponents__QuestionMarkOutlinedIcon-sc-p8nkv6-3 ctCoCI"
-                              required=""
-                            >
+                            <svg>
                               QuestionMarkCircleOutlined.svg
                             </svg>
                           </label>
