@@ -52,7 +52,7 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: 'PT15M',
-          filter: payload.filter ?? {}
+          filter: payload.filter
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'CONNECTED_CLIENTS_OVER_TIME' }],

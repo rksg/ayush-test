@@ -24,10 +24,10 @@ export const api = dataApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query IncidentsBySeverityWidget(
-          $path: [HierarchyNodeInput], 
-          $start: DateTime, 
-          $end: DateTime, 
-          $code: [String], 
+          $path: [HierarchyNodeInput],
+          $start: DateTime,
+          $end: DateTime,
+          $code: [String],
           $filter: FilterInput
         ) {
           network(start: $start, end: $end, filter : $filter) {
@@ -48,7 +48,7 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           code: payload.code ?? incidentCodes,
-          filter: payload.filter ?? {}
+          filter: payload.filter
         }
       }),
       transformResponse: (response: Response<IncidentsBySeverityData>) =>

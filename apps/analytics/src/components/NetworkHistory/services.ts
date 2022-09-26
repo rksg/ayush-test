@@ -63,7 +63,7 @@ export const api = dataApi.injectEndpoints({
           granularity: calcGranularity(payload.startDate, payload.endDate),
           severity: [{ gt: 0, lte: 1 }], // all severities
           code: payload.code ?? incidentCodes,
-          filter: payload.filter ?? {}
+          filter: payload.filter
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'NETWORK_HISTORY' }],

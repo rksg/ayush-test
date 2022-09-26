@@ -68,9 +68,9 @@ const getQuery = (path: NetworkPath) : string => {
   switch (type) {
     case 'AP': return gql`
     query NetworkNodeInfo(
-      $startDate: DateTime, 
-      $endDate: DateTime, 
-      $mac: String, 
+      $startDate: DateTime,
+      $endDate: DateTime,
+      $mac: String,
       $filter: FilterInput
       ){
         network(start: $startDate, end: $endDate, filter : $filter) {
@@ -100,7 +100,7 @@ const getQuery = (path: NetworkPath) : string => {
     `
     default: return gql`
       query NetworkNodeInfo(
-        $path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime, 
+        $path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime,
       ){
         network(start: $startDate, end: $endDate) {
           node: hierarchyNode(path:$path) {
@@ -118,9 +118,8 @@ const getQueryVariables = (payload: AnalyticsFilter): QueryVariables => {
   const [{ type, name }] = path.slice(-1)
   switch(type) {
     case 'AP':
-    case 'switch':
-      return { ...payload, mac: name, filter: payload.filter ?? {} }
-    default: return { ...payload, filter: payload.filter ?? {} }
+    case 'switch': return { ...payload, mac: name }
+    default:       return payload
   }
 }
 
