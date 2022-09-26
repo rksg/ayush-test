@@ -1,11 +1,12 @@
 import { capitalize }                                           from 'lodash'
 import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
-import { intlFormats, PathNode, NodeType } from '@acx-ui/utils'
+import { formatter, intlFormats } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
+import kpiThreshold            from './kpiThreshold'
 
 import type { IncidentInformation } from './incidentInformation'
 import type {
@@ -162,23 +163,43 @@ export function incidentScope (incident: Incident, intl: IntlShape) {
   return scope
 }
 
-export function ttcThreshold (incident: Incident, intl: IntlShape) {
-  const threshold = intl.$t({
-    defaultMessage: `test 123`
-  })
-  return threshold
-}
-
 export const useIncidentScope = (incident: Incident) => {
   const intl = useIntl()
   const scope = incidentScope(incident, intl)
   return scope
 }
 
+const thresholdMapping = {
+  ttc: 'timeToConnect'
+}
+
+export const getThreshold = (incident: Incident, intl: IntlShape) => {
+  const { code } = incident
+  if (code === 'ttc') {
+    const codeMap = thresholdMapping[code]
+    const value = formatter('durationFormat')(
+      kpiThreshold[codeMap as keyof typeof kpiThreshold]) as string
+    const threshold = intl.$t({
+      defaultMessage: '{threshold}'
+    }, {
+      threshold: value
+    })
+    return threshold
+  } else {
+    return undefined
+  }
+}
+
+export const useGetThreshold = (incident: Incident) => {
+  const intl = useIntl()
+  const threshold = getThreshold(incident, intl)
+  return threshold
+}
+
 export const shortDescription = (incident: Incident, intl: IntlShape) => {
   const scope = incidentScope(incident, intl)
-  const threshold = ttcThreshold(incident, intl)
-  return intl.$t(incident.shortDescription, { scope, threshold })
+  const threshold = getThreshold(incident, intl)
+  return intl.$t(incident.shortDescription, { scope, ...threshold && { threshold } })
 }
 
 export const useShortDescription = (incident: Incident) => {

@@ -29,8 +29,6 @@ export const Ttc = (incident: Incident) => {
     'eventEndTime'
   ]
 
-  console.log(incident)
-  console.log(useShortDescription(incident))
   return (
     <>
       <PageHeader
