@@ -2,16 +2,16 @@ import { fakeIncident1 }                from '@acx-ui/analytics/utils'
 import { Provider }                     from '@acx-ui/store'
 import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
-import { IncidentDetailsTemplate } from './FailureTemplate'
+import { IncidentDetailsTemplate } from '../FailureTemplate'
 
-jest.mock('../IncidentDetails/IncidentAttributes', () => ({
-  ...jest.requireActual('../IncidentDetails/IncidentAttributes'),
+jest.mock('../../IncidentDetails/IncidentAttributes', () => ({
+  ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
 }))
-jest.mock('../NetworkImpact', () => ({
+jest.mock('../../NetworkImpact', () => ({
   NetworkImpact: () => <div data-testid='networkImpact' />
 }))
-jest.mock('../IncidentDetails/TimeSeries', () => ({
+jest.mock('../../IncidentDetails/TimeSeries', () => ({
   TimeSeries: () => <div data-testid='timeSeries' />
 }))
 
