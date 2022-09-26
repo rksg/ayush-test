@@ -5,7 +5,7 @@ import { Provider  }              from '@acx-ui/store'
 import { render,
   mockServer,
   screen,
-  mockAutoSizer,
+  mockDOMWidth,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import VenueAlarmWidget, { getChartData } from '.'
@@ -56,7 +56,7 @@ const alarmListMeta = {
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
 describe('Venue Overview Alarm Widget', () => {
-  mockAutoSizer()
+  mockDOMWidth()
 
   it('should render chart correctly', async () => {
     mockServer.use(

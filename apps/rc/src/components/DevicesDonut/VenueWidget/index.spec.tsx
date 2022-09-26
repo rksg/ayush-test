@@ -2,7 +2,7 @@ import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider  }          from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
-  mockAutoSizer,
+  mockDOMWidth,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
@@ -14,7 +14,7 @@ const params = {
 }
 
 describe('Venue Overview Devices Widget', () => {
-  mockAutoSizer()
+  mockDOMWidth()
 
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getVenueDetailsHeader.url, 'get',{})

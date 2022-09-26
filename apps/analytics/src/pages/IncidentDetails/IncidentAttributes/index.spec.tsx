@@ -10,6 +10,7 @@ import { ImpactedAP, impactedApi, ImpactedClient } from './services'
 import {
   durationOf,
   IncidentAttributes,
+  Attributes,
   useDrawer
 } from '.'
 
@@ -56,15 +57,15 @@ describe('IncidentAttributes', () => {
     moment.tz.setDefault(moment.tz.guess())
   })
   const attributeList = [
-    'clientImpactCount',
-    'apImpactCount',
-    'incidentCategory',
-    'incidentSubCategory',
-    'type',
-    'scope',
-    'duration',
-    'eventStartTime',
-    'eventEndTime'
+    Attributes.ClientImpactCount,
+    Attributes.ApImpactCount,
+    Attributes.IncidentCategory,
+    Attributes.IncidentSubCategory,
+    Attributes.Type,
+    Attributes.Scope,
+    Attributes.Duration,
+    Attributes.EventStartTime,
+    Attributes.EventEndTime
   ]
   const incident = fakeIncident({
     id: 'id',

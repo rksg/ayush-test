@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider as AntDivider,
   Input,
   Select,
   Tooltip as AntTooltip
@@ -219,10 +220,6 @@ const tallStyle = css<StyledTable>`
         .ant-pro-table-alert-info {
           font-size: var(--acx-body-4-font-size);
           line-height: var(--acx-body-4-line-height);
-
-          .ant-divider-vertical {
-            border-left-color: var(--acx-neutrals-40);
-          }
         }
       }
     }
@@ -392,4 +389,9 @@ export const Wrapper = styled.div<StyledTable>`
   }
 
   ${props => styles[props.$type]}
+`
+
+export const Divider = styled(AntDivider)`
+  height: 12px;
+  border-left-color: var(--acx-neutrals-30);
 `

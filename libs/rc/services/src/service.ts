@@ -6,7 +6,8 @@ import {
   RequestPayload,
   TableResult,
   Service,
-  CommonResult
+  CommonResult,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -113,10 +114,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    vlanPoolList: build.query<TableResult<VlanPool>, RequestPayload>({
+    vlanPoolList: build.query<VlanPool[], RequestPayload>({
       query: ({ params }) => {
         const vlanPoolListReq = createHttpRequest(
-          CommonUrlsInfo.getVlanPools,
+          WifiUrlsInfo.getVlanPools,
           params
         )
         return {

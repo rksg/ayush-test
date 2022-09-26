@@ -6,15 +6,24 @@ import { renderToString }                          from 'react-dom/server'
 import { useIntl }                                 from 'react-intl'
 import AutoSizer                                   from 'react-virtualized-auto-sizer'
 
+
 import {
   getBarChartSeriesData,
   AnalyticsFilter,
   BarChartData
-}                             from '@acx-ui/analytics/utils'
+}                                     from '@acx-ui/analytics/utils'
 import {
-  BarChart, Card, cssNumber, Loader, cssStr, NoData, TooltipWrapper
-} from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
+  BarChart,
+  Card,
+  cssNumber,
+  Loader,
+  cssStr,
+  NoData,
+  TooltipWrapper,
+  EventParams
+}                                     from '@acx-ui/components'
+import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { formatter }                                          from '@acx-ui/utils'
 
 import { useTopSwitchesByTrafficQuery } from './services'
 
@@ -56,8 +65,22 @@ export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams
   )
 }
 
+export const onClick = (navigate: NavigateFunction, basePath: Path) => {
+  return (params: EventParams) => {
+    const mac = params.componentType ==='series' && Array.isArray(params.value) && params.value[1]
+    navigate({
+      ...basePath,
+      // TODO: Actual path to be updated later
+      pathname: `${basePath.pathname}/${mac}`
+    })
+  }
+}
+
 function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
+  const basePath = useTenantLink('/switch/')
+  const navigate = useNavigate()
+
   const queryResults = useTopSwitchesByTrafficQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
@@ -67,6 +90,7 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
     })
 
   const { data } = queryResults
+
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: 'Top 5 Switches by Traffic' })} >
@@ -81,6 +105,7 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
                 grid={{ right: '7%' }}
                 labelFormatter={switchTrafficLabelFormatter}
                 labelRichStyle={getSwitchTrafficRichStyle()}
+                onClick={onClick(navigate,basePath)}
                 tooltipFormatter={tooltipFormatter}
                 style={{ width, height }}
               />:

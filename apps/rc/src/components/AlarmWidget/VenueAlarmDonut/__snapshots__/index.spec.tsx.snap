@@ -22,7 +22,7 @@ exports[`Venue Overview Alarm Widget should render "No active alarms" when no al
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
               >
                 Alarms
               </div>
