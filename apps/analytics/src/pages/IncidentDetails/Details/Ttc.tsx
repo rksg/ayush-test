@@ -7,28 +7,39 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { IncidentAttributes } from '../IncidentAttributes'
-import { Insights }           from '../Insights'
-import { NetworkImpact }      from '../NetworkImpact'
+import { IncidentAttributes, Attributes } from '../IncidentAttributes'
+import { Insights }                       from '../Insights'
+import { NetworkImpact }                  from '../NetworkImpact'
+import { NetworkImpactChartTypes }        from '../NetworkImpact/config'
+import { TimeSeries }                     from '../TimeSeries'
+import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
 export const Ttc = (incident: Incident) => {
-  const networkImpactCharts = [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
-
+  console.log(1)
   const { $t } = useIntl()
   const attributeList = [
-    'clientImpactCount',
-    'apImpactCount',
-    'incidentCategory',
-    'incidentSubCategory',
-    'type',
-    'scope',
-    'duration',
-    'eventStartTime',
-    'eventEndTime'
+    Attributes.ClientImpactCount,
+    Attributes.ApImpactCount,
+    Attributes.IncidentCategory,
+    Attributes.IncidentSubCategory,
+    Attributes.Type,
+    Attributes.Scope,
+    Attributes.Duration,
+    Attributes.EventStartTime,
+    Attributes.EventEndTime
+  ]
+  const networkImpactCharts: NetworkImpactChartTypes[] = [
+    NetworkImpactChartTypes.WLAN,
+    NetworkImpactChartTypes.Radio,
+    NetworkImpactChartTypes.ClientManufacturer
+  ]
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.ClientCountChart
   ]
 
+  console.log(2)
   return (
     <>
       <PageHeader
@@ -54,7 +65,7 @@ export const Ttc = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts}/>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Chart</div>
+          <TimeSeries incident={incident} charts={timeSeriesCharts} />
         </GridCol>
       </GridRow>
     </>
