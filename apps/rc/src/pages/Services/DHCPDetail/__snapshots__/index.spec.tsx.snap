@@ -182,15 +182,15 @@ exports[`DHCP Detail Page should render detail page 1`] = `
         <div
           class="ant-card-body"
         >
-          <div>
+          <div
+            style="width: 100%;"
+          >
             <h3
               class="ant-typography"
             >
               Instances (undefined)
             </h3>
-            <div
-              style="width: 100%;"
-            >
+            <div>
               <div
                 class="styledComponents__Wrapper-sc-1abm7iv-10 fBxXu"
               >
