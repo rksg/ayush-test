@@ -16,7 +16,8 @@ import {
   ApplicationPolicy,
   VlanPool,
   AccessControlProfile,
-  DHCPDetailInstances
+  DHCPDetailInstances,
+  DHCPSaveData
 } from '@acx-ui/rc/utils'
 
 
@@ -134,21 +135,20 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    dhcpServiceDetail: build.query<TableResult<DHCPDetailInstances>, RequestPayload>({
-      query: ({ params, payload }) => {
-
-
-
-        // const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
-        // return result as QueryReturnValue<DHCPSaveData,
-        // FetchBaseQueryError,
-        // FetchBaseQueryMeta>
-
-
-        const dhcpDetailListReq = createHttpRequest(CommonUrlsInfo.getDHCPVenueInstances, params)
+    dhcpVenueInstances: build.query<TableResult<DHCPDetailInstances>, RequestPayload>({
+      query: ({ params }) => {
+        const instancesRes = createHttpRequest(CommonUrlsInfo.getDHCPVenueInstances, params)
         return {
-          ...dhcpDetailListReq,
-          body: payload
+          ...instancesRes
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getDHCPProfileDetail: build.query<DHCPSaveData | undefined, RequestPayload>({
+      query: ({ params }) => {
+        const dhcpDetailReq = createHttpRequest(CommonUrlsInfo.getDHCProfileDetail, params)
+        return {
+          ...dhcpDetailReq
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
@@ -167,5 +167,6 @@ export const {
   useDeleteServiceMutation,
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,
-  useDhcpServiceDetailQuery
+  useDhcpVenueInstancesQuery,
+  useGetDHCPProfileDetailQuery
 } = serviceApi

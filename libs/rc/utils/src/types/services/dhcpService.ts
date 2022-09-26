@@ -1,7 +1,7 @@
-
+import { Venue } from '../index'
 export interface DHCPDetailInstances {
   id: string,
-  venueName: number,
+  venue: Venue,
   aps: number
   switches: number
   health: number,
@@ -9,4 +9,9 @@ export interface DHCPDetailInstances {
   unsuccessfulAllocations: number,
   droppedPackets: number,
   capacity: number
+}
+
+export interface DHCPSaveData {
+  id?: string;
+  dhcpPools: [];
 }

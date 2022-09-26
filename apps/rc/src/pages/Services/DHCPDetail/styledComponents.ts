@@ -12,7 +12,7 @@ export const ProgressContent = styled.div`
     height: 13px;
     width: 7px;
     margin-left: 2px;
-    background: #23AB36;
+    background: ${props => (props.color ? props.color : '#23AB36')};
     border-radius: 3px;
 `
 export const ProgressEmptyContent = styled.div`

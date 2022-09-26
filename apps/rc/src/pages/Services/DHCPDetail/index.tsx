@@ -1,37 +1,34 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, Button }        from '@acx-ui/components'
-import { ClockOutlined }             from '@acx-ui/icons'
-import { useDhcpServiceDetailQuery } from '@acx-ui/rc/services'
-import { useTableQuery }             from '@acx-ui/rc/utils'
+import { PageHeader, Button }                                       from '@acx-ui/components'
+import { ClockOutlined }                                            from '@acx-ui/icons'
+import { useDhcpVenueInstancesQuery, useGetDHCPProfileDetailQuery } from '@acx-ui/rc/services'
+import { useTableQuery }                                            from '@acx-ui/rc/utils'
 
 import DHCPInstancesTable from './DHCPInstancesTable'
 import DHCPOverview       from './DHCPOverview'
 
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'id'
+  ]
+}
 
 export default function DHCPServiceDetail () {
   const { $t } = useIntl()
   const params = useParams()
 
   const tableQuery = useTableQuery({
-    useQuery: useDhcpServiceDetailQuery,
-    defaultPayload: {}
+    useQuery: useDhcpVenueInstancesQuery,
+    defaultPayload
   })
 
-  // const data = [
-  //   {
-  //     id: '0',
-  //     venueName: 0,
-  //     aps: 15,
-  //     switches: 3,
-  //     health: 0.9,
-  //     successfulAllocations: 90,
-  //     unsuccessfulAllocations: 23,
-  //     droppedPackets: 93,
-  //     capacity: 69
-  //   }
-  // ] as DHCPDetailInstances[]
+  const { data } = useGetDHCPProfileDetailQuery({ params })
+
+
   return (
     <>
       <PageHeader
@@ -48,7 +45,7 @@ export default function DHCPServiceDetail () {
           </Button>
         ]}
       />
-      <DHCPOverview poolNumber={4}/>
+      <DHCPOverview poolNumber={data?.dhcpPools.length} />
       <DHCPInstancesTable
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

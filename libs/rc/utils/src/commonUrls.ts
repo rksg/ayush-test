@@ -140,6 +140,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getDHCPVenueInstances: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/dhcp-service-profile/:serviceId'
+    url: '/api/tenant/:tenantId/dhcp-service-profile/instances/:serviceId'
+  },
+  getDHCProfileDetail: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/dhcp-service-profile/:serviceId'
   }
+
+
 }

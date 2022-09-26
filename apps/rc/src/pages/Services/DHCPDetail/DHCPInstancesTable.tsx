@@ -1,12 +1,12 @@
 
 import React from 'react'
 
-import { Row }     from 'antd'
-import { useIntl } from 'react-intl'
+import { Row, Typography } from 'antd'
+import { useIntl }         from 'react-intl'
 
 import { Table, TableProps, Card } from '@acx-ui/components'
 import { DHCPDetailInstances }     from '@acx-ui/rc/utils'
-
+import { TenantLink }              from '@acx-ui/react-router-dom'
 
 import ProgressBar from './ProgressBar'
 
@@ -22,9 +22,15 @@ export default function DHCPInstancesTable (props: {
     {
       key: 'VenueName',
       title: $t({ defaultMessage: 'Venue Name' }),
-      dataIndex: 'venueName',
+      dataIndex: 'venue',
       width: 10,
-      sorter: true
+      sorter: true,
+      render: function (_data, row) {
+        return (
+          <TenantLink
+            to={`/venues/${row.venue.id}/venue-details/overview`}>{row.venue.name}</TenantLink>
+        )
+      }
     },
     {
       key: 'APs',
@@ -45,7 +51,7 @@ export default function DHCPInstancesTable (props: {
       width: 135,
       dataIndex: 'health',
       render: (data) =>{
-        return (<ProgressBar sliceNumber={8} value={Number(data)}/>)
+        return (<ProgressBar value={Number(data)}/>)
       }
     },
     {
@@ -56,33 +62,44 @@ export default function DHCPInstancesTable (props: {
     },
     {
       key: 'ousa',
-      title: $t({ defaultMessage: 'of un-successful allocations' }),
-      width: 210,
+      title: $t({ defaultMessage: '# of un-successful allocations' }),
+      width: 220,
       dataIndex: 'unsuccessfulAllocations'
     },
     {
       key: 'droppedpackets',
-      title: $t({ defaultMessage: 'Dropped packets' }),
+      title: $t({ defaultMessage: 'Dropped Packets' }),
       width: 160,
-      dataIndex: 'droppedpackets'
+      dataIndex: 'droppedPackets',
+      render: (data) =>{
+        return data+'%'
+      }
     },
     {
       key: 'capacity',
       title: $t({ defaultMessage: 'Capacity' }),
       width: 100,
-      dataIndex: 'capacity'
+      dataIndex: 'capacity',
+      render: (data) =>{
+        return data+'%'
+      }
     }
   ]
 
   return (
     <Row style={style}>
       <Card>
-        <div style={{ width: '100%' }}>
-          <Table
-            columns={columns}
-            dataSource={dataSource}
-            rowKey='id'
-          />
+        <div>
+          <Typography.Title level={3}>
+            {$t({ defaultMessage: 'Instances' })+` (${dataSource?.length})`}
+          </Typography.Title>
+          <div style={{ width: '100%' }}>
+            <Table
+              columns={columns}
+              dataSource={dataSource}
+              rowKey='id'
+            />
+          </div>
         </div>
       </Card>
     </Row>

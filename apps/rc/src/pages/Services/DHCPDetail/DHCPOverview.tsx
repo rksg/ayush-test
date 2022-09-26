@@ -4,7 +4,7 @@ import { useIntl }         from 'react-intl'
 
 import { Card } from '@acx-ui/components'
 
-export default function DHCPOverView (props: { poolNumber:number }) {
+export default function DHCPOverView (props: { poolNumber:number | undefined }) {
   const { $t } = useIntl()
 
   return (
