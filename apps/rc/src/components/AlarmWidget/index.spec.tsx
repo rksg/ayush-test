@@ -7,7 +7,7 @@ import { render,
   mockServer,
   screen,
   fireEvent,
-  mockAutoSizer,
+  mockDOMWidth,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import AlarmWidget, { getAlarmsDonutChartData } from '.'
@@ -84,7 +84,7 @@ const alarmListMeta = {
 }
 
 describe('Alarm widget', () => {
-  mockAutoSizer()
+  mockDOMWidth()
   let params: { tenantId: string }
 
   it('should render donut chart and alarm list', async () => {

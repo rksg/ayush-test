@@ -3,11 +3,11 @@ import { gql } from 'graphql-request'
 import { dataApi }  from '@acx-ui/analytics/services'
 import { Incident } from '@acx-ui/analytics/utils'
 
-import { networkImpactCharts } from './config'
+import { networkImpactCharts, NetworkImpactChartTypes } from './config'
 
 export interface RequestPayload {
   incident: Incident,
-  charts: string[]
+  charts: NetworkImpactChartTypes[]
 }
 export interface NetworkImpactChartData {
   key: string
@@ -19,9 +19,7 @@ export interface Response {
 }
 
 const transformResponse = (response: Response, _: {}, payload: RequestPayload) => {
-  return Object.entries(networkImpactCharts)
-    .filter(([key]) => payload.charts.includes(key))
-    .map(([, value]) => value)
+  return payload.charts.map(chart => networkImpactCharts[chart])
     .sort((a, b) => (a.order as number) - (b.order as number))
     .reduce((agg, config) => {
       agg[config.key] = {
