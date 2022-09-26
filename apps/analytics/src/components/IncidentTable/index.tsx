@@ -15,8 +15,13 @@ import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
 import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
 import { formatter }                         from '@acx-ui/utils'
 
-import { useIncidentsListQuery, IncidentNodeData, IncidentTableRow } from './services'
-import * as UI                                                       from './styledComponents'
+import { 
+  useIncidentsListQuery, 
+  useMuteIncidentsMutation, 
+  IncidentNodeData, 
+  IncidentTableRow 
+} from './services'
+import * as UI  from './styledComponents'
 import {
   GetIncidentBySeverity,
   FormatDate,
@@ -66,11 +71,12 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     return data.filter((row) => row.isMuted === true).map((row) => row.id)
   }
 
-  const rowActions: TableProps<Incident>['rowActions'] = [
+  const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Mute' })),
-      onClick: () => {
+      onClick: (selectedItems) => {
         // TODO: to be updated for muting
+        console.log('muting', selectedItems, mutedKeysFilter(queryResults.data!))
       }
     }
   ]
@@ -216,10 +222,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         columns={ColumnHeaders}
         rowActions={rowActions}
         rowSelection={{
-          type: 'radio',
-          defaultSelectedRowKeys: queryResults.data
-            ? mutedKeysFilter(queryResults.data)
-            : undefined
+          type: 'radio'
         }}
         rowKey='id'
         showSorterTooltip={false}

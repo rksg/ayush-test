@@ -121,6 +121,23 @@ export interface Response<IncidentNodeData> {
   }
 }
 
+export interface MutationPayload {
+  id: string,
+  mute: boolean,
+  code: string,
+  priority: string,
+}
+
+export interface MutationResponse {
+  data: {
+    toogleMute: {
+      success: boolean,
+      errorMsg: string,
+      errorCode: string
+    }
+  }
+}
+
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     incidentsList: build.query<IncidentNodeData, IncidentFilter>({
@@ -165,9 +182,34 @@ export const api = dataApi.injectEndpoints({
         if (typeof incidents === 'undefined') return []
         return incidents.map((incident) => transformData(incident))
       }
+    }),
+    muteIncidents: build.mutation<MutationResponse, MutationPayload>({
+      query: (payload) => ({
+        document: gql`
+          mutation MutateIncident(
+            $id: String!,
+            $mute: Boolean!,
+            $code: String!,
+            $priority: String!
+          ){
+            toggleMute (mute: $mute, code: $code, priority: $priority, id: $id) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: {
+          id: payload.id,
+          mute: payload.mute,
+          code: payload.code,
+          priority: payload.priority
+        }
+      }),
+      transformResponse: (response: MutationResponse) => response
     })
   })
 })
 
 
-export const { useIncidentsListQuery } = api
+export const { useIncidentsListQuery, useMuteIncidentsMutation } = api
