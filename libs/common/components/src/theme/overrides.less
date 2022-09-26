@@ -717,6 +717,23 @@
     }
   }
 
+  .ant-collapse {
+    &.ant-collapse-icon-position-end
+    > .ant-collapse-item {
+      > .ant-collapse-header {
+        border-bottom: 1px solid var(--acx-neutrals-20);
+        padding: 15px 0px 5px 0px;
+        font-size: var(--acx-body-2-font-size);
+        font-weight: 600;
+        font-family: var(--acx-neutral-brand-font);
+      }
+      & .ant-collapse-arrow {
+        right: 10px;
+        top: 65%;
+      }
+    }
+  }
+
   // Gmap Close Icon and Info windows overrides
   .gm-ui-hover-effect {
     display: none !important;
