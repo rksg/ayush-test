@@ -2,10 +2,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useSplitTreatment }                                      from '@acx-ui/feature-toggle'
-import { networkApi }                                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
-import { Provider, store }                                        from '@acx-ui/store'
+import { useSplitTreatment }                                                    from '@acx-ui/feature-toggle'
+import { networkApi }                                                           from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                                                      from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -319,7 +319,7 @@ describe('VenueNetworksTab', () => {
         (req, res, ctx) => res(ctx.json(newApGroup))
       ),
       rest.post(
-        CommonUrlsInfo.addNetworkVenue.url,
+        WifiUrlsInfo.addNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
@@ -369,7 +369,7 @@ describe('VenueNetworksTab', () => {
         (req, res, ctx) => res(ctx.json(newApGroup))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteNetworkVenue.url,
+        WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       )
     )
