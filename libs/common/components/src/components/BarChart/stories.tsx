@@ -11,6 +11,7 @@ import { formatter }         from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import { Card }              from '../Card'
+import { EventParams }       from '../Chart'
 import { TooltipWrapper }    from '../Chart/styledComponents'
 
 import { BarChart } from '.'
@@ -123,6 +124,11 @@ export const wrapInsideCard = (title: string, children: ReactNode) => (
     </Card>
   </div>)
 
+const clickHandler = (params: EventParams) => {
+  // eslint-disable-next-line
+  console.log('Chart clicked:', params)
+}
+
 storiesOf('BarChart', module)
   .addDecorator(withKnobs)
   .add('Single Series - Default', () =>
@@ -131,6 +137,7 @@ storiesOf('BarChart', module)
         style={{ width: '100%', height: '100%' }}
         data={data()}
         barColors={barColors}
+        onClick={clickHandler}
       />))
   .add('Single Series - Custom formatter', () =>
     wrapInsideCard('Top 5 Switches by PoE Usage',
@@ -155,6 +162,7 @@ storiesOf('BarChart', module)
         tooltipFormatter={tooltipFormatter}
         labelFormatter={switchTrafficLabelFormatter}
         labelRichStyle={getSwitchTrafficRichStyle()}
+        onClick={clickHandler}
       />))
   .add('With Knobs', () =>
     wrapInsideCard('Top 5 Switches by PoE Usage',

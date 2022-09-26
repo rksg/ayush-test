@@ -1,11 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { dataApiURL }                                                                             from '@acx-ui/analytics/services'
-import { Incident }                                                                               from '@acx-ui/analytics/utils'
-import { Provider, store }                                                                        from '@acx-ui/store'
-import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen, renderHook, mockAutoSizer } from '@acx-ui/test-utils'
+import { dataApiURL }                                                                            from '@acx-ui/analytics/services'
+import { Incident }                                                                              from '@acx-ui/analytics/utils'
+import { Provider, store }                                                                       from '@acx-ui/store'
+import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen, renderHook, mockDOMWidth } from '@acx-ui/test-utils'
 
-import { networkImpactChartsApi } from './services'
+import { NetworkImpactChartTypes } from './config'
+import { networkImpactChartsApi }  from './services'
 
 import { transformData, transformSummary, NetworkImpact } from '.'
 
@@ -39,7 +40,7 @@ const NetworkImpactData = { incident: {
     count: 2,
     data: [{ key: '2.4', name: '2.4', value: 1 }, { key: '5', name: '5', value: 1 }] },
   clientManufacturer: {
-    key: 'radio',
+    key: 'clientManufacturer',
     count: 2,
     data: [
       { key: 'manufacturer1', name: 'manufacturer1', value: 1 },
@@ -51,11 +52,11 @@ describe('transformData', () => {
   it('should return correct result', async () => {
     const { result } = renderHook(() => {
       return transformData(
-        { ...NetworkImpactData.incident.WLAN, key: 'test' }, useIntl())
+        { ...NetworkImpactData.incident.WLAN, key: 'WLAN' }, useIntl())
     })
     expect(result.current).toEqual([
-      { color: '#D61119', key: 'ssid1', name: 'ssid1', value: 4 },
-      { color: '#F9C34B', key: 'ssid2', name: 'ssid2', value: 2 }
+      { color: '#D61119', key: 'ssid1', name: 'ssid1', value: 2 },
+      { color: '#F9C34B', key: 'ssid2', name: 'ssid2', value: 1 }
     ])
   })
 })
@@ -92,10 +93,15 @@ describe('transformSummary', () => {
 })
 
 describe('NetworkImpact', () => {
-  mockAutoSizer()
+  mockDOMWidth()
   const props ={
     incident: { id: 'id', metadata: { dominant: { } } } as Incident,
-    charts: [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
+    charts: [
+      NetworkImpactChartTypes.WLAN,
+      NetworkImpactChartTypes.Radio,
+      NetworkImpactChartTypes.Reason,
+      NetworkImpactChartTypes.ClientManufacturer
+    ]
   }
   it('should match snapshot', async () => {
     store.dispatch(networkImpactChartsApi.util.resetApiState())

@@ -27,7 +27,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                 class="ant-card-head-title"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+                  class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
                 >
                   TEST_2
                 </div>
@@ -79,7 +79,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                 class="ant-card-head-title"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+                  class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
                 >
                   dscx
                 </div>

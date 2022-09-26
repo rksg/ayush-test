@@ -5,14 +5,14 @@ import { CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider  }      from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
-  mockAutoSizer,
+  mockDOMWidth,
   waitForElementToBeRemoved,
   renderHook } from '@acx-ui/test-utils'
 
 import DevicesDonutWidget, { getApDonutChartData, getSwitchDonutChartData } from '.'
 
 describe('Devices widget', () => {
-  mockAutoSizer()
+  mockDOMWidth()
 
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get',{})
