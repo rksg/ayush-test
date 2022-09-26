@@ -89,11 +89,11 @@ export default function DHCPInstancesTable (props: {
   return (
     <Row style={style}>
       <Card>
-        <div>
+        <div style={{ width: '100%' }}>
           <Typography.Title level={3}>
             {$t({ defaultMessage: 'Instances' })+` (${dataSource?.length})`}
           </Typography.Title>
-          <div style={{ width: '100%' }}>
+          <div >
             <Table
               columns={columns}
               dataSource={dataSource}
