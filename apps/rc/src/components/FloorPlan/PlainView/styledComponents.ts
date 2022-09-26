@@ -30,9 +30,14 @@ export const GallaryWrapper = styled(Space)`
   padding-right: 4px;
 `
 export const GallaryIcon = styled(Button)`
-  border: 1px solid 'var(--acx-neutrals-30)';
+  border: 1px solid var(--acx-neutrals-30);
   height: 68px;
   width: 28px;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
 `
 export const ImageDesc = styled('div')<{ active: number }>`
   position: absolute;

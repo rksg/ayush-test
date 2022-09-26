@@ -8,7 +8,6 @@ export { ReactComponent as AccountCircleSolidSmall } from './icons/AccountCircle
 export { ReactComponent as AI } from './icons/AI.svg'
 export { ReactComponent as AndroidOutlined } from './icons/AndroidOutlined.svg'
 export { ReactComponent as AndroidSolid } from './icons/AndroidSolid.svg'
-export { ReactComponent as AppIcon } from './icons/Applications.svg'
 export { ReactComponent as AppleOutlined } from './icons/AppleOutlined.svg'
 export { ReactComponent as AppleSolid } from './icons/AppleSolid.svg'
 export { ReactComponent as ApplicationsOutlined } from './icons/ApplicationsOutlined.svg'

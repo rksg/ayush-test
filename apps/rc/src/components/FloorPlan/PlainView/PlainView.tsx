@@ -5,7 +5,7 @@ import { useIntl }                              from 'react-intl'
 
 import { Button, Loader }                 from '@acx-ui/components'
 import {
-  AppIcon,
+  ApplicationsSolid,
   MagnifyingGlassMinusOutlined,
   MagnifyingGlassPlusOutlined,
   SearchFitOutlined, SearchFullOutlined
@@ -209,7 +209,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
             data-testid='galleryIcon'
             onClick={() => onGalleryIconClick()}
             type='default'
-            icon={<AppIcon />}
+            icon={<ApplicationsSolid />}
           />
         </UI.GallaryWrapper>
         <Col span={23}>

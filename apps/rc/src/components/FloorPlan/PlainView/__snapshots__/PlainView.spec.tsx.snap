@@ -216,12 +216,12 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 lbgWNL"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 jhcQlq"
           data-testid="galleryIcon"
           type="button"
         >
           <svg>
-            Applications.svg
+            ApplicationsSolid.svg
           </svg>
         </button>
       </div>
@@ -513,12 +513,12 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 lbgWNL"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 jhcQlq"
           data-testid="galleryIcon"
           type="button"
         >
           <svg>
-            Applications.svg
+            ApplicationsSolid.svg
           </svg>
         </button>
       </div>
@@ -810,12 +810,12 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 lbgWNL"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 jhcQlq"
           data-testid="galleryIcon"
           type="button"
         >
           <svg>
-            Applications.svg
+            ApplicationsSolid.svg
           </svg>
         </button>
       </div>
@@ -1107,12 +1107,12 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 lbgWNL"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 jhcQlq"
           data-testid="galleryIcon"
           type="button"
         >
           <svg>
-            Applications.svg
+            ApplicationsSolid.svg
           </svg>
         </button>
       </div>
@@ -1404,12 +1404,12 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 lbgWNL"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__GallaryIcon-rlzd0s-3 jhcQlq"
           data-testid="galleryIcon"
           type="button"
         >
           <svg>
-            Applications.svg
+            ApplicationsSolid.svg
           </svg>
         </button>
       </div>
