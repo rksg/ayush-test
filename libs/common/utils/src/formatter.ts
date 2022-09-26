@@ -6,6 +6,8 @@ import {
   IntlShape
 } from 'react-intl'
 
+import { getIntl } from './intlUtil'
+
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
 
@@ -120,7 +122,7 @@ function calendarFormat (number: number, intl: IntlShape) {
   })
 }
 
-const formats = {
+export const formats = {
   durationFormat,
   calendarFormat: (number: number, intl: IntlShape) => calendarFormat(number, intl),
   decibelFormat: (number: number) => Math.round(number) + ' dB',
@@ -134,7 +136,7 @@ const formats = {
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
   txFormat: (value: keyof typeof txpowerMapping) =>
     (txpowerMapping[value] ? txpowerMapping[value] : value)
-} as Record<string, (value: unknown, intl?: IntlShape)=> string>
+} as const
 
 export const dateTimeFormats = {
   yearFormat: 'YYYY',
@@ -147,24 +149,7 @@ export const dateTimeFormats = {
   hourFormat: 'HH',
   timeFormat: 'HH:mm',
   secondFormat: 'HH:mm:ss'
-}
-
-export function formatter (
-  name: keyof typeof formats | keyof typeof dateTimeFormats,
-  intl?: IntlShape
-) {
-  return function formatter (value: unknown, tz?: string) {
-    if (value === null || value === '-') {
-      return value
-    }
-
-    if (dateTimeFormats[name as keyof typeof dateTimeFormats]) {
-      return dateTimeFormatter(value, dateTimeFormats[name as keyof typeof dateTimeFormats], tz)
-    } else {
-      return formats[name as keyof typeof formats](value, intl)
-    }
-  }
-}
+} as const
 
 const countFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::K .##/@##r}'
@@ -179,4 +164,38 @@ export const intlFormats = {
   countFormat,
   percentFormat,
   percentFormatRound
+} as const
+
+export function formatter (
+  name: keyof typeof formats | keyof typeof dateTimeFormats | keyof typeof intlFormats
+) {
+  return function formatter (value: unknown, tz?: string): string | null {
+    const intl = getIntl()
+    if (value === null || value === '-') {
+      return value as null | '-'
+    }
+    if (isIntlFormat(name)) {
+      return intl.$t(intlFormats[name], { value: value as number | string | Date })
+    }
+    if (isDateTimeFormat(name)) {
+      return dateTimeFormatter(value, dateTimeFormats[name], tz)
+    }
+    if (isFormat(name)) {
+      const formatter = formats[name] as (value: unknown, intl: IntlShape) => string
+      return formatter(value, intl)
+    }
+    return null
+  }
+}
+
+function isIntlFormat (name: string): name is keyof typeof intlFormats {
+  return name in intlFormats
+}
+
+function isDateTimeFormat (name: string): name is keyof typeof dateTimeFormats {
+  return name in dateTimeFormats
+}
+
+function isFormat (name: string): name is keyof typeof formats {
+  return name in formats
 }

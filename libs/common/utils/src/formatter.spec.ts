@@ -1,12 +1,9 @@
-import moment                         from 'moment-timezone'
-import { MessageDescriptor, useIntl } from 'react-intl'
+import moment from 'moment-timezone'
 
-import { renderHook } from '@acx-ui/test-utils'
-
-import { formatter, intlFormats } from './formatter'
+import { formatter, formats } from './formatter'
 
 function testFormat (
-  format: string,
+  format: keyof typeof formats,
   values: Record<string | number | symbol, string>,
   tz?: string
 ) {
@@ -15,6 +12,9 @@ function testFormat (
   }
 }
 describe('formatter', () => {
+  it('returns null if format is not supported', () => {
+    expect(formatter('something' as keyof typeof formats)(1)).toBe(null)
+  })
   it('Should take care of null values correctly', () => {
     expect(formatter('decibelFormat')(null)).toBe(null)
   })
@@ -105,28 +105,28 @@ describe('formatter', () => {
         )
     })
     it('should format date to "[Today,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659687682000))
-      expect(result.current).toBe('Today, 08:21')
+      const result = formatter('calendarFormat')(1659687682000)
+      expect(result).toBe('Today, 08:21')
     })
     it('should format date to "[Yesterday,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659608482000))
-      expect(result.current).toBe('Yesterday, 10:21')
+      const result = formatter('calendarFormat')(1659608482000)
+      expect(result).toBe('Yesterday, 10:21')
     })
     it('should format date to "[Tomorrow,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659774082000))
-      expect(result.current).toBe('Tomorrow, 08:21')
+      const result = formatter('calendarFormat')(1659774082000)
+      expect(result).toBe('Tomorrow, 08:21')
     })
     it('should format date to "[Last] dddd[,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659255682000))
-      expect(result.current).toBe('Last Sunday, 08:21')
+      const result = formatter('calendarFormat')(1659255682000)
+      expect(result).toBe('Last Sunday, 08:21')
     })
     it('should format date to "dddd[,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1659860482000))
-      expect(result.current).toBe('Sunday, 08:21')
+      const result = formatter('calendarFormat')(1659860482000)
+      expect(result).toBe('Sunday, 08:21')
     })
     it('should format date to "MMM DD[,] HH:mm"', () => {
-      const { result } = renderHook(() => formatter('calendarFormat', useIntl())(1654590082000))
-      expect(result.current).toBe('Jun 07 08:21')
+      const result = formatter('calendarFormat')(1654590082000)
+      expect(result).toBe('Jun 07 08:21')
     })
   })
   describe('durationFormat', () => {
@@ -204,46 +204,52 @@ describe('formatter', () => {
           .format('MMM DD YYYY HH:mm:ss Z').replace('+00:00', 'UTC'))
     })
   })
-})
-
-type TestSet = [number, string]
-describe('intlFormats', () => {
-  const testFormat = (
-    format: MessageDescriptor,
-    sets: TestSet[]
-  ) => sets.forEach(([value, expected]) => {
-    it(`convert ${value} to ${expected}`, () => {
-      const result = renderHook(() => useIntl().$t(format, { value })).result.current
-      expect(result).toEqual(expected)
+  describe('intlFormats', () => {
+    type TestSet = [number | undefined, string | null]
+    const testFormat = (
+      format: Parameters<typeof formatter>[0],
+      sets: TestSet[]
+    ) => sets.forEach(([value, expected]) => {
+      it(`convert ${value} to ${expected}`, () => {
+        const result = formatter(format)(value)
+        expect(result).toEqual(expected)
+      })
+    })
+    describe('countFormat', () => {
+      testFormat('countFormat', [
+        [1,'1'],
+        [12,'12'],
+        [123,'123'],
+        [1234,'1.23K'],
+        [12345,'12.3K'],
+        [12344,'12.3K'],
+        [123456,'123K'],
+        [1234567,'1.23M'],
+        [12345678,'12.3M'],
+        [123000000000,'123B'],
+        [123000000000000,'123T'],
+        [123000000000000000,'123,000T'],
+        [123.456789,'123'],
+        [1.00,'1'],
+        [1500,'1.5K'],
+        [2000,'2K']
+      ])
+    })
+    describe('percentFormat', () => {
+      testFormat('percentFormat', [
+        [0.12, '12%'],
+        [0.123, '12.3%'],
+        [0.1235, '12.35%'],
+        [0.12359, '12.36%'],
+        [0.12999, '13%']
+      ])
+    })
+    describe('percentFormatRound', () => {
+      testFormat('percentFormatRound', [
+        [0.12, '12%'],
+        [0.123, '12%']
+      ])
     })
   })
-  describe('countFormat', () => {
-    testFormat(intlFormats.countFormat, [
-      [1,'1'],
-      [12,'12'],
-      [123,'123'],
-      [1234,'1.23K'],
-      [12345,'12.3K'],
-      [12344,'12.3K'],
-      [123456,'123K'],
-      [1234567,'1.23M'],
-      [12345678,'12.3M'],
-      [123000000000,'123B'],
-      [123000000000000,'123T'],
-      [123000000000000000,'123,000T'],
-      [123.456789,'123'],
-      [1.00,'1'],
-      [1500,'1.5K'],
-      [2000,'2K']
-    ])
-  })
-  describe('percentFormat', () => {
-    testFormat(intlFormats.percentFormat, [
-      [0.12, '12%'],
-      [0.123, '12.3%'],
-      [0.1235, '12.35%'],
-      [0.12359, '12.36%'],
-      [0.12999, '13%']
-    ])
-  })
 })
+
