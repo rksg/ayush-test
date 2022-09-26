@@ -17,7 +17,6 @@ import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 import * as UI from './styledComponents'
 
 export const Ttc = (incident: Incident) => {
-  console.log(1)
   const { $t } = useIntl()
   const attributeList = [
     Attributes.ClientImpactCount,
@@ -39,7 +38,6 @@ export const Ttc = (incident: Incident) => {
     TimeSeriesChartTypes.ClientCountChart
   ]
 
-  console.log(2)
   return (
     <>
       <PageHeader
