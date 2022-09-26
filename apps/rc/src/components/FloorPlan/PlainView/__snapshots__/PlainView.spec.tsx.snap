@@ -118,97 +118,92 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
     </div>
   </div>
   <div
-    class="styledComponents__ImageButtonsContainer-rlzd0s-9 dDDWeA"
+    class="ant-space ant-space-vertical styledComponents__ImageButtonsContainer-rlzd0s-9 CXZsa"
   >
     <div
-      class="ant-space ant-space-vertical"
-      style="border-radius: 4px;"
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-in"
+        type="button"
+      >
+        <svg>
+          MagnifyingGlassPlusOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
     >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-out"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-in"
-          type="button"
-        >
-          <svg>
-            MagnifyingGlassPlusOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
+        <svg>
+          MagnifyingGlassMinusOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
+    >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-original"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-out"
-          type="button"
-        >
-          <svg>
-            MagnifyingGlassMinusOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
+        <svg>
+          SearchFullOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
+    >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-fit"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-original"
-          type="button"
-        >
-          <svg>
-            SearchFullOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
-      <div
-        class="ant-space-item"
-      >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-fit"
-          type="button"
-        >
-          <svg>
-            SearchFitOutlined.svg
-          </svg>
-        </button>
-      </div>
+        <svg>
+          SearchFitOutlined.svg
+        </svg>
+      </button>
     </div>
   </div>
   <div
@@ -246,7 +241,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
           >
             <div
               active="1"
-              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 hZhqNZ"
+              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 eRPiEN"
               data-testid="thumbnailBg"
             >
               <div
@@ -261,7 +256,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 eYxTGe"
+              class="styledComponents__ImageDesc-rlzd0s-4 jZeBiK"
             >
               TEST_2
             </div>
@@ -275,7 +270,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
           >
             <div
               active="0"
-              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 cBgsRo"
+              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 dvsWPw"
               data-testid="thumbnailBg"
             >
               <div
@@ -290,7 +285,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 kwOGUY"
+              class="styledComponents__ImageDesc-rlzd0s-4 gCVmfM"
             >
               dscx
             </div>
@@ -420,97 +415,92 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
     </div>
   </div>
   <div
-    class="styledComponents__ImageButtonsContainer-rlzd0s-9 dDDWeA"
+    class="ant-space ant-space-vertical styledComponents__ImageButtonsContainer-rlzd0s-9 CXZsa"
   >
     <div
-      class="ant-space ant-space-vertical"
-      style="border-radius: 4px;"
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-in"
+        type="button"
+      >
+        <svg>
+          MagnifyingGlassPlusOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
     >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-out"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-in"
-          type="button"
-        >
-          <svg>
-            MagnifyingGlassPlusOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
+        <svg>
+          MagnifyingGlassMinusOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
+    >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-original"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-out"
-          type="button"
-        >
-          <svg>
-            MagnifyingGlassMinusOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
+        <svg>
+          SearchFullOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
+    >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-fit"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-original"
-          type="button"
-        >
-          <svg>
-            SearchFullOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
-      <div
-        class="ant-space-item"
-      >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-fit"
-          type="button"
-        >
-          <svg>
-            SearchFitOutlined.svg
-          </svg>
-        </button>
-      </div>
+        <svg>
+          SearchFitOutlined.svg
+        </svg>
+      </button>
     </div>
   </div>
   <div
@@ -548,7 +538,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
           >
             <div
               active="1"
-              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 hZhqNZ"
+              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 eRPiEN"
               data-testid="thumbnailBg"
             >
               <div
@@ -563,7 +553,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 eYxTGe"
+              class="styledComponents__ImageDesc-rlzd0s-4 jZeBiK"
             >
               TEST_2
             </div>
@@ -577,7 +567,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
           >
             <div
               active="0"
-              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 cBgsRo"
+              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 dvsWPw"
               data-testid="thumbnailBg"
             >
               <div
@@ -592,7 +582,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 kwOGUY"
+              class="styledComponents__ImageDesc-rlzd0s-4 gCVmfM"
             >
               dscx
             </div>
@@ -722,97 +712,92 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
     </div>
   </div>
   <div
-    class="styledComponents__ImageButtonsContainer-rlzd0s-9 dDDWeA"
+    class="ant-space ant-space-vertical styledComponents__ImageButtonsContainer-rlzd0s-9 CXZsa"
   >
     <div
-      class="ant-space ant-space-vertical"
-      style="border-radius: 4px;"
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-in"
+        type="button"
+      >
+        <svg>
+          MagnifyingGlassPlusOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
     >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-out"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-in"
-          type="button"
-        >
-          <svg>
-            MagnifyingGlassPlusOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
+        <svg>
+          MagnifyingGlassMinusOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
+    >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-original"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-out"
-          type="button"
-        >
-          <svg>
-            MagnifyingGlassMinusOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
+        <svg>
+          SearchFullOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
+    >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-fit"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-original"
-          type="button"
-        >
-          <svg>
-            SearchFullOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
-      <div
-        class="ant-space-item"
-      >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-fit"
-          type="button"
-        >
-          <svg>
-            SearchFitOutlined.svg
-          </svg>
-        </button>
-      </div>
+        <svg>
+          SearchFitOutlined.svg
+        </svg>
+      </button>
     </div>
   </div>
   <div
@@ -850,7 +835,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
           >
             <div
               active="1"
-              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 hZhqNZ"
+              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 eRPiEN"
               data-testid="thumbnailBg"
             >
               <div
@@ -865,7 +850,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 eYxTGe"
+              class="styledComponents__ImageDesc-rlzd0s-4 jZeBiK"
             >
               TEST_2
             </div>
@@ -879,7 +864,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
           >
             <div
               active="0"
-              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 cBgsRo"
+              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 dvsWPw"
               data-testid="thumbnailBg"
             >
               <div
@@ -894,7 +879,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 kwOGUY"
+              class="styledComponents__ImageDesc-rlzd0s-4 gCVmfM"
             >
               dscx
             </div>
@@ -1024,97 +1009,92 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
     </div>
   </div>
   <div
-    class="styledComponents__ImageButtonsContainer-rlzd0s-9 dDDWeA"
+    class="ant-space ant-space-vertical styledComponents__ImageButtonsContainer-rlzd0s-9 CXZsa"
   >
     <div
-      class="ant-space ant-space-vertical"
-      style="border-radius: 4px;"
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-in"
+        type="button"
+      >
+        <svg>
+          MagnifyingGlassPlusOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
     >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-out"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-in"
-          type="button"
-        >
-          <svg>
-            MagnifyingGlassPlusOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
+        <svg>
+          MagnifyingGlassMinusOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
+    >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-original"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-out"
-          type="button"
-        >
-          <svg>
-            MagnifyingGlassMinusOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
+        <svg>
+          SearchFullOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
+    >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-fit"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-original"
-          type="button"
-        >
-          <svg>
-            SearchFullOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
-      <div
-        class="ant-space-item"
-      >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-fit"
-          type="button"
-        >
-          <svg>
-            SearchFitOutlined.svg
-          </svg>
-        </button>
-      </div>
+        <svg>
+          SearchFitOutlined.svg
+        </svg>
+      </button>
     </div>
   </div>
   <div
@@ -1152,7 +1132,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
           >
             <div
               active="1"
-              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 hZhqNZ"
+              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 eRPiEN"
               data-testid="thumbnailBg"
             >
               <div
@@ -1167,7 +1147,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 eYxTGe"
+              class="styledComponents__ImageDesc-rlzd0s-4 jZeBiK"
             >
               TEST_2
             </div>
@@ -1181,7 +1161,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
           >
             <div
               active="0"
-              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 cBgsRo"
+              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 dvsWPw"
               data-testid="thumbnailBg"
             >
               <div
@@ -1196,7 +1176,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 kwOGUY"
+              class="styledComponents__ImageDesc-rlzd0s-4 gCVmfM"
             >
               dscx
             </div>
@@ -1326,97 +1306,92 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
     </div>
   </div>
   <div
-    class="styledComponents__ImageButtonsContainer-rlzd0s-9 dDDWeA"
+    class="ant-space ant-space-vertical styledComponents__ImageButtonsContainer-rlzd0s-9 CXZsa"
   >
     <div
-      class="ant-space ant-space-vertical"
-      style="border-radius: 4px;"
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-in"
+        type="button"
+      >
+        <svg>
+          MagnifyingGlassPlusOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
     >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-out"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-in"
-          type="button"
-        >
-          <svg>
-            MagnifyingGlassPlusOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
+        <svg>
+          MagnifyingGlassMinusOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
+    >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+      style="margin-bottom: 0px;"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-original"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-out"
-          type="button"
-        >
-          <svg>
-            MagnifyingGlassMinusOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
+        <svg>
+          SearchFullOutlined.svg
+        </svg>
+      </button>
+    </div>
+    <span
+      class="ant-space-item-split"
+      style="margin-bottom: 0px;"
+    >
       <div
-        class="ant-space-item"
-        style="margin-bottom: 0px;"
+        class="ant-divider ant-divider-horizontal"
+        role="separator"
+        style="line-height: 0px; margin: 0px;"
+      />
+    </span>
+    <div
+      class="ant-space-item"
+    >
+      <button
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        data-testid="image-zoom-fit"
+        type="button"
       >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-original"
-          type="button"
-        >
-          <svg>
-            SearchFullOutlined.svg
-          </svg>
-        </button>
-      </div>
-      <span
-        class="ant-space-item-split"
-        style="margin-bottom: 0px;"
-      >
-        <div
-          class="ant-divider ant-divider-horizontal"
-          role="separator"
-          style="line-height: 0px; margin: 0px;"
-        />
-      </span>
-      <div
-        class="ant-space-item"
-      >
-        <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-          data-testid="image-zoom-fit"
-          type="button"
-        >
-          <svg>
-            SearchFitOutlined.svg
-          </svg>
-        </button>
-      </div>
+        <svg>
+          SearchFitOutlined.svg
+        </svg>
+      </button>
     </div>
   </div>
   <div
@@ -1454,7 +1429,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
           >
             <div
               active="1"
-              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 hZhqNZ"
+              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 eRPiEN"
               data-testid="thumbnailBg"
             >
               <div
@@ -1469,7 +1444,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 eYxTGe"
+              class="styledComponents__ImageDesc-rlzd0s-4 jZeBiK"
             >
               TEST_2
             </div>
@@ -1483,7 +1458,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
           >
             <div
               active="0"
-              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 cBgsRo"
+              class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 dvsWPw"
               data-testid="thumbnailBg"
             >
               <div
@@ -1498,7 +1473,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
               </div>
             </div>
             <div
-              class="styledComponents__ImageDesc-rlzd0s-4 kwOGUY"
+              class="styledComponents__ImageDesc-rlzd0s-4 gCVmfM"
             >
               dscx
             </div>

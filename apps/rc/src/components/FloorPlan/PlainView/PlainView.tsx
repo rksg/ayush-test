@@ -178,43 +178,30 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
         </UI.ImageLoaderContainer>
       </UI.ImageContainerWrapper>
       <UI.ImageButtonsContainer>
-        <Space direction='vertical'
-          style={{
-            border: '1px solid var(--acx-neutrals-30)',
-            borderRadius: '4px',
-            backgroundColor: 'var(--acx-primary-white)'
-          }}
-          split={<Divider style={{
-            lineHeight: '0px',
-            margin: '0px',
-            border: '1px solid var(--acx-neutrals-30)'
-          }} />}
-          size={0}>
-          <Button
-            data-testid='image-zoom-in'
-            onClick={() => setImageModeHandler(ImageMode.ZOOM_IN)}
-            type='link'
-            size='middle'
-            icon={<MagnifyingGlassPlusOutlined />} />
-          <Button
-            data-testid='image-zoom-out'
-            onClick={() => setImageModeHandler(ImageMode.ZOOM_OUT)}
-            type='link'
-            size='middle'
-            icon={<MagnifyingGlassMinusOutlined />} />
-          <Button
-            data-testid='image-zoom-original'
-            onClick={() => setImageModeHandler(ImageMode.ORIGINAL)}
-            size='middle'
-            type='link'
-            icon={<SearchFullOutlined />} />
-          <Button
-            data-testid='image-zoom-fit'
-            onClick={() => setImageModeHandler(ImageMode.FIT)}
-            size='middle'
-            type='link'
-            icon={<SearchFitOutlined />}/>
-        </Space>
+        <Button
+          data-testid='image-zoom-in'
+          onClick={() => setImageModeHandler(ImageMode.ZOOM_IN)}
+          type='link'
+          size='middle'
+          icon={<MagnifyingGlassPlusOutlined />} />
+        <Button
+          data-testid='image-zoom-out'
+          onClick={() => setImageModeHandler(ImageMode.ZOOM_OUT)}
+          type='link'
+          size='middle'
+          icon={<MagnifyingGlassMinusOutlined />} />
+        <Button
+          data-testid='image-zoom-original'
+          onClick={() => setImageModeHandler(ImageMode.ORIGINAL)}
+          size='middle'
+          type='link'
+          icon={<SearchFullOutlined />} />
+        <Button
+          data-testid='image-zoom-fit'
+          onClick={() => setImageModeHandler(ImageMode.FIT)}
+          size='middle'
+          type='link'
+          icon={<SearchFitOutlined />}/>
       </UI.ImageButtonsContainer>
       {floorPlans.length > 1 && <Row style={{ backgroundColor: 'var(--acx-neutrals-10' }}>
         <UI.GallaryWrapper>

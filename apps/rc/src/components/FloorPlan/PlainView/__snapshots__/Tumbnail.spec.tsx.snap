@@ -7,7 +7,7 @@ exports[`Floor Plan Thumbnail Image should render correctly 1`] = `
   >
     <div
       active="0"
-      class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 cBgsRo"
+      class="ant-card-grid styledComponents__StyledCardGrid-rlzd0s-1 dvsWPw"
       data-testid="thumbnailBg"
     >
       <div
@@ -22,7 +22,7 @@ exports[`Floor Plan Thumbnail Image should render correctly 1`] = `
       </div>
     </div>
     <div
-      class="styledComponents__ImageDesc-rlzd0s-4 kwOGUY"
+      class="styledComponents__ImageDesc-rlzd0s-4 gCVmfM"
     >
       TEST_2
     </div>
