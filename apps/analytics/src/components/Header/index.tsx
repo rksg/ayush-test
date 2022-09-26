@@ -35,7 +35,8 @@ export type HeaderData = {
 
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
   data: HeaderData
-  replaceTitle: boolean
+  replaceTitle: boolean,
+  shouldQuerySwitch: boolean
 }
 
 export const useSubTitle = (subTitles: SubTitle[]) => {
@@ -60,7 +61,7 @@ export const useSubTitle = (subTitles: SubTitle[]) => {
   )
 }
 
-export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
+export const Header = ({ data, replaceTitle, shouldQuerySwitch, ...otherProps }: HeaderProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
   const { title, subTitle } = data
@@ -70,7 +71,9 @@ export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
     <PageHeader
       {...props}
       extra={[
-        <NetworkFilter key='network-filter' />,
+        <NetworkFilter key='network-filter'
+          shouldQuerySwitch={shouldQuerySwitch}
+        />,
         <RangePicker
           key='range-picker'
           selectedRange={{
@@ -87,7 +90,7 @@ export const Header = ({ data, replaceTitle, ...otherProps }: HeaderProps) => {
   )
 }
 
-const ConnectedHeader = (props: PageHeaderProps) => {
+const ConnectedHeader = (props: PageHeaderProps & { shouldQuerySwitch : boolean }) => {
   const { filters } = useAnalyticsFilter()
   const queryResults = useNetworkNodeInfoQuery(filters)
   return (
@@ -95,6 +98,7 @@ const ConnectedHeader = (props: PageHeaderProps) => {
       <Loader states={[queryResults]}>
         <Header
           {...props}
+          shouldQuerySwitch={props.shouldQuerySwitch}
           data={queryResults.data as HeaderData}
           replaceTitle={filters.path.length > 1}
         />

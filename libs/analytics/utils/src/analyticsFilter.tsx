@@ -37,10 +37,12 @@ export function useAnalyticsFilter () {
   const { path, raw } = getNetworkFilter()
   const { dateFilter } = useContext(DateFilterContext)
   const { range, startDate, endDate } = dateFilter
+  const selectedNode = path.length > 1 ? [path.slice(1)] : []
   return {
     filters: {
-      path: path.length ? path : defaultNetworkPath,
-      ...getDateRangeFilter(range, startDate, endDate)
+      path: defaultNetworkPath,
+      ...getDateRangeFilter(range, startDate, endDate),
+      filter: { networkNodes: selectedNode, switchNodes: selectedNode } 
     } as const,
     setNetworkPath,
     raw

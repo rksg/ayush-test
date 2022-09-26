@@ -18,7 +18,7 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
   severity: { [key: string]: number };
 }
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
-
+type ConnectedNetworkFilterProps = { shouldQuerySwitch : boolean } 
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
 ): VenuesWithSeverityNodes => 
@@ -181,7 +181,7 @@ export const onApply = (
   setNetworkPath(path, value || [])
 }
 
-function ConnectedNetworkFilter () {
+function ConnectedNetworkFilter ({ shouldQuerySwitch } : ConnectedNetworkFilterProps) {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const incidentsList = useIncidentsListQuery(({ ...filters, path: defaultNetworkPath }), {
@@ -189,7 +189,9 @@ function ConnectedNetworkFilter () {
       data: data ? getSeverityFromIncidents(data) : []
     })
   })
-  const queryResults = useNetworkFilterQuery(omit(filters, 'path'), {
+  const networkFilter = { ...filters, shouldQuerySwitch } 
+  console.log(networkFilter)
+  const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path'), {
     selectFromResult: ({ data, ...rest }) => ({
       data: data ? getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes) : [],
       ...rest
