@@ -50,23 +50,39 @@ describe('transformIncidentQueryResult', () => {
 })
 
 describe('useShortDescription', () => {
-  const incident = fakeIncident({
-    id: '1',
-    code: 'eap-failure',
-    startTime: '2022-08-12T00:00:00.000Z',
-    endTime: '2022-08-12T01:00:00.000Z',
-    path: [
-      { type: 'network', name: 'Network' },
-      { type: 'zone', name: 'Venue 1' }
-    ],
-    sliceType: 'zoneName',
-    sliceValue: 'Venue 1'
-  })
-  const renderShortDescription: typeof useShortDescription = (incident) =>
-    renderHook(() => useShortDescription(incident)).result.current
-
   it('should return correct value', () => {
+    const incident = fakeIncident({
+      id: '1',
+      code: 'eap-failure',
+      startTime: '2022-08-12T00:00:00.000Z',
+      endTime: '2022-08-12T01:00:00.000Z',
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'Venue 1' }
+      ],
+      sliceType: 'zoneName',
+      sliceValue: 'Venue 1'
+    })
+    const renderShortDescription: typeof useShortDescription = (incident) =>
+      renderHook(() => useShortDescription(incident)).result.current
     expect(renderShortDescription(incident)).toContain('Venue: Venue 1')
+  })
+  it('should return correct value with threshold', () => {
+    const incident = fakeIncident({
+      id: '1',
+      code: 'ttc',
+      startTime: '2022-08-12T00:00:00.000Z',
+      endTime: '2022-08-12T01:00:00.000Z',
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'Venue 1' }
+      ],
+      sliceType: 'zoneName',
+      sliceValue: 'Venue 1'
+    })
+    const renderShortDescription: typeof useShortDescription = (incident) =>
+      renderHook(() => useShortDescription(incident)).result.current
+    expect(renderShortDescription(incident)).toContain('2s')
   })
 })
 
