@@ -5,7 +5,7 @@ import moment from 'moment-timezone'
 import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { kpiConfig } from './config'
-import { calcGranularity } from '../../../utils'
+import { calculateGranularity } from '../../../utils'
 
 type datum = number []
 export type KPITimeseriesResponse = {
@@ -33,28 +33,11 @@ const getKPIMetric = (kpi: string) : string => {
     ? `${apiMetric}(threshold: ${histogram.initialThreshold})`
     : apiMetric
 }
-export function getMaxGranularity (...durations: string[]) {
-  let max = null
-  for (let i = 0; i < durations.length; i++) {
-    const duration = durations[i]
-    if (!max) {
-      max = duration
-      continue
-    }
-    if (duration === 'all') return 'all'
-    if (moment.duration(duration).asSeconds() > moment.duration(max).asSeconds()) {
-      max = durations[i]
-    }
-  }
-  return max
-}
+
 const getGranularity = (start: string, end: string, kpi: string) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { timeseries: { minGranularity } } = config
-  return getMaxGranularity(
-    calcGranularity(start, end),
-    minGranularity
-  )
+  return calculateGranularity(start, end, minGranularity)
 }
 export const timeseriesApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
