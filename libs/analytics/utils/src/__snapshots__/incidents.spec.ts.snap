@@ -64,3 +64,7 @@ Object {
 `;
 
 exports[`impactValues useIncidentScope formats correct incident scope 1`] = `"Venue: Venue 1"`;
+
+exports[`useGetThreshold should return the correct result for ttc 1`] = `"2s"`;
+
+exports[`useGetThreshold should return undefined when code does not match 1`] = `undefined`;
