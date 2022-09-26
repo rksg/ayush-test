@@ -1,6 +1,6 @@
 import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
 import { Provider }                        from '@acx-ui/store'
-import { mockDOMWidth, render, screen }   from '@acx-ui/test-utils'
+import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
 
 import { VlanMismatch } from '../VlanMismatch'
 
