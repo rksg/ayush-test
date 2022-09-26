@@ -1,4 +1,6 @@
-import { createContext, ReactNode, useEffect, useMemo, useState } from 'react'
+import { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+
+import moment from 'moment-timezone'
 
 import {
   useAnalyticsFilter,
@@ -15,20 +17,37 @@ export interface HealthFilter extends AnalyticsFilter {
 
 export const HealthPageContext = createContext(null as unknown as HealthFilter)
 
+export const formatTimeWindow = (window: TimeWindow) => {
+  if (typeof window[0] === 'number') {
+    window[0] = moment(window[0]).format()
+  }
+
+  if (typeof window[1] === 'number') {
+    window[1] = moment(window[1]).format()
+  }
+  
+  return window
+}
+
 export function HealthPageContextProvider (props: { children: ReactNode }) {
   const analyticsFilter = useAnalyticsFilter()
   const { startDate, endDate } = analyticsFilter.filters
   const [timeWindow, setTimeWindow] = useState<TimeWindow>([startDate, endDate])
 
+  const setTimeWindowCallback = useCallback((window: TimeWindow) => {
+    const formattedWindow = formatTimeWindow(window)
+    setTimeWindow(formattedWindow)
+  }, [])
+
   useEffect(() => {
-    setTimeWindow([startDate, endDate])
-  }, [startDate, endDate])
+    setTimeWindowCallback([startDate, endDate])
+  }, [startDate, endDate, setTimeWindowCallback])
 
   const context = useMemo(() => ({
     ...analyticsFilter.filters,
-    setTimeWindow,
+    setTimeWindow: setTimeWindowCallback,
     timeWindow
-  }), [analyticsFilter.filters, setTimeWindow, timeWindow])
+  }), [analyticsFilter.filters, setTimeWindowCallback, timeWindow])
 
   return <HealthPageContext.Provider {...props} value={context} />
 }

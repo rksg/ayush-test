@@ -6,7 +6,8 @@ import { DateFilterContext, DateRange } from '@acx-ui/utils'
 import {
   TimeWindow,
   HealthPageContext,
-  HealthPageContextProvider
+  HealthPageContextProvider,
+  formatTimeWindow
 } from './HealthPageContext'
 
 describe('HealthPageContextProvider', () => {
@@ -85,5 +86,22 @@ describe('HealthPageContextProvider', () => {
     rerender()
 
     expect(result.current.timeWindow).toEqual(nextTimeWindow)
+  })
+})
+
+describe('formatTimeWindow', () => {
+  it('should convert numeric window to valid date', () => {
+    const stringTimeWindow: TimeWindow = [
+      '2022-09-25T12:15:57+00:00',
+      '2022-09-26T09:00:00+00:00'
+    ]
+
+    const numericTimeWindow: TimeWindow = [
+      1664108157462,
+      1664182800000
+    ]
+
+    const formattedWindow = formatTimeWindow(numericTimeWindow)
+    expect(formattedWindow).toMatchObject(stringTimeWindow)
   })
 })
