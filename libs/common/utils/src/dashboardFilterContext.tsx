@@ -32,7 +32,8 @@ export type NetworkNode = {
 export type NetworkNodePath = NetworkNode[] | []
 
 export type pathFilter = {
-  networkNodes? : NetworkPath[]
+  networkNodes? : NetworkPath[],
+  switchNodes? : NetworkPath[]
 }
 
 interface DashboardFilterProps {
