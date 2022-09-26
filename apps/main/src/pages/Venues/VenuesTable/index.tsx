@@ -187,6 +187,7 @@ export function VenuesTable () {
     ] = useDeleteVenueMutation()
 
     const rowActions: TableProps<Venue>['rowActions'] = [{
+      hideIfMultipleSelection: true,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate(`${selectedRows[0].id}/edit/details`, { replace: false })

@@ -49,6 +49,7 @@ export interface TableProps <RecordType>
       onClick: () => void
     }>
     rowActions?: Array<{
+      hideIfMultipleSelection?: boolean,
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
@@ -298,6 +299,8 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
           </Space>
           <Space size={0} split={<UI.Divider type='vertical' />}>
             {props.rowActions?.map((option) =>
+              (!option.hideIfMultipleSelection ||
+                (option.hideIfMultipleSelection && selectedRowKeys.length === 1)) &&
               <UI.ActionButton
                 key={option.label}
                 onClick={() =>
