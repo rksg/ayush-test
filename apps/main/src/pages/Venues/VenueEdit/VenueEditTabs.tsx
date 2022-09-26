@@ -21,10 +21,11 @@ function VenueEditTabs () {
   const basePath = useTenantLink(`/venues/${params.venueId}/edit/`)
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const onTabChange = (tab: string) => {
-    const subTab = tab === 'wifi' ? 'radio' : (tab === 'switch' ? 'general' : 'details')
+    if (tab === 'wifi') tab = `${tab}/radio`
+    if (tab === 'switch') tab = `${tab}/general`
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/${tab}/${subTab}`
+      pathname: `${basePath.pathname}/${tab}`
     })
   }
 

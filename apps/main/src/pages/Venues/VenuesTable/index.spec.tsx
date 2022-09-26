@@ -66,7 +66,7 @@ describe('Venues Table', () => {
     const editButton = screen.getByRole('button', { name: /edit/i })
     fireEvent.click(editButton)
     expect(mockedUsedNavigate).toHaveBeenCalledWith(
-      `${venuelist?.data?.[0].id}/edit/details/details`,
+      `${venuelist?.data?.[0].id}/edit/details`,
       { replace: false }
     )
   })
