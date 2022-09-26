@@ -148,8 +148,7 @@ export function ServicesTable () {
             },
             onOk: () => {
               const [ deleteFn ] = deleteServiceFnMapping[type]
-              deleteFn({ params: { tenantId, serviceId: id } })
-              clearSelection()
+              deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
             }
           })
         }
