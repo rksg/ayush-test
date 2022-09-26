@@ -40,16 +40,14 @@ interface DashboardFilterProps {
   path: NetworkPath
   setNodeFilter: CallableFunction
   getNodeFilter: CallableFunction
-  nodes: NetworkNodePath
 }
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
 export const defaultDashboardFilter = {
   path: defaultNetworkPath,
-  setNodeFilter: () => {}, 
-  getNodeFilter: () => ({ path: defaultNetworkPath }),
-  nodes: []
-} 
+  setNodeFilter: () => {},
+  getNodeFilter: () => ({ path: defaultNetworkPath, nodes: [] })
+}
 
 export const DashboardFilterContext = React.createContext<DashboardFilterProps>(
   defaultDashboardFilter
@@ -65,7 +63,10 @@ export function useDashboardFilter () {
     filters: {
       path: defaultNetworkPath,
       ...getDateRangeFilter(range, startDate, endDate),
-      filter: { networkNodes: nodes, switchNodes: nodes } 
+      filter: nodes.length ? {
+        networkNodes: nodes.map(([name]: string[]) => [{ type: 'zone', name }]),
+        switchNodes: nodes.map(([name]: string[]) => [{ type: 'switchGroup', name }])
+      }: {}
     },
     setNodeFilter
   }
@@ -79,10 +80,10 @@ export function DashboardFilterProvider (props: { children: ReactNode }) {
     )
     : { nodes: [] }
 
-  const setNodeFilter = (Nodes: NetworkPath) => {
+  const setNodeFilter = (nodes: string[]) => {
     search.set(
       'dashboardVenueFilter',
-      Buffer.from(JSON.stringify({ nodes: Nodes.length ? Nodes : [] })).toString('base64')
+      Buffer.from(JSON.stringify({ nodes: nodes.length ? nodes : [] })).toString('base64')
     )
     setSearch(search, { replace: true })
   }

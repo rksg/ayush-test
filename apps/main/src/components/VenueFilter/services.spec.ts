@@ -9,33 +9,15 @@ import { api } from './services'
 
 export const networkHierarchy = {
   children: [{
-    type: 'zone',
-    name: 'venue',
-    path: [...defaultNetworkPath, { type: 'zone', name: 'venue' }],
-    aps: [{ name: 'ap', mac: 'ap-mac' }],
-    switches: []
+    name: 'venue A',
+    id: 'venue1'
   }, {
-    type: 'switchGroup',
-    name: 'venue',
-    path: [...defaultNetworkPath, { type: 'switchGroup', name: 'venue' }],
-    aps: [],
-    switches: [{ name: 'switch', mac: 'switch-mac' }]
+    name: 'venue B',
+    id: 'venue2'
   }, {
-    type: 'zone',
-    name: 'venue1',
-    path: [...defaultNetworkPath, { type: 'zone', name: 'venue1' }],
-    aps: [{ name: 'ap2', mac: 'ap-mac2' }],
-    switches: []
-  }, {
-    type: 'switchGroup',
-    name: 'swg',
-    path: [...defaultNetworkPath, { type: 'switchGroup', name: 'swg' }],
-    aps: [],
-    switches: [{ name: 'switch2', mac: 'switch-mac2' }]
-  }],
-  name: 'Network',
-  type: 'network',
-  path: defaultNetworkPath
+    name: 'venue B',
+    id: 'venue2'
+  }]
 }
 describe('venueFilterApi', () => {
   const store = configureStore({
@@ -66,7 +48,7 @@ describe('venueFilterApi', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.networkFilter.initiate(props)
+      api.endpoints.venueFilter.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode.children)
@@ -77,7 +59,7 @@ describe('venueFilterApi', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.networkFilter.initiate(props)
+      api.endpoints.venueFilter.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

@@ -1,8 +1,6 @@
-import userEvent             from '@testing-library/user-event'
-import { DefaultOptionType } from 'antd/lib/select'
+import userEvent from '@testing-library/user-event'
 
 import { dataApiURL }                                  from '@acx-ui/analytics/services'
-import { defaultNetworkPath }                          from '@acx-ui/analytics/utils'
 import { Provider, store }                             from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent } from '@acx-ui/test-utils'
 import { DateRange }                                   from '@acx-ui/utils'
@@ -10,7 +8,7 @@ import { DateRange }                                   from '@acx-ui/utils'
 import { api }              from './services'
 import { networkHierarchy } from './services.spec'
 
-import VenueFilter, { onApply, displayRender } from '.'
+import VenueFilter from '.'
 
 
 const mockSetNodeFilter = jest.fn()
@@ -24,7 +22,6 @@ const filters = {
 const mockUseDashboardFilter = {
   filters,
   setNodeFilter: mockSetNodeFilter
-
 }
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -32,7 +29,6 @@ jest.mock('@acx-ui/utils', () => ({
   useDashboardFilter: () => mockUseDashboardFilter
 }))
 describe('venue Filter', () => {
-  
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
     jest.clearAllMocks()
@@ -62,13 +58,10 @@ describe('venue Filter', () => {
     render(<Provider><VenueFilter /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(await screen.findByRole('combobox'))
-    fireEvent.click(await screen.findByText('venue1'))
+    fireEvent.click(await screen.findByText('venue A'))
     fireEvent.click(await screen.findByText('Apply'))
-    const path = [
-      { type: 'zone', name: 'venue1' }
-    ]
     expect(mockSetNodeFilter).toHaveBeenCalledTimes(1)
-    expect(mockSetNodeFilter).toHaveBeenCalledWith([path])
+    expect(mockSetNodeFilter).toHaveBeenCalledWith([['venue1']])
     await userEvent.click(screen.getByRole('combobox'))
   })
   it('should select multiple network node', async () => {
@@ -78,18 +71,11 @@ describe('venue Filter', () => {
     render(<Provider><VenueFilter /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(await screen.findByRole('combobox'))
-    fireEvent.click(await screen.findByText('venue1'))
-    fireEvent.click(await screen.findByText('swg'))
+    fireEvent.click(await screen.findByText('venue A'))
+    fireEvent.click(await screen.findByText('venue B'))
     fireEvent.click(await screen.findByText('Apply'))
-
-    const path1 = [
-      { type: 'zone', name: 'venue1' }
-    ]
-    const path2 = [
-      { type: 'switchGroup', name: 'swg' }
-    ]
     expect(mockSetNodeFilter).toHaveBeenCalledTimes(1)
-    expect(mockSetNodeFilter).toHaveBeenCalledWith([path1,path2])
+    expect(mockSetNodeFilter).toHaveBeenCalledWith([['venue1'], ['venue2']])
     await userEvent.click(screen.getByRole('combobox'))
   })
   it('should search node', async () => {
@@ -99,21 +85,11 @@ describe('venue Filter', () => {
     render(<Provider><VenueFilter /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(await screen.findByRole('combobox'))
-    await userEvent.type(screen.getByRole('combobox'), 'swg')
-    const ele = await screen.findAllByText('swg')
+    await userEvent.type(screen.getByRole('combobox'), 'venue B')
+    const ele = await screen.findAllByText('venue B')
     fireEvent.click(ele[1])
     fireEvent.click(await screen.findByText('Apply'))
-    const path = [
-      { type: 'switchGroup', name: 'swg' }
-    ]
     expect(mockSetNodeFilter).toHaveBeenCalledTimes(1)
-    expect(mockSetNodeFilter).toHaveBeenCalledWith([path])
-
-  })
-  it('should correctly call setNodeFilter', () => {
-    const setNodeFilter = jest.fn()
-    const path = [JSON.stringify(defaultNetworkPath)]
-    onApply(path, setNodeFilter)
-    expect(setNodeFilter).toBeCalledWith([defaultNetworkPath])
+    expect(mockSetNodeFilter).toHaveBeenCalledWith([['venue2']])
   })
 })
