@@ -1,10 +1,11 @@
 import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
 import { Provider }                        from '@acx-ui/store'
-import { mockAutoSizer, render, screen }   from '@acx-ui/test-utils'
+import { mockDOMWidth, render, screen }   from '@acx-ui/test-utils'
 
 import { ApSzConnFailure } from '../ApSzConnFailure'
 
 jest.mock('../../IncidentAttributes', () => ({
+  ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
 }))
 jest.mock('../../Insights', () => ({
@@ -12,7 +13,7 @@ jest.mock('../../Insights', () => ({
 }))
 
 describe('i-apserv-downtime-high', () => {
-  mockAutoSizer()
+  mockDOMWidth()
   it('should render correctly', () => {
     const params = {
       incidentId: fakeIncident1.id

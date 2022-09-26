@@ -7,22 +7,22 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { IncidentAttributes } from '../IncidentAttributes'
-import { Insights }           from '../Insights'
+import { IncidentAttributes, Attributes } from '../IncidentAttributes'
+import { Insights }                       from '../Insights'
 
 import * as UI from './styledComponents'
 
 export const VlanMismatch = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
-    'apImpactCount',
-    'incidentCategory',
-    'incidentSubCategory',
-    'type',
-    'scope',
-    'duration',
-    'eventStartTime',
-    'eventEndTime'
+    Attributes.ApImpactCount,
+    Attributes.IncidentCategory,
+    Attributes.IncidentSubCategory,
+    Attributes.Type,
+    Attributes.Scope,
+    Attributes.Duration,
+    Attributes.EventStartTime,
+    Attributes.EventEndTime
   ]
 
   return (

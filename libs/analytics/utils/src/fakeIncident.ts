@@ -1,5 +1,6 @@
 import { IncidentInformation }          from './incidentInformation'
 import { transformIncidentQueryResult } from './incidents'
+import { codeToFailureTypeMap } from './rootCauseRecommendation'
 import { Incident }                     from './types/incidents'
 
 type RequiredFields = 'id'
@@ -38,9 +39,9 @@ export function fakeIncident (props: FakeIncidentProps): Incident {
   } as Incident)
 }
 
-export const mockFakeIncident = (code: string = 'eap-failure') => fakeIncident({
+export const mockFakeIncident = (code = 'eap-failure') => fakeIncident({
   id: 'df5339ba-da3b-4110-a291-7f8993a274f3',
-  code: code,
+  code: code as keyof typeof codeToFailureTypeMap,
   path: [
     { type: 'network', name: 'Network' },
     { type: 'zone', name: 'Edu2-611-Mesh' },
