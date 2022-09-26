@@ -7,7 +7,7 @@ import {
   TableResult,
   Service,
   CommonResult,
-  WifiCallingUrls
+  WifiCallingUrls,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
