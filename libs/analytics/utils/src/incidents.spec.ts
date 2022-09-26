@@ -13,7 +13,8 @@ import {
   useImpactedArea,
   useImpactValues,
   useShortDescription,
-  useIncidentScope
+  useIncidentScope,
+  useGetThreshold
 } from './incidents'
 
 import type { Incident, NodeType, PathNode } from './types/incidents'
@@ -211,5 +212,40 @@ describe('impactValues', () => {
     it('formats correct incident scope', () => {
       expect(renderUseIncidentScope()).toMatchSnapshot()
     })
+  })
+})
+
+describe('useGetThreshold', () => {
+  it('should return the correct result for ttc', () => {
+    const renderUseGetThreshold = () => renderHook(
+      () => useGetThreshold(
+        fakeIncident({
+          id: '1',
+          code: 'ttc',
+          startTime: '2022-08-12T00:00:00.000Z',
+          endTime: '2022-08-12T01:00:00.000Z',
+          path: [
+            { type: 'network', name: 'Network' },
+            { type: 'zone', name: 'Venue 1' }
+          ]
+        })
+      )).result.current
+    expect(renderUseGetThreshold()).toMatchSnapshot()
+  })
+  it('should return undefined when code does not match', () => {
+    const renderUseGetThreshold = () => renderHook(
+      () => useGetThreshold(
+        fakeIncident({
+          id: '1',
+          code: 'radius-failure',
+          startTime: '2022-08-12T00:00:00.000Z',
+          endTime: '2022-08-12T01:00:00.000Z',
+          path: [
+            { type: 'network', name: 'Network' },
+            { type: 'zone', name: 'Venue 1' }
+          ]
+        })
+      )).result.current
+    expect(renderUseGetThreshold()).toMatchSnapshot()
   })
 })
