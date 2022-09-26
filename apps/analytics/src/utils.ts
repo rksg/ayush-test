@@ -22,19 +22,8 @@ export const calculateGranularity = (
     default:
       gran = 'PT180S'
   }
-  return getMaxGranularity(gran, minGranularity || '')
-}
-function getMaxGranularity (...durations: string[]): string {
-  let max = ''
-  for (let i = 0; i < durations.length; i++) {
-    const duration = durations[i]
-    if (!max) {
-      max = duration
-      continue
-    }
-    if (moment.duration(duration).asSeconds() > moment.duration(max).asSeconds()) {
-      max = durations[i]
-    }
-  }
-  return max
+  return minGranularity &&
+    moment.duration(minGranularity).asSeconds() > moment.duration(gran).asSeconds()
+    ? minGranularity
+    : gran
 }
