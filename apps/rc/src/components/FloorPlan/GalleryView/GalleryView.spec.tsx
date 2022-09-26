@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { FloorPlanDto }   from '@acx-ui/rc/utils'
-import { render, screen } from '@acx-ui/test-utils'
+import { FloorPlanDto }              from '@acx-ui/rc/utils'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import GalleryView from './GalleryView'
 
@@ -44,4 +44,17 @@ describe('Floor Plan Gallery View', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('handles click on gallery item', async () => {
+    const onFloorPlanClick = jest.fn()
+
+    render(<GalleryView
+      floorPlans={list}
+      onFloorPlanClick={onFloorPlanClick}
+    />)
+
+    const images = screen.getAllByTestId('fpImage')
+    fireEvent.click(images[1])
+
+    expect(onFloorPlanClick).toBeCalledWith(list[1])
+  })
 })

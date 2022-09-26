@@ -1,12 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, FloorPlanDto }                                     from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
-
-import GalleryView from './GalleryView/GalleryView'
-import PlainView   from './PlainView/PlainView'
+import { CommonUrlsInfo, FloorPlanDto }                          from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import FloorPlan from '.'
 
@@ -58,34 +55,9 @@ describe('Floor Plans', () => {
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-    const {
-      asFragment: asChildrenFragment
-    } = render(<PlainView floorPlans={list}
-      toggleGalleryView={jest.fn()}
-      defaultFloorPlan={list[0]}/>)
-    const component = screen.getAllByTestId('floorPlanImage')
-
-    expect(component.length).toEqual(list.length)
-
-    expect(asChildrenFragment()).toMatchSnapshot()
+    expect(screen.getAllByTestId('floorPlanImage')).toHaveLength(1)
+    expect(screen.getAllByTestId('thumbnailBg')).toHaveLength(list.length)
 
     expect(asFragment()).toMatchSnapshot()
   })
-  it('Gallaryview should render correctly', async () => {
-    const setSelectedFloorPlanState = jest.fn()
-
-    const {
-      asFragment
-    } = render(<GalleryView floorPlans={list}
-      onFloorPlanClick={setSelectedFloorPlanState}/>)
-
-    const images = screen.getAllByTestId('fpImage')
-    images.forEach((image) => {
-      fireEvent.click(image)
-    })
-    expect(setSelectedFloorPlanState).toBeCalledTimes(images.length)
-    
-    expect(asFragment).toMatchSnapshot()
-  })
-
 })

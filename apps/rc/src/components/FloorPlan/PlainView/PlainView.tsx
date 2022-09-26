@@ -123,10 +123,10 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
       const imageCoordsX = imageRef?.current?.offsetWidth || 0
       const imageCoordsY = imageRef?.current?.offsetHeight || 0
 
-    
+
       const differencePercentage = getImageFitPercentage(containerCoordsX,
         containerCoordsY, imageCoordsX, imageCoordsY)
-      
+
       if (differencePercentage) {
         const _zoom = Math.floor(differencePercentage) / 100
         setCurrentZoom(_zoom)
@@ -179,13 +179,11 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
       </UI.ImageContainerWrapper>
       <UI.ImageButtonsContainer>
         <Space direction='vertical'
-          style={
-            {
-              border: '1px solid var(--acx-neutrals-30)',
-              borderRadius: '4px',
-              backgroundColor: 'var(--acx-primary-white)'
-            }
-          }
+          style={{
+            border: '1px solid var(--acx-neutrals-30)',
+            borderRadius: '4px',
+            backgroundColor: 'var(--acx-primary-white)'
+          }}
           split={<Divider style={{
             lineHeight: '0px',
             margin: '0px',
