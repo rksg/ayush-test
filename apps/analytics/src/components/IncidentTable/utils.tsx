@@ -25,7 +25,6 @@ export const GetIncidentBySeverity = (props: GetIncidentBySeverityProps) => {
   const basePath = useTenantLink('/analytics/incidents/')
 
   const severity = calculateSeverity(value)
-  if (typeof severity === 'undefined') return <span>{noDataSymbol}</span>
 
   return <UI.UnstyledLink to={{ ...basePath, pathname: `${basePath.pathname}/${id}` }}>
     <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>

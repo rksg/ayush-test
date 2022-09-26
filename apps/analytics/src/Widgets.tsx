@@ -3,6 +3,7 @@ import { Card }            from '@acx-ui/components'
 import { Provider }        from '@acx-ui/store'
 
 import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
+import IncidentsDashboardWidget       from './components/IncidentsDashboard'
 import NetworkHistoryWidget           from './components/NetworkHistory'
 import SwitchesTrafficByVolumeWidget  from './components/SwitchesTrafficByVolume'
 import TopSwitchModelsWidget          from './components/SwitchModels'
@@ -47,6 +48,9 @@ const widgetsMap = {
   ),
   topSwitchesByTraffic: ({ filters }: { filters: AnalyticsFilter }) => (
     <TopSwitchesByTrafficWidget filters={filters}/>
+  ),
+  incidents: ({ filters }: { filters: AnalyticsFilter }) => (
+    <IncidentsDashboardWidget filters={filters} />
   )
 }
 
