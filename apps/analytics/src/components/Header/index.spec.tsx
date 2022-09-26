@@ -19,6 +19,7 @@ describe('Analytics dumb header', () => {
   const props = {
     title: 'title',
     replaceTitle: true,
+    shouldQuerySwitch: true,
     data: {
       title: 'title',
       subTitle: [
@@ -44,14 +45,14 @@ describe('Analytics connected header', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
       data: header2.queryResult
     })
-    render(<Provider> <Header title={''}/></Provider>)
+    render(<Provider> <Header title={''} shouldQuerySwitch/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render header', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
       data: header1.queryResult
     })
-    render(<Provider><Header title={'Title'}/></Provider>)
+    render(<Provider><Header title={'Title'} shouldQuerySwitch/></Provider>)
     await screen.findByText('Title')
     expect(screen.getByTitle('Organization')).toHaveTextContent('Type:')
   })
