@@ -80,7 +80,7 @@ const NetworkHistoryWidget = forwardRef<
           {({ height, width }) => (
             queryResults.data.length ?
               <MultiLineTimeSeriesChart
-                style={{ width: width, height: height }}
+                style={{ width, height }}
                 data={queryResults.data}
                 lineColors={lineColors}
                 brush={brush?.timeWindow}
