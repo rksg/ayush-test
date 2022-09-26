@@ -26,9 +26,6 @@ const search = (input: string, path: DefaultOptionType[]) : boolean => {
   const item = path.slice(-1)[0]
   return (item?.label as string)?.toLowerCase().includes(input.toLowerCase())
 }
-export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) =>
-  selectedOptions
-    ?.map(option => option?.displayLabel || option?.label).join(' / ')
 export const onApply = (
   selectedOptions: SingleValueType | SingleValueType[] | undefined,
   setNodeFilter: CallableFunction

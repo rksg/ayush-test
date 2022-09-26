@@ -108,17 +108,7 @@ describe('venue Filter', () => {
     ]
     expect(mockSetNodeFilter).toHaveBeenCalledTimes(1)
     expect(mockSetNodeFilter).toHaveBeenCalledWith([path])
-   
-  })
-  it('should return correct value to render', () => {
-    const data = [
-      { input: undefined, output: undefined },
-      { input: [{ displayLabel: 'dp' }], output: 'dp' },
-      { input: [{ label: 'l' }, { label: 'k' }], output: 'l / k' }
-    ]
-    data.forEach(({ input, output }) => {
-      expect(displayRender({}, input as DefaultOptionType[] | undefined)).toEqual(output)
-    })
+
   })
   it('should correctly call setNodeFilter', () => {
     const setNodeFilter = jest.fn()
