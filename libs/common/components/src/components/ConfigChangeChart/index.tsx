@@ -418,7 +418,7 @@ export function ConfigChangeChart ({
       type: 'time',
       axisLabel: {
         ...axisLabelOptions(),
-        formatter: dateAxisFormatter
+        formatter: dateAxisFormatter()
       },
       min: chartBoundary[0],
       max: chartBoundary[1],
@@ -502,4 +502,3 @@ export function ConfigChangeChart ({
     />
   )
 }
-

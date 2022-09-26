@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
+import { NetworkImpactChartTypes  }                from './config'
 import { networkImpactChartsApi, RequestPayload  } from './services'
 
 describe('networkImpactChartsApi', () => {
@@ -15,7 +16,12 @@ describe('networkImpactChartsApi', () => {
   })
   const payload = {
     incident: { id: 'id', metadata: { dominant: { } } },
-    charts: [ 'WLAN', 'radio', 'reason', 'clientManufacturer']
+    charts: [
+      NetworkImpactChartTypes.WLAN,
+      NetworkImpactChartTypes.Radio,
+      NetworkImpactChartTypes.Reason,
+      NetworkImpactChartTypes.ClientManufacturer
+    ]
   } as RequestPayload
   afterEach(() =>
     store.dispatch(networkImpactChartsApi.util.resetApiState())

@@ -19,7 +19,7 @@ exports[`Card component should render card with grey background 1`] = `
             class="ant-card-head-title"
           >
             <div
-              class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+              class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
             />
           </div>
           <div
@@ -60,7 +60,7 @@ exports[`Card component should render card with no border 1`] = `
             class="ant-card-head-title"
           >
             <div
-              class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+              class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
             />
           </div>
           <div
