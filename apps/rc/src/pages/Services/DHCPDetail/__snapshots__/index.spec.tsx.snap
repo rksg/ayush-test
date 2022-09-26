@@ -1,0 +1,547 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DHCP Detail Page should render detail page 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/a27e3eb0bd164e01ae731da8d976d3b1/services"
+              >
+                Services
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              DHCP Service373377b0cb6e46ea8982b1c80aabe1fa
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+              style="margin-right: 8px;"
+            >
+              <button
+                class="ant-btn ant-btn-default ant-btn-lg styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                type="button"
+              >
+                <svg>
+                  ClockOutlined.svg
+                </svg>
+                <span>
+                  Last 24 hours
+                </span>
+              </button>
+            </div>
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-primary ant-btn-lg styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                type="button"
+              >
+                <span>
+                  Configure
+                </span>
+              </button>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-13w5wfx-3 gtmGMB"
+      type="default"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+              />
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        >
+          <div>
+            <h3
+              class="ant-typography"
+            >
+              Number of Pool
+            </h3>
+            <span
+              class="ant-typography"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row"
+    style="padding-top: 25px;"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-13w5wfx-3 gtmGMB"
+      type="default"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+              />
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        >
+          <div>
+            <h3
+              class="ant-typography"
+            >
+              Instances (undefined)
+            </h3>
+            <div
+              style="width: 100%;"
+            >
+              <div
+                class="styledComponents__Wrapper-sc-1abm7iv-10 fBxXu"
+              >
+                <div
+                  class="ant-pro-table"
+                >
+                  <div
+                    class="ant-pro-card"
+                  >
+                    <div
+                      class="ant-pro-card-body"
+                      style="padding-top: 0px;"
+                    >
+                      <div
+                        class="ant-pro-table-list-toolbar"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar-container"
+                        >
+                          <div
+                            class="ant-pro-table-list-toolbar-left"
+                          />
+                          <div
+                            class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                          >
+                            <div
+                              class="ant-space-item"
+                            >
+                              <div
+                                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                              >
+                                <div
+                                  class="ant-space-item"
+                                >
+                                  <div
+                                    class="ant-pro-table-list-toolbar-setting-item"
+                                  >
+                                    <svg>
+                                      SettingsOutlined.svg
+                                    </svg>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-table-wrapper"
+                      >
+                        <div
+                          class="ant-spin-nested-loading"
+                        >
+                          <div
+                            class="ant-spin-container"
+                          >
+                            <div
+                              class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                            >
+                              <div
+                                class="ant-table-container"
+                              >
+                                <div
+                                  class="ant-table-content"
+                                  style="overflow-x: auto; overflow-y: hidden;"
+                                >
+                                  <table
+                                    style="min-width: 100%; table-layout: auto;"
+                                  >
+                                    <colgroup>
+                                      <col
+                                        style="width: 10px;"
+                                      />
+                                      <col
+                                        style="width: 100px;"
+                                      />
+                                      <col
+                                        style="width: 100px;"
+                                      />
+                                      <col
+                                        style="width: 135px;"
+                                      />
+                                      <col
+                                        style="width: 200px;"
+                                      />
+                                      <col
+                                        style="width: 220px;"
+                                      />
+                                      <col
+                                        style="width: 160px;"
+                                      />
+                                      <col
+                                        style="width: 100px;"
+                                      />
+                                      <col
+                                        style="width: 32px;"
+                                      />
+                                    </colgroup>
+                                    <thead
+                                      class="ant-table-thead"
+                                    >
+                                      <tr>
+                                        <th
+                                          class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                          tabindex="0"
+                                        >
+                                          <div
+                                            class="ant-table-column-sorters"
+                                          >
+                                            <span
+                                              class="ant-table-column-title"
+                                            >
+                                              Venue Name
+                                            </span>
+                                            <span
+                                              class="ant-table-column-sorter ant-table-column-sorter-full"
+                                            >
+                                              <span
+                                                class="ant-table-column-sorter-inner"
+                                              >
+                                                <span
+                                                  aria-label="caret-up"
+                                                  class="anticon anticon-caret-up ant-table-column-sorter-up"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="caret-up"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="0 0 1024 1024"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                                <span
+                                                  aria-label="caret-down"
+                                                  class="anticon anticon-caret-down ant-table-column-sorter-down"
+                                                  role="img"
+                                                >
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    data-icon="caret-down"
+                                                    fill="currentColor"
+                                                    focusable="false"
+                                                    height="1em"
+                                                    viewBox="0 0 1024 1024"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </span>
+                                            </span>
+                                          </div>
+                                          <div
+                                            class="react-resizable-handle"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          APs
+                                          <div
+                                            class="react-resizable-handle"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          Switches
+                                          <div
+                                            class="react-resizable-handle"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          Service Health
+                                          <div
+                                            class="react-resizable-handle"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          # of successful allocations
+                                          <div
+                                            class="react-resizable-handle"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          # of un-successful allocations
+                                          <div
+                                            class="react-resizable-handle"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          Dropped Packets
+                                          <div
+                                            class="react-resizable-handle"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell react-resizable"
+                                        >
+                                          Capacity
+                                          <div
+                                            class="react-resizable-handle"
+                                          />
+                                        </th>
+                                        <th
+                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                          style="position: sticky; right: 0px;"
+                                        >
+                                          <div
+                                            class="react-resizable-handle"
+                                          />
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody
+                                      class="ant-table-tbody"
+                                    >
+                                      <tr
+                                        aria-hidden="true"
+                                        class="ant-table-measure-row"
+                                        style="height: 0px; font-size: 0px;"
+                                      >
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
+                                      </tr>
+                                      <tr
+                                        class="ant-table-placeholder"
+                                      >
+                                        <td
+                                          class="ant-table-cell"
+                                          colspan="9"
+                                        >
+                                          <div
+                                            class="ant-table-expanded-row-fixed"
+                                            style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
+                                          />
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
