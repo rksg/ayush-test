@@ -1,6 +1,6 @@
 import { IncidentInformation }          from './incidentInformation'
 import { transformIncidentQueryResult } from './incidents'
-import { codeToFailureTypeMap } from './rootCauseRecommendation'
+import { codeToFailureTypeMap }         from './rootCauseRecommendation'
 import { Incident }                     from './types/incidents'
 
 type RequiredFields = 'id'
