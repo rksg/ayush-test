@@ -20,11 +20,11 @@ export function useMenuConfig () {
       enableIcon: UI.EnabledCustomerIcon,
       routes: [
         {
-          path: '/mspCustomers',
+          path: '/dashboard/mspCustomers',
           name: $t({ defaultMessage: 'MSP Customers' })
         },
         {
-          path: '/varCustomers',
+          path: '/dashboard/varCustomers',
           name: $t({ defaultMessage: 'VAR Customers' })
         }
       ]
