@@ -6,7 +6,8 @@ import {
   RequestPayload,
   TableResult,
   Service,
-  CommonResult
+  CommonResult,
+  WifiCallingUrls
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -75,8 +76,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-
-
     devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
         const devicePolicyListReq = createHttpRequest(
@@ -89,7 +88,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-
     applicationPolicyList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
         const applicationPolicyListReq = createHttpRequest(
@@ -124,11 +122,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    deleteService: build.mutation<CommonResult, RequestPayload>({
+    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.deleteService, params)
         return {
-          ...req
+          ...createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
@@ -144,7 +141,7 @@ export const {
   useApplicationPolicyListQuery,
   useDevicePolicyListQuery,
   useServiceListQuery,
-  useDeleteServiceMutation,
   useVlanPoolListQuery,
-  useAccessControlProfileListQuery
+  useAccessControlProfileListQuery,
+  useDeleteWifiCallingServiceMutation
 } = serviceApi

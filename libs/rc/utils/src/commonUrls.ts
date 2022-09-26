@@ -100,11 +100,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getServicesList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/service-profiles'
-  },
-  deleteService: {
-    method: 'delete',
-    url: '/api/tenant/:tenantId/service/:serviceId'
+    url: '/api/viewmodel/tenant/:tenantId/serviceprofiles'
   },
   getVenuesList: {
     method: 'post',
