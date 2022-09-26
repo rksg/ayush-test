@@ -1,6 +1,7 @@
 import { Badge } from 'antd'
 
-import { Table } from '..'
+import { Table }     from '..'
+import { showToast } from '../../Toast'
 
 function CustomColumn (color: string, text: string | number) {
   return <Badge color={color} text={text} />
@@ -69,6 +70,13 @@ export function CustomTable () {
     <Table
       columns={customColumns}
       dataSource={customData}
+      actions={[{
+        label: 'Add Item',
+        onClick: () => showToast({ type: 'info', content: 'Add Item Clicked' })
+      }, {
+        label: 'Add Other Item',
+        onClick: () => showToast({ type: 'info', content: 'Add Other Item Clicked' })
+      }]}
     />
   </>)
 }

@@ -9,13 +9,15 @@ import {
 }                             from '@acx-ui/analytics/utils'
 import {
   BarChart,
-  NoData,
+  EventParams,
   Card,
   cssNumber,
+  cssStr,
   Loader,
-  cssStr
+  NoData
 } from '@acx-ui/components'
-import { formatter, intlFormats } from '@acx-ui/utils'
+import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { formatter, intlFormats }                             from '@acx-ui/utils'
 
 import { useTopSwitchesByPoEUsageQuery } from './services'
 
@@ -57,9 +59,24 @@ const getSwitchUsageRichStyle = () => ({
     fontWeight: cssNumber('--acx-body-font-weight')
   }
 })
+export const onClick = (navigate: NavigateFunction, basePath: Path) => {
+  return (params: EventParams) => {
+    const mac = params.componentType ==='series' && Array.isArray(params.value) && params.value[3]
+    navigate({
+      ...basePath,
+      // TODO: Actual path to be updated later
+      pathname: `${basePath.pathname}/${mac}`
+    })
+  }
+}
 
 function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
+  const basePath = useTenantLink('/switch/')
+  const navigate = useNavigate()
+
   const intl = useIntl()
+  
+
   const queryResults = useTopSwitchesByPoEUsageQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
@@ -67,8 +84,8 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
         ...rest
       })
     })
-
   const { data } = queryResults
+
   return (
     <Loader states={[queryResults]}>
       <Card title={intl.$t({ defaultMessage: 'Top 5 Switches by PoE Usage' })} >
@@ -82,6 +99,7 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
                 grid={{ top: '10%',right: '17%' }}
                 labelFormatter={switchUsageLabelFormatter(intl)}
                 labelRichStyle={getSwitchUsageRichStyle()}
+                onClick={onClick(navigate,basePath)}
                 style={{ width, height: height * 0.9 }}
               />
               :

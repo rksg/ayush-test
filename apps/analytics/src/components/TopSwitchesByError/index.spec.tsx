@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL }                                      from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                                 from '@acx-ui/analytics/utils'
-import { Provider, store }                                 from '@acx-ui/store'
-import { render, screen, mockGraphqlQuery, mockAutoSizer } from '@acx-ui/test-utils'
-import { DateRange }                                       from '@acx-ui/utils'
+import { dataApiURL }                                     from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                                from '@acx-ui/analytics/utils'
+import { Provider, store }                                from '@acx-ui/store'
+import { render, screen, mockGraphqlQuery, mockDOMWidth } from '@acx-ui/test-utils'
+import { DateRange }                                      from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -28,7 +28,7 @@ const sample = {
 }
 
 describe('TopSwitchesByErrorWidget', () => {
-  mockAutoSizer()
+  mockDOMWidth()
 
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
@@ -41,7 +41,7 @@ describe('TopSwitchesByErrorWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TopSwitchesByErrorWidget', {
       data: { network: { hierarchyNode: sample } }
     })
-    render( <Provider> <TopSwitchesByErrorWidget filters={filters}/></Provider>, 
+    render( <Provider> <TopSwitchesByErrorWidget filters={filters}/></Provider>,
       { route: { params } })
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
@@ -52,11 +52,11 @@ describe('TopSwitchesByErrorWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TopSwitchesByErrorWidget', {
       data: { network: { hierarchyNode: sample } }
     })
-    const { asFragment } =render( 
+    const { asFragment } =render(
       <Provider>
         <TopSwitchesByErrorWidget filters={filters}/>
       </Provider>, { route: { params } })
-    
+
     expect(await screen.findByText('Top 5 Switches by Error')).toBeVisible()
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[class="ant-pro-table"]')).not.toBeNull()
@@ -70,7 +70,7 @@ describe('TopSwitchesByErrorWidget', () => {
     mockGraphqlQuery(dataApiURL, 'TopSwitchesByErrorWidget', {
       error: new Error('something went wrong!')
     })
-    render( <Provider><TopSwitchesByErrorWidget filters={filters}/></Provider>, 
+    render( <Provider><TopSwitchesByErrorWidget filters={filters}/></Provider>,
       { route: { params } })
     await screen.findByText('Something went wrong.')
     jest.resetAllMocks()

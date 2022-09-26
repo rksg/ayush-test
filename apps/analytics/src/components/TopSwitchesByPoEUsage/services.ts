@@ -36,7 +36,8 @@ export const api = dataApi.injectEndpoints({
                 topNSwitchesByPoEUsage(n: 5) {
                   name,
                   usage: poeUtilization,
-                  usagePct: poeUtilizationPct
+                  usagePct: poeUtilizationPct,
+                  mac
                 }
               }
             }
