@@ -181,7 +181,7 @@ export function VenuesTable () {
     const rowActions: TableProps<Venue>['rowActions'] = [{
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
-        navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
+        navigate(`${selectedRows[0].id}/edit/details/details`, { replace: false })
       }
     }]
 

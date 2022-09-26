@@ -9,6 +9,9 @@ import {
   TableResult,
   Venue,
   VenueDetailHeader,
+  VenueCapabilities,
+  VenueLed,
+  VenueApModels,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 
@@ -68,11 +71,44 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, 
+          showActivityMessage(msg,
             ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
             })
         })
+      }
+    }),
+    getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueCapabilities, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueApModels: build.query<VenueApModels, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueApModels, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueLedOn: build.query<VenueLed[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueLedOn, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueLedOn: build.mutation<VenueLed[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueLedOn, params)
+        return {
+          ...req,
+          body: payload
+        }
       }
     })
   })
@@ -83,5 +119,9 @@ export const {
   useLazyVenuesListQuery,
   useAddVenueMutation,
   useGetVenueQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useGetVenueCapabilitiesQuery,
+  useGetVenueApModelsQuery,
+  useGetVenueLedOnQuery,
+  useUpdateVenueLedOnMutation
 } = venueApi

@@ -23,7 +23,7 @@ export const AnchorLayout = ({ items, offsetTop } : {
 }) => {
   const anchorRef = useRef<InternalAnchorClass>(null)
   const navigate = useNavigate()
-  const location = useLocation() 
+  const location = useLocation()
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
@@ -33,14 +33,14 @@ export const AnchorLayout = ({ items, offsetTop } : {
 
   useEffect(()=>{
     if (location.hash) {
-      setTimeout(() => 
+      setTimeout(() =>
         anchorRef?.current?.handleScrollTo(`${location.hash}`)
       , 500)
     }
   }, [])
 
   return <GridRow >
-    <GridCol col={{ span: 4 }}>
+    <GridCol style={{ position: 'fixed' }} col={{ span: 4 }}>
       <Anchor ref={anchorRef} offsetTop={offsetTop} onClick={(e) => handleClick(e)}>{
         items.map(item => {
           const linkId = item.title.split(' ').join('-')
