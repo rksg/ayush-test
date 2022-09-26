@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
+import { mockServer, render, screen }   from '@acx-ui/test-utils'
 
 import { NetworkDetails } from './NetworkDetails'
 
@@ -39,7 +39,7 @@ describe('NetworkDetails', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
