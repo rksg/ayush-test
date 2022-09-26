@@ -287,7 +287,7 @@ const formStyle = css`
       &-thead > tr:first-child > th,
       &-thead > tr:last-child > th {
         font-size: var(--acx-body-4-font-size);
-        line-height: var(--acx-body-5-line-height);
+        line-height: var(--acx-body-4-line-height);
         font-weight: var(--acx-body-font-weight-bold);
         padding-top: 5px;
         padding-bottom: 5px;
