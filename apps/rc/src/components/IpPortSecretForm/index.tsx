@@ -22,7 +22,7 @@ export function IpPortSecretForm ({ serverType, order }:
         label={intl.$t({ defaultMessage: 'IP Address' })}
         rules={[
           { required: true },
-          { validator: (_, value) => networkWifiIpRegExp(intl, value) },
+          { validator: (_, value) => networkWifiIpRegExp(value) },
           ( formInstance ) => ({
             validator: () => checkIpAndPortUnique(serverType, order, 'ip', formInstance, intl)
           })
@@ -50,7 +50,7 @@ export function IpPortSecretForm ({ serverType, order }:
         label={intl.$t({ defaultMessage: 'Shared secret' })}
         rules={[
           { required: true },
-          { validator: (_, value) => networkWifiSecretRegExp(intl, value) }
+          { validator: (_, value) => networkWifiSecretRegExp(value) }
         ]}
         children={<Input.Password />}
       />
