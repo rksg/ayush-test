@@ -81,8 +81,7 @@ describe('IncidentTable: utils', () => {
       { value: 0.001, label: 'P4' }, 
       { value: 0.65, label: 'P3' }, 
       { value: 0.8, label: 'P2' },
-      { value: 1, label: 'P1' },
-      { value: undefined, label: noDataSymbol }
+      { value: 1, label: 'P1' }
     ]
     
     it.each(testSeverityArr)(
