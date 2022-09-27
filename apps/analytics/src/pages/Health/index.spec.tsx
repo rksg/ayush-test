@@ -30,6 +30,9 @@ describe('HealthPage', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
     })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: [] } } }
+    })
   })
   const params = { activeTab: 'overview', tenantId: 'tenant-id' }
   it('should render page header and grid layout', async () => {
