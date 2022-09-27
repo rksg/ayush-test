@@ -3,7 +3,7 @@
 exports[`DHCP Detail Page should render detail page 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -117,7 +117,7 @@ exports[`DHCP Detail Page should render detail page 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
               />
             </div>
             <div
@@ -167,7 +167,7 @@ exports[`DHCP Detail Page should render detail page 1`] = `
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
+                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
               />
             </div>
             <div
@@ -192,7 +192,7 @@ exports[`DHCP Detail Page should render detail page 1`] = `
             </h3>
             <div>
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-10 fBxXu"
+                class="styledComponents__Wrapper-sc-1abm7iv-12 jSKMsx"
               >
                 <div
                   class="ant-pro-table"
@@ -298,6 +298,9 @@ exports[`DHCP Detail Page should render detail page 1`] = `
                                           tabindex="0"
                                         >
                                           <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
+                                          <div
                                             class="ant-table-column-sorters"
                                           >
                                             <span
@@ -353,63 +356,84 @@ exports[`DHCP Detail Page should render detail page 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           APs
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           Switches
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           Service Health
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           # of successful allocations
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           # of un-successful allocations
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           Dropped Packets
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           Capacity
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
@@ -417,7 +441,10 @@ exports[`DHCP Detail Page should render detail page 1`] = `
                                           style="position: sticky; right: 0px;"
                                         >
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                       </tr>
