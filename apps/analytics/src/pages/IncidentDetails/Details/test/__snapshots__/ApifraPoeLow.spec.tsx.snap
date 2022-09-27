@@ -147,7 +147,19 @@ exports[`i-apinfra-poe-low should render correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div>
-          PoE Impact
+          Charts
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div>
+          Impacted Entities Section
         </div>
       </div>
     </div>
