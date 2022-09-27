@@ -9,8 +9,12 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 import {
   venueDetailHeaderData
 } from '../__tests__/fixtures'
+import { VenueDetails } from '../VenueDetails'
 
-import { VenueDetails } from './VenueDetails'
+jest.mock(
+  'rc/Widgets',
+  () => ({ name }: { name: string }) => <div data-testid={`networks-${name}`} title={name} />,
+  { virtual: true })
 
 describe('VenueDetails', () => {
   beforeEach(() => {
