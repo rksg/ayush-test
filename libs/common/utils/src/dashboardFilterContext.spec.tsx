@@ -5,7 +5,7 @@ import { MemoryRouter }       from 'react-router-dom'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { useDashboardFilter, DashboardFilterProvider } from './dashboardFilterContext'
+import { useDashboardFilter, DashboardFilterProvider, defaultDashboardFilter } from './dashboardFilterContext'
 
 describe('useDashboardFilter', () => {
   beforeEach(() => {
@@ -13,6 +13,7 @@ describe('useDashboardFilter', () => {
   })
   it('should return default value', () => {
     const { result } = renderHook(useDashboardFilter)
+    defaultDashboardFilter.setNodeFilter()
     expect(result.current.filters).toEqual({
       path: [{ name: 'Network', type: 'network' }],
       startDate: '2021-12-31T00:00:00+00:00',
