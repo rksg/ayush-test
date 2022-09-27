@@ -22,7 +22,10 @@ export const PillWrap = styled.div`
 
 export const KpiRow = styled(GridRow)`
   border-bottom: 1px solid var(--acx-neutrals-30);
-  padding: 10px 0;
+  &:not(:first-of-type){
+    padding-top: 20px;
+  }
+  padding-bottom: 20px;
 `
 export const PillDesc = styled.div`
   ${pillDescCommom}

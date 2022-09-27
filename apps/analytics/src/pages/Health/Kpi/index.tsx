@@ -13,7 +13,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
   return (<>{
     kpis.map(kpi => (<KpiRow key={kpi}>
       <GridCol col={{ span: 16 }}>
-        <GridRow style={{ height: '200px' }}>
+        <GridRow style={{ height: '150px' }}>
           <GridCol col={{ span: 4 }} ><HealthPill filters={filters} kpi={kpi} /></GridCol>
           <GridCol col={{ span: 20 }} ><KpiTimeseries filters={filters} kpi={kpi} /></GridCol>
         </GridRow>
