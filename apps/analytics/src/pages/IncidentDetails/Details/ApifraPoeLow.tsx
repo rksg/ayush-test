@@ -12,7 +12,7 @@ import { Insights }                       from '../Insights'
 
 import * as UI from './styledComponents'
 
-export const VlanMismatch = (incident: Incident) => {
+export const ApifraPoeLow = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
     Attributes.ApImpactCount,
@@ -47,11 +47,14 @@ export const VlanMismatch = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Impacted Entities Section</div>
+          <div>Network Impact</div>
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }}>
+          <div>PoE Impact</div>
         </GridCol>
       </GridRow>
     </>
   )
 }
 
-export default VlanMismatch
+export default ApifraPoeLow

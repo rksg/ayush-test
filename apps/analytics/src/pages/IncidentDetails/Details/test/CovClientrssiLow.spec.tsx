@@ -2,7 +2,7 @@ import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
 import { Provider }                        from '@acx-ui/store'
 import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
 
-import { Rss } from '../Rss'
+import { CovClientrssiLow } from '../CovClientrssiLow'
 
 jest.mock('../../NetworkImpact', () => ({
   NetworkImpact: () => <div data-testid='networkImpact' />
@@ -23,7 +23,7 @@ describe('p-cov-clientrssi-low', () => {
     }
 
     const { asFragment } = render(<Provider>
-      <Rss {...mockFakeIncident('p-cov-clientrssi-low')} />
+      <CovClientrssiLow {...mockFakeIncident('p-cov-clientrssi-low')} />
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()

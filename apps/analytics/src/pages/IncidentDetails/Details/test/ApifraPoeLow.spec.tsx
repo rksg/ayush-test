@@ -2,7 +2,7 @@ import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
 import { Provider }                        from '@acx-ui/store'
 import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
 
-import { PoePd } from '../PoePd'
+import { ApifraPoeLow } from '../ApifraPoeLow'
 
 jest.mock('../../IncidentAttributes', () => ({
   ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
@@ -12,7 +12,7 @@ jest.mock('../../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
 
-describe('i-switch-poe-pd', () => {
+describe('i-apinfra-poe-low', () => {
   mockDOMWidth()
   it('should render correctly', () => {
     const params = {
@@ -20,7 +20,7 @@ describe('i-switch-poe-pd', () => {
     }
 
     const { asFragment } = render(<Provider>
-      <PoePd {...mockFakeIncident('i-switch-poe-pd')} />
+      <ApifraPoeLow {...mockFakeIncident('i-apinfra-poe-low')}/>
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
