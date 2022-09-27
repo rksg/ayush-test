@@ -3,7 +3,7 @@ import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { CommonUrlsInfo }                                                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                          from '@acx-ui/rc/utils'
 import { Provider }                                                              from '@acx-ui/store'
 import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -80,7 +80,7 @@ const validateErrorResponse = [{
 }]
 
 async function fillInBeforeSettings (networkName: string) {
-  const insertInput = screen.getByLabelText('Network Name')
+  const insertInput = screen.getByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
 
@@ -117,7 +117,7 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
