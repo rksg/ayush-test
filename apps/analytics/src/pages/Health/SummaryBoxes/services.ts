@@ -27,7 +27,7 @@ export const api = dataApi.injectEndpoints({
     summary: build.query<SummaryData, RequestPayload>({
       query: payload => ({
         document: gql`
-          query Summary($path: [HierarchyNodeInput],
+          query HealthSummary($path: [HierarchyNodeInput],
           $start: DateTime, $end: DateTime, $granularity: String) {
             timeSeries(
               path: $path,

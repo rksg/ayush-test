@@ -15,7 +15,7 @@ describe('incidentDetailsApi', () => {
     end: '2022-01-01T00:00:00+00:00'
   }
   it('should return correct data', async () => {
-    mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeSummary })
+    mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
     const { status, data, error } = await store.dispatch(
       api.endpoints.summary.initiate(payload)
     )
@@ -24,7 +24,7 @@ describe('incidentDetailsApi', () => {
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'Summary', {
+    mockGraphqlQuery(dataApiURL, 'HealthSummary', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(

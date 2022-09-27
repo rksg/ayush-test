@@ -20,13 +20,13 @@ describe('Incidents Page', () => {
     store.dispatch(api.util.resetApiState())
   })
   it('should match snapshot', async () => {
-    mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeSummary })
+    mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
     const { asFragment } = render(<Provider><SummaryBoxes/></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should show - when no data', async () => {
-    mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeEmptySummary })
+    mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
     const { asFragment } = render(<Provider><SummaryBoxes/></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
@@ -34,7 +34,7 @@ describe('Incidents Page', () => {
 
   describe('toggle stats', () => {
     it('should handle toggle stats', async () => {
-      mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeSummary })
+      mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
       render(<Provider><SummaryBoxes/></Provider>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
@@ -50,7 +50,7 @@ describe('Incidents Page', () => {
     })
 
     it('should handle toggle ttc', async () => {
-      mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeSummary })
+      mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
       render(<Provider><SummaryBoxes/></Provider>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
