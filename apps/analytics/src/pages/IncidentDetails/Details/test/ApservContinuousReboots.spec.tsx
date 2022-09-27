@@ -2,7 +2,7 @@ import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
 import { Provider }                        from '@acx-ui/store'
 import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
 
-import { ApPoeLow } from '../ApPoeLow'
+import { ApservContinuousReboots } from '../ApservContinuousReboots'
 
 jest.mock('../../IncidentAttributes', () => ({
   ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
@@ -12,7 +12,7 @@ jest.mock('../../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
 
-describe('i-apinfra-poe-low', () => {
+describe('i-apserv-high-num-reboots', () => {
   mockDOMWidth()
   it('should render correctly', () => {
     const params = {
@@ -20,7 +20,7 @@ describe('i-apinfra-poe-low', () => {
     }
 
     const { asFragment } = render(<Provider>
-      <ApPoeLow {...mockFakeIncident('i-apinfra-poe-low')}/>
+      <ApservContinuousReboots {...mockFakeIncident('i-apserv-continuous-reboots')} />
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()

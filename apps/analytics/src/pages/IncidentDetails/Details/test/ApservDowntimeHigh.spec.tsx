@@ -2,7 +2,7 @@ import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
 import { Provider }                        from '@acx-ui/store'
 import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
 
-import { ApSzConnFailure } from '../ApSzConnFailure'
+import { ApservDowntimeHigh } from '../ApservDowntimeHigh'
 
 jest.mock('../../IncidentAttributes', () => ({
   ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
@@ -20,7 +20,7 @@ describe('i-apserv-downtime-high', () => {
     }
 
     const { asFragment } = render(<Provider>
-      <ApSzConnFailure {...mockFakeIncident('i-apserv-downtime-high')}/>
+      <ApservDowntimeHigh {...mockFakeIncident('i-apserv-downtime-high')}/>
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
