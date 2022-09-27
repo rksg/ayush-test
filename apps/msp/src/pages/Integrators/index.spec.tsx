@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                                                from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                                                   from '@acx-ui/rc/utils'
 import { Provider }                                                      from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
@@ -32,7 +32,7 @@ describe('Integrators', () => {
   it('should render correctly', async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getMspCustomersList.url,
+        MspUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json(list))
       )
     )

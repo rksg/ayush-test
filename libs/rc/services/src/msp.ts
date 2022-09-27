@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
-  CommonUrlsInfo,
+  MspUrlsInfo,
   createHttpRequest,
   RequestPayload,
   TableResult,
@@ -21,7 +21,7 @@ export const mspApi = baseMspApi.injectEndpoints({
   endpoints: (build) => ({
     mspCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
-        const mspCustomerListReq = createHttpRequest(CommonUrlsInfo.getMspCustomersList, params)
+        const mspCustomerListReq = createHttpRequest(MspUrlsInfo.getMspCustomersList, params)
         return {
           ...mspCustomerListReq,
           body: payload
@@ -31,7 +31,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     deleteMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.deleteMspEc, params)
+        const req = createHttpRequest(MspUrlsInfo.deleteMspEc, params)
         return {
           ...req
         }
@@ -40,7 +40,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     varCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
-        const varCustomerListReq = createHttpRequest(CommonUrlsInfo.getVarDelegations, params)
+        const varCustomerListReq = createHttpRequest(MspUrlsInfo.getVarDelegations, params)
         return {
           ...varCustomerListReq,
           body: payload
@@ -50,7 +50,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     inviteCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
-        const inviteCustomerListReq = createHttpRequest(CommonUrlsInfo.getVarDelegations, params)
+        const inviteCustomerListReq = createHttpRequest(MspUrlsInfo.getVarDelegations, params)
         return {
           ...inviteCustomerListReq,
           body: payload
@@ -61,7 +61,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     deviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
       query: ({ params, payload }) => {
         const deviceInventoryListReq = 
-          createHttpRequest(CommonUrlsInfo.getMspDeviceInventory, params)
+          createHttpRequest(MspUrlsInfo.getMspDeviceInventory, params)
         return {
           ...deviceInventoryListReq,
           body: payload

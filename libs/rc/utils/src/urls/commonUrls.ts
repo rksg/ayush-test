@@ -122,25 +122,5 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   validateRadius: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
-  },
-  getMspCustomersList: {
-    method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/msp-ec'
-  },
-  getMspDeviceInventory: {
-    method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/ec-inventory'
-  },
-  getIntegratorDeviceInventory: {
-    method: 'post',
-    url: '/api/viewmodel/tenant/:mspTenantId/ec-inventory'
-  },
-  getVarDelegations: {
-    method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/delegations'
-  },
-  deleteMspEcAccount: {
-    method: 'delete',
-    url: '/api/mspservice/tenant/:mspEcTenantId'
   }
 }
