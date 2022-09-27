@@ -73,7 +73,7 @@ export const SummaryBoxes = () => {
             ? '-' : $t(intlFormats.countFormat, { value: failureCount }),
           successPercentage,
           averageTtc: isNull(averageTtc)
-            ? '-' : formatter('durationFormat', intl)(averageTtc) as string
+            ? '-' : formatter('durationFormat')(averageTtc) as string
         }
       }
     }
