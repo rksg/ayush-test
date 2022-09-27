@@ -15,7 +15,3 @@ export const RadioDescription = styled.div`
   color: var(--acx-neutrals-50);
   margin-top: 4px;
 `
-
-export const FieldExtraTooltip = styled.div`
-  margin-bottom: 20px;
-`

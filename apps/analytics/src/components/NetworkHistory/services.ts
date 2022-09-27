@@ -3,7 +3,7 @@ import { gql } from 'graphql-request'
 import { dataApi }                        from '@acx-ui/analytics/services'
 import {  incidentCodes, IncidentFilter } from '@acx-ui/analytics/utils'
 
-import { calcGranularity } from '../../utils'
+import { calculateGranularity } from '../../utils'
 
 export type NetworkHistoryData = {
   connectedClientCount: number[]
@@ -54,7 +54,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: calcGranularity(payload.startDate, payload.endDate),
+          granularity: calculateGranularity(payload.startDate, payload.endDate),
           severity: [{ gt: 0, lte: 1 }], // all severities
           code: payload.code ?? incidentCodes
         }
