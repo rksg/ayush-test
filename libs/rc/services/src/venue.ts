@@ -8,7 +8,10 @@ import {
   showActivityMessage,
   TableResult,
   Venue,
-  VenueDetailHeader
+  VenueDetailHeader,
+  VenueCapabilities,
+  VenueLed,
+  VenueApModels
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -73,6 +76,39 @@ export const venueApi = baseVenueApi.injectEndpoints({
             })
         })
       }
+    }),
+    getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueCapabilities, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueApModels: build.query<VenueApModels, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueApModels, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueLedOn: build.query<VenueLed[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueLedOn, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueLedOn: build.mutation<VenueLed[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueLedOn, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -82,5 +118,9 @@ export const {
   useLazyVenuesListQuery,
   useAddVenueMutation,
   useGetVenueQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useGetVenueCapabilitiesQuery,
+  useGetVenueApModelsQuery,
+  useGetVenueLedOnQuery,
+  useUpdateVenueLedOnMutation
 } = venueApi
