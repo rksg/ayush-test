@@ -36,5 +36,9 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   getAvailableLteBands: {
     method: 'get',
     url: '/api/tenant/:venueId/wifi/lte-band'
-  }
+  },
+  getVenueApModelCellular: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular'
+  },
 }

@@ -1,4 +1,4 @@
-import { LteBandRegionEnum } from '../constants'
+import { CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
 
 import { ApStatusDetails, ApModel } from './ap'
 
@@ -86,12 +86,30 @@ export interface VenueApModels {
 }
 
 export interface AvailableLteBands {
-	band3G?: string[]
-  
-	band4G?: string[]
-  
-	region: LteBandRegionEnum
-  
+	band3G?: string[],  
+	band4G?: string[],  
+	region: LteBandRegionEnum,
 	countryCodes?: string[]
-  
   }
+
+  export interface VenueApModelCellular {
+	model?: string,
+	primarySim: SimSettings,
+	secondarySim: SimSettings,
+	wanConnection: WanConnectionEnum,
+	primaryWanRecoveryTimer: number
+  }
+
+export interface SimSettings {
+	lteBands?: LteBandLockChannel[];
+	enabled?: boolean;
+	apn?: string;
+	roaming?: boolean;
+	networkSelection: CellularNetworkSelectionEnum;
+}
+
+export interface LteBandLockChannel {
+	band3G?: string[];
+	band4G?: string[];
+	region: LteBandRegionEnum;
+}

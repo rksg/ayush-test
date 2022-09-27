@@ -6,15 +6,15 @@ import { Provider }          from '@acx-ui/store'
 import { NetworkDetails }                        from './pages/Networks/NetworkDetails/NetworkDetails'
 import { NetworkForm }                           from './pages/Networks/NetworkForm/NetworkForm'
 import { NetworksTable }                         from './pages/Networks/NetworksTable'
-import { SelectServiceForm }                     from './pages/Services/SelectServiceForm'
-import { getServiceRoutePath, ServiceOperation } from './pages/Services/serviceRouteUtils'
-import { ServicesTable }                         from './pages/Services/ServicesTable'
+import { SelectServiceForm }                     from './pages/services/SelectServiceForm'
+import { getServiceRoutePath, ServiceOperation } from './pages/services/serviceRouteUtils'
+import { ServicesTable } from './pages/services/ServicesTable'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='networks/*' element={<NetworkRoutes />} />
-      <Route path='services/*' element={<ServiceRoutes />} />
+      {/* <Route path='services/*' element={<ServiceRoutes />} /> */}
     </Route>
   )
   return (

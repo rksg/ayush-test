@@ -141,3 +141,9 @@ export enum LteBandRegionEnum {
   USA_CANADA = 'USA_CANADA',
   JAPAN = 'JAPAN',
 }
+
+export enum CellularNetworkSelectionEnum {
+  AUTO = 'AUTO',
+  LTE = 'LTE',
+  ThreeG = 'ThreeG',
+}

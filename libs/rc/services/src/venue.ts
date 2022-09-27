@@ -14,7 +14,8 @@ import {
   VenueApModels,
   CommonUrlsInfo,
   WifiUrlsInfo,
-  AvailableLteBands
+  AvailableLteBands,
+  VenueApModelCellular
 } from '@acx-ui/rc/utils'
 
 
@@ -129,6 +130,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getVenueApModelCellular: build.query<VenueApModelCellular, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueApModelCellular, params)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -144,5 +153,6 @@ export const {
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
-  useGetAvailableLteBandsQuery
+  useGetAvailableLteBandsQuery,
+  useGetVenueApModelCellularQuery
 } = venueApi

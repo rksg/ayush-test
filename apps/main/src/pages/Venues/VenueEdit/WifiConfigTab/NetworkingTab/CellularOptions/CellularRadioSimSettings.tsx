@@ -10,7 +10,7 @@ import {
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { AvailableLteBands } from '@acx-ui/rc/utils'
+import { AvailableLteBands, CellularNetworkSelectionEnum } from '@acx-ui/rc/utils'
 
 
 export interface ModelOption {
@@ -20,11 +20,7 @@ export interface ModelOption {
 
 const { Option } = Select
 
-export enum CellularNetworkSelectionEnum {
-  AUTO = 'AUTO',
-  LTE = 'LTE',
-  ThreeG = 'ThreeG',
-}
+
 
 export function CellularRadioSimSettings (props: {
   availableLteBands: AvailableLteBands

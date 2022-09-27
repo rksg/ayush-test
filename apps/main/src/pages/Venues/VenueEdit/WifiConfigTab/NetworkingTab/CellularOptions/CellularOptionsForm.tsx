@@ -17,11 +17,11 @@ import { useParams } from 'react-router-dom'
 
 import { Button, StepsForm, Table, TableProps, Loader, showToast, Subtitle } from '@acx-ui/components'
 import { useGetAvailableLteBandsQuery }                                      from '@acx-ui/rc/services'
-import { AvailableLteBands }                                                 from '@acx-ui/rc/utils'
+import { AvailableLteBands, LteBandRegionEnum }                                                 from '@acx-ui/rc/utils'
 
 import { VenueEditContext } from '../../..'
-
 import { CellularRadioSimSettings } from './CellularRadioSimSettings'
+
 
 export interface ModelOption {
   label: string
@@ -64,57 +64,33 @@ export function CellularOptionsForm () {
       countries: 'Japan'
     }
   }
+
+  const defaultAvailableLteBandsArray: AvailableLteBands[] = []
   let regionCountriesMap = _.cloneDeep(LteBandLockCountriesJson)
   const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
-  // const venueEditContext = useContext(VenueEditContext)
-
-  // console.log(venueEditContext.editContextData.oldData);
+  const [availableLteBandsArray, setAvailableLteBandsArray] = useState(defaultAvailableLteBandsArray)
+  
   useEffect(() => {
     let availableLteBandsContext = availableLteBands?.data
 
 
     if(availableLteBandsContext){
+      
       availableLteBandsContext.forEach(lteBands => {
         regionCountriesMap[lteBands.region] =
         Object.assign(regionCountriesMap[lteBands.region], {
           countryCodes: lteBands.countryCodes
         })
       })
+
+      setAvailableLteBandsArray(availableLteBandsContext)
     }
 
 
-    // this.setRegionCountryNamesMap();
     // this.setCurrentRegion(this.venueSettings.countryCode);
     // this.setCurrentCountryName();
-    // this.getCellularSupportedModels$();
+    // this.getCellularSupportedModels$(); //for edit
   }, [availableLteBands.data])
-
-
-  // let cellularRadioSimSettingsLists = availableLteBands?.data.map(
-  //   (list) =>
-  //     <CellularRadioSimSettings
-  //       availableLteBands={list}>
-  //     </CellularRadioSimSettings>)
-
-
-  if (availableLteBands?.data) {
-    let lists = []
-
-    //用迴圈將代辦事項的內容一個個放進空陣列中
-    for (let i = 0; i <= availableLteBands.data.length - 1; i++) {
-      //記得在JSX中使用JS變數要用花括號包著
-      lists.push(<CellularRadioSimSettings availableLteBands={availableLteBands.data[i]}>
-
-      </CellularRadioSimSettings>)
-    }
-
-    return (
-      <ul>
-        {lists}
-      </ul>
-    )
-  }
-
 
 
 
@@ -127,9 +103,7 @@ export function CellularOptionsForm () {
       >
         <StepsForm.StepForm>
 
-          {/* <CellularRadioSimSettings/> */}
-          {cellularRadioSimSettingsLists}
-
+        <CellularRadioSimSettings availableLteBands={availableLteBandsArray[0]}/>
 
           <Form.Item
             name={'wanConnection'}
