@@ -25,7 +25,7 @@ export const api = dataApi.injectEndpoints({
             network(start: $start, end: $end) {
               hierarchyNode(path: $path, querySwitch: true) {
                 children {
-                  id: name
+                  id
                   name
                 }
               }
