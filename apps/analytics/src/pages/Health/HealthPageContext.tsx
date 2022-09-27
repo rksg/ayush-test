@@ -17,7 +17,10 @@ export interface HealthFilter extends AnalyticsFilter {
 
 export const HealthPageContext = createContext(null as unknown as HealthFilter)
 
-export const formatTimeWindow = (window: TimeWindow) => {
+export const isBefore = (a: TimeStamp, b: TimeStamp) => moment(a).isBefore(b)
+export const isAfter = (a: TimeStamp, b: TimeStamp) => moment(a).isAfter(b)
+
+export const formatTimeWindow = (window: TimeWindow, defaultWindow: TimeWindow) => {
   if (typeof window[0] === 'number') {
     window[0] = moment(window[0]).format()
   }
@@ -26,6 +29,14 @@ export const formatTimeWindow = (window: TimeWindow) => {
     window[1] = moment(window[1]).format()
   }
   
+  if (isBefore(window[0], defaultWindow[0])) {
+    window[0] = defaultWindow[0]
+  }
+
+  if (isAfter(window[1], defaultWindow[1])) {
+    window[1] = defaultWindow[1]
+  }
+
   return window
 }
 
@@ -35,9 +46,9 @@ export function HealthPageContextProvider (props: { children: ReactNode }) {
   const [timeWindow, setTimeWindow] = useState<TimeWindow>([startDate, endDate])
 
   const setTimeWindowCallback = useCallback((window: TimeWindow) => {
-    const formattedWindow = formatTimeWindow(window)
+    const formattedWindow = formatTimeWindow(window, [startDate, endDate])
     setTimeWindow(formattedWindow)
-  }, [])
+  }, [startDate, endDate])
 
   useEffect(() => {
     setTimeWindowCallback([startDate, endDate])

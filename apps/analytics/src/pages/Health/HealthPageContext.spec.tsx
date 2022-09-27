@@ -101,7 +101,47 @@ describe('formatTimeWindow', () => {
       1664182800000
     ]
 
-    const formattedWindow = formatTimeWindow(numericTimeWindow)
+    const formattedWindow = formatTimeWindow(numericTimeWindow, stringTimeWindow)
     expect(formattedWindow).toMatchObject(stringTimeWindow)
+  })
+
+  it('should restrict time window to start date', () => {
+    const startDateOverWindow: TimeWindow = [
+      '2022-09-22T12:15:57+00:00',
+      '2022-09-26T09:00:00+00:00'
+    ]
+
+    const restrictedStartDate: TimeWindow = [
+      '2022-09-23T12:15:57+00:00',
+      '2022-09-27T09:00:00+00:00'
+    ]
+
+    const expectedWindow: TimeWindow = [
+      '2022-09-23T12:15:57+00:00',
+      '2022-09-26T09:00:00+00:00'
+    ]
+
+    const formattedWindow = formatTimeWindow(startDateOverWindow, restrictedStartDate)
+    expect(formattedWindow).toMatchObject(expectedWindow)
+  })
+
+  it('should restrict time window to end date', () => {
+    const endDateOverWindow: TimeWindow = [
+      '2022-09-24T12:15:57+00:00',
+      '2022-09-26T09:00:00+00:00'
+    ]
+
+    const restrictedEndDate: TimeWindow = [
+      '2022-09-23T12:15:57+00:00',
+      '2022-09-25T09:00:00+00:00'
+    ]
+
+    const expectedWindow: TimeWindow = [
+      '2022-09-24T12:15:57+00:00',
+      '2022-09-25T09:00:00+00:00'
+    ]
+
+    const formattedWindow = formatTimeWindow(endDateOverWindow, restrictedEndDate)
+    expect(formattedWindow).toMatchObject(expectedWindow)
   })
 })
