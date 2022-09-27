@@ -50,7 +50,10 @@ export const ApifraPoeLow = (incident: Incident) => {
           <div>Network Impact</div>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>PoE Impact</div>
+          <div>Charts</div>
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }}>
+          <div>Impacted Entities Section</div>
         </GridCol>
       </GridRow>
     </>
