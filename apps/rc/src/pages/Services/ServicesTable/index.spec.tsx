@@ -110,7 +110,5 @@ describe('Services Table', () => {
     await screen.findByText('Delete "' + selectedServiceName + '"?')
     const deleteServiceButton = await screen.findByRole('button', { name: /Delete Service/i })
     fireEvent.click(deleteServiceButton)
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   })
 })
