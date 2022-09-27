@@ -10,7 +10,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import Header from '../../components/Header'
 
-import HealthTimeSeriesChart         from './HealthConnectedClientsOverTime'
+import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
 import { HealthPageContextProvider } from './HealthPageContext'
 import * as UI                       from './styledComponents'
 
@@ -67,7 +67,7 @@ export default function HealthPage () {
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
-            <HealthTimeSeriesChart ref={connectedClientsRef} />
+            <ConnectedClientsOverTime ref={connectedClientsRef} />
           </GridCol>
           <GridCol col={{ span: 16 }} >
             <Tabs activeKey={activeTab} onChange={onTabChange}>

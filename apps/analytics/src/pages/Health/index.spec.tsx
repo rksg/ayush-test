@@ -18,7 +18,7 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUseNavigate
 }))
-jest.mock('./HealthConnectedClientsOverTime', () => () => <div>Summary TimeSeries</div>)
+jest.mock('./ConnectedClientsOverTime', () => () => <div>Summary TimeSeries</div>)
 
 describe('HealthPage', () => {
   beforeEach(() => {

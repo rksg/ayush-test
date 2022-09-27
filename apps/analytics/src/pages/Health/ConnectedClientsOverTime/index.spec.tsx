@@ -18,7 +18,7 @@ import { DateRange } from '@acx-ui/utils'
 import { api }                           from '../../../components/NetworkHistory/services'
 import { HealthPageContext, TimeWindow } from '../HealthPageContext'
 
-import HealthTimeSeriesChart from '.'
+import ConnectedClientsOverTime from '.'
 
 function mockGetClientSize (width = 280, height = 280) {
   const originalHeight = Object.getOwnPropertyDescriptor(Element.prototype, 'clientHeight')
@@ -81,7 +81,7 @@ describe('HealthConnectedClientsOverTime', () => {
     const { asFragment } = render(
       <Provider>
         <HealthPageContext.Provider value={healthContext}>
-          <HealthTimeSeriesChart ref={ref}/>
+          <ConnectedClientsOverTime ref={ref}/>
         </HealthPageContext.Provider>
       </Provider>
     )

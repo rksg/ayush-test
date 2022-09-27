@@ -6,7 +6,7 @@ import NetworkHistoryWidget  from '../../../components/NetworkHistory'
 import { HealthPageContext } from '../HealthPageContext'
 
 
-const HealthTimeSeriesChart = forwardRef<ReactECharts>((
+const ConnectedClientsOverTime = forwardRef<ReactECharts>((
   _props,
   ref
 ) => {
@@ -25,4 +25,4 @@ const HealthTimeSeriesChart = forwardRef<ReactECharts>((
     />
   )})
 
-export default HealthTimeSeriesChart
+export default ConnectedClientsOverTime
