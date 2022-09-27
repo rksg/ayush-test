@@ -14,7 +14,7 @@ import {
   useImpactValues,
   useShortDescription,
   useIncidentScope,
-  useGetThreshold
+  getThreshold
 } from './incidents'
 
 import type { Incident, NodeType, PathNode } from './types/incidents'
@@ -232,6 +232,11 @@ describe('impactValues', () => {
 })
 
 describe('useGetThreshold', () => {
+  const useGetThreshold = (incident: Incident) => {
+    const intl = useIntl()
+    const threshold = getThreshold(incident, intl)
+    return threshold
+  }
   it('should return the correct result for ttc', () => {
     const renderUseGetThreshold = () => renderHook(
       () => useGetThreshold(
