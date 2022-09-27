@@ -12,9 +12,10 @@ import { Insights }                       from '../Insights'
 
 import * as UI from './styledComponents'
 
-export const ApSzConnFailure = (incident: Incident) => {
+export const ApservContinuousReboots = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
+    Attributes.ClientImpactCount,
     Attributes.ApImpactCount,
     Attributes.IncidentCategory,
     Attributes.IncidentSubCategory,
@@ -57,4 +58,4 @@ export const ApSzConnFailure = (incident: Incident) => {
   )
 }
 
-export default ApSzConnFailure
+export default ApservContinuousReboots

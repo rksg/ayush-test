@@ -12,10 +12,9 @@ import { Insights }                       from '../Insights'
 
 import * as UI from './styledComponents'
 
-export const ApReboot = (incident: Incident) => {
+export const SwitchVlanMismatch = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
-    Attributes.ClientImpactCount,
     Attributes.ApImpactCount,
     Attributes.IncidentCategory,
     Attributes.IncidentSubCategory,
@@ -48,14 +47,11 @@ export const ApReboot = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Network Impact</div>
-        </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Chart</div>
+          <div>Impacted Entities Section</div>
         </GridCol>
       </GridRow>
     </>
   )
 }
 
-export default ApReboot
+export default SwitchVlanMismatch
