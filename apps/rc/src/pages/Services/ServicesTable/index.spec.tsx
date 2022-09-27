@@ -23,7 +23,7 @@ const mockTableResult = {
     category: 'APPLICATION',
     status: 'UP',
     adminState: 'ENABLED',
-    technology: 'WIFI',
+    technology: 'WI-FI',
     scope: '5',
     health: '',
     tags: ['tag1', 'tag2']
@@ -35,7 +35,7 @@ const mockTableResult = {
     category: 'APPLICATION',
     status: 'UP',
     adminState: 'ENABLED',
-    technology: 'WIFI',
+    technology: 'WI-FI',
     scope: '7',
     health: '',
     tags: ['tag3', 'tag4']
@@ -47,7 +47,7 @@ const mockTableResult = {
     category: 'CONNECTIVITY',
     status: 'DOWN',
     adminState: 'DISABLED',
-    technology: 'WIFI',
+    technology: 'WI-FI',
     scope: '15',
     health: '',
     tags: ['tag5', 'tag6']
