@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, WifiCallingUrls }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                        from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
