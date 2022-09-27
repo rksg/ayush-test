@@ -1,6 +1,7 @@
 import { GridCol, GridRow } from '@acx-ui/components'
 import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 
+import { KpiRow } from '../styledComponents'
 import { HealthTab } from '../'
 import { kpisForTab } from './config'
 import KpiTimeseries  from './Timeseries'
@@ -10,7 +11,7 @@ export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]
   const { filters } = useAnalyticsFilter()
   return (<>{
-    kpis.map(kpi => (<GridRow key={kpi}>
+    kpis.map(kpi => (<KpiRow key={kpi}>
       <GridCol col={{ span: 16 }}>
         <GridRow style={{ height: '200px' }}>
           <GridCol col={{ span: 4 }} ><HealthPill filters={filters} kpi={kpi} /></GridCol>
@@ -20,6 +21,6 @@ export default function KpiSection (props: { tab: HealthTab }) {
       <GridCol col={{ span: 8 }}>
         <div>Threshold Content</div>
       </GridCol>
-    </GridRow>))
+    </KpiRow>))
   }</>)
 }
