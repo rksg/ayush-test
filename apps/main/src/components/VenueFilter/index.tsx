@@ -1,6 +1,5 @@
-import { DefaultOptionType } from 'antd/lib/select'
-import { omit }              from 'lodash'
-import { useIntl }           from 'react-intl'
+import { omit }    from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { NetworkFilter, Option, Loader }       from '@acx-ui/components'
 import { useDashboardFilter, NetworkNodePath } from '@acx-ui/utils'
@@ -17,10 +16,6 @@ const getFilterData = (data: Child[]): Option [] => {
     }
   }
   return Object.values(venues)
-}
-const search = (input: string, path: DefaultOptionType[]) : boolean => {
-  const item = path.slice(-1)[0]
-  return (item?.label as string)?.toLowerCase().includes(input.toLowerCase())
 }
 function VenueFilter () {
   const { $t } = useIntl()
@@ -45,7 +40,6 @@ function VenueFilter () {
           options={queryResults.data}
           onApply={(selectedOptions) => setNodeFilter(selectedOptions)}
           placement='bottomRight'
-          showSearch={{ filter: search }}
         />
       </Loader>
     </UI.Container>
