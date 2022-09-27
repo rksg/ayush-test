@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { AnchorLayout } from '@acx-ui/components'
 
 import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
-
+import { MeshNetwork }         from './MeshNetwork'
 
 
 export function NetworkingTab () {
@@ -15,9 +15,9 @@ export function NetworkingTab () {
   // }, {
     title: $t({ defaultMessage: 'Cellular Options' }),
     content: (<CellularOptionsForm></CellularOptionsForm>)
-  // }, {
-  //   title: $t({ defaultMessage: 'Mesh Network' }),
-  //   content: 'Mesh Network Content'
+  }, {
+    title: $t({ defaultMessage: 'Mesh Network' }),
+    content: (<MeshNetwork />)
   // }, {
   //   title: $t({ defaultMessage: 'Client Isolation Allowlist' }),
   //   content: 'Client Isolation Allowlist Content'
@@ -25,7 +25,7 @@ export function NetworkingTab () {
 
   return (
     <div>
-      <AnchorLayout items={items} offsetTop={50} />
+      <AnchorLayout items={items} offsetTop={200} />
     </div>
 
   )

@@ -12,7 +12,8 @@ import {
   VenueCapabilities,
   VenueLed,
   VenueApModels,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  VenueSettings
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -78,6 +79,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    getVenueSettings: build.query<VenueSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSettings, params)
+        return{
+          ...req
+        }
+      }
+    }),
     getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueCapabilities, params)
@@ -120,6 +129,7 @@ export const {
   useAddVenueMutation,
   useGetVenueQuery,
   useVenueDetailsHeaderQuery,
+  useGetVenueSettingsQuery,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
