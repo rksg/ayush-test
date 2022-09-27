@@ -25,7 +25,7 @@ export function NetworkingTab () {
 
   return (
     <div>
-      <AnchorLayout items={items} offsetTop={200} />
+      <AnchorLayout items={items} offsetTop={275} />
     </div>
 
   )

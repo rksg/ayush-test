@@ -55,7 +55,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenue: build.query<Venue, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenue, params)
+        const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
         return{
           ...req
         }
@@ -84,6 +84,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(CommonUrlsInfo.getVenueSettings, params)
         return{
           ...req
+        }
+      }
+    }),
+    updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueMesh, params)
+        return {
+          ...req,
+          body: payload
         }
       }
     }),
@@ -130,6 +139,7 @@ export const {
   useGetVenueQuery,
   useVenueDetailsHeaderQuery,
   useGetVenueSettingsQuery,
+  useUpdateVenueMeshMutation,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,

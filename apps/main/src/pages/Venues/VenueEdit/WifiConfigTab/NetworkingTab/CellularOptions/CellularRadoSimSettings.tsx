@@ -12,6 +12,7 @@ import {
 } from 'antd'
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
+
 import { CellularNetworkSelectionEnum } from './CellularOptionsForm'
 
 

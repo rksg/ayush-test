@@ -4,23 +4,30 @@ import { Switch, Tooltip } from 'antd'
 import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
-import { showActionModal }                              from '@acx-ui/components'
-import { useGetVenueSettingsQuery, useLazyApListQuery } from '@acx-ui/rc/services'
-import { APMeshRole }                                   from '@acx-ui/rc/utils'
+import { showActionModal, Subtitle }     from '@acx-ui/components'
+import { 
+  useLazyApListQuery,
+  useGetVenueSettingsQuery,
+  useUpdateVenueMeshMutation
+} from '@acx-ui/rc/services'
+import { APMeshRole } from '@acx-ui/rc/utils'
 
+import * as UI from './styledComponents'
 
 export function MeshNetwork () {
   const { $t } = useIntl()
   const params = useParams()
   
-  const { data } = useGetVenueSettingsQuery({ params })
   const [apList] = useLazyApListQuery()
+  const [updateVenueMesh] = useUpdateVenueMeshMutation()
 
   const [isAllowEnableMesh, setIsAllowEnableMesh] = useState(false)
   const [hasMeshAPs, setHasMeshAPs] = useState(false)
   const [meshEnabled, setMeshEnabled] = useState(false)
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = 
     useState($t({ defaultMessage: 'Not available' }))
+  
+  const { data } = useGetVenueSettingsQuery({ params })
 
   useEffect(() => {
     if(data){
@@ -32,7 +39,7 @@ export function MeshNetwork () {
       }
       setIsAllowEnableMesh(enableDhcpSetting as boolean) //TODO: this.rbacService.isRoleAllowed('UpdateMeshButton')
         
-      if(meshEnabled){
+      if(data.mesh.enabled){
         checkMeshAPs()
       }
     }
@@ -52,20 +59,24 @@ export function MeshNetwork () {
     if(data?.data && data?.data.length > 0){
       setHasMeshAPs(true)
     }
-    console.log(hasMeshAPs)
   }
 
   const toggleMesh = (checked: boolean) => {
     if (checked) {
       showActionModal({
         type: 'confirm',
-        title: 'Enable Mesh',
         content: $t({ defaultMessage:
               'If you have Mesh-APs, you will not be able to disable this option.' }),
         okText: 'Enable Mesh',
         cancelText: 'Cancel',
         onOk () { 
           setMeshEnabled(true)
+          updateVenueMesh({
+            params,
+            payload: {
+              mesh: checked
+            }
+          })
         },
         onCancel () {}
       })
@@ -79,20 +90,33 @@ export function MeshNetwork () {
         })
       } else {
         setMeshEnabled(false)
+        updateVenueMesh({
+          params,
+          payload: {
+            mesh: checked
+          }
+        })
       }
     }
   }
 
   return (
-    <div>
-      <span>{$t({ defaultMessage: 'Mesh Network' })}</span>
-      <Tooltip title={meshToolTipDisabledText}>
-        <Switch
-          checked={meshEnabled}
-          onClick={toggleMesh}
-        />
-      </Tooltip>
-    </div>
+    <>
+      <Subtitle level={3}>{$t({ defaultMessage: 'Mesh Network' })}</Subtitle>
+      <UI.FieldLabel width='125px'>
+        {$t({ defaultMessage: 'Mesh Network' })}
+        <UI.FieldLabel width='30px'>
+          <Tooltip title={meshToolTipDisabledText}>
+            <Switch
+              checked={meshEnabled}
+              disabled={isAllowEnableMesh}
+              onClick={toggleMesh}
+              style={{ marginTop: '7px' }}
+            />
+          </Tooltip>
+        </UI.FieldLabel>
+      </UI.FieldLabel>
+    </>
   )
 }
   
