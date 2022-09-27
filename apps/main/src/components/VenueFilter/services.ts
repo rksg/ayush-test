@@ -1,11 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/analytics/services'
-import {
-  AnalyticsFilter,
-  defaultNetworkPath,
-  PathNode
-} from '@acx-ui/analytics/utils'
+import { dataApi }                             from '@acx-ui/analytics/services'
+import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { PathNode }                            from '@acx-ui/utils'
 
 export type Child = PathNode & { id: string }
 interface Response {

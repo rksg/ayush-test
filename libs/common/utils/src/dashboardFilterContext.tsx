@@ -6,36 +6,7 @@ import { useSearchParams } from 'react-router-dom'
 
 import { DateFilterContext, DateFilter } from './dateFilterContext'
 import {  getDateRangeFilter }           from './dateUtil'
-
-export type NodeType = 'network'
-  | 'apGroupName'
-  | 'apGroup'
-  | 'zoneName'
-  | 'zone'
-  | 'switchGroup'
-  | 'switch'
-  | 'apMac'
-  | 'ap'
-  | 'AP'
-
-export interface PathNode {
-  type: NodeType
-  name: string
-}
-
-export interface NetworkPath extends Array<PathNode> {}
-
-export type NetworkNode = {
-  type: Omit<NodeType,'network'>
-  name: string
-}
-export type NetworkNodePath = NetworkNode[] | []
-
-export type pathFilter = {
-  networkNodes? : NetworkPath[],
-  switchNodes? : NetworkPath[]
-}
-
+import { NetworkPath, pathFilter }       from './types/networkFilter'
 interface DashboardFilterProps {
   path: NetworkPath
   setNodeFilter: CallableFunction

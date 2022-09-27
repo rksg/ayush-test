@@ -1,9 +1,9 @@
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { NodeType, nodeTypes, useAnalyticsFilter }          from '@acx-ui/analytics/utils'
+import {  nodeTypes, useAnalyticsFilter }                   from '@acx-ui/analytics/utils'
 import { PageHeader, PageHeaderProps, Loader, RangePicker } from '@acx-ui/components'
-import { useDateFilter, dateRangeForLast }                  from '@acx-ui/utils'
+import { useDateFilter, dateRangeForLast, NodeType }        from '@acx-ui/utils'
 
 import NetworkFilter from '../NetworkFilter'
 
