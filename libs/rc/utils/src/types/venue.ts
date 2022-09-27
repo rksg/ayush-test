@@ -1,3 +1,4 @@
+import { LteBandRegionEnum } from '../constants'
 import { ApStatusDetails, ApModel } from './ap'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
@@ -54,7 +55,7 @@ export interface VenueCapabilities {
 	apModels: ApModel[]
 	version: string
 }
-  
+
 export interface VenueLed {
 	ledEnabled: boolean
 	model: string,
@@ -64,4 +65,15 @@ export interface VenueLed {
 
 export interface VenueApModels {
 	models: string[]
+}
+
+export interface AvailableLteBands {
+  band3G?: string[]
+
+  band4G?: string[]
+
+  region: LteBandRegionEnum
+
+  countryCodes?: string[]
+
 }

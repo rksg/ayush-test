@@ -127,3 +127,17 @@ export enum RadiusErrorsType {
   AUTH = 'AUTH',
   ACCOUNTING = 'ACCOUNTING'
 }
+
+export enum WanConnectionEnum {
+  ETH_WITH_CELLULAR_FAILOVER = 'ETH_WITH_CELLULAR_FAILOVER',
+  CELLULAR_WITH_ETH_FAILOVER = 'CELLULAR_WITH_ETH_FAILOVER',
+  ETH = 'ETH',
+  CELLULAR = 'CELLULAR',
+}
+
+export enum LteBandRegionEnum {
+  DOMAIN_1 = 'DOMAIN_1',
+  DOMAIN_2 = 'DOMAIN_2',
+  USA_CANADA = 'USA_CANADA',
+  JAPAN = 'JAPAN',
+}

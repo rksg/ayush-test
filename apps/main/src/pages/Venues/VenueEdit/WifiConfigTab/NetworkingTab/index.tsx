@@ -15,17 +15,17 @@ export function NetworkingTab () {
   // }, {
     title: $t({ defaultMessage: 'Cellular Options' }),
     content: (<CellularOptionsForm></CellularOptionsForm>)
-  // }, {
-  //   title: $t({ defaultMessage: 'Mesh Network' }),
-  //   content: 'Mesh Network Content'
-  // }, {
-  //   title: $t({ defaultMessage: 'Client Isolation Allowlist' }),
-  //   content: 'Client Isolation Allowlist Content'
+  }, {
+    title: $t({ defaultMessage: 'Mesh Network' }),
+    content: 'Mesh Network Content'
+  }, {
+    title: $t({ defaultMessage: 'Client Isolation Allowlist' }),
+    content: 'Client Isolation Allowlist Content'
   }]
 
   return (
     <div>
-      <AnchorLayout items={items} offsetTop={50} />
+      <AnchorLayout items={items} offsetTop={275} />
     </div>
 
   )

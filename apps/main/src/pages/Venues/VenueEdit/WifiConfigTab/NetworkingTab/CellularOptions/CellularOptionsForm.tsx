@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, createContext } from 'react'
 
 import {
   Select,
@@ -11,42 +11,25 @@ import {
   Form,
   Input
 } from 'antd'
-import { useIntl } from 'react-intl'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Button, StepsForm, Table, TableProps, Loader, showToast, Subtitle } from '@acx-ui/components'
+import { useGetAvailableLteBandsQuery }                                      from '@acx-ui/rc/services'
+import { AvailableLteBands }                                                 from '@acx-ui/rc/utils'
 
-import { CellularRadoSimSettings } from './CellularRadoSimSettings'
+import { VenueEditContext } from '../../..'
+
+import { CellularRadioSimSettings } from './CellularRadioSimSettings'
 
 export interface ModelOption {
   label: string
   value: string
 }
 
-export enum CellularNetworkSelectionEnum {
-  AUTO = 'AUTO',
-  LTE = 'LTE',
-  ThreeG = 'ThreeG',
-}
 
-export const LteBandLockCountriesJson = {
-  DOMAIN_1: {
-    name: 'Domain 1 countries',
-    // eslint-disable-next-line max-len
-    countries: 'European Union, Hong Kong, India, Malaysia, Philippines, Singapore, Thailand, Turkey, United Kingdom, Vietnam'
-  },
-  DOMAIN_2: {
-    name: 'Domain 2 countries',
-    countries: 'Australia, Brazil, Mexico, New Zealand, Taiwan'
-  },
-  USA_CANADA: {
-    name: 'USA & Canada',
-    countries: 'USA, Canada'
-  },
-  JAPAN: {
-    name: 'Japan',
-    countries: 'Japan'
-  }
-}
+
 const { Option } = Select
 export enum WanConnectionEnum {
   ETH_WITH_CELLULAR_FAILOVER = 'ETH_WITH_CELLULAR_FAILOVER',
@@ -56,34 +39,98 @@ export enum WanConnectionEnum {
 }
 
 
+
 export function CellularOptionsForm () {
   const { $t } = useIntl()
+  const { tenantId, venueId } = useParams()
 
-  const wanConnectionOptions = [
-    {
-      label: 'Ethernet (Primary) with cellular failover',
-      value: WanConnectionEnum.ETH_WITH_CELLULAR_FAILOVER
-    }, {
-      label: 'Cellular (Primary) with ethernet failover',
-      value: WanConnectionEnum.CELLULAR_WITH_ETH_FAILOVER
-    }, {
-      label: 'Ethernet only',
-      value: WanConnectionEnum.ETH
-    }, {
-      label: 'Cellular only',
-      value: WanConnectionEnum.CELLULAR
+  const venueContext = useContext(VenueEditContext)
+  const LteBandLockCountriesJson = {
+    DOMAIN_1: {
+      name: 'Domain 1 countries',
+      // eslint-disable-next-line max-len
+      countries: 'European Union, Hong Kong, India, Malaysia, Philippines, Singapore, Thailand, Turkey, United Kingdom, Vietnam'
+    },
+    DOMAIN_2: {
+      name: 'Domain 2 countries',
+      countries: 'Australia, Brazil, Mexico, New Zealand, Taiwan'
+    },
+    USA_CANADA: {
+      name: 'USA & Canada',
+      countries: 'USA, Canada'
+    },
+    JAPAN: {
+      name: 'Japan',
+      countries: 'Japan'
     }
-  ]
+  }
+  let regionCountriesMap = _.cloneDeep(LteBandLockCountriesJson)
+  const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
+  // const venueEditContext = useContext(VenueEditContext)
+
+  // console.log(venueEditContext.editContextData.oldData);
+  useEffect(() => {
+    let availableLteBandsContext = availableLteBands?.data
+
+
+    if(availableLteBandsContext){
+      availableLteBandsContext.forEach(lteBands => {
+        regionCountriesMap[lteBands.region] =
+        Object.assign(regionCountriesMap[lteBands.region], {
+          countryCodes: lteBands.countryCodes
+        })
+      })
+    }
+
+
+    // this.setRegionCountryNamesMap();
+    // this.setCurrentRegion(this.venueSettings.countryCode);
+    // this.setCurrentCountryName();
+    // this.getCellularSupportedModels$();
+  }, [availableLteBands.data])
+
+
+  // let cellularRadioSimSettingsLists = availableLteBands?.data.map(
+  //   (list) =>
+  //     <CellularRadioSimSettings
+  //       availableLteBands={list}>
+  //     </CellularRadioSimSettings>)
+
+
+  if (availableLteBands?.data) {
+    let lists = []
+
+    //用迴圈將代辦事項的內容一個個放進空陣列中
+    for (let i = 0; i <= availableLteBands.data.length - 1; i++) {
+      //記得在JSX中使用JS變數要用花括號包著
+      lists.push(<CellularRadioSimSettings availableLteBands={availableLteBands.data[i]}>
+
+      </CellularRadioSimSettings>)
+    }
+
+    return (
+      <ul>
+        {lists}
+      </ul>
+    )
+  }
+
+
 
 
   return (
+
     <>
       <Subtitle level={3}>{$t({ defaultMessage: 'Cellular Options' })}</Subtitle>
       <StepsForm
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
         <StepsForm.StepForm>
-          <CellularRadoSimSettings/>
+
+          {/* <CellularRadioSimSettings/> */}
+          {cellularRadioSimSettingsLists}
+
+
           <Form.Item
             name={'wanConnection'}
             label={$t({ defaultMessage: 'WAN Connection:' })}
@@ -109,6 +156,8 @@ export function CellularOptionsForm () {
               </Select>
             }
           />
+
+
           <Form.Item
             name={'primaryWanRecoveryTimer'}
             label={$t({ defaultMessage: 'Primary WAN Recovery Timer:' })}

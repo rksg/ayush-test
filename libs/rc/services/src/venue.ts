@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
-  CommonUrlsInfo,
   createHttpRequest,
   onSocketActivityChanged,
   RequestPayload,
@@ -12,8 +11,11 @@ import {
   VenueCapabilities,
   VenueLed,
   VenueApModels,
-  WifiUrlsInfo
+  CommonUrlsInfo,
+  WifiUrlsInfo,
+  AvailableLteBands
 } from '@acx-ui/rc/utils'
+
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -110,6 +112,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getAvailableLteBands: build.query<AvailableLteBands[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getAvailableLteBands, params)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -123,5 +133,6 @@ export const {
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
-  useUpdateVenueLedOnMutation
+  useUpdateVenueLedOnMutation,
+  useGetAvailableLteBandsQuery
 } = venueApi

@@ -1,18 +1,16 @@
-import { useState, useEffect, useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 
 import {
   Select,
   Switch,
-  Row,
-  Col,
-  Space,
   Divider,
   Form,
   Input
 } from 'antd'
-import { isEqual } from 'lodash'
-import { useIntl } from 'react-intl'
-import { CellularNetworkSelectionEnum } from './CellularOptionsForm'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
+
+import { AvailableLteBands } from '@acx-ui/rc/utils'
 
 
 export interface ModelOption {
@@ -22,11 +20,18 @@ export interface ModelOption {
 
 const { Option } = Select
 
+export enum CellularNetworkSelectionEnum {
+  AUTO = 'AUTO',
+  LTE = 'LTE',
+  ThreeG = 'ThreeG',
+}
 
-export function CellularRadoSimSettings () {
+export function CellularRadioSimSettings (props: {
+  availableLteBands: AvailableLteBands
+}) {
   const { $t } = useIntl()
-
-
+  // const { tenantId, venueId } = useParams()
+  const a = props.availableLteBands
 
   return (
     <>

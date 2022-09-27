@@ -40,7 +40,7 @@ export const AnchorLayout = ({ items, offsetTop } : {
   }, [])
 
   return <GridRow >
-    <GridCol style={{ position: 'fixed' }} col={{ span: 4 }}>
+    <GridCol col={{ span: 4 }}>
       <Anchor ref={anchorRef} offsetTop={offsetTop} onClick={(e) => handleClick(e)}>{
         items.map(item => {
           const linkId = item.title.split(' ').join('-')

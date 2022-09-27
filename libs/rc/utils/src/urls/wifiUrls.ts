@@ -28,5 +28,13 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   deleteNetworkVenue: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId'
+  },
+  getLteBandLockChannel: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/lte-band-lock-channel'
+  },
+  getAvailableLteBands: {
+    method: 'get',
+    url: '/api/tenant/:venueId/wifi/lte-band'
   }
 }
