@@ -1,15 +1,10 @@
+/* eslint-disable max-len */
 import { defineMessage } from 'react-intl'
 
 export const AAANotification = defineMessage({ 
   defaultMessage: 
   'You must have at least one RADIUS or TACACS+ server set-up in order to enable authorization or accounting' 
 })
-
-export enum AAAServerTypeEnum {
-  RADIUS = 'RADIUS',
-  TACACS = 'TACACS_PLUS',
-  LOCAL_USER = 'LOCAL'
-}
 
 export enum AAA_Purpose_UI_Type {
   'DEFAULT' = 'Default (All)',

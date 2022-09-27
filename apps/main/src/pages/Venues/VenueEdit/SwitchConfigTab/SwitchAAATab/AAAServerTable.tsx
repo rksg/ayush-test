@@ -1,3 +1,4 @@
+import { Input }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -6,14 +7,13 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { useVenuesListQuery }      from '@acx-ui/rc/services'
-import { useTableQuery, Venue }    from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate } from '@acx-ui/react-router-dom'
+import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser } from '@acx-ui/rc/utils'
 
-import { AAAServerTypeEnum, AAA_Level_UI_Type, AAA_Purpose_UI_Type } from './contentsMap'
+import { AAA_Level_UI_Type, AAA_Purpose_UI_Type } from './contentsMap'
 
 function useColumns (type: AAAServerTypeEnum) {
   const { $t } = useIntl()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const radiusColumns: TableProps<any>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -37,9 +37,20 @@ function useColumns (type: AAAServerTypeEnum) {
     },
     {
       title: $t({ defaultMessage: 'Shared Secret' }),
-      key: 'secret'
+      key: 'secret',
+      dataIndex: 'secret',
+      render: function (data, row) {
+        return <div onClick={(e)=> {e.stopPropagation()}}>
+          <Input.Password
+            readOnly
+            bordered={false}
+            value={row.secret}
+          />
+        </div>
+      }
     }
   ]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tacacsColumns: TableProps<any>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -63,7 +74,17 @@ function useColumns (type: AAAServerTypeEnum) {
     },
     {
       title: $t({ defaultMessage: 'Shared Secret' }),
-      key: 'secret'
+      key: 'secret',
+      dataIndex: 'secret',
+      render: function (data, row) {
+        return <div onClick={(e)=> {e.stopPropagation()}}>
+          <Input.Password
+            readOnly
+            bordered={false}
+            value={row.secret}
+          />
+        </div>
+      }
     },
     {
       title: $t({ defaultMessage: 'Purpose' }),
@@ -74,6 +95,7 @@ function useColumns (type: AAAServerTypeEnum) {
       }
     }
   ]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const localUserColumns: TableProps<any>['columns'] = [
     {
       title: $t({ defaultMessage: 'Username' }),
@@ -83,7 +105,16 @@ function useColumns (type: AAAServerTypeEnum) {
     {
       title: $t({ defaultMessage: 'Password' }),
       key: 'password',
-      dataIndex: 'password'
+      dataIndex: 'password',
+      render: function (data, row) {
+        return <div onClick={(e)=> {e.stopPropagation()}}>
+          <Input.Password
+            readOnly
+            bordered={false}
+            value={row.password}
+          />
+        </div>
+      }
     },
     {
       title: $t({ defaultMessage: 'Privilege' }),
@@ -103,31 +134,18 @@ function useColumns (type: AAAServerTypeEnum) {
   return columnsMap[type]
 }
 
-const defaultPayload = {
-  venueId: '4c778ed630394b76b17bce7fe230cf9f',
-  serverType: AAAServerTypeEnum.RADIUS,
-  sortField: 'name',
-  sortOrder: 'ASC'
-}
-
-export const AAAServerTable = (props: { type:AAAServerTypeEnum }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const AAAServerTable = (props: { type:AAAServerTypeEnum, tableQuery: any }) => {
   const { $t } = useIntl()
-  const payloadMap = {
-    [AAAServerTypeEnum.RADIUS]: { ...defaultPayload },
-    [AAAServerTypeEnum.TACACS]: { ...defaultPayload, serverType: AAAServerTypeEnum.TACACS },
-    [AAAServerTypeEnum.LOCAL_USER]: { ...defaultPayload, serverType: AAAServerTypeEnum.LOCAL_USER }
+  const { type, tableQuery } = props
+  const addButtonText = {
+    [AAAServerTypeEnum.RADIUS]: $t({ defaultMessage: 'Add RADIUS Server' }),
+    [AAAServerTypeEnum.TACACS]: $t({ defaultMessage: 'Add TACACS+ Server' }),
+    [AAAServerTypeEnum.LOCAL_USER]: $t({ defaultMessage: 'Add Local User' })
   }
-  const tableQuery = useTableQuery({
-    useQuery: useVenuesListQuery,
-    defaultPayload: payloadMap[props.type],
-    pagination: {
-      pageSize: 5
-    }
-  })
-
-  const actions: TableProps<Venue>['actions'] = [{
-    label: $t({ defaultMessage: 'Edit' }),
-    onClick: (selectedRows) => {
+  const actions: TableProps<RadiusServer | TacacsServer | LocalUser>['actions'] = [{
+    label: addButtonText[type],
+    onClick: () => {
     }
   }]
 
@@ -136,7 +154,7 @@ export const AAAServerTable = (props: { type:AAAServerTypeEnum }) => {
       tableQuery
     ]}>
       <Table
-        columns={useColumns(props.type)}
+        columns={useColumns(type)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

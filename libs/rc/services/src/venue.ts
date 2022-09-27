@@ -2,20 +2,21 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
+  WifiUrlsInfo,
+  SwitchUrlsInfo,
   createHttpRequest,
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
   TableResult,
   Venue,
-  VenueDetailHeader,
-  WifiUrlsInfo
+  VenueDetailHeader
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue'],
+  tagTypes: ['Venue', 'AAA'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -74,6 +75,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
             })
         })
       }
+    }),
+    venueSwitchAAAServerList: build.query<TableResult<Venue>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const listReq = createHttpRequest(SwitchUrlsInfo.getAaaServerList, params)
+        return {
+          ...listReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'AAA', id: 'LIST' }]
+      // async onCacheEntryAdded (requestArgs, api) {
+      //   await onSocketActivityChanged(requestArgs, api, (msg) => {
+      //     showActivityMessage(msg, ['AddVenue', 'DeleteVenue'], () => {
+      //       api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
+      //     })
+      //   })
+      // }
     })
   })
 })
@@ -83,5 +101,6 @@ export const {
   useLazyVenuesListQuery,
   useAddVenueMutation,
   useGetVenueQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useVenueSwitchAAAServerListQuery
 } = venueApi
