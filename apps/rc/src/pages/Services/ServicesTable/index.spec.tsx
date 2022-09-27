@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiCallingUrls }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import {
   fireEvent,
@@ -19,7 +19,7 @@ const mockTableResult = {
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'Service 1',
-    type: 'WIFI_CALLING',
+    type: 'Wi-Fi Calling',
     category: 'APPLICATION',
     status: 'UP',
     adminState: 'ENABLED',
@@ -63,7 +63,7 @@ describe('Services Table', () => {
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteService.url,
+        WifiCallingUrls.deleteWifiCalling.url,
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
       )
     )

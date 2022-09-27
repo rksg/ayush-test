@@ -125,8 +125,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
+        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
         return {
-          ...createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
+          ...req
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
