@@ -23,8 +23,12 @@ export const store = configureStore({
     [serviceApi.reducerPath]: serviceApi.reducer
   },
 
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([
+  middleware: (getDefaultMiddleware) => {
+    const isDev = process.env['NODE_ENV'] === 'development'
+    return getDefaultMiddleware({
+      serializableCheck: isDev ? undefined : false,
+      immutableCheck: isDev ? undefined : false
+    }).concat([
       networkApi.middleware,
       venueApi.middleware,
       eventAlarmApi.middleware,
@@ -33,7 +37,8 @@ export const store = configureStore({
       userApi.middleware,
       dataApi.middleware,
       serviceApi.middleware
-    ]),
+    ])
+  },
 
   devTools: process.env['NODE_ENV'] !== 'production'
 })
