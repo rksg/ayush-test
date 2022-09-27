@@ -16,9 +16,9 @@ exports[`Incidents Page should match snapshot 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <div
-            class="styledComponents__Wrapper-sc-9l0oc9-0 bOqLDL"
-            type="successCount"
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 esRJiy"
+            type="button"
           >
             <div
               class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
@@ -46,7 +46,7 @@ exports[`Incidents Page should match snapshot 1`] = `
             <div
               data-testid="down-arrow"
             />
-          </div>
+          </button>
         </div>
       </div>
       <div
@@ -56,9 +56,9 @@ exports[`Incidents Page should match snapshot 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <div
-            class="styledComponents__Wrapper-sc-9l0oc9-0 bYvkzD"
-            type="failureCount"
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 fFqqaO"
+            type="button"
           >
             <div
               class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
@@ -86,7 +86,7 @@ exports[`Incidents Page should match snapshot 1`] = `
             <div
               data-testid="down-arrow"
             />
-          </div>
+          </button>
         </div>
       </div>
       <div
@@ -96,9 +96,9 @@ exports[`Incidents Page should match snapshot 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <div
-            class="styledComponents__Wrapper-sc-9l0oc9-0 ecLRWx"
-            type="successPercentage"
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 kRVJAs"
+            type="button"
           >
             <div
               class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
@@ -121,7 +121,7 @@ exports[`Incidents Page should match snapshot 1`] = `
             <div
               data-testid="down-arrow"
             />
-          </div>
+          </button>
         </div>
       </div>
       <div
@@ -131,9 +131,9 @@ exports[`Incidents Page should match snapshot 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <div
-            class="styledComponents__Wrapper-sc-9l0oc9-0 jxsWdA"
-            type="averageTtc"
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 llGwou"
+            type="button"
           >
             <div
               class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 hAiNJH"
@@ -156,7 +156,7 @@ exports[`Incidents Page should match snapshot 1`] = `
             <div
               data-testid="down-arrow"
             />
-          </div>
+          </button>
         </div>
       </div>
     </div>
@@ -180,9 +180,9 @@ exports[`Incidents Page should show - when no data 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <div
-            class="styledComponents__Wrapper-sc-9l0oc9-0 bOqLDL"
-            type="successCount"
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 esRJiy"
+            type="button"
           >
             <div
               class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
@@ -210,7 +210,7 @@ exports[`Incidents Page should show - when no data 1`] = `
             <div
               data-testid="down-arrow"
             />
-          </div>
+          </button>
         </div>
       </div>
       <div
@@ -220,9 +220,9 @@ exports[`Incidents Page should show - when no data 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <div
-            class="styledComponents__Wrapper-sc-9l0oc9-0 bYvkzD"
-            type="failureCount"
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 fFqqaO"
+            type="button"
           >
             <div
               class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
@@ -250,7 +250,7 @@ exports[`Incidents Page should show - when no data 1`] = `
             <div
               data-testid="down-arrow"
             />
-          </div>
+          </button>
         </div>
       </div>
       <div
@@ -260,9 +260,9 @@ exports[`Incidents Page should show - when no data 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <div
-            class="styledComponents__Wrapper-sc-9l0oc9-0 ecLRWx"
-            type="successPercentage"
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 kRVJAs"
+            type="button"
           >
             <div
               class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 dTEgbz"
@@ -285,7 +285,7 @@ exports[`Incidents Page should show - when no data 1`] = `
             <div
               data-testid="down-arrow"
             />
-          </div>
+          </button>
         </div>
       </div>
       <div
@@ -295,9 +295,9 @@ exports[`Incidents Page should show - when no data 1`] = `
         <div
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
-          <div
-            class="styledComponents__Wrapper-sc-9l0oc9-0 jxsWdA"
-            type="averageTtc"
+          <button
+            class="styledComponents__Wrapper-sc-9l0oc9-0 llGwou"
+            type="button"
           >
             <div
               class="ant-statistic styledComponents__Statistic-sc-9l0oc9-1 hAiNJH"
@@ -320,7 +320,7 @@ exports[`Incidents Page should show - when no data 1`] = `
             <div
               data-testid="down-arrow"
             />
-          </div>
+          </button>
         </div>
       </div>
     </div>

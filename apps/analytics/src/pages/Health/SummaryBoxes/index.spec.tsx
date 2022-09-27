@@ -31,12 +31,37 @@ describe('Incidents Page', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should handle onClick', async () => {
-    mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeSummary })
-    render(<Provider><SummaryBoxes/></Provider>)
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const arrows = screen.getAllByTestId('down-arrow')
-    await userEvent.click(arrows[0])
-    screen.getAllByTestId('up-arrow')
+
+  describe('toggle stats', () => {
+    it('should handle toggle stats', async () => {
+      mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeSummary })
+      render(<Provider><SummaryBoxes/></Provider>)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const downArrows = screen.getAllByTestId('down-arrow')
+      expect(downArrows).toHaveLength(4)
+
+      await userEvent.click(downArrows[0])
+      const upArrows = screen.getAllByTestId('up-arrow')
+      expect(upArrows).toHaveLength(3)
+
+      await userEvent.click(upArrows[1])
+      expect(screen.getAllByTestId('down-arrow')).toHaveLength(4)
+    })
+
+    it('should handle toggle ttc', async () => {
+      mockGraphqlQuery(dataApiURL, 'Summary', { data: fakeSummary })
+      render(<Provider><SummaryBoxes/></Provider>)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      expect(screen.getAllByTestId('down-arrow')).toHaveLength(4)
+
+      const button = screen.getByRole('button', { name: /time to connect/i })
+      await userEvent.click(button)
+      expect(screen.getAllByTestId('up-arrow')).toHaveLength(1)
+
+      await userEvent.click(button)
+      expect(screen.getAllByTestId('down-arrow')).toHaveLength(4)
+    })
   })
 })
