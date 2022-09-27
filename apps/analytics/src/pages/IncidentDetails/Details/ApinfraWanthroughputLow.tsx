@@ -12,7 +12,7 @@ import { Insights }                       from '../Insights'
 
 import * as UI from './styledComponents'
 
-export const ApWanthroughputLow = (incident: Incident) => {
+export const ApinfraWanthroughputLow = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
     Attributes.ApImpactCount,
@@ -57,4 +57,4 @@ export const ApWanthroughputLow = (incident: Incident) => {
   )
 }
 
-export default ApWanthroughputLow
+export default ApinfraWanthroughputLow

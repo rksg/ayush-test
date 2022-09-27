@@ -9,12 +9,10 @@ import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
-import { NetworkImpact }                  from '../NetworkImpact'
-import { NetworkImpactChartTypes }        from '../NetworkImpact/config'
 
 import * as UI from './styledComponents'
 
-export const Rss = (incident: Incident) => {
+export const SwitchPoePd = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
     Attributes.ApImpactCount,
@@ -25,10 +23,6 @@ export const Rss = (incident: Incident) => {
     Attributes.Duration,
     Attributes.EventStartTime,
     Attributes.EventEndTime
-  ]
-  const networkImpactCharts: NetworkImpactChartTypes[] = [
-    NetworkImpactChartTypes.WLAN,
-    NetworkImpactChartTypes.Radio
   ]
 
   return (
@@ -53,14 +47,11 @@ export const Rss = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <NetworkImpact incident={incident} charts={networkImpactCharts}/>
-        </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Chart</div>
+          <div>Impacted Entities</div>
         </GridCol>
       </GridRow>
     </>
   )
 }
 
-export default Rss
+export default SwitchPoePd

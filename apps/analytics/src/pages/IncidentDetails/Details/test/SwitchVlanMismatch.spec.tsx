@@ -2,7 +2,7 @@ import { fakeIncident1, mockFakeIncident } from '@acx-ui/analytics/utils'
 import { Provider }                        from '@acx-ui/store'
 import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
 
-import { ApWanthroughputLow } from '../ApWanthroughputLow'
+import { SwitchVlanMismatch } from '../SwitchVlanMismatch'
 
 jest.mock('../../IncidentAttributes', () => ({
   ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
@@ -12,7 +12,7 @@ jest.mock('../../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
 
-describe('i-apinfra-poe-low', () => {
+describe('i-switch-vlan-mismatch', () => {
   mockDOMWidth()
   it('should render correctly', () => {
     const params = {
@@ -20,7 +20,7 @@ describe('i-apinfra-poe-low', () => {
     }
 
     const { asFragment } = render(<Provider>
-      <ApWanthroughputLow {...mockFakeIncident('i-apinfra-poe-low')}/>
+      <SwitchVlanMismatch {...mockFakeIncident('i-switch-vlan-mismatch')} />
     </Provider>, { route: { params } })
 
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
