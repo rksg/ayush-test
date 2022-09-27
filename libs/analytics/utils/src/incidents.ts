@@ -190,12 +190,6 @@ export const getThreshold = (incident: Incident, intl: IntlShape) => {
   }
 }
 
-export const useGetThreshold = (incident: Incident) => {
-  const intl = useIntl()
-  const threshold = getThreshold(incident, intl)
-  return threshold
-}
-
 export const shortDescription = (incident: Incident, intl: IntlShape) => {
   const scope = incidentScope(incident, intl)
   const threshold = getThreshold(incident, intl)
