@@ -1,0 +1,115 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row"
+    style="margin: -10px -8px -10px -8px;"
+  >
+    <div
+      class="ant-col ant-col-12"
+      style="padding: 10px 8px 10px 8px;"
+    >
+      <div
+        class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
+        type="default"
+      >
+        <div
+          class="ant-card"
+        >
+          <div
+            class="ant-card-head"
+          >
+            <div
+              class="ant-card-head-wrapper"
+            >
+              <div
+                class="ant-card-head-title"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                >
+                  TEST_2
+                </div>
+              </div>
+              <div
+                class="ant-card-extra"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-card-body"
+          >
+            <div
+              class="styledComponents__StyledImageWrapper-sc-53x6ha-0 deeyXM"
+            >
+              <img
+                alt="img"
+                data-testid="fpImage"
+                src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                style="width: auto; height: 100%;"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-12"
+      style="padding: 10px 8px 10px 8px;"
+    >
+      <div
+        class="styledComponents__Wrapper-sc-13w5wfx-3 dFcNFM"
+        type="default"
+      >
+        <div
+          class="ant-card"
+        >
+          <div
+            class="ant-card-head"
+          >
+            <div
+              class="ant-card-head-wrapper"
+            >
+              <div
+                class="ant-card-head-title"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                >
+                  dscx
+                </div>
+              </div>
+              <div
+                class="ant-card-extra"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-card-body"
+          >
+            <div
+              class="styledComponents__StyledImageWrapper-sc-53x6ha-0 deeyXM"
+            >
+              <img
+                alt="img"
+                data-testid="fpImage"
+                src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                style="width: auto; height: 100%;"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

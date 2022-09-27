@@ -122,7 +122,7 @@ export function ServicesTable () {
       { isLoading: isDeleteServiceUpdating }
     ] = useDeleteServiceMutation()
 
-    const actions: TableProps<Service>['actions'] = [{
+    const rowActions: TableProps<Service>['rowActions'] = [{
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
@@ -149,7 +149,7 @@ export function ServicesTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          actions={actions}
+          rowActions={rowActions}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

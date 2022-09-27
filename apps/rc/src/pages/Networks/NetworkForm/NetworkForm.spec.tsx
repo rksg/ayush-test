@@ -45,10 +45,12 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse)))
+        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
+      rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
+        (_, res, ctx) => res(ctx.json(dhcpResponse)))
     )
   })
 
@@ -61,7 +63,7 @@ describe('NetworkForm', () => {
 
     expect(asFragment()).toMatchSnapshot()
 
-    const insertInput = screen.getByLabelText('Network Name')
+    const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     fireEvent.blur(insertInput)
 
@@ -87,7 +89,7 @@ describe('NetworkForm', () => {
 
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
 
-    const insertInput = screen.getByLabelText('Network Name')
+    const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     fireEvent.blur(insertInput)
     const validating = await screen.findByRole('img', { name: 'loading' })
@@ -124,24 +126,7 @@ describe('NetworkForm', () => {
 
     expect(asFragment()).toMatchSnapshot()
 
-    mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
-        (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venuesResponse))),
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.post(CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
-      rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
-        (_, res, ctx) => res(ctx.json(dhcpResponse)))
-    )
-
-    const insertInput = screen.getByLabelText('Network Name')
+    const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     fireEvent.blur(insertInput)
     const validating = await screen.findByRole('img', { name: 'loading' })
@@ -158,6 +143,43 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
     const redirectUrlInput = screen.getByPlaceholderText('e.g. http://www.example.com')
     fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
+    await userEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })
+    await userEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Venues' })
+    await userEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Summary' })
+    await userEvent.click(screen.getByText('Finish'))
+  })
+
+  it('should create captive portal without redirect url successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+
+    expect(asFragment()).toMatchSnapshot()
+
+    const insertInput = screen.getByLabelText(/Network Name/)
+    fireEvent.change(insertInput, { target: { value: 'open network test' } })
+    fireEvent.blur(insertInput)
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
+    await userEvent.click(screen.getByRole('radio', { name: /Captive Portal/ }))
+    await userEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Portal Type' })
+    await userEvent.click(screen.getByRole('radio', { name: /Click-Through/ }))
+    await userEvent.click(screen.getByText('Next'))
+
+    await screen.findByRole('heading', { level: 3, name: 'Onboarding' })
+    await userEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
+    await userEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })

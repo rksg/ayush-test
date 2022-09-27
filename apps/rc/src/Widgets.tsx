@@ -7,6 +7,7 @@ import { Provider }          from '@acx-ui/store'
 import AlarmWidget from './components/AlarmWidget'
 import Clients     from './components/ClientsDonut'
 import Devices     from './components/DevicesDonut'
+import FloorPlan   from './components/FloorPlan'
 import Map         from './components/Map'
 import Venues      from './components/VenuesDonut'
 
@@ -18,6 +19,7 @@ const widgetsMap = {
   venues: () => <Venues />,
   devices: () => <Devices />,
   clients: () => <Clients />,
+  floorPlans: () => <FloorPlan />,
   none: null
 }
 

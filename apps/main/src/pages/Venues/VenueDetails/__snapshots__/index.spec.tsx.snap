@@ -3,7 +3,7 @@
 exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -333,7 +333,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
 exports[`VenueDetails should navigate to client tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -663,7 +663,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
 exports[`VenueDetails should navigate to device tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -993,7 +993,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
 exports[`VenueDetails should navigate to network tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1357,7 +1357,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
 exports[`VenueDetails should navigate to service tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -1687,7 +1687,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
 exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -2017,7 +2017,7 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
 exports[`VenueDetails should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwLxuM"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -2343,6 +2343,72 @@ exports[`VenueDetails should render correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  Overview
+  <div
+    class="ant-card ant-card-bordered"
+  >
+    <div
+      class="ant-card-body"
+    >
+      <div
+        class="styledComponents__ContentSwitcherContainer-sc-kf9xxo-0 fsIugZ"
+      >
+        <div
+          style="text-align: left; padding: 10px 0px;"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+          >
+            <div
+              class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
+            >
+              <label
+                class="ant-radio-button-wrapper"
+              >
+                <span
+                  class="ant-radio-button"
+                >
+                  <input
+                    class="ant-radio-button-input"
+                    type="radio"
+                    value="topology"
+                  />
+                  <span
+                    class="ant-radio-button-inner"
+                  />
+                </span>
+                <span>
+                  Topology
+                </span>
+              </label>
+              <label
+                class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+              >
+                <span
+                  class="ant-radio-button ant-radio-button-checked"
+                >
+                  <input
+                    checked=""
+                    class="ant-radio-button-input"
+                    type="radio"
+                    value="floor-plans"
+                  />
+                  <span
+                    class="ant-radio-button-inner"
+                  />
+                </span>
+                <span>
+                  Floor Plans
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div
+          data-testid="networks-floorPlans"
+          title="floorPlans"
+        />
+      </div>
+    </div>
+  </div>
 </DocumentFragment>
 `;

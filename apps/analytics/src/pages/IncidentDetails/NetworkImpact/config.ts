@@ -61,8 +61,15 @@ const highlights = {
   })
 }
 
-export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> = {
-  WLAN: {
+export enum NetworkImpactChartTypes {
+  WLAN,
+  Radio,
+  Reason,
+  ClientManufacturer
+}
+
+export const networkImpactCharts = {
+  [NetworkImpactChartTypes.WLAN]: {
     key: 'WLAN',
     title: defineMessage({ defaultMessage: 'WLAN' }),
     dimension: 'ssids',
@@ -80,7 +87,7 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     },
     order: 0
   },
-  radio: {
+  [NetworkImpactChartTypes.Radio]: {
     key: 'radio',
     title: defineMessage({ defaultMessage: 'Radio' }),
     dimension: 'radios',
@@ -98,7 +105,7 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     },
     order: 5
   },
-  reason: {
+  [NetworkImpactChartTypes.Reason]: {
     key: 'reason',
     title: defineMessage({ defaultMessage: 'Reason' }),
     dimension: 'reasonCodes',
@@ -116,7 +123,7 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     },
     order: 1
   },
-  clientManufacturer: {
+  [NetworkImpactChartTypes.ClientManufacturer]: {
     key: 'clientManufacturer',
     title: defineMessage({ defaultMessage: 'Client Manufacturers' }),
     dimension: 'manufacturer',
@@ -134,4 +141,4 @@ export const networkImpactCharts: Readonly<Record<string, NetworkImpactChart>> =
     },
     order: 2
   }
-}
+} as Readonly<Record<NetworkImpactChartTypes, NetworkImpactChart>>

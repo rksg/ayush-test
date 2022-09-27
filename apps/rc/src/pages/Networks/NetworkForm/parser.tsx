@@ -312,8 +312,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
       managementFrameMinimumPhyRate: get(data, 'wlan.managementFrameMinimumPhyRate')
     }
   }
- 
 
+  if (get(data, 'wlan.advancedCustomization.vlanPool')) {
+    advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
+  }
 
   let saveData:NetworkSaveData = {
     ...originalData,

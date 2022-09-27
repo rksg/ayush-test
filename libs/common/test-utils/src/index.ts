@@ -1,4 +1,4 @@
-export * from './mockAutoSizer'
+export * from './mockDOMWidth'
 export * from './mockRTKQuery'
 export * from './mockServer'
 export * from './mockWebsocketServer'
