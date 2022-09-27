@@ -1,0 +1,196 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FailureChart should handle markAreaProps 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "apCount": null,
+      "category": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Connection",
+          },
+        ],
+        "id": "KtZV9p",
+      },
+      "clientCount": null,
+      "code": "eap-failure",
+      "endTime": "2022-07-20T02:42:00.000Z",
+      "id": "df5339ba-da3b-4110-a291-7f8993a274f3",
+      "impactedApCount": null,
+      "impactedClientCount": null,
+      "incidentType": "network",
+      "isMuted": false,
+      "longDescription": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "EAP failures are high in ",
+          },
+          Object {
+            "type": 1,
+            "value": "scope",
+          },
+          Object {
+            "type": 0,
+            "value": " impacting connectivity for ",
+          },
+          Object {
+            "type": 1,
+            "value": "impact",
+          },
+          Object {
+            "type": 0,
+            "value": " of clients.",
+          },
+        ],
+        "id": "v9+jd5",
+      },
+      "metadata": Object {
+        "dominant": Object {},
+        "rootCauseChecks": Object {
+          "checks": Array [],
+          "params": Object {},
+        },
+      },
+      "mutedAt": null,
+      "mutedBy": null,
+      "path": Array [
+        Object {
+          "name": "Zone",
+          "type": "zone",
+        },
+      ],
+      "severity": 0.5,
+      "shortDescription": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "EAP failures are unusually high in ",
+          },
+          Object {
+            "type": 1,
+            "value": "scope",
+          },
+        ],
+        "id": "Mu/Odk",
+      },
+      "slaThreshold": null,
+      "sliceType": "zone",
+      "sliceValue": "Zone",
+      "startTime": "2022-07-19T05:15:00.000Z",
+      "subCategory": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "EAP",
+          },
+        ],
+        "id": "QBomBf",
+      },
+    },
+    "endTime": "2022-07-20T02:42:00.000Z",
+    "itemStyle": Object {
+      "color": "#FAD278",
+      "opacity": 1,
+    },
+    "startTime": "2022-07-19T05:15:00.000Z",
+  },
+  Object {
+    "data": Object {
+      "apCount": null,
+      "category": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "Connection",
+          },
+        ],
+        "id": "KtZV9p",
+      },
+      "clientCount": null,
+      "code": "eap-failure",
+      "endTime": "2022-04-08T13:15:00.000Z",
+      "id": "07965e24-84ba-48a5-8200-f310f8197f41",
+      "impactedApCount": null,
+      "impactedClientCount": null,
+      "incidentType": "network",
+      "isMuted": false,
+      "longDescription": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "EAP failures are high in ",
+          },
+          Object {
+            "type": 1,
+            "value": "scope",
+          },
+          Object {
+            "type": 0,
+            "value": " impacting connectivity for ",
+          },
+          Object {
+            "type": 1,
+            "value": "impact",
+          },
+          Object {
+            "type": 0,
+            "value": " of clients.",
+          },
+        ],
+        "id": "v9+jd5",
+      },
+      "metadata": Object {
+        "dominant": Object {},
+        "rootCauseChecks": Object {
+          "checks": Array [],
+          "params": Object {},
+        },
+      },
+      "mutedAt": null,
+      "mutedBy": null,
+      "path": Array [
+        Object {
+          "name": "Zone",
+          "type": "zone",
+        },
+      ],
+      "severity": 0.8,
+      "shortDescription": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "EAP failures are unusually high in ",
+          },
+          Object {
+            "type": 1,
+            "value": "scope",
+          },
+        ],
+        "id": "Mu/Odk",
+      },
+      "slaThreshold": null,
+      "sliceType": "zone",
+      "sliceValue": "Zone",
+      "startTime": "2022-04-08T12:15:00.000Z",
+      "subCategory": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "EAP",
+          },
+        ],
+        "id": "QBomBf",
+      },
+    },
+    "endTime": "2022-04-08T13:15:00.000Z",
+    "itemStyle": Object {
+      "color": "#FAD278",
+      "opacity": 0.3,
+    },
+    "startTime": "2022-04-08T12:15:00.000Z",
+  },
+]
+`;

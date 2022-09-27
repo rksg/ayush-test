@@ -7,15 +7,12 @@ import { generatePath }                                   from '@acx-ui/react-ro
 import { Provider, store }                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 
+import {
+  venueDetailHeaderData
+} from '../__tests__/fixtures'
+
 import VenueTabs from './VenueTabs'
 
-const venueDetailHeaderData = {
-  activeNetworkCount: 1,
-  aps: {
-    totalApCount: 1
-  },
-  totalClientCount: 2
-}
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 const url = generatePath(CommonUrlsInfo.getVenueDetailsHeader.url, params)
 const mockedUsedNavigate = jest.fn()

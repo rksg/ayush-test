@@ -1,8 +1,8 @@
-import { dataApiURL }                                      from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                                 from '@acx-ui/analytics/utils'
-import { Provider, store }                                 from '@acx-ui/store'
-import { mockGraphqlQuery, mockAutoSizer, render, screen } from '@acx-ui/test-utils'
-import { DateRange }                                       from '@acx-ui/utils'
+import { dataApiURL }                                     from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                                from '@acx-ui/analytics/utils'
+import { Provider, store }                                from '@acx-ui/store'
+import { mockGraphqlQuery, mockDOMWidth, render, screen } from '@acx-ui/test-utils'
+import { DateRange }                                      from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -42,7 +42,7 @@ const filters = {
 } as AnalyticsFilter
 
 describe('NetworkHistoryWidget', () => {
-  mockAutoSizer()
+  mockDOMWidth()
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
@@ -56,7 +56,7 @@ describe('NetworkHistoryWidget', () => {
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
-    const { asFragment } =render( <Provider> <NetworkHistoryWidget filters={filters}/></Provider>)
+    const { asFragment } =render(<Provider> <NetworkHistoryWidget filters={filters}/></Provider>)
     await screen.findByText('Network History')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -64,9 +64,10 @@ describe('NetworkHistoryWidget', () => {
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
   it('should render chart without title', async () => {
-    const { asFragment } = render(<Provider>
-      <NetworkHistoryWidget hideTitle filters={filters}/>
-    </Provider>)
+    const { asFragment } = render(
+      <Provider>
+        <NetworkHistoryWidget hideTitle filters={filters}/>
+      </Provider>)
     await screen.findByText('3')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
@@ -75,7 +76,7 @@ describe('NetworkHistoryWidget', () => {
   })
 })
 describe('Handle No Data', () => {
-  mockAutoSizer()
+  mockDOMWidth()
 
   beforeEach(() =>
     store.dispatch(api.util.resetApiState())
@@ -95,7 +96,7 @@ describe('Handle error', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHistoryWidget', {
       error: new Error('something went wrong!')
     })
-    render( <Provider> <NetworkHistoryWidget filters={filters}/> </Provider>)
+    render(<Provider> <NetworkHistoryWidget filters={filters}/> </Provider>)
     await screen.findByText('Something went wrong.')
     jest.resetAllMocks()
   })

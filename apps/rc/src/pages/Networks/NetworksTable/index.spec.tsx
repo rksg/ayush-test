@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -162,7 +162,7 @@ describe('Networks Table', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteNetwork.url,
+        WifiUrlsInfo.deleteNetwork.url,
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
       )
     )

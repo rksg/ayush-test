@@ -66,7 +66,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     return data.filter((row) => row.isMuted === true).map((row) => row.id)
   }
 
-  const actions: TableProps<Incident>['actions'] = [
+  const rowActions: TableProps<Incident>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Mute' })),
       onClick: () => {
@@ -214,7 +214,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         type='tall'
         dataSource={queryResults?.data}
         columns={ColumnHeaders}
-        actions={actions}
+        rowActions={rowActions}
         rowSelection={{
           type: 'radio',
           defaultSelectedRowKeys: queryResults.data

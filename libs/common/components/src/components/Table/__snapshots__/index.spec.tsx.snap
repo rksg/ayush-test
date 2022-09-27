@@ -180,10 +180,190 @@ exports[`Table component renders compact table 1`] = `
 </DocumentFragment>
 `;
 
+exports[`Table component renders form table 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1abm7iv-12 eqaCKo"
+  >
+    <div
+      class="ant-pro-table"
+    >
+      <div
+        class="ant-pro-card"
+      >
+        <div
+          class="ant-pro-card-body"
+          style="padding-top: 0px;"
+        >
+          <div
+            class="ant-pro-table-list-toolbar"
+          />
+          <div
+            class="ant-table-wrapper"
+          >
+            <div
+              class="ant-spin-nested-loading"
+            >
+              <div
+                class="ant-spin-container"
+              >
+                <div
+                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                >
+                  <div
+                    class="ant-table-container"
+                  >
+                    <div
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
+                    >
+                      <table
+                        style="min-width: 100%; table-layout: auto;"
+                      >
+                        <colgroup />
+                        <thead
+                          class="ant-table-thead"
+                        >
+                          <tr>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Name
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <div
+                                  data-testid="information-outlined"
+                                />
+                              </span>
+                            </th>
+                            <th
+                              class="ant-table-cell"
+                            >
+                              Address
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody
+                          class="ant-table-tbody"
+                        >
+                          <tr
+                            aria-hidden="true"
+                            class="ant-table-measure-row"
+                            style="height: 0px; font-size: 0px;"
+                          >
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                            <td
+                              style="padding: 0px; border: 0px; height: 0px;"
+                            >
+                              <div
+                                style="height: 0px; overflow: hidden;"
+                              >
+                                 
+                              </div>
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="1"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            >
+                              John Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              32
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              sample address
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="2"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            >
+                              Jane Doe
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              33
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              new address
+                            </td>
+                          </tr>
+                          <tr
+                            class="ant-table-row ant-table-row-level-0"
+                            data-row-key="3"
+                          >
+                            <td
+                              class="ant-table-cell"
+                            >
+                              Will Smith
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              45
+                            </td>
+                            <td
+                              class="ant-table-cell"
+                            >
+                              address
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`Table component should handle ellipsis 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 fsuxoG"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 jSKMsx"
   >
     <div
       class="ant-pro-table"
@@ -535,7 +715,7 @@ exports[`Table component should handle ellipsis 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 fsuxoG"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 jSKMsx"
   >
     <div
       class="ant-pro-table"
@@ -875,7 +1055,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
   >
     <div
       class="ant-pro-table"
@@ -1315,7 +1495,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
   >
     <div
       class="ant-pro-table"
@@ -1436,7 +1616,7 @@ exports[`Table component should render multi select table and render action butt
                               style="margin-right: 0px;"
                             >
                               <div
-                                class="ant-divider ant-divider-vertical"
+                                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-13 fsVtFP"
                                 role="separator"
                               />
                             </span>
@@ -1854,7 +2034,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 fROlXd"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
   >
     <div
       class="ant-pro-table"

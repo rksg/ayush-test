@@ -1,12 +1,14 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space, Divider, Button }                      from 'antd'
+import { Space }                                       from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
 
 import { SettingsOutlined } from '@acx-ui/icons'
+
+import { Button } from '../Button'
 
 import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
 import { ResizableColumn }                                          from './ResizableColumn'
@@ -38,11 +40,15 @@ export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'tooltip'
+    type?: 'tall' | 'compact' | 'tooltip' | 'form'
     ellipsis?: boolean
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
+      label: string
+      onClick: () => void
+    }>
+    rowActions?: Array<{
       label: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
@@ -219,6 +225,19 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     $type={type}
     $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
   >
+    <UI.TableSettingsGlobalOverride />
+    {props.actions && <Space
+      size={0}
+      split={<UI.Divider type='vertical' />}
+      style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      {props.actions?.map((action, index) => <Button
+        key={index}
+        type='link'
+        size='small'
+        onClick={action.onClick}
+        children={action.label}
+      />)}
+    </Space>}
     {hasHeader && (
       <UI.Header>
         <div>
@@ -243,7 +262,6 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
         </UI.HeaderRight>
       </UI.Header>
     )}
-    <UI.TableSettingsGlobalOverride />
     <ProTable<RecordType>
       {...props}
       dataSource={getFilteredData<RecordType>(
@@ -278,8 +296,8 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
               title={$t({ defaultMessage: 'Clear selection' })}
             />
           </Space>
-          <Space size={0} split={<Divider type='vertical' />}>
-            {props.actions?.map((option) =>
+          <Space size={0} split={<UI.Divider type='vertical' />}>
+            {props.rowActions?.map((option) =>
               <UI.ActionButton
                 key={option.label}
                 onClick={() =>

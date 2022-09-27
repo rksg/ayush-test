@@ -3,7 +3,7 @@ import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { CommonUrlsInfo }                                                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                          from '@acx-ui/rc/utils'
 import { Provider }                                                              from '@acx-ui/store'
 import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -54,7 +54,7 @@ const validateErrorResponse = [{
       port: 20,
       sharedSecret: '88888'
     },
-    id: '3e90174d344749b1a1e36a1fd802510c' }  
+    id: '3e90174d344749b1a1e36a1fd802510c' }
 }, {
   code: 'WIFI-10200',
   message: 'multiple conflict xxxxx Authentication Profile Mismatch xxxxxx',
@@ -65,7 +65,7 @@ const validateErrorResponse = [{
       port: 10,
       sharedSecret: '99999'
     },
-    id: '007d6854e6294e97882b432185c1abd9' }  
+    id: '007d6854e6294e97882b432185c1abd9' }
 }, {
   code: 'WIFI-10200',
   message: 'Authentication Profile Mismatch xxxxxx multiple conflict xxxxxx',
@@ -76,11 +76,11 @@ const validateErrorResponse = [{
       port: 20,
       sharedSecret: '88888'
     },
-    id: '007d6854e6294e97882b432185c1abd9' }    
+    id: '007d6854e6294e97882b432185c1abd9' }
 }]
 
 async function fillInBeforeSettings (networkName: string) {
-  const insertInput = screen.getByLabelText('Network Name')
+  const insertInput = screen.getByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
 
@@ -117,7 +117,7 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
@@ -183,7 +183,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.2.2:2222')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
     })
-  })
+  }, 20000)
 
   it('should render Network AAA diagram with AAA buttons', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -251,8 +251,8 @@ describe('NetworkForm', () => {
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
       fireEvent.blur(secondaryPortTextbox)
-    })  
-  })  
+    })
+  })
 })
 
 
@@ -275,7 +275,7 @@ describe('Server Configuration Conflict', () => {
     fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-    
+
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
   }
@@ -312,7 +312,7 @@ describe('Server Configuration Conflict', () => {
         })
     )
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    
+
     await fillInBeforeSettings('AAA network test')
     await fillInAuthIpSettings()
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
@@ -326,7 +326,7 @@ describe('Server Configuration Conflict', () => {
         })
     )
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    
+
     await fillInBeforeSettings('AAA network test')
     await fillInAuthIpSettings()
 
@@ -343,14 +343,14 @@ describe('Server Configuration Conflict', () => {
         })
     )
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    
+
     await fillInBeforeSettings('AAA network test')
     await fillInAuthIpSettings()
 
     dialog = await screen.findByRole('dialog')
     await screen.findByText('Server Configuration Conflict')
     await screen.findByText($t(radiusErrorMessage['AUTH']))
-    
+
     await userEvent.click(screen.getByText('Use existing server configuration'))
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -367,7 +367,7 @@ describe('Server Configuration Conflict', () => {
         })
     )
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    
+
     await fillInBeforeSettings('AAA network test')
     await fillInAuthAndAccIpSettings()
 
@@ -391,7 +391,7 @@ describe('Server Configuration Conflict', () => {
         })
     )
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    
+
     await fillInBeforeSettings('AAA network test')
     await fillInAuthAndAccIpSettings()
 
@@ -411,7 +411,7 @@ describe('Server Configuration Conflict', () => {
         })
     )
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    
+
     await fillInBeforeSettings('AAA network test')
     await fillInAuthAndAccIpSettings()
 
@@ -428,7 +428,7 @@ describe('Server Configuration Conflict', () => {
         })
     )
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    
+
     await fillInBeforeSettings('AAA network test')
     await fillInAuthIpSettings()
 
@@ -445,7 +445,7 @@ describe('Server Configuration Conflict', () => {
         })
     )
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    
+
     await fillInBeforeSettings('AAA network test')
     await fillInAuthAndAccIpSettings()
 
@@ -462,7 +462,7 @@ describe('Server Configuration Conflict', () => {
         })
     )
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    
+
     await fillInBeforeSettings('AAA network test')
     await fillInAuthIpSettings()
 
