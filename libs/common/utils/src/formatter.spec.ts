@@ -131,13 +131,12 @@ describe('formatter', () => {
   })
   describe('durationFormat', () => {
     const testFormat = (
-      format: string,
+      format: 'durationFormat',
       values: Record<string | number | symbol, string>,
       tz?: string
     ) => Object.entries(values).forEach(([value, expected]) => {
       it(`convert ${value} to ${expected}`, () => {
-        const result = renderHook(() =>
-          formatter(format, useIntl())(parseFloat(value), tz)).result.current
+        const result = formatter(format)(parseFloat(value), tz)
         expect(result).toEqual(expected)
       })
     })
