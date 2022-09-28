@@ -228,7 +228,12 @@ export function NetworkForm () {
           { text: intl.$t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
-      <NetworkFormContext.Provider value={{ setNetworkType, editMode, cloneMode, data }}>
+      <NetworkFormContext.Provider value={{
+        setNetworkType,
+        editMode,
+        cloneMode,
+        data: data ?? null
+      }}>
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}

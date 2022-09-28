@@ -138,10 +138,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    getDHCP: build.query<DHCPSaveData | undefined, RequestPayload>({
+    getDHCP: build.query<DHCPSaveData | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
-        if (!params?.serviceId) return Promise.resolve({ data: undefined } as QueryReturnValue<
-          undefined,
+        if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
