@@ -87,4 +87,7 @@ export interface RadiusService {
   sharedSecret: string
 }
 
-
+export enum VlanType {
+  VLAN = 'vlanId',
+  Pool = 'vlanPool'
+}

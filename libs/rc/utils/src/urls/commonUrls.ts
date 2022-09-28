@@ -63,10 +63,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/wifi-calling-profile'
   },
-  getVlanPoolList: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool'
-  },
   getServicesList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/services'

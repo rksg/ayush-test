@@ -13,7 +13,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
+import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
@@ -27,6 +27,7 @@ import {
   NetworkVenue,
   NetworkApGroup,
   Venue,
+  VlanType,
   RadioEnum,
   generateDefaultNetworkVenue,
   VLAN_PREFIX,
@@ -349,15 +350,6 @@ export function NetworkVenuesTab () {
     }
   ]
 
-  const updateSelectedApGroup = (callback: () => void) => {
-    const networkVenue = { ...apGroupModalState.networkVenue }
-
-    updateNetworkVenue({ params: {
-      tenantId: params.tenantId,
-      networkVenueId: networkVenue.id
-    }, payload: networkVenue }).then(callback)
-  }
-
   const getCurrentVenue = (row: Venue) => {
     if (!row.activated.isActivated) {
       return
@@ -545,15 +537,6 @@ export function NetworkVenuesTab () {
     })
   }
 
-  const handleOk =() => {
-    // form.submit()
-    updateSelectedApGroup(()=>{
-      setApGroupModalState({
-        visible: false
-      })
-    })
-  }
-
   const handleCancel = () => {
     setApGroupModalState({
       visible: false
@@ -563,7 +546,7 @@ export function NetworkVenuesTab () {
   const handleFormFinish = (name: string, info: FormFinishInfo) => {
     if (name === 'networkApGroupForm') {
 
-      const { selectionType, allApGroupsRadioTypes, apgroups, apTags } = info.values
+      const { selectionType, allApGroupsRadioTypes, apgroups } = info.values
 
       let data = _.cloneDeep(apGroupModalState.networkVenue)
 
@@ -586,9 +569,9 @@ export function NetworkVenuesTab () {
 
               ret.radioTypes = editedApGroup.radioTypes
               ret.radio = transformRadioTypeEnumToRadioEnum(editedApGroup.radioTypes) || RadioEnum.Both
-              if (editedApGroup.vlan.vlanPool) {
-                ret.vlanPoolId = editedApGroup.vlan.vlanPool.id
-                ret.vlanPoolName = editedApGroup.vlan.vlanPool.name
+              if (editedApGroup.vlanType === VlanType.Pool) {
+                ret.vlanPoolId = editedApGroup.vlanPoolId
+                ret.vlanPoolName = editedApGroup.vlanPoolName
               } else {
                 ret.vlanId = editedApGroup.vlan.vlanId
               }

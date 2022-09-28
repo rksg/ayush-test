@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import React, { useEffect, useState, useRef, useMemo } from 'react'
 
-import { EditOutlined, ReloadOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import {
   ModalProps as AntdModalProps,
   SelectProps,
@@ -9,20 +8,17 @@ import {
   Col,
   Form,
   Input,
-  InputNumber,
   Radio,
-  RadioChangeEvent,
   Row,
   Space,
   Spin,
   Select,
   Typography
 } from 'antd'
-import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
-  Button,
   Modal
 } from '@acx-ui/components'
 import { useSplitTreatment } from '@acx-ui/feature-toggle'
@@ -34,19 +30,16 @@ import {
   NetworkApGroup,
   NetworkSaveData,
   VlanPool,
+  VlanType,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
 import { RadioDescription } from '../../NetworkForm/styledComponents'
 
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import * as UI       from './styledComponents'
+import { VlanInput } from './VlanInput'
 
-enum VlanType { // Move to models
-  VLAN = 'vlanId',
-  Pool = 'vlanPool'
-}
-
-const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number) => {
+export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number) => {
   let vlanPrefix = ''
   let vlanString
   let vlanType
@@ -82,10 +75,14 @@ interface ApGroupModalProps extends AntdModalProps {
   formName: string
 }
 
-interface VlanDate {
+export interface VlanDate {
   vlanId?: number,
   vlanPool?: VlanPool | null,
   vlanType: VlanType
+}
+
+interface NetworkApGroupWithSelected extends NetworkApGroup {
+  selected: boolean
 }
 
 const defaultAG: NetworkApGroup = {
@@ -126,11 +123,13 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
   const formInitData = useMemo(() => {
     // if specific AP groups were selected or the  All APs option is disabled,
     // then the "select specific AP group" option should be selected
-    const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)    
+    const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
+    const apGroups = (networkVenue?.apGroups || [defaultAG]).map(ag => ({ ...ag, selected: true }))
+
     return {
       selectionType: isAllAps ? 0 : 1,
       allApGroupsRadioTypes: networkVenue?.allApGroupsRadioTypes || [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz, RadioTypeEnum._6_GHz],
-      apgroups: networkVenue?.apGroups || [defaultAG],
+      apgroups: apGroups,
       apTags: []
     }
   }, [networkVenue])
@@ -140,21 +139,6 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
   }, [form, formInitData])
 
   const [loading, setLoading] = useState(false)
-
-  const onTypeChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value)
-    form.setFieldsValue({
-      selectionType: e.target.value
-    })
-  }
-
-  const handleTagChange = (value: string) => {
-    console.log(`selected ${value}`)
-  }
-
-
-  const style: React.CSSProperties = { background: '#F8F8FA', padding: '8px', borderRadius: '4px' }
-
 
 
   const RadioSelect = (props: SelectProps) => {
@@ -182,102 +166,6 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
     )
   }
 
-  const VlanInput = ({ apgroup, onChange }: { apgroup: NetworkApGroup, onChange: (data: VlanDate) => void }) => {
-    const [isEditMode, setEditMode] = useState(false)
-    const [isDirty, setDirty] = useState(true)
-
-    const apGroupVlanId = apgroup?.vlanId || network?.wlan?.vlanId
-    const apGroupVlanPool = apgroup?.vlanPoolId ? {
-      name: apgroup.vlanPoolName || '',
-      id: apgroup.vlanPoolId || '',
-      vlanMembers: []
-    } : network?.wlan?.advancedCustomization?.vlanPool
-
-    const apGroupVlanType = apGroupVlanPool ? VlanType.Pool : VlanType.VLAN
-    const [selectedVlan, setSelectedVlan] = useState<VlanDate>({ vlanId: apGroupVlanId, vlanPool: apGroupVlanPool, vlanType: apGroupVlanType })
-
-    const vlanLabel = useRef('')
-
-    useEffect(() => {
-      onChange(selectedVlan)
-      const { vlanPrefix, vlanString, vlanType } = getVlanString(selectedVlan.vlanPool, selectedVlan.vlanId)
-      const valueSuffix = _.isEqual({ vlanPrefix, vlanString, vlanType }, defaultVlanString) ? $t({ defaultMessage: '(Default)' }) : $t({ defaultMessage: '(Custom)' })
-      vlanLabel.current = `${vlanPrefix}${vlanString} ${valueSuffix}`
-    }, [selectedVlan])
-
-
-    const handleVlanTypeChange = (value: VlanType) => {
-      setSelectedVlan({
-        vlanId: selectedVlan.vlanId,
-        vlanPool: selectedVlan.vlanPool,
-        vlanType: value
-      })
-    }
-    const handleVlanIdChange = (value: number) => {
-      setSelectedVlan({
-        vlanId: value,
-        vlanPool: selectedVlan.vlanPool,
-        vlanType: selectedVlan.vlanType
-      })
-    }
-    const handleVlanPoolChange = (value: { value: string; label: string }) => {
-      setSelectedVlan({
-        vlanId: selectedVlan.vlanId,
-        vlanPool: {
-          name: value.label,
-          id: value.value,
-          vlanMembers: []
-        },
-        vlanType: selectedVlan.vlanType
-      })
-    }
-    const reset = () => {
-      setSelectedVlan({
-        vlanId: apGroupVlanId,
-        vlanPool: apGroupVlanPool,
-        vlanType: apGroupVlanType
-      })
-    }
-
-    const fakePool: VlanPool[] = [
-      {
-        name: 'Pool 1', id: 'a', vlanMembers: []
-      }, {
-        name: 'Pool 2', id: 'b', vlanMembers: []
-      }
-    ]
-
-    return (
-      <Space size='small'>
-        { isEditMode ? (
-          <>
-            <Select onChange={handleVlanTypeChange} defaultValue={selectedVlan.vlanType}>
-              <Select.Option value={VlanType.Pool}>{$t({ defaultMessage: 'Pool' })}</Select.Option>
-              <Select.Option value={VlanType.VLAN}>{$t({ defaultMessage: 'VLAN' })}</Select.Option>
-            </Select>
-            { selectedVlan.vlanType === VlanType.VLAN ? (
-              <InputNumber max={4094} min={1} controls={false} onChange={handleVlanIdChange} defaultValue={selectedVlan.vlanId}/>
-            ) : (
-              // TODO:  vlanPoolingService.fetchAllVlanPools  WifiUrlsInfo.GetVlanPoolByQuery.url
-              <Select labelInValue onChange={handleVlanPoolChange}>
-                <Select.Option value={fakePool[0].id}>{fakePool[0].name}</Select.Option>
-                <Select.Option value={fakePool[1].id}>{fakePool[1].name}</Select.Option>
-              </Select>
-            )}
-            <Button type='link' icon={<CheckOutlined />} onClick={()=>{setEditMode(false)}}></Button>
-            <Button type='link' icon={<CloseOutlined />} onClick={()=>{setEditMode(false)}}></Button>
-          </>
-        ) : (
-          <>
-            <label>{vlanLabel.current}</label>
-            <Button type='link' icon={<EditOutlined />} onClick={()=>{setEditMode(true)}}></Button>
-            { isDirty && (<Button type='link' icon={<ReloadOutlined />} onClick={()=>{reset()}}></Button>) }
-          </>
-        )}
-      </Space>
-    )
-  }
-
   const ApGroupItem = ({ apgroup, name }: { apgroup: NetworkApGroup, name: number }) => {
     const apGroupName = apgroup?.isDefault ? $t({ defaultMessage: 'APs not assigned to any group' }) : apgroup?.apGroupName
 
@@ -289,19 +177,8 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
     } : network?.wlan?.advancedCustomization?.vlanPool
     const apGroupVlanType = apGroupVlanPool ? VlanType.Pool : VlanType.VLAN
 
-    const onApGroupChange = (e: CheckboxChangeEvent) => {
-      console.log('checked = ', e.target.checked)
-      form.setFields([
-        { name: ['apgroups', name, 'selected'], value: !!e.target.checked }
-      ])
-    }
-
-    const handleRadioChange = (value: string) => {
-      console.log(`selected ${value}`)
-    }
- 
     const handleVlanInputChange = (value: VlanDate) => {
-      console.log('handleVlanInputChange', value)
+      // console.log('handleVlanInputChange', value)
 
       form.setFields([
         { name: ['apgroups', name, 'vlanId'], value: value.vlanId },
@@ -322,7 +199,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
           <Form.Item name={[name, 'vlanType']} initialValue={apGroupVlanType} noStyle>
             <Input type='hidden' />
           </Form.Item>
-          <Form.Item name={[name, 'vlanId']} noStyle>
+          <Form.Item name={[name, 'vlanId']} initialValue={apGroupVlanId} noStyle>
             <Input type='hidden' />
           </Form.Item>
           <Form.Item name={[name, 'vlanPoolId']} initialValue={apGroupVlanPool?.id} noStyle>
@@ -331,24 +208,22 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
           <Form.Item name={[name, 'vlanPoolName']} initialValue={apGroupVlanPool?.name} noStyle>
             <Input type='hidden' />
           </Form.Item>
-          <Form.Item name={[name, 'selected']} style={style} valuePropName='checked'>
+          <UI.FormItemRounded name={[name, 'selected']} valuePropName='checked'>
             {/*TODO: error tooltip */}
-            <Checkbox disabled={apgroup.validationError} onChange={onApGroupChange}>{apGroupName}</Checkbox>
-          </Form.Item>
+            <Checkbox disabled={apgroup.validationError} >{apGroupName}</Checkbox>
+          </UI.FormItemRounded>
         </Col>
         <Col span={8}>
-          <Form.Item style={style}>
-            { selected && (<VlanInput apgroup={apgroup} onChange={handleVlanInputChange}/>) }
-          </Form.Item>
+          <UI.FormItemRounded>
+            { selected && (<VlanInput apgroup={apgroup} network={network} onChange={handleVlanInputChange}/>) }
+          </UI.FormItemRounded>
         </Col>
         <Col span={8}>
-          <Form.Item name={[name, 'radioTypes']} style={style}>
+          <UI.FormItemRounded name={[name, 'radioTypes']}>
             { selected && (
-              <RadioSelect 
-                onChange={handleRadioChange}
-              />
+              <RadioSelect />
             )}
-          </Form.Item>
+          </UI.FormItemRounded>
         </Col>
       </>
     )
@@ -378,12 +253,12 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
         layout='horizontal'
         size='small'
         name={formName}
-        initialValues={formInitData}
+        // initialValues={formInitData}
         // onFinish={onFinish}
         // onFinishFailed={onFinishFailed}
       >
         <Form.Item name='selectionType'>
-          <Radio.Group onChange={onTypeChange}>
+          <Radio.Group>
             <Space direction='vertical' size='middle'>
               <Radio value={0} disabled={isDisableAllAPs(networkVenue?.apGroups)}>{$t({ defaultMessage: 'All APs' })}
                 <RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to this venue in the future.' })}</RadioDescription>
@@ -391,7 +266,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
               <Form.Item noStyle
                 shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>
                 { ({ getFieldValue }) => getFieldValue('selectionType') === 0 && (
-                  <div style={style}>
+                  <UI.FormItemRounded>
                     <Form.Item label={$t({ defaultMessage: 'VLAN' })} labelCol={{ span: 5 }}>
                       {`${defaultVlanString.vlanPrefix}${defaultVlanString.vlanString}`} {$t({ defaultMessage: '(Default)' })}
                     </Form.Item>
@@ -400,7 +275,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
                       labelCol={{ span: 5 }}>
                       <RadioSelect />
                     </Form.Item>
-                  </div>
+                  </UI.FormItemRounded>
                 )}
               </Form.Item>
 
@@ -408,7 +283,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
                 <RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to a selected AP group in the future.' })}</RadioDescription>
               </Radio>
               <Form.List name='apgroups'>
-                { (fields, { add, remove }) => (
+                { (fields) => (
                   <Form.Item noStyle
                     shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>
                     { ({ getFieldValue }) => getFieldValue('selectionType') === 1 && (
@@ -443,7 +318,6 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
                       size='middle'
                       allowClear
                       style={{ width: '400px' }}
-                      onChange={handleTagChange}
                     >
                     </Select>
                   </Form.Item>
