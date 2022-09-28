@@ -13,8 +13,7 @@ import {
   ContentSwitcherProps
 } from '@acx-ui/components'
 import {
-  DownloadOutlined,
-  BulbOutlined
+  DownloadOutlined
 } from '@acx-ui/icons'
 import { useDateFilter, dateRangeForLast, DashboardFilterProvider, useDashboardFilter } from '@acx-ui/utils'
 
@@ -54,9 +53,6 @@ function DashboardPageHeader () {
     <PageHeader
       title={$t({ defaultMessage: 'Dashboard' })}
       extra={[
-        <Button key='add' type='primary'>
-          {$t({ defaultMessage: 'Add...' })}
-        </Button>,
         <VenueFilter key='hierarchy-filter'/>,
         <RangePicker
           key='range-picker'
@@ -66,8 +62,7 @@ function DashboardPageHeader () {
           showTimePicker
           selectionType={range}
         />,
-        <Button key='download' icon={<DownloadOutlined />} />,
-        <Button key='insight' icon={<BulbOutlined />} />
+        <Button key='download' icon={<DownloadOutlined />} />
       ]}
     />
   )

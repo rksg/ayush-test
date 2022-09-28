@@ -1,24 +1,22 @@
 import userEvent from '@testing-library/user-event'
 
 import { dataApiURL }                                  from '@acx-ui/analytics/services'
-import { PathNode }                                    from '@acx-ui/analytics/utils'
 import { Provider, store }                             from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent } from '@acx-ui/test-utils'
-import { DateRange }                                   from '@acx-ui/utils'
+import { PathNode, DateRange }                         from '@acx-ui/utils'
 
 import { api }              from './services'
 import { networkHierarchy } from './services.spec'
 
 import VenueFilter from '.'
 
-
 const setNodeFilter = jest.fn()
-const filters = (networkNodes: PathNode[][]) => ({
+const filters = (nodes: PathNode[][]) => ({
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours,
-  filter: { networkNodes , switchNodes: [] }
+  filter: { networkNodes: nodes, switchNodes: nodes }
 })
 let mockUseDashboardFilter = { filters: filters([]), setNodeFilter }
 jest.mock('@acx-ui/utils', () => ({
@@ -81,7 +79,7 @@ describe('venue Filter', () => {
   })
   it('renders existing filters', async () => {
     mockUseDashboardFilter = {
-      filters: filters([[{ type: 'zone', name: 'venue B' }]]),
+      filters: filters([[{ type: 'zone', name: 'venue1' }]]),
       setNodeFilter
     }
     render(<Provider><VenueFilter /></Provider>)
