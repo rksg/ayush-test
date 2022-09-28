@@ -32,8 +32,9 @@ export const api = dataApi.injectEndpoints({
           $start: DateTime
           $end: DateTime
           $granularity: String
+          $filter: FilterInput
         ) {
-          network(start: $start, end: $end) {
+          network(start: $start, end: $end,filter : $filter) {
             hierarchyNode(path: $path) {
               timeSeries(granularity: $granularity) {
                 time
@@ -50,7 +51,8 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          granularity: 'PT15M'
+          granularity: 'PT15M',
+          filter: payload.filter
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'CONNECTED_CLIENTS_OVER_TIME' }],

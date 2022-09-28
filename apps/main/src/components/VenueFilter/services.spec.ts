@@ -5,10 +5,21 @@ import { defaultNetworkPath }  from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 import { DateRange }           from '@acx-ui/utils'
 
-import { networkHierarchy } from './__tests__/fixtures'
-import { api }              from './services'
+import { api } from './services'
 
-describe('networkFilterApi', () => {
+export const networkHierarchy = {
+  children: [{
+    name: 'venue A',
+    id: 'venue1'
+  }, {
+    name: 'venue B',
+    id: 'venue2'
+  }, {
+    name: 'venue B',
+    id: 'venue2'
+  }]
+}
+describe('venueFilterApi', () => {
   const store = configureStore({
     reducer: {
       [dataApi.reducerPath]: dataApi.reducer
@@ -20,7 +31,8 @@ describe('networkFilterApi', () => {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
     path: defaultNetworkPath,
-    range: DateRange.last24Hours
+    range: DateRange.last24Hours,
+    filter: {}
   }
 
   afterEach(() =>
@@ -36,7 +48,7 @@ describe('networkFilterApi', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.networkFilter.initiate(props)
+      api.endpoints.venueFilter.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode.children)
@@ -47,7 +59,7 @@ describe('networkFilterApi', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.networkFilter.initiate(props)
+      api.endpoints.venueFilter.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

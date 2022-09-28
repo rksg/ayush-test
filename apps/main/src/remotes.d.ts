@@ -19,8 +19,14 @@ declare module 'analytics/Routes' {
 declare module 'analytics/Widgets' {
   // eslint-disable-next-line align-import/align-import
   import type { AnalyticsFilter } from '@acx-ui/analytics/utils'
+  // eslint-disable-next-line align-import/align-import
+  import type { DashboardFilter } from '@acx-ui/utils'
+
   // refer to modulefederation.config.js for correct mapping
-  function Widgets (props: { name: string, filters: AnalyticsFilter }): React.ReactElement
+  function Widgets (props: {
+    name: string
+    filters: AnalyticsFilter | DashboardFilter
+  }): React.ReactElement
   export = Widgets
 }
 declare module 'msp/Routes' {
