@@ -69,11 +69,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getServicesList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/services'
-  },
-  deleteService: {
-    method: 'delete',
-    url: '/api/tenant/:tenantId/service/:serviceId'
+    url: '/api/viewmodel/tenant/:tenantId/serviceprofiles'
   },
   getVenuesList: {
     method: 'post',
@@ -90,6 +86,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+  },
+  getVenueFloorplans: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
   },
   getVenueCapabilities: {
     method: 'get',
