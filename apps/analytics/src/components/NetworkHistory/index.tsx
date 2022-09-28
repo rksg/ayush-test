@@ -22,10 +22,10 @@ import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
 type Key = keyof Omit<NetworkHistoryData, 'time'>
 
-const lineColors = [
-  cssStr('--acx-accents-blue-30'),
+let lineColors = [
   cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-orange-50')
+  cssStr('--acx-accents-orange-50'),
+  cssStr('--acx-neutrals-20')
 ]
 
 interface NetworkHistoryWidgetComponentProps {
@@ -49,7 +49,10 @@ const NetworkHistoryWidget = forwardRef<
   } = props
   const { $t } = useIntl()
   let seriesMapping = [
-    { key: 'newClientCount', name: $t({ defaultMessage: 'New Clients' }) },
+    { 
+      key: 'newClientCount',
+      name: $t({ defaultMessage: 'New Clients' })
+    },
     {
       key: 'impactedClientCount',
       name: $t({ defaultMessage: 'Impacted Clients' })
@@ -62,6 +65,7 @@ const NetworkHistoryWidget = forwardRef<
 
   if (hideIncidents) {
     seriesMapping = seriesMapping.filter(value => value.key !== 'impactedClientCount')
+    lineColors = lineColors.filter(value => value !== cssStr('--acx-accents-orange-50'))
   }
 
   const queryResults = useNetworkHistoryQuery(filters, {
