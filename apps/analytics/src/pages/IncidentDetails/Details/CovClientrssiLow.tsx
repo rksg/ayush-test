@@ -17,7 +17,7 @@ import * as UI from './styledComponents'
 export const CovClientrssiLow = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
-    Attributes.ApImpactCount,
+    Attributes.ClientImpactCount,
     Attributes.IncidentCategory,
     Attributes.IncidentSubCategory,
     Attributes.Type,
