@@ -7,10 +7,10 @@ import {
   impactValues,
   Incident,
   nodeTypes,
-  useFormattedPath,
-  useImpactedArea
+  formattedPath,
+  impactedArea
 } from '@acx-ui/analytics/utils'
-import { formatter } from '@acx-ui/utils'
+import { formatter, getIntl } from '@acx-ui/utils'
 
 import { DescriptionRowProps, DescriptionSection } from '../../../components/DescriptionSection'
 
@@ -42,16 +42,17 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
   incident: Incident
   visibleFields: Attributes[]
 }) => {
+  const { $t } = getIntl()
   const intl = useIntl()
   const { visible, onOpen, onClose } = useDrawer(false)
-  const scope = useFormattedPath(incident.path, incident.sliceValue)
-  const impactedArea = useImpactedArea(incident.path, incident.sliceValue)
+  const scope = formattedPath(incident.path, incident.sliceValue)
+  const area = impactedArea(incident.path, incident.sliceValue)
   const fields = {
     [Attributes.ClientImpactCount]: {
       key: 'clientImpactCount',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Client Impact Count' }),
-        children: impactValues(intl, 'client', incident).clientImpactDescription,
+        children: impactValues('client', incident).clientImpactDescription,
         onClick: () => onOpen('client')
       })
     },
@@ -59,7 +60,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       key: 'apImpactCount',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'AP Impact Count' }),
-        children: impactValues(intl, 'ap', incident).apImpactDescription,
+        children: impactValues('ap', incident).apImpactDescription,
         onClick: () => onOpen('ap')
       })
     },
@@ -80,11 +81,11 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
     [Attributes.Type]: {
       key: 'type',
       getValue: (incident: Incident) => ({
-        label: intl.$t({
+        label: $t({
           defaultMessage: 'Type',
           description: 'Path node type'
         }),
-        children: intl.$t(nodeTypes(incident.sliceType))
+        children: $t(nodeTypes(incident.sliceType))
       })
     },
     [Attributes.Scope]: {
@@ -94,14 +95,14 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
           defaultMessage: 'Scope',
           description: 'Incident impacted scope'
         }),
-        children: impactedArea,
+        children: area,
         tooltip: scope
       })
     },
     [Attributes.Duration]: {
       key: 'duration',
       getValue: (incident: Incident) => ({
-        label: intl.$t({ defaultMessage: 'Duration' }),
+        label: $t({ defaultMessage: 'Duration' }),
         children: formatter('durationFormat')(durationOf(
           incident.startTime,
           incident.endTime
@@ -111,14 +112,14 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
     [Attributes.EventStartTime]: {
       key: 'eventStartTime',
       getValue: (incident: Incident) => ({
-        label: intl.$t({ defaultMessage: 'Event Start Time' }),
+        label: $t({ defaultMessage: 'Event Start Time' }),
         children: formatter('dateTimeFormat')(incident.startTime)
       })
     },
     [Attributes.EventEndTime]: {
       key: 'eventEndTime',
       getValue: (incident: Incident) => ({
-        label: intl.$t({ defaultMessage: 'Event End Time' }),
+        label: $t({ defaultMessage: 'Event End Time' }),
         children: formatter('dateTimeFormat')(incident.endTime)
       })
     }

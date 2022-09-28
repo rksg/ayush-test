@@ -1,5 +1,4 @@
 import { capitalize, omit } from 'lodash'
-import { useIntl }          from 'react-intl'
 
 import { renderHook } from '@acx-ui/test-utils'
 
@@ -8,12 +7,12 @@ import {
   calculateSeverity,
   impactValues,
   transformIncidentQueryResult,
-  useFormattedNodeType,
-  useFormattedPath,
-  useImpactedArea,
+  formattedNodeType,
+  formattedPath,
+  impactedArea,
   useImpactValues,
-  useShortDescription,
-  useIncidentScope,
+  shortDescription,
+  incidentScope,
   getThreshold
 } from './incidents'
 
@@ -49,7 +48,7 @@ describe('transformIncidentQueryResult', () => {
   })
 })
 
-describe('useShortDescription', () => {
+describe('shortDescription', () => {
   it('should return correct value', () => {
     const incident = fakeIncident({
       id: '1',
@@ -63,8 +62,8 @@ describe('useShortDescription', () => {
       sliceType: 'zoneName',
       sliceValue: 'Venue 1'
     })
-    const renderShortDescription: typeof useShortDescription = (incident) =>
-      renderHook(() => useShortDescription(incident)).result.current
+    const renderShortDescription: typeof shortDescription = (incident) =>
+      renderHook(() => shortDescription(incident)).result.current
     expect(renderShortDescription(incident)).toContain('Venue: Venue 1')
   })
   it('should return correct value with threshold', () => {
@@ -80,15 +79,15 @@ describe('useShortDescription', () => {
       sliceType: 'zoneName',
       sliceValue: 'Venue 1'
     })
-    const renderShortDescription: typeof useShortDescription = (incident) =>
-      renderHook(() => useShortDescription(incident)).result.current
+    const renderShortDescription: typeof shortDescription = (incident) =>
+      renderHook(() => shortDescription(incident)).result.current
     expect(renderShortDescription(incident)).toContain('2s')
   })
 })
 
-describe('useFormattedNodeType', () => {
+describe('formattedNodeType', () => {
   const renderNodeType = (nodeType: NodeType) =>
-    renderHook(() => useFormattedNodeType(nodeType)).result.current
+    renderHook(() => formattedNodeType(nodeType)).result.current
 
   it('should return correct value', () => {
     expect(renderNodeType('network')).toEqual('Organization')
@@ -105,9 +104,9 @@ describe('useFormattedNodeType', () => {
   })
 })
 
-describe('useFormattedPath', () => {
+describe('formattedPath', () => {
   it('returns path with correct format', () => {
-    const { result } = renderHook(() => useFormattedPath([
+    const { result } = renderHook(() => formattedPath([
       { type: 'network', name: 'N' },
       { type: 'zone', name: 'V' },
       { type: 'apGroup', name: 'AG' }
@@ -115,7 +114,7 @@ describe('useFormattedPath', () => {
     expect(result.current).toEqual('V (Venue)\n> AG (AP Group)')
   })
   it('returns path which contains AP with correct format', () => {
-    const { result } = renderHook(() => useFormattedPath([
+    const { result } = renderHook(() => formattedPath([
       { type: 'network', name: 'N' },
       { type: 'zone', name: 'V' },
       { type: 'apGroup', name: 'AG' },
@@ -125,9 +124,9 @@ describe('useFormattedPath', () => {
   })
 })
 
-describe('useImpactedArea', () => {
-  const renderImpactedArea: typeof useImpactedArea = (path, sliceValue) =>
-    renderHook(() => useImpactedArea(path, sliceValue)).result.current
+describe('impactedArea', () => {
+  const renderImpactedArea: typeof impactedArea = (path, sliceValue) =>
+    renderHook(() => impactedArea(path, sliceValue)).result.current
 
   const path = [{ type: 'zone', name: 'Venue' }] as PathNode[]
   it('return correct value for normal incident', () => {
@@ -177,7 +176,6 @@ describe('impactValues', () => {
     count: number | null,
     impactedCount: number | null
   ) => renderHook(() => impactValues(
-    useIntl(),
     type,
     incident(type, count, impactedCount)
   )).result.current
@@ -210,9 +208,9 @@ describe('impactValues', () => {
     expect(renderImpactValues('ap', 1, 1)).toMatchSnapshot()
   })
 
-  describe('useIncidentScope', () => {
+  describe('incidentScope', () => {  
     const renderUseIncidentScope = () => renderHook(
-      () => useIncidentScope(
+      () => incidentScope(
         fakeIncident({
           id: '1',
           code: 'dhcp-failure',
@@ -233,8 +231,7 @@ describe('impactValues', () => {
 
 describe('useGetThreshold', () => {
   const useGetThreshold = (incident: Incident) => {
-    const intl = useIntl()
-    const threshold = getThreshold(incident, intl)
+    const threshold = getThreshold(incident)
     return threshold
   }
   it('should return the correct result for ttc', () => {

@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import {
   calculateSeverity,
   Incident,
-  useShortDescription
+  shortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
@@ -32,7 +32,7 @@ export const SwitchPoePd = (incident: Incident) => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={useShortDescription(incident)}
+        subTitle={shortDescription(incident)}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>
