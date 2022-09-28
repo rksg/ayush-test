@@ -14,10 +14,20 @@ export const ThresholdTitle = styled(Subtitle).attrs({ level: 4 })`
 export const PillTitle = styled(Subtitle).attrs({ level: 5 })`
   padding-bottom: 3px;
   text-align: center;
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  >span:last-of-type{
+    margin-left: 3px;
+    cursor: pointer;
+    display: flex;
+  }
 `
 export const PillWrap = styled.div`
   display: flex;
   flex-grow: 0;
+  padding: 0 10px 0 0;
 `
 
 export const KpiRow = styled(GridRow)`
