@@ -10,7 +10,7 @@ import {
   venueDetailHeaderData
 } from '../__tests__/fixtures'
 
-import { VenueDetails } from './VenueDetails'
+import { VenueDetails } from './'
 
 describe('VenueDetails', () => {
   beforeEach(() => {

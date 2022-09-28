@@ -125,7 +125,7 @@ describe('IncidentTable: services', () => {
     severity: 0.3813119146230035,
     startTime: '2022-07-21T01:15:00.000Z',
     endTime: '2022-07-21T01:18:00.000Z',
-    code: 'auth-failure',
+    code: 'auth-failure' as IncidentCode,
     sliceType: 'zone' as NodeType,
     sliceValue: 'Venue-3-US',
     id: '268a443a-e079-4633-9491-536543066e7d',
