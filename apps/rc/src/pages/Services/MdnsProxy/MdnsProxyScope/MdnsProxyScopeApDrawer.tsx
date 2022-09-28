@@ -26,6 +26,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
   const { venue, selectedApsId, visible, setVisible, setAps } = props
   const [ activatedAps, setActivatedAps ] = useState<SimpleApRecord[]>([])
   const [ tableData, setTableData ] = useState<AP[]>([])
+  const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
 
   const getTableFilters = (venue: Venue) => {
     return { venueId: [venue.id] }
@@ -40,8 +41,17 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
   })
 
   useEffect(() => {
-    setActivatedAps(selectedApsId ? selectedApsId.map(a => ({ serialNumber: a })) : [])
-  }, [venue.id])
+    if (!visible) {
+      return
+    }
+
+    if (selectedApsId && selectedApsId.length > 0) {
+      setActivatedAps(selectedApsId.map(a => ({ serialNumber: a })))
+    } else if (activatedAps.length > 0) {
+      setActivatedAps([])
+    }
+
+  }, [venue.id, visible])
 
   useEffect(() => {
     tableQuery.setPayload({
@@ -52,15 +62,19 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
     if (tableQuery.data) {
       setTableData(tableQuery.data.data)
     }
-  }, [venue.id, tableQuery.data?.data.length])
+  }, [venue.id, tableQuery.data?.data])
 
   const onClose = () => {
     setVisible(false)
+    setSelectedRowKeys([])
+    setActivatedAps([])
   }
 
   const onSave = () => {
     setVisible(false)
     setAps(venue, activatedAps)
+    setSelectedRowKeys([])
+    setActivatedAps([])
   }
 
   const handleActivateAp = (isActivated: boolean, selectedAps: AP[]) => {
@@ -151,7 +165,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       rowActions={rowActions}
       dataSource={tableData}
       rowKey='serialNumber'
-      rowSelection={{ type: 'checkbox' }}
+      rowSelection={{ type: 'checkbox', selectedRowKeys }}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
     />
