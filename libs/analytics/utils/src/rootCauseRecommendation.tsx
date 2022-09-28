@@ -851,10 +851,18 @@ export const rootCauseRecommendationMap = {
   'switch-memory-high': {
     DEFAULT: {
       rootCauses: defineMessage({
-        defaultMessage: '<p>System has detected abnormally high memory utilization in the switch. At the current rate, the switch will reach threshold limit* soon, as indicated in the graph.\\n\\nSwitch might run out of memory if the memory usage rate continues. This is typically indicative of a memory leak in the switch.\\n\\n*Note: Threshold limit is auto-calculated by the system.</p>'
+        defaultMessage: `
+          <p>System has detected abnormally high memory utilization in the switch. At the current rate, the switch will reach threshold limit soon, as indicated in the graph.</p>
+          <p>Switch might run out of memory if the memory usage rate continues. This is typically indicative of a memory leak in the switch.</p>
+          <p>*Note: Threshold limit is auto-calculated by the system.</p>
+        `
       }),
       recommendations: defineMessage({
-        defaultMessage: '<p>P3 - Contact RUCKUS Support.\\nP2 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.\\nP1 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.</p>'
+        defaultMessage: `
+          <p>P3 - Contact RUCKUS Support.</p>
+          <p>P2 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.</p>
+          <p>P1 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.</p>
+        `
       })
     }
   },
@@ -866,8 +874,10 @@ export const rootCauseRecommendationMap = {
       recommendations: defineMessage({
         defaultMessage: `
           <p>Increase power capacity by adding a second power supply or add additional switches if the switch doesn't have pluggable power supply. If the switch is part of a stack, connect the device to a different switch in the stack based on proximity.</p>
-          <p>If there is no more room for adding power supplies either due to the switch type or all the power supply slots are used, increase power capacity by adding additional switches because there is no room to add more power supplies.</p>
-          <p>If the switch has room for more power supplies, increase power capacity by adding a second power supply.</p>
+          <ol>
+            <li>If there is no more room for adding power supplies either due to the switch type or all the power supply slots are used, increase power capacity by adding additional switches because there is no room to add more power supplies.</li>
+            <li>If the switch has room for more power supplies, increase power capacity by adding a second power supply.</li>
+          </ol>
         `
       })
     }
