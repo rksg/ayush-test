@@ -63,4 +63,4 @@ Object {
 }
 `;
 
-exports[`impactValues useIncidentScope formats correct incident scope 1`] = `"Venue: Venue 1"`;
+exports[`impactValues incidentScope formats correct incident scope 1`] = `"Venue: Venue 1"`;
