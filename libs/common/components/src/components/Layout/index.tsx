@@ -64,8 +64,7 @@ export function Layout ({
     }
   }))
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
-    const path = (item.routes ? item.routes[0].uri : item.uri)!
-    return <TenantNavLink to={path} tenantType={item.tenantType}>
+    return <TenantNavLink to={item.uri!} tenantType={item.tenantType}>
       {({ isActive }) => {
         const Icon = isActive ? item.enableIcon : item.disableIcon
         return <>

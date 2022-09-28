@@ -104,7 +104,11 @@ export const CustomerIcon = styled(MspCustomersOutlined)`
   ${disabledMenuIconStyle}
 `
 export const EnabledCustomerIcon = styled(MspCustomersSolid)`
-  ${enabledMenuIconStyle}
+  ${menuIconStyle}
+  path {
+    fill: var(--acx-primary-white);
+    stroke: var(--acx-primary-white);
+  }
 `
 export const IntegratorIcon = styled(MspIntegratorsOutlined)`
   ${disabledMenuIconStyle}
@@ -119,10 +123,12 @@ export const EnableInventoryIcon = styled(MspInventorySolid)`
   ${enabledMenuIconStyle}
 `
 export const MspLicenseIcon = styled(MspLicenseOutlined)`
-  ${disabledMenuIconStyle}
+  ${menuIconStyle}
+  path {  fill: var(--acx-primary-white); }
 `
 export const EnableMspLicenseIcon = styled(MspLicenseSolid)`
-  ${enabledMenuIconStyle}
+  ${menuIconStyle}
+  path { fill: var(--acx-primary-white); }
 `
 export const ConfigurationIcon = styled(ConfigurationOutlined)`
   ${disabledMenuIconStyle}
