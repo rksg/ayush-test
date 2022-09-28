@@ -124,7 +124,7 @@ export const EnableInventoryIcon = styled(MspInventorySolid)`
 `
 export const MspLicenseIcon = styled(MspLicenseOutlined)`
   ${menuIconStyle}
-  path {  fill: var(--acx-primary-white); }
+  path { fill: var(--acx-primary-white); }
 `
 export const EnableMspLicenseIcon = styled(MspLicenseSolid)`
   ${menuIconStyle}
