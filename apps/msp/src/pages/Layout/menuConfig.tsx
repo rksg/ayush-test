@@ -31,21 +31,21 @@ export function useMenuConfig () {
     },
     {
       path: '/integrators',
-      name: 'Integrators',
+      name: $t({ defaultMessage: 'Integrators' }),
       tenantType: 'v',
       disableIcon: UI.IntegratorIcon,
       enableIcon: UI.EnabledIntegratorIcon
     },
     {
       path: '/deviceInventory',
-      name: 'Device Inventory',
+      name: $t({ defaultMessage: 'Device Inventory' }),
       tenantType: 'v',
       disableIcon: UI.InventoryIcon,
       enableIcon: UI.EnableInventoryIcon
     },
     {
       path: '/mspLicenses',
-      name: 'MSP Licenses',
+      name: $t({ defaultMessage: 'MSP Licenses' }),
       tenantType: 'v',
       disableIcon: UI.MspLicenseIcon,
       enableIcon: UI.EnableMspLicenseIcon
@@ -53,7 +53,7 @@ export function useMenuConfig () {
     genPlaceholder(),
     {
       path: '/portalSetting',
-      name: 'Settings',
+      name: $t({ defaultMessage: 'Settings' }),
       tenantType: 'v',
       disableIcon: UI.ConfigurationIcon,
       enableIcon: UI.EnabledConfigurationIcon
