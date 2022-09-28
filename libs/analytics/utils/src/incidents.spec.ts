@@ -251,7 +251,7 @@ describe('useGetThreshold', () => {
           ]
         })
       )).result.current
-    expect(renderUseGetThreshold()).toMatchSnapshot()
+    expect(renderUseGetThreshold()).toEqual('2s')
   })
   it('should return undefined when code does not match', () => {
     const renderUseGetThreshold = () => renderHook(
@@ -267,6 +267,6 @@ describe('useGetThreshold', () => {
           ]
         })
       )).result.current
-    expect(renderUseGetThreshold()).toMatchSnapshot()
+    expect(renderUseGetThreshold()).toEqual(undefined)
   })
 })
