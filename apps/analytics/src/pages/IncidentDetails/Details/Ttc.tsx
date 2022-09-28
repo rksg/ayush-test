@@ -20,7 +20,6 @@ export const Ttc = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
     Attributes.ClientImpactCount,
-    Attributes.ApImpactCount,
     Attributes.IncidentCategory,
     Attributes.IncidentSubCategory,
     Attributes.Type,
