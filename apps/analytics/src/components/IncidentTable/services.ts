@@ -57,24 +57,24 @@ export type IncidentTableRow = RecordWithChildren<Incident & AdditionalIncidentT
 
 export const transformData = (incident: Incident): IncidentTableRow => {
   const { relatedIncidents } = incident
-  const intl = getIntl()
+  const { $t } = getIntl()
 
   const children = relatedIncidents
   && relatedIncidents.map((child) => {
     const childDuration = durationValue(child.startTime, child.endTime)
     const childIncident = transformIncidentQueryResult(child)
-    const impactValueObj = impactValues(intl, 'client', childIncident)
+    const impactValueObj = impactValues('client', childIncident)
     const childClientImpact = impactValueObj['clientImpactRatioFormatted']
     const childClientCount = impactValueObj['clientImpactCountFormatted']
-    const childDescription = shortDescription(childIncident, intl)
-    const childScope = impactedArea(child.path, child.sliceValue, intl)!
-    const childType = formattedNodeType(child.sliceType, intl)
+    const childDescription = shortDescription(childIncident)
+    const childScope = impactedArea(child.path, child.sliceValue)!
+    const childType = formattedNodeType(child.sliceType)
     const childSeverityLabel = calculateSeverity(child.severity) ?? noDataSymbol
 
     return {
       ...childIncident,
-      category: intl.$t(childIncident.category),
-      subCategory: intl.$t(childIncident.subCategory),
+      category: $t(childIncident.category),
+      subCategory: $t(childIncident.subCategory),
       children: undefined,
       duration: childDuration,
       description: childDescription,
@@ -88,18 +88,18 @@ export const transformData = (incident: Incident): IncidentTableRow => {
 
   const incidentInfo = transformIncidentQueryResult(incident)
   const duration = durationValue(incident.startTime, incident.endTime)
-  const impactValueObj = impactValues(intl, 'client', incidentInfo)
+  const impactValueObj = impactValues('client', incidentInfo)
   const clientImpact = impactValueObj['clientImpactRatioFormatted']
   const impactedClients = impactValueObj['clientImpactCountFormatted']
-  const description = shortDescription(incidentInfo, intl)
-  const scope = impactedArea(incident.path, incident.sliceValue, intl)!
-  const type = formattedNodeType(incident.sliceType, intl)
+  const description = shortDescription(incidentInfo)
+  const scope = impactedArea(incident.path, incident.sliceValue)!
+  const type = formattedNodeType(incident.sliceType)
   const severityLabel = calculateSeverity(incident.severity) ?? noDataSymbol
 
   return {
     ...incidentInfo,
-    category: intl.$t(incidentInfo.category),
-    subCategory: intl.$t(incidentInfo.subCategory),
+    category: $t(incidentInfo.category),
+    subCategory: $t(incidentInfo.subCategory),
     children: (children && children?.length > 0) ? children : undefined,
     duration,
     description,
