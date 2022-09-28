@@ -40,7 +40,7 @@ describe('TopSwitchesByTrafficWidget', () => {
   mockDOMWidth()
 
   const wrapper = (<BrowserRouter>
-    <Provider> 
+    <Provider>
       <SwitchesByTraffic filters={filters}/>
     </Provider>
   </BrowserRouter>)
@@ -104,6 +104,6 @@ describe('TopSwitchesByTrafficWidget', () => {
     const handleOnClick = onClick(navigate.current,basePath.current)
     const param = { componentType: 'series', value: [1,2,3] } as EventParams
     handleOnClick(param)
-    expect(mockedUseNavigate).toHaveBeenCalled()    
+    expect(mockedUseNavigate).toHaveBeenCalled()
   })
 })

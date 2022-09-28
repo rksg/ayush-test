@@ -6,49 +6,19 @@ import { useSearchParams } from 'react-router-dom'
 
 import { DateFilterContext, DateFilter } from './dateFilterContext'
 import {  getDateRangeFilter }           from './dateUtil'
-
-export type NodeType = 'network'
-  | 'apGroupName'
-  | 'apGroup'
-  | 'zoneName'
-  | 'zone'
-  | 'switchGroup'
-  | 'switch'
-  | 'apMac'
-  | 'ap'
-  | 'AP'
-
-export interface PathNode {
-  type: NodeType
-  name: string
-}
-
-export interface NetworkPath extends Array<PathNode> {}
-
-export type NetworkNode = {
-  type: Omit<NodeType,'network'>
-  name: string
-}
-export type NetworkNodePath = NetworkNode[] | []
-
-export type pathFilter = {
-  networkNodes? : NetworkPath[]
-}
-
+import { NetworkPath, pathFilter }       from './types/networkFilter'
 interface DashboardFilterProps {
   path: NetworkPath
   setNodeFilter: CallableFunction
   getNodeFilter: CallableFunction
-  nodes: NetworkNodePath
 }
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
 export const defaultDashboardFilter = {
   path: defaultNetworkPath,
-  setNodeFilter: () => {}, 
-  getNodeFilter: () => ({ path: defaultNetworkPath }),
-  nodes: []
-} 
+  setNodeFilter: () => {},
+  getNodeFilter: () => ({ path: defaultNetworkPath, nodes: [] })
+}
 
 export const DashboardFilterContext = React.createContext<DashboardFilterProps>(
   defaultDashboardFilter
@@ -64,7 +34,10 @@ export function useDashboardFilter () {
     filters: {
       path: defaultNetworkPath,
       ...getDateRangeFilter(range, startDate, endDate),
-      filter: { networkNodes: nodes, switchNodes: nodes } 
+      filter: nodes.length ? {
+        networkNodes: nodes.map(([name]: string[]) => [{ type: 'zone', name }]),
+        switchNodes: nodes.map(([name]: string[]) => [{ type: 'switchGroup', name }])
+      }: {}
     },
     setNodeFilter
   }
@@ -78,10 +51,10 @@ export function DashboardFilterProvider (props: { children: ReactNode }) {
     )
     : { nodes: [] }
 
-  const setNodeFilter = (Nodes: NetworkPath) => {
+  const setNodeFilter = (nodes: string[]) => {
     search.set(
       'dashboardVenueFilter',
-      Buffer.from(JSON.stringify({ nodes: Nodes.length ? Nodes : [] })).toString('base64')
+      Buffer.from(JSON.stringify({ nodes: nodes.length ? nodes : [] })).toString('base64')
     )
     setSearch(search, { replace: true })
   }

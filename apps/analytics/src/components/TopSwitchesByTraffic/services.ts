@@ -2,6 +2,7 @@ import { gql } from 'graphql-request'
 
 import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+
 export type SwitchesByTrafficData = {
   name: string
   Received: number
@@ -46,7 +47,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          filter: payload.filter ?? {}
+          filter: payload.filter
         }
       }),
       transformResponse: (response: Response<SwitchesByTrafficData>) =>

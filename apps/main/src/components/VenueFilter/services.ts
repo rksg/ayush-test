@@ -1,21 +1,10 @@
 import { gql } from 'graphql-request'
 
-import { dataApi } from '@acx-ui/analytics/services'
-import {
-  AnalyticsFilter,
-  defaultNetworkPath,
-  NetworkPath,
-  PathNode
-} from '@acx-ui/analytics/utils'
+import { dataApi }                             from '@acx-ui/analytics/services'
+import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { PathNode }                            from '@acx-ui/utils'
 
-type NetworkData = PathNode & { path: NetworkPath }
-export type ApOrSwitch = {
-  path: NetworkPath
-  name: string
-  mac: string
-}
-type ApsOrSwitches = { aps?: ApOrSwitch[], switches?: ApOrSwitch[] }
-export type Child = NetworkData & ApsOrSwitches
+export type Child = PathNode & { id: string }
 interface Response {
   network: {
     hierarchyNode: { children: Child[] }
@@ -24,7 +13,7 @@ interface Response {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    networkFilter: build.query<
+    venueFilter: build.query<
       Child[],
       Omit<AnalyticsFilter, 'path'>
     >({
@@ -35,27 +24,9 @@ export const api = dataApi.injectEndpoints({
           ) {
             network(start: $start, end: $end) {
               hierarchyNode(path: $path, querySwitch: true) {
-                type
-                name
-                path {
-                  type
-                  name
-                }
                 children {
-                  type
+                  id
                   name
-                  path {
-                    type
-                    name
-                  }
-                  aps {
-                    name
-                    mac
-                  }
-                  switches {
-                    name
-                    mac
-                  }
                 }
               }
             }
@@ -67,11 +38,11 @@ export const api = dataApi.injectEndpoints({
           end: payload.endDate
         }
       }),
-      providesTags: [{ type: 'Monitoring', id: 'ANALYTICS_NETWORK_FILTER' }],
+      providesTags: [{ type: 'Monitoring', id: 'DASHBOARD_NETWORK_FILTER' }],
       transformResponse: (response: Response) =>
         response.network.hierarchyNode.children
     })
   })
 })
 
-export const { useNetworkFilterQuery } = api
+export const { useVenueFilterQuery } = api

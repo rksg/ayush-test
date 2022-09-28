@@ -45,7 +45,7 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           n: 5,
-          filter: payload.filter ?? {}
+          filter: payload.filter
         }
       }),
       transformResponse: (response: Response<HierarchyNodeData>) =>

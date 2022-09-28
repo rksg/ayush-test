@@ -44,7 +44,7 @@ export const api = dataApi.injectEndpoints({
           path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          filter: payload.filter ?? {}
+          filter: payload.filter
         }
       }),
       transformResponse: (response: Response<SwitchModel>) =>

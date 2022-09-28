@@ -4,13 +4,16 @@ import { configureStore } from '@reduxjs/toolkit'
 import { dataApi, dataApiURL }   from '@acx-ui/analytics/services'
 import {
   fakeIncident,
-  NetworkPath,
-  NodeType,
-  PathNode,
   transformIncidentQueryResult
 } from '@acx-ui/analytics/utils'
-import { mockGraphqlQuery }     from '@acx-ui/test-utils'
-import { DateRange, setUpIntl } from '@acx-ui/utils'
+import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import {
+  DateRange,
+  setUpIntl,
+  NetworkPath,
+  NodeType,
+  PathNode
+} from '@acx-ui/utils'
 
 import { api, transformData } from './services'
 

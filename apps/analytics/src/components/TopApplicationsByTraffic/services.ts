@@ -53,7 +53,7 @@ export const api = dataApi.injectEndpoints({
             }
           }
         }
-        
+
         fragment applicationTrafficData on ApplicationTrafficTopN{
           name
           applicationTraffic
@@ -69,7 +69,7 @@ export const api = dataApi.injectEndpoints({
           end: payload.endDate,
           granularity: getSparklineGranularity(payload.startDate, payload.endDate),
           n: 5,
-          filter: payload.filter ?? {}
+          filter: payload.filter
         }
       }),
       transformResponse: (response: Response<HierarchyNodeData>) =>

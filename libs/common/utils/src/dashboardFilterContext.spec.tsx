@@ -5,7 +5,7 @@ import { MemoryRouter }       from 'react-router-dom'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { useDashboardFilter, DashboardFilterProvider } from './dashboardFilterContext'
+import { useDashboardFilter, DashboardFilterProvider, defaultDashboardFilter } from './dashboardFilterContext'
 
 describe('useDashboardFilter', () => {
   beforeEach(() => {
@@ -13,12 +13,7 @@ describe('useDashboardFilter', () => {
   })
   it('should return default value', () => {
     const { result } = renderHook(useDashboardFilter)
-    let isCallableFn = false
-    if (typeof result.current.setNodeFilter === 'function') {
-      result.current.setNodeFilter([{ name: 'test', type: 'zone' }])
-      isCallableFn = true
-    }
-    expect(isCallableFn).toBeTruthy()
+    defaultDashboardFilter.setNodeFilter()
     expect(result.current.filters).toEqual({
       path: [{ name: 'Network', type: 'network' }],
       startDate: '2021-12-31T00:00:00+00:00',
@@ -30,14 +25,6 @@ describe('useDashboardFilter', () => {
 })
 
 describe('DashboardFilterProvider', () => {
-  const filter = {
-    path: [
-      { type: 'network', name: 'Network' },
-      { type: 'zone', name: 'A-T-Venue' },
-      { type: 'AP', name: 'D8:38:FC:36:78:D0' }
-    ]
-  }
-  const path = Buffer.from(JSON.stringify(filter)).toString('base64')
   it('should render correctly', () => {
     function Component () {
       const { filters } = useDashboardFilter()
@@ -70,6 +57,8 @@ describe('DashboardFilterProvider', () => {
       const { filters } = useDashboardFilter()
       return <div>{JSON.stringify(filters)}</div>
     }
+    const nodes = [['venue1'], ['venue2']]
+    const path = Buffer.from(JSON.stringify({ nodes })).toString('base64')
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
         pathname: '/incidents',
@@ -80,7 +69,7 @@ describe('DashboardFilterProvider', () => {
         </DashboardFilterProvider>
       </MemoryRouter>
     )
-    expect(asFragment()).toMatchSnapshot() 
+    expect(asFragment()).toMatchSnapshot()
   })
   it('set empty array when path is empty', () => {
     function Component () {
