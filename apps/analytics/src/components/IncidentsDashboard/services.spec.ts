@@ -1,24 +1,15 @@
 import '@testing-library/jest-dom'
-import { configureStore } from '@reduxjs/toolkit'
-
-import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
+import { dataApiURL } from '@acx-ui/analytics/services'
 import {
   NetworkPath
 } from '@acx-ui/analytics/utils'
+import { store }            from '@acx-ui/store'
 import { mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange }        from '@acx-ui/utils'
 
 import { api } from './services'
 
 describe('IncidentsDashboard: services', () => {
-  const store = configureStore({
-    reducer: {
-      [dataApi.reducerPath]: dataApi.reducer
-    },
-    middleware: (getDefaultMiddleWare) =>
-      getDefaultMiddleWare().concat([dataApi.middleware])
-  })
-
   const props = {
     startDate: '2022-08-15T00:00:00+08:00',
     endDate: '2022-08-16T00:00:00+08:00',

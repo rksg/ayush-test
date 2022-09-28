@@ -1,19 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit'
-
-import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { mockGraphqlQuery }    from '@acx-ui/test-utils'
+import { dataApiURL }       from '@acx-ui/analytics/services'
+import { store }            from '@acx-ui/store'
+import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import { topSwitchesByTrafficResponse } from './__tests__/fixtures'
 import { api }                          from './services'
 
 describe('topSwitchesByTrafficApi', () => {
-  const store = configureStore({
-    reducer: {
-      [dataApi.reducerPath]: dataApi.reducer
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataApi.middleware])
-  })
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
@@ -23,7 +15,7 @@ describe('topSwitchesByTrafficApi', () => {
     store.dispatch(api.util.resetApiState())
   )
   it('should return correct data', async () => {
-    
+
     mockGraphqlQuery(dataApiURL, 'SwitchesByTraffic', {
       data: topSwitchesByTrafficResponse
     })
