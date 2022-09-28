@@ -1,11 +1,12 @@
 import { gql } from 'graphql-request'
-
-import moment from 'moment-timezone'
+import moment  from 'moment-timezone'
 
 import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { kpiConfig } from './config'
+
 import { calculateGranularity } from '../../../utils'
+
+import { kpiConfig } from './config'
 
 type datum = number []
 export type KPITimeseriesResponse = {
@@ -14,21 +15,21 @@ export type KPITimeseriesResponse = {
 }
 
 interface Response <TimeSeriesData> {
-  timeSeries: TimeSeriesData   
+  timeSeries: TimeSeriesData
 }
 export type KPIHistogramResponse = {
   data: number []
 }
 
 interface HistogramResponse <HistogramData> {
-  histogram: HistogramData   
+  histogram: HistogramData
 }
 
-type KpiPayload = AnalyticsFilter & { kpi: string }
+export type KpiPayload = AnalyticsFilter & { kpi: string }
 const getKPIMetric = (kpi: string) : string => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { timeseries: { apiMetric } } = config
-  const histogram  = Object(config).histogram || null
+  const histogram = Object(config).histogram || null
   return histogram
     ? `${apiMetric}(threshold: ${histogram.initialThreshold})`
     : apiMetric
