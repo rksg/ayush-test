@@ -136,7 +136,7 @@ exports[`DHCP Detail Page should render detail page 1`] = `
             <h3
               class="ant-typography"
             >
-              Number of Pool
+              Number of Pools
             </h3>
             <span
               class="ant-typography"
@@ -148,7 +148,7 @@ exports[`DHCP Detail Page should render detail page 1`] = `
   </div>
   <div
     class="ant-row"
-    style="padding-top: 25px;"
+    style="margin-top: 25px;"
   >
     <div
       class="styledComponents__Wrapper-sc-13w5wfx-3 gtmGMB"

@@ -8,13 +8,28 @@ export const DivContainer = styled.div`
     padding: 0px;
 `
 
-export const ProgressContent = styled.div`
+export const HealthContentExcellent = styled.div`
     height: 13px;
     width: 7px;
     margin-left: 2px;
-    background: ${props => (props.color ? props.color : '#23AB36')};
+    background: #23AB36;
     border-radius: 3px;
 `
+export const HealthContentModerate = styled.div`
+    height: 13px;
+    width: 7px;
+    margin-left: 2px;
+    background: #EC7100;
+    border-radius: 3px;
+`
+export const HealthContentPoor = styled.div`
+    height: 13px;
+    width: 7px;
+    margin-left: 2px;
+    background: #ED1C24;
+    border-radius: 3px;
+`
+
 export const ProgressEmptyContent = styled.div`
     height: 13px;
     width: 7px;

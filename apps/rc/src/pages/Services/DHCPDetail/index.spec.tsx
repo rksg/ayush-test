@@ -120,7 +120,7 @@ describe('DHCP Detail Page', () => {
     expect(asFragment()).toMatchSnapshot()
 
     await screen.findByRole('heading', { level: 3, name: `Instances (${list.data.length})` })
-    await screen.findByRole('heading', { level: 3, name: 'Number of Pool' })
+    await screen.findByRole('heading', { level: 3, name: 'Number of Pools' })
 
   })
 

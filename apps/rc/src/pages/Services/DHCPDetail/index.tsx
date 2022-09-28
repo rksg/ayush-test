@@ -1,3 +1,4 @@
+import { Row }       from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -8,6 +9,7 @@ import { useTableQuery }                                            from '@acx-u
 
 import DHCPInstancesTable from './DHCPInstancesTable'
 import DHCPOverview       from './DHCPOverview'
+
 
 const defaultPayload = {
   searchString: '',
@@ -45,13 +47,17 @@ export default function DHCPServiceDetail () {
           </Button>
         ]}
       />
-      <DHCPOverview poolNumber={data?.dhcpPools.length} />
-      <DHCPInstancesTable
-        dataSource={tableQuery.data?.data}
-        pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
-        style={{ paddingTop: 25 }}/>
+      <Row>
+        <DHCPOverview poolNumber={data?.dhcpPools.length} />
+      </Row>
 
+      <Row style={{ marginTop: 25 }}>
+        <DHCPInstancesTable
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+        />
+      </Row>
     </>
   )
 }

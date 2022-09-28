@@ -1,23 +1,21 @@
 
 import React from 'react'
 
-import { Row, Typography } from 'antd'
-import { useIntl }         from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import { Table, TableProps, Card } from '@acx-ui/components'
 import { DHCPDetailInstances }     from '@acx-ui/rc/utils'
 import { TenantLink }              from '@acx-ui/react-router-dom'
 
-import ProgressBar from './ProgressBar'
+import HealthBar from './HealthBar'
 
 
-export default function DHCPInstancesTable (props: {
-  dataSource:DHCPDetailInstances[] | undefined,
-  pagination: { current: number; pageSize: number; total: number; },
-  onChange: Function,
-  style: React.CSSProperties }) {
+export default function DHCPInstancesTable (
+  props:Partial<TableProps<DHCPDetailInstances>>){
+
   const { $t } = useIntl()
-  const { dataSource, style } = props
+  const { dataSource } = props
   const columns: TableProps<DHCPDetailInstances>['columns'] = [
     {
       key: 'VenueName',
@@ -50,9 +48,7 @@ export default function DHCPInstancesTable (props: {
       title: $t({ defaultMessage: 'Service Health' }),
       width: 135,
       dataIndex: 'health',
-      render: (data) =>{
-        return (<ProgressBar value={Number(data)}/>)
-      }
+      render: (data) => <HealthBar value={Number(data)}/>
     },
     {
       key: 'osa',
@@ -87,22 +83,20 @@ export default function DHCPInstancesTable (props: {
   ]
 
   return (
-    <Row style={style}>
-      <Card>
-        <div style={{ width: '100%' }}>
-          <Typography.Title level={3}>
-            {$t({ defaultMessage: 'Instances' })+` (${dataSource?.length})`}
-          </Typography.Title>
-          <div >
-            <Table
-              columns={columns}
-              dataSource={dataSource}
-              rowKey='id'
-            />
-          </div>
+    <Card>
+      <div style={{ width: '100%' }}>
+        <Typography.Title level={3}>
+          {$t({ defaultMessage: 'Instances' })+` (${dataSource?.length})`}
+        </Typography.Title>
+        <div >
+          <Table
+            columns={columns}
+            dataSource={dataSource}
+            rowKey='id'
+          />
         </div>
-      </Card>
-    </Row>
+      </div>
+    </Card>
   )
 }
 
