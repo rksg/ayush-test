@@ -4,6 +4,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import {
   Incident,
+  TimeSeriesData,
   getSeriesData,
   mapCodeToReason,
   mapCodeToAttempt,
@@ -39,7 +40,7 @@ export const AttemptAndFailureChart = (
     { key: 'attemptCount', name: attempt }
   ]
 
-  const chartResults = getSeriesData(attemptAndFailureChart, seriesMapping)
+  const chartResults = getSeriesData(attemptAndFailureChart as TimeSeriesData, seriesMapping)
 
   return <Card title={$t({ defaultMessage: 'Failures' })} type='no-border'>
     <AutoSizer>

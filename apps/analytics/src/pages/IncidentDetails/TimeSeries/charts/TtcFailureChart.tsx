@@ -12,33 +12,34 @@ import {
 import { FailureTimeSeriesChart } from '../../../../components/FailureTimeSeriesChart'
 import { ChartsData }             from '../services'
 
-const failureChartQuery = (incident: Incident) => gql`
+
+const ttcFailureChartQuery = () => gql`
   relatedIncidents: incidents(filter: {code: [$code]}) {
     id severity code startTime endTime
   }
   failureChart: timeSeries(granularity: $granularity) {
     time
-    ${codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap]}:
-      apConnectionFailureRatio(
-        metric: "${codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap]}")
+    ttc: timeToConnect
   }
   `
 
-export const FailureChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
+export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
+  const { $t } = useIntl()
   const { failureChart, relatedIncidents } = data
   const title = mapCodeToReason(codeToFailureTypeMap[incident.code], useIntl())
+
   const seriesMapping = [{
     key: codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap],
     name: title
   }]
   const chartResults = getSeriesData(failureChart as TimeSeriesData, seriesMapping)
   return <FailureTimeSeriesChart
-    title={title}
+    title={$t({ defaultMessage: 'CONNECTION EVENTS' })}
     incident={incident}
     relatedIncidents={relatedIncidents}
     data={chartResults}
   />
 }
 
-const chartConfig = { chart: FailureChart, query: failureChartQuery }
+const chartConfig = { chart: TtcFailureChart, query: ttcFailureChartQuery }
 export default chartConfig

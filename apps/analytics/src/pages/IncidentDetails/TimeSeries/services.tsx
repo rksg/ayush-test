@@ -28,7 +28,7 @@ interface Response <ChartsData> {
 
 export type ChartsData = {
   relatedIncidents: Incident[],
-} & Record<string, Record<string, number[] | string[]>>
+} & Record<string, Record<string, number[] | string[] | Record<string, number[] | string[]>>>
 
 export const calcGranularity = (start: string, end: string): string => {
   const duration = moment.duration(moment(end).diff(moment(start))).asHours()
