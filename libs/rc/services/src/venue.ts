@@ -12,7 +12,6 @@ import {
   VenueCapabilities,
   VenueLed,
   VenueApModels,
-  WifiUrlsInfo,
   VenueSettings
 } from '@acx-ui/rc/utils'
 

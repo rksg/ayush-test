@@ -2,8 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { AnchorLayout } from '@acx-ui/components'
 
-import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
-import { MeshNetwork }         from './MeshNetwork'
+import { MeshNetwork } from './MeshNetwork'
 
 
 export function NetworkingTab () {
@@ -13,9 +12,9 @@ export function NetworkingTab () {
   //   title: $t({ defaultMessage: 'LAN Ports' }),
   //   content: 'LAN Ports Content'
   // }, {
-    title: $t({ defaultMessage: 'Cellular Options' }),
-    content: (<CellularOptionsForm></CellularOptionsForm>)
-  }, {
+  //   title: $t({ defaultMessage: 'Cellular Options' }),
+  //   content: (<CellularOptionsForm></CellularOptionsForm>)
+  // }, {
     title: $t({ defaultMessage: 'Mesh Network' }),
     content: (<MeshNetwork />)
   // }, {

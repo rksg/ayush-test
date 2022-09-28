@@ -15,7 +15,6 @@ function VenueEditPageHeader () {
   const { tenantId, venueId } = useParams()
   const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
 
-  console.log(data)
   const navigate = useNavigate()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/`)
 

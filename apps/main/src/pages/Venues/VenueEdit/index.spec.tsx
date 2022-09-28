@@ -9,7 +9,8 @@ import { render, screen, fireEvent, mockServer, waitForElementToBeRemoved } from
 import {
   venueData,
   venueCaps,
-  venueLed
+  venueLed,
+  venueApModels
 } from '../__tests__/fixtures'
 
 import { VenueEdit } from './index'
@@ -32,7 +33,9 @@ describe('VenueEdit', () => {
         CommonUrlsInfo.getVenueCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(CommonUrlsInfo.getVenueLedOn.url,
-        (_, res, ctx) => res(ctx.json(venueLed)))
+        (_, res, ctx) => res(ctx.json(venueLed))),
+      rest.get(CommonUrlsInfo.getVenueApModels.url,
+        (_, res, ctx) => res(ctx.json(venueApModels)))
     )
   })
 

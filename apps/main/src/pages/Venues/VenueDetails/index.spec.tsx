@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { venueApi }                   from '@acx-ui/rc/services'
 import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
@@ -7,10 +8,14 @@ import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
-  venueDetailHeaderData
+  venueDetailHeaderData,
+  venueNetworkList,
+  networkDeepList,
+  venueNetworkApGroup
 } from '../__tests__/fixtures'
 
-import { VenueDetails } from './VenueDetails'
+import { VenueDetails } from './'
+
 
 describe('VenueDetails', () => {
   beforeEach(() => {
@@ -19,13 +24,25 @@ describe('VenueDetails', () => {
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
         (req, res, ctx) => res(ctx.json(venueDetailHeaderData))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenueNetworkList.url,
+        (req, res, ctx) => res(ctx.json(venueNetworkList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json(networkDeepList))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
       )
     )
   })
 
   it('should render correctly', async () => {
     const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'overview'
     }
@@ -41,7 +58,7 @@ describe('VenueDetails', () => {
 
   it('should navigate to analytic tab correctly', async () => {
     const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'analytics'
     }
@@ -53,7 +70,7 @@ describe('VenueDetails', () => {
 
   it('should navigate to client tab correctly', async () => {
     const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'clients'
     }
@@ -65,7 +82,7 @@ describe('VenueDetails', () => {
 
   it('should navigate to device tab correctly', async () => {
     const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'devices'
     }
@@ -77,7 +94,7 @@ describe('VenueDetails', () => {
 
   it('should navigate to network tab correctly', async () => {
     const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'networks'
     }
@@ -89,7 +106,7 @@ describe('VenueDetails', () => {
 
   it('should navigate to service tab correctly', async () => {
     const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'services'
     }
@@ -101,7 +118,7 @@ describe('VenueDetails', () => {
 
   it('should navigate to timeline tab correctly', async () => {
     const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'timeline'
     }
@@ -113,7 +130,7 @@ describe('VenueDetails', () => {
 
   it('should not navigate to non-existent tab', async () => {
     const params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'not-exist'
     }
@@ -123,5 +140,17 @@ describe('VenueDetails', () => {
 
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)
+  })
+  it('should go to edit page', async () => {
+    const params = {
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
+      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
+      activeTab: 'overview'
+    }
+    render(<Provider><VenueDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+    })
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
   })
 })
