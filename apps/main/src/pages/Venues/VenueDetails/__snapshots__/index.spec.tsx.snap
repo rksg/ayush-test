@@ -2409,7 +2409,7 @@ exports[`VenueDetails should render correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-        style="height: 440px;"
+        style="height: 520px;"
       >
         <div
           data-testid="networks-floorPlans"

@@ -72,7 +72,7 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
         <WifiWidgets name='venueHealth' />
       </GridCol>
 
-      <GridCol col={{ span: 24 }} style={{ height: '440px' }}>
+      <GridCol col={{ span: 24 }} style={{ height: '520px' }}>
         <WifiWidgets name='floorPlans' />
       </GridCol>
     </GridRow>
