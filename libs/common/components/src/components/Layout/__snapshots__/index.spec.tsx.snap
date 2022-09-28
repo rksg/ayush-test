@@ -86,7 +86,7 @@ exports[`Layout should render correctly 1`] = `
                     >
                       <a
                         class=""
-                        href="/t/undefined/analytics/incidents"
+                        href="/t/undefined/analytics"
                       >
                         <div
                           data-testid="ai"
