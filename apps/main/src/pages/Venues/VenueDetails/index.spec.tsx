@@ -6,6 +6,10 @@ import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
+import {
+  venueDetailHeaderData
+} from '../__tests__/fixtures'
+
 import { VenueDetails } from '.'
 
 jest.mock(
@@ -17,17 +21,6 @@ jest.mock(
   'rc/Widgets',
   () => ({ name }: { name: string }) => <div data-testid={`networks-${name}`} title={name} />,
   { virtual: true })
-
-const venueDetailHeaderData = {
-  activeNetworkCount: 1,
-  aps: {
-    totalApCount: 1
-  },
-  totalClientCount: 2,
-  venue: {
-    name: 'testVenue'
-  }
-}
 
 describe('VenueDetails', () => {
   beforeEach(() => {

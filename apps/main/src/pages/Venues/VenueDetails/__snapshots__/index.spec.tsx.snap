@@ -2412,8 +2412,8 @@ exports[`VenueDetails should render correctly 1`] = `
         style="height: 440px;"
       >
         <div
-          data-testid="networks-topologyAndFloormaps"
-          title="topologyAndFloormaps"
+          data-testid="networks-floorPlans"
+          title="floorPlans"
         />
       </div>
     </div>

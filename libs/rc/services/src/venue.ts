@@ -3,13 +3,16 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  FloorPlanDto,
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
   TableResult,
   Venue,
   VenueDetailHeader,
-  WifiUrlsInfo
+  VenueCapabilities,
+  VenueLed,
+  VenueApModels
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -51,7 +54,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenue: build.query<Venue, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenue, params)
+        const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
         return{
           ...req
         }
@@ -74,6 +77,47 @@ export const venueApi = baseVenueApi.injectEndpoints({
             })
         })
       }
+    }),
+    floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
+      query: ({ params }) => {
+        const floorPlansReq = createHttpRequest(CommonUrlsInfo.getVenueFloorplans, params)
+        return {
+          ...floorPlansReq
+        }
+      }
+    }),
+    getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueCapabilities, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueApModels: build.query<VenueApModels, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueApModels, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getVenueLedOn: build.query<VenueLed[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueLedOn, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueLedOn: build.mutation<VenueLed[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueLedOn, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -83,5 +127,10 @@ export const {
   useLazyVenuesListQuery,
   useAddVenueMutation,
   useGetVenueQuery,
-  useVenueDetailsHeaderQuery
+  useVenueDetailsHeaderQuery,
+  useFloorPlanListQuery,
+  useGetVenueCapabilitiesQuery,
+  useGetVenueApModelsQuery,
+  useGetVenueLedOnQuery,
+  useUpdateVenueLedOnMutation
 } = venueApi

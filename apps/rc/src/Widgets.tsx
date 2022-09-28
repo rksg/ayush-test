@@ -4,13 +4,14 @@ import { Card }              from '@acx-ui/components'
 import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import { Provider }          from '@acx-ui/store'
 
-import AlarmWidget        from './components/AlarmWidget'
-import VenueAlarmDonut    from './components/AlarmWidget/VenueAlarmDonut'
-import Clients            from './components/ClientsDonut'
-import Devices            from './components/DevicesDonut/DashboardWidget'
-import VenueDevicesWidget from './components/DevicesDonut/VenueWidget'
-import Map                from './components/Map'
-import Venues             from './components/VenuesDonut'
+import AlarmWidget             from './components/AlarmWidget'
+import VenueAlarmDonut         from './components/AlarmWidget/VenueAlarmDonut'
+import Clients                 from './components/ClientsDonut'
+import Devices                 from './components/DevicesDonut/DashboardWidget'
+import VenueDevicesWidget      from './components/DevicesDonut/VenueWidget'
+import Map                     from './components/Map'
+import TopologyFloorPlanWidget from './components/TopologyFloorPlanWidget'
+import Venues                  from './components/VenuesDonut'
 
 const SPLIT_NAME = 'sara-demo-toggle' // this is sample splitName, needs to be switched based on the epic level FF name
 
@@ -20,6 +21,7 @@ const widgetsMap = {
   venues: () => <Venues />,
   devices: () => <Devices />,
   clients: () => <Clients />,
+  floorPlans: () => <TopologyFloorPlanWidget />,
   // Venue Overview Page Widgets
   venueAlarmDonut: () => <VenueAlarmDonut />,
   venueDevices: () => <VenueDevicesWidget />,
