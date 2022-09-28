@@ -263,9 +263,12 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           <label
                             class="ant-form-item-required"
                             for="details_name"
-                            title="Network Name"
+                            title=""
                           >
                             Network Name
+                            <svg>
+                              QuestionMarkCircleOutlined.svg
+                            </svg>
                           </label>
                         </div>
                         <div

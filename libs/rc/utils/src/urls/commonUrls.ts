@@ -1,35 +1,12 @@
-interface ApiInfo {
-  url: string;
-  method: string;
-}
+import { ApiInfo } from '../apiService'
 
 export const websocketServerUrl = '/api/websocket/socket.io'
 
 export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
-  getVlanPools: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool'
-  },
   getVMNetworksList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/network'
-  },
-  getNetwork: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/network/:networkId/deep'
-  },
-  addNetworkDeep: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
-  },
-  updateNetworkDeep: {
-    method: 'put',
-    url: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true'
-  },
-  deleteNetwork: {
-    method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/network/:networkId?quickAck=true'
-  },
+  },  
   getNetworksDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/network/:networkId/detailheader'
@@ -37,14 +14,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getNetworksVenuesList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues'
-  },
-  addNetworkVenue: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network-venue'
-  },
-  deleteNetworkVenue: {
-    method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId'
   },
   getCloudpathList: {
     method: 'get',
@@ -100,11 +69,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getServicesList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/services'
-  },
-  deleteService: {
-    method: 'delete',
-    url: '/api/tenant/:tenantId/service/:serviceId'
+    url: '/api/viewmodel/tenant/:tenantId/serviceprofiles'
   },
   getVenuesList: {
     method: 'post',
@@ -121,6 +86,26 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+  },
+  getVenueFloorplans: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
+  },
+  getVenueCapabilities: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
+  },
+  getVenueApModels: {
+    method: 'get',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/ap-models'
+  },
+  getVenueLedOn: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/led'
+  },
+  updateVenueLedOn: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/led'
   },
   getVenueNetworkList: {
     method: 'post',
