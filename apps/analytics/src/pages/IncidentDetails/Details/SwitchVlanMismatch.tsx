@@ -15,7 +15,6 @@ import * as UI from './styledComponents'
 export const SwitchVlanMismatch = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
-    Attributes.ApImpactCount,
     Attributes.IncidentCategory,
     Attributes.IncidentSubCategory,
     Attributes.Type,
