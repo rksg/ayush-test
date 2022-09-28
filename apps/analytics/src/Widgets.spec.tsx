@@ -134,7 +134,7 @@ test('should render Top 5 Switches by PoE Usage widget', async () => {
   mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', { data: topSwitchesByPoEUsageResponse })
   render(
     <BrowserRouter>
-      <Provider> 
+      <Provider>
         <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/>
       </Provider>
     </BrowserRouter>)
@@ -208,10 +208,21 @@ test('should render Incidents Dashboard Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
     data: { network: { hierarchyNode: expectedIncidentDashboardData } }
   })
-  render( <Provider> <AnalyticsWidgets 
+  render( <Provider> <AnalyticsWidgets
     name='incidents'
     filters={filters}
   /></Provider>)
 
+  await screen.findByText('Incidents')
+})
+
+test('should render Venue Overview Incidents Widget', async () => {
+  const sample = { P1: 0, P2: 2, P3: 3, P4: 4 }
+  mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+    data: { network: { hierarchyNode: sample } }
+  })
+  render( <Provider> <AnalyticsWidgets
+    name='venueIncidentsDonut'
+    filters={filters} /></Provider>)
   await screen.findByText('Incidents')
 })

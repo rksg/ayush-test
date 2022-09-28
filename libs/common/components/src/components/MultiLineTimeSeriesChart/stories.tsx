@@ -11,7 +11,6 @@ import { Button } from '../Button'
 
 import { MultiLineTimeSeriesChart } from '.'
 
-
 const getData = () => {
   const base = +new Date(2020, 9, 29)
   const oneDay = 24 * 3600 * 1000
@@ -65,7 +64,7 @@ const ConnectedCharts = () => {
     connectRefs()
   }, [connectRefs])
 
-  const onBrushChangeCallback = useCallback((range: TimeStamp[]) => {    
+  const onBrushChangeCallback = useCallback((range: TimeStamp[]) => {
     if (range[0] !== timeWindow[0]) {
       setTimeWindow(range)
       connectRefs()
@@ -84,7 +83,7 @@ const ConnectedCharts = () => {
         type='primary'
         onClick={()=>{
           const copyData = getSeriesData()
-          setData(copyData) 
+          setData(copyData)
           setTimeWindow(timeWindowInit(copyData))
           connectRefs()
         }}>Update Data</Button>
