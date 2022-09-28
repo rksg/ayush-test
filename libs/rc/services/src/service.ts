@@ -9,6 +9,7 @@ import {
   CommonResult,
   MdnsProxyFormData,
   MdnsProxyUrls,
+  WifiCallingUrls,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
@@ -122,9 +123,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    deleteService: build.mutation<CommonResult, RequestPayload>({
+    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.deleteService, params)
+        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
         return {
           ...req
         }
@@ -190,12 +191,12 @@ export const {
   useApplicationPolicyListQuery,
   useDevicePolicyListQuery,
   useServiceListQuery,
-  useDeleteServiceMutation,
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,
   useGetMdnsProxyQuery,
   useAddMdnsProxyMutation,
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,
-  useDeleteMdnsProxyListMutation
+  useDeleteMdnsProxyListMutation,
+  useDeleteWifiCallingServiceMutation
 } = serviceApi
