@@ -22,9 +22,9 @@ const transformResponse = ({ data, time }: KPITimeseriesResponse) => {
 
 }
 function KpiTimeseries ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
-  
-  const intl = useIntl()
-  const queryResults = useKpiTimeseriesQuery({ ...filters, kpi }, {
+  const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const queryResults = useKpiTimeseriesQuery(
+    { ...filters, kpi, threshold: histogram?.initialThreshold }, {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: data! && [{

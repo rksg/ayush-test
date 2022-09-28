@@ -25,13 +25,13 @@ interface HistogramResponse <HistogramData> {
   histogram: HistogramData
 }
 
-export type KpiPayload = AnalyticsFilter & { kpi: string }
-const getKPIMetric = (kpi: string) : string => {
+export type KpiPayload = AnalyticsFilter & { kpi: string, threshold?: string }
+
+const getKPIMetric = (kpi: string, threshold?: string) : string => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { timeseries: { apiMetric } } = config
-  const histogram = Object(config).histogram || null
-  return histogram
-    ? `${apiMetric}(threshold: ${histogram.initialThreshold})`
+  return threshold
+    ? `${apiMetric}(threshold: ${threshold})`
     : apiMetric
 }
 
@@ -58,7 +58,7 @@ export const timeseriesApi = dataApi.injectEndpoints({
             granularity: $granularity
           ) {
             time
-            data: ${getKPIMetric(payload.kpi)}
+            data: ${getKPIMetric(payload.kpi, payload.threshold)}
           }
         }
       `,

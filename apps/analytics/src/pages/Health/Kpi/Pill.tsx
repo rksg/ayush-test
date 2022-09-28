@@ -2,7 +2,8 @@ import { sum } from 'lodash'
 import { MessageDescriptor, useIntl, defineMessage } from 'react-intl'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { formatter } from '@acx-ui/utils'
-import { ProgressPill, Loader, Card } from '@acx-ui/components'
+import { ProgressPill, Loader, Card} from '@acx-ui/components'
+import { InformationOutlined } from '@acx-ui/icons'
 import * as UI from '../styledComponents'
 import {
   useKpiHistogramQuery,
@@ -77,7 +78,7 @@ function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }
     )
   }
   return <Loader states={[queryResults]} key={kpi}>
-    <UI.PillTitle>{text}</UI.PillTitle>
+    <UI.PillTitle><span>{text}</span><span><InformationOutlined /></span></UI.PillTitle>
     <UI.PillWrap>
       <ProgressPill percent={percent} formatter={value => formatPillText(value || 0, pillSuffix)}/>
     </UI.PillWrap>
