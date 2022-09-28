@@ -160,7 +160,6 @@ export const api = dataApi.injectEndpoints({
           includeMuted: true,
           severity: [{ gt: 0, lte: 1 }],
           filter: payload?.filter
-
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {
