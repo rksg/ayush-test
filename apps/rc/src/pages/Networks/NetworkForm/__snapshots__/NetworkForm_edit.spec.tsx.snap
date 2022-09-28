@@ -3,7 +3,7 @@
 exports[`NetworkForm should edit open network successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -52,7 +52,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
               Edit Network
             </h1>
@@ -263,9 +263,12 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           <label
                             class="ant-form-item-required"
                             for="details_name"
-                            title="Network Name"
+                            title=""
                           >
                             Network Name
+                            <svg>
+                              QuestionMarkCircleOutlined.svg
+                            </svg>
                           </label>
                         </div>
                         <div
