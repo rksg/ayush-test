@@ -32,30 +32,6 @@ const ccd80211CommonRecommendations = defineMessage({
   </ol>`
 })
 
-const ttcRootCause = defineMessage({
-  defaultMessage: `
-    <p>Users are experiencing a higher time to connect compared to the configured SLA goal. User's Wi-Fi connection process goes through several stages. Delays in any of the stages will result in a higher time to connect for the user.</p>
-    <ol>
-      <li>802.11 authentication, association.</li>
-      <li>802.11 re-association in case of roaming</li>
-      <li>L2/L3 authentication - Typical with 802.1x WLAN when RADIUS server is configured</li>
-      <li>DHCP</li>
-    </ol>
-  `
-})
-
-const ttcRecommendation = defineMessage({
-  defaultMessage: `
-    <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
-    <ol>
-      <li>This stage typically does not contribute to delays. Delays in this stage might indicates RF issues. Try changing channel or band.</li>
-      <li>Delays in this stage might indicate roaming issues. User device may be trying to connect to far off APs. Try changing channel or band.</li>
-      <li>(Typical) Delays in this stage might indicate high latency to the RADIUS server or an overloaded RADIUS server. Inspect RADIUS server configuration, isolate the component with high network latency or try dedicating CPU, memory, and disk to the RADIUS server if it is hosted on a shared VM.</li>
-      <li>(Typical) If there is high latency in receiving the DHCP response or if the DHCP response is not received it can add significant delays to the connection process. Common causes are overloaded DHCP server - DHCP server IP pool exhaustion or DHCP server not able to keep up with the rate of incoming DHCP requests. Inspect DHCP server configuration and assign dedicated CPU, memory, disk space to the DHCP server.</li>
-    </ol>
-  `
-})
-
 export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'ttc': 'ttc',
   'radius-failure': 'radius',
@@ -622,12 +598,44 @@ export const rootCauseRecommendationMap = {
   },
   'ttc': {
     DEFAULT: {
-      rootCauses: ttcRootCause,
-      recommendations: ttcRecommendation
+      rootCauses: `
+        <p>Users are experiencing a higher time to connect compared to the configured SLA goal. User's Wi-Fi connection process goes through several stages. Delays in any of the stages will result in a higher time to connect for the user.</p>
+        <ol>
+          <li>802.11 authentication, association.</li>
+          <li>802.11 re-association in case of roaming</li>
+          <li>L2/L3 authentication - Typical with 802.1x WLAN when RADIUS server is configured</li>
+          <li>DHCP</li>
+        </ol>
+      `,
+      recommendations: `
+        <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
+        <ol>
+          <li>This stage typically does not contribute to delays. Delays in this stage might indicates RF issues. Try changing channel or band.</li>
+          <li>Delays in this stage might indicate roaming issues. User device may be trying to connect to far off APs. Try changing channel or band.</li>
+          <li>(Typical) Delays in this stage might indicate high latency to the RADIUS server or an overloaded RADIUS server. Inspect RADIUS server configuration, isolate the component with high network latency or try dedicating CPU, memory, and disk to the RADIUS server if it is hosted on a shared VM.</li>
+          <li>(Typical) If there is high latency in receiving the DHCP response or if the DHCP response is not received it can add significant delays to the connection process. Common causes are overloaded DHCP server - DHCP server IP pool exhaustion or DHCP server not able to keep up with the rate of incoming DHCP requests. Inspect DHCP server configuration and assign dedicated CPU, memory, disk space to the DHCP server.</li>
+        </ol>
+      `
     },
     VARIOUS_REASONS: {
-      rootCauses: ttcRootCause,
-      recommendations: ttcRecommendation
+      rootCauses: `
+        <p>Users are experiencing a higher time to connect compared to the configured SLA goal. User's Wi-Fi connection process goes through several stages. Delays in any of the stages will result in a higher time to connect for the user.</p>
+        <ol>
+          <li>802.11 authentication, association.</li>
+          <li>802.11 re-association in case of roaming</li>
+          <li>L2/L3 authentication - Typical with 802.1x WLAN when RADIUS server is configured</li>
+          <li>DHCP</li>
+        </ol>
+      `,
+      recommendations: `
+        <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
+        <ol>
+          <li>This stage typically does not contribute to delays. Delays in this stage might indicates RF issues. Try changing channel or band.</li>
+          <li>Delays in this stage might indicate roaming issues. User device may be trying to connect to far off APs. Try changing channel or band.</li>
+          <li>(Typical) Delays in this stage might indicate high latency to the RADIUS server or an overloaded RADIUS server. Inspect RADIUS server configuration, isolate the component with high network latency or try dedicating CPU, memory, and disk to the RADIUS server if it is hosted on a shared VM.</li>
+          <li>(Typical) If there is high latency in receiving the DHCP response or if the DHCP response is not received it can add significant delays to the connection process. Common causes are overloaded DHCP server - DHCP server IP pool exhaustion or DHCP server not able to keep up with the rate of incoming DHCP requests. Inspect DHCP server configuration and assign dedicated CPU, memory, disk space to the DHCP server.</li>
+        </ol>
+      `
     }
   },
   'rss': {
@@ -776,6 +784,55 @@ export const rootCauseRecommendationMap = {
             <li>Ensure that there is clear communication on all required ports.</li>
             <li>Test WAN connection health to ensure there is a route from AP to the controller and there is no or acceptable packet loss.</li>
             <li>Ensure that AP certificate is valid. Work with Ruckus customer support to identify and resolve this condition.</li>
+          </ol>
+        `
+      })
+    }
+  },
+  'channel-dist-24g': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>This incident can be caused due to the following reasons:</p>
+          <ol>
+            <li>An incorrect static channel configuration in Zone/AP Group may lead to APs in overlapping channels.</li>
+            <li>High number of rogue APs in the RF environment may cause APs to select overlapping channels.</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
+          <ol>
+            <li>Consider turning on auto channel selection algorithms - Background scan or ChannelFly.</li>
+            <li>If ChannelFly is selected it is mandatory to turn ON background scan.</li>
+            <li>Scan your environments for rogue APs and remove them if possible.</li>
+          </ol>
+        `
+      })
+    }
+  },
+  'channel-dist-5g': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `
+          <p>This incident can be caused due to the following reasons:</p>
+          <ol>
+            <li>An incorrect static channel configuration in Zone/AP Group may lead to APs in overlapping channels.</li>
+            <li>High number of rogue APs in the RF environment may cause APs to select overlapping channels.</li>
+            <li>In 5 GHz band, APs might select overlapping channels to avoid channels with DFS events.</li>
+          </ol>
+        `
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `
+          <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
+          <ol>
+            <li>Consider turning on auto channel selection algorithms - Background scan or ChannelFly.</li>
+            <li>If ChannelFly is selected it is mandatory to turn ON background scan.</li>
+            <li>If static channel assignment is desired consider reducing  Channelization to 20MHz / 40MHz.</li>
+            <li>Scan your environments for rogue APs and remove them if possible.</li>
+            <li>In the Zone/ AP group configuration, remove DFS channels with excessive DFS events.</li>
           </ol>
         `
       })
