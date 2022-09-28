@@ -10,7 +10,12 @@ import {
   venueDetailHeaderData
 } from '../__tests__/fixtures'
 
-import { VenueDetails } from './'
+import { VenueDetails } from '.'
+
+jest.mock(
+  'rc/Widgets',
+  () => ({ name }: { name: string }) => <div data-testid={`networks-${name}`} title={name} />,
+  { virtual: true })
 
 describe('VenueDetails', () => {
   beforeEach(() => {

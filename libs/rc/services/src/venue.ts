@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  FloorPlanDto,
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
@@ -77,6 +78,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
+    floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
+      query: ({ params }) => {
+        const floorPlansReq = createHttpRequest(CommonUrlsInfo.getVenueFloorplans, params)
+        return {
+          ...floorPlansReq
+        }
+      }
+    }),
     getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueCapabilities, params)
@@ -119,6 +128,7 @@ export const {
   useAddVenueMutation,
   useGetVenueQuery,
   useVenueDetailsHeaderQuery,
+  useFloorPlanListQuery,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
