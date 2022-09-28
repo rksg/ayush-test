@@ -124,7 +124,7 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
     // if specific AP groups were selected or the  All APs option is disabled,
     // then the "select specific AP group" option should be selected
     const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
-    const apGroups = (networkVenue?.apGroups || [defaultAG]).map(ag => ({ ...ag, selected: true }))
+    const apGroups: NetworkApGroupWithSelected[] = (networkVenue?.apGroups || [defaultAG]).map(ag => ({ ...ag, selected: true }))
 
     return {
       selectionType: isAllAps ? 0 : 1,

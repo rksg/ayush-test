@@ -1,11 +1,19 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
+
 import { rest } from 'msw'
 
-import * as config                      from '@acx-ui/config'
-import { networkApi }                   from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import * as config    from '@acx-ui/config'
+import { networkApi } from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  WifiUrlsInfo,
+  NetworkTypeEnum,
+  RadioTypeEnum,
+  RadioEnum,
+  WlanSecurityEnum
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -19,8 +27,8 @@ import {
 
 import { NetworkVenuesTab } from './index'
 
-const network = {
-  type: 'aaa',
+export const network = {
+  type: NetworkTypeEnum.AAA,
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
   venues: [
     {
@@ -28,9 +36,9 @@ const network = {
       dual5gEnabled: true,
       tripleBandEnabled: false,
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
-      allApGroupsRadio: 'Both',
+      allApGroupsRadio: RadioEnum.Both,
       isAllApGroups: true,
-      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
       id: '7a97953dc55f4645b3cdbf1527f3d7cb'
     }
   ],
@@ -47,7 +55,7 @@ const network = {
 
 const user = { COMMON: '{"supportTriRadio":true,"tab-venue-clients":"wifi"}' }
 
-const list = {
+export const list = {
   totalCount: 2,
   page: 1,
   data: [
@@ -77,7 +85,7 @@ const list = {
       switches: 1,
       status: '1_InSetupPhase',
       mesh: { enabled: false },
-      wlan: { wlanSecurity: 'WPA3' }
+      wlan: { wlanSecurity: WlanSecurityEnum.WPA3 }
     }
   ]
 }
@@ -88,6 +96,12 @@ const timezoneRes = { // location=-37.8145092,144.9704868
   status: 'OK',
   timeZoneId: 'Australia/Melbourne',
   timeZoneName: 'Australian Eastern Standard Time'
+}
+
+
+const params = {
+  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
 }
 
 describe('NetworkVenuesTab', () => {
@@ -120,10 +134,6 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(user))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
@@ -157,10 +167,6 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(user))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
@@ -185,7 +191,7 @@ describe('NetworkVenuesTab', () => {
           id: '6cb1e831973a4d60924ac59f1bda073c',
           apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
           apGroupName: 'APs not assigned to any group',
-          vlanPoolId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+          vlanPoolId: '1c061cf2649344adaf1e79a9d624a451',
           vlanPoolName: 'pool1'
         }]
       }
@@ -232,10 +238,6 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(user))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
@@ -279,10 +281,6 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(user))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
@@ -336,10 +334,6 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(user))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
@@ -392,11 +386,6 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(user))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
-
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
@@ -506,10 +495,6 @@ describe('NetworkVenuesTab', () => {
         }
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
 
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00'))) // Australian Eastern Standard Time
@@ -567,12 +552,12 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         CommonUrlsInfo.getAllUserSettings.url,
         (req, res, ctx) => res(ctx.json(user))
+      ),
+      rest.put(
+        WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
@@ -585,5 +570,60 @@ describe('NetworkVenuesTab', () => {
     expect(row).toHaveTextContent('APG1')
     expect(row).toHaveTextContent('All')
     expect(row).toHaveTextContent('VLAN-1 (Custom)')
+
+    fireEvent.click(within(row).getByText('APG1'))
+    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+
+    fireEvent.click(within(row).getByText('VLAN-1 (Custom)'))
+    // Switch to 'All APs' radio
+    fireEvent.click(within(dialog).getByLabelText('All APs', { exact: false }))
+
+    // Switch to 'AP groups' radio
+    fireEvent.click(within(dialog).getByLabelText('Select specific AP groups', { exact: false }))
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
+  })
+
+
+  it('setup NetworkApGroupDialog', async () => {
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getNetworksVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.get(
+        WifiUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json(network))
+      ),
+      rest.get(
+        CommonUrlsInfo.getAllUserSettings.url,
+        (req, res, ctx) => res(ctx.json(user))
+      ),
+      rest.put(
+        WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+
+    render(<Provider><NetworkVenuesTab /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /network-venue-1/i })
+
+    fireEvent.click(within(row).getByText('All APs'))
+
+    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+
+    // click 'x' of Radio tag '5 GHz'
+    const radioTag = within(dialog).getByTitle('5 GHz')
+    fireEvent.click(within(radioTag).getByRole('img', { name: 'close', hidden: true }))
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
   })
 })
