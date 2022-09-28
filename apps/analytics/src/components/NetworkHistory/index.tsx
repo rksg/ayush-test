@@ -25,7 +25,7 @@ type Key = keyof Omit<NetworkHistoryData, 'time'>
 let lineColors = [
   cssStr('--acx-accents-blue-50'),
   cssStr('--acx-accents-orange-50'),
-  cssStr('--acx-neutrals-20')
+  cssStr('--acx-accents-blue-30')
 ]
 
 interface NetworkHistoryWidgetComponentProps {
