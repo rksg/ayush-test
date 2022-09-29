@@ -13,7 +13,9 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 import { 
   ListIcon,
   LineChartIcon,
-  MeshIcon
+  MeshIcon,
+  IconWrapper,
+  WhiteButton
 } from './styledComponents'
 
 function venueNameColTpl (
@@ -31,10 +33,12 @@ function venueNameColTpl (
     [APMeshRole.DISABLED]: intl.$t({ defaultMessage: 'disabled' })
   }
   return (
-    <Tooltip title={tooltipTitle[meshRole as APMeshRole]} 
-      className={icon[meshRole as APMeshRole]}>
-      <TenantLink to={`aps/${id}/details/overview`}>{name}</TenantLink>
-    </Tooltip>
+    <IconWrapper>
+      <Tooltip title={tooltipTitle[meshRole as APMeshRole]} 
+        className={`${icon[meshRole as APMeshRole]}`}>
+        <TenantLink to={`aps/${id}/details/overview`}>{name}</TenantLink>
+      </Tooltip>
+    </IconWrapper>
   )
 }
 
@@ -98,7 +102,9 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       render: function (data, row) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           return (
-            <span className='icon-signal-down'>{data}</span>
+            <IconWrapper>
+              <span className='icon-signal-down'>{data}</span>
+            </IconWrapper>
           )
         }
         return
@@ -112,7 +118,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       render: function (data, row) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           return (
-            <span className='icon-wlan'>{data}</span>
+            <IconWrapper><span className='icon-wlan'>{data}</span></IconWrapper>
           )
         }
         return
@@ -233,11 +239,10 @@ export function VenueMeshApsTable () {
           size='small' />
         <Button icon={<ListIcon />}
           size='small' />
-        <Button type='secondary'
+        <WhiteButton type='primary'
           icon={<MeshIcon />}
           size='small' 
           style={{ borderRadius: '0 4px 4px 0' }}/>
-        <MeshIcon style={{ stroke: 'white' }} />
       </span>
       <VenueMeshApsTable />
     </>
