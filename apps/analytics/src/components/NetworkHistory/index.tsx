@@ -22,12 +22,6 @@ import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
 type Key = keyof Omit<NetworkHistoryData, 'time'>
 
-let lineColors = [
-  cssStr('--acx-accents-blue-50'),
-  cssStr('--acx-accents-orange-50'),
-  cssStr('--acx-accents-blue-30')
-]
-
 interface NetworkHistoryWidgetComponentProps {
   hideTitle?: boolean;
   type?: CardTypes;
@@ -62,6 +56,12 @@ const NetworkHistoryWidget = forwardRef<
       name: $t({ defaultMessage: 'Connected Clients' })
     }
   ] as Array<{ key: Key; name: string }>
+
+  let lineColors = [
+    cssStr('--acx-accents-blue-50'),
+    cssStr('--acx-accents-orange-50'),
+    cssStr('--acx-accents-blue-30')
+  ]
 
   if (hideIncidents) {
     seriesMapping = seriesMapping.filter(value => value.key !== 'impactedClientCount')
