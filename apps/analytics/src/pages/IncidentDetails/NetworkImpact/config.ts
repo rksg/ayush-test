@@ -65,7 +65,10 @@ export enum NetworkImpactChartTypes {
   WLAN,
   Radio,
   Reason,
-  ClientManufacturer
+  ClientManufacturer,
+  ApModel,
+  ApVersion,
+  OS
 }
 
 export const networkImpactCharts = {
@@ -138,6 +141,63 @@ export const networkImpactCharts = {
           one {client manufacturer}
           other {client manufacturers}
         }` })
+    },
+    order: 2
+  },
+  [NetworkImpactChartTypes.ApModel]: {
+    key: 'apModel',
+    title: defineMessage({ defaultMessage: 'AP Model' }),
+    dimension: 'apModels',
+    type: 'client',
+    highlight: highlights.clients,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage:
+          '{percentage} of failures impacted {dominant} AP model' }),
+      broad: defineMessage({
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {Ap Model}
+          other {Ap Models}
+        }`
+      })
+    },
+    order: 3
+  },
+  [NetworkImpactChartTypes.ApVersion]: {
+    key: 'apVersion',
+    title: defineMessage({ defaultMessage: 'AP Version' }),
+    dimension: 'apFwVersions',
+    type: 'client',
+    highlight: highlights.clients,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage:
+          '{percentage} of failures impacted {dominant} Ap firmware' }),
+      broad: defineMessage({
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {AP firmware}
+          other {AP firmwares}
+        }`
+      })
+    },
+    order: 4
+  },
+  [NetworkImpactChartTypes.OS]: {
+    key: 'os',
+    title: defineMessage({ defaultMessage: 'OS' }),
+    dimension: 'osType',
+    type: 'client',
+    highlight: highlights.clients,
+    summary: {
+      dominance: defineMessage({
+        defaultMessage:
+          '{percentage} of failures impacted {dominant} Operating System' }),
+      broad: defineMessage({
+        defaultMessage: `This incident impacted {count} {count, plural,
+          one {Operating System}
+          other {Operating Systems}
+        }`
+      })
     },
     order: 2
   }
