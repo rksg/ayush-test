@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/components'
 import { DHCPOption } from '@acx-ui/rc/utils'
 
-const dataOption = {
+const defaultData: DHCPOption = {
   id: 0,
   optId: '',
   optName: '',
@@ -17,12 +17,13 @@ const dataOption = {
   value: ''
 }
 export function OptionTable (props:{
-  optionData: DHCPOption[],
-  updateOptionData?: (data:DHCPOption[]) => void,
-  showOptionForm?: (data:DHCPOption) => void,
+  data: DHCPOption[]
+  onAdd?: (data: DHCPOption) => void
+  onEdit?: (data: DHCPOption) => void
+  onDelete?: (data: DHCPOption[]) => void
 }) {
   const { $t } = useIntl()
-  const { optionData, updateOptionData, showOptionForm } = props
+  const { data } = props
   const [ errorVisible, showError ] = useState<Boolean>(false)
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
@@ -31,24 +32,15 @@ export function OptionTable (props:{
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (rows: DHCPOption[]) => {
-        if (rows.length===1) {
-          showOptionForm?.(rows[0])
-        }else{
-          showError(true)
-        }
+        if (rows.length === 1) props.onEdit?.(rows[0])
+        else showError(true)
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows: DHCPOption[], clearSelection) => {
-        rows.forEach(item => {
-          const index = optionData.findIndex(i => i.id === item.id)
-          if (index !== -1) {
-            optionData.splice(index, 1)
-          }
-        })
         clearSelection()
-        updateOptionData?.(optionData)
+        props.onDelete?.(rows)
       }
     }
   ]
@@ -80,26 +72,17 @@ export function OptionTable (props:{
   ]
   return (
     <>
-      {
-        errorVisible &&
-      <Alert message={$t(errorMessage)} type='error' showIcon closable />
-      }
+      {errorVisible && <Alert message={$t(errorMessage)} type='error' showIcon closable />}
       <Table
         rowKey='id'
-        style={{ width: '800px' }}
         columns={columns}
-        dataSource={[...optionData]}
-        type={'tall'}
+        dataSource={data}
         rowActions={rowActions}
-        actions={
-          [{
-            label: $t({ defaultMessage: 'Add option' }),
-            onClick: () => {
-              showOptionForm?.(dataOption)
-            }
-          }]
-        }
-        rowSelection={{ defaultSelectedRowKeys: [] }}
+        actions={[{
+          label: $t({ defaultMessage: 'Add option' }),
+          onClick: () => props.onAdd?.(defaultData)
+        }]}
+        rowSelection={{}}
       />
     </>
   )

@@ -28,8 +28,8 @@ export function PoolTable (props:{
   const rowActions: TableProps<DHCPPool>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
-      onClick: (rows: DHCPPool | DHCPPool[]) => {
-        if (Array.isArray(rows) && rows.length===1) {
+      onClick: (rows: DHCPPool[]) => {
+        if (rows.length===1) {
           showPoolForm?.(rows[0])
         }else{
           showError(true)
@@ -38,16 +38,13 @@ export function PoolTable (props:{
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows: DHCPPool | DHCPPool[], clearSelection) => {
-
-        if (Array.isArray(rows)) {
-          rows.forEach(item => {
-            const index = poolData.findIndex(i => i.id === item.id)
-            if (index !== -1) {
-              poolData.splice(index, 1)
-            }
-          })
-        }
+      onClick: (rows: DHCPPool[], clearSelection) => {
+        rows.forEach(item => {
+          const index = poolData.findIndex(i => i.id === item.id)
+          if (index !== -1) {
+            poolData.splice(index, 1)
+          }
+        })
         clearSelection()
         updatePoolData?.(poolData)
       }
@@ -99,21 +96,17 @@ export function PoolTable (props:{
     }
   }]
   return (
-    <div>
-      {
-        errorVisible &&
-      <Alert message={$t(errorMessage)} type='error' showIcon closable />
-      }
-
+    <>
+      {errorVisible && <Alert message={$t(errorMessage)} type='error' showIcon closable />}
       <Table
         rowKey='id'
         columns={columns}
-        dataSource={[...poolData]}
+        dataSource={poolData}
         type={'tall'}
         rowActions={rowActions}
         actions={actions}
-        rowSelection={readonly ? undefined : { defaultSelectedRowKeys: [] }}
+        rowSelection={readonly ? undefined : {}}
       />
-    </div>
+    </>
   )
 }

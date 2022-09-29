@@ -15,7 +15,7 @@ import {
 
 import { PoolOption } from './PoolOption'
 
-const data =[
+const data = [
   {
     id: 2,
     optId: '21',
@@ -61,7 +61,7 @@ describe('Create DHCP: Option detail', () => {
         (req, res, ctx) => res(ctx.json(data))
       )
     )
-    const { asFragment } = render(<PoolOption optionData={data}/>, {
+    const { asFragment } = render(<PoolOption value={data}/>, {
       wrapper
     })
 
@@ -77,11 +77,11 @@ describe('Create DHCP: Option detail', () => {
         (req, res, ctx) => res(ctx.json(data))
       )
     )
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const params = { tenantId: 'tenant-id' }
 
-    render(<PoolOption optionData={data}/>, {
+    render(<PoolOption value={data} />, {
       wrapper,
-      route: { params, path: '/:tenantId/:networkId' }
+      route: { params }
     })
 
     const addButton = screen.getByRole('button', { name: 'Add option' })

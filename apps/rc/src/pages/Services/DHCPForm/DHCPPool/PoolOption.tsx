@@ -1,15 +1,10 @@
 import { useState, useRef } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
-import { FormInstance }          from 'antd/es/form/Form'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Modal, StepsFormInstance } from '@acx-ui/components'
-import {
-  Button,
-  StepsForm
-} from '@acx-ui/components'
+import { Modal, Button }      from '@acx-ui/components'
 import { DHCPOption }         from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -17,57 +12,65 @@ import { OptionTable } from './OptionTable'
 
 
 export function PoolOption (props:{
-  optionData: DHCPOption[],
-  setOptionList?: (data: DHCPOption[]) => void
-  onSave?: (form: FormInstance, data?:DHCPOption ) => void
+  value?: DHCPOption[]
+  onChange?: (data: DHCPOption[]) => void
 }) {
-  const form = Form.useFormInstance()
   const { $t } = useIntl()
-  const { optionData } = props
-  const formRef = useRef<StepsFormInstance<DHCPOption>>()
+  const { value: optionData } = props
+  const optionsMap = useRef(optionData ? _.keyBy(optionData, 'id') : {})
+  const options = Object.values(optionsMap.current)
+  const [selected, setSelected] = useState<DHCPOption | undefined>()
 
-  const idValidator = async (value: string) => {
-    const { id } = { id: 0, ...formRef.current?.getFieldsValue() }
-    if(_.find(optionData, (item)=>{return id !== item.id && item.optId === value})){
+  const [modalForm] = Form.useForm<DHCPOption>()
+  const idValidator = async (text: string) => {
+    const { id } = { ...modalForm.getFieldsValue() }
+    if(_.find(optionData, (item)=>{return id !== item.id && item.optId === text})){
       const entityName = $t({ defaultMessage: 'Option ID' })
       const key = 'optId'
       return Promise.reject($t(validationMessages.duplication, { entityName, key }))
     }
     return Promise.resolve()
   }
-  const handleSaveData = () => {
-    props?.onSave?.(form, formRef?.current?.getFieldsValue())
+
+  const handleChanged = () => {
+    props.onChange?.(Object.values(optionsMap.current))
+  }
+
+  const handleSaveData = (data: DHCPOption) => {
+    let id = data.id
+    if (!id) { id = data.id = Date.now() }
+    optionsMap.current[id] = data
+    handleChanged()
     onClose()
-    return
   }
   const [visible, setVisible] = useState(false)
   const onClose = () => {
-    formRef?.current?.resetFields()
+    setSelected(undefined)
     setVisible(false)
   }
   const footer = [
-    <Button key='back' onClick={onClose}>
-      {$t({ defaultMessage: 'Cancel' })}
-    </Button>,
-    <Button key='forward'
-      onClick={()=>{
-        formRef.current?.validateFields().then(()=>{
-          handleSaveData()
-        },()=>{
-          return false
-        })
-      }
-      }>
-      {$t({ defaultMessage: 'Save' })}
-    </Button>
+    <Button
+      key='back'
+      type='link'
+      onClick={onClose}
+      children={$t({ defaultMessage: 'Cancel' })}
+    />,
+    <Button
+      key='forward'
+      type='secondary'
+      onClick={() => modalForm.submit()}
+      children={$t({ defaultMessage: 'Save' })}
+    />
   ]
-  const getContent=visible?<StepsForm.StepForm formRef={formRef}>
+  const getContent = <Form
+    form={modalForm}
+    layout='vertical'
+    onFinish={handleSaveData}
+    initialValues={selected}
+  >
     <Row gutter={20}>
-      <Col span={12}>
-        <Form.Item
-          name='id'
-          style={{ height: 0 }}
-        />
+      <Col span={23}>
+        <Form.Item name='id' hidden />
         <Form.Item
           name='optId'
           label={$t({ defaultMessage: 'Option ID' })}
@@ -99,37 +102,41 @@ export function PoolOption (props:{
           name='value'
           label={$t({ defaultMessage: 'Option Value' })}
           rules={[
-            { required: true },
-            { validator: (_, value) => { return value ? Promise.resolve() : Promise.reject() } }
+            { required: true }
           ]}
           children={<Input />}
         />
       </Col>
     </Row>
-  </StepsForm.StepForm>:null
-  return (
+  </Form>
 
+  const onAddOrEdit = (item: DHCPOption) => {
+    setVisible(true)
+    modalForm.setFieldsValue(item)
+  }
 
-    <Form.Item label={$t({ defaultMessage: 'Add DHCP options:' })} style={{ paddingLeft: 10 }}>
-      <OptionTable
-        optionData={[...optionData]}
-        updateOptionData={(optionsData: DHCPOption[]) => {
-          form?.setFieldsValue({ dhcpOptions: optionsData })
-          props.setOptionList?.(optionsData)
-        }}
-        showOptionForm={(selectedOption: DHCPOption) => {
-          setVisible(true)
-          formRef.current?.setFieldsValue(selectedOption)
-        }}></OptionTable>
-      <Modal
-        title={$t({ defaultMessage: 'DHCP option' })}
-        visible={visible}
-        onCancel={onClose}
-        width={400}
-        footer={footer}
-      >
-        {getContent}
-      </Modal>
-    </Form.Item>
-  )
+  const onDelete = (items: DHCPOption[]) => {
+    items.forEach(item => {
+      delete optionsMap.current[item.id]
+    })
+    handleChanged()
+  }
+
+  return (<>
+    <OptionTable
+      data={options}
+      onAdd={onAddOrEdit}
+      onEdit={onAddOrEdit}
+      onDelete={onDelete}
+    />
+    <Modal
+      title={$t({ defaultMessage: 'DHCP option' })}
+      visible={visible}
+      onCancel={onClose}
+      width={300}
+      footer={footer}
+    >
+      {getContent}
+    </Modal>
+  </>)
 }

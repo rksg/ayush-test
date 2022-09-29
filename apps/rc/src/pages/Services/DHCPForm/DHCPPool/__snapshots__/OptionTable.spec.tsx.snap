@@ -27,7 +27,6 @@ exports[`Create DHCP: Option table should render correctly 1`] = `
       </div>
       <div
         class="ant-pro-table"
-        style="width: 800px;"
       >
         <div
           class="ant-pro-card"

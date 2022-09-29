@@ -50,7 +50,7 @@ describe('Create DHCP: Option table', () => {
 
   it('should render correctly', async () => {
 
-    const { asFragment } = render(<OptionTable optionData={list.data}/>, {
+    const { asFragment } = render(<OptionTable data={list.data} />, {
       wrapper
     })
 
@@ -61,7 +61,7 @@ describe('Create DHCP: Option table', () => {
 
   it('Table action bar edit pool', async () => {
 
-    render(<OptionTable optionData={list.data}/>, {
+    render(<OptionTable data={list.data} />, {
       wrapper
     })
 
