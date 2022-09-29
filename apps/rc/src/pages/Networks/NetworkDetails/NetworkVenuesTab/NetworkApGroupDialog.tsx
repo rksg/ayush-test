@@ -13,6 +13,7 @@ import {
   Space,
   Spin,
   Select,
+  Tooltip,
   Typography
 } from 'antd'
 import _           from 'lodash'
@@ -21,7 +22,7 @@ import { useIntl } from 'react-intl'
 import {
   Modal
 } from '@acx-ui/components'
-import { useSplitTreatment } from '@acx-ui/feature-toggle'
+import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   RadioEnum,
   RadioTypeEnum,
@@ -97,7 +98,7 @@ const defaultAG: NetworkApGroupWithSelected = {
 
 export function NetworkApGroupDialog (props: ApGroupModalProps) {
   const { $t } = useIntl()
-  const triBandRadioFeatureFlag = useSplitTreatment('tri-band-radio-toggle')
+  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
 
   const { networkVenue, venueName, network, formName } = props
 
@@ -192,6 +193,15 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
 
     const selected = Form.useWatch(['apgroups', name, 'selected'], form)
 
+    let errorTooltip = ''
+    if (apgroup.validationError) {
+      if (apgroup.validationErrorReachedMaxConnectedNetworksLimit) {
+        errorTooltip = $t({ defaultMessage: 'You cannot activate this network on this AP Group because it already has 15 active networks' })
+      } else {
+        errorTooltip = $t({ defaultMessage: 'You cannot activate this network to this AP Group. A network with the same SSID is already active' })
+      }
+    }
+
     return (
       <>
         <Col span={8}>
@@ -210,10 +220,11 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
           <Form.Item name={[name, 'vlanPoolName']} initialValue={apGroupVlanPool?.name} noStyle>
             <Input type='hidden' />
           </Form.Item>
-          <UI.FormItemRounded name={[name, 'selected']} valuePropName='checked'>
-            {/*TODO: error tooltip */}
-            <Checkbox disabled={apgroup.validationError} >{apGroupName}</Checkbox>
-          </UI.FormItemRounded>
+          <Tooltip title={errorTooltip}>
+            <UI.FormItemRounded name={[name, 'selected']} valuePropName='checked'>
+              <Checkbox disabled={apgroup.validationError} >{apGroupName}</Checkbox>
+            </UI.FormItemRounded>
+          </Tooltip>
         </Col>
         <Col span={8}>
           <UI.FormItemRounded>
