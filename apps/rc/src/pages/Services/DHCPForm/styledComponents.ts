@@ -43,7 +43,7 @@ export const AddButton = styled(Button)`
   top: 10px;
   right: -600px;
   z-index: 1;
-  color: var(--acx-accents-blue-50);
+  background-color: var(--acx-accents-blue-50);
   font-weight: 600;
   border: 0px;
   cursor: pointer;
