@@ -89,7 +89,7 @@ describe('Venue Marker Tooltip', () => {
     const venueTitle = screen.getByText('Aparna-Venue')
     fireEvent.click(venueTitle)
     expect(onNavigateMock).toHaveBeenCalledWith({
-      path: 'overview',
+      path: 'venue-details/overview',
       venueId: '7ae27179b7b84de89eb7e56d9b15943d'
     })
 

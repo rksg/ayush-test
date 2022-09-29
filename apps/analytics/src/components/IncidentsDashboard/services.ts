@@ -67,8 +67,9 @@ export const api = dataApi.injectEndpoints({
             $connectionCodes: [String],
             $performanceCodes: [String],
             $infrastructureCodes: [String],
+            $filter: FilterInput
           ){
-            network(start: $start, end: $end) {
+            network(start: $start, end: $end, filter : $filter) {
               hierarchyNode(path: $path) {
               ${Object.entries(incidentSeverities).map(([name, { gt, lte }]) => `
               ${name}Count: incidentCount(filter: {severity: {gt: ${gt}, lte: ${lte}}, code: $code})
@@ -92,7 +93,8 @@ export const api = dataApi.injectEndpoints({
           connectionCodes: categoryCodeMap.connection.codes,
           performanceCodes: categoryCodeMap.performance.codes,
           infrastructureCodes: categoryCodeMap.infrastructure.codes,
-          granularity: 'all'
+          granularity: 'all',
+          filter: payload?.filter
         }
       }),
       transformResponse: (response: ApiResponse) => {

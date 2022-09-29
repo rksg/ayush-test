@@ -6,7 +6,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVMNetworksList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/network'
-  },  
+  },
   getNetworksDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/network/:networkId/detailheader'
