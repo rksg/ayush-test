@@ -135,7 +135,7 @@ export function Venues () {
     setTableData(data)
   }
 
-  const actions: TableProps<Venue>['actions'] = [
+  const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
       onClick: (rows) => {
@@ -151,24 +151,11 @@ export function Venues () {
   ]
 
   useEffect(()=>{
-    if(editMode){
-      if(tableQuery.data && activateVenues.length === 0){
-
-      }
-    }else{
-      if(tableQuery.data && tableData.length === 0){
-        const tableData = tableQuery.data.data.map((item: Venue) =>
-        {
-          return {
-            ...item,
-            // work around of read-only records from RTKQ
-            activated: { ...item.activated }
-          }
-        })
-        setTableData(tableData)
-      }
-    }
-  }, [venues, tableQuery.data, editMode])
+    // if(editMode){
+    //   setActivateVenues(selected)
+    // }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [venues, tableQuery, editMode])
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -208,10 +195,10 @@ export function Venues () {
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),
-      dataIndex: ['activated', 'isActivated'],
+      dataIndex: 'id',
       render: function (data, row) {
         return <Switch
-          checked={Boolean(data)}
+          checked={_.find(activateVenues, { id: row.id }) != null}
           onClick={(checked, event) => {
             event.stopPropagation()
             handleActivateVenue(checked, row)
@@ -255,12 +242,13 @@ export function Venues () {
         <Loader states={[tableQuery]}>
           <Table
             rowKey='id'
-            actions={actions}
+            rowActions={rowActions}
             rowSelection={{
               type: 'checkbox'
             }}
             columns={columns}
-            dataSource={[...tableData]}
+            dataSource={tableQuery.data?.data}
+            // dataSource={tableData}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
           />

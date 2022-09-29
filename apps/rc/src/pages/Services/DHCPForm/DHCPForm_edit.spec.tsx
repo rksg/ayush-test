@@ -93,11 +93,7 @@ describe('DHCPForm', () => {
 
     //Venues
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    //summary
-    await screen.findByRole('heading', { level: 3, name: 'Summary' })
-    await userEvent.click(screen.getByText('Finish'))
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
 
   })
 })

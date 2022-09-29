@@ -30,19 +30,26 @@ exports[`Create DHCP: Option detail should render correctly 1`] = `
             <div
               class="ant-form-item-control-input-content"
             >
-              <div>
-                <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__OptionAddButton-sc-187er8i-7 gLEkLD"
-                  type="button"
-                >
-                  <span>
-                    Add option
-                  </span>
-                </button>
-              </div>
               <div
-                class="styledComponents__Wrapper-sc-1abm7iv-10 eZVtsF"
+                class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
               >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                  style="display: flex; justify-content: flex-end;"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <button
+                      class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                      type="button"
+                    >
+                      <span>
+                        Add option
+                      </span>
+                    </button>
+                  </div>
+                </div>
                 <div
                   class="ant-pro-table"
                   style="width: 800px;"
@@ -114,18 +121,10 @@ exports[`Create DHCP: Option detail should render correctly 1`] = `
                                       <col
                                         class="ant-table-selection-col"
                                       />
-                                      <col
-                                        style="width: 10px;"
-                                      />
-                                      <col
-                                        style="width: 10px;"
-                                      />
-                                      <col
-                                        style="width: 10px;"
-                                      />
-                                      <col
-                                        style="width: 50px;"
-                                      />
+                                      <col />
+                                      <col />
+                                      <col />
+                                      <col />
                                       <col
                                         style="width: 32px;"
                                       />
@@ -137,6 +136,9 @@ exports[`Create DHCP: Option detail should render correctly 1`] = `
                                         <th
                                           class="ant-table-cell ant-table-selection-column react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           <div
                                             class="ant-table-selection"
                                           >
@@ -158,13 +160,16 @@ exports[`Create DHCP: Option detail should render correctly 1`] = `
                                             </label>
                                           </div>
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                           tabindex="0"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           <div
                                             class="ant-table-column-sorters"
                                           >
@@ -221,13 +226,16 @@ exports[`Create DHCP: Option detail should render correctly 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                           tabindex="0"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           <div
                                             class="ant-table-column-sorters"
                                           >
@@ -284,13 +292,16 @@ exports[`Create DHCP: Option detail should render correctly 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                           tabindex="0"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           <div
                                             class="ant-table-column-sorters"
                                           >
@@ -347,15 +358,18 @@ exports[`Create DHCP: Option detail should render correctly 1`] = `
                                             </span>
                                           </div>
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
                                           class="ant-table-cell react-resizable"
                                         >
+                                          <div
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
                                           Option Value
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                         <th
@@ -363,7 +377,10 @@ exports[`Create DHCP: Option detail should render correctly 1`] = `
                                           style="position: sticky; right: 0px;"
                                         >
                                           <div
-                                            class="react-resizable-handle"
+                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                          />
+                                          <div
+                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                           />
                                         </th>
                                       </tr>

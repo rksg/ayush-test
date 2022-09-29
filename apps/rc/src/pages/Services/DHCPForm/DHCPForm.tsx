@@ -100,10 +100,11 @@ export function DHCPForm () {
             <Venues />
           </StepsForm.StepForm>
 
+          {!editMode &&
           <StepsForm.StepForm name='summary' title={$t({ defaultMessage: 'Summary' })}>
             <SummaryForm summaryData={saveState}/>
           </StepsForm.StepForm>
-
+          }
         </StepsForm>
       </DHCPFormContext.Provider>
     </>

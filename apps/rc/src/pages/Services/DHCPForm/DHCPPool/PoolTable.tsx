@@ -26,7 +26,9 @@ export function PoolTable (props:{
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
   })
-  const actions: TableProps<DHCPPool>['actions'] = [
+
+
+  const rowActions: TableProps<DHCPPool>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (rows: DHCPPool | DHCPPool[]) => {
@@ -60,27 +62,23 @@ export function PoolTable (props:{
       key: 'name',
       title: $t({ defaultMessage: 'Pool Name' }),
       dataIndex: 'name',
-      width: 10,
       sorter: true
     },
     {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ip',
-      width: 100,
       sorter: true
     },
     {
       key: 'mask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
       dataIndex: 'mask',
-      width: 100,
       sorter: true
     },
     {
       key: 'leaseTime',
       title: $t({ defaultMessage: 'Lease Time' }),
-      width: 100,
       dataIndex: 'leaseTime',
       render: (data) =>{
         return data + ' Hours'
@@ -89,34 +87,33 @@ export function PoolTable (props:{
     {
       key: 'vlan',
       title: $t({ defaultMessage: 'Vlan' }),
-      width: 50,
       dataIndex: 'vlan'
     },
     {
       key: 'NumberOfHosts',
       title: $t({ defaultMessage: 'Number of hosts' }),
-      width: 200,
       dataIndex: 'NumberOfhosts'
     }
   ]
+  let actions = readonly ? []: [{
+    label: $t({ defaultMessage: 'Add DHCP Pool' }),
+    onClick: () => {
+      showPoolForm?.()
+    }
+  }]
   return (
     <div>
       {
         errorVisible &&
       <Alert message={$t(errorMessage)} type='error' showIcon closable />
       }
-      { !readonly && <div>
-        <PoolAddButton
-          onClick={()=>
-            showPoolForm?.()
-          }>{$t({ defaultMessage: 'Add DHCP Pool' })}</PoolAddButton>
-      </div> }
 
       <Table
         rowKey='id'
         columns={columns}
         dataSource={[...poolData]}
         type={'tall'}
+        rowActions={rowActions}
         actions={actions}
         rowSelection={readonly ? undefined : { defaultSelectedRowKeys: [] }}
       />

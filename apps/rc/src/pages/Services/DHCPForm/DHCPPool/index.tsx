@@ -127,7 +127,7 @@ export default function DHCPPoolMain () {
             label={$t({ defaultMessage: 'IP Address' })}
             rules={[
               { required: true },
-              { validator: (_, value) => networkWifiIpRegExp(intl, value) }
+              { validator: (_, value) => networkWifiIpRegExp(value) }
             ]}
             children={<Input />}
           />
@@ -136,7 +136,7 @@ export default function DHCPPoolMain () {
             label={$t({ defaultMessage: 'Subnet Mask' })}
             rules={[
               { required: true },
-              { validator: (_, value) => subnetMaskIpRegExp(intl, value) }
+              { validator: (_, value) => subnetMaskIpRegExp(value) }
             ]}
             children={<Input />}
           />
@@ -147,7 +147,7 @@ export default function DHCPPoolMain () {
             <Space><Form.Item name='excludedRangeStart'
               rules={[
                 { required: false },
-                { validator: (_, value) => networkWifiIpRegExp(intl, value) }
+                { validator: (_, value) => networkWifiIpRegExp(value) }
               ]}
               children={<Input/>}
             />-
@@ -155,7 +155,7 @@ export default function DHCPPoolMain () {
               name='excludedRangeEnd'
               rules={[
                 { required: false },
-                { validator: (_, value) => networkWifiIpRegExp(intl, value) }
+                { validator: (_, value) => networkWifiIpRegExp(value) }
               ]}
               children={<Input />}
             />
@@ -165,7 +165,7 @@ export default function DHCPPoolMain () {
             name='primaryDNS'
             label={$t({ defaultMessage: 'Primary DNS IP' })}
             rules={[
-              { validator: (_, value) => networkWifiIpRegExp(intl, value) }
+              { validator: (_, value) => networkWifiIpRegExp(value) }
             ]}
             children={<Input />}
           />
@@ -173,7 +173,7 @@ export default function DHCPPoolMain () {
             name='secondaryDNS'
             label={$t({ defaultMessage: 'Secondary DNS IP' })}
             rules={[
-              { validator: (_, value) => networkWifiIpRegExp(intl, value) }
+              { validator: (_, value) => networkWifiIpRegExp(value) }
             ]}
             children={<Input />}
           />

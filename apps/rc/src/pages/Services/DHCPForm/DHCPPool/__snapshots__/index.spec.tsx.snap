@@ -6,19 +6,26 @@ exports[`Create DHCP: Pool detail should render correctly 1`] = `
     class="ant-form ant-form-horizontal"
   >
     <div>
-      <div>
-        <button
-          class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__PoolAddButton-sc-187er8i-4 sbWGz"
-          type="button"
-        >
-          <span>
-            Add DHCP Pool
-          </span>
-        </button>
-      </div>
       <div
-        class="styledComponents__Wrapper-sc-1abm7iv-10 eZVtsF"
+        class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
       >
+        <div
+          class="ant-space ant-space-horizontal ant-space-align-center"
+          style="display: flex; justify-content: flex-end;"
+        >
+          <div
+            class="ant-space-item"
+          >
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              type="button"
+            >
+              <span>
+                Add DHCP Pool
+              </span>
+            </button>
+          </div>
+        </div>
         <div
           class="ant-pro-table"
         >
@@ -89,24 +96,12 @@ exports[`Create DHCP: Pool detail should render correctly 1`] = `
                               <col
                                 class="ant-table-selection-col"
                               />
-                              <col
-                                style="width: 10px;"
-                              />
-                              <col
-                                style="width: 100px;"
-                              />
-                              <col
-                                style="width: 100px;"
-                              />
-                              <col
-                                style="width: 100px;"
-                              />
-                              <col
-                                style="width: 50px;"
-                              />
-                              <col
-                                style="width: 200px;"
-                              />
+                              <col />
+                              <col />
+                              <col />
+                              <col />
+                              <col />
+                              <col />
                               <col
                                 style="width: 32px;"
                               />
@@ -118,6 +113,9 @@ exports[`Create DHCP: Pool detail should render correctly 1`] = `
                                 <th
                                   class="ant-table-cell ant-table-selection-column react-resizable"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-selection"
                                   >
@@ -139,13 +137,16 @@ exports[`Create DHCP: Pool detail should render correctly 1`] = `
                                     </label>
                                   </div>
                                   <div
-                                    class="react-resizable-handle"
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
                                   class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                   tabindex="0"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-column-sorters"
                                   >
@@ -202,13 +203,16 @@ exports[`Create DHCP: Pool detail should render correctly 1`] = `
                                     </span>
                                   </div>
                                   <div
-                                    class="react-resizable-handle"
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
                                   class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                   tabindex="0"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-column-sorters"
                                   >
@@ -265,13 +269,16 @@ exports[`Create DHCP: Pool detail should render correctly 1`] = `
                                     </span>
                                   </div>
                                   <div
-                                    class="react-resizable-handle"
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
                                   class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                   tabindex="0"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-column-sorters"
                                   >
@@ -328,31 +335,40 @@ exports[`Create DHCP: Pool detail should render correctly 1`] = `
                                     </span>
                                   </div>
                                   <div
-                                    class="react-resizable-handle"
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
                                   class="ant-table-cell react-resizable"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   Lease Time
                                   <div
-                                    class="react-resizable-handle"
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
                                   class="ant-table-cell react-resizable"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   Vlan
                                   <div
-                                    class="react-resizable-handle"
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
                                   class="ant-table-cell react-resizable"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   Number of hosts
                                   <div
-                                    class="react-resizable-handle"
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
@@ -360,7 +376,10 @@ exports[`Create DHCP: Pool detail should render correctly 1`] = `
                                   style="position: sticky; right: 0px;"
                                 >
                                   <div
-                                    class="react-resizable-handle"
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
+                                  <div
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                               </tr>
