@@ -71,7 +71,7 @@ export default function TopSwitchesByErrorWidget ({
 
   const { data } = queryResults
 
-  const topSwitchesByErrorTable = 
+  const topSwitchesByErrorTable =
   data && data.topNSwitchesByErrors && data.topNSwitchesByErrors.length ? <CustomTable><Table
     columns={columns}
     dataSource={getDataSource(data.topNSwitchesByErrors)}

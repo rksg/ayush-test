@@ -1,4 +1,4 @@
-import { 
+import {
   RfBandUsageEnum,
   BssMinimumPhyRateEnum,
   BssMinimumPhyRateEnum6G,
