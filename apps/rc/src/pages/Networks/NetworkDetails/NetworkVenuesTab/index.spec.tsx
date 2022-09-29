@@ -1,6 +1,9 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import { rest }       from 'msw'
+import socketIOClient from 'socket.io-client'
+import MockedSocket   from 'socket.io-mock'
+
 
 import * as config         from '@acx-ui/config'
 import { networkApi }      from '@acx-ui/rc/services'
@@ -18,6 +21,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import { NetworkVenuesTab } from './index'
+
+jest.mock('socket.io-client')
 
 const network = {
   type: 'aaa',
@@ -99,7 +104,11 @@ describe('NetworkVenuesTab', () => {
     await config.initialize()
   })
 
+  let socket
+  
   beforeEach(() => {
+    socket = new MockedSocket()
+    socketIOClient.mockReturnValue(socket)
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
     })

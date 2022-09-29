@@ -1,4 +1,6 @@
-import { rest } from 'msw'
+import { rest }       from 'msw'
+import socketIOClient from 'socket.io-client'
+import MockedSocket   from 'socket.io-mock'
 
 import { CommonUrlsInfo, websocketServerUrl } from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
@@ -12,6 +14,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import { NetworksTable } from '.'
+
+jest.mock('socket.io-client')
 
 const list = {
   totalCount: 10,
@@ -155,7 +159,11 @@ const list = {
 
 describe('Networks Table', () => {
   let params: { tenantId: string }
-  beforeEach(async () => {
+  let socket
+  
+  beforeEach(() => {
+    socket = new MockedSocket()
+    socketIOClient.mockReturnValue(socket)
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,

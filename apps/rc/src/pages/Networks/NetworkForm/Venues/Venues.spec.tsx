@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom'
-import { Form } from 'antd'
-import { rest } from 'msw'
+import { Form }       from 'antd'
+import { rest }       from 'msw'
+import socketIOClient from 'socket.io-client'
+import MockedSocket   from 'socket.io-mock'
+
 
 import { networkApi }                         from '@acx-ui/rc/services'
 import { CommonUrlsInfo, websocketServerUrl } from '@acx-ui/rc/utils'
@@ -17,6 +20,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import { Venues } from './Venues'
+
+jest.mock('socket.io-client')
 
 const list = {
   totalCount: 2,
@@ -62,7 +67,11 @@ function wrapper ({ children }: { children: React.ReactElement }) {
 }
 
 describe('Create Network: Venues Step', () => {
+  let socket
+
   beforeEach(() => {
+    socket = new MockedSocket()
+    socketIOClient.mockReturnValue(socket)
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
     })

@@ -1,11 +1,14 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import { rest }       from 'msw'
+import socketIOClient from 'socket.io-client'
+import MockedSocket   from 'socket.io-mock'
 
 import { CommonUrlsInfo, websocketServerUrl } from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, render, screen }         from '@acx-ui/test-utils'
 
 import { NetworkDetails } from './NetworkDetails'
+
 
 const network = {
   type: 'aaa',
@@ -35,8 +38,14 @@ const networkDetailHeaderData = {
   }
 }
 
+jest.mock('socket.io-client')
+
 describe('NetworkDetails', () => {
+  let socket
+  
   beforeEach(() => {
+    socket = new MockedSocket()
+    socketIOClient.mockReturnValue(socket)
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getNetwork.url,
