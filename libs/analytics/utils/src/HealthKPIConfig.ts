@@ -15,8 +15,6 @@ const createBarChartConfig = (apiMetric: string) => ({
   shortYFormat: (val: number) => formatter('percentFormat')(val / 100)
 })
 
-// const createUnitFormatter = (text: string, formatFn = formatter()) => 
-//   (x: number) => t(text, { value: formatFn(x) })
 
 const divideBy1000 = (ms: number) => ms / 1000
 
@@ -295,28 +293,6 @@ export const kpiConfig = {
       tooltip: 'The time-series graph on the left displays the percentage of APs that have AP-to-SZ control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.'
     },
   },
-  // clusterLatency: {
-  //   text: 'Cluster Latency',
-  //   timeseries: {
-  //     apiMetric: 'szLatencyCountAndSzCount',
-  //     minGranularity: 'PT3M'
-  //   },
-  //   histogram: {
-  //     highlightAbove: false,
-  //     initialThreshold: 10,
-  //     apiMetric: 'szLatency',
-  //     splits: [2, 5, 10, 25, 50, 100, 200, 500],
-  //     xUnit: 'ms',
-  //     //longXFormat: x => t('{x} ms', {x}),
-  //     //shortYFormat: formatter(),
-  //     //longYFormat: createUnitFormatter('{value} internode links')
-  //   },
-  //   pill: {
-  //     description: defineMessage({ defaultMessage: '{successCount} of {totalCount} internode links under {threshold} ms' }),
-  //     pillSuffix: pillSuffix.meetGoal,
-  //     tooltip: 'The time-series graph on the left displays the percentage of samples that have intra-SZ cluster latency (which is the latency between each node within a SZ cluster) which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of clusters. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.'
-  //   }
-  // },
   switchPoeUtilization: {
     text: 'PoE Utilization',
     isBeta: false,
@@ -365,7 +341,6 @@ export const kpiConfig = {
 
 export const kpisForTab = {
   overview: {
-    // display order
     kpis: [
       'connectionSuccess',
       'timeToConnect',
@@ -373,19 +348,9 @@ export const kpisForTab = {
       'apCapacity',
       'apServiceUptime',
       'onlineAPs'
-    ],
-    // order in which queries are executed
-    loadOrder: [
-      'connectionSuccess',
-      'apServiceUptime',
-      'apCapacity',
-      'timeToConnect',
-      'clientThroughput',
-      'onlineAPs'
     ]
   },
   connection: {
-    // display order
     kpis: [
       'connectionSuccess',
       'timeToConnect',
@@ -395,18 +360,6 @@ export const kpisForTab = {
       'radius',
       'dhcp',
       'roamingSuccess'
-      // 'captivePortal',
-    ],
-    // order in which queries are executed
-    loadOrder: [
-      'connectionSuccess',
-      'userAuthentication',
-      'association',
-      'eap',
-      'radius',
-      'dhcp',
-      'roamingSuccess',
-      'timeToConnect'
     ]
   },
   performance: {
@@ -414,29 +367,14 @@ export const kpisForTab = {
       'clientThroughput',
       'apCapacity',
       'rss'
-      // 'airtimeEfficiency'
-    ],
-    loadOrder: [
-      'rss',
-      'apCapacity',
-      'clientThroughput'
     ]
   },
   infrastructure: {
     kpis: [
       'apServiceUptime',
       'apToSZLatency',
-      // isAlto() ? null : 'clusterLatency',
       'switchPoeUtilization',
       'onlineAPs'
-      // 'szUptime',
-    ].filter(Boolean),
-    loadOrder: [
-      // isAlto() ? null : 'clusterLatency',
-      'apServiceUptime',
-      'apToSZLatency',
-      'switchPoeUtilization',
-      'onlineAPs'
-    ].filter(Boolean)
+    ]
   }
 }

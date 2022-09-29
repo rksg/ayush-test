@@ -3,8 +3,7 @@ import { gql } from 'graphql-request'
 import moment from 'moment-timezone'
 
 import { dataApi }         from '@acx-ui/analytics/services'
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { kpiConfig } from './config'
+import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import { calculateGranularity } from '../../../utils'
 
 type datum = number []
