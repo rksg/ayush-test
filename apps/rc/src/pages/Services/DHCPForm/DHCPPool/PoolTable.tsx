@@ -9,9 +9,6 @@ import {
 } from '@acx-ui/components'
 import { DHCPPool } from '@acx-ui/rc/utils'
 
-import { PoolAddButton } from '../styledComponents'
-
-
 
 export function PoolTable (props:{
   poolData: DHCPPool[],

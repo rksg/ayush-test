@@ -100,10 +100,11 @@ export function SettingForm () {
       </Col>
       }
 
-      <AntLabel>
-        {intl.$t({ defaultMessage: 'Set DHCP Pools' })}
-      </AntLabel>
+
       <Col span={20}>
+        <AntLabel>
+          {intl.$t({ defaultMessage: 'Set DHCP Pools' })}
+        </AntLabel>
         <DHCPPoolMain/>
       </Col>
     </Row>
