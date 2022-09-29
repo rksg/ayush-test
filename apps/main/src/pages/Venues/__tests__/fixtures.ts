@@ -185,3 +185,172 @@ export const timezoneResult = {
   timeZoneId: 'America/Los_Angeles',
   timeZoneName: 'Pacific Daylight Time'
 }
+
+export const configProfiles = [{
+  id: '771f6e6b21af43fa8879e10170114fc4',
+  name: 'profile-cli01',
+  profileType: 'CLI',
+  venueCliTemplate: {
+    cli: 'manager registrar\n bbb',
+    id: '361a51cd00804f498b28eab9f7114227',
+    name: 'profile-cli01',
+    overwrite: false,
+    switchModels: 'ICX7150-24'
+  }
+}, {
+  id: '6a757409dc1f47c2ad48689db4a0846a',
+  name: 'profile01',
+  profileType: 'Regular',
+  venues: ['My-Venue', 'My-Venue2']
+}, {
+  id: '69248dfe1d5b400199304447b45a1700',
+  name: 'profile-cli03',
+  profileType: 'CLI',
+  venueCliTemplate: {
+    cli: 'manager registrar\n profile-cli03 cli test',
+    id: '3ace41aef9be4f4087baf0af96bbed67',
+    name: 'profile-cli03',
+    overwrite: false,
+    switchModels: 'ICX7150-24F,ICX7850-48F,ICX7850-48FS'
+  }
+}, {
+  id: '7d6efb0dec2d4a58a08056045982ef6a',
+  name: 'profile-cli02',
+  profileType: 'CLI',
+  venueCliTemplate: {
+    cli: 'manager registrar\n qqq',
+    id: '1c5dca60d0b8464a9163436405ece945',
+    name: 'profile-cli02',
+    overwrite: false,
+    switchModels: 'ICX7150-24,ICX7550-24P'
+  },
+  venues: ['Venue01']
+}, {
+  acls: [{
+    aclType: 'standard',
+    id: 'ae7ea5418aee4048b8122e2ae20a243b',
+    name: 'aaa'
+  }],
+  id: '74ee9d8bb08b47218926d9bc33f6167f',
+  name: 'profile02',
+  profileType: 'Regular',
+  trustedPorts: [{
+    id: '89892eff25b64ac0ada800f0e5cd736c',
+    model: 'ICX7150-48',
+    slots: [
+      { slotNumber: 3, enable: true, option: '4X1/10G' },
+      { slotNumber: 2, enable: true, option: '2X1G' },
+      { slotNumber: 1, enable: true }
+    ],
+    trustPorts: ['1/1/1', '1/1/4'],
+    trustedPortType: 'all',
+    vlanDemand: false
+  }, {
+    id: '2cdada96178343be93c6b8a998115259',
+    model: 'ICX7850-48FS',
+    slots: [{ slotNumber: 2, enable: true, option: '8X40/100G' }, { slotNumber: 1, enable: true }],
+    trustPorts: ['1/1/3'],
+    trustedPortType: 'all',
+    vlanDemand: false
+  }],
+  vlans: [{
+    arpInspection: false,
+    id: '0abd832af3e542f58341c85cf180ab2b',
+    igmpSnooping: 'passive',
+    ipv4DhcpSnooping: true,
+    multicastVersion: 3,
+    spanningTreeProtocol: 'stp',
+    vlanId: 2
+  }]
+}]
+
+export const venueSwitchSetting = [{
+  cliApplied: false,
+  id: '45aa5ab71bd040be8c445be8523e0b6c',
+  name: 'My-Venue',
+  profileId: ['6a757409dc1f47c2ad48689db4a0846a'],
+  switchLoginPassword: 'xxxxxxxxx',
+  switchLoginUsername: 'admin',
+  syslogEnabled: false
+}, {
+  cliApplied: true,
+  dns: ['1.1.1.10'],
+  id: '45aa5ab71bd040be8c445be8523e0b6c',
+  name: 'My-Venue',
+  profileId: ['771f6e6b21af43fa8879e10170114fc4', '69248dfe1d5b400199304447b45a1700'],
+  switchLoginPassword: 'xxxxxxxxx',
+  switchLoginUsername: 'admin',
+  syslogEnabled: false
+}, {
+  cliApplied: false,
+  id: '45aa5ab71bd040be8c445be8523e0b6c',
+  name: 'My-Venue',
+  profileId: ['74ee9d8bb08b47218926d9bc33f6167f'],
+  switchLoginPassword: 'xxxxxxxxx',
+  switchLoginUsername: 'admin',
+  syslogEnabled: false
+}]
+
+export const switchConfigProfile = [{
+  id: '6a757409dc1f47c2ad48689db4a0846a',
+  name: 'profile01',
+  profileType: 'Regular',
+  venues: ['45aa5ab71bd040be8c445be8523e0b6c']
+}, {
+  id: '74ee9d8bb08b47218926d9bc33f6167f',
+  name: 'profile02',
+  profileType: 'Regular',
+  acls: [{
+    aclRules: [{
+      sequence: 65000,
+      action: 'permit',
+      source: 'any',
+      id: 'c2a17d8e5ea048baa220a6ca1a68ad54'
+    }],
+    name: 'test-acl',
+    aclType: 'standard',
+    id: 'ae7ea5418aee4048b8122e2ae20a243b'
+  }],
+  trustedPorts: [{
+    id: '89892eff25b64ac0ada800f0e5cd736c',
+    model: 'ICX7150-48',
+    slots: [
+      { slotNumber: 3, enable: true, option: '4X1/10G' },
+      { slotNumber: 2, enable: true, option: '2X1G' },
+      { slotNumber: 1, enable: true }
+    ],
+    trustPorts: ['1/1/1', '1/1/4'],
+    trustedPortType: 'all',
+    vlanDemand: false
+  }, {
+    id: '2cdada96178343be93c6b8a998115259',
+    model: 'ICX7850-48FS',
+    slots: [
+      { slotNumber: 2, enable: true, option: '8X40/100G' },
+      { slotNumber: 1, enable: true }
+    ],
+    trustPorts: ['1/1/3'],
+    trustedPortType: 'all',
+    vlanDemand: false
+  }],
+  vlans: [{
+    vlanId: 2,
+    vlanName: 'test-vlan',
+    ipv4DhcpSnooping: true,
+    arpInspection: false,
+    igmpSnooping: 'passive',
+    multicastVersion: 3,
+    spanningTreeProtocol: 'stp',
+    switchFamilyModels: [{
+      id: '5b902550c38343198059598a074c0e01',
+      model: 'ICX7550-24P',
+      slots: [{ slotNumber: 2, enable: true, option: '2X40G' },
+        { slotNumber: 1, enable: true },
+        { slotNumber: 3, enable: true, option: '2X40G' }
+      ],
+      taggedPorts: '1/1/2',
+      untaggedPorts: '1/1/22,1/1/24'
+    }],
+    id: '0abd832af3e542f58341c85cf180ab2b'
+  }]
+}]

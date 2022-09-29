@@ -12,7 +12,9 @@ import {
   VenueDetailHeader,
   VenueCapabilities,
   VenueLed,
-  VenueApModels
+  VenueApModels,
+  VenueSwitchConfiguration,
+  ConfigurationProfile
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -118,6 +120,43 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    configProfiles: build.query<ConfigurationProfile[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getConfigProfiles, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: { data: ConfigurationProfile[] }) {
+        return result?.data
+      }
+    }),
+    venueSwitchSetting: build.query<VenueSwitchConfiguration, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSwitchSetting, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueSwitchSetting: build.mutation<Venue, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueSwitchSetting, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    switchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getSwitchConfigProfile, params)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -132,5 +171,9 @@ export const {
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
-  useUpdateVenueLedOnMutation
+  useUpdateVenueLedOnMutation,
+  useConfigProfilesQuery,
+  useVenueSwitchSettingQuery,
+  useUpdateVenueSwitchSettingMutation,
+  useSwitchConfigProfileQuery
 } = venueApi

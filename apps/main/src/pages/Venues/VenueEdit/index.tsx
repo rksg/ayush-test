@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react'
 
 import { showActionModal, CustomButtonProps } from '@acx-ui/components'
-import { VenueLed }                           from '@acx-ui/rc/utils'
+import { VenueLed, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
 import { getIntl }                            from '@acx-ui/utils'
 
@@ -27,7 +27,8 @@ export interface EditContext {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setData: (data: any) => void,
   tempData?: {
-    settings?: VenueLed[]
+    settings?: VenueLed[],
+    general?: VenueSwitchConfiguration
   }
 }
 

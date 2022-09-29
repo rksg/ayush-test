@@ -157,11 +157,14 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
         setSelectedRowKeys([key])
       }
     } else {
-      setSelectedRowKeys(isSelected
-        // remove if selected
+      const keys = isSelected
+      // remove if selected
         ? selectedRowKeys.filter(k => k !== key)
-        // add into collection if not selected
-        : [...selectedRowKeys, key])
+      // add into collection if not selected
+        : [...selectedRowKeys, key]
+
+      setSelectedRowKeys(keys)
+      props.rowSelection?.onChange?.(keys, [record], { type: 'single' })
     }
   }
   columns = columns.map(column => column.searchable && searchValue

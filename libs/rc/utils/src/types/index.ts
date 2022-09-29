@@ -161,6 +161,11 @@ export enum SwitchStatusEnum {
   STACK_MEMBER_NEVER_CONTACTED = 'STACK_MEMBER_PREPROVISIONED'
 }
 
+export enum ProfileTypeEnum {
+  REGULAR = 'Regular',
+  CLI = 'CLI'
+}
+
 export type ChartData = {
   category: string
   series: Array<{ name: string, value: number }>

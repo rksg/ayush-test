@@ -126,5 +126,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   validateRadius: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
+  },
+  getConfigProfiles: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profiles/query'
+  },
+  getVenueSwitchSetting: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venue/:venueId'
+  },
+  updateVenueSwitchSetting: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/venue'
+  },
+  getSwitchConfigProfile: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId'
   }
 }
