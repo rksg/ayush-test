@@ -53,7 +53,7 @@ export interface VenueDetail {
 }
 
 export interface FloorPlanDto {
-  	id: string;
+  id: string;
 	name: string;
 	floorNumber: number,
 	image: FloorPlanImage,
@@ -64,8 +64,8 @@ export interface FloorPlanDto {
 }
 
 export interface FloorPlanImage {
-  	id: string,
-  	name: string
+	id: string,
+	name: string
 }
 
 export interface VenueCapabilities {

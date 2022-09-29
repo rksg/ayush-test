@@ -13,8 +13,6 @@ import type { IncidentInformation } from './incidentInformation'
 import type {
   IncidentSeverities,
   SeverityRange,
-  PathNode,
-  NodeType,
   Incident
 } from './types/incidents'
 
