@@ -21,7 +21,10 @@ export function WifiConfigTab () {
     setEditContextData({
       ...editContextData,
       tabKey: activeSubTab,
+      newData: undefined,
+      oldData: undefined,
       tempData: {
+        ...editContextData.tempData,
         [activeSubTab]: editContextData.newData
       }
     })

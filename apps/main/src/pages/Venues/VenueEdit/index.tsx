@@ -16,17 +16,16 @@ const tabs = {
   switch: SwitchConfigTab
 }
 
-export type EditData = VenueLed[]
-
 export interface EditContext {
   tabTitle: string,
   tabKey?: string,
   isDirty: boolean,
   hasError?: boolean,
-  oldData: EditData,
-  newData: EditData,
+  oldData: unknown,
+  newData: unknown,
   updateChanges: () => void,
-  setData: (data: EditData) => void,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setData: (data: any) => void,
   tempData?: {
     settings?: VenueLed[]
   }
@@ -77,6 +76,8 @@ export function showUnsavedModal (
       setEditContextData({
         ...editContextData,
         isDirty: false,
+        newData: undefined,
+        oldData: undefined,
         tempData: {
           ...editContextData.tempData,
           [tabKey as keyof EditContext]: oldData

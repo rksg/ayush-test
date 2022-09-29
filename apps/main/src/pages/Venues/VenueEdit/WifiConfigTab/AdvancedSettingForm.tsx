@@ -53,7 +53,7 @@ export function AdvancedSettingForm () {
   useEffect(() => {
     // set default data when switching sub tab
     const tab = activeSubTab as keyof EditContext['tempData']
-    const data = editContextData?.tempData?.[tab] || []
+    const data = editContextData?.tempData?.[tab] || undefined
     setEditContextData({
       ...editContextData,
       tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
