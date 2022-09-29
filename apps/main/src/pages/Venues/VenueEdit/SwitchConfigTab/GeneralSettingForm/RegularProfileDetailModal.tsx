@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Typography } from 'antd'
 
 import { Modal, Table, TableProps }                         from '@acx-ui/components'
@@ -75,7 +73,7 @@ export function RegularProfileDetailModal (props: {
   }
 
   return (<Modal
-    title={`${data?.name} ${$t({ defaultMessage: 'Profile Details' })}`}
+    title={$t({ defaultMessage: 'VLAN (L2) Profile Details' })}
     visible={formState?.regularModalvisible}
     width={900}
     cancelButtonProps={{ style: { display: 'none' } }}

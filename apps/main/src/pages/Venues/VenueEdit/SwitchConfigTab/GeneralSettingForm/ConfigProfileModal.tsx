@@ -67,13 +67,21 @@ export function ConfigProfileModal (props: {
     key: 'venueCliTemplate',
     render: (data) => {
       const models = (data as string)?.split(',') ?? []
-      return models?.length > 1 ? `${models.length} models` : data
+      const title = <>{models.map((m, idx) => <div key={idx}>{m}</div>)}</>
+      const content = models?.length > 1 ? `${models.length} models` : data
+      return <Tooltip title={title} placement='bottom'>{ content }</Tooltip>
     }
   }, {
     title: $t({ defaultMessage: 'Venues' }),
     dataIndex: 'venues',
     key: 'venues',
-    render: (data) => (data as string[])?.length ?? 0
+    render: (data) => {
+      const title = data
+        ? <>{(data as string[])?.map((v, idx) => <div key={idx}>{v}</div>)}</>
+        : null
+      const count = (data as string[])?.length ?? 0
+      return <Tooltip title={title} placement='bottom'>{ count }</Tooltip>
+    }
   }]
 
   return (<Modal
@@ -142,6 +150,11 @@ export function ConfigProfileModal (props: {
               defaultSelectedRowKeys: selectedCLIKeys,
               onChange: onChangeCLI
             }}
+            // TODO: 
+            actions={[{
+              label: 'Add CLI Profile',
+              onClick: () => {}
+            }]}
           />
         </>
       </Tabs.TabPane>

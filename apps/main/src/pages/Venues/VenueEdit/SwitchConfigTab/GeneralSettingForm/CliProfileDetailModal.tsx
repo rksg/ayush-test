@@ -28,7 +28,7 @@ export function CliProfileDetailModal (props: {
   }
 
   return (<Modal
-    title={`${selectedProfile?.name} ${$t({ defaultMessage: 'Profile Details' })}`}
+    title={$t({ defaultMessage: 'VLAN (L2) Profile Details' })}
     visible={formState?.cliModalvisible}
     width={900}
     cancelButtonProps={{ style: { display: 'none' } }}

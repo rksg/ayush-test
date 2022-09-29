@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect, Key } from 'react'
+import { useContext, useState, useRef, useEffect, Key } from 'react'
 
 import { Col, Divider, Form, Input, Space, Switch } from 'antd'
 import { isEqual }                                  from 'lodash'
@@ -104,6 +104,7 @@ export function GeneralSettingForm () {
 
     setEditContextData({
       ...editContextData,
+      tabKey: activeSubTab,
       tabTitle: $t({ defaultMessage: 'General' }),
       newData: {
         ...formData   
@@ -119,7 +120,7 @@ export function GeneralSettingForm () {
       hasError: errors ? errors.flat()?.length > 0 : false,
       setData: setFormData,
       updateChanges: handleUpdate
-    })    
+    })
   }, [formData])
 
   const handleSyslogServer = (checked: boolean) => {
@@ -303,12 +304,11 @@ export function GeneralSettingForm () {
           </RowStyle>
           <ConfigProfileModal {...{ formState, setFormState, formData, setFormData }} />
           { formState.cliModalvisible && 
-            <CliProfileDetailModal {...{ formState, setFormState, formData }} />
-          }
-          <SyslogServerModal {...{ formState, setFormState, formData, setFormData }} />
+            <CliProfileDetailModal {...{ formState, setFormState, formData }} /> }
+          { formState.syslogModalvisible && 
+            <SyslogServerModal {...{ formState, setFormState, formData, setFormData }} /> }
           { formState.regularModalvisible && 
-            <RegularProfileDetailModal {...{ formState, setFormState, formData }} />
-          }
+            <RegularProfileDetailModal {...{ formState, setFormState, formData }} /> }
         </StepsForm.StepForm> }
       </StepsForm>
     </Loader>

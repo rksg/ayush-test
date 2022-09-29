@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect } from 'react'
 
 import { Form, Input } from 'antd'
 
@@ -17,6 +17,13 @@ export function SyslogServerModal (props: {
   const { $t } = getIntl()
   const { formState, setFormState, formData, setFormData } = props
   const [form] = Form.useForm()
+
+  useEffect(() => {
+    form.setFieldsValue({
+      syslogPrimaryServer: formData?.syslogPrimaryServer,
+      syslogSecondaryServer: formData?.syslogSecondaryServer
+    })
+  }, [])
 
   const onOk = async () => {
     try {
