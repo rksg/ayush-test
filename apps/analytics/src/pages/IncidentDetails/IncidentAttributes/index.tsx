@@ -10,7 +10,7 @@ import {
   formattedPath,
   impactedArea
 } from '@acx-ui/analytics/utils'
-import { formatter, getIntl } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/utils'
 
 import { DescriptionRowProps, DescriptionSection } from '../../../components/DescriptionSection'
 
@@ -42,7 +42,6 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
   incident: Incident
   visibleFields: Attributes[]
 }) => {
-  const { $t } = getIntl()
   const intl = useIntl()
   const { visible, onOpen, onClose } = useDrawer(false)
   const scope = formattedPath(incident.path, incident.sliceValue)
@@ -81,11 +80,11 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
     [Attributes.Type]: {
       key: 'type',
       getValue: (incident: Incident) => ({
-        label: $t({
+        label: intl.$t({
           defaultMessage: 'Type',
           description: 'Path node type'
         }),
-        children: $t(nodeTypes(incident.sliceType))
+        children: intl.$t(nodeTypes(incident.sliceType))
       })
     },
     [Attributes.Scope]: {
@@ -102,7 +101,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
     [Attributes.Duration]: {
       key: 'duration',
       getValue: (incident: Incident) => ({
-        label: $t({ defaultMessage: 'Duration' }),
+        label: intl.$t({ defaultMessage: 'Duration' }),
         children: formatter('durationFormat')(durationOf(
           incident.startTime,
           incident.endTime
@@ -112,14 +111,14 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
     [Attributes.EventStartTime]: {
       key: 'eventStartTime',
       getValue: (incident: Incident) => ({
-        label: $t({ defaultMessage: 'Event Start Time' }),
+        label: intl.$t({ defaultMessage: 'Event Start Time' }),
         children: formatter('dateTimeFormat')(incident.startTime)
       })
     },
     [Attributes.EventEndTime]: {
       key: 'eventEndTime',
       getValue: (incident: Incident) => ({
-        label: $t({ defaultMessage: 'Event End Time' }),
+        label: intl.$t({ defaultMessage: 'Event End Time' }),
         children: formatter('dateTimeFormat')(incident.endTime)
       })
     }
