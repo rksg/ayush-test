@@ -1,3 +1,5 @@
+import { BrowserRouter } from 'react-router-dom'
+
 import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
 import { Provider }                         from '@acx-ui/store'
@@ -43,7 +45,8 @@ const filters: AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
-  range: DateRange.last24Hours
+  range: DateRange.last24Hours,
+  filters: {}
 } as AnalyticsFilter
 
 const switchModelsData = [
@@ -106,9 +109,12 @@ test('should render Top Switches by Traffic widget', async () => {
     data: topSwitchesByTrafficResponse
   })
   render(
-    <Provider>
-      <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
-    </Provider>)
+    <BrowserRouter>
+      <Provider>
+        <AnalyticsWidgets name='topSwitchesByTraffic' filters={filters}/>
+      </Provider>
+    </BrowserRouter>
+  )
   expect(await screen.findByText('Top 5 Switches by Traffic')).not.toBe(null)
 })
 
@@ -126,7 +132,12 @@ test('should render Connected Clients Over Time widget', async () => {
 
 test('should render Top 5 Switches by PoE Usage widget', async () => {
   mockGraphqlQuery(dataApiURL, 'SwitchesByPoEUsage', { data: topSwitchesByPoEUsageResponse })
-  render( <Provider> <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/></Provider>)
+  render(
+    <BrowserRouter>
+      <Provider>
+        <AnalyticsWidgets name='topSwitchesByPoeUsage' filters={filters}/>
+      </Provider>
+    </BrowserRouter>)
   expect(await screen.findByText('Top 5 Switches by PoE Usage')).toBeVisible()
 })
 
@@ -137,7 +148,8 @@ test('should render Top 5 Switch Models widget', async () => {
   render(
     <Provider>
       <AnalyticsWidgets name='topSwitchModelsByCount' filters={filters}/>
-    </Provider>)
+    </Provider>
+  )
   expect(await screen.findByText('Top 5 Switch Models')).not.toBe(null)
 })
 
@@ -196,10 +208,21 @@ test('should render Incidents Dashboard Widget', async () => {
   mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
     data: { network: { hierarchyNode: expectedIncidentDashboardData } }
   })
-  render( <Provider> <AnalyticsWidgets 
+  render( <Provider> <AnalyticsWidgets
     name='incidents'
     filters={filters}
   /></Provider>)
 
+  await screen.findByText('Incidents')
+})
+
+test('should render Venue Overview Incidents Widget', async () => {
+  const sample = { P1: 0, P2: 2, P3: 3, P4: 4 }
+  mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
+    data: { network: { hierarchyNode: sample } }
+  })
+  render( <Provider> <AnalyticsWidgets
+    name='venueIncidentsDonut'
+    filters={filters} /></Provider>)
   await screen.findByText('Incidents')
 })

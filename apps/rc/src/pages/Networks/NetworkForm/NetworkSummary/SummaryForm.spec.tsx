@@ -4,7 +4,7 @@ import { rest }       from 'msw'
 import socketIOClient from 'socket.io-client'
 import MockedSocket   from 'socket.io-mock'
 
-import { CommonUrlsInfo, websocketServerUrl }                               from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, websocketServerUrl, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render }                                               from '@acx-ui/test-utils'
@@ -55,7 +55,7 @@ describe('SummaryForm', () => {
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
@@ -63,7 +63,7 @@ describe('SummaryForm', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.get(CommonUrlsInfo.getNetwork.url,
+      rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.get(`http://localhost${websocketServerUrl}/`,
         (_, res, ctx) => res(ctx.json({})))

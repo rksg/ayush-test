@@ -278,7 +278,7 @@ exports[`Select Service Form should render form 1`] = `
                                       <input
                                         class="ant-radio-input"
                                         type="radio"
-                                        value="WIFI_CALLING"
+                                        value="Wi-Fi Calling"
                                       />
                                       <span
                                         class="ant-radio-inner"

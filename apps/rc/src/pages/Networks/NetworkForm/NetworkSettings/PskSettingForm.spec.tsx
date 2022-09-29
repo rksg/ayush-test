@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, websocketServerUrl }                               from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, websocketServerUrl, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -16,7 +16,7 @@ import {
 import { NetworkForm } from '../NetworkForm'
 
 async function fillInBeforeSettings (networkName: string) {
-  const insertInput = screen.getByLabelText('Network Name')
+  const insertInput = screen.getByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
   const validating = await screen.findByRole('img', { name: 'loading' })
@@ -55,7 +55,7 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json([]))),
@@ -63,7 +63,7 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.get(CommonUrlsInfo.getNetwork.url,
+      rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.get(`http://localhost${websocketServerUrl}/`,
         (_, res, ctx) => res(ctx.json({})))
@@ -167,8 +167,47 @@ describe('NetworkForm', () => {
 
     await userEvent.click(screen.getByText('Generate'))
 
+    await userEvent.click(screen.getByRole('switch'))
+
+    const ipTextbox = screen.getByLabelText('IP Address')
+    fireEvent.change(ipTextbox, { target: { value: '192.168.1.1' } })
+
+    const portTextbox = screen.getByLabelText('Port')
+    fireEvent.change(portTextbox, { target: { value: '1111' } })
+
+    const secretTextbox = screen.getByLabelText('Shared secret')
+    fireEvent.change(secretTextbox, { target: { value: 'secret-1' } })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add Secondary Server' }))
+
+    const ipTextboxAlt = screen.getAllByLabelText('IP Address')[1]
+    fireEvent.change(ipTextboxAlt, { target: { value: '192.168.2.2' } })
+
+    const portTextboxAlt = screen.getAllByLabelText('Port')[1]
+    fireEvent.change(portTextboxAlt, { target: { value: '2222' } })
+
+    const secretTextboxAlt = screen.getAllByLabelText('Shared secret')[1]
+    fireEvent.change(secretTextboxAlt, { target: { value: 'secret-2' } })
+
+    await userEvent.click(screen.getAllByRole('switch')[1])
+
+    const ipTextboxAcc = screen.getAllByLabelText('IP Address')[2]
+    fireEvent.change(ipTextboxAcc, { target: { value: '192.168.3.3' } })
+
+    const portTextboxAcc = screen.getAllByLabelText('Port')[2]
+    fireEvent.change(portTextboxAcc, { target: { value: '3333' } })
+
+    const secretTextboxAcc = screen.getAllByLabelText('Shared secret')[2]
+    fireEvent.change(secretTextboxAcc, { target: { value: 'secret-3' } })
+    
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
+      expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
+      expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
+      expect(screen.getByText('192.168.2.2:2222')).toBeVisible()
+      expect(screen.getAllByDisplayValue('secret-2')).toHaveLength(2)
+      expect(screen.getByText('192.168.3.3:3333')).toBeVisible()
+      expect(screen.getAllByDisplayValue('secret-3')).toHaveLength(2)
     })
   })
 })

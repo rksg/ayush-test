@@ -3,9 +3,9 @@ import { rest }       from 'msw'
 import socketIOClient from 'socket.io-client'
 import MockedSocket   from 'socket.io-mock'
 
-import { CommonUrlsInfo, websocketServerUrl } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen }         from '@acx-ui/test-utils'
+import { CommonUrlsInfo, websocketServerUrl, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                         from '@acx-ui/store'
+import { mockServer, render, screen }                       from '@acx-ui/test-utils'
 
 import { NetworkDetails } from './NetworkDetails'
 
@@ -48,7 +48,7 @@ describe('NetworkDetails', () => {
     socketIOClient.mockReturnValue(socket)
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
       rest.get(

@@ -2,8 +2,8 @@ import { rest }       from 'msw'
 import socketIOClient from 'socket.io-client'
 import MockedSocket   from 'socket.io-mock'
 
-import { CommonUrlsInfo, websocketServerUrl } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { CommonUrlsInfo, websocketServerUrl, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                         from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -170,7 +170,7 @@ describe('Networks Table', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteNetwork.url,
+        WifiUrlsInfo.deleteNetwork.url,
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
       ),
       rest.get(`http://localhost${websocketServerUrl}/`,
