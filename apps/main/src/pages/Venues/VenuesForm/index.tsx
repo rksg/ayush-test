@@ -172,7 +172,7 @@ export function VenuesForm () {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
-    return checkObjectNotExists(intl, list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
+    return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
 
   const addressValidator = async () => {

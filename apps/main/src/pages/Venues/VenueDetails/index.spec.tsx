@@ -6,18 +6,15 @@ import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { VenueDetails } from './VenueDetails'
+import {
+  venueDetailHeaderData
+} from '../__tests__/fixtures'
+import { VenueDetails } from '../VenueDetails'
 
-const venueDetailHeaderData = {
-  activeNetworkCount: 1,
-  aps: {
-    totalApCount: 1
-  },
-  totalClientCount: 2,
-  venue: {
-    name: 'testVenue'
-  }
-}
+jest.mock(
+  'rc/Widgets',
+  () => ({ name }: { name: string }) => <div data-testid={`networks-${name}`} title={name} />,
+  { virtual: true })
 
 describe('VenueDetails', () => {
   beforeEach(() => {

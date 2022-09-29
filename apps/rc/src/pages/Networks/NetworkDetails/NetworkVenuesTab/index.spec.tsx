@@ -2,10 +2,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import * as config         from '@acx-ui/config'
-import { networkApi }      from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import * as config                      from '@acx-ui/config'
+import { networkApi }                   from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }              from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -112,7 +112,7 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
@@ -150,7 +150,7 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
@@ -193,11 +193,11 @@ describe('NetworkVenuesTab', () => {
     ]
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
       rest.post(
-        CommonUrlsInfo.addNetworkVenue.url,
+        WifiUrlsInfo.addNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
@@ -225,7 +225,7 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
@@ -246,11 +246,11 @@ describe('NetworkVenuesTab', () => {
 
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteNetworkVenue.url,
+        WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       )
     )
@@ -272,7 +272,7 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
@@ -293,15 +293,15 @@ describe('NetworkVenuesTab', () => {
 
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteNetworkVenue.url,
+        WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       ),
       rest.put(
-        CommonUrlsInfo.updateNetworkDeep.url.split('?')[0],
+        WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -329,7 +329,7 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
@@ -350,15 +350,15 @@ describe('NetworkVenuesTab', () => {
 
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteNetworkVenue.url,
+        WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       ),
       rest.put(
-        CommonUrlsInfo.updateNetworkDeep.url.split('?')[0],
+        WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -385,7 +385,7 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
@@ -406,15 +406,15 @@ describe('NetworkVenuesTab', () => {
 
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteNetworkVenue.url,
+        WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       ),
       rest.put(
-        CommonUrlsInfo.updateNetworkDeep.url.split('?')[0],
+        WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -492,7 +492,7 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
       rest.get(
@@ -562,7 +562,7 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
       rest.get(

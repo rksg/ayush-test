@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, websocketServerUrl } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen }         from '@acx-ui/test-utils'
+import { CommonUrlsInfo, websocketServerUrl, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                         from '@acx-ui/store'
+import { mockServer, render, screen }                       from '@acx-ui/test-utils'
 
 import { 
   cloudpathResponse,
@@ -22,7 +22,7 @@ describe('DpskSettingsForm', () => {
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.get(CommonUrlsInfo.getNetwork.url,
+      rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.get(`http://localhost${websocketServerUrl}/`,
         (_, res, ctx) => res(ctx.json({})))

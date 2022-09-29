@@ -6,7 +6,9 @@ import {
   RequestPayload,
   TableResult,
   Service,
-  CommonResult
+  CommonResult,
+  WifiCallingUrls,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -75,8 +77,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-
-
     devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
         const devicePolicyListReq = createHttpRequest(
@@ -89,7 +89,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-
     applicationPolicyList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
         const applicationPolicyListReq = createHttpRequest(
@@ -116,7 +115,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     vlanPoolList: build.query<VlanPool[], RequestPayload>({
       query: ({ params }) => {
         const vlanPoolListReq = createHttpRequest(
-          CommonUrlsInfo.getVlanPools,
+          WifiUrlsInfo.getVlanPools,
           params
         )
         return {
@@ -124,9 +123,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    deleteService: build.mutation<CommonResult, RequestPayload>({
+    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.deleteService, params)
+        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
         return {
           ...req
         }
@@ -144,7 +143,7 @@ export const {
   useApplicationPolicyListQuery,
   useDevicePolicyListQuery,
   useServiceListQuery,
-  useDeleteServiceMutation,
   useVlanPoolListQuery,
-  useAccessControlProfileListQuery
+  useAccessControlProfileListQuery,
+  useDeleteWifiCallingServiceMutation
 } = serviceApi

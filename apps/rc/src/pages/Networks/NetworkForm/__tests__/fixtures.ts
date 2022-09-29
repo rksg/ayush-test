@@ -196,6 +196,14 @@ export const cloudpathResponse = [{
     },
     id: 'c615bf8c82dc404ebb98c7e89672ef29'
   },
+  accountingRadius: {
+    primary: {
+      ip: '5.54.58.6',
+      port: 57,
+      sharedSecret: '454545'
+    },
+    id: 'c615bf8c82dc404ebb98c7e89672ef29'
+  },
   deploymentType: 'Cloud',
   id: '6edb22ef74b143f280f2eb3105053840',
   name: 'cloud_02'
@@ -204,6 +212,14 @@ export const cloudpathResponse = [{
     primary: {
       ip: '3.2.34.5',
       port: 56,
+      sharedSecret: 'GFHFGH'
+    },
+    id: '296ee3f68c434aa4bc3b3ba1f7272806'
+  }, 
+  accountingRadius: {
+    primary: {
+      ip: '3.2.34.6',
+      port: 57,
       sharedSecret: 'GFHFGH'
     },
     id: '296ee3f68c434aa4bc3b3ba1f7272806'

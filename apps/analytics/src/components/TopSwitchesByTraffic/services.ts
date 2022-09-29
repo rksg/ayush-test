@@ -29,8 +29,9 @@ export const api = dataApi.injectEndpoints({
             $path: [HierarchyNodeInput]
             $start: DateTime
             $end: DateTime
+            $filter: FilterInput
           ) {
-            network(start: $start, end: $end) {
+            network(start: $start, end: $end,filter : $filter) {
               hierarchyNode(path: $path) {
                 topNSwitchesByTraffic (n: 5) {
                   name,
@@ -45,7 +46,8 @@ export const api = dataApi.injectEndpoints({
         variables: {
           path: payload.path,
           start: payload.startDate,
-          end: payload.endDate
+          end: payload.endDate,
+          filter: payload.filter
         }
       }),
       transformResponse: (response: Response<SwitchesByTrafficData>) =>

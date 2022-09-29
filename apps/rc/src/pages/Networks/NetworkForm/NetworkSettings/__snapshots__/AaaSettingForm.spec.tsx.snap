@@ -54,7 +54,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              Add Network
+              Create New Network
             </h1>
           </span>
         </div>
@@ -257,9 +257,12 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                           <label
                             class="ant-form-item-required"
                             for="details_name"
-                            title="Network Name"
+                            title=""
                           >
                             Network Name
+                            <svg>
+                              QuestionMarkCircleOutlined.svg
+                            </svg>
                           </label>
                         </div>
                         <div
