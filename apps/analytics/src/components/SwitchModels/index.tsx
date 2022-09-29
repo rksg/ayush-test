@@ -59,7 +59,7 @@ function TopSwitchModelsWidget ({ filters }: { filters: AnalyticsFilter }) {
                   defaultMessage: `{name}<br></br>
                     <space><b>{formattedValue}</b> ({formattedPercent})</space>`
                 })}
-                type={'large'}
+                size={'large'}
               />
               : <NoData />
           )}

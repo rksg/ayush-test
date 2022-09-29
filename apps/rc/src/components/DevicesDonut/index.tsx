@@ -1,114 +1,13 @@
-import { find }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card, DonutChart } from '@acx-ui/components'
-import type { DonutChartData }              from '@acx-ui/components'
-import { useDashboardOverviewQuery }        from '@acx-ui/rc/services'
-import {
-  Dashboard,
-  ApVenueStatusEnum,
-  SwitchStatusEnum
-} from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Card, DonutChart }           from '@acx-ui/components'
+import type { DonutChartData }        from '@acx-ui/components'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { getAPStatusDisplayName, getSwitchStatusDisplayName } from '../Map/VenuesMap/helper'
-
-const seriesMappingAP = [
-  { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
-    name: getAPStatusDisplayName(ApVenueStatusEnum.REQUIRES_ATTENTION, false),
-    color: cssStr('--acx-semantics-red-50') },
-  { key: ApVenueStatusEnum.TRANSIENT_ISSUE,
-    name: getAPStatusDisplayName(ApVenueStatusEnum.TRANSIENT_ISSUE, false),
-    color: cssStr('--acx-semantics-yellow-40') },
-  { key: ApVenueStatusEnum.IN_SETUP_PHASE,
-    name: getAPStatusDisplayName(ApVenueStatusEnum.IN_SETUP_PHASE, false),
-    color: cssStr('--acx-neutrals-50') },
-  { key: ApVenueStatusEnum.OFFLINE,
-    name: getAPStatusDisplayName(ApVenueStatusEnum.OFFLINE, false),
-    color: cssStr('--acx-neutrals-50') },
-  { key: ApVenueStatusEnum.OPERATIONAL,
-    name: getAPStatusDisplayName(ApVenueStatusEnum.OPERATIONAL, false),
-    color: cssStr('--acx-semantics-green-50') }
-] as Array<{ key: string, name: string, color: string }>
-
-export const getApDonutChartData = (overviewData: Dashboard | undefined,
-  { $t }: ReturnType<typeof useIntl>): DonutChartData[] => {
-  const chartData: DonutChartData[] = []
-  const apsSummary = overviewData?.summary?.aps?.summary
-  if (apsSummary) {
-    seriesMappingAP.forEach(({ key, name, color }) => {
-      if (key === ApVenueStatusEnum.OFFLINE && apsSummary[key]) {
-        const setupPhase = find(chartData, { name: $t({ defaultMessage: 'In Setup Phase' }) })
-        if (setupPhase) {
-          setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${apsSummary[key]}`
-          setupPhase.value = setupPhase.value + apsSummary[key]
-        } else {
-          chartData.push({
-            name,
-            value: apsSummary[key],
-            color
-          })
-        }
-      }
-      else if (apsSummary[key]) {
-        chartData.push({
-          name,
-          value: apsSummary[key],
-          color
-        })
-      }
-    })
-  }
-  return chartData
-}
-
-const seriesMappingSwitch = [
-  { key: SwitchStatusEnum.DISCONNECTED,
-    name: getSwitchStatusDisplayName(SwitchStatusEnum.DISCONNECTED),
-    color: cssStr('--acx-semantics-red-50') },
-  { key: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
-    name: getSwitchStatusDisplayName(SwitchStatusEnum.NEVER_CONTACTED_CLOUD),
-    color: cssStr('--acx-neutrals-50') },
-  { key: SwitchStatusEnum.INITIALIZING,
-    name: getSwitchStatusDisplayName(SwitchStatusEnum.INITIALIZING),
-    color: cssStr('--acx-neutrals-50') },
-  { key: SwitchStatusEnum.OPERATIONAL,
-    name: getSwitchStatusDisplayName(SwitchStatusEnum.OPERATIONAL),
-    color: cssStr('--acx-semantics-green-50') }
-] as Array<{ key: string, name: string, color: string }>
-
-export const getSwitchDonutChartData = (overviewData?: Dashboard): DonutChartData[] => {
-  const chartData: DonutChartData[] = []
-  const switchesSummary = overviewData?.summary?.switches?.summary
-  if (switchesSummary) {
-    seriesMappingSwitch.forEach(({ key, name, color }) => {
-      if(key === SwitchStatusEnum.INITIALIZING && switchesSummary[key]) {
-        const neverContactedCloud = find(chartData, {
-          name: getSwitchStatusDisplayName(SwitchStatusEnum.NEVER_CONTACTED_CLOUD) })
-        if (neverContactedCloud) {
-          const currentValue: number = neverContactedCloud.value
-          neverContactedCloud.value = currentValue + parseInt(switchesSummary[key], 10)
-        } else {
-          chartData.push({
-            name,
-            value: parseInt(switchesSummary[key], 10),
-            color
-          })
-        }
-      } else if (switchesSummary[key]) {
-        chartData.push({
-          name,
-          value: parseInt(switchesSummary[key], 10),
-          color
-        })
-      }
-    })
-  }
-  return chartData
-}
-
-function DevicesDonutWidget () {
+function DevicesDonutWidget (props: {
+  apData: DonutChartData[], switchData: DonutChartData[]
+}) {
   const basePath = useTenantLink('/devices/')
   const navigate = useNavigate()
   const { $t } = useIntl()
@@ -119,39 +18,26 @@ function DevicesDonutWidget () {
       pathname: `${basePath.pathname}/${param}`
     })
   }
-  const intl = useIntl()
-  const queryResults = useDashboardOverviewQuery({
-    params: useParams()
-  },{
-    selectFromResult: ({ data, ...rest }) => ({
-      data: {
-        apData: getApDonutChartData(data, intl),
-        switchData: getSwitchDonutChartData(data)
-      },
-      ...rest
-    })
-  })
+
   return (
-    <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Devices' })}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <div style={{ display: 'inline-flex' }}>
-              <DonutChart
-                style={{ width: width/2 , height }}
-                title={$t({ defaultMessage: 'Wi-Fi' })}
-                data={queryResults.data.apData}
-                onClick={() => onClick('TBD')}/>
-              <DonutChart
-                style={{ width: width/2, height }}
-                title={$t({ defaultMessage: 'Switch' })}
-                data={queryResults.data.switchData}
-                onClick={() => onClick('TBD')}/>
-            </div>
-          )}
-        </AutoSizer>
-      </Card>
-    </Loader>
+    <Card title={$t({ defaultMessage: 'Devices' })}>
+      <AutoSizer>
+        {({ height, width }) => (
+          <div style={{ display: 'inline-flex' }}>
+            <DonutChart
+              style={{ width: width/2 , height }}
+              title={$t({ defaultMessage: 'Wi-Fi' })}
+              data={props.apData}
+              onClick={() => onClick('TBD')}/>
+            <DonutChart
+              style={{ width: width/2, height }}
+              title={$t({ defaultMessage: 'Switch' })}
+              data={props.switchData}
+              onClick={() => onClick('TBD')}/>
+          </div>
+        )}
+      </AutoSizer>
+    </Card>
   )
 }
 
