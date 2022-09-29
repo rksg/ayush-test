@@ -3,8 +3,9 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import * as config    from '@acx-ui/config'
-import { networkApi } from '@acx-ui/rc/services'
+import * as config           from '@acx-ui/config'
+import { useSplitTreatment } from '@acx-ui/feature-toggle'
+import { networkApi }        from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   WifiUrlsInfo,
@@ -166,7 +167,8 @@ describe('NetworkVenuesTab', () => {
         CommonUrlsInfo.getAllUserSettings.url,
         (req, res, ctx) => res(ctx.json(user))
       )
-    )
+    )    
+    jest.mocked(useSplitTreatment).mockReturnValue(true)
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }

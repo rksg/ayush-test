@@ -85,7 +85,8 @@ interface NetworkApGroupWithSelected extends NetworkApGroup {
   selected: boolean
 }
 
-const defaultAG: NetworkApGroup = {
+const defaultAG: NetworkApGroupWithSelected = {
+  selected: true,
   apGroupId: '',
   apGroupName: '',
   isDefault: true,
@@ -124,7 +125,8 @@ export function NetworkApGroupDialog (props: ApGroupModalProps) {
     // if specific AP groups were selected or the  All APs option is disabled,
     // then the "select specific AP group" option should be selected
     const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
-    const apGroups: NetworkApGroupWithSelected[] = (networkVenue?.apGroups || [defaultAG]).map(ag => ({ ...ag, selected: true }))
+    let apGroups: NetworkApGroupWithSelected[] = (networkVenue?.apGroups || []).map(ag => ({ ...ag, selected: true }))
+    apGroups = _.isEmpty(apGroups) ? [defaultAG] : apGroups
 
     return {
       selectionType: isAllAps ? 0 : 1,

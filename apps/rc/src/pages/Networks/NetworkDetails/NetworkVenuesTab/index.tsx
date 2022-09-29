@@ -80,12 +80,10 @@ const notificationMessage = defineMessage({
 const transformRadioTypeEnumToRadioEnum = (radioTypes: RadioTypeEnum[]) => {
   if (radioTypes.includes(RadioTypeEnum._2_4_GHz) && radioTypes.includes(RadioTypeEnum._5_GHz)) {
     return RadioEnum.Both
-  } else if (radioTypes.includes(RadioTypeEnum._2_4_GHz)) {
-    return RadioEnum._2_4_GHz
-  } else if (radioTypes.includes(RadioTypeEnum._5_GHz)) {
-    return RadioEnum._5_GHz
+  } else {
+    const radioEnum = [RadioEnum._2_4_GHz, RadioEnum._5_GHz]
+    return radioEnum[_.findIndex([RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz], (r)=>radioTypes.includes(r))]
   }
-  return
 }
 
 interface ApGroupModalState {
