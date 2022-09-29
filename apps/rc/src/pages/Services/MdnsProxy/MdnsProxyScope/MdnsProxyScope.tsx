@@ -87,7 +87,7 @@ export function MdnsProxyScope () {
     updateField(resultScope)
   }
 
-  const updateField = (scope: MdnsProxyScopeData[]) => {
+  const updateField = (scope: MdnsProxyScopeData[] = []) => {
     form.setFieldValue('scope', scope)
     applyTableSelectedAps(scope)
   }

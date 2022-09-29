@@ -2,8 +2,10 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { showActionModal, Table, TableProps } from '@acx-ui/components'
-import { MdnsProxyForwardingRule }            from '@acx-ui/rc/utils'
+import { showActionModal, Table, TableProps }                       from '@acx-ui/components'
+import { MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum } from '@acx-ui/rc/utils'
+
+import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
 
 import { MdnsProxyForwardingRuleDrawer } from './MdnsProxyForwardingRuleDrawer'
 
@@ -44,7 +46,10 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
       key: 'type',
-      sorter: true
+      sorter: true,
+      render: (data) => {
+        return $t(ruleTypeLabelMapping[data as MdnsProxyForwardingRuleTypeEnum])
+      }
     },
     {
       title: $t({ defaultMessage: 'From VLAN' }),

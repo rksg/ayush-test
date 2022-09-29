@@ -4,9 +4,10 @@ import { Form, Input, Select } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }             from 'react-intl'
 
-import { Drawer, DrawerFormFooter } from '@acx-ui/components'
-import { MdnsProxyForwardingRule }  from '@acx-ui/rc/utils'
+import { Drawer, DrawerFormFooter }                                 from '@acx-ui/components'
+import { MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum } from '@acx-ui/rc/utils'
 
+import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
 
 export interface MdnsProxyForwardingRuleDrawerProps {
   rule?: MdnsProxyForwardingRule;
@@ -57,16 +58,16 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
     >
       <Select
         placeholder={$t({ defaultMessage: 'Select Type...' })}
-      >
-        {
-          // Mocked option data for development purpose, will get options by the API later
-          <>
-            <Option key='AirPlay'>AirPlay</Option>
-            <Option key='AirPrint'>AirPrint</Option>
-            <Option key='AirTv'>Air TV</Option>
-          </>
+        children={
+          Object.keys(ruleTypeLabelMapping).map((key) => {
+            return (
+              <Option key={key}>
+                {$t(ruleTypeLabelMapping[key as MdnsProxyForwardingRuleTypeEnum])}
+              </Option>
+            )
+          })
         }
-      </Select>
+      />
     </Form.Item>
     <Form.Item
       name='fromVlan'

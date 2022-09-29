@@ -23,13 +23,7 @@ export function MdnsProxySettingsForm () {
   }, [currentData, form])
 
   const nameValidator = async (value: string) => {
-    // const payload = { ...networkListPayload, searchString: value }
-    // const list = (await getNetworkList({ params, payload }, true).unwrap()).data
-    //   .filter(n => n.id !== params.networkId)
-    //   .map(n => n.name)
-
-    // return checkObjectNotExists(intl, list, value, intl.$t({ defaultMessage: 'Network' }))
-
+    // TODO
     return Promise.resolve(value)
   }
 
