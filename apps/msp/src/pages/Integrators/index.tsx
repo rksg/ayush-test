@@ -1,11 +1,11 @@
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
 
-import { Button, PageHeader, showToast, Table, TableProps, Loader } from '@acx-ui/components'
+import { Button, PageHeader, showActionModal, showToast, Table, TableProps, Loader } from '@acx-ui/components'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { useMspCustomerListQuery } from '@acx-ui/rc/services'
+import { useDeleteMspEcMutation, useMspCustomerListQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   MspEc
@@ -109,6 +109,10 @@ export function Integrators () {
       useQuery: useMspCustomerListQuery,
       defaultPayload
     })
+    const [
+      deleteMspEc,
+      { isLoading: isDeleteEcUpdating }
+    ] = useDeleteMspEcMutation()
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
@@ -125,12 +129,25 @@ export function Integrators () {
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
-        onClick: () => alert()
+        onClick: ([{ name, id }], clearSelection) => {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'Integrator' }),
+              entityValue: name
+            },
+            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+              .then(clearSelection)
+          })
+        }
       }
     ]
 
     return (
-      <Loader states={[tableQuery]}>
+      <Loader states={[
+        tableQuery,
+        { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
           columns={useColumns()}
           rowActions={rowActions}

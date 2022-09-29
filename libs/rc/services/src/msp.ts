@@ -31,7 +31,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     deleteMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.deleteMspEc, params)
+        const req = createHttpRequest(MspUrlsInfo.deleteMspEcAccount, params)
         return {
           ...req
         }
