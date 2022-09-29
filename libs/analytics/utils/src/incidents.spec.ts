@@ -1,6 +1,7 @@
 import { capitalize, omit } from 'lodash'
 
-import { renderHook } from '@acx-ui/test-utils'
+import { renderHook }         from '@acx-ui/test-utils'
+import { PathNode, NodeType } from '@acx-ui/utils'
 
 import { fakeIncident, fakeIncident1 } from './fakeIncident'
 import {
@@ -16,7 +17,7 @@ import {
   getThreshold
 } from './incidents'
 
-import type { Incident, NodeType, PathNode } from './types/incidents'
+import type { Incident } from './types/incidents'
 
 describe('calculateSeverity', () => {
   it('should return correct value', () => {
