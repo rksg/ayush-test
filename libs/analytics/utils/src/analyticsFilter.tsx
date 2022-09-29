@@ -4,10 +4,7 @@ import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
 
-import { DateFilterContext, getDateRangeFilter, DateFilter } from '@acx-ui/utils'
-
-import type { NetworkPath } from './types/incidents'
-
+import { DateFilterContext, getDateRangeFilter, DateFilter, pathFilter, NetworkPath } from '@acx-ui/utils'
 interface AnalyticsFilterProps {
   path: NetworkPath
   raw?: object
@@ -26,7 +23,7 @@ export const defaultAnalyticsFilter = {
 export const AnalyticsFilterContext = React.createContext<AnalyticsFilterProps>(
   defaultAnalyticsFilter
 )
-export type AnalyticsFilter = DateFilter & { path: NetworkPath }
+export type AnalyticsFilter = DateFilter & { path: NetworkPath } & { filter? : pathFilter }
 
 export function useAnalyticsFilter () {
   const { getNetworkFilter, setNetworkPath } = useContext(AnalyticsFilterContext)

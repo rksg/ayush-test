@@ -42,6 +42,18 @@ export const validationMessages = {
   max: defineMessage({
     defaultMessage: "This value should be lower than or equal to $'{max'}",
     description: 'Validation - max checks'
+  }),
+  hasGraveAccentAndDollarSign: defineMessage({
+    defaultMessage: '"`" and "$(" are not allowed',
+    description: 'Validation - grave accent and dollar sign checks'
+  }),
+  hasGraveAccent: defineMessage({
+    defaultMessage: '"`" is not allowed',
+    description: 'Validation - grave accent checks'
+  }),
+  hasDollarSign: defineMessage({
+    defaultMessage: '"$(" is not allowed',
+    description: 'Validation - dollar sign checks'
   })
 }
 

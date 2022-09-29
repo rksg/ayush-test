@@ -1,4 +1,4 @@
-export * from './commonUrls'
+export * from './urls'
 export * from './apiService'
 export * from './userService'
 export * from './toast/toastService'
@@ -28,3 +28,4 @@ export * from './pipes/apPipes'
 export * from './pipes/commonPipes'
 
 export * from './networkService'
+export * from './urls'

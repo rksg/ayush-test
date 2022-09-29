@@ -149,9 +149,10 @@ export const api = dataApi.injectEndpoints({
             $end: DateTime,
             $code: [String],
             $includeMuted: Boolean,
-            $severity: [Range]
+            $severity: [Range],
+            $filter: FilterInput
           ) {
-            network(start: $start, end: $end) {
+            network(start: $start, end: $end, filter : $filter) {
               hierarchyNode(path: $path) {
                 incidents: incidents(
                   filter: {
@@ -174,7 +175,8 @@ export const api = dataApi.injectEndpoints({
           end: payload.endDate,
           code: payload.code ?? incidentCodes,
           includeMuted: true,
-          severity: [{ gt: 0, lte: 1 }]
+          severity: [{ gt: 0, lte: 1 }],
+          filter: payload?.filter
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {

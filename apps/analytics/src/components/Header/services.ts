@@ -1,7 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }                                                   from '@acx-ui/analytics/services'
-import { AnalyticsFilter, NetworkPath, normalizeNodeType, NodeType } from '@acx-ui/analytics/utils'
+import { dataApi }                            from '@acx-ui/analytics/services'
+import { AnalyticsFilter, normalizeNodeType } from '@acx-ui/analytics/utils'
+import {  NetworkPath, NodeType, pathFilter } from '@acx-ui/utils'
 
 import { HeaderData, SubTitle } from '.'
 
@@ -28,6 +29,7 @@ type QueryVariables = {
   startDate: string
   endDate: string
   mac?: string
+  filter?: pathFilter
 }
 
 const lowPreferenceList = ['0.0.0.0', '0', 'Unknown']
@@ -65,9 +67,14 @@ const getAttributesByNodeType = (nodeType: NodeType) => {
 const getQuery = (path: NetworkPath) : string => {
   const [{ type }] = path.slice(-1)
   switch (type) {
-    case 'AP':
-      return gql`query NetworkNodeInfo($startDate: DateTime, $endDate: DateTime, $mac: String){
-        network(start: $startDate, end: $endDate) {
+    case 'AP': return gql`
+    query NetworkNodeInfo(
+      $startDate: DateTime,
+      $endDate: DateTime,
+      $mac: String,
+      $filter: FilterInput
+      ){
+        network(start: $startDate, end: $endDate, filter : $filter) {
           node: ap(mac: $mac) {
             type: __typename
             name
@@ -80,9 +87,10 @@ const getQuery = (path: NetworkPath) : string => {
         $path: [HierarchyNodeInput],
         $startDate: DateTime,
         $endDate: DateTime,
-        $mac: String
+        $mac: String,
+        $filter: FilterInput
       ){
-        network(start: $startDate, end: $endDate) {
+        network(start: $startDate, end: $endDate, filter : $filter) {
           node: switch(mac: $mac, path: $path) {
             type
             name
@@ -93,7 +101,7 @@ const getQuery = (path: NetworkPath) : string => {
     `
     default: return gql`
       query NetworkNodeInfo(
-        $path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime
+        $path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime,
       ){
         network(start: $startDate, end: $endDate) {
           node: hierarchyNode(path:$path) {
@@ -111,9 +119,8 @@ const getQueryVariables = (payload: AnalyticsFilter): QueryVariables => {
   const [{ type, name }] = path.slice(-1)
   switch(type) {
     case 'AP':
-    case 'switch':
-      return { ...payload, mac: name }
-    default: return { ...payload }
+    case 'switch': return { ...payload, mac: name }
+    default:       return payload
   }
 }
 

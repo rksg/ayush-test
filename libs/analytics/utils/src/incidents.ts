@@ -1,7 +1,7 @@
 import { capitalize }                                           from 'lodash'
 import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
-import { intlFormats } from '@acx-ui/utils'
+import { intlFormats, PathNode, NodeType } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
 import { incidentInformation } from './incidentInformation'
@@ -11,8 +11,6 @@ import type { IncidentInformation } from './incidentInformation'
 import type {
   IncidentSeverities,
   SeverityRange,
-  PathNode,
-  NodeType,
   Incident
 } from './types/incidents'
 
