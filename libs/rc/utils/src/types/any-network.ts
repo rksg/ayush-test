@@ -32,7 +32,7 @@ export class AnyWlan implements AAAWlan, PskWlan, OpenWlan, GuestWlan, DpskWlan 
   saePassphrase?: string
   wepHexKey?: string
   macAuthMacFormat?: MacAuthMacFormatEnum
-  
+
   constructor () {
     this.ssid = ''
     this.advancedCustomization = new WlanAdvancedCustomization()
@@ -42,11 +42,11 @@ export class AnyWlan implements AAAWlan, PskWlan, OpenWlan, GuestWlan, DpskWlan 
     this.bypassCPUsingMacAddressAuthentication = false
     this.macAddressAuthentication = false
   }
-  
+
 }
-export class AnyNetwork implements 
+export class AnyNetwork implements
     PskNetwork, DpskNetwork, OpenNetwork, GuestNetwork, AAANetwork {
-  
+
   name: string
   description?: string
   venues?: NetworkVenue[]

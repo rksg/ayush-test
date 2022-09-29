@@ -18,7 +18,7 @@ export class WlanAdvancedCustomization {
   userDownlinkRateLimiting?: number
 
   totalUplinkRateLimiting?: number
-  
+
   totalDownlinkRateLimiting?: number
 
   maxClientsOnWlanPerRadio: number

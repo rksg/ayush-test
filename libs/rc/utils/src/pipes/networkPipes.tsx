@@ -3,7 +3,7 @@ import React from 'react'
 import { defineMessage, FormattedMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
 import { GuestNetworkTypeEnum, NetworkTypeEnum, PassphraseExpirationEnum, PassphraseFormatEnum, WlanSecurityEnum } from '../constants'
-import { Network }                                                                                                 from '../types/network'                                                                                              
+import { Network }                                                                                                 from '../types/network'
 
 export enum DpskNetworkType {
   FORMAT = 'PassphraseFormat',

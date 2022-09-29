@@ -151,7 +151,7 @@ const GMap: React.FC<MapProps> = ({
         marker.addListener('click', () => {
           onNavigate && onNavigate({
             venueId: venueMarker.venueId,
-            path: 'overview'
+            path: 'venue-details/overview'
           })
         })
         return marker

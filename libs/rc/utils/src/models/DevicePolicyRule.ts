@@ -8,9 +8,9 @@ export class DevicePolicyRule {
   action: AccessEnum
 
   deviceType: DeviceTypeEnum
-  
+
   osVendor: OsVendorEnum
-  
+
   downloadRateLimit?: number
 
   uploadRateLimit?: number

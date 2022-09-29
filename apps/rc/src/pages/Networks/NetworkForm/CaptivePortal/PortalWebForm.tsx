@@ -6,7 +6,7 @@ import {
 } from 'antd'
 
 import { StepsForm } from '@acx-ui/components'
-  
+
 export function PortalWebForm () {
   return (
     <Row gutter={20}>
@@ -18,13 +18,13 @@ export function PortalWebForm () {
     </Row>
   )
 }
-  
+
 /* eslint-disable */
   const onChange = (e: RadioChangeEvent) => {
     // setSettingStepTitle(e.target.value as NetworkTypeEnum)
   }
   /* eslint-enable */
-  
+
 function PortalWebFormPage () {
   return (
     <>
@@ -59,4 +59,3 @@ function PortalWebFormPage () {
     </>
   )
 }
-  

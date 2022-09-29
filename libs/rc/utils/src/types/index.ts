@@ -55,7 +55,7 @@ export interface NetworkDetail {
     ssid?: string;
     vlanId?: number;
     enable?: boolean;
-    advancedCustomization?:   
+    advancedCustomization?:
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |
@@ -171,11 +171,7 @@ export interface NetworkDetailHeader {
   activeVenueCount: number,
   aps: {
     summary?: {
-      [ApVenueStatusEnum.IN_SETUP_PHASE]?: number
-      [ApVenueStatusEnum.OFFLINE]?: number
-      [ApVenueStatusEnum.OPERATIONAL]?: number
-      [ApVenueStatusEnum.REQUIRES_ATTENTION]?: number
-      [ApVenueStatusEnum.TRANSIENT_ISSUE]?: number
+      [key in ApVenueStatusEnum]?: number
     },
     totalApCount: number
   },
@@ -204,13 +200,13 @@ export interface Dashboard {
     },
     aps?: {
       summary: {
-        [prop: string]: number;
+        [key in ApVenueStatusEnum]?: number
       },
       totalCount: number;
     },
     switches?: {
       summary: {
-        [prop: string]: string;
+        [key in SwitchStatusEnum]?: string
       },
       totalCount: number;
     },

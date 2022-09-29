@@ -11,7 +11,7 @@ export class GuestNetwork extends NetworkDetail {
 
   constructor () {
     super()
-    
+
     this.wlan = new GuestWlan()
 
     this.guestPortal = new GuestPortal()

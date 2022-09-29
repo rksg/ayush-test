@@ -44,3 +44,4 @@ export * from './pipes/apPipes'
 export * from './pipes/commonPipes'
 
 export * from './networkService'
+export * from './urls'

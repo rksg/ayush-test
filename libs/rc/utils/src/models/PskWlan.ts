@@ -15,7 +15,7 @@ export class PskWlan {
   managementFrameProtection?: ManagementFrameProtectionEnum
 
   vlanId: number
-  
+
   ssid?: string
 
   enabled?: boolean

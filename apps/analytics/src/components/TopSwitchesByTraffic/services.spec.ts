@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
+import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
 
 import { topSwitchesByTrafficResponse } from './__tests__/fixtures'
@@ -17,13 +18,14 @@ describe('topSwitchesByTrafficApi', () => {
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'network', name: 'Network' }]
-  }
+    path: [{ type: 'network', name: 'Network' }],
+    filter: {}
+  } as AnalyticsFilter
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
   it('should return correct data', async () => {
-    
+
     mockGraphqlQuery(dataApiURL, 'SwitchesByTraffic', {
       data: topSwitchesByTrafficResponse
     })

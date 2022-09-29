@@ -3,7 +3,7 @@ import { OpenWlan }      from './OpenWlan'
 
 export class OpenNetwork extends NetworkDetail{
   wlan: OpenWlan
-  
+
   cloudpathServerId?: string
 
   constructor () {

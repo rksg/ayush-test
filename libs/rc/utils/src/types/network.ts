@@ -61,7 +61,7 @@ export interface NetworkDetail {
     ssid?: string;
     vlanId?: number;
     enable?: boolean;
-    advancedCustomization?:  
+    advancedCustomization?:
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |
@@ -98,7 +98,7 @@ export interface NetworkSaveData {
     macAuthMacFormat?: string;
     wlanSecurity?: WlanSecurityEnum;
     wepHexKey?: string;
-    advancedCustomization?: 
+    advancedCustomization?:
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |

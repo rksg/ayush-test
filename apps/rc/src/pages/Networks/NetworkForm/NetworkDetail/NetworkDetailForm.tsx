@@ -22,10 +22,10 @@ const { useWatch } = Form
 export function NetworkDetailForm () {
   const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
-  const { 
-    setNetworkType: setSettingStepTitle, 
+  const {
+    setNetworkType: setSettingStepTitle,
     editMode,
-    cloneMode 
+    cloneMode
   } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
     setSettingStepTitle(e.target.value as NetworkTypeEnum)
@@ -101,7 +101,7 @@ export function NetworkDetailForm () {
                     <Radio key={type} value={type} disabled={disabled}>
                       <Tooltip
                         title={[NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
-                          .indexOf(type) > -1 ? 
+                          .indexOf(type) > -1 ?
                           intl.$t({ defaultMessage: 'Not available in Beta1' }) : ''}>
                         {intl.$t(networkTypes[type])}
                         <RadioDescription>

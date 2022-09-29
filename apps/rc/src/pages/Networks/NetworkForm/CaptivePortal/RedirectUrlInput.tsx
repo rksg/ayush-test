@@ -35,7 +35,7 @@ export function RedirectUrlInput () {
       form.setFieldsValue({ redirectUrl: '' })
     }
   }
-  
+
   return (
     <Form.Item>
       <Form.Item
@@ -61,8 +61,8 @@ export function RedirectUrlInput () {
         }
         children={
           <Input
-            style={{ marginTop: '5px' }} 
-            placeholder='e.g. http://www.example.com' 
+            style={{ marginTop: '5px' }}
+            placeholder='e.g. http://www.example.com'
             disabled={!redirectCheckbox}
           />
         }

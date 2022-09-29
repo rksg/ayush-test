@@ -109,13 +109,13 @@ export function NetworkForm () {
   }, [data])
 
   const handlePortalWebPage = async (data: NetworkSaveData) => {
-    const tmpGuestPageState = { 
+    const tmpGuestPageState = {
       guestPortal: {
         ...saveState?.guestPortal,
         guestPage: {
           ...data
         }
-      } 
+      }
     }
     updateSaveData({ ...saveState, ...tmpGuestPageState } as NetworkSaveData)
     return true
@@ -311,7 +311,7 @@ export function NetworkForm () {
               <NetworkMoreSettingsForm wlanData={saveState} />
 
             </StepsForm.StepForm>}
-          { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
+          { networkType === NetworkTypeEnum.CAPTIVEPORTAL &&
               <StepsForm.StepForm
                 name='onboarding'
                 title={intl.$t({ defaultMessage: 'Onboarding' })}
@@ -323,7 +323,7 @@ export function NetworkForm () {
               </StepsForm.StepForm>
           }
 
-          { networkType === NetworkTypeEnum.CAPTIVEPORTAL && 
+          { networkType === NetworkTypeEnum.CAPTIVEPORTAL &&
               <StepsForm.StepForm
                 name='portalweb'
                 title={intl.$t({ defaultMessage: 'Portal Web Page' })}

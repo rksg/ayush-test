@@ -26,9 +26,9 @@ export function DhcpCheckbox () {
     useWatch('venues')
   ]
   const [meshEnable, setMeshEnable] = useState(false)
-  const venueApi = useVenuesListQuery({ 
-    params: { 
-      networkId: 'UNKNOWN-NETWORK-ID', ...useParams() 
+  const venueApi = useVenuesListQuery({
+    params: {
+      networkId: 'UNKNOWN-NETWORK-ID', ...useParams()
     },
     payload: {
       fields: ['name','mesh','id'],
@@ -39,8 +39,8 @@ export function DhcpCheckbox () {
   const dhcpApi = useGetDefaultGuestDhcpServiceProfileQuery({
     params: useParams()
   })
-  
-  const [guestDhcp, setGuestDhcp] = useState({   
+
+  const [guestDhcp, setGuestDhcp] = useState({
     guestDhcpIpSpec: '',
     guestDhcpToolTipText: '',
     guestDhcpLeaseTime: '',
@@ -91,15 +91,15 @@ export function DhcpCheckbox () {
         initialValue={false}
         children={<Checkbox>Enable Ruckus DHCP service</Checkbox>}
       />
-      <Tooltip title={meshEnable ? 
+      <Tooltip title={meshEnable ?
         guestDhcpDisableToolTipText :
         guestDhcp.guestDhcpToolTipText
-      } 
+      }
       placement='bottom'
       >
         <QuestionCircleOutlined />
       </Tooltip>
-      <Popover 
+      <Popover
         placement='bottom'
         content={
           <div>
@@ -110,7 +110,7 @@ export function DhcpCheckbox () {
             <label>End IP Address:</label> {guestDhcp.endIpAddress} <br />
             <label>Lease time:</label> {guestDhcp.guestDhcpLeaseTime}
           </div>
-        } 
+        }
         trigger='click'
       >
         <Button type='link' style={{ height: 'auto', marginLeft: '14px' }}>More details</Button>
