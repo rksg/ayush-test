@@ -40,7 +40,7 @@ export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'tooltip'
+    type?: 'tall' | 'compact' | 'tooltip' | 'form'
     ellipsis?: boolean
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]

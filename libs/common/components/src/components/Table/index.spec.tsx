@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockAutoSizer } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMWidth } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
 
@@ -62,6 +62,15 @@ describe('Table component', () => {
   it('renders compact table', () => {
     const { asFragment } = render(<Table
       type='compact'
+      columns={basicColumns}
+      dataSource={basicData}
+    />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders form table', () => {
+    const { asFragment } = render(<Table
+      type='form'
       columns={basicColumns}
       dataSource={basicData}
     />)
@@ -225,8 +234,8 @@ describe('Table component', () => {
     render(<Table
       columns={basicColumns}
       dataSource={basicData}
-      rowSelection={{ 
-        type: 'radio', 
+      rowSelection={{
+        type: 'radio',
         getCheckboxProps: () => ({
           disabled: true
         })
@@ -301,7 +310,7 @@ describe('Table component', () => {
   })
 
   describe('resize', () => {
-    mockAutoSizer(99)
+    mockDOMWidth(99)
     it('should allow column resizing', async () => {
       const { asFragment } = render(<Table
         columns={basicColumns}
@@ -333,6 +342,29 @@ describe('Table component', () => {
     expect(actions[0].onClick).not.toBeCalled()
     fireEvent.click(action1)
     expect(actions[0].onClick).toBeCalled()
+  })
+
+  it('testing hideIfMultipleSelection option of action items', async () => {
+    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
+    const rowActions = [
+      { hideIfMultipleSelection: true, label: 'Edit', onClick: onEdit },
+      { label: 'Delete', onClick: onDelete }
+    ]
+
+    render(<Table
+      columns={basicColumns}
+      dataSource={basicData}
+      rowActions={rowActions}
+      rowSelection={{ defaultSelectedRowKeys: [] }}
+    />)
+
+    const row1 = await screen.findByRole('row', { name: /john/i })
+    fireEvent.click(within(row1).getByRole('checkbox'))
+    const editButton = screen.getByRole('button', { name: /edit/i })
+    expect(editButton).toBeVisible()
+    const row2 = await screen.findByRole('row', { name: /jane/i })
+    fireEvent.click(within(row2).getByRole('checkbox'))
+    expect(editButton).not.toBeVisible()
   })
 
   describe('search & filter', () => {
