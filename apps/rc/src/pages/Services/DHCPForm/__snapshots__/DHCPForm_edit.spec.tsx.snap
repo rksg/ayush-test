@@ -350,6 +350,17 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                         class="ant-row ant-form-item-row"
                       >
                         <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class="ant-form-item-required"
+                            for="settings_dhcpConfig"
+                            title="DHCP Configuration"
+                          >
+                            DHCP Configuration
+                          </label>
+                        </div>
+                        <div
                           class="ant-col ant-form-item-control"
                         >
                           <div
@@ -359,129 +370,98 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                               class="ant-form-item-control-input-content"
                             >
                               <div
-                                class="ant-form-item"
+                                class="ant-radio-group ant-radio-group-outline"
+                                id="settings_dhcpConfig"
                               >
                                 <div
-                                  class="ant-row ant-form-item-row"
+                                  class="ant-space ant-space-vertical"
                                 >
                                   <div
-                                    class="ant-col ant-form-item-label"
+                                    class="ant-space-item"
+                                    style="margin-bottom: 8px;"
                                   >
                                     <label
-                                      class="ant-form-item-required"
-                                      for="settings_dhcpConfig"
-                                      title="DHCP Configuration"
+                                      class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
                                     >
-                                      DHCP Configuration
+                                      <span
+                                        class="ant-radio ant-radio-checked"
+                                      >
+                                        <input
+                                          checked=""
+                                          class="ant-radio-input"
+                                          type="radio"
+                                          value="SIMPLE"
+                                        />
+                                        <span
+                                          class="ant-radio-inner"
+                                        />
+                                      </span>
+                                      <span>
+                                        Simple DHCP
+                                        <div
+                                          class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
+                                        >
+                                          Each AP in this venue is running it’s own DHCP server instance. Typically configured when APs are at different sites and roaming is not required
+                                        </div>
+                                      </span>
                                     </label>
                                   </div>
                                   <div
-                                    class="ant-col ant-form-item-control"
+                                    class="ant-space-item"
+                                    style="margin-bottom: 8px;"
                                   >
-                                    <div
-                                      class="ant-form-item-control-input"
+                                    <label
+                                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                     >
-                                      <div
-                                        class="ant-form-item-control-input-content"
+                                      <span
+                                        class="ant-radio"
                                       >
+                                        <input
+                                          class="ant-radio-input"
+                                          type="radio"
+                                          value="MULTIPLE"
+                                        />
+                                        <span
+                                          class="ant-radio-inner"
+                                        />
+                                      </span>
+                                      <span>
+                                        Multiple AP DHCP
                                         <div
-                                          class="ant-radio-group ant-radio-group-outline"
-                                          id="settings_dhcpConfig"
+                                          class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
                                         >
-                                          <div
-                                            class="ant-space ant-space-vertical"
-                                          >
-                                            <div
-                                              class="ant-space-item"
-                                              style="margin-bottom: 8px;"
-                                            >
-                                              <label
-                                                class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
-                                              >
-                                                <span
-                                                  class="ant-radio ant-radio-checked"
-                                                >
-                                                  <input
-                                                    checked=""
-                                                    class="ant-radio-input"
-                                                    type="radio"
-                                                    value="SIMPLE"
-                                                  />
-                                                  <span
-                                                    class="ant-radio-inner"
-                                                  />
-                                                </span>
-                                                <span>
-                                                  Simple DHCP
-                                                  <div
-                                                    class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
-                                                  >
-                                                    Each AP in this venue is running it’s own DHCP server instance. Typically configured when APs are at different sites and roaming is not required
-                                                  </div>
-                                                </span>
-                                              </label>
-                                            </div>
-                                            <div
-                                              class="ant-space-item"
-                                              style="margin-bottom: 8px;"
-                                            >
-                                              <label
-                                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                              >
-                                                <span
-                                                  class="ant-radio"
-                                                >
-                                                  <input
-                                                    class="ant-radio-input"
-                                                    type="radio"
-                                                    value="MULTIPLE"
-                                                  />
-                                                  <span
-                                                    class="ant-radio-inner"
-                                                  />
-                                                </span>
-                                                <span>
-                                                  Multiple AP DHCP
-                                                  <div
-                                                    class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
-                                                  >
-                                                    Designated APs in this venue are running the DHCP Server instance. Typically configured when multiple APs are at the same site and roaming across APs is needed
-                                                  </div>
-                                                </span>
-                                              </label>
-                                            </div>
-                                            <div
-                                              class="ant-space-item"
-                                            >
-                                              <label
-                                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                              >
-                                                <span
-                                                  class="ant-radio"
-                                                >
-                                                  <input
-                                                    class="ant-radio-input"
-                                                    type="radio"
-                                                    value="HIERARCHICAL"
-                                                  />
-                                                  <span
-                                                    class="ant-radio-inner"
-                                                  />
-                                                </span>
-                                                <span>
-                                                  Hierarchical AP DHCP
-                                                  <div
-                                                    class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
-                                                  >
-                                                    Designated APs in this venue are running the DHCP Server instance. The DHCP server APs connected to the WAN, the rest of APs get their Private IP address from a local IP Pool with VLAN ID 1 from the DHCP Server AP
-                                                  </div>
-                                                </span>
-                                              </label>
-                                            </div>
-                                          </div>
+                                          Designated APs in this venue are running the DHCP Server instance. Typically configured when multiple APs are at the same site and roaming across APs is needed
                                         </div>
-                                      </div>
-                                    </div>
+                                      </span>
+                                    </label>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <label
+                                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                    >
+                                      <span
+                                        class="ant-radio"
+                                      >
+                                        <input
+                                          class="ant-radio-input"
+                                          type="radio"
+                                          value="HIERARCHICAL"
+                                        />
+                                        <span
+                                          class="ant-radio-inner"
+                                        />
+                                      </span>
+                                      <span>
+                                        Hierarchical AP DHCP
+                                        <div
+                                          class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
+                                        >
+                                          Designated APs in this venue are running the DHCP Server instance. The DHCP server APs connected to the WAN, the rest of APs get their Private IP address from a local IP Pool with VLAN ID 1 from the DHCP Server AP
+                                        </div>
+                                      </span>
+                                    </label>
                                   </div>
                                 </div>
                               </div>
@@ -512,15 +492,15 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                       </div>
                     </div>
                   </div>
-                  <label
-                    class="styledComponents__AntLabel-sc-187er8i-7 fSELPa"
-                  >
-                    Set DHCP Pools
-                  </label>
                   <div
                     class="ant-col ant-col-20"
                     style="padding-left: 10px; padding-right: 10px;"
                   >
+                    <label
+                      class="styledComponents__AntLabel-sc-187er8i-7 fSELPa"
+                    >
+                      Set DHCP Pools
+                    </label>
                     <div>
                       <div
                         class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"

@@ -68,8 +68,7 @@ export function SettingForm () {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item>
-          {createType === ServiceTechnology.WIFI &&
+        {createType === ServiceTechnology.WIFI &&
         <Form.Item
           name='dhcpConfig'
           initialValue={DHCPConfigTypeEnum.SIMPLE}
@@ -90,8 +89,6 @@ export function SettingForm () {
             </Space>
           </Radio.Group>
         </Form.Item>}
-
-        </Form.Item>
 
       </Col>
       {createType === ServiceTechnology.WIFI &&
