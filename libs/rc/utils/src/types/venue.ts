@@ -82,3 +82,40 @@ export interface VenueLed {
 export interface VenueApModels {
 	models: string[]
 }
+
+export enum AAAServerTypeEnum {
+  RADIUS = 'RADIUS',
+  TACACS = 'TACACS_PLUS',
+  LOCAL_USER = 'LOCAL'
+}
+
+export interface RadiusServer {
+  serverType: AAAServerTypeEnum,
+  id: string,
+  name: string,
+  ip: string,
+  authPort: number,
+  acctPort: number,
+  secret: string
+}
+
+export interface TacacsServer {
+  serverType: AAAServerTypeEnum,
+  id: string,
+  name: string,
+  ip: string,
+  authPort: number,
+  purpose: string,
+  secret: string
+}
+
+export interface LocalUser {
+  serverType: AAAServerTypeEnum,
+  id: string,
+  level: string,
+  name: string,
+  username: string,
+  password: string,
+  authPort: number,
+  purpose: string
+}

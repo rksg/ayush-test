@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { Input }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -5,11 +7,15 @@ import { useIntl } from 'react-intl'
 import {
   Table,
   TableProps,
-  Loader
+  Loader,
+  showActionModal
 } from '@acx-ui/components'
+import { useDeleteAAAServerMutation }                               from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser } from '@acx-ui/rc/utils'
+import { useParams }                                                from '@acx-ui/react-router-dom'
 
-import { AAA_Level_UI_Type, AAA_Purpose_UI_Type } from './contentsMap'
+import AAAServerDrawer                                                                                from './AAAServerDrawer'
+import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText } from './contentsMap'
 
 function useColumns (type: AAAServerTypeEnum) {
   const { $t } = useIntl()
@@ -68,11 +74,6 @@ function useColumns (type: AAAServerTypeEnum) {
       dataIndex: 'authPort'
     },
     {
-      title: $t({ defaultMessage: 'Accounting Port' }),
-      key: 'acctPort',
-      dataIndex: 'acctPort'
-    },
-    {
       title: $t({ defaultMessage: 'Shared Secret' }),
       key: 'secret',
       dataIndex: 'secret',
@@ -90,8 +91,8 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Purpose' }),
       key: 'purpose',
       dataIndex: 'purpose',
-      render: function (data, row) {
-        return _.get(AAA_Purpose_UI_Type, row.purpose)
+      render: function (data) {
+        return $t(purposeDisplayText[data as AAA_Purpose_Type]) 
       }
     }
   ]
@@ -120,8 +121,8 @@ function useColumns (type: AAAServerTypeEnum) {
       title: $t({ defaultMessage: 'Privilege' }),
       key: 'level',
       dataIndex: 'level',
-      render: function (data, row) {
-        return _.get(AAA_Level_UI_Type, row.level)
+      render: function (data) {
+        return $t(levelDisplayText[data as AAA_Level_Type])
       }
     }
   ]
@@ -137,22 +138,63 @@ function useColumns (type: AAAServerTypeEnum) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const AAAServerTable = (props: { type:AAAServerTypeEnum, tableQuery: any }) => {
   const { $t } = useIntl()
+  const [visible, setVisible] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [editData, setEditData] = useState({})
+  const { tenantId } = useParams()
+  const [
+    deleteAAAServer,
+    { isLoading: isDeleting }
+  ] = useDeleteAAAServerMutation()
   const { type, tableQuery } = props
-  const addButtonText = {
-    [AAAServerTypeEnum.RADIUS]: $t({ defaultMessage: 'Add RADIUS Server' }),
-    [AAAServerTypeEnum.TACACS]: $t({ defaultMessage: 'Add TACACS+ Server' }),
-    [AAAServerTypeEnum.LOCAL_USER]: $t({ defaultMessage: 'Add Local User' })
+
+  const handleAddAction = () => {
+    setIsEditMode(false)
+    setEditData({})  
+    setVisible(true)
   }
   const actions: TableProps<RadiusServer | TacacsServer | LocalUser>['actions'] = [{
-    label: addButtonText[type],
-    onClick: () => {
-    }
+    label: $t({ defaultMessage: 'Add' }) + ' ' +　$t(serversDisplayText[type]),
+    onClick: handleAddAction
   }]
+
+  const rowActions: TableProps<RadiusServer | TacacsServer | LocalUser>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: (selectedRows) => {
+        setIsEditMode(true)
+        setEditData(selectedRows[0])
+        setVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: ([{ name, id }], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t(serversDisplayText[type]),
+            entityValue: name
+          },
+          onOk: () => deleteAAAServer({ params: { tenantId, aaaServerId: id } })
+            .then(clearSelection)
+        })
+      }
+    }]
 
   return (
     <Loader states={[
-      tableQuery
+      tableQuery,
+      { isLoading: false, isFetching: isDeleting }
     ]}>
+      <AAAServerDrawer 
+        visible={visible}
+        setVisible={setVisible}
+        isEditMode={isEditMode}
+        editData={editData}
+        serverType={type}
+      />
       <Table
         columns={useColumns(type)}
         dataSource={tableQuery.data?.data}
@@ -160,6 +202,7 @@ export const AAAServerTable = (props: { type:AAAServerTypeEnum, tableQuery: any 
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         actions={actions}
+        rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
       />
     </Loader>
