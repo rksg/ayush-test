@@ -31,7 +31,7 @@ interface NetworkHistoryWidgetComponentProps {
 }
 
 const NetworkHistoryWidget = forwardRef<
-  EChartsReact, 
+  EChartsReact,
   NetworkHistoryWidgetComponentProps
 >((props, ref) => {
   const {
@@ -43,40 +43,33 @@ const NetworkHistoryWidget = forwardRef<
   } = props
   const { $t } = useIntl()
   let seriesMapping = [
-    { 
+    {
       key: 'newClientCount',
       name: $t({ defaultMessage: 'New Clients' })
-    },
-    {
-      key: 'impactedClientCount',
-      name: $t({ defaultMessage: 'Impacted Clients' })
     },
     {
       key: 'connectedClientCount',
       name: $t({ defaultMessage: 'Connected Clients' })
     }
   ] as Array<{ key: Key; name: string }>
-
-  let lineColors = [
+  const lineColors = [
     cssStr('--acx-accents-blue-50'),
-    cssStr('--acx-accents-orange-50'),
     cssStr('--acx-accents-blue-30')
   ]
-
-  if (hideIncidents) {
-    seriesMapping = seriesMapping.filter(value => value.key !== 'impactedClientCount')
-    lineColors = lineColors.filter(value => value !== cssStr('--acx-accents-orange-50'))
+  if (!hideIncidents) {
+    seriesMapping.push({
+      key: 'impactedClientCount',
+      name: $t({ defaultMessage: 'Impacted Clients' })
+    })
+    lineColors.push(cssStr('--acx-accents-orange-50'))
   }
-
   const queryResults = useNetworkHistoryQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
       ...rest
     })
   })
-
   const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
-
   return (
     <Loader states={[queryResults]}>
       <Card title={title} type={type}>
