@@ -17,7 +17,9 @@ const lineColors = [
 const transformResponse = ({ data, time }: KPITimeseriesResponse) => {
   return data.map((datum, index) => ([
     time[index],
-    datum && datum.length && (datum[0] !== null && datum[1] !== null && datum[1] > 0) ? (datum[0] / datum[1]) : '-'
+    datum && datum.length && (datum[0] !== null && datum[1] !== null)
+      ? datum[1] === 0 ? 0 : (datum[0] / datum[1])
+      : '-'
   ])) as [TimeStamp, number][]
 
 }
