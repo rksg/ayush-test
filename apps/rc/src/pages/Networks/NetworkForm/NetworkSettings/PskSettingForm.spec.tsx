@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -14,7 +14,7 @@ import {
 import { NetworkForm } from '../NetworkForm'
 
 async function fillInBeforeSettings (networkName: string) {
-  const insertInput = screen.getByLabelText('Network Name')
+  const insertInput = screen.getByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
   const validating = await screen.findByRole('img', { name: 'loading' })
@@ -52,7 +52,7 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(CommonUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json([]))),
@@ -101,7 +101,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  })
+  }, 20000)
 
 
   it('should create PSK network with WP3 and mac auth security protocol', async () => {
@@ -136,7 +136,7 @@ describe('NetworkForm', () => {
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
       expect(screen.getAllByDisplayValue('secret-1')).toHaveLength(2)
     })
-  })
+  }, 20000)
 
   it('should create PSK network with WEP security protocol', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
@@ -160,5 +160,5 @@ describe('NetworkForm', () => {
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
     })
-  })
+  }, 20000)
 })

@@ -11,7 +11,8 @@ import {
 import * as UI                from './styledComponents'
 import { VenueMarkerOptions } from './VenueMarkerWithLabel'
 
-export const getAPStatusDisplayName = (label: ApVenueStatusEnum, severity: boolean = true) => {
+export const getAPStatusDisplayName = (label: ApVenueStatusEnum,
+  severity: boolean = true) => {
   switch (label) {
     case ApVenueStatusEnum.REQUIRES_ATTENTION:
       return `${severity ? '1 ' : ''}Requires Attention`

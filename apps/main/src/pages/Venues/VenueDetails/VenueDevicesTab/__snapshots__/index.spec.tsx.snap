@@ -3,7 +3,7 @@
 exports[`VenueMeshAps should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -52,7 +52,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
             class="ant-page-header-heading-title"
           >
             <h1
-              class="ant-typography"
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             />
           </span>
         </div>
@@ -431,7 +431,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
               type="button"
             >
               <svg
-                class="styledComponents__LineChartIcon-sc-12uzynx-2 kBALdR"
+                class="styledComponents__LineChartIcon-sc-12uzynx-2 ffpuJy"
               >
                 LineChartOutline1.svg
               </svg>
@@ -441,28 +441,22 @@ exports[`VenueMeshAps should render correctly 1`] = `
               type="button"
             >
               <svg
-                class="styledComponents__ListIcon-sc-12uzynx-0 lbRPxz"
+                class="styledComponents__ListIcon-sc-12uzynx-0 fImaPI"
               >
                 List.svg
               </svg>
             </button>
             <button
-              class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+              class="ant-btn ant-btn-primary ant-btn-sm ant-btn-icon-only styledComponents__WhiteButton-sc-12uzynx-7 cYcsAj"
               style="border-radius: 0 4px 4px 0;"
               type="button"
             >
               <svg
-                class="styledComponents__MeshIcon-sc-12uzynx-4 jnavlp"
+                class="styledComponents__MeshIcon-sc-12uzynx-4 cEsssA"
               >
                 Mesh.svg
               </svg>
             </button>
-            <svg
-              class="styledComponents__MeshIcon-sc-12uzynx-4 jnavlp"
-              style="stroke: white;"
-            >
-              Mesh.svg
-            </svg>
           </span>
           <div
             class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"

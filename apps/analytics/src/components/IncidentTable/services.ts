@@ -9,10 +9,13 @@ import {
   transformIncidentQueryResult,
   shortDescription,
   formattedNodeType,
-  formattedPath,
-  impactValues
+  impactValues,
+  impactedArea,
+  calculateSeverity,
+  noDataSymbol
 } from '@acx-ui/analytics/utils'
-import { getIntl } from '@acx-ui/utils'
+import type { RecordWithChildren } from '@acx-ui/components'
+import { getIntl }                 from '@acx-ui/utils'
 
 import { durationValue } from './utils'
 
@@ -46,58 +49,52 @@ export type AdditionalIncidentTableFields = {
   scope: string,
   type: string,
   clientImpact: string | number,
-  impactedClients: string | number
+  impactedClients: string | number,
+  severityLabel: string
 }
 
-export type IncidentTableRow = Incident
-& AdditionalIncidentTableFields 
-& {
-  children?: IncidentTableRow[]
-}
+export type IncidentTableRow = RecordWithChildren<Incident & AdditionalIncidentTableFields>
 
 export const transformData = (incident: Incident): IncidentTableRow => {
   const { relatedIncidents } = incident
   const intl = getIntl()
-  
+
   const children = relatedIncidents
   && relatedIncidents.map((child) => {
     const childDuration = durationValue(child.startTime, child.endTime)
     const childIncident = transformIncidentQueryResult(child)
-
-    const partialChildIncident = {
-      ...childIncident
-    }
-
-    const impactValueObj = impactValues(intl, 'client', partialChildIncident)
+    const impactValueObj = impactValues(intl, 'client', childIncident)
     const childClientImpact = impactValueObj['clientImpactRatioFormatted']
     const childClientCount = impactValueObj['clientImpactCountFormatted']
-    const childDescription = shortDescription(partialChildIncident, intl)
-    const childScope = formattedPath(child.path, child.sliceValue, intl)
+    const childDescription = shortDescription(childIncident, intl)
+    const childScope = impactedArea(child.path, child.sliceValue, intl)!
     const childType = formattedNodeType(child.sliceType, intl)
+    const childSeverityLabel = calculateSeverity(child.severity) ?? noDataSymbol
 
     return {
-      ...partialChildIncident,
-      category: intl.$t(partialChildIncident.category),
-      subCategory: intl.$t(partialChildIncident.subCategory),
+      ...childIncident,
+      category: intl.$t(childIncident.category),
+      subCategory: intl.$t(childIncident.subCategory),
       children: undefined,
       duration: childDuration,
       description: childDescription,
       scope: childScope,
       type: childType,
       clientImpact: childClientImpact,
-      impactedClients: childClientCount
+      impactedClients: childClientCount,
+      severityLabel: childSeverityLabel
     }
   })
 
   const incidentInfo = transformIncidentQueryResult(incident)
   const duration = durationValue(incident.startTime, incident.endTime)
-
   const impactValueObj = impactValues(intl, 'client', incidentInfo)
   const clientImpact = impactValueObj['clientImpactRatioFormatted']
   const impactedClients = impactValueObj['clientImpactCountFormatted']
   const description = shortDescription(incidentInfo, intl)
-  const scope = formattedPath(incident.path, incident.sliceValue, intl)
-  const type = formattedNodeType(incident.sliceType, intl) 
+  const scope = impactedArea(incident.path, incident.sliceValue, intl)!
+  const type = formattedNodeType(incident.sliceType, intl)
+  const severityLabel = calculateSeverity(incident.severity) ?? noDataSymbol
 
   return {
     ...incidentInfo,
@@ -109,7 +106,8 @@ export const transformData = (incident: Incident): IncidentTableRow => {
     scope,
     type,
     clientImpact,
-    impactedClients
+    impactedClients,
+    severityLabel
   }
 }
 
@@ -134,9 +132,10 @@ export const api = dataApi.injectEndpoints({
             $end: DateTime,
             $code: [String],
             $includeMuted: Boolean,
-            $severity: [Range]
+            $severity: [Range],
+            $filter: FilterInput
           ) {
-            network(start: $start, end: $end) {
+            network(start: $start, end: $end, filter : $filter) {
               hierarchyNode(path: $path) {
                 incidents: incidents(
                   filter: {
@@ -159,7 +158,8 @@ export const api = dataApi.injectEndpoints({
           end: payload.endDate,
           code: payload.code ?? incidentCodes,
           includeMuted: true,
-          severity: [{ gt: 0, lte: 1 }]
+          severity: [{ gt: 0, lte: 1 }],
+          filter: payload?.filter
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {
