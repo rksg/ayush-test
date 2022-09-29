@@ -11,6 +11,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { AvailableLteBands, CellularNetworkSelectionEnum } from '@acx-ui/rc/utils'
+import { LteBandChannels } from './LteBandChannels'
 
 
 export interface ModelOption {
@@ -94,6 +95,9 @@ export function CellularRadioSimSettings (props: {
         children={<Switch />}
       />
 
+      
+        <LteBandChannels/>
+        <Divider orientation='left' plain/>
     </>
 
   )
