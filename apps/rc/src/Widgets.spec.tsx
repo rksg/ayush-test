@@ -11,7 +11,7 @@ jest.mock('./components/VenuesDonut', () => ({
   __esModule: true,
   default: () => <div>Venues Widget</div>
 }))
-jest.mock('./components/DevicesDonut', () => ({
+jest.mock('./components/DevicesDonut/DashboardWidget', () => ({
   __esModule: true,
   default: () => <div>Devices Widget</div>
 }))
@@ -22,6 +22,14 @@ jest.mock('./components/ClientsDonut', () => ({
 jest.mock('./components/Map', () => ({
   __esModule: true,
   default: () => <div>Map Widget</div>
+}))
+jest.mock('./components/AlarmWidget/VenueAlarmDonut', () => ({
+  __esModule: true,
+  default: () => <div>Venue Overview Alarm Widget</div>
+}))
+jest.mock('./components/DevicesDonut/VenueWidget', () => ({
+  __esModule: true,
+  default: () => <div>Venue Overview Devices Widget</div>
 }))
 
 describe('Wi-Fi Widgets', () => {
@@ -44,6 +52,14 @@ describe('Wi-Fi Widgets', () => {
   it('should render Map widget', async () => {
     render(<WifiWidgets name={'map'}></WifiWidgets>)
     expect(screen.getByText('Map Widget')).toBeTruthy()
+  })
+  it('should render Venue Overview Alarm widget', async () => {
+    render(<WifiWidgets name={'venueAlarmDonut'}></WifiWidgets>)
+    expect(screen.getByText('Venue Overview Alarm Widget')).toBeTruthy()
+  })
+  it('should render Venue Overview Devices widget', async () => {
+    render(<WifiWidgets name={'venueDevices'}></WifiWidgets>)
+    expect(screen.getByText('Venue Overview Devices Widget')).toBeTruthy()
   })
   it('should render a Card with name, if widget is not defined and FF enabled', async () => {
     jest.mocked(useSplitTreatment).mockReturnValue(true)
