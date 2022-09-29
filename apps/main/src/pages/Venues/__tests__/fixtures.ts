@@ -248,7 +248,10 @@ export const configProfiles = [{
   }, {
     id: '2cdada96178343be93c6b8a998115259',
     model: 'ICX7850-48FS',
-    slots: [{ slotNumber: 2, enable: true, option: '8X40/100G' }, { slotNumber: 1, enable: true }],
+    slots: [
+      { slotNumber: 2, enable: true, option: '8X40/100G' },
+      { slotNumber: 1, enable: true }
+    ],
     trustPorts: ['1/1/3'],
     trustedPortType: 'all',
     vlanDemand: false
@@ -344,7 +347,8 @@ export const switchConfigProfile = [{
     switchFamilyModels: [{
       id: '5b902550c38343198059598a074c0e01',
       model: 'ICX7550-24P',
-      slots: [{ slotNumber: 2, enable: true, option: '2X40G' },
+      slots: [
+        { slotNumber: 2, enable: true, option: '2X40G' },
         { slotNumber: 1, enable: true },
         { slotNumber: 3, enable: true, option: '2X40G' }
       ],

@@ -30,16 +30,20 @@ export interface FormState {
   configProfiles: ConfigurationProfile[]
 }
 
-export function getProfilesByKeys (profiles: ConfigurationProfile[], keys: Key[]) {
-  return profiles.filter(p => keys?.includes(p.id))
+const defaultState = {
+  changeModalvisible: false,
+  regularModalvisible: false,
+  cliModalvisible: false,
+  syslogModalvisible: false,
+  cliApplied: false,
+  configProfiles: []  
 }
-
-export function getProfilesByType (profiles: ConfigurationProfile[], type: string) {
-  return profiles.filter(p => p.profileType === type)
-}
-
-export function getProfileKeysByType (profiles: ConfigurationProfile[], type: string) {
-  return profiles.filter(p => p.profileType === type).map(p => p.id)
+const defaultFormData = {
+  profileId: [],
+  dns: [],
+  syslogEnabled: false,
+  syslogPrimaryServer: '',
+  syslogSecondaryServer: ''
 }
 
 export function GeneralSettingForm () {
@@ -54,22 +58,9 @@ export function GeneralSettingForm () {
   const configProfiles = useConfigProfilesQuery({ params: { tenantId, venueId }, payload: {} })
   const [updateVenueSwitchSetting] = useUpdateVenueSwitchSettingMutation()
 
-  const [formState, setFormState] = useState<FormState>({
-    changeModalvisible: false,
-    regularModalvisible: false,
-    cliModalvisible: false,
-    syslogModalvisible: false,
-    cliApplied: false,
-    configProfiles: []
-  })
-  const [formData, setFormData] = useState<VenueSwitchConfiguration>({
-    profileId: [],
-    dns: [],
-    syslogEnabled: false,
-    syslogPrimaryServer: '',
-    syslogSecondaryServer: ''
-  })
-  const selectProfiles = getProfilesByKeys(formState.configProfiles, formData.profileId)
+  const [formState, setFormState] = useState<FormState>(defaultState)
+  const [formData, setFormData] = useState<VenueSwitchConfiguration>(defaultFormData)
+  const selectedProfiles = getProfilesByKeys(formState.configProfiles, formData.profileId)
 
   useEffect(() => {
     // set default data when switching sub tab
@@ -202,33 +193,28 @@ export function GeneralSettingForm () {
                 children={
                   <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: '12px', display: 'flex' }} >
-                      {selectProfiles?.length > 1
-                        ? `${selectProfiles?.length} 
+                      {selectedProfiles?.length > 1
+                        ? `${selectedProfiles?.length} 
                           ${$t({ defaultMessage: 'CLI profiles selected' })}`
-                        : (selectProfiles?.length
-                          ? `${selectProfiles[0]?.name} (${selectProfiles[0]?.profileType})`
+                        : (selectedProfiles?.length
+                          ? `${selectedProfiles[0]?.name} (${selectedProfiles[0]?.profileType})`
                           : $t({ defaultMessage: 'No Profile is selected' })
                         )
                       }
                     </span>
-                    <ButtonWrapper
-                      size={0}
-                      split={selectProfiles?.length > 0 && <Divider type='vertical' />}
+                    <ButtonWrapper size={0}
+                      split={selectedProfiles?.length > 0 && <Divider type='vertical' />}
                     >
-                      { selectProfiles?.length > 0 &&
+                      { selectedProfiles?.length > 0 &&
                           <Button type='link'
                             key='view'
                             onClick={() => {
-                              const selectedCLI = selectProfiles?.filter(p => 
+                              const selectedCLI = selectedProfiles?.filter(p => 
                                 p.profileType === ProfileTypeEnum.CLI)?.length
 
                               selectedCLI
-                                ? setFormState({
-                                  ...formState,
-                                  cliModalvisible: true })
-                                : setFormState({
-                                  ...formState,
-                                  regularModalvisible: true })
+                                ? setFormState({ ...formState, cliModalvisible: true })
+                                : setFormState({ ...formState, regularModalvisible: true })
                             }}>
                             {$t({ defaultMessage: 'View Details' })}
                           </Button> }
@@ -236,12 +222,9 @@ export function GeneralSettingForm () {
                       <Button type='link'
                         key='select'
                         onClick={() => {
-                          setFormState({
-                            ...formState,
-                            changeModalvisible: true
-                          })
+                          setFormState({ ...formState, changeModalvisible: true })
                         }}>{
-                          selectProfiles?.length
+                          selectedProfiles?.length
                             ? $t({ defaultMessage: 'Change' })
                             : $t({ defaultMessage: 'Select' })
                         }</Button>
@@ -330,4 +313,16 @@ export function GeneralSettingForm () {
       </StepsForm>
     </Loader>
   )
+}
+
+export function getProfilesByKeys (profiles: ConfigurationProfile[], keys: Key[]) {
+  return profiles.filter(p => keys?.includes(p.id))
+}
+
+export function getProfilesByType (profiles: ConfigurationProfile[], type: string) {
+  return profiles.filter(p => p.profileType === type)
+}
+
+export function getProfileKeysByType (profiles: ConfigurationProfile[], type: string) {
+  return profiles.filter(p => p.profileType === type).map(p => p.id)
 }

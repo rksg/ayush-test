@@ -10,7 +10,6 @@ import { CliConfiguration } from './styledComponents'
 
 import { getProfilesByKeys, FormState } from './index'
 
-
 export function CliProfileDetailModal (props: {
   formState: FormState,
   formData: VenueSwitchConfiguration,
@@ -49,9 +48,9 @@ export function CliProfileDetailModal (props: {
             label={$t({ defaultMessage: 'Select Profile' })}
             children={<Select
               value={selectedProfile?.id}
-              options={profiles?.map((p) => ({ label: p.name, value: p.id }))}
+              options={profiles?.map(p => ({ label: p.name, value: p.id }))}
               onChange={(value) => {
-                setSelectedProfile(profiles.filter((p) => p.id === value)[0])
+                setSelectedProfile(profiles.filter(p => p.id === value)[0])
               }}
             />}
           />

@@ -35,6 +35,7 @@ export function ConfigProfileModal (props: {
   const onChangeRegular = (e: RadioChangeEvent) => {
     setSelectedProfileKeys(e.target.value)
   }
+
   const onChangeCLI = (selectedRowKeys: Key[]) => {
     const selected = getProfilesByKeys(formState.configProfiles, selectedRowKeys)
     const switchModels = selected.flatMap(s => s?.venueCliTemplate?.switchModels?.split(','))
@@ -108,8 +109,8 @@ export function ConfigProfileModal (props: {
         </Typography.Text>
         <Picker>
           <Radio.Group defaultValue={'none'} onChange={onChangeRegular} value={selectedProfileKeys}>
-            { regularProfiles?.map((profile) =>
-              <Radio value={profile.id} key={profile.id}>{profile.name}</Radio>)}
+            { regularProfiles?.map(p =>
+              <Radio value={p.id} key={p.id}>{p.name}</Radio>)}
             <Radio value='none' key='none' style={{ color: cssStr('--acx-semantics-red-50') }}>
               {$t({ defaultMessage: 'No Profile' })}
             </Radio>
