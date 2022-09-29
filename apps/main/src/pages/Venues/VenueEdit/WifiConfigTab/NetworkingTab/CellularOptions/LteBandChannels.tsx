@@ -74,7 +74,7 @@ export function LteBandChannels (
       border: 1px solid rgb(217, 217, 217);
       border-right-width: 0;
 
-      border: 1px solid black;
+      border: 1px solid #333333;
       border-radius: 4px;
       background-color: white;
 
@@ -84,9 +84,9 @@ export function LteBandChannels (
     }
 
     > label.ant-checkbox-wrapper-checked {
-      border: 1px solid black;
+      border: 1px solid #333333;
       border-radius: 4px;
-      background-color: black;
+      background-color: #333333;
       color: white;
     }
 
