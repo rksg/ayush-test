@@ -74,7 +74,6 @@ export function Venues () {
     defaultPayload
   })
 
-  const [tableData, setTableData] = useState(defaultArray)
   const [activateVenues, setActivateVenues] = useState(defaultArray)
 
   const handleVenueSaveData = (selectedRows: Venue[]) => {
@@ -119,21 +118,8 @@ export function Venues () {
     selectedVenues = _.uniq(selectedVenues)
     setActivateVenues(selectedVenues)
     handleVenueSaveData(selectedVenues)
-    setTableDataActivate(tableData ,selectedVenues)
   }
 
-  const setTableDataActivate = (dataOfTable:Venue[], selectedVenues:Venue[]) => {
-    const data:Venue[] = []
-    dataOfTable.forEach(item => {
-      let activated = { isActivated: false }
-      if(selectedVenues.find(i => i.id === item.id)) {
-        activated.isActivated = true
-      }
-      item.activated = activated
-      data.push(item)
-    })
-    setTableData(data)
-  }
 
   const rowActions: TableProps<Venue>['rowActions'] = [
     {
@@ -248,7 +234,6 @@ export function Venues () {
             }}
             columns={columns}
             dataSource={tableQuery.data?.data}
-            // dataSource={tableData}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
           />

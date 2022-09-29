@@ -88,7 +88,7 @@ describe('Create DHCP: Venues Step', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('Activate and Deactivate DHCP by toogleButton', async () => {
+  it('Activate and Deactivate Venue by toogleButton', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,

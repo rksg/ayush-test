@@ -21,7 +21,7 @@ export const PoolAddButton = styled(Button)`
   background-color: transparent;
   right: -650px;
   z-index: 1;
-  color: rgb(84, 150, 234);
+  color: var(--acx-accents-blue-50);
   font-weight: 600;
   border: 0px;
   cursor: pointer;
@@ -36,13 +36,14 @@ export const CancelButton = styled(Button)`
   border: 0px;
   cursor: pointer;
   font-size: 14px;
-  color: rgb(84, 150, 234);
+  color: var(--acx-accents-blue-50);
+
 `
 export const AddButton = styled(Button)`
   top: 10px;
   right: -600px;
   z-index: 1;
-  background-color: rgb(84, 150, 234);
+  color: var(--acx-accents-blue-50);
   font-weight: 600;
   border: 0px;
   cursor: pointer;
