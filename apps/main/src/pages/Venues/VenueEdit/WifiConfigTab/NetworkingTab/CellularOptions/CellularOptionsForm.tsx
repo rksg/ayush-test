@@ -68,14 +68,15 @@ export function CellularOptionsForm () {
   const defaultAvailableLteBandsArray: AvailableLteBands[] = []
   let regionCountriesMap = _.cloneDeep(LteBandLockCountriesJson)
   const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
-  const [availableLteBandsArray, setAvailableLteBandsArray] = useState(defaultAvailableLteBandsArray)
-  
+  const [availableLteBandsArray, setAvailableLteBandsArray] =
+    useState(defaultAvailableLteBandsArray)
+
   useEffect(() => {
     let availableLteBandsContext = availableLteBands?.data
 
 
     if(availableLteBandsContext){
-      
+
       availableLteBandsContext.forEach(lteBands => {
         regionCountriesMap[lteBands.region] =
         Object.assign(regionCountriesMap[lteBands.region], {
@@ -103,7 +104,12 @@ export function CellularOptionsForm () {
       >
         <StepsForm.StepForm>
 
-        <CellularRadioSimSettings availableLteBands={availableLteBandsArray[0]}/>
+          <CellularRadioSimSettings
+            simCardNumber={1}
+            availableLteBands={availableLteBandsArray} />
+          <CellularRadioSimSettings
+            simCardNumber={2}
+            availableLteBands={availableLteBandsArray} />
 
           <Form.Item
             name={'wanConnection'}

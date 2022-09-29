@@ -11,8 +11,8 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { AvailableLteBands, CellularNetworkSelectionEnum } from '@acx-ui/rc/utils'
-import { LteBandChannels } from './LteBandChannels'
 
+import { LteBandChannels } from './LteBandChannels'
 
 export interface ModelOption {
   label: string
@@ -21,17 +21,18 @@ export interface ModelOption {
 
 const { Option } = Select
 
-
-
 export function CellularRadioSimSettings (props: {
-  availableLteBands: AvailableLteBands
+  availableLteBands: AvailableLteBands[],
+  simCardNumber: number
 }) {
   const { $t } = useIntl()
   // const { tenantId, venueId } = useParams()
-  const a = props.availableLteBands
+  const a = props.availableLteBands[0]
 
   return (
-    <>
+    <div style={{
+
+    }}>
       <Divider orientation='left' plain>
         <div style={{
           display: 'grid', gridTemplateColumns: 'auto 100px', gridGap: '5px',
@@ -40,14 +41,14 @@ export function CellularRadioSimSettings (props: {
           <div style={{
             display: 'flex', alignItems: 'center',
             height: '30px'
-          }}>1 Primary SIM</div>
+          }}>{props.simCardNumber} Primary SIM </div>
 
           <Form.Item
             style={{
               display: 'flex', alignItems: 'center',
               height: '30px'
             }}
-            name={['wlan', 'advancedCustomization', 'hideSsid']}
+            name={['venue', props.simCardNumber, 'enable']}
             initialValue={false}
             valuePropName='checked'
             children={
@@ -94,11 +95,20 @@ export function CellularRadioSimSettings (props: {
         valuePropName='checked'
         children={<Switch />}
       />
+      <Form.Item
+        label={$t({ defaultMessage: 'LTE Bank Lock' })}
+        children={
+          props.availableLteBands.map((item, index) => (
+            <LteBandChannels
+              simCardNumber={props.simCardNumber}
+              availableLteBands={item}
+              isCurrent={index === 0} />
+          ))
+        }
+      />
 
-      
-        <LteBandChannels/>
-        <Divider orientation='left' plain/>
-    </>
+      <Divider orientation='left' plain/>
+    </div>
 
   )
 }
