@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
 import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
 import { mockGraphqlQuery }    from '@acx-ui/test-utils'
+import { DateRange }           from '@acx-ui/utils'
 
 import { topSwitchesByPoEUsageResponse } from './__tests__/fixtures'
 import { api }                           from './services'
@@ -19,7 +20,9 @@ describe('topSwitchesByPoEUsageApi', () => {
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'network', name: 'Network' }]
+    path: [{ type: 'network', name: 'Network' }],
+    filter: {},
+    range: DateRange.last24Hours
   } as AnalyticsFilter
 
   afterEach(() =>
