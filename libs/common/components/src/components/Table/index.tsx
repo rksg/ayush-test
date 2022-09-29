@@ -57,7 +57,7 @@ export interface TableProps <RecordType>
       & AntTableProps<RecordType>['rowSelection']
       & {
       alwaysShowAlert?: boolean;
-  })
+    })
   }
 
 const defaultPagination = {

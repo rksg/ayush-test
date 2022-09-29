@@ -16,9 +16,7 @@ import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
 import { formatter }                         from '@acx-ui/utils'
 
 import { 
-  useIncidentsListQuery, 
-  useMuteIncidentsMutation, 
-  IncidentNodeData, 
+  useIncidentsListQuery,
   IncidentTableRow 
 } from './services'
 import * as UI  from './styledComponents'
@@ -67,16 +65,12 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const basePath = useTenantLink('/analytics/incidents/')
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const onDrawerClose = () => setDrawerSelection(null)
-  const mutedKeysFilter = (data: IncidentNodeData) => {
-    return data.filter((row) => row.isMuted === true).map((row) => row.id)
-  }
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Mute' })),
-      onClick: (selectedItems) => {
+      onClick: () => {
         // TODO: to be updated for muting
-        console.log('muting', selectedItems, mutedKeysFilter(queryResults.data!))
       }
     }
   ]
