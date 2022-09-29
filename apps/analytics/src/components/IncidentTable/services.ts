@@ -57,7 +57,7 @@ export type IncidentTableRow = RecordWithChildren<Incident & AdditionalIncidentT
 
 export const transformData = (incident: Incident): IncidentTableRow => {
   const { relatedIncidents } = incident
-  const { $t } = getIntl()
+  const intl = getIntl()
 
   const children = relatedIncidents
   && relatedIncidents.map((child) => {
@@ -73,8 +73,8 @@ export const transformData = (incident: Incident): IncidentTableRow => {
 
     return {
       ...childIncident,
-      category: $t(childIncident.category),
-      subCategory: $t(childIncident.subCategory),
+      category: intl.$t(childIncident.category),
+      subCategory: intl.$t(childIncident.subCategory),
       children: undefined,
       duration: childDuration,
       description: childDescription,
@@ -98,8 +98,8 @@ export const transformData = (incident: Incident): IncidentTableRow => {
 
   return {
     ...incidentInfo,
-    category: $t(incidentInfo.category),
-    subCategory: $t(incidentInfo.subCategory),
+    category: intl.$t(incidentInfo.category),
+    subCategory: intl.$t(incidentInfo.subCategory),
     children: (children && children?.length > 0) ? children : undefined,
     duration,
     description,
