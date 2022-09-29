@@ -16,29 +16,31 @@ const tabs = {
   switch: SwitchConfigTab
 }
 
-export interface AdvancedSettingContext {
+export type EditData = VenueLed[]
+
+export interface EditContext {
   tabTitle: string,
   tabKey?: string,
   isDirty: boolean,
   hasError?: boolean,
-  oldData: VenueLed[],
-  newData: VenueLed[],
+  oldData: EditData,
+  newData: EditData,
   updateChanges: () => void,
-  setData: (data: VenueLed[]) => void,
+  setData: (data: EditData) => void,
   tempData?: {
     settings?: VenueLed[]
   }
 }
 
 export const VenueEditContext = createContext({} as {
-  editContextData: AdvancedSettingContext,
-  setEditContextData: (data: AdvancedSettingContext) => void
+  editContextData: EditContext,
+  setEditContextData: (data: EditContext) => void
 })
 
 export function VenueEdit () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
-  const [editContextData, setEditContextData] = useState({} as AdvancedSettingContext)
+  const [editContextData, setEditContextData] = useState({} as EditContext)
 
   return (
     <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
@@ -49,8 +51,8 @@ export function VenueEdit () {
 }
 
 export function showUnsavedModal (
-  editContextData: AdvancedSettingContext,
-  setEditContextData: (data: AdvancedSettingContext) => void,
+  editContextData: EditContext,
+  setEditContextData: (data: EditContext) => void,
   callback?: () => void
 ) {
   const { $t } = getIntl()
@@ -77,7 +79,7 @@ export function showUnsavedModal (
         isDirty: false,
         tempData: {
           ...editContextData.tempData,
-          [tabKey as keyof AdvancedSettingContext]: oldData
+          [tabKey as keyof EditContext]: oldData
         }
       })
       setData(oldData)
