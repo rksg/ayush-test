@@ -10,9 +10,9 @@ export function NetworkingTab () {
   const { $t } = useIntl()
 
   const items = [{
-  //   title: $t({ defaultMessage: 'LAN Ports' }),
-  //   content: 'LAN Ports Content'
-  // }, {
+    title: $t({ defaultMessage: 'LAN Ports' }),
+    content: 'LAN Ports Content'
+  }, {
     title: $t({ defaultMessage: 'Cellular Options' }),
     content: (<CellularOptionsForm></CellularOptionsForm>)
   }, {

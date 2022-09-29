@@ -1,13 +1,7 @@
-import { useState, useEffect, useContext, createContext } from 'react'
+import { useState, useEffect } from 'react'
 
 import {
   Select,
-  Switch,
-  Row,
-  Col,
-  Space,
-  Divider,
-  Checkbox,
   Form,
   Input
 } from 'antd'
@@ -15,11 +9,10 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, StepsForm, Table, TableProps, Loader, showToast, Subtitle } from '@acx-ui/components'
-import { useGetAvailableLteBandsQuery }                                      from '@acx-ui/rc/services'
-import { AvailableLteBands, LteBandRegionEnum }                                                 from '@acx-ui/rc/utils'
+import { StepsForm, Subtitle }                            from '@acx-ui/components'
+import { useGetAvailableLteBandsQuery, useGetVenueQuery } from '@acx-ui/rc/services'
+import { AvailableLteBands }                              from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../..'
 import { CellularRadioSimSettings } from './CellularRadioSimSettings'
 
 
@@ -43,8 +36,8 @@ export enum WanConnectionEnum {
 export function CellularOptionsForm () {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
+  const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
 
-  const venueContext = useContext(VenueEditContext)
   const LteBandLockCountriesJson = {
     DOMAIN_1: {
       name: 'Domain 1 countries',
