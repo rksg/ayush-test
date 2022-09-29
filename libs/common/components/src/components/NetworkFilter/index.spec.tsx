@@ -79,7 +79,7 @@ describe('NetworkFilter', () => {
     fireEvent.mouseDown(await screen.findByRole('combobox'))
     fireEvent.click(allOptions[4])
     expect(onApplyMock).toBeCalledTimes(2)
-    
+
   })
 
   it('renders simple list, triggers onApply with multi-select', async () => {

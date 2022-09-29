@@ -92,8 +92,8 @@ export function useFormattedNodeType (nodeType: NodeType) {
   return formattedNodeType(nodeType, intl)
 }
 
-export const useImpactValues = 
-  <Type extends 'ap' | 'client'> (type: Type, incident: Incident): 
+export const useImpactValues =
+  <Type extends 'ap' | 'client'> (type: Type, incident: Incident):
   Record<string, string | number | null | {}> => {
     const intl = useIntl()
     const values = impactValues(intl, type, incident)
