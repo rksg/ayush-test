@@ -3,7 +3,6 @@ import '@testing-library/jest-dom'
 import { useSplitTreatment } from '@acx-ui/feature-toggle'
 import {
   RadioTypeEnum,
-  RadioEnum,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -15,25 +14,13 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { network }              from './index.spec'
 import { NetworkApGroupDialog } from './NetworkApGroupDialog'
-import { networkVenue_apgroup } from './VlanInput.spec'
-
-const networkVenue_allAps = {
-  venueId: 'd7b1a9a350634115a92ee7b0f11c7e75',
-  dual5gEnabled: true,
-  tripleBandEnabled: false,
-  networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
-  allApGroupsRadio: RadioEnum.Both,
-  isAllApGroups: true,
-  allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz],
-  id: '7a97953dc55f4645b3cdbf1527f3d7cb'
-}
-
-const params = {
-  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-  networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-}
+import {
+  network,
+  networkVenue_apgroup,
+  networkVenue_allAps,
+  params
+} from './NetworkVenueTestData'
 
 const venueName = 'My-Venue'
 

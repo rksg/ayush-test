@@ -8,8 +8,7 @@ import { networkApi } from '@acx-ui/rc/services'
 import {
   WifiUrlsInfo,
   RadioTypeEnum,
-  RadioEnum,
-  SchedulerTypeEnum
+  RadioEnum
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -20,31 +19,13 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { network }   from './index.spec'
+import {
+  network,
+  networkVenue_apgroup,
+  params
+} from './NetworkVenueTestData'
 import { VlanInput } from './VlanInput'
 
-export const networkVenue_apgroup = {
-  venueId: '02e2ddbc88e1428987666d31edbc3d9a',
-  dual5gEnabled: true,
-  tripleBandEnabled: false,
-  networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
-  allApGroupsRadio: RadioEnum.Both,
-  isAllApGroups: false,
-  id: '7a97953dc55f4645b3cdbf1527f3d7cb',
-  scheduler: {
-    type: SchedulerTypeEnum.ALWAYS_ON
-  },
-  apGroups: [{
-    radio: RadioEnum._2_4_GHz,
-    radioTypes: [RadioTypeEnum._2_4_GHz],
-    isDefault: true,
-    id: '6cb1e831973a4d60924ac59f1bda073c',
-    apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
-    apGroupName: 'APs not assigned to any group',
-    vlanPoolId: '1c061cf2649344adaf1e79a9d624a451',
-    vlanPoolName: 'pool1'
-  }]
-}
 
 const vlanPoolList = [{
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -52,12 +33,6 @@ const vlanPoolList = [{
   vlanMembers: ['123'],
   id: '1c061cf2649344adaf1e79a9d624a451'
 }]
-
-
-const params = {
-  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-  networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-}
 
 describe('VlanInput', () => {
   beforeAll(async () => {
