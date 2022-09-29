@@ -82,6 +82,7 @@ const mockSummary = {
     secondaryDNS: '',
     dhcpOptions: [],
     leaseTime: 24,
+    leaseUnit: 'Hours',
     vlan: 300,
     excludedRangeStart: '1.1.1.1',
     excludedRangeEnd: '1.1.1.1'
@@ -96,6 +97,7 @@ const mockSummary = {
     secondaryDNS: '',
     dhcpOptions: [],
     leaseTime: 24,
+    leaseUnit: 'Hours',
     vlan: 300,
     excludedRangeStart: '2.2.2.2',
     excludedRangeEnd: '2.2.2.2'

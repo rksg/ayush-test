@@ -110,7 +110,7 @@ export function PoolOption (props:{
   return (
 
 
-    <Form.Item label={$t({ defaultMessage: 'Add DHCP options:' })}>
+    <Form.Item label={$t({ defaultMessage: 'Add DHCP options:' })} style={{ paddingLeft: 10 }}>
       <OptionTable
         optionData={[...optionData]}
         updateOptionData={(optionsData: DHCPOption[]) => {

@@ -30,6 +30,7 @@ const initPoolData = {
   excludedRangeEnd: '',
   dhcpOptions: [],
   leaseTime: 24,
+  leaseUnit: 'Hours',
   vlan: 300
 }
 export default function DHCPPoolMain () {
@@ -188,11 +189,18 @@ export default function DHCPPoolMain () {
               >
                 <InputNumber min={1} max={1440} style={{ width: '100%' }} />
               </Form.Item>
-              <Select defaultValue={'Hours'} style={{ marginTop: 6 }}>
-                <Option value={'Days'}>{$t({ defaultMessage: 'Days' })}</Option>
-                <Option value={'Hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
-                <Option value={'Minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
-              </Select>
+              <Form.Item
+                name='leaseUnit'
+                rules={[
+                  { required: true }
+                ]}
+              >
+                <Select defaultValue={'Hours'} style={{ marginTop: 24 }}>
+                  <Option value={'Days'}>{$t({ defaultMessage: 'Days' })}</Option>
+                  <Option value={'Hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
+                  <Option value={'Minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                </Select>
+              </Form.Item>
             </Space>
           </Form.Item>
           <Form.Item

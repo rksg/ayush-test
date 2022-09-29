@@ -77,8 +77,8 @@ export function PoolTable (props:{
       key: 'leaseTime',
       title: $t({ defaultMessage: 'Lease Time' }),
       dataIndex: 'leaseTime',
-      render: (data) =>{
-        return data + ' Hours'
+      render: (data, row) =>{
+        return data + ' ' + row.leaseUnit
       }
     },
     {

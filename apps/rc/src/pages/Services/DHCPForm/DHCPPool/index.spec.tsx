@@ -30,6 +30,7 @@ const data =
       excludedRangeStart: '',
       excludedRangeEnd: '',
       leaseTime: 24,
+      leaseUnit: 'Hours',
       vlan: 300
     }
 
@@ -53,6 +54,7 @@ function wrapper ({ children }: { children: React.ReactElement }) {
         excludedRangeEnd: '',
         dhcpOptions: [],
         leaseTime: 24,
+        leaseUnit: 'Hours',
         vlan: 300
       }] },
     updateSaveState: () => {} }}>

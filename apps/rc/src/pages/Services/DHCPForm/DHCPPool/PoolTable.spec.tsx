@@ -29,6 +29,7 @@ const list = {
       excludedRangeStart: '',
       excludedRangeEnd: '',
       leaseTime: 24,
+      leaseUnit: 'Hours',
       vlan: 300
     },
     {
@@ -43,6 +44,7 @@ const list = {
       excludedRangeStart: '',
       excludedRangeEnd: '',
       leaseTime: 24,
+      leaseUnit: 'Hours',
       vlan: 300
     }
   ]

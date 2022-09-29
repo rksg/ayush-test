@@ -113,6 +113,7 @@ export interface DHCPPool {
   primaryDNS: string;
   secondaryDNS: string;
   leaseTime: number;
+  leaseUnit: string;
   vlan: number;
   dhcpOptions: DHCPOption[];
 }
