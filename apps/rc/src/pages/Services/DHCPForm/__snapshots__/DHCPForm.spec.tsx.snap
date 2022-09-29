@@ -526,7 +526,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <label
-                      class="styledComponents__AntLabel-sc-187er8i-7 fSELPa"
+                      class="styledComponents__AntLabel-sc-187er8i-6 TDhnr"
                     >
                       Set DHCP Pools
                     </label>

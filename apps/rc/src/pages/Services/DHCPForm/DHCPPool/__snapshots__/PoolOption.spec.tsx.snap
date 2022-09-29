@@ -7,6 +7,7 @@ exports[`Create DHCP: Option detail should render correctly 1`] = `
   >
     <div
       class="ant-form-item"
+      style="padding-left: 10px;"
     >
       <div
         class="ant-row ant-form-item-row"
