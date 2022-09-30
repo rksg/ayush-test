@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import {
   calculateSeverity,
   Incident,
-  useShortDescription
+  shortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
@@ -17,7 +17,7 @@ import * as UI from './styledComponents'
 export const CovClientrssiLow = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
-    Attributes.ApImpactCount,
+    Attributes.ClientImpactCount,
     Attributes.IncidentCategory,
     Attributes.IncidentSubCategory,
     Attributes.Type,
@@ -39,7 +39,7 @@ export const CovClientrssiLow = (incident: Incident) => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={useShortDescription(incident)}
+        subTitle={shortDescription(incident)}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>
