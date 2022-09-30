@@ -6,13 +6,13 @@ import AutoSizer       from 'react-virtualized-auto-sizer'
 import {
   Incident,
   TimeSeriesData,
-  getSeriesData
+  getSeriesData,
+  kpiConfig
 }                                                 from '@acx-ui/analytics/utils'
 import { Card, Loader, MultiLineTimeSeriesChart } from '@acx-ui/components'
 import { useTenantLink }                          from '@acx-ui/react-router-dom'
 import { formatter }                              from '@acx-ui/utils'
 
-import { kpiConfig }                                from '../../../Health/Kpi/config'
 import { useKpiTimeseriesQuery, KpiPayload }        from '../../../Health/Kpi/services'
 import { ChartsData, getIncidentTimeSeriesPeriods } from '../services'
 
@@ -85,6 +85,7 @@ export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: 
               data={chartResults}
               dataFormatter={formatter('countFormat')}
               seriesFormatters={seriesFormatters}
+              hasTooltipBadge={false}
               onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}
               markers={getMarkers(data.relatedIncidents, incident)}
             />

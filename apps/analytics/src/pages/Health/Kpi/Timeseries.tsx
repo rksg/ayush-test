@@ -28,12 +28,13 @@ function KpiTimeseries ({ filters, kpi }: { filters: AnalyticsFilter, kpi: strin
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: data! && [{
+        key: kpi,
         name: kpiConfig[kpi as keyof typeof kpiConfig].text,
         data: transformResponse(data)
-      }]    
+      }]
     })
   })
- 
+
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>

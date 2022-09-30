@@ -4,9 +4,9 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { formatter, intlFormats, getIntl, PathNode, NodeType } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
+import { kpiConfig }           from './HealthKPIConfig'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
-import kpiThreshold            from './kpiThreshold'
 
 import type { IncidentInformation } from './incidentInformation'
 import type {
@@ -151,17 +151,11 @@ export function incidentScope (incident: Incident) {
   return scope
 }
 
-const thresholdMapping = {
-  ttc: 'timeToConnect'
-}
-
 export const getThreshold = (incident: Incident) => {
   const { $t } = getIntl()
   const { code } = incident
   if (code === 'ttc') {
-    const codeMap = thresholdMapping[code]
-    const value = formatter('durationFormat')(
-      kpiThreshold[codeMap as keyof typeof kpiThreshold]) as string
+    const value = formatter('durationFormat')(kpiConfig.timeToConnect.histogram.initialThreshold)
     const threshold = $t({
       defaultMessage: '{threshold}'
     }, {
