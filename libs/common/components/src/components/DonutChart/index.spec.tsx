@@ -95,6 +95,30 @@ describe('DonutChart - small', () => {
     await screen.findByText(/5.1K/)
     await screen.findByText(/5K/)
   })
+  it('should render legend in "name-value" format', async () => {
+    render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      title='Donut Chart'
+      legend={'name-value'}
+      subTitle='Donut Chart subTitle'
+    />)
+    data.forEach(async item => {
+      expect(await screen.findByText(`${item.name} - ${item.value}`)).toBeTruthy()
+    })
+  })
+  it('should render legend as "name" format', async () => {
+    render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      title='Donut Chart'
+      legend={'name'}
+      subTitle='Donut Chart subTitle'
+    />)
+    data.forEach(async item => {
+      expect(await screen.findByText(item.name)).toBeTruthy()
+    })
+  })
   it('should render subTitle', async () => {
     render(<DonutChart
       style={{ width: 238, height: 176 }}
@@ -111,11 +135,10 @@ describe('Donut Chart - large', () => {
     const { asFragment } = render(<DonutChart
       style={{ width: 238, height: 176 }}
       data={data}
-      type={'large'}
+      size={'large'}
       onClick={jest.fn()}
       title='Donut Chart'
       showLegend={false}
-      showTooltipPercentage={true}
       showTotal={false}/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('Donut Chart').getAttribute('style'))
@@ -125,12 +148,11 @@ describe('Donut Chart - large', () => {
     const { asFragment } = render(<DonutChart
       style={{ width: 238, height: 176 }}
       data={data}
-      type={'large'}
+      size={'large'}
       title='Some Title'
       value='100'
       showLabel={true}
       showLegend={false}
-      showTooltipPercentage={true}
       showTotal={false}/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('Some Title').getAttribute('style'))
