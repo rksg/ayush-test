@@ -1,11 +1,12 @@
-import { capitalize }                                           from 'lodash'
-import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
+import { capitalize }                       from 'lodash'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { intlFormats, PathNode, NodeType } from '@acx-ui/utils'
+import { formatter, intlFormats, getIntl, PathNode, NodeType } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
+import kpiThreshold            from './kpiThreshold'
 
 import type { IncidentInformation } from './incidentInformation'
 import type {
@@ -13,6 +14,7 @@ import type {
   SeverityRange,
   Incident
 } from './types/incidents'
+
 
 /**
  * Uses to transform incident record loaded from API and
@@ -83,31 +85,26 @@ export function nodeTypes (nodeType: NodeType): MessageDescriptor {
   }
 }
 
-export function formattedNodeType (nodeType: NodeType, intl: IntlShape) {
-  return intl.$t(nodeTypes(nodeType))
-}
-
-export function useFormattedNodeType (nodeType: NodeType) {
-  const intl = useIntl()
-  return formattedNodeType(nodeType, intl)
+export function formattedNodeType (nodeType: NodeType) {
+  const { $t } = getIntl()
+  return $t(nodeTypes(nodeType))
 }
 
 export const useImpactValues =
   <Type extends 'ap' | 'client'> (type: Type, incident: Incident):
   Record<string, string | number | null | {}> => {
-    const intl = useIntl()
-    const values = impactValues(intl, type, incident)
+    const values = impactValues(type, incident)
     return values
   }
 
 function formattedNodeName (
-  intl: IntlShape,
   node: PathNode,
   sliceValue: string
 ): string | undefined {
+  const { $t } = getIntl()
   const type = node.type.toLocaleLowerCase()
   const isComplexName = ['ap', 'switch'].includes(type) && sliceValue !== node.name
-  return intl.$t({
+  return $t({
     defaultMessage: `{isComplexName, select,
       true {{name} ({nodeName})}
       other {{nodeName}}
@@ -117,69 +114,73 @@ function formattedNodeName (
   }, { isComplexName, name: sliceValue, nodeName: node.name })
 }
 
-export function formattedPath (path: PathNode[], sliceValue: string, intl: IntlShape) {
+export function formattedPath (path: PathNode[], sliceValue: string) {
+  const { $t } = getIntl()
   return path
     .filter(node => node.type !== 'network')
     .map(node => ({
-      nodeName: formattedNodeName(intl, node, sliceValue),
-      nodeType: intl.$t(nodeTypes(node.type))
+      nodeName: formattedNodeName(node, sliceValue),
+      nodeType: $t(nodeTypes(node.type))
     }))
-    .map(node => intl.$t({
+    .map(node => $t({
       defaultMessage: '{nodeName} ({nodeType})',
       description: 'FormattedPath: Uses to show path node name & type'
     }, node))
-    .reduce((nodeA, nodeB) => intl.$t({
+    .reduce((nodeA, nodeB) => $t({
       defaultMessage: '{nodeA}{newline}> {nodeB}',
       description: 'FormattedPath: Uses to join path nodes together in a chain'
     }, { nodeA, nodeB, newline: '\n' }))
 }
 
-export function useFormattedPath (path: PathNode[], sliceValue: string) {
-  const intl = useIntl()
-  return formattedPath(path, sliceValue, intl)
-}
-
-export function impactedArea (path: PathNode[], sliceValue: string, intl: IntlShape) {
+export function impactedArea (path: PathNode[], sliceValue: string) {
   const lastNode = path[path.length - 1]
   return lastNode
-    ? formattedNodeName(intl, lastNode, sliceValue)
+    ? formattedNodeName(lastNode, sliceValue)
     : sliceValue
 }
 
-export function useImpactedArea (path: PathNode[], sliceValue: string) {
-  const intl = useIntl()
-  return impactedArea(path, sliceValue, intl)
-}
-
-export function incidentScope (incident: Incident, intl: IntlShape) {
-  const scope = intl.$t({
+export function incidentScope (incident: Incident) {
+  const { $t } = getIntl()
+  const scope = $t({
     defaultMessage: '{nodeType}: {nodeName}',
     description: 'Uses to generate incident impacted scope for various incident descriptions'
   }, {
-    nodeType: formattedNodeType(incident.sliceType, intl),
-    nodeName: impactedArea(incident.path, incident.sliceValue, intl)
+    nodeType: formattedNodeType(incident.sliceType),
+    nodeName: impactedArea(incident.path, incident.sliceValue)
   })
   return scope
 }
 
-export const useIncidentScope = (incident: Incident) => {
-  const intl = useIntl()
-  const scope = incidentScope(incident, intl)
-  return scope
+const thresholdMapping = {
+  ttc: 'timeToConnect'
 }
 
-export const shortDescription = (incident: Incident, intl: IntlShape) => {
-  const scope = incidentScope(incident, intl)
-  return intl.$t(incident.shortDescription, { scope })
+export const getThreshold = (incident: Incident) => {
+  const { $t } = getIntl()
+  const { code } = incident
+  if (code === 'ttc') {
+    const codeMap = thresholdMapping[code]
+    const value = formatter('durationFormat')(
+      kpiThreshold[codeMap as keyof typeof kpiThreshold]) as string
+    const threshold = $t({
+      defaultMessage: '{threshold}'
+    }, {
+      threshold: value
+    })
+    return threshold
+  } else {
+    return undefined
+  }
 }
 
-export const useShortDescription = (incident: Incident) => {
-  const intl = useIntl()
-  return shortDescription(incident, intl)
+export const shortDescription = (incident: Incident) => {
+  const { $t } = getIntl()
+  const scope = incidentScope(incident)
+  const threshold = getThreshold(incident)
+  return $t(incident.shortDescription, { scope, ...threshold && { threshold } })
 }
 
 export const impactValues = <Type extends 'ap' | 'client'> (
-  { $t }: IntlShape,
   type: Type,
   incident: Incident
 ): (
@@ -189,6 +190,7 @@ export const impactValues = <Type extends 'ap' | 'client'> (
     string
   >
 ) => {
+  const { $t } = getIntl()
   const total = incident[`${type}Count` as const]
   const count = incident[
     `impacted${capitalize(type)}Count` as `impacted${Capitalize<typeof type>}Count`

@@ -16,7 +16,7 @@ import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (incident: Incident) => {
+export const Ttc = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
     Attributes.ClientImpactCount,
@@ -31,13 +31,10 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
   const networkImpactCharts: NetworkImpactChartTypes[] = [
     NetworkImpactChartTypes.WLAN,
     NetworkImpactChartTypes.Radio,
-    NetworkImpactChartTypes.Reason,
     NetworkImpactChartTypes.ClientManufacturer
   ]
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.FailureChart,
-    TimeSeriesChartTypes.ClientCountChart,
-    TimeSeriesChartTypes.AttemptAndFailureChart
+    TimeSeriesChartTypes.ClientCountChart
   ]
 
   return (
@@ -62,7 +59,7 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <NetworkImpact incident={incident} charts={networkImpactCharts} />
+          <NetworkImpact incident={incident} charts={networkImpactCharts}/>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
           <TimeSeries incident={incident} charts={timeSeriesCharts} />
@@ -72,4 +69,4 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
   )
 }
 
-export default IncidentDetailsTemplate
+export default Ttc

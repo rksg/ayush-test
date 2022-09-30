@@ -9,17 +9,12 @@ import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
-import { NetworkImpact }                  from '../NetworkImpact'
-import { NetworkImpactChartTypes }        from '../NetworkImpact/config'
-import { TimeSeries }                     from '../TimeSeries'
-import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
-export const IncidentDetailsTemplate = (incident: Incident) => {
+export const SwitchPoePd = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
-    Attributes.ClientImpactCount,
     Attributes.IncidentCategory,
     Attributes.IncidentSubCategory,
     Attributes.Type,
@@ -27,17 +22,6 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
     Attributes.Duration,
     Attributes.EventStartTime,
     Attributes.EventEndTime
-  ]
-  const networkImpactCharts: NetworkImpactChartTypes[] = [
-    NetworkImpactChartTypes.WLAN,
-    NetworkImpactChartTypes.Radio,
-    NetworkImpactChartTypes.Reason,
-    NetworkImpactChartTypes.ClientManufacturer
-  ]
-  const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.FailureChart,
-    TimeSeriesChartTypes.ClientCountChart,
-    TimeSeriesChartTypes.AttemptAndFailureChart
   ]
 
   return (
@@ -62,14 +46,11 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <NetworkImpact incident={incident} charts={networkImpactCharts} />
-        </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }}>
-          <TimeSeries incident={incident} charts={timeSeriesCharts} />
+          <div>Impacted Entities</div>
         </GridCol>
       </GridRow>
     </>
   )
 }
 
-export default IncidentDetailsTemplate
+export default SwitchPoePd

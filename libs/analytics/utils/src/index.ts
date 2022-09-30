@@ -15,4 +15,5 @@ export {
 export * from './timeseries'
 export * from './types/incidents'
 export * from './types/timeseries'
+export * from './kpiThreshold'
 export * from './HealthKPIConfig'
