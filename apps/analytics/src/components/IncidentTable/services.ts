@@ -69,7 +69,7 @@ export const transformData = (incident: Incident): IncidentTableRow => {
     const childDescription = shortDescription(childIncident, intl)
     const childScope = impactedArea(child.path, child.sliceValue, intl)!
     const childType = formattedNodeType(child.sliceType, intl)
-    const childSeverityLabel = calculateSeverity(child.severity) ?? noDataSymbol
+    const childSeverityLabel = calculateSeverity(child.severity)
 
     return {
       ...childIncident,
@@ -94,7 +94,7 @@ export const transformData = (incident: Incident): IncidentTableRow => {
   const description = shortDescription(incidentInfo, intl)
   const scope = impactedArea(incident.path, incident.sliceValue, intl)!
   const type = formattedNodeType(incident.sliceType, intl)
-  const severityLabel = calculateSeverity(incident.severity) ?? noDataSymbol
+  const severityLabel = calculateSeverity(incident.severity)
 
   return {
     ...incidentInfo,
