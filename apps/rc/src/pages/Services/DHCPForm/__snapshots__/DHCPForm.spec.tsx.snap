@@ -1,0 +1,1775 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DHCPForm should create DHCP successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 ivOHzu"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/tenant-id/services"
+              >
+                Service
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              Add DHCP for Wi-Fi Service
+            </h1>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <section
+    class="styledComponents__Wrapper-sc-1ibvcih-2 kqqYPH"
+  >
+    <div
+      class="ant-pro-steps-form"
+    >
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
+        >
+          <div
+            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+          >
+            <div
+              class="ant-steps ant-steps-vertical ant-steps-dot"
+            >
+              <div
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+              >
+                <div
+                  class="ant-steps-item-container"
+                >
+                  <div
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
+                  >
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    >
+                      DHCP Settings
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-steps-item ant-steps-item-wait"
+              >
+                <div
+                  class="ant-steps-item-container"
+                >
+                  <div
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
+                  >
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    >
+                      Venues
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-steps-item ant-steps-item-wait"
+              >
+                <div
+                  class="ant-steps-item-container"
+                >
+                  <div
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
+                  >
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    >
+                      Summary
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
+        >
+          <div
+            class="ant-pro-steps-form-container"
+          >
+            <div
+              class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+            >
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="settings"
+              >
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div
+                  class="ant-row"
+                  style="margin-left: -10px; margin-right: -10px;"
+                >
+                  <div
+                    class="ant-col ant-col-10"
+                    style="padding-left: 10px; padding-right: 10px;"
+                  >
+                    <h3
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                    >
+                      Settings
+                    </h3>
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class="ant-form-item-required"
+                            for="settings_name"
+                            title="Service Name"
+                          >
+                            Service Name
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            >
+                              <span
+                                class="ant-input-affix-wrapper ant-input-affix-wrapper-has-feedback"
+                              >
+                                <input
+                                  class="ant-input"
+                                  id="settings_name"
+                                  type="text"
+                                  value=""
+                                />
+                                <span
+                                  class="ant-input-suffix"
+                                />
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-form-item"
+                      style="display: none;"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            for="settings_tags"
+                            title="Tags"
+                          >
+                            Tags
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            >
+                              <input
+                                class="ant-input"
+                                id="settings_tags"
+                                type="text"
+                                value=""
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-form-item"
+                      style="display: none;"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            for="settings_createType"
+                            title="Type"
+                          >
+                            Type
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            >
+                              <div
+                                class="ant-radio-group ant-radio-group-outline"
+                                id="settings_createType"
+                              >
+                                <label
+                                  class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-radio ant-radio-checked"
+                                  >
+                                    <input
+                                      checked=""
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value="WI-FI"
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    Wi-Fi
+                                  </span>
+                                </label>
+                                <label
+                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value="SWITCH"
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                  <span>
+                                    Switch
+                                  </span>
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class="ant-form-item-required"
+                            for="settings_dhcpConfig"
+                            title="DHCP Configuration"
+                          >
+                            DHCP Configuration
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            >
+                              <div
+                                class="ant-radio-group ant-radio-group-outline"
+                                id="settings_dhcpConfig"
+                              >
+                                <div
+                                  class="ant-space ant-space-vertical"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-bottom: 8px;"
+                                  >
+                                    <label
+                                      class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
+                                    >
+                                      <span
+                                        class="ant-radio ant-radio-checked"
+                                      >
+                                        <input
+                                          checked=""
+                                          class="ant-radio-input"
+                                          type="radio"
+                                          value="SIMPLE"
+                                        />
+                                        <span
+                                          class="ant-radio-inner"
+                                        />
+                                      </span>
+                                      <span>
+                                        Simple DHCP
+                                        <div
+                                          class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
+                                        >
+                                          Each AP in this venue is running it’s own DHCP server instance. Typically configured when APs are at different sites and roaming is not required
+                                        </div>
+                                      </span>
+                                    </label>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                    style="margin-bottom: 8px;"
+                                  >
+                                    <label
+                                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                    >
+                                      <span
+                                        class="ant-radio"
+                                      >
+                                        <input
+                                          class="ant-radio-input"
+                                          type="radio"
+                                          value="MULTIPLE"
+                                        />
+                                        <span
+                                          class="ant-radio-inner"
+                                        />
+                                      </span>
+                                      <span>
+                                        Multiple AP DHCP
+                                        <div
+                                          class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
+                                        >
+                                          Designated APs in this venue are running the DHCP Server instance. Typically configured when multiple APs are at the same site and roaming across APs is needed
+                                        </div>
+                                      </span>
+                                    </label>
+                                  </div>
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <label
+                                      class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                    >
+                                      <span
+                                        class="ant-radio"
+                                      >
+                                        <input
+                                          class="ant-radio-input"
+                                          type="radio"
+                                          value="HIERARCHICAL"
+                                        />
+                                        <span
+                                          class="ant-radio-inner"
+                                        />
+                                      </span>
+                                      <span>
+                                        Hierarchical AP DHCP
+                                        <div
+                                          class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
+                                        >
+                                          Designated APs in this venue are running the DHCP Server instance. The DHCP server APs connected to the WAN, the rest of APs get their Private IP address from a local IP Pool with VLAN ID 1 from the DHCP Server AP
+                                        </div>
+                                      </span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-10"
+                    style="padding-left: 10px; padding-right: 10px;"
+                  >
+                    <div
+                      class="ant-row ant-row-center"
+                    >
+                      <div
+                        class="ant-col"
+                      >
+                        <div
+                          class="styledComponents__Diagram-sc-187er8i-0 hdEhRb"
+                        >
+                          <img
+                            alt=""
+                            src="dpsk.png"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-row"
+                  style="margin-left: -10px; margin-right: -10px;"
+                >
+                  <div
+                    class="ant-col ant-col-20"
+                    style="padding-left: 10px; padding-right: 10px;"
+                  >
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            for="settings_dhcpPools"
+                            title="Set DHCP Pools"
+                          >
+                            Set DHCP Pools
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            >
+                              <div
+                                class="styledComponents__Wrapper-sc-1abm7iv-12 cbnATm"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center"
+                                  style="display: flex; justify-content: flex-end;"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <button
+                                      class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                      type="button"
+                                    >
+                                      <span>
+                                        Add DHCP Pool
+                                      </span>
+                                    </button>
+                                  </div>
+                                </div>
+                                <div
+                                  class="ant-pro-table"
+                                >
+                                  <div
+                                    class="ant-pro-card"
+                                  >
+                                    <div
+                                      class="ant-pro-card-body"
+                                      style="padding-top: 0px;"
+                                    >
+                                      <div
+                                        class="ant-pro-table-list-toolbar"
+                                      >
+                                        <div
+                                          class="ant-pro-table-list-toolbar-container"
+                                        >
+                                          <div
+                                            class="ant-pro-table-list-toolbar-left"
+                                          />
+                                          <div
+                                            class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                                          >
+                                            <div
+                                              class="ant-space-item"
+                                            >
+                                              <div
+                                                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                                              >
+                                                <div
+                                                  class="ant-space-item"
+                                                >
+                                                  <div
+                                                    class="ant-pro-table-list-toolbar-setting-item"
+                                                  >
+                                                    <svg>
+                                                      SettingsOutlined.svg
+                                                    </svg>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="ant-table-wrapper"
+                                      >
+                                        <div
+                                          class="ant-spin-nested-loading"
+                                        >
+                                          <div
+                                            class="ant-spin-container"
+                                          >
+                                            <div
+                                              class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                                            >
+                                              <div
+                                                class="ant-table-container"
+                                              >
+                                                <div
+                                                  class="ant-table-content"
+                                                  style="overflow-x: auto; overflow-y: hidden;"
+                                                >
+                                                  <table
+                                                    style="min-width: 100%; table-layout: auto;"
+                                                  >
+                                                    <colgroup>
+                                                      <col
+                                                        class="ant-table-selection-col"
+                                                      />
+                                                      <col />
+                                                      <col />
+                                                      <col />
+                                                      <col />
+                                                      <col />
+                                                      <col />
+                                                      <col
+                                                        style="width: 32px;"
+                                                      />
+                                                    </colgroup>
+                                                    <thead
+                                                      class="ant-table-thead"
+                                                    >
+                                                      <tr>
+                                                        <th
+                                                          class="ant-table-cell ant-table-selection-column react-resizable"
+                                                        >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          />
+                                                          <div
+                                                            class="ant-table-selection"
+                                                          >
+                                                            <label
+                                                              class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item"
+                                                            >
+                                                              <span
+                                                                class="ant-checkbox ant-checkbox-disabled"
+                                                              >
+                                                                <input
+                                                                  class="ant-checkbox-input"
+                                                                  disabled=""
+                                                                  type="checkbox"
+                                                                  value=""
+                                                                />
+                                                                <span
+                                                                  class="ant-checkbox-inner"
+                                                                />
+                                                              </span>
+                                                            </label>
+                                                          </div>
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          />
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                                          tabindex="0"
+                                                        >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          />
+                                                          <div
+                                                            class="ant-table-column-sorters"
+                                                          >
+                                                            <span
+                                                              class="ant-table-column-title"
+                                                            >
+                                                              Pool Name
+                                                            </span>
+                                                            <span
+                                                              class="ant-table-column-sorter ant-table-column-sorter-full"
+                                                            >
+                                                              <span
+                                                                class="ant-table-column-sorter-inner"
+                                                              >
+                                                                <span
+                                                                  aria-label="caret-up"
+                                                                  class="anticon anticon-caret-up ant-table-column-sorter-up"
+                                                                  role="img"
+                                                                >
+                                                                  <svg
+                                                                    aria-hidden="true"
+                                                                    data-icon="caret-up"
+                                                                    fill="currentColor"
+                                                                    focusable="false"
+                                                                    height="1em"
+                                                                    viewBox="0 0 1024 1024"
+                                                                    width="1em"
+                                                                  >
+                                                                    <path
+                                                                      d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
+                                                                    />
+                                                                  </svg>
+                                                                </span>
+                                                                <span
+                                                                  aria-label="caret-down"
+                                                                  class="anticon anticon-caret-down ant-table-column-sorter-down"
+                                                                  role="img"
+                                                                >
+                                                                  <svg
+                                                                    aria-hidden="true"
+                                                                    data-icon="caret-down"
+                                                                    fill="currentColor"
+                                                                    focusable="false"
+                                                                    height="1em"
+                                                                    viewBox="0 0 1024 1024"
+                                                                    width="1em"
+                                                                  >
+                                                                    <path
+                                                                      d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+                                                                    />
+                                                                  </svg>
+                                                                </span>
+                                                              </span>
+                                                            </span>
+                                                          </div>
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          />
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                                          tabindex="0"
+                                                        >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          />
+                                                          <div
+                                                            class="ant-table-column-sorters"
+                                                          >
+                                                            <span
+                                                              class="ant-table-column-title"
+                                                            >
+                                                              IP Address
+                                                            </span>
+                                                            <span
+                                                              class="ant-table-column-sorter ant-table-column-sorter-full"
+                                                            >
+                                                              <span
+                                                                class="ant-table-column-sorter-inner"
+                                                              >
+                                                                <span
+                                                                  aria-label="caret-up"
+                                                                  class="anticon anticon-caret-up ant-table-column-sorter-up"
+                                                                  role="img"
+                                                                >
+                                                                  <svg
+                                                                    aria-hidden="true"
+                                                                    data-icon="caret-up"
+                                                                    fill="currentColor"
+                                                                    focusable="false"
+                                                                    height="1em"
+                                                                    viewBox="0 0 1024 1024"
+                                                                    width="1em"
+                                                                  >
+                                                                    <path
+                                                                      d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
+                                                                    />
+                                                                  </svg>
+                                                                </span>
+                                                                <span
+                                                                  aria-label="caret-down"
+                                                                  class="anticon anticon-caret-down ant-table-column-sorter-down"
+                                                                  role="img"
+                                                                >
+                                                                  <svg
+                                                                    aria-hidden="true"
+                                                                    data-icon="caret-down"
+                                                                    fill="currentColor"
+                                                                    focusable="false"
+                                                                    height="1em"
+                                                                    viewBox="0 0 1024 1024"
+                                                                    width="1em"
+                                                                  >
+                                                                    <path
+                                                                      d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+                                                                    />
+                                                                  </svg>
+                                                                </span>
+                                                              </span>
+                                                            </span>
+                                                          </div>
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          />
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                                          tabindex="0"
+                                                        >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          />
+                                                          <div
+                                                            class="ant-table-column-sorters"
+                                                          >
+                                                            <span
+                                                              class="ant-table-column-title"
+                                                            >
+                                                              Subnet Mask
+                                                            </span>
+                                                            <span
+                                                              class="ant-table-column-sorter ant-table-column-sorter-full"
+                                                            >
+                                                              <span
+                                                                class="ant-table-column-sorter-inner"
+                                                              >
+                                                                <span
+                                                                  aria-label="caret-up"
+                                                                  class="anticon anticon-caret-up ant-table-column-sorter-up"
+                                                                  role="img"
+                                                                >
+                                                                  <svg
+                                                                    aria-hidden="true"
+                                                                    data-icon="caret-up"
+                                                                    fill="currentColor"
+                                                                    focusable="false"
+                                                                    height="1em"
+                                                                    viewBox="0 0 1024 1024"
+                                                                    width="1em"
+                                                                  >
+                                                                    <path
+                                                                      d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
+                                                                    />
+                                                                  </svg>
+                                                                </span>
+                                                                <span
+                                                                  aria-label="caret-down"
+                                                                  class="anticon anticon-caret-down ant-table-column-sorter-down"
+                                                                  role="img"
+                                                                >
+                                                                  <svg
+                                                                    aria-hidden="true"
+                                                                    data-icon="caret-down"
+                                                                    fill="currentColor"
+                                                                    focusable="false"
+                                                                    height="1em"
+                                                                    viewBox="0 0 1024 1024"
+                                                                    width="1em"
+                                                                  >
+                                                                    <path
+                                                                      d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+                                                                    />
+                                                                  </svg>
+                                                                </span>
+                                                              </span>
+                                                            </span>
+                                                          </div>
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          />
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell react-resizable"
+                                                        >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          />
+                                                          Lease Time
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          />
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell react-resizable"
+                                                        >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          />
+                                                          Vlan
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          />
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell react-resizable"
+                                                        >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          />
+                                                          Number of hosts
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          />
+                                                        </th>
+                                                        <th
+                                                          class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                                          style="position: sticky; right: 0px;"
+                                                        >
+                                                          <div
+                                                            class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                          />
+                                                          <div
+                                                            class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                          />
+                                                        </th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody
+                                                      class="ant-table-tbody"
+                                                    >
+                                                      <tr
+                                                        aria-hidden="true"
+                                                        class="ant-table-measure-row"
+                                                        style="height: 0px; font-size: 0px;"
+                                                      >
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
+                                                          >
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
+                                                          >
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
+                                                          >
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
+                                                          >
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
+                                                          >
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
+                                                          >
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
+                                                          >
+                                                             
+                                                          </div>
+                                                        </td>
+                                                        <td
+                                                          style="padding: 0px; border: 0px; height: 0px;"
+                                                        >
+                                                          <div
+                                                            style="height: 0px; overflow: hidden;"
+                                                          >
+                                                             
+                                                          </div>
+                                                        </td>
+                                                      </tr>
+                                                      <tr
+                                                        class="ant-table-placeholder"
+                                                      >
+                                                        <td
+                                                          class="ant-table-cell"
+                                                          colspan="8"
+                                                        >
+                                                          <div
+                                                            class="ant-table-expanded-row-fixed"
+                                                            style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
+                                                          />
+                                                        </td>
+                                                      </tr>
+                                                    </tbody>
+                                                  </table>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div
+              class="ant-pro-steps-form-step"
+            >
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="venues"
+              >
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <h3
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                >
+                  Venues
+                </h3>
+                <p>
+                  Select venues to activate this DHCP service
+                </p>
+                <div
+                  class="ant-form-item ant-form-item-has-success"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <div
+                            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                          >
+                            <div
+                              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+                            >
+                              <span
+                                aria-label="loader"
+                                role="img"
+                              >
+                                <div
+                                  aria-busy="true"
+                                  aria-live="polite"
+                                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                                >
+                                  <span
+                                    class="ant-spin-dot ant-spin-dot-spin"
+                                  >
+                                    <i
+                                      class="ant-spin-dot-item"
+                                    />
+                                    <i
+                                      class="ant-spin-dot-item"
+                                    />
+                                    <i
+                                      class="ant-spin-dot-item"
+                                    />
+                                    <i
+                                      class="ant-spin-dot-item"
+                                    />
+                                  </span>
+                                </div>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div
+              class="ant-pro-steps-form-step"
+            >
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="summary"
+              >
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <h3
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                >
+                  Summary
+                </h3>
+                <div
+                  class="ant-row"
+                  style="margin-left: -10px; margin-right: -10px; padding-top: 20px;"
+                >
+                  <div
+                    class="ant-col"
+                    style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                  >
+                    <h4
+                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                    >
+                      DHCP Settings
+                    </h4>
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            title="Service Name:"
+                          >
+                            Service Name:
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            title="Tags:"
+                          >
+                            Tags:
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-label"
+                        >
+                          <label
+                            class=""
+                            title="DHCP Configuration:"
+                          >
+                            DHCP Configuration:
+                          </label>
+                        </div>
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            >
+                              Simple DHCP
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-divider ant-divider-vertical"
+                    role="separator"
+                    style="height: 250px;"
+                  />
+                  <div
+                    class="ant-col"
+                    style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
+                  >
+                    <h4
+                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                    >
+                      Activated in venues
+                    </h4>
+                    <div
+                      class="ant-form-item"
+                    >
+                      <div
+                        class="ant-row ant-form-item-row"
+                      >
+                        <div
+                          class="ant-col ant-form-item-control"
+                        >
+                          <div
+                            class="ant-form-item-control-input"
+                          >
+                            <div
+                              class="ant-form-item-control-input-content"
+                            >
+                              --
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 jSKMsx"
+                >
+                  <div
+                    class="ant-pro-table"
+                  >
+                    <div
+                      class="ant-pro-card"
+                    >
+                      <div
+                        class="ant-pro-card-body"
+                        style="padding-top: 0px;"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar"
+                        >
+                          <div
+                            class="ant-pro-table-list-toolbar-container"
+                          >
+                            <div
+                              class="ant-pro-table-list-toolbar-left"
+                            />
+                            <div
+                              class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                            >
+                              <div
+                                class="ant-space-item"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    <div
+                                      class="ant-pro-table-list-toolbar-setting-item"
+                                    >
+                                      <svg>
+                                        SettingsOutlined.svg
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-table-wrapper"
+                        >
+                          <div
+                            class="ant-spin-nested-loading"
+                          >
+                            <div
+                              class="ant-spin-container"
+                            >
+                              <div
+                                class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                              >
+                                <div
+                                  class="ant-table-container"
+                                >
+                                  <div
+                                    class="ant-table-content"
+                                    style="overflow-x: auto; overflow-y: hidden;"
+                                  >
+                                    <table
+                                      style="min-width: 100%; table-layout: auto;"
+                                    >
+                                      <colgroup>
+                                        <col />
+                                        <col />
+                                        <col />
+                                        <col />
+                                        <col />
+                                        <col />
+                                        <col
+                                          style="width: 32px;"
+                                        />
+                                      </colgroup>
+                                      <thead
+                                        class="ant-table-thead"
+                                      >
+                                        <tr>
+                                          <th
+                                            class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                            tabindex="0"
+                                          >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            />
+                                            <div
+                                              class="ant-table-column-sorters"
+                                            >
+                                              <span
+                                                class="ant-table-column-title"
+                                              >
+                                                Pool Name
+                                              </span>
+                                              <span
+                                                class="ant-table-column-sorter ant-table-column-sorter-full"
+                                              >
+                                                <span
+                                                  class="ant-table-column-sorter-inner"
+                                                >
+                                                  <span
+                                                    aria-label="caret-up"
+                                                    class="anticon anticon-caret-up ant-table-column-sorter-up"
+                                                    role="img"
+                                                  >
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      data-icon="caret-up"
+                                                      fill="currentColor"
+                                                      focusable="false"
+                                                      height="1em"
+                                                      viewBox="0 0 1024 1024"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
+                                                      />
+                                                    </svg>
+                                                  </span>
+                                                  <span
+                                                    aria-label="caret-down"
+                                                    class="anticon anticon-caret-down ant-table-column-sorter-down"
+                                                    role="img"
+                                                  >
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      data-icon="caret-down"
+                                                      fill="currentColor"
+                                                      focusable="false"
+                                                      height="1em"
+                                                      viewBox="0 0 1024 1024"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+                                                      />
+                                                    </svg>
+                                                  </span>
+                                                </span>
+                                              </span>
+                                            </div>
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            />
+                                          </th>
+                                          <th
+                                            class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                            tabindex="0"
+                                          >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            />
+                                            <div
+                                              class="ant-table-column-sorters"
+                                            >
+                                              <span
+                                                class="ant-table-column-title"
+                                              >
+                                                IP Address
+                                              </span>
+                                              <span
+                                                class="ant-table-column-sorter ant-table-column-sorter-full"
+                                              >
+                                                <span
+                                                  class="ant-table-column-sorter-inner"
+                                                >
+                                                  <span
+                                                    aria-label="caret-up"
+                                                    class="anticon anticon-caret-up ant-table-column-sorter-up"
+                                                    role="img"
+                                                  >
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      data-icon="caret-up"
+                                                      fill="currentColor"
+                                                      focusable="false"
+                                                      height="1em"
+                                                      viewBox="0 0 1024 1024"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
+                                                      />
+                                                    </svg>
+                                                  </span>
+                                                  <span
+                                                    aria-label="caret-down"
+                                                    class="anticon anticon-caret-down ant-table-column-sorter-down"
+                                                    role="img"
+                                                  >
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      data-icon="caret-down"
+                                                      fill="currentColor"
+                                                      focusable="false"
+                                                      height="1em"
+                                                      viewBox="0 0 1024 1024"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+                                                      />
+                                                    </svg>
+                                                  </span>
+                                                </span>
+                                              </span>
+                                            </div>
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            />
+                                          </th>
+                                          <th
+                                            class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                            tabindex="0"
+                                          >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            />
+                                            <div
+                                              class="ant-table-column-sorters"
+                                            >
+                                              <span
+                                                class="ant-table-column-title"
+                                              >
+                                                Subnet Mask
+                                              </span>
+                                              <span
+                                                class="ant-table-column-sorter ant-table-column-sorter-full"
+                                              >
+                                                <span
+                                                  class="ant-table-column-sorter-inner"
+                                                >
+                                                  <span
+                                                    aria-label="caret-up"
+                                                    class="anticon anticon-caret-up ant-table-column-sorter-up"
+                                                    role="img"
+                                                  >
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      data-icon="caret-up"
+                                                      fill="currentColor"
+                                                      focusable="false"
+                                                      height="1em"
+                                                      viewBox="0 0 1024 1024"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
+                                                      />
+                                                    </svg>
+                                                  </span>
+                                                  <span
+                                                    aria-label="caret-down"
+                                                    class="anticon anticon-caret-down ant-table-column-sorter-down"
+                                                    role="img"
+                                                  >
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      data-icon="caret-down"
+                                                      fill="currentColor"
+                                                      focusable="false"
+                                                      height="1em"
+                                                      viewBox="0 0 1024 1024"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+                                                      />
+                                                    </svg>
+                                                  </span>
+                                                </span>
+                                              </span>
+                                            </div>
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            />
+                                          </th>
+                                          <th
+                                            class="ant-table-cell react-resizable"
+                                          >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            />
+                                            Lease Time
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            />
+                                          </th>
+                                          <th
+                                            class="ant-table-cell react-resizable"
+                                          >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            />
+                                            Vlan
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            />
+                                          </th>
+                                          <th
+                                            class="ant-table-cell react-resizable"
+                                          >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            />
+                                            Number of hosts
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            />
+                                          </th>
+                                          <th
+                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                            style="position: sticky; right: 0px;"
+                                          >
+                                            <div
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                            />
+                                            <div
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                            />
+                                          </th>
+                                        </tr>
+                                      </thead>
+                                      <tbody
+                                        class="ant-table-tbody"
+                                      >
+                                        <tr
+                                          aria-hidden="true"
+                                          class="ant-table-measure-row"
+                                          style="height: 0px; font-size: 0px;"
+                                        >
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
+                                          >
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
+                                          >
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
+                                          >
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
+                                          >
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
+                                          >
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
+                                          >
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                          <td
+                                            style="padding: 0px; border: 0px; height: 0px;"
+                                          >
+                                            <div
+                                              style="height: 0px; overflow: hidden;"
+                                            >
+                                               
+                                            </div>
+                                          </td>
+                                        </tr>
+                                        <tr
+                                          class="ant-table-placeholder"
+                                        >
+                                          <td
+                                            class="ant-table-cell"
+                                            colspan="7"
+                                          >
+                                            <div
+                                              class="ant-table-expanded-row-fixed"
+                                              style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
+                                            />
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+      >
+        <div
+          class="ant-space ant-space-horizontal ant-space-align-center"
+        >
+          <div
+            class="ant-space-item"
+            style="margin-right: 12px;"
+          >
+            <button
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              type="button"
+            >
+              <span>
+                Cancel
+              </span>
+            </button>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+                style="margin-right: 12px;"
+              >
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  disabled=""
+                  type="button"
+                >
+                  <span>
+                    Back
+                  </span>
+                </button>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <button
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 hFgoIn"
+                  type="button"
+                >
+                  <span>
+                    Next
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</DocumentFragment>
+`;
