@@ -38,7 +38,7 @@ describe('TopSwitchesByPoEUsageWidget', () => {
   mockDOMWidth()
 
   const wrapper = (<BrowserRouter>
-    <Provider> 
+    <Provider>
       <SwitchesByPoEUsage filters={filters}/>
     </Provider>
   </BrowserRouter>)
