@@ -58,6 +58,8 @@ export interface TableProps <RecordType>
       & {
       alwaysShowAlert?: boolean;
     })
+    extraSettings?: React.ReactNode[]
+    onResetState?: CallableFunction
   }
 
 const defaultPagination = {
@@ -125,12 +127,18 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     checkedReset: false,
     extra: <div>
       <UI.TableSettingTitle children={$t({ defaultMessage: 'Select Columns' })} />
-      <Button
-        type='link'
-        size='small'
-        onClick={columnsState.resetState}
-        children={$t({ defaultMessage: 'Reset to default' })}
-      />
+      {props.extraSettings?.map(section => <UI.SettingSection>{section}</UI.SettingSection>)}
+      <UI.SettingSection>
+        <Button
+          type='link'
+          size='small'
+          onClick={() => {
+            columnsState.resetState()
+            props.onResetState?.()
+          }}
+          children={$t({ defaultMessage: 'Reset to default' })}
+        />
+      </UI.SettingSection>
     </div>,
     children: <SettingsOutlined/>
   } : false

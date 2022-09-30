@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Tooltip }                                  from 'antd'
+import { Checkbox, Tooltip }                        from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
@@ -15,9 +15,9 @@ import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
 import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
 import { formatter }                         from '@acx-ui/utils'
 
-import { 
+import {
   useIncidentsListQuery,
-  IncidentTableRow 
+  IncidentTableRow
 } from './services'
 import * as UI  from './styledComponents'
 import {
@@ -29,6 +29,8 @@ import {
   dateSort,
   defaultSort
 } from './utils'
+
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
   const { $t } = useIntl()
@@ -64,6 +66,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const queryResults = useIncidentsListQuery(filters)
   const basePath = useTenantLink('/analytics/incidents/')
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
+  const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
@@ -223,6 +226,14 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         columnEmptyText={noDataSymbol}
         ellipsis={true}
         indentSize={6}
+        onResetState={() => setShowMuted(false)}
+        extraSettings={[
+          <Checkbox
+            onChange={(e: CheckboxChangeEvent) => setShowMuted(e.target.checked)}
+            checked={showMuted}
+            children={$t({ defaultMessage: 'Show Muted Incidents' })}
+          />
+        ]}
       />
       {drawerSelection &&
       <Drawer
