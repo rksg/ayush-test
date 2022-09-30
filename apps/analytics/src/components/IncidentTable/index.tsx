@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 
 import { Checkbox, Tooltip }                        from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
@@ -87,7 +87,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     }
   ]
 
-  const ColumnHeaders: TableProps<IncidentTableRow>['columns'] = [
+  const ColumnHeaders: TableProps<IncidentTableRow>['columns'] = useMemo(() => [
     {
       title: $t(defineMessage({ defaultMessage: 'Severity' })),
       width: 80,
@@ -218,7 +218,8 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       show: false,
       filterable: true
     }
-  ]
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], []) // '$t' 'basePath' 'intl' are not changing. $t is always a new object and causes issues
 
   return (
     <Loader states={[queryResults]}>
