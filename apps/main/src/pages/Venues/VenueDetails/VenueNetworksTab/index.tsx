@@ -65,14 +65,14 @@ export function VenueNetworksTab () {
 
   const activateNetwork = async (checked: boolean, row: Network) => {
     if (row.allApDisabled) {
-      // TODO: 
+      // TODO:
       // manageAPGroups(row);
-    } 
+    }
     else {
       if (row.deepNetwork) {
         if (checked) { // activate
-          const newNetworkVenue = generateDefaultNetworkVenue(params.venueId as string, row.id) 
-          if (triBandRadioFeatureFlag && row.deepNetwork.wlan && 
+          const newNetworkVenue = generateDefaultNetworkVenue(params.venueId as string, row.id)
+          if (triBandRadioFeatureFlag && row.deepNetwork.wlan &&
               row.deepNetwork.wlan.wlanSecurity === WlanSecurityEnum.WPA3) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }

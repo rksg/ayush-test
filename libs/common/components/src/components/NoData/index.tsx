@@ -7,7 +7,7 @@ interface NoDataWrapperProps {
 }
 export function NoData ({ text }: NoDataWrapperProps) {
   const { $t } = useIntl()
-  text = text ? text : $t({ defaultMessage: 'No data to display' }) 
+  text = text ? text : $t({ defaultMessage: 'No data to display' })
   return (
     <UI.NoDataWrapper>
       <UI.TextWrapper>{text}</UI.TextWrapper>

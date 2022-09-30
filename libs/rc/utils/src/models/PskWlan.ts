@@ -1,5 +1,5 @@
 
-import { 
+import {
   PskWlanSecurityEnum,
   MacAuthMacFormatEnum,
   ManagementFrameProtectionEnum
