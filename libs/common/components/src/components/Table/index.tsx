@@ -49,8 +49,8 @@ export interface TableProps <RecordType>
       onClick: () => void
     }>
     rowActions?: Array<{
-      hideIfMultipleSelection?: boolean,
-      label: string,
+      label: string
+      visible?: boolean | ((selectedItems: RecordType[]) => boolean)
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
@@ -298,16 +298,20 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
             />
           </Space>
           <Space size={0} split={<UI.Divider type='vertical' />}>
-            {props.rowActions?.map((option) =>
-              (!option.hideIfMultipleSelection ||
-                (option.hideIfMultipleSelection && selectedRowKeys.length === 1)) &&
-              <UI.ActionButton
+            {props.rowActions?.map((option) => {
+              const rows = getSelectedRows(selectedRowKeys)
+              let visible = typeof option.visible === 'function'
+                ? option.visible(rows)
+                : option.visible ?? true
+
+              if (!visible) return null
+
+              return <UI.ActionButton
                 key={option.label}
-                onClick={() =>
-                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
+                onClick={() => option.onClick(rows, () => { onCleanSelected() })}
                 children={option.label}
               />
-            )}
+            })}
           </Space>
         </Space>
       )}

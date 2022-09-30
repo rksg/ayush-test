@@ -1,4 +1,6 @@
 import '@testing-library/jest-dom'
+import { useState } from 'react'
+
 import userEvent from '@testing-library/user-event'
 
 import { render, fireEvent, screen, within, mockDOMWidth } from '@acx-ui/test-utils'
@@ -344,10 +346,39 @@ describe('Table component', () => {
     expect(actions[0].onClick).toBeCalled()
   })
 
-  it('testing hideIfMultipleSelection option of action items', async () => {
+  it('hides rowAction when visible == false', async () => {
     const [onEdit, onDelete] = [jest.fn(), jest.fn()]
-    const rowActions = [
-      { hideIfMultipleSelection: true, label: 'Edit', onClick: onEdit },
+    const Component = () => {
+      const [visible, setVisible] = useState(true)
+      const rowActions = [
+        { label: 'Edit', onClick: onEdit, visible },
+        { label: 'Delete', onClick: onDelete }
+      ]
+
+      return <>
+        <button onClick={() => setVisible(false)}>show</button>
+        <Table
+          columns={basicColumns}
+          dataSource={basicData}
+          rowActions={rowActions}
+          rowSelection={{ defaultSelectedRowKeys: ['1'] }}
+        />
+      </>
+    }
+
+    render(<Component />)
+
+
+    const editButton = screen.getByRole('button', { name: /edit/i })
+    expect(editButton).toBeVisible()
+    fireEvent.click(screen.getByRole('button', { name: 'show' }))
+    expect(editButton).not.toBeVisible()
+  })
+
+  it('hides rowAction when visible(items) == false', async () => {
+    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
+    const rowActions: TableProps<typeof basicData[number]>['rowActions'] = [
+      { label: 'Edit', onClick: onEdit, visible: (items) => items.length === 1 },
       { label: 'Delete', onClick: onDelete }
     ]
 
@@ -355,7 +386,7 @@ describe('Table component', () => {
       columns={basicColumns}
       dataSource={basicData}
       rowActions={rowActions}
-      rowSelection={{ defaultSelectedRowKeys: [] }}
+      rowSelection={{ }}
     />)
 
     const row1 = await screen.findByRole('row', { name: /john/i })

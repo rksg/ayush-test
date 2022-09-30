@@ -187,7 +187,7 @@ export function VenuesTable () {
     ] = useDeleteVenueMutation()
 
     const rowActions: TableProps<Venue>['rowActions'] = [{
-      hideIfMultipleSelection: true,
+      visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
@@ -205,11 +205,11 @@ export function VenuesTable () {
             numOfEntities: rows.length,
             confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
           },
-          onOk: () => { rows.length === 1 ? 
+          onOk: () => { rows.length === 1 ?
             deleteVenue({ params: { tenantId, venueId: rows[0].id } })
               .then(clearSelection) :
             deleteVenue({ params: { tenantId }, payload: rows.map(item => item.id) })
-              .then(clearSelection) 
+              .then(clearSelection)
           }
         })
       }
