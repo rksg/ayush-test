@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  FloorPlanDto,
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
@@ -70,11 +71,19 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, 
+          showActivityMessage(msg,
             ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
             })
         })
+      }
+    }),
+    floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
+      query: ({ params }) => {
+        const floorPlansReq = createHttpRequest(CommonUrlsInfo.getVenueFloorplans, params)
+        return {
+          ...floorPlansReq
+        }
       }
     }),
     getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
@@ -119,6 +128,7 @@ export const {
   useAddVenueMutation,
   useGetVenueQuery,
   useVenueDetailsHeaderQuery,
+  useFloorPlanListQuery,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,

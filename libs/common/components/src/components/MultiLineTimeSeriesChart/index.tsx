@@ -64,10 +64,13 @@ export interface MultiLineTimeSeriesChartProps <
     chartRef?: RefObject<ReactECharts>
   }
 
-export const useBrush = (
+
+
+export function useBrush<T> (
   eChartsRef: RefObject<ReactECharts>,
-  brush?: [TimeStamp, TimeStamp]
-) => {
+  brush?: [TimeStamp, TimeStamp],
+  data?: T[]
+) {
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current || isEmpty(brush)) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
@@ -79,14 +82,14 @@ export const useBrush = (
         xAxisIndex: 0
       }]
     })
-  }, [eChartsRef, brush])
+  }, [eChartsRef, brush, data])
 }
 
 export const useOnBrushChange = (
   onBrushChange?: (range: TimeStamp[]) => void
 ) => {
-  return (params: { batch: { areas: { coordRange: [TimeStamp, TimeStamp] }[] }[] }) => {
-    onBrushChange && onBrushChange(params.batch[0].areas[0].coordRange)
+  return (params: { areas: { coordRange: [TimeStamp, TimeStamp] }[] }) => {
+    onBrushChange && onBrushChange(params.areas[0].coordRange)
   }
 }
 
@@ -117,11 +120,11 @@ export function MultiLineTimeSeriesChart <
   onMarkedAreaClick,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData, MarkerData>) {
-  const brushEnabled = Boolean(props.brush)
+  const zoomEnabled = !Boolean(props.brush)
 
   const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(props.chartRef, () => eChartsRef.current!)
-  useBrush(eChartsRef, props.brush)
+  useBrush(eChartsRef, props.brush, data)
   useOnMarkedAreaClick(eChartsRef, onMarkedAreaClick)
 
   const option: EChartsOption = {
@@ -177,7 +180,7 @@ export function MultiLineTimeSeriesChart <
         ])
       } : undefined
     })),
-    ...(!brushEnabled ? {
+    ...(zoomEnabled ? {
       toolbox: {
         top: '15%',
         feature: {
@@ -214,7 +217,7 @@ export function MultiLineTimeSeriesChart <
       ref={eChartsRef}
       opts={{ renderer: 'svg' }}
       option={option}
-      onEvents={{ brushselected: useOnBrushChange(props.onBrushChange) }}
+      onEvents={{ brushend: useOnBrushChange(props.onBrushChange) }}
     />
   )
 }

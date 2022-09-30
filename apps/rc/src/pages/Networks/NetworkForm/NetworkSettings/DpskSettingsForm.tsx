@@ -179,7 +179,7 @@ function PassphraseGeneration () {
               `}
               values={{ p: (chunks) => <p>{chunks}</p> }}
             />}
-            children={<QuestionMarkCircleOutlined />} 
+            children={<QuestionMarkCircleOutlined />}
           />
         </>}
         rules={[{ required: true }]}

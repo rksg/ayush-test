@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                        from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -19,11 +19,11 @@ const mockTableResult = {
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'Service 1',
-    type: 'WIFI_CALLING',
+    type: 'Wi-Fi Calling',
     category: 'APPLICATION',
     status: 'UP',
     adminState: 'ENABLED',
-    technology: 'WIFI',
+    technology: 'WI-FI',
     scope: '5',
     health: '',
     tags: ['tag1', 'tag2']
@@ -35,7 +35,7 @@ const mockTableResult = {
     category: 'APPLICATION',
     status: 'UP',
     adminState: 'ENABLED',
-    technology: 'WIFI',
+    technology: 'WI-FI',
     scope: '7',
     health: '',
     tags: ['tag3', 'tag4']
@@ -47,7 +47,7 @@ const mockTableResult = {
     category: 'CONNECTIVITY',
     status: 'DOWN',
     adminState: 'DISABLED',
-    technology: 'WIFI',
+    technology: 'WI-FI',
     scope: '15',
     health: '',
     tags: ['tag5', 'tag6']
@@ -63,7 +63,7 @@ describe('Services Table', () => {
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteService.url,
+        WifiCallingUrls.deleteWifiCalling.url,
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
       )
     )
@@ -110,7 +110,5 @@ describe('Services Table', () => {
     await screen.findByText('Delete "' + selectedServiceName + '"?')
     const deleteServiceButton = await screen.findByRole('button', { name: /Delete Service/i })
     fireEvent.click(deleteServiceButton)
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   })
 })

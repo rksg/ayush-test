@@ -3,6 +3,7 @@ import { Card }            from '@acx-ui/components'
 import { Provider }        from '@acx-ui/store'
 
 import ConnectedClientsOverTimeWidget from './components/ConnectedClientsOverTime'
+import VenueIncidentsWidget           from './components/IncidentBySeverity/DonutChart'
 import IncidentsDashboardWidget       from './components/IncidentsDashboard'
 import NetworkHistoryWidget           from './components/NetworkHistory'
 import SwitchesTrafficByVolumeWidget  from './components/SwitchesTrafficByVolume'
@@ -51,6 +52,9 @@ const widgetsMap = {
   ),
   incidents: ({ filters }: { filters: AnalyticsFilter }) => (
     <IncidentsDashboardWidget filters={filters} />
+  ),
+  venueIncidentsDonut: ({ filters }: { filters: AnalyticsFilter }) => (
+    <VenueIncidentsWidget filters={filters}/>
   )
 }
 

@@ -539,7 +539,7 @@
     }
   }
 
-  .ant-checkbox {
+  .ant-cascader-checkbox, .ant-checkbox {
     &-inner {
       background-color: transparent;
       border-color: var(--acx-accents-blue-50);
@@ -551,8 +551,10 @@
         border-width: 1px;
       }
     }
-    &-checked .ant-checkbox-inner { background-color: var(--acx-accents-blue-50); }
-    &-indeterminate .ant-checkbox-inner {
+    &-checked .ant-cascader-checkbox-inner, &-checked .ant-checkbox-inner {
+      background-color: var(--acx-accents-blue-50);
+    }
+    &-indeterminate .ant-cascader-checkbox-inner, &-indeterminate .ant-checkbox-inner {
       background-color: var(--acx-accents-blue-50);
       &::after {
         width: 8px;
@@ -562,44 +564,10 @@
         background-color: var(--acx-primary-white);
       }
     }
-    &-disabled .ant-checkbox-inner {
+    &-disabled .ant-cascader-checkbox-inner, &-disabled .ant-checkbox-inner {
       border-color: var(--acx-neutrals-40);
     }
-    &-checked.ant-checkbox-disabled .ant-checkbox-inner {
-      border-color: var(--acx-neutrals-40);
-      background-color: var(--acx-neutrals-40);
-      &::after {
-        border-color: var(--acx-primary-white);
-      }
-    }
-  }
-  .ant-cascader-checkbox {
-    &-inner {
-      background-color: transparent;
-      border-color: var(--acx-accents-blue-50);
-      &::after {
-        width: 3px;
-        height: 6px;
-        top: 45%;
-        left: 33%;
-        border-width: 1px;
-      }
-    }
-    &-checked .ant-cascader-checkbox-inner { background-color: var(--acx-accents-blue-50); }
-    &-indeterminate .ant-cascader-checkbox-inner {
-      background-color: var(--acx-accents-blue-50);
-      &::after {
-        width: 8px;
-        height: 1px;
-        top: 50%;
-        left: 50%;
-        background-color: var(--acx-primary-white);
-      }
-    }
-    &-disabled .ant-cascader-checkbox-inner {
-      border-color: var(--acx-neutrals-40);
-    }
-    &-checked.ant-cascader-checkbox-disabled .ant-cascader-checkbox-inner {
+    &-checked.ant-cascader-checkbox-disabled .ant-cascader-checkbox-inner, &-checked.ant-checkbox-disabled .ant-checkbox-inner {
       border-color: var(--acx-neutrals-40);
       background-color: var(--acx-neutrals-40);
       &::after {
