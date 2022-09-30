@@ -25,7 +25,7 @@ describe('topSwitchesByTrafficApi', () => {
     store.dispatch(api.util.resetApiState())
   )
   it('should return correct data', async () => {
-    
+
     mockGraphqlQuery(dataApiURL, 'SwitchesByTraffic', {
       data: topSwitchesByTrafficResponse
     })

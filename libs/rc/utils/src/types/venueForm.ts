@@ -19,7 +19,7 @@ export interface VenueSaveData {
   dhcp?: DhcpOptions;
   id?: string;
 }
-    
+
 export interface Address {
   addressLine?: string;
   city?: string;
@@ -29,16 +29,16 @@ export interface Address {
   notes?: string;
   timezone?: string;
 }
-  
+
 interface MeshOptions {
   enabled: boolean;
 }
-  
+
 interface DhcpOptions {
   enabled: boolean;
   mode: DhcpModeEnum;
 }
-  
+
 enum DhcpModeEnum {
   DHCPMODE_EACH_AP = 'DHCPMODE_EACH_AP',
   DHCPMODE_MULTIPLE_AP = 'DHCPMODE_MULTIPLE_AP',

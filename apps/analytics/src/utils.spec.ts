@@ -14,7 +14,7 @@ it('should return correct granularity for sparkline', () => {
     input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-01T00:10:00+08:00' },
     output: 'PT180S'
   }]
-  data.forEach(({ input, output }) => 
+  data.forEach(({ input, output }) =>
     expect(getSparklineGranularity(input.start, input.end)).toStrictEqual(output)
   )
 })
@@ -36,7 +36,7 @@ it('should return correct granularity based on interval and min granularity', ()
     },
     output: 'PT15M'
   }]
-  data.forEach(({ input, output }) => 
+  data.forEach(({ input, output }) =>
     expect(
       calculateGranularity(input.start, input.end, input.minGranularity)
     ).toStrictEqual(output)
