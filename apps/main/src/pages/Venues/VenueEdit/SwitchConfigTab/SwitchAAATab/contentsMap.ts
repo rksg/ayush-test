@@ -21,6 +21,12 @@ export enum AAA_Level_Type {
   READ_WRITE = 'READ_WRITE',
 }
 
+export const serversTypeDisplayText = {
+  [AAAServerTypeEnum.RADIUS]: defineMessage({ defaultMessage: 'RADIUS' }),
+  [AAAServerTypeEnum.TACACS]: defineMessage({ defaultMessage: 'TACACS+' }),
+  [AAAServerTypeEnum.LOCAL_USER]: defineMessage({ defaultMessage: 'Local User' })
+}
+
 export const serversDisplayText = {
   [AAAServerTypeEnum.RADIUS]: defineMessage({ defaultMessage: 'RADIUS Server' }),
   [AAAServerTypeEnum.TACACS]: defineMessage({ defaultMessage: 'TACACS+ Server' }),

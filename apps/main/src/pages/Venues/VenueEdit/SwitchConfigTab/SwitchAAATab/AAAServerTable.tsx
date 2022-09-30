@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import { Input }   from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -10,12 +9,12 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { useDeleteAAAServerMutation }                               from '@acx-ui/rc/services'
-import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser } from '@acx-ui/rc/utils'
-import { useParams }                                                from '@acx-ui/react-router-dom'
+import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }           from '@acx-ui/rc/services'
+import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting } from '@acx-ui/rc/utils'
+import { useParams }                                                            from '@acx-ui/react-router-dom'
 
-import AAAServerDrawer                                                                                from './AAAServerDrawer'
-import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText } from './contentsMap'
+import AAAServerDrawer                                                                                                        from './AAAServerDrawer'
+import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText, serversTypeDisplayText } from './contentsMap'
 
 function useColumns (type: AAAServerTypeEnum) {
   const { $t } = useIntl()
@@ -135,22 +134,30 @@ function useColumns (type: AAAServerTypeEnum) {
   return columnsMap[type]
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const AAAServerTable = (props: { type:AAAServerTypeEnum, tableQuery: any }) => {
+
+export const AAAServerTable = (props: { 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  type:AAAServerTypeEnum, tableQuery: any, aaaSetting?:AAASetting }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [editData, setEditData] = useState({})
+  const [editData, setEditData] = useState({} as RadiusServer | TacacsServer | LocalUser)
+  const [disabledDelete, setDisabledDelete] = useState(false)
+  const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
   const { tenantId } = useParams()
   const [
     deleteAAAServer,
     { isLoading: isDeleting }
   ] = useDeleteAAAServerMutation()
-  const { type, tableQuery } = props
+  const [
+    bulkDeleteAAAServer,
+    { isLoading: isBulkDeleting }
+  ] = useBulkDeleteAAAServerMutation()
+  const { type, tableQuery, aaaSetting } = props
 
   const handleAddAction = () => {
     setIsEditMode(false)
-    setEditData({})  
+    setEditData({} as RadiusServer | TacacsServer | LocalUser)  
     setVisible(true)
   }
   const actions: TableProps<RadiusServer | TacacsServer | LocalUser>['actions'] = [{
@@ -158,7 +165,59 @@ export const AAAServerTable = (props: { type:AAAServerTypeEnum, tableQuery: any 
     onClick: handleAddAction
   }]
 
-  const rowActions: TableProps<RadiusServer | TacacsServer | LocalUser>['rowActions'] = [
+  const checkAAASetting = (serverType: AAAServerTypeEnum) => {
+    const a = aaaSetting || {} as AAASetting
+    const result = []
+    if (a.authnEnabledSsh) { // SSH Authentication
+      if (a.authnFirstPref === serverType) { // First is radius or TACACS+
+        if (!a.authnSecondPref || a.authnSecondPref === 'NONE_TYPE') { // Second is none or empty
+          result.push($t({ defaultMessage: 'Log-in Authentication' }))
+        }
+      }
+    }
+    if (a.authzEnabledCommand) { // Command Authorization
+      if (a.authzCommonsFirstServer === serverType) { // First is radius or TACACS+
+        if (!a.authzCommonsSecondServer || a.authzCommonsSecondServer === 'NONE_TYPE') { // Second is none or empty
+          result.push($t({ defaultMessage: 'Command Authorization' }))
+        }
+      }
+    }
+    if (a.authzEnabledExec) { // Executive Authorization
+      if (a.authzExecFirstServer === serverType) { // First is radius or TACACS+
+        if (!a.authzExecSecondServer || a.authzExecSecondServer === 'NONE_TYPE') { // Second is none or empty
+          result.push($t({ defaultMessage: 'Executive Authorization' }))
+        }
+      }
+    }
+    if (a.acctEnabledCommand) { // Command Accounting
+      if (a.acctCommonsFirstServer === serverType) { // First is radius or TACACS+
+        if (!a.acctCommonsSecondServer || a.acctCommonsSecondServer === 'NONE_TYPE') { // Second is none or empty
+          result.push($t({ defaultMessage: 'Command Accounting' }))
+        }
+      }
+    }
+    if (a.acctEnabledExec) { // Executive Accounting
+      if (a.acctExecFirstServer === serverType) { // First is radius or TACACS+
+        if (!a.acctExecSecondServer || a.acctExecSecondServer === 'NONE_TYPE') { // Second is none or empty
+          result.push($t({ defaultMessage: 'Executive Accounting' }))
+        }
+      }
+    }
+    return result
+  }
+
+  const onSelectChange = (keys: React.Key[], rows: LocalUser[]) => {
+    setDeleteButtonTooltip('')
+    if (rows[0] && rows[0].serverType === AAAServerTypeEnum.LOCAL_USER) {
+      const localAdmin = rows.find(i => i.username === 'admin')
+      setDisabledDelete(!!localAdmin)
+      if(!!localAdmin) {
+        setDeleteButtonTooltip($t({ defaultMessage: 'The default user "admin" cannot be deleted' }))
+      }
+    } 
+  }
+
+  const rowActions: TableProps<RadiusServer & TacacsServer & LocalUser>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -169,24 +228,58 @@ export const AAAServerTable = (props: { type:AAAServerTypeEnum, tableQuery: any 
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t(serversDisplayText[type]),
-            entityValue: name
-          },
-          onOk: () => deleteAAAServer({ params: { tenantId, aaaServerId: id } })
-            .then(clearSelection)
-        })
+      disabled: disabledDelete,
+      tooltip: deleteButtonTooltip,
+      onClick: (rows, clearSelection) => {
+        let disableDeleteList:string[] = []
+        if ((tableQuery.data?.totalCount === rows.length) && 
+        (type === AAAServerTypeEnum.TACACS || type === AAAServerTypeEnum.RADIUS)) {
+          disableDeleteList = checkAAASetting(type)
+        }
+        if (disableDeleteList.length) {
+          showActionModal({
+            type: 'info',
+            title: $t(serversTypeDisplayText[type]) + ' ' 
+                   + $t({ defaultMessage: 'Server Required' }),
+            content: (<div>
+              {$t(serversTypeDisplayText[type])}
+              {$t({ defaultMessage: 'servers are prioritized for the following:' })} <br/>
+              {disableDeleteList.join(', ')}. <br/>
+              {$t(
+                { defaultMessage: 'In order to delete {these} ' },
+                { these: rows.length > 1 ? 'these': 'this' }
+              )}  
+              {$t(serversTypeDisplayText[type])}  
+              {$t(
+                { defaultMessage: 'server{s} you must define a different method.' },
+                { s: rows.length > 1 ? 's': '' }
+              )}
+            </div>)
+          })
+        } else {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'AAA Server' }),
+              entityValue: rows.length === 1 ? rows[0].name : undefined,
+              numOfEntities: rows.length
+            },
+            onOk: () => { rows.length === 1 ? 
+              deleteAAAServer({ params: { tenantId, aaaServerId: rows[0].id } })
+                .then(clearSelection) :
+              bulkDeleteAAAServer({ params: { tenantId }, payload: rows.map(item => item.id) })
+                .then(clearSelection) 
+            }
+          })
+        }
       }
     }]
 
   return (
     <Loader states={[
       tableQuery,
-      { isLoading: false, isFetching: isDeleting }
+      { isLoading: false, isFetching: isDeleting || isBulkDeleting }
     ]}>
       <AAAServerDrawer 
         visible={visible}
@@ -203,7 +296,7 @@ export const AAAServerTable = (props: { type:AAAServerTypeEnum, tableQuery: any 
         rowKey='id'
         actions={actions}
         rowActions={rowActions}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={{ type: 'checkbox', onChange: onSelectChange }}
       />
     </Loader>
   )

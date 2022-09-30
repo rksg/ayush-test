@@ -1,10 +1,10 @@
+/* eslint-disable max-len */
 import { isEqual, includes } from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 export function networkWifiIpRegExp (value: string) {
   const { $t } = getIntl()
-  // eslint-disable-next-line max-len
   const re = new RegExp('^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$')
   if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))

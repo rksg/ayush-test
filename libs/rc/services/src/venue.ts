@@ -16,7 +16,8 @@ import {
   VenueApModels,
   RadiusServer,
   TacacsServer,
-  LocalUser
+  LocalUser,
+  AAASetting
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
@@ -123,7 +124,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    venueSwitchAAAServerList: build.query<TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
+    venueSwitchAAAServerList: build.query<
+    TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
       query: ({ params, payload }) => {
         const listReq = createHttpRequest(SwitchUrlsInfo.getAaaServerList, params)
         return {
@@ -132,6 +134,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    getAaaSetting: build.query<AAASetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getAaaSetting, params)
+        return{
+          ...req
+        }
+      }
     }),
     addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
       query: ({ params, payload }) => {
@@ -161,6 +171,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
+    }),
+    bulkDeleteAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.bulkDeleteAaaServer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     })
   })
 })
@@ -177,7 +197,9 @@ export const {
   useGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
   useVenueSwitchAAAServerListQuery,
+  useGetAaaSettingQuery,
   useAddAAAServerMutation,
   useUpdateAAAServerMutation,
-  useDeleteAAAServerMutation
+  useDeleteAAAServerMutation,
+  useBulkDeleteAAAServerMutation
 } = venueApi

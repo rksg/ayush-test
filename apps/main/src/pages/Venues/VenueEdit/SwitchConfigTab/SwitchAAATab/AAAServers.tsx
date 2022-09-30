@@ -1,10 +1,11 @@
+/* eslint-disable max-len */
 import { Collapse } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Alert }                            from '@acx-ui/components'
-import { useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
-import { useTableQuery, AAAServerTypeEnum } from '@acx-ui/rc/utils'
-import { useParams }                        from '@acx-ui/react-router-dom'
+import { Alert }                                                   from '@acx-ui/components'
+import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
+import { useTableQuery, AAAServerTypeEnum }                        from '@acx-ui/rc/utils'
+import { useParams }                                               from '@acx-ui/react-router-dom'
 
 import { AAAServerTable }  from './AAAServerTable'
 import { AAANotification } from './contentsMap'
@@ -13,7 +14,7 @@ import * as UI             from './styledComponents'
 const { Panel } = Collapse
 
 export function AAAServers () {
-  const { venueId } = useParams()
+  const { tenantId, venueId } = useParams()
   const { $t } = useIntl()
   const PanelHeader = {
     [AAAServerTypeEnum.RADIUS]: $t({ defaultMessage: 'RADIUS Servers' }),
@@ -37,6 +38,8 @@ export function AAAServers () {
     [AAAServerTypeEnum.TACACS]: { ...defaultPayload, serverType: AAAServerTypeEnum.TACACS },
     [AAAServerTypeEnum.LOCAL_USER]: { ...defaultPayload, serverType: AAAServerTypeEnum.LOCAL_USER }
   }
+
+  const { data: aaaSetting } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
 
   const radiusTableQuery = useTableQuery({
     useQuery: useVenueSwitchAAAServerListQuery,
@@ -75,11 +78,11 @@ export function AAAServers () {
         bordered={false}
       >
         <Panel header={getPanelHeader(AAAServerTypeEnum.RADIUS, 0)} key='1' >
-          <AAAServerTable type={AAAServerTypeEnum.RADIUS} tableQuery={radiusTableQuery} />   
+          <AAAServerTable type={AAAServerTypeEnum.RADIUS} tableQuery={radiusTableQuery} aaaSetting={aaaSetting} />   
         </Panel>
 
         <Panel header={getPanelHeader(AAAServerTypeEnum.TACACS, 0)} key='2' >
-          <AAAServerTable type={AAAServerTypeEnum.TACACS} tableQuery={tacasTableQuery} />   
+          <AAAServerTable type={AAAServerTypeEnum.TACACS} tableQuery={tacasTableQuery} aaaSetting={aaaSetting} />   
         </Panel>
 
         <Panel header={getPanelHeader(AAAServerTypeEnum.LOCAL_USER, 0)} key='3' >

@@ -1,7 +1,7 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space }                                       from 'antd'
+import { Space, Tooltip }                              from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
@@ -50,6 +50,8 @@ export interface TableProps <RecordType>
     }>
     rowActions?: Array<{
       label: string,
+      disabled?: boolean,
+      tooltip?: string,
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
@@ -297,9 +299,19 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
             />
           </Space>
           <Space size={0} split={<UI.Divider type='vertical' />}>
-            {props.rowActions?.map((option) =>
+            {props.rowActions?.map((option) => option.tooltip ?
               <UI.ActionButton
                 key={option.label}
+                disabled={option.disabled}
+                onClick={() =>
+                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
+              >
+                <Tooltip placement='top' title={option.tooltip}>{option.label}</Tooltip>
+              </UI.ActionButton>
+              :
+              <UI.ActionButton
+                key={option.label}
+                disabled={option.disabled}
                 onClick={() =>
                   option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
                 children={option.label}

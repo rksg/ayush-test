@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Input, Select, Tooltip } from 'antd'
-import { FormattedMessage, useIntl }    from 'react-intl'
+import { useIntl }                      from 'react-intl'
 
 import { Button, Drawer }                                                                                                                                                                                                                                           from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                                                                                                                                                                                                                               from '@acx-ui/icons'
@@ -17,7 +17,7 @@ interface AAAServerDrawerProps {
   setVisible: (visible: boolean) => void
   isEditMode: boolean
   serverType: AAAServerTypeEnum
-  editData: any
+  editData: RadiusServer | TacacsServer | LocalUser
 }
 
 const AAAServerDrawer = (props: AAAServerDrawerProps) => {
@@ -187,7 +187,7 @@ const AAAServerDrawer = (props: AAAServerDrawerProps) => {
       <Select>
         {
           Object.entries(AAA_Purpose_Type).map(([label, value]) => (
-            <Option value={value}>{$t(purposeDisplayText[value])}</Option>
+            <Option key={label} value={value}>{$t(purposeDisplayText[value])}</Option>
           ))
         }       
       </Select>
@@ -243,7 +243,7 @@ const AAAServerDrawer = (props: AAAServerDrawerProps) => {
       <Select>
         {
           Object.entries(AAA_Level_Type).map(([label, value]) => (
-            <Option value={value}>{$t(levelDisplayText[value])}</Option>
+            <Option key={label} value={value}>{$t(levelDisplayText[value])}</Option>
           ))
         }       
       </Select>
