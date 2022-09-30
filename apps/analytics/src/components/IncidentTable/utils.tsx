@@ -8,7 +8,7 @@ import {
   calculateSeverity,
   Incident,
   noDataSymbol,
-  shortDescription
+  useShortDescription
 } from '@acx-ui/analytics/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { formatter }     from '@acx-ui/utils'
@@ -64,7 +64,7 @@ export interface IncidentTableDescriptionProps {
 
 export const ShortIncidentDescription = (props: IncidentTableDescriptionProps) => {
   const { incident, onClickDesc } = props
-  const shortDesc = shortDescription(incident)
+  const shortDesc = useShortDescription(incident)
   return (
     <UI.DescriptionSpan
       onClick={() => onClickDesc(incident)}

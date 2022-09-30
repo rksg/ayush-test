@@ -2,39 +2,19 @@ import React from 'react'
 
 import { Loader } from '@acx-ui/components'
 
-import ApifraPoeLow            from './Details/ApifraPoeLow'
-import ApinfraWanthroughputLow from './Details/ApinfraWanthroughputLow'
-import ApservContinuousReboots from './Details/ApservContinuousReboots'
-import ApservDowntimeHigh      from './Details/ApservDowntimeHigh'
-import ApservHighNumReboots    from './Details/ApservHighNumReboots'
-import AssocFailure            from './Details/AssocFailure'
-import AuthFailure             from './Details/AuthFailure'
-import CovClientrssiLow        from './Details/CovClientrssiLow'
-import DhcpFailure             from './Details/DhcpFailure'
-import EapFailure              from './Details/EapFailure'
-import RadiusFailure           from './Details/RadiusFailure'
-import SwitchMemoryHigh        from './Details/SwitchMemoryHigh'
-import SwitchPoePd             from './Details/SwitchPoePd'
-import SwitchVlanMismatch      from './Details/SwitchVlanMismatch'
-import Ttc                     from './Details/Ttc'
-import { useIncident }         from './services'
+import Assoc           from './Details/Assoc'
+import Auth            from './Details/Auth'
+import Dhcp            from './Details/Dhcp'
+import Eap             from './Details/Eap'
+import Radius          from './Details/Radius'
+import { useIncident } from './services'
 
 export const incidentDetailsMap = {
-  'radius-failure': RadiusFailure,
-  'dhcp-failure': DhcpFailure,
-  'eap-failure': EapFailure,
-  'auth-failure': AuthFailure,
-  'assoc-failure': AssocFailure,
-  'ttc': Ttc,
-  'p-cov-clientrssi-low': CovClientrssiLow,
-  'p-switch-memory-high': SwitchMemoryHigh,
-  'i-apserv-high-num-reboots': ApservHighNumReboots,
-  'i-apserv-continuous-reboots': ApservContinuousReboots,
-  'i-apserv-downtime-high': ApservDowntimeHigh,
-  'i-switch-vlan-mismatch': SwitchVlanMismatch,
-  'i-switch-poe-pd': SwitchPoePd,
-  'i-apinfra-poe-low': ApifraPoeLow,
-  'i-apinfra-wanthroughput-low': ApinfraWanthroughputLow
+  'radius-failure': Radius,
+  'dhcp-failure': Dhcp,
+  'eap-failure': Eap,
+  'auth-failure': Auth,
+  'assoc-failure': Assoc
 }
 
 function IncidentDetailsPage () {

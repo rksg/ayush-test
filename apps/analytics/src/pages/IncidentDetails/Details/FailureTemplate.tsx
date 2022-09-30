@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import {
   calculateSeverity,
   Incident,
-  shortDescription
+  useShortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
@@ -48,7 +48,7 @@ export const IncidentDetailsTemplate = (incident: Incident) => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
-        subTitle={shortDescription(incident)}
+        subTitle={useShortDescription(incident)}
       />
       <GridRow>
         <GridCol col={{ span: 4 }}>

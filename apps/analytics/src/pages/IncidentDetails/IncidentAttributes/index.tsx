@@ -7,8 +7,8 @@ import {
   impactValues,
   Incident,
   nodeTypes,
-  formattedPath,
-  impactedArea
+  useFormattedPath,
+  useImpactedArea
 } from '@acx-ui/analytics/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -44,14 +44,14 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
 }) => {
   const intl = useIntl()
   const { visible, onOpen, onClose } = useDrawer(false)
-  const scope = formattedPath(incident.path, incident.sliceValue)
-  const area = impactedArea(incident.path, incident.sliceValue)
+  const scope = useFormattedPath(incident.path, incident.sliceValue)
+  const impactedArea = useImpactedArea(incident.path, incident.sliceValue)
   const fields = {
     [Attributes.ClientImpactCount]: {
       key: 'clientImpactCount',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'Client Impact Count' }),
-        children: impactValues('client', incident).clientImpactDescription,
+        children: impactValues(intl, 'client', incident).clientImpactDescription,
         onClick: () => onOpen('client')
       })
     },
@@ -59,7 +59,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       key: 'apImpactCount',
       getValue: (incident: Incident) => ({
         label: intl.$t({ defaultMessage: 'AP Impact Count' }),
-        children: impactValues('ap', incident).apImpactDescription,
+        children: impactValues(intl, 'ap', incident).apImpactDescription,
         onClick: () => onOpen('ap')
       })
     },
@@ -94,7 +94,7 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
           defaultMessage: 'Scope',
           description: 'Incident impacted scope'
         }),
-        children: area,
+        children: impactedArea,
         tooltip: scope
       })
     },
