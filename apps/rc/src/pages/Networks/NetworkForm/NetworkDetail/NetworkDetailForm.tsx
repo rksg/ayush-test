@@ -1,14 +1,14 @@
 import { useContext } from 'react'
 
-
 import { Form, Input, Col, Radio, Row, Space, Tooltip } from 'antd'
 import TextArea                                         from 'antd/lib/input/TextArea'
 import { useIntl }                                      from 'react-intl'
 
-import { StepsForm }                             from '@acx-ui/components'
-import { useLazyNetworkListQuery }               from '@acx-ui/rc/services'
-import { NetworkTypeEnum, checkObjectNotExists } from '@acx-ui/rc/utils'
-import { useParams }                             from '@acx-ui/react-router-dom'
+import { StepsForm }                                                                               from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                                                              from '@acx-ui/icons'
+import { useLazyNetworkListQuery }                                                                 from '@acx-ui/rc/services'
+import { NetworkTypeEnum, WifiNetworkMessages, checkObjectNotExists, hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
+import { useParams }                                                                               from '@acx-ui/react-router-dom'
 
 import { networkTypesDescription, networkTypes } from '../contentsMap'
 import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
@@ -22,10 +22,10 @@ const { useWatch } = Form
 export function NetworkDetailForm () {
   const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
-  const { 
-    setNetworkType: setSettingStepTitle, 
+  const {
+    setNetworkType: setSettingStepTitle,
     editMode,
-    cloneMode 
+    cloneMode
   } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
     setSettingStepTitle(e.target.value as NetworkTypeEnum)
@@ -46,7 +46,7 @@ export function NetworkDetailForm () {
       .filter(n => n.id !== params.networkId)
       .map(n => n.name)
 
-    return checkObjectNotExists(intl, list, value, intl.$t({ defaultMessage: 'Network' }))
+    return checkObjectNotExists(list, value, intl.$t({ defaultMessage: 'Network' }))
   }
 
   const types = [
@@ -63,12 +63,21 @@ export function NetworkDetailForm () {
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
         <Form.Item
           name='name'
-          label={intl.$t({ defaultMessage: 'Network Name' })}
+          label={<>
+            { intl.$t({ defaultMessage: 'Network Name' }) }
+            <Tooltip
+              title={intl.$t(WifiNetworkMessages.NETWORK_NAME_TOOLTIP)}
+              placement='bottom'
+            >
+              <QuestionMarkCircleOutlined />
+            </Tooltip>
+          </>}
           rules={[
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: (_, value) => nameValidator(value) }
+            { validator: (_, value) => nameValidator(value) },
+            { validator: (_, value) => hasGraveAccentAndDollarSign(value) }
           ]}
           validateFirst
           hasFeedback
@@ -92,7 +101,7 @@ export function NetworkDetailForm () {
                     <Radio key={type} value={type} disabled={disabled}>
                       <Tooltip
                         title={[NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
-                          .indexOf(type) > -1 ? 
+                          .indexOf(type) > -1 ?
                           intl.$t({ defaultMessage: 'Not available in Beta1' }) : ''}>
                         {intl.$t(networkTypes[type])}
                         <RadioDescription>

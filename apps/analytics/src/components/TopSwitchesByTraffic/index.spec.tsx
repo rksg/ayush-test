@@ -32,14 +32,15 @@ const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
-  range: DateRange.last24Hours
+  range: DateRange.last24Hours,
+  filter: {}
 } as AnalyticsFilter
 
 describe('TopSwitchesByTrafficWidget', () => {
   mockDOMWidth()
 
   const wrapper = (<BrowserRouter>
-    <Provider> 
+    <Provider>
       <SwitchesByTraffic filters={filters}/>
     </Provider>
   </BrowserRouter>)
@@ -103,6 +104,6 @@ describe('TopSwitchesByTrafficWidget', () => {
     const handleOnClick = onClick(navigate.current,basePath.current)
     const param = { componentType: 'series', value: [1,2,3] } as EventParams
     handleOnClick(param)
-    expect(mockedUseNavigate).toHaveBeenCalled()    
+    expect(mockedUseNavigate).toHaveBeenCalled()
   })
 })

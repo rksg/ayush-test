@@ -1,9 +1,5 @@
 import React, { useContext, useEffect } from 'react'
 
-import {
-  QuestionCircleOutlined,
-  ExclamationCircleFilled
-} from '@ant-design/icons'
 import { Space } from 'antd'
 import {
   Col,
@@ -14,14 +10,15 @@ import {
   Tooltip,
   Input
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import {
   StepsForm,
   Button,
   Subtitle
 } from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { useCloudpathListQuery }                        from '@acx-ui/rc/services'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -133,7 +130,7 @@ function SettingsForm () {
           WlanSecurityEnum.WEP
         ].indexOf(wlanSecurity) > -1 &&
           <Space align='start'>
-            <ExclamationCircleFilled />
+            <InformationSolid />
             {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
           </Space>
         }
@@ -199,8 +196,8 @@ function SettingsForm () {
             rules={[
               { required: true, min: 8 },
               { max: 64 },
-              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) },
-              { validator: (_, value) => passphraseRegExp(intl, value) }
+              { validator: (_, value) => trailingNorLeadingSpaces(value) },
+              { validator: (_, value) => passphraseRegExp(value) }
             ]}
             validateFirst
             extra={intl.$t({ defaultMessage: '8 characters minimum' })}
@@ -213,7 +210,7 @@ function SettingsForm () {
             label={SecurityOptionsPassphraseLabel[PskWlanSecurityEnum.WEP]}
             rules={[
               { required: true },
-              { validator: (_, value) => hexRegExp(intl, value) }
+              { validator: (_, value) => hexRegExp(value) }
             ]}
             extra={intl.$t({ defaultMessage: 'Must be 26 hex characters' })}
             children={<Input.Password />}
@@ -234,8 +231,8 @@ function SettingsForm () {
             rules={[
               { required: true, min: 8 },
               { max: 64 },
-              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) },
-              { validator: (_, value) => passphraseRegExp(intl, value) }
+              { validator: (_, value) => trailingNorLeadingSpaces(value) },
+              { validator: (_, value) => passphraseRegExp(value) }
             ]}
             validateFirst
             extra={intl.$t({ defaultMessage: '8 characters minimum' })}
@@ -255,7 +252,21 @@ function SettingsForm () {
         {[WlanSecurityEnum.WPA2Personal, WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed]
           .includes(wlanSecurity) &&
           <Form.Item
-            label={intl.$t({ defaultMessage: 'Management Frame Protection (802.11w)' })}
+            label={<>
+              { intl.$t({ defaultMessage: 'Management Frame Protection (802.11w)' }) }
+              <Tooltip
+                title={<FormattedMessage
+                  {...WifiNetworkMessages.NETWORK_MFP_TOOLTIP}
+                  values={{
+                    p: (text: string) => <p>{text}</p>,
+                    ul: (text: string) => <ul>{text}</ul>,
+                    li: (text: string) => <li>{text}</li>
+                  }}
+                />}
+                placement='bottom'>
+                <QuestionMarkCircleOutlined />
+              </Tooltip>
+            </>}
             name={['wlan', 'managementFrameProtection']}
             initialValue={ManagementFrameProtectionEnum.Disabled}
           >
@@ -275,8 +286,11 @@ function SettingsForm () {
               <Switch disabled={editMode} />
             </Form.Item>
             <span>{intl.$t({ defaultMessage: 'Use MAC Auth' })}</span>
-            <Tooltip title={WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP} placement='bottom'>
-              <QuestionCircleOutlined />
+            <Tooltip
+              title={intl.$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              placement='bottom'
+            >
+              <QuestionMarkCircleOutlined />
             </Tooltip>
           </Form.Item>
         </Form.Item>

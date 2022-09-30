@@ -14,6 +14,6 @@ export const initialSocket = (url: string) => {
       rejectUnauthorized: false
     })
   }
-  
+
   return socket
 }
