@@ -4,7 +4,7 @@ import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
 
-import { DateFilterContext, getDateRangeFilter, DateFilter, pathFilter, NetworkPath } from '@acx-ui/utils'
+import { DateFilterContext, getDateRangeFilter, DateFilter, pathFilter, NetworkPath, PathNode } from '@acx-ui/utils'
 interface AnalyticsFilterProps {
   path: NetworkPath
   raw?: object
@@ -25,17 +25,41 @@ export const AnalyticsFilterContext = React.createContext<AnalyticsFilterProps>(
 )
 export type AnalyticsFilter = DateFilter & { path: NetworkPath } & { filter? : pathFilter }
 
+function getFilterObj (path : NetworkPath) {
+  const pathLength = path.length
+  switch(pathLength){
+    case 0:
+    case 1:
+      return { networkNodes: [], switchNodes: [] }
+    case 2:
+      return {
+        networkNodes: [path.slice(1)].map(([name]: PathNode[]) => [{ type: 'zone', name }]),
+        switchNodes: [path.slice(1)].map(([name]: PathNode[]) => [{ type: 'switchGroup', name }])
+      }
+    default:
+      if(path[1].name === 'zone')
+        return {
+          networkNodes: [path.slice(1)]
+        }
+      if(path[1].name === 'switchGroup')
+        return {
+          switchNodes: [path.slice(1)]
+        }
+      return { networkNodes: [], switchNodes: [] }
+  }
+} 
+
+
 export function useAnalyticsFilter () {
   const { getNetworkFilter, setNetworkPath } = useContext(AnalyticsFilterContext)
   const { path, raw } = getNetworkFilter()
   const { dateFilter } = useContext(DateFilterContext)
   const { range, startDate, endDate } = dateFilter
-  const selectedNode = path.length > 1 ? [path.slice(1)] : []
   return {
     filters: {
       path: defaultNetworkPath,
       ...getDateRangeFilter(range, startDate, endDate),
-      filter: { networkNodes: selectedNode, switchNodes: selectedNode } 
+      filter: getFilterObj(path) 
     } as const,
     setNetworkPath,
     raw

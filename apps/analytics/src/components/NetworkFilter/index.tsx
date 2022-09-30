@@ -45,7 +45,12 @@ const getSeverityCircles = (
   let severityArray = nodes.reduce((acc: string[], val: ApOrSwitch) => {
     venueWiseSeverities.forEach((apOrSwitchWithSeverity: NodesWithSeverity) => {
       const severity = calculateSeverity(apOrSwitchWithSeverity.severity[val?.mac])
-      if (severity && !acc.includes(severity)) acc.push(severity)
+      if (
+        severity &&
+        !acc.includes(severity) &&
+        apOrSwitchWithSeverity.severity[val?.mac]
+      )
+        acc.push(severity)
     })
     return acc
   }, [])
@@ -184,11 +189,14 @@ export const onApply = (
 function ConnectedNetworkFilter ({ shouldQuerySwitch } : ConnectedNetworkFilterProps) {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
-  const incidentsList = useIncidentsListQuery(({ ...filters, path: defaultNetworkPath }), {
-    selectFromResult: ({ data }) => ({
-      data: data ? getSeverityFromIncidents(data) : []
-    })
-  })
+  const incidentsList = useIncidentsListQuery(
+    omit({ ...filters, path: defaultNetworkPath }, 'filter'), 
+    {
+      selectFromResult: ({ data }) => ({
+        data: data ? getSeverityFromIncidents(data) : []
+      })
+    }
+  )
   const networkFilter = { ...filters, shouldQuerySwitch } 
   const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path'), {
     selectFromResult: ({ data, ...rest }) => ({
