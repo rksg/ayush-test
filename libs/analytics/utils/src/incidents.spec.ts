@@ -145,14 +145,6 @@ describe('impactedArea', () => {
   })
 
   describe('useImpactValues', () => {
-<<<<<<< HEAD
-=======
-
-    const renderImpactValues: typeof useImpactValues =
-    (type: 'ap' | 'client', incident: Incident) =>
-      renderHook(() => useImpactValues(type, incident)).result.current
-
->>>>>>> master
     it('returns object for invalid count & impactArea', () => {
       expect(useImpactValues('client', fakeIncident1)).toMatchObject({
         clientImpactDescription: '5 of 27 clients (18.52%)'
@@ -204,25 +196,7 @@ describe('impactValues', () => {
     expect(renderImpactValues('ap', 1, 1)).toMatchSnapshot()
   })
 
-<<<<<<< HEAD
   describe('incidentScope', () => {
-=======
-  describe('useIncidentScope', () => {
-    const renderUseIncidentScope = () => renderHook(
-      () => useIncidentScope(
-        fakeIncident({
-          id: '1',
-          code: 'dhcp-failure',
-          startTime: '2022-08-12T00:00:00.000Z',
-          endTime: '2022-08-12T01:00:00.000Z',
-          path: [
-            { type: 'network', name: 'Network' },
-            { type: 'zone', name: 'Venue 1' }
-          ]
-        })
-      )).result.current
-
->>>>>>> master
     it('formats correct incident scope', () => {
       expect(incidentScope(fakeIncident1)).toEqual('Access Point: RuckusAP (70:CA:97:01:A0:C0)')
     })
