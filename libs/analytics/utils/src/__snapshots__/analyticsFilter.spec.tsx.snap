@@ -11,7 +11,7 @@ exports[`AnalyticsFilterProvider changes filter value 1`] = `
 exports[`AnalyticsFilterProvider gets initial value from search parameters 1`] = `
 <DocumentFragment>
   <div>
-    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]],"switchNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]]}}
+    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]]}}
   </div>
 </DocumentFragment>
 `;
@@ -20,6 +20,30 @@ exports[`AnalyticsFilterProvider should render correctly 1`] = `
 <DocumentFragment>
   <div>
     {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[],"switchNodes":[]}}
+  </div>
+</DocumentFragment>
+`;
+
+exports[`AnalyticsFilterProvider should set filter to default when select path does not have switch or AP 1`] = `
+<DocumentFragment>
+  <div>
+    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[],"switchNodes":[]}}
+  </div>
+</DocumentFragment>
+`;
+
+exports[`AnalyticsFilterProvider should set filter with switchGroup & zone 1`] = `
+<DocumentFragment>
+  <div>
+    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"switchGroup"}]],"switchNodes":[[{"type":"switchGroup","name":"switchGroup"}]]}}
+  </div>
+</DocumentFragment>
+`;
+
+exports[`AnalyticsFilterProvider should set filter with switches when search parameters has switches 1`] = `
+<DocumentFragment>
+  <div>
+    {"path":[{"type":"network","name":"Network"}],"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"switchNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","name":"D8:38:FC:36:78:D0"}]]}}
   </div>
 </DocumentFragment>
 `;
