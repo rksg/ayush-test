@@ -1,66 +1,18 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
-import { rest }  from 'msw'
 
-import { networkApi }                                            from '@acx-ui/rc/services'
-import { CommonUrlsInfo, DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
-import { store }                                                 from '@acx-ui/store'
+import { networkApi } from '@acx-ui/rc/services'
+import { store }      from '@acx-ui/store'
 import {
-  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import DHCPFormContext from '../DHCPFormContext'
-
-import  DHCPPoolMain from '.'
-
-const data =
-    {
-      id: 2,
-      name: 'pool2',
-      allowWired: false,
-      ip: '1.1.1.1',
-      mask: '255.0.0.0',
-      primaryDNS: '',
-      secondaryDNS: '',
-      dhcpOptions: [],
-      excludedRangeStart: '',
-      excludedRangeEnd: '',
-      leaseTime: 24,
-      leaseUnit: 'Hours',
-      vlan: 300
-    }
+import  DHCPPoolTable from '.'
 
 function wrapper ({ children }: { children: React.ReactElement }) {
-  return <DHCPFormContext.Provider value={{ editMode: false,
-    saveState: {
-      name: '',
-      tags: [],
-      createType: ServiceTechnology.WIFI,
-      dhcpConfig: DHCPConfigTypeEnum.SIMPLE,
-      venues: [],
-      dhcpPools: [{
-        id: 0,
-        name: '',
-        allowWired: false,
-        ip: '',
-        mask: '',
-        primaryDNS: '',
-        secondaryDNS: '',
-        excludedRangeStart: '',
-        excludedRangeEnd: '',
-        dhcpOptions: [],
-        leaseTime: 24,
-        leaseUnit: 'Hours',
-        vlan: 300
-      }] },
-    updateSaveState: () => {} }}>
-    <Form>
-      {children}
-    </Form>
-  </DHCPFormContext.Provider>
+  return <Form>{children}</Form>
 }
 
 describe('Create DHCP: Pool detail', () => {
@@ -68,31 +20,10 @@ describe('Create DHCP: Pool detail', () => {
     store.dispatch(networkApi.util.resetApiState())
   })
 
-  it('should render correctly', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(data))
-      )
-    )
-    const { asFragment } = render(<DHCPPoolMain/>, {
-      wrapper
-    })
-
-    await screen.findByText('Add DHCP Pool')
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('Table action bar add pool', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(data))
-      )
-    )
     const params = { tenantId: 'tenant-id' }
 
-    render(<DHCPPoolMain/>, {
+    render(<DHCPPoolTable />, {
       wrapper,
       route: { params }
     })

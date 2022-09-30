@@ -9,7 +9,3 @@ export const RadioDescription = styled.div`
   color: var(--acx-neutrals-50);
   margin-top: 4px;
 `
-
-export const AntLabel = styled.label`
-  color: var(--acx-neutrals-60);
-`

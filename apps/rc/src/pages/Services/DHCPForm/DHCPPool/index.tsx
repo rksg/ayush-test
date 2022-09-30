@@ -1,5 +1,4 @@
-
-import { useState, useContext } from 'react'
+import { useState, useRef } from 'react'
 
 import { Checkbox, Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
 import TextArea                                                                from 'antd/lib/input/TextArea'
@@ -9,9 +8,7 @@ import { useIntl }                                                             f
 import { Button }                                            from '@acx-ui/components'
 import { Drawer }                                            from '@acx-ui/components'
 import { DHCPPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-import { validationMessages }                                from '@acx-ui/utils'
-
-import DHCPFormContext from '../DHCPFormContext'
+import { getIntl, validationMessages }                       from '@acx-ui/utils'
 
 import { PoolOption } from './PoolOption'
 import { PoolTable }  from './PoolTable'
@@ -25,52 +22,76 @@ const initPoolData: Partial<DHCPPool> = {
   leaseUnit: 'Hours',
   vlan: 300
 }
-export default function DHCPPoolMain () {
+
+type DHCPPoolTableProps = {
+  value?: DHCPPool[]
+  onChange?: (data: DHCPPool[]) => void
+}
+
+const { Option } = Select
+
+async function nameValidator (
+  value: string,
+  dhcpPools: DHCPPool[],
+  currentId: DHCPPool['id']
+) {
+  const { $t } = getIntl()
+  const matched = dhcpPools.find((item) => item.name === value && currentId !== item.id)
+  if (!matched) return
+
+  const entityName = $t({ defaultMessage: 'Pool Name' })
+  const key = 'name'
+  return Promise.reject($t(validationMessages.duplication, { entityName, key }))
+}
+
+export default function DHCPPoolTable ({
+  value,
+  onChange
+}: DHCPPoolTableProps) {
   const { $t } = useIntl()
-  const intl = useIntl()
-  const { Option } = Select
   const [form] = Form.useForm<DHCPPool>()
-  const [ addOn, setAddOn ] = useState(false)
-  const { updateSaveState, saveState } = useContext(DHCPFormContext)
-  const nameValidator = async (value: string) => {
-    const id = form.getFieldValue('id')
-    if(_.find(saveState?.dhcpPools, (item)=>{return item.name === value && id !== item.id})){
-      const entityName = intl.$t({ defaultMessage: 'Pool Name' })
-      const key = 'name'
-      return Promise.reject(intl.$t(validationMessages.duplication, { entityName, key }))
-    }
-    return Promise.resolve()
-  }
-  const updateSaveData = (data: DHCPPool) => {
-    if (data.id === initPoolData.id) {
-      data.id = Date.now()
-    }
-
-    const findIndex = saveState?.dhcpPools
-      .findIndex(item => data.id === item.id)
-
-    //edit
-    if (findIndex > -1) { saveState.dhcpPools[findIndex] = data }
-    else saveState?.dhcpPools?.push({ ...data })
-
-    //@FIXME: DELETE ...form.getFieldsValue()
-    updateSaveState?.({ ...saveState })
-    if (addOn) { return form.resetFields() }
-    onClose()
-  }
+  const valueMap = useRef<Record<string, DHCPPool>>(value ? _.keyBy(value, 'id') : {})
+  const [addOn, setAddOn] = useState(false)
   const [visible, setVisible] = useState(false)
+
+  const values = () => Object.values(valueMap.current)
+
+  const handleChanged = () => onChange?.(values())
+
+  const onAddOrEdit = (item?: DHCPPool) => {
+    setVisible(true)
+    setAddOn(false)
+    if (item) form.setFieldsValue(item)
+    else form.resetFields()
+  }
+
+  const onDelete = (items: DHCPPool[]) => {
+    items.forEach(item => {
+      delete valueMap.current[item.id]
+    })
+    handleChanged()
+  }
+
+  const onSubmit = (data: DHCPPool) => {
+    let id = data.id
+    if (id === initPoolData.id) { id = data.id = Date.now() }
+    valueMap.current[id] = data
+    handleChanged()
+    if (addOn) { return form.resetFields() }
+    else { return onClose() }
+  }
+
   const onClose = () => {
-    updateSaveState?.({ ...saveState })
     form.resetFields()
     setVisible(false)
   }
 
-  const isEdit = () => form.getFieldValue('id') !== 0
+  const isEdit = () => Number(form.getFieldValue('id')) > initPoolData.id!
 
   const getContent = <Form
     form={form}
     layout='vertical'
-    onFinish={updateSaveData}
+    onFinish={onSubmit}
     initialValues={initPoolData}
   >
     <Form.Item name='id' hidden />
@@ -84,7 +105,7 @@ export default function DHCPPoolMain () {
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: (_, value) => nameValidator(value) }
+            { validator: (_, value) => nameValidator(value, values(), form.getFieldValue('id')) }
           ]}
           validateFirst
           hasFeedback
@@ -224,15 +245,10 @@ export default function DHCPPoolMain () {
   return (
     <>
       <PoolTable
-        poolData={saveState?.dhcpPools || []}
-        updatePoolData={(poolsData: DHCPPool[]) => {
-          updateSaveState({ ...saveState, ...{ dhcpPools: poolsData } })
-        }}
-        showPoolForm={(selectedPool?: DHCPPool) => {
-          setVisible(true)
-          setAddOn(false)
-          form.setFieldsValue(selectedPool ?? initPoolData)
-        }}
+        data={values()}
+        onAdd={onAddOrEdit}
+        onEdit={onAddOrEdit}
+        onDelete={onDelete}
       />
       <Drawer
         title={$t({ defaultMessage: 'Add DHCP Pool' })}
@@ -244,7 +260,5 @@ export default function DHCPPoolMain () {
         width={900}
       />
     </>
-
   )
-
 }

@@ -4,11 +4,7 @@ import { Form }  from 'antd'
 
 import { networkApi }      from '@acx-ui/rc/services'
 import { Provider, store } from '@acx-ui/store'
-import {
-  act,
-  render,
-  screen
-} from '@acx-ui/test-utils'
+import { render, screen }  from '@acx-ui/test-utils'
 
 
 import { PoolTable } from './PoolTable'
@@ -50,7 +46,7 @@ const list = {
   ]
 }
 
-function wrapper ({ children }: { children: React.ReactElement }) {
+function wrapper ({ children }: { children: JSX.Element }) {
   return <Provider>
     <Form>
       {children}
@@ -60,28 +56,11 @@ function wrapper ({ children }: { children: React.ReactElement }) {
 
 describe('Create DHCP: Pool table', () => {
   beforeEach(() => {
-    act(() => {
-      store.dispatch(networkApi.util.resetApiState())
-    })
+    store.dispatch(networkApi.util.resetApiState())
   })
-
-  it('should render correctly', async () => {
-
-    const { asFragment } = render(<PoolTable poolData={list.data}/>, {
-      wrapper
-    })
-
-    await screen.findByText('test1')
-    expect(asFragment()).toMatchSnapshot()
-  })
-
 
   it('Table action bar edit pool', async () => {
-
-
-    render(<PoolTable poolData={list.data}/>, {
-      wrapper
-    })
+    render(<PoolTable data={list.data} />, { wrapper })
 
     const tbody = (await screen.findAllByRole('rowgroup'))
       .find(element => element.classList.contains('ant-table-tbody'))!
@@ -96,7 +75,5 @@ describe('Create DHCP: Pool table', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
     userEvent.click(screen.getByText('test1'))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
-
   })
-
 })

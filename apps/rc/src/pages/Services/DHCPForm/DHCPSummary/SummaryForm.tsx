@@ -79,7 +79,7 @@ export function SummaryForm (props: {
           <Form.Item children={getVenues()} />
         </Col>
       </Row>
-      <PoolTable readonly={true} poolData={summaryData.dhcpPools}/>
+      <PoolTable readonly={true} data={summaryData.dhcpPools}/>
     </>
   )
 }

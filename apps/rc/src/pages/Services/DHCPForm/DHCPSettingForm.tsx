@@ -6,17 +6,16 @@ import { useIntl }                                               from 'react-int
 import { StepsForm }                             from '@acx-ui/components'
 import { DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
 
-import { dhcpTypes, dhcpTypesDesc }   from './contentsMap'
-import { DHCPDiagram }                from './DHCPDiagram/DHCPDiagram'
-import DHCPFormContext                from './DHCPFormContext'
-import DHCPPoolMain                   from './DHCPPool'
-import { RadioDescription, AntLabel } from './styledComponents'
+import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
+import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
+import DHCPFormContext              from './DHCPFormContext'
+import DHCPPoolTable                from './DHCPPool'
+import { RadioDescription }         from './styledComponents'
 
 
 const { useWatch } = Form
 export function SettingForm () {
   const intl = useIntl()
-
 
   const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
   const createType = useWatch<ServiceTechnology>('createType')
@@ -24,7 +23,7 @@ export function SettingForm () {
 
   const types = Object.values(DHCPConfigTypeEnum)
 
-  return (
+  return (<>
     <Row gutter={20}>
       <Col span={10}>
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
@@ -91,19 +90,18 @@ export function SettingForm () {
         </Form.Item>}
 
       </Col>
-      {createType === ServiceTechnology.WIFI &&
-      <Col span={10}>
+      {createType === ServiceTechnology.WIFI && <Col span={10}>
         <DHCPDiagram type={type}/>
-      </Col>
-      }
-
-
+      </Col>}
+    </Row>
+    <Row gutter={20}>
       <Col span={20}>
-        <AntLabel>
-          {intl.$t({ defaultMessage: 'Set DHCP Pools' })}
-        </AntLabel>
-        <DHCPPoolMain/>
+        <Form.Item
+          name='dhcpPools'
+          label={intl.$t({ defaultMessage: 'Set DHCP Pools' })}
+          children={<DHCPPoolTable />}
+        />
       </Col>
     </Row>
-  )
+  </>)
 }

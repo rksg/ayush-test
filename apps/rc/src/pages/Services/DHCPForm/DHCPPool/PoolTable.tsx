@@ -11,42 +11,32 @@ import { DHCPPool } from '@acx-ui/rc/utils'
 
 
 export function PoolTable (props:{
-  poolData: DHCPPool[],
-  updatePoolData?: (data:DHCPPool[]) => void,
-  showPoolForm?: (data?:DHCPPool) => void,
+  data: DHCPPool[]
+  onAdd?: () => void
+  onEdit?: (data?: DHCPPool) => void
+  onDelete?: (data:DHCPPool[]) => void
   readonly?: Boolean
 }) {
-
   const { $t } = useIntl()
-  const { poolData, updatePoolData, showPoolForm, readonly=false } = props
+  const { data, readonly=false } = props
   const [ errorVisible, showError ] = useState<Boolean>(false)
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
   })
 
-
   const rowActions: TableProps<DHCPPool>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (rows: DHCPPool[]) => {
-        if (rows.length===1) {
-          showPoolForm?.(rows[0])
-        }else{
-          showError(true)
-        }
+        if (rows.length === 1) props.onEdit?.(rows[0])
+        else showError(true)
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows: DHCPPool[], clearSelection) => {
-        rows.forEach(item => {
-          const index = poolData.findIndex(i => i.id === item.id)
-          if (index !== -1) {
-            poolData.splice(index, 1)
-          }
-        })
+        props.onDelete?.(rows)
         clearSelection()
-        updatePoolData?.(poolData)
       }
     }
   ]
@@ -91,9 +81,7 @@ export function PoolTable (props:{
   ]
   let actions = readonly ? []: [{
     label: $t({ defaultMessage: 'Add DHCP Pool' }),
-    onClick: () => {
-      showPoolForm?.()
-    }
+    onClick: () => props.onAdd?.()
   }]
   return (
     <>
@@ -101,8 +89,7 @@ export function PoolTable (props:{
       <Table
         rowKey='id'
         columns={columns}
-        dataSource={poolData}
-        type={'tall'}
+        dataSource={data}
         rowActions={rowActions}
         actions={actions}
         rowSelection={readonly ? undefined : {}}
