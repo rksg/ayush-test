@@ -62,8 +62,8 @@ export function StackedAreaChart <
     },
     tooltip: {
       ...tooltipOptions(),
-      trigger: 'axis',
-      formatter: timeSeriesTooltipFormatter(dataFormatter)
+      trigger: 'axis'
+      // formatter: timeSeriesTooltipFormatter(data, { default: dataFormatter })
     },
     xAxis: {
       ...xAxisOptions(),

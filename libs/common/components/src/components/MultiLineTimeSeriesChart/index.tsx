@@ -52,6 +52,9 @@ export interface MultiLineTimeSeriesChartProps <
     legendProp?: keyof TChartData,
     lineColors?: string[],
     dataFormatter?: (value: unknown) => string | null,
+    seriesFormatters?: Record<string, (value: unknown) => string | null>
+     /** @default true */
+    hasTooltipBadge?: boolean,
     yAxisProps?: {
       max: number,
       min: number
@@ -112,6 +115,8 @@ export function MultiLineTimeSeriesChart <
   data,
   legendProp = 'name' as keyof TChartData,
   dataFormatter,
+  seriesFormatters,
+  hasTooltipBadge = true,
   yAxisProps,
   disableLegend,
   onMarkedAreaClick,
@@ -135,12 +140,18 @@ export function MultiLineTimeSeriesChart <
     legend: {
       ...legendOptions(),
       textStyle: legendTextStyleOptions(),
-      data: data.map(datum => datum[legendProp]) as unknown as string[]
+      data: data
+        .filter(datum=> datum.show !== false )
+        .map(datum => datum[legendProp]) as unknown as string[]
     },
     tooltip: {
       ...tooltipOptions(),
       trigger: 'axis',
-      formatter: timeSeriesTooltipFormatter(dataFormatter)
+      formatter: timeSeriesTooltipFormatter(
+        data,
+        { ...seriesFormatters, default: dataFormatter },
+        hasTooltipBadge
+      )
     },
     xAxis: {
       ...xAxisOptions(),
@@ -161,22 +172,24 @@ export function MultiLineTimeSeriesChart <
         }
       }
     },
-    series: data.map(datum => ({
-      name: datum[legendProp] as unknown as string,
-      data: datum.data,
-      type: 'line',
-      smooth: true,
-      symbol: 'none',
-      z: 1,
-      zlevel: 1,
-      lineStyle: { width: 1 },
-      markArea: props.markers ? {
-        data: props.markers?.map(marker => [
-          { xAxis: marker.startTime, itemStyle: marker.itemStyle, data: marker.data },
-          { xAxis: marker.endTime }
-        ])
-      } : undefined
-    })),
+    series: data
+      .filter(datum=> datum.show !== false )
+      .map(datum => ({
+        name: datum[legendProp] as unknown as string,
+        data: datum.data,
+        type: 'line',
+        smooth: true,
+        symbol: 'none',
+        z: 1,
+        zlevel: 1,
+        lineStyle: { width: 1 },
+        markArea: props.markers ? {
+          data: props.markers?.map(marker => [
+            { xAxis: marker.startTime, itemStyle: marker.itemStyle, data: marker.data },
+            { xAxis: marker.endTime }
+          ])
+        } : undefined
+      })),
     ...(!brushEnabled ? {
       toolbox: {
         top: '15%',

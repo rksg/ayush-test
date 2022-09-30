@@ -8,13 +8,13 @@ export type TimeSeriesData = {
 
 export function getSeriesData (
   data: TimeSeriesData | null,
-  seriesMapping: Array<{ key: string, name: string }>
+  seriesMapping: Array<{ key: string, name: string, show?: boolean }>
 ): MultiLineTimeSeriesChartData[] {
   if (checkNoData(data)) return []
-  return seriesMapping.map(({ key, name }) => ({
-    name,
+  return seriesMapping.map((mapping) => ({
+    ...mapping,
     data: (data!['time'] as TimeStamp[]).map((t, index) => {
-      const value = data![key][index] as number
+      const value = data![mapping.key][index] as number
       return [t, value === null ? '-' : value]
     })
   }))
@@ -26,7 +26,7 @@ export function checkNoData (data: TimeSeriesData | null): boolean {
   for (let [key, value] of Object.entries(data)) {
     if(key !== 'time') {
       const uniqueVal = new Set(value)
-      uniqueVal.size === 1 && uniqueVal.has(null) ? 
+      uniqueVal.size === 1 && uniqueVal.has(null) ?
         isNoData = true : isNoData = false
     }
   }

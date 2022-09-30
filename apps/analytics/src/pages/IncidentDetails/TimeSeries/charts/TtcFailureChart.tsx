@@ -1,17 +1,22 @@
-import { gql }     from 'graphql-request'
-import { useIntl } from 'react-intl'
+import { gql }         from 'graphql-request'
+import { useIntl }     from 'react-intl'
+import { useNavigate } from 'react-router-dom'
+import AutoSizer       from 'react-virtualized-auto-sizer'
 
 import {
   Incident,
   TimeSeriesData,
   getSeriesData
-} from '@acx-ui/analytics/utils'
-import { Loader } from '@acx-ui/components'
+}                                                 from '@acx-ui/analytics/utils'
+import { Card, Loader, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { useTenantLink }                          from '@acx-ui/react-router-dom'
+import { formatter }                              from '@acx-ui/utils'
 
-import { FailureTimeSeriesChart }                   from '../../../../components/FailureTimeSeriesChart'
+import { kpiConfig }                                from '../../../Health/Kpi/config'
 import { useKpiTimeseriesQuery, KpiPayload }        from '../../../Health/Kpi/services'
 import { ChartsData, getIncidentTimeSeriesPeriods } from '../services'
 
+import { getMarkers, onMarkedAreaClick } from './markerHelper'
 
 const ttcFailureChartQuery = () => gql`
   relatedIncidents: incidents(filter: {code: [$code]}) {
@@ -25,12 +30,15 @@ const ttcFailureChartQuery = () => gql`
 
 export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/analytics/incidents/')
   const { start, end } = getIncidentTimeSeriesPeriods(incident)
   const queryResults = useKpiTimeseriesQuery({
     path: incident.path,
     startDate: start.toISOString(),
     endDate: end.toISOString(),
-    kpi: 'timeToConnect'
+    kpi: 'timeToConnect',
+    threshold: kpiConfig.timeToConnect.histogram.initialThreshold.toString() // TODO
   } as KpiPayload, {
     selectFromResult: ({ data: connectionData, ...rest }) => {
       const { ttcFailureChart } = data
@@ -40,7 +48,7 @@ export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: 
       return {
         data: time.reduce((agg, _, index) => {
           agg.ttc = agg.ttc
-            .concat(ttc[index] && Math.round(ttc[index]!/1000))
+            .concat(ttc[index])
           agg.totalConnections = agg.totalConnections
             .concat(ttcCounts && ttcCounts[index] && ttcCounts[index]![1])
           agg.slowConnections = agg.slowConnections
@@ -56,19 +64,35 @@ export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: 
   })
 
   const seriesMapping = [
-    { key: 'totalConnections', name: $t({ defaultMessage: 'Total Connections' }) },
-    { key: 'slowConnections', name: $t({ defaultMessage: 'Slow Connections' }) },
-    { key: 'ttc', name: $t({ defaultMessage: 'Avg Time To Connect' }) }
+    { key: 'totalConnections', name: $t({ defaultMessage: 'Total Connections' }), show: true },
+    { key: 'slowConnections', name: $t({ defaultMessage: 'Slow Connections' }), show: true },
+    { key: 'ttc', name: $t({ defaultMessage: 'Avg Time To Connect' }), show: false }
   ]
+  const seriesFormatters = {
+    totalConnections: formatter('countFormat'),
+    slowConnections: formatter('countFormat'),
+    ttc: formatter('durationFormat')
+  }
 
   const chartResults = getSeriesData(queryResults.data as TimeSeriesData, seriesMapping)
-  return <Loader states={[queryResults]}>
-    <FailureTimeSeriesChart
-      title={$t({ defaultMessage: 'CONNECTION EVENTS' })}
-      incident={incident}
-      relatedIncidents={data.relatedIncidents}
-      data={chartResults}
-    /></Loader>
+  return (
+    <Loader states={[queryResults]}>
+      <Card title={$t({ defaultMessage: 'CONNECTION EVENTS' })} type='no-border'>
+        <AutoSizer>
+          {({ height, width }) => (
+            <MultiLineTimeSeriesChart
+              style={{ height, width }}
+              data={chartResults}
+              dataFormatter={formatter('countFormat')}
+              seriesFormatters={seriesFormatters}
+              onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}
+              markers={getMarkers(data.relatedIncidents, incident)}
+            />
+          )}
+        </AutoSizer>
+      </Card>
+    </Loader>
+  )
 }
 
 const chartConfig = { chart: TtcFailureChart, query: ttcFailureChartQuery }

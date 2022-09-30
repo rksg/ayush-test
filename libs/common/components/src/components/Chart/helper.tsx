@@ -14,17 +14,17 @@ import {
   defineMessage
 } from 'react-intl'
 
-import { TimeStamp } from '@acx-ui/types'
+import { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { TimeStamp }                    from '@acx-ui/types'
 import {
   formatter,
   dateTimeFormats,
   intlFormats
-} from '@acx-ui/utils'
+}                                       from '@acx-ui/utils'
 
 import { cssStr, cssNumber } from '../../theme/helper'
 
 import * as UI from './styledComponents'
-
 
 export type TooltipFormatterParams = Exclude<
   TooltipComponentFormatterCallbackParams,
@@ -139,30 +139,39 @@ export const tooltipOptions = () => ({
   extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08);'
 } as TooltipComponentOption)
 
+type Formatter = ((value: unknown) => (string | null)) | undefined
+
 export const timeSeriesTooltipFormatter = (
-  dataFormatter?: ((value: unknown) => string | null)
+  series: MultiLineTimeSeriesChartData[],
+  dataFormatters: { default?: Formatter } & Record<string, Formatter>,
+  hasBadge: boolean = false
 ) => (
   parameters: TooltipFormatterParams | TooltipFormatterParams[]
 ) => {
-  const [ time ] = (Array.isArray(parameters)
-    ? parameters[0].data : parameters.data) as [TimeStamp, number]
+  const param = Array.isArray(parameters) ? parameters[0] : parameters
+  const [ time ] = param.data as [TimeStamp, number]
+  const dataIndex = param.dataIndex
+
   return renderToString(
     <UI.TooltipWrapper>
       <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
       <ul>{
-        (Array.isArray(parameters) ? parameters : [parameters])
-          .map((parameter: TooltipFormatterParams)=> {
-            const [, value] = parameter.data as [TimeStamp, number]
-            return <li key={parameter.seriesName}>
-              <UI.Badge
-                color={parameter.color!.toString()}
-                text={<>
-                  {`${parameter.seriesName}: `}
-                  <b>{`${dataFormatter ? dataFormatter(value) : value}`}</b>
-                </>}
-              />
-            </li>
-          })
+        series.map((data: MultiLineTimeSeriesChartData)=> {
+          const color = (Array.isArray(parameters)
+            ? parameters.find(p => p.seriesName === data.name) : parameters)?.color
+          const formatter = dataFormatters[data.key] || dataFormatters.default
+          const [, value] = data.data[dataIndex as number] as [TimeStamp, number]
+          const text = <>
+            {`${data.name}: `}
+            <b>{`${formatter ? formatter(value) : value}`}</b>
+          </>
+          return <li key={data.name}>
+            {hasBadge
+              ? <UI.Badge color={(color||'') as string} text={text}/>
+              : text
+            }
+          </li>
+        })
       }</ul>
     </UI.TooltipWrapper>
   )
