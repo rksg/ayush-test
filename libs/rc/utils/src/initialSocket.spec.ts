@@ -4,8 +4,6 @@ import { initialSocket } from './initialSocket'
 
 import { websocketServerUrl } from '.'
 
-jest.unmock('socket.io-client')
-
 describe('Test websocket', () => {
   it('should connect websocket correctly', async () => {
     const url = `ws://localhost${websocketServerUrl}/`
