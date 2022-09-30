@@ -67,6 +67,10 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const onDrawerClose = () => setDrawerSelection(null)
   const [muteIncident ] = useMuteIncidentsMutation()
+  const [isMutedFiltered ] = useState(true)
+  const data = (isMutedFiltered)
+    ? queryResults.data?.filter(row => !row.isMuted)
+    : queryResults.data
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
@@ -217,7 +221,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     <Loader states={[queryResults]}>
       <Table
         type='tall'
-        dataSource={queryResults?.data}
+        dataSource={data}
         columns={ColumnHeaders}
         rowActions={rowActions}
         rowSelection={{
