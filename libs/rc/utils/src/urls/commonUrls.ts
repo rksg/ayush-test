@@ -91,6 +91,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/mesh'
   },
+  getService: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/service/:serviceId'
+  },
+  saveDHCPService: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
+  },
   getVenueFloorplans: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'

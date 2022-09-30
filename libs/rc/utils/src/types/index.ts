@@ -55,7 +55,7 @@ export interface NetworkDetail {
     ssid?: string;
     vlanId?: number;
     enable?: boolean;
-    advancedCustomization?:   
+    advancedCustomization?:
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |

@@ -13,7 +13,7 @@ export class AAAWlanAdvancedCustomization {
   applicationPolicyId?: string
 
   accessControlProfileId?: string
-  
+
   userUplinkRateLimiting?: number
 
   // Mbps
@@ -95,9 +95,9 @@ export class AAAWlanAdvancedCustomization {
   enableTransientClientManagement?: boolean
 
   joinWaitTime: number
-  
+
   joinExpireTime: number
-  
+
   joinWaitThreshold: number
 
   enableOptimizedConnectivityExperience?: boolean

@@ -72,7 +72,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, 
+          showActivityMessage(msg,
             ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
             })

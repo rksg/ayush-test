@@ -6,7 +6,7 @@ export function networkWifiIpRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp('^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$')
-  if (value!=='' && !re.test(value)) {
+  if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))
   }
   return Promise.resolve()
@@ -16,7 +16,7 @@ export function networkWifiSecretRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp('^[\\x21-\\x7E]+([\\x20-\\x7E]*[\\x21-\\x7E]+)*$')
-  if (value!=='' && !re.test(value)) {
+  if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.invalid))
   }
   return Promise.resolve()
@@ -26,7 +26,7 @@ export function domainNameRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
-  if (value!=='' && !re.test(value)) {
+  if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.invalid))
   }
   return Promise.resolve()
@@ -55,7 +55,7 @@ export function hasGraveAccentAndDollarSign (value: string) {
 export function passphraseRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp('^[!-_a-~]((?!\\$\\()[ !-_a-~]){6,61}[!-_a-~]$|^[A-Fa-f0-9]{64}$')
-  if (value!=='' && !re.test(value)) {
+  if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.invalid))
   }
   return Promise.resolve()
@@ -90,8 +90,18 @@ export function checkItemNotIncluded (
 export function hexRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp(/^[0-9a-fA-F]{26}$/)
-  if (value!=='' && !re.test(value)) {
+  if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.invalidHex))
+  }
+  return Promise.resolve()
+}
+
+export function subnetMaskIpRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^((128|192|224|240|248|252|254)\.0\.0\.0)|(255\.(((0|128|192|224|240|248|252|254)\.0\.0)|(255\.(((0|128|192|224|240|248|252|254)\.0)|255\.(0|128|192|224|240|248|252|254)))))$')
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.subnetMask))
   }
   return Promise.resolve()
 }

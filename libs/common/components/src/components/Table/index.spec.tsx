@@ -211,10 +211,11 @@ describe('Table component', () => {
   })
 
   it('single select row click', async () => {
+    const onChange = jest.fn()
     render(<Table
       columns={basicColumns}
       dataSource={basicData}
-      rowSelection={{ type: 'radio' }}
+      rowSelection={{ type: 'radio', onChange }}
     />)
 
     const tbody = (await screen.findAllByRole('rowgroup'))
@@ -223,11 +224,12 @@ describe('Table component', () => {
     expect(tbody).toBeVisible()
 
     const body = within(tbody)
-    fireEvent.click(await body.findByText('Jane Doe'))
+    fireEvent.click(await body.findByText(basicData[1].name))
     // to ensure it doesn't get unselected
-    fireEvent.click(await body.findByText('Jane Doe'))
+    fireEvent.click(await body.findByText(basicData[1].name))
     const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
     expect(selectedRow.filter(el => el.checked)).toHaveLength(1)
+    expect(onChange).toBeCalledTimes(1)
   })
 
   it('single select disabled row click', async () => {
@@ -256,10 +258,11 @@ describe('Table component', () => {
   })
 
   it('multible select row click', async () => {
+    const onChange = jest.fn()
     render(<Table
       columns={basicColumns}
       dataSource={basicData}
-      rowSelection={{ defaultSelectedRowKeys: ['1', '3'] }}
+      rowSelection={{ defaultSelectedRowKeys: ['1', '3'], onChange }}
     />)
 
     const tbody = (await screen.findAllByRole('rowgroup'))
@@ -273,6 +276,7 @@ describe('Table component', () => {
     expect(selectedRows.filter(el => el.checked)).toHaveLength(3)
     fireEvent.click(await body.findByText('Will Smith'))
     expect(selectedRows.filter(el => el.checked)).toHaveLength(2)
+    expect(onChange).toBeCalledTimes(2)
   })
 
   it('should handle ellipsis', () => {

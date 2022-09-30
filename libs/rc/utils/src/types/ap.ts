@@ -87,7 +87,7 @@ export interface LanPort {
 	untagId: number
 	vlanMembers: string
 }
-  
+
 export interface ApModel {
 	allowDfsCountry: string[],
 	canSupportCellular: boolean,
