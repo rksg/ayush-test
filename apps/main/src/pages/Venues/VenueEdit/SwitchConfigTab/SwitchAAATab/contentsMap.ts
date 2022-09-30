@@ -3,9 +3,9 @@ import { defineMessage } from 'react-intl'
 
 import { AAAServerTypeEnum } from '@acx-ui/rc/utils'
 
-export const AAANotification = defineMessage({ 
-  defaultMessage: 
-  'You must have at least one RADIUS or TACACS+ server set-up in order to enable authorization or accounting' 
+export const AAANotification = defineMessage({
+  defaultMessage:
+  'You must have at least one RADIUS or TACACS+ server set-up in order to enable authorization or accounting'
 })
 
 export enum AAA_Purpose_Type {

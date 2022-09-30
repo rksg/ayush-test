@@ -78,7 +78,7 @@ const AAAServerDrawer = (props: AAAServerDrawerProps) => {
       }).unwrap()
       setLoading(false)
     }
-    onClose()    
+    onClose()
     const clearButton = document?.querySelector('button[title="Clear selection"]')
     if (clearButton) {
       // @ts-ignore
@@ -91,7 +91,7 @@ const AAAServerDrawer = (props: AAAServerDrawerProps) => {
       name='name'
       label={$t({ defaultMessage: 'Name' })}
       rules={[
-        { required: true }, 
+        { required: true },
         { min: 2 },
         { max: 64 },
         { validator: (_, value) => excludeExclamationRegExp(value) }
@@ -143,7 +143,7 @@ const AAAServerDrawer = (props: AAAServerDrawerProps) => {
       name='name'
       label={$t({ defaultMessage: 'Name' })}
       rules={[
-        { required: true }, 
+        { required: true },
         { min: 2 },
         { max: 64 },
         { validator: (_, value) => excludeExclamationRegExp(value) }
@@ -189,7 +189,7 @@ const AAAServerDrawer = (props: AAAServerDrawerProps) => {
           Object.entries(AAA_Purpose_Type).map(([label, value]) => (
             <Option key={label} value={value}>{$t(purposeDisplayText[value])}</Option>
           ))
-        }       
+        }
       </Select>
     </Form.Item>
   </Form>
@@ -199,7 +199,7 @@ const AAAServerDrawer = (props: AAAServerDrawerProps) => {
       name='username'
       label={$t({ defaultMessage: 'Username' })}
       rules={[
-        { required: true }, 
+        { required: true },
         { min: 2 },
         { max: 48 },
         { validator: (_, value) => excludeQuoteRegExp(value) },
@@ -245,7 +245,7 @@ const AAAServerDrawer = (props: AAAServerDrawerProps) => {
           Object.entries(AAA_Level_Type).map(([label, value]) => (
             <Option key={label} value={value}>{$t(levelDisplayText[value])}</Option>
           ))
-        }       
+        }
       </Select>
     </Form.Item>
   </Form>

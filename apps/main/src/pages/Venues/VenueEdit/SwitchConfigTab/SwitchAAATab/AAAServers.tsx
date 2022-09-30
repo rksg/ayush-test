@@ -21,11 +21,11 @@ export function AAAServers () {
     [AAAServerTypeEnum.TACACS]: $t({ defaultMessage: 'TACACS+ Servers' }),
     [AAAServerTypeEnum.LOCAL_USER]: $t({ defaultMessage: 'Local Users' })
   }
-  
+
   const getPanelHeader = (type: AAAServerTypeEnum, count: number) => {
     return PanelHeader[type] + ' (' + count + ')'
   }
-  
+
   const defaultPayload = {
     venueId,
     serverType: AAAServerTypeEnum.RADIUS,
@@ -78,15 +78,15 @@ export function AAAServers () {
         bordered={false}
       >
         <Panel header={getPanelHeader(AAAServerTypeEnum.RADIUS, 0)} key='1' >
-          <AAAServerTable type={AAAServerTypeEnum.RADIUS} tableQuery={radiusTableQuery} aaaSetting={aaaSetting} />   
+          <AAAServerTable type={AAAServerTypeEnum.RADIUS} tableQuery={radiusTableQuery} aaaSetting={aaaSetting} />
         </Panel>
 
         <Panel header={getPanelHeader(AAAServerTypeEnum.TACACS, 0)} key='2' >
-          <AAAServerTable type={AAAServerTypeEnum.TACACS} tableQuery={tacasTableQuery} aaaSetting={aaaSetting} />   
+          <AAAServerTable type={AAAServerTypeEnum.TACACS} tableQuery={tacasTableQuery} aaaSetting={aaaSetting} />
         </Panel>
 
         <Panel header={getPanelHeader(AAAServerTypeEnum.LOCAL_USER, 0)} key='3' >
-          <AAAServerTable type={AAAServerTypeEnum.LOCAL_USER} tableQuery={localUserTableQuery} /> 
+          <AAAServerTable type={AAAServerTypeEnum.LOCAL_USER} tableQuery={localUserTableQuery} />
         </Panel>
       </Collapse>
     </UI.AAAServers>

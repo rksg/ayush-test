@@ -186,7 +186,7 @@ export function validateUserPassword (value: string) {
     }
     if (restriction !== 4) {
       return Promise.reject($t(validationMessages.validateUserPassword))
-    } 
+    }
     return Promise.resolve()
   } else {
     return Promise.resolve()

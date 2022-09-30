@@ -8,7 +8,7 @@ const { TabPane } = Tabs
 export function SwitchConfigTab () {
   const { $t } = useIntl()
   return (
-    <Tabs defaultActiveKey='aaa' type='card'>
+    <Tabs defaultActiveKey='general' type='card'>
       <TabPane tab={$t({ defaultMessage: 'General' })} key='general'>
         {$t({ defaultMessage: 'General' })}
       </TabPane>
