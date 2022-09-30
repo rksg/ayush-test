@@ -10,6 +10,9 @@ import { validationMessages } from '@acx-ui/utils'
 
 import { OptionTable } from './OptionTable'
 
+const defaultData: Partial<DHCPOption> = {
+  id: 0
+}
 
 export function PoolOption (props:{
   value?: DHCPOption[]
@@ -19,7 +22,6 @@ export function PoolOption (props:{
   const { value: optionData } = props
   const optionsMap = useRef(optionData ? _.keyBy(optionData, 'id') : {})
   const options = Object.values(optionsMap.current)
-  const [selected, setSelected] = useState<DHCPOption | undefined>()
 
   const [modalForm] = Form.useForm<DHCPOption>()
   const idValidator = async (text: string) => {
@@ -38,14 +40,13 @@ export function PoolOption (props:{
 
   const handleSaveData = (data: DHCPOption) => {
     let id = data.id
-    if (!id) { id = data.id = Date.now() }
+    if (id === defaultData.id) { id = data.id = Date.now() }
     optionsMap.current[id] = data
     handleChanged()
     onClose()
   }
   const [visible, setVisible] = useState(false)
   const onClose = () => {
-    setSelected(undefined)
     setVisible(false)
   }
   const footer = [
@@ -66,7 +67,7 @@ export function PoolOption (props:{
     form={modalForm}
     layout='vertical'
     onFinish={handleSaveData}
-    initialValues={selected}
+    initialValues={defaultData}
   >
     <Row gutter={20}>
       <Col span={23}>
@@ -110,9 +111,10 @@ export function PoolOption (props:{
     </Row>
   </Form>
 
-  const onAddOrEdit = (item: DHCPOption) => {
+  const onAddOrEdit = (item?: DHCPOption) => {
     setVisible(true)
-    modalForm.setFieldsValue(item)
+    if (item) modalForm.setFieldsValue(item)
+    else modalForm.resetFields()
   }
 
   const onDelete = (items: DHCPOption[]) => {

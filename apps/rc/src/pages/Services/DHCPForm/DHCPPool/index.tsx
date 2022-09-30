@@ -17,16 +17,9 @@ import { PoolOption } from './PoolOption'
 import { PoolTable }  from './PoolTable'
 
 
-const initPoolData: DHCPPool = {
+const initPoolData: Partial<DHCPPool> = {
   id: 0,
-  name: '',
   allowWired: false,
-  ip: '',
-  mask: '',
-  primaryDNS: '',
-  secondaryDNS: '',
-  excludedRangeStart: '',
-  excludedRangeEnd: '',
   dhcpOptions: [],
   leaseTime: 24,
   leaseUnit: 'Hours',
@@ -49,7 +42,7 @@ export default function DHCPPoolMain () {
     return Promise.resolve()
   }
   const updateSaveData = (data: DHCPPool) => {
-    if (data.id === 0) {
+    if (data.id === initPoolData.id) {
       data.id = Date.now()
     }
 
@@ -78,6 +71,7 @@ export default function DHCPPoolMain () {
     form={form}
     layout='vertical'
     onFinish={updateSaveData}
+    initialValues={initPoolData}
   >
     <Form.Item name='id' hidden />
 
@@ -234,10 +228,10 @@ export default function DHCPPoolMain () {
         updatePoolData={(poolsData: DHCPPool[]) => {
           updateSaveState({ ...saveState, ...{ dhcpPools: poolsData } })
         }}
-        showPoolForm={(selectedPool: DHCPPool = initPoolData) => {
+        showPoolForm={(selectedPool?: DHCPPool) => {
           setVisible(true)
           setAddOn(false)
-          form.setFieldsValue(selectedPool)
+          form.setFieldsValue(selectedPool ?? initPoolData)
         }}
       />
       <Drawer

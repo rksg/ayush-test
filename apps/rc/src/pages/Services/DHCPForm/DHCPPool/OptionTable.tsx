@@ -9,16 +9,9 @@ import {
 } from '@acx-ui/components'
 import { DHCPOption } from '@acx-ui/rc/utils'
 
-const defaultData: DHCPOption = {
-  id: 0,
-  optId: '',
-  optName: '',
-  format: '',
-  value: ''
-}
 export function OptionTable (props:{
   data: DHCPOption[]
-  onAdd?: (data: DHCPOption) => void
+  onAdd?: () => void
   onEdit?: (data: DHCPOption) => void
   onDelete?: (data: DHCPOption[]) => void
 }) {
@@ -80,7 +73,7 @@ export function OptionTable (props:{
         rowActions={rowActions}
         actions={[{
           label: $t({ defaultMessage: 'Add option' }),
-          onClick: () => props.onAdd?.(defaultData)
+          onClick: () => props.onAdd?.()
         }]}
         rowSelection={{}}
       />
