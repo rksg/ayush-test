@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, websocketServerUrl, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -64,9 +64,7 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.get(`http://localhost${websocketServerUrl}/`,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
 
     )
   })
@@ -199,7 +197,7 @@ describe('NetworkForm', () => {
 
     const secretTextboxAcc = screen.getAllByLabelText('Shared secret')[2]
     fireEvent.change(secretTextboxAcc, { target: { value: 'secret-3' } })
-    
+
     await fillInAfterSettings(async () => {
       expect(screen.getByText('PSK network test')).toBeVisible()
       expect(screen.getByText('192.168.1.1:1111')).toBeVisible()
