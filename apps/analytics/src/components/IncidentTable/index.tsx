@@ -15,9 +15,10 @@ import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
 import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
 import { formatter }                         from '@acx-ui/utils'
 
-import { 
+import {
   useIncidentsListQuery,
-  IncidentTableRow 
+  useMuteIncidentsMutation,
+  IncidentTableRow
 } from './services'
 import * as UI  from './styledComponents'
 import {
@@ -65,12 +66,16 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const basePath = useTenantLink('/analytics/incidents/')
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const onDrawerClose = () => setDrawerSelection(null)
+  const [muteIncident ] = useMuteIncidentsMutation()
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
-      label: $t(defineMessage({ defaultMessage: 'Mute' })),
-      onClick: () => {
-        // TODO: to be updated for muting
+      label: $t(defineMessage({ defaultMessage: 'Mute/Unmute' })),
+      onClick: async (selectedItems) => {
+        await Promise.all(selectedItems.map(async (row) => {
+          const { id, code, severityLabel, isMuted } = row
+          await muteIncident({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()
+        }))
       }
     }
   ]
