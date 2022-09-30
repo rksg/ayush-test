@@ -142,3 +142,8 @@ export interface VenueSettings {
   enableClientIsolationAllowlist?: boolean
   id?: string
 }
+
+export interface VenueNetworking {
+  mesh?: boolean
+  cellular?: any
+}

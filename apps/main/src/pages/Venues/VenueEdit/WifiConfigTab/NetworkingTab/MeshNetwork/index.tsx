@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Switch, Tooltip } from 'antd'
 import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
-import { showActionModal, Subtitle } from '@acx-ui/components'
+import { showActionModal, showToast, Subtitle } from '@acx-ui/components'
 import { 
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -12,11 +12,15 @@ import {
 } from '@acx-ui/rc/services'
 import { APMeshRole } from '@acx-ui/rc/utils'
 
+import { VenueEditContext } from '../../../index'
+
 import * as UI from './styledComponents'
 
 export function MeshNetwork () {
   const { $t } = useIntl()
   const params = useParams()
+
+  const { editContextData, setEditContextData } = useContext(VenueEditContext)
   
   const [apList] = useLazyApListQuery()
   const [updateVenueMesh] = useUpdateVenueMeshMutation()
@@ -45,7 +49,8 @@ export function MeshNetwork () {
         checkMeshAPs()
       }
     }
-  }, [data, isAllowEnableMesh])
+    console.log(meshEnabled)
+  }, [data, isAllowEnableMesh, meshEnabled])
 
   const checkMeshAPs = async () => {
     const payload = {
@@ -63,6 +68,17 @@ export function MeshNetwork () {
     }
   }
 
+  const handleUpdateMeshSetting = async () => {
+    try {
+      await updateVenueMesh({ params, payload: { mesh: meshEnabled } })
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
   const toggleMesh = (checked: boolean) => {
     if (checked) {
       showActionModal({
@@ -71,13 +87,19 @@ export function MeshNetwork () {
               'If you have Mesh-APs, you will not be able to disable this option.' }),
         okText: 'Enable Mesh',
         cancelText: 'Cancel',
-        onOk () { 
+        onOk () {
           setMeshEnabled(true)
-          updateVenueMesh({
-            params,
-            payload: {
-              mesh: checked
-            }
+          // updateVenueMesh({
+          //   params,
+          //   payload: {
+          //     mesh: checked
+          //   }
+          // })
+          setEditContextData({
+            ...editContextData,
+            tabTitle: $t({ defaultMessage: 'Networking' }),
+            isDirty: true,
+            updateChanges: [handleUpdateMeshSetting]
           })
         },
         onCancel () {}
@@ -92,11 +114,17 @@ export function MeshNetwork () {
         })
       } else {
         setMeshEnabled(false)
-        updateVenueMesh({
-          params,
-          payload: {
-            mesh: checked
-          }
+        // updateVenueMesh({
+        //   params,
+        //   payload: {
+        //     mesh: checked
+        //   }
+        // })
+        setEditContextData({
+          ...editContextData,
+          tabTitle: $t({ defaultMessage: 'Networking' }),
+          isDirty: true,
+          updateChanges: [handleUpdateMeshSetting]
         })
       }
     }

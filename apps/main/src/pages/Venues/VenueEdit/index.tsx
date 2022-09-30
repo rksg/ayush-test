@@ -3,7 +3,7 @@ import { createContext, useState } from 'react'
 import { IntlShape } from 'react-intl'
 
 import { showActionModal, CustomButtonProps } from '@acx-ui/components'
-import { VenueLed }                           from '@acx-ui/rc/utils'
+import { VenueLed, VenueNetworking }          from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
 
 import { SwitchConfigTab } from './SwitchConfigTab'
@@ -22,10 +22,10 @@ export interface AdvancedSettingContext {
   tabKey?: string,
   isDirty: boolean,
   hasError?: boolean,
-  oldData: VenueLed[],
-  newData: VenueLed[],
-  updateChanges: () => void,
-  setData: (data: VenueLed[]) => void,
+  oldData?: VenueLed[],
+  newData?: VenueLed[],
+  updateChanges: (() => void)[],
+  setData?: (data: VenueLed[]) => void,
   tempData?: {
     settings?: VenueLed[]
   }
@@ -81,7 +81,7 @@ export function showUnsavedModal (
           [tabKey as keyof AdvancedSettingContext]: oldData
         }
       })
-      setData(oldData)
+      setData && oldData && setData(oldData)
       callback?.()
     }
   }, {
@@ -90,7 +90,11 @@ export function showUnsavedModal (
     key: 'save',
     closeAfterAction: true,
     handler: async () => {
-      editContextData?.updateChanges?.()
+      for (let i=0; i < editContextData?.updateChanges.length; i++) {
+        if(editContextData?.updateChanges[i]){
+          editContextData?.updateChanges[i]?.()
+        }
+      }
       callback?.()
     }
   }]
