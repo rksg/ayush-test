@@ -12,21 +12,21 @@ export const HealthContentExcellent = styled.div`
     height: 13px;
     width: 7px;
     margin-left: 2px;
-    background: #23AB36;
+    background: var(--acx-semantics-green-50);
     border-radius: 3px;
 `
 export const HealthContentModerate = styled.div`
     height: 13px;
     width: 7px;
     margin-left: 2px;
-    background: #EC7100;
+    background: var(--acx-accents-orange-50);
     border-radius: 3px;
 `
 export const HealthContentPoor = styled.div`
     height: 13px;
     width: 7px;
     margin-left: 2px;
-    background: #ED1C24;
+    background: var(--acx-semantics-red-50);
     border-radius: 3px;
 `
 
@@ -34,6 +34,6 @@ export const ProgressEmptyContent = styled.div`
     height: 13px;
     width: 7px;
     margin-left: 2px;
-    background: #D4D4D4;
+    background: var(--acx-neutrals-30);
     border-radius: 3px;
 `
