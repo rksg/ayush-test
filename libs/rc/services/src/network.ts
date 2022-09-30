@@ -180,7 +180,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           }))
         }
         const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
-        const venueNetworkApGroupList = 
+        const venueNetworkApGroupList =
               venueNetworkApGroupQuery.data as { response: NetworkVenue[] }
 
         const networkDeepListInfo = {
@@ -219,8 +219,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
   })
 })
 
-export const aggregatedVenueNetworksData = (networkList: TableResult<Network>, 
-  venueNetworkApGroupList:{ response: NetworkVenue[] }, 
+export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
+  venueNetworkApGroupList:{ response: NetworkVenue[] },
   networkDeepListList:{ response: NetworkDetail[] }) => {
   const data:Network[] = []
   networkList.data.forEach(item => {

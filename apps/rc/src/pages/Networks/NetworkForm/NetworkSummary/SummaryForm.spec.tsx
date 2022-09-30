@@ -19,7 +19,7 @@ const mockSummary = {
     }
   ],
   wlanSecurity: WlanSecurityEnum.WPA2Enterprise,
-  dpskPassphraseGeneration: { 
+  dpskPassphraseGeneration: {
     format: PassphraseFormatEnum.MOST_SECURED,
     length: 18,
     expiration: PassphraseExpirationEnum.UNLIMITED

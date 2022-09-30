@@ -1,5 +1,8 @@
+import { useRef } from 'react'
+
 import { Tabs }                                      from 'antd'
-import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import ReactECharts                                  from 'echarts-for-react'
+import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { categoryNames }                         from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }                      from '@acx-ui/components'
@@ -7,6 +10,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import Header from '../../components/Header'
 
+import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
 import { HealthPageContextProvider } from './HealthPageContext'
 import * as UI                       from './styledComponents'
 import Kpis from './Kpi/'
@@ -41,6 +45,9 @@ export default function HealthPage () {
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
+
+  const connectedClientsRef = useRef<ReactECharts>(null)
+
   return (
     <>
       <Header title={$t({ defaultMessage: 'Health' })} />
@@ -50,7 +57,7 @@ export default function HealthPage () {
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
-            <div>Summary TimeSeries</div>
+            <ConnectedClientsOverTime ref={connectedClientsRef} />
           </GridCol>
           <GridCol col={{ span: 16 }} >
             <Tabs activeKey={activeTab} onChange={onTabChange}>

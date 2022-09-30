@@ -153,8 +153,8 @@ describe('useImpactedArea', () => {
 
   describe('useImpactValues', () => {
 
-    const renderImpactValues: typeof useImpactValues = 
-    (type: 'ap' | 'client', incident: Incident) => 
+    const renderImpactValues: typeof useImpactValues =
+    (type: 'ap' | 'client', incident: Incident) =>
       renderHook(() => useImpactValues(type, incident)).result.current
 
     it('returns object for invalid count & impactArea', () => {
@@ -210,7 +210,7 @@ describe('impactValues', () => {
     expect(renderImpactValues('ap', 1, 1)).toMatchSnapshot()
   })
 
-  describe('useIncidentScope', () => {  
+  describe('useIncidentScope', () => {
     const renderUseIncidentScope = () => renderHook(
       () => useIncidentScope(
         fakeIncident({

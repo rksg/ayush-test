@@ -1,6 +1,6 @@
 import { sum } from 'lodash'
 import { MessageDescriptor, useIntl, defineMessage } from 'react-intl'
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import { formatter } from '@acx-ui/utils'
 import { ProgressPill, Loader, Card} from '@acx-ui/components'
 import { InformationOutlined } from '@acx-ui/icons'
@@ -11,7 +11,6 @@ import {
   KPITimeseriesResponse,
   KPIHistogramResponse
 } from './services'
-import { kpiConfig } from './config'
 
 type PillData = { success: number, total: number }
 
@@ -36,8 +35,9 @@ const tranformHistResponse = (
   const success = sum(highlightedData)
   return { success, total }
 }
-const formatPillText = (value: number, suffix: string) => suffix
-  ? `${formatter('percentFormatRound')(value / 100)} ${suffix}` : `${formatter('percentFormatRound')(value/ 100)}`
+const formatPillText = (value: number = 0, suffix: string) => suffix
+  ? `${formatter('percentFormatRound')(value / 100)} ${suffix}`
+  : `${formatter('percentFormatRound')(value/ 100)}`
 
 function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
   const { histogram, pill, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
@@ -80,7 +80,7 @@ function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }
   return <Loader states={[queryResults]} key={kpi}>
     <UI.PillTitle><span>{text}</span><span><InformationOutlined /></span></UI.PillTitle>
     <UI.PillWrap>
-      <ProgressPill percent={percent} formatter={value => formatPillText(value || 0, pillSuffix)}/>
+      <ProgressPill percent={percent} formatter={value => formatPillText(value, pillSuffix)}/>
     </UI.PillWrap>
     <UI.PillDesc>{translatedDesc}</UI.PillDesc>
     {translatedThresholdDesc.length > 0 &&
