@@ -1,13 +1,14 @@
 import { useContext } from 'react'
 
+import { kpisForTab }       from '@acx-ui/analytics/utils'
 import { GridCol, GridRow } from '@acx-ui/components'
-import { kpisForTab } from '@acx-ui/analytics/utils'
 
+import { HealthTab }         from '../'
 import { HealthPageContext } from '../HealthPageContext'
-import { KpiRow } from '../styledComponents'
-import { HealthTab } from '../'
-import KpiTimeseries  from './Timeseries'
-import HealthPill from './Pill'
+import { KpiRow }            from '../styledComponents'
+
+import HealthPill    from './Pill'
+import KpiTimeseries from './Timeseries'
 
 export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]

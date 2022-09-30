@@ -1,10 +1,13 @@
-import { sum } from 'lodash'
-import { MessageDescriptor, useIntl, defineMessage } from 'react-intl'
+import { sum }     from 'lodash'
+import { useIntl } from 'react-intl'
+
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
-import { formatter } from '@acx-ui/utils'
-import { ProgressPill, Loader, Card} from '@acx-ui/components'
-import { InformationOutlined } from '@acx-ui/icons'
+import { ProgressPill, Loader }       from '@acx-ui/components'
+import { InformationOutlined }        from '@acx-ui/icons'
+import { formatter }                  from '@acx-ui/utils'
+
 import * as UI from '../styledComponents'
+
 import {
   useKpiHistogramQuery,
   useKpiTimeseriesQuery,
@@ -44,6 +47,7 @@ function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }
   const { $t } = useIntl()
   let queryResults
   if (histogram) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     queryResults = useKpiHistogramQuery({ ...filters, kpi }, {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
@@ -51,6 +55,7 @@ function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }
       })
     })
   } else {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     queryResults = useKpiTimeseriesQuery({ ...filters, kpi }, {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
@@ -71,14 +76,14 @@ function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }
     translatedThresholdDesc.push(
       $t(
         thresholdDesc[1],
-        { 
+        {
           threshold: thresholdFormatter ? thresholdFormatter(initialThreshold) : initialThreshold
         }
       )
     )
   }
   return <Loader states={[queryResults]} key={kpi}>
-    <UI.PillTitle><span>{text}</span><span><InformationOutlined /></span></UI.PillTitle>
+    <UI.PillTitle><span>{$t(text)}</span><span><InformationOutlined /></span></UI.PillTitle>
     <UI.PillWrap>
       <ProgressPill percent={percent} formatter={value => formatPillText(value, pillSuffix)}/>
     </UI.PillWrap>

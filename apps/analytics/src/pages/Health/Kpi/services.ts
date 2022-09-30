@@ -1,9 +1,8 @@
 import { gql } from 'graphql-request'
 
-import moment from 'moment-timezone'
-
-import { dataApi }         from '@acx-ui/analytics/services'
+import { dataApi }                    from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
+
 import { calculateGranularity } from '../../../utils'
 
 type datum = number []
@@ -12,15 +11,15 @@ export type KPITimeseriesResponse = {
   time: string[]
 }
 
-interface Response <TimeSeriesData> {
-  timeSeries: TimeSeriesData   
+interface TimeseriesResponse <TimeSeriesData> {
+  timeSeries: TimeSeriesData
 }
 export type KPIHistogramResponse = {
   data: number []
 }
 
 interface HistogramResponse <HistogramData> {
-  histogram: HistogramData   
+  histogram: HistogramData
 }
 
 type KpiPayload = AnalyticsFilter & { kpi: string, threshold?: string }
@@ -68,7 +67,7 @@ export const timeseriesApi = dataApi.injectEndpoints({
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
-      transformResponse: (response: Response<KPITimeseriesResponse>) =>
+      transformResponse: (response: TimeseriesResponse<KPITimeseriesResponse>) =>
         response.timeSeries
     })
   })
@@ -77,7 +76,7 @@ const getHistogramQuery = (kpi: string) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { apiMetric, splits } = Object(config).histogram
   return `
-    query pillKPI($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
+    query histogramKPI($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
       histogram: histogram(path: $path, start: $start, end: $end) {
         data: ${apiMetric}(splits: [${splits.join(', ')}])
       }

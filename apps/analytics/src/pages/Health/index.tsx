@@ -12,8 +12,8 @@ import Header from '../../components/Header'
 
 import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
 import { HealthPageContextProvider } from './HealthPageContext'
+import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
-import Kpis from './Kpi/'
 
 const healthTabs = [{ text: 'Overview', value: 'overview' }, ...categoryNames]
 export type HealthTab = 'overview' | 'connection' | 'performance' | 'infrastructure'

@@ -1,4 +1,5 @@
-import moment from 'moment-timezone'
+/* eslint-disable max-len */
+import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
 import { formatter } from '@acx-ui/utils'
@@ -20,7 +21,7 @@ const divideBy1000 = (ms: number) => ms / 1000
 
 export const kpiConfig = {
   connectionSuccess: {
-    text: 'Connection Success',
+    text: defineMessage({ defaultMessage: 'Connection Success' }),
     timeseries: {
       apiMetric: 'connectionSuccessAndAttemptCount',
       minGranularity: 'PT3M'
@@ -35,7 +36,7 @@ export const kpiConfig = {
     }
   },
   timeToConnect: {
-    text: 'Time to Connect',
+    text: defineMessage({ defaultMessage: 'Time to Connect' }),
     timeseries: {
       apiMetric: 'ttcCountAndConnectionCount',
       minGranularity: 'PT3M'
@@ -45,9 +46,9 @@ export const kpiConfig = {
       splits: [1000, 2000, 5000, 10000, 30000, 50000],
       apiMetric: 'timeToConnect',
       xUnit: 'sec',
-      shortXFormat: divideBy1000,
+      shortXFormat: divideBy1000
       //longXFormat: createUnitFormatter('{value} seconds', divideBy1000),
-     // shortYFormat: formatter(),
+      // shortYFormat: formatter(),
       //longYFormat: createUnitFormatter('{value} connections')
     },
     pill: {
@@ -62,12 +63,12 @@ export const kpiConfig = {
     }
   },
   association: {
-    text: 'Association',
+    text: defineMessage({ defaultMessage: 'Association' }),
     timeseries: {
       apiMetric: 'assocSuccessAndAttemptCount',
       minGranularity: 'PT3M'
     },
-    // barChart: createBarChartConfig('assocSuccessAndAttemptCount'),
+    barChart: createBarChartConfig('assocSuccessAndAttemptCount'),
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} association attempts' }),
       thresholdDesc: [],
@@ -77,7 +78,7 @@ export const kpiConfig = {
     }
   },
   userAuthentication: {
-    text: '802.11 Authentication',
+    text: defineMessage({ defaultMessage: '802.11 Authentication' }),
     timeseries: {
       apiMetric: 'authSuccessAndAttemptCount',
       minGranularity: 'PT3M'
@@ -92,7 +93,7 @@ export const kpiConfig = {
     }
   },
   eap: {
-    text: 'EAP',
+    text: defineMessage({ defaultMessage: 'EAP' }),
     timeseries: {
       apiMetric: 'eapSuccessAndAttemptCount',
       minGranularity: 'PT3M'
@@ -108,7 +109,7 @@ export const kpiConfig = {
   },
   dhcp: {
     textPostFix: 'Success',
-    text: 'DHCP',
+    text: defineMessage({ defaultMessage: 'DHCP' }),
     timeseries: {
       apiMetric: 'dhcpSuccessAndAttemptCount',
       minGranularity: 'PT3M'
@@ -117,13 +118,13 @@ export const kpiConfig = {
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP attempts' }),
       thresholdDesc: [],
-      thresholdFormatter: null,    
+      thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
       tooltip: 'The time-series graph on the left displays the percentage of DHCP connection attempts that have completed successfully. A DHCP connection attempt is deemed successful when the Wifi client has received an IP address from the DHCP server. Do note that a single Wifi client could have multiple DHCP connection attempts.\n\nThe bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.'
     }
   },
   radius: {
-    text: 'RADIUS',
+    text: defineMessage({ defaultMessage: 'RADIUS' }),
     timeseries: {
       apiMetric: 'radiusSuccessAndAttemptCount',
       minGranularity: 'PT3M'
@@ -138,7 +139,7 @@ export const kpiConfig = {
     }
   },
   roamingSuccess: {
-    text: 'Roaming Success',
+    text: defineMessage({ defaultMessage: 'Roaming Success' }),
     timeseries: {
       apiMetric: 'clientRoamingSuccessAndAttemptCount',
       minGranularity: 'PT3M'
@@ -153,7 +154,7 @@ export const kpiConfig = {
     }
   },
   rss: {
-    text: 'Client RSS',
+    text: defineMessage({ defaultMessage: 'Client RSS' }),
     timeseries: {
       apiMetric: 'rssCountAndSessionCount',
       minGranularity: 'PT3M'
@@ -181,7 +182,7 @@ export const kpiConfig = {
     }
   },
   clientThroughput: {
-    text: 'Client Throughput',
+    text: defineMessage({ defaultMessage: 'Client Throughput' }),
     timeseries: {
       apiMetric: 'throughputCountAndSessionCount',
       minGranularity: 'PT3M'
@@ -193,7 +194,7 @@ export const kpiConfig = {
       splits: [10000, 25000, 50000, 100000, 200000, 500000, 1000000],
       apiMetric: 'clientThroughput',
       xUnit: 'Mbps',
-      shortXFormat: divideBy1000,
+      shortXFormat: divideBy1000
       //longXFormat: x => t('{x} Mbps', {x: divideBy1000(x)}),
       //shortYFormat: formatter(),
       //longYFormat: createUnitFormatter('{value} samples')
@@ -210,7 +211,7 @@ export const kpiConfig = {
     }
   },
   apCapacity: {
-    text: 'AP Capacity',
+    text: defineMessage({ defaultMessage: 'AP Capacity' }),
     timeseries: {
       apiMetric: 'capacityCountAndAPCount',
       minGranularity: 'PT3M'
@@ -220,7 +221,7 @@ export const kpiConfig = {
       initialThreshold: 50,
       splits: [5, 10, 25, 50, 100, 300, 500],
       apiMetric: 'apCapacity',
-      xUnit: 'Mbps',
+      xUnit: 'Mbps'
       //shortXFormat: identity,
       //longXFormat: x => t('{x} Mbps', {x}),
       //shortYFormat: formatter(),
@@ -238,7 +239,7 @@ export const kpiConfig = {
     }
   },
   apServiceUptime: {
-    text: 'AP-RUCKUS Cloud Connection Uptime',
+    text: defineMessage({ defaultMessage: 'AP-RUCKUS Cloud Connection Uptime' }),
     timeseries: {
       apiMetric: 'apUptimeCountAndApCount',
       minGranularity: 'PT3M'
@@ -248,7 +249,7 @@ export const kpiConfig = {
       initialThreshold: 0.995,
       splits: [0.5, 0.95, 0.98, 0.99, 0.995, 0.997, 0.999],
       apiMetric: 'apServiceUptime',
-      xUnit: '%',
+      xUnit: '%'
       //shortXFormat: x => formatter('percentFormatNoSign')(x),
       //longXFormat: x => formatter('percentFormat')(x),
       //shortYFormat: formatter(),
@@ -262,12 +263,12 @@ export const kpiConfig = {
       ],
       thresholdFormatter: formatter('percentFormat'),
       pillSuffix: pillSuffix.meetGoal,
-      tooltip: 'AP-Controller connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-Controller connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.',
+      tooltip: 'AP-Controller connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-Controller connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.'
       //thresholdFormat: x => formatter('percentFormat')(x)
     }
   },
   apToSZLatency: {
-    text: 'AP-to-RUCKUS Cloud Latency',
+    text: defineMessage({ defaultMessage: 'AP-to-RUCKUS Cloud Latency' }),
     timeseries: {
       apiMetric: 'apSzLatencyCountAndAPCount',
       minGranularity: 'PT3M'
@@ -277,7 +278,7 @@ export const kpiConfig = {
       initialThreshold: 200,
       apiMetric: 'apSzLatency',
       splits: [50, 100, 150, 200, 250, 300, 350, 400],
-      xUnit: 'ms',
+      xUnit: 'ms'
       // longXFormat: x => t('{x} ms', {x}),
       // shortYFormat: formatter(),
       // longYFormat: createUnitFormatter('{value} APs')
@@ -291,10 +292,10 @@ export const kpiConfig = {
       thresholdFormatter: null,
       pillSuffix: pillSuffix.meetGoal,
       tooltip: 'The time-series graph on the left displays the percentage of APs that have AP-to-SZ control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.'
-    },
+    }
   },
   switchPoeUtilization: {
-    text: 'PoE Utilization',
+    text: defineMessage({ defaultMessage: 'PoE Utilization' }),
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
@@ -307,7 +308,7 @@ export const kpiConfig = {
       splits: [0.1, 0.25, 0.5, 0.6, 0.7, 0.8, 0.9],
       xUnit: '%',
       //shortXFormat: formatter('percentFormatNoSign'),
-      longXFormat: formatter('percentFormat'),
+      longXFormat: formatter('percentFormat')
       //shortYFormat: formatter(),
       //longYFormat: createUnitFormatter('{value} switches')
     },
@@ -323,7 +324,7 @@ export const kpiConfig = {
     }
   },
   onlineAPs: {
-    text: 'Online APs',
+    text: defineMessage({ defaultMessage: 'Online APs' }),
     timeseries: {
       apiMetric: 'onlineAPCountAndTotalAPCount',
       minGranularity: 'PT15M'
