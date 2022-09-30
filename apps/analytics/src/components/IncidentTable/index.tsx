@@ -17,6 +17,7 @@ import { formatter }                         from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
+  useMuteIncidentsMutation,
   IncidentTableRow
 } from './services'
 import * as UI  from './styledComponents'
@@ -68,12 +69,20 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
+  const [muteIncident ] = useMuteIncidentsMutation()
+  const [isMutedFiltered ] = useState(true)
+  const data = (isMutedFiltered)
+    ? queryResults.data?.filter(row => !row.isMuted)
+    : queryResults.data
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
-      label: $t(defineMessage({ defaultMessage: 'Mute' })),
-      onClick: () => {
-        // TODO: to be updated for muting
+      label: $t(defineMessage({ defaultMessage: 'Mute/Unmute' })),
+      onClick: async (selectedItems) => {
+        await Promise.all(selectedItems.map(async (row) => {
+          const { id, code, severityLabel, isMuted } = row
+          await muteIncident({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()
+        }))
       }
     }
   ]
@@ -215,7 +224,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
     <Loader states={[queryResults]}>
       <Table
         type='tall'
-        dataSource={queryResults?.data}
+        dataSource={data}
         columns={ColumnHeaders}
         rowActions={rowActions}
         rowSelection={{

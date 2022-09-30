@@ -183,7 +183,8 @@ export const api = dataApi.injectEndpoints({
         const { incidents } = response.network.hierarchyNode
         if (typeof incidents === 'undefined') return []
         return incidents.map((incident) => transformData(incident))
-      }
+      },
+      providesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
     }),
     muteIncidents: build.mutation<MutationResponse, MutationPayload>({
       query: (payload) => ({
@@ -208,7 +209,8 @@ export const api = dataApi.injectEndpoints({
           priority: payload.priority
         }
       }),
-      transformResponse: (response: MutationResponse) => response
+      transformResponse: (response: MutationResponse) => response,
+      invalidatesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
     })
   })
 })
