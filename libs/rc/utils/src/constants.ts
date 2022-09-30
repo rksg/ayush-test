@@ -122,8 +122,15 @@ export enum ServiceAdminState {
   DISABLED = 'DISABLED'
 }
 
+export enum DHCPConfigTypeEnum {
+  SIMPLE = 'SIMPLE',
+  MULTIPLE = 'MULTIPLE',
+  HIERARCHICAL = 'HIERARCHICAL'
+}
+
 export enum RadiusErrorsType {
   AUTH_AND_ACC = 'AUTH_AND_ACC',
   AUTH = 'AUTH',
   ACCOUNTING = 'ACCOUNTING'
 }
+

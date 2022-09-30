@@ -22,6 +22,7 @@ import type {
   TableProps as AntTableProps,
   TablePaginationConfig
 } from 'antd'
+import type { RowSelectMethod } from 'antd/lib/table/interface'
 
 export type {
   ColumnType,
@@ -153,17 +154,24 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     const key = record[rowKey] as unknown as Key
     const isSelected = selectedRowKeys.includes(key)
 
+    let newKeys: Key[] | undefined
+    let type: RowSelectMethod
     if (props.rowSelection.type === 'radio') {
+      type = 'single'
       if (!isSelected) {
-        setSelectedRowKeys([key])
+        newKeys = [key]
       }
     } else {
-      setSelectedRowKeys(isSelected
+      type = 'multiple'
+      newKeys = isSelected
         // remove if selected
         ? selectedRowKeys.filter(k => k !== key)
         // add into collection if not selected
-        : [...selectedRowKeys, key])
+        : [...selectedRowKeys, key]
     }
+    if (!newKeys) return
+    setSelectedRowKeys(newKeys)
+    props.rowSelection?.onChange?.(newKeys, getSelectedRows(newKeys), { type })
   }
   columns = columns.map(column => column.searchable && searchValue
     ? {
