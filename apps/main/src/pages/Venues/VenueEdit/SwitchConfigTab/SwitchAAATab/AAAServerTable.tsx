@@ -216,6 +216,7 @@ export const AAAServerTable = (props: {
 
   const rowActions: TableProps<RadiusServer & TacacsServer & LocalUser>['rowActions'] = [
     {
+      visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         setIsEditMode(true)
@@ -258,7 +259,7 @@ export const AAAServerTable = (props: {
             type: 'confirm',
             customContent: {
               action: 'DELETE',
-              entityName: $t({ defaultMessage: 'AAA Server' }),
+              entityName: $t(serversDisplayText[type]),
               entityValue: rows.length === 1 ? rows[0].name : undefined,
               numOfEntities: rows.length
             },
