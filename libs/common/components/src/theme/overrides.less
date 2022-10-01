@@ -119,16 +119,14 @@
       margin-bottom: 16px;
     }
 
-    &-item-label,
-    &-item-control-input-content {
-      svg {
-        path {
-          stroke: var(--acx-primary-black);
-        }
-        width: 16px;
-        height: 16px;
-        margin-left: 5px;
+    &-item-label label > svg,
+    &-item-control-input-content > svg {
+      path {
+        stroke: var(--acx-primary-black);
       }
+      width: 16px;
+      height: 16px;
+      margin-left: 5px;
     }
 
     &-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional) {
@@ -142,7 +140,7 @@
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
       }
-      svg {
+      > svg {
         order: -1
       }
     }

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import { render }   from '@acx-ui/test-utils'
 
 import { SwitchAAATab } from './SwitchAAATab'
 
