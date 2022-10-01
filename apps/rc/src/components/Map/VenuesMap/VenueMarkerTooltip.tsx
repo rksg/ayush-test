@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { StackedBarChart }                 from '@acx-ui/components'
 import { Table }                           from '@acx-ui/components'
@@ -57,7 +57,10 @@ export function VenueMarkerTooltip (
     showLabels: false,
     style: { height: 10, width: 100 },
     showTotal: false,
-    barColors: deviceConnectionStatusColors
+    barColors: deviceConnectionStatusColors,
+    tooltipFormat: defineMessage({
+      defaultMessage: '<span><b>{formattedValue}</b></span>'
+    })
   }
 
   const data = [
@@ -116,7 +119,8 @@ export function VenueMarkerTooltip (
   return (
     <UI.Wrapper needPadding={needPadding}>
       <UI.InfoWindowHeader>
-        <UI.Title onClick={() => onNavigate && onNavigate({ venueId, path: 'overview' })}>
+        <UI.Title onClick={
+          () => onNavigate && onNavigate({ venueId, path: 'venue-details/overview' })}>
           {name}
         </UI.Title>
       </UI.InfoWindowHeader>

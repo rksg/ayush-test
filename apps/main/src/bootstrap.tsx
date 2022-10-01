@@ -20,7 +20,7 @@ const supportedLocales = {
   'ja': 'ja-JP'
 }
 export function loadMessages (locales: readonly string[]): string {
-  const locale = locales.find(locale => 
+  const locale = locales.find(locale =>
     supportedLocales[locale as keyof typeof supportedLocales]) || 'en-US'
   return supportedLocales[locale as keyof typeof supportedLocales]
 }

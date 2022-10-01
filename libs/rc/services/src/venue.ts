@@ -37,7 +37,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddVenue', 'UpdateVenue', 'DeleteVenue'], () => {
+          const activities = [
+            'AddVenue',
+            'UpdateVenue',
+            'DeleteVenue',
+            'DeleteVenues'
+          ]
+          showActivityMessage(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
@@ -88,6 +94,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
             })
         })
       }
+    }),
+    deleteVenue: build.mutation<Venue, RequestPayload>({
+      query: ({ params, payload }) => {
+        if(payload){ //delete multiple rows
+          const req = createHttpRequest(CommonUrlsInfo.deleteVenues, params)
+          return {
+            ...req,
+            body: payload
+          }
+        }else{ //delete single row
+          const req = createHttpRequest(CommonUrlsInfo.deleteVenue, params)
+          return {
+            ...req
+          }
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
     floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
       query: ({ params }) => {
@@ -140,6 +163,7 @@ export const {
   useGetVenueQuery,
   useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
+  useDeleteVenueMutation,
   useFloorPlanListQuery,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,

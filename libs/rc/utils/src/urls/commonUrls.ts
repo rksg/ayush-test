@@ -6,7 +6,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVMNetworksList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/network'
-  },  
+  },
   getNetworksDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/network/:networkId/detailheader'
@@ -87,9 +87,25 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId'
   },
+  deleteVenue: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/venue/:venueId'
+  },
+  deleteVenues: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/venue'
+  },
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+  },
+  getService: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/service/:serviceId'
+  },
+  saveDHCPService: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
   },
   getVenueFloorplans: {
     method: 'get',

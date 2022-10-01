@@ -2,9 +2,9 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useSplitTreatment }                   from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, websocketServerUrl  } from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
+import { useSplitTreatment }  from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo  }    from '@acx-ui/rc/utils'
+import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -70,9 +70,7 @@ describe('Venues Form', () => {
       rest.get(
         'https://maps.googleapis.com/maps/api/timezone/*',
         (req, res, ctx) => res(ctx.json(timezoneResult))
-      ),
-      rest.get(`http://localhost${websocketServerUrl}/`,
-        (_, res, ctx) => res(ctx.json({})))
+      )
     )
 
     initialize()
@@ -174,7 +172,7 @@ describe('Venues Form', () => {
       </Provider>, {
         route: { params }
       })
-    
+
     const venueInput = screen.getByLabelText('Venue Name')
     fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
     fireEvent.blur(venueInput)

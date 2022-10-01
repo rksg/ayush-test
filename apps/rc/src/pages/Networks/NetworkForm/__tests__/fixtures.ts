@@ -215,7 +215,7 @@ export const cloudpathResponse = [{
       sharedSecret: 'GFHFGH'
     },
     id: '296ee3f68c434aa4bc3b3ba1f7272806'
-  }, 
+  },
   accountingRadius: {
     primary: {
       ip: '3.2.34.6',

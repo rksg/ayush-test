@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, websocketServerUrl, WifiUrlsInfo  } from '@acx-ui/rc/utils'
-import { Provider }                                          from '@acx-ui/store'
+import { CommonUrlsInfo, WifiUrlsInfo  } from '@acx-ui/rc/utils'
+import { Provider }                      from '@acx-ui/store'
 import {
   mockServer,
   render, screen,
@@ -111,8 +111,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json([]))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.get(`http://localhost${websocketServerUrl}/`,
-        (_, res, ctx) => res(ctx.json([]))),
       rest.post(CommonUrlsInfo.getL2AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.post(CommonUrlsInfo.getL3AclPolicyList.url,
