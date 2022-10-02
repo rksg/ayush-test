@@ -1,24 +1,45 @@
-import { uniqueId } from 'lodash'
+import styled from 'styled-components/macro'
 
-import * as UI from './styledComponents'
+import {
+  AI as AIOriginal,
+  AccountCircleOutlined,
+  AccountCircleSolid,
+  CalendarDateOutlined,
+  CalendarDateSolid,
+  ConfigurationOutlined,
+  ConfigurationSolid,
+  DevicesOutlined,
+  DevicesSolid,
+  LocationOutlined,
+  LocationSolid,
+  NetworksOutlined,
+  NetworksSolid,
+  ReportsOutlined,
+  ReportsSolid,
+  ServicesOutlined,
+  ServicesSolid,
+  SpeedIndicatorOutlined,
+  SpeedIndicatorSolid
+} from '@acx-ui/icons'
 
-const genPlaceholder = () => ({
-  path: `/${uniqueId()}/placeholder`,
-  name: ' '
-})
+import { genPlaceholder } from '..'
+
+const AI = styled(AIOriginal)`
+  path { stroke: none !important; }
+`
 
 const config = [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    disableIcon: UI.SpeedIndicatorIcon,
-    enableIcon: UI.EnabledSpeedIndicatorIcon
+    inactiveIcon: SpeedIndicatorOutlined,
+    activeIcon: SpeedIndicatorSolid
   },
   {
     path: '/analytics',
     name: 'AI Analytics',
-    disableIcon: UI.AIAnalyticsIcon,
-    enableIcon: UI.AIAnalyticsIcon,
+    inactiveIcon: AI,
+    activeIcon: AI,
     routes: [
       {
         path: '/analytics/incidents',
@@ -45,58 +66,58 @@ const config = [
   {
     path: '/timeline',
     name: 'Timeline',
-    disableIcon: UI.CalendarIcon,
-    enableIcon: UI.EnabledCalendarIcon
+    inactiveIcon: CalendarDateOutlined,
+    activeIcon: CalendarDateSolid
   },
   {
     path: '/reports',
     name: 'Reports',
-    disableIcon: UI.ReportsIcon,
-    enableIcon: UI.EnabledReportsIcon
+    inactiveIcon: ReportsOutlined,
+    activeIcon: ReportsSolid
   },
   genPlaceholder(),
   {
     path: '/venues',
     name: 'Venues',
-    disableIcon: UI.LocationIcon,
-    enableIcon: UI.EnabledLocationIcon
+    inactiveIcon: LocationOutlined,
+    activeIcon: LocationSolid
   },
   {
     path: '/devices',
-    name: 'Devices',
-    disableIcon: UI.DevicesIcon,
-    enableIcon: UI.EnabledDevicesIcon
+    name: 'Device Inventory',
+    inactiveIcon: DevicesOutlined,
+    activeIcon: DevicesSolid
   },
   {
     path: '/networks',
     name: 'Networks',
-    disableIcon: UI.NetworksIcon,
-    enableIcon: UI.EnabledNetworksIcon
+    inactiveIcon: NetworksOutlined,
+    activeIcon: NetworksSolid
   },
   {
     path: '/services',
     name: 'Services',
-    disableIcon: UI.ServicesIcon,
-    enableIcon: UI.EnabledServicesIcon
+    inactiveIcon: ServicesOutlined,
+    activeIcon: ServicesSolid
   },
   {
     path: '/policies',
     name: 'Policies',
-    disableIcon: UI.ServicesIcon,
-    enableIcon: UI.EnabledServicesIcon
+    inactiveIcon: ServicesOutlined,
+    activeIcon: ServicesSolid
   },
   {
     path: '/users',
     name: 'Users',
-    disableIcon: UI.AccountIcon,
-    enableIcon: UI.EnabledAccountIcon
+    inactiveIcon: AccountCircleOutlined,
+    activeIcon: AccountCircleSolid
   },
   genPlaceholder(),
   {
     path: '/administration',
     name: 'Administration',
-    disableIcon: UI.ConfigurationIcon,
-    enableIcon: UI.EnabledConfigurationIcon
+    inactiveIcon: ConfigurationOutlined,
+    activeIcon: ConfigurationSolid
   }
 ]
 
