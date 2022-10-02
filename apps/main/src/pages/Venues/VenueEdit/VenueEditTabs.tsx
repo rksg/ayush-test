@@ -44,7 +44,7 @@ function VenueEditTabs () {
           ...editContextData,
           isDirty: false
         })
-        editNetworkingContextData && showUnsavedModal(
+        showUnsavedModal(
           editContextData,
           setEditContextData,
           editNetworkingContextData,
