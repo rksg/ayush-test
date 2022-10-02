@@ -20,7 +20,7 @@ interface AAAServerDrawerProps {
   editData: RadiusServer | TacacsServer | LocalUser
 }
 
-const AAAServerDrawer = (props: AAAServerDrawerProps) => {
+export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   const { $t } = useIntl()
 
   const { visible, setVisible, isEditMode, serverType, editData } = props
@@ -281,5 +281,3 @@ const AAAServerDrawer = (props: AAAServerDrawerProps) => {
     />
   )
 }
-
-export default AAAServerDrawer

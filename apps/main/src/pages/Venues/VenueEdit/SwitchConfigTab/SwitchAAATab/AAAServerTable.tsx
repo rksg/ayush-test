@@ -13,7 +13,7 @@ import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }           
 import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting } from '@acx-ui/rc/utils'
 import { useParams }                                                            from '@acx-ui/react-router-dom'
 
-import AAAServerDrawer                                                                                                        from './AAAServerDrawer'
+import { AAAServerDrawer }                                                                                                    from './AAAServerDrawer'
 import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText, serversTypeDisplayText } from './contentsMap'
 
 function useColumns (type: AAAServerTypeEnum) {
