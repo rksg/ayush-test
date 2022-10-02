@@ -91,6 +91,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
   },
+  getVenueSettings: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId'
+  },
+  updateVenueMesh: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/mesh'
+  },
   getVenueCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'

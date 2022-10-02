@@ -1,26 +1,25 @@
 import '@testing-library/jest-dom'
-
 import { rest } from 'msw'
 
+
+import { venueApi }           from '@acx-ui/rc/services'
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { Provider, store }    from '@acx-ui/store'
 import { mockServer, render } from '@acx-ui/test-utils'
+
 
 import {
   venueData,
-  venueSetting,
-  venueNetworkApGroup
-} from '../../__tests__/fixtures'
+  venueSetting
+} from '../../../__tests__/fixtures'
 
-import { VenueDetailsTab } from './index'
+import { NetworkingTab } from './'
 
-const params = {
-  tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
-  venueId: 'f892848466d047798430de7ac234e940'
-}
+const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
-describe('VenueDetailsTab', () => {
+describe('MeshNetwork', () => {
   beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getDashboardOverview.url,
@@ -30,15 +29,11 @@ describe('VenueDetailsTab', () => {
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json(venueSetting))),
-      rest.post(
-        CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
-      )
+        (_, res, ctx) => res(ctx.json(venueSetting)))
     )
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><VenueDetailsTab /></Provider>, { route: { params } })
+    const { asFragment } = render(<Provider><NetworkingTab /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
   })
 })
