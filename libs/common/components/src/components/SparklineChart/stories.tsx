@@ -72,7 +72,7 @@ const getTableData = (isTrendLine:boolean=false) =>{
         1320, 820, 932, 901, 934, 901, 934, 1290, 1330],isTrendLine)
     }
   ]
-} 
+}
 
 storiesOf('SparklineChart', module)
   .addDecorator(withKnobs)

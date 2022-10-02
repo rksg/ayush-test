@@ -265,7 +265,7 @@ function SettingsForm () {
                 />}
                 placement='bottom'>
                 <QuestionMarkCircleOutlined />
-              </Tooltip>                  
+              </Tooltip>
             </>}
             name={['wlan', 'managementFrameProtection']}
             initialValue={ManagementFrameProtectionEnum.Disabled}

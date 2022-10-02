@@ -6,7 +6,7 @@ export interface NetworkFormContextType {
   setNetworkType: (networkType: NetworkTypeEnum) => void
   editMode: boolean,
   cloneMode: boolean,
-  data: NetworkSaveData | undefined
+  data: NetworkSaveData | null
 }
 const NetworkFormContext = createContext({} as NetworkFormContextType)
 

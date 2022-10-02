@@ -2344,68 +2344,216 @@ exports[`VenueDetails should render correctly 1`] = `
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
   <div
-    class="ant-card ant-card-bordered"
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
   >
     <div
-      class="ant-card-body"
+      class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="styledComponents__ContentSwitcherContainer-sc-kf9xxo-0 fsIugZ"
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 176px;"
       >
         <div
-          style="text-align: left; padding: 10px 0px;"
-        >
-          <div
-            class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
-          >
-            <div
-              class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
-            >
-              <label
-                class="ant-radio-button-wrapper"
-              >
-                <span
-                  class="ant-radio-button"
-                >
-                  <input
-                    class="ant-radio-button-input"
-                    type="radio"
-                    value="topology"
-                  />
-                  <span
-                    class="ant-radio-button-inner"
-                  />
-                </span>
-                <span>
-                  Topology
-                </span>
-              </label>
-              <label
-                class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
-              >
-                <span
-                  class="ant-radio-button ant-radio-button-checked"
-                >
-                  <input
-                    checked=""
-                    class="ant-radio-button-input"
-                    type="radio"
-                    value="floor-plans"
-                  />
-                  <span
-                    class="ant-radio-button-inner"
-                  />
-                </span>
-                <span>
-                  Floor Plans
-                </span>
-              </label>
-            </div>
-          </div>
-        </div>
+          data-testid="networks-venueAlarmDonut"
+          title="venueAlarmDonut"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 176px;"
+      >
+        <div
+          data-testid="analytics-venueIncidentsDonut"
+          title="venueIncidentsDonut"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-10 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 176px;"
+      >
+        <div
+          data-testid="networks-venueDevices"
+          title="venueDevices"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 88px;"
+      >
+        <div
+          data-testid="networks-venueHealth"
+          title="venueHealth"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 520px;"
+      >
         <div
           data-testid="networks-floorPlans"
           title="floorPlans"
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    style="text-align: center; padding: 15px 0px;"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-c4vpsp-0 hUYWAW"
+    >
+      <div
+        class="ant-radio-group ant-radio-group-outline ant-radio-group-large"
+      >
+        <label
+          class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
+        >
+          <span
+            class="ant-radio-button ant-radio-button-checked"
+          >
+            <input
+              checked=""
+              class="ant-radio-button-input"
+              type="radio"
+              value="ap"
+            />
+            <span
+              class="ant-radio-button-inner"
+            />
+          </span>
+          <span>
+            Wi-Fi
+          </span>
+        </label>
+        <label
+          class="ant-radio-button-wrapper"
+        >
+          <span
+            class="ant-radio-button"
+          >
+            <input
+              class="ant-radio-button-input"
+              type="radio"
+              value="switch"
+            />
+            <span
+              class="ant-radio-button-inner"
+            />
+          </span>
+          <span>
+            Switch
+          </span>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
+  >
+    <div
+      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 280px;"
+      >
+        <div
+          data-testid="analytics-trafficByVolume"
+          title="trafficByVolume"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 280px;"
+      >
+        <div
+          data-testid="analytics-networkHistory"
+          title="networkHistory"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 280px;"
+      >
+        <div
+          data-testid="analytics-connectedClientsOverTime"
+          title="connectedClientsOverTime"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 280px;"
+      >
+        <div
+          data-testid="analytics-topApplicationsByTraffic"
+          title="topApplicationsByTraffic"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 280px;"
+      >
+        <div
+          data-testid="analytics-topSSIDsByTraffic"
+          title="topSSIDsByTraffic"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 280px;"
+      >
+        <div
+          data-testid="analytics-topSSIDsByClient"
+          title="topSSIDsByClient"
         />
       </div>
     </div>
