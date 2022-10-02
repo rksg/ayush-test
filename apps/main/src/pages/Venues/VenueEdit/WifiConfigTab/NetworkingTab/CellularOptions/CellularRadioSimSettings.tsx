@@ -5,9 +5,10 @@ import {
   Switch,
   Divider,
   Form,
-  Input
+  Input,
+  Button
 } from 'antd'
-import { useIntl }   from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { AvailableLteBands, CellularNetworkSelectionEnum, VenueApModelCellular } from '@acx-ui/rc/utils'
 
@@ -20,19 +21,19 @@ export interface ModelOption {
 
 const { Option } = Select
 
-export function CellularRadioSimSettings (props: {
+export function CellularRadioSimSettings(props: {
   availableLteBands: AvailableLteBands[],
   simCardNumber: number,
   legend: string,
   regionCountriesMap: any,
-  currentRegion:string,
+  currentRegion: string,
   currentCountryName: string,
-  formControlName: string,
+  formControlName: 'primarySim' | 'secondarySim',
   editData: VenueApModelCellular
 }) {
   const { $t } = useIntl()
   const a = props.availableLteBands[0]
-  let isShowOtherLteBands = false //TODO
+  const [isShowOtherLteBands, setIsShowOtherLteBands] = useState(false)
 
   return (
     <div style={{
@@ -64,7 +65,7 @@ export function CellularRadioSimSettings (props: {
       </Divider>
 
       <Form.Item
-        name={['editData',props.formControlName,'apn']}
+        name={['editData', props.formControlName, 'apn']}
         label={$t({ defaultMessage: 'APN:' })}
         initialValue={1}
         children={<Input style={{ width: '150px' }}></Input>}
@@ -94,35 +95,55 @@ export function CellularRadioSimSettings (props: {
       />
 
       <Form.Item
-        name={['editData',props.formControlName, 'roaming']}
+        name={['editData', props.formControlName, 'roaming']}
         label={$t({ defaultMessage: 'Data Roaming' })}
         initialValue={false}
         valuePropName='checked'
         children={<Switch />}
       />
+
+
       <Form.Item
         label={$t({ defaultMessage: 'LTE Bank Lock' })}
         children={
           props.availableLteBands.map((item, index) => (
-            <LteBandChannels
-              key={index}
-              editData={props.editData}
-              formControlName={props.formControlName}
-              simCardNumber={props.simCardNumber}
-              availableLteBands={item}
-              isShowDesc={item.region == 'DOMAIN_1' || item.region == 'DOMAIN_2'}
-              isShowOtherLteBands={isShowOtherLteBands}
-              countryName = {props.currentCountryName}
-              regionName ={item.region} //getRegionName
-              regionCountries = {item.region} //getRegionCountries
-              regionCountriesMap = {props.regionCountriesMap}
-              region = {item.region}
-              isCurrent={index === 0} />
+            <>
+              <LteBandChannels
+                key={index}
+                index={index}
+                editData={props.editData}
+                formControlName={props.formControlName}
+                simCardNumber={props.simCardNumber}
+                availableLteBands={item}
+                isShowDesc={item.region == 'DOMAIN_1' || item.region == 'DOMAIN_2'}
+                isShowOtherLteBands={isShowOtherLteBands}
+                countryName={props.currentCountryName}
+                regionName={props.regionCountriesMap[item.region].name}
+                regionCountries={props.regionCountriesMap[item.region].countries}
+                regionCountriesMap={props.regionCountriesMap}
+                region={item.region}
+                isCurrent={index === 0} />
+              {index === 0 &&
+                <Button
+                  type='link'
+                  onClick={() => {
+                    setIsShowOtherLteBands(!isShowOtherLteBands)
+                  }}
+                >
+                  {isShowOtherLteBands ?
+                    $t({ defaultMessage: 'Hide bands for other countries' }) :
+                    $t({ defaultMessage: 'Show bands for other countries' })}
+                </Button>
+              }
+            </>
+
           ))
         }
       />
 
-      <Divider orientation='left' plain/>
+
+
+      <Divider orientation='left' plain />
     </div>
 
   )

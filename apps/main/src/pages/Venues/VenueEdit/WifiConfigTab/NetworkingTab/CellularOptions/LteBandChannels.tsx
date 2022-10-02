@@ -10,11 +10,13 @@ import styled                from 'styled-components'
 import { AvailableLteBands, VenueApModelCellular } from '@acx-ui/rc/utils'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
+import { __generator } from 'tslib'
 
 const { useWatch } = Form
 
 export function LteBandChannels (
   props: {
+    index: number,
     availableLteBands: AvailableLteBands,
     isCurrent: boolean,
     simCardNumber: number,
@@ -24,7 +26,7 @@ export function LteBandChannels (
     regionCountries: string,
     regionCountriesMap: any,
     region: string,
-    formControlName: string,
+    formControlName: 'primarySim'|'secondarySim',
     isShowOtherLteBands: boolean,
     editData: VenueApModelCellular
   }
@@ -36,6 +38,7 @@ export function LteBandChannels (
     const lteBandsArray = object.lteBands
     if (lteBandsArray && lteBandsArray.length == 4) {
 
+
       form.setFieldsValue({
         bandLteArray: {
           [props.formControlName]:
@@ -46,7 +49,15 @@ export function LteBandChannels (
             [lteBandsArray[3].region]: lteBandsArray[3],
           }
         }
-      })
+      }
+      )
+
+      if(props.formControlName){
+        form.setFieldValue(['checkbox', props.formControlName, props.region], 
+        (!_.isEmpty(lteBandsArray[props.index].band3G)||
+        !_.isEmpty(lteBandsArray[props.index].band4G)))
+     
+      }
     }
   }, [object])
 
@@ -86,11 +97,7 @@ export function LteBandChannels (
 `
 
 
-  const [
-    enableRegion
-  ] = [
-    useWatch<boolean>(['editData', props.simCardNumber, props.region])
-  ]
+
 
 
 
@@ -128,29 +135,46 @@ export function LteBandChannels (
   }
 `
 
+const CountryDescLabel = styled.span`
+font-size: var(--acx-body-5-font-size);
+line-height: 32px;
+
+`
+
+const [
+  enableRegion
+] = [
+  useWatch<boolean>(['checkbox', props.formControlName, props.region])
+]
+
+
+
+
 
   return (
     <>
 
       {props.isCurrent &&
         <CurrentCountryLabel>{$t({ defaultMessage: 'Bands for current country' })}
-          {' (' + props.availableLteBands?.region + ')'}
+          {' (' + props.regionCountries + ')'}
         </CurrentCountryLabel>
       }
-      {!props.isCurrent &&
-
-        <Form.Item
-          name={['editData', props.simCardNumber, props.region]}
-          initialValue={false}
-          valuePropName='checked'
-          style={{ marginBottom: '0px' }}
-          children={
-            <Checkbox children={props.region} />
-          }
-        />
-
+      {(!props.isCurrent && props.isShowOtherLteBands) &&
+        <>
+          <Form.Item
+            name={['checkbox', props.formControlName, props.region]}
+            initialValue={false}
+            valuePropName='checked'
+            style={{ marginBottom: '0px' }}
+            children={
+              <Checkbox children={props.regionName} />
+            }
+          />
+          {props.isShowDesc &&
+            <CountryDescLabel>{props.regionCountries}</CountryDescLabel>}
+        </>
       }
-      {(props.isCurrent || (!props.isCurrent && enableRegion)) &&
+      {(props.isCurrent || (!props.isCurrent && enableRegion && props.isShowOtherLteBands)) &&
         <>
           <FieldLabel width='25px'>
             {$t({ defaultMessage: '3G:' })}

@@ -79,7 +79,7 @@ export function CellularOptionsForm () {
    
   
   useEffect(() => {
-    let availableLteBandsContext = availableLteBands?.data
+    let availableLteBandsContext = _.cloneDeep(availableLteBands?.data)
       const countryCode = _.get(venueData, 'data.address.countryCode')
 
     let venueApModelCellularContext = _.cloneDeep(venueApModelCellular.data)
@@ -109,14 +109,15 @@ export function CellularOptionsForm () {
     if (currentCountry) {
       currentCountryName = _.keys(currentCountry)[0];
     }
-    setAvailableLteBandsArray(availableLteBandsContext)
-     
-    }
+
+    
+ 
+  
 
 
 
     // this.getCellularSupportedModels$(); 
-    if (availableLteBandsContext && venueApModelCellularContext) {
+    if (venueApModelCellularContext) {
       venueApModelCellularContext.primarySim.lteBands = venueApModelCellularContext.primarySim?.lteBands || [];
       venueApModelCellularContext.secondarySim.lteBands =venueApModelCellularContext.secondarySim?.lteBands || [];
       
@@ -155,6 +156,7 @@ export function CellularOptionsForm () {
       }
       sortByLteBandRegionEnum( venueApModelCellularContext.primarySim.lteBands)
       sortByLteBandRegionEnum( venueApModelCellularContext.secondarySim.lteBands)
+      sortByLteBandRegionEnum(availableLteBandsContext)
       
 
       //shiftCurrentRegionToFirst
@@ -166,15 +168,17 @@ export function CellularOptionsForm () {
       }
       shiftCurrentRegionToFirst(venueApModelCellularContext.primarySim.lteBands)
       shiftCurrentRegionToFirst(venueApModelCellularContext.secondarySim.lteBands)
+      shiftCurrentRegionToFirst(availableLteBandsContext)
 
       setEditData(venueApModelCellularContext)
      
       formRef?.current?.setFieldsValue({editData: venueApModelCellularContext})
-      //TODO
-      // this.cellularRadioForm.patchValue(res);
       // this.checkEditability();
-    }
 
+
+    }
+    setAvailableLteBandsArray(availableLteBandsContext)
+  }
 
   }, [availableLteBands.data, venueApModelCellular.data, form])
 
