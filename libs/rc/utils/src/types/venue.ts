@@ -96,7 +96,7 @@ export interface AvailableLteBands {
 	model?: string,
 	primarySim: SimSettings,
 	secondarySim: SimSettings,
-	wanConnection: WanConnectionEnum,
+	wanConnection?: WanConnectionEnum,
 	primaryWanRecoveryTimer: number
   }
 
@@ -105,7 +105,7 @@ export interface SimSettings {
 	enabled?: boolean;
 	apn?: string;
 	roaming?: boolean;
-	networkSelection: CellularNetworkSelectionEnum;
+	networkSelection?: CellularNetworkSelectionEnum;
 }
 
 export interface LteBandLockChannel {

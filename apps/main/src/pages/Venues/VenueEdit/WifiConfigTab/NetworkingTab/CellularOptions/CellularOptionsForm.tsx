@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import {
   Select,
@@ -9,9 +9,9 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { StepsForm, Subtitle }                            from '@acx-ui/components'
-import { useGetAvailableLteBandsQuery, useGetVenueQuery } from '@acx-ui/rc/services'
-import { AvailableLteBands }                              from '@acx-ui/rc/utils'
+import { StepsForm, StepsFormInstance, Subtitle }                            from '@acx-ui/components'
+import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueQuery } from '@acx-ui/rc/services'
+import { AvailableLteBands, Constants, CountryIsoDisctionary, LteBandLockChannel, LteBandRegionEnum, VenueApModelCellular }                              from '@acx-ui/rc/utils'
 
 import { CellularRadioSimSettings } from './CellularRadioSimSettings'
 
@@ -36,10 +36,11 @@ export enum WanConnectionEnum {
 export function CellularOptionsForm () {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
-  const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
+  const venueApModelCellular = useGetVenueApModelCellularQuery({ params: { tenantId, venueId } })
 
-  const LteBandLockCountriesJson = {
-    DOMAIN_1: {
+
+ const LteBandLockCountriesJson = {
+    DOMAIN_1 : {
       name: 'Domain 1 countries',
       // eslint-disable-next-line max-len
       countries: 'European Union, Hong Kong, India, Malaysia, Philippines, Singapore, Thailand, Turkey, United Kingdom, Vietnam'
@@ -59,34 +60,125 @@ export function CellularOptionsForm () {
   }
 
   const defaultAvailableLteBandsArray: AvailableLteBands[] = []
+  const defaultEditData: VenueApModelCellular = {
+    primarySim: {}, secondarySim: {},
+    primaryWanRecoveryTimer: 0
+  }
   let regionCountriesMap = _.cloneDeep(LteBandLockCountriesJson)
+  let currentRegion='', currentCountryName=''
   const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
+  const venueData = useGetVenueQuery({ params: { tenantId, venueId } })
+
   const [availableLteBandsArray, setAvailableLteBandsArray] =
     useState(defaultAvailableLteBandsArray)
 
+  const [editData, setEditData] =
+    useState(defaultEditData)
+    const formRef = useRef<StepsFormInstance<any>>()
+    const form = Form.useFormInstance()
+   
+  
   useEffect(() => {
     let availableLteBandsContext = availableLteBands?.data
+      const countryCode = _.get(venueData, 'data.address.countryCode')
 
+    let venueApModelCellularContext = _.cloneDeep(venueApModelCellular.data)
+     
 
-    if(availableLteBandsContext){
+    if (availableLteBandsContext) {
 
       availableLteBandsContext.forEach(lteBands => {
         regionCountriesMap[lteBands.region] =
-        Object.assign(regionCountriesMap[lteBands.region], {
-          countryCodes: lteBands.countryCodes
-        })
+          Object.assign(regionCountriesMap[lteBands.region], {
+            countryCodes: lteBands.countryCodes
+          })
       })
 
-      setAvailableLteBandsArray(availableLteBandsContext)
+      //setCurrentCountry
+      Object.keys(regionCountriesMap).map(function (objectKey, index) {
+        const value = _.get(regionCountriesMap, objectKey)
+        if (value.countryCodes.indexOf(countryCode) > -1)
+          {currentRegion = objectKey}
+    })
+
+    //setCurrentCountryName
+    const currentCountry = _.pickBy(CountryIsoDisctionary, (val, key) => {
+      return val.toUpperCase() === countryCode
+    })
+
+    if (currentCountry) {
+      currentCountryName = _.keys(currentCountry)[0];
+    }
+    setAvailableLteBandsArray(availableLteBandsContext)
+     
     }
 
 
-    // this.setCurrentRegion(this.venueSettings.countryCode);
-    // this.setCurrentCountryName();
-    // this.getCellularSupportedModels$(); //for edit
-  }, [availableLteBands.data])
+
+    // this.getCellularSupportedModels$(); 
+    if (availableLteBandsContext && venueApModelCellularContext) {
+      venueApModelCellularContext.primarySim.lteBands = venueApModelCellularContext.primarySim?.lteBands || [];
+      venueApModelCellularContext.secondarySim.lteBands =venueApModelCellularContext.secondarySim?.lteBands || [];
+      
+      //createDefaultRegion
+      for(const region in LteBandRegionEnum) {
+        if (!venueApModelCellularContext.primarySim.lteBands.some(item => item.region === region)) {
+          venueApModelCellularContext.primarySim.lteBands.push({
+            region: _.get(region, region)
+          })
+        }
+
+        if (!venueApModelCellularContext.secondarySim.lteBands.some(item => item.region === region)) {
+          venueApModelCellularContext.secondarySim.lteBands.push({
+            region: _.get(region, region)
+          })
+        }
+      }
+
+      //sortByLteBandRegionEnum
+      const sortByLteBandRegionEnum = function (availableLteBands: AvailableLteBands[]) {
+        const map = {
+          [LteBandRegionEnum.DOMAIN_1]: 0,
+          [LteBandRegionEnum.DOMAIN_2]: 1,
+          [LteBandRegionEnum.USA_CANADA]: 2,
+          [LteBandRegionEnum.JAPAN]: 3,
+        }
+        availableLteBands.sort((a, b) => {
+          if (map[a.region] < map[b.region]) {
+            return -1;
+          }
+          if (map[a.region] > map[b.region]) {
+            return 1;
+          }
+          return 0;
+        });
+      }
+      sortByLteBandRegionEnum( venueApModelCellularContext.primarySim.lteBands)
+      sortByLteBandRegionEnum( venueApModelCellularContext.secondarySim.lteBands)
+      
+
+      //shiftCurrentRegionToFirst
+      const shiftCurrentRegionToFirst = function (lteBands: LteBandLockChannel[]) {
+        if (!_.isEmpty(currentRegion)) {
+          const index = lteBands.findIndex(item => item.region === currentRegion);
+          lteBands.splice(0, 0, lteBands.splice(index, 1)[0]);
+        }
+      }
+      shiftCurrentRegionToFirst(venueApModelCellularContext.primarySim.lteBands)
+      shiftCurrentRegionToFirst(venueApModelCellularContext.secondarySim.lteBands)
+
+      setEditData(venueApModelCellularContext)
+     
+      formRef?.current?.setFieldsValue({editData: venueApModelCellularContext})
+      //TODO
+      // this.cellularRadioForm.patchValue(res);
+      // this.checkEditability();
+    }
 
 
+  }, [availableLteBands.data, venueApModelCellular.data, form])
+
+ 
 
   return (
 
@@ -95,17 +187,27 @@ export function CellularOptionsForm () {
       <StepsForm
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
-        <StepsForm.StepForm>
+        <StepsForm.StepForm
+         formRef={formRef}>
 
           <CellularRadioSimSettings
             simCardNumber={1}
-            availableLteBands={availableLteBandsArray} />
+            legend={$t({ defaultMessage: 'Primary SIM' })}
+            regionCountriesMap={regionCountriesMap}
+            currentRegion={currentRegion}
+            currentCountryName={currentCountryName}
+            availableLteBands={availableLteBandsArray}
+            formControlName={'primarySim'}/>
           <CellularRadioSimSettings
             simCardNumber={2}
-            availableLteBands={availableLteBandsArray} />
-
+            legend={$t({ defaultMessage: 'Secondary SIM' })}
+            regionCountriesMap={regionCountriesMap}
+            currentRegion={currentRegion}
+            currentCountryName={currentCountryName}
+            availableLteBands={availableLteBandsArray}
+            formControlName={'secondarySim'}/>
           <Form.Item
-            name={'wanConnection'}
+            name={['editData', 'wanConnection']}
             label={$t({ defaultMessage: 'WAN Connection:' })}
             initialValue={WanConnectionEnum.ETH_WITH_CELLULAR_FAILOVER}
             rules={[{
@@ -132,7 +234,7 @@ export function CellularOptionsForm () {
 
 
           <Form.Item
-            name={'primaryWanRecoveryTimer'}
+            name={['editData', 'primaryWanRecoveryTimer']}
             label={$t({ defaultMessage: 'Primary WAN Recovery Timer:' })}
             initialValue={60}
             rules={[{
@@ -151,3 +253,4 @@ export function CellularOptionsForm () {
 
   )
 }
+

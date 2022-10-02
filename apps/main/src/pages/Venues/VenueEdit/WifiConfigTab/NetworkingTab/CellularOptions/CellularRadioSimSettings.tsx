@@ -10,7 +10,7 @@ import {
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { AvailableLteBands, CellularNetworkSelectionEnum } from '@acx-ui/rc/utils'
+import { AvailableLteBands, CellularNetworkSelectionEnum, VenueApModelCellular } from '@acx-ui/rc/utils'
 
 import { LteBandChannels } from './LteBandChannels'
 
@@ -23,7 +23,13 @@ const { Option } = Select
 
 export function CellularRadioSimSettings (props: {
   availableLteBands: AvailableLteBands[],
-  simCardNumber: number
+  simCardNumber: number,
+  legend: string,
+  regionCountriesMap: any,
+  currentRegion:string,
+  currentCountryName: string,
+  formControlName: string,
+  // editData: VenueApModelCellular
 }) {
   const { $t } = useIntl()
   // const { tenantId, venueId } = useParams()
@@ -41,14 +47,14 @@ export function CellularRadioSimSettings (props: {
           <div style={{
             display: 'flex', alignItems: 'center',
             height: '30px'
-          }}>{props.simCardNumber} Primary SIM </div>
+          }}>{props.simCardNumber} {props.legend} </div>
 
           <Form.Item
             style={{
               display: 'flex', alignItems: 'center',
               height: '30px'
             }}
-            name={['venue', props.simCardNumber, 'enable']}
+            name={['editData', props.formControlName, 'enabled']}
             initialValue={false}
             valuePropName='checked'
             children={
@@ -59,14 +65,14 @@ export function CellularRadioSimSettings (props: {
       </Divider>
 
       <Form.Item
-        name={'apn'}
+        name={['editData',props.formControlName,'apn']}
         label={$t({ defaultMessage: 'APN:' })}
         initialValue={1}
         children={<Input style={{ width: '150px' }}></Input>}
       />
 
       <Form.Item
-        name={'networkSelection'}
+        name={['editData', props.formControlName, 'networkSelection']}
         rules={[{
           required: true
         }]}
@@ -89,7 +95,7 @@ export function CellularRadioSimSettings (props: {
       />
 
       <Form.Item
-        name={'dataRoming'}
+        name={['editData',props.formControlName, 'roaming']}
         label={$t({ defaultMessage: 'Data Roaming' })}
         initialValue={false}
         valuePropName='checked'
