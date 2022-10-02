@@ -1,14 +1,11 @@
 import '@testing-library/jest-dom'
 
 
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import { Form } from 'antd'
 
-import { CellularNetworkSelectionEnum, CommonUrlsInfo, LteBandRegionEnum, WanConnectionEnum }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
-import { fireEvent, within }          from '@acx-ui/test-utils'
+import { CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                           from '@acx-ui/store'
+import {  render, screen }                                                    from '@acx-ui/test-utils'
 
 import { LteBandChannels } from './LteBandChannels'
 
@@ -17,36 +14,36 @@ describe('LteBandChannels', () => {
   const params = { venueId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
   const editData = {
-    'model': 'M510',
-    'primarySim': {
-      'lteBands': [{
-        'band3G': ['B2', 'B4'],
-        'band4G': ['B4'],
-        'region': LteBandRegionEnum.USA_CANADA
+    model: 'M510',
+    primarySim: {
+      lteBands: [{
+        band3G: ['B2', 'B4'],
+        band4G: ['B4'],
+        region: LteBandRegionEnum.USA_CANADA
       }, {
-        'band4G': ['B3'], 
-        'region': LteBandRegionEnum.DOMAIN_1
+        band4G: ['B3'], 
+        region: LteBandRegionEnum.DOMAIN_1
       }],
-      'enabled': false,
-      'apn': 'defaultapn0000',
-      'roaming': true,
-      'networkSelection': CellularNetworkSelectionEnum.ThreeG
+      enabled: false,
+      apn: 'defaultapn0000',
+      roaming: true,
+      networkSelection: CellularNetworkSelectionEnum.ThreeG
     },
-    'secondarySim': {
-      'lteBands': [{
-        'band4G': ['B3'],
-        'region': LteBandRegionEnum.DOMAIN_1
+    secondarySim: {
+      lteBands: [{
+        band4G: ['B3'],
+        region: LteBandRegionEnum.DOMAIN_1
       }, {
-        'band3G': ['B2'],
-        'region': LteBandRegionEnum.USA_CANADA
+        band3G: ['B2'],
+        region: LteBandRegionEnum.USA_CANADA
       }],
-      'enabled': true,
-      'apn': 'defaultapn',
-      'roaming': true,
-      'networkSelection': CellularNetworkSelectionEnum.LTE
+      enabled: true,
+      apn: 'defaultapn',
+      roaming: true,
+      networkSelection: CellularNetworkSelectionEnum.LTE
     },
-    'wanConnection': WanConnectionEnum.CELLULAR,
-    'primaryWanRecoveryTimer': 99
+    wanConnection: WanConnectionEnum.CELLULAR,
+    primaryWanRecoveryTimer: 99
   }
 
   const regionCountriesMap = {
@@ -84,19 +81,19 @@ describe('LteBandChannels', () => {
       <Provider>
         <Form>
           <LteBandChannels 
-           index={0}
-           availableLteBands={availableLteBands} 
-           isCurrent={false} 
-           simCardNumber={0} 
-           isShowDesc={false} 
-           countryName={''} 
-           regionName={''} 
-           regionCountries={''} 
-           regionCountriesMap={regionCountriesMap} 
-           region={''} 
-           formControlName={'primarySim'} 
-           isShowOtherLteBands={false} 
-           editData={editData} />
+            index={0}
+            availableLteBands={availableLteBands} 
+            isCurrent={false} 
+            simCardNumber={0} 
+            isShowDesc={false} 
+            countryName={''} 
+            regionName={''} 
+            regionCountries={''} 
+            regionCountriesMap={regionCountriesMap} 
+            region={''} 
+            formControlName={'primarySim'} 
+            isShowOtherLteBands={false} 
+            editData={editData} />
         </Form>
       </Provider>, {
         route: { params }
@@ -112,26 +109,26 @@ describe('LteBandChannels', () => {
       <Provider>
         <Form>
           <LteBandChannels 
-           index={2}
-           availableLteBands={availableLteBands} 
-           isCurrent={false} 
-           simCardNumber={0} 
-           isShowDesc={true} 
-           countryName={''} 
-           regionName={'USA & Canada'} 
-           regionCountries={'USA, Canada'} 
-           regionCountriesMap={regionCountriesMap} 
-           region={LteBandRegionEnum.USA_CANADA} 
-           formControlName={'primarySim'} 
-           isShowOtherLteBands={true} 
-           editData={editData} />
+            index={2}
+            availableLteBands={availableLteBands} 
+            isCurrent={false} 
+            simCardNumber={0} 
+            isShowDesc={true} 
+            countryName={''} 
+            regionName={'USA & Canada'} 
+            regionCountries={'USA, Canada'} 
+            regionCountriesMap={regionCountriesMap} 
+            region={LteBandRegionEnum.USA_CANADA} 
+            formControlName={'primarySim'} 
+            isShowOtherLteBands={true} 
+            editData={editData} />
         </Form>
       </Provider>, {
         route: { params }
       })
 
-      expect(screen.getByText(/USA & Canada/i)).toBeVisible()
-      expect(screen.getByText(/USA, Canada/i)).toBeVisible()
+    expect(screen.getByText(/USA & Canada/i)).toBeVisible()
+    expect(screen.getByText(/USA, Canada/i)).toBeVisible()
       
    
   })
