@@ -92,7 +92,7 @@ export interface AvailableLteBands {
 	countryCodes?: string[]
   }
 
-  export interface VenueApModelCellular {
+export interface VenueApModelCellular {
 	model?: string,
 	primarySim: SimSettings,
 	secondarySim: SimSettings,
@@ -112,4 +112,9 @@ export interface LteBandLockChannel {
 	band3G?: string[];
 	band4G?: string[];
 	region: LteBandRegionEnum;
+}
+
+export interface AvailableLteBandOptions {
+	value: string, 
+	label: string
 }

@@ -8,7 +8,7 @@ import { NetworkForm }                           from './pages/Networks/NetworkF
 import { NetworksTable }                         from './pages/Networks/NetworksTable'
 import { SelectServiceForm }                     from './pages/Services/SelectServiceForm'
 import { getServiceRoutePath, ServiceOperation } from './pages/Services/serviceRouteUtils'
-import { ServicesTable } from './pages/Services/ServicesTable'
+import { ServicesTable }                         from './pages/Services/ServicesTable'
 
 export default function RcRoutes () {
   const routes = rootRoutes(

@@ -9,8 +9,9 @@ import {
   ServiceTechnology
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
 import { serviceTechnologyLabelMapping, serviceTypeLabelMapping } from '../contentsMap'
-import { getServiceDetailsLink, ServiceOperation } from '../serviceRouteUtils'
+import { getServiceDetailsLink, ServiceOperation }                from '../serviceRouteUtils'
 
 
 

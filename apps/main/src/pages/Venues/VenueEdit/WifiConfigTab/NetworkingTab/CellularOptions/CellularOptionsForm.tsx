@@ -9,9 +9,9 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { StepsForm, StepsFormInstance, Subtitle }                            from '@acx-ui/components'
-import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueQuery } from '@acx-ui/rc/services'
-import { AvailableLteBands, Constants, CountryIsoDisctionary, LteBandLockChannel, LteBandRegionEnum, VenueApModelCellular }                              from '@acx-ui/rc/utils'
+import { StepsForm, StepsFormInstance, Subtitle }                                                                from '@acx-ui/components'
+import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueQuery }                       from '@acx-ui/rc/services'
+import { AvailableLteBands, CountryIsoDisctionary, LteBandLockChannel, LteBandRegionEnum, VenueApModelCellular } from '@acx-ui/rc/utils'
 
 import { CellularRadioSimSettings } from './CellularRadioSimSettings'
 
@@ -39,8 +39,8 @@ export function CellularOptionsForm () {
   const venueApModelCellular = useGetVenueApModelCellularQuery({ params: { tenantId, venueId } })
 
 
- const LteBandLockCountriesJson = {
-    DOMAIN_1 : {
+  const LteBandLockCountriesJson = {
+    DOMAIN_1: {
       name: 'Domain 1 countries',
       // eslint-disable-next-line max-len
       countries: 'European Union, Hong Kong, India, Malaysia, Philippines, Singapore, Thailand, Turkey, United Kingdom, Vietnam'
@@ -65,7 +65,7 @@ export function CellularOptionsForm () {
     primaryWanRecoveryTimer: 0
   }
   let regionCountriesMap = _.cloneDeep(LteBandLockCountriesJson)
-  let currentRegion='', currentCountryName=''
+  let currentRegion = '', currentCountryName = ''
   const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
   const venueData = useGetVenueQuery({ params: { tenantId, venueId } })
 
@@ -74,16 +74,16 @@ export function CellularOptionsForm () {
 
   const [editData, setEditData] =
     useState(defaultEditData)
-    const formRef = useRef<StepsFormInstance<any>>()
-    const form = Form.useFormInstance()
-   
-  
+  const formRef = useRef<StepsFormInstance>()
+  const form = Form.useFormInstance()
+
+
   useEffect(() => {
     let availableLteBandsContext = _.cloneDeep(availableLteBands?.data)
-      const countryCode = _.get(venueData, 'data.address.countryCode')
+    const countryCode = _.get(venueData, 'data.address.countryCode')
 
     let venueApModelCellularContext = _.cloneDeep(venueApModelCellular.data)
-     
+
 
     if (availableLteBandsContext) {
 
@@ -95,94 +95,91 @@ export function CellularOptionsForm () {
       })
 
       //setCurrentCountry
-      Object.keys(regionCountriesMap).map(function (objectKey, index) {
+      Object.keys(regionCountriesMap).map(function (objectKey) {
         const value = _.get(regionCountriesMap, objectKey)
-        if (value.countryCodes.indexOf(countryCode) > -1)
-          {currentRegion = objectKey}
-    })
+        if (value.countryCodes.indexOf(countryCode) > -1) { currentRegion = objectKey }
+      })
 
-    //setCurrentCountryName
-    const currentCountry = _.pickBy(CountryIsoDisctionary, (val, key) => {
-      return val.toUpperCase() === countryCode
-    })
+      //setCurrentCountryName
+      const currentCountry = _.pickBy(CountryIsoDisctionary, (val) => {
+        return val.toUpperCase() === countryCode
+      })
 
-    if (currentCountry) {
-      currentCountryName = _.keys(currentCountry)[0];
-    }
+      if (currentCountry) {
+        currentCountryName = _.keys(currentCountry)[0]
+      }
 
-    
- 
-  
+      // this.getCellularSupportedModels$(); 
+      if (venueApModelCellularContext) {
+        venueApModelCellularContext.primarySim.lteBands =
+          venueApModelCellularContext.primarySim?.lteBands || []
+        venueApModelCellularContext.secondarySim.lteBands =
+          venueApModelCellularContext.secondarySim?.lteBands || []
 
+        //createDefaultRegion
+        for (const region in LteBandRegionEnum) {
+          if (!venueApModelCellularContext.primarySim.lteBands.some(
+            item => item.region === region)) {
+            venueApModelCellularContext.primarySim.lteBands.push({
+              region: _.get(region, region)
+            })
+          }
 
+          if (!venueApModelCellularContext.secondarySim.lteBands.some(
+            item => item.region === region)) {
+            venueApModelCellularContext.secondarySim.lteBands.push({
+              region: _.get(region, region)
+            })
+          }
+        }
 
-    // this.getCellularSupportedModels$(); 
-    if (venueApModelCellularContext) {
-      venueApModelCellularContext.primarySim.lteBands = venueApModelCellularContext.primarySim?.lteBands || [];
-      venueApModelCellularContext.secondarySim.lteBands =venueApModelCellularContext.secondarySim?.lteBands || [];
-      
-      //createDefaultRegion
-      for(const region in LteBandRegionEnum) {
-        if (!venueApModelCellularContext.primarySim.lteBands.some(item => item.region === region)) {
-          venueApModelCellularContext.primarySim.lteBands.push({
-            region: _.get(region, region)
+        //sortByLteBandRegionEnum
+        const sortByLteBandRegionEnum = function (availableLteBands: AvailableLteBands[]) {
+          const map = {
+            [LteBandRegionEnum.DOMAIN_1]: 0,
+            [LteBandRegionEnum.DOMAIN_2]: 1,
+            [LteBandRegionEnum.USA_CANADA]: 2,
+            [LteBandRegionEnum.JAPAN]: 3
+          }
+          availableLteBands.sort((a, b) => {
+            if (map[a.region] < map[b.region]) {
+              return -1
+            }
+            if (map[a.region] > map[b.region]) {
+              return 1
+            }
+            return 0
           })
         }
+        sortByLteBandRegionEnum(venueApModelCellularContext.primarySim.lteBands)
+        sortByLteBandRegionEnum(venueApModelCellularContext.secondarySim.lteBands)
+        sortByLteBandRegionEnum(availableLteBandsContext)
 
-        if (!venueApModelCellularContext.secondarySim.lteBands.some(item => item.region === region)) {
-          venueApModelCellularContext.secondarySim.lteBands.push({
-            region: _.get(region, region)
-          })
-        }
-      }
 
-      //sortByLteBandRegionEnum
-      const sortByLteBandRegionEnum = function (availableLteBands: AvailableLteBands[]) {
-        const map = {
-          [LteBandRegionEnum.DOMAIN_1]: 0,
-          [LteBandRegionEnum.DOMAIN_2]: 1,
-          [LteBandRegionEnum.USA_CANADA]: 2,
-          [LteBandRegionEnum.JAPAN]: 3,
-        }
-        availableLteBands.sort((a, b) => {
-          if (map[a.region] < map[b.region]) {
-            return -1;
+        //shiftCurrentRegionToFirst
+        const shiftCurrentRegionToFirst = function (lteBands: LteBandLockChannel[]) {
+          if (!_.isEmpty(currentRegion)) {
+            const index = lteBands.findIndex(item => item.region === currentRegion)
+            lteBands.splice(0, 0, lteBands.splice(index, 1)[0])
           }
-          if (map[a.region] > map[b.region]) {
-            return 1;
-          }
-          return 0;
-        });
-      }
-      sortByLteBandRegionEnum( venueApModelCellularContext.primarySim.lteBands)
-      sortByLteBandRegionEnum( venueApModelCellularContext.secondarySim.lteBands)
-      sortByLteBandRegionEnum(availableLteBandsContext)
-      
-
-      //shiftCurrentRegionToFirst
-      const shiftCurrentRegionToFirst = function (lteBands: LteBandLockChannel[]) {
-        if (!_.isEmpty(currentRegion)) {
-          const index = lteBands.findIndex(item => item.region === currentRegion);
-          lteBands.splice(0, 0, lteBands.splice(index, 1)[0]);
         }
+        shiftCurrentRegionToFirst(venueApModelCellularContext.primarySim.lteBands)
+        shiftCurrentRegionToFirst(venueApModelCellularContext.secondarySim.lteBands)
+        shiftCurrentRegionToFirst(availableLteBandsContext)
+
+        setEditData(venueApModelCellularContext)
+
+        formRef?.current?.setFieldsValue({ editData: venueApModelCellularContext })
+        // this.checkEditability();
+
+
       }
-      shiftCurrentRegionToFirst(venueApModelCellularContext.primarySim.lteBands)
-      shiftCurrentRegionToFirst(venueApModelCellularContext.secondarySim.lteBands)
-      shiftCurrentRegionToFirst(availableLteBandsContext)
-
-      setEditData(venueApModelCellularContext)
-     
-      formRef?.current?.setFieldsValue({editData: venueApModelCellularContext})
-      // this.checkEditability();
-
-
+      setAvailableLteBandsArray(availableLteBandsContext)
     }
-    setAvailableLteBandsArray(availableLteBandsContext)
-  }
 
   }, [availableLteBands.data, venueApModelCellular.data, form])
 
- 
+
 
   return (
 
@@ -192,7 +189,7 @@ export function CellularOptionsForm () {
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
         <StepsForm.StepForm
-         formRef={formRef}>
+          formRef={formRef}>
 
           <CellularRadioSimSettings
             editData={editData}
@@ -202,7 +199,7 @@ export function CellularOptionsForm () {
             currentRegion={currentRegion}
             currentCountryName={currentCountryName}
             availableLteBands={availableLteBandsArray}
-            formControlName={'primarySim'}/>
+            formControlName={'primarySim'} />
           <CellularRadioSimSettings
             editData={editData}
             simCardNumber={2}
@@ -211,7 +208,7 @@ export function CellularOptionsForm () {
             currentRegion={currentRegion}
             currentCountryName={currentCountryName}
             availableLteBands={availableLteBandsArray}
-            formControlName={'secondarySim'}/>
+            formControlName={'secondarySim'} />
           <Form.Item
             name={['editData', 'wanConnection']}
             label={$t({ defaultMessage: 'WAN Connection:' })}
@@ -247,8 +244,10 @@ export function CellularOptionsForm () {
               required: true
             }, {
               type: 'number', max: 300, min: 10,
-              message: $t({ defaultMessage:
-                'Primary WAN Recovery Timer must be between 10 and 300' })
+              message: $t({
+                defaultMessage:
+                  'Primary WAN Recovery Timer must be between 10 and 300'
+              })
             }]}
             children={<Input style={{ width: '150px' }}></Input>}
           />

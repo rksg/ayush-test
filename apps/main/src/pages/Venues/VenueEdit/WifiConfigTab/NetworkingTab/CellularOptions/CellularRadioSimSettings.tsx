@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import {
   Select,
@@ -21,7 +21,7 @@ export interface ModelOption {
 
 const { Option } = Select
 
-export function CellularRadioSimSettings(props: {
+export function CellularRadioSimSettings (props: {
   availableLteBands: AvailableLteBands[],
   simCardNumber: number,
   legend: string,
@@ -32,7 +32,6 @@ export function CellularRadioSimSettings(props: {
   editData: VenueApModelCellular
 }) {
   const { $t } = useIntl()
-  const a = props.availableLteBands[0]
   const [isShowOtherLteBands, setIsShowOtherLteBands] = useState(false)
 
   return (
@@ -140,9 +139,6 @@ export function CellularRadioSimSettings(props: {
           ))
         }
       />
-
-
-
       <Divider orientation='left' plain />
     </div>
 

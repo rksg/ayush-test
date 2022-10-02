@@ -1,16 +1,18 @@
 
+import { useEffect } from 'react'
+
 import {
   Form,
   Checkbox
 } from 'antd'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
+import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
-import styled                from 'styled-components'
 
-import { AvailableLteBands, VenueApModelCellular } from '@acx-ui/rc/utils'
-import _ from 'lodash'
-import { useEffect, useState } from 'react'
-import { __generator } from 'tslib'
+import { AvailableLteBandOptions, AvailableLteBands, VenueApModelCellular } from '@acx-ui/rc/utils'
+
+import * as UI from './styledComponents'
+
 
 const { useWatch } = Form
 
@@ -32,13 +34,13 @@ export function LteBandChannels (
   }
 ) {
   const form = Form.useFormInstance()
-
+  const [enableRegion] = [
+    useWatch<boolean>(['checkbox', props.formControlName, props.region])
+  ]
   const object = _.get(props.editData, props.formControlName)
   useEffect(() => {
     const lteBandsArray = object.lteBands
-    if (lteBandsArray && lteBandsArray.length == 4) {
-
-
+    if (lteBandsArray && lteBandsArray.length === 4) {
       form.setFieldsValue({
         bandLteArray: {
           [props.formControlName]:
@@ -46,7 +48,7 @@ export function LteBandChannels (
             [lteBandsArray[0].region]: lteBandsArray[0],
             [lteBandsArray[1].region]: lteBandsArray[1],
             [lteBandsArray[2].region]: lteBandsArray[2],
-            [lteBandsArray[3].region]: lteBandsArray[3],
+            [lteBandsArray[3].region]: lteBandsArray[3]
           }
         }
       }
@@ -54,7 +56,7 @@ export function LteBandChannels (
 
       if(props.formControlName){
         form.setFieldValue(['checkbox', props.formControlName, props.region], 
-        (!_.isEmpty(lteBandsArray[props.index].band3G)||
+          (!_.isEmpty(lteBandsArray[props.index].band3G)||
         !_.isEmpty(lteBandsArray[props.index].band4G)))
      
       }
@@ -63,11 +65,11 @@ export function LteBandChannels (
 
 
   const { $t } = useIntl()
-  const onChange = (checkedValues: CheckboxValueType[]) => {
-    console.log('checked = ', checkedValues)
-  }
-  let availableLteBand3G: any[] = []
-  let availableLteBand4G: any[] = []
+  // const onChange = (checkedValues: CheckboxValueType[]) => {
+  //   checkedValues
+  // }
+  let availableLteBand3G: AvailableLteBandOptions[] = []
+  let availableLteBand4G: AvailableLteBandOptions[] = []
 
   if (props.availableLteBands.band3G) {
     availableLteBand3G = props.availableLteBands.band3G.map((band: string) => ({
@@ -84,80 +86,13 @@ export function LteBandChannels (
     })
     )
   }
-  const FieldLabel = styled.div<{ width: string }>`
-    font-size: var(--acx-body-4-font-size);
-    display: grid;
-    line-height: 32px;
-    grid-template-columns: ${props => props.width} 1fr;
-`
-
-  const CurrentCountryLabel = styled.span`
-    font-size: var(--acx-body-4-font-size);
-    line-height: var(--acx-body-4-line-height);
-`
-
-
-
-
-
-
-  const Styled = styled.div`
-  div.ant-checkbox-group {
-    display: flex;
-    > label.ant-checkbox-wrapper {
-      font-size: 12px;
-      align-items: center;
-      margin: 0 3px;
-      width: auto;
-      padding: 4px 12px;
-      border: 1px solid rgb(217, 217, 217);
-      border-right-width: 0;
-
-      border: 1px solid #333333;
-      border-radius: 4px;
-      background-color: white;
-
-      > span:first-child {
-        display: none;
-      }
-    }
-
-    > label.ant-checkbox-wrapper-checked {
-      border: 1px solid #333333;
-      border-radius: 4px;
-      background-color: #333333;
-      color: white;
-    }
-
-    > label.ant-checkbox-wrapper:last-child {
-      border-right-width: 1px;
-    }
-  }
-`
-
-const CountryDescLabel = styled.span`
-font-size: var(--acx-body-5-font-size);
-line-height: 32px;
-
-`
-
-const [
-  enableRegion
-] = [
-  useWatch<boolean>(['checkbox', props.formControlName, props.region])
-]
-
-
-
-
 
   return (
     <>
-
       {props.isCurrent &&
-        <CurrentCountryLabel>{$t({ defaultMessage: 'Bands for current country' })}
+        <UI.CurrentCountryLabel>{$t({ defaultMessage: 'Bands for current country' })}
           {' (' + props.regionCountries + ')'}
-        </CurrentCountryLabel>
+        </UI.CurrentCountryLabel>
       }
       {(!props.isCurrent && props.isShowOtherLteBands) &&
         <>
@@ -171,43 +106,43 @@ const [
             }
           />
           {props.isShowDesc &&
-            <CountryDescLabel>{props.regionCountries}</CountryDescLabel>}
+            <UI.CountryDescLabel>{props.regionCountries}</UI.CountryDescLabel>}
         </>
       }
       {(props.isCurrent || (!props.isCurrent && enableRegion && props.isShowOtherLteBands)) &&
         <>
-          <FieldLabel width='25px'>
+          <UI.FieldLabel width='25px'>
             {$t({ defaultMessage: '3G:' })}
-            <Styled>
-            <Form.Item
-              style={{ marginBottom: '0px' }}
-              initialValue={[]}
-              name={['bandLteArray', props.formControlName, props.region, 'band3G']}
-              children={
+            <UI.MultiSelect>
+              <Form.Item
+                style={{ marginBottom: '0px' }}
+                initialValue={[]}
+                name={['bandLteArray', props.formControlName, props.region, 'band3G']}
+                children={
                   <Checkbox.Group
                     options={availableLteBand3G}
+                    // onChange={onChange}
+                  />
+                }
+              />
+            </UI.MultiSelect>
+          </UI.FieldLabel>
+
+          <UI.FieldLabel width='25px'>
+            {$t({ defaultMessage: '4G:' })}
+            <UI.MultiSelect>
+              <Form.Item
+                initialValue={[]}
+                name={['bandLteArray', props.formControlName, props.region, 'band4G']}
+                children={
+                  <Checkbox.Group
+                    options={availableLteBand4G}
                     onChange={onChange}
                   />
-              }
-            />
-             </Styled>
-        </FieldLabel>
-
-        <FieldLabel width='25px'>
-          {$t({ defaultMessage: '4G:' })}
-          <Styled>
-            <Form.Item
-            initialValue={[]}
-            name={['bandLteArray', props.formControlName, props.region, 'band4G']}
-              children={
-                <Checkbox.Group
-                  options={availableLteBand4G}
-                  onChange={onChange}
-                />
-              }
-            />
-          </Styled>
-        </FieldLabel></>
+                }
+              />
+            </UI.MultiSelect>
+          </UI.FieldLabel></>
       }
     </>
 
