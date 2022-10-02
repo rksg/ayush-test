@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react'
 
-import ProLayout   from '@ant-design/pro-layout'
-import { isEmpty } from 'lodash'
-import { useIntl } from 'react-intl'
+import ProLayout             from '@ant-design/pro-layout'
+import { isEmpty, uniqueId } from 'lodash'
+import { useIntl }           from 'react-intl'
 
 import { Logo }   from '@acx-ui/icons'
 import {
@@ -13,13 +12,7 @@ import {
   TenantNavLink
 } from '@acx-ui/react-router-dom'
 
-
 import * as UI from './styledComponents'
-
-interface MenuItem {
-  path: string;
-  name: string;
-}
 
 interface MenuItem {
   path: string
@@ -35,9 +28,14 @@ interface MenuItem {
 export interface LayoutProps {
   menuConfig: MenuItem[];
   rightHeaderContent: React.ReactNode;
-  leftHeaderContent: React.ReactNode;
+  leftHeaderContent?: React.ReactNode;
   content: React.ReactNode;
 }
+
+export const genPlaceholder = () => ({
+  path: `/${uniqueId()}/placeholder`,
+  name: ' '
+})
 
 export function Layout ({
   menuConfig: routes,
@@ -66,9 +64,16 @@ export function Layout ({
   const menuRender = (item: MenuItem, dom: React.ReactNode) => {
     return <TenantNavLink to={item.uri!} tenantType={item.tenantType}>
       {({ isActive }) => {
-        const Icon = isActive ? item.enableIcon : item.disableIcon
+        let icon: JSX.Element | undefined
+        if (isActive) {
+          const IconComponent = item.enableIcon
+          if (IconComponent) icon = <UI.MenuIconSolid children={<IconComponent />} />
+        } else {
+          const IconComponent = item.disableIcon
+          if (IconComponent) icon = <UI.MenuIconOutlined children={<IconComponent />} />
+        }
         return <>
-          {(Icon && isEmpty(item.pro_layout_parentKeys) )? <Icon /> : null}
+          {(icon && isEmpty(item.pro_layout_parentKeys)) ? icon : null}
           {dom}
         </>
       }}
@@ -86,12 +91,17 @@ export function Layout ({
       menuHeaderRender={() => <Logo />}
       subMenuItemRender={menuRender}
       menuItemRender={menuRender}
-      rightContentRender={() => rightHeaderContent}
-      headerContentRender={() => leftHeaderContent}
+      headerContentRender={() => leftHeaderContent && <UI.LeftHeaderContentWrapper>
+        <UI.LogoDivider />
+        {leftHeaderContent}
+      </UI.LeftHeaderContentWrapper>}
+      rightContentRender={() => <UI.RightHeaderContentWrapper>
+        {rightHeaderContent}
+      </UI.RightHeaderContentWrapper>}
       onCollapse={setCollapsed}
       collapsedButtonRender={(collapsed: boolean) => <>
         {collapsed ? <UI.ArrowCollapsed /> : <UI.Arrow />}
-        <UI.TextWrapper
+        <UI.CollapseText
           className='ant-pro-menu-item-title'
           children={$t({ defaultMessage: 'Collapse' })}
         />

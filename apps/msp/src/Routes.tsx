@@ -10,8 +10,11 @@ import { VarCustomers } from './pages/VarCustomers'
 export default function MspRoutes () {
   const routes = rootRoutes(
     <Route path='v/:tenantId' element={<Layout />}>
-      <Route index element={<TenantNavigate to='/dashboard' tenantType='v'/>} />
-      <Route path='dashboard' element={<MspCustomers />} />
+      <Route index element={<TenantNavigate replace to='/dashboard' tenantType='v'/>} />
+      <Route
+        path='dashboard'
+        element={<TenantNavigate replace to='/dashboard/mspCustomers' tenantType='v'/>}
+      />
       <Route path='dashboard/mspCustomers' element={<MspCustomers />} />
       <Route path='dashboard/varCustomers' element={<VarCustomers />} />
       <Route path='integrators' element={<Integrators />} />

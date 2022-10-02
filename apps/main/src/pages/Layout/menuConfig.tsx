@@ -1,12 +1,32 @@
-import { uniqueId } from 'lodash'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
+import styled      from 'styled-components/macro'
 
-import * as UI from './styledComponents'
+import { genPlaceholder } from '@acx-ui/components'
+import {
+  AI as AIOriginal,
+  AccountCircleOutlined,
+  AccountCircleSolid,
+  CalendarDateOutlined,
+  CalendarDateSolid,
+  ConfigurationOutlined,
+  ConfigurationSolid,
+  DevicesOutlined,
+  DevicesSolid,
+  LocationOutlined,
+  LocationSolid,
+  NetworksOutlined,
+  NetworksSolid,
+  ReportsOutlined,
+  ReportsSolid,
+  ServicesOutlined,
+  ServicesSolid,
+  SpeedIndicatorOutlined,
+  SpeedIndicatorSolid
+} from '@acx-ui/icons'
 
-const genPlaceholder = () => ({
-  path: `/${uniqueId()}/placeholder`,
-  name: ' '
-})
+const AI = styled(AIOriginal)`
+  path { stroke: none !important; }
+`
 
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -14,14 +34,14 @@ export function useMenuConfig () {
     {
       path: '/dashboard',
       name: $t({ defaultMessage: 'Dashboard' }),
-      disableIcon: UI.SpeedIndicatorIcon,
-      enableIcon: UI.EnabledSpeedIndicatorIcon
+      disableIcon: SpeedIndicatorOutlined,
+      enableIcon: SpeedIndicatorSolid
     },
     {
       path: '/analytics',
       name: $t({ defaultMessage: 'AI Analytics' }),
-      disableIcon: UI.AIAnalyticsIcon,
-      enableIcon: UI.AIAnalyticsIcon,
+      disableIcon: AI,
+      enableIcon: AI,
       routes: [
         {
           path: '/analytics/incidents',
@@ -46,58 +66,58 @@ export function useMenuConfig () {
     {
       path: '/timeline',
       name: $t({ defaultMessage: 'Timeline' }),
-      disableIcon: UI.CalendarIcon,
-      enableIcon: UI.EnabledCalendarIcon
+      disableIcon: CalendarDateOutlined,
+      enableIcon: CalendarDateSolid
     },
     {
       path: '/reports',
       name: $t({ defaultMessage: 'Reports' }),
-      disableIcon: UI.ReportsIcon,
-      enableIcon: UI.EnabledReportsIcon
+      disableIcon: ReportsOutlined,
+      enableIcon: ReportsSolid
     },
     genPlaceholder(),
     {
       path: '/venues',
       name: $t({ defaultMessage: 'Venues' }),
-      disableIcon: UI.LocationIcon,
-      enableIcon: UI.EnabledLocationIcon
+      disableIcon: LocationOutlined,
+      enableIcon: LocationSolid
     },
     {
       path: '/devices',
       name: $t({ defaultMessage: 'Devices' }),
-      disableIcon: UI.DevicesIcon,
-      enableIcon: UI.EnabledDevicesIcon
+      disableIcon: DevicesOutlined,
+      enableIcon: DevicesSolid
     },
     {
       path: '/networks',
       name: $t({ defaultMessage: 'Networks' }),
-      disableIcon: UI.NetworksIcon,
-      enableIcon: UI.EnabledNetworksIcon
+      disableIcon: NetworksOutlined,
+      enableIcon: NetworksSolid
     },
     {
       path: '/services',
       name: $t({ defaultMessage: 'Services' }),
-      disableIcon: UI.ServicesIcon,
-      enableIcon: UI.EnabledServicesIcon
+      disableIcon: ServicesOutlined,
+      enableIcon: ServicesSolid
     },
     {
       path: '/policies',
       name: $t({ defaultMessage: 'Policies' }),
-      disableIcon: UI.ServicesIcon,
-      enableIcon: UI.EnabledServicesIcon
+      disableIcon: ServicesOutlined,
+      enableIcon: ServicesSolid
     },
     {
       path: '/users',
       name: $t({ defaultMessage: 'Users' }),
-      disableIcon: UI.AccountIcon,
-      enableIcon: UI.EnabledAccountIcon
+      disableIcon: AccountCircleOutlined,
+      enableIcon: AccountCircleSolid
     },
     genPlaceholder(),
     {
       path: '/administration',
       name: $t({ defaultMessage: 'Administration' }),
-      disableIcon: UI.ConfigurationIcon,
-      enableIcon: UI.EnabledConfigurationIcon
+      disableIcon: ConfigurationOutlined,
+      enableIcon: ConfigurationSolid
     }
   ]
   return config

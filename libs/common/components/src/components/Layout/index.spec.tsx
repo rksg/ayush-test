@@ -1,10 +1,14 @@
 import '@testing-library/jest-dom'
 
+import {
+  SpeedIndicatorOutlined,
+  SpeedIndicatorSolid
+} from '@acx-ui/icons'
 import { TenantType }                from '@acx-ui/react-router-dom'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import menuConfig from './stories/menuConfig'
-import * as UI    from './stories/styledComponents'
+import menuConfig   from './stories/menuConfig'
+import { LayoutUI } from './styledComponents'
 
 import { Layout } from '.'
 
@@ -38,8 +42,8 @@ describe('Layout', () => {
   it('should render correctly', async () => {
     const { asFragment } = render(<Layout
       menuConfig={menuConfig}
+      leftHeaderContent={<LayoutUI.DropdownText>Left header</LayoutUI.DropdownText>}
       rightHeaderContent={<div>Right header</div>}
-      leftHeaderContent={<div>Left header</div>}
       content={<div>content</div>}
     />, { route: true })
     await screen.findByTestId('ai')
@@ -51,14 +55,14 @@ describe('Layout', () => {
         path: '/dashboard',
         name: 'Dashboard',
         tenantType: 'v' as TenantType,
-        disableIcon: UI.SpeedIndicatorIcon,
-        enableIcon: UI.EnabledSpeedIndicatorIcon
+        disableIcon: SpeedIndicatorOutlined,
+        enableIcon: SpeedIndicatorSolid
       }
     ]
     const { asFragment } = render(<Layout
       menuConfig={mspConfig}
-      rightHeaderContent={<div>Right header</div>}
       leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
     />, { route: true })
     await screen.findByTestId('speed-indicator-outlined')
@@ -67,8 +71,8 @@ describe('Layout', () => {
   it('should collapsed', async () => {
     render(<Layout
       menuConfig={menuConfig}
-      rightHeaderContent={<div>Right header</div>}
       leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
     />, { route: true })
     await screen.findByTestId('ai')
@@ -78,8 +82,8 @@ describe('Layout', () => {
   it('should render corresponding icons', async () => {
     render(<Layout
       menuConfig={menuConfig}
-      rightHeaderContent={<div>Right header</div>}
       leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
     />, {
       route: {

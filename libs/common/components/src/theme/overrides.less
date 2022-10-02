@@ -42,8 +42,12 @@
   }
 
   .ant-badge {
+    sup.ant-badge-count {
+      box-shadow: unset;
+    }
     &-status-text {
       font-size: var(--acx-body-4-font-size);
+      font-weight: var(--acx-body-font-weight);
       line-height: var(--acx-body-4-line-height);
     }
   }
@@ -93,6 +97,32 @@
             margin-left: 12px;
           }
         }
+      }
+    }
+  }
+
+  .ant-dropdown-menu {
+    min-width: 90px;
+    padding: 8px 0;
+    box-shadow: 0px 6px 16px rgba(51, 51, 51, 0.2);
+
+    &-item {
+      font-size: var(--acx-body-4-font-size);
+      font-weight: var(--acx-body-font-weight);
+
+      &:hover {
+        background-color: var(--acx-accents-orange-10);
+      }
+
+      &-selected {
+        color: unset;
+        background-color: unset;
+        font-weight: var(--acx-body-font-weight-bold);
+      }
+
+      &-divider {
+        margin: 4px 12px;
+        background-color: var(--acx-neutrals-25);
       }
     }
   }

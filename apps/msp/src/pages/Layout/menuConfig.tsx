@@ -1,13 +1,26 @@
-import { uniqueId } from 'lodash'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
+import styled      from 'styled-components/macro'
 
-import { LayoutProps } from '@acx-ui/components'
+import { LayoutProps, genPlaceholder } from '@acx-ui/components'
+import {
+  ConfigurationOutlined,
+  ConfigurationSolid,
+  DevicesOutlined,
+  DevicesSolid,
+  MspSubscriptionOutlined as MspSubscriptionOutlinedOriginal,
+  MspSubscriptionSolid as MspSubscriptionSolidOriginal,
+  ServicesOutlined,
+  ServicesSolid,
+  UsersThreeOutlined,
+  UsersThreeSolid
+} from '@acx-ui/icons'
 
-import * as UI from './styledComponents'
-const genPlaceholder = () => ({
-  path: `/${uniqueId()}/placeholder`,
-  name: ' '
-})
+const MspSubscriptionOutlined = styled(MspSubscriptionOutlinedOriginal)`
+  path { stroke: none !important; }
+`
+const MspSubscriptionSolid = styled(MspSubscriptionSolidOriginal)`
+  path { stroke: none !important; }
+`
 
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -16,8 +29,8 @@ export function useMenuConfig () {
       path: '/dashboard',
       name: $t({ defaultMessage: 'My Customers' }),
       tenantType: 'v',
-      disableIcon: UI.CustomerIcon,
-      enableIcon: UI.EnabledCustomerIcon,
+      disableIcon: UsersThreeOutlined,
+      enableIcon: UsersThreeSolid,
       routes: [
         {
           path: '/dashboard/mspCustomers',
@@ -33,30 +46,30 @@ export function useMenuConfig () {
       path: '/integrators',
       name: $t({ defaultMessage: 'Integrators' }),
       tenantType: 'v',
-      disableIcon: UI.IntegratorIcon,
-      enableIcon: UI.EnabledIntegratorIcon
+      disableIcon: ServicesOutlined,
+      enableIcon: ServicesSolid
     },
     {
       path: '/deviceInventory',
       name: $t({ defaultMessage: 'Device Inventory' }),
       tenantType: 'v',
-      disableIcon: UI.InventoryIcon,
-      enableIcon: UI.EnableInventoryIcon
+      disableIcon: DevicesOutlined,
+      enableIcon: DevicesSolid
     },
     {
       path: '/mspLicenses',
       name: $t({ defaultMessage: 'MSP Licenses' }),
       tenantType: 'v',
-      disableIcon: UI.MspLicenseIcon,
-      enableIcon: UI.EnableMspLicenseIcon
+      disableIcon: MspSubscriptionOutlined,
+      enableIcon: MspSubscriptionSolid
     },
     genPlaceholder(),
     {
       path: '/portalSetting',
       name: $t({ defaultMessage: 'Settings' }),
       tenantType: 'v',
-      disableIcon: UI.ConfigurationIcon,
-      enableIcon: UI.EnabledConfigurationIcon
+      disableIcon: ConfigurationOutlined,
+      enableIcon: ConfigurationSolid
     }
   ]
   return config

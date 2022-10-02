@@ -2,21 +2,28 @@ import React, { useState } from 'react'
 
 import * as UI from './styledComponents'
 
-export function DropDown ({ list, selected }: { list: string[]; selected: string }) {
-  const [selectedItem, setSelectedItem] = useState(selected)
-  const menu = (
-    <UI.Menu onClick={({ key }) => setSelectedItem(list[parseInt(key, 10)])}>
-      {list.map((account, index) => (
-        <UI.MenuItem key={index}>{account}</UI.MenuItem>
-      ))}
-    </UI.Menu>
-  )
-  return (
-    <UI.Dropdown overlay={menu} trigger={['click']}>
-      <UI.DropDownContainer>
-        {selectedItem}
-        <UI.ArrowExpandIcon />
-      </UI.DropDownContainer>
-    </UI.Dropdown>
-  )
+import type {
+  DropdownProps as AntDropdownProps,
+  MenuProps as AntMenuProps
+} from 'antd'
+
+export interface DropdownProps extends Omit<AntDropdownProps, 'overlay' | 'trigger' | 'children'> {
+  overlay: React.ReactElement<AntMenuProps>
+  children: (selectedKeys: string | null) => React.ReactElement
+}
+
+export function Dropdown ({ overlay, children, ...props }: DropdownProps) {
+  const { defaultSelectedKeys, onClick } = overlay.props
+  const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>(defaultSelectedKeys)
+  const menu = React.cloneElement(overlay, {
+    onClick: ((event) => {
+      onClick && onClick(event)
+      setSelectedKeys([event.key])
+    }) as AntMenuProps['onClick']
+  })
+  return <UI.Dropdown
+    overlay={menu}
+    trigger={['click']}
+    {...props}
+  >{children && children!(selectedKeys ? selectedKeys.join(', ') : null)}</UI.Dropdown>
 }
