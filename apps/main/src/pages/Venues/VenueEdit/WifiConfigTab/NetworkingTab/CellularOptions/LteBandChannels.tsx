@@ -7,7 +7,9 @@ import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import { useIntl }           from 'react-intl'
 import styled                from 'styled-components'
 
-import { AvailableLteBands } from '@acx-ui/rc/utils'
+import { AvailableLteBands, VenueApModelCellular } from '@acx-ui/rc/utils'
+import _ from 'lodash'
+import { useEffect, useState } from 'react'
 
 const { useWatch } = Form
 
@@ -15,9 +17,39 @@ export function LteBandChannels (
   props: {
     availableLteBands: AvailableLteBands,
     isCurrent: boolean,
-    simCardNumber: number
+    simCardNumber: number,
+    isShowDesc: boolean,
+    countryName: string,
+    regionName: string,
+    regionCountries: string,
+    regionCountriesMap: any,
+    region: string,
+    formControlName: string,
+    isShowOtherLteBands: boolean,
+    editData: VenueApModelCellular
   }
 ) {
+  const form = Form.useFormInstance()
+
+  const object = _.get(props.editData, props.formControlName)
+  useEffect(() => {
+    const lteBandsArray = object.lteBands
+    if (lteBandsArray && lteBandsArray.length == 4) {
+
+      form.setFieldsValue({
+        bandLteArray: {
+          [props.formControlName]:
+          {
+            [lteBandsArray[0].region]: lteBandsArray[0],
+            [lteBandsArray[1].region]: lteBandsArray[1],
+            [lteBandsArray[2].region]: lteBandsArray[2],
+            [lteBandsArray[3].region]: lteBandsArray[3],
+          }
+        }
+      })
+    }
+  }, [object])
+
 
   const { $t } = useIntl()
   const onChange = (checkedValues: CheckboxValueType[]) => {
@@ -57,7 +89,7 @@ export function LteBandChannels (
   const [
     enableRegion
   ] = [
-    useWatch<boolean>(['venue', props.simCardNumber, props.availableLteBands?.region])
+    useWatch<boolean>(['editData', props.simCardNumber, props.region])
   ]
 
 
@@ -108,12 +140,12 @@ export function LteBandChannels (
       {!props.isCurrent &&
 
         <Form.Item
-          name={['venue', props.simCardNumber, props.availableLteBands?.region]}
+          name={['editData', props.simCardNumber, props.region]}
           initialValue={false}
           valuePropName='checked'
           style={{ marginBottom: '0px' }}
           children={
-            <Checkbox children={props.availableLteBands?.region} />
+            <Checkbox children={props.region} />
           }
         />
 
@@ -122,32 +154,36 @@ export function LteBandChannels (
         <>
           <FieldLabel width='25px'>
             {$t({ defaultMessage: '3G:' })}
+            <Styled>
             <Form.Item
               style={{ marginBottom: '0px' }}
+              initialValue={[]}
+              name={['bandLteArray', props.formControlName, props.region, 'band3G']}
               children={
-                <Styled>
                   <Checkbox.Group
                     options={availableLteBand3G}
                     onChange={onChange}
                   />
-                </Styled>
               }
             />
-          </FieldLabel>
+             </Styled>
+        </FieldLabel>
 
-          <FieldLabel width='25px'>
-            {$t({ defaultMessage: '4G:' })}
+        <FieldLabel width='25px'>
+          {$t({ defaultMessage: '4G:' })}
+          <Styled>
             <Form.Item
+            initialValue={[]}
+            name={['bandLteArray', props.formControlName, props.region, 'band4G']}
               children={
-                <Styled>
-                  <Checkbox.Group
-                    options={availableLteBand4G}
-                    onChange={onChange}
-                  />
-                </Styled>
+                <Checkbox.Group
+                  options={availableLteBand4G}
+                  onChange={onChange}
+                />
               }
             />
-          </FieldLabel></>
+          </Styled>
+        </FieldLabel></>
       }
     </>
 

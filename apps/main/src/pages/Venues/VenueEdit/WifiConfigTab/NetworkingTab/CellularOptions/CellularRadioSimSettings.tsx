@@ -8,7 +8,6 @@ import {
   Input
 } from 'antd'
 import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
 
 import { AvailableLteBands, CellularNetworkSelectionEnum, VenueApModelCellular } from '@acx-ui/rc/utils'
 
@@ -29,11 +28,11 @@ export function CellularRadioSimSettings (props: {
   currentRegion:string,
   currentCountryName: string,
   formControlName: string,
-  // editData: VenueApModelCellular
+  editData: VenueApModelCellular
 }) {
   const { $t } = useIntl()
-  // const { tenantId, venueId } = useParams()
   const a = props.availableLteBands[0]
+  let isShowOtherLteBands = false //TODO
 
   return (
     <div style={{
@@ -106,8 +105,18 @@ export function CellularRadioSimSettings (props: {
         children={
           props.availableLteBands.map((item, index) => (
             <LteBandChannels
+              key={index}
+              editData={props.editData}
+              formControlName={props.formControlName}
               simCardNumber={props.simCardNumber}
               availableLteBands={item}
+              isShowDesc={item.region == 'DOMAIN_1' || item.region == 'DOMAIN_2'}
+              isShowOtherLteBands={isShowOtherLteBands}
+              countryName = {props.currentCountryName}
+              regionName ={item.region} //getRegionName
+              regionCountries = {item.region} //getRegionCountries
+              regionCountriesMap = {props.regionCountriesMap}
+              region = {item.region}
               isCurrent={index === 0} />
           ))
         }

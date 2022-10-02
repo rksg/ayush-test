@@ -191,6 +191,7 @@ export function CellularOptionsForm () {
          formRef={formRef}>
 
           <CellularRadioSimSettings
+            editData={editData}
             simCardNumber={1}
             legend={$t({ defaultMessage: 'Primary SIM' })}
             regionCountriesMap={regionCountriesMap}
@@ -199,6 +200,7 @@ export function CellularOptionsForm () {
             availableLteBands={availableLteBandsArray}
             formControlName={'primarySim'}/>
           <CellularRadioSimSettings
+            editData={editData}
             simCardNumber={2}
             legend={$t({ defaultMessage: 'Secondary SIM' })}
             regionCountriesMap={regionCountriesMap}
