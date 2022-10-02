@@ -72,7 +72,7 @@ describe('LteBandChannels', () => {
   const availableLteBands = {
     band3G: ['B2', 'B4', 'B5'],
     band4G: ['B2', 'B4', 'B12'],
-    region: LteBandRegionEnum.DOMAIN_1,
+    region: LteBandRegionEnum.USA_CANADA,
     countryCodes: ['US', 'CA']
   }
 
@@ -105,4 +105,34 @@ describe('LteBandChannels', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+
+  it('should render LTE Band channel not show other bands successfully', async () => {
+
+    render(
+      <Provider>
+        <Form>
+          <LteBandChannels 
+           index={2}
+           availableLteBands={availableLteBands} 
+           isCurrent={false} 
+           simCardNumber={0} 
+           isShowDesc={true} 
+           countryName={''} 
+           regionName={'USA & Canada'} 
+           regionCountries={'USA, Canada'} 
+           regionCountriesMap={regionCountriesMap} 
+           region={LteBandRegionEnum.USA_CANADA} 
+           formControlName={'primarySim'} 
+           isShowOtherLteBands={true} 
+           editData={editData} />
+        </Form>
+      </Provider>, {
+        route: { params }
+      })
+
+      expect(screen.getByText(/USA & Canada/i)).toBeVisible()
+      expect(screen.getByText(/USA, Canada/i)).toBeVisible()
+      
+   
+  })
 })

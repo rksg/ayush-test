@@ -73,12 +73,12 @@ describe('CellularRadioSimSettings', () => {
   const availableLteBands = [{
     band3G: ['B2', 'B4', 'B5'],
     band4G: ['B2', 'B4', 'B12'],
-    region: LteBandRegionEnum.DOMAIN_1,
+    region: LteBandRegionEnum.USA_CANADA,
     countryCodes: ['US', 'CA']
   }]
 
 
-  it('should render CellularRadioSimSettings  successfully', async () => {
+  it('should render CellularRadioSimSettings successfully', async () => {
    
 
     const { asFragment } = render(
@@ -101,4 +101,32 @@ describe('CellularRadioSimSettings', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+
+  it('should click Show bands for other countries successfully', async () => {
+
+    render(
+      <Provider>
+        <Form>
+          <CellularRadioSimSettings 
+           availableLteBands={availableLteBands} 
+           simCardNumber={0} 
+           regionCountriesMap={regionCountriesMap} 
+           currentCountryName={''}
+           legend={'Secondary SIM'}
+           currentRegion={''}
+           formControlName={'primarySim'} 
+           editData={editData} />
+        </Form>
+      </Provider>, {
+        route: { params }
+      })
+
+      const view = screen.getByText(/Show bands for other countries/i)
+      await userEvent.click(view)
+      expect(screen.getByText(/Hide bands for other countries/i)).toBeVisible()
+  })
+
+
+  
 })
+

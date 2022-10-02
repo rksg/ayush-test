@@ -179,7 +179,6 @@ export function CellularOptionsForm () {
       >
         <StepsForm.StepForm
           formRef={formRef}>
-
           <CellularRadioSimSettings
             editData={editData}
             simCardNumber={1}

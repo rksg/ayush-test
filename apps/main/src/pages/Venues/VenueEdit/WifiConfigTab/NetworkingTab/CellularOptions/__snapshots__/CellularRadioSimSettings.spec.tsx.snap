@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CellularRadioSimSettings should render CellularRadioSimSettings  successfully 1`] = `
+exports[`CellularRadioSimSettings should render CellularRadioSimSettings successfully 1`] = `
 <DocumentFragment>
   <form
     class="ant-form ant-form-horizontal"
@@ -262,7 +262,7 @@ exports[`CellularRadioSimSettings should render CellularRadioSimSettings  succes
                 <span
                   class="styledComponents__CurrentCountryLabel-sc-nyixel-2 cLUVoM"
                 >
-                  Bands for current country (European Union, Hong Kong, India, Malaysia, Philippines, Singapore, Thailand, Turkey, United Kingdom, Vietnam)
+                  Bands for current country (USA, Canada)
                 </span>
                 <div
                   class="styledComponents__FieldLabel-sc-nyixel-1 hqJZEc"
@@ -290,7 +290,7 @@ exports[`CellularRadioSimSettings should render CellularRadioSimSettings  succes
                             >
                               <div
                                 class="ant-checkbox-group"
-                                id="bandLteArray_primarySim_DOMAIN_1_band3G"
+                                id="bandLteArray_primarySim_USA_CANADA_band3G"
                               >
                                 <label
                                   class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
@@ -382,7 +382,7 @@ exports[`CellularRadioSimSettings should render CellularRadioSimSettings  succes
                             >
                               <div
                                 class="ant-checkbox-group"
-                                id="bandLteArray_primarySim_DOMAIN_1_band4G"
+                                id="bandLteArray_primarySim_USA_CANADA_band4G"
                               >
                                 <label
                                   class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
