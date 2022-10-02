@@ -137,7 +137,7 @@ export function LteBandChannels (
                 children={
                   <Checkbox.Group
                     options={availableLteBand4G}
-                    onChange={onChange}
+                    // onChange={onChange}
                   />
                 }
               />
