@@ -81,7 +81,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenue: {
     method: 'get',
-    url: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId'
   },
   getVenueDetailsHeader: {
     method: 'get',

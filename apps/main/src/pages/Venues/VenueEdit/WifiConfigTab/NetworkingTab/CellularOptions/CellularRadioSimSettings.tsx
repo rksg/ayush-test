@@ -106,9 +106,9 @@ export function CellularRadioSimSettings (props: {
         label={$t({ defaultMessage: 'LTE Bank Lock' })}
         children={
           props.availableLteBands.map((item, index) => (
-            <>
+            <div
+              key={props.formControlName + index}>
               <LteBandChannels
-                key={index}
                 index={index}
                 editData={props.editData}
                 formControlName={props.formControlName}
@@ -134,8 +134,7 @@ export function CellularRadioSimSettings (props: {
                     $t({ defaultMessage: 'Show bands for other countries' })}
                 </Button>
               }
-            </>
-
+            </div>
           ))
         }
       />

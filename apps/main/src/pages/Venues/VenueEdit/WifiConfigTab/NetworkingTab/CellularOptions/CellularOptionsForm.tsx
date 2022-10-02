@@ -72,16 +72,43 @@ export function CellularOptionsForm () {
     useState(defaultEditData)
   const formRef = useRef<StepsFormInstance>()
   const form = Form.useFormInstance()
+  const shiftCurrentRegionToFirst = function (lteBands: LteBandLockChannel[]) {
+    if (!_.isEmpty(currentRegion)) {
+      const index = lteBands.findIndex(item => item.region === currentRegion)
+      lteBands.splice(0, 0, lteBands.splice(index, 1)[0])
+    }
+  }
 
+  const sortByLteBandRegionEnum = function (availableLteBands: AvailableLteBands[]) {
+    const map = {
+      [LteBandRegionEnum.DOMAIN_1]: 0,
+      [LteBandRegionEnum.DOMAIN_2]: 1,
+      [LteBandRegionEnum.USA_CANADA]: 2,
+      [LteBandRegionEnum.JAPAN]: 3
+    }
+    availableLteBands.sort((a, b) => {
+      if (map[a.region] < map[b.region]) {
+        return -1
+      }
+      if (map[a.region] > map[b.region]) {
+        return 1
+      }
+      return 0
+    })
+  }
+
+  const getCurrentCountryName = function (countryCode: string) {
+    return _.pickBy(CountryIsoDisctionary, (val) => {
+      return val.toUpperCase() === countryCode
+    })
+  }
 
   useEffect(() => {
     let availableLteBandsContext = _.cloneDeep(availableLteBands?.data)
-    const countryCode = _.get(venueData, 'data.address.countryCode')
-
     let venueApModelCellularContext = _.cloneDeep(venueApModelCellular.data)
-
-
-    if (availableLteBandsContext) {
+    const countryCode = _.get(venueData, 'data.countryCode')
+    
+    if (availableLteBandsContext && countryCode) {
 
       availableLteBandsContext.forEach(lteBands => {
         regionCountriesMap[lteBands.region] =
@@ -97,9 +124,7 @@ export function CellularOptionsForm () {
       })
 
       //setCurrentCountryName
-      const currentCountry = _.pickBy(CountryIsoDisctionary, (val) => {
-        return val.toUpperCase() === countryCode
-      })
+      const currentCountry = getCurrentCountryName(countryCode)
 
       if (currentCountry) {
         currentCountryName = _.keys(currentCountry)[0]
@@ -130,34 +155,11 @@ export function CellularOptionsForm () {
         }
 
         //sortByLteBandRegionEnum
-        const sortByLteBandRegionEnum = function (availableLteBands: AvailableLteBands[]) {
-          const map = {
-            [LteBandRegionEnum.DOMAIN_1]: 0,
-            [LteBandRegionEnum.DOMAIN_2]: 1,
-            [LteBandRegionEnum.USA_CANADA]: 2,
-            [LteBandRegionEnum.JAPAN]: 3
-          }
-          availableLteBands.sort((a, b) => {
-            if (map[a.region] < map[b.region]) {
-              return -1
-            }
-            if (map[a.region] > map[b.region]) {
-              return 1
-            }
-            return 0
-          })
-        }
         sortByLteBandRegionEnum(venueApModelCellularContext.primarySim.lteBands)
         sortByLteBandRegionEnum(venueApModelCellularContext.secondarySim.lteBands)
         sortByLteBandRegionEnum(availableLteBandsContext)
 
         //shiftCurrentRegionToFirst
-        const shiftCurrentRegionToFirst = function (lteBands: LteBandLockChannel[]) {
-          if (!_.isEmpty(currentRegion)) {
-            const index = lteBands.findIndex(item => item.region === currentRegion)
-            lteBands.splice(0, 0, lteBands.splice(index, 1)[0])
-          }
-        }
         shiftCurrentRegionToFirst(venueApModelCellularContext.primarySim.lteBands)
         shiftCurrentRegionToFirst(venueApModelCellularContext.secondarySim.lteBands)
         shiftCurrentRegionToFirst(availableLteBandsContext)
