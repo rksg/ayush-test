@@ -29,8 +29,8 @@ export function useMenuConfig () {
       path: '/dashboard',
       name: $t({ defaultMessage: 'My Customers' }),
       tenantType: 'v',
-      disableIcon: UsersThreeOutlined,
-      enableIcon: UsersThreeSolid,
+      inactiveIcon: UsersThreeOutlined,
+      activeIcon: UsersThreeSolid,
       routes: [
         {
           path: '/dashboard/mspCustomers',
@@ -46,30 +46,30 @@ export function useMenuConfig () {
       path: '/integrators',
       name: $t({ defaultMessage: 'Integrators' }),
       tenantType: 'v',
-      disableIcon: ServicesOutlined,
-      enableIcon: ServicesSolid
+      inactiveIcon: ServicesOutlined,
+      activeIcon: ServicesSolid
     },
     {
       path: '/deviceInventory',
       name: $t({ defaultMessage: 'Device Inventory' }),
       tenantType: 'v',
-      disableIcon: DevicesOutlined,
-      enableIcon: DevicesSolid
+      inactiveIcon: DevicesOutlined,
+      activeIcon: DevicesSolid
     },
     {
       path: '/mspLicenses',
       name: $t({ defaultMessage: 'MSP Licenses' }),
       tenantType: 'v',
-      disableIcon: MspSubscriptionOutlined,
-      enableIcon: MspSubscriptionSolid
+      inactiveIcon: MspSubscriptionOutlined,
+      activeIcon: MspSubscriptionSolid
     },
     genPlaceholder(),
     {
       path: '/portalSetting',
       name: $t({ defaultMessage: 'Settings' }),
       tenantType: 'v',
-      disableIcon: ConfigurationOutlined,
-      enableIcon: ConfigurationSolid
+      inactiveIcon: ConfigurationOutlined,
+      activeIcon: ConfigurationSolid
     }
   ]
   return config

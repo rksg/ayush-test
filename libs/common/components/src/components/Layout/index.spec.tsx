@@ -55,8 +55,8 @@ describe('Layout', () => {
         path: '/dashboard',
         name: 'Dashboard',
         tenantType: 'v' as TenantType,
-        disableIcon: SpeedIndicatorOutlined,
-        enableIcon: SpeedIndicatorSolid
+        inactiveIcon: SpeedIndicatorOutlined,
+        activeIcon: SpeedIndicatorSolid
       }
     ]
     const { asFragment } = render(<Layout

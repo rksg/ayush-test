@@ -34,14 +34,14 @@ export function useMenuConfig () {
     {
       path: '/dashboard',
       name: $t({ defaultMessage: 'Dashboard' }),
-      disableIcon: SpeedIndicatorOutlined,
-      enableIcon: SpeedIndicatorSolid
+      inactiveIcon: SpeedIndicatorOutlined,
+      activeIcon: SpeedIndicatorSolid
     },
     {
       path: '/analytics',
       name: $t({ defaultMessage: 'AI Analytics' }),
-      disableIcon: AI,
-      enableIcon: AI,
+      inactiveIcon: AI,
+      activeIcon: AI,
       routes: [
         {
           path: '/analytics/incidents',
@@ -66,58 +66,58 @@ export function useMenuConfig () {
     {
       path: '/timeline',
       name: $t({ defaultMessage: 'Timeline' }),
-      disableIcon: CalendarDateOutlined,
-      enableIcon: CalendarDateSolid
+      inactiveIcon: CalendarDateOutlined,
+      activeIcon: CalendarDateSolid
     },
     {
       path: '/reports',
       name: $t({ defaultMessage: 'Reports' }),
-      disableIcon: ReportsOutlined,
-      enableIcon: ReportsSolid
+      inactiveIcon: ReportsOutlined,
+      activeIcon: ReportsSolid
     },
     genPlaceholder(),
     {
       path: '/venues',
       name: $t({ defaultMessage: 'Venues' }),
-      disableIcon: LocationOutlined,
-      enableIcon: LocationSolid
+      inactiveIcon: LocationOutlined,
+      activeIcon: LocationSolid
     },
     {
       path: '/devices',
       name: $t({ defaultMessage: 'Devices' }),
-      disableIcon: DevicesOutlined,
-      enableIcon: DevicesSolid
+      inactiveIcon: DevicesOutlined,
+      activeIcon: DevicesSolid
     },
     {
       path: '/networks',
       name: $t({ defaultMessage: 'Networks' }),
-      disableIcon: NetworksOutlined,
-      enableIcon: NetworksSolid
+      inactiveIcon: NetworksOutlined,
+      activeIcon: NetworksSolid
     },
     {
       path: '/services',
       name: $t({ defaultMessage: 'Services' }),
-      disableIcon: ServicesOutlined,
-      enableIcon: ServicesSolid
+      inactiveIcon: ServicesOutlined,
+      activeIcon: ServicesSolid
     },
     {
       path: '/policies',
       name: $t({ defaultMessage: 'Policies' }),
-      disableIcon: ServicesOutlined,
-      enableIcon: ServicesSolid
+      inactiveIcon: ServicesOutlined,
+      activeIcon: ServicesSolid
     },
     {
       path: '/users',
       name: $t({ defaultMessage: 'Users' }),
-      disableIcon: AccountCircleOutlined,
-      enableIcon: AccountCircleSolid
+      inactiveIcon: AccountCircleOutlined,
+      activeIcon: AccountCircleSolid
     },
     genPlaceholder(),
     {
       path: '/administration',
       name: $t({ defaultMessage: 'Administration' }),
-      disableIcon: ConfigurationOutlined,
-      enableIcon: ConfigurationSolid
+      inactiveIcon: ConfigurationOutlined,
+      activeIcon: ConfigurationSolid
     }
   ]
   return config

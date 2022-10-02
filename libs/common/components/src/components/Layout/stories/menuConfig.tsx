@@ -32,14 +32,14 @@ const config = [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    disableIcon: SpeedIndicatorOutlined,
-    enableIcon: SpeedIndicatorSolid
+    inactiveIcon: SpeedIndicatorOutlined,
+    activeIcon: SpeedIndicatorSolid
   },
   {
     path: '/analytics',
     name: 'AI Analytics',
-    disableIcon: AI,
-    enableIcon: AI,
+    inactiveIcon: AI,
+    activeIcon: AI,
     routes: [
       {
         path: '/analytics/incidents',
@@ -66,58 +66,58 @@ const config = [
   {
     path: '/timeline',
     name: 'Timeline',
-    disableIcon: CalendarDateOutlined,
-    enableIcon: CalendarDateSolid
+    inactiveIcon: CalendarDateOutlined,
+    activeIcon: CalendarDateSolid
   },
   {
     path: '/reports',
     name: 'Reports',
-    disableIcon: ReportsOutlined,
-    enableIcon: ReportsSolid
+    inactiveIcon: ReportsOutlined,
+    activeIcon: ReportsSolid
   },
   genPlaceholder(),
   {
     path: '/venues',
     name: 'Venues',
-    disableIcon: LocationOutlined,
-    enableIcon: LocationSolid
+    inactiveIcon: LocationOutlined,
+    activeIcon: LocationSolid
   },
   {
     path: '/devices',
     name: 'Device Inventory',
-    disableIcon: DevicesOutlined,
-    enableIcon: DevicesSolid
+    inactiveIcon: DevicesOutlined,
+    activeIcon: DevicesSolid
   },
   {
     path: '/networks',
     name: 'Networks',
-    disableIcon: NetworksOutlined,
-    enableIcon: NetworksSolid
+    inactiveIcon: NetworksOutlined,
+    activeIcon: NetworksSolid
   },
   {
     path: '/services',
     name: 'Services',
-    disableIcon: ServicesOutlined,
-    enableIcon: ServicesSolid
+    inactiveIcon: ServicesOutlined,
+    activeIcon: ServicesSolid
   },
   {
     path: '/policies',
     name: 'Policies',
-    disableIcon: ServicesOutlined,
-    enableIcon: ServicesSolid
+    inactiveIcon: ServicesOutlined,
+    activeIcon: ServicesSolid
   },
   {
     path: '/users',
     name: 'Users',
-    disableIcon: AccountCircleOutlined,
-    enableIcon: AccountCircleSolid
+    inactiveIcon: AccountCircleOutlined,
+    activeIcon: AccountCircleSolid
   },
   genPlaceholder(),
   {
     path: '/administration',
     name: 'Administration',
-    disableIcon: ConfigurationOutlined,
-    enableIcon: ConfigurationSolid
+    inactiveIcon: ConfigurationOutlined,
+    activeIcon: ConfigurationSolid
   }
 ]
 

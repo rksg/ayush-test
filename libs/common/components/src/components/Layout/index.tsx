@@ -19,8 +19,8 @@ interface MenuItem {
   uri?: string
   name: string
   tenantType?: TenantType
-  disableIcon?: React.FC
-  enableIcon?: React.FC
+  inactiveIcon?: React.FC
+  activeIcon?: React.FC
   routes?: Array<MenuItem>
   pro_layout_parentKeys?: string[]
 }
@@ -66,10 +66,10 @@ export function Layout ({
       {({ isActive }) => {
         let icon: JSX.Element | undefined
         if (isActive) {
-          const IconComponent = item.enableIcon
-          if (IconComponent) icon = <UI.MenuIconSolid children={<IconComponent />} />
+          const IconComponent = item.activeIcon as React.FC
+          icon = <UI.MenuIconSolid children={<IconComponent />} />
         } else {
-          const IconComponent = item.disableIcon
+          const IconComponent = item.inactiveIcon
           if (IconComponent) icon = <UI.MenuIconOutlined children={<IconComponent />} />
         }
         return <>
