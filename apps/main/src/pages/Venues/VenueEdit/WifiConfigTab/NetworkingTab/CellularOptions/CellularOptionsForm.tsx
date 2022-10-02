@@ -15,13 +15,10 @@ import { AvailableLteBands, CountryIsoDisctionary, LteBandLockChannel, LteBandRe
 
 import { CellularRadioSimSettings } from './CellularRadioSimSettings'
 
-
 export interface ModelOption {
   label: string
   value: string
 }
-
-
 
 const { Option } = Select
 export enum WanConnectionEnum {
@@ -38,22 +35,21 @@ export function CellularOptionsForm () {
   const { tenantId, venueId } = useParams()
   const venueApModelCellular = useGetVenueApModelCellularQuery({ params: { tenantId, venueId } })
 
-
   const LteBandLockCountriesJson = {
-    DOMAIN_1: {
+    [LteBandRegionEnum.DOMAIN_1]: {
       name: 'Domain 1 countries',
       // eslint-disable-next-line max-len
       countries: 'European Union, Hong Kong, India, Malaysia, Philippines, Singapore, Thailand, Turkey, United Kingdom, Vietnam'
     },
-    DOMAIN_2: {
+    [LteBandRegionEnum.DOMAIN_2]: {
       name: 'Domain 2 countries',
       countries: 'Australia, Brazil, Mexico, New Zealand, Taiwan'
     },
-    USA_CANADA: {
+    [LteBandRegionEnum.USA_CANADA]: {
       name: 'USA & Canada',
       countries: 'USA, Canada'
     },
-    JAPAN: {
+    [LteBandRegionEnum.JAPAN]: {
       name: 'Japan',
       countries: 'Japan'
     }
@@ -155,7 +151,6 @@ export function CellularOptionsForm () {
         sortByLteBandRegionEnum(venueApModelCellularContext.secondarySim.lteBands)
         sortByLteBandRegionEnum(availableLteBandsContext)
 
-
         //shiftCurrentRegionToFirst
         const shiftCurrentRegionToFirst = function (lteBands: LteBandLockChannel[]) {
           if (!_.isEmpty(currentRegion)) {
@@ -170,19 +165,13 @@ export function CellularOptionsForm () {
         setEditData(venueApModelCellularContext)
 
         formRef?.current?.setFieldsValue({ editData: venueApModelCellularContext })
-        // this.checkEditability();
-
-
       }
       setAvailableLteBandsArray(availableLteBandsContext)
     }
 
   }, [availableLteBands.data, venueApModelCellular.data, form])
 
-
-
   return (
-
     <>
       <Subtitle level={3}>{$t({ defaultMessage: 'Cellular Options' })}</Subtitle>
       <StepsForm

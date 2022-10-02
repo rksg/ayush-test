@@ -14,7 +14,7 @@ export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='networks/*' element={<NetworkRoutes />} />
-      {/* <Route path='services/*' element={<ServiceRoutes />} /> */}
+      <Route path='services/*' element={<ServiceRoutes />} />
     </Route>
   )
   return (

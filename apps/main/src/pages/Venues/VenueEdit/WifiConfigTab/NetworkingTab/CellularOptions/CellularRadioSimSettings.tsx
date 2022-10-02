@@ -10,7 +10,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { AvailableLteBands, CellularNetworkSelectionEnum, VenueApModelCellular } from '@acx-ui/rc/utils'
+import { AvailableLteBands, CellularNetworkSelectionEnum, LteBandLockCountriesJson, VenueApModelCellular } from '@acx-ui/rc/utils'
 
 import { LteBandChannels } from './LteBandChannels'
 
@@ -25,7 +25,7 @@ export function CellularRadioSimSettings (props: {
   availableLteBands: AvailableLteBands[],
   simCardNumber: number,
   legend: string,
-  regionCountriesMap: any,
+  regionCountriesMap: LteBandLockCountriesJson,
   currentRegion: string,
   currentCountryName: string,
   formControlName: 'primarySim' | 'secondarySim',

@@ -5,11 +5,10 @@ import {
   Form,
   Checkbox
 } from 'antd'
-import { CheckboxValueType } from 'antd/lib/checkbox/Group'
-import _                     from 'lodash'
-import { useIntl }           from 'react-intl'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
-import { AvailableLteBandOptions, AvailableLteBands, VenueApModelCellular } from '@acx-ui/rc/utils'
+import { AvailableLteBandOptions, AvailableLteBands, LteBandLockCountriesJson, VenueApModelCellular } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -26,7 +25,7 @@ export function LteBandChannels (
     countryName: string,
     regionName: string,
     regionCountries: string,
-    regionCountriesMap: any,
+    regionCountriesMap: LteBandLockCountriesJson,
     region: string,
     formControlName: 'primarySim'|'secondarySim',
     isShowOtherLteBands: boolean,
@@ -65,9 +64,6 @@ export function LteBandChannels (
 
 
   const { $t } = useIntl()
-  // const onChange = (checkedValues: CheckboxValueType[]) => {
-  //   checkedValues
-  // }
   let availableLteBand3G: AvailableLteBandOptions[] = []
   let availableLteBand4G: AvailableLteBandOptions[] = []
 
@@ -121,7 +117,6 @@ export function LteBandChannels (
                 children={
                   <Checkbox.Group
                     options={availableLteBand3G}
-                    // onChange={onChange}
                   />
                 }
               />
@@ -137,7 +132,6 @@ export function LteBandChannels (
                 children={
                   <Checkbox.Group
                     options={availableLteBand4G}
-                    // onChange={onChange}
                   />
                 }
               />

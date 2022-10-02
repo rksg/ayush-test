@@ -6,7 +6,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware')
  * Configure proxy to devalto for local development
  * See https://create-react-app.dev/docs/proxying-api-requests-in-development/
  */
-const CLOUD_URL = 'https://qaalto.ruckuswireless.com'
+const CLOUD_URL = 'https://devalto.ruckuswireless.com'
 const LOCAL_MLISA_URL = 'https://alto.local.mlisa.io'
 module.exports = async function setupProxy (app) {
   const localDataApi = new Promise((resolve) => {

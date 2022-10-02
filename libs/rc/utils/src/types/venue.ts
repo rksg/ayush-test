@@ -118,3 +118,10 @@ export interface AvailableLteBandOptions {
 	value: string, 
 	label: string
 }
+
+export interface LteBandLockCountriesJson {
+	[LteBandRegionEnum.DOMAIN_1]: { name: string, countries: string },
+	[LteBandRegionEnum.DOMAIN_2]: { name: string, countries: string },
+	[LteBandRegionEnum.JAPAN]: { name: string, countries: string },
+	[LteBandRegionEnum.USA_CANADA]: { name: string, countries: string }
+}
