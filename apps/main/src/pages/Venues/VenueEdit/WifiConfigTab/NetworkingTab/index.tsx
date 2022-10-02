@@ -4,15 +4,25 @@ import { useIntl } from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm } from '@acx-ui/components'
 
-import { VenueEditContext, AdvancedSettingContext } from '../../index'
+import { VenueEditContext } from '../../index'
 
 import { MeshNetwork } from './MeshNetwork'
 
+export interface NetworkingSettingContext {
+  cellularData: unknown,
+  meshData: { mesh: boolean },
+  updateCellular: (() => void),
+  updateMesh: ((check: boolean) => void)
+}
 
 export function NetworkingTab () {
   const { $t } = useIntl()
 
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const {
+    editContextData,
+    setEditContextData,
+    editNetworkingContextData
+  } = useContext(VenueEditContext)
 
   const items = [{
   //   title: $t({ defaultMessage: 'LAN Ports' }),
@@ -30,12 +40,12 @@ export function NetworkingTab () {
 
   const handleUpdateAllSettings = async () => {
     try {
-      console.log(editContextData?.updateChanges)
-      for (let i=0; i < editContextData?.updateChanges.length; i++) {
-        if(editContextData?.updateChanges[i]){
-          editContextData?.updateChanges[i]?.()
-        }
-      }
+      editNetworkingContextData?.updateCellular?.()
+      editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
+      setEditContextData({
+        ...editContextData,
+        isDirty: false
+      })
     } catch {
       showToast({
         type: 'error',

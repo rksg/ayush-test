@@ -19,7 +19,11 @@ function VenueEditTabs () {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/venues/${params.venueId}/edit/`)
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const {
+    editContextData,
+    setEditContextData,
+    editNetworkingContextData
+  } = useContext(VenueEditContext)
   const onTabChange = (tab: string) => {
     const subTab = tab === 'wifi' ? 'radio' : (tab === 'switch' ? 'general' : 'details')
     navigate({
@@ -40,9 +44,10 @@ function VenueEditTabs () {
           ...editContextData,
           isDirty: false
         })
-        showUnsavedModal(
+        editNetworkingContextData && showUnsavedModal(
           editContextData,
           setEditContextData,
+          editNetworkingContextData,
           intl,
           tx.retry
         )

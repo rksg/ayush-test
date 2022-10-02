@@ -20,7 +20,12 @@ export function MeshNetwork () {
   const { $t } = useIntl()
   const params = useParams()
 
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const {
+    editContextData,
+    setEditContextData,
+    editNetworkingContextData,
+    setEditNetworkingContextData
+  } = useContext(VenueEditContext)
   
   const [apList] = useLazyApListQuery()
   const [updateVenueMesh] = useUpdateVenueMeshMutation()
@@ -49,8 +54,7 @@ export function MeshNetwork () {
         checkMeshAPs()
       }
     }
-    console.log(meshEnabled)
-  }, [data, isAllowEnableMesh, meshEnabled])
+  }, [data, isAllowEnableMesh])
 
   const checkMeshAPs = async () => {
     const payload = {
@@ -68,9 +72,9 @@ export function MeshNetwork () {
     }
   }
 
-  const handleUpdateMeshSetting = async () => {
+  const handleUpdateMeshSetting = async (check: boolean) => {
     try {
-      await updateVenueMesh({ params, payload: { mesh: meshEnabled } })
+      await updateVenueMesh({ params, payload: {mesh: check } })
     } catch {
       showToast({
         type: 'error',
@@ -98,8 +102,12 @@ export function MeshNetwork () {
           setEditContextData({
             ...editContextData,
             tabTitle: $t({ defaultMessage: 'Networking' }),
-            isDirty: true,
-            updateChanges: [handleUpdateMeshSetting]
+            isDirty: true
+          })
+          setEditNetworkingContextData({
+            ...editNetworkingContextData,
+            meshData: {mesh: true},
+            updateMesh: handleUpdateMeshSetting
           })
         },
         onCancel () {}
@@ -123,8 +131,12 @@ export function MeshNetwork () {
         setEditContextData({
           ...editContextData,
           tabTitle: $t({ defaultMessage: 'Networking' }),
-          isDirty: true,
-          updateChanges: [handleUpdateMeshSetting]
+          isDirty: true
+        })
+        setEditNetworkingContextData({
+          ...editNetworkingContextData,
+          meshData: {mesh: false},
+          updateMesh: handleUpdateMeshSetting
         })
       }
     }

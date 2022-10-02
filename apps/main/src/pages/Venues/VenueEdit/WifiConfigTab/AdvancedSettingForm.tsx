@@ -60,7 +60,7 @@ export function AdvancedSettingForm () {
       oldData: data,
       newData: data,
       isDirty: false,
-      updateChanges: [handleUpdateSetting],
+      updateChanges: handleUpdateSetting,
       setData: setTableData
     })
   }, [navigate])
@@ -105,7 +105,7 @@ export function AdvancedSettingForm () {
       isDirty: editContextData?.oldData ? !isEqual(editContextData?.oldData, tableData) : false,
       hasError: tableData?.filter(item => !item.model).length > 0,
       setData: setTableData,
-      updateChanges: [handleUpdateSetting]
+      updateChanges: handleUpdateSetting
     })
   }, [tableData])
 

@@ -3,13 +3,14 @@ import { createContext, useState } from 'react'
 import { IntlShape } from 'react-intl'
 
 import { showActionModal, CustomButtonProps } from '@acx-ui/components'
-import { VenueLed, VenueNetworking }          from '@acx-ui/rc/utils'
+import { VenueLed }                           from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
 
-import { SwitchConfigTab } from './SwitchConfigTab'
-import { VenueDetailsTab } from './VenueDetailsTab'
-import VenueEditPageHeader from './VenueEditPageHeader'
-import { WifiConfigTab }   from './WifiConfigTab'
+import { SwitchConfigTab }          from './SwitchConfigTab'
+import { VenueDetailsTab }          from './VenueDetailsTab'
+import VenueEditPageHeader          from './VenueEditPageHeader'
+import { WifiConfigTab }            from './WifiConfigTab'
+import { NetworkingSettingContext } from './WifiConfigTab/NetworkingTab'
 
 const tabs = {
   details: VenueDetailsTab,
@@ -24,7 +25,7 @@ export interface AdvancedSettingContext {
   hasError?: boolean,
   oldData?: VenueLed[],
   newData?: VenueLed[],
-  updateChanges: (() => void)[],
+  updateChanges: (() => void),
   setData?: (data: VenueLed[]) => void,
   tempData?: {
     settings?: VenueLed[]
@@ -33,16 +34,27 @@ export interface AdvancedSettingContext {
 
 export const VenueEditContext = createContext({} as {
   editContextData: AdvancedSettingContext,
-  setEditContextData: (data: AdvancedSettingContext) => void
+  setEditContextData: (data: AdvancedSettingContext) => void,
+  
+  editNetworkingContextData: NetworkingSettingContext,
+  setEditNetworkingContextData: (data: NetworkingSettingContext) => void
 })
 
 export function VenueEdit () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
   const [editContextData, setEditContextData] = useState({} as AdvancedSettingContext)
+  const [
+    editNetworkingContextData, setEditNetworkingContextData
+  ] = useState({} as NetworkingSettingContext)
 
   return (
-    <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
+    <VenueEditContext.Provider value={{
+      editContextData,
+      setEditContextData,
+      editNetworkingContextData,
+      setEditNetworkingContextData
+    }}>
       <VenueEditPageHeader />
       { Tab && <Tab /> }
     </VenueEditContext.Provider>
@@ -52,6 +64,7 @@ export function VenueEdit () {
 export function showUnsavedModal (
   editContextData: AdvancedSettingContext,
   setEditContextData: (data: AdvancedSettingContext) => void,
+  editNetworkingContextData: NetworkingSettingContext,
   intl: IntlShape,
   callback?: () => void
 ) {
@@ -90,10 +103,14 @@ export function showUnsavedModal (
     key: 'save',
     closeAfterAction: true,
     handler: async () => {
-      for (let i=0; i < editContextData?.updateChanges.length; i++) {
-        if(editContextData?.updateChanges[i]){
-          editContextData?.updateChanges[i]?.()
-        }
+      if(editContextData?.updateChanges){
+        editContextData?.updateChanges?.()
+      }
+      if(editNetworkingContextData?.updateCellular){
+        editNetworkingContextData?.updateCellular?.()
+      }
+      if(editNetworkingContextData?.updateMesh){
+        editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
       }
       callback?.()
     }
