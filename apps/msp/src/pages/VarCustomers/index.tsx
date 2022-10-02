@@ -6,17 +6,17 @@ import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/component
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { 
-  useVarCustomerListQuery 
-  // useInviteCustomerListQuery 
+import {
+  useVarCustomerListQuery
+  // useInviteCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
   DelegationEntitlementRecord,
   EntitlementNetworkDeviceType,
   EntitlementUtil,
-  MspEc, 
-  useTableQuery 
+  MspEc,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -127,14 +127,14 @@ function useCustomerColumns () {
 }
 
 const transformApUtilization = (row: MspEc) => {
-  const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) => 
+  const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
     en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
   if (entitlement.length > 0) {
     const apEntitlement = entitlement[0]
     const quantity = parseInt(apEntitlement.quantity, 10)
     const consumed = parseInt(apEntitlement.consumed, 10)
     if (quantity > 0) {
-      const value = 
+      const value =
       (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
       return value
     } else {
@@ -159,7 +159,7 @@ const transformNextExpirationDate = (row: MspEc) => {
       }
     }
     expirationDate = moment(target.expirationDate).format(DateFormatEnum.UserDateFormat)
-    toBeRemoved = EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType, 
+    toBeRemoved = EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType,
       parseInt(target.toBeRemovedQuantity, 10))
   })
 
@@ -179,14 +179,14 @@ const transformNextExpirationDate = (row: MspEc) => {
 const varCustomerPayload = {
   searchString: '',
   fields: [
-    'tenantName', 
-    'tenantEmail', 
-    'alarmCount', 
-    'priorityIncidents', 
-    'apEntitlement.quantity', 
-    'apEntitlement', 
-    'switchEntitlement', 
-    'nextExpirationLicense', 
+    'tenantName',
+    'tenantEmail',
+    'alarmCount',
+    'priorityIncidents',
+    'apEntitlement.quantity',
+    'apEntitlement',
+    'switchEntitlement',
+    'nextExpirationLicense',
     'id'],
   searchTargetFields: ['tenantName', 'tenantEmail'],
   filters: {

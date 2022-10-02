@@ -36,7 +36,7 @@ const list = {
     }
   ]
 }
-  
+
 describe('VarCustomers', () => {
   it('should render correctly', async () => {
     mockServer.use(
@@ -48,24 +48,23 @@ describe('VarCustomers', () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
-  
+
     const { asFragment } = render(<Provider><VarCustomers /></Provider>, {
       route: { params, path: '/:tenantId/varCustomers' }
     })
-  
+
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-  
+
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = screen.getByRole('table').querySelector('tbody')!
     expect(tbody).toBeVisible()
-  
+
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(list.data.length)
     list.data.forEach((item, index) => {
       expect(within(rows[index]).getByText(item.tenantName)).toBeVisible()
     })
-  
+
     expect(asFragment()).toMatchSnapshot()
   })
 })
-  

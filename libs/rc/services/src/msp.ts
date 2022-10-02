@@ -16,7 +16,7 @@ export const baseMspApi = createApi({
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
-  
+
 export const mspApi = baseMspApi.injectEndpoints({
   endpoints: (build) => ({
     mspCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
@@ -60,7 +60,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     deviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
       query: ({ params, payload }) => {
-        const deviceInventoryListReq = 
+        const deviceInventoryListReq =
           createHttpRequest(MspUrlsInfo.getMspDeviceInventory, params)
         return {
           ...deviceInventoryListReq,

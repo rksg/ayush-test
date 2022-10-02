@@ -23,11 +23,11 @@ const list = {
       status: 'Active',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
-      wifiLicenses: 2        
+      wifiLicenses: 2
     }
   ]
 }
-  
+
 describe('Integrators', () => {
   it('should render correctly', async () => {
     mockServer.use(
@@ -39,24 +39,23 @@ describe('Integrators', () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
-  
+
     const { asFragment } = render(<Provider><Integrators /></Provider>, {
       route: { params, path: '/:tenantId/integrators' }
     })
-  
+
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-  
+
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = screen.getByRole('table').querySelector('tbody')!
     expect(tbody).toBeVisible()
-  
+
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(list.data.length)
     list.data.forEach((item, index) => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
-  
+
     expect(asFragment()).toMatchSnapshot()
   })
 })
-  

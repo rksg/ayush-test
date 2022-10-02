@@ -8,16 +8,16 @@ export enum LicenseBannerTypeEnum {
     ra_50_to_90_percent = 'RA_BELOW_90_PERCENT_OF_DEVICES',
     ra_onboard_only = 'RA_ONBOARD_ONLY'
 }
-  
-export type EntitlementDeviceType = 
+
+export type EntitlementDeviceType =
     'WIFI' | 'LTE' | 'SWITCH' | 'ANALYTICS' | 'MSP_WIFI' | 'MSP_SWITCH'
-  
+
 export enum EntitlementNetworkDeviceType {
     SWITCH = 'DVCNWTYPE_SWITCH',
     WIFI = 'DVCNWTYPE_WIFI',
     LTE = 'DVCNWTYPE_LTE'
 }
-  
+
 export enum EntitlementDeviceSubType {
     ICX71L = 'ICX71L',
     ICX71 = 'ICX71',
@@ -26,7 +26,7 @@ export enum EntitlementDeviceSubType {
     ICX78 = 'ICX78',
     ICXTEMP = 'ICXTEMP'
 }
-  
+
 export class EntitlementUtil {
   public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType): string {
     switch (deviceSubType) {
@@ -50,7 +50,7 @@ export class EntitlementUtil {
     return isTempLicense ? 'Trial' : 'Basic'
   }
 
-  public static getNetworkDeviceTypeUnitText (networkDeviceType: EntitlementNetworkDeviceType, 
+  public static getNetworkDeviceTypeUnitText (networkDeviceType: EntitlementNetworkDeviceType,
     count: number): string {
     const unitArray = [count, ' ']
 
@@ -86,7 +86,7 @@ export interface DelegationEntitlementRecord {
     subTypeText?: string;
     percentageUsage?: string;
 }
-  
+
 export interface MspEc {
     id: string;
     name: string;
@@ -102,7 +102,7 @@ export interface MspEc {
     creationDate: number;
     entitlements: DelegationEntitlementRecord[];
 }
-  
+
 export interface EcDeviceInventory {
     deviceType: string;
     venueName: string;
