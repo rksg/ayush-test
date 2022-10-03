@@ -4,7 +4,9 @@ import { Buffer } from 'buffer'
 
 import { useSearchParams } from 'react-router-dom'
 
+import { useLocation }                                                                from '@acx-ui/react-router-dom'
 import { DateFilterContext, getDateRangeFilter, DateFilter, pathFilter, NetworkPath } from '@acx-ui/utils'
+
 interface AnalyticsFilterProps {
   path: NetworkPath
   raw?: object
@@ -68,12 +70,23 @@ export function useAnalyticsFilter () {
 
 export function AnalyticsFilterProvider (props: { children: ReactNode }) {
   const [search, setSearch] = useSearchParams()
-  const getNetworkFilter = () => search.has('analyticsNetworkFilter')
-    ? JSON.parse(
-      Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
-    )
-    : { path: [], raw: [] }
-
+  const { pathname } = useLocation()
+  const sublocation = pathname.substring(pathname.lastIndexOf('/') + 1)
+  const getNetworkFilter = () => {
+    let networkFilter = search.has('analyticsNetworkFilter')
+      ? JSON.parse(
+        Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
+      )
+      : { path: [], raw: [] }
+    const { path } = networkFilter
+    if(sublocation === 'health' &&
+    path.length &&
+    path.length > 1 &&
+    path[1]?.type === 'switchGroup'){
+      networkFilter = { path: defaultNetworkPath, raw: [] }
+    }
+    return networkFilter
+  }
   const setNetworkPath = (path: NetworkPath, raw: object) => {
     search.set(
       'analyticsNetworkFilter',
@@ -82,6 +95,7 @@ export function AnalyticsFilterProvider (props: { children: ReactNode }) {
     setSearch(search, { replace: true })
   }
   const { path } = getNetworkFilter()
+
   const providerValue = {
     path: path.length ? path : defaultNetworkPath,
     setNetworkPath,

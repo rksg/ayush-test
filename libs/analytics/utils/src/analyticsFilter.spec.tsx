@@ -165,4 +165,29 @@ describe('AnalyticsFilterProvider', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should set path to default when path is health and selected node is switch', () => {
+    const filter = {
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'switchGroup', name: 'switchGroup' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }
+    const path = Buffer.from(JSON.stringify(filter)).toString('base64')
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/health',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <AnalyticsFilterProvider>
+          <Component />
+        </AnalyticsFilterProvider>
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
 })
