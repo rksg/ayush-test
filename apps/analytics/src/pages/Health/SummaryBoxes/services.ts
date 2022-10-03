@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
 import { dataApi }     from '@acx-ui/analytics/services'
-import { NetworkPath } from '@acx-ui/analytics/utils'
+import { NetworkPath } from '@acx-ui/utils'
 
 export interface SummaryData {
   timeSeries: {
