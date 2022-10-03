@@ -7,13 +7,15 @@ import { Incident } from '@acx-ui/analytics/utils'
 
 import { timeSeriesCharts, TimeSeriesChartTypes } from './config'
 
-export type BufferConfig = {
-  value: number;
-  unit: unitOfTime.Base;
+type BufferConfig = {
+  value: number
+  unit: unitOfTime.Base
 }
 
+export type BufferType = number | { front: BufferConfig, back: BufferConfig }
+
 interface ChartIncident extends Incident {
-  buffer?: number | { front: BufferConfig, back: BufferConfig }
+  buffer?: BufferType
 }
 export interface ChartDataProps {
   charts: TimeSeriesChartTypes[]
@@ -27,7 +29,7 @@ interface Response <ChartsData> {
 }
 
 export type ChartsData = {
-  relatedIncidents: Incident[],
+  relatedIncidents: Incident[]
 } & Record<string, Record<string, number[] | string[]>>
 
 export const calcGranularity = (start: string, end: string): string => {

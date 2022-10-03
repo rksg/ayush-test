@@ -11,7 +11,7 @@ import {
   calcGranularity,
   getIncidentTimeSeriesPeriods,
   getBuffer,
-  BufferConfig
+  BufferType
 } from './services'
 
 describe('chartQuery', () => {
@@ -153,12 +153,12 @@ describe('chartQuery', () => {
       front: {
         value: 1,
         unit: 'hour'
-      } as BufferConfig,
+      },
       back: {
         value: 10,
         unit: 'minutes'
-      } as BufferConfig
-    }
+      }
+    } as BufferType
     expect(getBuffer(undefined)).toEqual(
       { back: { unit: 'hours', value: 6 }, front: { unit: 'hours', value: 6 } })
     expect(getBuffer(10)).toEqual(

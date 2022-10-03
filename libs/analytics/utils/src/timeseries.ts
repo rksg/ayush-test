@@ -1,6 +1,6 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import type { MultiLineTimeSeriesChartData } from './types/timeseries'
+import type { SeriesChartData } from './types/timeseries'
 
 export type TimeSeriesData = {
   [key: string]: (TimeStamp | number | null)[]
@@ -9,7 +9,7 @@ export type TimeSeriesData = {
 export function getSeriesData (
   data: TimeSeriesData | null,
   seriesMapping: Array<{ key: string, name: string }>
-): MultiLineTimeSeriesChartData[] {
+): SeriesChartData[] {
   if (checkNoData(data)) return []
   return seriesMapping.map(({ key, name }) => ({
     name,

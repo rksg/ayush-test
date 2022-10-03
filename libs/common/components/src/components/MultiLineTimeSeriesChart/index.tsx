@@ -4,8 +4,8 @@ import ReactECharts from 'echarts-for-react'
 import { isEmpty }  from 'lodash'
 import styled       from 'styled-components/macro'
 
-import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
-import type { TimeStamp }                    from '@acx-ui/types'
+import type { SeriesChartData } from '@acx-ui/analytics/utils'
+import type { TimeStamp }       from '@acx-ui/types'
 
 import { cssStr }              from '../../theme/helper'
 import {
@@ -43,7 +43,7 @@ type Marker <MarkerData> = {
 }
 
 export interface MultiLineTimeSeriesChartProps <
-  TChartData extends MultiLineTimeSeriesChartData,
+  TChartData extends SeriesChartData,
   MarkerData
 >
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
@@ -108,7 +108,7 @@ export function useOnMarkedAreaClick <MarkerData> (
 }
 
 export function MultiLineTimeSeriesChart <
-  TChartData extends MultiLineTimeSeriesChartData,
+  TChartData extends SeriesChartData,
   MarkerData
 >
 ({

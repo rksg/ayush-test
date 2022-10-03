@@ -1,6 +1,7 @@
 import ReactECharts from 'echarts-for-react'
 
-import { TimeStamp } from '@acx-ui/types'
+import { SeriesChartData } from '@acx-ui/analytics/utils'
+import { TimeStamp }       from '@acx-ui/types'
 
 import { cssStr }              from '../../theme/helper'
 import {
@@ -18,34 +19,24 @@ import {
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
 
-interface ChartData extends Object {
-  /**
-   * Multi dimensional array which first item is timestamp and 2nd item is value
-   * @example
-   * [
-   *   [1603900800000, 64.12186646508322],
-   *   [1603987200000, 76]
-   * ]
-   */
-  value: [TimeStamp, number][]
-}
-
 export interface StackedAreaChartProps
-  <TChartData extends ChartData>
+  <TChartData extends SeriesChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[]
     /** @default 'name' */
     legendProp?: keyof TChartData,
     lineColors?: string[],
-    dataFormatter?: (value: unknown) => string | null
+    dataFormatter?: (value: unknown) => string | null,
+    disableLegend?: boolean
   }
 
 export function StackedAreaChart <
-  TChartData extends ChartData = { name: string, value: [TimeStamp, number][] }
+  TChartData extends SeriesChartData = { name: string, data: [TimeStamp, number][] }
 > ({
   data,
   legendProp = 'name' as keyof TChartData,
   dataFormatter,
+  disableLegend,
   ...props
 }: StackedAreaChartProps<TChartData>) {
   const option: EChartsOption = {
@@ -85,7 +76,7 @@ export function StackedAreaChart <
     },
     series: data.map(datum => ({
       name: datum[legendProp] as unknown as string,
-      data: datum.value,
+      data: datum.data,
       type: 'line',
       silent: true,
       stack: 'Total',
@@ -95,6 +86,8 @@ export function StackedAreaChart <
       areaStyle: { opacity: 1 }
     }))
   }
+
+  if (option && disableLegend === true) { delete(option.legend) }
 
   return (
     <ReactECharts

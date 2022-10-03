@@ -11,6 +11,8 @@ import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 import { NetworkImpact }                  from '../NetworkImpact'
 import { NetworkImpactChartTypes }        from '../NetworkImpact/config'
+import { TimeSeries }                     from '../TimeSeries'
+import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import * as UI from './styledComponents'
 
@@ -29,6 +31,9 @@ export const CovClientrssiLow = (incident: Incident) => {
   const networkImpactCharts: NetworkImpactChartTypes[] = [
     NetworkImpactChartTypes.WLAN,
     NetworkImpactChartTypes.Radio
+  ]
+  const timeSeriesCharts: TimeSeriesChartTypes[] = [
+    TimeSeriesChartTypes.RssQualityByClientsChart
   ]
 
   return (
@@ -56,7 +61,7 @@ export const CovClientrssiLow = (incident: Incident) => {
           <NetworkImpact incident={incident} charts={networkImpactCharts}/>
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Chart</div>
+          <TimeSeries incident={incident} charts={timeSeriesCharts} />
         </GridCol>
       </GridRow>
     </>

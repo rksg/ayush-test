@@ -1,6 +1,6 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-export interface MultiLineTimeSeriesChartData extends Object {
+export interface SeriesChartData extends Object {
   name: string,
   data: [TimeStamp, number | '-'][]
 }
