@@ -96,7 +96,7 @@ exports[`Layout should render correctly 1`] = `
                           class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
                         >
                           <div
-                            data-testid="ai"
+                            data-testid="ai-outlined"
                           />
                         </span>
                         <span

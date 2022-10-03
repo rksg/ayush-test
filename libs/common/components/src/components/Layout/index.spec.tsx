@@ -17,7 +17,8 @@ jest.mock('@acx-ui/icons', ()=>({
   Logo: () => <div data-testid='logo'/>,
   ArrowChevronLeft: () => <div data-testid='arrow-left'/>,
   ArrowChevronRight: () => <div data-testid='arrow-right'/>,
-  AI: () => <div data-testid='ai'/>,
+  AIOutlined: () => <div data-testid='ai-outlined'/>,
+  AISolid: () => <div data-testid='ai-solid'/>,
   AccountCircleOutlined: () => <div data-testid='account-circle-outlined'/>,
   AccountCircleSolid: () => <div data-testid='account-circle-solid'/>,
   AdminOutlined: () => <div data-testid='admin-outlined'/>,
@@ -48,7 +49,7 @@ describe('Layout', () => {
       rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
     />, { route: true })
-    await screen.findByTestId('ai')
+    await screen.findByTestId('ai-outlined')
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render with custom tenant type correctly', async () => {
@@ -77,7 +78,7 @@ describe('Layout', () => {
       rightHeaderContent={<div>Right header</div>}
       content={<div>content</div>}
     />, { route: true })
-    await screen.findByTestId('ai')
+    await screen.findByTestId('ai-outlined')
     fireEvent.click(screen.getByText('Collapse'))
     await screen.findByTestId('arrow-right')
   })
@@ -93,7 +94,7 @@ describe('Layout', () => {
         params: { tenantId: 't-id', page: 'dashboard' }
       }
     })
-    await screen.findByTestId('ai')
+    await screen.findByTestId('ai-outlined')
     fireEvent.click(screen.getByTestId('account-circle-outlined'))
     await screen.findByTestId('account-circle-solid')
   })

@@ -1,7 +1,8 @@
 import styled from 'styled-components/macro'
 
 import {
-  AI as AIBase,
+  AIOutlined as AIOutlinedBase,
+  AISolid as AISolidBase,
   AccountCircleOutlined,
   AccountCircleSolid,
   AdminOutlined,
@@ -27,7 +28,8 @@ import {
 import { genPlaceholder, LayoutProps } from '..'
 import { LayoutUI }                    from '../styledComponents'
 
-const AI = styled(AIBase)`${LayoutUI.iconOutlinedOverride}`
+const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
+const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
 const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
 const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
@@ -42,8 +44,8 @@ const config: LayoutProps['menuConfig'] = [
   {
     path: '/analytics',
     name: 'AI Analytics',
-    inactiveIcon: AI,
-    activeIcon: AI,
+    inactiveIcon: AIOutlined,
+    activeIcon: AISolid,
     routes: [
       {
         path: '/analytics/incidents',

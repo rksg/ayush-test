@@ -3,7 +3,8 @@ import styled      from 'styled-components/macro'
 
 import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
 import {
-  AI as AIBase,
+  AIOutlined as AIOutlinedBase,
+  AISolid as AISolidBase,
   AccountCircleOutlined,
   AccountCircleSolid,
   AdminOutlined,
@@ -26,7 +27,8 @@ import {
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
 
-const AI = styled(AIBase)`${LayoutUI.iconOutlinedOverride}`
+const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
+const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
 const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
 const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
@@ -43,8 +45,8 @@ export function useMenuConfig () {
     {
       path: '/analytics',
       name: $t({ defaultMessage: 'AI Analytics' }),
-      inactiveIcon: AI,
-      activeIcon: AI,
+      inactiveIcon: AIOutlined,
+      activeIcon: AISolid,
       routes: [
         {
           path: '/analytics/incidents',
