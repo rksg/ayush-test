@@ -263,12 +263,6 @@ export const CollapseText = styled.div`
   margin-left: 5px;
 `
 
-const menuIconStyle = css`
-  height: 20px;
-  width: 20px;
-  vertical-align: middle;
-  margin-right: 8px;
-`
 const Button = styled(AntButton).attrs({ type: 'primary' })`
   background-color: var(--acx-neutrals-70);
   border: none;
@@ -282,19 +276,11 @@ const Button = styled(AntButton).attrs({ type: 'primary' })`
   }
 `
 export const LayoutUI = {
-  menuIconStyle,
-  enabledMenuIconStyle: css`
-    ${menuIconStyle}
-    path {
-      fill: var(--acx-primary-white);
-      stroke: var(--acx-neutrals-70);
-    }
+  iconOutlinedOverride: css`
+    path { stroke: none !important; }
   `,
-  disabledMenuIconStyle: css`
-    ${menuIconStyle}
-    path {
-      stroke: var(--acx-primary-white);
-    }
+  iconSolidOverride: css`
+    stroke: none !important;
   `,
   Icon: styled.span`
     > svg {

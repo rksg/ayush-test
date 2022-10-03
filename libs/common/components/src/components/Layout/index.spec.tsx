@@ -18,18 +18,20 @@ jest.mock('@acx-ui/icons', ()=>({
   ArrowChevronLeft: () => <div data-testid='arrow-left'/>,
   ArrowChevronRight: () => <div data-testid='arrow-right'/>,
   AI: () => <div data-testid='ai'/>,
-  AccountCircleOutlined: () => <div data-testid='acccount-circle-outlined'/>,
-  AccountCircleSolid: () => <div data-testid='acccount-circle-solid'/>,
+  AccountCircleOutlined: () => <div data-testid='account-circle-outlined'/>,
+  AccountCircleSolid: () => <div data-testid='account-circle-solid'/>,
+  AdminOutlined: () => <div data-testid='admin-outlined'/>,
+  AdminSolid: () => <div data-testid='admin-solid'/>,
   CalendarDateOutlined: () => <div data-testid='calendar-date-outlined'/>,
   CalendarDateSolid: () => <div data-testid='calendar-date-solid'/>,
-  ConfigurationOutlined: () => <div data-testid='configuration-outlined'/>,
-  ConfigurationSolid: () => <div data-testid='configuration-solid'/>,
   DevicesOutlined: () => <div data-testid='devices-outlined'/>,
   DevicesSolid: () => <div data-testid='devices-solid'/>,
   LocationOutlined: () => <div data-testid='location-outlined'/>,
   LocationSolid: () => <div data-testid='location-solid'/>,
   NetworksOutlined: () => <div data-testid='networks-outlined'/>,
   NetworksSolid: () => <div data-testid='networks-solid'/>,
+  PoliciesOutlined: () => <div data-testid='policies-outlined'/>,
+  PoliciesSolid: () => <div data-testid='policies-solid'/>,
   ReportsOutlined: () => <div data-testid='reports-outlined'/>,
   ReportsSolid: () => <div data-testid='reports-solid'/>,
   ServicesOutlined: () => <div data-testid='services-outlined'/>,
@@ -92,7 +94,7 @@ describe('Layout', () => {
       }
     })
     await screen.findByTestId('ai')
-    fireEvent.click(screen.getByTestId('acccount-circle-outlined'))
-    await screen.findByTestId('acccount-circle-solid')
+    fireEvent.click(screen.getByTestId('account-circle-outlined'))
+    await screen.findByTestId('account-circle-solid')
   })
 })

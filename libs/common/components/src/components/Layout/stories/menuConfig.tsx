@@ -1,34 +1,38 @@
 import styled from 'styled-components/macro'
 
 import {
-  AI as AIOriginal,
+  AI as AIBase,
   AccountCircleOutlined,
   AccountCircleSolid,
+  AdminOutlined,
+  AdminSolid as AdminSolidBase,
   CalendarDateOutlined,
   CalendarDateSolid,
-  ConfigurationOutlined,
-  ConfigurationSolid,
   DevicesOutlined,
   DevicesSolid,
   LocationOutlined,
   LocationSolid,
   NetworksOutlined,
   NetworksSolid,
+  PoliciesOutlined,
+  PoliciesSolid as PoliciesSolidBase,
   ReportsOutlined,
   ReportsSolid,
   ServicesOutlined,
-  ServicesSolid,
+  ServicesSolid as ServicesSolidBase,
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
 
-import { genPlaceholder } from '..'
+import { genPlaceholder, LayoutProps } from '..'
+import { LayoutUI }                    from '../styledComponents'
 
-const AI = styled(AIOriginal)`
-  path { stroke: none !important; }
-`
+const AI = styled(AIBase)`${LayoutUI.iconOutlinedOverride}`
+const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
+const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
+const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
-const config = [
+const config: LayoutProps['menuConfig'] = [
   {
     path: '/dashboard',
     name: 'Dashboard',
@@ -103,8 +107,8 @@ const config = [
   {
     path: '/policies',
     name: 'Policies',
-    inactiveIcon: ServicesOutlined,
-    activeIcon: ServicesSolid
+    inactiveIcon: PoliciesOutlined,
+    activeIcon: PoliciesSolid
   },
   {
     path: '/users',
@@ -116,8 +120,8 @@ const config = [
   {
     path: '/administration',
     name: 'Administration',
-    inactiveIcon: ConfigurationOutlined,
-    activeIcon: ConfigurationSolid
+    inactiveIcon: AdminOutlined,
+    activeIcon: AdminSolid
   }
 ]
 

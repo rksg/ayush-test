@@ -354,7 +354,7 @@ exports[`Layout should render correctly 1`] = `
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
                       >
                         <div
-                          data-testid="services-outlined"
+                          data-testid="policies-outlined"
                         />
                       </span>
                       <span
@@ -387,7 +387,7 @@ exports[`Layout should render correctly 1`] = `
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
                       >
                         <div
-                          data-testid="acccount-circle-outlined"
+                          data-testid="account-circle-outlined"
                         />
                       </span>
                       <span
@@ -446,7 +446,7 @@ exports[`Layout should render correctly 1`] = `
                         class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 eXbqRI cEzRxN"
                       >
                         <div
-                          data-testid="configuration-outlined"
+                          data-testid="admin-outlined"
                         />
                       </span>
                       <span
