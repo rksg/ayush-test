@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Input }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Input }                     from 'antd'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   Table,
@@ -89,7 +89,7 @@ function useColumns (type: AAAServerTypeEnum) {
       key: 'purpose',
       dataIndex: 'purpose',
       render: function (data) {
-        return $t(purposeDisplayText[data as AAA_Purpose_Type])
+        return <FormattedMessage {...purposeDisplayText[data as AAA_Purpose_Type]}/>
       }
     }
   ]
@@ -118,7 +118,7 @@ function useColumns (type: AAAServerTypeEnum) {
       key: 'level',
       dataIndex: 'level',
       render: function (data) {
-        return $t(levelDisplayText[data as AAA_Level_Type])
+        return <FormattedMessage {...levelDisplayText[data as AAA_Level_Type]}/>
       }
     }
   ]
@@ -240,14 +240,14 @@ export const AAAServerTable = (props: {
             title: $t(serversTypeDisplayText[type]) + ' '
                    + $t({ defaultMessage: 'Server Required' }),
             content: (<div>
-              {$t(serversTypeDisplayText[type])}
+              {$t(serversTypeDisplayText[type])} <span> </span>
               {$t({ defaultMessage: 'servers are prioritized for the following:' })} <br/>
               {disableDeleteList.join(', ')}. <br/>
               {$t(
                 { defaultMessage: 'In order to delete {these} ' },
                 { these: rows.length > 1 ? 'these': 'this' }
-              )}
-              {$t(serversTypeDisplayText[type])}
+              )} <span> </span>
+              {$t(serversTypeDisplayText[type])} <span> </span>
               {$t(
                 { defaultMessage: 'server{s} you must define a different method.' },
                 { s: rows.length > 1 ? 's': '' }
