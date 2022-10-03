@@ -74,7 +74,7 @@ export function MeshNetwork () {
 
   const handleUpdateMeshSetting = async (check: boolean) => {
     try {
-      await updateVenueMesh({ params, payload: {mesh: check } })
+      await updateVenueMesh({ params, payload: { mesh: check } })
     } catch {
       showToast({
         type: 'error',
@@ -93,20 +93,14 @@ export function MeshNetwork () {
         cancelText: 'Cancel',
         onOk () {
           setMeshEnabled(true)
-          // updateVenueMesh({
-          //   params,
-          //   payload: {
-          //     mesh: checked
-          //   }
-          // })
-          setEditContextData({
+          setEditContextData && setEditContextData({
             ...editContextData,
             tabTitle: $t({ defaultMessage: 'Networking' }),
             isDirty: true
           })
-          setEditNetworkingContextData({
+          setEditNetworkingContextData && setEditNetworkingContextData({
             ...editNetworkingContextData,
-            meshData: {mesh: true},
+            meshData: { mesh: true },
             updateMesh: handleUpdateMeshSetting
           })
         },
@@ -122,20 +116,14 @@ export function MeshNetwork () {
         })
       } else {
         setMeshEnabled(false)
-        // updateVenueMesh({
-        //   params,
-        //   payload: {
-        //     mesh: checked
-        //   }
-        // })
-        setEditContextData({
+        setEditContextData && setEditContextData({
           ...editContextData,
           tabTitle: $t({ defaultMessage: 'Networking' }),
           isDirty: true
         })
-        setEditNetworkingContextData({
+        setEditNetworkingContextData && setEditNetworkingContextData({
           ...editNetworkingContextData,
-          meshData: {mesh: false},
+          meshData: { mesh: false },
           updateMesh: handleUpdateMeshSetting
         })
       }
