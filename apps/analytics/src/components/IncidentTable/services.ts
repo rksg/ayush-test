@@ -1,7 +1,7 @@
 import { gql }               from 'graphql-request'
 import { MessageDescriptor } from 'react-intl'
 
-import { dataApi } from '@acx-ui/analytics/services'
+import { dataApi }    from '@acx-ui/analytics/services'
 import {
   IncidentFilter,
   incidentCodes,
@@ -11,8 +11,7 @@ import {
   formattedNodeType,
   impactValues,
   impactedArea,
-  calculateSeverity,
-  noDataSymbol
+  calculateSeverity
 } from '@acx-ui/analytics/utils'
 import type { RecordWithChildren } from '@acx-ui/components'
 import { getIntl }                 from '@acx-ui/utils'
@@ -38,7 +37,7 @@ const listQueryProps = {
   `
 }
 
-export type AdditionalIncidentTableFields = {
+type AdditionalIncidentTableFields = {
   duration: number,
   description: string,
   category: string | MessageDescriptor,
@@ -69,7 +68,7 @@ export const transformData = (incident: Incident): IncidentTableRow => {
     const childDescription = shortDescription(childIncident, intl)
     const childScope = impactedArea(child.path, child.sliceValue, intl)!
     const childType = formattedNodeType(child.sliceType, intl)
-    const childSeverityLabel = calculateSeverity(child.severity) ?? noDataSymbol
+    const childSeverityLabel = calculateSeverity(child.severity)
 
     return {
       ...childIncident,
@@ -94,7 +93,7 @@ export const transformData = (incident: Incident): IncidentTableRow => {
   const description = shortDescription(incidentInfo, intl)
   const scope = impactedArea(incident.path, incident.sliceValue, intl)!
   const type = formattedNodeType(incident.sliceType, intl)
-  const severityLabel = calculateSeverity(incident.severity) ?? noDataSymbol
+  const severityLabel = calculateSeverity(incident.severity)
 
   return {
     ...incidentInfo,

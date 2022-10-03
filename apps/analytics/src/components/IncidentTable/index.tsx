@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 
 import { Checkbox, Tooltip }                        from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
@@ -69,10 +69,11 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
-  const [muteIncident ] = useMuteIncidentsMutation()
+  const [muteIncident] = useMuteIncidentsMutation()
   const data = (showMuted)
     ? queryResults.data
     : queryResults.data?.filter(row => !row.isMuted)
+  const [selectedRowKeys, setRowKeys] = useState<React.Key[]>([])
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
@@ -82,6 +83,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
           const { id, code, severityLabel, isMuted } = row
           await muteIncident({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()
         }))
+        setRowKeys([])
       }
     }
   ]
@@ -229,14 +231,19 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         columns={ColumnHeaders}
         rowActions={rowActions}
         rowSelection={{
-          type: 'radio'
+          type: 'radio',
+          selectedRowKeys,
+          onChange: (selectedRowKeys) => setRowKeys(selectedRowKeys)
         }}
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataSymbol}
         ellipsis={true}
         indentSize={6}
-        onResetState={() => setShowMuted(false)}
+        onResetState={() => {
+          setShowMuted(false)
+          setRowKeys([])
+        }}
         extraSettings={[
           <Checkbox
             onChange={(e: CheckboxChangeEvent) => setShowMuted(e.target.checked)}
