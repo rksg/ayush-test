@@ -1,6 +1,7 @@
 import ReactECharts from 'echarts-for-react'
 
-import { TimeStamp } from '@acx-ui/types'
+import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { formatter }           from '@acx-ui/utils'
 
 import { cssStr }              from '../../theme/helper'
 import {
@@ -13,43 +14,51 @@ import {
   dateAxisFormatter,
   tooltipOptions,
   timeSeriesTooltipFormatter
-} from '../Chart/helper'
+}                             from '../Chart/helper'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
 
-interface ChartData extends Object {
-  /**
-   * Multi dimensional array which first item is timestamp and 2nd item is value
-   * @example
-   * [
-   *   [1603900800000, 64.12186646508322],
-   *   [1603987200000, 76]
-   * ]
-   */
-  value: [TimeStamp, number][]
-}
-
 export interface StackedAreaChartProps
-  <TChartData extends ChartData>
+  <TChartData extends TimeSeriesChartData>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[]
     /** @default 'name' */
-    legendProp?: keyof TChartData,
-    lineColors?: string[],
-    dataFormatter?: (value: unknown) => string | null
+    legendProp?: keyof TChartData
+    stackColors?: string[]
+    dataFormatter?: ReturnType<typeof formatter>
+    seriesFormatters?: Record<string, ReturnType<typeof formatter>>
+    tooltipTotal?: string
   }
 
 export function StackedAreaChart <
-  TChartData extends ChartData = { name: string, value: [TimeStamp, number][] }
+  TChartData extends TimeSeriesChartData,
 > ({
-  data,
+  data: initalData,
   legendProp = 'name' as keyof TChartData,
   dataFormatter,
+  seriesFormatters,
+  tooltipTotal,
   ...props
 }: StackedAreaChartProps<TChartData>) {
+
+  const data = tooltipTotal
+    ? initalData.concat({
+      key: 'total',
+      name: tooltipTotal,
+      show: false,
+      data: initalData[0].data.map((point, index)=>{
+        const total = initalData.reduce((sum, series)=>
+          (typeof series.data[index][1] === 'number'
+            ? sum + (series.data[index][1] as number)
+            : sum ), 0)
+        return [ point[0], total ]
+      })
+    } as TChartData )
+    : initalData
+
   const option: EChartsOption = {
-    color: props.lineColors || [
+    color: props.stackColors || [
       cssStr('--acx-accents-blue-30'),
       cssStr('--acx-accents-blue-70'),
       cssStr('--acx-accents-blue-50')
@@ -58,12 +67,15 @@ export function StackedAreaChart <
     legend: {
       ...legendOptions(),
       textStyle: legendTextStyleOptions(),
-      data: data.map(datum => datum[legendProp]) as unknown as string[]
+      data: initalData.map(datum => datum[legendProp]) as unknown as string[]
     },
     tooltip: {
       ...tooltipOptions(),
-      trigger: 'axis'
-      // formatter: timeSeriesTooltipFormatter(data, { default: dataFormatter })
+      trigger: 'axis',
+      formatter: timeSeriesTooltipFormatter(
+        data,
+        { ...seriesFormatters, default: dataFormatter }
+      )
     },
     xAxis: {
       ...xAxisOptions(),
@@ -83,9 +95,9 @@ export function StackedAreaChart <
         }
       }
     },
-    series: data.map(datum => ({
+    series: initalData.map(datum => ({
       name: datum[legendProp] as unknown as string,
-      data: datum.value,
+      data: datum.data,
       type: 'line',
       silent: true,
       stack: 'Total',

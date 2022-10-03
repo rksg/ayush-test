@@ -14,13 +14,13 @@ import {
   defineMessage
 } from 'react-intl'
 
-import { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
-import { TimeStamp }                    from '@acx-ui/types'
+import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { TimeStamp }           from '@acx-ui/types'
 import {
   formatter,
   dateTimeFormats,
   intlFormats
-}                                       from '@acx-ui/utils'
+}                              from '@acx-ui/utils'
 
 import { cssStr, cssNumber } from '../../theme/helper'
 
@@ -139,12 +139,11 @@ export const tooltipOptions = () => ({
   extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08);'
 } as TooltipComponentOption)
 
-type Formatter = ((value: unknown) => (string | null)) | undefined
-
 export const timeSeriesTooltipFormatter = (
-  series: MultiLineTimeSeriesChartData[],
-  dataFormatters: { default?: Formatter } & Record<string, Formatter>,
-  hasBadge: boolean = false
+  series: TimeSeriesChartData[],
+  dataFormatters: {
+    default: (ReturnType<typeof formatter> | undefined)
+  } & Record<string, (ReturnType<typeof formatter> | undefined)>
 ) => (
   parameters: TooltipFormatterParams | TooltipFormatterParams[]
 ) => {
@@ -156,7 +155,7 @@ export const timeSeriesTooltipFormatter = (
     <UI.TooltipWrapper>
       <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
       <ul>{
-        series.map((data: MultiLineTimeSeriesChartData)=> {
+        series.map((data: TimeSeriesChartData)=> {
           const color = (Array.isArray(parameters)
             ? parameters.find(p => p.seriesName === data.name) : parameters)?.color
           const formatter = dataFormatters[data.key] || dataFormatters.default
@@ -166,9 +165,9 @@ export const timeSeriesTooltipFormatter = (
             <b>{`${formatter ? formatter(value) : value}`}</b>
           </>
           return <li key={data.name}>
-            {hasBadge
-              ? <UI.Badge color={(color||'') as string} text={text}/>
-              : text
+            {color
+              ? <UI.Badge color={(color) as string} text={text}/>
+              : data.show !== false ? null : text
             }
           </li>
         })

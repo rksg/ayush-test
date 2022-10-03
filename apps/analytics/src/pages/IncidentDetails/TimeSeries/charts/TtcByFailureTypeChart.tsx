@@ -6,7 +6,8 @@ import {
   TimeSeriesData,
   getSeriesData
 }                                         from '@acx-ui/analytics/utils'
-import { Card, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { Card, cssStr, StackedAreaChart } from '@acx-ui/components'
+import { formatter }                      from '@acx-ui/utils'
 
 import { ChartsData } from '../services'
 
@@ -24,18 +25,19 @@ const ttcByFailureTypeChartQuery = () => gql`
   }
   `
 
-// const prettyNames = name => ({
-//   ttcByEap: { long: t('EAP Stage'), short: t('EAP') },
-//   ttcByDhcp: { long: t('DHCP Stage'), short: t('DHCP') },
-//   ttcByAuth: { long: t('Authentication Stage'), short: t('Authentication') },
-//   ttcByAssoc: { long: t('Association Stage'), short: t('Association') },
-//   ttcByRadius: { long: t('Radius Stage'), short: t('Radius') }
-// }[name])
-
 export const TtcByFailureTypeChart = ({ data }: { data: ChartsData }) => {
   const { ttcByFailureTypeChart: { time, ttcByFailureTypes } } = data
   const intl = useIntl()
   const { $t } = intl
+
+  // TODO: change color when confirmed
+  const stackColors = [
+    cssStr('--acx-semantics-green-50'),
+    cssStr('--acx-semantics-red-30'),
+    cssStr('--acx-accents-blue-50'),
+    cssStr('--acx-accents-orange-70'),
+    cssStr('--acx-accents-orange-30')
+  ]
 
   const seriesMapping = [
     { key: 'ttcByAuth', name: $t({ defaultMessage: 'Authentication' }) },
@@ -53,10 +55,12 @@ export const TtcByFailureTypeChart = ({ data }: { data: ChartsData }) => {
   return <Card title={$t({ defaultMessage: 'TIME TO CONNECT (BY STAGE)' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
-        <MultiLineTimeSeriesChart
+        <StackedAreaChart
           style={{ height, width }}
+          stackColors={stackColors}
           data={chartResults}
-          // dataFormatter={formatter('countFormat')}
+          dataFormatter={formatter('durationFormat')}
+          tooltipTotal={$t({ defaultMessage: 'Total Time to Connect' })}
         />
       )}
     </AutoSizer>

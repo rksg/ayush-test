@@ -38,7 +38,7 @@ export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: 
     startDate: start.toISOString(),
     endDate: end.toISOString(),
     kpi: 'timeToConnect',
-    threshold: kpiConfig.timeToConnect.histogram.initialThreshold.toString() // TODO
+    threshold: kpiConfig.timeToConnect.histogram.initialThreshold.toString()
   } as KpiPayload, {
     selectFromResult: ({ data: connectionData, ...rest }) => {
       const { ttcFailureChart } = data
@@ -85,7 +85,6 @@ export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: 
               data={chartResults}
               dataFormatter={formatter('countFormat')}
               seriesFormatters={seriesFormatters}
-              hasTooltipBadge={false}
               onMarkedAreaClick={onMarkedAreaClick(navigate, basePath, incident)}
               markers={getMarkers(data.relatedIncidents, incident)}
             />

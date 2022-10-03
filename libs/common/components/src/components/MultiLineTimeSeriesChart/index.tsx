@@ -4,8 +4,9 @@ import ReactECharts from 'echarts-for-react'
 import { isEmpty }  from 'lodash'
 import styled       from 'styled-components/macro'
 
-import type { MultiLineTimeSeriesChartData } from '@acx-ui/analytics/utils'
-import type { TimeStamp }                    from '@acx-ui/types'
+import type { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import type { TimeStamp }           from '@acx-ui/types'
+import { formatter }                from '@acx-ui/utils'
 
 import { cssStr }              from '../../theme/helper'
 import {
@@ -43,7 +44,7 @@ type Marker <MarkerData> = {
 }
 
 export interface MultiLineTimeSeriesChartProps <
-  TChartData extends MultiLineTimeSeriesChartData,
+  TChartData extends TimeSeriesChartData,
   MarkerData
 >
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
@@ -51,10 +52,8 @@ export interface MultiLineTimeSeriesChartProps <
     /** @default 'name' */
     legendProp?: keyof TChartData,
     lineColors?: string[],
-    dataFormatter?: (value: unknown) => string | null,
-    seriesFormatters?: Record<string, (value: unknown) => string | null>
-     /** @default true */
-    hasTooltipBadge?: boolean,
+    dataFormatter?: ReturnType<typeof formatter>
+    seriesFormatters?: Record<string, ReturnType<typeof formatter>>
     yAxisProps?: {
       max: number,
       min: number
@@ -111,7 +110,7 @@ export function useOnMarkedAreaClick <MarkerData> (
 }
 
 export function MultiLineTimeSeriesChart <
-  TChartData extends MultiLineTimeSeriesChartData,
+  TChartData extends TimeSeriesChartData,
   MarkerData
 >
 ({
@@ -119,7 +118,6 @@ export function MultiLineTimeSeriesChart <
   legendProp = 'name' as keyof TChartData,
   dataFormatter,
   seriesFormatters,
-  hasTooltipBadge = true,
   yAxisProps,
   disableLegend,
   onMarkedAreaClick,
@@ -152,8 +150,7 @@ export function MultiLineTimeSeriesChart <
       trigger: 'axis',
       formatter: timeSeriesTooltipFormatter(
         data,
-        { ...seriesFormatters, default: dataFormatter },
-        hasTooltipBadge
+        { ...seriesFormatters, default: dataFormatter }
       )
     },
     xAxis: {
