@@ -28,8 +28,26 @@ export interface StackedAreaChartProps
     stackColors?: string[]
     dataFormatter?: ReturnType<typeof formatter>
     seriesFormatters?: Record<string, ReturnType<typeof formatter>>
-    tooltipTotal?: string
+    tooltipTotalTitle?: string
   }
+
+export function getSeriesTotal <DataType extends TimeSeriesChartData> (
+  series: DataType[],
+  tooltipTotalTitleTitle: string
+) {
+  return {
+    key: 'total',
+    name: tooltipTotalTitleTitle,
+    show: false,
+    data: series[0].data.map((point, index)=>{
+      const total = series.reduce((sum, series)=>
+        (typeof series.data[index][1] === 'number'
+          ? sum + (series.data[index][1] as number)
+          : sum ), 0)
+      return [ point[0], total ]
+    })
+  } as DataType
+}
 
 export function StackedAreaChart <
   TChartData extends TimeSeriesChartData,
@@ -38,23 +56,12 @@ export function StackedAreaChart <
   legendProp = 'name' as keyof TChartData,
   dataFormatter,
   seriesFormatters,
-  tooltipTotal,
+  tooltipTotalTitle,
   ...props
 }: StackedAreaChartProps<TChartData>) {
 
-  const data = tooltipTotal
-    ? initalData.concat({
-      key: 'total',
-      name: tooltipTotal,
-      show: false,
-      data: initalData[0].data.map((point, index)=>{
-        const total = initalData.reduce((sum, series)=>
-          (typeof series.data[index][1] === 'number'
-            ? sum + (series.data[index][1] as number)
-            : sum ), 0)
-        return [ point[0], total ]
-      })
-    } as TChartData )
+  const data = tooltipTotalTitle
+    ? initalData.concat(getSeriesTotal<TChartData>(initalData, tooltipTotalTitle))
     : initalData
 
   const option: EChartsOption = {

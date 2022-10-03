@@ -6,12 +6,13 @@ import { connect }          from 'echarts'
 import ReactECharts         from 'echarts-for-react'
 
 import { TimeStamp } from '@acx-ui/types'
+import { formatter } from '@acx-ui/utils'
 
 import { Button } from '../Button'
 
 import { MultiLineTimeSeriesChart } from '.'
 
-const getData = () => {
+export const getData = () => {
   const base = +new Date(2020, 9, 29)
   const oneDay = 24 * 3600 * 1000
   const data = [[base, Math.random() * 3000]]
@@ -31,6 +32,7 @@ export const getSeriesData = () => {
   const series = []
   for (let i = 0; i < 3; i++) {
     series.push({
+      key: `series-${i}`,
       name: seriesNames[i],
       data: getData()
     })
@@ -104,6 +106,18 @@ storiesOf('MultiLineTimeSeriesChart', module)
   .add('Chart View', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}
     data={getSeriesData()}
+  />)
+  .add('With Formatters', () => <MultiLineTimeSeriesChart
+    style={{ width: 504, height: 300 }}
+    data={[
+      { key: 'count', name: 'Count Sample', data: getData() },
+      { key: 'duration', name: 'Duration Sample', data: getData() }
+    ]}
+    dataFormatter={formatter('countFormat')}
+    seriesFormatters={{
+      count: formatter('countFormat'),
+      duration: formatter('durationFormat')
+    }}
   />)
   .add('With Marked Areas', () => <MultiLineTimeSeriesChart
     style={{ width: 504, height: 300 }}

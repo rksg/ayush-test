@@ -19,7 +19,8 @@ import { TimeStamp }           from '@acx-ui/types'
 import {
   formatter,
   dateTimeFormats,
-  intlFormats
+  intlFormats,
+  getIntl
 }                              from '@acx-ui/utils'
 
 import { cssStr, cssNumber } from '../../theme/helper'
@@ -142,22 +143,21 @@ export const tooltipOptions = () => ({
 export const timeSeriesTooltipFormatter = (
   series: TimeSeriesChartData[],
   dataFormatters: {
-    default: (ReturnType<typeof formatter> | undefined)
+    default?: (ReturnType<typeof formatter> | undefined)
   } & Record<string, (ReturnType<typeof formatter> | undefined)>
 ) => (
   parameters: TooltipFormatterParams | TooltipFormatterParams[]
 ) => {
-  const param = Array.isArray(parameters) ? parameters[0] : parameters
-  const [ time ] = param.data as [TimeStamp, number]
-  const dataIndex = param.dataIndex
+  const param = Array.isArray(parameters) ? parameters : [parameters]
+  const [ time ] = param[0].data as [TimeStamp, number]
+  const dataIndex = param[0].dataIndex
 
   return renderToString(
     <UI.TooltipWrapper>
       <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
       <ul>{
         series.map((data: TimeSeriesChartData)=> {
-          const color = (Array.isArray(parameters)
-            ? parameters.find(p => p.seriesName === data.name) : parameters)?.color
+          const color = param.find(p => p.seriesName === data.name)?.color || ''
           const formatter = dataFormatters[data.key] || dataFormatters.default
           const [, value] = data.data[dataIndex as number] as [TimeStamp, number]
           const text = <>
@@ -165,9 +165,9 @@ export const timeSeriesTooltipFormatter = (
             <b>{`${formatter ? formatter(value) : value}`}</b>
           </>
           return <li key={data.name}>
-            {color
-              ? <UI.Badge color={(color) as string} text={text}/>
-              : data.show !== false ? null : text
+            { data.show !== false
+              ? (color ? <UI.Badge color={(color) as string} text={text}/> : null)
+              : text
             }
           </li>
         })
@@ -177,12 +177,12 @@ export const timeSeriesTooltipFormatter = (
 }
 
 export const stackedBarTooltipFormatter = (
-  intl: IntlShape,
   dataFormatter?: ((value: unknown) => string | null),
   format?: MessageDescriptor
 ) => (
   parameters: TooltipComponentFormatterCallbackParams
 ) => {
+  const intl = getIntl()
   const param = parameters as TooltipFormatterParams
   const value = param.value as string[]
   const name = param.seriesName
@@ -193,7 +193,9 @@ export const stackedBarTooltipFormatter = (
   })
   const text = <FormattedMessage {...tooltipFormat}
     values={{
-      name, formattedValue,
+      name,
+      formattedValue,
+      value: value[0],
       br: () => <br />,
       span: content => <span>{content}</span>,
       b: content => <b>{content}</b>,
