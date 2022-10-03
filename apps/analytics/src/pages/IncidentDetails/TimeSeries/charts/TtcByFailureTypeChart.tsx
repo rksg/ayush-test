@@ -60,7 +60,7 @@ export const TtcByFailureTypeChart = ({ data }: { data: ChartsData }) => {
           stackColors={stackColors}
           data={chartResults}
           dataFormatter={formatter('durationFormat')}
-          tooltipTotal={$t({ defaultMessage: 'Total Time to Connect' })}
+          tooltipTotalTitle={$t({ defaultMessage: 'Total Time to Connect' })}
         />
       )}
     </AutoSizer>

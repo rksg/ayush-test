@@ -15,7 +15,7 @@ import { formatter }                      from '@acx-ui/utils'
 
 import { ChartsData } from '../services'
 
-import { onMarkedAreaClick, getMarkers } from './markerHelper'
+import { onMarkedAreaClick, getMarkers } from './incidentTimeSeriesMarker'
 
 const failureChartQuery = (incident: Incident) => gql`
   relatedIncidents: incidents(filter: {code: [$code]}) {

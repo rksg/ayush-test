@@ -16,7 +16,7 @@ import { formatter }                              from '@acx-ui/utils'
 import { useKpiTimeseriesQuery, KpiPayload }        from '../../../Health/Kpi/services'
 import { ChartsData, getIncidentTimeSeriesPeriods } from '../services'
 
-import { getMarkers, onMarkedAreaClick } from './markerHelper'
+import { getMarkers, onMarkedAreaClick } from './incidentTimeSeriesMarker'
 
 const ttcFailureChartQuery = () => gql`
   relatedIncidents: incidents(filter: {code: [$code]}) {
@@ -27,6 +27,25 @@ const ttcFailureChartQuery = () => gql`
     ttc: timeToConnect
   }
   `
+
+export const aggregateTTC = (
+  time:string[],
+  ttc: (number|null)[],
+  ttcCounts: ([number, number]|null)[]
+) => time.reduce((agg, _, index) => {
+  agg.ttc = agg.ttc
+    .concat(ttc[index])
+  agg.totalConnections = agg.totalConnections
+    .concat(ttcCounts && ttcCounts[index] && ttcCounts[index]![1])
+  agg.slowConnections = agg.slowConnections
+    .concat(ttcCounts && ttcCounts[index] && ttcCounts[index]![1] - ttcCounts[index]![0])
+  return agg
+}, { time, ttc: [], totalConnections: [], slowConnections: [] } as {
+  time: string[]
+  ttc: (number|null)[]
+  totalConnections: (number|null)[]
+  slowConnections: (number|null)[]
+})
 
 export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: ChartsData }) => {
   const { $t } = useIntl()
@@ -45,22 +64,7 @@ export const TtcFailureChart = ({ incident, data }: { incident: Incident, data: 
       const time = ttcFailureChart.time as string[]
       const ttc = ttcFailureChart.ttc as (number|null)[]
       const ttcCounts = connectionData?.data as ([number, number]|null)[]
-      return {
-        data: time.reduce((agg, _, index) => {
-          agg.ttc = agg.ttc
-            .concat(ttc[index])
-          agg.totalConnections = agg.totalConnections
-            .concat(ttcCounts && ttcCounts[index] && ttcCounts[index]![1])
-          agg.slowConnections = agg.slowConnections
-            .concat(ttcCounts && ttcCounts[index] && ttcCounts[index]![1] - ttcCounts[index]![0])
-          return agg
-        }, { time, ttc: [], totalConnections: [], slowConnections: [] } as {
-          time: string[]
-          ttc: (number|null)[]
-          totalConnections: (number|null)[]
-          slowConnections: (number|null)[]
-        }), ...rest }
-    }
+      return { data: aggregateTTC(time, ttc, ttcCounts), ...rest } }
   })
 
   const seriesMapping = [
