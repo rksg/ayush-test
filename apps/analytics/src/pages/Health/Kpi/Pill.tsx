@@ -1,5 +1,6 @@
 import { sum }     from 'lodash'
 import { useIntl } from 'react-intl'
+import { Tooltip } from 'antd'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import { ProgressPill, Loader }       from '@acx-ui/components'
@@ -65,7 +66,7 @@ function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }
   }
   const { success, total } = queryResults.data as PillData
   const percent = total > 0 ? (success / total) * 100 : 0
-  const { pillSuffix, description, thresholdDesc, thresholdFormatter } = pill
+  const { pillSuffix, description, thresholdDesc, thresholdFormatter, tooltip } = pill
   const translatedDesc = description
     ? $t(description, { successCount: success, totalCount: total })
     : ''
@@ -83,7 +84,12 @@ function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }
     )
   }
   return <Loader states={[queryResults]} key={kpi}>
-    <UI.PillTitle><span>{$t(text)}</span><span><InformationOutlined /></span></UI.PillTitle>
+    <UI.PillTitle>
+      <span>{$t(text)}</span>
+      <span>
+        <Tooltip placement='top' title={tooltip}><InformationOutlined /></Tooltip>
+      </span>
+    </UI.PillTitle>
     <UI.PillWrap>
       <ProgressPill percent={percent} formatter={value => formatPillText(value, pillSuffix)}/>
     </UI.PillWrap>
