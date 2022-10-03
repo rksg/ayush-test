@@ -346,6 +346,45 @@ describe('IncidentTableWidget', () => {
     }
 
   })
+
+  it('should show muted incidents', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+
+    render(<Provider><IncidentTableWidget filters={filters}/></Provider>, {
+      route: {
+        path: '/t/tenantId/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+
+    const before = await screen.findAllByRole('radio', { hidden: true, checked: false })
+    expect(before).toHaveLength(2)
+
+    const settingsButton = await screen.findByText('SettingsOutlined.svg')
+    expect(settingsButton).toBeDefined()
+    fireEvent.click(settingsButton)
+
+    const showMutedIncidents = await screen.findByText('Show Muted Incidents')
+    expect(showMutedIncidents).toBeDefined()
+    fireEvent.click(showMutedIncidents)
+
+    const afterShowMuted = await screen.findAllByRole('radio', { hidden: true, checked: false })
+    expect(afterShowMuted).toHaveLength(3)
+
+    fireEvent.click(settingsButton)
+    const resetButton = await screen.findByText('Reset to default')
+    expect(resetButton).toBeDefined()
+    fireEvent.click(resetButton)
+
+    const afterReset = await screen.findAllByRole('radio', { hidden: true, checked: false })
+    expect(afterReset).toHaveLength(2)
+  })
+
   it('should render drawer when click on description', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
