@@ -11,9 +11,9 @@ import {
   useShortDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, Drawer } from '@acx-ui/components'
-import { useTenantLink, Link }               from '@acx-ui/react-router-dom'
-import { formatter }                         from '@acx-ui/utils'
+import { Loader, TableProps, Drawer } from '@acx-ui/components'
+import { useTenantLink, Link }        from '@acx-ui/react-router-dom'
+import { formatter }                  from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
@@ -70,10 +70,9 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
   const [muteIncident ] = useMuteIncidentsMutation()
-  const [isMutedFiltered ] = useState(true)
-  const data = (isMutedFiltered)
-    ? queryResults.data?.filter(row => !row.isMuted)
-    : queryResults.data
+  const data = (showMuted)
+    ? queryResults.data
+    : queryResults.data?.filter(row => !row.isMuted)
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
@@ -93,7 +92,8 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       width: 80,
       dataIndex: 'severityLabel',
       key: 'severity',
-      render: (_, value) => <GetIncidentBySeverity value={value.severity} id={value.id}/>,
+      render: (_, value) =>
+        <GetIncidentBySeverity severityLabel={value.severityLabel} id={value.id}/>,
       sorter: {
         compare: (a, b) => severitySort(a.severity, b.severity),
         multiple: 1
@@ -223,7 +223,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
 
   return (
     <Loader states={[queryResults]}>
-      <Table
+      <UI.IncidentTableWrapper
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}
@@ -244,6 +244,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
             children={$t({ defaultMessage: 'Show Muted Incidents' })}
           />
         ]}
+        rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
       />
       {drawerSelection &&
       <Drawer

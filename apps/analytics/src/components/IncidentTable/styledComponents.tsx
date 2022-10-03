@@ -5,8 +5,10 @@ import {
   IncidentSeverities,
   incidentSeverities
 } from '@acx-ui/analytics/utils'
-import { cssStr } from '@acx-ui/components'
-import { Link }   from '@acx-ui/react-router-dom'
+import { cssStr, Table, TableProps } from '@acx-ui/components'
+import { Link }                      from '@acx-ui/react-router-dom'
+
+import { IncidentTableRow } from './services'
 
 
 export type IncidentImpactedClientProps = {
@@ -74,4 +76,27 @@ export const DrawerList = styled.li`
 `
 export const DrawerOrderList = styled.ol`
   padding-inline-start: 30px;
+`
+
+export const IncidentTableWrapper =
+styled((props: TableProps<IncidentTableRow>) => <Table {...props} />)`
+  .table-row-muted {
+    color: var(--acx-neutrals-40);
+    background-color: var(--acx-neutrals-20);
+  }
+
+  .ant-table-cell {
+    color: unset;
+    &-fix-left, &-fix-right {
+      background: unset;
+    }
+  }
+  
+  .ant-radio-inner {
+    background-color: var(--acx-primary-white);
+  }
+
+  .ant-typography {
+    color: unset;
+  }
 `

@@ -5,8 +5,8 @@ import {
 } from 'react-intl'
 
 import {
-  calculateSeverity,
   Incident,
+  IncidentSeverities,
   noDataSymbol,
   useShortDescription
 } from '@acx-ui/analytics/utils'
@@ -16,18 +16,17 @@ import { formatter }     from '@acx-ui/utils'
 import * as UI from './styledComponents'
 
 export type GetIncidentBySeverityProps = {
-  value: number,
+  severityLabel: string,
   id: string
 }
 
 export const GetIncidentBySeverity = (props: GetIncidentBySeverityProps) => {
-  const { value, id } = props
+  const { severityLabel, id } = props
   const basePath = useTenantLink('/analytics/incidents/')
-
-  const severity = calculateSeverity(value)
-
   return <UI.UnstyledLink to={{ ...basePath, pathname: `${basePath.pathname}/${id}` }}>
-    <UI.SeveritySpan severity={severity}>{severity}</UI.SeveritySpan>
+    <UI.SeveritySpan severity={severityLabel as IncidentSeverities}>
+      {severityLabel}
+    </UI.SeveritySpan>
   </UI.UnstyledLink>
 }
 
