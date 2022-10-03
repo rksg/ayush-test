@@ -6,11 +6,24 @@ import { formatter }                 from '@acx-ui/utils'
 
 import { NetworkImpactChartData } from './services'
 
+export type NetworkImpactType = 'ap'
+| 'client'
+| 'apDowntime'
+| 'apReboot'
+| 'apRebootEvent'
+| 'ctrlApplication'
+| 'ctrlApplicationGroup'
+| 'apInfra'
+
+export type NetworkImpactChartConfig = {
+  chart: NetworkImpactChartTypes
+  type: NetworkImpactType
+  dimension: string
+}
+
 export interface NetworkImpactChart {
   key: string
   title: MessageDescriptor
-  dimension: string
-  type: string
   highlight: MessageDescriptor
   dominanceFn?: (data: NetworkImpactChartData['data'], incident: Incident) => {
     key: string
@@ -62,18 +75,19 @@ const highlights = {
 }
 
 export enum NetworkImpactChartTypes {
-  WLAN,
-  Radio,
-  Reason,
-  ClientManufacturer
+  WLAN = 'WLAN',
+  Radio = 'radio',
+  Reason = 'reason',
+  ClientManufacturer = 'clientManufacturer'
 }
 
-export const networkImpactCharts = {
+export const networkImpactChartConfigs: Readonly<Record<
+  NetworkImpactChartTypes,
+  NetworkImpactChart
+>> = {
   [NetworkImpactChartTypes.WLAN]: {
-    key: 'WLAN',
+    key: NetworkImpactChartTypes.WLAN,
     title: defineMessage({ defaultMessage: 'WLAN' }),
-    dimension: 'ssids',
-    type: 'client',
     highlight: highlights.clients,
     dominanceFn: getWLANDominance,
     summary: {
@@ -84,14 +98,11 @@ export const networkImpactCharts = {
           one {WLAN}
           other {WLANs}
         }` })
-    },
-    order: 0
+    }
   },
   [NetworkImpactChartTypes.Radio]: {
-    key: 'radio',
+    key: NetworkImpactChartTypes.Radio,
     title: defineMessage({ defaultMessage: 'Radio' }),
-    dimension: 'radios',
-    type: 'client',
     transformKeyFn: (val: string) => formatter('radioFormat')(val) as string,
     highlight: highlights.clients,
     summary: {
@@ -102,14 +113,11 @@ export const networkImpactCharts = {
           one {band}
           other {bands}
         }` })
-    },
-    order: 5
+    }
   },
   [NetworkImpactChartTypes.Reason]: {
-    key: 'reason',
+    key: NetworkImpactChartTypes.Reason,
     title: defineMessage({ defaultMessage: 'Reason' }),
-    dimension: 'reasonCodes',
-    type: 'client',
     transformKeyFn: mapCodeToReason,
     highlight: highlights.clients,
     summary: {
@@ -120,14 +128,11 @@ export const networkImpactCharts = {
           one {reason}
           other {reasons}
         } contributed to this incident` })
-    },
-    order: 1
+    }
   },
   [NetworkImpactChartTypes.ClientManufacturer]: {
-    key: 'clientManufacturer',
+    key: NetworkImpactChartTypes.ClientManufacturer,
     title: defineMessage({ defaultMessage: 'Client Manufacturers' }),
-    dimension: 'manufacturer',
-    type: 'client',
     highlight: highlights.clients,
     summary: {
       dominance: defineMessage({
@@ -138,7 +143,6 @@ export const networkImpactCharts = {
           one {client manufacturer}
           other {client manufacturers}
         }` })
-    },
-    order: 2
+    }
   }
-} as Readonly<Record<NetworkImpactChartTypes, NetworkImpactChart>>
+}

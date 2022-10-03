@@ -8,16 +8,16 @@ import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen, renderHook
 import { NetworkImpactChartTypes } from './config'
 import { networkImpactChartsApi }  from './services'
 
-import { transformData, transformSummary, NetworkImpact } from '.'
+import { transformData, transformSummary, NetworkImpact, NetworkImpactProps } from '.'
 
 jest.mock('./config', () => {
-  const { networkImpactCharts, ...rest } = jest.requireActual('./config')
+  const { networkImpactChartConfigs, ...rest } = jest.requireActual('./config')
   return {
     ...rest,
-    networkImpactCharts: {
-      ...networkImpactCharts,
+    networkImpactChartConfigs: {
+      ...networkImpactChartConfigs,
       test: {
-        ...networkImpactCharts['WLAN'],
+        ...networkImpactChartConfigs['WLAN'],
         transformValueFn: (val: number) => val * 2
       }
     }
@@ -94,14 +94,25 @@ describe('transformSummary', () => {
 
 describe('NetworkImpact', () => {
   mockDOMWidth()
-  const props ={
+  const props: NetworkImpactProps = {
     incident: { id: 'id', metadata: { dominant: { } } } as Incident,
-    charts: [
-      NetworkImpactChartTypes.WLAN,
-      NetworkImpactChartTypes.Radio,
-      NetworkImpactChartTypes.Reason,
-      NetworkImpactChartTypes.ClientManufacturer
-    ]
+    charts: [{
+      chart: NetworkImpactChartTypes.WLAN,
+      type: 'client',
+      dimension: 'ssids'
+    }, {
+      chart: NetworkImpactChartTypes.Reason,
+      type: 'client',
+      dimension: 'reasonCodes'
+    }, {
+      chart: NetworkImpactChartTypes.ClientManufacturer,
+      type: 'client',
+      dimension: 'manufacturer'
+    }, {
+      chart: NetworkImpactChartTypes.Radio,
+      type: 'client',
+      dimension: 'radios'
+    }]
   }
   it('should match snapshot', async () => {
     store.dispatch(networkImpactChartsApi.util.resetApiState())
