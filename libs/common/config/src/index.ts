@@ -26,3 +26,5 @@ export function get (key: keyof EnvironmentConfig) {
   if (config.value === undefined) throw new Error('Config not initialized')
   return config.value[key]
 }
+
+export * from './kpiDefaultThresholds'
