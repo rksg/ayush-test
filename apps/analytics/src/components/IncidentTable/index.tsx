@@ -221,7 +221,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
       filterable: true
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], []) // '$t' 'basePath' 'intl' are not changing. $t is always a new object and causes issues
+  ], []) // '$t' 'basePath' 'intl' are not changing
 
   return (
     <Loader states={[queryResults]}>

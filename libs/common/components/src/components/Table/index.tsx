@@ -127,11 +127,9 @@ function Table <RecordType> ({ type = 'tall', columnState, ...props }: TableProp
     checkedReset: false,
     extra: <div>
       <UI.TableSettingTitle children={$t({ defaultMessage: 'Select Columns' })} />
-      {
-        props.extraSettings?.map(
-          (section, index) =>
-            <UI.SettingSection key={index}>{section}</UI.SettingSection>)
-      }
+      {props.extraSettings?.map((section, i) =>
+        <UI.SettingSection key={i}>{section}</UI.SettingSection>
+      )}
       <UI.SettingSection>
         <Button
           type='link'
