@@ -63,7 +63,7 @@ export default function HealthPage () {
     <>
       <Header title={$t({ defaultMessage: 'Health' })} />
       <GridRow>
-        <GridCol col={{ span: 24 }}>
+        <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
           <SummaryBoxes/>
         </GridCol>
         <HealthPageContextProvider>

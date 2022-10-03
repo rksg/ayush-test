@@ -37,7 +37,7 @@ const arrowStyle = css`
 export const Wrapper = styled.button.attrs({ type: 'button' })<{ $type: string }>`
   border: 0;
   cursor: pointer;
-  padding-block: 10px 5px;
+  padding-block: 10px;
   background: var(${props => colors[props.$type as Type].background});
   border-radius: 3px;
   text-align: center;
