@@ -5,8 +5,7 @@ import { defineMessage } from 'react-intl'
 import {
   noDataSymbol,
   fakeIncident,
-  NodeType,
-  PathNode
+  Incident
 } from '@acx-ui/analytics/utils'
 import { Provider }                from '@acx-ui/store'
 import { render, screen, cleanup } from '@acx-ui/test-utils'
@@ -38,7 +37,7 @@ describe('IncidentTable: utils', () => {
     startTime: '2022-07-21T01:15:00.000Z',
     endTime: '2022-07-21T01:18:00.000Z',
     code: 'auth-failure',
-    sliceType: 'zone' as NodeType,
+    sliceType: 'zone',
     sliceValue: 'Venue-3-US',
     id: '268a443a-e079-4633-9491-536543066e7d',
     path: [
@@ -46,7 +45,7 @@ describe('IncidentTable: utils', () => {
         type: 'zone',
         name: 'Venue-3-US'
       }
-    ] as PathNode[],
+    ],
     metadata: {
       dominant: {
         ssid: 'qa-eric-acx-R760-psk'
@@ -74,21 +73,21 @@ describe('IncidentTable: utils', () => {
     currentSlaThreshold: null
   }
 
-  const sampleIncident = fakeIncident(incidentValues)
+  const sampleIncident = fakeIncident(incidentValues as unknown as Incident)
 
   describe('getIncidentBySeverity', () => {
     const testSeverityArr = [
-      { value: 0.001, label: 'P4' },
-      { value: 0.65, label: 'P3' },
-      { value: 0.8, label: 'P2' },
-      { value: 1, label: 'P1' }
+      { label: 'P4' },
+      { label: 'P3' },
+      { label: 'P2' },
+      { label: 'P1' }
     ]
 
     it.each(testSeverityArr)(
       'should show correct label: %s for value %n',
-      async ({ label, value }) => {
+      async ({ label }) => {
         render(<Provider>
-          <GetIncidentBySeverity value={value as unknown as number} id={'test'}/>
+          <GetIncidentBySeverity severityLabel={label} id={'test'}/>
         </Provider>, {
           route: {
             path: '/t/tenantId/analytics/incidents',
