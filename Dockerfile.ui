@@ -31,7 +31,6 @@ RUN export $(cat ${ENV_FILE}) \
     && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
 ###############################################################
-
 FROM build-base as acx-ui
 ENV NODE_OPTIONS=--max-old-space-size=8192
 RUN npx nx run-many --target=lint --all --verbose

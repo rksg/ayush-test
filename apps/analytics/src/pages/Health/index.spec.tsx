@@ -18,6 +18,7 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUseNavigate
 }))
+jest.mock('./ConnectedClientsOverTime', () => () => <div>Summary TimeSeries</div>)
 
 jest.mock('./SummaryBoxes', () => ({
   SummaryBoxes: () => <div data-testid='Summary Boxes' />
@@ -37,7 +38,7 @@ describe('HealthPage', () => {
   const params = { activeTab: 'overview', tenantId: 'tenant-id' }
   it('should render page header and grid layout', async () => {
     render(<Provider><HealthPage /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     expect(screen.getByText('Health')).toBeVisible()
     expect(screen.getByTestId('Summary Boxes')).toBeVisible()
     expect(screen.getByText('Summary TimeSeries')).toBeVisible()

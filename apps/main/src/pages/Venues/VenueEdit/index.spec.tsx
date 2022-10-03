@@ -85,7 +85,7 @@ describe('VenueEdit', () => {
       activeTab: 'wifi',
       activeSubTab: 'settings'
     }
-    render(<Provider><VenueEdit /></Provider>, { 
+    render(<Provider><VenueEdit /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
     })
 

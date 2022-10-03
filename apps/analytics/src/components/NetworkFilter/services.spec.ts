@@ -13,7 +13,6 @@ describe('networkFilterApi', () => {
     endDate: '2022-01-02T00:00:00+08:00',
     path: defaultNetworkPath,
     range: DateRange.last24Hours
-
   }
 
   afterEach(() =>

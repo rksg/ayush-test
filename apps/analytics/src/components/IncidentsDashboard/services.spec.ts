@@ -1,11 +1,9 @@
 import '@testing-library/jest-dom'
-import { dataApiURL } from '@acx-ui/analytics/services'
-import {
-  NetworkPath
-} from '@acx-ui/analytics/utils'
-import { store }            from '@acx-ui/store'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange }        from '@acx-ui/utils'
+
+import { dataApiURL }             from '@acx-ui/analytics/services'
+import { store }                  from '@acx-ui/store'
+import { mockGraphqlQuery }       from '@acx-ui/test-utils'
+import { DateRange, NetworkPath } from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -14,7 +12,8 @@ describe('IncidentsDashboard: services', () => {
     startDate: '2022-08-15T00:00:00+08:00',
     endDate: '2022-08-16T00:00:00+08:00',
     range: DateRange.last24Hours,
-    path: [{ type: 'network', name: 'Network' }] as NetworkPath
+    path: [{ type: 'network', name: 'Network' }] as NetworkPath,
+    filter: {}
   } as const
   const expectedResponse = {
     P1Count: 1,

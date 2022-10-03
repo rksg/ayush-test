@@ -1,4 +1,5 @@
 import { dataApiURL }       from '@acx-ui/analytics/services'
+import { AnalyticsFilter }  from '@acx-ui/analytics/utils'
 import { store }            from '@acx-ui/store'
 import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
@@ -18,8 +19,9 @@ describe('NetworkNodeInfo', () => {
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'network', name: 'Network' }]
-  }
+    path: [{ type: 'network', name: 'Network' }],
+    filter: {}
+  } as AnalyticsFilter
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
