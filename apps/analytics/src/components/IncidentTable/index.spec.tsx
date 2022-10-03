@@ -347,7 +347,7 @@ describe('IncidentTableWidget', () => {
 
   })
 
-  it('should show muted incidents', async () => {
+  it('should render muted incidents & reset to default', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
