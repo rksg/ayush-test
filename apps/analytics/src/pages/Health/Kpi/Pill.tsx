@@ -1,6 +1,6 @@
+import { Tooltip } from 'antd'
 import { sum }     from 'lodash'
 import { useIntl } from 'react-intl'
-import { Tooltip } from 'antd'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import { ProgressPill, Loader }       from '@acx-ui/components'
@@ -87,7 +87,7 @@ function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }
     <UI.PillTitle>
       <span>{$t(text)}</span>
       <span>
-        <Tooltip placement='top' title={tooltip}><InformationOutlined /></Tooltip>
+        <Tooltip placement='top' title={$t(tooltip, { br: '\n' })}><InformationOutlined /></Tooltip>
       </span>
     </UI.PillTitle>
     <UI.PillWrap>

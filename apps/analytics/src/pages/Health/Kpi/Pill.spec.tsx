@@ -1,8 +1,10 @@
+import userEvent from '@testing-library/user-event'
+
 import { dataApiURL }                       from '@acx-ui/analytics/services'
-import { AnalyticsFilter }                  from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, kpiConfig }       from '@acx-ui/analytics/utils'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
-import { DateRange }                        from '@acx-ui/utils'
+import { DateRange, getIntl }               from '@acx-ui/utils'
 
 import HealthPill                      from './Pill'
 import { timeseriesApi, histogramApi } from './services'
@@ -112,5 +114,20 @@ describe('Pill without kpi threshold', () => {
     )
     await screen.findByText('Online APs')
     expect(screen.getByText('0%')).toBeVisible()
+  })
+  it('should render pill with correct tooltip', async () => {
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+      data: { timeSeries: sampleNoDataTS }
+    })
+    render(
+      <Provider> <HealthPill filters={filters} kpi={'onlineAPs'}/></Provider>
+    )
+    const { tooltip } = kpiConfig['onlineAPs'].pill
+    const { $t } = getIntl()
+    await screen.findByText('Online APs')
+    const infoIcon = screen.getByText('InformationOutlined.svg')
+    await userEvent.hover(infoIcon)
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent($t(tooltip, { br: '\n' }).replace('\n', '').replace('\n', ' '))
   })
 })
