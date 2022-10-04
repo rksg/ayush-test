@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 
 
-import _ from 'lodash'
-
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { TableProps }        from '@acx-ui/components'
 import { useParams, Params } from '@acx-ui/react-router-dom'
@@ -114,7 +112,7 @@ export function useTableQuery <
       ? sorters[0]
       : sorters
 
-    const sorterKey = _.isArray(sorter.field) ? sorter.columnKey : sorter.field
+    const sorterKey = Array.isArray(sorter.field) ? sorter.columnKey : sorter.field
 
     const tableProps = {
       sortField: sorterKey || DEFAULT_SORTER.sortField,
