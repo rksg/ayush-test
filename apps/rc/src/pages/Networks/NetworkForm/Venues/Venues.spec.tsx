@@ -1,13 +1,11 @@
 import '@testing-library/jest-dom'
-import { Form }       from 'antd'
-import { rest }       from 'msw'
-import socketIOClient from 'socket.io-client'
-import MockedSocket   from 'socket.io-mock'
+import { Form } from 'antd'
+import { rest } from 'msw'
 
 
-import { networkApi }                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, websocketServerUrl } from '@acx-ui/rc/utils'
-import { Provider, store }                    from '@acx-ui/store'
+import { networkApi }      from '@acx-ui/rc/services'
+import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -67,11 +65,7 @@ function wrapper ({ children }: { children: React.ReactElement }) {
 }
 
 describe('Create Network: Venues Step', () => {
-  let socket
-
   beforeEach(() => {
-    socket = new MockedSocket()
-    socketIOClient.mockReturnValue(socket)
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
     })
@@ -82,9 +76,7 @@ describe('Create Network: Venues Step', () => {
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
         (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(`http://localhost${websocketServerUrl}/`,
-        (_, res, ctx) => res(ctx.json([])))
+      )
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
@@ -104,9 +96,7 @@ describe('Create Network: Venues Step', () => {
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
         (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(`http://localhost${websocketServerUrl}/`,
-        (_, res, ctx) => res(ctx.json([])))
+      )
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
@@ -131,9 +121,7 @@ describe('Create Network: Venues Step', () => {
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
         (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(`http://localhost${websocketServerUrl}/`,
-        (_, res, ctx) => res(ctx.json([])))
+      )
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
@@ -165,9 +153,7 @@ describe('Create Network: Venues Step', () => {
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
         (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(`http://localhost${websocketServerUrl}/`,
-        (_, res, ctx) => res(ctx.json([])))
+      )
     )
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 

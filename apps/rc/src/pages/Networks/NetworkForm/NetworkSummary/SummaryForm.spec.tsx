@@ -1,10 +1,8 @@
 import '@testing-library/jest-dom'
-import { Form }       from 'antd'
-import { rest }       from 'msw'
-import socketIOClient from 'socket.io-client'
-import MockedSocket   from 'socket.io-mock'
+import { Form } from 'antd'
+import { rest } from 'msw'
 
-import { CommonUrlsInfo, websocketServerUrl, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render }                                               from '@acx-ui/test-utils'
@@ -34,7 +32,7 @@ const mockSummary = {
     }
   ],
   wlanSecurity: WlanSecurityEnum.WPA2Enterprise,
-  dpskPassphraseGeneration: { 
+  dpskPassphraseGeneration: {
     format: PassphraseFormatEnum.MOST_SECURED,
     length: 18,
     expiration: PassphraseExpirationEnum.UNLIMITED
@@ -42,11 +40,7 @@ const mockSummary = {
 }
 
 describe('SummaryForm', () => {
-  let socket
-  
   beforeEach(() => {
-    socket = new MockedSocket()
-    socketIOClient.mockReturnValue(socket)
     networkDeepResponse.name = 'AAA network test'
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
@@ -64,9 +58,7 @@ describe('SummaryForm', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.get(`http://localhost${websocketServerUrl}/`,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
     )
   })
   it('should render cloudpath enabled successfully', async () => {

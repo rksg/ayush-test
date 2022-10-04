@@ -1,11 +1,9 @@
 import '@testing-library/jest-dom'
-import { rest }       from 'msw'
-import socketIOClient from 'socket.io-client'
-import MockedSocket   from 'socket.io-mock'
+import { rest } from 'msw'
 
-import { CommonUrlsInfo, websocketServerUrl, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                         from '@acx-ui/store'
-import { mockServer, render, screen }                       from '@acx-ui/test-utils'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
+import { mockServer, render, screen }   from '@acx-ui/test-utils'
 
 import { NetworkDetails } from './NetworkDetails'
 
@@ -41,11 +39,7 @@ const networkDetailHeaderData = {
 jest.mock('socket.io-client')
 
 describe('NetworkDetails', () => {
-  let socket
-  
   beforeEach(() => {
-    socket = new MockedSocket()
-    socketIOClient.mockReturnValue(socket)
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getNetwork.url,
@@ -54,9 +48,7 @@ describe('NetworkDetails', () => {
       rest.get(
         CommonUrlsInfo.getNetworksDetailHeader.url,
         (req, res, ctx) => res(ctx.json(networkDetailHeaderData))
-      ),
-      rest.get(`http://localhost${websocketServerUrl}/`,
-        (_, res, ctx) => res(ctx.json([])))
+      )
     )
   })
 

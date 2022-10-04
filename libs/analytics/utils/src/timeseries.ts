@@ -26,7 +26,7 @@ export function checkNoData (data: TimeSeriesData | null): boolean {
   for (let [key, value] of Object.entries(data)) {
     if(key !== 'time') {
       const uniqueVal = new Set(value)
-      uniqueVal.size === 1 && uniqueVal.has(null) ? 
+      uniqueVal.size === 1 && uniqueVal.has(null) ?
         isNoData = true : isNoData = false
     }
   }

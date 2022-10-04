@@ -1,9 +1,7 @@
-import { rest }       from 'msw'
-import socketIOClient from 'socket.io-client'
-import MockedSocket   from 'socket.io-mock'
+import { rest } from 'msw'
 
-import { CommonUrlsInfo, websocketServerUrl, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                         from '@acx-ui/store'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -159,11 +157,8 @@ const list = {
 
 describe('Networks Table', () => {
   let params: { tenantId: string }
-  let socket
-  
+
   beforeEach(() => {
-    socket = new MockedSocket()
-    socketIOClient.mockReturnValue(socket)
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
@@ -172,9 +167,7 @@ describe('Networks Table', () => {
       rest.delete(
         WifiUrlsInfo.deleteNetwork.url,
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
-      ),
-      rest.get(`http://localhost${websocketServerUrl}/`,
-        (_, res, ctx) => res(ctx.json({})))
+      )
     )
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'

@@ -199,8 +199,6 @@ describe('NetworkMoreSettingsForm', () => {
     const enableFastRoamingCheckbox = screen.getByTestId('enableFastRoaming')
     fireEvent.click(enableFastRoamingCheckbox)
     expect(screen.getByText(/mobility domain id/i)).toBeVisible()
-
-
   })
 })
 

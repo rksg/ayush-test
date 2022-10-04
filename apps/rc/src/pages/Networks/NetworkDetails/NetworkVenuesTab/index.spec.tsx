@@ -1,8 +1,6 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
-import { rest }       from 'msw'
-import socketIOClient from 'socket.io-client'
-import MockedSocket   from 'socket.io-mock'
+import { rest } from 'msw'
 
 
 import * as config                      from '@acx-ui/config'
@@ -104,11 +102,7 @@ describe('NetworkVenuesTab', () => {
     await config.initialize()
   })
 
-  let socket
-  
   beforeEach(() => {
-    socket = new MockedSocket()
-    socketIOClient.mockReturnValue(socket)
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
     })
