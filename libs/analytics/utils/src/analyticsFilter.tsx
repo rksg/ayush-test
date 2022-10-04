@@ -81,7 +81,6 @@ export function AnalyticsFilterProvider (props: { children: ReactNode }) {
       : { path: [], raw: [] }
     const { path } = networkFilter
     if(sublocation === 'health' &&
-    path.length &&
     path.length > 1 &&
     path[1]?.type === 'switchGroup'){
       networkFilter = { path: defaultNetworkPath, raw: [] }
@@ -96,7 +95,6 @@ export function AnalyticsFilterProvider (props: { children: ReactNode }) {
     setSearch(search, { replace: true })
   }
   const { path } = getNetworkFilter()
-
   const providerValue = {
     path: path.length ? path : defaultNetworkPath,
     setNetworkPath,
