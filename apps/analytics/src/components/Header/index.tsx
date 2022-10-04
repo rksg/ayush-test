@@ -91,9 +91,8 @@ export const Header = ({ data, replaceTitle, shouldQuerySwitch, ...otherProps }:
 }
 
 const ConnectedHeader = (props: PageHeaderProps & { shouldQuerySwitch : boolean }) => {
-  const { filters,getNetworkFilter } = useAnalyticsFilter()
-  const { path } = getNetworkFilter()
-  const queryResults = useNetworkNodeInfoQuery({ ...filters, path })
+  const { filters } = useAnalyticsFilter()
+  const queryResults = useNetworkNodeInfoQuery(filters)
   return (
     <ConnectedHeaderWrapper>
       <Loader states={[queryResults]}>
@@ -101,7 +100,7 @@ const ConnectedHeader = (props: PageHeaderProps & { shouldQuerySwitch : boolean 
           {...props}
           shouldQuerySwitch={props.shouldQuerySwitch}
           data={queryResults.data as HeaderData}
-          replaceTitle={path.length > 1}
+          replaceTitle={filters.path.length > 1}
         />
       </Loader>
     </ConnectedHeaderWrapper>
