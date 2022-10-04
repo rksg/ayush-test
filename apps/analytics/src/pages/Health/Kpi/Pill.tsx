@@ -1,4 +1,5 @@
 import { sum }     from 'lodash'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
@@ -17,11 +18,20 @@ import {
 
 type PillData = { success: number, total: number }
 
-const transformTSResponse = ({ data }: KPITimeseriesResponse) : PillData => {
-  const [success, total] = data.reduce(([success, total], datum) => (
-    datum && datum.length && (datum[0] !== null && datum[1] !== null )
-      ? [success + datum[0], total + datum[1]] : [success, total]
-  ), [0, 0])
+const transformTSResponse = (
+  { data, time }: KPITimeseriesResponse,
+  window: { startDate: string, endDate: string }
+) : PillData => {
+  const [success, total] = data
+    .filter((_, index) =>
+      moment(time[index]).isBetween(
+        moment(window.startDate), moment(window.endDate), undefined, '[]'
+      )
+    )
+    .reduce(([success, total], datum) => (
+      datum && datum.length && (datum[0] !== null && datum[1] !== null )
+        ? [success + datum[0], total + datum[1]] : [success, total]
+    ), [0, 0])
   return { success, total }
 }
 
@@ -42,24 +52,28 @@ const formatPillText = (value: number = 0, suffix: string) => suffix
   ? `${formatter('percentFormatRound')(value / 100)} ${suffix}`
   : `${formatter('percentFormatRound')(value/ 100)}`
 
-function HealthPill ({ filters, kpi }: { filters: AnalyticsFilter, kpi: string }) {
+function HealthPill ({ filters, kpi, timeWindow }: {
+  filters: AnalyticsFilter, kpi: string, timeWindow: [string, string]
+}) {
   const { histogram, pill, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { $t } = useIntl()
+  const [ startDate, endDate ] = timeWindow
   let queryResults
   if (histogram) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    queryResults = useKpiHistogramQuery({ ...filters, kpi }, {
-      selectFromResult: ({ data, ...rest }) => ({
-        ...rest,
-        data: data ? tranformHistResponse({ ...data!, kpi }) : { success: 0, total: 0 }
+    queryResults = useKpiHistogramQuery(
+      { ...filters, startDate, endDate, kpi }, {
+        selectFromResult: ({ data, ...rest }) => ({
+          ...rest,
+          data: data ? tranformHistResponse({ ...data!, kpi }) : { success: 0, total: 0 }
+        })
       })
-    })
   } else {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     queryResults = useKpiTimeseriesQuery({ ...filters, kpi }, {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,
-        data: data ? transformTSResponse(data!) : { success: 0, total: 0 }
+        data: data ? transformTSResponse(data!, { startDate, endDate }) : { success: 0, total: 0 }
       })
     })
   }
