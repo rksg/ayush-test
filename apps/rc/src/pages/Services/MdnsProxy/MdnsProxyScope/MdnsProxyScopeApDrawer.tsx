@@ -40,6 +40,19 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
     }
   })
 
+  // Set AP table data source
+  useEffect(() => {
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: getTableFilters(venue)
+    })
+
+    if (tableQuery.data) {
+      setTableData(tableQuery.data.data)
+    }
+  }, [venue.id, tableQuery.data?.data])
+
+  // Update activated APs value
   useEffect(() => {
     if (!visible) {
       return
@@ -52,17 +65,6 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
     }
 
   }, [venue.id, visible])
-
-  useEffect(() => {
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: getTableFilters(venue)
-    })
-
-    if (tableQuery.data) {
-      setTableData(tableQuery.data.data)
-    }
-  }, [venue.id, tableQuery.data?.data])
 
   const onClose = () => {
     setVisible(false)
@@ -150,7 +152,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
     }
   ]
 
-  const content = <Loader states={[tableQuery]}>
+  const content = <>
     <p>{ $t({
       // eslint-disable-next-line max-len
       defaultMessage: 'Select the APS that the mDNS Proxy Service will be applied to at venue “{venueName}”.'
@@ -160,16 +162,19 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
     <p>{ $t({
       defaultMessage: 'It is suggested to only enable this service on a single AP per service.'
     }) }</p>
-    <Table<AP>
-      columns={columns}
-      rowActions={rowActions}
-      dataSource={tableData}
-      rowKey='serialNumber'
-      rowSelection={{ type: 'checkbox', selectedRowKeys }}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-    />
-  </Loader>
+    <Loader states={[tableQuery]}>
+      <Table<AP>
+        data-testid='MdnsProxyScopeApTable'
+        columns={columns}
+        rowActions={rowActions}
+        dataSource={tableData}
+        rowKey='serialNumber'
+        rowSelection={{ type: 'checkbox', selectedRowKeys }}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+      />
+    </Loader>
+  </>
 
   const footer = [
     <Button

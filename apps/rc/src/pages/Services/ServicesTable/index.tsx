@@ -10,8 +10,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { serviceTypeLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
-import { getServiceDetailsLink, ServiceOperation }                from '../serviceRouteUtils'
+import { serviceTypeLabelMapping, serviceTechnologyLabelMapping }             from '../contentsMap'
+import { getSelectServiceRoutePath, getServiceDetailsLink, ServiceOperation } from '../serviceRouteUtils'
 
 
 function useColumns () {
@@ -188,7 +188,7 @@ export function ServicesTable () {
       <PageHeader
         title={$t({ defaultMessage: 'Services' })}
         extra={[
-          <TenantLink to='/services/select' key='add'>
+          <TenantLink to={getSelectServiceRoutePath(true)} key='add'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>
         ]}

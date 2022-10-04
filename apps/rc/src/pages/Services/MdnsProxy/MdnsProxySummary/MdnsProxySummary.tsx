@@ -12,7 +12,7 @@ import { MdnsProxySummaryVenues } from './MdnsProxySummaryVenue'
 
 export function MdnsProxySummary () {
   const { currentData } = useContext(MdnsProxyFormContext)
-  const apCount = (currentData.scope ?? []).reduce((accumulator, currentValue) => {
+  const totalApCount = (currentData.scope ?? []).reduce((accumulator, currentValue) => {
     return accumulator + currentValue.aps.length
   }, 0)
 
@@ -52,7 +52,7 @@ export function MdnsProxySummary () {
         <Row>
           <Col span={24}>
             <Subtitle level={4}>
-              { $t({ defaultMessage: 'Venues & APs ({apCount})' }, { apCount }) }
+              { $t({ defaultMessage: 'Venues & APs ({apCount})' }, { apCount: totalApCount }) }
             </Subtitle>
           </Col>
           <Col span={10}>

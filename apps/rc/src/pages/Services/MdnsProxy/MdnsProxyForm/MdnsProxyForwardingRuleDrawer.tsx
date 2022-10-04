@@ -55,6 +55,9 @@ export function MdnsProxyForwardingRuleDrawer (props: MdnsProxyForwardingRuleDra
     <Form.Item
       label={$t({ defaultMessage: 'Type' })}
       name='type'
+      rules={[
+        { required: true }
+      ]}
     >
       <Select
         placeholder={$t({ defaultMessage: 'Select Type...' })}

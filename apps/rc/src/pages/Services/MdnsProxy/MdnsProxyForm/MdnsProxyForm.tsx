@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react'
 
-import _                                from 'lodash'
-import { useIntl }                      from 'react-intl'
-import { Path, useNavigate, useParams } from 'react-router-dom'
+import _                   from 'lodash'
+import { useIntl }         from 'react-intl'
+import { Path, useParams } from 'react-router-dom'
 
 import { PageHeader, showToast, StepsForm }              from '@acx-ui/components'
 import { useAddMdnsProxyMutation, useGetMdnsProxyQuery } from '@acx-ui/rc/services'
 import { MdnsProxyFormData }                             from '@acx-ui/rc/utils'
-import { useTenantLink }                                 from '@acx-ui/react-router-dom'
+import { useTenantLink, useNavigate }                    from '@acx-ui/react-router-dom'
 
-import { MdnsProxyScope }   from '../MdnsProxyScope/MdnsProxyScope'
-import { MdnsProxySummary } from '../MdnsProxySummary/MdnsProxySummary'
+import { getSelectServiceRoutePath, getServiceListRoutePath } from '../../serviceRouteUtils'
+import { MdnsProxyScope }                                     from '../MdnsProxyScope/MdnsProxyScope'
+import { MdnsProxySummary }                                   from '../MdnsProxySummary/MdnsProxySummary'
 
 import MdnsProxyFormContext      from './MdnsProxyFormContext'
 import { MdnsProxySettingsForm } from './MdnsProxySettingsForm'
@@ -24,8 +25,8 @@ export function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const servicesTablePath: Path = useTenantLink('/services')
-  const selectServicePath: Path = useTenantLink('/services/select')
+  const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))
+  const selectServicePath: Path = useTenantLink(getSelectServiceRoutePath(true))
   const [ currentData, setCurrentData ] = useState<MdnsProxyFormData>({} as MdnsProxyFormData)
   const { data: dataFromServer } = useGetMdnsProxyQuery({ params }, { skip: !editMode })
   const [ addMdnsProxy ] = useAddMdnsProxyMutation()
@@ -66,7 +67,7 @@ export function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps) {
           : $t({ defaultMessage: 'Add mDNS Proxy Service' })
         }
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Add Service' }), link: '/services/select' }
+          { text: $t({ defaultMessage: 'Add Service' }), link: getSelectServiceRoutePath() }
         ]}
       />
       <MdnsProxyFormContext.Provider value={{ editMode, currentData }}>

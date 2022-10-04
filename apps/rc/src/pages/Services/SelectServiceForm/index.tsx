@@ -5,9 +5,16 @@ import { PageHeader, StepsForm }            from '@acx-ui/components'
 import { ServiceType }                      from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { RadioDescription }                                from '../../Networks/NetworkForm/styledComponents'
-import { serviceTypeDescMapping, serviceTypeLabelMapping } from '../contentsMap'
-import { getServiceRoutePath, ServiceOperation }           from '../serviceRouteUtils'
+import { RadioDescription }  from '../../Networks/NetworkForm/styledComponents'
+import {
+  serviceTypeDescMapping,
+  serviceTypeLabelMapping
+} from '../contentsMap'
+import {
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  ServiceOperation
+} from '../serviceRouteUtils'
 
 import * as UI from './styledComponents'
 
@@ -15,7 +22,7 @@ import * as UI from './styledComponents'
 export function SelectServiceForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const servicesTablePath: Path = useTenantLink('/services')
+  const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
@@ -35,7 +42,7 @@ export function SelectServiceForm () {
       <PageHeader
         title={$t({ defaultMessage: 'Add Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
       />
       <StepsForm

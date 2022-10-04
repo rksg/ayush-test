@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Form }    from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsForm, Table, Loader, TableProps }     from '@acx-ui/components'
@@ -10,6 +11,7 @@ import { useTableQuery, Venue, MdnsProxyScopeData } from '@acx-ui/rc/utils'
 import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
 import { MdnsProxyScopeApDrawer, SimpleApRecord } from './MdnsProxyScopeApDrawer'
+
 
 
 export function MdnsProxyScope () {
@@ -31,65 +33,49 @@ export function MdnsProxyScope () {
     }
   })
 
+  // Set venue table data source
   useEffect(() => {
     if (tableQuery.data) {
-      setTableData(tableQuery.data?.data ?? [])
+      setTableData(tableQuery.data.data)
     }
   }, [tableQuery.data])
 
+  // Update selected APs value
   useEffect(() => {
-    if (!dataloadedRef.current) {
+    if (!dataloadedRef.current && tableData) {
       updateField(currentData.scope)
       dataloadedRef.current = true
     }
-  }, [currentData, form])
-
-  useEffect(() => {
-    const formScope = form.getFieldValue('scope')
-    if (dataloadedRef.current && formScope) {
-      applyTableSelectedAps(formScope)
-    }
-  }, [tableQuery.pagination?.current])
-
-  const applyTableSelectedAps = (selected: MdnsProxyScopeData[]) => {
-    const resultTableData: Venue[] = (tableData ?? []).map((tableVenue: Venue) => {
-      const target: MdnsProxyScopeData | undefined = selected.find(s => s.venueId === tableVenue.id)
-
-      return {
-        ...tableVenue,
-        activatedApsId: target ? target.aps.map(ap => ap.serialNumber) : tableVenue.activatedApsId
-      }
-    })
-
-    setTableData(resultTableData)
-  }
+  }, [currentData.scope, form, tableData])
 
   const handleSelectAps = (rows: Venue[]) => {
     setDrawerVisible(true)
     setSelectedVenue(rows[0])
   }
 
-  const handleSetAps = (venue: Venue, aps: SimpleApRecord[] = []) => {
+  const handleSetAps = (venue: Venue, aps: SimpleApRecord[]) => {
     const currentScope = form.getFieldValue('scope')
     const resultScope: MdnsProxyScopeData[] = currentScope?.slice() ?? []
-    let targetVenue = resultScope.find((s: MdnsProxyScopeData) => s.venueId === venue.id)
 
-    if (targetVenue) {
-      targetVenue.aps = (aps.length === 0
-        ? []
-        : aps.map(a => ({ serialNumber: a.serialNumber, name: a.name }))
-      )
-    } else {
-      targetVenue = { venueName: venue.name, venueId: venue.id, aps: aps }
-      resultScope.push(targetVenue)
-    }
+    _.remove(resultScope, (s: MdnsProxyScopeData) => s.venueId === venue.id)
+
+    resultScope.push({
+      venueName: venue.name,
+      venueId: venue.id,
+      aps: aps
+    })
 
     updateField(resultScope)
   }
 
   const updateField = (scope: MdnsProxyScopeData[] = []) => {
     form.setFieldValue('scope', scope)
-    applyTableSelectedAps(scope)
+  }
+
+  const getActivatedApsId = (venueId: string): string[] => {
+    const scope: MdnsProxyScopeData[] = form.getFieldValue('scope')
+    const target = scope.find(s => s.venueId === venueId)
+    return target ? target.aps.map(ap => ap.serialNumber) : []
   }
 
   const rowActions: TableProps<Venue>['rowActions'] = [
@@ -118,8 +104,11 @@ export function MdnsProxyScope () {
       title: $t({ defaultMessage: 'Selected APs' }),
       dataIndex: ['activatedApsId', 'length'],
       key: 'activatedApsId',
-      render: function (data) {
-        return data ? data : 0
+      render: function (data, row) {
+        const scope: MdnsProxyScopeData[] = form.getFieldValue('scope') ?? []
+        const target = scope.find(v => v.venueId === row.id)
+
+        return target ? target.aps.length : 0
       }
     }
   ]
@@ -133,7 +122,7 @@ export function MdnsProxyScope () {
       {selectedVenue
         ? <MdnsProxyScopeApDrawer
           venue={selectedVenue}
-          selectedApsId={selectedVenue.activatedApsId}
+          selectedApsId={getActivatedApsId(selectedVenue.id)}
           visible={drawerVisible}
           setVisible={setDrawerVisible}
           setAps={handleSetAps}

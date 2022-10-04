@@ -83,7 +83,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'Rule' }),
-          entityValue: selectedRows[0].type
+          entityValue: $t(ruleTypeLabelMapping[selectedRows[0].type])
         },
         onOk: () => {
           const newRules = rules.filter((r: MdnsProxyForwardingRule) => {
