@@ -71,10 +71,9 @@ const getQuery = (path: NetworkPath) : string => {
     query NetworkNodeInfo(
       $startDate: DateTime,
       $endDate: DateTime,
-      $mac: String,
-      $filter: FilterInput
+      $mac: String
       ){
-        network(start: $startDate, end: $endDate, filter : $filter) {
+        network(start: $startDate, end: $endDate) {
           node: ap(mac: $mac) {
             type: __typename
             name
@@ -87,10 +86,9 @@ const getQuery = (path: NetworkPath) : string => {
         $path: [HierarchyNodeInput],
         $startDate: DateTime,
         $endDate: DateTime,
-        $mac: String,
-        $filter: FilterInput
+        $mac: String
       ){
-        network(start: $startDate, end: $endDate, filter : $filter) {
+        network(start: $startDate, end: $endDate) {
           node: switch(mac: $mac, path: $path) {
             type
             name

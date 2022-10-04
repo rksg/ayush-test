@@ -64,6 +64,7 @@ export function useAnalyticsFilter () {
       filter: getFilterObj(path) as pathFilter
     } as const,
     setNetworkPath,
+    getNetworkFilter,
     raw
   }
 }

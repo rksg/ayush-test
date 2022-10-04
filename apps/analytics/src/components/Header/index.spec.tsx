@@ -12,8 +12,10 @@ jest.mock('../../components/NetworkFilter', () => () => <div>network filter</div
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: () => ({
-    filters: { path: [{ type: 'network', name: 'Network' }], filter: {} }
-  })
+    filters: { path: [{ type: 'network', name: 'Network' }], filter: {} },
+    getNetworkFilter: jest
+      .fn()
+      .mockReturnValueOnce({ path: [{ type: 'network', name: 'Network' }] }) })
 }))
 describe('Analytics dumb header', () => {
   const props = {

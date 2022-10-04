@@ -198,7 +198,7 @@ function ConnectedNetworkFilter ({ shouldQuerySwitch } : ConnectedNetworkFilterP
     }
   )
   const networkFilter = { ...filters, shouldQuerySwitch }
-  const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path'), {
+  const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
     selectFromResult: ({ data, ...rest }) => ({
       data: data ? getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes) : [],
       ...rest
