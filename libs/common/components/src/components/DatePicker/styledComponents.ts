@@ -3,8 +3,6 @@ import styled                from 'styled-components/macro'
 
 import { DateRange, defaultRanges } from '@acx-ui/utils'
 
-import { cssNumber } from '../../theme/helper'
-
 type WrapperProps = {
   rangeOptions?: DateRange[];
   selectionType: DateRange;
