@@ -136,7 +136,18 @@ exports[`p-cov-clientrssi-low should render correctly 1`] = `
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div

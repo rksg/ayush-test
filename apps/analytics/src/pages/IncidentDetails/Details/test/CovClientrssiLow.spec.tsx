@@ -4,9 +4,9 @@ import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
 
 import { CovClientrssiLow } from '../CovClientrssiLow'
 
-jest.mock('../../NetworkImpact', () => ({
-  NetworkImpact: () => <div data-testid='networkImpact' />
-}))
+import { mockNetworkImpact } from './__tests__/fixtures'
+
+jest.mock('../../NetworkImpact')
 jest.mock('../../IncidentAttributes', () => ({
   ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
@@ -17,6 +17,8 @@ jest.mock('../../Insights', () => ({
 
 describe('p-cov-clientrssi-low', () => {
   mockDOMWidth()
+  mockNetworkImpact()
+
   it('should render correctly', () => {
     const params = {
       incidentId: fakeIncident1.id
