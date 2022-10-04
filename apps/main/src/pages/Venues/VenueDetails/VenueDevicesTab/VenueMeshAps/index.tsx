@@ -10,7 +10,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import { 
+import {
   ListIcon,
   LineChartIcon,
   MeshIcon,
@@ -34,7 +34,7 @@ function venueNameColTpl (
   }
   return (
     <IconWrapper>
-      <Tooltip title={tooltipTitle[meshRole as APMeshRole]} 
+      <Tooltip title={tooltipTitle[meshRole as APMeshRole]}
         className={`${icon[meshRole as APMeshRole]}`}>
         <TenantLink to={`aps/${id}/details/overview`}>{name}</TenantLink>
       </Tooltip>
@@ -241,7 +241,7 @@ export function VenueMeshApsTable () {
           size='small' />
         <WhiteButton type='primary'
           icon={<MeshIcon />}
-          size='small' 
+          size='small'
           style={{ borderRadius: '0 4px 4px 0' }}/>
       </span>
       <VenueMeshApsTable />

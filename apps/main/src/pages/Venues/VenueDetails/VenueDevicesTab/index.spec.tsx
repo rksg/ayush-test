@@ -149,7 +149,7 @@ const venueDetailHeaderData = {
       id: '4c778ed630394b76b17bce7fe230cf9f',
       venueStatus: '3_RequiresAttention',
       mesh: {
-        enabled: false 
+        enabled: false
       },
       dhcp: {
         mode: 'DHCPMODE_EACH_AP',
@@ -174,11 +174,11 @@ const venueDetailHeaderData = {
     }
   },
   activeNetworkCount: 7,
-  switches: { 
-    summary: { 
-      OFFLINE: 1 
+  switches: {
+    summary: {
+      OFFLINE: 1
     },
-    totalCount: 1 
+    totalCount: 1
   },
   lteAps: {
     summary: {},

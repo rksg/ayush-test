@@ -15,7 +15,7 @@ export function VenueDevicesTab () {
         <VenueMeshApsTable />
       </Tabs.TabPane>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Switch' })} key='switch'>
-        {$t({ defaultMessage: 'Switch' })} 
+        {$t({ defaultMessage: 'Switch' })}
       </Tabs.TabPane>
     </Tabs>
   )
