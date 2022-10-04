@@ -17,7 +17,7 @@ import * as UI     from './styledComponents'
 
 export default function FloorPlan () {
   const params = useParams()
-  const responseData = useFloorPlanListQuery({ params })
+  const floorPlanQuery = useFloorPlanListQuery({ params })
   const { $t } = useIntl()
   const [showGalleryView, setShowGalleryView] = useState(false)
 
@@ -26,11 +26,11 @@ export default function FloorPlan () {
   
   useEffect(() => {
     setFloorPlans([])
-    if(responseData?.data){
-      setFloorPlans(responseData?.data)
-      setSelectedFloorPlan(responseData?.data[0])
+    if(floorPlanQuery?.data){
+      setFloorPlans(floorPlanQuery?.data)
+      setSelectedFloorPlan(floorPlanQuery?.data[0])
     }
-  }, [responseData?.data])
+  }, [floorPlanQuery?.data])
 
   const [
     deleteFloorPlan,
@@ -66,7 +66,7 @@ export default function FloorPlan () {
   }
 
   return (
-    <Loader states={[responseData,
+    <Loader states={[floorPlanQuery,
       { isLoading: false, isFetching: isDeleteFloorPlanUpdating }]}>
       {floorPlans?.length ?
         <UI.FloorPlanContainer>

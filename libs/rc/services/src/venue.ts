@@ -76,6 +76,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
             ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
             })
+          showActivityMessage(msg, 
+            ['DeleteFloorPlan'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFP', id: 'DETAIL' }]))
+            })
         })
       }
     }),
@@ -86,15 +90,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...floorPlansReq
         }
       },
-      providesTags: [{ type: 'VenueFP', id: 'DETAIL' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, 
-            ['DeleteFloorPlan'], () => {
-              api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFP', id: 'DETAIL' }]))
-            })
-        })
-      }
+      providesTags: [{ type: 'VenueFP', id: 'DETAIL' }]
     }),
     deleteFloorPlan: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
