@@ -78,4 +78,42 @@ describe('Timeseries component', () => {
     expect(screen.getByText(/eap failures/i).textContent).toEqual('EAP Failures')
     expect(screen.getByText(/clients/i).textContent).toEqual('Clients')
   })
+
+  it('should match rss snapshot', async () => {
+    const rssCharts = [
+      TimeSeriesChartTypes.RssQualityByClientsChart
+    ]
+    const rssProps = {
+      incident: fakeIncident1,
+      charts: rssCharts
+    }
+    const rssDistributionResult = {
+      network: {
+        hierarchyNode: {
+          rssQualityByClientsChart: {
+            time: [
+              '2022-07-20T09:15:00.000Z',
+              '2022-07-20T09:30:00.000Z'
+            ],
+            good: [3, 4],
+            average: [1, 2],
+            bad: [0, 1]
+          }
+        }
+      }
+    }
+    store.dispatch(Api.util.resetApiState())
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
+      data: rssDistributionResult
+    })
+    render(<BrowserRouter>
+      <Provider>
+        <TimeSeries {...rssProps} />
+      </Provider>
+    </BrowserRouter>
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getByText(/clients/i).textContent).toEqual('RSS Quality By Clients')
+  })
 })

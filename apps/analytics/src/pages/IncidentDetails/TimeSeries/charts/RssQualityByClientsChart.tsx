@@ -50,7 +50,7 @@ export const RssQualityByClientsChart = ({ data }: { data: ChartsData }) => {
 
   const chartResults = getSeriesData(rssQualityByClientsChart, seriesMapping)
 
-  return <Card title={$t({ defaultMessage: 'Rss Quality By Clients' })} type='no-border'>
+  return <Card title={$t({ defaultMessage: 'RSS Quality By Clients' })} type='no-border'>
     <AutoSizer>
       {({ height, width }) => (
         <StackedAreaChart
