@@ -97,9 +97,9 @@ const getQuery = (path: NetworkPath) : string => {
     `
     default: return gql`
       query NetworkNodeInfo(
-        $path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime,
+        $path: [HierarchyNodeInput], $startDate: DateTime, $endDate: DateTime, $filter: FilterInput
       ){
-        network(start: $startDate, end: $endDate) {
+        network(start: $startDate, end: $endDate, filter: $filter) {
           node: hierarchyNode(path:$path) {
             name
             ${getAttributesByNodeType(type).join('\n')}
