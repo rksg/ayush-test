@@ -16,8 +16,8 @@ const getData = () => {
 }
 
 export const data = [
-  { name: '2.4 GHz', value: getData() },
-  { name: '5 GHz', value: getData() }
+  { name: '2.4 GHz', data: getData() },
+  { name: '5 GHz', data: getData() }
 ]
 
 storiesOf('StackedAreaChart', module)

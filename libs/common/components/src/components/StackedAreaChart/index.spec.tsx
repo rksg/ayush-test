@@ -13,4 +13,13 @@ describe('StackedAreaChart',()=>{
     />)
     expect(formatter).toBeCalled()
   })
+  it('should handle when there is no legend', () => {
+    const formatter = jest.fn()
+    render(<StackedAreaChart
+      data={data}
+      dataFormatter={formatter}
+      disableLegend={true}
+    />)
+    expect(formatter).toBeCalled()
+  })
 })
