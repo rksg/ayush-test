@@ -6,7 +6,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVMNetworksList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/network'
-  },  
+  },
   getNetworksDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/network/:networkId/detailheader'
@@ -69,11 +69,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getServicesList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/services'
-  },
-  deleteService: {
-    method: 'delete',
-    url: '/api/tenant/:tenantId/service/:serviceId'
+    url: '/api/viewmodel/tenant/:tenantId/serviceprofiles'
   },
   getVenuesList: {
     method: 'post',
@@ -87,6 +83,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId'
   },
+  deleteVenue: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/venue/:venueId'
+  },
+  deleteVenues: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/venue'
+  },
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
@@ -98,6 +102,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueMesh: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/mesh'
+  },
+  getService: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/service/:serviceId'
+  },
+  saveDHCPService: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
+  },
+  getVenueFloorplans: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
   },
   getVenueCapabilities: {
     method: 'get',

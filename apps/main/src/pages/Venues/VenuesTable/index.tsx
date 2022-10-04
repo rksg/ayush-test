@@ -1,4 +1,5 @@
 import { Space }   from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -9,12 +10,13 @@ import {
   Loader,
   StackedBarChart,
   cssStr,
+  showActionModal,
   deviceStatusColors,
   getDeviceConnectionStatusColors
 } from '@acx-ui/components'
-import { useVenuesListQuery }                       from '@acx-ui/rc/services'
-import { useTableQuery, ApDeviceStatusEnum, Venue } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate }                  from '@acx-ui/react-router-dom'
+import { useVenuesListQuery, useDeleteVenueMutation }                  from '@acx-ui/rc/services'
+import { useTableQuery, ApDeviceStatusEnum, Venue, ApVenueStatusEnum } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }                          from '@acx-ui/react-router-dom'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -178,16 +180,45 @@ export function VenuesTable () {
       defaultPayload
     })
 
+    const { tenantId } = useParams()
+    const [
+      deleteVenue,
+      { isLoading: isDeleteVenueUpdating }
+    ] = useDeleteVenueMutation()
+
     const rowActions: TableProps<Venue>['rowActions'] = [{
+      visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
-        navigate(`${selectedRows[0].id}/edit/details/details`, { replace: false })
+        navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: (rows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Venues' }),
+            entityValue: rows.length === 1 ? rows[0].name : undefined,
+            numOfEntities: rows.length,
+            confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
+          },
+          onOk: () => { rows.length === 1 ?
+            deleteVenue({ params: { tenantId, venueId: rows[0].id } })
+              .then(clearSelection) :
+            deleteVenue({ params: { tenantId }, payload: rows.map(item => item.id) })
+              .then(clearSelection)
+          }
+        })
       }
     }]
 
     return (
       <Loader states={[
-        tableQuery
+        tableQuery,
+        { isLoading: false, isFetching: isDeleteVenueUpdating }
       ]}>
         <Table
           columns={useColumns()}
@@ -272,4 +303,11 @@ function getEmptyStatusChart () {
     showTotal={false}
     barColors={[cssStr(deviceStatusColors.empty)]}
   />
+}
+
+function shouldShowConfirmation (selectedVenues: Venue[]) {
+  const venues = selectedVenues.filter(v => {
+    return v['status'] !== ApVenueStatusEnum.IN_SETUP_PHASE || !_.isEmpty(v['aggregatedApStatus'])
+  })
+  return venues.length > 0
 }

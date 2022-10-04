@@ -5,7 +5,7 @@ import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
 import { showActionModal, showToast, Subtitle } from '@acx-ui/components'
-import { 
+import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation
@@ -26,16 +26,16 @@ export function MeshNetwork () {
     editNetworkingContextData,
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
-  
+
   const [apList] = useLazyApListQuery()
   const [updateVenueMesh] = useUpdateVenueMeshMutation()
 
   const [isAllowEnableMesh, setIsAllowEnableMesh] = useState(true)
   const [hasMeshAPs, setHasMeshAPs] = useState(false)
   const [meshEnabled, setMeshEnabled] = useState(false)
-  const [meshToolTipDisabledText, setMeshToolTipDisabledText] = 
+  const [meshToolTipDisabledText, setMeshToolTipDisabledText] =
     useState($t({ defaultMessage: 'Not available' }))
-  
+
   const { data } = useGetVenueSettingsQuery({ params })
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export function MeshNetwork () {
         setMeshToolTipDisabledText('')
       }
       setIsAllowEnableMesh(!enableDhcpSetting as boolean) //TODO: this.rbacService.isRoleAllowed('UpdateMeshButton')
-        
+
       if(data.mesh.enabled){
         checkMeshAPs()
       }
@@ -111,7 +111,7 @@ export function MeshNetwork () {
         showActionModal({
           type: 'error',
           title: 'Error',
-          content: 
+          content:
               $t({ defaultMessage: 'You cannot set Mesh off because you have connected Mesh APs' })
         })
       } else {
@@ -149,4 +149,3 @@ export function MeshNetwork () {
     </>
   )
 }
-  

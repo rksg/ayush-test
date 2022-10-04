@@ -221,13 +221,19 @@ export function NetworkForm () {
   return (
     <>
       <PageHeader
-        title={editMode ?
-          intl.$t({ defaultMessage: 'Edit Network' }) : intl.$t({ defaultMessage: 'Add Network' })}
+        title={editMode
+          ? intl.$t({ defaultMessage: 'Edit Network' })
+          : intl.$t({ defaultMessage: 'Create New Network' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
-      <NetworkFormContext.Provider value={{ setNetworkType, editMode, cloneMode, data }}>
+      <NetworkFormContext.Provider value={{
+        setNetworkType,
+        editMode,
+        cloneMode,
+        data: data ?? null
+      }}>
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}

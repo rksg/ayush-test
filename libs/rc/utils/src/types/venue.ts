@@ -44,28 +44,45 @@ export interface VenueDetailHeader {
 		totalCount: number
 	},
 	totalClientCount: string
-	venue: {
-		addressLine: string,
-		city: string,
-		country: string,
-		crtTime: string,
-		id: string,
-		lastUpdTime: string,
-		latitude: string,
-		longitude: string,
-		name: string,
-		tenantId: string,
-		timeZone: string,
-		type: string,
-		venueStatus: string
-	}
+	venue: VenueDetail
+}
+
+export interface VenueDetail {
+	addressLine: string,
+	city: string,
+	country: string,
+	crtTime: string,
+	id: string,
+	lastUpdTime: string,
+	latitude: string,
+	longitude: string,
+	name: string,
+	tenantId: string,
+	timeZone: string,
+	type: string,
+	venueStatus: string
+}
+
+export interface FloorPlanDto {
+  id: string;
+	name: string;
+	floorNumber: number,
+	image: FloorPlanImage,
+	imageId?: string,
+	imageUrl?: string,
+	imageBlob?: string, //used for SVG
+	imageName?: string
+}
+
+export interface FloorPlanImage {
+	id: string,
+	name: string
 }
 
 export interface VenueCapabilities {
 	apModels: ApModel[]
 	version: string
 }
-  
 export interface VenueLed {
 	ledEnabled: boolean
 	model: string,
@@ -77,7 +94,7 @@ export interface VenueApModels {
 	models: string[]
 }
 
-    
+
 export interface Address {
   addressLine?: string
   city?: string

@@ -88,7 +88,7 @@ describe('VenueEdit', () => {
       activeTab: 'wifi',
       activeSubTab: 'settings'
     }
-    render(<Provider><VenueEdit /></Provider>, { 
+    render(<Provider><VenueEdit /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
     })
 
@@ -126,7 +126,6 @@ describe('VenueEdit', () => {
       },
       updateMesh: jest.fn()
     }
-    const intl = { $t: jest.fn() }
-    showUnsavedModal(editContextData, jest.fn(), editNetworkingContextData, intl)
+    showUnsavedModal(editContextData, jest.fn(), editNetworkingContextData)
   })
 })

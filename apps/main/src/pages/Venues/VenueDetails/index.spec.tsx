@@ -14,8 +14,17 @@ import {
   venueNetworkApGroup
 } from '../__tests__/fixtures'
 
-import { VenueDetails } from './'
+import { VenueDetails } from '.'
 
+jest.mock(
+  'analytics/Widgets',
+  () => ({ name }: { name: string }) => <div data-testid={`analytics-${name}`} title={name} />,
+  { virtual: true })
+
+jest.mock(
+  'rc/Widgets',
+  () => ({ name }: { name: string }) => <div data-testid={`networks-${name}`} title={name} />,
+  { virtual: true })
 
 describe('VenueDetails', () => {
   beforeEach(() => {

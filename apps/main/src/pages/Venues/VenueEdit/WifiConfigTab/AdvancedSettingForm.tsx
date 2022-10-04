@@ -11,6 +11,7 @@ import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, StepsForm, Table, TableProps, Loader, showToast } from '@acx-ui/components'
+import { DeleteOutlinedIcon }                                      from '@acx-ui/icons'
 import {
   useGetVenueCapabilitiesQuery,
   useGetVenueLedOnQuery,
@@ -24,7 +25,6 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { DeleteOutlinedIcon }                       from '../../../Layout/styledComponents'
 import { VenueEditContext, AdvancedSettingContext } from '../index'
 
 export interface ModelOption {
@@ -141,7 +141,7 @@ export function AdvancedSettingForm () {
     }
   }, {
     key: 'action',
-    dataIndex: 'a', //Todo
+    dataIndex: 'action',
     render: (data, row) => row.manual ? <Button
       key='delete'
       role='deleteBtn'

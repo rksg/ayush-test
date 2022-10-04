@@ -32,13 +32,13 @@ function VenuePageHeader () {
         <Button
           key='configure'
           type='primary'
-          onClick={() => 
+          onClick={() =>
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/edit/details/details`
+              pathname: `${basePath.pathname}/edit/details`
             })
-          }          
-        >{$t({ defaultMessage: 'Configure' })}</Button> 
+          }
+        >{$t({ defaultMessage: 'Configure' })}</Button>
       ]}
       footer={<VenueTabs />}
     />

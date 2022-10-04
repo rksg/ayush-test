@@ -1,10 +1,9 @@
 import { createContext, useState } from 'react'
 
-import { IntlShape } from 'react-intl'
-
 import { showActionModal, CustomButtonProps } from '@acx-ui/components'
 import { VenueLed }                           from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
+import { getIntl }                            from '@acx-ui/utils'
 
 import { SwitchConfigTab }          from './SwitchConfigTab'
 import { VenueDetailsTab }          from './VenueDetailsTab'
@@ -35,7 +34,7 @@ export interface AdvancedSettingContext {
 export const VenueEditContext = createContext({} as {
   editContextData: AdvancedSettingContext,
   setEditContextData: (data: AdvancedSettingContext) => void,
-  
+
   editNetworkingContextData: NetworkingSettingContext,
   setEditNetworkingContextData: (data: NetworkingSettingContext) => void
 })
@@ -65,13 +64,13 @@ export function showUnsavedModal (
   editContextData: AdvancedSettingContext,
   setEditContextData: (data: AdvancedSettingContext) => void,
   editNetworkingContextData: NetworkingSettingContext,
-  intl: IntlShape,
   callback?: () => void
 ) {
+  const { $t } = getIntl()
   const title = editContextData?.tabTitle ?? ''
   const hasError = editContextData?.hasError ?? false
   const btns = [{
-    text: intl.$t({ defaultMessage: 'Cancel' }),
+    text: $t({ defaultMessage: 'Cancel' }),
     key: 'close',
     closeAfterAction: true,
     handler () {
@@ -81,7 +80,7 @@ export function showUnsavedModal (
       })
     }
   }, {
-    text: intl.$t({ defaultMessage: 'Discard Changes' }),
+    text: $t({ defaultMessage: 'Discard Changes' }),
     key: 'discard',
     closeAfterAction: true,
     handler: async () => {
@@ -98,7 +97,7 @@ export function showUnsavedModal (
       callback?.()
     }
   }, {
-    text: intl.$t({ defaultMessage: 'Save Changes' }),
+    text: $t({ defaultMessage: 'Save Changes' }),
     type: 'primary',
     key: 'save',
     closeAfterAction: true,
@@ -123,16 +122,16 @@ export function showUnsavedModal (
     type: 'confirm',
     width: 450,
     title: hasError
-      ? intl.$t({ defaultMessage: 'You Have Invalid Changes' })
-      : intl.$t({ defaultMessage: 'You Have Unsaved Changes' }),
+      ? $t({ defaultMessage: 'You Have Invalid Changes' })
+      : $t({ defaultMessage: 'You Have Unsaved Changes' }),
     content: hasError
-      ? intl.$t({ defaultMessage: 'Do you want to discard your changes in "{title}"?' }, { title })
-      : intl.$t({
+      ? $t({ defaultMessage: 'Do you want to discard your changes in "{title}"?' }, { title })
+      : $t({
         defaultMessage: 'Do you want to save your changes in "{title}", or discard all changes?'
       }, { title }),
     customContent: {
       action: 'CUSTOM_BUTTONS',
       buttons: (hasError ? btns.slice(0, 2) : btns) as CustomButtonProps[]
     }
-  })  
+  })
 }

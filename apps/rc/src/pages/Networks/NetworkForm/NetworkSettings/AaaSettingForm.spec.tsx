@@ -11,7 +11,9 @@ import {
   venuesResponse,
   networksResponse,
   successResponse,
-  cloudpathResponse
+  cloudpathResponse,
+  networkDeepResponse,
+  venueListResponse
 } from '../__tests__/fixtures'
 import { radiusErrorMessage, multipleConflictMessage } from '../contentsMap'
 import { NetworkForm }                                 from '../NetworkForm'
@@ -80,7 +82,7 @@ const validateErrorResponse = [{
 }]
 
 async function fillInBeforeSettings (networkName: string) {
-  const insertInput = screen.getByLabelText('Network Name')
+  const insertInput = screen.getByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
 
@@ -110,6 +112,7 @@ async function fillInAfterSettings (checkSummary: Function) {
 
 describe('NetworkForm', () => {
   beforeEach(() => {
+    networkDeepResponse.name = 'AAA network test'
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
@@ -122,7 +125,11 @@ describe('NetworkForm', () => {
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.post(CommonUrlsInfo.validateRadius.url,
-        (_, res, ctx) => res(ctx.json(successResponse)))
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
     )
   })
 
@@ -258,6 +265,28 @@ describe('NetworkForm', () => {
 
 describe('Server Configuration Conflict', () => {
   let dialog
+
+  beforeEach(() => {
+    networkDeepResponse.name = 'AAA network test'
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+        (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
+      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json(networksResponse))),
+      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(CommonUrlsInfo.getCloudpathList.url,
+        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
+      rest.post(CommonUrlsInfo.validateRadius.url,
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse)))
+    )
+  })
 
   afterEach(async () => dialog?.remove())
 
