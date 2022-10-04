@@ -4,8 +4,8 @@ import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
 import { mapCodeToReason, Incident } from '@acx-ui/analytics/utils'
 import { formatter }                 from '@acx-ui/utils'
 
+import { apRebootReasonMap }      from './apRebootReasonMap'
 import { NetworkImpactChartData } from './services'
-import { apRebootReasonMap } from './apRebootReasonMap'
 
 export type NetworkImpactType = 'ap'
 | 'client'

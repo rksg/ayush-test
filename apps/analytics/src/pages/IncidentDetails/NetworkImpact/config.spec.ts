@@ -1,6 +1,7 @@
+import { useIntl } from 'react-intl'
+
 import { Incident }   from '@acx-ui/analytics/utils'
 import { renderHook } from '@acx-ui/test-utils'
-import { useIntl } from 'react-intl'
 
 import {
   getDataWithPercentage,
