@@ -5,6 +5,7 @@ import { mapCodeToReason, Incident } from '@acx-ui/analytics/utils'
 import { formatter }                 from '@acx-ui/utils'
 
 import { NetworkImpactChartData } from './services'
+import { apRebootReasonMap } from './apRebootReasonMap'
 
 export type NetworkImpactType = 'ap'
 | 'client'
@@ -46,6 +47,11 @@ export const getDataWithPercentage = (data: NetworkImpactChartData['data']) => {
 
 export const getDominance = (data: NetworkImpactChartData['data']) =>
   _.maxBy(getDataWithPercentage(data), 'percentage')
+
+export const getAPRebootReason = (key: string, { $t }: IntlShape) => {
+  const content = _.get(apRebootReasonMap, key)
+  return content ? $t(content) : key
+}
 
 const dominanceThreshold = 0.7
 
@@ -208,6 +214,7 @@ export const networkImpactChartConfigs: Readonly<Record<
     key: NetworkImpactChartTypes.ReasonByAP,
     title: defineMessage({ defaultMessage: 'Reason' }),
     highlight: highlights.aps,
+    transformKeyFn: getAPRebootReason,
     summary: {
       dominance: defineMessage({
         defaultMessage: '{percentage} of failures caused by {dominant}'
