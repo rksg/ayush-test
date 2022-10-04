@@ -1,14 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Empty, Space } from 'antd'
 import { isEmpty }      from 'lodash'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { Button, Loader }        from '@acx-ui/components'
-import { BulbOutlined }          from '@acx-ui/icons'
-import { useFloorPlanListQuery } from '@acx-ui/rc/services'
-import { FloorPlanDto }          from '@acx-ui/rc/utils'
+import { Button, Loader, showActionModal }                   from '@acx-ui/components'
+import { BulbOutlined }                                      from '@acx-ui/icons'
+import { useDeleteFloorPlanMutation, useFloorPlanListQuery } from '@acx-ui/rc/services'
+import { FloorPlanDto }                                      from '@acx-ui/rc/utils'
 
 import GalleryView from './GalleryView/GalleryView'
 import PlainView   from './PlainView/PlainView'
@@ -21,8 +21,21 @@ export default function FloorPlan () {
   const { $t } = useIntl()
   const [showGalleryView, setShowGalleryView] = useState(false)
 
-  const floorPlans = responseData?.data
+  const [floorPlans, setFloorPlans] = useState<FloorPlanDto[]>()
   const [selectedFloorPlan, setSelectedFloorPlan] = useState({} as FloorPlanDto)
+  
+  useEffect(() => {
+    setFloorPlans([])
+    if(responseData?.data){
+      setFloorPlans(responseData?.data)
+      setSelectedFloorPlan(responseData?.data[0])
+    }
+  }, [responseData?.data])
+
+  const [
+    deleteFloorPlan,
+    { isLoading: isDeleteFloorPlanUpdating }
+  ] = useDeleteFloorPlanMutation()
 
   const expandClickHandler = () => {
     // TODO: Expand to Fullscreen
@@ -37,16 +50,33 @@ export default function FloorPlan () {
     setShowGalleryView(false)
   }
 
+  const onDeleteFloorPlan = (floorPlanId: string) => {
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: $t({ defaultMessage: 'Floor Plan' }),
+        entityValue: 'test'+floorPlanId
+      },
+      onOk: () => deleteFloorPlan({ params: { ...params, floorPlanId } })
+        .then((res) => {
+          // TODO:
+        })
+    })
+  }
+
   return (
-    <Loader states={[responseData]}>
+    <Loader states={[responseData,
+      { isLoading: false, isFetching: isDeleteFloorPlanUpdating }]}>
       {floorPlans?.length ?
-        <>
+        <UI.FloorPlanContainer>
           { showGalleryView ?
             <GalleryView floorPlans={floorPlans ?? []} onFloorPlanClick={onFloorPlanClick}/>
             : <PlainView
               floorPlans={floorPlans ?? []}
               toggleGalleryView={galleryViewHandler}
-              defaultFloorPlan={!isEmpty(selectedFloorPlan) ? selectedFloorPlan : floorPlans[0]}/>
+              defaultFloorPlan={!isEmpty(selectedFloorPlan) ? selectedFloorPlan : floorPlans[0]}
+              deleteFloorPlan={onDeleteFloorPlan}/>
           }
           <UI.StyledSpace size={24}>
             <Button size='small' type='link'>{$t({ defaultMessage: '+ Add Floor Plan' })}</Button>
@@ -62,15 +92,14 @@ export default function FloorPlan () {
               onClick={expandClickHandler}
             />
           </UI.StyledSpace>
-        </>
+        </UI.FloorPlanContainer>
         :
         <Empty description={
           <Space><BulbOutlined />
-            <span id='noFloorPlansTemplate'>
-              {$t({ defaultMessage:
-          'You can place your devices on floor plans or map to view their geographical distribution'
-              })}
-            </span>
+            {$t({
+              defaultMessage:
+                'You can place your devices on floor plans or map to view their geographical distribution'
+            })}
           </Space>}>
           <Button type='link'>{$t({ defaultMessage: 'Add Floor Plan' })}</Button>
         </Empty>

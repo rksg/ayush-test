@@ -12,13 +12,14 @@ import {
   VenueDetailHeader,
   VenueCapabilities,
   VenueLed,
-  VenueApModels
+  VenueApModels,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue'],
+  tagTypes: ['Venue', 'VenueFP'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -84,7 +85,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...floorPlansReq
         }
+      },
+      providesTags: [{ type: 'VenueFP', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, 
+            ['DeleteFloorPlan'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFP', id: 'DETAIL' }]))
+            })
+        })
       }
+    }),
+    deleteFloorPlan: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.deleteFloorPlan, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFP', id: 'DETAIL' }]
     }),
     getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
@@ -129,6 +148,7 @@ export const {
   useGetVenueQuery,
   useVenueDetailsHeaderQuery,
   useFloorPlanListQuery,
+  useDeleteFloorPlanMutation,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,

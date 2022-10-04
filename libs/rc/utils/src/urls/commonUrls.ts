@@ -91,6 +91,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
   },
+  deleteFloorPlan: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
+  },
   getVenueCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
