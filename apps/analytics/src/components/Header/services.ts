@@ -36,10 +36,10 @@ const lowPreferenceList = ['0.0.0.0', '0', 'Unknown']
 
 const getAttributesByNodeType = (nodeType: NodeType) => {
   const defaultAttributes = ['type', 'apCount', 'clientCount' ] as const
-
+  const venueAttributes = [...defaultAttributes, 'switchCount']
   const attributes = {
-    network: [...defaultAttributes, 'switchCount'] as const,
-    zone: defaultAttributes,
+    network: venueAttributes,
+    zone: venueAttributes,
     apGroup: defaultAttributes,
     AP: [
       'model',
@@ -48,9 +48,7 @@ const getAttributesByNodeType = (nodeType: NodeType) => {
       'internalIp',
       'clientCount'
     ] as const,
-    switchGroup: [
-      'switchCount'
-    ] as const,
+    switchGroup: venueAttributes,
     switchSubGroup: [
       'switchCount'
     ] as const,

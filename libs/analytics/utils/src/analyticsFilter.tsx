@@ -30,7 +30,6 @@ export type AnalyticsFilter = DateFilter & { path: NetworkPath } & { filter? : p
 function getFilterObj (path : NetworkPath) {
   const pathLength = path.length
   switch(pathLength){
-    case 0:
     case 1:
       return { networkNodes: [], switchNodes: [] }
     case 2:
@@ -78,7 +77,7 @@ export function AnalyticsFilterProvider (props: { children: ReactNode }) {
       ? JSON.parse(
         Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
       )
-      : { path: [], raw: [] }
+      : { path: defaultNetworkPath, raw: [] }
     const { path } = networkFilter
     if(sublocation === 'health' &&
     path.length > 1 &&
@@ -96,7 +95,7 @@ export function AnalyticsFilterProvider (props: { children: ReactNode }) {
   }
   const { path } = getNetworkFilter()
   const providerValue = {
-    path: path.length ? path : defaultNetworkPath,
+    path: path,
     setNetworkPath,
     getNetworkFilter
   }
