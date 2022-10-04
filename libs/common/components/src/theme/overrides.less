@@ -129,7 +129,10 @@
 
   .ant-cascader {
     width: 100%;
+
     &-menu {
+      border-right: 1px solid var(--acx-neutrals-20);
+
       &-item {
         &:hover {
           background-color: var(--acx-accents-orange-10);
@@ -322,6 +325,9 @@
         }
       }
     }
+    .ant-picker-footer, .ant-picker-footer-extra {
+      line-height: inherit;
+    }
   }
 
   .ant-radio {
@@ -423,8 +429,9 @@
   }
 
   .ant-select {
-    .ant-cascader-dropdown {
-      padding-bottom: 0 !important;
+    &-dropdown {
+      font-size: var(--acx-body-4-font-size);
+      font-weight: var(--acx-body-font-weight);
     }
     .ant-select-arrow {
       margin-right: -3px;
@@ -603,6 +610,7 @@
       }
     }
   }
+
   .ant-message {
     top: initial;
     bottom: 20px;
