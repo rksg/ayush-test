@@ -14,6 +14,9 @@ jest.mock('../../IncidentAttributes', () => ({
 jest.mock('../../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
+jest.mock('../../IncidentDetails/TimeSeries', () => ({
+  TimeSeries: () => <div data-testid='timeSeries' />
+}))
 
 describe('p-cov-clientrssi-low', () => {
   mockDOMWidth()
@@ -29,6 +32,7 @@ describe('p-cov-clientrssi-low', () => {
     expect(screen.getByTestId('incidentAttributes')).toBeVisible()
     expect(screen.getByTestId('networkImpact')).toBeVisible()
     expect(screen.getByTestId('insights')).toBeVisible()
+    expect(screen.getByTestId('timeSeries')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
 })
