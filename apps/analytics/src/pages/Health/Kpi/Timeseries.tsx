@@ -1,5 +1,9 @@
+import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
+
+import { connect }  from 'echarts'
+import ReactECharts from 'echarts-for-react'
 
 import { AnalyticsFilter, kpiConfig }                       from '@acx-ui/analytics/utils'
 import { Loader, MultiLineTimeSeriesChart, cssStr, NoData } from '@acx-ui/components'
@@ -34,6 +38,13 @@ function KpiTimeseries ({ filters, kpi }: { filters: AnalyticsFilter, kpi: strin
         }]
       })
     })
+  const connectChart = (chart: ReactECharts | null) => {
+    if (chart) {
+      const instance = chart.getEchartsInstance()
+      instance.group = 'timeSeriesGroup'
+    }
+  }
+  useEffect(() => { connect('timeSeriesGroup') }, [])
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>
@@ -46,6 +57,7 @@ function KpiTimeseries ({ filters, kpi }: { filters: AnalyticsFilter, kpi: strin
               dataFormatter={formatYDataPoint}
               yAxisProps={{ min: 0, max: 1 }}
               disableLegend
+              chartRef={connectChart}
             />
             : <NoData/>
         )}

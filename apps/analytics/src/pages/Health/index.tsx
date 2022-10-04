@@ -1,7 +1,4 @@
-import { useRef } from 'react'
-
 import { Tabs }                                      from 'antd'
-import ReactECharts                                  from 'echarts-for-react'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { categoryNames }                         from '@acx-ui/analytics/utils'
@@ -47,8 +44,6 @@ export default function HealthPage () {
       pathname: `${basePath.pathname}/${tab}`
     })
 
-  const connectedClientsRef = useRef<ReactECharts>(null)
-
   return (
     <>
       <Header title={$t({ defaultMessage: 'Health' })} />
@@ -58,7 +53,7 @@ export default function HealthPage () {
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
-            <ConnectedClientsOverTime ref={connectedClientsRef} />
+            <ConnectedClientsOverTime />
           </GridCol>
           <GridCol col={{ span: 16 }} >
             <Tabs activeKey={activeTab} onChange={onTabChange}>

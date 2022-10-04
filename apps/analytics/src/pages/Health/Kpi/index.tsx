@@ -14,9 +14,8 @@ export default function KpiSection (props: { tab: HealthTab }) {
   const { kpis } = kpisForTab[props.tab]
   const healthFilter = useContext(HealthPageContext)
   const { timeWindow } = healthFilter
-  //const [wStartDate, wEndDate] = timeWindow as [string, string]
   const { filters } = useAnalyticsFilter()
-  //const kpiFilters = { startDate, endDate, range, path, wStartDate, wEndDate }
+  
   return (<>{
     kpis.map(kpi => (<KpiRow key={kpi}>
       <GridCol col={{ span: 16 }}>
