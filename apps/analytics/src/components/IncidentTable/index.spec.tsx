@@ -446,7 +446,7 @@ describe('IncidentTableWidget', () => {
         'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
       )
     )
-    fireEvent.click(await screen.findByRole('button', { name: /close/i }))
+    fireEvent.click(await screen.findByText('CloseSymbol.svg'))
     expect(screen.queryByText('Root cause:')).toBeNull()
   })
 

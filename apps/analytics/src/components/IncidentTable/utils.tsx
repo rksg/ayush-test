@@ -13,7 +13,8 @@ import {
 import { useTenantLink } from '@acx-ui/react-router-dom'
 import { formatter }     from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import { IncidentTableRow } from './services'
+import * as UI              from './styledComponents'
 
 export type GetIncidentBySeverityProps = {
   severityLabel: string,
@@ -102,4 +103,27 @@ export const severitySort = (a?: unknown, b?: unknown) => {
   if (isDefined && c > d) return 1
   if (isDefined && c < d) return -1
   return 0
+}
+
+export const filterMutedIncidents = (data?: IncidentTableRow[]) => {
+  if (!data) return []
+  const finalData: IncidentTableRow[] = []
+  data.forEach(datum => {
+    if (datum.isMuted) {
+      datum.children?.forEach(child => {
+        if (!child.isMuted) {
+          finalData.push(child)
+        }
+      })
+    } else {
+      const copyDatum = {
+        ...datum,
+        children: datum.children?.filter(child => {
+          return !child.isMuted
+        })
+      }
+      finalData.push(copyDatum)
+    }
+  })
+  return finalData
 }

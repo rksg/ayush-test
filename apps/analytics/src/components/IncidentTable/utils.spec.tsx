@@ -7,9 +7,11 @@ import {
   fakeIncident,
   Incident
 } from '@acx-ui/analytics/utils'
-import { Provider }                from '@acx-ui/store'
-import { render, screen, cleanup } from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
+import { incidentTests }                   from './__tests__/fixtures'
+import { IncidentTableRow, transformData } from './services'
 import {
   GetIncidentBySeverity,
   FormatDate,
@@ -20,7 +22,8 @@ import {
   IncidentTableComponentProps,
   dateSort,
   defaultSort,
-  ShortIncidentDescription
+  ShortIncidentDescription,
+  filterMutedIncidents
 } from './utils'
 
 describe('IncidentTable: utils', () => {
@@ -29,8 +32,6 @@ describe('IncidentTable: utils', () => {
     moment.tz.setDefault('Asia/Singapore')
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
-
-  afterEach(() => cleanup())
 
   const incidentValues = {
     severity: 0.3813119146230035,
@@ -84,7 +85,7 @@ describe('IncidentTable: utils', () => {
     ]
 
     it.each(testSeverityArr)(
-      'should show correct label: %s for value %n',
+      'should show correct label: %s',
       async ({ label }) => {
         render(<Provider>
           <GetIncidentBySeverity severityLabel={label} id={'test'}/>
@@ -300,6 +301,35 @@ describe('IncidentTable: utils', () => {
     it('should sort 0 string', () => {
       const zero = defaultSort(textA, textA)
       expect(zero).toBe(0)
+    })
+  })
+
+  describe('filterMutedIncidents', () => {
+    it('should filter child & parent muted incidents', () => {
+      const sampleIncidents = incidentTests.map(incident => transformData(incident))
+      const unmutedIncidents: IncidentTableRow[] = []
+      sampleIncidents.forEach(incident => {
+        if (incident.isMuted) {
+          // eslint-disable-next-line testing-library/no-node-access
+          incident.children?.forEach(child => {
+            if (!child.isMuted) {
+              unmutedIncidents.push(child)
+            }
+          })
+        } else {
+          // eslint-disable-next-line testing-library/no-node-access
+          incident.children = incident.children?.filter(child => !child.isMuted)
+          unmutedIncidents.push(incident)
+        }
+      })
+
+      const filteredIncidents = filterMutedIncidents(sampleIncidents)
+      expect(filteredIncidents).toHaveLength(unmutedIncidents.length)
+    })
+
+    it('should return empty table on undefined', () => {
+      const undefinedTest = filterMutedIncidents()
+      expect(undefinedTest).toMatchObject([])
     })
   })
 

@@ -20,7 +20,7 @@ import {
   useMuteIncidentsMutation,
   IncidentTableRow
 } from './services'
-import * as UI  from './styledComponents'
+import * as UI           from './styledComponents'
 import {
   GetIncidentBySeverity,
   FormatDate,
@@ -28,7 +28,8 @@ import {
   ShortIncidentDescription,
   severitySort,
   dateSort,
-  defaultSort
+  defaultSort,
+  filterMutedIncidents
 } from './utils'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
@@ -70,20 +71,26 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
   const [muteIncident] = useMuteIncidentsMutation()
+  const [selectedRowData, setSelectedRowData] = useState<{
+    id: string,
+    code: string,
+    severityLabel: string,
+    isMuted: boolean
+  }[]>([])
+
   const data = (showMuted)
     ? queryResults.data
-    : queryResults.data?.filter(row => !row.isMuted)
-  const [selectedRowKeys, setRowKeys] = useState<React.Key[]>([])
+    : filterMutedIncidents(queryResults.data)
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Mute/Unmute' })),
-      onClick: async (selectedItems) => {
-        await Promise.all(selectedItems.map(async (row) => {
+      onClick: async () => {
+        await Promise.all(selectedRowData.map(async (row) => {
           const { id, code, severityLabel, isMuted } = row
           await muteIncident({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()
         }))
-        setRowKeys([])
+        setSelectedRowData([])
       }
     }
   ]
@@ -232,8 +239,15 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         rowActions={rowActions}
         rowSelection={{
           type: 'radio',
-          selectedRowKeys,
-          onChange: (selectedRowKeys) => setRowKeys(selectedRowKeys)
+          selectedRowKeys: selectedRowData.map(val => val.id),
+          onSelect: (selectedRowKeys) => {
+            setSelectedRowData([{
+              id: selectedRowKeys.id,
+              code: selectedRowKeys.code,
+              severityLabel: selectedRowKeys.severityLabel,
+              isMuted: selectedRowKeys.isMuted
+            }])
+          }
         }}
         rowKey='id'
         showSorterTooltip={false}
@@ -242,7 +256,7 @@ function IncidentTableWidget ({ filters }: { filters: IncidentFilter }) {
         indentSize={6}
         onResetState={() => {
           setShowMuted(false)
-          setRowKeys([])
+          setSelectedRowData([])
         }}
         extraSettings={[
           <Checkbox
