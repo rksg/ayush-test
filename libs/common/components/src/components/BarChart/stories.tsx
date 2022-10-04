@@ -82,9 +82,9 @@ export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams
   const mac = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[5] : ''
   return renderToString(
     <TooltipWrapper>
-      <div> 
+      <div>
         {name as string}
-        <b> ({mac as string})</b> 
+        <b> ({mac as string})</b>
       </div>
     </TooltipWrapper>
   )

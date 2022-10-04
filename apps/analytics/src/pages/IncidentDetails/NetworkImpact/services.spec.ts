@@ -1,19 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit'
-
-import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { mockGraphqlQuery }    from '@acx-ui/test-utils'
+import { dataApiURL }       from '@acx-ui/analytics/services'
+import { store }            from '@acx-ui/store'
+import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import { NetworkImpactChartTypes  }                from './config'
 import { networkImpactChartsApi, RequestPayload  } from './services'
 
 describe('networkImpactChartsApi', () => {
-  const store = configureStore({
-    reducer: {
-      [dataApi.reducerPath]: dataApi.reducer
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataApi.middleware])
-  })
   const payload = {
     incident: { id: 'id', metadata: { dominant: { } } },
     charts: [

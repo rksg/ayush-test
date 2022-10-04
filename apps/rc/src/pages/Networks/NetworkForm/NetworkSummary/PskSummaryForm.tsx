@@ -3,7 +3,7 @@ import React from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { 
+import {
   AaaServerTypeEnum,
   NetworkSaveData,
   WlanSecurityEnum,
@@ -20,11 +20,11 @@ export function PskSummaryForm (props: {
   const { summaryData } = props
   return (
     <>
-      {summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.WPA3 && 
+      {summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.WPA3 &&
        summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.WEP &&
        summaryData.wlan?.passphrase &&
         <Form.Item
-          label={summaryData.wlanSecurity === WlanSecurityEnum.WPA23Mixed ? 
+          label={summaryData.wlanSecurity === WlanSecurityEnum.WPA23Mixed ?
             $t({ defaultMessage: 'WPA2 Passphrase:' }) :
             $t({ defaultMessage: 'Passphrase:' })
           }
@@ -83,10 +83,10 @@ export function PskSummaryForm (props: {
                 summaryData.wlan?.macAuthMacFormat as keyof typeof macAuthMacFormatOptions
               ]
             }/>
-            
+
           {$t({ defaultMessage: 'Authentication Service' })}
           <AaaServer serverType={AaaServerTypeEnum.AUTHENTICATION} summaryData={summaryData} />
-          {summaryData.enableAccountingService && 
+          {summaryData.enableAccountingService &&
             <>{$t({ defaultMessage: 'Accounting Service' })}
               <AaaServer serverType={AaaServerTypeEnum.ACCOUNTING} summaryData={summaryData} />
             </>

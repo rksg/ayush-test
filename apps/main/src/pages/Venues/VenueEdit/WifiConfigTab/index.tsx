@@ -41,7 +41,7 @@ export function WifiConfigTab () {
       security: $t({ defaultMessage: 'Security' }),
       servers: $t({ defaultMessage: 'External Servers' }),
       settings: $t({ defaultMessage: 'Advanced Settings' })
-    } 
+    }
 
     const title = tabTitle[tabkey as keyof typeof tabTitle]
     return editContextData.isDirty && params?.activeSubTab === tabkey

@@ -113,5 +113,5 @@ export function showUnsavedModal (
       action: 'CUSTOM_BUTTONS',
       buttons: (hasError ? btns.slice(0, 2) : btns) as CustomButtonProps[]
     }
-  })  
+  })
 }
