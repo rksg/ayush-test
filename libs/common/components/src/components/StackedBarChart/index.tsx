@@ -1,5 +1,6 @@
-import ReactECharts from 'echarts-for-react'
-import _            from 'lodash'
+import ReactECharts                   from 'echarts-for-react'
+import _                              from 'lodash'
+import { useIntl, MessageDescriptor } from 'react-intl'
 
 import { incidentSeverities } from '@acx-ui/analytics/utils'
 
@@ -30,6 +31,7 @@ type Dimensions = [
 interface StackedBarOptionalProps {
   animation: boolean
   showLabels: boolean
+  barWidth: number
   barColors?: string[]
   showTotal: boolean
   showTooltip: boolean
@@ -41,7 +43,8 @@ const defaultProps: StackedBarOptionalProps = {
   animation: true,
   showLabels: true,
   showTotal: true,
-  showTooltip: true
+  showTooltip: true,
+  barWidth: 8
 }
 
 StackedBarChart.defaultProps = { ...defaultProps }
@@ -52,7 +55,8 @@ export interface StackedBarChartProps
     data: TChartData[]
     /** @default 'name' */
     legendProp?: keyof TChartData
-    dataFormatter?: (value: unknown) => string | null
+    dataFormatter?: (value: unknown) => string | null,
+    tooltipFormat?: MessageDescriptor
   }
 
 const computeChartData = ({ category, series }: ChartData) => {
@@ -72,7 +76,7 @@ const computeChartData = ({ category, series }: ChartData) => {
 }
 
 const massageData = (
-  data: ChartData[], showTotal: boolean): RegisteredSeriesOption['bar'][] => {
+  data: ChartData[], showTotal: boolean, barWidth: number): RegisteredSeriesOption['bar'][] => {
   const seriesCommonConfig: RegisteredSeriesOption['bar'] = {
     type: 'bar',
     cursor: 'default',
@@ -83,7 +87,7 @@ const massageData = (
       { name: 'sum', type: 'number' }
     ],
     stack: 'Total',
-    barWidth: 8,
+    barWidth,
     label: {
       ...barChartSeriesLabelOptions(),
       formatter: '{@sum}'
@@ -109,21 +113,18 @@ const massageData = (
     .map((datum) => {
       const dataWithColor = datum.data.map(val => {
         const isValidColor = Object.keys(incidentSeverities).includes(val.value[2])
-
         if (isValidColor) {
           return {
             ...val,
             itemStyle: {
               ...val.itemStyle,
-              color: 
+              color:
                 cssStr(incidentSeverities[val.value[2] as keyof typeof incidentSeverities].color)
             }
           }
         }
-
         return val
       })
-      
       return {
         ...datum,
         data: dataWithColor
@@ -137,7 +138,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   ...props
 }: StackedBarChartProps<TChartData>) {
 
-  const { animation, showTotal, showLabels, showTooltip } = props
+  const { animation, showTotal, showLabels, showTooltip, barWidth } = props
   const barColors = props.barColors ??
     Object.values(incidentSeverities).map(({ color }) => cssStr(color))
   let option: EChartsOption = {
@@ -177,10 +178,13 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
     tooltip: {
       ...tooltipOptions(),
       trigger: 'item',
-      formatter: stackedBarTooltipFormatter(dataFormatter),
+      formatter: stackedBarTooltipFormatter(
+        useIntl(),
+        dataFormatter,
+        props.tooltipFormat),
       show: showTooltip
     },
-    series: massageData(data, showTotal)
+    series: massageData(data, showTotal, barWidth)
   }
   return (
     <ReactECharts

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { withKnobs,object } from '@storybook/addon-knobs'
 import { storiesOf }        from '@storybook/react'
@@ -7,9 +7,9 @@ import ReactECharts         from 'echarts-for-react'
 
 import { TimeStamp } from '@acx-ui/types'
 
+import { Button } from '../Button'
 
 import { MultiLineTimeSeriesChart } from '.'
-
 
 const getData = () => {
   const base = +new Date(2020, 9, 29)
@@ -17,7 +17,10 @@ const getData = () => {
   const data = [[base, Math.random() * 3000]]
 
   for (let i = 1; i < 37; i++) {
-    data.push([base + oneDay * i, Math.round((Math.random()-0.5) * 250 + data[i - 1][1])])
+    // eslint-disable-next-line max-len
+    const value = Math.round((Math.random()-0.5) * 250 + data[i - 1][1])
+    const displayValue = (Math.random() > 0.20) ? value : null
+    data.push([base + oneDay * i, displayValue as number])
   }
   return data as [TimeStamp, number][]
 }
@@ -36,25 +39,61 @@ export const getSeriesData = () => {
 }
 
 const ConnectedCharts = () => {
+  const [data, setData]= useState(getSeriesData())
   const chartRef1 = useRef<ReactECharts>(null)
   const chartRef2 = useRef<ReactECharts>(null)
   const chartRefs = useMemo(() => [chartRef1, chartRef2],[])
-  useEffect(()=>{
-    if(chartRefs.every(ref => ref && ref.current)){
-      [chartRefs[0], chartRefs[1]].forEach(ref => {
-        let instance = ref.current!.getEchartsInstance()
-        instance.group = 'group1'
-      })
-      connect('group1')
-    }
+  const n = data.length
+  const timeWindowInit = (data: {
+    name: string;
+    data: [TimeStamp, number][];
+}[]) => [data[0].data[0][0], data[n-1].data[n-1][0]]
+  const [timeWindow, setTimeWindow] = useState(timeWindowInit(data))
+
+  const connectRefs = useCallback(() => {
+    const validRefs = chartRefs.filter(ref => ref && ref.current)
+    validRefs.forEach(ref => {
+      let instance = ref.current!.getEchartsInstance()
+      instance.group = 'group1'
+    })
+    connect('group1')
   }, [chartRefs])
+
+
+  useEffect(()=>{
+    connectRefs()
+  }, [connectRefs])
+
+  const onBrushChangeCallback = useCallback((range: TimeStamp[]) => {
+    if (range[0] !== timeWindow[0]) {
+      setTimeWindow(range)
+      connectRefs()
+    }
+
+    if (range[1] !== timeWindow[1]) {
+      setTimeWindow(range)
+      connectRefs()
+    }
+  }, [timeWindow, connectRefs])
+
   return (
     <>
+      <Button
+        size='small'
+        type='primary'
+        onClick={()=>{
+          const copyData = getSeriesData()
+          setData(copyData)
+          setTimeWindow(timeWindowInit(copyData))
+          connectRefs()
+        }}>Update Data</Button>
       {chartRefs.map((ref, index) => <MultiLineTimeSeriesChart
         key={index}
         chartRef={ref}
         style={{ width: 504, height: 300 }}
-        data={getSeriesData()}
+        data={data}
+        brush={timeWindow as [TimeStamp, TimeStamp]}
+        onBrushChange={onBrushChangeCallback}
       />)}
     </>
   )
@@ -89,7 +128,7 @@ storiesOf('MultiLineTimeSeriesChart', module)
     brush={['2020-11-10', '2020-11-20']}
     onBrushChange={range => {console.log(range.map(r=>new Date(r).toISOString()))}} // eslint-disable-line no-console
   />)
-  .add('Connected Chart', () => <ConnectedCharts/>)
+  .add('Connected Chart', () => <ConnectedCharts />)
   .add('With Knobs', () =>
     <div style={{ width: 504, height: 278, padding: 10, border: '1px solid lightgray' }}>
       <MultiLineTimeSeriesChart

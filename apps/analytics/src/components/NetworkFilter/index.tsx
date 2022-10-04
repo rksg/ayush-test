@@ -21,7 +21,7 @@ export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
-): VenuesWithSeverityNodes => 
+): VenuesWithSeverityNodes =>
   groupBy(
     incidentsList.map((incident: Incident) => ({
       ...pick(incident, ['sliceType', 'path']),
@@ -59,9 +59,9 @@ const getSeverityCircles = (
   return severityArray.sort()
 }
 const getApsAndSwitches = ( data: Child[], name : string) =>
-  data.reduce((acc : ApOrSwitch[] | [], datum : Child) => { 
+  data.reduce((acc : ApOrSwitch[] | [], datum : Child) => {
     const { aps, switches } = datum
-    if(datum.name === name) 
+    if(datum.name === name)
       acc = [...acc,...(aps || []), ...(switches || [])]
     return acc
   }, [] )

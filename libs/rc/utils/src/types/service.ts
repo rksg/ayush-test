@@ -1,3 +1,7 @@
+import {
+  DHCPConfigTypeEnum,
+  ServiceTechnology
+} from '../constants'
 
 export enum AccessEnum {
   ALLOW = 'Allow',
@@ -96,3 +100,51 @@ export interface RadiusService {
 }
 
 
+
+export interface DHCPPool {
+  id: number;
+  name: string;
+  description?: string;
+  allowWired: boolean;
+  ip: string;
+  mask: string;
+  excludedRangeStart?: string;
+  excludedRangeEnd?: string;
+  primaryDNS: string;
+  secondaryDNS: string;
+  leaseTime: number;
+  leaseUnit: string;
+  vlan: number;
+  dhcpOptions: DHCPOption[];
+}
+
+export interface DHCPOption{
+  optId: string;
+  id: number;
+  optName: string;
+  format: string;
+  value: string;
+}
+
+export interface CreateDHCPFormFields {
+  name: string;
+  tags: string[];
+  createType: ServiceTechnology;
+  dhcpConfig: DHCPConfigTypeEnum;
+  dhcpPools: DHCPPool[];
+  venues: DHCPVenue[];
+}
+
+export interface DHCPSaveData extends CreateDHCPFormFields {
+  id?: string;
+}
+
+export interface DHCPVenue {
+  id?: string
+  name?: string
+  scheduler: {
+    type: string
+  }
+  venueId: string
+  dhcpId: string
+}

@@ -12,7 +12,7 @@ jest.mock('../../components/NetworkFilter', () => () => <div>network filter</div
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: () => ({
-    filters: { path: [{ type: 'network', name: 'Network' }] }
+    filters: { path: [{ type: 'network', name: 'Network' }], filter: {} }
   })
 }))
 describe('Analytics dumb header', () => {

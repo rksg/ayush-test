@@ -1,25 +1,20 @@
 import { forwardRef } from 'react'
 
-import { Popover } from 'antd'
+import { Badge, Popover } from 'antd'
 
+import { LayoutUI }                  from '@acx-ui/components'
+import { NotificationSolid }         from '@acx-ui/icons'
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import { useParams }                 from '@acx-ui/react-router-dom'
 
-import { Button, NotificationIcon } from '../../../pages/Layout/styledComponents'
-import { AlarmsTable }              from '../../Alarms/Table'
-
-import {
-  NotificationCounter
-} from './styledComponents'
+import { AlarmsTable } from '../../Alarms/Table'
 
 const NotificationCounterWithRef = forwardRef<HTMLElement, { count: number }>((props, ref) => {
-  return <NotificationCounter
+  return <Badge
     {...props}
-    overflowCount={999}
-    offset={[-2, 10]}
-    color='black'
-    size='small'
-    children={<Button type='primary' ref={ref} icon={<NotificationIcon />} />}
+    overflowCount={9}
+    offset={[-3, 0]}
+    children={<LayoutUI.ButtonSolid ref={ref} icon={<NotificationSolid />} />}
   />
 })
 

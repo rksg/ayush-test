@@ -1,7 +1,7 @@
 import { capitalize }                                           from 'lodash'
 import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
-import { intlFormats } from '@acx-ui/utils'
+import { intlFormats, PathNode, NodeType } from '@acx-ui/utils'
 
 import { noDataSymbol }        from './constants'
 import { incidentInformation } from './incidentInformation'
@@ -11,8 +11,6 @@ import type { IncidentInformation } from './incidentInformation'
 import type {
   IncidentSeverities,
   SeverityRange,
-  PathNode,
-  NodeType,
   Incident
 } from './types/incidents'
 
@@ -94,8 +92,8 @@ export function useFormattedNodeType (nodeType: NodeType) {
   return formattedNodeType(nodeType, intl)
 }
 
-export const useImpactValues = 
-  <Type extends 'ap' | 'client'> (type: Type, incident: Incident): 
+export const useImpactValues =
+  <Type extends 'ap' | 'client'> (type: Type, incident: Incident):
   Record<string, string | number | null | {}> => {
     const intl = useIntl()
     const values = impactValues(intl, type, incident)

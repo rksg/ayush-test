@@ -3,13 +3,15 @@ import styled                from 'styled-components/macro'
 
 import { DateRange, defaultRanges } from '@acx-ui/utils'
 
+import { cssNumber } from '../../theme/helper'
+
 type WrapperProps = {
   rangeOptions?: DateRange[];
   selectionType: DateRange;
 }
 /* eslint-disable max-len */
 export const Wrapper = styled.div<WrapperProps>`
-  --acx-date-picker-ranges-width: 130px;
+  --acx-date-picker-ranges-width: 125px;
 
   > .ant-picker {
     width: 23em;
@@ -83,6 +85,12 @@ export const Wrapper = styled.div<WrapperProps>`
       : Object.keys(defaultRanges()).indexOf(props.selectionType) + 1}) {
         font-weight: var(--acx-body-font-weight-bold);
       }
+      li {
+        span.ant-tag {
+          padding: 0;
+          margin: 0;
+        }
+      }
       position: absolute;
       width: var(--acx-date-picker-ranges-width);
       top: 10px;
@@ -91,7 +99,7 @@ export const Wrapper = styled.div<WrapperProps>`
       display: flex;
       flex-direction: column;
       background-color: var(--acx-neutrals-10);
-      padding: 20px;
+      padding: 10px 20px;
       border-radius: 4px 0 0 4px;
       .ant-picker-preset > .ant-tag-blue {
         color: var(--acx-neutrals-100);
@@ -189,7 +197,7 @@ export const RangeApplyRow = styled.div`
   display: flex;
   background-color: var(--acx-neutrals-10);
   align-items: center;
-  height: 48px;
+  padding: var(--acx-modal-footer-small-padding);
 `
 export const SelectedRange = styled.div`
   flex: auto;
@@ -197,8 +205,9 @@ export const SelectedRange = styled.div`
   font-size: var(--acx-subtitle-5-font-size);
   font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
 `
-export const Buttons = styled(Space).attrs({ size: 12 })`
-  padding-right: 14px;
+export const Buttons = styled(Space).attrs({
+  size: cssNumber('--acx-modal-footer-small-button-space')
+})`
   .ant-space-item {
     line-height: normal;
   }
