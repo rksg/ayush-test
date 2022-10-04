@@ -10,12 +10,15 @@ import { DHCPForm }                              from './pages/Services/DHCPForm
 import { SelectServiceForm }                     from './pages/Services/SelectServiceForm'
 import { getServiceRoutePath, ServiceOperation } from './pages/Services/serviceRouteUtils'
 import { ServicesTable }                         from './pages/Services/ServicesTable'
+import { EdgesTable }                         from './pages/Devices/EdgesTable'
+import { EdgesForm }                           from './pages/Devices/EdgesForm'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='networks/*' element={<NetworkRoutes />} />
       <Route path='services/*' element={<ServiceRoutes />} />
+      <Route path='devices/*' element={<DeviceRoutes />} />
     </Route>
   )
   return (
@@ -85,6 +88,15 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<h1>DHCP details page</h1>}
       />
+    </Route>
+  )
+}
+
+function DeviceRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='devices' element={<EdgesTable />} />
+      <Route path='devices/add' element={<EdgesForm />} />
     </Route>
   )
 }
