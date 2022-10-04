@@ -7,8 +7,10 @@ import {
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
 
-import { IncidentAttributes, Attributes } from '../IncidentAttributes'
-import { Insights }                       from '../Insights'
+import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
+import { Insights }                          from '../Insights'
+import { NetworkImpact, NetworkImpactProps } from '../NetworkImpact'
+import { NetworkImpactChartTypes }           from '../NetworkImpact/config'
 
 import * as UI from './styledComponents'
 
@@ -24,6 +26,23 @@ export const ApservDowntimeHigh = (incident: Incident) => {
     Attributes.EventStartTime,
     Attributes.EventEndTime
   ]
+  const networkImpactCharts: NetworkImpactProps['charts'] = [{
+    chart: NetworkImpactChartTypes.APModelByAP,
+    type: 'apDowntime',
+    dimension: 'apModel'
+  }, {
+    chart: NetworkImpactChartTypes.APFwVersionByAP,
+    type: 'apDowntime',
+    dimension: 'apFwVersion'
+  }, {
+    chart: NetworkImpactChartTypes.EventTypeByAP,
+    type: 'apDowntime',
+    dimension: 'eventType'
+  }, {
+    chart: NetworkImpactChartTypes.ReasonByAP,
+    type: 'apDowntime',
+    dimension: 'reason'
+  }]
 
   return (
     <>
@@ -47,7 +66,7 @@ export const ApservDowntimeHigh = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <div>Network Impact</div>
+          <NetworkImpact incident={incident} charts={networkImpactCharts} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
           <div>Chart</div>

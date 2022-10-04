@@ -134,8 +134,29 @@ exports[`i-apserv-downtime-high should render correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        <div>
-          Network Impact
+        <div
+          data-testid="networkImpact"
+        >
+          <div
+            data-dimension="apModel"
+            data-testid="network-impact-apModelByAP"
+            data-type="apDowntime"
+          />
+          <div
+            data-dimension="apFwVersion"
+            data-testid="network-impact-apFwVersionByAP"
+            data-type="apDowntime"
+          />
+          <div
+            data-dimension="eventType"
+            data-testid="network-impact-eventTypeByAP"
+            data-type="apDowntime"
+          />
+          <div
+            data-dimension="reason"
+            data-testid="network-impact-reasonByAP"
+            data-type="apDowntime"
+          />
         </div>
       </div>
     </div>

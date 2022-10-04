@@ -136,7 +136,23 @@ exports[`ttc should render correctly 1`] = `
       >
         <div
           data-testid="networkImpact"
-        />
+        >
+          <div
+            data-dimension="ssids"
+            data-testid="network-impact-WLAN"
+            data-type="client"
+          />
+          <div
+            data-dimension="radios"
+            data-testid="network-impact-radio"
+            data-type="client"
+          />
+          <div
+            data-dimension="manufacturer"
+            data-testid="network-impact-clientManufacturer"
+            data-type="client"
+          />
+        </div>
       </div>
     </div>
     <div

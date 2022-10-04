@@ -14,6 +14,7 @@ jest.mock('../../Insights', () => ({
 
 describe('p-switch-memory-high', () => {
   mockDOMWidth()
+
   it('should render correctly', () => {
     const params = {
       incidentId: fakeIncident1.id

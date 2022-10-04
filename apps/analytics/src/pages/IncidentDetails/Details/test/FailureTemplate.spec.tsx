@@ -4,19 +4,20 @@ import { mockDOMWidth, render, screen } from '@acx-ui/test-utils'
 
 import { IncidentDetailsTemplate } from '../FailureTemplate'
 
+import { mockNetworkImpact } from './__tests__/fixtures'
+
 jest.mock('../../IncidentDetails/IncidentAttributes', () => ({
   ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
 }))
-jest.mock('../../NetworkImpact', () => ({
-  NetworkImpact: () => <div data-testid='networkImpact' />
-}))
+jest.mock('../../NetworkImpact')
 jest.mock('../../IncidentDetails/TimeSeries', () => ({
   TimeSeries: () => <div data-testid='timeSeries' />
 }))
 
 describe('IncidentDetailsTemplate', () => {
   mockDOMWidth()
+  mockNetworkImpact()
 
   it('should render correctly', () => {
     const params = {

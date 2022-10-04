@@ -4,19 +4,21 @@ import { mockDOMWidth, render, screen }    from '@acx-ui/test-utils'
 
 import { Ttc } from '../Ttc'
 
+import { mockNetworkImpact } from './__tests__/fixtures'
+
 jest.mock('../../IncidentAttributes', () => ({
   ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
 }))
-jest.mock('../../NetworkImpact', () => ({
-  NetworkImpact: () => <div data-testid='networkImpact' />
-}))
+jest.mock('../../NetworkImpact')
 jest.mock('../../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
 
 describe('ttc', () => {
   mockDOMWidth()
+  mockNetworkImpact()
+
   it('should render correctly', () => {
     const params = {
       incidentId: fakeIncident1.id

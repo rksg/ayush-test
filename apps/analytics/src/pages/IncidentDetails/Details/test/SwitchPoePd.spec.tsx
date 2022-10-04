@@ -14,6 +14,7 @@ jest.mock('../../Insights', () => ({
 
 describe('i-switch-poe-pd', () => {
   mockDOMWidth()
+
   it('should render correctly', () => {
     const params = {
       incidentId: fakeIncident1.id
